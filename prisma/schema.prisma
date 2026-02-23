@@ -107,6 +107,7 @@ model Organization {
   incidentTasks         AIIncidentTask[]
   incidentNotifications AIIncidentNotification[]
   complianceMappings    ComplianceMapping[]
+  complianceEvidence    ComplianceEvidence[]
   shadowAIReports       ShadowAIReport[]
   auditLogs             AuditLog[]
   customerLinks         CustomerOrganization[]
@@ -573,6 +574,17 @@ enum ComplianceStatus {
   NOT_ASSESSED
 }
 
+enum EvidenceType {
+  POLICY
+  DOCUMENT
+  TEST_RESULT
+  MONITORING
+  AUDIT
+  TRAINING
+  APPROVAL
+  OTHER
+}
+
 model ComplianceFramework {
   id          String        @id @default(cuid())
   code        FrameworkCode @unique
@@ -620,13 +632,33 @@ model ComplianceMapping {
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
 
-  organization Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  aiSystem     AISystem              @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
-  requirement  ComplianceRequirement @relation(fields: [requirementId], references: [id], onDelete: Cascade)
+  organization  Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  aiSystem      AISystem              @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  requirement   ComplianceRequirement @relation(fields: [requirementId], references: [id], onDelete: Cascade)
+  evidenceItems ComplianceEvidence[]
 
   @@unique([aiSystemId, requirementId])
   @@index([organizationId])
   @@map("compliance_mappings")
+}
+
+model ComplianceEvidence {
+  id                  String       @id @default(cuid())
+  complianceMappingId String
+  organizationId      String
+  type                EvidenceType
+  title               String
+  url                 String?
+  description         String?      @db.Text
+  addedBy             String
+  addedAt             DateTime     @default(now())
+
+  complianceMapping ComplianceMapping @relation(fields: [complianceMappingId], references: [id], onDelete: Cascade)
+  organization      Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([complianceMappingId])
+  @@index([organizationId])
+  @@map("compliance_evidence")
 }
 
 // ============================================================

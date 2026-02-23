@@ -13,7 +13,8 @@
     "db:studio": "prisma studio",
     "db:seed-frameworks": "tsx scripts/seed-frameworks.ts",
     "db:seed-templates": "tsx scripts/seed-assessment-templates.ts",
-    "db:seed-scenarios": "tsx scripts/seed-demo-scenarios.ts"
+    "db:seed-scenarios": "tsx scripts/seed-demo-scenarios.ts",
+    "db:migrate-evidence": "tsx scripts/migrate-evidence-to-structured.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

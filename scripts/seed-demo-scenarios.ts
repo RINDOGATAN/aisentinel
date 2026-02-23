@@ -593,22 +593,116 @@ async function main() {
   }
 
   // Create compliance mappings for the fraud detection system (HIGH risk, DEPLOYED)
-  const fraudComplianceMappings = [
-    { reqCode: "Art. 9", status: "COMPLIANT" as const, evidence: "Risk management system documented in RMS-FRAUD-001. Covers known risks (false positives, adversarial manipulation), foreseeable misuse (batch fraud testing), and residual risks. Annual risk review cycle.", assessedBy: userId },
-    { reqCode: "Art. 9(2)", status: "COMPLIANT" as const, evidence: "Risk register identifies 23 known risks and 8 foreseeable risks. Last updated December 2025.", assessedBy: userId },
-    { reqCode: "Art. 9(3)", status: "COMPLIANT" as const, evidence: "Misuse evaluation completed. 5 misuse scenarios documented with mitigations.", assessedBy: userId },
-    { reqCode: "Art. 9(4)", status: "COMPLIANT" as const, evidence: "12 risk mitigation measures implemented, including input validation, rate limiting, and anomaly detection on the detection model itself.", assessedBy: userId },
-    { reqCode: "Art. 10", status: "PARTIALLY_COMPLIANT" as const, evidence: "Data governance policy DGP-003 in place. Training data cataloged and versioned. Gap: data quality metrics not yet automated for real-time monitoring.", assessedBy: userId },
-    { reqCode: "Art. 10(2)", status: "COMPLIANT" as const, evidence: "Design document covers collection (payment processor APIs), preparation (anonymization, feature engineering), and assumptions (fraud rate ~0.3% baseline).", assessedBy: userId },
-    { reqCode: "Art. 10(3)", status: "PARTIALLY_COMPLIANT" as const, evidence: "Dataset is representative of EU transaction patterns. Gap: international transaction coverage lower (12% of training vs. 18% of production traffic). Remediation planned for Q2 2026 retraining.", assessedBy: userId },
-    { reqCode: "Art. 11", status: "COMPLIANT" as const, evidence: "Full technical documentation package TD-FRAUD-v3 maintained in Confluence. Includes model cards, architecture diagrams, training methodology, performance benchmarks.", assessedBy: userId },
-    { reqCode: "Art. 12", status: "COMPLIANT" as const, evidence: "All predictions logged with full feature vectors, model version, timestamp, confidence score, and outcome feedback. Logs retained 7 years per financial regulation requirements.", assessedBy: userId },
-    { reqCode: "Art. 13", status: "COMPLIANT" as const, evidence: "Instructions for use provided to deployment team. Includes capability description, known limitations, performance metrics, and recommended human oversight procedures.", assessedBy: userId },
-    { reqCode: "Art. 14", status: "PARTIALLY_COMPLIANT" as const, evidence: "Human oversight: all flagged transactions reviewed by fraud analysts. Gap: automated override capability not yet implemented for analysts (manual escalation required to halt model in emergency).", assessedBy: userId },
-    { reqCode: "Art. 14(4)", status: "NON_COMPLIANT" as const, evidence: "Currently no one-click mechanism for fraud analysts to override model decisions in real-time. Escalation to engineering team required. Fix scheduled for Sprint 23 (March 2026).", assessedBy: userId },
-    { reqCode: "Art. 15", status: "COMPLIANT" as const, evidence: "Accuracy: 98% AUC-ROC, declared in documentation. Robustness tested against adversarial inputs (FGSM, PGD attacks). Cybersecurity: penetration test completed Q4 2025, no critical findings.", assessedBy: userId },
-    { reqCode: "Art. 50(1)", status: "NOT_APPLICABLE" as const, evidence: "System does not directly interact with natural persons. It processes transactions in the background.", assessedBy: userId },
-    { reqCode: "Art. 62", status: "COMPLIANT" as const, evidence: "Incident reporting procedure aligned with Art. 62 timelines (15 days). Two test drills completed successfully in 2025.", assessedBy: userId },
+  // Each mapping has structured evidence items instead of a single text field
+  const fraudComplianceMappings: Array<{
+    reqCode: string;
+    status: "COMPLIANT" | "PARTIALLY_COMPLIANT" | "NON_COMPLIANT" | "NOT_APPLICABLE" | "NOT_ASSESSED";
+    notes?: string;
+    assessedBy: string;
+    evidenceItems: Array<{ type: "POLICY" | "DOCUMENT" | "TEST_RESULT" | "MONITORING" | "AUDIT" | "TRAINING" | "APPROVAL" | "OTHER"; title: string; description?: string; url?: string }>;
+  }> = [
+    {
+      reqCode: "Art. 9", status: "COMPLIANT", assessedBy: userId,
+      evidenceItems: [
+        { type: "POLICY", title: "Risk Management Policy RMS-FRAUD-001", description: "Covers known risks (false positives, adversarial manipulation), foreseeable misuse, and residual risks." },
+        { type: "DOCUMENT", title: "Risk Register — 23 known risks, 8 foreseeable", description: "Comprehensive risk register last updated December 2025." },
+        { type: "TEST_RESULT", title: "Annual Risk Review Cycle Results 2025", description: "Annual risk review covering all identified risks and mitigations." },
+      ],
+    },
+    {
+      reqCode: "Art. 9(2)", status: "COMPLIANT", assessedBy: userId,
+      evidenceItems: [
+        { type: "DOCUMENT", title: "Risk Register v3.2", description: "Identifies 23 known risks and 8 foreseeable risks. Last updated December 2025." },
+      ],
+    },
+    {
+      reqCode: "Art. 9(3)", status: "COMPLIANT", assessedBy: userId,
+      evidenceItems: [
+        { type: "DOCUMENT", title: "Misuse Evaluation Report", description: "5 misuse scenarios documented with mitigations." },
+      ],
+    },
+    {
+      reqCode: "Art. 9(4)", status: "COMPLIANT", assessedBy: userId,
+      evidenceItems: [
+        { type: "DOCUMENT", title: "Risk Mitigation Register — 12 measures", description: "Input validation, rate limiting, and anomaly detection on the detection model itself." },
+        { type: "TEST_RESULT", title: "Mitigation Effectiveness Report Q4 2025", description: "All 12 measures tested and verified effective." },
+      ],
+    },
+    {
+      reqCode: "Art. 10", status: "PARTIALLY_COMPLIANT", assessedBy: userId,
+      notes: "Gap: data quality metrics not yet automated for real-time monitoring.",
+      evidenceItems: [
+        { type: "POLICY", title: "Data Governance Policy DGP-003", description: "Training data cataloged and versioned." },
+        { type: "DOCUMENT", title: "Training Data Catalog v2", description: "Full catalog of training data sources with versioning." },
+      ],
+    },
+    {
+      reqCode: "Art. 10(2)", status: "COMPLIANT", assessedBy: userId,
+      evidenceItems: [
+        { type: "DOCUMENT", title: "Data Design Document — Collection & Preparation", description: "Covers collection (payment processor APIs), preparation (anonymization, feature engineering), and assumptions (fraud rate ~0.3% baseline)." },
+      ],
+    },
+    {
+      reqCode: "Art. 10(3)", status: "PARTIALLY_COMPLIANT", assessedBy: userId,
+      notes: "International transaction coverage lower (12% of training vs. 18% of production traffic). Remediation planned for Q2 2026 retraining.",
+      evidenceItems: [
+        { type: "TEST_RESULT", title: "Dataset Representativeness Analysis", description: "Dataset is representative of EU transaction patterns with noted gaps in international coverage." },
+      ],
+    },
+    {
+      reqCode: "Art. 11", status: "COMPLIANT", assessedBy: userId,
+      evidenceItems: [
+        { type: "DOCUMENT", title: "Technical Documentation Package TD-FRAUD-v3", description: "Includes model cards, architecture diagrams, training methodology, performance benchmarks." },
+        { type: "DOCUMENT", title: "Model Card — Fraud Detection XGBoost v2", description: "Standardized model card with intended use, performance metrics, and limitations." },
+      ],
+    },
+    {
+      reqCode: "Art. 12", status: "COMPLIANT", assessedBy: userId,
+      evidenceItems: [
+        { type: "MONITORING", title: "Prediction Logging Configuration", description: "All predictions logged with full feature vectors, model version, timestamp, confidence score, and outcome feedback." },
+        { type: "POLICY", title: "Log Retention Policy — 7 Year Financial", description: "Logs retained 7 years per financial regulation requirements." },
+      ],
+    },
+    {
+      reqCode: "Art. 13", status: "COMPLIANT", assessedBy: userId,
+      evidenceItems: [
+        { type: "DOCUMENT", title: "Instructions for Use — Fraud Detection System", description: "Includes capability description, known limitations, performance metrics, and recommended human oversight procedures." },
+        { type: "TRAINING", title: "Deployment Team Training Completion Records", description: "All deployment team members completed training on system usage and limitations." },
+      ],
+    },
+    {
+      reqCode: "Art. 14", status: "PARTIALLY_COMPLIANT", assessedBy: userId,
+      notes: "Gap: automated override capability not yet implemented for analysts (manual escalation required to halt model in emergency).",
+      evidenceItems: [
+        { type: "DOCUMENT", title: "Human Oversight Procedure HOP-FRAUD-001", description: "All flagged transactions reviewed by fraud analysts." },
+        { type: "APPROVAL", title: "Fraud Analyst Review Workflow Sign-off", description: "Documented approval workflow for flagged transactions." },
+      ],
+    },
+    {
+      reqCode: "Art. 14(4)", status: "NON_COMPLIANT", assessedBy: userId,
+      notes: "Currently no one-click mechanism for fraud analysts to override model decisions in real-time. Fix scheduled for Sprint 23 (March 2026).",
+      evidenceItems: [],
+    },
+    {
+      reqCode: "Art. 15", status: "COMPLIANT", assessedBy: userId,
+      evidenceItems: [
+        { type: "TEST_RESULT", title: "Model Accuracy Report — 98% AUC-ROC", description: "Accuracy declared in documentation and verified in production." },
+        { type: "TEST_RESULT", title: "Adversarial Robustness Test (FGSM, PGD)", description: "Robustness tested against adversarial inputs with no degradation beyond acceptable thresholds." },
+        { type: "AUDIT", title: "Penetration Test Report Q4 2025", description: "Cybersecurity penetration test completed, no critical findings." },
+      ],
+    },
+    {
+      reqCode: "Art. 50(1)", status: "NOT_APPLICABLE", assessedBy: userId,
+      notes: "System does not directly interact with natural persons. It processes transactions in the background.",
+      evidenceItems: [],
+    },
+    {
+      reqCode: "Art. 62", status: "COMPLIANT", assessedBy: userId,
+      evidenceItems: [
+        { type: "POLICY", title: "Incident Reporting Procedure — Art. 62 Aligned", description: "Aligned with Art. 62 timelines (15 days)." },
+        { type: "TEST_RESULT", title: "Incident Reporting Drill Results 2025", description: "Two test drills completed successfully in 2025." },
+      ],
+    },
   ];
 
   let complianceCount = 0;
@@ -616,7 +710,7 @@ async function main() {
     const reqId = euArtIds[mapping.reqCode];
     if (!reqId) continue;
 
-    await prisma.complianceMapping.upsert({
+    const upserted = await prisma.complianceMapping.upsert({
       where: {
         aiSystemId_requirementId: {
           aiSystemId: "demo-system-fraud",
@@ -625,7 +719,7 @@ async function main() {
       },
       update: {
         status: mapping.status,
-        evidence: mapping.evidence,
+        notes: mapping.notes,
         assessedBy: mapping.assessedBy,
         assessedAt: new Date("2025-12-01"),
       },
@@ -634,32 +728,108 @@ async function main() {
         aiSystemId: "demo-system-fraud",
         requirementId: reqId,
         status: mapping.status,
-        evidence: mapping.evidence,
+        notes: mapping.notes,
         assessedBy: mapping.assessedBy,
         assessedAt: new Date("2025-12-01"),
       },
     });
+
+    // Delete existing evidence items for this mapping, then recreate
+    await prisma.complianceEvidence.deleteMany({
+      where: { complianceMappingId: upserted.id },
+    });
+
+    for (const item of mapping.evidenceItems) {
+      await prisma.complianceEvidence.create({
+        data: {
+          complianceMappingId: upserted.id,
+          organizationId: orgId,
+          type: item.type,
+          title: item.title,
+          url: item.url,
+          description: item.description,
+          addedBy: userId,
+          addedAt: new Date("2025-12-01"),
+        },
+      });
+    }
+
     complianceCount++;
   }
 
   // Compliance mappings for HR Screening system (HIGH risk)
-  const hrComplianceMappings = [
-    { reqCode: "Art. 9", status: "PARTIALLY_COMPLIANT" as const, evidence: "Risk management system in place but pending annual review update. Initial risk assessment covers 15 known risks.", assessedBy: userId },
-    { reqCode: "Art. 10", status: "NON_COMPLIANT" as const, evidence: "Training data governance needs improvement. Historical hiring data not yet fully documented for bias sources. Remediation plan in progress.", assessedBy: userId },
-    { reqCode: "Art. 11", status: "PARTIALLY_COMPLIANT" as const, evidence: "Technical documentation exists but requires updates to reflect v2.1 model changes. Target completion: Q1 2026.", assessedBy: userId },
-    { reqCode: "Art. 12", status: "COMPLIANT" as const, evidence: "Full logging implemented. Every screening decision recorded with features, score, and model version. 5-year retention policy.", assessedBy: userId },
-    { reqCode: "Art. 13", status: "PARTIALLY_COMPLIANT" as const, evidence: "Instructions provided to HR team but need simplification for non-technical recruiters. User guide revision in progress.", assessedBy: userId },
-    { reqCode: "Art. 14", status: "COMPLIANT" as const, evidence: "All AI-screened candidates reviewed by human recruiter before any employment decision. No automatic rejections. Recruiters trained on AI limitations.", assessedBy: userId },
-    { reqCode: "Art. 15", status: "NOT_ASSESSED" as const, evidence: null, assessedBy: null },
-    { reqCode: "Art. 26", status: "PARTIALLY_COMPLIANT" as const, evidence: "Using system per provider instructions. Human oversight assigned. Gap: FRIA for public deployment not yet completed.", assessedBy: userId },
-    { reqCode: "Art. 27", status: "PARTIALLY_COMPLIANT" as const, evidence: "FRIA started but not yet completed. Draft assessment addresses fundamental rights impact. Expected completion: Q1 2026.", assessedBy: userId },
+  const hrComplianceMappings: Array<{
+    reqCode: string;
+    status: "COMPLIANT" | "PARTIALLY_COMPLIANT" | "NON_COMPLIANT" | "NOT_APPLICABLE" | "NOT_ASSESSED";
+    notes?: string;
+    assessedBy: string | null;
+    evidenceItems: Array<{ type: "POLICY" | "DOCUMENT" | "TEST_RESULT" | "MONITORING" | "AUDIT" | "TRAINING" | "APPROVAL" | "OTHER"; title: string; description?: string; url?: string }>;
+  }> = [
+    {
+      reqCode: "Art. 9", status: "PARTIALLY_COMPLIANT", assessedBy: userId,
+      notes: "Pending annual review update.",
+      evidenceItems: [
+        { type: "DOCUMENT", title: "Initial Risk Assessment — 15 known risks", description: "Risk management system in place covering 15 known risks." },
+      ],
+    },
+    {
+      reqCode: "Art. 10", status: "NON_COMPLIANT", assessedBy: userId,
+      notes: "Training data governance needs improvement. Historical hiring data not yet fully documented for bias sources. Remediation plan in progress.",
+      evidenceItems: [],
+    },
+    {
+      reqCode: "Art. 11", status: "PARTIALLY_COMPLIANT", assessedBy: userId,
+      notes: "Technical documentation exists but requires updates to reflect v2.1 model changes. Target completion: Q1 2026.",
+      evidenceItems: [
+        { type: "DOCUMENT", title: "Technical Documentation v2.0 (outdated)", description: "Exists but requires updates to reflect v2.1 model changes." },
+      ],
+    },
+    {
+      reqCode: "Art. 12", status: "COMPLIANT", assessedBy: userId,
+      evidenceItems: [
+        { type: "MONITORING", title: "Decision Logging System", description: "Every screening decision recorded with features, score, and model version." },
+        { type: "POLICY", title: "Log Retention Policy — 5 Year", description: "5-year retention policy for all screening decisions." },
+      ],
+    },
+    {
+      reqCode: "Art. 13", status: "PARTIALLY_COMPLIANT", assessedBy: userId,
+      notes: "Instructions provided but need simplification for non-technical recruiters. User guide revision in progress.",
+      evidenceItems: [
+        { type: "DOCUMENT", title: "HR Screening User Guide v1", description: "Instructions provided to HR team." },
+      ],
+    },
+    {
+      reqCode: "Art. 14", status: "COMPLIANT", assessedBy: userId,
+      evidenceItems: [
+        { type: "POLICY", title: "Human Review Policy — No Automatic Rejections", description: "All AI-screened candidates reviewed by human recruiter before any employment decision." },
+        { type: "TRAINING", title: "Recruiter AI Limitations Training Records", description: "Recruiters trained on AI limitations and override procedures." },
+      ],
+    },
+    {
+      reqCode: "Art. 15", status: "NOT_ASSESSED", assessedBy: null,
+      evidenceItems: [],
+    },
+    {
+      reqCode: "Art. 26", status: "PARTIALLY_COMPLIANT", assessedBy: userId,
+      notes: "Gap: FRIA for public deployment not yet completed.",
+      evidenceItems: [
+        { type: "DOCUMENT", title: "Provider Instructions Compliance Checklist", description: "Using system per provider instructions. Human oversight assigned." },
+      ],
+    },
+    {
+      reqCode: "Art. 27", status: "PARTIALLY_COMPLIANT", assessedBy: userId,
+      notes: "Expected completion: Q1 2026.",
+      evidenceItems: [
+        { type: "DOCUMENT", title: "FRIA Draft — Fundamental Rights Impact", description: "FRIA started but not yet completed. Draft assessment addresses fundamental rights impact." },
+      ],
+    },
   ];
 
   for (const mapping of hrComplianceMappings) {
     const reqId = euArtIds[mapping.reqCode];
     if (!reqId) continue;
 
-    await prisma.complianceMapping.upsert({
+    const upserted = await prisma.complianceMapping.upsert({
       where: {
         aiSystemId_requirementId: {
           aiSystemId: "demo-system-hr-screening",
@@ -668,7 +838,7 @@ async function main() {
       },
       update: {
         status: mapping.status,
-        evidence: mapping.evidence,
+        notes: mapping.notes,
         assessedBy: mapping.assessedBy,
         assessedAt: mapping.assessedBy ? new Date("2026-01-15") : null,
       },
@@ -677,11 +847,32 @@ async function main() {
         aiSystemId: "demo-system-hr-screening",
         requirementId: reqId,
         status: mapping.status,
-        evidence: mapping.evidence,
+        notes: mapping.notes,
         assessedBy: mapping.assessedBy,
         assessedAt: mapping.assessedBy ? new Date("2026-01-15") : null,
       },
     });
+
+    // Delete existing evidence items for this mapping, then recreate
+    await prisma.complianceEvidence.deleteMany({
+      where: { complianceMappingId: upserted.id },
+    });
+
+    for (const item of mapping.evidenceItems) {
+      await prisma.complianceEvidence.create({
+        data: {
+          complianceMappingId: upserted.id,
+          organizationId: orgId,
+          type: item.type,
+          title: item.title,
+          url: item.url,
+          description: item.description,
+          addedBy: userId,
+          addedAt: new Date("2026-01-15"),
+        },
+      });
+    }
+
     complianceCount++;
   }
 

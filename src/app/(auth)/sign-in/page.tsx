@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { useState, useEffect } from "react";
+import { signIn, getProviders } from "next-auth/react";
 import { Mail, ArrowRight, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,6 +16,14 @@ export default function SignInPage() {
   const [isDevLoading, setIsDevLoading] = useState(false);
   const [isEmailSent, setIsEmailSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [providers, setProviders] = useState<Record<string, { id: string; name: string }> | null>(null);
+
+  useEffect(() => {
+    getProviders().then((p) => setProviders(p));
+  }, []);
+
+  const hasEmail = !!providers?.email;
+  const hasGoogle = !!providers?.google;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -140,53 +148,58 @@ export default function SignInPage() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email Address</Label>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@company.com"
-              className="input-brutal"
-              required
-              autoFocus={!isDev}
-            />
+        {error && (
+          <div className="p-4 bg-destructive/10 border border-destructive text-destructive text-sm mb-6">
+            {error}
           </div>
+        )}
 
-          {error && (
-            <div className="p-4 bg-destructive/10 border border-destructive text-destructive text-sm">
-              {error}
-            </div>
-          )}
+        {hasEmail && (
+          <>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email Address</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@company.com"
+                  className="input-brutal"
+                  required
+                  autoFocus={!isDev}
+                />
+              </div>
 
-          <button
-            type="submit"
-            disabled={isLoading || !email}
-            className="btn-brutal w-full flex items-center justify-center gap-2 disabled:opacity-50"
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                Sending...
-              </>
-            ) : (
-              <>
-                Continue with Email
-                <ArrowRight className="w-4 h-4" />
-              </>
-            )}
-          </button>
-        </form>
+              <button
+                type="submit"
+                disabled={isLoading || !email}
+                className="btn-brutal w-full flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    Continue with Email
+                    <ArrowRight className="w-4 h-4" />
+                  </>
+                )}
+              </button>
+            </form>
 
-        <p className="mt-6 text-center text-sm text-muted-foreground">
-          No password needed. We&apos;ll send you a secure link.
-        </p>
+            <p className="mt-6 text-center text-sm text-muted-foreground">
+              No password needed. We&apos;ll send you a secure link.
+            </p>
+          </>
+        )}
 
-        <div className="mt-6 pt-6 border-t border-border">
-          <p className="text-xs text-muted-foreground text-center mb-4">Or continue with</p>
-          <button
+        {hasGoogle && (
+          <div className={hasEmail ? "mt-6 pt-6 border-t border-border" : ""}>
+            {hasEmail && <p className="text-xs text-muted-foreground text-center mb-4">Or continue with</p>}
+            <button
             type="button"
             onClick={handleGoogleSignIn}
             disabled={isGoogleLoading}
@@ -206,7 +219,14 @@ export default function SignInPage() {
               {isGoogleLoading ? "Signing in..." : "Continue with Google"}
             </span>
           </button>
-        </div>
+          </div>
+        )}
+
+        {!hasEmail && !hasGoogle && providers !== null && (
+          <div className="p-4 bg-destructive/10 border border-destructive text-destructive text-sm">
+            No sign-in providers configured. Please contact the administrator.
+          </div>
+        )}
 
         <div className="mt-6 pt-6 border-t border-border text-center">
           <p className="text-xs text-muted-foreground">

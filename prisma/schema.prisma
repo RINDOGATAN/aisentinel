@@ -1,0 +1,804 @@
+// AI SENTINEL — AI Governance Platform
+// Prisma Schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================
+// AUTHENTICATION & USERS
+// ============================================================
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts                Account[]
+  sessions                Session[]
+  organizationMemberships OrganizationMember[]
+  auditLogs               AuditLog[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ============================================================
+// MULTI-TENANCY: ORGANIZATIONS
+// ============================================================
+
+enum OrganizationRole {
+  OWNER
+  ADMIN
+  AI_OFFICER
+  MEMBER
+  VIEWER
+}
+
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  domain    String?
+  logoUrl   String?
+  settings  Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  members               OrganizationMember[]
+  aiSystems             AISystem[]
+  aiModels              AIModel[]
+  aiSystemDataSources   AISystemDataSource[]
+  riskClassifications   RiskClassification[]
+  assessmentTemplates   AIAssessmentTemplate[]
+  assessments           AIAssessment[]
+  oversightGates        OversightGate[]
+  oversightDecisions    OversightDecision[]
+  incidents             AIIncident[]
+  incidentTimelines     AIIncidentTimeline[]
+  incidentTasks         AIIncidentTask[]
+  incidentNotifications AIIncidentNotification[]
+  complianceMappings    ComplianceMapping[]
+  shadowAIReports       ShadowAIReport[]
+  auditLogs             AuditLog[]
+  customerLinks         CustomerOrganization[]
+
+  @@map("organizations")
+}
+
+model OrganizationMember {
+  id             String           @id @default(cuid())
+  organizationId String
+  userId         String
+  role           OrganizationRole @default(MEMBER)
+  invitedEmail   String?
+  invitedAt      DateTime?
+  joinedAt       DateTime         @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, userId])
+  @@map("organization_members")
+}
+
+// ============================================================
+// AI REGISTRY
+// ============================================================
+
+enum AITechnique {
+  MACHINE_LEARNING
+  DEEP_LEARNING
+  GENERATIVE_AI
+  AGENTIC_AI
+  NLP
+  COMPUTER_VISION
+  SPEECH_RECOGNITION
+  ROBOTICS
+  RULE_BASED
+  EXPERT_SYSTEM
+  STATISTICAL
+  OTHER
+}
+
+enum AISystemRole {
+  PROVIDER
+  DEPLOYER
+  IMPORTER
+  DISTRIBUTOR
+  USER
+}
+
+enum AISystemStatus {
+  DRAFT
+  DEVELOPMENT
+  TESTING
+  DEPLOYED
+  RETIRED
+}
+
+enum DataSourceType {
+  TRAINING
+  FINE_TUNING
+  VALIDATION
+  INPUT
+  OUTPUT
+}
+
+model AISystem {
+  id                    String         @id @default(cuid())
+  organizationId        String
+  name                  String
+  description           String?        @db.Text
+  technique             AITechnique
+  role                  AISystemRole
+  status                AISystemStatus @default(DRAFT)
+  purpose               String?        @db.Text
+  businessOwner         String?
+  technicalOwner        String?
+  deploymentDate        DateTime?
+  retirementDate        DateTime?
+  processesPersonalData Boolean        @default(false)
+  dpoCentralVendorId    String?
+  dpoCentralAssetIds    String[]
+  metadata              Json?
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+
+  organization       Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  models             AIModel[]
+  dataSources        AISystemDataSource[]
+  riskClassification RiskClassification?
+  assessments        AIAssessment[]
+  oversightGates     OversightGate[]
+  incidents          AIIncident[]
+  complianceMappings ComplianceMapping[]
+
+  @@index([organizationId])
+  @@map("ai_systems")
+}
+
+model AIModel {
+  id                  String   @id @default(cuid())
+  aiSystemId          String
+  organizationId      String
+  name                String
+  provider            String?
+  modelType           String?
+  version             String?
+  trainingDataSummary String?  @db.Text
+  knownLimitations    String?  @db.Text
+  performanceMetrics  Json?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  aiSystem     AISystem     @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([aiSystemId])
+  @@index([organizationId])
+  @@map("ai_models")
+}
+
+model AISystemDataSource {
+  id                   String         @id @default(cuid())
+  aiSystemId           String
+  organizationId       String
+  name                 String
+  sourceType           DataSourceType
+  description          String?        @db.Text
+  containsPersonalData Boolean        @default(false)
+  dataCategories       String[]
+  createdAt            DateTime       @default(now())
+
+  aiSystem     AISystem     @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([aiSystemId])
+  @@index([organizationId])
+  @@map("ai_system_data_sources")
+}
+
+// ============================================================
+// RISK CLASSIFICATION
+// ============================================================
+
+enum AIRiskLevel {
+  UNACCEPTABLE
+  HIGH
+  LIMITED
+  MINIMAL
+}
+
+model RiskClassification {
+  id               String      @id @default(cuid())
+  aiSystemId       String      @unique
+  organizationId   String
+  riskLevel        AIRiskLevel
+  rationale        String      @db.Text
+  annexIIICategory String?
+  classifiedBy     String
+  classifiedAt     DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  aiSystem     AISystem                    @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  organization Organization                @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  history      RiskClassificationHistory[]
+
+  @@index([organizationId])
+  @@map("risk_classifications")
+}
+
+model RiskClassificationHistory {
+  id                   String      @id @default(cuid())
+  riskClassificationId String
+  previousLevel        AIRiskLevel
+  newLevel             AIRiskLevel
+  rationale            String      @db.Text
+  changedBy            String
+  changedAt            DateTime    @default(now())
+
+  riskClassification RiskClassification @relation(fields: [riskClassificationId], references: [id], onDelete: Cascade)
+
+  @@index([riskClassificationId])
+  @@map("risk_classification_history")
+}
+
+// ============================================================
+// ASSESSMENTS
+// ============================================================
+
+enum AIAssessmentType {
+  FRIA
+  CONFORMITY
+  AI_RISK
+  BIAS_FAIRNESS
+  CUSTOM
+}
+
+enum AssessmentStatus {
+  DRAFT
+  IN_PROGRESS
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+}
+
+model AIAssessmentTemplate {
+  id             String           @id @default(cuid())
+  organizationId String?
+  name           String
+  type           AIAssessmentType
+  description    String?          @db.Text
+  sections       Json
+  frameworkRef   String?
+  isSystem       Boolean          @default(false)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  organization Organization?  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  assessments  AIAssessment[]
+
+  @@index([organizationId])
+  @@map("ai_assessment_templates")
+}
+
+model AIAssessment {
+  id             String           @id @default(cuid())
+  organizationId String
+  aiSystemId     String
+  templateId     String
+  title          String
+  type           AIAssessmentType
+  status         AssessmentStatus @default(DRAFT)
+  riskScore      Float?
+  responses      Json?
+  mitigations    Json?
+  reviewedBy     String?
+  reviewedAt     DateTime?
+  approvedBy     String?
+  approvedAt     DateTime?
+  createdBy      String
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  organization Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  aiSystem     AISystem             @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  template     AIAssessmentTemplate @relation(fields: [templateId], references: [id])
+
+  @@index([organizationId])
+  @@index([aiSystemId])
+  @@map("ai_assessments")
+}
+
+// ============================================================
+// HUMAN OVERSIGHT (Phase 2 schema)
+// ============================================================
+
+enum GateType {
+  PRE_DEPLOYMENT
+  POST_DEPLOYMENT
+  PERIODIC_REVIEW
+  INCIDENT_TRIGGERED
+  MATERIAL_CHANGE
+}
+
+enum GateStatus {
+  PENDING
+  IN_REVIEW
+  PASSED
+  FAILED
+  DEFERRED
+}
+
+enum OversightDecisionType {
+  APPROVE
+  REJECT
+  DEFER
+}
+
+model OversightGate {
+  id             String     @id @default(cuid())
+  organizationId String
+  aiSystemId     String
+  gateType       GateType
+  status         GateStatus @default(PENDING)
+  reviewCadence  String?
+  nextReviewDate DateTime?
+  assignedTo     String?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  organization Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  aiSystem     AISystem           @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  decisions    OversightDecision[]
+
+  @@index([organizationId])
+  @@index([aiSystemId])
+  @@map("oversight_gates")
+}
+
+model OversightDecision {
+  id               String                @id @default(cuid())
+  gateId           String
+  organizationId   String
+  decision         OversightDecisionType
+  rationale        String                @db.Text
+  evidenceReviewed String[]
+  decidedBy        String
+  decidedAt        DateTime              @default(now())
+
+  gate         OversightGate @relation(fields: [gateId], references: [id], onDelete: Cascade)
+  organization Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([gateId])
+  @@index([organizationId])
+  @@map("oversight_decisions")
+}
+
+// ============================================================
+// AI INCIDENTS (Phase 2 schema)
+// ============================================================
+
+enum AIIncidentType {
+  HALLUCINATION
+  BIAS_DISCRIMINATION
+  MODEL_DRIFT
+  ADVERSARIAL_ATTACK
+  PROMPT_INJECTION
+  UNAUTHORIZED_ACCESS
+  SAFETY_FAILURE
+  PERFORMANCE_DEGRADATION
+  DATA_POISONING
+  PRIVACY_VIOLATION
+  OTHER
+}
+
+enum IncidentSeverity {
+  CRITICAL
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum IncidentStatus {
+  REPORTED
+  INVESTIGATING
+  MITIGATING
+  RESOLVED
+  CLOSED
+}
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  ACKNOWLEDGED
+}
+
+model AIIncident {
+  id                   String           @id @default(cuid())
+  organizationId       String
+  aiSystemId           String?
+  title                String
+  description          String           @db.Text
+  type                 AIIncidentType
+  severity             IncidentSeverity
+  status               IncidentStatus   @default(REPORTED)
+  rootCauseCategory    String?
+  rootCauseDescription String?          @db.Text
+  impactDescription    String?          @db.Text
+  notificationRequired Boolean          @default(false)
+  notifiedAuthorities  String[]
+  dpoCentralIncidentId String?
+  reportedBy           String
+  reportedAt           DateTime         @default(now())
+  resolvedAt           DateTime?
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+
+  organization  Organization             @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  aiSystem      AISystem?                @relation(fields: [aiSystemId], references: [id], onDelete: SetNull)
+  timeline      AIIncidentTimeline[]
+  tasks         AIIncidentTask[]
+  notifications AIIncidentNotification[]
+
+  @@index([organizationId])
+  @@index([aiSystemId])
+  @@map("ai_incidents")
+}
+
+model AIIncidentTimeline {
+  id             String   @id @default(cuid())
+  incidentId     String
+  organizationId String
+  action         String
+  description    String?  @db.Text
+  performedBy    String
+  performedAt    DateTime @default(now())
+
+  incident     AIIncident   @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([incidentId])
+  @@index([organizationId])
+  @@map("ai_incident_timelines")
+}
+
+model AIIncidentTask {
+  id             String     @id @default(cuid())
+  incidentId     String
+  organizationId String
+  title          String
+  status         TaskStatus @default(PENDING)
+  assignedTo     String?
+  dueDate        DateTime?
+  completedAt    DateTime?
+  createdAt      DateTime   @default(now())
+
+  incident     AIIncident   @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([incidentId])
+  @@index([organizationId])
+  @@map("ai_incident_tasks")
+}
+
+model AIIncidentNotification {
+  id               String             @id @default(cuid())
+  incidentId       String
+  organizationId   String
+  authority        String
+  notificationType String
+  sentAt           DateTime?
+  dueBy            DateTime?
+  status           NotificationStatus @default(PENDING)
+
+  incident     AIIncident   @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([incidentId])
+  @@index([organizationId])
+  @@map("ai_incident_notifications")
+}
+
+// ============================================================
+// COMPLIANCE
+// ============================================================
+
+enum FrameworkCode {
+  EU_AI_ACT
+  NIST_AI_RMF
+  ISO_42001
+}
+
+enum ComplianceStatus {
+  COMPLIANT
+  PARTIALLY_COMPLIANT
+  NON_COMPLIANT
+  NOT_APPLICABLE
+  NOT_ASSESSED
+}
+
+model ComplianceFramework {
+  id          String        @id @default(cuid())
+  code        FrameworkCode @unique
+  name        String
+  version     String
+  description String?       @db.Text
+  createdAt   DateTime      @default(now())
+
+  requirements ComplianceRequirement[]
+
+  @@map("compliance_frameworks")
+}
+
+model ComplianceRequirement {
+  id           String        @id @default(cuid())
+  frameworkId  String
+  code         String
+  title        String
+  description  String?       @db.Text
+  applicableTo AIRiskLevel[]
+  parentId     String?
+  sortOrder    Int           @default(0)
+  createdAt    DateTime      @default(now())
+
+  framework ComplianceFramework   @relation(fields: [frameworkId], references: [id], onDelete: Cascade)
+  parent    ComplianceRequirement?  @relation("RequirementHierarchy", fields: [parentId], references: [id])
+  children  ComplianceRequirement[] @relation("RequirementHierarchy")
+  mappings  ComplianceMapping[]
+
+  @@index([frameworkId])
+  @@index([parentId])
+  @@map("compliance_requirements")
+}
+
+model ComplianceMapping {
+  id             String           @id @default(cuid())
+  organizationId String
+  aiSystemId     String
+  requirementId  String
+  status         ComplianceStatus @default(NOT_ASSESSED)
+  evidence       String?          @db.Text
+  notes          String?          @db.Text
+  assessedBy     String?
+  assessedAt     DateTime?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  organization Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  aiSystem     AISystem              @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  requirement  ComplianceRequirement @relation(fields: [requirementId], references: [id], onDelete: Cascade)
+
+  @@unique([aiSystemId, requirementId])
+  @@index([organizationId])
+  @@map("compliance_mappings")
+}
+
+// ============================================================
+// SHADOW AI DISCOVERY (Phase 3 - Premium)
+// ============================================================
+
+enum ShadowAIStatus {
+  DISCOVERED
+  UNDER_REVIEW
+  APPROVED
+  PROHIBITED
+  REGISTERED
+}
+
+model ShadowAITool {
+  id             String   @id @default(cuid())
+  name           String
+  vendor         String?
+  category       String
+  description    String?  @db.Text
+  website        String?
+  riskIndicators String[]
+  createdAt      DateTime @default(now())
+
+  reports ShadowAIReport[]
+
+  @@map("shadow_ai_tools")
+}
+
+model ShadowAIReport {
+  id                 String         @id @default(cuid())
+  organizationId     String
+  toolId             String?
+  toolName           String
+  status             ShadowAIStatus @default(DISCOVERED)
+  reportedBy         String?
+  department         String?
+  usageDescription   String?        @db.Text
+  registeredSystemId String?
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+
+  organization Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  tool         ShadowAITool? @relation(fields: [toolId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId])
+  @@map("shadow_ai_reports")
+}
+
+// ============================================================
+// LICENSING (mirrors DPO Central)
+// ============================================================
+
+enum CustomerType {
+  SAAS
+  SELF_HOSTED
+}
+
+enum LicenseType {
+  TRIAL
+  SUBSCRIPTION
+  PERPETUAL
+}
+
+enum EntitlementStatus {
+  ACTIVE
+  EXPIRED
+  SUSPENDED
+}
+
+model SkillPackage {
+  id              String            @id @default(cuid())
+  skillId         String            @unique
+  name            String
+  displayName     String
+  assessmentType  AIAssessmentType?
+  description     String?           @db.Text
+  isPremium       Boolean           @default(true)
+  isActive        Boolean           @default(true)
+  stripePriceId   String?
+  priceAmount     Int?
+  priceCurrency   String?           @default("eur")
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  entitlements SkillEntitlement[]
+
+  @@map("skill_packages")
+}
+
+model Customer {
+  id               String       @id @default(cuid())
+  name             String
+  email            String       @unique
+  type             CustomerType
+  stripeCustomerId String?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  organizations CustomerOrganization[]
+  entitlements  SkillEntitlement[]
+
+  @@map("customers")
+}
+
+model CustomerOrganization {
+  id             String   @id @default(cuid())
+  customerId     String
+  organizationId String
+  createdAt      DateTime @default(now())
+
+  customer     Customer     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([customerId, organizationId])
+  @@index([organizationId])
+  @@map("customer_organizations")
+}
+
+model SkillEntitlement {
+  id                   String            @id @default(cuid())
+  customerId           String
+  skillPackageId       String
+  licenseKey           String            @unique @default(cuid())
+  licenseType          LicenseType
+  status               EntitlementStatus @default(ACTIVE)
+  stripeSubscriptionId String?
+  expiresAt            DateTime?
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+
+  customer     Customer     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  skillPackage SkillPackage @relation(fields: [skillPackageId], references: [id], onDelete: Cascade)
+
+  @@unique([customerId, skillPackageId])
+  @@index([status])
+  @@map("skill_entitlements")
+}
+
+model PlatformAdmin {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  @@map("platform_admins")
+}
+
+// ============================================================
+// AUDIT LOG
+// ============================================================
+
+model AuditLog {
+  id             String   @id @default(cuid())
+  organizationId String?
+  userId         String?
+  entityType     String
+  entityId       String
+  action         String
+  changes        Json?
+  ipAddress      String?
+  userAgent      String?
+  metadata       Json?
+  createdAt      DateTime @default(now())
+
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  user         User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId])
+  @@index([userId])
+  @@index([entityType, entityId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}

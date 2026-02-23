@@ -1,0 +1,846 @@
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
+
+async function main() {
+  console.log("Populating comprehensive demo scenarios...\n");
+
+  // Get existing org and user
+  const org = await prisma.organization.findUnique({ where: { slug: "acme-ai" } });
+  if (!org) throw new Error("Demo org not found — run `npx prisma db seed` first");
+
+  const user = await prisma.user.findUnique({ where: { email: "demo@aisentinel.example" } });
+  if (!user) throw new Error("Demo user not found — run `npx prisma db seed` first");
+
+  const orgId = org.id;
+  const userId = user.id;
+
+  // ============================================================
+  // 1. ADDITIONAL AI SYSTEMS (cover DRAFT + RETIRED statuses)
+  // ============================================================
+
+  console.log("1. Creating additional AI systems...");
+
+  const predictiveMaintenance = await prisma.aISystem.upsert({
+    where: { id: "demo-system-pred-maint" },
+    update: {},
+    create: {
+      id: "demo-system-pred-maint",
+      organizationId: orgId,
+      name: "Predictive Maintenance Engine",
+      description: "IoT sensor data analysis using time-series forecasting to predict equipment failures in manufacturing plants. Processes sensor readings, vibration data, and temperature logs.",
+      technique: "DEEP_LEARNING",
+      role: "PROVIDER",
+      status: "DEPLOYED",
+      purpose: "Predict equipment failures before they occur to reduce downtime and maintenance costs.",
+      businessOwner: "Operations",
+      technicalOwner: "IoT Platform Team",
+      deploymentDate: new Date("2025-01-10"),
+      processesPersonalData: false,
+    },
+  });
+
+  const sentimentAnalysis = await prisma.aISystem.upsert({
+    where: { id: "demo-system-sentiment" },
+    update: {},
+    create: {
+      id: "demo-system-sentiment",
+      organizationId: orgId,
+      name: "Employee Sentiment Analysis",
+      description: "NLP-based system analyzing employee survey responses and internal communications to gauge organizational sentiment and detect early signs of workplace issues.",
+      technique: "NLP",
+      role: "DEPLOYER",
+      status: "DRAFT",
+      purpose: "Provide HR leadership with aggregate insights into employee morale and engagement trends.",
+      businessOwner: "Human Resources",
+      technicalOwner: "People Analytics Team",
+      processesPersonalData: true,
+    },
+  });
+
+  const legacyRecommender = await prisma.aISystem.upsert({
+    where: { id: "demo-system-recommender" },
+    update: {},
+    create: {
+      id: "demo-system-recommender",
+      organizationId: orgId,
+      name: "Product Recommender v1 (Legacy)",
+      description: "Collaborative filtering recommendation engine that was used for product suggestions on the e-commerce platform. Replaced by the newer v2 system using deep learning.",
+      technique: "MACHINE_LEARNING",
+      role: "DEPLOYER",
+      status: "RETIRED",
+      purpose: "Provide personalized product recommendations to customers based on browsing and purchase history.",
+      businessOwner: "E-Commerce",
+      technicalOwner: "ML Platform Team",
+      deploymentDate: new Date("2023-06-01"),
+      retirementDate: new Date("2025-11-30"),
+      processesPersonalData: true,
+    },
+  });
+
+  const creditScoring = await prisma.aISystem.upsert({
+    where: { id: "demo-system-credit" },
+    update: {},
+    create: {
+      id: "demo-system-credit",
+      organizationId: orgId,
+      name: "Credit Risk Scoring Model",
+      description: "Gradient boosting model that evaluates creditworthiness of loan applicants based on financial history, employment data, and behavioral signals. Outputs a risk score and recommended decision.",
+      technique: "MACHINE_LEARNING",
+      role: "DEPLOYER",
+      status: "TESTING",
+      purpose: "Automate initial credit risk assessment to accelerate loan processing while maintaining consistent risk standards.",
+      businessOwner: "Lending Operations",
+      technicalOwner: "Risk Analytics Team",
+      processesPersonalData: true,
+    },
+  });
+
+  console.log("  Created 4 additional AI systems (total: 8)");
+
+  // ============================================================
+  // 2. ADDITIONAL AI MODELS
+  // ============================================================
+
+  console.log("2. Creating additional AI models...");
+
+  await prisma.aIModel.upsert({
+    where: { id: "demo-model-content-mod" },
+    update: {},
+    create: {
+      id: "demo-model-content-mod",
+      aiSystemId: "demo-system-content-mod",
+      organizationId: orgId,
+      name: "ContentGuard v1.2",
+      provider: "Internal",
+      modelType: "Multi-modal Classification",
+      version: "1.2.0",
+      trainingDataSummary: "Fine-tuned on 200K labeled content samples (text + image) from moderation queues 2023-2025.",
+      knownLimitations: "May struggle with nuanced sarcasm and culturally-specific references. Image analysis limited to common formats.",
+      performanceMetrics: { "accuracy": 0.94, "precision": 0.92, "recall": 0.89 },
+    },
+  });
+
+  await prisma.aIModel.upsert({
+    where: { id: "demo-model-pred-maint" },
+    update: {},
+    create: {
+      id: "demo-model-pred-maint",
+      aiSystemId: predictiveMaintenance.id,
+      organizationId: orgId,
+      name: "FailurePredict LSTM v2",
+      provider: "Internal",
+      modelType: "Time-series Forecasting",
+      version: "2.0.1",
+      trainingDataSummary: "Trained on 3 years of sensor data from 500+ manufacturing machines. 12M time-series records.",
+      knownLimitations: "Prediction horizon limited to 72 hours. Performance drops for equipment types with fewer than 100 historical failure events.",
+      performanceMetrics: { "mae_hours": 4.2, "precision_72h": 0.91, "recall_72h": 0.87 },
+    },
+  });
+
+  await prisma.aIModel.upsert({
+    where: { id: "demo-model-credit" },
+    update: {},
+    create: {
+      id: "demo-model-credit",
+      aiSystemId: creditScoring.id,
+      organizationId: orgId,
+      name: "CreditScore XGBoost v3",
+      provider: "Internal",
+      modelType: "Classification (Binary)",
+      version: "3.1.0",
+      trainingDataSummary: "Trained on 500K anonymized loan applications (2020-2025) with known outcomes. Features include payment history, debt-to-income, employment stability.",
+      knownLimitations: "May show bias toward younger applicants with thin credit files. Geographic bias observed in certain regions with lower data coverage.",
+      performanceMetrics: { "auc_roc": 0.92, "gini": 0.84, "ks_statistic": 0.68 },
+    },
+  });
+
+  console.log("  Created 3 additional models (total: 6)");
+
+  // ============================================================
+  // 3. DATA SOURCES
+  // ============================================================
+
+  console.log("3. Creating AI system data sources...");
+
+  const dataSources = [
+    {
+      id: "demo-ds-chatbot-kb",
+      aiSystemId: "demo-system-chatbot",
+      organizationId: orgId,
+      name: "Customer Knowledge Base",
+      sourceType: "INPUT" as const,
+      description: "RAG knowledge base containing product documentation, FAQ, and support articles. Updated weekly.",
+      containsPersonalData: false,
+      dataCategories: ["product_docs", "faq", "support_articles"],
+    },
+    {
+      id: "demo-ds-chatbot-logs",
+      aiSystemId: "demo-system-chatbot",
+      organizationId: orgId,
+      name: "Chat Conversation Logs",
+      sourceType: "OUTPUT" as const,
+      description: "Stored conversation transcripts for quality assurance and model improvement. Retained for 90 days.",
+      containsPersonalData: true,
+      dataCategories: ["conversation_text", "user_email", "session_metadata"],
+    },
+    {
+      id: "demo-ds-hr-resumes",
+      aiSystemId: "demo-system-hr-screening",
+      organizationId: orgId,
+      name: "Applicant Resume Dataset",
+      sourceType: "INPUT" as const,
+      description: "Parsed resume data from applicant tracking system. Includes work history, education, skills, and certifications.",
+      containsPersonalData: true,
+      dataCategories: ["name", "email", "work_history", "education", "skills"],
+    },
+    {
+      id: "demo-ds-hr-training",
+      aiSystemId: "demo-system-hr-screening",
+      organizationId: orgId,
+      name: "Historical Hiring Decisions",
+      sourceType: "TRAINING" as const,
+      description: "50K anonymized resume-decision pairs from 2020-2024 used to train the ranking model.",
+      containsPersonalData: false,
+      dataCategories: ["anonymized_resumes", "hiring_outcomes", "job_descriptions"],
+    },
+    {
+      id: "demo-ds-fraud-txns",
+      aiSystemId: "demo-system-fraud",
+      organizationId: orgId,
+      name: "Transaction Stream",
+      sourceType: "INPUT" as const,
+      description: "Real-time financial transaction data including amount, merchant, location, device fingerprint, and behavioral signals.",
+      containsPersonalData: true,
+      dataCategories: ["transaction_amount", "merchant_id", "device_fingerprint", "ip_address"],
+    },
+    {
+      id: "demo-ds-fraud-training",
+      aiSystemId: "demo-system-fraud",
+      organizationId: orgId,
+      name: "Labeled Fraud Dataset",
+      sourceType: "TRAINING" as const,
+      description: "2M+ labeled transactions (2022-2024) with confirmed fraud/legitimate classification.",
+      containsPersonalData: false,
+      dataCategories: ["anonymized_transactions", "fraud_labels", "feature_vectors"],
+    },
+    {
+      id: "demo-ds-credit-input",
+      aiSystemId: creditScoring.id,
+      organizationId: orgId,
+      name: "Loan Application Data",
+      sourceType: "INPUT" as const,
+      description: "Applicant financial profile including income, employment, existing debts, and credit bureau data.",
+      containsPersonalData: true,
+      dataCategories: ["income", "employment_history", "credit_score", "debt_to_income"],
+    },
+  ];
+
+  for (const ds of dataSources) {
+    await prisma.aISystemDataSource.upsert({
+      where: { id: ds.id },
+      update: {},
+      create: ds,
+    });
+  }
+
+  console.log(`  Created ${dataSources.length} data sources`);
+
+  // ============================================================
+  // 4. RISK CLASSIFICATIONS for new systems
+  // ============================================================
+
+  console.log("4. Creating risk classifications for new systems...");
+
+  await prisma.riskClassification.upsert({
+    where: { aiSystemId: predictiveMaintenance.id },
+    update: {},
+    create: {
+      aiSystemId: predictiveMaintenance.id,
+      organizationId: orgId,
+      riskLevel: "MINIMAL",
+      rationale: "Predictive maintenance system processes only IoT sensor data (no personal data). Does not make decisions affecting natural persons. Pure operational efficiency tool. Classified as minimal risk under EU AI Act.",
+      classifiedBy: userId,
+    },
+  });
+
+  await prisma.riskClassification.upsert({
+    where: { aiSystemId: sentimentAnalysis.id },
+    update: {},
+    create: {
+      aiSystemId: sentimentAnalysis.id,
+      organizationId: orgId,
+      riskLevel: "HIGH",
+      rationale: "Employee sentiment analysis falls under EU AI Act Annex III, Category 4 (Employment). System processes employee communications to derive emotional/sentiment insights, which could influence employment decisions. Art. 5(1)(f) prohibitions on emotion recognition in workplaces apply unless for safety/medical purposes.",
+      annexIIICategory: "Employment, workers management and access to self-employment (Annex III, 4)",
+      classifiedBy: userId,
+    },
+  });
+
+  await prisma.riskClassification.upsert({
+    where: { aiSystemId: legacyRecommender.id },
+    update: {},
+    create: {
+      aiSystemId: legacyRecommender.id,
+      organizationId: orgId,
+      riskLevel: "MINIMAL",
+      rationale: "Product recommendation engine for e-commerce. Does not make decisions with significant effects on individuals. Classified as minimal risk. Note: system is now retired.",
+      classifiedBy: userId,
+    },
+  });
+
+  await prisma.riskClassification.upsert({
+    where: { aiSystemId: creditScoring.id },
+    update: {},
+    create: {
+      aiSystemId: creditScoring.id,
+      organizationId: orgId,
+      riskLevel: "HIGH",
+      rationale: "Credit risk scoring directly affects access to financial services (Annex III, Category 5(b)). Decisions determine loan approval/rejection with significant financial impact on individuals. Requires conformity assessment, bias monitoring, and full human oversight on rejections.",
+      annexIIICategory: "Access to and enjoyment of essential private and public services (Annex III, 5)",
+      classifiedBy: userId,
+    },
+  });
+
+  console.log("  Created 4 additional risk classifications (total: 8)");
+
+  // ============================================================
+  // 5. RISK CLASSIFICATION HISTORY (reclassification scenarios)
+  // ============================================================
+
+  console.log("5. Creating risk classification history...");
+
+  // Get existing risk classification for chatbot
+  const chatbotRisk = await prisma.riskClassification.findUnique({
+    where: { aiSystemId: "demo-system-chatbot" },
+  });
+
+  if (chatbotRisk) {
+    await prisma.riskClassificationHistory.upsert({
+      where: { id: "demo-risk-history-chatbot-1" },
+      update: {},
+      create: {
+        id: "demo-risk-history-chatbot-1",
+        riskClassificationId: chatbotRisk.id,
+        previousLevel: "MINIMAL",
+        newLevel: "LIMITED",
+        rationale: "Reclassified from MINIMAL to LIMITED after review. The chatbot directly interacts with natural persons and must comply with transparency obligations under Art. 50 (users must be informed they are interacting with AI).",
+        changedBy: userId,
+        changedAt: new Date("2025-07-01"),
+      },
+    });
+  }
+
+  // Get existing risk classification for sentiment analysis
+  const sentimentRisk = await prisma.riskClassification.findUnique({
+    where: { aiSystemId: sentimentAnalysis.id },
+  });
+
+  if (sentimentRisk) {
+    await prisma.riskClassificationHistory.upsert({
+      where: { id: "demo-risk-history-sentiment-1" },
+      update: {},
+      create: {
+        id: "demo-risk-history-sentiment-1",
+        riskClassificationId: sentimentRisk.id,
+        previousLevel: "LIMITED",
+        newLevel: "HIGH",
+        rationale: "Initially classified as LIMITED but reclassified to HIGH after legal review determined that analyzing employee communications for sentiment constitutes emotion recognition in the workplace (Art. 5(1)(f)). The system's outputs could influence employment decisions.",
+        changedBy: userId,
+        changedAt: new Date("2025-12-15"),
+      },
+    });
+  }
+
+  console.log("  Created 2 risk classification history entries");
+
+  // ============================================================
+  // 6. COMPREHENSIVE ASSESSMENTS (all statuses)
+  // ============================================================
+
+  console.log("6. Creating assessments in all statuses...");
+
+  const friaTemplate = await prisma.aIAssessmentTemplate.findFirst({
+    where: { id: "system-fria-template" },
+  });
+  const aiRiskTemplate = await prisma.aIAssessmentTemplate.findFirst({
+    where: { id: "system-ai-risk-template" },
+  });
+  const customTemplate = await prisma.aIAssessmentTemplate.findFirst({
+    where: { id: "system-custom-template" },
+  });
+
+  // FRIA for Credit Scoring — UNDER_REVIEW (fully filled out)
+  if (friaTemplate) {
+    await prisma.aIAssessment.upsert({
+      where: { id: "demo-assessment-fria-credit" },
+      update: {},
+      create: {
+        id: "demo-assessment-fria-credit",
+        organizationId: orgId,
+        aiSystemId: creditScoring.id,
+        templateId: friaTemplate.id,
+        title: "FRIA - Credit Risk Scoring Model",
+        type: "FRIA",
+        status: "UNDER_REVIEW",
+        createdBy: userId,
+        reviewedBy: userId,
+        reviewedAt: new Date("2026-01-20"),
+        responses: {
+          fria1_1: "Credit Risk Scoring Model (CreditScore XGBoost v3) is an automated credit assessment system that evaluates loan applicants based on financial history, employment data, and behavioral signals. It outputs a numerical risk score (0-1000) and a recommended decision (approve/refer/decline).",
+          fria1_2: "The system is integrated into the loan origination workflow. When a customer submits a loan application, the model processes their data and returns a score within 2 seconds. Scores above 700 are auto-approved; scores below 400 are auto-declined; scores 400-700 are referred to human underwriters.",
+          fria1_3: "Continuous operation during business hours (8am-8pm). Expected to process 500-1000 applications daily. Planned for indefinite use with quarterly model retraining.",
+          fria1_4: "Deployed across all EU member states where the company operates lending services (currently: Germany, France, Netherlands, Spain, Italy). Covers both consumer and small business lending.",
+          fria2_1: "Direct: Loan applicants (consumers and small businesses). Indirect: Family members and dependents of applicants whose financial situation may be affected. Third-party: Credit bureau data subjects.",
+          fria2_2: "Yes — the system may disproportionately affect: (1) Young adults with thin credit files, (2) Immigrants and expats with limited local credit history, (3) Self-employed individuals with irregular income patterns, (4) Persons recovering from financial hardship or illness.",
+          fria2_3: "Estimated 150,000-200,000 applications per year across all markets. Each application affects at minimum the applicant and their immediate household (estimated 400,000+ individuals indirectly affected).",
+          fria2_4: "Consumer advisory panel consulted during design phase. Pilot testing with 500 applicants who provided feedback on the experience. Data protection officer reviewed the processing activities.",
+          fria3_1: "Risk of demographic bias in lending decisions. Analysis shows potential disparate impact on: age groups under 25 (3% higher decline rate vs. baseline), non-EU nationals (2.5% gap), and self-employed applicants. Mitigation: quarterly fairness audits and bias correction layer.",
+          fria3_2: "System processes extensive personal financial data including income, debts, payment history, and behavioral signals. Risk of unauthorized inference of sensitive attributes (health status from medical payment patterns, family status from spending). All data access logged and encrypted.",
+          fria3_3: "Limited direct impact on freedom of expression. However, the system's behavioral signal analysis could theoretically create a chilling effect if individuals believe their communications affect credit decisions.",
+          fria3_4: "Auto-declined applicants may experience harm to dignity through perceived algorithmic discrimination. Mitigation: all declined applicants receive a human-readable explanation of key factors and right to request human review.",
+          fria3_5: "Declined applicants have the right to: (1) receive an explanation of the decision factors, (2) request human review within 30 days, (3) dispute data accuracy, (4) file a complaint with the supervisory authority. Average human review turnaround: 5 business days.",
+          fria3_6: "Right to work (Art. 15): Small business loan decisions may indirectly affect employment for business owners and their employees. Consumer protection (Art. 38): Risk of predatory scoring that could lead to unsuitable lending.",
+          fria4_1: "Human oversight operates at three levels: (1) Human-on-the-loop: All decisions in the 400-700 score range require underwriter approval. (2) Human-in-command: Compliance officer can override any auto-decision. (3) Periodic review: Monthly sampling of 5% of auto-approved and auto-declined cases.",
+          fria4_2: "Fairness constraints in the model (equalized odds objective), real-time bias monitoring dashboard, explainability via SHAP values for every decision, accuracy monitoring with automated alerts for drift detection.",
+          fria4_3: "Quarterly fairness audits by independent team, mandatory bias training for all underwriters, monthly compliance review meetings, annual external audit by a qualified conformity assessment body.",
+          fria4_4: "All declined applicants receive: (1) Written explanation within 48 hours, (2) Clear instructions for requesting human review, (3) Data portability and rectification rights, (4) Contact details for complaints officer and supervisory authority.",
+          fria5_1: "Overall impact is assessed as MODERATE. The system significantly affects access to financial services but has robust safeguards in place. Key strengths: human oversight for borderline cases, explainability, and appeal mechanisms. Key weakness: potential for indirect discrimination against thin-file applicants that requires ongoing monitoring.",
+          fria5_2: "Residual risks: (1) Potential for age-related bias despite correction measures (~1% gap), (2) Imperfect explainability for complex interaction effects, (3) Delayed detection of emerging bias patterns between quarterly audits.",
+          fria5_3: "Recommended: (1) Increase auto-review sampling to 10%, (2) Implement real-time fairness alerts (not just quarterly), (3) Develop a simplified scoring model for thin-file applicants, (4) Conduct external bias audit before production deployment.",
+          fria5_4: "Notification to the National Data Protection Authority and AI Market Surveillance Authority planned for Q2 2026 prior to full production deployment. Draft notification prepared and under legal review.",
+        },
+      },
+    });
+    console.log("  Created FRIA for Credit Scoring (UNDER_REVIEW)");
+
+    // FRIA for Sentiment — DRAFT (barely started)
+    await prisma.aIAssessment.upsert({
+      where: { id: "demo-assessment-fria-sentiment" },
+      update: {},
+      create: {
+        id: "demo-assessment-fria-sentiment",
+        organizationId: orgId,
+        aiSystemId: sentimentAnalysis.id,
+        templateId: friaTemplate.id,
+        title: "FRIA - Employee Sentiment Analysis",
+        type: "FRIA",
+        status: "DRAFT",
+        createdBy: userId,
+        responses: {
+          fria1_1: "Employee Sentiment Analysis system using NLP to analyze survey responses and internal communications.",
+        },
+      },
+    });
+    console.log("  Created FRIA for Sentiment (DRAFT)");
+  }
+
+  // AI Risk Assessment for Chatbot — APPROVED (complete)
+  if (aiRiskTemplate) {
+    await prisma.aIAssessment.upsert({
+      where: { id: "demo-assessment-risk-chatbot" },
+      update: {},
+      create: {
+        id: "demo-assessment-risk-chatbot",
+        organizationId: orgId,
+        aiSystemId: "demo-system-chatbot",
+        templateId: aiRiskTemplate.id,
+        title: "AI Risk Assessment - Customer Support Chatbot",
+        type: "AI_RISK",
+        status: "APPROVED",
+        riskScore: 42,
+        createdBy: userId,
+        approvedBy: userId,
+        approvedAt: new Date("2025-08-15"),
+        responses: {
+          air1_1: "Customer Support Chatbot powered by GPT-4o with RAG over the company knowledge base. Handles first-line customer inquiries via web and mobile channels.",
+          air1_2: "Limited",
+          air1_3: "Intended users: Customers seeking support. Affected stakeholders: Customer service team (workflow changes), support managers (quality oversight).",
+          air2_1: "Primary risk: hallucination of incorrect product information or support procedures. False confidence in generated responses could lead to customer misinformation. Mitigation: RAG grounding + confidence scoring + fallback to human agent.",
+          air2_2: "Knowledge base drift as products evolve. Model outputs may reference outdated procedures if KB not updated. Mitigation: weekly KB refresh cycle + staleness detection.",
+          air2_3: "Prompt injection risk: customers could attempt to extract system prompts or make the bot behave inappropriately. Mitigation: input sanitization + output filtering + system prompt hardening.",
+          air3_1: "Low bias risk as the system provides informational responses, not decisions. Minor risk of language bias (better performance in English vs. other supported languages).",
+          air3_2: "Partially explainable",
+          air3_3: "Low risk to autonomy. Customers can always request a human agent. No binding decisions made by the chatbot.",
+          air4_1: "If the chatbot is unavailable, traffic is routed to the existing human support queue. Average wait time increases from 30s to 8min. Business continuity plan documented.",
+          air4_2: "Knowledge base quality depends on manual curation. Stale or incorrect KB entries propagate to chatbot responses. Weekly QA review process in place.",
+          air4_3: "Dependency on OpenAI API. Risk of price increases, rate limiting, or service disruption. Fallback: pre-cached responses for top 100 queries + human escalation.",
+          air5_1: "Confidence scoring, automated response quality monitoring, weekly accuracy sampling (100 random conversations reviewed), prompt injection detection.",
+          air5_2: "Customer Service team trained on AI limitations, clear escalation paths documented, weekly quality review meetings, monthly accuracy reports to management.",
+          air5_3: "Human-on-the-loop: All low-confidence responses are flagged for human review. Customers informed they are interacting with AI (Art. 50 compliance). One-click handoff to human agent.",
+          air6_1: "Low",
+          air6_2: "Yes, residual risk is acceptable. The chatbot provides informational support only, with robust human escalation and no binding decisions. Risk-benefit analysis strongly favorable given 70% reduction in response time.",
+          air6_3: "Quarterly review of hallucination rates. Annual external security audit. Expand monitoring to cover all supported languages equally.",
+        },
+      },
+    });
+    console.log("  Created AI Risk for Chatbot (APPROVED)");
+
+    // AI Risk for Credit Scoring — IN_PROGRESS
+    await prisma.aIAssessment.upsert({
+      where: { id: "demo-assessment-risk-credit" },
+      update: {},
+      create: {
+        id: "demo-assessment-risk-credit",
+        organizationId: orgId,
+        aiSystemId: creditScoring.id,
+        templateId: aiRiskTemplate.id,
+        title: "AI Risk Assessment - Credit Risk Scoring",
+        type: "AI_RISK",
+        status: "IN_PROGRESS",
+        riskScore: 78,
+        createdBy: userId,
+        responses: {
+          air1_1: "Credit Risk Scoring Model using XGBoost to evaluate loan applicants. Outputs a risk score (0-1000) and recommended lending decision.",
+          air1_2: "High",
+          air1_3: "Intended users: Loan officers and automated origination system. Affected: Loan applicants, their families, small business employees.",
+          air2_1: "False negatives (approving risky loans) could lead to financial losses. False positives (declining good applicants) cause customer harm and lost business. Current test precision: 95%, recall: 88%.",
+          air2_2: "Credit risk profiles shift with economic conditions. The 2024-trained model may not reflect current default patterns. Quarterly retraining planned.",
+          air2_3: "Model inversion attacks could reveal training data characteristics. Adversarial inputs crafted to game the scoring algorithm. API rate limiting and input validation as primary defenses.",
+          air3_1: "Identified bias: age (under 25s 3% higher decline rate), nationality (non-EU 2.5% gap), self-employment (irregular income patterns). Active debiasing applied but residual gaps remain.",
+          air3_2: "Partially explainable",
+        },
+      },
+    });
+    console.log("  Created AI Risk for Credit Scoring (IN_PROGRESS)");
+  }
+
+  // Custom assessment — REJECTED
+  if (customTemplate) {
+    await prisma.aIAssessment.upsert({
+      where: { id: "demo-assessment-custom-recommender" },
+      update: {},
+      create: {
+        id: "demo-assessment-custom-recommender",
+        organizationId: orgId,
+        aiSystemId: legacyRecommender.id,
+        templateId: customTemplate.id,
+        title: "Retirement Review - Product Recommender v1",
+        type: "CUSTOM",
+        status: "REJECTED",
+        createdBy: userId,
+        reviewedBy: userId,
+        reviewedAt: new Date("2025-10-20"),
+        responses: {
+          custom1_1: "Retirement assessment for the legacy Product Recommender v1 system. Evaluating whether the system can be safely decommissioned and data retention requirements.",
+          custom1_2: "Product Recommender v1 collaborative filtering engine, all associated training data, model artifacts, and logging infrastructure.",
+          custom2_1: "Risk 1: Loss of historical recommendation data needed for audit trail. Risk 2: Customer data in training sets requires proper deletion per GDPR. Risk 3: Downstream systems still reference v1 API endpoints.",
+          custom2_2: "Medium",
+          custom3_1: "Proposed: Archive model artifacts for 5 years, delete PII from training data, redirect v1 API to v2. However, data retention policy has not been finalized and downstream dependency mapping is incomplete.",
+          custom3_2: "Needs further review",
+        },
+        mitigations: {
+          reason: "Assessment rejected: downstream dependency audit not yet completed. Three internal services still reference v1 API. Must complete migration before retirement can proceed. Reassess after Q1 2026 migration sprint.",
+        },
+      },
+    });
+    console.log("  Created Custom assessment for Recommender (REJECTED)");
+
+    // Custom assessment for predictive maintenance — APPROVED
+    await prisma.aIAssessment.upsert({
+      where: { id: "demo-assessment-custom-pred-maint" },
+      update: {},
+      create: {
+        id: "demo-assessment-custom-pred-maint",
+        organizationId: orgId,
+        aiSystemId: predictiveMaintenance.id,
+        templateId: customTemplate.id,
+        title: "Operational Readiness - Predictive Maintenance",
+        type: "CUSTOM",
+        status: "APPROVED",
+        riskScore: 25,
+        createdBy: userId,
+        approvedBy: userId,
+        approvedAt: new Date("2025-02-01"),
+        responses: {
+          custom1_1: "Operational readiness assessment for the Predictive Maintenance Engine prior to expanding deployment from 2 pilot factories to all 12 manufacturing sites.",
+          custom1_2: "FailurePredict LSTM v2 model, IoT data pipeline, alert notification system, and maintenance scheduling integration.",
+          custom2_1: "Risk 1: False alerts could lead to unnecessary maintenance shutdowns (est. $50K per incident). Risk 2: Missed predictions could result in equipment failures (est. $200K-500K per incident). Risk 3: Sensor data quality varies across factory sites.",
+          custom2_2: "Low",
+          custom3_1: "Mitigation: 2-week parallel run at each site before cutover. Sensor calibration protocol standardized. Human confirmation required for all predicted failures before scheduling maintenance. Monthly model performance review.",
+          custom3_2: "Yes, fully acceptable",
+        },
+      },
+    });
+    console.log("  Created Custom assessment for Pred. Maintenance (APPROVED)");
+  }
+
+  // ============================================================
+  // 7. COMPLIANCE MAPPINGS
+  // ============================================================
+
+  console.log("7. Creating compliance mappings...");
+
+  // Get EU AI Act framework and its requirements
+  const euFramework = await prisma.complianceFramework.findUnique({
+    where: { code: "EU_AI_ACT" },
+  });
+
+  const euRequirements = euFramework
+    ? await prisma.complianceRequirement.findMany({
+        where: { frameworkId: euFramework.id },
+        orderBy: { sortOrder: "asc" },
+      })
+    : [];
+
+  const euArtIds: Record<string, string> = {};
+  for (const req of euRequirements) {
+    euArtIds[req.code] = req.id;
+  }
+
+  if (!euFramework) {
+    console.log("  WARNING: EU AI Act framework not found — run db:seed-frameworks first");
+  }
+
+  // Create compliance mappings for the fraud detection system (HIGH risk, DEPLOYED)
+  const fraudComplianceMappings = [
+    { reqCode: "Art. 9", status: "COMPLIANT" as const, evidence: "Risk management system documented in RMS-FRAUD-001. Covers known risks (false positives, adversarial manipulation), foreseeable misuse (batch fraud testing), and residual risks. Annual risk review cycle.", assessedBy: userId },
+    { reqCode: "Art. 9(2)", status: "COMPLIANT" as const, evidence: "Risk register identifies 23 known risks and 8 foreseeable risks. Last updated December 2025.", assessedBy: userId },
+    { reqCode: "Art. 9(3)", status: "COMPLIANT" as const, evidence: "Misuse evaluation completed. 5 misuse scenarios documented with mitigations.", assessedBy: userId },
+    { reqCode: "Art. 9(4)", status: "COMPLIANT" as const, evidence: "12 risk mitigation measures implemented, including input validation, rate limiting, and anomaly detection on the detection model itself.", assessedBy: userId },
+    { reqCode: "Art. 10", status: "PARTIALLY_COMPLIANT" as const, evidence: "Data governance policy DGP-003 in place. Training data cataloged and versioned. Gap: data quality metrics not yet automated for real-time monitoring.", assessedBy: userId },
+    { reqCode: "Art. 10(2)", status: "COMPLIANT" as const, evidence: "Design document covers collection (payment processor APIs), preparation (anonymization, feature engineering), and assumptions (fraud rate ~0.3% baseline).", assessedBy: userId },
+    { reqCode: "Art. 10(3)", status: "PARTIALLY_COMPLIANT" as const, evidence: "Dataset is representative of EU transaction patterns. Gap: international transaction coverage lower (12% of training vs. 18% of production traffic). Remediation planned for Q2 2026 retraining.", assessedBy: userId },
+    { reqCode: "Art. 11", status: "COMPLIANT" as const, evidence: "Full technical documentation package TD-FRAUD-v3 maintained in Confluence. Includes model cards, architecture diagrams, training methodology, performance benchmarks.", assessedBy: userId },
+    { reqCode: "Art. 12", status: "COMPLIANT" as const, evidence: "All predictions logged with full feature vectors, model version, timestamp, confidence score, and outcome feedback. Logs retained 7 years per financial regulation requirements.", assessedBy: userId },
+    { reqCode: "Art. 13", status: "COMPLIANT" as const, evidence: "Instructions for use provided to deployment team. Includes capability description, known limitations, performance metrics, and recommended human oversight procedures.", assessedBy: userId },
+    { reqCode: "Art. 14", status: "PARTIALLY_COMPLIANT" as const, evidence: "Human oversight: all flagged transactions reviewed by fraud analysts. Gap: automated override capability not yet implemented for analysts (manual escalation required to halt model in emergency).", assessedBy: userId },
+    { reqCode: "Art. 14(4)", status: "NON_COMPLIANT" as const, evidence: "Currently no one-click mechanism for fraud analysts to override model decisions in real-time. Escalation to engineering team required. Fix scheduled for Sprint 23 (March 2026).", assessedBy: userId },
+    { reqCode: "Art. 15", status: "COMPLIANT" as const, evidence: "Accuracy: 98% AUC-ROC, declared in documentation. Robustness tested against adversarial inputs (FGSM, PGD attacks). Cybersecurity: penetration test completed Q4 2025, no critical findings.", assessedBy: userId },
+    { reqCode: "Art. 50(1)", status: "NOT_APPLICABLE" as const, evidence: "System does not directly interact with natural persons. It processes transactions in the background.", assessedBy: userId },
+    { reqCode: "Art. 62", status: "COMPLIANT" as const, evidence: "Incident reporting procedure aligned with Art. 62 timelines (15 days). Two test drills completed successfully in 2025.", assessedBy: userId },
+  ];
+
+  let complianceCount = 0;
+  for (const mapping of fraudComplianceMappings) {
+    const reqId = euArtIds[mapping.reqCode];
+    if (!reqId) continue;
+
+    await prisma.complianceMapping.upsert({
+      where: {
+        aiSystemId_requirementId: {
+          aiSystemId: "demo-system-fraud",
+          requirementId: reqId,
+        },
+      },
+      update: {
+        status: mapping.status,
+        evidence: mapping.evidence,
+        assessedBy: mapping.assessedBy,
+        assessedAt: new Date("2025-12-01"),
+      },
+      create: {
+        organizationId: orgId,
+        aiSystemId: "demo-system-fraud",
+        requirementId: reqId,
+        status: mapping.status,
+        evidence: mapping.evidence,
+        assessedBy: mapping.assessedBy,
+        assessedAt: new Date("2025-12-01"),
+      },
+    });
+    complianceCount++;
+  }
+
+  // Compliance mappings for HR Screening system (HIGH risk)
+  const hrComplianceMappings = [
+    { reqCode: "Art. 9", status: "PARTIALLY_COMPLIANT" as const, evidence: "Risk management system in place but pending annual review update. Initial risk assessment covers 15 known risks.", assessedBy: userId },
+    { reqCode: "Art. 10", status: "NON_COMPLIANT" as const, evidence: "Training data governance needs improvement. Historical hiring data not yet fully documented for bias sources. Remediation plan in progress.", assessedBy: userId },
+    { reqCode: "Art. 11", status: "PARTIALLY_COMPLIANT" as const, evidence: "Technical documentation exists but requires updates to reflect v2.1 model changes. Target completion: Q1 2026.", assessedBy: userId },
+    { reqCode: "Art. 12", status: "COMPLIANT" as const, evidence: "Full logging implemented. Every screening decision recorded with features, score, and model version. 5-year retention policy.", assessedBy: userId },
+    { reqCode: "Art. 13", status: "PARTIALLY_COMPLIANT" as const, evidence: "Instructions provided to HR team but need simplification for non-technical recruiters. User guide revision in progress.", assessedBy: userId },
+    { reqCode: "Art. 14", status: "COMPLIANT" as const, evidence: "All AI-screened candidates reviewed by human recruiter before any employment decision. No automatic rejections. Recruiters trained on AI limitations.", assessedBy: userId },
+    { reqCode: "Art. 15", status: "NOT_ASSESSED" as const, evidence: null, assessedBy: null },
+    { reqCode: "Art. 26", status: "PARTIALLY_COMPLIANT" as const, evidence: "Using system per provider instructions. Human oversight assigned. Gap: FRIA for public deployment not yet completed.", assessedBy: userId },
+    { reqCode: "Art. 27", status: "PARTIALLY_COMPLIANT" as const, evidence: "FRIA started but not yet completed. Draft assessment addresses fundamental rights impact. Expected completion: Q1 2026.", assessedBy: userId },
+  ];
+
+  for (const mapping of hrComplianceMappings) {
+    const reqId = euArtIds[mapping.reqCode];
+    if (!reqId) continue;
+
+    await prisma.complianceMapping.upsert({
+      where: {
+        aiSystemId_requirementId: {
+          aiSystemId: "demo-system-hr-screening",
+          requirementId: reqId,
+        },
+      },
+      update: {
+        status: mapping.status,
+        evidence: mapping.evidence,
+        assessedBy: mapping.assessedBy,
+        assessedAt: mapping.assessedBy ? new Date("2026-01-15") : null,
+      },
+      create: {
+        organizationId: orgId,
+        aiSystemId: "demo-system-hr-screening",
+        requirementId: reqId,
+        status: mapping.status,
+        evidence: mapping.evidence,
+        assessedBy: mapping.assessedBy,
+        assessedAt: mapping.assessedBy ? new Date("2026-01-15") : null,
+      },
+    });
+    complianceCount++;
+  }
+
+  console.log(`  Created ${complianceCount} compliance mappings across 2 systems`);
+
+  // ============================================================
+  // 8. ADDITIONAL AUDIT LOG ENTRIES
+  // ============================================================
+
+  console.log("8. Creating additional audit log entries...");
+
+  const newAuditEntries = [
+    {
+      id: "demo-audit-10",
+      organizationId: orgId,
+      userId: userId,
+      entityType: "RiskClassification",
+      entityId: "demo-system-chatbot",
+      action: "UPDATE",
+      changes: { riskLevel: { from: "MINIMAL", to: "LIMITED" } },
+      createdAt: new Date("2025-07-01"),
+    },
+    {
+      id: "demo-audit-11",
+      organizationId: orgId,
+      userId: userId,
+      entityType: "AIAssessment",
+      entityId: "demo-assessment-risk-chatbot",
+      action: "APPROVE",
+      changes: { status: { from: "UNDER_REVIEW", to: "APPROVED" }, riskScore: 42 },
+      createdAt: new Date("2025-08-15"),
+    },
+    {
+      id: "demo-audit-12",
+      organizationId: orgId,
+      userId: userId,
+      entityType: "AISystem",
+      entityId: predictiveMaintenance.id,
+      action: "CREATE",
+      changes: { name: "Predictive Maintenance Engine", status: "DEPLOYED" },
+      createdAt: new Date("2025-01-10"),
+    },
+    {
+      id: "demo-audit-13",
+      organizationId: orgId,
+      userId: userId,
+      entityType: "AISystem",
+      entityId: legacyRecommender.id,
+      action: "UPDATE",
+      changes: { status: { from: "DEPLOYED", to: "RETIRED" } },
+      createdAt: new Date("2025-11-30"),
+    },
+    {
+      id: "demo-audit-14",
+      organizationId: orgId,
+      userId: userId,
+      entityType: "RiskClassification",
+      entityId: sentimentAnalysis.id,
+      action: "UPDATE",
+      changes: { riskLevel: { from: "LIMITED", to: "HIGH" } },
+      createdAt: new Date("2025-12-15"),
+    },
+    {
+      id: "demo-audit-15",
+      organizationId: orgId,
+      userId: userId,
+      entityType: "AIAssessment",
+      entityId: "demo-assessment-custom-recommender",
+      action: "REJECT",
+      changes: { status: { from: "UNDER_REVIEW", to: "REJECTED" }, reason: "Downstream dependencies not resolved" },
+      createdAt: new Date("2025-10-20"),
+    },
+    {
+      id: "demo-audit-16",
+      organizationId: orgId,
+      userId: userId,
+      entityType: "ComplianceMapping",
+      entityId: "demo-system-fraud",
+      action: "BULK_UPDATE",
+      changes: { framework: "EU AI Act", mappingsUpdated: 15 },
+      createdAt: new Date("2025-12-01"),
+    },
+    {
+      id: "demo-audit-17",
+      organizationId: orgId,
+      userId: userId,
+      entityType: "AISystem",
+      entityId: creditScoring.id,
+      action: "CREATE",
+      changes: { name: "Credit Risk Scoring Model", status: "TESTING" },
+      createdAt: new Date("2025-11-01"),
+    },
+    {
+      id: "demo-audit-18",
+      organizationId: orgId,
+      userId: userId,
+      entityType: "AIAssessment",
+      entityId: "demo-assessment-fria-credit",
+      action: "SUBMIT_FOR_REVIEW",
+      changes: { status: { from: "IN_PROGRESS", to: "UNDER_REVIEW" } },
+      createdAt: new Date("2026-01-20"),
+    },
+    {
+      id: "demo-audit-19",
+      organizationId: orgId,
+      userId: userId,
+      entityType: "AISystem",
+      entityId: sentimentAnalysis.id,
+      action: "CREATE",
+      changes: { name: "Employee Sentiment Analysis", status: "DRAFT" },
+      createdAt: new Date("2025-09-15"),
+    },
+  ];
+
+  for (const entry of newAuditEntries) {
+    await prisma.auditLog.upsert({
+      where: { id: entry.id },
+      update: {},
+      create: entry,
+    });
+  }
+
+  console.log(`  Created ${newAuditEntries.length} additional audit log entries`);
+
+  // ============================================================
+  // SUMMARY
+  // ============================================================
+
+  console.log("\n========================================");
+  console.log("Demo scenario population complete!");
+  console.log("========================================");
+  console.log("");
+  console.log("AI Systems: 8 total");
+  console.log("  - 3 DEPLOYED, 2 TESTING, 1 DEVELOPMENT, 1 DRAFT, 1 RETIRED");
+  console.log("");
+  console.log("AI Models: 6 total");
+  console.log("");
+  console.log("Data Sources: 7 total");
+  console.log("  - INPUT, OUTPUT, TRAINING types");
+  console.log("");
+  console.log("Risk Classifications: 8 total");
+  console.log("  - 3 HIGH, 2 LIMITED, 2 MINIMAL, 1 HIGH (pending review)");
+  console.log("  - 2 reclassification history entries");
+  console.log("");
+  console.log("Assessments: 8 total (was 2)");
+  console.log("  - 2 APPROVED, 2 IN_PROGRESS, 1 UNDER_REVIEW, 1 DRAFT, 1 REJECTED, 1 APPROVED");
+  console.log("");
+  console.log("Compliance Mappings: ~24 mappings");
+  console.log("  - Fraud Detection: 15 EU AI Act mappings (mixed statuses)");
+  console.log("  - HR Screening: 9 EU AI Act mappings (more gaps)");
+  console.log("");
+  console.log("Audit Log: 15 entries (was 5)");
+}
+
+main()
+  .catch((e) => {
+    console.error("Error populating demo scenarios:", e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

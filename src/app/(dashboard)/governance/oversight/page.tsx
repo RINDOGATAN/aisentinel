@@ -31,9 +31,9 @@ const gateTypeLabels: Record<string, string> = {
 };
 
 const gateStatusColors: Record<string, string> = {
-  PENDING: "border-yellow-500 text-yellow-500",
-  IN_REVIEW: "border-blue-500 text-blue-500",
-  PASSED: "border-green-500 text-green-500",
+  PENDING: "border-warning text-warning",
+  IN_REVIEW: "border-info text-info",
+  PASSED: "border-success text-success",
   FAILED: "border-destructive text-destructive",
   DEFERRED: "border-muted-foreground text-muted-foreground",
 };
@@ -96,19 +96,19 @@ export default function OversightPage() {
       <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-yellow-500">{stats.pending}</div>
+            <div className="text-xl sm:text-2xl font-bold text-warning">{stats.pending}</div>
             <p className="text-xs sm:text-sm text-muted-foreground">Pending</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-blue-500">{stats.inReview}</div>
+            <div className="text-xl sm:text-2xl font-bold text-info">{stats.inReview}</div>
             <p className="text-xs sm:text-sm text-muted-foreground">In Review</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-green-500">{stats.passed}</div>
+            <div className="text-xl sm:text-2xl font-bold text-success">{stats.passed}</div>
             <p className="text-xs sm:text-sm text-muted-foreground">Passed</p>
           </CardContent>
         </Card>

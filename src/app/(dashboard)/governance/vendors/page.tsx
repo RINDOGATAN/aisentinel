@@ -17,25 +17,28 @@ import {
   User,
   Cpu,
   FileSearch,
+  Database,
+  Lock,
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
 import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
+import { EnableFeatureModal } from "@/components/premium/enable-feature-modal";
 import { formatRelativeTime, formatDate } from "@/lib/utils";
 
 const riskLevelColors: Record<string, string> = {
   CRITICAL: "bg-destructive text-destructive-foreground",
   HIGH: "bg-destructive/80 text-destructive-foreground",
-  MEDIUM: "bg-yellow-500/20 text-yellow-500",
-  LOW: "bg-green-500/20 text-green-500",
+  MEDIUM: "bg-warning/20 text-warning",
+  LOW: "bg-success/20 text-success",
 };
 
 const statusColors: Record<string, string> = {
-  ACTIVE: "border-green-500 text-green-500",
-  UNDER_REVIEW: "border-yellow-500 text-yellow-500",
-  APPROVED: "border-blue-500 text-blue-500",
-  SUSPENDED: "border-orange-500 text-orange-500",
+  ACTIVE: "border-success text-success",
+  UNDER_REVIEW: "border-warning text-warning",
+  APPROVED: "border-info text-info",
+  SUSPENDED: "border-warning text-warning",
   TERMINATED: "border-muted-foreground text-muted-foreground",
 };
 
@@ -67,10 +70,16 @@ function getDaysUntil(date: Date | string | null | undefined): number | null {
 export default function VendorRiskPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
+  const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
   const debouncedSearch = useDebounce(searchQuery);
   const { organization } = useOrganization();
 
   const statusFilter = tabToStatus[activeTab];
+
+  const { data: catalogAccess } = trpc.vendor.hasVendorCatalogAccess.useQuery(
+    { organizationId: organization?.id ?? "" },
+    { enabled: !!organization?.id }
+  );
 
   const { data: statsData, isLoading: statsLoading } = trpc.vendor.getStats.useQuery(
     { organizationId: organization?.id ?? "" },
@@ -140,11 +149,69 @@ export default function VendorRiskPage() {
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-yellow-500">{stats.expiringSoon}</div>
+            <div className="text-xl sm:text-2xl font-bold text-warning">{stats.expiringSoon}</div>
             <p className="text-xs sm:text-sm text-muted-foreground">Expiring Soon</p>
           </CardContent>
         </Card>
       </div>
+
+      {/* AI Vendor Catalog — Premium Feature Card */}
+      {catalogAccess?.hasAccess ? (
+        <Card className="border-primary/50">
+          <CardContent className="p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-primary/10 flex items-center justify-center shrink-0">
+                <Database className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="font-semibold text-sm sm:text-base">AI Vendor Catalog</h3>
+                  <Badge className="bg-success/20 text-success text-xs">Active</Badge>
+                </div>
+                <p className="text-xs sm:text-sm text-muted-foreground">
+                  Search pre-audited AI vendors from Vendor.Watch and auto-fill vendor records
+                </p>
+              </div>
+            </div>
+            <Link href="/governance/vendors/new?catalog=true" className="flex-none">
+              <Button size="sm" className="w-full sm:w-auto">
+                <Database className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Add from Catalog</span>
+                <span className="sm:hidden">Catalog</span>
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+      ) : (
+        <Card className="border-dashed border-amber-500/50">
+          <CardContent className="p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-amber-500/10 flex items-center justify-center shrink-0">
+                <Lock className="w-5 h-5 text-amber-500" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="font-semibold text-sm sm:text-base">AI Vendor Catalog</h3>
+                  <Badge className="bg-amber-500/20 text-amber-500 text-xs">EUR 9/mo</Badge>
+                </div>
+                <p className="text-xs sm:text-sm text-muted-foreground">
+                  Search pre-audited AI vendors from Vendor.Watch and auto-fill vendor records
+                </p>
+              </div>
+            </div>
+            <Button
+              size="sm"
+              variant="outline"
+              className="flex-none w-full sm:w-auto border-amber-500/50 text-amber-500 hover:bg-amber-500/10"
+              onClick={() => setUpgradeModalOpen(true)}
+            >
+              <Lock className="w-4 h-4 sm:mr-2" />
+              <span className="hidden sm:inline">Enable</span>
+              <span className="sm:hidden">Enable</span>
+            </Button>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Search */}
       <div className="flex gap-2 sm:gap-4">
@@ -251,7 +318,7 @@ export default function VendorRiskPage() {
                             </span>
                           </div>
                           {isExpiringSoon && (
-                            <div className="flex items-center gap-1 mt-2 text-xs text-yellow-500">
+                            <div className="flex items-center gap-1 mt-2 text-xs text-warning">
                               <AlertTriangle className="w-3 h-3" />
                               Contract expires in {daysUntilExpiry} days
                             </div>
@@ -303,6 +370,14 @@ export default function VendorRiskPage() {
           )}
         </TabsContent>
       </Tabs>
+
+      {upgradeModalOpen && (
+        <EnableFeatureModal
+          featureName="AI Vendor Catalog"
+          description="Search pre-audited AI vendors from the Vendor.Watch database and auto-fill your local vendor records with compliance data."
+          onClose={() => setUpgradeModalOpen(false)}
+        />
+      )}
     </div>
   );
 }

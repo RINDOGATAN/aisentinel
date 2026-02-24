@@ -43,9 +43,9 @@ import { useOrganization } from "@/lib/organization-context";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 
 const statusColors: Record<string, string> = {
-  DISCOVERED: "border-yellow-500 text-yellow-500",
-  UNDER_REVIEW: "border-blue-500 text-blue-500",
-  APPROVED: "border-green-500 text-green-500",
+  DISCOVERED: "border-warning text-warning",
+  UNDER_REVIEW: "border-info text-info",
+  APPROVED: "border-success text-success",
   PROHIBITED: "border-destructive text-destructive",
   REGISTERED: "border-primary text-primary",
 };
@@ -71,11 +71,11 @@ const riskIndicatorLabels: Record<string, string> = {
 const riskIndicatorColors: Record<string, string> = {
   PROCESSES_PERSONAL_DATA: "bg-destructive/20 text-destructive",
   TRAINS_ON_INPUT: "bg-destructive/20 text-destructive",
-  CLOUD_HOSTED: "bg-yellow-500/20 text-yellow-500",
-  ON_PREMISE_AVAILABLE: "bg-green-500/20 text-green-500",
-  SOC2_CERTIFIED: "bg-green-500/20 text-green-500",
-  GDPR_COMPLIANT: "bg-green-500/20 text-green-500",
-  REQUIRES_API_KEY: "bg-blue-500/20 text-blue-500",
+  CLOUD_HOSTED: "bg-warning/20 text-warning",
+  ON_PREMISE_AVAILABLE: "bg-success/20 text-success",
+  SOC2_CERTIFIED: "bg-success/20 text-success",
+  GDPR_COMPLIANT: "bg-success/20 text-success",
+  REQUIRES_API_KEY: "bg-info/20 text-info",
 };
 
 export default function ShadowAIDetailPage() {

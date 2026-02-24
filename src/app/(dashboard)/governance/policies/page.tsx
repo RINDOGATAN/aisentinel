@@ -35,9 +35,9 @@ const policyTypeLabels: Record<string, string> = {
 
 const statusColors: Record<string, string> = {
   DRAFT: "border-muted-foreground text-muted-foreground",
-  UNDER_REVIEW: "border-yellow-500 text-yellow-500",
-  APPROVED: "border-blue-500 text-blue-500",
-  PUBLISHED: "border-green-500 text-green-500",
+  UNDER_REVIEW: "border-warning text-warning",
+  APPROVED: "border-info text-info",
+  PUBLISHED: "border-success text-success",
   ARCHIVED: "border-muted-foreground/50 text-muted-foreground/50",
 };
 
@@ -119,13 +119,13 @@ export default function PoliciesPage() {
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-green-500">{stats.published}</div>
+            <div className="text-xl sm:text-2xl font-bold text-success">{stats.published}</div>
             <p className="text-xs sm:text-sm text-muted-foreground">Published</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className={`text-xl sm:text-2xl font-bold ${stats.reviewDue > 0 ? "text-yellow-500" : "text-muted-foreground"}`}>
+            <div className={`text-xl sm:text-2xl font-bold ${stats.reviewDue > 0 ? "text-warning" : "text-muted-foreground"}`}>
               {stats.reviewDue}
             </div>
             <p className="text-xs sm:text-sm text-muted-foreground">Review Due</p>

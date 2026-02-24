@@ -120,13 +120,13 @@ export default function GovernanceDashboardPage() {
       <div className="grid gap-3 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
         <Card>
           <CardContent className="p-4">
-            <div className="text-xl sm:text-2xl font-bold text-primary">{stats?.totalSystems ?? 0}</div>
+            <div className="text-xl sm:text-2xl font-bold text-foreground">{stats?.totalSystems ?? 0}</div>
             <p className="text-xs text-muted-foreground">Total Systems</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
-            <div className="text-xl sm:text-2xl font-bold text-green-500">{stats?.deployedSystems ?? 0}</div>
+            <div className="text-xl sm:text-2xl font-bold text-success">{stats?.deployedSystems ?? 0}</div>
             <p className="text-xs text-muted-foreground">Deployed</p>
           </CardContent>
         </Card>
@@ -140,7 +140,7 @@ export default function GovernanceDashboardPage() {
         </Card>
         <Card>
           <CardContent className="p-4">
-            <div className={`text-xl sm:text-2xl font-bold ${incidents.open > 0 ? "text-orange-500" : "text-muted-foreground"}`}>
+            <div className={`text-xl sm:text-2xl font-bold ${incidents.open > 0 ? "text-warning" : "text-muted-foreground"}`}>
               {incidents.open}
             </div>
             <p className="text-xs text-muted-foreground">Open Incidents</p>
@@ -148,7 +148,7 @@ export default function GovernanceDashboardPage() {
         </Card>
         <Card>
           <CardContent className="p-4">
-            <div className={`text-xl sm:text-2xl font-bold ${oversight.pending > 0 ? "text-yellow-500" : "text-muted-foreground"}`}>
+            <div className={`text-xl sm:text-2xl font-bold ${oversight.pending > 0 ? "text-warning" : "text-muted-foreground"}`}>
               {oversight.pending}
             </div>
             <p className="text-xs text-muted-foreground">Pending Gates</p>
@@ -156,7 +156,7 @@ export default function GovernanceDashboardPage() {
         </Card>
         <Card>
           <CardContent className="p-4">
-            <div className="text-xl sm:text-2xl font-bold text-primary">{stats?.activeAssessments ?? 0}</div>
+            <div className="text-xl sm:text-2xl font-bold text-foreground">{stats?.activeAssessments ?? 0}</div>
             <p className="text-xs text-muted-foreground">Active Assessments</p>
           </CardContent>
         </Card>
@@ -195,7 +195,7 @@ export default function GovernanceDashboardPage() {
                   )}
                   {riskPosture.limited > 0 && (
                     <div
-                      className="bg-yellow-500/40 flex items-center justify-center text-[10px] text-yellow-300 font-medium"
+                      className="bg-warning/40 flex items-center justify-center text-[10px] text-warning font-medium"
                       style={{ width: `${(riskPosture.limited / riskTotal) * 100}%` }}
                     >
                       {riskPosture.limited}
@@ -203,7 +203,7 @@ export default function GovernanceDashboardPage() {
                   )}
                   {riskPosture.minimal > 0 && (
                     <div
-                      className="bg-green-500/30 flex items-center justify-center text-[10px] text-green-400 font-medium"
+                      className="bg-success/30 flex items-center justify-center text-[10px] text-success font-medium"
                       style={{ width: `${(riskPosture.minimal / riskTotal) * 100}%` }}
                     >
                       {riskPosture.minimal}
@@ -221,11 +221,11 @@ export default function GovernanceDashboardPage() {
                     High ({riskPosture.high})
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-sm bg-yellow-500/40" />
+                    <span className="w-2.5 h-2.5 rounded-sm bg-warning/40" />
                     Limited ({riskPosture.limited})
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-sm bg-green-500/30" />
+                    <span className="w-2.5 h-2.5 rounded-sm bg-success/30" />
                     Minimal ({riskPosture.minimal})
                   </span>
                 </div>
@@ -253,7 +253,7 @@ export default function GovernanceDashboardPage() {
                 <p className="text-xs text-muted-foreground">Critical</p>
               </div>
               <div className="text-center">
-                <div className={`text-2xl font-bold ${incidents.open > 0 ? "text-orange-500" : "text-muted-foreground"}`}>
+                <div className={`text-2xl font-bold ${incidents.open > 0 ? "text-warning" : "text-muted-foreground"}`}>
                   {incidents.open}
                 </div>
                 <p className="text-xs text-muted-foreground">Open</p>
@@ -284,7 +284,7 @@ export default function GovernanceDashboardPage() {
           <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0 space-y-3">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <div className={`text-2xl font-bold ${oversight.pending > 0 ? "text-yellow-500" : "text-muted-foreground"}`}>
+                <div className={`text-2xl font-bold ${oversight.pending > 0 ? "text-warning" : "text-muted-foreground"}`}>
                   {oversight.pending}
                 </div>
                 <p className="text-xs text-muted-foreground">Pending</p>
@@ -325,15 +325,15 @@ export default function GovernanceDashboardPage() {
                 <p className="text-[10px] text-muted-foreground">Draft</p>
               </div>
               <div>
-                <div className="text-lg font-bold text-blue-500">{pipeline.inProgress}</div>
+                <div className="text-lg font-bold text-info">{pipeline.inProgress}</div>
                 <p className="text-[10px] text-muted-foreground">In Progress</p>
               </div>
               <div>
-                <div className="text-lg font-bold text-yellow-500">{pipeline.underReview}</div>
+                <div className="text-lg font-bold text-warning">{pipeline.underReview}</div>
                 <p className="text-[10px] text-muted-foreground">Review</p>
               </div>
               <div>
-                <div className="text-lg font-bold text-green-500">{pipeline.approved}</div>
+                <div className="text-lg font-bold text-success">{pipeline.approved}</div>
                 <p className="text-[10px] text-muted-foreground">Approved</p>
               </div>
             </div>
@@ -344,13 +344,13 @@ export default function GovernanceDashboardPage() {
                   <div className="bg-muted-foreground/30" style={{ flex: pipeline.draft }} />
                 )}
                 {pipeline.inProgress > 0 && (
-                  <div className="bg-blue-500/50" style={{ flex: pipeline.inProgress }} />
+                  <div className="bg-info/50" style={{ flex: pipeline.inProgress }} />
                 )}
                 {pipeline.underReview > 0 && (
-                  <div className="bg-yellow-500/50" style={{ flex: pipeline.underReview }} />
+                  <div className="bg-warning/50" style={{ flex: pipeline.underReview }} />
                 )}
                 {pipeline.approved > 0 && (
-                  <div className="bg-green-500/50" style={{ flex: pipeline.approved }} />
+                  <div className="bg-success/50" style={{ flex: pipeline.approved }} />
                 )}
               </div>
             )}
@@ -370,10 +370,10 @@ export default function GovernanceDashboardPage() {
               <>
                 <div className="h-4 flex overflow-hidden rounded-sm">
                   {compliance.compliant > 0 && (
-                    <div className="bg-green-500/60" style={{ width: `${(compliance.compliant / complianceTotal) * 100}%` }} />
+                    <div className="bg-success/60" style={{ width: `${(compliance.compliant / complianceTotal) * 100}%` }} />
                   )}
                   {compliance.partial > 0 && (
-                    <div className="bg-yellow-500/50" style={{ width: `${(compliance.partial / complianceTotal) * 100}%` }} />
+                    <div className="bg-warning/50" style={{ width: `${(compliance.partial / complianceTotal) * 100}%` }} />
                   )}
                   {compliance.nonCompliant > 0 && (
                     <div className="bg-destructive/50" style={{ width: `${(compliance.nonCompliant / complianceTotal) * 100}%` }} />
@@ -384,11 +384,11 @@ export default function GovernanceDashboardPage() {
                 </div>
                 <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
                   <span className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-sm bg-green-500/60" />
+                    <span className="w-2.5 h-2.5 rounded-sm bg-success/60" />
                     Compliant ({compliance.compliant})
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-sm bg-yellow-500/50" />
+                    <span className="w-2.5 h-2.5 rounded-sm bg-warning/50" />
                     Partial ({compliance.partial})
                   </span>
                   <span className="flex items-center gap-1.5">

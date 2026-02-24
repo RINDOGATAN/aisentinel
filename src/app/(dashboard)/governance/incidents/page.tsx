@@ -24,15 +24,15 @@ import { formatRelativeTime } from "@/lib/utils";
 const severityColors: Record<string, string> = {
   CRITICAL: "bg-destructive text-destructive-foreground",
   HIGH: "bg-destructive/80 text-destructive-foreground",
-  MEDIUM: "bg-yellow-500/20 text-yellow-500",
+  MEDIUM: "bg-warning/20 text-warning",
   LOW: "bg-muted text-muted-foreground",
 };
 
 const statusColors: Record<string, string> = {
-  REPORTED: "border-yellow-500 text-yellow-500",
-  INVESTIGATING: "border-blue-500 text-blue-500",
-  MITIGATING: "border-orange-500 text-orange-500",
-  RESOLVED: "border-green-500 text-green-500",
+  REPORTED: "border-warning text-warning",
+  INVESTIGATING: "border-info text-info",
+  MITIGATING: "border-warning text-warning",
+  RESOLVED: "border-success text-success",
   CLOSED: "border-muted-foreground text-muted-foreground",
 };
 
@@ -128,13 +128,13 @@ export default function IncidentsPage() {
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-yellow-500">{stats.open}</div>
+            <div className="text-xl sm:text-2xl font-bold text-warning">{stats.open}</div>
             <p className="text-xs sm:text-sm text-muted-foreground">Open</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-green-500">{stats.resolved}</div>
+            <div className="text-xl sm:text-2xl font-bold text-success">{stats.resolved}</div>
             <p className="text-xs sm:text-sm text-muted-foreground">Resolved</p>
           </CardContent>
         </Card>

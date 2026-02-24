@@ -60,17 +60,17 @@ const policyTypeLabels: Record<string, string> = {
 
 const statusColors: Record<string, string> = {
   DRAFT: "border-muted-foreground text-muted-foreground",
-  UNDER_REVIEW: "border-yellow-500 text-yellow-500",
-  APPROVED: "border-blue-500 text-blue-500",
-  PUBLISHED: "border-green-500 text-green-500",
+  UNDER_REVIEW: "border-warning text-warning",
+  APPROVED: "border-info text-info",
+  PUBLISHED: "border-success text-success",
   ARCHIVED: "border-muted-foreground/50 text-muted-foreground/50",
 };
 
 const systemStatusColors: Record<string, string> = {
   DRAFT: "border-muted-foreground text-muted-foreground",
-  DEVELOPMENT: "border-blue-500 text-blue-500",
-  TESTING: "border-yellow-500 text-yellow-500",
-  DEPLOYED: "border-green-500 text-green-500",
+  DEVELOPMENT: "border-info text-info",
+  TESTING: "border-warning text-warning",
+  DEPLOYED: "border-success text-success",
   RETIRED: "border-muted-foreground/50 text-muted-foreground/50",
 };
 

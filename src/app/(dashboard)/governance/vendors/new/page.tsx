@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useRef, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -15,10 +16,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, Loader2, Search, CheckCircle, X, Shield, Globe } from "lucide-react";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
+import { useDebounce } from "@/hooks/use-debounce";
 
 const riskLevels = [
   { value: "CRITICAL", label: "Critical" },
@@ -35,10 +37,38 @@ const statuses = [
   { value: "TERMINATED", label: "Terminated" },
 ];
 
-export default function NewVendorPage() {
+type CatalogVendor = {
+  id: string;
+  slug: string;
+  name: string;
+  category: string;
+  description: string | null;
+  website: string | null;
+  isVerified: boolean;
+  gdprCompliant: boolean | null;
+  euAiActCompliant: boolean | null;
+  certifications: string[];
+  frameworks: string[];
+  aiCapabilities: string[];
+  privacyPolicyUrl: string | null;
+  trustCenterUrl: string | null;
+  dpaUrl: string | null;
+  securityPageUrl: string | null;
+};
+
+function NewVendorForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const isCatalogMode = searchParams.get("catalog") === "true";
   const { organization } = useOrganization();
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Catalog search state
+  const [catalogQuery, setCatalogQuery] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [selectedCatalogVendor, setSelectedCatalogVendor] = useState<CatalogVendor | null>(null);
+  const debouncedCatalogQuery = useDebounce(catalogQuery, 300);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -53,6 +83,62 @@ export default function NewVendorPage() {
     dpoCentralVendorId: "",
     notes: "",
   });
+
+  // Catalog search query
+  const { data: catalogResults, isLoading: catalogLoading } =
+    trpc.vendorCatalog.search.useQuery(
+      { query: debouncedCatalogQuery, limit: 10 },
+      { enabled: isCatalogMode && debouncedCatalogQuery.length >= 2 }
+    );
+
+  // Click-outside handler
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setShowDropdown(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Show dropdown when results arrive
+  useEffect(() => {
+    if (catalogResults && catalogResults.length > 0 && debouncedCatalogQuery.length >= 2) {
+      setShowDropdown(true);
+    }
+  }, [catalogResults, debouncedCatalogQuery]);
+
+  const handleSelectCatalogVendor = (vendor: CatalogVendor) => {
+    setSelectedCatalogVendor(vendor);
+    setShowDropdown(false);
+    setCatalogQuery("");
+
+    // Auto-fill form
+    setFormData((prev) => ({
+      ...prev,
+      name: vendor.name,
+      description: vendor.description || prev.description,
+      website: vendor.website || prev.website,
+    }));
+  };
+
+  const handleClearCatalogVendor = () => {
+    setSelectedCatalogVendor(null);
+    setFormData({
+      name: "",
+      website: "",
+      description: "",
+      contactName: "",
+      contactEmail: "",
+      riskLevel: "",
+      status: "UNDER_REVIEW",
+      contractStartDate: "",
+      contractExpiryDate: "",
+      dpoCentralVendorId: "",
+      notes: "",
+    });
+  };
 
   const utils = trpc.useUtils();
 
@@ -107,6 +193,192 @@ export default function NewVendorPage() {
           </p>
         </div>
       </div>
+
+      {/* Catalog Search Card */}
+      {isCatalogMode && (
+        <Card className="border-primary/50">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+              <Search className="w-5 h-5 text-primary" />
+              AI Vendor Catalog
+            </CardTitle>
+            <CardDescription>
+              Search pre-audited AI vendors from the Vendor.Watch database to auto-fill vendor details
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {selectedCatalogVendor ? (
+              <div className="border border-primary/30 rounded-md p-4 space-y-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <h4 className="font-semibold">{selectedCatalogVendor.name}</h4>
+                    {selectedCatalogVendor.isVerified && (
+                      <CheckCircle className="w-4 h-4 text-success" />
+                    )}
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={handleClearCatalogVendor}
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
+                </div>
+                <Badge variant="secondary" className="text-xs">
+                  {selectedCatalogVendor.category}
+                </Badge>
+                {selectedCatalogVendor.description && (
+                  <p className="text-sm text-muted-foreground">
+                    {selectedCatalogVendor.description}
+                  </p>
+                )}
+                <div className="flex flex-wrap gap-1.5">
+                  {selectedCatalogVendor.gdprCompliant && (
+                    <Badge className="bg-success/20 text-success text-xs">
+                      <Shield className="w-3 h-3 mr-1" />
+                      GDPR
+                    </Badge>
+                  )}
+                  {selectedCatalogVendor.euAiActCompliant && (
+                    <Badge className="bg-info/20 text-info text-xs">
+                      <Shield className="w-3 h-3 mr-1" />
+                      EU AI Act
+                    </Badge>
+                  )}
+                  {selectedCatalogVendor.certifications.map((cert) => (
+                    <Badge key={cert} variant="outline" className="text-xs">
+                      {cert}
+                    </Badge>
+                  ))}
+                </div>
+                <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
+                  {selectedCatalogVendor.website && (
+                    <a
+                      href={selectedCatalogVendor.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1 hover:text-primary"
+                    >
+                      <Globe className="w-3 h-3" />
+                      Website
+                    </a>
+                  )}
+                  {selectedCatalogVendor.privacyPolicyUrl && (
+                    <a
+                      href={selectedCatalogVendor.privacyPolicyUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1 hover:text-primary"
+                    >
+                      <Shield className="w-3 h-3" />
+                      Privacy Policy
+                    </a>
+                  )}
+                  {selectedCatalogVendor.trustCenterUrl && (
+                    <a
+                      href={selectedCatalogVendor.trustCenterUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1 hover:text-primary"
+                    >
+                      <Shield className="w-3 h-3" />
+                      Trust Center
+                    </a>
+                  )}
+                  {selectedCatalogVendor.dpaUrl && (
+                    <a
+                      href={selectedCatalogVendor.dpaUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1 hover:text-primary"
+                    >
+                      <Shield className="w-3 h-3" />
+                      DPA
+                    </a>
+                  )}
+                </div>
+                <p className="text-xs text-muted-foreground italic">
+                  Vendor details have been auto-filled in the form below. Review and adjust before saving.
+                </p>
+              </div>
+            ) : (
+              <div className="relative" ref={dropdownRef}>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search AI vendors (e.g., OpenAI, Anthropic, Google)..."
+                    className="pl-9"
+                    value={catalogQuery}
+                    onChange={(e) => setCatalogQuery(e.target.value)}
+                    onFocus={() => {
+                      if (catalogResults && catalogResults.length > 0) {
+                        setShowDropdown(true);
+                      }
+                    }}
+                  />
+                  {catalogLoading && (
+                    <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
+                  )}
+                </div>
+
+                {showDropdown && catalogResults && catalogResults.length > 0 && (
+                  <div className="absolute z-50 w-full mt-1 bg-background border rounded-md shadow-lg max-h-64 overflow-y-auto">
+                    {catalogResults.map((vendor) => (
+                      <button
+                        key={vendor.id}
+                        type="button"
+                        className="w-full text-left p-3 hover:bg-muted/50 transition-colors border-b last:border-b-0"
+                        onClick={() => handleSelectCatalogVendor(vendor as CatalogVendor)}
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium text-sm">{vendor.name}</span>
+                            {vendor.isVerified && (
+                              <CheckCircle className="w-3.5 h-3.5 text-success" />
+                            )}
+                          </div>
+                          <Badge variant="secondary" className="text-xs shrink-0">
+                            {vendor.category}
+                          </Badge>
+                        </div>
+                        <div className="flex gap-1.5 mt-1">
+                          {vendor.gdprCompliant && (
+                            <Badge className="bg-success/20 text-success text-[10px] px-1.5 py-0">
+                              GDPR
+                            </Badge>
+                          )}
+                          {vendor.euAiActCompliant && (
+                            <Badge className="bg-info/20 text-info text-[10px] px-1.5 py-0">
+                              EU AI Act
+                            </Badge>
+                          )}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {showDropdown && catalogResults && catalogResults.length === 0 && debouncedCatalogQuery.length >= 2 && !catalogLoading && (
+                  <div className="absolute z-50 w-full mt-1 bg-background border rounded-md shadow-lg p-3 text-sm text-muted-foreground text-center">
+                    No vendors found for &quot;{debouncedCatalogQuery}&quot;
+                  </div>
+                )}
+              </div>
+            )}
+
+            {!selectedCatalogVendor && (
+              <p className="text-xs text-muted-foreground">
+                Or{" "}
+                <Link href="/governance/vendors/new" className="text-primary hover:underline">
+                  skip catalog search
+                </Link>{" "}
+                and fill in vendor details manually.
+              </p>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       {/* Form */}
       <Card>
@@ -296,5 +568,19 @@ export default function NewVendorPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function NewVendorPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      }
+    >
+      <NewVendorForm />
+    </Suspense>
   );
 }

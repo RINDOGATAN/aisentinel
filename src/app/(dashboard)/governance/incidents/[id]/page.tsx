@@ -40,15 +40,15 @@ import { formatDate, formatRelativeTime } from "@/lib/utils";
 const severityColors: Record<string, string> = {
   CRITICAL: "bg-destructive text-destructive-foreground",
   HIGH: "bg-destructive/80 text-destructive-foreground",
-  MEDIUM: "bg-yellow-500/20 text-yellow-500",
+  MEDIUM: "bg-warning/20 text-warning",
   LOW: "bg-muted text-muted-foreground",
 };
 
 const statusColors: Record<string, string> = {
-  REPORTED: "border-yellow-500 text-yellow-500",
-  INVESTIGATING: "border-blue-500 text-blue-500",
-  MITIGATING: "border-orange-500 text-orange-500",
-  RESOLVED: "border-green-500 text-green-500",
+  REPORTED: "border-warning text-warning",
+  INVESTIGATING: "border-info text-info",
+  MITIGATING: "border-warning text-warning",
+  RESOLVED: "border-success text-success",
   CLOSED: "border-muted-foreground text-muted-foreground",
 };
 
@@ -67,9 +67,9 @@ const typeLabels: Record<string, string> = {
 };
 
 const notificationStatusColors: Record<string, string> = {
-  PENDING: "border-yellow-500 text-yellow-500",
-  SENT: "border-green-500 text-green-500",
-  ACKNOWLEDGED: "border-blue-500 text-blue-500",
+  PENDING: "border-warning text-warning",
+  SENT: "border-success text-success",
+  ACKNOWLEDGED: "border-info text-info",
 };
 
 const statusTransitions: Record<string, string[]> = {
@@ -478,7 +478,7 @@ export default function IncidentDetailPage() {
                         <CheckCircle2
                           className={`w-5 h-5 ${
                             task.status === "COMPLETED"
-                              ? "text-green-500"
+                              ? "text-success"
                               : "text-muted-foreground hover:text-primary"
                           }`}
                         />
@@ -512,8 +512,8 @@ export default function IncidentDetailPage() {
                         variant="outline"
                         className={`text-xs ${
                           task.status === "COMPLETED"
-                            ? "border-green-500 text-green-500"
-                            : "border-yellow-500 text-yellow-500"
+                            ? "border-success text-success"
+                            : "border-warning text-warning"
                         }`}
                       >
                         {task.status}

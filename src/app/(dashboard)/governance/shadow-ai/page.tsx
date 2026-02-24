@@ -26,9 +26,9 @@ import { EnableFeatureModal } from "@/components/premium/enable-feature-modal";
 import { formatRelativeTime } from "@/lib/utils";
 
 const statusColors: Record<string, string> = {
-  DISCOVERED: "border-yellow-500 text-yellow-500",
-  UNDER_REVIEW: "border-blue-500 text-blue-500",
-  APPROVED: "border-green-500 text-green-500",
+  DISCOVERED: "border-warning text-warning",
+  UNDER_REVIEW: "border-info text-info",
+  APPROVED: "border-success text-success",
   PROHIBITED: "border-destructive text-destructive",
   REGISTERED: "border-primary text-primary",
 };
@@ -190,7 +190,7 @@ export default function ShadowAIPage() {
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-yellow-500">
+            <div className="text-xl sm:text-2xl font-bold text-warning">
               {stats.discovered}
             </div>
             <p className="text-xs sm:text-sm text-muted-foreground">
@@ -200,7 +200,7 @@ export default function ShadowAIPage() {
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-blue-500">
+            <div className="text-xl sm:text-2xl font-bold text-info">
               {stats.underReview}
             </div>
             <p className="text-xs sm:text-sm text-muted-foreground">

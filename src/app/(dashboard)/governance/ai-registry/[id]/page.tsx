@@ -25,17 +25,17 @@ import { formatDate, formatRelativeTime } from "@/lib/utils";
 
 const statusColors: Record<string, string> = {
   DRAFT: "border-muted-foreground text-muted-foreground",
-  DEVELOPMENT: "border-blue-500 text-blue-500",
-  TESTING: "border-yellow-500 text-yellow-500",
-  DEPLOYED: "border-green-500 text-green-500",
+  DEVELOPMENT: "border-info text-info",
+  TESTING: "border-warning text-warning",
+  DEPLOYED: "border-success text-success",
   RETIRED: "border-muted-foreground/50 text-muted-foreground/50",
 };
 
 const riskLevelColors: Record<string, string> = {
   UNACCEPTABLE: "bg-destructive text-destructive-foreground",
   HIGH: "bg-destructive/80 text-destructive-foreground",
-  LIMITED: "bg-yellow-500/20 text-yellow-500",
-  MINIMAL: "bg-green-500/20 text-green-500",
+  LIMITED: "bg-warning/20 text-warning",
+  MINIMAL: "bg-success/20 text-success",
 };
 
 const techniqueLabels: Record<string, string> = {
@@ -70,18 +70,18 @@ const dataSourceTypeLabels: Record<string, string> = {
 };
 
 const dataSourceTypeColors: Record<string, string> = {
-  TRAINING: "border-blue-500 text-blue-500",
+  TRAINING: "border-info text-info",
   FINE_TUNING: "border-purple-500 text-purple-500",
-  VALIDATION: "border-yellow-500 text-yellow-500",
-  INPUT: "border-green-500 text-green-500",
-  OUTPUT: "border-orange-500 text-orange-500",
+  VALIDATION: "border-warning text-warning",
+  INPUT: "border-success text-success",
+  OUTPUT: "border-warning text-warning",
 };
 
 const assessmentStatusColors: Record<string, string> = {
   DRAFT: "border-muted-foreground text-muted-foreground",
-  IN_PROGRESS: "border-blue-500 text-blue-500",
-  UNDER_REVIEW: "border-yellow-500 text-yellow-500",
-  APPROVED: "border-green-500 text-green-500",
+  IN_PROGRESS: "border-info text-info",
+  UNDER_REVIEW: "border-warning text-warning",
+  APPROVED: "border-success text-success",
   REJECTED: "border-destructive text-destructive",
 };
 
@@ -395,7 +395,7 @@ export default function AISystemDetailPage() {
                           {dataSourceTypeLabels[ds.sourceType] || ds.sourceType}
                         </Badge>
                         {ds.containsPersonalData && (
-                          <Badge variant="outline" className="text-xs border-yellow-500 text-yellow-500">
+                          <Badge variant="outline" className="text-xs border-warning text-warning">
                             Personal Data
                           </Badge>
                         )}

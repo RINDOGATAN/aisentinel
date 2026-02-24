@@ -46,9 +46,9 @@ import {
 
 const statusOptions = [
   { value: "NOT_ASSESSED", label: "Not Assessed", color: "bg-gray-500/20 text-gray-400" },
-  { value: "COMPLIANT", label: "Compliant", color: "bg-green-500/20 text-green-400" },
-  { value: "PARTIALLY_COMPLIANT", label: "Partial", color: "bg-yellow-500/20 text-yellow-400" },
-  { value: "NON_COMPLIANT", label: "Non-Compliant", color: "bg-red-500/20 text-red-400" },
+  { value: "COMPLIANT", label: "Compliant", color: "bg-success/20 text-success" },
+  { value: "PARTIALLY_COMPLIANT", label: "Partial", color: "bg-warning/20 text-warning" },
+  { value: "NON_COMPLIANT", label: "Non-Compliant", color: "bg-destructive/20 text-destructive" },
   { value: "NOT_APPLICABLE", label: "N/A", color: "bg-gray-500/20 text-gray-500" },
 ];
 

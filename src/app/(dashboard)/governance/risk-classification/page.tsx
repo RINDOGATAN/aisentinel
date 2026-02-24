@@ -36,8 +36,8 @@ import { formatDate } from "@/lib/utils";
 const riskLevelColors: Record<string, string> = {
   UNACCEPTABLE: "bg-destructive text-destructive-foreground",
   HIGH: "bg-destructive/80 text-destructive-foreground",
-  LIMITED: "bg-yellow-500/20 text-yellow-500",
-  MINIMAL: "bg-green-500/20 text-green-500",
+  LIMITED: "bg-warning/20 text-warning",
+  MINIMAL: "bg-success/20 text-success",
 };
 
 const riskLevelDescriptions: Record<string, string> = {
@@ -162,17 +162,17 @@ export default function RiskClassificationPage() {
             <p className="text-xs text-muted-foreground">High</p>
           </CardContent>
         </Card>
-        <Card className="border-yellow-500/30">
+        <Card className="border-warning/30">
           <CardContent className="p-3 sm:p-4 text-center">
-            <div className="text-lg sm:text-xl font-bold text-yellow-500">
+            <div className="text-lg sm:text-xl font-bold text-warning">
               {riskStats.limited}
             </div>
             <p className="text-xs text-muted-foreground">Limited</p>
           </CardContent>
         </Card>
-        <Card className="border-green-500/30">
+        <Card className="border-success/30">
           <CardContent className="p-3 sm:p-4 text-center">
-            <div className="text-lg sm:text-xl font-bold text-green-500">
+            <div className="text-lg sm:text-xl font-bold text-success">
               {riskStats.minimal}
             </div>
             <p className="text-xs text-muted-foreground">Minimal</p>
@@ -314,13 +314,13 @@ export default function RiskClassificationPage() {
                               </SelectItem>
                               <SelectItem value="LIMITED">
                                 <div className="flex items-center gap-2">
-                                  <ShieldQuestion className="w-4 h-4 text-yellow-500" />
+                                  <ShieldQuestion className="w-4 h-4 text-warning" />
                                   Limited
                                 </div>
                               </SelectItem>
                               <SelectItem value="MINIMAL">
                                 <div className="flex items-center gap-2">
-                                  <ShieldCheck className="w-4 h-4 text-green-500" />
+                                  <ShieldCheck className="w-4 h-4 text-success" />
                                   Minimal
                                 </div>
                               </SelectItem>

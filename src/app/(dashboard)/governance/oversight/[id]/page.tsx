@@ -53,17 +53,17 @@ const gateTypeLabels: Record<string, string> = {
 };
 
 const gateStatusColors: Record<string, string> = {
-  PENDING: "border-yellow-500 text-yellow-500",
-  IN_REVIEW: "border-blue-500 text-blue-500",
-  PASSED: "border-green-500 text-green-500",
+  PENDING: "border-warning text-warning",
+  IN_REVIEW: "border-info text-info",
+  PASSED: "border-success text-success",
   FAILED: "border-destructive text-destructive",
   DEFERRED: "border-muted-foreground text-muted-foreground",
 };
 
 const decisionColors: Record<string, string> = {
-  APPROVE: "bg-green-500/20 text-green-500",
+  APPROVE: "bg-success/20 text-success",
   REJECT: "bg-destructive/20 text-destructive",
-  DEFER: "bg-yellow-500/20 text-yellow-500",
+  DEFER: "bg-warning/20 text-warning",
 };
 
 const decisionIcons: Record<string, React.ElementType> = {
@@ -365,10 +365,10 @@ export default function OversightGateDetailPage() {
                     <div className="shrink-0 mt-0.5">
                       <Icon className={`w-5 h-5 ${
                         decision.decision === "APPROVE"
-                          ? "text-green-500"
+                          ? "text-success"
                           : decision.decision === "REJECT"
                           ? "text-destructive"
-                          : "text-yellow-500"
+                          : "text-warning"
                       }`} />
                     </div>
                     <div className="flex-1 min-w-0 space-y-2">

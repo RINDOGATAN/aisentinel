@@ -30,9 +30,9 @@ const assessmentTypeLabels: Record<string, string> = {
 };
 
 const assessmentTypeColors: Record<string, string> = {
-  FRIA: "border-blue-500 text-blue-500",
+  FRIA: "border-info text-info",
   CONFORMITY: "border-purple-500 text-purple-500",
-  AI_RISK: "border-orange-500 text-orange-500",
+  AI_RISK: "border-warning text-warning",
   BIAS_FAIRNESS: "border-pink-500 text-pink-500",
   CUSTOM: "border-muted-foreground text-muted-foreground",
 };
@@ -47,9 +47,9 @@ const statusLabels: Record<string, string> = {
 
 const statusColors: Record<string, string> = {
   DRAFT: "border-muted-foreground text-muted-foreground",
-  IN_PROGRESS: "border-blue-500 text-blue-500",
-  UNDER_REVIEW: "border-yellow-500 text-yellow-500",
-  APPROVED: "border-green-500 text-green-500",
+  IN_PROGRESS: "border-info text-info",
+  UNDER_REVIEW: "border-warning text-warning",
+  APPROVED: "border-success text-success",
   REJECTED: "border-destructive text-destructive",
 };
 
@@ -135,19 +135,19 @@ export default function AssessmentsPage() {
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-blue-500">{stats.inProgress}</div>
+            <div className="text-xl sm:text-2xl font-bold text-info">{stats.inProgress}</div>
             <p className="text-xs sm:text-sm text-muted-foreground">In Progress</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-yellow-500">{stats.underReview}</div>
+            <div className="text-xl sm:text-2xl font-bold text-warning">{stats.underReview}</div>
             <p className="text-xs sm:text-sm text-muted-foreground">Under Review</p>
           </CardContent>
         </Card>
         <Card className="col-span-2 lg:col-span-1">
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-green-500">{stats.approved}</div>
+            <div className="text-xl sm:text-2xl font-bold text-success">{stats.approved}</div>
             <p className="text-xs sm:text-sm text-muted-foreground">Approved</p>
           </CardContent>
         </Card>
@@ -176,7 +176,7 @@ export default function AssessmentsPage() {
           <TabsTrigger value="conformity" className="text-xs sm:text-sm">
             <span>Conformity</span>
             {isPremiumLocked("CONFORMITY") && (
-              <Lock className="w-3 h-3 ml-1 text-yellow-500" />
+              <Lock className="w-3 h-3 ml-1 text-warning" />
             )}
           </TabsTrigger>
           <TabsTrigger value="ai_risk" className="text-xs sm:text-sm">
@@ -185,7 +185,7 @@ export default function AssessmentsPage() {
           <TabsTrigger value="bias_fairness" className="text-xs sm:text-sm">
             <span>Bias/Fairness</span>
             {isPremiumLocked("BIAS_FAIRNESS") && (
-              <Lock className="w-3 h-3 ml-1 text-yellow-500" />
+              <Lock className="w-3 h-3 ml-1 text-warning" />
             )}
           </TabsTrigger>
           <TabsTrigger value="custom" className="text-xs sm:text-sm">

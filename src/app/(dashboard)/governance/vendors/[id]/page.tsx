@@ -39,15 +39,15 @@ import { formatDate, formatRelativeTime } from "@/lib/utils";
 const riskLevelColors: Record<string, string> = {
   CRITICAL: "bg-destructive text-destructive-foreground",
   HIGH: "bg-destructive/80 text-destructive-foreground",
-  MEDIUM: "bg-yellow-500/20 text-yellow-500",
-  LOW: "bg-green-500/20 text-green-500",
+  MEDIUM: "bg-warning/20 text-warning",
+  LOW: "bg-success/20 text-success",
 };
 
 const statusColors: Record<string, string> = {
-  ACTIVE: "border-green-500 text-green-500",
-  UNDER_REVIEW: "border-yellow-500 text-yellow-500",
-  APPROVED: "border-blue-500 text-blue-500",
-  SUSPENDED: "border-orange-500 text-orange-500",
+  ACTIVE: "border-success text-success",
+  UNDER_REVIEW: "border-warning text-warning",
+  APPROVED: "border-info text-info",
+  SUSPENDED: "border-warning text-warning",
   TERMINATED: "border-muted-foreground text-muted-foreground",
 };
 
@@ -61,16 +61,16 @@ const statusLabels: Record<string, string> = {
 
 const systemStatusColors: Record<string, string> = {
   DRAFT: "border-muted-foreground text-muted-foreground",
-  DEVELOPMENT: "border-blue-500 text-blue-500",
-  TESTING: "border-yellow-500 text-yellow-500",
-  DEPLOYED: "border-green-500 text-green-500",
+  DEVELOPMENT: "border-info text-info",
+  TESTING: "border-warning text-warning",
+  DEPLOYED: "border-success text-success",
   RETIRED: "border-muted-foreground/50 text-muted-foreground/50",
 };
 
 const assessmentStatusColors: Record<string, string> = {
   DRAFT: "border-muted-foreground text-muted-foreground",
-  IN_PROGRESS: "border-blue-500 text-blue-500",
-  COMPLETED: "border-green-500 text-green-500",
+  IN_PROGRESS: "border-info text-info",
+  COMPLETED: "border-success text-success",
   EXPIRED: "border-destructive text-destructive",
 };
 
@@ -320,11 +320,11 @@ export default function VendorDetailPage() {
                   Expired {Math.abs(daysUntilExpiry!)} days ago
                 </p>
               ) : isExpiringSoon ? (
-                <p className="font-medium text-sm text-yellow-500">
+                <p className="font-medium text-sm text-warning">
                   Expires in {daysUntilExpiry} days
                 </p>
               ) : daysUntilExpiry !== null ? (
-                <p className="font-medium text-sm text-green-500">
+                <p className="font-medium text-sm text-success">
                   {daysUntilExpiry} days remaining
                 </p>
               ) : (
@@ -462,7 +462,7 @@ export default function VendorDetailPage() {
                             onClick={() => handleCompleteAssessment(assessment.id)}
                             disabled={updateAssessment.isPending}
                           >
-                            <CheckCircle className="w-4 h-4 text-green-500" />
+                            <CheckCircle className="w-4 h-4 text-success" />
                           </Button>
                         )}
                       </div>

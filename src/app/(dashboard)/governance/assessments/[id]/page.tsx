@@ -14,9 +14,9 @@ import Link from "next/link";
 
 const statusColors: Record<string, string> = {
   DRAFT: "bg-gray-500/20 text-gray-400",
-  IN_PROGRESS: "bg-blue-500/20 text-blue-400",
-  UNDER_REVIEW: "bg-yellow-500/20 text-yellow-400",
-  APPROVED: "bg-green-500/20 text-green-400",
+  IN_PROGRESS: "bg-info/20 text-info",
+  UNDER_REVIEW: "bg-warning/20 text-warning",
+  APPROVED: "bg-success/20 text-success",
   REJECTED: "bg-red-500/20 text-red-400",
 };
 
@@ -118,9 +118,9 @@ export default function AssessmentDetailPage() {
       )}
 
       {assessment.approvedBy && (
-        <Card className="border-green-500/30">
+        <Card className="border-success/30">
           <CardContent className="p-4">
-            <div className="flex items-center gap-2 text-green-400">
+            <div className="flex items-center gap-2 text-success">
               <CheckCircle className="w-5 h-5" />
               <span>Approved on {formatDate(assessment.approvedAt)}</span>
             </div>

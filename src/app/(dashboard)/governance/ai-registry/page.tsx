@@ -27,17 +27,17 @@ import { formatRelativeTime } from "@/lib/utils";
 
 const statusColors: Record<string, string> = {
   DRAFT: "border-muted-foreground text-muted-foreground",
-  DEVELOPMENT: "border-blue-500 text-blue-500",
-  TESTING: "border-yellow-500 text-yellow-500",
-  DEPLOYED: "border-green-500 text-green-500",
+  DEVELOPMENT: "border-info text-info",
+  TESTING: "border-warning text-warning",
+  DEPLOYED: "border-success text-success",
   RETIRED: "border-muted-foreground/50 text-muted-foreground/50",
 };
 
 const riskLevelColors: Record<string, string> = {
   UNACCEPTABLE: "bg-destructive text-destructive-foreground",
   HIGH: "bg-destructive/80 text-destructive-foreground",
-  LIMITED: "bg-yellow-500/20 text-yellow-500",
-  MINIMAL: "bg-green-500/20 text-green-500",
+  LIMITED: "bg-warning/20 text-warning",
+  MINIMAL: "bg-success/20 text-success",
 };
 
 const techniqueLabels: Record<string, string> = {
@@ -143,7 +143,7 @@ export default function AIRegistryPage() {
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-green-500">{stats.deployed}</div>
+            <div className="text-xl sm:text-2xl font-bold text-success">{stats.deployed}</div>
             <p className="text-xs sm:text-sm text-muted-foreground">Deployed</p>
           </CardContent>
         </Card>

@@ -7,6 +7,7 @@ export interface FeatureFlags {
   conformityEnabled: boolean;
   biasFairnessEnabled: boolean;
   shadowAiEnabled: boolean;
+  vendorCatalogEnabled: boolean;
 }
 
 const defaultFeatures: FeatureFlags = {
@@ -18,6 +19,7 @@ const defaultFeatures: FeatureFlags = {
   conformityEnabled: true,
   biasFairnessEnabled: true,
   shadowAiEnabled: true,
+  vendorCatalogEnabled: true,
 };
 
 export function getFeatureFlags(): FeatureFlags {
@@ -34,6 +36,7 @@ export function getFeatureFlags(): FeatureFlags {
     conformityEnabled: defaultFeatures.conformityEnabled,
     biasFairnessEnabled: defaultFeatures.biasFairnessEnabled,
     shadowAiEnabled: defaultFeatures.shadowAiEnabled,
+    vendorCatalogEnabled: defaultFeatures.vendorCatalogEnabled,
   };
 }
 

@@ -158,6 +158,14 @@ export async function hasShadowAiAccess(organizationId: string): Promise<boolean
   return completeResult.entitled;
 }
 
+export async function hasVendorCatalogAccess(organizationId: string): Promise<boolean> {
+  const directResult = await checkSkillEntitlement(organizationId, "com.todolaw.aisentinel.vendor-catalog");
+  if (directResult.entitled) return true;
+
+  const completeResult = await checkSkillEntitlement(organizationId, "com.todolaw.aisentinel.complete");
+  return completeResult.entitled;
+}
+
 export function isPremiumAssessmentType(assessmentType: AIAssessmentType): boolean {
   return PREMIUM_ASSESSMENT_TYPES.includes(assessmentType);
 }

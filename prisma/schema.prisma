@@ -894,6 +894,56 @@ model AIVendorAssessment {
 }
 
 // ============================================================
+// AI VENDOR CATALOG (Premium — global reference table)
+// ============================================================
+
+model VendorCatalog {
+  id                String    @id @default(cuid())
+  slug              String    @unique
+  name              String
+  category          String            // "LLM Provider", "AI Platform", "MLOps", etc.
+  subcategory       String?
+  description       String?   @db.Text
+  tags              String[]          // ["AI", "LLM", "NLP"] — for Vendor.Watch filtering
+
+  // Links
+  website           String?
+  privacyPolicyUrl  String?
+  trustCenterUrl    String?
+  dpaUrl            String?
+  securityPageUrl   String?
+
+  // Compliance
+  certifications    String[]          // ["ISO 27001", "SOC 2 Type II", "ISO 42001"]
+  frameworks        String[]          // ["EU AI Act", "NIST AI RMF", "GDPR"]
+  gdprCompliant     Boolean?
+  euAiActCompliant  Boolean?
+  hipaaCompliant    Boolean?
+
+  // Data Processing
+  dataLocations     String[]          // ["US", "EU", "UK"]
+  hasEuDataCenter   Boolean?
+
+  // AI-Specific
+  aiCapabilities    String[]          // ["LLM", "Computer Vision", "Speech"]
+  modelHosting      String?           // "Cloud", "On-Premise", "Hybrid"
+
+  // Metadata
+  logoUrl           String?
+  isVerified        Boolean   @default(false)
+  verifiedAt        DateTime?
+  verifiedBy        String?
+  source            String?           // "vendor-watch", "seed", "manual"
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([category])
+  @@index([name])
+  @@map("vendor_catalog")
+}
+
+// ============================================================
 // POLICY MANAGEMENT
 // ============================================================
 

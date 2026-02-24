@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { createTRPCRouter, organizationProcedure } from "../../trpc";
 import { TRPCError } from "@trpc/server";
+import { hasVendorCatalogAccess } from "@/server/services/licensing/entitlement";
 
 export const vendorRouter = createTRPCRouter({
   list: organizationProcedure
@@ -275,6 +276,13 @@ export const vendorRouter = createTRPCRouter({
         where: { id: input.assessmentId },
         data: updateData as never,
       });
+    }),
+
+  hasVendorCatalogAccess: organizationProcedure
+    .input(z.object({ organizationId: z.string() }))
+    .query(async ({ ctx }) => {
+      const hasAccess = await hasVendorCatalogAccess(ctx.organization.id);
+      return { hasAccess };
     }),
 
   getStats: organizationProcedure

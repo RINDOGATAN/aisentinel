@@ -87,8 +87,8 @@ function NewVendorForm() {
   // Catalog search query
   const { data: catalogResults, isLoading: catalogLoading } =
     trpc.vendorCatalog.search.useQuery(
-      { query: debouncedCatalogQuery, limit: 10 },
-      { enabled: isCatalogMode && debouncedCatalogQuery.length >= 2 }
+      { organizationId: organization?.id ?? "", query: debouncedCatalogQuery, limit: 10 },
+      { enabled: isCatalogMode && !!organization?.id && debouncedCatalogQuery.length >= 2 }
     );
 
   // Click-outside handler

@@ -30,11 +30,11 @@ const defaultBrand: BrandConfig = {
   logoPath: "/nel-icon.png",
   faviconPath: "/logos/favicon.png",
   colors: {
-    primary: "#8b5cf6",
-    primaryForeground: "#ffffff",
+    primary: "#f5a623",
+    primaryForeground: "#1a1a1a",
     background: "#1a1a1a",
     card: "#242424",
-    accent: "#8b5cf6",
+    accent: "#f5a623",
   },
 };
 

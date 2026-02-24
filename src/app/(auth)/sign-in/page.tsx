@@ -49,26 +49,10 @@ export default function SignInPage() {
     }
   };
 
-  const handleGoogleSignIn = async () => {
+  const handleGoogleSignIn = () => {
     setIsGoogleLoading(true);
     setError(null);
-
-    try {
-      const result = await signIn("google", {
-        redirect: false,
-        callbackUrl: "/governance",
-      });
-
-      if (result?.url) {
-        window.location.href = result.url;
-      } else if (result?.error) {
-        setError("Google sign-in failed. Please try again.");
-        setIsGoogleLoading(false);
-      }
-    } catch {
-      setError("Google sign-in failed.");
-      setIsGoogleLoading(false);
-    }
+    signIn("google", { callbackUrl: "/governance" });
   };
 
   const handleDevSignIn = async (e: React.FormEvent) => {

@@ -20,8 +20,16 @@ import {
   LayoutDashboard,
   Building2,
   ScrollText,
+  ChevronDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Sheet,
   SheetContent,
@@ -43,6 +51,36 @@ const navItems = [
   { href: "/governance/vendors", label: "Vendors", icon: Building2 },
   { href: "/governance/policies", label: "Policies", icon: ScrollText },
   { href: "/governance/shadow-ai", label: "Shadow AI", icon: Search, premium: true },
+];
+
+const navGroups = [
+  {
+    label: "AI Systems",
+    icon: Brain,
+    items: [
+      { href: "/governance/ai-registry", label: "AI Registry", icon: Brain },
+      { href: "/governance/risk-classification", label: "Risk Classification", icon: ShieldAlert },
+    ],
+  },
+  {
+    label: "Governance",
+    icon: Scale,
+    items: [
+      { href: "/governance/assessments", label: "Assessments", icon: ClipboardCheck },
+      { href: "/governance/oversight", label: "Oversight", icon: Eye },
+      { href: "/governance/compliance", label: "Compliance", icon: Scale },
+      { href: "/governance/policies", label: "Policies", icon: ScrollText },
+    ],
+  },
+  {
+    label: "Operations",
+    icon: AlertTriangle,
+    items: [
+      { href: "/governance/incidents", label: "Incidents", icon: AlertTriangle },
+      { href: "/governance/vendors", label: "Vendors", icon: Building2 },
+      { href: "/governance/shadow-ai", label: "Shadow AI", icon: Search, premium: true },
+    ],
+  },
 ];
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {
@@ -75,40 +113,68 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                   <span className="sr-only">Open menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-[280px] sm:w-[320px]">
+              <SheetContent side="left" className="w-[300px] sm:w-[320px]">
                 <SheetHeader>
                   <SheetTitle className="flex items-center gap-2">
                     <span className="text-lg font-bold tracking-tight">AI SENTINEL</span>
                   </SheetTitle>
                 </SheetHeader>
-                <nav className="mt-6 flex flex-col gap-1">
-                  {navItems.map((item) => {
-                    const Icon = item.icon;
-                    const isActive = item.exact
-                      ? pathname === item.href
-                      : pathname === item.href || pathname.startsWith(item.href + "/");
+                <nav className="mt-6 flex flex-col gap-0.5">
+                  {/* Dashboard link */}
+                  <Link
+                    href="/governance"
+                    onClick={() => setMobileNavOpen(false)}
+                  >
+                    <Button
+                      variant="ghost"
+                      className={`w-full justify-start gap-3 min-h-[48px] text-base rounded-lg ${
+                        pathname === "/governance"
+                          ? "bg-primary/15 text-primary border border-primary/20"
+                          : ""
+                      }`}
+                    >
+                      <LayoutDashboard className="w-5 h-5 shrink-0" />
+                      Dashboard
+                    </Button>
+                  </Link>
 
-                    return (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        onClick={() => setMobileNavOpen(false)}
-                      >
-                        <Button
-                          variant="ghost"
-                          className={`w-full justify-start gap-3 h-12 text-base ${
-                            isActive ? "bg-primary/20 text-primary hover:bg-primary/30 hover:text-primary" : ""
-                          }`}
-                        >
-                          <Icon className="w-5 h-5" />
-                          {item.label}
-                          {item.premium && (
-                            <Lock className="w-3 h-3 ml-auto text-muted-foreground" />
-                          )}
-                        </Button>
-                      </Link>
-                    );
-                  })}
+                  <div className="h-px bg-border my-2" />
+
+                  {/* Grouped nav items */}
+                  {navGroups.map((group) => (
+                    <div key={group.label} className="mb-2">
+                      <p className="px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                        {group.label}
+                      </p>
+                      {group.items.map((item) => {
+                        const Icon = item.icon;
+                        const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+
+                        return (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            onClick={() => setMobileNavOpen(false)}
+                          >
+                            <Button
+                              variant="ghost"
+                              className={`w-full justify-start gap-3 min-h-[48px] text-base rounded-lg ${
+                                isActive
+                                  ? "bg-primary/15 text-primary border border-primary/20"
+                                  : ""
+                              }`}
+                            >
+                              <Icon className="w-5 h-5 shrink-0" />
+                              {item.label}
+                              {item.premium && (
+                                <Lock className="w-3.5 h-3.5 ml-auto text-muted-foreground" />
+                              )}
+                            </Button>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  ))}
                 </nav>
               </SheetContent>
             </Sheet>
@@ -120,22 +186,52 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
           </div>
 
           <nav className="hidden md:flex items-center gap-1">
-            {navItems.filter(item => !item.exact).map((item) => {
-              const Icon = item.icon;
-              const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+            {navGroups.map((group) => {
+              const GroupIcon = group.icon;
+              const isGroupActive = group.items.some(
+                (item) => pathname === item.href || pathname.startsWith(item.href + "/")
+              );
 
               return (
-                <Link key={item.href} href={item.href}>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className={`gap-2 ${isActive ? "bg-primary/20 text-primary hover:bg-primary/30 hover:text-primary" : ""}`}
-                  >
-                    <Icon className="w-4 h-4" />
-                    <span className="hidden lg:inline">{item.label}</span>
-                    {item.premium && <Lock className="w-3 h-3" />}
-                  </Button>
-                </Link>
+                <DropdownMenu key={group.label}>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className={`gap-1.5 ${
+                        isGroupActive
+                          ? "bg-primary/15 text-primary border border-primary/20 hover:bg-primary/25 hover:text-primary"
+                          : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      <GroupIcon className="w-4 h-4" />
+                      <span className="hidden lg:inline">{group.label}</span>
+                      <ChevronDown className="w-3 h-3 opacity-50" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="min-w-[180px]">
+                    <DropdownMenuLabel className="text-xs text-muted-foreground">{group.label}</DropdownMenuLabel>
+                    {group.items.map((item) => {
+                      const Icon = item.icon;
+                      const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+
+                      return (
+                        <DropdownMenuItem key={item.href} asChild>
+                          <Link
+                            href={item.href}
+                            className={`flex items-center gap-2 ${
+                              isActive ? "bg-primary/10 text-primary" : ""
+                            }`}
+                          >
+                            <Icon className="w-4 h-4" />
+                            {item.label}
+                            {item.premium && <Lock className="w-3 h-3 ml-auto text-muted-foreground" />}
+                          </Link>
+                        </DropdownMenuItem>
+                      );
+                    })}
+                  </DropdownMenuContent>
+                </DropdownMenu>
               );
             })}
           </nav>
@@ -162,15 +258,15 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
       </main>
 
       <footer className="border-t border-border mt-auto py-4">
-        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 text-center text-xs text-muted-foreground space-y-1">
-          <p>AI SENTINEL is a <a href="https://todo.law" target="_blank" rel="noopener noreferrer" className="hover:text-foreground">TODO.LAW</a> service.</p>
-          <div className="flex items-center justify-center gap-3">
-            <a href="https://todo.law/terms" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-foreground transition-colors">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 text-center text-xs text-muted-foreground space-y-2">
+          <p>AI SENTINEL is a <a href="https://todo.law" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">TODO.LAW</a> service.</p>
+          <div className="flex items-center justify-center gap-1">
+            <a href="https://todo.law/terms" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors">
               <Scale className="w-3.5 h-3.5" />
               Terms
             </a>
             <span className="text-border">&middot;</span>
-            <a href="https://todo.law/privacy" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-foreground transition-colors">
+            <a href="https://todo.law/privacy" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors">
               <BookOpen className="w-3.5 h-3.5" />
               Privacy
             </a>

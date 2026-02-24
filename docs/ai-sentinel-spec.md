@@ -1,8 +1,8 @@
 # AI SENTINEL — Product & Technical Specification
 
-**Version**: 1.0
-**Date**: 2026-02-22
-**Status**: Approved for Development
+**Version**: 2.0
+**Date**: 2026-02-23
+**Status**: Phases 1-3 Implemented
 **Author**: TODO.LAW Product Team
 
 ---
@@ -82,17 +82,20 @@ DPOs and AI governance officers face a fragmented landscape:
 
 ## 4. Module Structure
 
-AI SENTINEL ships with 6 core modules and 1 premium module:
+AI SENTINEL ships with 9 core modules and 1 premium module across 3 phases:
 
-| # | Module | Core/Premium | Purpose |
-|---|--------|-------------|---------|
-| 1 | **AI Registry** | Core | Inventory all AI systems, models, agents, and tools with lifecycle tracking |
-| 2 | **Risk Classification** | Core | EU AI Act four-tier classification (unacceptable / high / limited / minimal) |
-| 3 | **Assessments** | Core + Premium | FRIA & AI Risk (core), Conformity & Bias/Fairness (premium) |
-| 4 | **Human Oversight** | Core | Approval gates, review scheduling, decision logging (Art. 14) |
-| 5 | **AI Incidents** | Core | AI-specific failures, bias events, authority notifications (Art. 62) |
-| 6 | **Compliance** | Core | Framework mapping (EU AI Act, NIST AI RMF, ISO 42001), tech docs export |
-| 7 | **Shadow AI Discovery** | Premium | AI tool catalog, self-reporting portal, policy engine |
+| # | Module | Core/Premium | Phase | Purpose |
+|---|--------|-------------|-------|---------|
+| 1 | **AI Registry** | Core | 1 | Inventory all AI systems, models, agents, and tools with lifecycle tracking |
+| 2 | **Risk Classification** | Core | 1 | EU AI Act four-tier classification (unacceptable / high / limited / minimal) |
+| 3 | **Assessments** | Core + Premium | 1 | FRIA & AI Risk (core), Conformity & Bias/Fairness (premium) |
+| 4 | **Compliance** | Core | 1 | Framework mapping (EU AI Act, NIST AI RMF, ISO 42001), evidence management |
+| 5 | **Human Oversight** | Core | 2 | Approval gates, review scheduling, decision logging (Art. 14) |
+| 6 | **AI Incidents** | Core | 2 | AI-specific failures, bias events, timeline, tasks, authority notifications (Art. 62) |
+| 7 | **Vendor Risk** | Core | 2 | Third-party AI vendor management, risk assessment, contract tracking |
+| 8 | **Policy Management** | Core | 2 | AI policies with versioning, approval workflow, system linking |
+| 9 | **Executive Dashboard** | Core | 2 | Org-wide stats, module summaries, quick actions, activity feed |
+| 10 | **Shadow AI Discovery** | Premium | 3 | 36-tool AI catalog, self-reporting portal, status workflow |
 
 ### 4.1 AI Registry
 
@@ -181,17 +184,51 @@ Framework-based compliance mapping and evidence management.
 - CSV and PDF export for technical documentation packages (Art. 11 / Annex IV)
 - Dashboard showing compliance posture across frameworks
 
-### 4.7 Shadow AI Discovery (Premium)
+### 4.7 Vendor Risk
+
+Third-party AI vendor management with risk assessment and contract lifecycle tracking.
+
+**Key capabilities**:
+- Vendor registry with contact details, risk levels (Critical/High/Medium/Low), and status workflow (Under Review → Active/Approved/Suspended/Terminated)
+- Vendor risk assessments with scoring, findings, and review scheduling
+- Contract lifecycle tracking (start date, expiry date, renewal alerts)
+- Due diligence documentation
+- Optional cross-reference to DPO Central vendor records
+- Search, tabs (by status), stats dashboard, list/detail/create views
+
+### 4.8 Policy Management
+
+AI governance policy authoring with versioning, approval workflow, and system linking.
+
+**Key capabilities**:
+- Policy types: AI Usage, AI Governance, AI Ethics, AI Risk Management, AI Data Governance, AI Procurement, AI Incident Response, AI Transparency, Custom
+- Content authoring with version history (automatic versioning on content changes with change notes)
+- Approval workflow: Draft → Under Review → Approved → Published → Archived
+- System linking: associate policies with specific AI systems for traceability
+- Effective dates and review date scheduling
+- Search, tabs (by status), stats dashboard, list/detail/create views
+
+### 4.9 Executive Dashboard
+
+Organization-wide governance overview as the main `/governance` landing page.
+
+**Key capabilities**:
+- Summary stats across all modules (AI systems by status, risk distribution, open incidents, upcoming reviews)
+- Quick action buttons for common tasks (register AI system, report incident, create assessment)
+- Recent activity feed showing latest changes across all modules
+- Module-level summary cards with counts and status breakdowns
+
+### 4.10 Shadow AI Discovery (Premium)
 
 Organizational visibility into unauthorized or unmanaged AI tool usage.
 
 **Key capabilities**:
-- Pre-loaded catalog of 200+ known AI tools (ChatGPT, Midjourney, Copilot, etc.)
-- Self-reporting portal for employees to declare AI tool usage
-- Policy engine: Approved, Prohibited, Under Review statuses per tool
-- Discovery → Review → Approve/Prohibit workflow
-- Conversion path: promote a shadow AI discovery into a full AI Registry entry
-- Usage reporting and trend analytics
+- Pre-loaded catalog of 36 known AI tools across 8 categories (LLM Chat, Code Assistants, Image Generation, Video/Audio, Writing/Productivity, Business Tools, Data Analytics, Search)
+- Self-reporting portal: catalog search or custom tool entry with department and usage description
+- Status workflow: Discovered → Under Review → Approved/Prohibited, Approved → Registered (linked to AI Registry)
+- Risk indicators per tool: processes personal data, trains on input, cloud-hosted, on-premise available, SOC2 certified, GDPR compliant, requires API key
+- Premium-gated via `hasShadowAiAccess()` entitlement check
+- Search, tabs (by status), stats dashboard, list/detail/create views
 
 ---
 
@@ -433,6 +470,96 @@ ComplianceMapping
   @@unique([aiSystemId, requirementId])
 ```
 
+#### Compliance Evidence
+
+```
+ComplianceEvidence
+  id                    String    @id @default(cuid())
+  complianceMappingId   String
+  organizationId        String
+  type                  EvidenceType      (POLICY/DOCUMENT/TEST_RESULT/MONITORING/AUDIT/TRAINING/APPROVAL/OTHER)
+  title                 String
+  url                   String?
+  description           String?
+  addedBy               String
+  addedAt               DateTime
+```
+
+#### Vendor Risk
+
+```
+AIVendor
+  id                    String    @id @default(cuid())
+  organizationId        String
+  name                  String
+  website               String?
+  description           String?
+  contactName           String?
+  contactEmail          String?
+  riskLevel             VendorRiskLevel?  (CRITICAL/HIGH/MEDIUM/LOW)
+  status                VendorStatus      (ACTIVE/UNDER_REVIEW/APPROVED/SUSPENDED/TERMINATED)
+  dueDiligenceDate      DateTime?
+  contractStartDate     DateTime?
+  contractExpiryDate    DateTime?
+  dpoCentralVendorId    String?
+  notes                 String?
+  metadata              Json?
+  createdAt             DateTime
+  updatedAt             DateTime
+
+AIVendorAssessment
+  id                    String    @id @default(cuid())
+  vendorId              String
+  organizationId        String
+  title                 String
+  status                VendorAssessmentStatus  (DRAFT/IN_PROGRESS/COMPLETED/EXPIRED)
+  riskScore             Float?
+  responses             Json?
+  findings              String?
+  completedBy           String?
+  completedAt           DateTime?
+  nextReviewDate        DateTime?
+  createdAt             DateTime
+  updatedAt             DateTime
+```
+
+#### Policy Management
+
+```
+AIPolicy
+  id                    String    @id @default(cuid())
+  organizationId        String
+  title                 String
+  type                  PolicyType        (AI_USAGE/AI_GOVERNANCE/AI_ETHICS/AI_RISK_MANAGEMENT/AI_DATA_GOVERNANCE/AI_PROCUREMENT/AI_INCIDENT_RESPONSE/AI_TRANSPARENCY/CUSTOM)
+  description           String?
+  content               String?
+  currentVersion        Int               @default(1)
+  status                PolicyStatus      (DRAFT/UNDER_REVIEW/APPROVED/PUBLISHED/ARCHIVED)
+  approvedBy            String?
+  approvedAt            DateTime?
+  effectiveDate         DateTime?
+  reviewDate            DateTime?
+  createdBy             String
+  createdAt             DateTime
+  updatedAt             DateTime
+
+AIPolicyVersion
+  id                    String    @id @default(cuid())
+  policyId              String
+  version               Int
+  content               String
+  changeNotes           String?
+  createdBy             String
+  createdAt             DateTime
+
+AIPolicySystemLink
+  id                    String    @id @default(cuid())
+  policyId              String
+  aiSystemId            String
+
+  @@unique([policyId, aiSystemId])
+```
+
 #### Shadow AI Discovery
 
 ```
@@ -539,6 +666,59 @@ enum ShadowAIStatus {
   REGISTERED
 }
 
+enum EvidenceType {
+  POLICY
+  DOCUMENT
+  TEST_RESULT
+  MONITORING
+  AUDIT
+  TRAINING
+  APPROVAL
+  OTHER
+}
+
+enum VendorStatus {
+  ACTIVE
+  UNDER_REVIEW
+  APPROVED
+  SUSPENDED
+  TERMINATED
+}
+
+enum VendorRiskLevel {
+  CRITICAL
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum VendorAssessmentStatus {
+  DRAFT
+  IN_PROGRESS
+  COMPLETED
+  EXPIRED
+}
+
+enum PolicyType {
+  AI_USAGE
+  AI_GOVERNANCE
+  AI_ETHICS
+  AI_RISK_MANAGEMENT
+  AI_DATA_GOVERNANCE
+  AI_PROCUREMENT
+  AI_INCIDENT_RESPONSE
+  AI_TRANSPARENCY
+  CUSTOM
+}
+
+enum PolicyStatus {
+  DRAFT
+  UNDER_REVIEW
+  APPROVED
+  PUBLISHED
+  ARCHIVED
+}
+
 enum ComplianceStatus {
   COMPLIANT
   PARTIALLY_COMPLIANT
@@ -567,7 +747,10 @@ All core modules are freely available:
 - **Assessments** — FRIA + AI Risk + Custom template builder
 - **Human Oversight** — All gate types, decision logging, review scheduling
 - **AI Incidents** — Full incident lifecycle, timeline, tasks, authority notifications
-- **Compliance** — All 3 frameworks (EU AI Act, NIST AI RMF, ISO 42001), compliance matrix, CSV/PDF export
+- **Compliance** — All 3 frameworks (EU AI Act, NIST AI RMF, ISO 42001), compliance matrix, evidence management, CSV/PDF export
+- **Vendor Risk** — Vendor registry, risk assessments, contract tracking, due diligence
+- **Policy Management** — Policy authoring, versioning, approval workflow, system linking
+- **Executive Dashboard** — Org-wide stats, module summaries, quick actions, activity feed
 
 ### 6.2 Premium (Proprietary — Requires License)
 
@@ -596,7 +779,7 @@ AI SENTINEL and DPO Central are **separate applications with separate databases*
 | AI System to DPO Central Vendor | `dpoCentralVendorId: String` | Clickable link to `dpocentral.todo.law/privacy/vendors/{id}` |
 | AI Incident to DPO Central Incident | `dpoCentralIncidentId: String` | Clickable link to `dpocentral.todo.law/privacy/incidents/{id}` |
 
-### 7.2 Future Integration (Phase 3+)
+### 7.2 Future Integration (Phase 4+)
 
 - Shared authentication database (single sign-on across TODO.LAW products)
 - Cross-app name resolution API (display asset/vendor/incident names, not just IDs)
@@ -618,6 +801,8 @@ AI SENTINEL and DPO Central are **separate applications with separate databases*
 | Human Oversight | Art. 14 | Human oversight measures for high-risk AI systems |
 | AI Incidents | Art. 62 | Serious incident reporting to market surveillance authorities |
 | Compliance | Art. 9 (risk management), Art. 10 (data governance), Art. 11/Annex IV (technical documentation), Art. 12 (record-keeping/logging), Art. 13 (transparency), Art. 15 (accuracy, robustness, cybersecurity) | Horizontal requirements for high-risk AI |
+| Vendor Risk | Art. 25 (responsibilities along the AI value chain), Art. 28 (obligations of distributors/importers) | Third-party AI supply chain governance |
+| Policy Management | Art. 4 (AI literacy), Art. 9 (risk management system), Art. 26 (deployer obligations) | Organizational AI governance policies |
 | Shadow AI | Art. 4 (AI literacy), Art. 26 (deployer obligations) | Organizational literacy and deployer duties |
 
 ### 8.2 NIST AI Risk Management Framework (AI RMF 1.0)
@@ -674,21 +859,22 @@ OWNER > ADMIN > AI_OFFICER > MEMBER > VIEWER
 ## 10. Folder Structure
 
 ```
-/Users/sme/NEL/ai-sentinel/
+/Users/sme/NEL/aisentinel/
   CLAUDE.md                        # Project instructions
   LICENSE                          # AGPL-3.0
-  package.json                     # name: "ai-sentinel", port 3002
+  package.json                     # name: "aisentinel", port 3002
   next.config.ts
-  tailwind.config.ts
   tsconfig.json
-  .env.local                       # DATABASE_URL, NEXTAUTH_*, GOOGLE_*, RESEND_*, STRIPE_*
+  .env.local                       # ais_DATABASE_URL, NEXTAUTH_*, GOOGLE_*, RESEND_*, STRIPE_*
   prisma/
-    schema.prisma                  # ~20 models (see Section 5)
+    schema.prisma                  # ~25 models (see Section 5)
     seed.ts                        # Main seed entrypoint
   scripts/
     seed-frameworks.ts             # EU AI Act articles, NIST AI RMF, ISO 42001
     seed-assessment-templates.ts   # FRIA, AI Risk Assessment templates
-    seed-demo.ts                   # Demo org with sample AI systems
+    seed-demo-scenarios.ts         # Comprehensive demo (8 systems, incidents, vendors, policies, shadow AI)
+    seed-shadow-ai-tools.ts        # 36-tool AI catalog for Shadow AI Discovery
+    migrate-evidence-to-structured.ts  # Evidence migration utility
   src/
     app/
       layout.tsx                   # Root layout with providers
@@ -699,7 +885,7 @@ OWNER > ADMIN > AI_OFFICER > MEMBER > VIEWER
       (dashboard)/
         layout.tsx                 # Dashboard shell with nav
         governance/
-          page.tsx                 # Main dashboard (stats, quick actions, activity)
+          page.tsx                 # Executive dashboard (stats, quick actions, activity)
           ai-registry/
             page.tsx               # List view with search/tabs
             [id]/page.tsx          # Detail view
@@ -710,16 +896,28 @@ OWNER > ADMIN > AI_OFFICER > MEMBER > VIEWER
             page.tsx               # List view with type tabs
             [id]/page.tsx          # Assessment detail/editor
             new/page.tsx           # Create with template selection
-          oversight/               # Phase 2
-            page.tsx
-          incidents/               # Phase 2
-            page.tsx
-            [id]/page.tsx
-            new/page.tsx
+          oversight/
+            page.tsx               # List view with gate type tabs
+            [id]/page.tsx          # Gate detail with decisions
+            new/page.tsx           # Create oversight gate
+          incidents/
+            page.tsx               # List view with status tabs
+            [id]/page.tsx          # Incident detail with timeline/tasks
+            new/page.tsx           # Report incident form
           compliance/
-            page.tsx               # Framework selector + compliance matrix
-          shadow-ai/               # Phase 3
-            page.tsx
+            page.tsx               # Framework selector + compliance matrix + evidence
+          vendors/
+            page.tsx               # List view with status tabs
+            [id]/page.tsx          # Vendor detail with assessments
+            new/page.tsx           # Create vendor form
+          policies/
+            page.tsx               # List view with status tabs
+            [id]/page.tsx          # Policy detail with versions + system links
+            new/page.tsx           # Create policy form
+          shadow-ai/
+            page.tsx               # List view (premium-gated) with status tabs
+            [id]/page.tsx          # Report detail with status workflow
+            new/page.tsx           # Self-report form with catalog search
       api/
         auth/[...nextauth]/route.ts
         trpc/[trpc]/route.ts
@@ -727,14 +925,17 @@ OWNER > ADMIN > AI_OFFICER > MEMBER > VIEWER
       trpc.ts                      # Context, middleware, organizationProcedure
       routers/
         governance/
-          index.ts                 # Merged router
-          aiSystem.ts
-          riskClassification.ts
-          assessment.ts
-          compliance.ts
-          oversight.ts             # Phase 2
-          incident.ts              # Phase 2
-          shadowAi.ts              # Phase 3
+          index.ts                 # Merged router (10 sub-routers)
+          organization.ts          # Org management + executive dashboard stats
+          aiSystem.ts              # AI Registry CRUD
+          riskClassification.ts    # Risk classification wizard + history
+          assessment.ts            # Assessment CRUD + templates
+          compliance.ts            # Framework mapping + evidence
+          oversight.ts             # Oversight gates + decisions
+          incident.ts              # AI incidents + timeline + tasks + notifications
+          vendor.ts                # Vendor risk + vendor assessments
+          policy.ts                # Policy CRUD + versioning + system links
+          shadowAi.ts              # Shadow AI (premium-gated, 7 endpoints)
       services/
         licensing/
           entitlement.ts
@@ -742,13 +943,15 @@ OWNER > ADMIN > AI_OFFICER > MEMBER > VIEWER
     components/
       ui/                          # Shadcn UI components
       governance/                  # Module-specific components
+        organization-setup.tsx
         ai-system-form.tsx
         risk-classification-wizard.tsx
         assessment-editor.tsx
         compliance-matrix.tsx
-        ...
       premium/
         enable-feature-modal.tsx
+      providers/                   # Context providers
+      skeletons/                   # Loading skeleton components
     config/
       brand.ts                     # Brand config (name, colors, tagline)
       features.ts                  # Feature flags
@@ -758,6 +961,7 @@ OWNER > ADMIN > AI_OFFICER > MEMBER > VIEWER
       prisma.ts                    # Prisma client singleton
       trpc.ts                      # tRPC client config
       organization-context.tsx     # Org context provider
+      utils.ts                     # Utility functions (cn, formatDate, etc.)
     hooks/
       use-debounce.ts              # 300ms debounce hook
 ```
@@ -766,24 +970,22 @@ OWNER > ADMIN > AI_OFFICER > MEMBER > VIEWER
 
 ## 11. Phased Delivery
 
-### Phase 1 — MVP
+### Phase 1 — Core Platform ✅ Complete
 
 **Goal**: Ship a usable tool for registering AI systems and demonstrating basic EU AI Act compliance.
 
-**Scope**:
+**Delivered**:
 - Project scaffolding (Next.js 16, tRPC, Prisma, Neon, NextAuth, Tailwind, Shadcn)
 - AI Registry module (full CRUD, model cards, data sources, lifecycle, search/tabs)
 - Risk Classification module (four-tier wizard, classification history, dashboard)
 - Assessments module (FRIA + AI Risk templates, custom builder, workflow)
-- Compliance module (EU AI Act + NIST AI RMF pre-loaded, compliance matrix, CSV/PDF export)
-- Dashboard (stats cards, quick actions, recent activity feed)
+- Compliance module (EU AI Act + NIST AI RMF + ISO 42001, compliance matrix, structured evidence, CSV/PDF export)
+- Executive Dashboard (stats cards, quick actions, recent activity feed)
 - Auth (Google OAuth + magic links), multi-tenancy, brand config, feature flags
-- Seed scripts (frameworks with articles, assessment templates, demo org with sample AI systems)
+- Seed scripts (frameworks with articles, assessment templates)
 - Vercel deployment to `aisentinel.todo.law`
 
-**Not in Phase 1**: AI Incidents, Human Oversight, Shadow AI, Stripe billing, i18n
-
-**UX patterns** (consistent with DPO Central):
+**UX patterns** (consistent across all modules):
 - Debounced search wired to tRPC `search` param
 - Controlled Tabs for client-side filtering (no TabsContent)
 - Mobile stacked layout (`sm:hidden`) + desktop horizontal layout (`hidden sm:flex`)
@@ -791,31 +993,45 @@ OWNER > ADMIN > AI_OFFICER > MEMBER > VIEWER
 - Stats grid: `grid-cols-2 lg:grid-cols-4` + `p-4 sm:pt-6`
 - Full-width search input (no `max-w-md`)
 
-### Phase 2 — Governance Lifecycle
+### Phase 2 — Governance Lifecycle ✅ Complete
 
-**Goal**: Complete the governance loop with incident tracking, human oversight, and billing.
+**Goal**: Complete the governance loop with incident tracking, human oversight, vendor risk, and policy management.
 
-**Scope**:
+**Delivered**:
+- Human Oversight module (5 gate types incl. material-change, decision logging, review scheduling)
 - AI Incident Tracking module (full CRUD, timeline, tasks, authority notifications)
-- Human Oversight & Approvals module (gates, decisions, review scheduling)
+- Vendor Risk module (vendor registry, risk assessments, contract tracking, due diligence)
+- Policy Management module (9 policy types, versioning, approval workflow, system linking)
 - Stripe billing integration (premium features via add-on model)
 - Premium assessment templates (Conformity Assessment, Bias & Fairness Assessment)
-- ISO 42001 framework (pre-loaded requirements)
-- Enriched demo seed script (comprehensive scenario)
+- Comprehensive demo seed script (8 AI systems, incidents, oversight gates, vendors, policies)
 
-### Phase 3 — Advanced
+### Phase 3 — Shadow AI Discovery ✅ Complete
+
+**Goal**: Premium shadow AI detection and self-reporting for organizational AI visibility.
+
+**Delivered**:
+- Shadow AI Discovery premium module with 36-tool catalog across 8 categories
+- Self-reporting portal with catalog search and custom tool entry
+- Status workflow: Discovered → Under Review → Approved/Prohibited → Registered (linked to AI Registry)
+- Risk indicators per tool (7 indicator types)
+- Premium gating via entitlement service
+- 8 demo shadow AI reports across all statuses
+- Seed script for tool catalog (`seed-shadow-ai-tools.ts`)
+
+### Phase 4 — Future
 
 **Goal**: Market differentiation, cross-product integration, AI-assisted features.
 
-**Scope** (ongoing):
-- Shadow AI Discovery (premium module with pre-loaded tool catalog)
+**Scope** (planned):
 - Shared authentication with DPO Central (single sign-on)
-- AI-assisted risk classification suggestions (Claude Haiku for automated preliminary classification)
+- AI-assisted risk classification suggestions (Claude for automated preliminary classification)
 - Public AI Registry portal (Art. 49 compliance — public-facing registry of high-risk AI systems)
 - Board-ready PDF reporting (executive summaries, compliance posture reports)
 - Agentic AI governance features (agent chain tracing, multi-agent system mapping)
 - Cross-app name resolution API
 - Unified TODO.LAW product portal
+- Internationalization (i18n)
 
 ---
 

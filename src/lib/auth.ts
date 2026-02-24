@@ -148,9 +148,25 @@ export const authOptions: NextAuthOptions = {
       }
       return session;
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, account, profile }) {
       if (user) {
         token.id = user.id;
+      }
+      // Sync email from OAuth provider on each sign-in (handles email changes)
+      if (account?.provider === "google" && profile?.email) {
+        token.email = profile.email;
+        token.name = profile.name ?? token.name;
+        // Update the user record if the email has changed
+        try {
+          if (token.sub && profile.email !== user?.email) {
+            await prisma.user.update({
+              where: { id: token.sub },
+              data: { email: profile.email, name: profile.name ?? undefined },
+            });
+          }
+        } catch (error) {
+          console.error("Failed to sync user email from Google profile:", error);
+        }
       }
       return token;
     },

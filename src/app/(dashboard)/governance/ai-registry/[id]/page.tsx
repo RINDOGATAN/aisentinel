@@ -18,6 +18,8 @@ import {
   ExternalLink,
   User,
   Calendar,
+  Building2,
+  Globe,
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
@@ -292,6 +294,56 @@ export default function AISystemDetailPage() {
                 </a>
               </div>
             ))}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Linked Vendor */}
+      {system.vendor && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Building2 className="w-4 h-4" />
+              Linked Vendor
+            </CardTitle>
+            <CardDescription>
+              Third-party AI vendor associated with this system
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Link href={`/governance/vendors/${system.vendor.id}`}>
+              <div className="flex items-center justify-between p-3 bg-muted/50 hover:bg-muted/80 transition-colors cursor-pointer">
+                <div className="flex items-center gap-3 min-w-0">
+                  <Building2 className="w-5 h-5 text-primary shrink-0" />
+                  <div className="min-w-0">
+                    <p className="font-medium">{system.vendor.name}</p>
+                    <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                      {system.vendor.riskLevel && (
+                        <Badge className={`text-xs ${
+                          system.vendor.riskLevel === "CRITICAL" || system.vendor.riskLevel === "HIGH"
+                            ? "bg-destructive/20 text-destructive"
+                            : system.vendor.riskLevel === "MEDIUM"
+                              ? "bg-warning/20 text-warning"
+                              : "bg-success/20 text-success"
+                        }`}>
+                          {system.vendor.riskLevel} Risk
+                        </Badge>
+                      )}
+                      <Badge variant="outline" className="text-xs">
+                        {system.vendor.status}
+                      </Badge>
+                      {system.vendor.website && (
+                        <span className="text-xs text-muted-foreground flex items-center gap-1">
+                          <Globe className="w-3 h-3" />
+                          {system.vendor.website}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <ExternalLink className="w-4 h-4 text-muted-foreground shrink-0" />
+              </div>
+            </Link>
           </CardContent>
         </Card>
       )}

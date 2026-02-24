@@ -6,6 +6,10 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Dialog,
   DialogContent,
@@ -41,6 +45,30 @@ import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
+import { suggestTechnique } from "@/lib/ai-technique-mapping";
+
+const aiTechniques = [
+  { value: "MACHINE_LEARNING", label: "Machine Learning" },
+  { value: "DEEP_LEARNING", label: "Deep Learning" },
+  { value: "GENERATIVE_AI", label: "Generative AI" },
+  { value: "AGENTIC_AI", label: "Agentic AI" },
+  { value: "NLP", label: "Natural Language Processing" },
+  { value: "COMPUTER_VISION", label: "Computer Vision" },
+  { value: "SPEECH_RECOGNITION", label: "Speech Recognition" },
+  { value: "ROBOTICS", label: "Robotics" },
+  { value: "RULE_BASED", label: "Rule-Based" },
+  { value: "EXPERT_SYSTEM", label: "Expert System" },
+  { value: "STATISTICAL", label: "Statistical" },
+  { value: "OTHER", label: "Other" },
+];
+
+const aiRoles = [
+  { value: "PROVIDER", label: "Provider" },
+  { value: "DEPLOYER", label: "Deployer" },
+  { value: "IMPORTER", label: "Importer" },
+  { value: "DISTRIBUTOR", label: "Distributor" },
+  { value: "USER", label: "User" },
+];
 
 const statusColors: Record<string, string> = {
   DISCOVERED: "border-warning text-warning",
@@ -83,7 +111,18 @@ export default function ShadowAIDetailPage() {
   const id = params.id as string;
   const { organization } = useOrganization();
   const [registerDialogOpen, setRegisterDialogOpen] = useState(false);
+  const [registerTab, setRegisterTab] = useState<string>("create");
   const [selectedSystemId, setSelectedSystemId] = useState("");
+  // Create new system state
+  const [newSystemData, setNewSystemData] = useState({
+    systemName: "",
+    systemRole: "DEPLOYER",
+    systemTechnique: "",
+    systemPurpose: "",
+    createVendor: false,
+    vendorName: "",
+    vendorWebsite: "",
+  });
 
   const utils = trpc.useUtils();
 
@@ -116,10 +155,53 @@ export default function ShadowAIDetailPage() {
     },
   });
 
+  const registerWithAutoCreate = trpc.shadowAi.registerWithAutoCreate.useMutation({
+    onSuccess: () => {
+      toast.success("System created and report registered");
+      utils.shadowAi.getReportById.invalidate({
+        organizationId: organization?.id ?? "",
+        id,
+      });
+      utils.shadowAi.listReports.invalidate();
+      utils.shadowAi.getStats.invalidate();
+      utils.aiSystem.list.invalidate();
+      utils.aiSystem.getStats.invalidate();
+      utils.vendor.list.invalidate();
+      setRegisterDialogOpen(false);
+      setNewSystemData({
+        systemName: "",
+        systemRole: "DEPLOYER",
+        systemTechnique: "",
+        systemPurpose: "",
+        createVendor: false,
+        vendorName: "",
+        vendorWebsite: "",
+      });
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to register");
+    },
+  });
+
   const handleStatusChange = (newStatus: string) => {
     if (!organization?.id) return;
 
     if (newStatus === "REGISTERED") {
+      // Pre-fill from report/tool data
+      if (report) {
+        const suggestedTechnique = report.tool?.category
+          ? suggestTechnique(report.tool.category) || ""
+          : "";
+        setNewSystemData({
+          systemName: report.toolName,
+          systemRole: "DEPLOYER",
+          systemTechnique: suggestedTechnique,
+          systemPurpose: "",
+          createVendor: false,
+          vendorName: report.tool?.vendor || "",
+          vendorWebsite: report.tool?.website || "",
+        });
+      }
       setRegisterDialogOpen(true);
       return;
     }
@@ -132,14 +214,30 @@ export default function ShadowAIDetailPage() {
   };
 
   const handleRegister = () => {
-    if (!organization?.id || !selectedSystemId) return;
+    if (!organization?.id) return;
 
-    updateReport.mutate({
-      organizationId: organization.id,
-      id,
-      status: "REGISTERED",
-      registeredSystemId: selectedSystemId,
-    });
+    if (registerTab === "existing") {
+      if (!selectedSystemId) return;
+      updateReport.mutate({
+        organizationId: organization.id,
+        id,
+        status: "REGISTERED",
+        registeredSystemId: selectedSystemId,
+      });
+    } else {
+      if (!newSystemData.systemName) return;
+      registerWithAutoCreate.mutate({
+        organizationId: organization.id,
+        reportId: id,
+        systemName: newSystemData.systemName,
+        systemRole: newSystemData.systemRole,
+        systemTechnique: newSystemData.systemTechnique || "OTHER",
+        systemPurpose: newSystemData.systemPurpose || undefined,
+        createVendor: newSystemData.createVendor,
+        vendorName: newSystemData.vendorName || undefined,
+        vendorWebsite: newSystemData.vendorWebsite || undefined,
+      });
+    }
   };
 
   if (isLoading) {
@@ -381,34 +479,136 @@ export default function ShadowAIDetailPage() {
 
       {/* Register Dialog */}
       <Dialog open={registerDialogOpen} onOpenChange={setRegisterDialogOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-lg">
           <DialogHeader>
             <DialogTitle>Register as AI System</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">
-              Link this shadow AI tool to an existing AI system in your registry.
-              This will mark the report as registered.
-            </p>
-            <div className="space-y-2">
-              <Label htmlFor="systemSelect">AI System *</Label>
-              <Select
-                value={selectedSystemId}
-                onValueChange={setSelectedSystemId}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select an AI system" />
-                </SelectTrigger>
-                <SelectContent>
-                  {systems.map((system) => (
-                    <SelectItem key={system.id} value={system.id}>
-                      {system.name} ({system.status})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
+          <Tabs value={registerTab} onValueChange={setRegisterTab}>
+            <TabsList className="w-full">
+              <TabsTrigger value="create" className="flex-1">Create New</TabsTrigger>
+              <TabsTrigger value="existing" className="flex-1">Link Existing</TabsTrigger>
+            </TabsList>
+
+            {/* Create New Tab */}
+            <TabsContent value="create" className="space-y-4 mt-4">
+              <p className="text-sm text-muted-foreground">
+                Create a new AI system (and optionally a vendor) and link it to this report.
+              </p>
+              <div className="space-y-2">
+                <Label>System Name *</Label>
+                <Input
+                  placeholder="e.g., ChatGPT Integration"
+                  value={newSystemData.systemName}
+                  onChange={(e) => setNewSystemData({ ...newSystemData, systemName: e.target.value })}
+                />
+              </div>
+              <div className="grid gap-3 grid-cols-2">
+                <div className="space-y-2">
+                  <Label>Organization Role</Label>
+                  <Select
+                    value={newSystemData.systemRole}
+                    onValueChange={(value) => setNewSystemData({ ...newSystemData, systemRole: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {aiRoles.map((r) => (
+                        <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>AI Technique</Label>
+                  <Select
+                    value={newSystemData.systemTechnique}
+                    onValueChange={(value) => setNewSystemData({ ...newSystemData, systemTechnique: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select technique" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {aiTechniques.map((t) => (
+                        <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label>Intended Purpose</Label>
+                <Textarea
+                  placeholder="Describe the intended purpose..."
+                  rows={2}
+                  value={newSystemData.systemPurpose}
+                  onChange={(e) => setNewSystemData({ ...newSystemData, systemPurpose: e.target.value })}
+                />
+              </div>
+
+              {/* Vendor toggle */}
+              <div className="border rounded-md p-3 space-y-3">
+                <div className="flex items-center gap-3">
+                  <Switch
+                    id="createVendor"
+                    checked={newSystemData.createVendor}
+                    onCheckedChange={(checked) =>
+                      setNewSystemData({ ...newSystemData, createVendor: checked })
+                    }
+                  />
+                  <Label htmlFor="createVendor" className="flex items-center gap-2 cursor-pointer text-sm">
+                    <Building2 className="w-4 h-4 text-primary" />
+                    Also create vendor record
+                  </Label>
+                </div>
+                {newSystemData.createVendor && (
+                  <div className="space-y-3 pl-0 sm:pl-10">
+                    <div className="space-y-1">
+                      <Label className="text-xs">Vendor Name</Label>
+                      <Input
+                        placeholder="e.g., OpenAI"
+                        value={newSystemData.vendorName}
+                        onChange={(e) => setNewSystemData({ ...newSystemData, vendorName: e.target.value })}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Vendor Website</Label>
+                      <Input
+                        placeholder="e.g., https://openai.com"
+                        value={newSystemData.vendorWebsite}
+                        onChange={(e) => setNewSystemData({ ...newSystemData, vendorWebsite: e.target.value })}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            </TabsContent>
+
+            {/* Link Existing Tab */}
+            <TabsContent value="existing" className="space-y-4 mt-4">
+              <p className="text-sm text-muted-foreground">
+                Link this shadow AI tool to an existing AI system in your registry.
+              </p>
+              <div className="space-y-2">
+                <Label>AI System *</Label>
+                <Select
+                  value={selectedSystemId}
+                  onValueChange={setSelectedSystemId}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select an AI system" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {systems.map((system) => (
+                      <SelectItem key={system.id} value={system.id}>
+                        {system.name} ({system.status})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </TabsContent>
+          </Tabs>
           <DialogFooter>
             <Button
               variant="outline"
@@ -421,9 +621,14 @@ export default function ShadowAIDetailPage() {
             </Button>
             <Button
               onClick={handleRegister}
-              disabled={!selectedSystemId || updateReport.isPending}
+              disabled={
+                (registerTab === "existing" && !selectedSystemId) ||
+                (registerTab === "create" && !newSystemData.systemName) ||
+                updateReport.isPending ||
+                registerWithAutoCreate.isPending
+              }
             >
-              {updateReport.isPending ? (
+              {(updateReport.isPending || registerWithAutoCreate.isPending) ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                   Registering...

@@ -118,6 +118,92 @@ export const vendorRouter = createTRPCRouter({
       return vendor;
     }),
 
+  createWithSystem: organizationProcedure
+    .input(
+      z.object({
+        organizationId: z.string(),
+        // vendor fields
+        name: z.string().min(1).max(200),
+        website: z.string().optional(),
+        description: z.string().optional(),
+        contactName: z.string().optional(),
+        contactEmail: z.string().optional(),
+        riskLevel: z.string().optional(),
+        status: z.string().default("UNDER_REVIEW"),
+        contractStartDate: z.string().optional(),
+        contractExpiryDate: z.string().optional(),
+        dpoCentralVendorId: z.string().optional(),
+        notes: z.string().optional(),
+        // optional AI system creation
+        createSystem: z.boolean().default(false),
+        systemName: z.string().optional(),
+        systemRole: z.string().optional(),
+        systemTechnique: z.string().optional(),
+        systemPurpose: z.string().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const result = await ctx.prisma.$transaction(async (tx) => {
+        const vendor = await tx.aIVendor.create({
+          data: {
+            organizationId: ctx.organization.id,
+            name: input.name,
+            website: input.website,
+            description: input.description,
+            contactName: input.contactName,
+            contactEmail: input.contactEmail,
+            riskLevel: input.riskLevel ? (input.riskLevel as never) : undefined,
+            status: input.status as never,
+            contractStartDate: input.contractStartDate ? new Date(input.contractStartDate) : undefined,
+            contractExpiryDate: input.contractExpiryDate ? new Date(input.contractExpiryDate) : undefined,
+            dpoCentralVendorId: input.dpoCentralVendorId,
+            notes: input.notes,
+          },
+        });
+
+        await tx.auditLog.create({
+          data: {
+            organizationId: ctx.organization.id,
+            userId: ctx.session.user.id,
+            entityType: "AIVendor",
+            entityId: vendor.id,
+            action: "CREATE",
+            changes: { name: input.name },
+          },
+        });
+
+        let system = null;
+        if (input.createSystem && input.systemName) {
+          system = await tx.aISystem.create({
+            data: {
+              organizationId: ctx.organization.id,
+              name: input.systemName,
+              technique: (input.systemTechnique || "OTHER") as never,
+              role: (input.systemRole || "DEPLOYER") as never,
+              status: "DRAFT" as never,
+              purpose: input.systemPurpose,
+              vendorId: vendor.id,
+            },
+          });
+
+          await tx.auditLog.create({
+            data: {
+              organizationId: ctx.organization.id,
+              userId: ctx.session.user.id,
+              entityType: "AISystem",
+              entityId: system.id,
+              action: "CREATE",
+              changes: { name: input.systemName, vendorId: vendor.id },
+            },
+          });
+        }
+
+        return { vendor, system };
+      });
+
+      return result;
+    }),
+
   update: organizationProcedure
     .input(
       z.object({

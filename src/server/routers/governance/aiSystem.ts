@@ -52,6 +52,7 @@ export const aiSystemRouter = createTRPCRouter({
       const system = await ctx.prisma.aISystem.findFirst({
         where: { id: input.id, organizationId: ctx.organization.id },
         include: {
+          vendor: { select: { id: true, name: true, riskLevel: true, status: true, website: true, contractExpiryDate: true } },
           models: true,
           dataSources: true,
           riskClassification: { include: { history: { orderBy: { changedAt: "desc" } } } },
@@ -86,6 +87,7 @@ export const aiSystemRouter = createTRPCRouter({
         processesPersonalData: z.boolean().default(false),
         dpoCentralVendorId: z.string().optional(),
         dpoCentralAssetIds: z.array(z.string()).optional(),
+        vendorId: z.string().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -103,6 +105,7 @@ export const aiSystemRouter = createTRPCRouter({
           processesPersonalData: input.processesPersonalData,
           dpoCentralVendorId: input.dpoCentralVendorId,
           dpoCentralAssetIds: input.dpoCentralAssetIds ?? [],
+          vendorId: input.vendorId || undefined,
         },
       });
 
@@ -136,6 +139,7 @@ export const aiSystemRouter = createTRPCRouter({
         processesPersonalData: z.boolean().optional(),
         deploymentDate: z.date().optional(),
         retirementDate: z.date().optional(),
+        vendorId: z.string().nullable().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {

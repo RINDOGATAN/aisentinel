@@ -67,7 +67,14 @@ export default function NewAISystemPage() {
     businessOwner: "",
     technicalOwner: "",
     processesPersonalData: false,
+    vendorId: "",
   });
+
+  const { data: vendorsData } = trpc.vendor.list.useQuery(
+    { organizationId: organization?.id ?? "", limit: 100 },
+    { enabled: !!organization?.id }
+  );
+  const vendors = vendorsData?.items ?? [];
 
   const utils = trpc.useUtils();
 
@@ -101,6 +108,7 @@ export default function NewAISystemPage() {
       businessOwner: formData.businessOwner || undefined,
       technicalOwner: formData.technicalOwner || undefined,
       processesPersonalData: formData.processesPersonalData,
+      vendorId: formData.vendorId || undefined,
     });
   };
 
@@ -216,6 +224,29 @@ export default function NewAISystemPage() {
                   </SelectContent>
                 </Select>
               </div>
+            </div>
+
+            {/* Vendor */}
+            <div className="space-y-2">
+              <Label htmlFor="vendor">Vendor</Label>
+              <Select
+                value={formData.vendorId}
+                onValueChange={(value) => setFormData({ ...formData, vendorId: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select vendor (optional)" />
+                </SelectTrigger>
+                <SelectContent>
+                  {vendors.map((v) => (
+                    <SelectItem key={v.id} value={v.id}>
+                      {v.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground">
+                Link this system to a vendor from your vendor registry
+              </p>
             </div>
 
             {/* Purpose */}

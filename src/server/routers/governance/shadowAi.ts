@@ -226,6 +226,121 @@ export const shadowAiRouter = createTRPCRouter({
       return updated;
     }),
 
+  registerWithAutoCreate: organizationProcedure
+    .input(
+      z.object({
+        organizationId: z.string(),
+        reportId: z.string(),
+        // AI system fields
+        systemName: z.string().min(1).max(200),
+        systemRole: z.string().default("DEPLOYER"),
+        systemTechnique: z.string().default("OTHER"),
+        systemPurpose: z.string().optional(),
+        // Optional vendor creation
+        createVendor: z.boolean().default(false),
+        vendorName: z.string().optional(),
+        vendorWebsite: z.string().optional(),
+        vendorDescription: z.string().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      await assertShadowAiAccess(ctx.organization.id);
+
+      const existing = await ctx.prisma.shadowAIReport.findFirst({
+        where: { id: input.reportId, organizationId: ctx.organization.id },
+      });
+
+      if (!existing) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Report not found" });
+      }
+
+      // Must be APPROVED to register
+      if (existing.status !== "APPROVED") {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: `Cannot register from status ${existing.status}. Report must be APPROVED first.`,
+        });
+      }
+
+      const result = await ctx.prisma.$transaction(async (tx) => {
+        let vendorId: string | undefined;
+
+        // 1. Optionally create vendor
+        if (input.createVendor && input.vendorName) {
+          const vendor = await tx.aIVendor.create({
+            data: {
+              organizationId: ctx.organization.id,
+              name: input.vendorName,
+              website: input.vendorWebsite,
+              description: input.vendorDescription,
+              status: "UNDER_REVIEW" as never,
+            },
+          });
+          vendorId = vendor.id;
+
+          await tx.auditLog.create({
+            data: {
+              organizationId: ctx.organization.id,
+              userId: ctx.session.user.id,
+              entityType: "AIVendor",
+              entityId: vendor.id,
+              action: "CREATE",
+              changes: { name: input.vendorName, source: "shadow-ai-register" },
+            },
+          });
+        }
+
+        // 2. Create AI system
+        const system = await tx.aISystem.create({
+          data: {
+            organizationId: ctx.organization.id,
+            name: input.systemName,
+            technique: input.systemTechnique as never,
+            role: input.systemRole as never,
+            status: "DRAFT" as never,
+            purpose: input.systemPurpose,
+            vendorId: vendorId || undefined,
+          },
+        });
+
+        await tx.auditLog.create({
+          data: {
+            organizationId: ctx.organization.id,
+            userId: ctx.session.user.id,
+            entityType: "AISystem",
+            entityId: system.id,
+            action: "CREATE",
+            changes: { name: input.systemName, source: "shadow-ai-register", vendorId },
+          },
+        });
+
+        // 3. Update shadow AI report to REGISTERED
+        const updated = await tx.shadowAIReport.update({
+          where: { id: input.reportId },
+          data: {
+            status: "REGISTERED",
+            registeredSystemId: system.id,
+          },
+          include: { tool: true },
+        });
+
+        await tx.auditLog.create({
+          data: {
+            organizationId: ctx.organization.id,
+            userId: ctx.session.user.id,
+            entityType: "ShadowAIReport",
+            entityId: input.reportId,
+            action: "UPDATE",
+            changes: { status: "REGISTERED", registeredSystemId: system.id },
+          },
+        });
+
+        return { report: updated, system, vendorId };
+      });
+
+      return result;
+    }),
+
   getStats: organizationProcedure
     .input(z.object({ organizationId: z.string() }))
     .query(async ({ ctx }) => {

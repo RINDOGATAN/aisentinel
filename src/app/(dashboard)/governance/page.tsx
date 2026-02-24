@@ -19,6 +19,7 @@ import {
   ChevronDown,
   Eye,
   ScrollText,
+  Search,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -418,7 +419,7 @@ export default function GovernanceDashboardPage() {
               Common governance tasks
             </CardDescription>
           </CardHeader>
-          <CardContent className="grid gap-2 grid-cols-1 sm:grid-cols-2 p-4 pt-0 sm:p-6 sm:pt-0">
+          <CardContent className="grid gap-2 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 p-4 pt-0 sm:p-6 sm:pt-0">
             <Link href="/governance/ai-registry/new">
               <Button variant="outline" className="w-full justify-start h-11">
                 <Plus className="w-4 h-4 mr-2 shrink-0" />
@@ -447,6 +448,18 @@ export default function GovernanceDashboardPage() {
               <Button variant="outline" className="w-full justify-start h-11">
                 <Building2 className="w-4 h-4 mr-2 shrink-0" />
                 <span className="truncate">Add Vendor</span>
+              </Button>
+            </Link>
+            <Link href="/governance/vendors/new?catalog=true">
+              <Button variant="outline" className="w-full justify-start h-11">
+                <ShieldCheck className="w-4 h-4 mr-2 shrink-0" />
+                <span className="truncate">Vendor from Catalog</span>
+              </Button>
+            </Link>
+            <Link href="/governance/shadow-ai/new">
+              <Button variant="outline" className="w-full justify-start h-11">
+                <Search className="w-4 h-4 mr-2 shrink-0" />
+                <span className="truncate">Report Shadow AI</span>
               </Button>
             </Link>
             <Link href="/governance/policies/new">

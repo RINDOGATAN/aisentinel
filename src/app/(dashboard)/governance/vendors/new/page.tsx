@@ -16,11 +16,36 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ArrowLeft, Loader2, Search, CheckCircle, X, Shield, Globe } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { ArrowLeft, Loader2, Search, CheckCircle, X, Shield, Globe, Cpu } from "lucide-react";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
+import { suggestTechniqueFromCapabilities } from "@/lib/ai-technique-mapping";
+
+const aiTechniques = [
+  { value: "MACHINE_LEARNING", label: "Machine Learning" },
+  { value: "DEEP_LEARNING", label: "Deep Learning" },
+  { value: "GENERATIVE_AI", label: "Generative AI" },
+  { value: "AGENTIC_AI", label: "Agentic AI" },
+  { value: "NLP", label: "Natural Language Processing" },
+  { value: "COMPUTER_VISION", label: "Computer Vision" },
+  { value: "SPEECH_RECOGNITION", label: "Speech Recognition" },
+  { value: "ROBOTICS", label: "Robotics" },
+  { value: "RULE_BASED", label: "Rule-Based" },
+  { value: "EXPERT_SYSTEM", label: "Expert System" },
+  { value: "STATISTICAL", label: "Statistical" },
+  { value: "OTHER", label: "Other" },
+];
+
+const aiRoles = [
+  { value: "PROVIDER", label: "Provider" },
+  { value: "DEPLOYER", label: "Deployer" },
+  { value: "IMPORTER", label: "Importer" },
+  { value: "DISTRIBUTOR", label: "Distributor" },
+  { value: "USER", label: "User" },
+];
 
 const riskLevels = [
   { value: "CRITICAL", label: "Critical" },
@@ -84,6 +109,15 @@ function NewVendorForm() {
     notes: "",
   });
 
+  // "Also register as AI System" state
+  const [createSystem, setCreateSystem] = useState(false);
+  const [systemData, setSystemData] = useState({
+    systemName: "",
+    systemRole: "DEPLOYER",
+    systemTechnique: "",
+    systemPurpose: "",
+  });
+
   // Catalog search query
   const { data: catalogResults, isLoading: catalogLoading } =
     trpc.vendorCatalog.search.useQuery(
@@ -121,6 +155,13 @@ function NewVendorForm() {
       description: vendor.description || prev.description,
       website: vendor.website || prev.website,
     }));
+
+    // Pre-fill system data from catalog
+    setSystemData((prev) => ({
+      ...prev,
+      systemName: vendor.name,
+      systemTechnique: suggestTechniqueFromCapabilities(vendor.aiCapabilities || []) || prev.systemTechnique,
+    }));
   };
 
   const handleClearCatalogVendor = () => {
@@ -138,6 +179,8 @@ function NewVendorForm() {
       dpoCentralVendorId: "",
       notes: "",
     });
+    setSystemData({ systemName: "", systemRole: "DEPLOYER", systemTechnique: "", systemPurpose: "" });
+    setCreateSystem(false);
   };
 
   const utils = trpc.useUtils();
@@ -155,13 +198,32 @@ function NewVendorForm() {
     },
   });
 
+  const createVendorWithSystem = trpc.vendor.createWithSystem.useMutation({
+    onSuccess: (data) => {
+      if (data.system) {
+        toast.success("Vendor and AI system created successfully");
+        utils.aiSystem.list.invalidate();
+        utils.aiSystem.getStats.invalidate();
+      } else {
+        toast.success("Vendor added successfully");
+      }
+      utils.vendor.list.invalidate();
+      utils.vendor.getStats.invalidate();
+      router.push(`/governance/vendors/${data.vendor.id}`);
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to add vendor");
+      setIsSubmitting(false);
+    },
+  });
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!organization?.id || !formData.name) return;
 
     setIsSubmitting(true);
 
-    createVendor.mutate({
+    const vendorFields = {
       organizationId: organization.id,
       name: formData.name,
       website: formData.website || undefined,
@@ -174,7 +236,20 @@ function NewVendorForm() {
       contractExpiryDate: formData.contractExpiryDate || undefined,
       dpoCentralVendorId: formData.dpoCentralVendorId || undefined,
       notes: formData.notes || undefined,
-    });
+    };
+
+    if (createSystem && systemData.systemName) {
+      createVendorWithSystem.mutate({
+        ...vendorFields,
+        createSystem: true,
+        systemName: systemData.systemName,
+        systemRole: systemData.systemRole || undefined,
+        systemTechnique: systemData.systemTechnique || undefined,
+        systemPurpose: systemData.systemPurpose || undefined,
+      });
+    } else {
+      createVendor.mutate(vendorFields);
+    }
   };
 
   return (
@@ -524,6 +599,97 @@ function NewVendorForm() {
               </p>
             </div>
 
+            {/* Register as AI System Toggle */}
+            <div className="border rounded-md p-4 space-y-4">
+              <div className="flex items-center gap-3">
+                <Switch
+                  id="createSystem"
+                  checked={createSystem}
+                  onCheckedChange={(checked) => {
+                    setCreateSystem(checked);
+                    if (checked && !systemData.systemName) {
+                      setSystemData((prev) => ({ ...prev, systemName: formData.name }));
+                    }
+                  }}
+                />
+                <div className="flex-1">
+                  <Label htmlFor="createSystem" className="flex items-center gap-2 cursor-pointer">
+                    <Cpu className="w-4 h-4 text-primary" />
+                    Also register as AI System
+                  </Label>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Create a linked AI system in the registry alongside this vendor
+                  </p>
+                </div>
+              </div>
+
+              {createSystem && (
+                <div className="space-y-4 pl-0 sm:pl-10">
+                  <div className="space-y-2">
+                    <Label htmlFor="systemName">System Name *</Label>
+                    <Input
+                      id="systemName"
+                      placeholder="e.g., OpenAI GPT-4 Integration"
+                      value={systemData.systemName}
+                      onChange={(e) => setSystemData({ ...systemData, systemName: e.target.value })}
+                      required
+                    />
+                  </div>
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="systemRole">Organization Role</Label>
+                      <Select
+                        value={systemData.systemRole}
+                        onValueChange={(value) => setSystemData({ ...systemData, systemRole: value })}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select role" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {aiRoles.map((r) => (
+                            <SelectItem key={r.value} value={r.value}>
+                              {r.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <p className="text-xs text-muted-foreground">
+                        Your org&apos;s role under the EU AI Act
+                      </p>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="systemTechnique">AI Technique</Label>
+                      <Select
+                        value={systemData.systemTechnique}
+                        onValueChange={(value) => setSystemData({ ...systemData, systemTechnique: value })}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select technique" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {aiTechniques.map((t) => (
+                            <SelectItem key={t.value} value={t.value}>
+                              {t.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="systemPurpose">Intended Purpose</Label>
+                    <Textarea
+                      id="systemPurpose"
+                      placeholder="Describe the intended purpose of the AI system..."
+                      rows={2}
+                      value={systemData.systemPurpose}
+                      onChange={(e) => setSystemData({ ...systemData, systemPurpose: e.target.value })}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Notes */}
             <div className="space-y-2">
               <Label htmlFor="notes">Notes</Label>
@@ -537,9 +703,9 @@ function NewVendorForm() {
             </div>
 
             {/* Error */}
-            {createVendor.error && (
+            {(createVendor.error || createVendorWithSystem.error) && (
               <div className="text-sm text-destructive">
-                Error: {createVendor.error.message}
+                Error: {(createVendor.error || createVendorWithSystem.error)?.message}
               </div>
             )}
 
@@ -552,13 +718,15 @@ function NewVendorForm() {
               </Link>
               <Button
                 type="submit"
-                disabled={isSubmitting || !formData.name}
+                disabled={isSubmitting || !formData.name || (createSystem && !systemData.systemName)}
               >
                 {isSubmitting ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Adding...
+                    {createSystem ? "Creating..." : "Adding..."}
                   </>
+                ) : createSystem ? (
+                  "Add Vendor & System"
                 ) : (
                   "Add Vendor"
                 )}

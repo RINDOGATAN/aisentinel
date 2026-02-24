@@ -27,6 +27,7 @@ import {
   Cpu,
 } from "lucide-react";
 import { toast } from "sonner";
+import { keepPreviousData } from "@tanstack/react-query";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -83,7 +84,7 @@ export default function RiskClassificationPage() {
       organizationId: organization?.id ?? "",
       search: debouncedSearch || undefined,
     },
-    { enabled: !!organization?.id }
+    { enabled: !!organization?.id, placeholderData: keepPreviousData }
   );
 
   const utils = trpc.useUtils();
@@ -200,7 +201,7 @@ export default function RiskClassificationPage() {
       </div>
 
       {/* Systems List */}
-      {systemsLoading ? (
+      {systemsLoading && !systems ? (
         <ListPageSkeleton />
       ) : systems && systems.length > 0 ? (
         <div className="space-y-3">

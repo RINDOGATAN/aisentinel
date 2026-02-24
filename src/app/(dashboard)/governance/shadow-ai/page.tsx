@@ -18,6 +18,7 @@ import {
   AlertTriangle,
   Cpu,
 } from "lucide-react";
+import { keepPreviousData } from "@tanstack/react-query";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -86,6 +87,7 @@ export default function ShadowAIPage() {
     {
       enabled: !!organization?.id && hasAccess === true,
       getNextPageParam: (lastPage) => lastPage.nextCursor,
+      placeholderData: keepPreviousData,
     }
   );
 
@@ -266,7 +268,7 @@ export default function ShadowAIPage() {
         </TabsList>
 
         <TabsContent value={activeTab} className="mt-4">
-          {reportsLoading ? (
+          {reportsLoading && !reportsPages ? (
             <ListPageSkeleton />
           ) : reports.length > 0 ? (
             <>

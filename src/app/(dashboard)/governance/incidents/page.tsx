@@ -15,6 +15,7 @@ import {
   Clock,
   CheckCircle2,
 } from "lucide-react";
+import { keepPreviousData } from "@tanstack/react-query";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -87,6 +88,7 @@ export default function IncidentsPage() {
     {
       enabled: !!organization?.id,
       getNextPageParam: (lastPage) => lastPage.nextCursor,
+      placeholderData: keepPreviousData,
     }
   );
 
@@ -174,7 +176,7 @@ export default function IncidentsPage() {
         </TabsList>
 
         <TabsContent value={activeTab} className="mt-4">
-          {incidentsLoading ? (
+          {incidentsLoading && !incidentPages ? (
             <ListPageSkeleton />
           ) : incidents.length > 0 ? (
             <>

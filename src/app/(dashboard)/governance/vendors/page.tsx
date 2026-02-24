@@ -20,6 +20,7 @@ import {
   Database,
   Lock,
 } from "lucide-react";
+import { keepPreviousData } from "@tanstack/react-query";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -102,6 +103,7 @@ export default function VendorRiskPage() {
     {
       enabled: !!organization?.id,
       getNextPageParam: (lastPage) => lastPage.nextCursor,
+      placeholderData: keepPreviousData,
     }
   );
 
@@ -250,7 +252,7 @@ export default function VendorRiskPage() {
         </TabsList>
 
         <TabsContent value={activeTab} className="mt-4">
-          {vendorsLoading ? (
+          {vendorsLoading && !vendorsPages ? (
             <ListPageSkeleton />
           ) : vendors.length > 0 ? (
             <>

@@ -41,6 +41,7 @@ import {
   GraduationCap,
   ThumbsUp,
   MoreHorizontal,
+  Download,
 } from "lucide-react";
 
 const statusOptions = [
@@ -77,6 +78,42 @@ interface MappingData {
   evidence?: string | null;
   notes?: string | null;
   evidenceItems?: EvidenceItem[];
+}
+
+function exportComplianceCSV(
+  matrixData: Array<{
+    code: string;
+    title: string;
+    mapping: MappingData | null;
+    children?: Array<{ code: string; title: string; mapping: MappingData | null }>;
+  }>
+) {
+  const rows: string[][] = [["Code", "Title", "Status", "Notes", "Evidence Count"]];
+
+  for (const req of matrixData) {
+    const status = req.mapping?.status ?? "NOT_ASSESSED";
+    const notes = (req.mapping?.notes ?? "").replace(/"/g, '""');
+    const evidenceCount = req.mapping?.evidenceItems?.length ?? 0;
+    rows.push([req.code, `"${req.title}"`, status, `"${notes}"`, String(evidenceCount)]);
+
+    if (req.children) {
+      for (const child of req.children) {
+        const cStatus = child.mapping?.status ?? "NOT_ASSESSED";
+        const cNotes = (child.mapping?.notes ?? "").replace(/"/g, '""');
+        const cEvidence = child.mapping?.evidenceItems?.length ?? 0;
+        rows.push([child.code, `"${child.title}"`, cStatus, `"${cNotes}"`, String(cEvidence)]);
+      }
+    }
+  }
+
+  const csv = rows.map((r) => r.join(",")).join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `compliance-export-${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 export default function CompliancePage() {
@@ -128,6 +165,16 @@ export default function CompliancePage() {
           </h1>
           <p className="text-muted-foreground">Map AI system compliance against regulatory frameworks</p>
         </div>
+        {matrix && matrix.length > 0 && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => exportComplianceCSV(matrix as Parameters<typeof exportComplianceCSV>[0])}
+          >
+            <Download className="w-4 h-4 mr-2" />
+            Export CSV
+          </Button>
+        )}
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4">

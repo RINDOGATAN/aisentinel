@@ -236,39 +236,81 @@ export const organizationRouter = createTRPCRouter({
   getDashboardStats: organizationProcedure
     .input(z.object({ organizationId: z.string() }))
     .query(async ({ ctx }) => {
+      const orgId = ctx.organization.id;
+
       const [
         totalSystems,
         deployedSystems,
         highRiskSystems,
         activeAssessments,
         recentAuditLogs,
+        // Risk posture
+        riskUnacceptable,
+        riskHigh,
+        riskLimited,
+        riskMinimal,
+        // Incidents
+        totalIncidents,
+        criticalIncidents,
+        openIncidents,
+        // Oversight
+        pendingGates,
+        overdueGates,
+        // Assessment pipeline
+        assessmentDraft,
+        assessmentInProgress,
+        assessmentUnderReview,
+        assessmentApproved,
+        // Compliance summary
+        complianceCompliant,
+        compliancePartial,
+        complianceNonCompliant,
+        complianceNotAssessed,
       ] = await Promise.all([
-        ctx.prisma.aISystem.count({
-          where: { organizationId: ctx.organization.id },
-        }),
-        ctx.prisma.aISystem.count({
-          where: { organizationId: ctx.organization.id, status: "DEPLOYED" },
-        }),
+        ctx.prisma.aISystem.count({ where: { organizationId: orgId } }),
+        ctx.prisma.aISystem.count({ where: { organizationId: orgId, status: "DEPLOYED" } }),
         ctx.prisma.riskClassification.count({
-          where: {
-            organizationId: ctx.organization.id,
-            riskLevel: { in: ["HIGH", "UNACCEPTABLE"] },
-          },
+          where: { organizationId: orgId, riskLevel: { in: ["HIGH", "UNACCEPTABLE"] } },
         }),
         ctx.prisma.aIAssessment.count({
-          where: {
-            organizationId: ctx.organization.id,
-            status: { in: ["DRAFT", "IN_PROGRESS", "UNDER_REVIEW"] },
-          },
+          where: { organizationId: orgId, status: { in: ["DRAFT", "IN_PROGRESS", "UNDER_REVIEW"] } },
         }),
         ctx.prisma.auditLog.findMany({
-          where: { organizationId: ctx.organization.id },
+          where: { organizationId: orgId },
           orderBy: { createdAt: "desc" },
           take: 10,
-          include: {
-            user: { select: { name: true, email: true } },
+          include: { user: { select: { name: true, email: true } } },
+        }),
+        // Risk posture counts
+        ctx.prisma.riskClassification.count({ where: { organizationId: orgId, riskLevel: "UNACCEPTABLE" } }),
+        ctx.prisma.riskClassification.count({ where: { organizationId: orgId, riskLevel: "HIGH" } }),
+        ctx.prisma.riskClassification.count({ where: { organizationId: orgId, riskLevel: "LIMITED" } }),
+        ctx.prisma.riskClassification.count({ where: { organizationId: orgId, riskLevel: "MINIMAL" } }),
+        // Incidents
+        ctx.prisma.aIIncident.count({ where: { organizationId: orgId } }),
+        ctx.prisma.aIIncident.count({ where: { organizationId: orgId, severity: "CRITICAL" } }),
+        ctx.prisma.aIIncident.count({
+          where: { organizationId: orgId, status: { in: ["REPORTED", "INVESTIGATING", "MITIGATING"] } },
+        }),
+        // Oversight
+        ctx.prisma.oversightGate.count({ where: { organizationId: orgId, status: "PENDING" } }),
+        ctx.prisma.oversightGate.count({
+          where: {
+            organizationId: orgId,
+            status: { in: ["PENDING", "IN_REVIEW"] },
+            nextReviewDate: { lt: new Date() },
           },
         }),
+        // Assessment pipeline
+        ctx.prisma.aIAssessment.count({ where: { organizationId: orgId, status: "DRAFT" } }),
+        ctx.prisma.aIAssessment.count({ where: { organizationId: orgId, status: "IN_PROGRESS" } }),
+        ctx.prisma.aIAssessment.count({ where: { organizationId: orgId, status: "UNDER_REVIEW" } }),
+        ctx.prisma.aIAssessment.count({ where: { organizationId: orgId, status: "APPROVED" } }),
+        // Compliance summary
+        ctx.prisma.complianceMapping.count({ where: { organizationId: orgId, status: "COMPLIANT" } }),
+        ctx.prisma.complianceMapping.count({ where: { organizationId: orgId, status: "PARTIALLY_COMPLIANT" } }),
+        ctx.prisma.complianceMapping.count({ where: { organizationId: orgId, status: "NON_COMPLIANT" } }),
+        ctx.prisma.complianceMapping.count({ where: { organizationId: orgId, status: "NOT_ASSESSED" } }),
       ]);
 
       return {
@@ -277,6 +319,33 @@ export const organizationRouter = createTRPCRouter({
         highRiskSystems,
         activeAssessments,
         recentAuditLogs,
+        riskPosture: {
+          unacceptable: riskUnacceptable,
+          high: riskHigh,
+          limited: riskLimited,
+          minimal: riskMinimal,
+        },
+        incidents: {
+          total: totalIncidents,
+          critical: criticalIncidents,
+          open: openIncidents,
+        },
+        oversight: {
+          pending: pendingGates,
+          overdue: overdueGates,
+        },
+        assessmentPipeline: {
+          draft: assessmentDraft,
+          inProgress: assessmentInProgress,
+          underReview: assessmentUnderReview,
+          approved: assessmentApproved,
+        },
+        complianceSummary: {
+          compliant: complianceCompliant,
+          partial: compliancePartial,
+          nonCompliant: complianceNonCompliant,
+          notAssessed: complianceNotAssessed,
+        },
       };
     }),
 });

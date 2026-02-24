@@ -8,57 +8,48 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  AlertTriangle,
+  ScrollText,
   Plus,
   Search,
   Loader2,
-  Clock,
-  CheckCircle2,
+  Calendar,
+  Link2,
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
 import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
-import { formatRelativeTime } from "@/lib/utils";
+import { formatRelativeTime, formatDate } from "@/lib/utils";
 
-const severityColors: Record<string, string> = {
-  CRITICAL: "bg-destructive text-destructive-foreground",
-  HIGH: "bg-destructive/80 text-destructive-foreground",
-  MEDIUM: "bg-yellow-500/20 text-yellow-500",
-  LOW: "bg-muted text-muted-foreground",
+const policyTypeLabels: Record<string, string> = {
+  AI_USAGE: "AI Usage",
+  AI_GOVERNANCE: "AI Governance",
+  AI_ETHICS: "AI Ethics",
+  AI_RISK_MANAGEMENT: "Risk Management",
+  AI_DATA_GOVERNANCE: "Data Governance",
+  AI_PROCUREMENT: "Procurement",
+  AI_INCIDENT_RESPONSE: "Incident Response",
+  AI_TRANSPARENCY: "Transparency",
+  CUSTOM: "Custom",
 };
 
 const statusColors: Record<string, string> = {
-  REPORTED: "border-yellow-500 text-yellow-500",
-  INVESTIGATING: "border-blue-500 text-blue-500",
-  MITIGATING: "border-orange-500 text-orange-500",
-  RESOLVED: "border-green-500 text-green-500",
-  CLOSED: "border-muted-foreground text-muted-foreground",
-};
-
-const typeLabels: Record<string, string> = {
-  HALLUCINATION: "Hallucination",
-  BIAS_DISCRIMINATION: "Bias/Discrimination",
-  MODEL_DRIFT: "Model Drift",
-  ADVERSARIAL_ATTACK: "Adversarial Attack",
-  PROMPT_INJECTION: "Prompt Injection",
-  UNAUTHORIZED_ACCESS: "Unauthorized Access",
-  SAFETY_FAILURE: "Safety Failure",
-  PERFORMANCE_DEGRADATION: "Performance Degradation",
-  DATA_POISONING: "Data Poisoning",
-  PRIVACY_VIOLATION: "Privacy Violation",
-  OTHER: "Other",
+  DRAFT: "border-muted-foreground text-muted-foreground",
+  UNDER_REVIEW: "border-yellow-500 text-yellow-500",
+  APPROVED: "border-blue-500 text-blue-500",
+  PUBLISHED: "border-green-500 text-green-500",
+  ARCHIVED: "border-muted-foreground/50 text-muted-foreground/50",
 };
 
 const tabTypeMap: Record<string, string | undefined> = {
   all: undefined,
-  hallucination: "HALLUCINATION",
-  bias: "BIAS_DISCRIMINATION",
-  drift: "MODEL_DRIFT",
-  prompt_injection: "PROMPT_INJECTION",
+  usage: "AI_USAGE",
+  governance: "AI_GOVERNANCE",
+  ethics: "AI_ETHICS",
+  risk: "AI_RISK_MANAGEMENT",
 };
 
-export default function IncidentsPage() {
+export default function PoliciesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const debouncedSearch = useDebounce(searchQuery);
@@ -66,18 +57,18 @@ export default function IncidentsPage() {
 
   const typeFilter = tabTypeMap[activeTab];
 
-  const { data: statsData, isLoading: statsLoading } = trpc.incident.getStats.useQuery(
+  const { data: statsData } = trpc.policy.getStats.useQuery(
     { organizationId: organization?.id ?? "" },
     { enabled: !!organization?.id }
   );
 
   const {
-    data: incidentPages,
-    isLoading: incidentsLoading,
+    data: policiesPages,
+    isLoading: policiesLoading,
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
-  } = trpc.incident.list.useInfiniteQuery(
+  } = trpc.policy.list.useInfiniteQuery(
     {
       organizationId: organization?.id ?? "",
       search: debouncedSearch || undefined,
@@ -90,24 +81,24 @@ export default function IncidentsPage() {
     }
   );
 
-  const incidents = incidentPages?.pages.flatMap((p) => p.items) ?? [];
-  const stats = statsData ?? { total: 0, critical: 0, open: 0, resolved: 0 };
+  const policies = policiesPages?.pages.flatMap((p) => p.items) ?? [];
+  const stats = statsData ?? { total: 0, draft: 0, published: 0, reviewDue: 0 };
 
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl sm:text-2xl font-semibold">AI Incidents</h1>
+          <h1 className="text-xl sm:text-2xl font-semibold">Policies</h1>
           <p className="text-sm text-muted-foreground">
-            Track AI-specific failures, severity, timeline & Art. 62 notifications
+            AI governance policies and standards
           </p>
         </div>
-        <Link href="/governance/incidents/new" className="flex-none">
+        <Link href="/governance/policies/new" className="flex-none">
           <Button className="w-full sm:w-auto">
             <Plus className="w-4 h-4 sm:mr-2" />
-            <span className="hidden sm:inline">Report Incident</span>
-            <span className="sm:hidden">Report</span>
+            <span className="hidden sm:inline">Create Policy</span>
+            <span className="sm:hidden">Create</span>
           </Button>
         </Link>
       </div>
@@ -117,25 +108,27 @@ export default function IncidentsPage() {
         <Card>
           <CardContent className="p-4 sm:pt-6">
             <div className="text-xl sm:text-2xl font-bold text-primary">{stats.total}</div>
-            <p className="text-xs sm:text-sm text-muted-foreground">Total Incidents</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">Total</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-destructive">{stats.critical}</div>
-            <p className="text-xs sm:text-sm text-muted-foreground">Critical</p>
+            <div className="text-xl sm:text-2xl font-bold text-muted-foreground">{stats.draft}</div>
+            <p className="text-xs sm:text-sm text-muted-foreground">Draft</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-yellow-500">{stats.open}</div>
-            <p className="text-xs sm:text-sm text-muted-foreground">Open</p>
+            <div className="text-xl sm:text-2xl font-bold text-green-500">{stats.published}</div>
+            <p className="text-xs sm:text-sm text-muted-foreground">Published</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-green-500">{stats.resolved}</div>
-            <p className="text-xs sm:text-sm text-muted-foreground">Resolved</p>
+            <div className={`text-xl sm:text-2xl font-bold ${stats.reviewDue > 0 ? "text-yellow-500" : "text-muted-foreground"}`}>
+              {stats.reviewDue}
+            </div>
+            <p className="text-xs sm:text-sm text-muted-foreground">Review Due</p>
           </CardContent>
         </Card>
       </div>
@@ -145,7 +138,7 @@ export default function IncidentsPage() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search incidents..."
+            placeholder="Search policies..."
             className="pl-9"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -159,75 +152,90 @@ export default function IncidentsPage() {
           <TabsTrigger value="all" className="text-xs sm:text-sm">
             All ({stats.total})
           </TabsTrigger>
-          <TabsTrigger value="hallucination" className="text-xs sm:text-sm">
-            Hallucination
+          <TabsTrigger value="usage" className="text-xs sm:text-sm">
+            Usage
           </TabsTrigger>
-          <TabsTrigger value="bias" className="text-xs sm:text-sm">
-            Bias
+          <TabsTrigger value="governance" className="text-xs sm:text-sm">
+            Governance
           </TabsTrigger>
-          <TabsTrigger value="drift" className="text-xs sm:text-sm hidden sm:inline-flex">
-            Drift
+          <TabsTrigger value="ethics" className="text-xs sm:text-sm">
+            Ethics
           </TabsTrigger>
-          <TabsTrigger value="prompt_injection" className="text-xs sm:text-sm hidden sm:inline-flex">
-            Prompt Injection
+          <TabsTrigger value="risk" className="text-xs sm:text-sm">
+            Risk Mgmt
+          </TabsTrigger>
+          <TabsTrigger value="other" className="text-xs sm:text-sm">
+            Other
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value={activeTab} className="mt-4">
-          {incidentsLoading ? (
+          {policiesLoading ? (
             <ListPageSkeleton />
-          ) : incidents.length > 0 ? (
+          ) : policies.length > 0 ? (
             <>
               <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-                {incidents.map((incident) => (
-                  <Link key={incident.id} href={`/governance/incidents/${incident.id}`}>
+                {policies.map((policy) => (
+                  <Link key={policy.id} href={`/governance/policies/${policy.id}`}>
                     <Card className="hover:border-primary/50 transition-colors cursor-pointer h-full">
                       <CardHeader className="pb-3 p-4 sm:p-6 sm:pb-3">
                         <div className="flex items-start justify-between gap-2">
                           <div className="w-9 h-9 sm:w-10 sm:h-10 bg-primary/10 flex items-center justify-center shrink-0">
-                            <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+                            <ScrollText className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                           </div>
                           <div className="flex gap-1.5 flex-wrap justify-end">
                             <Badge
-                              className={`text-xs ${severityColors[incident.severity] || ""}`}
+                              variant="outline"
+                              className="text-xs"
                             >
-                              {incident.severity}
+                              {policyTypeLabels[policy.type] || policy.type}
                             </Badge>
                             <Badge
                               variant="outline"
-                              className={`text-xs ${statusColors[incident.status] || ""}`}
+                              className={`text-xs ${statusColors[policy.status] || ""}`}
                             >
-                              {incident.status}
+                              {policy.status.replace("_", " ")}
                             </Badge>
                           </div>
                         </div>
                         <CardTitle className="mt-3 text-base sm:text-lg line-clamp-1">
-                          {incident.title}
+                          {policy.title}
                         </CardTitle>
-                        {incident.description && (
+                        {policy.description && (
                           <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">
-                            {incident.description}
+                            {policy.description}
                           </p>
                         )}
                       </CardHeader>
                       <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
                         <div className="flex flex-wrap gap-1.5 mb-3">
                           <Badge variant="outline" className="text-xs">
-                            {typeLabels[incident.type] || incident.type}
+                            v{policy.currentVersion}
                           </Badge>
-                          {incident.aiSystem && (
+                          {(policy._count?.systemLinks ?? 0) > 0 && (
                             <Badge variant="outline" className="text-xs">
-                              {incident.aiSystem.name}
+                              <Link2 className="w-3 h-3 mr-1" />
+                              {policy._count.systemLinks} system{policy._count.systemLinks !== 1 ? "s" : ""}
                             </Badge>
                           )}
                         </div>
-                        <div className="flex justify-between text-xs text-muted-foreground">
-                          <span className="flex items-center gap-1">
-                            <Clock className="w-3 h-3" />
-                            {formatRelativeTime(incident.reportedAt)}
-                          </span>
-                          <span>{incident._count?.tasks ?? 0} tasks</span>
+                        <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
+                          {policy.effectiveDate && (
+                            <span className="flex items-center gap-1">
+                              <Calendar className="w-3 h-3" />
+                              Effective {formatDate(policy.effectiveDate)}
+                            </span>
+                          )}
+                          {policy.reviewDate && (
+                            <span className="flex items-center gap-1">
+                              <Calendar className="w-3 h-3" />
+                              Review {formatDate(policy.reviewDate)}
+                            </span>
+                          )}
                         </div>
+                        <p className="text-xs text-muted-foreground mt-2">
+                          Updated {formatRelativeTime(policy.updatedAt)}
+                        </p>
                       </CardContent>
                     </Card>
                   </Link>
@@ -251,18 +259,18 @@ export default function IncidentsPage() {
           ) : (
             <Card>
               <CardContent className="py-8 text-center text-muted-foreground">
-                <AlertTriangle className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                <p>No incidents found</p>
+                <ScrollText className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                <p>No policies found</p>
                 <p className="text-sm mb-4">
                   {searchQuery
                     ? "Try adjusting your search terms"
-                    : "No AI incidents have been reported yet"}
+                    : "Start by creating your first policy"}
                 </p>
                 {!searchQuery && (
-                  <Link href="/governance/incidents/new">
+                  <Link href="/governance/policies/new">
                     <Button>
                       <Plus className="w-4 h-4 mr-2" />
-                      Report Incident
+                      Create Policy
                     </Button>
                   </Link>
                 )}

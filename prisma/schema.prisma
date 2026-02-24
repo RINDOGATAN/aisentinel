@@ -109,6 +109,9 @@ model Organization {
   complianceMappings    ComplianceMapping[]
   complianceEvidence    ComplianceEvidence[]
   shadowAIReports       ShadowAIReport[]
+  aiVendors             AIVendor[]
+  aiVendorAssessments   AIVendorAssessment[]
+  aiPolicies            AIPolicy[]
   auditLogs             AuditLog[]
   customerLinks         CustomerOrganization[]
 
@@ -194,7 +197,10 @@ model AISystem {
   createdAt             DateTime       @default(now())
   updatedAt             DateTime       @updatedAt
 
+  vendorId           String?
+
   organization       Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  vendor             AIVendor?             @relation(fields: [vendorId], references: [id], onDelete: SetNull)
   models             AIModel[]
   dataSources        AISystemDataSource[]
   riskClassification RiskClassification?
@@ -202,8 +208,10 @@ model AISystem {
   oversightGates     OversightGate[]
   incidents          AIIncident[]
   complianceMappings ComplianceMapping[]
+  policyLinks        AIPolicySystemLink[]
 
   @@index([organizationId])
+  @@index([vendorId])
   @@map("ai_systems")
 }
 
@@ -391,6 +399,7 @@ model OversightGate {
   organizationId String
   aiSystemId     String
   gateType       GateType
+  description    String?    @db.Text
   status         GateStatus @default(PENDING)
   reviewCadence  String?
   nextReviewDate DateTime?
@@ -806,6 +815,158 @@ model PlatformAdmin {
   createdAt DateTime @default(now())
 
   @@map("platform_admins")
+}
+
+// ============================================================
+// VENDOR/THIRD-PARTY AI RISK
+// ============================================================
+
+enum VendorStatus {
+  ACTIVE
+  UNDER_REVIEW
+  APPROVED
+  SUSPENDED
+  TERMINATED
+}
+
+enum VendorRiskLevel {
+  CRITICAL
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum VendorAssessmentStatus {
+  DRAFT
+  IN_PROGRESS
+  COMPLETED
+  EXPIRED
+}
+
+model AIVendor {
+  id                 String          @id @default(cuid())
+  organizationId     String
+  name               String
+  website            String?
+  description        String?         @db.Text
+  contactName        String?
+  contactEmail       String?
+  riskLevel          VendorRiskLevel?
+  status             VendorStatus    @default(UNDER_REVIEW)
+  dueDiligenceDate   DateTime?
+  contractStartDate  DateTime?
+  contractExpiryDate DateTime?
+  dpoCentralVendorId String?
+  notes              String?         @db.Text
+  metadata           Json?
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+
+  organization Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  assessments  AIVendorAssessment[]
+  systems      AISystem[]
+
+  @@index([organizationId])
+  @@map("ai_vendors")
+}
+
+model AIVendorAssessment {
+  id             String                 @id @default(cuid())
+  vendorId       String
+  organizationId String
+  title          String
+  status         VendorAssessmentStatus @default(DRAFT)
+  riskScore      Float?
+  responses      Json?
+  findings       String?                @db.Text
+  completedBy    String?
+  completedAt    DateTime?
+  nextReviewDate DateTime?
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+
+  vendor       AIVendor     @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([vendorId])
+  @@index([organizationId])
+  @@map("ai_vendor_assessments")
+}
+
+// ============================================================
+// POLICY MANAGEMENT
+// ============================================================
+
+enum PolicyType {
+  AI_USAGE
+  AI_GOVERNANCE
+  AI_ETHICS
+  AI_RISK_MANAGEMENT
+  AI_DATA_GOVERNANCE
+  AI_PROCUREMENT
+  AI_INCIDENT_RESPONSE
+  AI_TRANSPARENCY
+  CUSTOM
+}
+
+enum PolicyStatus {
+  DRAFT
+  UNDER_REVIEW
+  APPROVED
+  PUBLISHED
+  ARCHIVED
+}
+
+model AIPolicy {
+  id             String       @id @default(cuid())
+  organizationId String
+  title          String
+  type           PolicyType
+  description    String?      @db.Text
+  content        String?      @db.Text
+  currentVersion Int          @default(1)
+  status         PolicyStatus @default(DRAFT)
+  approvedBy     String?
+  approvedAt     DateTime?
+  effectiveDate  DateTime?
+  reviewDate     DateTime?
+  createdBy      String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  organization Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  versions     AIPolicyVersion[]
+  systemLinks  AIPolicySystemLink[]
+
+  @@index([organizationId])
+  @@map("ai_policies")
+}
+
+model AIPolicyVersion {
+  id          String   @id @default(cuid())
+  policyId    String
+  version     Int
+  content     String   @db.Text
+  changeNotes String?  @db.Text
+  createdBy   String
+  createdAt   DateTime @default(now())
+
+  policy AIPolicy @relation(fields: [policyId], references: [id], onDelete: Cascade)
+
+  @@index([policyId])
+  @@map("ai_policy_versions")
+}
+
+model AIPolicySystemLink {
+  id         String @id @default(cuid())
+  policyId   String
+  aiSystemId String
+
+  policy   AIPolicy @relation(fields: [policyId], references: [id], onDelete: Cascade)
+  aiSystem AISystem @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+
+  @@unique([policyId, aiSystemId])
+  @@map("ai_policy_system_links")
 }
 
 // ============================================================

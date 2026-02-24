@@ -998,6 +998,740 @@ async function main() {
   console.log(`  Created ${newAuditEntries.length} additional audit log entries`);
 
   // ============================================================
+  // 9. HUMAN OVERSIGHT GATES & DECISIONS
+  // ============================================================
+
+  console.log("9. Creating oversight gates and decisions...");
+
+  // Pre-deployment gate for Credit Scoring — PENDING
+  const creditGate = await prisma.oversightGate.upsert({
+    where: { id: "demo-gate-credit-pre" },
+    update: {},
+    create: {
+      id: "demo-gate-credit-pre",
+      organizationId: orgId,
+      aiSystemId: creditScoring.id,
+      gateType: "PRE_DEPLOYMENT",
+      description: "Pre-deployment approval gate for Credit Risk Scoring Model. Requires sign-off from Risk Committee before production deployment.",
+      status: "PENDING",
+      assignedTo: "Risk Committee",
+    },
+  });
+
+  // Post-deployment gate for Fraud Detection — PASSED
+  const fraudGate = await prisma.oversightGate.upsert({
+    where: { id: "demo-gate-fraud-post" },
+    update: {},
+    create: {
+      id: "demo-gate-fraud-post",
+      organizationId: orgId,
+      aiSystemId: "demo-system-fraud",
+      gateType: "POST_DEPLOYMENT",
+      description: "Post-deployment validation of fraud detection system performance and fairness metrics.",
+      status: "PASSED",
+      assignedTo: "ML Operations",
+    },
+  });
+
+  // Periodic review for HR Screening — overdue
+  await prisma.oversightGate.upsert({
+    where: { id: "demo-gate-hr-periodic" },
+    update: {},
+    create: {
+      id: "demo-gate-hr-periodic",
+      organizationId: orgId,
+      aiSystemId: "demo-system-hr-screening",
+      gateType: "PERIODIC_REVIEW",
+      description: "Quarterly bias audit and performance review of the HR resume screening system.",
+      status: "PENDING",
+      reviewCadence: "Quarterly",
+      nextReviewDate: new Date("2026-01-15"), // overdue
+      assignedTo: "AI Ethics Board",
+    },
+  });
+
+  // Periodic review for Chatbot — PASSED (up to date)
+  await prisma.oversightGate.upsert({
+    where: { id: "demo-gate-chatbot-periodic" },
+    update: {},
+    create: {
+      id: "demo-gate-chatbot-periodic",
+      organizationId: orgId,
+      aiSystemId: "demo-system-chatbot",
+      gateType: "PERIODIC_REVIEW",
+      description: "Monthly quality review of chatbot responses and hallucination rate monitoring.",
+      status: "PASSED",
+      reviewCadence: "Monthly",
+      nextReviewDate: new Date("2026-03-15"),
+      assignedTo: "Customer Support Lead",
+    },
+  });
+
+  // Incident-triggered gate for Content Moderation — IN_REVIEW
+  await prisma.oversightGate.upsert({
+    where: { id: "demo-gate-content-incident" },
+    update: {},
+    create: {
+      id: "demo-gate-content-incident",
+      organizationId: orgId,
+      aiSystemId: "demo-system-content-mod",
+      gateType: "INCIDENT_TRIGGERED",
+      description: "Triggered after bias incident in content moderation. Reviewing model behavior and retraining requirements.",
+      status: "IN_REVIEW",
+      assignedTo: "Trust & Safety",
+    },
+  });
+
+  // Material change gate for Sentiment Analysis — FAILED
+  await prisma.oversightGate.upsert({
+    where: { id: "demo-gate-sentiment-material" },
+    update: {},
+    create: {
+      id: "demo-gate-sentiment-material",
+      organizationId: orgId,
+      aiSystemId: sentimentAnalysis.id,
+      gateType: "MATERIAL_CHANGE",
+      description: "Review gate for proposed expansion of sentiment analysis to include Slack messages. Blocked pending legal review.",
+      status: "FAILED",
+      assignedTo: "Legal Team",
+    },
+  });
+
+  // Decisions
+  const decisions = [
+    {
+      id: "demo-decision-fraud-1",
+      gateId: fraudGate.id,
+      organizationId: orgId,
+      decision: "APPROVE" as const,
+      rationale: "All post-deployment metrics within acceptable thresholds. False positive rate at 0.3% (target: <0.5%). AUC-ROC stable at 0.98. No significant demographic disparities detected in 30-day monitoring window.",
+      evidenceReviewed: ["Performance Dashboard Q4 2025", "Fairness Audit Report", "Customer Complaint Analysis"],
+      decidedBy: userId,
+      decidedAt: new Date("2025-11-15"),
+    },
+    {
+      id: "demo-decision-fraud-2",
+      gateId: fraudGate.id,
+      organizationId: orgId,
+      decision: "DEFER" as const,
+      rationale: "Initial review identified elevated false positive rate (0.7%) for transactions originating from new merchant categories. Requested additional analysis before approval.",
+      evidenceReviewed: ["Performance Dashboard Oct 2025"],
+      decidedBy: userId,
+      decidedAt: new Date("2025-10-20"),
+    },
+    {
+      id: "demo-decision-chatbot-1",
+      gateId: "demo-gate-chatbot-periodic",
+      organizationId: orgId,
+      decision: "APPROVE" as const,
+      rationale: "Monthly review passed. Hallucination rate at 2.1% (target: <3%). Customer satisfaction score stable at 4.2/5. No critical escalations in the review period.",
+      evidenceReviewed: ["Quality Dashboard Feb 2026", "CSAT Report", "Escalation Log"],
+      decidedBy: userId,
+      decidedAt: new Date("2026-02-15"),
+    },
+    {
+      id: "demo-decision-chatbot-2",
+      gateId: "demo-gate-chatbot-periodic",
+      organizationId: orgId,
+      decision: "APPROVE" as const,
+      rationale: "January review passed. All metrics within normal ranges.",
+      evidenceReviewed: ["Quality Dashboard Jan 2026"],
+      decidedBy: userId,
+      decidedAt: new Date("2026-01-15"),
+    },
+    {
+      id: "demo-decision-sentiment-1",
+      gateId: "demo-gate-sentiment-material",
+      organizationId: orgId,
+      decision: "REJECT" as const,
+      rationale: "Expanding to Slack messages would constitute emotion recognition in the workplace under Art. 5(1)(f). Legal team advises this expansion cannot proceed without explicit exemption for safety/medical purposes, which does not apply here.",
+      evidenceReviewed: ["Legal Analysis Memo", "EU AI Act Art. 5 Assessment", "Works Council Opinion"],
+      decidedBy: userId,
+      decidedAt: new Date("2026-02-01"),
+    },
+    {
+      id: "demo-decision-credit-defer",
+      gateId: creditGate.id,
+      organizationId: orgId,
+      decision: "DEFER" as const,
+      rationale: "FRIA still under review. Cannot approve pre-deployment gate until FRIA is completed and approved. Estimated completion: Q1 2026.",
+      evidenceReviewed: ["FRIA Draft Status", "Risk Committee Minutes"],
+      decidedBy: userId,
+      decidedAt: new Date("2026-01-25"),
+    },
+    {
+      id: "demo-decision-content-defer",
+      gateId: "demo-gate-content-incident",
+      organizationId: orgId,
+      decision: "DEFER" as const,
+      rationale: "Bias analysis still in progress. Preliminary results show potential over-flagging of content from certain cultural contexts. Awaiting retraining results.",
+      evidenceReviewed: ["Bias Analysis Preliminary Report"],
+      decidedBy: userId,
+      decidedAt: new Date("2026-02-10"),
+    },
+    {
+      id: "demo-decision-hr-approve-prev",
+      gateId: "demo-gate-hr-periodic",
+      organizationId: orgId,
+      decision: "APPROVE" as const,
+      rationale: "Q3 2025 review passed. Gender bias gap narrowed from 4% to 2.5% after model retraining. Monitoring continues.",
+      evidenceReviewed: ["Bias Audit Q3 2025", "Model Performance Report", "HR Feedback Summary"],
+      decidedBy: userId,
+      decidedAt: new Date("2025-10-01"),
+    },
+  ];
+
+  for (const d of decisions) {
+    await prisma.oversightDecision.upsert({
+      where: { id: d.id },
+      update: {},
+      create: d,
+    });
+  }
+
+  console.log("  Created 6 oversight gates and 8 decisions");
+
+  // ============================================================
+  // 10. AI INCIDENTS
+  // ============================================================
+
+  console.log("10. Creating AI incidents...");
+
+  // 1. CRITICAL hallucination — MITIGATING
+  const hallucinationIncident = await prisma.aIIncident.upsert({
+    where: { id: "demo-incident-hallucination" },
+    update: {},
+    create: {
+      id: "demo-incident-hallucination",
+      organizationId: orgId,
+      aiSystemId: "demo-system-chatbot",
+      title: "Customer chatbot provided fabricated refund policy",
+      description: "The customer support chatbot generated a detailed but entirely fabricated refund policy, citing non-existent 'Premium Refund Guarantee' terms. Multiple customers received incorrect information about 30-day unconditional refunds when actual policy is 14-day conditional. Estimated 47 customers affected over 3 hours before detection.",
+      type: "HALLUCINATION",
+      severity: "CRITICAL",
+      status: "MITIGATING",
+      notificationRequired: true,
+      reportedBy: userId,
+      reportedAt: new Date("2026-02-18T14:30:00"),
+    },
+  });
+
+  // 2. HIGH bias — RESOLVED
+  await prisma.aIIncident.upsert({
+    where: { id: "demo-incident-bias" },
+    update: {},
+    create: {
+      id: "demo-incident-bias",
+      organizationId: orgId,
+      aiSystemId: "demo-system-hr-screening",
+      title: "Gender bias detected in resume screening scores",
+      description: "Statistical analysis revealed that female applicants for engineering roles received systematically lower screening scores (mean: 62.3) compared to male applicants (mean: 71.8) with equivalent qualifications. The bias was traced to the training data overrepresenting male candidates in historical engineering hires.",
+      type: "BIAS_DISCRIMINATION",
+      severity: "HIGH",
+      status: "RESOLVED",
+      rootCauseCategory: "Training Data Bias",
+      rootCauseDescription: "Historical hiring data from 2020-2023 contained implicit gender bias: 78% of engineering hires were male. The model learned to associate male-correlated resume features (e.g., certain university names, hobbies) with higher scores.",
+      impactDescription: "Approximately 200 female applicants may have been unfairly ranked lower over a 6-month period. 15 confirmed cases where qualified female candidates were not advanced to interview stage.",
+      notificationRequired: false,
+      reportedBy: userId,
+      reportedAt: new Date("2025-11-01"),
+      resolvedAt: new Date("2025-12-20"),
+    },
+  });
+
+  // 3. MEDIUM drift — INVESTIGATING
+  await prisma.aIIncident.upsert({
+    where: { id: "demo-incident-drift" },
+    update: {},
+    create: {
+      id: "demo-incident-drift",
+      organizationId: orgId,
+      aiSystemId: "demo-system-fraud",
+      title: "Fraud detection accuracy degradation in Q1 2026",
+      description: "Monitoring dashboard shows a steady decline in fraud detection precision from 95.2% to 89.7% over the past 6 weeks. The model appears to be generating more false positives, particularly for international transactions. Investigation ongoing to determine if this is caused by distribution shift in transaction patterns.",
+      type: "MODEL_DRIFT",
+      severity: "MEDIUM",
+      status: "INVESTIGATING",
+      notificationRequired: false,
+      reportedBy: userId,
+      reportedAt: new Date("2026-02-10"),
+    },
+  });
+
+  // 4. LOW performance degradation — CLOSED
+  await prisma.aIIncident.upsert({
+    where: { id: "demo-incident-perf" },
+    update: {},
+    create: {
+      id: "demo-incident-perf",
+      organizationId: orgId,
+      aiSystemId: predictiveMaintenance.id,
+      title: "Prediction latency spike in Factory B sensors",
+      description: "Prediction response times increased from avg 200ms to 1.2s for Factory B sensor data. Root cause was a misconfigured batch processing pipeline that was accumulating sensor readings instead of processing in real-time.",
+      type: "PERFORMANCE_DEGRADATION",
+      severity: "LOW",
+      status: "CLOSED",
+      rootCauseCategory: "Infrastructure Configuration",
+      rootCauseDescription: "Batch processing pipeline configuration was accidentally overwritten during a routine deployment, changing the processing mode from streaming to batch with a 5-second window.",
+      impactDescription: "Factory B maintenance predictions were delayed by ~1 second for 4 hours. No missed predictions or equipment failures occurred.",
+      notificationRequired: false,
+      reportedBy: userId,
+      reportedAt: new Date("2026-01-05"),
+      resolvedAt: new Date("2026-01-05"),
+    },
+  });
+
+  // 5. HIGH prompt injection — REPORTED
+  await prisma.aIIncident.upsert({
+    where: { id: "demo-incident-injection" },
+    update: {},
+    create: {
+      id: "demo-incident-injection",
+      organizationId: orgId,
+      aiSystemId: "demo-system-chatbot",
+      title: "Prompt injection attempt extracted system prompt",
+      description: "A user exploited a prompt injection vulnerability to extract portions of the chatbot's system prompt and internal instructions. The extracted information included the list of restricted topics and the escalation rules. No customer data was exposed.",
+      type: "PROMPT_INJECTION",
+      severity: "HIGH",
+      status: "REPORTED",
+      notificationRequired: true,
+      reportedBy: userId,
+      reportedAt: new Date("2026-02-20"),
+    },
+  });
+
+  console.log("  Created 5 incidents");
+
+  // Timeline entries for hallucination incident
+  const timelineEntries = [
+    { id: "demo-timeline-h1", incidentId: hallucinationIncident.id, organizationId: orgId, action: "Incident reported", description: "Customer service manager identified pattern of incorrect refund information in chat transcripts.", performedBy: userId, performedAt: new Date("2026-02-18T14:30:00") },
+    { id: "demo-timeline-h2", incidentId: hallucinationIncident.id, organizationId: orgId, action: "Investigation started", description: "ML team began reviewing chatbot logs and RAG retrieval traces.", performedBy: userId, performedAt: new Date("2026-02-18T14:45:00") },
+    { id: "demo-timeline-h3", incidentId: hallucinationIncident.id, organizationId: orgId, action: "Root cause identified", description: "Knowledge base article on refund policy was deleted during routine cleanup, causing the model to hallucinate a policy from training data.", performedBy: userId, performedAt: new Date("2026-02-18T16:00:00") },
+    { id: "demo-timeline-h4", incidentId: hallucinationIncident.id, organizationId: orgId, action: "Immediate mitigation applied", description: "Refund policy article restored to knowledge base. Confidence threshold raised from 0.6 to 0.8 for policy-related queries.", performedBy: userId, performedAt: new Date("2026-02-18T17:30:00") },
+    { id: "demo-timeline-h5", incidentId: hallucinationIncident.id, organizationId: orgId, action: "Customer outreach initiated", description: "Customer service team contacting 47 affected customers with correct refund policy information and apology.", performedBy: userId, performedAt: new Date("2026-02-19T09:00:00") },
+    { id: "demo-timeline-h6", incidentId: hallucinationIncident.id, organizationId: orgId, action: "Status changed to MITIGATING", description: "Status updated from INVESTIGATING to MITIGATING", performedBy: userId, performedAt: new Date("2026-02-19T10:00:00") },
+  ];
+
+  for (const t of timelineEntries) {
+    await prisma.aIIncidentTimeline.upsert({ where: { id: t.id }, update: {}, create: t });
+  }
+
+  // Tasks for hallucination incident
+  const incidentTasks = [
+    { id: "demo-task-h1", incidentId: hallucinationIncident.id, organizationId: orgId, title: "Contact all 47 affected customers", status: "IN_PROGRESS" as const, assignedTo: "Customer Service", dueDate: new Date("2026-02-21") },
+    { id: "demo-task-h2", incidentId: hallucinationIncident.id, organizationId: orgId, title: "Implement KB deletion safeguards", status: "PENDING" as const, assignedTo: "ML Engineering", dueDate: new Date("2026-02-25") },
+    { id: "demo-task-h3", incidentId: hallucinationIncident.id, organizationId: orgId, title: "Add hallucination detection for policy queries", status: "PENDING" as const, assignedTo: "ML Engineering", dueDate: new Date("2026-03-01") },
+  ];
+
+  for (const t of incidentTasks) {
+    await prisma.aIIncidentTask.upsert({ where: { id: t.id }, update: {}, create: t });
+  }
+
+  // Notification for hallucination incident
+  await prisma.aIIncidentNotification.upsert({
+    where: { id: "demo-notif-h1" },
+    update: {},
+    create: {
+      id: "demo-notif-h1",
+      incidentId: hallucinationIncident.id,
+      organizationId: orgId,
+      authority: "National AI Market Surveillance Authority",
+      notificationType: "Art. 62 Serious Incident Report",
+      dueBy: new Date("2026-03-05"),
+      status: "PENDING",
+    },
+  });
+
+  console.log("  Created timeline entries, tasks, and notifications");
+
+  // ============================================================
+  // 11. VENDORS
+  // ============================================================
+
+  console.log("11. Creating AI vendors...");
+
+  const vendorOpenAI = await prisma.aIVendor.upsert({
+    where: { id: "demo-vendor-openai" },
+    update: {},
+    create: {
+      id: "demo-vendor-openai",
+      organizationId: orgId,
+      name: "OpenAI",
+      website: "https://openai.com",
+      description: "Provider of GPT-4o model used in Customer Support Chatbot and other generative AI applications.",
+      contactName: "Enterprise Support",
+      contactEmail: "enterprise@openai.com",
+      riskLevel: "MEDIUM",
+      status: "APPROVED",
+      contractStartDate: new Date("2025-01-01"),
+      contractExpiryDate: new Date("2026-12-31"),
+      notes: "Enterprise agreement with SLA and DPA. Model outputs do not train OpenAI models per agreement.",
+    },
+  });
+
+  await prisma.aIVendor.upsert({
+    where: { id: "demo-vendor-internal" },
+    update: {},
+    create: {
+      id: "demo-vendor-internal",
+      organizationId: orgId,
+      name: "Internal ML Platform",
+      description: "Internal machine learning platform team providing model training, serving, and monitoring infrastructure.",
+      riskLevel: "LOW",
+      status: "ACTIVE",
+      notes: "Internal team, no external contract required.",
+    },
+  });
+
+  await prisma.aIVendor.upsert({
+    where: { id: "demo-vendor-hr-saas" },
+    update: {},
+    create: {
+      id: "demo-vendor-hr-saas",
+      organizationId: orgId,
+      name: "TalentScreen AI",
+      website: "https://talentscreen.example.com",
+      description: "AI-powered resume screening and candidate matching SaaS platform used by HR department.",
+      contactName: "Sarah Johnson",
+      contactEmail: "sarah@talentscreen.example.com",
+      riskLevel: "HIGH",
+      status: "UNDER_REVIEW",
+      contractStartDate: new Date("2024-06-01"),
+      contractExpiryDate: new Date("2026-05-31"),
+      notes: "Contract expiring soon. Due diligence review in progress for renewal decision.",
+    },
+  });
+
+  await prisma.aIVendor.upsert({
+    where: { id: "demo-vendor-legacy" },
+    update: {},
+    create: {
+      id: "demo-vendor-legacy",
+      organizationId: orgId,
+      name: "RecSys Analytics (Legacy)",
+      description: "Former provider of the collaborative filtering recommendation engine. Contract terminated after migration to internal solution.",
+      riskLevel: "LOW",
+      status: "TERMINATED",
+      contractStartDate: new Date("2023-01-01"),
+      contractExpiryDate: new Date("2025-11-30"),
+    },
+  });
+
+  // Link OpenAI vendor to chatbot and content mod systems
+  await prisma.aISystem.updateMany({
+    where: { id: { in: ["demo-system-chatbot", "demo-system-content-mod"] } },
+    data: { vendorId: vendorOpenAI.id },
+  });
+
+  // Vendor assessments
+  await prisma.aIVendorAssessment.upsert({
+    where: { id: "demo-vassess-openai-1" },
+    update: {},
+    create: {
+      id: "demo-vassess-openai-1",
+      vendorId: vendorOpenAI.id,
+      organizationId: orgId,
+      title: "OpenAI Annual Due Diligence 2025",
+      status: "COMPLETED",
+      riskScore: 45,
+      findings: "OpenAI meets data processing requirements per DPA. Model outputs not used for training. SOC 2 Type II audit report reviewed. Recommended: monitor for any changes to data retention policies.",
+      completedBy: userId,
+      completedAt: new Date("2025-12-01"),
+      nextReviewDate: new Date("2026-12-01"),
+    },
+  });
+
+  await prisma.aIVendorAssessment.upsert({
+    where: { id: "demo-vassess-openai-2" },
+    update: {},
+    create: {
+      id: "demo-vassess-openai-2",
+      vendorId: vendorOpenAI.id,
+      organizationId: orgId,
+      title: "OpenAI EU AI Act Compliance Review",
+      status: "IN_PROGRESS",
+      findings: "Reviewing OpenAI's compliance with EU AI Act provider obligations for general-purpose AI models.",
+    },
+  });
+
+  await prisma.aIVendorAssessment.upsert({
+    where: { id: "demo-vassess-hr-1" },
+    update: {},
+    create: {
+      id: "demo-vassess-hr-1",
+      vendorId: "demo-vendor-hr-saas",
+      organizationId: orgId,
+      title: "TalentScreen AI Due Diligence - Renewal",
+      status: "DRAFT",
+      findings: "Pending: Need to review updated privacy policy, bias audit results, and Art. 14 compliance documentation.",
+    },
+  });
+
+  console.log("  Created 4 vendors and 3 assessments");
+
+  // ============================================================
+  // 12. POLICIES
+  // ============================================================
+
+  console.log("12. Creating AI policies...");
+
+  const usagePolicy = await prisma.aIPolicy.upsert({
+    where: { id: "demo-policy-usage" },
+    update: {},
+    create: {
+      id: "demo-policy-usage",
+      organizationId: orgId,
+      title: "AI Usage Policy",
+      type: "AI_USAGE",
+      description: "Organization-wide policy governing the acceptable use of AI systems by all employees and contractors.",
+      content: `1. PURPOSE\nThis policy establishes guidelines for the acceptable use of AI systems within the organization, ensuring compliance with the EU AI Act and internal governance standards.\n\n2. SCOPE\nThis policy applies to all employees, contractors, and third parties who use, develop, or deploy AI systems on behalf of the organization.\n\n3. GENERAL PRINCIPLES\n3.1 All AI systems must be registered in the AI Registry before deployment.\n3.2 AI systems processing personal data must have a completed FRIA.\n3.3 Employees must not use unauthorized AI tools for work purposes (see Shadow AI policy).\n3.4 All AI-generated outputs must be reviewed by a human before being used for decisions affecting individuals.\n\n4. PROHIBITED USES\n4.1 AI systems that perform social scoring or manipulation.\n4.2 Real-time biometric identification in public spaces (unless exempt).\n4.3 Emotion recognition in the workplace (unless for safety/medical purposes).\n4.4 AI systems making fully autonomous decisions in high-risk domains without human oversight.\n\n5. RESPONSIBILITIES\n5.1 AI Officers are responsible for maintaining the AI Registry and ensuring compliance.\n5.2 Business Owners are responsible for the appropriate use of AI within their departments.\n5.3 All employees must report suspected AI incidents or unauthorized AI use.\n\n6. REVIEW\nThis policy is reviewed annually and updated as needed to reflect regulatory changes.`,
+      currentVersion: 2,
+      status: "PUBLISHED",
+      approvedBy: userId,
+      approvedAt: new Date("2025-09-01"),
+      effectiveDate: new Date("2025-10-01"),
+      reviewDate: new Date("2026-10-01"),
+      createdBy: userId,
+    },
+  });
+
+  // Version history for usage policy
+  await prisma.aIPolicyVersion.upsert({
+    where: { id: "demo-pversion-usage-1" },
+    update: {},
+    create: {
+      id: "demo-pversion-usage-1",
+      policyId: usagePolicy.id,
+      version: 1,
+      content: "Initial version of the AI Usage Policy covering basic guidelines and prohibited uses.",
+      changeNotes: "Initial version",
+      createdBy: userId,
+      createdAt: new Date("2025-06-01"),
+    },
+  });
+
+  await prisma.aIPolicyVersion.upsert({
+    where: { id: "demo-pversion-usage-2" },
+    update: {},
+    create: {
+      id: "demo-pversion-usage-2",
+      policyId: usagePolicy.id,
+      version: 2,
+      content: `1. PURPOSE\nThis policy establishes guidelines for the acceptable use of AI systems within the organization...\n\n(Full updated content)`,
+      changeNotes: "Updated to include EU AI Act Art. 5 prohibited practices, Shadow AI reference, and expanded responsibilities section.",
+      createdBy: userId,
+      createdAt: new Date("2025-09-15"),
+    },
+  });
+
+  const riskPolicy = await prisma.aIPolicy.upsert({
+    where: { id: "demo-policy-risk" },
+    update: {},
+    create: {
+      id: "demo-policy-risk",
+      organizationId: orgId,
+      title: "AI Risk Management Framework",
+      type: "AI_RISK_MANAGEMENT",
+      description: "Framework for identifying, assessing, and mitigating risks associated with AI systems across their lifecycle.",
+      content: `1. FRAMEWORK OVERVIEW\nThis framework establishes the processes for managing AI-related risks in alignment with the EU AI Act (Art. 9) and NIST AI RMF.\n\n2. RISK IDENTIFICATION\n2.1 All AI systems must undergo risk classification per the EU AI Act four-tier system.\n2.2 Risk assessments must be conducted before deployment and reviewed periodically.\n\n3. RISK ASSESSMENT\n3.1 High-risk systems require a Fundamental Rights Impact Assessment (FRIA).\n3.2 All systems require an AI Risk Assessment using the standardized template.\n3.3 Risk scores are calculated based on impact severity, likelihood, and mitigation effectiveness.\n\n4. RISK MITIGATION\n4.1 Identified risks must have documented mitigation measures.\n4.2 Residual risks must be formally accepted by the appropriate authority.\n\n5. MONITORING\n5.1 Continuous monitoring for model drift, bias, and performance degradation.\n5.2 Incident reporting procedures as defined in the AI Incident Response Procedure.`,
+      currentVersion: 1,
+      status: "APPROVED",
+      approvedBy: userId,
+      approvedAt: new Date("2025-11-15"),
+      effectiveDate: new Date("2025-12-01"),
+      reviewDate: new Date("2026-12-01"),
+      createdBy: userId,
+    },
+  });
+
+  await prisma.aIPolicyVersion.upsert({
+    where: { id: "demo-pversion-risk-1" },
+    update: {},
+    create: {
+      id: "demo-pversion-risk-1",
+      policyId: riskPolicy.id,
+      version: 1,
+      content: "AI Risk Management Framework v1 content",
+      changeNotes: "Initial version",
+      createdBy: userId,
+      createdAt: new Date("2025-11-01"),
+    },
+  });
+
+  await prisma.aIPolicy.upsert({
+    where: { id: "demo-policy-procurement" },
+    update: {},
+    create: {
+      id: "demo-policy-procurement",
+      organizationId: orgId,
+      title: "AI Procurement Guidelines",
+      type: "AI_PROCUREMENT",
+      description: "Guidelines for evaluating and procuring AI systems and services from third-party vendors.",
+      content: "Draft: AI procurement guidelines covering vendor evaluation criteria, due diligence requirements, and contractual obligations.",
+      currentVersion: 1,
+      status: "DRAFT",
+      createdBy: userId,
+    },
+  });
+
+  const irPolicy = await prisma.aIPolicy.upsert({
+    where: { id: "demo-policy-ir" },
+    update: {},
+    create: {
+      id: "demo-policy-ir",
+      organizationId: orgId,
+      title: "AI Incident Response Procedure",
+      type: "AI_INCIDENT_RESPONSE",
+      description: "Standard operating procedure for reporting, investigating, and resolving AI-related incidents.",
+      content: `1. PURPOSE\nEstablish a standardized process for responding to AI incidents in compliance with Art. 62 of the EU AI Act.\n\n2. INCIDENT CLASSIFICATION\n- CRITICAL: Immediate safety risk or significant fundamental rights impact\n- HIGH: Significant performance failure or bias with broad impact\n- MEDIUM: Moderate issues requiring investigation\n- LOW: Minor issues with limited impact\n\n3. RESPONSE TIMELINE\n- CRITICAL: 1 hour response, 24 hour containment\n- HIGH: 4 hour response, 72 hour containment\n- MEDIUM: 24 hour response, 1 week resolution\n- LOW: 1 week response, 1 month resolution\n\n4. NOTIFICATION REQUIREMENTS\n- Art. 62 notifications to market surveillance authority within 15 days for serious incidents\n- Internal escalation to AI Officer within 4 hours for CRITICAL/HIGH\n\n5. POST-INCIDENT REVIEW\nAll incidents require a post-mortem within 2 weeks of resolution.`,
+      currentVersion: 1,
+      status: "PUBLISHED",
+      approvedBy: userId,
+      approvedAt: new Date("2025-08-01"),
+      effectiveDate: new Date("2025-08-15"),
+      reviewDate: new Date("2026-08-15"),
+      createdBy: userId,
+    },
+  });
+
+  await prisma.aIPolicyVersion.upsert({
+    where: { id: "demo-pversion-ir-1" },
+    update: {},
+    create: {
+      id: "demo-pversion-ir-1",
+      policyId: irPolicy.id,
+      version: 1,
+      content: "AI Incident Response Procedure v1",
+      changeNotes: "Initial version",
+      createdBy: userId,
+      createdAt: new Date("2025-08-01"),
+    },
+  });
+
+  // Policy-system links
+  const policyLinks = [
+    { id: "demo-plink-usage-chatbot", policyId: usagePolicy.id, aiSystemId: "demo-system-chatbot" },
+    { id: "demo-plink-usage-hr", policyId: usagePolicy.id, aiSystemId: "demo-system-hr-screening" },
+    { id: "demo-plink-usage-fraud", policyId: usagePolicy.id, aiSystemId: "demo-system-fraud" },
+    { id: "demo-plink-risk-hr", policyId: riskPolicy.id, aiSystemId: "demo-system-hr-screening" },
+    { id: "demo-plink-risk-credit", policyId: riskPolicy.id, aiSystemId: creditScoring.id },
+    { id: "demo-plink-ir-chatbot", policyId: irPolicy.id, aiSystemId: "demo-system-chatbot" },
+    { id: "demo-plink-ir-fraud", policyId: irPolicy.id, aiSystemId: "demo-system-fraud" },
+    { id: "demo-plink-ir-hr", policyId: irPolicy.id, aiSystemId: "demo-system-hr-screening" },
+    { id: "demo-plink-ir-content", policyId: irPolicy.id, aiSystemId: "demo-system-content-mod" },
+  ];
+
+  for (const link of policyLinks) {
+    await prisma.aIPolicySystemLink.upsert({
+      where: { id: link.id },
+      update: {},
+      create: link,
+    });
+  }
+
+  console.log("  Created 4 policies with version history and 9 system links");
+
+  // ============================================================
+  // 13. SHADOW AI REPORTS
+  // ============================================================
+
+  console.log("13. Creating shadow AI reports...");
+
+  const shadowReports = [
+    {
+      id: "demo-shadow-chatgpt",
+      organizationId: orgId,
+      toolId: "shadow-tool-chatgpt",
+      toolName: "ChatGPT",
+      status: "APPROVED" as const,
+      reportedBy: userId,
+      department: "Marketing",
+      usageDescription: "Marketing team using ChatGPT Team plan for campaign copy, social media content, and email drafts. Data opt-out enabled via enterprise settings.",
+    },
+    {
+      id: "demo-shadow-midjourney",
+      organizationId: orgId,
+      toolId: "shadow-tool-midjourney",
+      toolName: "Midjourney",
+      status: "UNDER_REVIEW" as const,
+      reportedBy: userId,
+      department: "Design",
+      usageDescription: "Design team using Midjourney for concept art and mockup generation. IP implications of AI-generated imagery need review before broader use.",
+    },
+    {
+      id: "demo-shadow-copilot",
+      organizationId: orgId,
+      toolId: "shadow-tool-gh-copilot",
+      toolName: "GitHub Copilot",
+      status: "REGISTERED" as const,
+      reportedBy: userId,
+      department: "Engineering",
+      usageDescription: "Engineering team using GitHub Copilot Business for code completion and generation across all repositories. Enterprise DPA in place.",
+      registeredSystemId: "demo-system-chatbot",
+    },
+    {
+      id: "demo-shadow-claude",
+      organizationId: orgId,
+      toolId: "shadow-tool-claude",
+      toolName: "Claude",
+      status: "DISCOVERED" as const,
+      reportedBy: userId,
+      department: "Legal",
+      usageDescription: "Legal team members observed using Claude for contract review and legal research. Potentially processing privileged client data.",
+    },
+    {
+      id: "demo-shadow-jasper",
+      organizationId: orgId,
+      toolId: "shadow-tool-jasper",
+      toolName: "Jasper",
+      status: "PROHIBITED" as const,
+      reportedBy: userId,
+      department: "Content",
+      usageDescription: "Content team was using Jasper for blog post generation. Prohibited due to EU data residency concerns — Jasper processes data in US-only regions.",
+    },
+    {
+      id: "demo-shadow-internal-llama",
+      organizationId: orgId,
+      toolId: null,
+      toolName: "Internal Llama Instance",
+      status: "DISCOVERED" as const,
+      reportedBy: userId,
+      department: "R&D",
+      usageDescription: "R&D team self-hosting a Llama model on internal GPU cluster for experimental code generation and research summarization. No catalog match.",
+    },
+    {
+      id: "demo-shadow-notion-ai",
+      organizationId: orgId,
+      toolId: "shadow-tool-notion-ai",
+      toolName: "Notion AI",
+      status: "APPROVED" as const,
+      reportedBy: userId,
+      department: "Product",
+      usageDescription: "Product team using Notion AI within existing Notion Enterprise workspace for meeting notes summarization and document drafting. Enterprise DPA in place.",
+    },
+    {
+      id: "demo-shadow-otter",
+      organizationId: orgId,
+      toolId: "shadow-tool-otter",
+      toolName: "Otter AI",
+      status: "UNDER_REVIEW" as const,
+      reportedBy: userId,
+      department: "Sales",
+      usageDescription: "Sales team using Otter AI to transcribe and summarize customer calls. Concerns about recording consent and processing of customer voice data.",
+    },
+  ];
+
+  for (const report of shadowReports) {
+    await prisma.shadowAIReport.upsert({
+      where: { id: report.id },
+      update: {},
+      create: report,
+    });
+  }
+
+  console.log(`  Created ${shadowReports.length} shadow AI reports`);
+
+  // ============================================================
   // SUMMARY
   // ============================================================
 
@@ -1011,20 +1745,29 @@ async function main() {
   console.log("AI Models: 6 total");
   console.log("");
   console.log("Data Sources: 7 total");
-  console.log("  - INPUT, OUTPUT, TRAINING types");
   console.log("");
   console.log("Risk Classifications: 8 total");
-  console.log("  - 3 HIGH, 2 LIMITED, 2 MINIMAL, 1 HIGH (pending review)");
-  console.log("  - 2 reclassification history entries");
   console.log("");
-  console.log("Assessments: 8 total (was 2)");
-  console.log("  - 2 APPROVED, 2 IN_PROGRESS, 1 UNDER_REVIEW, 1 DRAFT, 1 REJECTED, 1 APPROVED");
+  console.log("Assessments: 8 total");
   console.log("");
   console.log("Compliance Mappings: ~24 mappings");
-  console.log("  - Fraud Detection: 15 EU AI Act mappings (mixed statuses)");
-  console.log("  - HR Screening: 9 EU AI Act mappings (more gaps)");
   console.log("");
-  console.log("Audit Log: 15 entries (was 5)");
+  console.log("Oversight Gates: 6 gates, 8 decisions");
+  console.log("");
+  console.log("AI Incidents: 5 incidents");
+  console.log("  - 1 CRITICAL (MITIGATING), 1 HIGH bias (RESOLVED)");
+  console.log("  - 1 MEDIUM drift (INVESTIGATING), 1 LOW perf (CLOSED)");
+  console.log("  - 1 HIGH prompt injection (REPORTED)");
+  console.log("");
+  console.log("Vendors: 4 vendors, 3 assessments");
+  console.log("");
+  console.log("Policies: 4 policies (2 PUBLISHED, 1 APPROVED, 1 DRAFT)");
+  console.log("");
+  console.log("Shadow AI Reports: 8 reports");
+  console.log("  - 2 DISCOVERED, 2 UNDER_REVIEW, 2 APPROVED");
+  console.log("  - 1 PROHIBITED, 1 REGISTERED");
+  console.log("");
+  console.log("Audit Log: 15+ entries");
 }
 
 main()

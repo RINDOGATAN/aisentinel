@@ -4,6 +4,11 @@ import { aiSystemRouter } from "./governance/aiSystem";
 import { riskClassificationRouter } from "./governance/riskClassification";
 import { assessmentRouter } from "./governance/assessment";
 import { complianceRouter } from "./governance/compliance";
+import { oversightRouter } from "./governance/oversight";
+import { incidentRouter } from "./governance/incident";
+import { vendorRouter } from "./governance/vendor";
+import { policyRouter } from "./governance/policy";
+import { shadowAiRouter } from "./governance/shadowAi";
 
 export const appRouter = createTRPCRouter({
   organization: organizationRouter,
@@ -11,6 +16,11 @@ export const appRouter = createTRPCRouter({
   riskClassification: riskClassificationRouter,
   assessment: assessmentRouter,
   compliance: complianceRouter,
+  oversight: oversightRouter,
+  incident: incidentRouter,
+  vendor: vendorRouter,
+  policy: policyRouter,
+  shadowAi: shadowAiRouter,
 });
 
 export type AppRouter = typeof appRouter;

@@ -17,6 +17,8 @@ import {
   Loader2,
   Building2,
   ChevronDown,
+  Eye,
+  ScrollText,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -44,19 +46,25 @@ export default function GovernanceDashboardPage() {
     );
   }
 
-  const dashboardStats = {
-    totalSystems: stats?.totalSystems ?? 0,
-    deployedSystems: stats?.deployedSystems ?? 0,
-    highRiskSystems: stats?.highRiskSystems ?? 0,
-    activeAssessments: stats?.activeAssessments ?? 0,
-  };
-
   const recentActivity = stats?.recentAuditLogs ?? [];
+  const riskPosture = stats?.riskPosture ?? { unacceptable: 0, high: 0, limited: 0, minimal: 0 };
+  const incidents = stats?.incidents ?? { total: 0, critical: 0, open: 0 };
+  const oversight = stats?.oversight ?? { pending: 0, overdue: 0 };
+  const pipeline = stats?.assessmentPipeline ?? { draft: 0, inProgress: 0, underReview: 0, approved: 0 };
+  const compliance = stats?.complianceSummary ?? { compliant: 0, partial: 0, nonCompliant: 0, notAssessed: 0 };
+
+  const riskTotal = riskPosture.unacceptable + riskPosture.high + riskPosture.limited + riskPosture.minimal;
+  const complianceTotal = compliance.compliant + compliance.partial + compliance.nonCompliant + compliance.notAssessed;
 
   const actionLabels: Record<string, string> = {
     CREATE: "Created",
     UPDATE: "Updated",
     DELETE: "Deleted",
+    APPROVE: "Approved",
+    REJECT: "Rejected",
+    PUBLISH: "Published",
+    SUBMIT_FOR_REVIEW: "Submitted",
+    BULK_UPDATE: "Bulk updated",
   };
 
   const entityLabels: Record<string, string> = {
@@ -65,6 +73,11 @@ export default function GovernanceDashboardPage() {
     AIAssessment: "Assessment",
     ComplianceMapping: "Compliance Mapping",
     Organization: "Organization",
+    OversightGate: "Oversight Gate",
+    OversightDecision: "Oversight Decision",
+    AIIncident: "Incident",
+    AIVendor: "Vendor",
+    AIPolicy: "Policy",
   };
 
   return (
@@ -76,7 +89,7 @@ export default function GovernanceDashboardPage() {
             {organization?.name || "AI Governance"}
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground">
-            AI Governance Dashboard
+            Executive Dashboard
           </p>
         </div>
         {organizations.length > 1 && (
@@ -103,71 +116,300 @@ export default function GovernanceDashboardPage() {
         )}
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
+      {/* KPI Row - 6 cards */}
+      <div className="grid gap-3 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-4 sm:p-6 sm:pb-2">
-            <CardTitle className="text-xs sm:text-sm font-medium">Total AI Systems</CardTitle>
-            <Cpu className="h-4 w-4 text-muted-foreground hidden sm:block" />
-          </CardHeader>
-          <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
-            <div className="text-xl sm:text-2xl font-bold text-primary">
-              {dashboardStats.totalSystems}
-            </div>
-            <p className="text-xs text-muted-foreground">Registered systems</p>
+          <CardContent className="p-4">
+            <div className="text-xl sm:text-2xl font-bold text-primary">{stats?.totalSystems ?? 0}</div>
+            <p className="text-xs text-muted-foreground">Total Systems</p>
           </CardContent>
         </Card>
-
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-4 sm:p-6 sm:pb-2">
-            <CardTitle className="text-xs sm:text-sm font-medium">Deployed</CardTitle>
-            <Rocket className="h-4 w-4 text-muted-foreground hidden sm:block" />
-          </CardHeader>
-          <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
-            <div className="text-xl sm:text-2xl font-bold text-primary">
-              {dashboardStats.deployedSystems}
-            </div>
-            <p className="text-xs text-muted-foreground">In production</p>
+          <CardContent className="p-4">
+            <div className="text-xl sm:text-2xl font-bold text-green-500">{stats?.deployedSystems ?? 0}</div>
+            <p className="text-xs text-muted-foreground">Deployed</p>
           </CardContent>
         </Card>
-
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-4 sm:p-6 sm:pb-2">
-            <CardTitle className="text-xs sm:text-sm font-medium">High Risk</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-muted-foreground hidden sm:block" />
-          </CardHeader>
-          <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
-            <div className="text-xl sm:text-2xl font-bold text-primary">
-              {dashboardStats.highRiskSystems}
+          <CardContent className="p-4">
+            <div className={`text-xl sm:text-2xl font-bold ${(stats?.highRiskSystems ?? 0) > 0 ? "text-destructive" : "text-muted-foreground"}`}>
+              {stats?.highRiskSystems ?? 0}
             </div>
-            <p className="text-xs text-muted-foreground">
-              {dashboardStats.highRiskSystems > 0 ? (
-                <span className="bg-destructive/20 text-foreground px-1.5 py-0.5">
-                  Requires attention
-                </span>
-              ) : (
-                "No high-risk systems"
-              )}
-            </p>
+            <p className="text-xs text-muted-foreground">High Risk</p>
           </CardContent>
         </Card>
-
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-4 sm:p-6 sm:pb-2">
-            <CardTitle className="text-xs sm:text-sm font-medium">Active Assessments</CardTitle>
-            <ClipboardCheck className="h-4 w-4 text-muted-foreground hidden sm:block" />
-          </CardHeader>
-          <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
-            <div className="text-xl sm:text-2xl font-bold text-primary">
-              {dashboardStats.activeAssessments}
+          <CardContent className="p-4">
+            <div className={`text-xl sm:text-2xl font-bold ${incidents.open > 0 ? "text-orange-500" : "text-muted-foreground"}`}>
+              {incidents.open}
             </div>
-            <p className="text-xs text-muted-foreground">In progress</p>
+            <p className="text-xs text-muted-foreground">Open Incidents</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className={`text-xl sm:text-2xl font-bold ${oversight.pending > 0 ? "text-yellow-500" : "text-muted-foreground"}`}>
+              {oversight.pending}
+            </div>
+            <p className="text-xs text-muted-foreground">Pending Gates</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="text-xl sm:text-2xl font-bold text-primary">{stats?.activeAssessments ?? 0}</div>
+            <p className="text-xs text-muted-foreground">Active Assessments</p>
           </CardContent>
         </Card>
       </div>
 
       {/* Main Content Grid */}
       <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
+        {/* Risk Posture */}
+        <Card>
+          <CardHeader className="p-4 sm:p-6 pb-3">
+            <CardTitle className="text-base sm:text-lg">Risk Posture</CardTitle>
+            <CardDescription className="text-xs sm:text-sm">
+              EU AI Act risk classification distribution
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0 space-y-3">
+            {riskTotal > 0 ? (
+              <>
+                {/* Stacked bar */}
+                <div className="h-6 flex overflow-hidden rounded-sm">
+                  {riskPosture.unacceptable > 0 && (
+                    <div
+                      className="bg-destructive flex items-center justify-center text-[10px] text-destructive-foreground font-medium"
+                      style={{ width: `${(riskPosture.unacceptable / riskTotal) * 100}%` }}
+                    >
+                      {riskPosture.unacceptable}
+                    </div>
+                  )}
+                  {riskPosture.high > 0 && (
+                    <div
+                      className="bg-destructive/70 flex items-center justify-center text-[10px] text-destructive-foreground font-medium"
+                      style={{ width: `${(riskPosture.high / riskTotal) * 100}%` }}
+                    >
+                      {riskPosture.high}
+                    </div>
+                  )}
+                  {riskPosture.limited > 0 && (
+                    <div
+                      className="bg-yellow-500/40 flex items-center justify-center text-[10px] text-yellow-300 font-medium"
+                      style={{ width: `${(riskPosture.limited / riskTotal) * 100}%` }}
+                    >
+                      {riskPosture.limited}
+                    </div>
+                  )}
+                  {riskPosture.minimal > 0 && (
+                    <div
+                      className="bg-green-500/30 flex items-center justify-center text-[10px] text-green-400 font-medium"
+                      style={{ width: `${(riskPosture.minimal / riskTotal) * 100}%` }}
+                    >
+                      {riskPosture.minimal}
+                    </div>
+                  )}
+                </div>
+                {/* Legend */}
+                <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-sm bg-destructive" />
+                    Unacceptable ({riskPosture.unacceptable})
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-sm bg-destructive/70" />
+                    High ({riskPosture.high})
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-sm bg-yellow-500/40" />
+                    Limited ({riskPosture.limited})
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-sm bg-green-500/30" />
+                    Minimal ({riskPosture.minimal})
+                  </span>
+                </div>
+              </>
+            ) : (
+              <p className="text-sm text-muted-foreground text-center py-4">No risk classifications yet</p>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Incident Summary */}
+        <Card>
+          <CardHeader className="p-4 sm:p-6 pb-3">
+            <CardTitle className="text-base sm:text-lg">Incident Summary</CardTitle>
+            <CardDescription className="text-xs sm:text-sm">
+              AI incident tracking overview
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
+            <div className="grid grid-cols-3 gap-4">
+              <div className="text-center">
+                <div className={`text-2xl font-bold ${incidents.critical > 0 ? "text-destructive" : "text-muted-foreground"}`}>
+                  {incidents.critical}
+                </div>
+                <p className="text-xs text-muted-foreground">Critical</p>
+              </div>
+              <div className="text-center">
+                <div className={`text-2xl font-bold ${incidents.open > 0 ? "text-orange-500" : "text-muted-foreground"}`}>
+                  {incidents.open}
+                </div>
+                <p className="text-xs text-muted-foreground">Open</p>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-muted-foreground">{incidents.total}</div>
+                <p className="text-xs text-muted-foreground">Total</p>
+              </div>
+            </div>
+            {incidents.total > 0 && (
+              <Link href="/governance/incidents" className="block mt-3">
+                <Button variant="outline" size="sm" className="w-full">
+                  View Incidents <ArrowRight className="w-3 h-3 ml-1" />
+                </Button>
+              </Link>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Oversight Pipeline */}
+        <Card>
+          <CardHeader className="p-4 sm:p-6 pb-3">
+            <CardTitle className="text-base sm:text-lg">Oversight Pipeline</CardTitle>
+            <CardDescription className="text-xs sm:text-sm">
+              Human oversight gates status
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0 space-y-3">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <div className={`text-2xl font-bold ${oversight.pending > 0 ? "text-yellow-500" : "text-muted-foreground"}`}>
+                  {oversight.pending}
+                </div>
+                <p className="text-xs text-muted-foreground">Pending</p>
+              </div>
+              <div>
+                <div className={`text-2xl font-bold ${oversight.overdue > 0 ? "text-destructive" : "text-muted-foreground"}`}>
+                  {oversight.overdue}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {oversight.overdue > 0 ? (
+                    <span className="bg-destructive/20 text-foreground px-1.5 py-0.5">Overdue</span>
+                  ) : (
+                    "Overdue"
+                  )}
+                </p>
+              </div>
+            </div>
+            <Link href="/governance/oversight">
+              <Button variant="outline" size="sm" className="w-full">
+                View Oversight <ArrowRight className="w-3 h-3 ml-1" />
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+
+        {/* Assessment Pipeline */}
+        <Card>
+          <CardHeader className="p-4 sm:p-6 pb-3">
+            <CardTitle className="text-base sm:text-lg">Assessment Pipeline</CardTitle>
+            <CardDescription className="text-xs sm:text-sm">
+              Assessment workflow status
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
+            <div className="grid grid-cols-4 gap-2 text-center">
+              <div>
+                <div className="text-lg font-bold text-muted-foreground">{pipeline.draft}</div>
+                <p className="text-[10px] text-muted-foreground">Draft</p>
+              </div>
+              <div>
+                <div className="text-lg font-bold text-blue-500">{pipeline.inProgress}</div>
+                <p className="text-[10px] text-muted-foreground">In Progress</p>
+              </div>
+              <div>
+                <div className="text-lg font-bold text-yellow-500">{pipeline.underReview}</div>
+                <p className="text-[10px] text-muted-foreground">Review</p>
+              </div>
+              <div>
+                <div className="text-lg font-bold text-green-500">{pipeline.approved}</div>
+                <p className="text-[10px] text-muted-foreground">Approved</p>
+              </div>
+            </div>
+            {/* Progress bar */}
+            {(pipeline.draft + pipeline.inProgress + pipeline.underReview + pipeline.approved) > 0 && (
+              <div className="h-2 flex overflow-hidden rounded-sm mt-3">
+                {pipeline.draft > 0 && (
+                  <div className="bg-muted-foreground/30" style={{ flex: pipeline.draft }} />
+                )}
+                {pipeline.inProgress > 0 && (
+                  <div className="bg-blue-500/50" style={{ flex: pipeline.inProgress }} />
+                )}
+                {pipeline.underReview > 0 && (
+                  <div className="bg-yellow-500/50" style={{ flex: pipeline.underReview }} />
+                )}
+                {pipeline.approved > 0 && (
+                  <div className="bg-green-500/50" style={{ flex: pipeline.approved }} />
+                )}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Compliance Progress */}
+        <Card className="lg:col-span-2">
+          <CardHeader className="p-4 sm:p-6 pb-3">
+            <CardTitle className="text-base sm:text-lg">Compliance Progress</CardTitle>
+            <CardDescription className="text-xs sm:text-sm">
+              Overall compliance mapping status
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0 space-y-3">
+            {complianceTotal > 0 ? (
+              <>
+                <div className="h-4 flex overflow-hidden rounded-sm">
+                  {compliance.compliant > 0 && (
+                    <div className="bg-green-500/60" style={{ width: `${(compliance.compliant / complianceTotal) * 100}%` }} />
+                  )}
+                  {compliance.partial > 0 && (
+                    <div className="bg-yellow-500/50" style={{ width: `${(compliance.partial / complianceTotal) * 100}%` }} />
+                  )}
+                  {compliance.nonCompliant > 0 && (
+                    <div className="bg-destructive/50" style={{ width: `${(compliance.nonCompliant / complianceTotal) * 100}%` }} />
+                  )}
+                  {compliance.notAssessed > 0 && (
+                    <div className="bg-muted" style={{ width: `${(compliance.notAssessed / complianceTotal) * 100}%` }} />
+                  )}
+                </div>
+                <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-sm bg-green-500/60" />
+                    Compliant ({compliance.compliant})
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-sm bg-yellow-500/50" />
+                    Partial ({compliance.partial})
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-sm bg-destructive/50" />
+                    Non-Compliant ({compliance.nonCompliant})
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-sm bg-muted" />
+                    Not Assessed ({compliance.notAssessed})
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {Math.round(((compliance.compliant + compliance.partial) / complianceTotal) * 100)}% assessed as compliant or partially compliant
+                </p>
+              </>
+            ) : (
+              <p className="text-sm text-muted-foreground text-center py-4">No compliance mappings yet</p>
+            )}
+          </CardContent>
+        </Card>
+
         {/* Quick Actions */}
         <Card>
           <CardHeader className="p-4 sm:p-6">
@@ -183,10 +425,16 @@ export default function GovernanceDashboardPage() {
                 <span className="truncate">Register AI System</span>
               </Button>
             </Link>
-            <Link href="/governance/risk-classification">
+            <Link href="/governance/oversight/new">
               <Button variant="outline" className="w-full justify-start h-11">
-                <ShieldCheck className="w-4 h-4 mr-2 shrink-0" />
-                <span className="truncate">Classify Risk</span>
+                <Eye className="w-4 h-4 mr-2 shrink-0" />
+                <span className="truncate">Create Gate</span>
+              </Button>
+            </Link>
+            <Link href="/governance/incidents/new">
+              <Button variant="outline" className="w-full justify-start h-11">
+                <AlertTriangle className="w-4 h-4 mr-2 shrink-0" />
+                <span className="truncate">Report Incident</span>
               </Button>
             </Link>
             <Link href="/governance/assessments/new">
@@ -195,10 +443,16 @@ export default function GovernanceDashboardPage() {
                 <span className="truncate">New Assessment</span>
               </Button>
             </Link>
-            <Link href="/governance/compliance">
+            <Link href="/governance/vendors/new">
               <Button variant="outline" className="w-full justify-start h-11">
-                <ClipboardCheck className="w-4 h-4 mr-2 shrink-0" />
-                <span className="truncate">View Compliance</span>
+                <Building2 className="w-4 h-4 mr-2 shrink-0" />
+                <span className="truncate">Add Vendor</span>
+              </Button>
+            </Link>
+            <Link href="/governance/policies/new">
+              <Button variant="outline" className="w-full justify-start h-11">
+                <ScrollText className="w-4 h-4 mr-2 shrink-0" />
+                <span className="truncate">Create Policy</span>
               </Button>
             </Link>
           </CardContent>
@@ -214,7 +468,7 @@ export default function GovernanceDashboardPage() {
           </CardHeader>
           <CardContent className="space-y-3 sm:space-y-4 p-4 pt-0 sm:p-6 sm:pt-0">
             {recentActivity.length > 0 ? (
-              recentActivity.slice(0, 6).map((activity) => (
+              recentActivity.slice(0, 8).map((activity) => (
                 <div key={activity.id} className="flex items-start gap-3">
                   <div className="mt-0.5 p-1.5 border border-muted-foreground text-muted-foreground shrink-0">
                     <Clock className="h-3 w-3" />
@@ -243,119 +497,6 @@ export default function GovernanceDashboardPage() {
                 No recent activity
               </p>
             )}
-          </CardContent>
-        </Card>
-
-        {/* Module Overview */}
-        <Card className="lg:col-span-2">
-          <CardHeader className="p-4 sm:p-6">
-            <CardTitle className="text-base sm:text-lg">Governance Modules</CardTitle>
-            <CardDescription className="text-xs sm:text-sm">
-              Navigate to specific governance areas
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 p-4 pt-0 sm:p-6 sm:pt-0">
-            <Link href="/governance/ai-registry">
-              <Card className="hover:border-primary/50 transition-colors cursor-pointer h-full">
-                <CardContent className="p-4 flex items-center gap-3">
-                  <div className="w-10 h-10 bg-primary/10 flex items-center justify-center shrink-0">
-                    <Cpu className="w-5 h-5 text-primary" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium">AI Registry</p>
-                    <p className="text-xs text-muted-foreground truncate">
-                      {dashboardStats.totalSystems} systems registered
-                    </p>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
-                </CardContent>
-              </Card>
-            </Link>
-
-            <Link href="/governance/risk-classification">
-              <Card className="hover:border-primary/50 transition-colors cursor-pointer h-full">
-                <CardContent className="p-4 flex items-center gap-3">
-                  <div className="w-10 h-10 bg-primary/10 flex items-center justify-center shrink-0">
-                    <ShieldCheck className="w-5 h-5 text-primary" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium">Risk Classification</p>
-                    <p className="text-xs text-muted-foreground truncate">
-                      EU AI Act four-tier system
-                    </p>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
-                </CardContent>
-              </Card>
-            </Link>
-
-            <Link href="/governance/assessments">
-              <Card className="hover:border-primary/50 transition-colors cursor-pointer h-full">
-                <CardContent className="p-4 flex items-center gap-3">
-                  <div className="w-10 h-10 bg-primary/10 flex items-center justify-center shrink-0">
-                    <FileSearch className="w-5 h-5 text-primary" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium">Assessments</p>
-                    <p className="text-xs text-muted-foreground truncate">
-                      {dashboardStats.activeAssessments} active
-                    </p>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
-                </CardContent>
-              </Card>
-            </Link>
-
-            <Link href="/governance/compliance">
-              <Card className="hover:border-primary/50 transition-colors cursor-pointer h-full">
-                <CardContent className="p-4 flex items-center gap-3">
-                  <div className="w-10 h-10 bg-primary/10 flex items-center justify-center shrink-0">
-                    <ClipboardCheck className="w-5 h-5 text-primary" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium">Compliance</p>
-                    <p className="text-xs text-muted-foreground truncate">
-                      EU AI Act, NIST, ISO 42001
-                    </p>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
-                </CardContent>
-              </Card>
-            </Link>
-
-            <Link href="/governance/oversight">
-              <Card className="hover:border-primary/50 transition-colors cursor-pointer h-full">
-                <CardContent className="p-4 flex items-center gap-3">
-                  <div className="w-10 h-10 bg-primary/10 flex items-center justify-center shrink-0">
-                    <ShieldCheck className="w-5 h-5 text-primary" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium">Human Oversight</p>
-                    <p className="text-xs text-muted-foreground truncate">
-                      Approval gates & decisions
-                    </p>
-                  </div>
-                  <Badge variant="outline" className="text-xs shrink-0">Soon</Badge>
-                </CardContent>
-              </Card>
-            </Link>
-
-            <Link href="/governance/incidents">
-              <Card className="hover:border-primary/50 transition-colors cursor-pointer h-full">
-                <CardContent className="p-4 flex items-center gap-3">
-                  <div className="w-10 h-10 bg-primary/10 flex items-center justify-center shrink-0">
-                    <AlertTriangle className="w-5 h-5 text-primary" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium">AI Incidents</p>
-                    <p className="text-xs text-muted-foreground truncate">
-                      Report & track incidents
-                    </p>
-                  </div>
-                  <Badge variant="outline" className="text-xs shrink-0">Soon</Badge>
-                </CardContent>
-              </Card>
-            </Link>
           </CardContent>
         </Card>
       </div>

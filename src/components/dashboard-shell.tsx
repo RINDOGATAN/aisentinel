@@ -18,6 +18,8 @@ import {
   BookOpen,
   Lock,
   LayoutDashboard,
+  Building2,
+  ScrollText,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -35,10 +37,12 @@ const navItems = [
   { href: "/governance/ai-registry", label: "AI Registry", icon: Brain },
   { href: "/governance/risk-classification", label: "Risk", icon: ShieldAlert },
   { href: "/governance/assessments", label: "Assessments", icon: ClipboardCheck },
+  { href: "/governance/oversight", label: "Oversight", icon: Eye },
+  { href: "/governance/incidents", label: "Incidents", icon: AlertTriangle },
   { href: "/governance/compliance", label: "Compliance", icon: Scale },
-  { href: "/governance/oversight", label: "Oversight", icon: Eye, disabled: true },
-  { href: "/governance/incidents", label: "Incidents", icon: AlertTriangle, disabled: true },
-  { href: "/governance/shadow-ai", label: "Shadow AI", icon: Search, premium: true, disabled: true },
+  { href: "/governance/vendors", label: "Vendors", icon: Building2 },
+  { href: "/governance/policies", label: "Policies", icon: ScrollText },
+  { href: "/governance/shadow-ai", label: "Shadow AI", icon: Search, premium: true },
 ];
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {
@@ -87,21 +91,17 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                     return (
                       <Link
                         key={item.href}
-                        href={item.disabled ? "#" : item.href}
-                        onClick={() => !item.disabled && setMobileNavOpen(false)}
+                        href={item.href}
+                        onClick={() => setMobileNavOpen(false)}
                       >
                         <Button
                           variant="ghost"
-                          disabled={item.disabled}
                           className={`w-full justify-start gap-3 h-12 text-base ${
                             isActive ? "bg-primary/20 text-primary hover:bg-primary/30 hover:text-primary" : ""
                           }`}
                         >
                           <Icon className="w-5 h-5" />
                           {item.label}
-                          {item.disabled && !item.premium && (
-                            <span className="text-xs text-muted-foreground ml-auto">Soon</span>
-                          )}
                           {item.premium && (
                             <Lock className="w-3 h-3 ml-auto text-muted-foreground" />
                           )}
@@ -125,11 +125,10 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
               const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
 
               return (
-                <Link key={item.href} href={item.disabled ? "#" : item.href}>
+                <Link key={item.href} href={item.href}>
                   <Button
                     variant="ghost"
                     size="sm"
-                    disabled={item.disabled}
                     className={`gap-2 ${isActive ? "bg-primary/20 text-primary hover:bg-primary/30 hover:text-primary" : ""}`}
                   >
                     <Icon className="w-4 h-4" />

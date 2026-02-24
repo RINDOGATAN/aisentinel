@@ -71,7 +71,7 @@ export const authOptions: NextAuthOptions = {
                     <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 500px; margin: 0 auto; background: #1a1a1a; border-radius: 12px; overflow: hidden;">
                       <div style="padding: 24px 24px 16px; border-bottom: 1px solid #2a2a2a;">
                         <span style="font-size: 20px; font-weight: 700; color: #ffffff; letter-spacing: 0.05em;">AI SENTINEL</span>
-                        <span style="font-size: 13px; color: #a6a6a6; margin-left: 10px;">AI Governance Made Accountable</span>
+                        <span style="font-size: 13px; color: #a6a6a6; margin-left: 10px;">Cross-border AI Governance</span>
                       </div>
                       <div style="padding: 32px 24px;">
                         <p style="color: #e5e5e5; font-size: 15px; line-height: 1.6; margin: 0 0 24px;">Click the button below to sign in to your AI SENTINEL account:</p>

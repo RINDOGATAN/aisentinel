@@ -20,7 +20,7 @@ export interface BrandConfig {
 
 const defaultBrand: BrandConfig = {
   name: "AI SENTINEL",
-  tagline: "AI Governance Made Accountable",
+  tagline: "Cross-border AI Governance",
   description: "A purpose-built tool for managing AI systems, EU AI Act compliance, risk classification, and AI governance.",
   companyName: "TODO.LAW",
   companyWebsite: "https://todo.law",

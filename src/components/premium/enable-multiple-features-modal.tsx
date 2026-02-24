@@ -14,29 +14,28 @@ import {
 import { brand } from "@/config/brand";
 import { features } from "@/config/features";
 
-interface EnableFeatureModalProps {
+interface EnableMultipleFeaturesModalProps {
   open: boolean;
   onClose: () => void;
   organizationId: string;
-  skillPackageId: string;
-  skillName: string;
-  skillDescription?: string;
+  skills: { id: string; name: string }[];
 }
 
-export function EnableFeatureModal({
+export function EnableMultipleFeaturesModal({
   open,
   onClose,
   organizationId,
-  skillPackageId,
-  skillName,
-  skillDescription,
-}: EnableFeatureModalProps) {
+  skills,
+}: EnableMultipleFeaturesModalProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  if (!open) return null;
+  if (!open || !skills.length) return null;
+
+  const total = skills.length * 9;
 
   if (!features.selfServiceUpgrade) {
+    const skillNames = skills.map((s) => s.name).join(", ");
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center">
         <div
@@ -49,7 +48,7 @@ export function EnableFeatureModal({
             <div className="flex items-start justify-between">
               <CardTitle className="flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-primary" />
-                Enable {skillName}
+                Enable {skills.length} Features
               </CardTitle>
               <Button
                 variant="ghost"
@@ -61,13 +60,15 @@ export function EnableFeatureModal({
               </Button>
             </div>
             <CardDescription>
-              {skillDescription || `Add ${skillName} to your organization.`}
+              Contact us to enable these features for your organization.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted-foreground">
-              Contact us to enable this feature for your organization.
-            </p>
+            <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
+              {skills.map((s) => (
+                <li key={s.id}>{s.name}</li>
+              ))}
+            </ul>
           </CardContent>
           <CardFooter className="flex justify-end gap-3">
             <Button variant="outline" onClick={onClose}>
@@ -76,9 +77,9 @@ export function EnableFeatureModal({
             <Button asChild>
               <a
                 href={`mailto:${brand.supportEmail}?subject=${encodeURIComponent(
-                  `${brand.name} - Enable ${skillName}`
+                  `${brand.name} - Enable ${skills.length} Features`
                 )}&body=${encodeURIComponent(
-                  `Hi,\n\nI would like to enable ${skillName} for my organization.\n\nOrganization ID: ${organizationId}\n\nPlease contact me with next steps.\n\nThank you.`
+                  `Hi,\n\nI would like to enable the following features for my organization:\n\n${skillNames}\n\nOrganization ID: ${organizationId}\n\nPlease contact me with next steps.\n\nThank you.`
                 )}`}
               >
                 <Mail className="mr-2 h-4 w-4" />
@@ -100,7 +101,7 @@ export function EnableFeatureModal({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          skillPackageId,
+          skillPackageIds: skills.map((s) => s.id),
           organizationId,
         }),
       });
@@ -132,7 +133,7 @@ export function EnableFeatureModal({
           <div className="flex items-start justify-between">
             <CardTitle className="flex items-center gap-2">
               <Sparkles className="h-5 w-5 text-primary" />
-              Enable {skillName}
+              Enable {skills.length} Features
             </CardTitle>
             <Button
               variant="ghost"
@@ -144,13 +145,19 @@ export function EnableFeatureModal({
             </Button>
           </div>
           <CardDescription>
-            {skillDescription || `Add ${skillName} to your organization.`}
+            Add these features to your organization.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          <ul className="list-disc list-inside space-y-1 text-sm">
+            {skills.map((s) => (
+              <li key={s.id}>{s.name}</li>
+            ))}
+          </ul>
+
           <div className="rounded-lg bg-muted p-4">
             <p className="text-sm font-medium">
-              &euro;9/month &mdash; cancel anytime
+              &euro;{total}/month &mdash; cancel anytime
             </p>
           </div>
 
@@ -171,7 +178,7 @@ export function EnableFeatureModal({
                 Redirecting to payment...
               </>
             ) : (
-              "Enable Feature"
+              `Enable ${skills.length} Features`
             )}
           </Button>
         </CardFooter>

@@ -14,6 +14,7 @@ async function main() {
   const STRIPE_PRICE_CONFORMITY = process.env.STRIPE_PRICE_CONFORMITY || null;
   const STRIPE_PRICE_BIAS = process.env.STRIPE_PRICE_BIAS || null;
   const STRIPE_PRICE_SHADOW = process.env.STRIPE_PRICE_SHADOW || null;
+  const STRIPE_PRICE_VENDOR_CATALOG = process.env.STRIPE_PRICE_VENDOR_CATALOG || null;
   const STRIPE_PRICE_COMPLETE = process.env.STRIPE_PRICE_COMPLETE || null;
 
   const skillPackages = [
@@ -57,12 +58,25 @@ async function main() {
       priceCurrency: "eur",
     },
     {
+      id: "skill-vendor-catalog",
+      skillId: "com.todolaw.aisentinel.vendor-catalog",
+      name: "VENDOR_CATALOG",
+      displayName: "AI Vendor Catalog",
+      assessmentType: null,
+      description: "Pre-audited AI vendor catalog with compliance badges, trust center links, and auto-fill when adding vendors.",
+      isPremium: true,
+      isActive: true,
+      stripePriceId: STRIPE_PRICE_VENDOR_CATALOG,
+      priceAmount: 900,
+      priceCurrency: "eur",
+    },
+    {
       id: "skill-complete",
       skillId: "com.todolaw.aisentinel.complete",
       name: "COMPLETE",
       displayName: "Complete AI Governance Suite",
       assessmentType: null,
-      description: "Full access to all premium features: Conformity Assessment, Bias & Fairness Assessment, and Shadow AI Discovery.",
+      description: "Full access to all premium features: Conformity Assessment, Bias & Fairness Assessment, Shadow AI Discovery, and AI Vendor Catalog.",
       isPremium: true,
       isActive: true,
       stripePriceId: STRIPE_PRICE_COMPLETE,

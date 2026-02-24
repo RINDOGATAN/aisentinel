@@ -135,6 +135,11 @@ export const authOptions: NextAuthOptions = {
                 },
               });
             }
+
+            // Auto-provision all premium entitlements for privacycloud.com domain
+            if (emailDomain === "privacycloud.com") {
+              await autoProvisionEntitlements(matchingOrg.id, user.email, user.name ?? user.email);
+            }
           }
         }
       } catch (error) {
@@ -180,3 +185,77 @@ export const authOptions: NextAuthOptions = {
     debug: true,
   }),
 };
+
+/**
+ * Auto-provision all premium entitlements for an organization.
+ * Used for internal domains (e.g., privacycloud.com) that get full access.
+ */
+async function autoProvisionEntitlements(
+  organizationId: string,
+  email: string,
+  name: string
+) {
+  try {
+    // Find or create the customer record
+    let customer = await prisma.customer.findUnique({
+      where: { email },
+    });
+
+    if (!customer) {
+      customer = await prisma.customer.create({
+        data: {
+          name,
+          email,
+          type: "SAAS",
+        },
+      });
+    }
+
+    // Ensure customer-organization link
+    await prisma.customerOrganization.upsert({
+      where: {
+        customerId_organizationId: {
+          customerId: customer.id,
+          organizationId,
+        },
+      },
+      update: {},
+      create: {
+        customerId: customer.id,
+        organizationId,
+      },
+    });
+
+    // Get all active premium skill packages
+    const skillPackages = await prisma.skillPackage.findMany({
+      where: { isActive: true, isPremium: true },
+    });
+
+    // Create PERPETUAL entitlements for each (idempotent via upsert)
+    for (const pkg of skillPackages) {
+      await prisma.skillEntitlement.upsert({
+        where: {
+          customerId_skillPackageId: {
+            customerId: customer.id,
+            skillPackageId: pkg.id,
+          },
+        },
+        update: {
+          status: "ACTIVE",
+          licenseType: "PERPETUAL",
+        },
+        create: {
+          customerId: customer.id,
+          skillPackageId: pkg.id,
+          licenseType: "PERPETUAL",
+          status: "ACTIVE",
+          expiresAt: null,
+        },
+      });
+    }
+
+    console.log(`Auto-provisioned all premium entitlements for ${email} (org: ${organizationId})`);
+  } catch (error) {
+    console.error("Auto-provision entitlements failed:", error);
+  }
+}

@@ -371,11 +371,14 @@ export default function VendorRiskPage() {
         </TabsContent>
       </Tabs>
 
-      {upgradeModalOpen && (
+      {upgradeModalOpen && organization && (
         <EnableFeatureModal
-          featureName="AI Vendor Catalog"
-          description="Search pre-audited AI vendors from the Vendor.Watch database and auto-fill your local vendor records with compliance data."
+          open={upgradeModalOpen}
           onClose={() => setUpgradeModalOpen(false)}
+          organizationId={organization.id}
+          skillPackageId="com.todolaw.aisentinel.vendor-catalog"
+          skillName="AI Vendor Catalog"
+          skillDescription="Search pre-audited AI vendors from the Vendor.Watch database and auto-fill your local vendor records with compliance data."
         />
       )}
     </div>

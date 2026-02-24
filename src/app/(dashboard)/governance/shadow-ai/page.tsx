@@ -143,11 +143,14 @@ export default function ShadowAIPage() {
           </CardContent>
         </Card>
 
-        {showModal && (
+        {showModal && organization && (
           <EnableFeatureModal
-            featureName="Shadow AI Discovery"
-            description="Discover unauthorized AI tools, manage an AI tool catalog, and enforce AI usage policies across your organization."
+            open={showModal}
             onClose={() => setShowModal(false)}
+            organizationId={organization.id}
+            skillPackageId="com.todolaw.aisentinel.shadow-ai"
+            skillName="Shadow AI Discovery"
+            skillDescription="Discover unauthorized AI tools, manage an AI tool catalog, and enforce AI usage policies across your organization."
           />
         )}
       </div>

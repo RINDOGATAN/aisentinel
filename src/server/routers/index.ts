@@ -10,6 +10,7 @@ import { vendorRouter } from "./governance/vendor";
 import { policyRouter } from "./governance/policy";
 import { shadowAiRouter } from "./governance/shadowAi";
 import { vendorCatalogRouter } from "./governance/vendorCatalog";
+import { billingRouter } from "./billing";
 
 export const appRouter = createTRPCRouter({
   organization: organizationRouter,
@@ -23,6 +24,7 @@ export const appRouter = createTRPCRouter({
   policy: policyRouter,
   shadowAi: shadowAiRouter,
   vendorCatalog: vendorCatalogRouter,
+  billing: billingRouter,
 });
 
 export type AppRouter = typeof appRouter;

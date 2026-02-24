@@ -180,7 +180,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
             </Sheet>
 
             <Link href="/governance" className="flex items-center shrink-0">
-              <span className="text-sm font-bold tracking-tight text-muted-foreground">TODO.LAW<sup className="text-[8px] align-super">™</sup></span>
+              <span className="text-lg font-bold tracking-tight text-muted-foreground">TODO.LAW<sup className="text-xs align-super">™</sup></span>
               <span className="text-lg font-bold tracking-tight ml-2">AI SENTINEL</span>
             </Link>
           </div>

@@ -27,8 +27,8 @@ const defaultBrand: BrandConfig = {
   termsOfUseUrl: "https://todo.law/terms",
   privacyPolicyUrl: "https://todo.law/privacy",
   supportEmail: "hello@todo.law",
-  logoPath: "/nel-icon.png",
-  faviconPath: "/logos/favicon.png",
+  logoPath: "/favicon.png",
+  faviconPath: "/favicon.png",
   colors: {
     primary: "#f5a623",
     primaryForeground: "#1a1a1a",

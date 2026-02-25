@@ -16,7 +16,9 @@
     "db:seed-scenarios": "tsx scripts/seed-demo-scenarios.ts",
     "db:migrate-evidence": "tsx scripts/migrate-evidence-to-structured.ts",
     "db:seed-shadow-ai-tools": "tsx scripts/seed-shadow-ai-tools.ts",
-    "db:seed-vendor-catalog": "tsx scripts/seed-vendor-catalog.ts"
+    "db:seed-vendor-catalog": "tsx scripts/seed-vendor-catalog.ts",
+    "db:sync-vendor-catalog": "tsx scripts/sync-vendor-catalog.ts",
+    "generate-favicon": "tsx scripts/generate-favicon.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

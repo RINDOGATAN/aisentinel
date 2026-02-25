@@ -917,12 +917,14 @@ model VendorCatalog {
   certifications    String[]          // ["ISO 27001", "SOC 2 Type II", "ISO 42001"]
   frameworks        String[]          // ["EU AI Act", "NIST AI RMF", "GDPR"]
   gdprCompliant     Boolean?
+  ccpaCompliant     Boolean?
   euAiActCompliant  Boolean?
   hipaaCompliant    Boolean?
 
   // Data Processing
   dataLocations     String[]          // ["US", "EU", "UK"]
   hasEuDataCenter   Boolean?
+  subprocessors     Json?
 
   // AI-Specific
   aiCapabilities    String[]          // ["LLM", "Computer Vision", "Speech"]

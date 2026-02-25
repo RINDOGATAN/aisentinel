@@ -22,6 +22,7 @@ interface VendorWatchVendor {
   hipaaCompliant: boolean | null;
   dataLocations: string[];
   hasEuDataCenter: boolean | null;
+  subprocessors: unknown;
   euAiActCompliant: boolean | null;
   aiCapabilities: string[];
   modelHosting: string | null;
@@ -90,10 +91,12 @@ async function main() {
         certifications: v.certifications || [],
         frameworks: v.frameworks || [],
         gdprCompliant: v.gdprCompliant,
+        ccpaCompliant: v.ccpaCompliant,
         euAiActCompliant: v.euAiActCompliant,
         hipaaCompliant: v.hipaaCompliant,
         dataLocations: v.dataLocations || [],
         hasEuDataCenter: v.hasEuDataCenter,
+        subprocessors: v.subprocessors ?? undefined,
         aiCapabilities: v.aiCapabilities || [],
         modelHosting: v.modelHosting,
         logoUrl: v.logoUrl,

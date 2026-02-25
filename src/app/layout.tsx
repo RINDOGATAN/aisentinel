@@ -27,6 +27,13 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: `AI SENTINEL - ${brand.tagline}`,
   description: brand.description,
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon.png", type: "image/png" },
+    ],
+    apple: "/favicon.png",
+  },
 };
 
 export default async function RootLayout({

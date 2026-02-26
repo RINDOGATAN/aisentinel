@@ -22,6 +22,7 @@ import {
   ScrollText,
   ChevronDown,
   CreditCard,
+  Database,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -50,6 +51,7 @@ const navItems = [
   { href: "/governance/incidents", label: "Incidents", icon: AlertTriangle },
   { href: "/governance/compliance", label: "Compliance", icon: Scale },
   { href: "/governance/vendors", label: "Vendors", icon: Building2 },
+  { href: "/governance/vendor-catalog", label: "Vendor Catalog", icon: Database, premium: true },
   { href: "/governance/policies", label: "Policies", icon: ScrollText },
   { href: "/governance/shadow-ai", label: "Shadow AI", icon: Search, premium: true },
 ];
@@ -79,6 +81,7 @@ const navGroups = [
     items: [
       { href: "/governance/incidents", label: "Incidents", icon: AlertTriangle },
       { href: "/governance/vendors", label: "Vendors", icon: Building2 },
+      { href: "/governance/vendor-catalog", label: "Vendor Catalog", icon: Database, premium: true },
       { href: "/governance/shadow-ai", label: "Shadow AI", icon: Search, premium: true },
       { href: "/governance/billing", label: "Billing", icon: CreditCard },
     ],

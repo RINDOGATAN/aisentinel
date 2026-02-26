@@ -85,6 +85,7 @@ function NewVendorForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const isCatalogMode = searchParams.get("catalog") === "true";
+  const slugParam = searchParams.get("slug");
   const { organization } = useOrganization();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -117,6 +118,20 @@ function NewVendorForm() {
     systemTechnique: "",
     systemPurpose: "",
   });
+
+  // Auto-fetch catalog entry if slug param is present
+  const { data: slugCatalogEntry } = trpc.vendorCatalog.getBySlug.useQuery(
+    { organizationId: organization?.id ?? "", slug: slugParam ?? "" },
+    { enabled: isCatalogMode && !!organization?.id && !!slugParam && !selectedCatalogVendor }
+  );
+
+  // Auto-select catalog vendor when fetched via slug param
+  useEffect(() => {
+    if (slugCatalogEntry && !selectedCatalogVendor) {
+      handleSelectCatalogVendor(slugCatalogEntry as CatalogVendor);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [slugCatalogEntry]);
 
   // Catalog search query
   const { data: catalogResults, isLoading: catalogLoading } =
@@ -236,6 +251,7 @@ function NewVendorForm() {
       contractExpiryDate: formData.contractExpiryDate || undefined,
       dpoCentralVendorId: formData.dpoCentralVendorId || undefined,
       notes: formData.notes || undefined,
+      catalogSlug: selectedCatalogVendor?.slug || undefined,
     };
 
     if (createSystem && systemData.systemName) {

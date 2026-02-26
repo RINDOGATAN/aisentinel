@@ -30,6 +30,7 @@ import {
   FileSearch,
   Plus,
   CheckCircle,
+  Database,
 } from "lucide-react";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
@@ -192,7 +193,15 @@ export default function VendorDetailPage() {
               <Building2 className="w-6 h-6 text-primary" />
             </div>
             <div>
-              <h1 className="text-xl sm:text-2xl font-semibold">{vendor.name}</h1>
+              <div className="flex items-center gap-2">
+                <h1 className="text-xl sm:text-2xl font-semibold">{vendor.name}</h1>
+                {vendor.catalogSlug && (
+                  <Badge variant="secondary" className="text-xs">
+                    <Database className="w-3 h-3 mr-1" />
+                    Catalog
+                  </Badge>
+                )}
+              </div>
               <div className="flex items-center gap-2 mt-1 flex-wrap">
                 <Badge
                   variant="outline"
@@ -287,6 +296,30 @@ export default function VendorDetailPage() {
                     </Button>
                   </a>
                 </div>
+              </div>
+            )}
+
+            {/* Catalog Origin */}
+            {vendor.catalogEntry && (
+              <div className="pt-2 border-t">
+                <Link href={`/governance/vendor-catalog/${vendor.catalogEntry.slug}`}>
+                  <div className="flex items-center gap-3 p-3 bg-primary/5 hover:bg-primary/10 transition-colors rounded-md cursor-pointer">
+                    <Database className="w-4 h-4 text-primary" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium">From AI Vendor Catalog</p>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <span className="text-xs text-muted-foreground">{vendor.catalogEntry.name}</span>
+                        <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                          {vendor.catalogEntry.category}
+                        </Badge>
+                        {vendor.catalogEntry.isVerified && (
+                          <CheckCircle className="w-3 h-3 text-success" />
+                        )}
+                      </div>
+                    </div>
+                    <ExternalLink className="w-4 h-4 text-muted-foreground" />
+                  </div>
+                </Link>
               </div>
             )}
 

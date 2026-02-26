@@ -197,10 +197,10 @@ model AISystem {
   createdAt             DateTime       @default(now())
   updatedAt             DateTime       @updatedAt
 
-  vendorId           String?
+  vendorId String?
 
-  organization       Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  vendor             AIVendor?             @relation(fields: [vendorId], references: [id], onDelete: SetNull)
+  organization       Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  vendor             AIVendor?            @relation(fields: [vendorId], references: [id], onDelete: SetNull)
   models             AIModel[]
   dataSources        AISystemDataSource[]
   riskClassification RiskClassification?
@@ -407,8 +407,8 @@ model OversightGate {
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
 
-  organization Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  aiSystem     AISystem           @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  organization Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  aiSystem     AISystem            @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
   decisions    OversightDecision[]
 
   @@index([organizationId])
@@ -618,7 +618,7 @@ model ComplianceRequirement {
   sortOrder    Int           @default(0)
   createdAt    DateTime      @default(now())
 
-  framework ComplianceFramework   @relation(fields: [frameworkId], references: [id], onDelete: Cascade)
+  framework ComplianceFramework     @relation(fields: [frameworkId], references: [id], onDelete: Cascade)
   parent    ComplianceRequirement?  @relation("RequirementHierarchy", fields: [parentId], references: [id])
   children  ComplianceRequirement[] @relation("RequirementHierarchy")
   mappings  ComplianceMapping[]
@@ -739,19 +739,19 @@ enum EntitlementStatus {
 }
 
 model SkillPackage {
-  id              String            @id @default(cuid())
-  skillId         String            @unique
-  name            String
-  displayName     String
-  assessmentType  AIAssessmentType?
-  description     String?           @db.Text
-  isPremium       Boolean           @default(true)
-  isActive        Boolean           @default(true)
-  stripePriceId   String?
-  priceAmount     Int?
-  priceCurrency   String?           @default("eur")
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
+  id             String            @id @default(cuid())
+  skillId        String            @unique
+  name           String
+  displayName    String
+  assessmentType AIAssessmentType?
+  description    String?           @db.Text
+  isPremium      Boolean           @default(true)
+  isActive       Boolean           @default(true)
+  stripePriceId  String?
+  priceAmount    Int?
+  priceCurrency  String?           @default("eur")
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
 
   entitlements SkillEntitlement[]
 
@@ -844,29 +844,32 @@ enum VendorAssessmentStatus {
 }
 
 model AIVendor {
-  id                 String          @id @default(cuid())
+  id                 String           @id @default(cuid())
   organizationId     String
   name               String
   website            String?
-  description        String?         @db.Text
+  description        String?          @db.Text
   contactName        String?
   contactEmail       String?
   riskLevel          VendorRiskLevel?
-  status             VendorStatus    @default(UNDER_REVIEW)
+  status             VendorStatus     @default(UNDER_REVIEW)
   dueDiligenceDate   DateTime?
   contractStartDate  DateTime?
   contractExpiryDate DateTime?
   dpoCentralVendorId String?
-  notes              String?         @db.Text
+  notes              String?          @db.Text
+  catalogSlug        String?
   metadata           Json?
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
 
-  organization Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organization Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  catalogEntry VendorCatalog?       @relation(fields: [catalogSlug], references: [slug])
   assessments  AIVendorAssessment[]
   systems      AISystem[]
 
   @@index([organizationId])
+  @@index([catalogSlug])
   @@map("ai_vendors")
 }
 
@@ -898,47 +901,49 @@ model AIVendorAssessment {
 // ============================================================
 
 model VendorCatalog {
-  id                String    @id @default(cuid())
-  slug              String    @unique
-  name              String
-  category          String            // "LLM Provider", "AI Platform", "MLOps", etc.
-  subcategory       String?
-  description       String?   @db.Text
-  tags              String[]          // ["AI", "LLM", "NLP"] — for Vendor.Watch filtering
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  category    String // "LLM Provider", "AI Platform", "MLOps", etc.
+  subcategory String?
+  description String?  @db.Text
+  tags        String[] // ["AI", "LLM", "NLP"] — for Vendor.Watch filtering
 
   // Links
-  website           String?
-  privacyPolicyUrl  String?
-  trustCenterUrl    String?
-  dpaUrl            String?
-  securityPageUrl   String?
+  website          String?
+  privacyPolicyUrl String?
+  trustCenterUrl   String?
+  dpaUrl           String?
+  securityPageUrl  String?
 
   // Compliance
-  certifications    String[]          // ["ISO 27001", "SOC 2 Type II", "ISO 42001"]
-  frameworks        String[]          // ["EU AI Act", "NIST AI RMF", "GDPR"]
-  gdprCompliant     Boolean?
-  ccpaCompliant     Boolean?
-  euAiActCompliant  Boolean?
-  hipaaCompliant    Boolean?
+  certifications   String[] // ["ISO 27001", "SOC 2 Type II", "ISO 42001"]
+  frameworks       String[] // ["EU AI Act", "NIST AI RMF", "GDPR"]
+  gdprCompliant    Boolean?
+  ccpaCompliant    Boolean?
+  euAiActCompliant Boolean?
+  hipaaCompliant   Boolean?
 
   // Data Processing
-  dataLocations     String[]          // ["US", "EU", "UK"]
-  hasEuDataCenter   Boolean?
-  subprocessors     Json?
+  dataLocations   String[] // ["US", "EU", "UK"]
+  hasEuDataCenter Boolean?
+  subprocessors   Json?
 
   // AI-Specific
-  aiCapabilities    String[]          // ["LLM", "Computer Vision", "Speech"]
-  modelHosting      String?           // "Cloud", "On-Premise", "Hybrid"
+  aiCapabilities String[] // ["LLM", "Computer Vision", "Speech"]
+  modelHosting   String? // "Cloud", "On-Premise", "Hybrid"
 
   // Metadata
-  logoUrl           String?
-  isVerified        Boolean   @default(false)
-  verifiedAt        DateTime?
-  verifiedBy        String?
-  source            String?           // "vendor-watch", "seed", "manual"
+  logoUrl    String?
+  isVerified Boolean   @default(false)
+  verifiedAt DateTime?
+  verifiedBy String?
+  source     String? // "vendor-watch", "seed", "manual"
 
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  vendors AIVendor[]
 
   @@index([category])
   @@index([name])

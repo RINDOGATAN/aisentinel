@@ -4,11 +4,41 @@ import { TRPCError } from "@trpc/server";
 import { hasVendorCatalogAccess } from "@/server/services/licensing/entitlement";
 
 export const vendorCatalogRouter = createTRPCRouter({
+  checkAccess: organizationProcedure
+    .input(z.object({ organizationId: z.string() }))
+    .query(async ({ ctx }) => {
+      const hasAccess = await hasVendorCatalogAccess(ctx.organization.id);
+      return { hasAccess };
+    }),
+
+  getStats: organizationProcedure
+    .input(z.object({ organizationId: z.string() }))
+    .query(async ({ ctx }) => {
+      const hasAccess = await hasVendorCatalogAccess(ctx.organization.id);
+      if (!hasAccess) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "AI Vendor Catalog requires a premium subscription",
+        });
+      }
+
+      const [total, categories, verified] = await Promise.all([
+        ctx.prisma.vendorCatalog.count(),
+        ctx.prisma.vendorCatalog.findMany({
+          select: { category: true },
+          distinct: ["category"],
+        }),
+        ctx.prisma.vendorCatalog.count({ where: { isVerified: true } }),
+      ]);
+
+      return { total, categories: categories.length, verified };
+    }),
+
   search: organizationProcedure
     .input(
       z.object({
         organizationId: z.string(),
-        query: z.string().min(1),
+        query: z.string().optional(),
         category: z.string().optional(),
         limit: z.number().min(1).max(50).default(20),
       })
@@ -23,11 +53,13 @@ export const vendorCatalogRouter = createTRPCRouter({
       }
 
       const where = {
-        OR: [
-          { name: { contains: input.query, mode: "insensitive" as const } },
-          { slug: { contains: input.query, mode: "insensitive" as const } },
-          { description: { contains: input.query, mode: "insensitive" as const } },
-        ],
+        ...(input.query && {
+          OR: [
+            { name: { contains: input.query, mode: "insensitive" as const } },
+            { slug: { contains: input.query, mode: "insensitive" as const } },
+            { description: { contains: input.query, mode: "insensitive" as const } },
+          ],
+        }),
         ...(input.category && { category: input.category }),
       };
 
@@ -53,6 +85,13 @@ export const vendorCatalogRouter = createTRPCRouter({
 
       const entry = await ctx.prisma.vendorCatalog.findUnique({
         where: { slug: input.slug },
+        include: {
+          _count: {
+            select: {
+              vendors: { where: { organizationId: ctx.organization.id } },
+            },
+          },
+        },
       });
 
       if (!entry) {

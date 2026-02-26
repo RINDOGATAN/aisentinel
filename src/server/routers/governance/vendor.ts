@@ -54,6 +54,7 @@ export const vendorRouter = createTRPCRouter({
       const vendor = await ctx.prisma.aIVendor.findFirst({
         where: { id: input.id, organizationId: ctx.organization.id },
         include: {
+          catalogEntry: true,
           assessments: { orderBy: { createdAt: "desc" } },
           systems: {
             select: { id: true, name: true, status: true, technique: true },
@@ -84,6 +85,7 @@ export const vendorRouter = createTRPCRouter({
         contractExpiryDate: z.string().optional(),
         dpoCentralVendorId: z.string().optional(),
         notes: z.string().optional(),
+        catalogSlug: z.string().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -101,6 +103,7 @@ export const vendorRouter = createTRPCRouter({
           contractExpiryDate: input.contractExpiryDate ? new Date(input.contractExpiryDate) : undefined,
           dpoCentralVendorId: input.dpoCentralVendorId,
           notes: input.notes,
+          catalogSlug: input.catalogSlug,
         },
       });
 
@@ -134,6 +137,7 @@ export const vendorRouter = createTRPCRouter({
         contractExpiryDate: z.string().optional(),
         dpoCentralVendorId: z.string().optional(),
         notes: z.string().optional(),
+        catalogSlug: z.string().optional(),
         // optional AI system creation
         createSystem: z.boolean().default(false),
         systemName: z.string().optional(),
@@ -158,6 +162,7 @@ export const vendorRouter = createTRPCRouter({
             contractExpiryDate: input.contractExpiryDate ? new Date(input.contractExpiryDate) : undefined,
             dpoCentralVendorId: input.dpoCentralVendorId,
             notes: input.notes,
+            catalogSlug: input.catalogSlug,
           },
         });
 

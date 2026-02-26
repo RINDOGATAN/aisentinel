@@ -98,6 +98,7 @@ export default function ShadowAIPage() {
     underReview: 0,
     approved: 0,
     prohibited: 0,
+    registered: 0,
   };
 
   // Loading state
@@ -252,13 +253,13 @@ export default function ShadowAIPage() {
           </TabsTrigger>
           <TabsTrigger
             value="approved"
-            className="text-xs sm:text-sm hidden sm:inline-flex"
+            className="text-xs sm:text-sm"
           >
             Approved
           </TabsTrigger>
           <TabsTrigger
             value="prohibited"
-            className="text-xs sm:text-sm hidden sm:inline-flex"
+            className="text-xs sm:text-sm"
           >
             Prohibited
           </TabsTrigger>

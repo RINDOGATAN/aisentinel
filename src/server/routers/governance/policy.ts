@@ -288,6 +288,15 @@ export const policyRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const system = await ctx.prisma.aISystem.findFirst({
+        where: { id: input.aiSystemId, organizationId: ctx.organization.id },
+        select: { id: true },
+      });
+
+      if (!system) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "AI system not found" });
+      }
+
       return ctx.prisma.aIPolicySystemLink.create({
         data: {
           policyId: input.policyId,

@@ -346,7 +346,7 @@ export const shadowAiRouter = createTRPCRouter({
     .query(async ({ ctx }) => {
       await assertShadowAiAccess(ctx.organization.id);
 
-      const [total, discovered, underReview, approved, prohibited] =
+      const [total, discovered, underReview, approved, prohibited, registered] =
         await Promise.all([
           ctx.prisma.shadowAIReport.count({
             where: { organizationId: ctx.organization.id },
@@ -363,8 +363,11 @@ export const shadowAiRouter = createTRPCRouter({
           ctx.prisma.shadowAIReport.count({
             where: { organizationId: ctx.organization.id, status: "PROHIBITED" },
           }),
+          ctx.prisma.shadowAIReport.count({
+            where: { organizationId: ctx.organization.id, status: "REGISTERED" },
+          }),
         ]);
 
-      return { total, discovered, underReview, approved, prohibited };
+      return { total, discovered, underReview, approved, prohibited, registered };
     }),
 });

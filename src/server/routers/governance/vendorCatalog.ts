@@ -22,16 +22,17 @@ export const vendorCatalogRouter = createTRPCRouter({
         });
       }
 
-      const [total, categories, verified] = await Promise.all([
+      const [total, categories, verified, euAiActCompliant] = await Promise.all([
         ctx.prisma.vendorCatalog.count(),
         ctx.prisma.vendorCatalog.findMany({
           select: { category: true },
           distinct: ["category"],
         }),
         ctx.prisma.vendorCatalog.count({ where: { isVerified: true } }),
+        ctx.prisma.vendorCatalog.count({ where: { euAiActCompliant: true } }),
       ]);
 
-      return { total, categories: categories.length, verified };
+      return { total, categories: categories.length, verified, euAiActCompliant };
     }),
 
   search: organizationProcedure

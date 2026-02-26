@@ -179,10 +179,10 @@ export default function AIRegistryPage() {
           <TabsTrigger value="draft" className="text-xs sm:text-sm">
             Draft ({stats.draft})
           </TabsTrigger>
-          <TabsTrigger value="development" className="text-xs sm:text-sm hidden sm:inline-flex">
+          <TabsTrigger value="development" className="text-xs sm:text-sm">
             Development
           </TabsTrigger>
-          <TabsTrigger value="testing" className="text-xs sm:text-sm hidden sm:inline-flex">
+          <TabsTrigger value="testing" className="text-xs sm:text-sm">
             Testing
           </TabsTrigger>
           <TabsTrigger value="deployed" className="text-xs sm:text-sm">

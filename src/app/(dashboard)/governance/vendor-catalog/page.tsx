@@ -179,7 +179,7 @@ export default function VendorCatalogPage() {
         <Card>
           <CardContent className="p-4 sm:pt-6">
             <div className="text-xl sm:text-2xl font-bold text-warning">
-              {catalogItems?.filter((v) => v.euAiActCompliant)?.length ?? 0}
+              {stats?.euAiActCompliant ?? 0}
             </div>
             <p className="text-xs sm:text-sm text-muted-foreground">
               EU AI Act Compliant

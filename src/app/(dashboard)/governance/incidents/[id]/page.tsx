@@ -197,7 +197,7 @@ export default function IncidentDetailPage() {
     },
   });
 
-  if (isLoading) {
+  if (isLoading || !organization?.id) {
     return (
       <div className="flex items-center justify-center py-12">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
@@ -554,7 +554,7 @@ export default function IncidentDetailPage() {
             <CardContent>
               {incident.notifications && incident.notifications.length > 0 ? (
                 <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
+                  <table className="w-full text-sm min-w-[600px]">
                     <thead>
                       <tr className="border-b text-left text-muted-foreground">
                         <th className="pb-2 pr-4 font-medium">Authority</th>

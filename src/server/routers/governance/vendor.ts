@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { createTRPCRouter, organizationProcedure } from "../../trpc";
 import { TRPCError } from "@trpc/server";
-import { hasVendorCatalogAccess } from "@/server/services/licensing/entitlement";
 
 export const vendorRouter = createTRPCRouter({
   list: organizationProcedure
@@ -363,17 +362,23 @@ export const vendorRouter = createTRPCRouter({
         updateData.completedAt = new Date();
       }
 
-      return ctx.prisma.aIVendorAssessment.update({
+      const updated = await ctx.prisma.aIVendorAssessment.update({
         where: { id: input.assessmentId },
         data: updateData as never,
       });
-    }),
 
-  hasVendorCatalogAccess: organizationProcedure
-    .input(z.object({ organizationId: z.string() }))
-    .query(async ({ ctx }) => {
-      const hasAccess = await hasVendorCatalogAccess(ctx.organization.id);
-      return { hasAccess };
+      await ctx.prisma.auditLog.create({
+        data: {
+          organizationId: ctx.organization.id,
+          userId: ctx.session.user.id,
+          entityType: "AIVendorAssessment",
+          entityId: input.assessmentId,
+          action: "UPDATE",
+          changes: updateData as Record<string, string | number | boolean | null>,
+        },
+      });
+
+      return updated;
     }),
 
   getStats: organizationProcedure

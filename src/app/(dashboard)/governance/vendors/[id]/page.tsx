@@ -35,7 +35,7 @@ import {
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
-import { formatDate, formatRelativeTime } from "@/lib/utils";
+import { formatDate, formatRelativeTime, getDaysUntil } from "@/lib/utils";
 
 const riskLevelColors: Record<string, string> = {
   CRITICAL: "bg-destructive text-destructive-foreground",
@@ -81,14 +81,6 @@ const assessmentStatusLabels: Record<string, string> = {
   COMPLETED: "Completed",
   EXPIRED: "Expired",
 };
-
-function getDaysUntil(date: Date | string | null | undefined): number | null {
-  if (!date) return null;
-  const now = new Date();
-  const target = new Date(date);
-  const diffMs = target.getTime() - now.getTime();
-  return Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-}
 
 export default function VendorDetailPage() {
   const params = useParams();
@@ -152,7 +144,7 @@ export default function VendorDetailPage() {
     });
   };
 
-  if (isLoading) {
+  if (isLoading || !organization?.id) {
     return (
       <div className="flex items-center justify-center py-12">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />

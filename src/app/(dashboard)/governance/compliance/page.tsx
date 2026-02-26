@@ -178,16 +178,16 @@ export default function CompliancePage() {
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4">
-        <select
-          value={selectedSystemId}
-          onChange={(e) => setSelectedSystemId(e.target.value)}
-          className="input-brutal flex-1"
-        >
-          <option value="">Select AI System...</option>
-          {systemList.map((s) => (
-            <option key={s.id} value={s.id}>{s.name}</option>
-          ))}
-        </select>
+        <Select value={selectedSystemId} onValueChange={setSelectedSystemId}>
+          <SelectTrigger className="flex-1">
+            <SelectValue placeholder="Select AI System..." />
+          </SelectTrigger>
+          <SelectContent>
+            {systemList.map((s) => (
+              <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {frameworks && frameworks.length > 0 && (
@@ -214,6 +214,7 @@ export default function CompliancePage() {
               ) : !matrix ? (
                 <Card>
                   <CardContent className="p-8 text-center text-muted-foreground">
+                    <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-3" />
                     Loading compliance matrix...
                   </CardContent>
                 </Card>

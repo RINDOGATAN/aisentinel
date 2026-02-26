@@ -14,6 +14,7 @@ import {
   Loader2,
   Clock,
   CheckCircle2,
+  Cpu,
 } from "lucide-react";
 import { keepPreviousData } from "@tanstack/react-query";
 import { trpc } from "@/lib/trpc";
@@ -167,10 +168,10 @@ export default function IncidentsPage() {
           <TabsTrigger value="bias" className="text-xs sm:text-sm">
             Bias
           </TabsTrigger>
-          <TabsTrigger value="drift" className="text-xs sm:text-sm hidden sm:inline-flex">
+          <TabsTrigger value="drift" className="text-xs sm:text-sm">
             Drift
           </TabsTrigger>
-          <TabsTrigger value="prompt_injection" className="text-xs sm:text-sm hidden sm:inline-flex">
+          <TabsTrigger value="prompt_injection" className="text-xs sm:text-sm">
             Prompt Injection
           </TabsTrigger>
         </TabsList>
@@ -218,9 +219,10 @@ export default function IncidentsPage() {
                             {typeLabels[incident.type] || incident.type}
                           </Badge>
                           {incident.aiSystem && (
-                            <Badge variant="outline" className="text-xs">
+                            <span className="text-xs text-muted-foreground flex items-center gap-1">
+                              <Cpu className="w-3 h-3" />
                               {incident.aiSystem.name}
-                            </Badge>
+                            </span>
                           )}
                         </div>
                         <div className="flex justify-between text-xs text-muted-foreground">

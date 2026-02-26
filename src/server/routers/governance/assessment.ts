@@ -155,9 +155,21 @@ export const assessmentRouter = createTRPCRouter({
   submit: organizationProcedure
     .input(z.object({ organizationId: z.string(), id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      return ctx.prisma.aIAssessment.updateMany({
+      const result = await ctx.prisma.aIAssessment.updateMany({
         where: { id: input.id, organizationId: ctx.organization.id },
         data: { status: "UNDER_REVIEW" },
+      });
+
+      if (result.count === 0) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Assessment not found" });
+      }
+
+      return ctx.prisma.aIAssessment.findUnique({
+        where: { id: input.id },
+        include: {
+          template: true,
+          aiSystem: { select: { id: true, name: true } },
+        },
       });
     }),
 

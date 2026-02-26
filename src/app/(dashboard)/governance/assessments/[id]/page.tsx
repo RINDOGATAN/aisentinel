@@ -43,8 +43,12 @@ export default function AssessmentDetailPage() {
   const submitMutation = trpc.assessment.submit.useMutation({ onSuccess: () => refetch() });
   const approveMutation = trpc.assessment.processApproval.useMutation({ onSuccess: () => refetch() });
 
-  if (isLoading) {
-    return <div className="text-muted-foreground">Loading assessment...</div>;
+  if (isLoading || !orgId) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
   }
 
   if (!assessment) {

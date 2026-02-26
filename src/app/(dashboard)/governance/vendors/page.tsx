@@ -26,7 +26,7 @@ import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
 import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
 import { EnableFeatureModal } from "@/components/premium/enable-feature-modal";
-import { formatRelativeTime, formatDate } from "@/lib/utils";
+import { formatRelativeTime, formatDate, getDaysUntil } from "@/lib/utils";
 
 const riskLevelColors: Record<string, string> = {
   CRITICAL: "bg-destructive text-destructive-foreground",
@@ -60,14 +60,6 @@ const tabToStatus: Record<string, string | undefined> = {
   terminated: "TERMINATED",
 };
 
-function getDaysUntil(date: Date | string | null | undefined): number | null {
-  if (!date) return null;
-  const now = new Date();
-  const target = new Date(date);
-  const diffMs = target.getTime() - now.getTime();
-  return Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-}
-
 export default function VendorRiskPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
@@ -77,7 +69,7 @@ export default function VendorRiskPage() {
 
   const statusFilter = tabToStatus[activeTab];
 
-  const { data: catalogAccess } = trpc.vendor.hasVendorCatalogAccess.useQuery(
+  const { data: catalogAccess } = trpc.vendorCatalog.checkAccess.useQuery(
     { organizationId: organization?.id ?? "" },
     { enabled: !!organization?.id }
   );
@@ -157,6 +149,19 @@ export default function VendorRiskPage() {
         </Card>
       </div>
 
+      {/* Search */}
+      <div className="flex gap-2 sm:gap-4">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search vendors..."
+            className="pl-9"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+      </div>
+
       {/* AI Vendor Catalog — Premium Feature Card */}
       {catalogAccess?.hasAccess ? (
         <Card className="border-primary/50">
@@ -215,19 +220,6 @@ export default function VendorRiskPage() {
         </Card>
       )}
 
-      {/* Search */}
-      <div className="flex gap-2 sm:gap-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search vendors..."
-            className="pl-9"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-      </div>
-
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="w-full justify-start overflow-x-auto">
@@ -240,10 +232,10 @@ export default function VendorRiskPage() {
           <TabsTrigger value="under_review" className="text-xs sm:text-sm">
             Under Review
           </TabsTrigger>
-          <TabsTrigger value="approved" className="text-xs sm:text-sm hidden sm:inline-flex">
+          <TabsTrigger value="approved" className="text-xs sm:text-sm">
             Approved
           </TabsTrigger>
-          <TabsTrigger value="suspended" className="text-xs sm:text-sm hidden sm:inline-flex">
+          <TabsTrigger value="suspended" className="text-xs sm:text-sm">
             Suspended
           </TabsTrigger>
           <TabsTrigger value="terminated" className="text-xs sm:text-sm">

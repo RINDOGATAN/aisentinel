@@ -275,12 +275,12 @@ export default function VendorCatalogDetailPage() {
                   </p>
                 </div>
               </div>
-              <Link href={`/governance/vendors/new?catalog=true&slug=${entry.slug}`}>
-                <Button className="w-full">
+              <Button className="w-full" asChild>
+                <Link href={`/governance/vendors/new?catalog=true&slug=${entry.slug}`}>
                   <Plus className="w-4 h-4 mr-2" />
                   Add to My Vendors
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </CardContent>
           </Card>
         </div>

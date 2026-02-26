@@ -44,7 +44,7 @@ export default async function RootLayout({
   const session = await getServerSession(authOptions);
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${jost.variable} ${archivoBlack.variable} font-sans antialiased`}>
         <Providers session={session}>
           {children}

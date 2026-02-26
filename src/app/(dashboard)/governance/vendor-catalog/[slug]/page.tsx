@@ -31,7 +31,7 @@ export default function VendorCatalogDetailPage() {
     { enabled: !!organization?.id && !!slug }
   );
 
-  if (isLoading) {
+  if (isLoading || !organization?.id) {
     return (
       <div className="flex items-center justify-center py-12">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />

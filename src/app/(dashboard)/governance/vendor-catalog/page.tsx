@@ -21,6 +21,7 @@ import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
 import { EnableFeatureModal } from "@/components/premium/enable-feature-modal";
+import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
 
 export default function VendorCatalogPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -37,12 +38,12 @@ export default function VendorCatalogPage() {
 
   const hasAccess = accessData?.hasAccess;
 
-  const { data: stats } = trpc.vendorCatalog.getStats.useQuery(
+  const { data: stats, isLoading: statsLoading } = trpc.vendorCatalog.getStats.useQuery(
     { organizationId: organization?.id ?? "" },
     { enabled: !!organization?.id && hasAccess === true }
   );
 
-  const { data: categories } = trpc.vendorCatalog.listCategories.useQuery(
+  const { data: categories, isLoading: categoriesLoading } = trpc.vendorCatalog.listCategories.useQuery(
     { organizationId: organization?.id ?? "" },
     { enabled: !!organization?.id && hasAccess === true }
   );
@@ -57,6 +58,8 @@ export default function VendorCatalogPage() {
       },
       { enabled: !!organization?.id && hasAccess === true }
     );
+
+  const initialLoading = hasAccess === true && (statsLoading || categoriesLoading);
 
   // Loading state
   if (accessLoading) {
@@ -112,6 +115,21 @@ export default function VendorCatalogPage() {
             skillDescription="Browse pre-audited AI vendors with compliance data, certifications, and risk assessments from the Vendor.Watch database."
           />
         )}
+      </div>
+    );
+  }
+
+  // Show skeleton while initial data loads (prevents flash of empty stats/cards)
+  if (initialLoading) {
+    return (
+      <div className="space-y-4 sm:space-y-6">
+        <div>
+          <h1 className="text-xl sm:text-2xl font-semibold">AI Vendor Catalog</h1>
+          <p className="text-sm text-muted-foreground">
+            Browse pre-audited AI vendors from the Vendor.Watch database
+          </p>
+        </div>
+        <ListPageSkeleton count={6} />
       </div>
     );
   }

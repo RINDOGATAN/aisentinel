@@ -23,6 +23,7 @@ import {
   ChevronDown,
   CreditCard,
   Database,
+  MessageSquareWarning,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -41,6 +42,7 @@ import {
 } from "@/components/ui/sheet";
 import { useOrganization } from "@/lib/organization-context";
 import { OrganizationSetup } from "@/components/governance/organization-setup";
+import { FeedbackDialog } from "@/components/FeedbackDialog";
 
 const navItems = [
   { href: "/governance", label: "Dashboard", icon: LayoutDashboard, exact: true },
@@ -93,6 +95,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { organization, organizations, isLoading: orgLoading } = useOrganization();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
 
   if (orgLoading) {
     return (
@@ -180,6 +183,15 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                       })}
                     </div>
                   ))}
+                  <div className="h-px bg-border my-2" />
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start gap-3 min-h-[48px] text-base rounded-lg"
+                    onClick={() => { setMobileNavOpen(false); setFeedbackOpen(true); }}
+                  >
+                    <MessageSquareWarning className="w-5 h-5 shrink-0" />
+                    Feedback
+                  </Button>
                 </nav>
               </SheetContent>
             </Sheet>
@@ -242,6 +254,14 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
           </nav>
 
           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setFeedbackOpen(true)}
+              title="Feedback"
+            >
+              <MessageSquareWarning className="w-4 h-4" />
+            </Button>
             <div className="hidden sm:flex items-center gap-2 text-sm text-muted-foreground">
               <User className="w-4 h-4" />
               <span className="hidden lg:inline max-w-[150px] truncate">{session?.user?.email}</span>
@@ -286,6 +306,8 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       </footer>
+
+      <FeedbackDialog open={feedbackOpen} onOpenChange={setFeedbackOpen} />
     </div>
   );
 }

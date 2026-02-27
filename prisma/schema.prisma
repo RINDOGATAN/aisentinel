@@ -1052,3 +1052,16 @@ model AuditLog {
   @@index([createdAt])
   @@map("audit_logs")
 }
+
+// ============================================================
+// ANONYMOUS FEEDBACK
+// ============================================================
+
+model Feedback {
+  id        String   @id @default(cuid())
+  message   String   @db.Text
+  page      String?
+  createdAt DateTime @default(now())
+
+  @@map("feedback")
+}

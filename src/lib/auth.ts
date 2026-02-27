@@ -134,6 +134,7 @@ export const authOptions: NextAuthOptions = {
                 prompt: "select_account",
               },
             },
+            checks: ["state"],
           }),
         ]
       : []),

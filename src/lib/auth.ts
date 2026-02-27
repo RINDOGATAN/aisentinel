@@ -10,6 +10,8 @@ import prisma from "@/lib/prisma";
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 const isDev = process.env.NODE_ENV === "development";
+const isProduction = process.env.NODE_ENV === "production";
+const cookieDomain = isProduction ? ".todo.law" : undefined;
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma) as NextAuthOptions["adapter"],
@@ -262,6 +264,36 @@ export const authOptions: NextAuthOptions = {
     signIn: "/sign-in",
     verifyRequest: "/verify-request",
     error: "/auth-error",
+  },
+  cookies: {
+    sessionToken: {
+      name: isProduction ? "__Secure-aisentinel.session-token" : "aisentinel.session-token",
+      options: {
+        httpOnly: true,
+        sameSite: "lax" as const,
+        path: "/",
+        secure: isProduction,
+        ...(cookieDomain && { domain: cookieDomain }),
+      },
+    },
+    callbackUrl: {
+      name: isProduction ? "__Secure-aisentinel.callback-url" : "aisentinel.callback-url",
+      options: {
+        sameSite: "lax" as const,
+        path: "/",
+        secure: isProduction,
+        ...(cookieDomain && { domain: cookieDomain }),
+      },
+    },
+    csrfToken: {
+      name: "aisentinel.csrf-token",
+      options: {
+        httpOnly: true,
+        sameSite: "lax" as const,
+        path: "/",
+        secure: isProduction,
+      },
+    },
   },
   ...(isDev && {
     debug: true,

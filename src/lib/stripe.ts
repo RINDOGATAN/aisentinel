@@ -132,6 +132,46 @@ export async function getSubscription(
 }
 
 /**
+ * Retrieve a Stripe customer
+ */
+export async function getCustomer(
+  customerId: string
+): Promise<Stripe.Customer | Stripe.DeletedCustomer> {
+  const stripe = getStripe();
+  return stripe.customers.retrieve(customerId);
+}
+
+/**
+ * Cancel a subscription (immediately or at period end)
+ */
+export async function cancelSubscription(
+  subscriptionId: string,
+  immediately: boolean = false
+): Promise<Stripe.Subscription> {
+  const stripe = getStripe();
+  if (immediately) {
+    return stripe.subscriptions.cancel(subscriptionId);
+  }
+  return stripe.subscriptions.update(subscriptionId, {
+    cancel_at_period_end: true,
+  });
+}
+
+/**
+ * Create a Stripe Billing Portal session
+ */
+export async function createPortalSession(
+  customerId: string,
+  returnUrl: string
+): Promise<Stripe.BillingPortal.Session> {
+  const stripe = getStripe();
+  return stripe.billingPortal.sessions.create({
+    customer: customerId,
+    return_url: returnUrl,
+  });
+}
+
+/**
  * Remove a single subscription item (by price) from a subscription.
  * If it's the only item, cancels the entire subscription immediately.
  */

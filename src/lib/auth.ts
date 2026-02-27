@@ -4,6 +4,7 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { Resend } from "resend";
+import { jwtVerify } from "jose";
 import prisma from "@/lib/prisma";
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
@@ -47,6 +48,80 @@ export const authOptions: NextAuthOptions = {
           }),
         ]
       : []),
+    // Cross-domain SSO from startups.todo.law
+    CredentialsProvider({
+      id: "cross-login",
+      name: "Cross Login",
+      credentials: {
+        token: { type: "text" },
+        method: { type: "text" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.token || !credentials?.method) return null;
+
+        let email: string | undefined;
+        let name: string | undefined;
+
+        if (credentials.method === "magic-link") {
+          const secret = process.env.CROSS_LOGIN_SECRET;
+          if (!secret) {
+            console.error("CROSS_LOGIN_SECRET is not configured");
+            return null;
+          }
+          try {
+            const { payload } = await jwtVerify(
+              credentials.token,
+              new TextEncoder().encode(secret)
+            );
+            email = payload.email as string | undefined;
+            name = payload.name as string | undefined;
+          } catch (err) {
+            console.error("Cross-login JWT verification failed:", err);
+            return null;
+          }
+        } else if (credentials.method === "google") {
+          try {
+            const res = await fetch(
+              `https://www.googleapis.com/oauth2/v3/userinfo`,
+              { headers: { Authorization: `Bearer ${credentials.token}` } }
+            );
+            if (!res.ok) {
+              console.error("Google userinfo request failed:", res.status);
+              return null;
+            }
+            const profile = await res.json();
+            email = profile.email;
+            name = profile.name;
+          } catch (err) {
+            console.error("Cross-login Google token verification failed:", err);
+            return null;
+          }
+        } else {
+          return null;
+        }
+
+        if (!email) return null;
+
+        let user = await prisma.user.findUnique({
+          where: { email },
+        });
+
+        if (!user) {
+          user = await prisma.user.create({
+            data: {
+              email,
+              name: name ?? email.split("@")[0],
+            },
+          });
+        }
+
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+        };
+      },
+    }),
     // Google OAuth
     ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
       ? [

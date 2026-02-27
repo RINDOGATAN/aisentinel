@@ -1,8 +1,6 @@
 "use client";
 
 import { ClipboardList, ShieldAlert, Eye, AlertOctagon } from "lucide-react";
-import { signIn } from "next-auth/react";
-import { AuthProvider } from "./auth/AuthContext";
 import StartupProductPage from "./components/StartupProductPage";
 import StartupsHeader from "./components/StartupsHeader";
 import StartupsFooter from "./components/StartupsFooter";
@@ -66,7 +64,7 @@ export default function LandingPage() {
   const socialProofs = [t("social.s1"), t("social.s2"), t("social.s3")];
 
   return (
-    <AuthProvider>
+    <>
       <StartupsHeader
         t={t}
         locale="en"
@@ -81,9 +79,9 @@ export default function LandingPage() {
         valueProps={valueProps}
         socialProofs={socialProofs}
         heroVideo="/hero-sentinel-bg.mp4"
-        onAuthenticated={() => signIn("google", { callbackUrl: "/governance" })}
+        callbackUrl="/governance"
       />
       <StartupsFooter t={t} />
-    </AuthProvider>
+    </>
   );
 }

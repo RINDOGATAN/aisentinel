@@ -61,7 +61,7 @@ DPOs and AI governance officers face a fragmented landscape:
 
 - **DPO Central** handles data privacy compliance (GDPR, DSAR, breach tracking) but was never designed for AI-specific governance concerns.
 - **EU AI Act** (effective Aug 1, 2024; high-risk obligations due Aug 2, 2026) introduces new compliance requirements that don't map cleanly onto existing privacy tools: AI system registration (Art. 49), risk classification (Art. 5-6), conformity assessments (Art. 43), human oversight (Art. 14), and serious incident reporting (Art. 62).
-- **Shadow AI** proliferation means organizations have dozens of AI tools in use with no central inventory or policy governance.
+- **Shadow AI** proliferation means organizations have dozens of AI tools in use with no central inventory or policy governance. Studies show ~60% of employees use unapproved AI tools at work, yet most organizations have no visibility into this usage. Traditional vendor management only covers tools acquired through formal procurement — it cannot account for tools employees adopt on their own.
 - **Existing solutions** (OneTrust AI Governance, Credo AI, Holistic AI) are enterprise-priced and often bundled with broader GRC suites.
 
 ### Why a Separate Application
@@ -222,7 +222,36 @@ Organization-wide governance overview as the main `/governance` landing page.
 
 Organizational visibility into unauthorized or unmanaged AI tool usage.
 
-**Key capabilities**:
+#### Why Shadow AI is a distinct module (not part of Vendor Risk)
+
+Shadow AI and Vendor Risk solve fundamentally different problems in opposite directions:
+
+| | Vendor Risk Management | Shadow AI Discovery |
+|---|---|---|
+| **Who initiates** | The organization procures a vendor through formal channels | Employees adopt AI tools on their own, outside procurement |
+| **Starting visibility** | Known from day one — the org chose the vendor | Unknown until reported or discovered |
+| **Core problem** | "Is this vendor we selected risky?" | "What AI tools are people actually using?" |
+| **Lifecycle** | Procurement → Assessment → Monitoring → Renewal | Discovery → Triage → Approve or Prohibit |
+| **Data model** | Rich: contracts, due diligence, risk scores, contacts, assessments | Lightweight: tool name, department, usage description, risk indicators |
+
+The real-world driver: **~60% of employees use unapproved AI tools at work**, and most organizations have no visibility into this usage. Organizations cannot govern AI tools they do not know about. Vendor Risk assumes you already decided to use something; Shadow AI catches everything that bypassed that decision.
+
+#### What makes Shadow AI unique
+
+1. **Self-reporting portal** — Employees search a pre-loaded catalog or enter a custom tool and report "I'm using this in my department." This is bottom-up discovery rather than top-down governance. No other module provides this intake mechanism.
+
+2. **Triage workflow** — The `DISCOVERED → UNDER_REVIEW → APPROVED/PROHIBITED` decision framework is specific to "should we allow this?" This differs from vendor assessment, which assumes usage is already sanctioned.
+
+3. **PROHIBITED as a terminal status** — Vendors get suspended or terminated for performance or contract reasons. Shadow tools get *prohibited* because they were never authorized. Different intent, different organizational signal.
+
+4. **Promotion pipeline** — The `registerWithAutoCreate` flow bridges shadow discovery into formal governance. An approved shadow tool can be promoted into a real AI System (and optionally a Vendor record) in one transaction. Shadow AI is the **intake funnel** that feeds the core modules, not a parallel to them.
+
+#### Avoiding overlap with Vendor Risk
+
+The `ShadowAITool` catalog (36 tools with vendor string, category, risk indicators) is intentionally lighter than the `VendorCatalog` (pre-audited vendors with certifications, GDPR status, data locations). They serve different audiences: the shadow catalog helps employees *identify* what they are using; the vendor catalog helps procurement *evaluate* what to buy. The only intersection point is the promotion flow — when a shadow tool is approved and registered, it graduates into the AI Registry and optionally the Vendor module.
+
+#### Key capabilities
+
 - Pre-loaded catalog of 36 known AI tools across 8 categories (LLM Chat, Code Assistants, Image Generation, Video/Audio, Writing/Productivity, Business Tools, Data Analytics, Search)
 - Self-reporting portal: catalog search or custom tool entry with department and usage description
 - Status workflow: Discovered → Under Review → Approved/Prohibited, Approved → Registered (linked to AI Registry)

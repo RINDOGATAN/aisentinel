@@ -2,7 +2,7 @@
   "sent.heading": "Revisa tu bandeja",
   "sent.desc": "Enviamos un enlace de inicio de sesión a",
   "sent.action": "Haz clic en el enlace del email para continuar.",
-  "sent.resend": "¿No lo recibiste? Reenviar",
+  "sent.resend": "¿No lo has recibido? Reenviar",
   "login.heading": "Bienvenido de nuevo",
   "login.subtitle": "Inicia sesión para continuar.",
   "login.magicLink": "Enviar enlace mágico",

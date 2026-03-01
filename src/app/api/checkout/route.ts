@@ -114,26 +114,43 @@ export async function POST(request: NextRequest) {
     let stripeCustomerId = customerOrg?.customer?.stripeCustomerId;
 
     if (!customerId) {
-      const stripeCustomer = await createCustomer({
-        email: session.user.email,
-        name: session.user.name || undefined,
-        metadata: { organizationId },
+      // Check if customer exists by email but isn't linked to this org
+      const existingByEmail = await prisma.customer.findUnique({
+        where: { email: session.user.email },
       });
 
-      const newCustomer = await prisma.customer.create({
-        data: {
-          name: session.user.name || session.user.email,
-          email: session.user.email,
-          type: "SAAS",
-          stripeCustomerId: stripeCustomer.id,
-          organizations: {
-            create: { organizationId },
+      if (existingByEmail) {
+        // Link existing customer to this organization
+        await prisma.customerOrganization.create({
+          data: {
+            customerId: existingByEmail.id,
+            organizationId,
           },
-        },
-      });
+        });
+        customerId = existingByEmail.id;
+        stripeCustomerId = existingByEmail.stripeCustomerId;
+      } else {
+        const stripeCustomer = await createCustomer({
+          email: session.user.email,
+          name: session.user.name || undefined,
+          metadata: { organizationId },
+        });
 
-      customerId = newCustomer.id;
-      stripeCustomerId = stripeCustomer.id;
+        const newCustomer = await prisma.customer.create({
+          data: {
+            name: session.user.name || session.user.email,
+            email: session.user.email,
+            type: "SAAS",
+            stripeCustomerId: stripeCustomer.id,
+            organizations: {
+              create: { organizationId },
+            },
+          },
+        });
+
+        customerId = newCustomer.id;
+        stripeCustomerId = stripeCustomer.id;
+      }
     } else if (!stripeCustomerId && customerOrg?.customer) {
       const existingCustomer = customerOrg.customer;
       const stripeCustomer = await createCustomer({
@@ -153,9 +170,14 @@ export async function POST(request: NextRequest) {
       stripeCustomerId = stripeCustomer.id;
     }
 
-    // Build line items
+    // Determine currency from geo-IP (US → USD, else EUR)
+    const country = request.headers.get("x-vercel-ip-country") || "";
+    const isUSD = country === "US";
+    const usdPriceId = process.env.STRIPE_PRICE_ID_USD;
+
+    // Build line items (use USD price for US visitors if available)
     const lineItems = skillPackages.map((pkg) => ({
-      priceId: pkg.stripePriceId!,
+      priceId: isUSD && usdPriceId ? usdPriceId : pkg.stripePriceId!,
       skillPackageId: pkg.id,
     }));
 
@@ -176,9 +198,10 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ url: checkoutSession.url });
   } catch (error) {
-    console.error("Checkout error:", error);
+    const message = error instanceof Error ? error.message : String(error);
+    console.error("Checkout error:", message, error);
     return NextResponse.json(
-      { error: "Failed to create checkout session" },
+      { error: `Failed to create checkout session: ${message}` },
       { status: 500 }
     );
   }

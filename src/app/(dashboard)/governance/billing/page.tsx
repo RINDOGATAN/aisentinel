@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { features } from "@/config/features";
+import { formatPrice } from "@/lib/currency";
 
 export default function BillingPage() {
   const { organization } = useOrganization();
@@ -132,7 +133,7 @@ export default function BillingPage() {
           <Card>
             <CardContent className="pt-6">
               <p className="text-sm text-muted-foreground">Monthly Total</p>
-              <p className="text-2xl font-bold">&euro;{monthlyTotal}</p>
+              <p className="text-2xl font-bold">{formatPrice(monthlyTotal)}</p>
             </CardContent>
           </Card>
           <Card>
@@ -219,7 +220,7 @@ export default function BillingPage() {
                 ) : (
                   <>
                     <span className="text-sm text-muted-foreground">
-                      &euro;{(row.priceAmount ?? 900) / 100}/mo
+                      {formatPrice((row.priceAmount ?? 900) / 100)}/mo
                     </span>
                     {features.selfServiceUpgrade && (
                       <Button
@@ -243,7 +244,7 @@ export default function BillingPage() {
             <div className="flex items-center justify-between rounded-lg border border-primary/30 bg-primary/5 p-3 mt-4">
               <p className="text-sm text-muted-foreground">
                 {selectedIds.size} feature{selectedIds.size !== 1 ? "s" : ""} selected
-                &mdash; &euro;{selectedIds.size * 9}/month
+                &mdash; {formatPrice(selectedIds.size * 9)}/month
               </p>
               <Button size="sm" onClick={handleEnableSelected}>
                 Enable Selected ({selectedIds.size})

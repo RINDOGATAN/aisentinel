@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { brand } from "@/config/brand";
 import { features } from "@/config/features";
+import { formatPrice } from "@/lib/currency";
 
 interface EnableFeatureModalProps {
   open: boolean;
@@ -150,7 +151,7 @@ export function EnableFeatureModal({
         <CardContent className="space-y-4">
           <div className="rounded-lg bg-muted p-4">
             <p className="text-sm font-medium">
-              &euro;9/month &mdash; cancel anytime
+              {formatPrice(9)}/month &mdash; cancel anytime
             </p>
           </div>
 

@@ -27,6 +27,7 @@ import { useDebounce } from "@/hooks/use-debounce";
 import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
 import { EnableFeatureModal } from "@/components/premium/enable-feature-modal";
 import { formatRelativeTime, formatDate, getDaysUntil } from "@/lib/utils";
+import { formatPrice } from "@/lib/currency";
 
 const riskLevelColors: Record<string, string> = {
   CRITICAL: "bg-destructive text-destructive-foreground",
@@ -199,7 +200,7 @@ export default function VendorRiskPage() {
               <div>
                 <div className="flex items-center gap-2">
                   <h3 className="font-semibold text-sm sm:text-base">AI Vendor Catalog</h3>
-                  <Badge className="bg-amber-500/20 text-amber-500 text-xs">EUR 9/mo</Badge>
+                  <Badge className="bg-amber-500/20 text-amber-500 text-xs">{formatPrice(9)}/mo</Badge>
                 </div>
                 <p className="text-xs sm:text-sm text-muted-foreground">
                   Search pre-audited AI vendors from Vendor.Watch and auto-fill vendor records

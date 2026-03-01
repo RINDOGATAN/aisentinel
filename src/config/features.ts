@@ -11,8 +11,8 @@ export interface FeatureFlags {
 }
 
 const defaultFeatures: FeatureFlags = {
-  stripeEnabled: false,
-  selfServiceUpgrade: false,
+  stripeEnabled: true,
+  selfServiceUpgrade: true,
   googleAuthEnabled: true,
   emailAuthEnabled: true,
   devAuthEnabled: process.env.NODE_ENV === "development",

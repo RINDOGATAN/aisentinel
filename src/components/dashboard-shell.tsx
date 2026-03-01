@@ -97,15 +97,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
 
-  if (orgLoading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-muted-foreground">Loading...</div>
-      </div>
-    );
-  }
-
-  if (!organization && organizations.length === 0) {
+  if (!orgLoading && !organization && organizations.length === 0) {
     return <OrganizationSetup />;
   }
 
@@ -282,7 +274,13 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
       </header>
 
       <main className="max-w-[1600px] mx-auto px-4 sm:px-6 py-4 sm:py-6">
-        {children}
+        {orgLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <div className="text-muted-foreground text-sm">Loading…</div>
+          </div>
+        ) : (
+          children
+        )}
       </main>
 
       <footer className="border-t border-border mt-auto py-4">

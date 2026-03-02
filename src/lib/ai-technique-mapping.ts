@@ -31,6 +31,8 @@ const CATEGORY_MAP: Record<string, AITechnique> = {
   "Data Science": "MACHINE_LEARNING",
   "AI Analytics": "STATISTICAL",
   "AI Security": "MACHINE_LEARNING",
+  "ML Platform": "MACHINE_LEARNING",
+  "AI Tools": "GENERATIVE_AI",
   "Robotics": "ROBOTICS",
   "NLP": "NLP",
   // Shadow AI tool categories

@@ -240,6 +240,11 @@ export default function VendorCatalogPage() {
                         <Badge variant="secondary" className="text-xs shrink-0">
                           {vendor.category}
                         </Badge>
+                        {vendor.subcategory && (
+                          <Badge variant="outline" className="text-xs shrink-0">
+                            {vendor.subcategory}
+                          </Badge>
+                        )}
                       </div>
                       {vendor.description && (
                         <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 mb-3">

@@ -13,6 +13,7 @@ interface VendorPayload {
   name: string;
   slug?: string;
   category?: string;
+  subcategory?: string | null;
   description?: string | null;
   website?: string | null;
   criticality?: string;
@@ -119,6 +120,7 @@ export async function POST(request: Request) {
           metadata: {
             importedFrom: "vendorwatch",
             category: vendor.category ?? null,
+            subcategory: vendor.subcategory ?? null,
             certifications: vendor.certifications ?? [],
             dataLocations: vendor.dataLocations ?? [],
             aiCapabilities: vendor.aiCapabilities ?? [],

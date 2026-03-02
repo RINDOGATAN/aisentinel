@@ -17,7 +17,8 @@
     "db:migrate-evidence": "tsx scripts/migrate-evidence-to-structured.ts",
     "db:seed-shadow-ai-tools": "tsx scripts/seed-shadow-ai-tools.ts",
     "db:seed-vendor-catalog": "tsx scripts/seed-vendor-catalog.ts",
-    "db:sync-vendor-catalog": "tsx scripts/sync-vendor-catalog.ts"
+    "db:sync-vendor-catalog": "tsx scripts/sync-vendor-catalog.ts",
+    "db:seed-premium-templates": "tsx scripts/seed-assessment-templates.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

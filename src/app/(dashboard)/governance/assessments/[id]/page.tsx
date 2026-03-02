@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, Save, Send, CheckCircle, XCircle, Loader2 } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import Link from "next/link";
@@ -56,7 +57,7 @@ export default function AssessmentDetailPage() {
   }
 
   const template = assessment.template;
-  const sections = (template?.sections as Array<{ id: string; title: string; questions: Array<{ id: string; text: string; type: string; required: boolean; helpText?: string }> }>) ?? [];
+  const sections = (template?.sections as Array<{ id: string; title: string; questions: Array<{ id: string; text: string; type: string; required: boolean; helpText?: string; options?: string[] }> }>) ?? [];
   const canEdit = ["DRAFT", "IN_PROGRESS"].includes(assessment.status);
   const canSubmit = assessment.status === "IN_PROGRESS" || assessment.status === "DRAFT";
   const canApprove = assessment.status === "UNDER_REVIEW";
@@ -147,13 +148,30 @@ export default function AssessmentDetailPage() {
                 {question.helpText && (
                   <p className="text-xs text-muted-foreground">{question.helpText}</p>
                 )}
-                <Textarea
-                  value={responses[question.id] ?? ""}
-                  onChange={(e) => setResponses({ ...responses, [question.id]: e.target.value })}
-                  disabled={!canEdit}
-                  placeholder="Enter your response..."
-                  rows={3}
-                />
+                {question.type === "select" && question.options ? (
+                  <Select
+                    value={responses[question.id] ?? ""}
+                    onValueChange={(value) => setResponses({ ...responses, [question.id]: value })}
+                    disabled={!canEdit}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select an option..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {question.options.map((option) => (
+                        <SelectItem key={option} value={option}>{option}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <Textarea
+                    value={responses[question.id] ?? ""}
+                    onChange={(e) => setResponses({ ...responses, [question.id]: e.target.value })}
+                    disabled={!canEdit}
+                    placeholder="Enter your response..."
+                    rows={3}
+                  />
+                )}
               </div>
             ))}
           </CardContent>

@@ -50,14 +50,9 @@ export const billingRouter = createTRPCRouter({
         stripeSubscriptionId: e.stripeSubscriptionId,
       }));
 
-      const hasComplete = entitlements.some((e) =>
-        e.skillId.includes("complete")
-      );
-      const plan = hasComplete
-        ? ("complete" as const)
-        : entitlements.length > 0
-          ? ("premium" as const)
-          : ("free" as const);
+      const plan = entitlements.length > 0
+        ? ("premium" as const)
+        : ("free" as const);
 
       return {
         hasCustomer: true,

@@ -787,10 +787,10 @@ Premium features follow the same add-on billing model as DPO Central (Stripe, pe
 
 | Feature | Skill ID | Price |
 |---------|----------|-------|
-| Conformity Assessment template | `com.todolaw.aisentinel.conformity` | EUR 9/mo |
-| Bias & Fairness Assessment template | `com.todolaw.aisentinel.bias-fairness` | EUR 9/mo |
-| Shadow AI Discovery module | `com.todolaw.aisentinel.shadow-ai` | EUR 9/mo |
-| Complete Package (all premium) | `com.todolaw.aisentinel.complete` | EUR 19/mo |
+| Conformity Assessment template | `com.todolaw.aisentinel.conformity` | EUR 9/mo · USD 9/mo |
+| Bias & Fairness Assessment template | `com.todolaw.aisentinel.bias-fairness` | EUR 9/mo · USD 9/mo |
+| Shadow AI Discovery module | `com.todolaw.aisentinel.shadow-ai` | EUR 9/mo · USD 9/mo |
+| AI Vendor Catalog | `com.todolaw.aisentinel.vendor-catalog` | EUR 9/mo · USD 9/mo |
 
 Premium features are gated via the same entitlement service pattern used in DPO Central (`src/server/services/licensing/`).
 

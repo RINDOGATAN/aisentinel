@@ -38,10 +38,6 @@ export async function checkAssessmentEntitlement(
     return { entitled: false, reason: `No skill package found for ${assessmentType}` };
   }
 
-  const completePackage = await prisma.skillPackage.findFirst({
-    where: { skillId: "com.todolaw.aisentinel.complete", isActive: true },
-  });
-
   const customerOrg = await prisma.customerOrganization.findFirst({
     where: { organizationId },
     include: {
@@ -50,11 +46,7 @@ export async function checkAssessmentEntitlement(
           entitlements: {
             where: {
               status: EntitlementStatus.ACTIVE,
-              skillPackageId: {
-                in: completePackage
-                  ? [skillPackage.id, completePackage.id]
-                  : [skillPackage.id],
-              },
+              skillPackageId: skillPackage.id,
             },
           },
         },
@@ -151,19 +143,13 @@ export async function checkSkillEntitlement(
 }
 
 export async function hasShadowAiAccess(organizationId: string): Promise<boolean> {
-  const directResult = await checkSkillEntitlement(organizationId, "com.todolaw.aisentinel.shadow-ai");
-  if (directResult.entitled) return true;
-
-  const completeResult = await checkSkillEntitlement(organizationId, "com.todolaw.aisentinel.complete");
-  return completeResult.entitled;
+  const result = await checkSkillEntitlement(organizationId, "com.todolaw.aisentinel.shadow-ai");
+  return result.entitled;
 }
 
 export async function hasVendorCatalogAccess(organizationId: string): Promise<boolean> {
-  const directResult = await checkSkillEntitlement(organizationId, "com.todolaw.aisentinel.vendor-catalog");
-  if (directResult.entitled) return true;
-
-  const completeResult = await checkSkillEntitlement(organizationId, "com.todolaw.aisentinel.complete");
-  return completeResult.entitled;
+  const result = await checkSkillEntitlement(organizationId, "com.todolaw.aisentinel.vendor-catalog");
+  return result.entitled;
 }
 
 export function isPremiumAssessmentType(assessmentType: AIAssessmentType): boolean {

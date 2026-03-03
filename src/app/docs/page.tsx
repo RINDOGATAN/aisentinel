@@ -232,7 +232,6 @@ export default function DocsPage() {
               <li>Bias &amp; Fairness Assessment</li>
               <li>Shadow AI Discovery (36-tool catalog)</li>
               <li>AI Vendor Catalog (Vendor.Watch integration)</li>
-              <li>Complete Package bundle</li>
             </ul>
           </div>
         </div>

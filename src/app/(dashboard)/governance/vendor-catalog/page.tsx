@@ -16,6 +16,7 @@ import {
   Shield,
   Globe,
   Cpu,
+  FileCheck,
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
@@ -262,6 +263,20 @@ export default function VendorCatalogPage() {
                           <Badge className="bg-info/20 text-info text-xs">
                             <Shield className="w-3 h-3 mr-1" />
                             EU AI Act
+                          </Badge>
+                        )}
+                        {vendor.dpaComplianceScore != null && (
+                          <Badge
+                            className={`text-xs ${
+                              vendor.dpaComplianceScore >= 70
+                                ? "bg-success/20 text-success"
+                                : vendor.dpaComplianceScore >= 40
+                                  ? "bg-warning/20 text-warning"
+                                  : "bg-destructive/20 text-destructive"
+                            }`}
+                          >
+                            <FileCheck className="w-3 h-3 mr-1" />
+                            DPA {vendor.dpaComplianceScore}%
                           </Badge>
                         )}
                         {vendor.certifications.slice(0, 3).map((cert) => (

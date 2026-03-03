@@ -917,12 +917,15 @@ model VendorCatalog {
   securityPageUrl  String?
 
   // Compliance
-  certifications   String[] // ["ISO 27001", "SOC 2 Type II", "ISO 42001"]
-  frameworks       String[] // ["EU AI Act", "NIST AI RMF", "GDPR"]
-  gdprCompliant    Boolean?
-  ccpaCompliant    Boolean?
-  euAiActCompliant Boolean?
-  hipaaCompliant   Boolean?
+  certifications     String[] // ["ISO 27001", "SOC 2 Type II", "ISO 42001"]
+  frameworks         String[] // ["EU AI Act", "NIST AI RMF", "GDPR"]
+  gdprCompliant      Boolean?
+  ccpaCompliant      Boolean?
+  euAiActCompliant   Boolean?
+  hipaaCompliant     Boolean?
+  dpaComplianceScore Int? // 0-100 overall DPA compliance (from Vendor.Watch analysis)
+  dpaGdprScore       Int? // 0-100 GDPR clause coverage
+  dpaCcpaScore       Int? // 0-100 CCPA clause coverage
 
   // Data Processing
   dataLocations   String[] // ["US", "EU", "UK"]

@@ -21,6 +21,10 @@ interface VendorPayload {
   dataLocations?: string[];
   aiCapabilities?: string[];
   modelHosting?: string | null;
+  dpaUrl?: string | null;
+  dpaComplianceScore?: number | null;
+  dpaGdprScore?: number | null;
+  dpaCcpaScore?: number | null;
 }
 
 export async function POST(request: Request) {
@@ -125,6 +129,10 @@ export async function POST(request: Request) {
             dataLocations: vendor.dataLocations ?? [],
             aiCapabilities: vendor.aiCapabilities ?? [],
             modelHosting: vendor.modelHosting ?? null,
+            dpaUrl: vendor.dpaUrl ?? null,
+            dpaComplianceScore: vendor.dpaComplianceScore ?? null,
+            dpaGdprScore: vendor.dpaGdprScore ?? null,
+            dpaCcpaScore: vendor.dpaCcpaScore ?? null,
           },
         },
       });

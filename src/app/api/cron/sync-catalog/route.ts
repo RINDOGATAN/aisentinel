@@ -19,6 +19,9 @@ interface VendorWatchVendor {
   ccpaCompliant: boolean | null;
   euAiActCompliant: boolean | null;
   hipaaCompliant: boolean | null;
+  dpaComplianceScore: number | null;
+  dpaGdprScore: number | null;
+  dpaCcpaScore: number | null;
   dataLocations: string[];
   hasEuDataCenter: boolean | null;
   subprocessors: unknown;
@@ -88,6 +91,9 @@ export async function GET(request: Request) {
           ccpaCompliant: v.ccpaCompliant,
           euAiActCompliant: v.euAiActCompliant,
           hipaaCompliant: v.hipaaCompliant,
+          dpaComplianceScore: v.dpaComplianceScore,
+          dpaGdprScore: v.dpaGdprScore,
+          dpaCcpaScore: v.dpaCcpaScore,
           dataLocations: v.dataLocations || [],
           hasEuDataCenter: v.hasEuDataCenter,
           subprocessors: v.subprocessors ?? undefined,

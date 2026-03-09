@@ -41,10 +41,10 @@ function ListItemSkeleton() {
   );
 }
 
-export function ListPageSkeleton({ count = 4 }: { count?: number }) {
+export function ListPageSkeleton({ count = 4, showStats = false }: { count?: number; showStats?: boolean }) {
   return (
     <>
-      <StatsGridSkeleton />
+      {showStats && <StatsGridSkeleton />}
       <div className="grid gap-4 sm:grid-cols-2">
         {Array.from({ length: count }).map((_, i) => (
           <ListItemSkeleton key={i} />

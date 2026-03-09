@@ -97,7 +97,16 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
 
-  if (!orgLoading && !organization && organizations.length === 0) {
+  // Full-screen loading gate: prevent chrome from rendering before org is ready
+  if (orgLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-muted-foreground text-sm">Loading…</div>
+      </div>
+    );
+  }
+
+  if (!organization && organizations.length === 0) {
     return <OrganizationSetup />;
   }
 
@@ -274,13 +283,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
       </header>
 
       <main className="max-w-[1600px] mx-auto px-4 sm:px-6 py-4 sm:py-6">
-        {orgLoading ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="text-muted-foreground text-sm">Loading…</div>
-          </div>
-        ) : (
-          children
-        )}
+        {children}
       </main>
 
       <footer className="border-t border-border mt-auto py-4">

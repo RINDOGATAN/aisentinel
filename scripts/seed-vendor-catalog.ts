@@ -1,6 +1,12 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
+
+interface CatalogAIModel {
+  name: string;
+  type: string;
+  source: string;
+}
 
 interface VendorCatalogEntry {
   slug: string;
@@ -23,6 +29,15 @@ interface VendorCatalogEntry {
   trustCenterUrl?: string;
   dpaUrl?: string;
   securityPageUrl?: string;
+  // New fields
+  aiModels?: CatalogAIModel[];
+  euAiActRole?: string;
+  iso42001Certified?: boolean;
+  supportsExplainability?: boolean;
+  hasBiasMonitoring?: boolean;
+  hasModelCard?: boolean;
+  supportsAuditLogs?: boolean;
+  hasDesignatedDpo?: boolean;
 }
 
 const vendors: VendorCatalogEntry[] = [
@@ -45,6 +60,21 @@ const vendors: VendorCatalogEntry[] = [
     modelHosting: "Cloud",
     privacyPolicyUrl: "https://openai.com/policies/privacy-policy",
     trustCenterUrl: "https://trust.openai.com",
+    aiModels: [
+      { name: "GPT-4o", type: "LLM", source: "OpenAI" },
+      { name: "GPT-4o mini", type: "LLM", source: "OpenAI" },
+      { name: "o1", type: "LLM", source: "OpenAI" },
+      { name: "DALL-E 3", type: "Image Generation", source: "OpenAI" },
+      { name: "Whisper", type: "Speech", source: "OpenAI" },
+      { name: "TTS", type: "Speech", source: "OpenAI" },
+      { name: "text-embedding-3-large", type: "Embedding", source: "OpenAI" },
+    ],
+    euAiActRole: "Provider",
+    supportsExplainability: false,
+    hasBiasMonitoring: true,
+    hasModelCard: true,
+    supportsAuditLogs: true,
+    hasDesignatedDpo: true,
   },
   {
     slug: "anthropic",
@@ -63,6 +93,17 @@ const vendors: VendorCatalogEntry[] = [
     modelHosting: "Cloud",
     privacyPolicyUrl: "https://www.anthropic.com/privacy",
     trustCenterUrl: "https://trust.anthropic.com",
+    aiModels: [
+      { name: "Claude Opus 4", type: "LLM", source: "Anthropic" },
+      { name: "Claude Sonnet 4", type: "LLM", source: "Anthropic" },
+      { name: "Claude Haiku 3.5", type: "LLM", source: "Anthropic" },
+    ],
+    euAiActRole: "Provider",
+    supportsExplainability: true,
+    hasBiasMonitoring: true,
+    hasModelCard: true,
+    supportsAuditLogs: true,
+    hasDesignatedDpo: true,
   },
   {
     slug: "google-vertex-ai",
@@ -83,6 +124,20 @@ const vendors: VendorCatalogEntry[] = [
     privacyPolicyUrl: "https://cloud.google.com/terms/cloud-privacy-notice",
     trustCenterUrl: "https://cloud.google.com/security",
     dpaUrl: "https://cloud.google.com/terms/data-processing-addendum",
+    aiModels: [
+      { name: "Gemini 2.5 Pro", type: "LLM", source: "Google DeepMind" },
+      { name: "Gemini 2.5 Flash", type: "LLM", source: "Google DeepMind" },
+      { name: "Imagen 3", type: "Image Generation", source: "Google DeepMind" },
+      { name: "Chirp", type: "Speech", source: "Google Cloud" },
+      { name: "text-embedding-005", type: "Embedding", source: "Google Cloud" },
+    ],
+    euAiActRole: "Provider",
+    iso42001Certified: true,
+    supportsExplainability: true,
+    hasBiasMonitoring: true,
+    hasModelCard: true,
+    supportsAuditLogs: true,
+    hasDesignatedDpo: true,
   },
   {
     slug: "meta-llama",
@@ -98,6 +153,15 @@ const vendors: VendorCatalogEntry[] = [
     hasEuDataCenter: false,
     aiCapabilities: ["LLM", "Computer Vision", "Code Generation"],
     modelHosting: "On-Premise",
+    aiModels: [
+      { name: "Llama 4 Maverick", type: "LLM", source: "Meta" },
+      { name: "Llama 4 Scout", type: "LLM", source: "Meta" },
+      { name: "Llama 3.3 70B", type: "LLM", source: "Meta" },
+      { name: "Code Llama", type: "Code Generation", source: "Meta" },
+    ],
+    euAiActRole: "Provider",
+    hasModelCard: true,
+    supportsAuditLogs: false,
   },
   {
     slug: "mistral-ai",
@@ -115,6 +179,17 @@ const vendors: VendorCatalogEntry[] = [
     aiCapabilities: ["LLM", "Code Generation"],
     modelHosting: "Cloud",
     privacyPolicyUrl: "https://mistral.ai/terms/#privacy-policy",
+    aiModels: [
+      { name: "Mistral Large", type: "LLM", source: "Mistral AI" },
+      { name: "Mistral Small", type: "LLM", source: "Mistral AI" },
+      { name: "Codestral", type: "Code Generation", source: "Mistral AI" },
+      { name: "Mistral Embed", type: "Embedding", source: "Mistral AI" },
+    ],
+    euAiActRole: "Provider",
+    supportsExplainability: true,
+    hasBiasMonitoring: false,
+    hasModelCard: true,
+    supportsAuditLogs: true,
   },
   {
     slug: "cohere",
@@ -551,59 +626,45 @@ async function main() {
   let updated = 0;
 
   for (const vendor of vendors) {
+    const data = {
+      name: vendor.name,
+      category: vendor.category,
+      subcategory: vendor.subcategory,
+      description: vendor.description,
+      website: vendor.website,
+      tags: vendor.tags,
+      certifications: vendor.certifications,
+      frameworks: vendor.frameworks,
+      gdprCompliant: vendor.gdprCompliant,
+      euAiActCompliant: vendor.euAiActCompliant,
+      hipaaCompliant: vendor.hipaaCompliant,
+      dataLocations: vendor.dataLocations,
+      hasEuDataCenter: vendor.hasEuDataCenter,
+      aiCapabilities: vendor.aiCapabilities,
+      modelHosting: vendor.modelHosting,
+      privacyPolicyUrl: vendor.privacyPolicyUrl,
+      trustCenterUrl: vendor.trustCenterUrl,
+      dpaUrl: vendor.dpaUrl,
+      securityPageUrl: vendor.securityPageUrl,
+      source: "seed",
+      isVerified: true,
+      verifiedAt: new Date(),
+      verifiedBy: "AI SENTINEL seed",
+      // New fields
+      ...(vendor.aiModels && { aiModels: vendor.aiModels as unknown as Prisma.InputJsonValue }),
+      ...(vendor.euAiActRole && { euAiActRole: vendor.euAiActRole }),
+      ...(vendor.iso42001Certified != null && { iso42001Certified: vendor.iso42001Certified }),
+      ...(vendor.supportsExplainability != null && { supportsExplainability: vendor.supportsExplainability }),
+      ...(vendor.hasBiasMonitoring != null && { hasBiasMonitoring: vendor.hasBiasMonitoring }),
+      ...(vendor.hasModelCard != null && { hasModelCard: vendor.hasModelCard }),
+      ...(vendor.supportsAuditLogs != null && { supportsAuditLogs: vendor.supportsAuditLogs }),
+      ...(vendor.hasDesignatedDpo != null && { hasDesignatedDpo: vendor.hasDesignatedDpo }),
+    };
+
     const result = await prisma.vendorCatalog.upsert({
       where: { slug: vendor.slug },
-      create: {
-        slug: vendor.slug,
-        name: vendor.name,
-        category: vendor.category,
-        subcategory: vendor.subcategory,
-        description: vendor.description,
-        website: vendor.website,
-        tags: vendor.tags,
-        certifications: vendor.certifications,
-        frameworks: vendor.frameworks,
-        gdprCompliant: vendor.gdprCompliant,
-        euAiActCompliant: vendor.euAiActCompliant,
-        hipaaCompliant: vendor.hipaaCompliant,
-        dataLocations: vendor.dataLocations,
-        hasEuDataCenter: vendor.hasEuDataCenter,
-        aiCapabilities: vendor.aiCapabilities,
-        modelHosting: vendor.modelHosting,
-        privacyPolicyUrl: vendor.privacyPolicyUrl,
-        trustCenterUrl: vendor.trustCenterUrl,
-        dpaUrl: vendor.dpaUrl,
-        securityPageUrl: vendor.securityPageUrl,
-        source: "seed",
-        isVerified: true,
-        verifiedAt: new Date(),
-        verifiedBy: "AI SENTINEL seed",
-      },
-      update: {
-        name: vendor.name,
-        category: vendor.category,
-        subcategory: vendor.subcategory,
-        description: vendor.description,
-        website: vendor.website,
-        tags: vendor.tags,
-        certifications: vendor.certifications,
-        frameworks: vendor.frameworks,
-        gdprCompliant: vendor.gdprCompliant,
-        euAiActCompliant: vendor.euAiActCompliant,
-        hipaaCompliant: vendor.hipaaCompliant,
-        dataLocations: vendor.dataLocations,
-        hasEuDataCenter: vendor.hasEuDataCenter,
-        aiCapabilities: vendor.aiCapabilities,
-        modelHosting: vendor.modelHosting,
-        privacyPolicyUrl: vendor.privacyPolicyUrl,
-        trustCenterUrl: vendor.trustCenterUrl,
-        dpaUrl: vendor.dpaUrl,
-        securityPageUrl: vendor.securityPageUrl,
-        source: "seed",
-        isVerified: true,
-        verifiedAt: new Date(),
-        verifiedBy: "AI SENTINEL seed",
-      },
+      create: { slug: vendor.slug, ...data },
+      update: data,
     });
 
     // Check if it was created or updated by checking createdAt vs updatedAt

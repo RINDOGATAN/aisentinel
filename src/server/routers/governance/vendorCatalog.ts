@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { Prisma } from "@prisma/client";
 import { createTRPCRouter, organizationProcedure } from "../../trpc";
 import { TRPCError } from "@trpc/server";
 import { hasVendorCatalogAccess } from "@/server/services/licensing/entitlement";
@@ -22,7 +23,7 @@ export const vendorCatalogRouter = createTRPCRouter({
         });
       }
 
-      const [total, categories, verified, euAiActCompliant] = await Promise.all([
+      const [total, categories, verified, euAiActCompliant, withAiModels, iso42001Certified] = await Promise.all([
         ctx.prisma.vendorCatalog.count(),
         ctx.prisma.vendorCatalog.findMany({
           select: { category: true },
@@ -30,9 +31,11 @@ export const vendorCatalogRouter = createTRPCRouter({
         }),
         ctx.prisma.vendorCatalog.count({ where: { isVerified: true } }),
         ctx.prisma.vendorCatalog.count({ where: { euAiActCompliant: true } }),
+        ctx.prisma.vendorCatalog.count({ where: { aiModels: { not: Prisma.DbNull } } }),
+        ctx.prisma.vendorCatalog.count({ where: { iso42001Certified: true } }),
       ]);
 
-      return { total, categories: categories.length, verified, euAiActCompliant };
+      return { total, categories: categories.length, verified, euAiActCompliant, withAiModels, iso42001Certified };
     }),
 
   search: organizationProcedure

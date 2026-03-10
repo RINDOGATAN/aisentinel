@@ -17,12 +17,15 @@ import {
   Globe,
   Cpu,
   FileCheck,
+  Brain,
+  ShieldCheck,
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
 import { EnableFeatureModal } from "@/components/premium/enable-feature-modal";
 import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
+import type { CatalogAIModel } from "@/lib/vendor-watch-types";
 
 export default function VendorCatalogPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -160,10 +163,10 @@ export default function VendorCatalogPage() {
         <Card>
           <CardContent className="p-4 sm:pt-6">
             <div className="text-xl sm:text-2xl font-bold text-info">
-              {stats?.categories ?? 0}
+              {stats?.withAiModels ?? 0}
             </div>
             <p className="text-xs sm:text-sm text-muted-foreground">
-              Categories
+              With AI Models
             </p>
           </CardContent>
         </Card>
@@ -222,92 +225,107 @@ export default function VendorCatalogPage() {
             </div>
           ) : catalogItems && catalogItems.length > 0 ? (
             <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-              {catalogItems.map((vendor) => (
-                <Link
-                  key={vendor.id}
-                  href={`/governance/vendor-catalog/${vendor.slug}`}
-                >
-                  <Card className="hover:border-primary/50 transition-colors cursor-pointer h-full">
-                    <CardContent className="p-4 sm:p-6">
-                      <div className="flex items-start justify-between gap-2 mb-3">
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-semibold text-base sm:text-lg line-clamp-1">
-                            {vendor.name}
-                          </h3>
-                          {vendor.isVerified && (
-                            <CheckCircle className="w-4 h-4 text-success shrink-0" />
+              {catalogItems.map((vendor) => {
+                const models = (vendor.aiModels as CatalogAIModel[] | null) ?? [];
+                return (
+                  <Link
+                    key={vendor.id}
+                    href={`/governance/vendor-catalog/${vendor.slug}`}
+                  >
+                    <Card className="hover:border-primary/50 transition-colors cursor-pointer h-full">
+                      <CardContent className="p-4 sm:p-6">
+                        <div className="flex items-start justify-between gap-2 mb-3">
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-semibold text-base sm:text-lg line-clamp-1">
+                              {vendor.name}
+                            </h3>
+                            {vendor.isVerified && (
+                              <CheckCircle className="w-4 h-4 text-success shrink-0" />
+                            )}
+                          </div>
+                          <Badge variant="secondary" className="text-xs shrink-0">
+                            {vendor.category}
+                          </Badge>
+                          {vendor.subcategory && (
+                            <Badge variant="outline" className="text-xs shrink-0">
+                              {vendor.subcategory}
+                            </Badge>
                           )}
                         </div>
-                        <Badge variant="secondary" className="text-xs shrink-0">
-                          {vendor.category}
-                        </Badge>
-                        {vendor.subcategory && (
-                          <Badge variant="outline" className="text-xs shrink-0">
-                            {vendor.subcategory}
-                          </Badge>
+                        {vendor.description && (
+                          <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 mb-3">
+                            {vendor.description}
+                          </p>
                         )}
-                      </div>
-                      {vendor.description && (
-                        <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 mb-3">
-                          {vendor.description}
-                        </p>
-                      )}
-                      <div className="flex flex-wrap gap-1.5 mb-3">
-                        {vendor.gdprCompliant && (
-                          <Badge className="bg-success/20 text-success text-xs">
-                            <Shield className="w-3 h-3 mr-1" />
-                            GDPR
-                          </Badge>
-                        )}
-                        {vendor.euAiActCompliant && (
-                          <Badge className="bg-info/20 text-info text-xs">
-                            <Shield className="w-3 h-3 mr-1" />
-                            EU AI Act
-                          </Badge>
-                        )}
-                        {vendor.dpaComplianceScore != null && (
-                          <Badge
-                            className={`text-xs ${
-                              vendor.dpaComplianceScore >= 70
-                                ? "bg-success/20 text-success"
-                                : vendor.dpaComplianceScore >= 40
-                                  ? "bg-warning/20 text-warning"
-                                  : "bg-destructive/20 text-destructive"
-                            }`}
-                          >
-                            <FileCheck className="w-3 h-3 mr-1" />
-                            DPA {vendor.dpaComplianceScore}%
-                          </Badge>
-                        )}
-                        {vendor.certifications.slice(0, 3).map((cert) => (
-                          <Badge key={cert} variant="outline" className="text-xs">
-                            {cert}
-                          </Badge>
-                        ))}
-                        {vendor.certifications.length > 3 && (
-                          <Badge variant="outline" className="text-xs">
-                            +{vendor.certifications.length - 3}
-                          </Badge>
-                        )}
-                      </div>
-                      <div className="flex flex-wrap gap-1.5">
-                        {vendor.aiCapabilities.slice(0, 4).map((cap) => (
-                          <Badge key={cap} variant="secondary" className="text-[10px] px-1.5 py-0">
-                            <Cpu className="w-2.5 h-2.5 mr-0.5" />
-                            {cap}
-                          </Badge>
-                        ))}
-                      </div>
-                      {vendor.website && (
-                        <div className="mt-3 text-xs text-muted-foreground flex items-center gap-1">
-                          <Globe className="w-3 h-3" />
-                          <span className="truncate">{vendor.website.replace(/^https?:\/\//, "")}</span>
+                        <div className="flex flex-wrap gap-1.5 mb-3">
+                          {vendor.gdprCompliant && (
+                            <Badge className="bg-success/20 text-success text-xs">
+                              <Shield className="w-3 h-3 mr-1" />
+                              GDPR
+                            </Badge>
+                          )}
+                          {vendor.euAiActCompliant && (
+                            <Badge className="bg-info/20 text-info text-xs">
+                              <Shield className="w-3 h-3 mr-1" />
+                              EU AI Act
+                            </Badge>
+                          )}
+                          {vendor.dpaComplianceScore != null && (
+                            <Badge
+                              className={`text-xs ${
+                                vendor.dpaComplianceScore >= 70
+                                  ? "bg-success/20 text-success"
+                                  : vendor.dpaComplianceScore >= 40
+                                    ? "bg-warning/20 text-warning"
+                                    : "bg-destructive/20 text-destructive"
+                              }`}
+                            >
+                              <FileCheck className="w-3 h-3 mr-1" />
+                              DPA {vendor.dpaComplianceScore}%
+                            </Badge>
+                          )}
+                          {vendor.certifications.slice(0, 3).map((cert) => (
+                            <Badge key={cert} variant="outline" className="text-xs">
+                              {cert}
+                            </Badge>
+                          ))}
+                          {vendor.certifications.length > 3 && (
+                            <Badge variant="outline" className="text-xs">
+                              +{vendor.certifications.length - 3}
+                            </Badge>
+                          )}
+                          {vendor.iso42001Certified && (
+                            <Badge className="bg-info/20 text-info text-xs">
+                              <ShieldCheck className="w-3 h-3 mr-1" />
+                              ISO 42001
+                            </Badge>
+                          )}
                         </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))}
+                        <div className="flex flex-wrap gap-1.5">
+                          {vendor.aiCapabilities.slice(0, 4).map((cap) => (
+                            <Badge key={cap} variant="secondary" className="text-[10px] px-1.5 py-0">
+                              <Cpu className="w-2.5 h-2.5 mr-0.5" />
+                              {cap}
+                            </Badge>
+                          ))}
+                          {models.length > 0 && (
+                            <Badge className="bg-primary/20 text-primary text-[10px] px-1.5 py-0">
+                              <Brain className="w-2.5 h-2.5 mr-0.5" />
+                              {models.length} Models
+                            </Badge>
+                          )}
+                        </div>
+                        {vendor.website && (
+                          <div className="mt-3 text-xs text-muted-foreground flex items-center gap-1">
+                            <Globe className="w-3 h-3" />
+                            <span className="truncate">{vendor.website.replace(/^https?:\/\//, "")}</span>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </Link>
+                );
+              })}
             </div>
           ) : (
             <Card>

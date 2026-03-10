@@ -1,48 +1,8 @@
 import { PrismaClient } from "@prisma/client";
+import type { VendorWatchSyncResponse } from "../src/lib/vendor-watch-types";
+import { mapVendorToUpsert } from "../src/lib/vendor-watch-mapper";
 
 const prisma = new PrismaClient();
-
-interface VendorWatchVendor {
-  id: string;
-  slug: string;
-  name: string;
-  category: string;
-  subcategory: string | null;
-  description: string | null;
-  tags: string[];
-  website: string | null;
-  privacyPolicyUrl: string | null;
-  trustCenterUrl: string | null;
-  dpaUrl: string | null;
-  securityPageUrl: string | null;
-  certifications: string[];
-  frameworks: string[];
-  gdprCompliant: boolean | null;
-  ccpaCompliant: boolean | null;
-  hipaaCompliant: boolean | null;
-  dpaComplianceScore: number | null;
-  dpaGdprScore: number | null;
-  dpaCcpaScore: number | null;
-  dataLocations: string[];
-  hasEuDataCenter: boolean | null;
-  subprocessors: unknown;
-  euAiActCompliant: boolean | null;
-  aiCapabilities: string[];
-  modelHosting: string | null;
-  logoUrl: string | null;
-  isVerified: boolean;
-  verifiedAt: string | null;
-  verifiedBy: string | null;
-  source: string | null;
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface SyncResponse {
-  vendors: VendorWatchVendor[];
-  nextCursor: string | undefined;
-  count: number;
-}
 
 async function main() {
   const apiUrl = process.env.VENDORWATCH_CATALOG_API_URL;
@@ -76,41 +36,11 @@ async function main() {
       process.exit(1);
     }
 
-    const data: SyncResponse = await res.json();
+    const data: VendorWatchSyncResponse = await res.json();
     console.log(`Fetched ${data.count} vendors (cursor: ${cursor || "start"})`);
 
     for (const v of data.vendors) {
-      const mapped = {
-        name: v.name,
-        category: v.category,
-        subcategory: v.subcategory,
-        description: v.description,
-        tags: v.tags || [],
-        website: v.website,
-        privacyPolicyUrl: v.privacyPolicyUrl,
-        trustCenterUrl: v.trustCenterUrl,
-        dpaUrl: v.dpaUrl,
-        securityPageUrl: v.securityPageUrl,
-        certifications: v.certifications || [],
-        frameworks: v.frameworks || [],
-        gdprCompliant: v.gdprCompliant,
-        ccpaCompliant: v.ccpaCompliant,
-        euAiActCompliant: v.euAiActCompliant,
-        hipaaCompliant: v.hipaaCompliant,
-        dpaComplianceScore: v.dpaComplianceScore,
-        dpaGdprScore: v.dpaGdprScore,
-        dpaCcpaScore: v.dpaCcpaScore,
-        dataLocations: v.dataLocations || [],
-        hasEuDataCenter: v.hasEuDataCenter,
-        subprocessors: v.subprocessors ?? undefined,
-        aiCapabilities: v.aiCapabilities || [],
-        modelHosting: v.modelHosting,
-        logoUrl: v.logoUrl,
-        isVerified: v.isVerified,
-        verifiedAt: v.verifiedAt ? new Date(v.verifiedAt) : null,
-        verifiedBy: v.verifiedBy,
-        source: "vendor-watch",
-      };
+      const mapped = mapVendorToUpsert(v);
 
       const existing = await prisma.vendorCatalog.findUnique({
         where: { slug: v.slug },

@@ -932,9 +932,26 @@ model VendorCatalog {
   hasEuDataCenter Boolean?
   subprocessors   Json?
 
+  // Compliance (extended)
+  transferSafeguards String?
+  supportsDsars      Boolean?
+  hasDesignatedDpo   Boolean?
+  hasRecentBreach    Boolean?
+
   // AI-Specific
-  aiCapabilities String[] // ["LLM", "Computer Vision", "Speech"]
-  modelHosting   String? // "Cloud", "On-Premise", "Hybrid"
+  aiCapabilities              String[] // ["LLM", "Computer Vision", "Speech"]
+  modelHosting                String? // "Cloud", "On-Premise", "Hybrid"
+  aiModels                    Json?     // [{ name, type, source }] from Vendor.Watch
+  aiTechniques                String[]
+  euAiActRole                 String?   // "Provider", "Deployer", etc.
+  euAiActAnnexIIIDomains      String[]
+  iso42001Certified           Boolean?
+  supportsAuditLogs           Boolean?
+  supportsExplainability      Boolean?
+  hasBiasMonitoring           Boolean?
+  hasModelCard                Boolean?
+  aiIncidentNotificationSLA   String?
+  dataProcessingTransparency  String?
 
   // Metadata
   logoUrl    String?

@@ -31,6 +31,7 @@ import {
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { formatRelativeTime } from "@/lib/utils";
+import { DeploymentExpertCta } from "@/components/governance/deployment-expert-cta";
 
 export default function GovernanceDashboardPage() {
   const { organization, organizations, setOrganization } = useOrganization();
@@ -146,6 +147,8 @@ export default function GovernanceDashboardPage() {
           </CardContent>
         </Card>
       )}
+
+      <DeploymentExpertCta />
 
       {/* KPI Row - 6 cards */}
       <div className="grid gap-3 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">

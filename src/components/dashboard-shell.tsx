@@ -100,7 +100,7 @@ function buildNavGroups(isConsultant: boolean) {
         { href: "/governance/vendors", label: "Vendors", icon: Building2 },
         { href: "/governance/vendor-catalog", label: "Vendor Catalog", icon: Database, premium: true },
         { href: "/governance/shadow-ai", label: "Shadow AI", icon: Search, premium: true },
-        ...(!isConsultant && features.expertDirectoryEnabled
+        ...(features.expertDirectoryEnabled
           ? [{ href: "/governance/experts", label: "Find AI Expert", icon: Search }]
           : []),
         { href: "/governance/billing", label: "Billing", icon: CreditCard },

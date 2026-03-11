@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Building2, Briefcase } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { useUserType } from "@/lib/use-user-type";
+import { DeploymentExpertCta } from "@/components/governance/deployment-expert-cta";
 
 const personaLabels = {
   BUSINESS_USER: { icon: Building2, title: "Business User", description: "AI governance for your organization" },
@@ -64,6 +65,8 @@ export default function SettingsPage() {
           </CardContent>
         </Card>
       )}
+
+      <DeploymentExpertCta />
     </div>
   );
 }

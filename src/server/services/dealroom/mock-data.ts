@@ -87,9 +87,27 @@ export const mockExperts: ExpertProfile[] = [
     acceptingClients: true,
     profileCompleteness: 95,
   },
+  {
+    id: "exp-002",
+    name: "AI Sentinel Deployment Team",
+    email: "deploy@todo.law",
+    title: "Deployment Specialist",
+    firm: "TODO.LAW",
+    bio: "Helps organizations deploy and maintain self-hosted instances of AI Sentinel on their own infrastructure — Docker, Kubernetes, bare metal, or private cloud.",
+    expertType: "technical",
+    specializations: ["Self-Hosting / Deployment", "AI Safety"],
+    certifications: [],
+    languages: ["en", "es"],
+    location: { city: "Stockholm", country: "SE" },
+    jurisdictions: ["EU"],
+    contactUrl: "https://todo.law/contact",
+    acceptingClients: true,
+    profileCompleteness: 80,
+  },
 ];
 
 export const specializations = [
+  "Self-Hosting / Deployment",
   "EU AI Act",
   "AI Risk Management",
   "Bias & Fairness Auditing",

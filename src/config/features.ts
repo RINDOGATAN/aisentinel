@@ -8,6 +8,7 @@ export interface FeatureFlags {
   biasFairnessEnabled: boolean;
   shadowAiEnabled: boolean;
   vendorCatalogEnabled: boolean;
+  expertDirectoryEnabled: boolean;
 }
 
 const defaultFeatures: FeatureFlags = {
@@ -20,6 +21,7 @@ const defaultFeatures: FeatureFlags = {
   biasFairnessEnabled: true,
   shadowAiEnabled: true,
   vendorCatalogEnabled: true,
+  expertDirectoryEnabled: true,
 };
 
 export function getFeatureFlags(): FeatureFlags {
@@ -37,6 +39,9 @@ export function getFeatureFlags(): FeatureFlags {
     biasFairnessEnabled: defaultFeatures.biasFairnessEnabled,
     shadowAiEnabled: defaultFeatures.shadowAiEnabled,
     vendorCatalogEnabled: defaultFeatures.vendorCatalogEnabled,
+    expertDirectoryEnabled:
+      process.env.NEXT_PUBLIC_EXPERT_DIRECTORY_ENABLED !== "false" &&
+      defaultFeatures.expertDirectoryEnabled,
   };
 }
 

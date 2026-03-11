@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import { useState } from "react";
 import {
   Brain,
+  Briefcase,
   ShieldAlert,
   ClipboardCheck,
   Scale,
@@ -24,6 +25,7 @@ import {
   CreditCard,
   Database,
   MessageSquareWarning,
+  Settings,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -41,7 +43,10 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useOrganization } from "@/lib/organization-context";
+import { useUserType } from "@/lib/use-user-type";
+import { features } from "@/config/features";
 import { OrganizationSetup } from "@/components/governance/organization-setup";
+import { PersonaSelector } from "@/components/governance/persona-selector";
 import { FeedbackDialog } from "@/components/FeedbackDialog";
 
 const navItems = [
@@ -58,47 +63,64 @@ const navItems = [
   { href: "/governance/shadow-ai", label: "Shadow AI", icon: Search, premium: true },
 ];
 
-const navGroups = [
-  {
-    label: "AI Systems",
-    icon: Brain,
-    items: [
-      { href: "/governance/ai-registry", label: "AI Registry", icon: Brain },
-      { href: "/governance/risk-classification", label: "Risk Classification", icon: ShieldAlert },
-    ],
-  },
-  {
-    label: "Governance",
-    icon: Scale,
-    items: [
-      { href: "/governance/assessments", label: "Assessments", icon: ClipboardCheck },
-      { href: "/governance/oversight", label: "Oversight", icon: Eye },
-      { href: "/governance/compliance", label: "Compliance", icon: Scale },
-      { href: "/governance/policies", label: "Policies", icon: ScrollText },
-    ],
-  },
-  {
-    label: "Operations",
-    icon: AlertTriangle,
-    items: [
-      { href: "/governance/incidents", label: "Incidents", icon: AlertTriangle },
-      { href: "/governance/vendors", label: "Vendors", icon: Building2 },
-      { href: "/governance/vendor-catalog", label: "Vendor Catalog", icon: Database, premium: true },
-      { href: "/governance/shadow-ai", label: "Shadow AI", icon: Search, premium: true },
-      { href: "/governance/billing", label: "Billing", icon: CreditCard },
-    ],
-  },
-];
+function buildNavGroups(isConsultant: boolean) {
+  return [
+    ...(isConsultant
+      ? [{
+          label: "Consulting",
+          icon: Briefcase,
+          items: [
+            { href: "/governance/clients", label: "My Clients", icon: Briefcase },
+          ],
+        }]
+      : []),
+    {
+      label: "AI Systems",
+      icon: Brain,
+      items: [
+        { href: "/governance/ai-registry", label: "AI Registry", icon: Brain },
+        { href: "/governance/risk-classification", label: "Risk Classification", icon: ShieldAlert },
+      ],
+    },
+    {
+      label: "Governance",
+      icon: Scale,
+      items: [
+        { href: "/governance/assessments", label: "Assessments", icon: ClipboardCheck },
+        { href: "/governance/oversight", label: "Oversight", icon: Eye },
+        { href: "/governance/compliance", label: "Compliance", icon: Scale },
+        { href: "/governance/policies", label: "Policies", icon: ScrollText },
+      ],
+    },
+    {
+      label: "Operations",
+      icon: AlertTriangle,
+      items: [
+        { href: "/governance/incidents", label: "Incidents", icon: AlertTriangle },
+        { href: "/governance/vendors", label: "Vendors", icon: Building2 },
+        { href: "/governance/vendor-catalog", label: "Vendor Catalog", icon: Database, premium: true },
+        { href: "/governance/shadow-ai", label: "Shadow AI", icon: Search, premium: true },
+        ...(!isConsultant && features.expertDirectoryEnabled
+          ? [{ href: "/governance/experts", label: "Find AI Expert", icon: Search }]
+          : []),
+        { href: "/governance/billing", label: "Billing", icon: CreditCard },
+      ],
+    },
+  ];
+}
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {
   const { data: session } = useSession();
   const pathname = usePathname();
   const { organization, organizations, isLoading: orgLoading } = useOrganization();
+  const { needsOnboarding, isConsultant, isLoading: userTypeLoading } = useUserType();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
 
+  const navGroups = buildNavGroups(isConsultant);
+
   // Full-screen loading gate: prevent chrome from rendering before org is ready
-  if (orgLoading) {
+  if (orgLoading || userTypeLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-muted-foreground text-sm">Loading…</div>
@@ -106,6 +128,12 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
     );
   }
 
+  // Step 1: Show persona selection if user hasn't chosen yet
+  if (needsOnboarding) {
+    return <PersonaSelector />;
+  }
+
+  // Step 2: Show organization setup if user has no organizations
   if (!organization && organizations.length === 0) {
     return <OrganizationSetup />;
   }
@@ -185,6 +213,22 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                     </div>
                   ))}
                   <div className="h-px bg-border my-2" />
+                  <Link
+                    href="/governance/settings"
+                    onClick={() => setMobileNavOpen(false)}
+                  >
+                    <Button
+                      variant="ghost"
+                      className={`w-full justify-start gap-3 min-h-[48px] text-base rounded-lg ${
+                        pathname === "/governance/settings"
+                          ? "bg-primary/15 text-primary border border-primary/20"
+                          : ""
+                      }`}
+                    >
+                      <Settings className="w-5 h-5 shrink-0" />
+                      Settings
+                    </Button>
+                  </Link>
                   <Button
                     variant="ghost"
                     className="w-full justify-start gap-3 min-h-[48px] text-base rounded-lg"
@@ -263,6 +307,15 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
             >
               <MessageSquareWarning className="w-4 h-4" />
             </Button>
+            <Link href="/governance/settings">
+              <Button
+                variant="ghost"
+                size="icon"
+                title="Settings"
+              >
+                <Settings className="w-4 h-4" />
+              </Button>
+            </Link>
             <div className="hidden sm:flex items-center gap-2 text-sm text-muted-foreground">
               <User className="w-4 h-4" />
               <span className="hidden lg:inline max-w-[150px] truncate">{session?.user?.email}</span>

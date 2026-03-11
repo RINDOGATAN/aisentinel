@@ -20,6 +20,7 @@ import {
   Eye,
   ScrollText,
   Search,
+  Sparkles,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -116,6 +117,35 @@ export default function GovernanceDashboardPage() {
           </DropdownMenu>
         )}
       </div>
+
+      {/* Quickstart prompt — show when org has few systems */}
+      {(stats?.totalSystems ?? 0) <= 3 && (stats?.deployedSystems ?? 0) === 0 && (
+        <Card className="border-primary/30 bg-primary/5">
+          <CardContent className="p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+            <div className="p-3 rounded-lg bg-primary/10 shrink-0">
+              <Sparkles className="w-6 h-6 text-primary" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="font-semibold text-sm sm:text-base">
+                {(stats?.importedVendorCount ?? 0) > 0
+                  ? `We found ${stats?.importedVendorCount} AI vendors from Vendor.Watch — build governance around them?`
+                  : "Bootstrap your AI governance program in minutes"}
+              </h3>
+              <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+                {(stats?.importedVendorCount ?? 0) > 0
+                  ? "Auto-generate AI systems, risk classifications, and oversight gates from your vendor portfolio."
+                  : "Import from the AI Vendor Catalog or start from an industry template to get a head start."}
+              </p>
+            </div>
+            <Link href="/governance/quickstart">
+              <Button size="sm" className="shrink-0">
+                Quick Start
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+      )}
 
       {/* KPI Row - 6 cards */}
       <div className="grid gap-3 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">

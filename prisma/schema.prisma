@@ -14,12 +14,18 @@ datasource db {
 // AUTHENTICATION & USERS
 // ============================================================
 
+enum UserType {
+  BUSINESS_USER
+  AI_GOVERNANCE_CONSULTANT
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?
   email         String    @unique
   emailVerified DateTime?
   image         String?
+  userType      UserType?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 

@@ -266,6 +266,8 @@ export const organizationRouter = createTRPCRouter({
         compliancePartial,
         complianceNonCompliant,
         complianceNotAssessed,
+        // Quickstart
+        importedVendorCount,
       ] = await Promise.all([
         ctx.prisma.aISystem.count({ where: { organizationId: orgId } }),
         ctx.prisma.aISystem.count({ where: { organizationId: orgId, status: "DEPLOYED" } }),
@@ -311,6 +313,13 @@ export const organizationRouter = createTRPCRouter({
         ctx.prisma.complianceMapping.count({ where: { organizationId: orgId, status: "PARTIALLY_COMPLIANT" } }),
         ctx.prisma.complianceMapping.count({ where: { organizationId: orgId, status: "NON_COMPLIANT" } }),
         ctx.prisma.complianceMapping.count({ where: { organizationId: orgId, status: "NOT_ASSESSED" } }),
+        // Quickstart: count vendors imported from VW
+        ctx.prisma.aIVendor.count({
+          where: {
+            organizationId: orgId,
+            metadata: { path: ["importedFrom"], equals: "vendorwatch" },
+          },
+        }),
       ]);
 
       return {
@@ -346,6 +355,7 @@ export const organizationRouter = createTRPCRouter({
           nonCompliant: complianceNonCompliant,
           notAssessed: complianceNotAssessed,
         },
+        importedVendorCount,
       };
     }),
 });

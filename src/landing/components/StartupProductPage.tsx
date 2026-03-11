@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from "react";
 import { signIn } from "next-auth/react";
-import { motion } from "framer-motion";
 import { ArrowRight, Check, Loader2 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -34,15 +33,6 @@ interface StartupProductPageProps {
   accentGradient?: string;
   callbackUrl: string;
 }
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
-  }),
-};
 
 const GoogleIcon = () => (
   <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -199,11 +189,7 @@ const StartupProductPage = ({
           <div className="max-w-6xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
               <div>
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6 }}
-                >
+                <div className="animate-fade-up">
                   <div className="inline-flex items-center gap-2 px-4 py-2 mb-6 bg-accent/15 backdrop-blur-sm rounded-full border border-accent/30">
                     <span className="text-xs uppercase tracking-wider text-accent font-medium font-body">
                       {t("hero.badge")}
@@ -217,15 +203,10 @@ const StartupProductPage = ({
                   <p className="text-lg text-white/70 leading-relaxed font-body mb-8 max-w-lg">
                     {t("hero.subtitle")}
                   </p>
-                </motion.div>
+                </div>
               </div>
 
-              <motion.div
-                initial={{ opacity: 0, y: 30, scale: 0.97 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ duration: 0.7, delay: 0.3 }}
-                className="lg:sticky lg:top-24"
-              >
+              <div className="lg:sticky lg:top-24 animate-fade-up-delay">
                 <div className="bg-card/90 backdrop-blur-xl rounded-2xl border border-border/80 p-8 md:p-10 relative overflow-hidden shadow-2xl">
                   <div className="absolute -top-20 -right-20 w-40 h-40 bg-accent/10 rounded-full blur-3xl" />
 
@@ -314,7 +295,7 @@ const StartupProductPage = ({
                     </div>
                   )}
                 </div>
-              </motion.div>
+              </div>
             </div>
           </div>
         </div>
@@ -345,19 +326,11 @@ const StartupProductPage = ({
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            {valueProps.map((vp, i) => (
-              <motion.div
-                key={vp.title}
-                custom={i}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, margin: "-50px" }}
-                variants={fadeUp}
-                className="paper-card"
-              >
+            {valueProps.map((vp) => (
+              <div key={vp.title} className="paper-card">
                 <h3 className="text-lg font-display mb-3">{vp.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed font-body">{vp.desc}</p>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -376,15 +349,7 @@ const StartupProductPage = ({
           </div>
           <div className="max-w-3xl mx-auto">
             {workflowSteps.map((step, i) => (
-              <motion.div
-                key={step.title}
-                custom={i}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, margin: "-30px" }}
-                variants={fadeUp}
-                className="flex items-start gap-6 mb-6"
-              >
+              <div key={step.title} className="flex items-start gap-6 mb-6">
                 <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center">
                   <span className="text-lg font-display text-accent">
                     {String(i + 1).padStart(2, "0")}
@@ -394,7 +359,7 @@ const StartupProductPage = ({
                   <h3 className="text-lg font-display mb-2">{step.title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed font-body">{step.desc}</p>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -412,13 +377,8 @@ const StartupProductPage = ({
           </div>
           <div className="space-y-8 max-w-5xl mx-auto">
             {features.map((feature, index) => (
-              <motion.div
+              <div
                 key={feature.id}
-                custom={index}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, margin: "-50px" }}
-                variants={fadeUp}
                 className="paper-card group hover:border-accent/50 transition-all duration-300"
               >
                 <div className={`flex flex-col md:flex-row gap-6 md:gap-10 ${index % 2 === 1 ? "md:flex-row-reverse" : ""}`}>
@@ -441,7 +401,7 @@ const StartupProductPage = ({
                     </div>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -450,12 +410,7 @@ const StartupProductPage = ({
       {/* BOTTOM CTA */}
       <section className="py-20 md:py-28 border-t border-border bg-secondary/10">
         <div className="container px-6 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
+          <div>
             <h2 className="text-2xl md:text-4xl mb-6">
               {t("cta.heading.prefix")}
               <span className="text-accent">{t("cta.heading.accent")}</span>
@@ -469,7 +424,7 @@ const StartupProductPage = ({
               {t("cta.button")}
               <ArrowRight className="w-5 h-5 ml-2 inline" />
             </button>
-          </motion.div>
+          </div>
         </div>
       </section>
     </main>

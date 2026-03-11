@@ -5,7 +5,7 @@ export interface ExpertProfile {
   title: string | null;
   firm: string | null;
   bio: string | null;
-  expertType: "legal" | "technical" | "both";
+  expertTypes: ("legal" | "technical" | "deployment")[];
   specializations: string[];
   certifications: string[];
   languages: string[]; // ISO 639-1
@@ -68,7 +68,7 @@ export const mockExperts: ExpertProfile[] = [
     title: "Managing Partner",
     firm: "TODO.LAW",
     bio: "Privacy lawyer and technologist with over 15 years of experience at the intersection of data protection, AI governance, and regulatory compliance. Advises organisations across the EU on the EU AI Act, AI risk management, conformity assessments, bias auditing, and responsible AI deployment. Builder of AI Sentinel, DPO Central, and Vendor.Watch.",
-    expertType: "both",
+    expertTypes: ["legal", "technical"],
     specializations: [
       "EU AI Act",
       "AI Risk Management",
@@ -94,7 +94,7 @@ export const mockExperts: ExpertProfile[] = [
     title: "Deployment Specialist",
     firm: "TODO.LAW",
     bio: "Helps organizations deploy and maintain self-hosted instances of AI Sentinel on their own infrastructure — Docker, Kubernetes, bare metal, or private cloud.",
-    expertType: "technical",
+    expertTypes: ["technical", "deployment"],
     specializations: ["Self-Hosting / Deployment", "AI Safety"],
     certifications: [],
     languages: ["en", "es"],
@@ -130,5 +130,5 @@ export const specializations = [
 export const expertTypes = [
   { value: "legal", label: "Legal" },
   { value: "technical", label: "Technical" },
-  { value: "both", label: "Legal & Technical" },
+  { value: "deployment", label: "Deployment" },
 ] as const;

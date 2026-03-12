@@ -353,6 +353,11 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
               Privacy
             </a>
             <span className="text-border">&middot;</span>
+            <Link href="/governance/billing" className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors">
+              <CreditCard className="w-3.5 h-3.5" />
+              Billing
+            </Link>
+            <span className="text-border">&middot;</span>
             <Link href="/docs" className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors">
               <BookOpen className="w-3.5 h-3.5" />
               Docs

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Loader2, CheckCircle2, CreditCard, Sparkles } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
@@ -27,6 +28,31 @@ export default function BillingPage() {
     entitlementId: string;
     name: string;
   } | null>(null);
+  const [checkoutStatus, setCheckoutStatus] = useState<
+    "idle" | "verifying" | "success" | "error"
+  >("idle");
+
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const verifiedRef = useRef(false);
+
+  const verifyCheckout = trpc.billing.verifyCheckout.useMutation({
+    onSuccess: (result) => {
+      if (result.activated) {
+        setCheckoutStatus("success");
+        utils.billing.getSubscriptionStatus.invalidate();
+        utils.billing.getAvailablePlans.invalidate();
+      } else {
+        setCheckoutStatus("error");
+      }
+      // Clean up URL params
+      router.replace("/governance/billing", { scroll: false });
+    },
+    onError: () => {
+      setCheckoutStatus("error");
+      router.replace("/governance/billing", { scroll: false });
+    },
+  });
 
   const { data: status, isLoading: statusLoading } =
     trpc.billing.getSubscriptionStatus.useQuery(
@@ -41,6 +67,25 @@ export default function BillingPage() {
     );
 
   const utils = trpc.useUtils();
+
+  // Verify checkout session on return from Stripe
+  useEffect(() => {
+    const sessionId = searchParams.get("session_id");
+    const checkout = searchParams.get("checkout");
+    if (
+      checkout === "success" &&
+      sessionId &&
+      organization?.id &&
+      !verifiedRef.current
+    ) {
+      verifiedRef.current = true;
+      setCheckoutStatus("verifying");
+      verifyCheckout.mutate({
+        organizationId: organization.id,
+        sessionId,
+      });
+    }
+  }, [searchParams, organization?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const cancelFeature = trpc.billing.cancelFeature.useMutation({
     onSuccess: () => {
@@ -121,6 +166,43 @@ export default function BillingPage() {
           Manage your premium add-on features
         </p>
       </div>
+
+      {/* Checkout status banner */}
+      {checkoutStatus === "verifying" && (
+        <Card className="border-primary/30 bg-primary/5">
+          <CardContent className="pt-6 flex items-center gap-3">
+            <Loader2 className="h-5 w-5 animate-spin text-primary" />
+            <p className="text-sm">Activating your premium features...</p>
+          </CardContent>
+        </Card>
+      )}
+      {checkoutStatus === "success" && (
+        <Card className="border-[#66b280]/30 bg-[#66b280]/5">
+          <CardContent className="pt-6 flex items-center gap-3">
+            <CheckCircle2 className="h-5 w-5 text-[#66b280]" />
+            <p className="text-sm">
+              Payment successful! Your premium features are now active.
+            </p>
+          </CardContent>
+        </Card>
+      )}
+      {checkoutStatus === "error" && (
+        <Card className="border-destructive/30 bg-destructive/5">
+          <CardContent className="pt-6">
+            <p className="text-sm">
+              We received your payment but couldn&apos;t activate the features
+              automatically. Please refresh the page or contact{" "}
+              <a
+                href="mailto:support@todo.law"
+                className="text-primary underline"
+              >
+                support@todo.law
+              </a>
+              .
+            </p>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Summary */}
       {activeCount > 0 && (

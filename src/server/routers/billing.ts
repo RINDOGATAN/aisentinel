@@ -9,7 +9,18 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, organizationProcedure } from "../trpc";
-import { removeSubscriptionItem } from "@/lib/stripe";
+import { getStripe, getSubscription, removeSubscriptionItem } from "@/lib/stripe";
+
+function parseSkillPackageIds(metadata: Record<string, string> | null): string[] {
+  if (!metadata) return [];
+  if (metadata.skillPackageIds) {
+    return metadata.skillPackageIds.split(",").filter(Boolean);
+  }
+  if (metadata.skillPackageId) {
+    return [metadata.skillPackageId];
+  }
+  return [];
+}
 
 export const billingRouter = createTRPCRouter({
   getSubscriptionStatus: organizationProcedure
@@ -177,5 +188,124 @@ export const billingRouter = createTRPCRouter({
       }
 
       return { cancelled: result.cancelled };
+    }),
+
+  verifyCheckout: organizationProcedure
+    .input(
+      z.object({
+        organizationId: z.string(),
+        sessionId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const stripe = getStripe();
+      const session = await stripe.checkout.sessions.retrieve(input.sessionId);
+
+      if (session.payment_status !== "paid") {
+        return { activated: false, reason: "Payment not yet completed" };
+      }
+
+      const { organizationId, customerId } =
+        (session.metadata as Record<string, string>) || {};
+      const skillPackageIds = parseSkillPackageIds(
+        session.metadata as Record<string, string> | null
+      );
+
+      if (!organizationId || !skillPackageIds.length) {
+        return { activated: false, reason: "Invalid session metadata" };
+      }
+
+      if (organizationId !== ctx.organization.id) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Session does not belong to this organization",
+        });
+      }
+
+      const subscriptionId =
+        typeof session.subscription === "string"
+          ? session.subscription
+          : session.subscription?.id;
+
+      if (!subscriptionId) {
+        return { activated: false, reason: "No subscription found" };
+      }
+
+      // Find customer
+      let customer = customerId
+        ? await ctx.prisma.customer.findUnique({ where: { id: customerId } })
+        : null;
+
+      if (!customer && session.customer_email) {
+        customer = await ctx.prisma.customer.findUnique({
+          where: { email: session.customer_email },
+        });
+      }
+
+      if (!customer) {
+        return { activated: false, reason: "Customer not found" };
+      }
+
+      // Ensure Stripe customer ID is synced
+      const stripeCustomerId =
+        typeof session.customer === "string"
+          ? session.customer
+          : session.customer?.id;
+
+      if (stripeCustomerId && customer.stripeCustomerId !== stripeCustomerId) {
+        await ctx.prisma.customer.update({
+          where: { id: customer.id },
+          data: { stripeCustomerId },
+        });
+      }
+
+      // Ensure customer-org link
+      await ctx.prisma.customerOrganization.upsert({
+        where: {
+          customerId_organizationId: {
+            customerId: customer.id,
+            organizationId,
+          },
+        },
+        update: {},
+        create: {
+          customerId: customer.id,
+          organizationId,
+        },
+      });
+
+      // Retrieve subscription for period end
+      const subscription = await getSubscription(subscriptionId);
+      const periodEnd = (
+        subscription as unknown as { current_period_end?: number }
+      ).current_period_end;
+
+      // Create or update entitlements
+      for (const skillPackageId of skillPackageIds) {
+        await ctx.prisma.skillEntitlement.upsert({
+          where: {
+            customerId_skillPackageId: {
+              customerId: customer.id,
+              skillPackageId,
+            },
+          },
+          update: {
+            status: "ACTIVE",
+            licenseType: "SUBSCRIPTION",
+            stripeSubscriptionId: subscriptionId,
+            expiresAt: periodEnd ? new Date(periodEnd * 1000) : null,
+          },
+          create: {
+            customerId: customer.id,
+            skillPackageId,
+            licenseType: "SUBSCRIPTION",
+            status: "ACTIVE",
+            stripeSubscriptionId: subscriptionId,
+            expiresAt: periodEnd ? new Date(periodEnd * 1000) : null,
+          },
+        });
+      }
+
+      return { activated: true, skillCount: skillPackageIds.length };
     }),
 });

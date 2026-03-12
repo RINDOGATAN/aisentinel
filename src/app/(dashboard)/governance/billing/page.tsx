@@ -72,6 +72,7 @@ export default function BillingPage() {
       name: pkg.name,
       description: pkg.description,
       priceAmount: pkg.priceAmount,
+      purchasable: !!pkg.stripePriceId,
       isActive,
       entitlementId: entitlement?.id ?? null,
       stripeSubscriptionId: entitlement?.stripeSubscriptionId ?? null,
@@ -161,8 +162,8 @@ export default function BillingPage() {
                 row.isActive ? "border-primary/20 bg-primary/5" : "border-border"
               }`}
             >
-              {/* Checkbox for inactive rows */}
-              {features.selfServiceUpgrade && !row.isActive && (
+              {/* Checkbox for inactive purchasable rows */}
+              {features.selfServiceUpgrade && !row.isActive && row.purchasable && (
                 <Checkbox
                   checked={selectedIds.has(row.id)}
                   onCheckedChange={() => toggleSelect(row.id)}
@@ -222,7 +223,7 @@ export default function BillingPage() {
                     <span className="text-sm text-muted-foreground">
                       {formatPrice((row.priceAmount ?? 900) / 100)}/mo
                     </span>
-                    {features.selfServiceUpgrade && (
+                    {features.selfServiceUpgrade && row.purchasable ? (
                       <Button
                         variant="outline"
                         size="sm"
@@ -232,7 +233,11 @@ export default function BillingPage() {
                       >
                         Enable
                       </Button>
-                    )}
+                    ) : !row.purchasable ? (
+                      <Badge variant="secondary" className="text-xs">
+                        Coming Soon
+                      </Badge>
+                    ) : null}
                   </>
                 )}
               </div>

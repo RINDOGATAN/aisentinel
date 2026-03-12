@@ -178,3 +178,99 @@ export function getLanguages(): { code: string; name: string }[] {
 export function getExpertTypes() {
   return expertTypes;
 }
+
+// --- Expert contact requests (Dealroom API v1) ---
+
+export interface ContactExpertParams {
+  expertId: string;
+  requesterName: string;
+  requesterEmail: string;
+  requesterCompany?: string;
+  subject: string;
+  message?: string;
+  governingLaw?: string;
+}
+
+export interface ContactRequestResult {
+  requestId: string;
+  status: string;
+  createdAt: string;
+}
+
+export interface ContactRequestDetails {
+  requestId: string;
+  expertId: string;
+  expertName: string | null;
+  subject: string;
+  status: string;
+  message: string | null;
+  requesterName: string;
+  requesterEmail: string;
+  requesterCompany: string | null;
+  governingLaw: string | null;
+  respondedAt: string | null;
+  createdAt: string;
+}
+
+export async function contactExpert(
+  params: ContactExpertParams
+): Promise<ContactRequestResult> {
+  if (useMock) {
+    // In mock mode, simulate a successful request
+    return {
+      requestId: `mock-req-${Date.now()}`,
+      status: "pending",
+      createdAt: new Date().toISOString(),
+    };
+  }
+
+  const res = await fetch(
+    `${DEALROOM_API_URL}/api/v1/experts/${params.expertId}/contact`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${DEALROOM_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        requesterName: params.requesterName,
+        requesterEmail: params.requesterEmail,
+        requesterCompany: params.requesterCompany,
+        subject: params.subject,
+        message: params.message,
+        governingLaw: params.governingLaw,
+      }),
+    }
+  );
+
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(`Contact request failed (${res.status}): ${text}`);
+  }
+
+  return res.json();
+}
+
+export async function getContactRequest(
+  requestId: string
+): Promise<ContactRequestDetails> {
+  if (useMock) {
+    throw new Error("Contact request lookup not available in mock mode");
+  }
+
+  const res = await fetch(
+    `${DEALROOM_API_URL}/api/v1/experts/requests/${requestId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${DEALROOM_API_KEY}`,
+      },
+    }
+  );
+
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(`Request lookup failed (${res.status}): ${text}`);
+  }
+
+  return res.json();
+}

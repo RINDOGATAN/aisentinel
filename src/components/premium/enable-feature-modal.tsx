@@ -34,10 +34,11 @@ export function EnableFeatureModal({
 }: EnableFeatureModalProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fallbackContact, setFallbackContact] = useState(false);
 
   if (!open) return null;
 
-  if (!features.selfServiceUpgrade) {
+  if (!features.selfServiceUpgrade || fallbackContact) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center">
         <div
@@ -116,7 +117,13 @@ export function EnableFeatureModal({
         window.location.href = data.url;
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      const msg = err instanceof Error ? err.message : "Something went wrong";
+      if (msg.includes("not configured for purchase")) {
+        // Package has no Stripe price — switch to contact flow
+        setFallbackContact(true);
+      } else {
+        setError(msg);
+      }
       setIsLoading(false);
     }
   };

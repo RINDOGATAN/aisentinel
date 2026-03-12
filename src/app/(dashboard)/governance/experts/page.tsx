@@ -5,6 +5,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -13,24 +15,36 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
   Search,
   MapPin,
-  ExternalLink,
+  Mail,
   Award,
   Loader2,
   CheckCircle2,
   Globe,
+  Send,
+  Check,
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { useDebounce } from "@/hooks/use-debounce";
 import { features } from "@/config/features";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
+import type { ExpertProfile } from "@/server/services/dealroom/client";
 
 const PAGE_SIZE = 20;
 
 export default function ExpertsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { data: session } = useSession();
 
   useEffect(() => {
     if (!features.expertDirectoryEnabled) {
@@ -49,6 +63,29 @@ export default function ExpertsPage() {
   const [expertType, setExpertType] = useState<string>("");
   const [offset, setOffset] = useState(0);
   const debouncedSearch = useDebounce(searchQuery);
+
+  // Contact dialog state
+  const [contactExpert, setContactExpert] = useState<ExpertProfile | null>(null);
+  const [contactForm, setContactForm] = useState({
+    requesterName: "",
+    requesterEmail: "",
+    requesterCompany: "",
+    subject: "",
+    message: "",
+  });
+  const [contactSent, setContactSent] = useState(false);
+
+  // Pre-fill form when dialog opens
+  useEffect(() => {
+    if (contactExpert) {
+      setContactForm((prev) => ({
+        ...prev,
+        requesterName: session?.user?.name ?? prev.requesterName,
+        requesterEmail: session?.user?.email ?? prev.requesterEmail,
+      }));
+      setContactSent(false);
+    }
+  }, [contactExpert, session]);
 
   // Reset pagination when filters change
   useEffect(() => {
@@ -70,6 +107,10 @@ export default function ExpertsPage() {
     offset,
   });
 
+  const contactMutation = trpc.experts.contact.useMutation({
+    onSuccess: () => setContactSent(true),
+  });
+
   const experts = searchResult?.results ?? [];
   const total = searchResult?.total ?? 0;
   const hasMore = offset + PAGE_SIZE < total;
@@ -80,6 +121,32 @@ export default function ExpertsPage() {
     (country && country !== "all") ||
     (language && language !== "all") ||
     (expertType && expertType !== "all");
+
+  function handleContactSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!contactExpert) return;
+    contactMutation.mutate({
+      expertId: contactExpert.id,
+      requesterName: contactForm.requesterName,
+      requesterEmail: contactForm.requesterEmail,
+      requesterCompany: contactForm.requesterCompany || undefined,
+      subject: contactForm.subject,
+      message: contactForm.message || undefined,
+    });
+  }
+
+  function closeContactDialog() {
+    setContactExpert(null);
+    setContactForm({
+      requesterName: "",
+      requesterEmail: "",
+      requesterCompany: "",
+      subject: "",
+      message: "",
+    });
+    setContactSent(false);
+    contactMutation.reset();
+  }
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -242,24 +309,16 @@ export default function ExpertsPage() {
                     )}
                   </div>
 
-                  {expert.contactUrl ? (
-                    <a
-                      href={expert.contactUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block"
-                    >
-                      <Button variant="outline" size="sm" className="w-full gap-2">
-                        <ExternalLink className="w-3.5 h-3.5" />
-                        Contact Expert
-                      </Button>
-                    </a>
-                  ) : (
-                    <Button variant="outline" size="sm" className="w-full gap-2" disabled>
-                      <ExternalLink className="w-3.5 h-3.5" />
-                      No Contact Available
-                    </Button>
-                  )}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full gap-2"
+                    disabled={!expert.acceptingClients}
+                    onClick={() => setContactExpert(expert)}
+                  >
+                    <Mail className="w-3.5 h-3.5" />
+                    {expert.acceptingClients ? "Contact Expert" : "Not Accepting Clients"}
+                  </Button>
                 </CardContent>
               </Card>
             ))}
@@ -299,6 +358,137 @@ export default function ExpertsPage() {
           </p>
         </div>
       )}
+
+      {/* Contact Expert Dialog */}
+      <Dialog open={!!contactExpert} onOpenChange={(open) => { if (!open) closeContactDialog(); }}>
+        <DialogContent className="sm:max-w-md">
+          {contactSent ? (
+            <div className="py-6 text-center">
+              <div className="w-12 h-12 bg-success/15 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Check className="w-6 h-6 text-success" />
+              </div>
+              <DialogHeader className="items-center">
+                <DialogTitle>Request Sent</DialogTitle>
+                <DialogDescription>
+                  Your message has been delivered to {contactExpert?.name ?? "the expert"}.
+                  They will respond to {contactForm.requesterEmail} directly.
+                </DialogDescription>
+              </DialogHeader>
+              <Button
+                variant="outline"
+                size="sm"
+                className="mt-6"
+                onClick={closeContactDialog}
+              >
+                Close
+              </Button>
+            </div>
+          ) : (
+            <>
+              <DialogHeader>
+                <DialogTitle>Contact {contactExpert?.name ?? "Expert"}</DialogTitle>
+                <DialogDescription>
+                  {contactExpert?.firm ? `${contactExpert.firm} — ` : ""}
+                  Your request will be sent to the expert&apos;s inbox.
+                </DialogDescription>
+              </DialogHeader>
+              <form onSubmit={handleContactSubmit} className="space-y-4 mt-2">
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="contact-name" className="text-xs">Name *</Label>
+                    <Input
+                      id="contact-name"
+                      required
+                      value={contactForm.requesterName}
+                      onChange={(e) =>
+                        setContactForm((f) => ({ ...f, requesterName: e.target.value }))
+                      }
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="contact-email" className="text-xs">Email *</Label>
+                    <Input
+                      id="contact-email"
+                      type="email"
+                      required
+                      value={contactForm.requesterEmail}
+                      onChange={(e) =>
+                        setContactForm((f) => ({ ...f, requesterEmail: e.target.value }))
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="contact-company" className="text-xs">Company</Label>
+                  <Input
+                    id="contact-company"
+                    value={contactForm.requesterCompany}
+                    onChange={(e) =>
+                      setContactForm((f) => ({ ...f, requesterCompany: e.target.value }))
+                    }
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="contact-subject" className="text-xs">Subject *</Label>
+                  <Input
+                    id="contact-subject"
+                    required
+                    placeholder={
+                      contactExpert?.expertTypes.includes("deployment")
+                        ? "AI Sentinel deployment assistance"
+                        : "AI governance consultation"
+                    }
+                    value={contactForm.subject}
+                    onChange={(e) =>
+                      setContactForm((f) => ({ ...f, subject: e.target.value }))
+                    }
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="contact-message" className="text-xs">Message</Label>
+                  <Textarea
+                    id="contact-message"
+                    rows={3}
+                    placeholder="Describe what you need help with..."
+                    value={contactForm.message}
+                    onChange={(e) =>
+                      setContactForm((f) => ({ ...f, message: e.target.value }))
+                    }
+                  />
+                </div>
+                {contactMutation.error && (
+                  <p className="text-sm text-destructive">
+                    {contactMutation.error.message}
+                  </p>
+                )}
+                <div className="flex justify-end gap-2 pt-2">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={closeContactDialog}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    size="sm"
+                    disabled={contactMutation.isPending}
+                    className="gap-2"
+                  >
+                    {contactMutation.isPending ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    ) : (
+                      <Send className="w-3.5 h-3.5" />
+                    )}
+                    Send Request
+                  </Button>
+                </div>
+              </form>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

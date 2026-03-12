@@ -11,10 +11,12 @@ async function main() {
 
   console.log("Creating skill packages...");
 
-  const STRIPE_PRICE_CONFORMITY = process.env.STRIPE_PRICE_CONFORMITY || null;
-  const STRIPE_PRICE_BIAS = process.env.STRIPE_PRICE_BIAS || null;
-  const STRIPE_PRICE_SHADOW = process.env.STRIPE_PRICE_SHADOW || null;
-  const STRIPE_PRICE_VENDOR_CATALOG = process.env.STRIPE_PRICE_VENDOR_CATALOG || null;
+  // Per-package Stripe price IDs, falling back to shared STRIPE_PRICE_ID (all are €9/mo)
+  const STRIPE_PRICE_DEFAULT = process.env.STRIPE_PRICE_ID || null;
+  const STRIPE_PRICE_CONFORMITY = process.env.STRIPE_PRICE_CONFORMITY || STRIPE_PRICE_DEFAULT;
+  const STRIPE_PRICE_BIAS = process.env.STRIPE_PRICE_BIAS || STRIPE_PRICE_DEFAULT;
+  const STRIPE_PRICE_SHADOW = process.env.STRIPE_PRICE_SHADOW || STRIPE_PRICE_DEFAULT;
+  const STRIPE_PRICE_VENDOR_CATALOG = process.env.STRIPE_PRICE_VENDOR_CATALOG || STRIPE_PRICE_DEFAULT;
   const skillPackages = [
     {
       id: "skill-conformity",

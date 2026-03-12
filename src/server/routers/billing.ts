@@ -90,6 +90,7 @@ export const billingRouter = createTRPCRouter({
         customerOrg?.customer.entitlements.map((e) => e.skillPackageId) ?? []
       );
 
+      const defaultPriceId = process.env.STRIPE_PRICE_ID;
       return packages.map((pkg) => ({
         id: pkg.id,
         skillId: pkg.skillId,
@@ -97,7 +98,7 @@ export const billingRouter = createTRPCRouter({
         description: pkg.description,
         priceAmount: pkg.priceAmount,
         priceCurrency: pkg.priceCurrency,
-        stripePriceId: pkg.stripePriceId,
+        stripePriceId: pkg.stripePriceId || defaultPriceId || null,
         isEntitled: entitledPackageIds.has(pkg.id),
       }));
     }),

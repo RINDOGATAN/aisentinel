@@ -73,8 +73,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Verify all have a Stripe price
-    const missingPrice = skillPackages.find((p) => !p.stripePriceId);
+    // Verify all have a Stripe price (fall back to shared default)
+    const defaultPriceId = process.env.STRIPE_PRICE_ID;
+    const missingPrice = skillPackages.find((p) => !p.stripePriceId && !defaultPriceId);
     if (missingPrice) {
       return NextResponse.json(
         { error: `Skill package "${missingPrice.name}" is not configured for purchase` },
@@ -177,7 +178,7 @@ export async function POST(request: NextRequest) {
 
     // Build line items (use USD price for US visitors if available)
     const lineItems = skillPackages.map((pkg) => ({
-      priceId: isUSD && usdPriceId ? usdPriceId : pkg.stripePriceId!,
+      priceId: isUSD && usdPriceId ? usdPriceId : (pkg.stripePriceId || defaultPriceId!),
       skillPackageId: pkg.id,
     }));
 

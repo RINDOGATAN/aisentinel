@@ -8,6 +8,10 @@ import {
   Scale,
   Building2,
   ScrollText,
+  Search,
+  BookMarked,
+  FileCheck,
+  Activity,
 } from "lucide-react";
 
 export const metadata = {
@@ -64,6 +68,33 @@ const modules = [
     icon: ScrollText,
     title: "Policy Management",
     description: "AI governance policies with versioning, approval workflow, and system linking.",
+  },
+];
+
+const premiumModules = [
+  {
+    href: "/docs/shadow-ai",
+    icon: Search,
+    title: "Shadow AI Discovery",
+    description: "Discover unauthorized AI tools adopted by employees. Self-reporting portal, triage workflow, and promotion to formal governance.",
+  },
+  {
+    href: "/docs/vendor-catalog",
+    icon: BookMarked,
+    title: "AI Vendor Catalog",
+    description: "Pre-audited catalog of 665+ AI vendors with risk profiles, compliance certifications, and governance metadata.",
+  },
+  {
+    href: "/docs/conformity-assessment",
+    icon: FileCheck,
+    title: "Conformity Assessment",
+    description: "EU AI Act Art. 43 conformity assessment template for high-risk AI systems with structured evaluation sections.",
+  },
+  {
+    href: "/docs/bias-fairness",
+    icon: Activity,
+    title: "Bias & Fairness Assessment",
+    description: "Structured bias and fairness evaluation for AI systems — detect discrimination risks and document mitigations.",
   },
 ];
 
@@ -189,6 +220,43 @@ export default function DocsPage() {
                   <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">
                     {mod.title}
                   </h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {mod.description}
+                  </p>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Premium Modules */}
+      <section>
+        <h2 className="text-2xl font-display tracking-tight mb-2">Premium Skills</h2>
+        <p className="text-sm text-muted-foreground mb-6">
+          Add-on modules available at &euro;9/mo each. Can be enabled from the billing page.
+        </p>
+        <div className="grid sm:grid-cols-2 gap-4">
+          {premiumModules.map((mod) => {
+            const Icon = mod.icon;
+            return (
+              <Link
+                key={mod.href}
+                href={mod.href}
+                className="rounded-xl border border-border bg-card p-5 flex gap-4 group hover:border-primary/30 transition-colors"
+              >
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
+                  <Icon className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <h3 className="font-semibold group-hover:text-primary transition-colors">
+                      {mod.title}
+                    </h3>
+                    <span className="px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground text-[10px] font-medium">
+                      Premium
+                    </span>
+                  </div>
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     {mod.description}
                   </p>

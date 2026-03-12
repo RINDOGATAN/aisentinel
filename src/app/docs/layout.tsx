@@ -14,6 +14,10 @@ import {
   BookOpen,
   Menu,
   X,
+  Search,
+  BookMarked,
+  FileCheck,
+  Activity,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -27,6 +31,10 @@ const sidebarItems = [
   { href: "/docs/compliance", label: "Compliance", icon: Scale },
   { href: "/docs/vendors", label: "Vendor Risk", icon: Building2 },
   { href: "/docs/policies", label: "Policy Management", icon: ScrollText },
+  { href: "/docs/shadow-ai", label: "Shadow AI Discovery", icon: Search, premium: true },
+  { href: "/docs/vendor-catalog", label: "AI Vendor Catalog", icon: BookMarked, premium: true },
+  { href: "/docs/conformity-assessment", label: "Conformity Assessment", icon: FileCheck, premium: true },
+  { href: "/docs/bias-fairness", label: "Bias & Fairness", icon: Activity, premium: true },
 ];
 
 export default function DocsLayout({ children }: { children: React.ReactNode }) {
@@ -78,26 +86,34 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
             } md:block`}
           >
             <nav className="sticky top-20 space-y-1">
-              {sidebarItems.map((item) => {
+              {sidebarItems.map((item, i) => {
                 const Icon = item.icon;
                 const isActive = item.exact
                   ? pathname === item.href
                   : pathname === item.href || pathname.startsWith(item.href + "/");
+                const showPremiumLabel =
+                  item.premium && (i === 0 || !sidebarItems[i - 1].premium);
 
                 return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setSidebarOpen(false)}
-                    className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${
-                      isActive
-                        ? "bg-primary/15 text-primary border border-primary/20 font-medium"
-                        : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-                    }`}
-                  >
-                    <Icon className="w-4 h-4 shrink-0" />
-                    {item.label}
-                  </Link>
+                  <div key={item.href}>
+                    {showPremiumLabel && (
+                      <div className="px-3 pt-4 pb-1 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
+                        Premium
+                      </div>
+                    )}
+                    <Link
+                      href={item.href}
+                      onClick={() => setSidebarOpen(false)}
+                      className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${
+                        isActive
+                          ? "bg-primary/15 text-primary border border-primary/20 font-medium"
+                          : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                      }`}
+                    >
+                      <Icon className="w-4 h-4 shrink-0" />
+                      {item.label}
+                    </Link>
+                  </div>
                 );
               })}
             </nav>

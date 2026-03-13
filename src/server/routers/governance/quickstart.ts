@@ -338,6 +338,7 @@ export const quickstartRouter = createTRPCRouter({
             vendors: 0,
             systems: 0,
             riskClassifications: 0,
+            complianceMappings: 0,
             oversightGates: 0,
             policies: 0,
           };
@@ -430,6 +431,24 @@ export const quickstartRouter = createTRPCRouter({
               changes: { source: "quickstart", riskLevel: mapping.riskLevel },
             });
 
+            // Auto-create compliance mappings for applicable requirements
+            const applicableReqs = await tx.complianceRequirement.findMany({
+              where: { applicableTo: { has: mapping.riskLevel } },
+              select: { id: true },
+            });
+            if (applicableReqs.length > 0) {
+              const created = await tx.complianceMapping.createMany({
+                data: applicableReqs.map((req) => ({
+                  organizationId: orgId,
+                  aiSystemId: system.id,
+                  requirementId: req.id,
+                  status: "NOT_ASSESSED" as const,
+                })),
+                skipDuplicates: true,
+              });
+              counts.complianceMappings += created.count;
+            }
+
             // Create OversightGate if HIGH risk
             if (mapping.requiresOversightGate && mapping.gateType) {
               await tx.oversightGate.create({
@@ -496,6 +515,24 @@ export const quickstartRouter = createTRPCRouter({
                 },
               });
               counts.riskClassifications++;
+
+              // Auto-create compliance mappings for applicable requirements
+              const applicableReqs = await tx.complianceRequirement.findMany({
+                where: { applicableTo: { has: templateSystem.riskLevel } },
+                select: { id: true },
+              });
+              if (applicableReqs.length > 0) {
+                const created = await tx.complianceMapping.createMany({
+                  data: applicableReqs.map((req) => ({
+                    organizationId: orgId,
+                    aiSystemId: system.id,
+                    requirementId: req.id,
+                    status: "NOT_ASSESSED" as const,
+                  })),
+                  skipDuplicates: true,
+                });
+                counts.complianceMappings += created.count;
+              }
 
               // Create OversightGate for HIGH-risk systems
               if (templateSystem.gateType) {

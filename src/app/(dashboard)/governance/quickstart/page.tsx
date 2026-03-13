@@ -34,6 +34,7 @@ import {
   ShieldAlert,
   Eye,
   ScrollText,
+  Scale,
   LayoutDashboard,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -108,6 +109,7 @@ export default function QuickstartPage() {
     vendors: number;
     systems: number;
     riskClassifications: number;
+    complianceMappings: number;
     oversightGates: number;
     policies: number;
   } | null>(null);
@@ -1101,7 +1103,7 @@ export default function QuickstartPage() {
                 explore and customize each module.
               </p>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 max-w-xl mx-auto pt-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-w-2xl mx-auto pt-4">
                 {executionResult.vendors > 0 && (
                   <div className="text-center">
                     <div className="text-2xl font-bold text-primary">
@@ -1138,6 +1140,16 @@ export default function QuickstartPage() {
                     </p>
                   </div>
                 )}
+                {executionResult.complianceMappings > 0 && (
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-primary">
+                      {executionResult.complianceMappings}
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Compliance Reqs
+                    </p>
+                  </div>
+                )}
                 {executionResult.policies > 0 && (
                   <div className="text-center">
                     <div className="text-2xl font-bold text-primary">
@@ -1151,7 +1163,7 @@ export default function QuickstartPage() {
           </Card>
 
           {/* Quick nav cards */}
-          <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+          <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
             <Link href="/governance/ai-registry">
               <Card className="hover:border-primary/50 transition-all cursor-pointer h-full">
                 <CardContent className="p-4 flex items-center gap-3">
@@ -1172,6 +1184,19 @@ export default function QuickstartPage() {
                   <div>
                     <p className="text-sm font-medium">Risk Classification</p>
                     <p className="text-xs text-muted-foreground">Review risks</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+            <Link href="/governance/compliance">
+              <Card className="hover:border-primary/50 transition-all cursor-pointer h-full">
+                <CardContent className="p-4 flex items-center gap-3">
+                  <Scale className="w-5 h-5 text-primary shrink-0" />
+                  <div>
+                    <p className="text-sm font-medium">Compliance</p>
+                    <p className="text-xs text-muted-foreground">
+                      Assess requirements
+                    </p>
                   </div>
                 </CardContent>
               </Card>

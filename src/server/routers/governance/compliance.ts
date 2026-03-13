@@ -286,6 +286,119 @@ export const complianceRouter = createTRPCRouter({
       return { success: true };
     }),
 
+  getSystemScorecard: organizationProcedure
+    .input(z.object({ organizationId: z.string(), aiSystemId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const mappings = await ctx.prisma.complianceMapping.findMany({
+        where: {
+          organizationId: ctx.organization.id,
+          aiSystemId: input.aiSystemId,
+        },
+        select: {
+          status: true,
+          requirement: {
+            select: {
+              code: true,
+              title: true,
+              framework: {
+                select: { id: true, name: true, code: true },
+              },
+            },
+          },
+        },
+      });
+
+      // Group by framework
+      const byFramework = new Map<
+        string,
+        {
+          frameworkId: string;
+          frameworkName: string;
+          frameworkCode: string;
+          compliant: number;
+          partial: number;
+          nonCompliant: number;
+          notApplicable: number;
+          notAssessed: number;
+          gaps: { code: string; title: string; status: string }[];
+        }
+      >();
+
+      for (const m of mappings) {
+        const fw = m.requirement.framework;
+        if (!byFramework.has(fw.id)) {
+          byFramework.set(fw.id, {
+            frameworkId: fw.id,
+            frameworkName: fw.name,
+            frameworkCode: fw.code,
+            compliant: 0,
+            partial: 0,
+            nonCompliant: 0,
+            notApplicable: 0,
+            notAssessed: 0,
+            gaps: [],
+          });
+        }
+        const entry = byFramework.get(fw.id)!;
+        switch (m.status) {
+          case "COMPLIANT":
+            entry.compliant++;
+            break;
+          case "PARTIALLY_COMPLIANT":
+            entry.partial++;
+            break;
+          case "NON_COMPLIANT":
+            entry.nonCompliant++;
+            entry.gaps.push({
+              code: m.requirement.code,
+              title: m.requirement.title,
+              status: m.status,
+            });
+            break;
+          case "NOT_APPLICABLE":
+            entry.notApplicable++;
+            break;
+          case "NOT_ASSESSED":
+            entry.notAssessed++;
+            entry.gaps.push({
+              code: m.requirement.code,
+              title: m.requirement.title,
+              status: m.status,
+            });
+            break;
+        }
+      }
+
+      // Sort gaps: NON_COMPLIANT first, then NOT_ASSESSED, limit to top 5 per framework
+      const frameworks = Array.from(byFramework.values()).map((fw) => {
+        const statusOrder: Record<string, number> = { NON_COMPLIANT: 0, NOT_ASSESSED: 1 };
+        fw.gaps.sort((a, b) => (statusOrder[a.status] ?? 2) - (statusOrder[b.status] ?? 2));
+        fw.gaps = fw.gaps.slice(0, 5);
+        return fw;
+      });
+
+      // Overall stats
+      const total = mappings.length;
+      const totalCompliant = mappings.filter((m) => m.status === "COMPLIANT").length;
+      const totalPartial = mappings.filter((m) => m.status === "PARTIALLY_COMPLIANT").length;
+      const totalNonCompliant = mappings.filter((m) => m.status === "NON_COMPLIANT").length;
+      const totalNotApplicable = mappings.filter((m) => m.status === "NOT_APPLICABLE").length;
+      const assessed = total - mappings.filter((m) => m.status === "NOT_ASSESSED").length - totalNotApplicable;
+      const compliancePercent =
+        assessed > 0 ? Math.round(((totalCompliant + totalPartial) / assessed) * 100) : 0;
+
+      return {
+        total,
+        totalCompliant,
+        totalPartial,
+        totalNonCompliant,
+        totalNotApplicable,
+        assessed,
+        compliancePercent,
+        frameworks,
+      };
+    }),
+
   getStats: organizationProcedure
     .input(z.object({ organizationId: z.string(), aiSystemId: z.string().optional() }))
     .query(async ({ ctx, input }) => {

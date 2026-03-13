@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /sign-in
+Disallow: /verify-request
+Disallow: /governance/
+
+Sitemap: https://aisentinel.todo.law/sitemap.xml

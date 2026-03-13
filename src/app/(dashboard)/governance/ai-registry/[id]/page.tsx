@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
 import {
   ArrowLeft,
   Cpu,
@@ -20,6 +21,10 @@ import {
   Calendar,
   Building2,
   Globe,
+  CheckCircle2,
+  AlertTriangle,
+  XCircle,
+  ChevronRight,
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
@@ -97,10 +102,15 @@ export default function AISystemDetailPage() {
     { enabled: !!organization?.id && !!id }
   );
 
+  const { data: scorecard } = trpc.compliance.getSystemScorecard.useQuery(
+    { organizationId: organization?.id ?? "", aiSystemId: id },
+    { enabled: !!organization?.id && !!id }
+  );
+
   if (isLoading || !organization?.id) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
       </div>
     );
   }
@@ -240,6 +250,131 @@ export default function AISystemDetailPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Compliance Scorecard */}
+      {scorecard && scorecard.total > 0 && (
+        <Card>
+          <CardHeader>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <Shield className="w-4 h-4" />
+                  Compliance Scorecard
+                </CardTitle>
+                <CardDescription className="mt-1">
+                  {scorecard.total} requirements across {scorecard.frameworks.length} framework{scorecard.frameworks.length !== 1 ? "s" : ""}
+                </CardDescription>
+              </div>
+              <Link href="/governance/compliance" className="self-start">
+                <Button variant="outline" size="sm">
+                  View Matrix
+                  <ChevronRight className="w-4 h-4 ml-1" />
+                </Button>
+              </Link>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Overall compliance */}
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="text-2xl sm:text-3xl font-bold text-primary shrink-0">
+                {scorecard.compliancePercent}%
+              </div>
+              <div className="flex-1 min-w-0">
+                <Progress value={scorecard.compliancePercent} className="h-3" />
+                <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1 text-xs text-muted-foreground">
+                  <span>{scorecard.totalCompliant} compliant</span>
+                  <span>{scorecard.totalPartial} partial</span>
+                  <span>{scorecard.totalNonCompliant} non-compliant</span>
+                  <span>{scorecard.total - scorecard.assessed - scorecard.totalNotApplicable} not assessed</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Per-framework breakdown */}
+            <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-3">
+              {scorecard.frameworks.map((fw) => {
+                const applicable = fw.compliant + fw.partial + fw.nonCompliant + fw.notAssessed;
+                const fwPercent =
+                  applicable > 0
+                    ? Math.round(((fw.compliant + fw.partial) / applicable) * 100)
+                    : 0;
+                return (
+                  <div key={fw.frameworkId} className="rounded-xl border border-border p-3 sm:p-4 space-y-2 sm:space-y-3">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-semibold">{fw.frameworkCode}</p>
+                      <span className="text-sm font-bold text-primary">{fwPercent}%</span>
+                    </div>
+                    <Progress value={fwPercent} className="h-2" />
+                    <div className="flex gap-3 text-xs text-muted-foreground">
+                      <span className="flex items-center gap-1">
+                        <CheckCircle2 className="w-3 h-3 text-green-400" />
+                        {fw.compliant}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <AlertTriangle className="w-3 h-3 text-yellow-400" />
+                        {fw.partial}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <XCircle className="w-3 h-3 text-red-400" />
+                        {fw.nonCompliant}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Top gaps */}
+            {scorecard.frameworks.some((fw) => fw.gaps.length > 0) && (
+              <div>
+                <p className="text-sm font-medium mb-3">Top Gaps</p>
+                <div className="space-y-2">
+                  {scorecard.frameworks
+                    .flatMap((fw) =>
+                      fw.gaps.map((g) => ({ ...g, frameworkCode: fw.frameworkCode }))
+                    )
+                    .sort((a, b) => {
+                      if (a.status === "NON_COMPLIANT" && b.status !== "NON_COMPLIANT") return -1;
+                      if (a.status !== "NON_COMPLIANT" && b.status === "NON_COMPLIANT") return 1;
+                      return 0;
+                    })
+                    .slice(0, 5)
+                    .map((gap) => (
+                      <div
+                        key={`${gap.frameworkCode}-${gap.code}`}
+                        className="rounded-lg bg-muted/50 p-2.5 text-sm"
+                      >
+                        <div className="flex items-center gap-2">
+                          {gap.status === "NON_COMPLIANT" ? (
+                            <XCircle className="w-4 h-4 text-red-400 shrink-0" />
+                          ) : (
+                            <AlertTriangle className="w-4 h-4 text-muted-foreground shrink-0" />
+                          )}
+                          <Badge variant="outline" className="text-xs shrink-0">
+                            {gap.frameworkCode}
+                          </Badge>
+                          <span className="font-medium shrink-0">{gap.code}</span>
+                          <Badge
+                            className={`text-xs shrink-0 ml-auto ${
+                              gap.status === "NON_COMPLIANT"
+                                ? "bg-red-500/10 text-red-400 border-red-500/20"
+                                : "bg-muted text-muted-foreground border-border"
+                            }`}
+                          >
+                            {gap.status === "NON_COMPLIANT" ? "Non-Compliant" : "Not Assessed"}
+                          </Badge>
+                        </div>
+                        <p className="text-muted-foreground text-xs mt-1 ml-6 line-clamp-1">
+                          {gap.title}
+                        </p>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       {/* DPO Central Links */}
       {hasDpoCentralLinks && (

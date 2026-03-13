@@ -112,6 +112,68 @@ export default function ComplianceDocsPage() {
         </div>
       </section>
 
+      {/* Cross-Framework Mapping */}
+      <section>
+        <h2 className="text-2xl font-display tracking-tight mb-6">
+          Cross-Framework Mapping
+        </h2>
+        <p className="text-muted-foreground mb-6">
+          Many requirements across the EU AI Act, NIST AI RMF, and ISO 42001 overlap
+          conceptually. AI SENTINEL includes 41 pre-built cross-framework mappings so
+          that one compliance effort can satisfy requirements across multiple frameworks
+          simultaneously.
+        </p>
+        <div className="rounded-xl border border-border bg-card p-6 space-y-4">
+          <div className="space-y-3 text-sm text-muted-foreground">
+            <p>
+              When you mark a requirement as <strong className="text-foreground">Compliant</strong> or{" "}
+              <strong className="text-foreground">Partially Compliant</strong>, AI SENTINEL shows
+              linked requirements from other frameworks and offers to propagate the status
+              automatically.
+            </p>
+            <p>
+              For example, marking EU AI Act Art. 9 (Risk Management) as compliant can
+              automatically update NIST GOVERN 1 (Risk Management Policies) and ISO 42001
+              Clause 6.1 (Actions to Address Risks) — because they cover the same obligation.
+            </p>
+          </div>
+          <div className="grid sm:grid-cols-3 gap-3 pt-2">
+            <div className="rounded-lg bg-primary/5 border border-primary/20 p-3 text-center">
+              <p className="text-2xl font-display text-primary">28</p>
+              <p className="text-xs text-muted-foreground">Equivalent mappings</p>
+            </div>
+            <div className="rounded-lg bg-muted p-3 text-center">
+              <p className="text-2xl font-display">12</p>
+              <p className="text-xs text-muted-foreground">Partial mappings</p>
+            </div>
+            <div className="rounded-lg bg-muted p-3 text-center">
+              <p className="text-2xl font-display">1</p>
+              <p className="text-xs text-muted-foreground">Related mapping</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Auto-Generated Compliance Snapshot */}
+      <section>
+        <h2 className="text-2xl font-display tracking-tight mb-6">
+          Auto-Generated Compliance Snapshot
+        </h2>
+        <div className="rounded-xl border border-border bg-card p-6 space-y-4">
+          <p className="text-muted-foreground leading-relaxed">
+            When you classify an AI system&apos;s risk level (e.g., High Risk under the EU AI Act),
+            AI SENTINEL automatically creates compliance mapping records for every applicable
+            requirement across all three frameworks. You arrive at the compliance matrix with
+            all relevant controls pre-populated — no manual setup needed.
+          </p>
+          <p className="text-sm text-muted-foreground">
+            For a High Risk system, this means 80+ requirements are instantly initialized across
+            EU AI Act (Art. 6-62), NIST AI RMF (all 23 practices), and ISO 42001 (all 31 clauses),
+            each set to &ldquo;Not Assessed&rdquo; and ready for evaluation.
+          </p>
+        </div>
+      </section>
+
       {/* How to Map Compliance */}
       <section>
         <h2 className="text-2xl font-display tracking-tight mb-6">

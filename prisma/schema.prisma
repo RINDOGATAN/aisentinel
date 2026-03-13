@@ -628,6 +628,8 @@ model ComplianceRequirement {
   parent    ComplianceRequirement?  @relation("RequirementHierarchy", fields: [parentId], references: [id])
   children  ComplianceRequirement[] @relation("RequirementHierarchy")
   mappings  ComplianceMapping[]
+  crossMappingsA CrossFrameworkMapping[] @relation("CrossMappingA")
+  crossMappingsB CrossFrameworkMapping[] @relation("CrossMappingB")
 
   @@index([frameworkId])
   @@index([parentId])
@@ -674,6 +676,23 @@ model ComplianceEvidence {
   @@index([complianceMappingId])
   @@index([organizationId])
   @@map("compliance_evidence")
+}
+
+model CrossFrameworkMapping {
+  id             String   @id @default(cuid())
+  requirementAId String
+  requirementBId String
+  relationship   String   @default("equivalent") // equivalent | partial | related
+  notes          String?  @db.Text
+  createdAt      DateTime @default(now())
+
+  requirementA ComplianceRequirement @relation("CrossMappingA", fields: [requirementAId], references: [id], onDelete: Cascade)
+  requirementB ComplianceRequirement @relation("CrossMappingB", fields: [requirementBId], references: [id], onDelete: Cascade)
+
+  @@unique([requirementAId, requirementBId])
+  @@index([requirementAId])
+  @@index([requirementBId])
+  @@map("cross_framework_mappings")
 }
 
 // ============================================================

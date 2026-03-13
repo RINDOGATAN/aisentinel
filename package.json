@@ -18,7 +18,8 @@
     "db:seed-shadow-ai-tools": "tsx scripts/seed-shadow-ai-tools.ts",
     "db:seed-vendor-catalog": "tsx scripts/seed-vendor-catalog.ts",
     "db:sync-vendor-catalog": "tsx scripts/sync-vendor-catalog.ts",
-    "db:seed-premium-templates": "tsx scripts/seed-assessment-templates.ts"
+    "db:seed-premium-templates": "tsx scripts/seed-assessment-templates.ts",
+    "db:seed-cross-mappings": "tsx scripts/seed-cross-framework-mappings.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

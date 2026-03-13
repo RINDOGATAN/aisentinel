@@ -42,7 +42,9 @@ import {
   ThumbsUp,
   MoreHorizontal,
   Download,
+  Link2,
 } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const statusOptions = [
   { value: "NOT_ASSESSED", label: "Not Assessed", color: "bg-gray-500/20 text-gray-400" },
@@ -136,7 +138,13 @@ export default function CompliancePage() {
   );
 
   const updateMapping = trpc.compliance.updateMapping.useMutation({
-    onSuccess: () => refetchMatrix(),
+    onSuccess: (result) => {
+      refetchMatrix();
+      if (result.propagatedCount > 0) {
+        // A simple alert is fine for now — could use toast in the future
+        console.log(`Propagated to ${result.propagatedCount} linked requirements`);
+      }
+    },
   });
 
   const addEvidence = trpc.compliance.addEvidence.useMutation({
@@ -314,7 +322,7 @@ function RequirementRow({
   mapping: MappingData | null;
   orgId: string;
   systemId: string;
-  onUpdate: (data: { organizationId: string; aiSystemId: string; requirementId: string; status: StatusValue; notes?: string }) => void;
+  onUpdate: (data: { organizationId: string; aiSystemId: string; requirementId: string; status: StatusValue; notes?: string; propagateToLinked?: boolean }) => void;
   onAddEvidence: (data: { organizationId: string; aiSystemId: string; requirementId: string; type: EvidenceTypeValue; title: string; url?: string; description?: string }) => void;
   onRemoveEvidence: (data: { organizationId: string; evidenceId: string }) => void;
   isUpdatePending: boolean;
@@ -324,6 +332,12 @@ function RequirementRow({
   const [notes, setNotes] = useState(mapping?.notes ?? "");
   const [dirty, setDirty] = useState(false);
   const [showAddDialog, setShowAddDialog] = useState(false);
+  const [propagate, setPropagate] = useState(true);
+
+  const { data: crossMappings } = trpc.compliance.getCrossMappedRequirements.useQuery(
+    { organizationId: orgId, requirementId: reqId },
+    { enabled: !!orgId }
+  );
 
   // Add evidence form state
   const [newType, setNewType] = useState<EvidenceTypeValue>("DOCUMENT");
@@ -449,25 +463,64 @@ function RequirementRow({
         className="text-sm"
       />
 
+      {/* Cross-framework links */}
+      {crossMappings && crossMappings.length > 0 && (
+        <div className="space-y-2">
+          <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1">
+            <Link2 className="w-3 h-3" />
+            Linked across frameworks ({crossMappings.length})
+          </span>
+          <div className="flex flex-wrap gap-1.5">
+            {crossMappings.map((cm) => (
+              <span
+                key={cm.id}
+                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs border ${
+                  cm.relationship === "equivalent"
+                    ? "border-primary/30 text-primary bg-primary/5"
+                    : "border-border text-muted-foreground"
+                }`}
+                title={cm.notes ?? undefined}
+              >
+                <span className="font-medium">{cm.frameworkCode === "EU_AI_ACT" ? "EU" : cm.frameworkCode === "NIST_AI_RMF" ? "NIST" : "ISO"}</span>
+                <span>{cm.code}</span>
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Save (status + notes) */}
       {dirty && (
-        <Button
-          size="sm"
-          onClick={() => {
-            onUpdate({
-              organizationId: orgId,
-              aiSystemId: systemId,
-              requirementId: reqId,
-              status: status as StatusValue,
-              notes,
-            });
-            setDirty(false);
-          }}
-          disabled={isUpdatePending}
-        >
-          {isUpdatePending ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <Save className="w-3 h-3 mr-1" />}
-          Save
-        </Button>
+        <div className="space-y-2">
+          {crossMappings && crossMappings.filter((cm) => cm.relationship === "equivalent").length > 0 &&
+            (status === "COMPLIANT" || status === "PARTIALLY_COMPLIANT") && (
+              <label className="flex items-center gap-2 text-xs text-muted-foreground">
+                <Checkbox
+                  checked={propagate}
+                  onCheckedChange={(v) => setPropagate(!!v)}
+                />
+                Also apply to {crossMappings.filter((cm) => cm.relationship === "equivalent").length} equivalent requirement{crossMappings.filter((cm) => cm.relationship === "equivalent").length !== 1 ? "s" : ""} across frameworks
+              </label>
+            )}
+          <Button
+            size="sm"
+            onClick={() => {
+              onUpdate({
+                organizationId: orgId,
+                aiSystemId: systemId,
+                requirementId: reqId,
+                status: status as StatusValue,
+                notes,
+                propagateToLinked: propagate,
+              });
+              setDirty(false);
+            }}
+            disabled={isUpdatePending}
+          >
+            {isUpdatePending ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <Save className="w-3 h-3 mr-1" />}
+            Save
+          </Button>
+        </div>
       )}
 
       {/* Add Evidence Dialog */}

@@ -85,7 +85,25 @@ export const riskClassificationRouter = createTRPCRouter({
           include: { aiSystem: true },
         });
 
-        return updated;
+        // Auto-generate compliance mappings for any new applicable requirements
+        const applicableRequirements = await ctx.prisma.complianceRequirement.findMany({
+          where: { applicableTo: { has: input.riskLevel } },
+          select: { id: true },
+        });
+
+        const complianceMappingsCreated = applicableRequirements.length > 0
+          ? (await ctx.prisma.complianceMapping.createMany({
+              data: applicableRequirements.map((req) => ({
+                organizationId: ctx.organization.id,
+                aiSystemId: input.aiSystemId,
+                requirementId: req.id,
+                status: "NOT_ASSESSED" as const,
+              })),
+              skipDuplicates: true,
+            })).count
+          : 0;
+
+        return { ...updated, complianceMappingsCreated };
       }
 
       // Create new classification
@@ -112,7 +130,25 @@ export const riskClassificationRouter = createTRPCRouter({
         },
       });
 
-      return classification;
+      // Auto-generate compliance mappings for applicable requirements
+      const applicableRequirements = await ctx.prisma.complianceRequirement.findMany({
+        where: { applicableTo: { has: input.riskLevel } },
+        select: { id: true },
+      });
+
+      const complianceMappingsCreated = applicableRequirements.length > 0
+        ? (await ctx.prisma.complianceMapping.createMany({
+            data: applicableRequirements.map((req) => ({
+              organizationId: ctx.organization.id,
+              aiSystemId: input.aiSystemId,
+              requirementId: req.id,
+              status: "NOT_ASSESSED" as const,
+            })),
+            skipDuplicates: true,
+          })).count
+        : 0;
+
+      return { ...classification, complianceMappingsCreated };
     }),
 
   getHistory: organizationProcedure

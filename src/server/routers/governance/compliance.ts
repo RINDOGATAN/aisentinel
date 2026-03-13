@@ -75,6 +75,43 @@ export const complianceRouter = createTRPCRouter({
       }));
     }),
 
+  getCrossMappedRequirements: organizationProcedure
+    .input(
+      z.object({
+        organizationId: z.string(),
+        requirementId: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const mappings = await ctx.prisma.crossFrameworkMapping.findMany({
+        where: {
+          OR: [
+            { requirementAId: input.requirementId },
+            { requirementBId: input.requirementId },
+          ],
+        },
+        include: {
+          requirementA: { include: { framework: true } },
+          requirementB: { include: { framework: true } },
+        },
+      });
+
+      return mappings.map((m) => {
+        const isA = m.requirementAId === input.requirementId;
+        const linked = isA ? m.requirementB : m.requirementA;
+        return {
+          id: m.id,
+          relationship: m.relationship,
+          notes: m.notes,
+          requirementId: linked.id,
+          code: linked.code,
+          title: linked.title,
+          frameworkName: linked.framework.name,
+          frameworkCode: linked.framework.code,
+        };
+      });
+    }),
+
   updateMapping: organizationProcedure
     .input(
       z.object({
@@ -83,6 +120,7 @@ export const complianceRouter = createTRPCRouter({
         requirementId: z.string(),
         status: z.enum(["COMPLIANT", "PARTIALLY_COMPLIANT", "NON_COMPLIANT", "NOT_APPLICABLE", "NOT_ASSESSED"]),
         notes: z.string().optional(),
+        propagateToLinked: z.boolean().optional().default(false),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -111,7 +149,70 @@ export const complianceRouter = createTRPCRouter({
         include: { evidenceItems: true },
       });
 
-      return mapping;
+      let propagatedCount = 0;
+
+      if (
+        input.propagateToLinked &&
+        (input.status === "COMPLIANT" || input.status === "PARTIALLY_COMPLIANT")
+      ) {
+        const crossMappings = await ctx.prisma.crossFrameworkMapping.findMany({
+          where: {
+            OR: [
+              { requirementAId: input.requirementId },
+              { requirementBId: input.requirementId },
+            ],
+            relationship: "equivalent",
+          },
+        });
+
+        const linkedReqIds = crossMappings.map((m) =>
+          m.requirementAId === input.requirementId ? m.requirementBId : m.requirementAId
+        );
+
+        for (const linkedReqId of linkedReqIds) {
+          const existing = await ctx.prisma.complianceMapping.findUnique({
+            where: {
+              aiSystemId_requirementId: {
+                aiSystemId: input.aiSystemId,
+                requirementId: linkedReqId,
+              },
+            },
+          });
+
+          if (!existing || existing.status === "NOT_ASSESSED") {
+            await ctx.prisma.complianceMapping.upsert({
+              where: {
+                aiSystemId_requirementId: {
+                  aiSystemId: input.aiSystemId,
+                  requirementId: linkedReqId,
+                },
+              },
+              update: {
+                status: input.status,
+                notes: input.notes
+                  ? `[Propagated] ${input.notes}`
+                  : "[Propagated from cross-framework mapping]",
+                assessedBy: ctx.session.user.id,
+                assessedAt: new Date(),
+              },
+              create: {
+                organizationId: ctx.organization.id,
+                aiSystemId: input.aiSystemId,
+                requirementId: linkedReqId,
+                status: input.status,
+                notes: input.notes
+                  ? `[Propagated] ${input.notes}`
+                  : "[Propagated from cross-framework mapping]",
+                assessedBy: ctx.session.user.id,
+                assessedAt: new Date(),
+              },
+            });
+            propagatedCount++;
+          }
+        }
+      }
+
+      return { ...mapping, propagatedCount };
     }),
 
   addEvidence: organizationProcedure

@@ -77,7 +77,7 @@ export default function AIRegistryPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const debouncedSearch = useDebounce(searchQuery);
-  const { organization } = useOrganization();
+  const { organization, canWrite } = useOrganization();
 
   const statusFilter = activeTab === "all" ? undefined : activeTab.toUpperCase() as "DRAFT" | "DEVELOPMENT" | "TESTING" | "DEPLOYED" | "RETIRED";
 
@@ -120,13 +120,15 @@ export default function AIRegistryPage() {
             Inventory of all AI systems, models, and agents
           </p>
         </div>
-        <Link href="/governance/ai-registry/new" className="flex-none">
-          <Button className="w-full sm:w-auto">
-            <Plus className="w-4 h-4 sm:mr-2" />
-            <span className="hidden sm:inline">Register AI System</span>
-            <span className="sm:hidden">Register</span>
-          </Button>
-        </Link>
+        {canWrite && (
+          <Link href="/governance/ai-registry/new" className="flex-none">
+            <Button className="w-full sm:w-auto">
+              <Plus className="w-4 h-4 sm:mr-2" />
+              <span className="hidden sm:inline">Register AI System</span>
+              <span className="sm:hidden">Register</span>
+            </Button>
+          </Link>
+        )}
       </div>
 
       {/* Stats Grid */}
@@ -283,7 +285,7 @@ export default function AIRegistryPage() {
                     ? "Try adjusting your search terms"
                     : "Start by registering your first AI system"}
                 </p>
-                {!searchQuery && (
+                {!searchQuery && canWrite && (
                   <Link href="/governance/ai-registry/new">
                     <Button>
                       <Plus className="w-4 h-4 mr-2" />

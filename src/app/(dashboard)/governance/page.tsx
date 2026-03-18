@@ -34,7 +34,7 @@ import { formatRelativeTime } from "@/lib/utils";
 import { DeploymentExpertCta } from "@/components/governance/deployment-expert-cta";
 
 export default function GovernanceDashboardPage() {
-  const { organization, organizations, setOrganization } = useOrganization();
+  const { organization, organizations, setOrganization, canWrite } = useOrganization();
 
   const { data: stats, isLoading } = trpc.organization.getDashboardStats.useQuery(
     { organizationId: organization?.id ?? "" },
@@ -445,64 +445,66 @@ export default function GovernanceDashboardPage() {
         </Card>
 
         {/* Quick Actions */}
-        <Card>
-          <CardHeader className="p-4 sm:p-6">
-            <CardTitle className="text-base sm:text-lg">Quick Actions</CardTitle>
-            <CardDescription className="text-xs sm:text-sm">
-              Common governance tasks
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="grid gap-2 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 p-4 pt-0 sm:p-6 sm:pt-0">
-            <Link href="/governance/ai-registry/new">
-              <Button variant="outline" className="w-full justify-start h-11">
-                <Plus className="w-4 h-4 mr-2 shrink-0" />
-                <span className="truncate">Register AI System</span>
-              </Button>
-            </Link>
-            <Link href="/governance/oversight/new">
-              <Button variant="outline" className="w-full justify-start h-11">
-                <Eye className="w-4 h-4 mr-2 shrink-0" />
-                <span className="truncate">Create Gate</span>
-              </Button>
-            </Link>
-            <Link href="/governance/incidents/new">
-              <Button variant="outline" className="w-full justify-start h-11">
-                <AlertTriangle className="w-4 h-4 mr-2 shrink-0" />
-                <span className="truncate">Report Incident</span>
-              </Button>
-            </Link>
-            <Link href="/governance/assessments/new">
-              <Button variant="outline" className="w-full justify-start h-11">
-                <FileSearch className="w-4 h-4 mr-2 shrink-0" />
-                <span className="truncate">New Assessment</span>
-              </Button>
-            </Link>
-            <Link href="/governance/vendors/new">
-              <Button variant="outline" className="w-full justify-start h-11">
-                <Building2 className="w-4 h-4 mr-2 shrink-0" />
-                <span className="truncate">Add Vendor</span>
-              </Button>
-            </Link>
-            <Link href="/governance/vendors/new?catalog=true">
-              <Button variant="outline" className="w-full justify-start h-11">
-                <ShieldCheck className="w-4 h-4 mr-2 shrink-0" />
-                <span className="truncate">Vendor from Catalog</span>
-              </Button>
-            </Link>
-            <Link href="/governance/shadow-ai/new">
-              <Button variant="outline" className="w-full justify-start h-11">
-                <Search className="w-4 h-4 mr-2 shrink-0" />
-                <span className="truncate">Report Shadow AI</span>
-              </Button>
-            </Link>
-            <Link href="/governance/policies/new">
-              <Button variant="outline" className="w-full justify-start h-11">
-                <ScrollText className="w-4 h-4 mr-2 shrink-0" />
-                <span className="truncate">Create Policy</span>
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
+        {canWrite && (
+          <Card>
+            <CardHeader className="p-4 sm:p-6">
+              <CardTitle className="text-base sm:text-lg">Quick Actions</CardTitle>
+              <CardDescription className="text-xs sm:text-sm">
+                Common governance tasks
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-2 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 p-4 pt-0 sm:p-6 sm:pt-0">
+              <Link href="/governance/ai-registry/new">
+                <Button variant="outline" className="w-full justify-start h-11">
+                  <Plus className="w-4 h-4 mr-2 shrink-0" />
+                  <span className="truncate">Register AI System</span>
+                </Button>
+              </Link>
+              <Link href="/governance/oversight/new">
+                <Button variant="outline" className="w-full justify-start h-11">
+                  <Eye className="w-4 h-4 mr-2 shrink-0" />
+                  <span className="truncate">Create Gate</span>
+                </Button>
+              </Link>
+              <Link href="/governance/incidents/new">
+                <Button variant="outline" className="w-full justify-start h-11">
+                  <AlertTriangle className="w-4 h-4 mr-2 shrink-0" />
+                  <span className="truncate">Report Incident</span>
+                </Button>
+              </Link>
+              <Link href="/governance/assessments/new">
+                <Button variant="outline" className="w-full justify-start h-11">
+                  <FileSearch className="w-4 h-4 mr-2 shrink-0" />
+                  <span className="truncate">New Assessment</span>
+                </Button>
+              </Link>
+              <Link href="/governance/vendors/new">
+                <Button variant="outline" className="w-full justify-start h-11">
+                  <Building2 className="w-4 h-4 mr-2 shrink-0" />
+                  <span className="truncate">Add Vendor</span>
+                </Button>
+              </Link>
+              <Link href="/governance/vendors/new?catalog=true">
+                <Button variant="outline" className="w-full justify-start h-11">
+                  <ShieldCheck className="w-4 h-4 mr-2 shrink-0" />
+                  <span className="truncate">Vendor from Catalog</span>
+                </Button>
+              </Link>
+              <Link href="/governance/shadow-ai/new">
+                <Button variant="outline" className="w-full justify-start h-11">
+                  <Search className="w-4 h-4 mr-2 shrink-0" />
+                  <span className="truncate">Report Shadow AI</span>
+                </Button>
+              </Link>
+              <Link href="/governance/policies/new">
+                <Button variant="outline" className="w-full justify-start h-11">
+                  <ScrollText className="w-4 h-4 mr-2 shrink-0" />
+                  <span className="truncate">Create Policy</span>
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Recent Activity */}
         <Card>

@@ -60,7 +60,7 @@ export default function AssessmentsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const debouncedSearch = useDebounce(searchQuery);
-  const { organization } = useOrganization();
+  const { organization, canWrite } = useOrganization();
 
   const typeFilter = activeTab === "all" ? undefined : activeTab.toUpperCase() as "FRIA" | "CONFORMITY" | "AI_RISK" | "BIAS_FAIRNESS" | "CUSTOM";
 
@@ -112,13 +112,15 @@ export default function AssessmentsPage() {
             FRIA, conformity, and risk assessments for AI systems
           </p>
         </div>
-        <Link href="/governance/assessments/new" className="flex-none">
-          <Button className="w-full sm:w-auto">
-            <Plus className="w-4 h-4 sm:mr-2" />
-            <span className="hidden sm:inline">New Assessment</span>
-            <span className="sm:hidden">New</span>
-          </Button>
-        </Link>
+        {canWrite && (
+          <Link href="/governance/assessments/new" className="flex-none">
+            <Button className="w-full sm:w-auto">
+              <Plus className="w-4 h-4 sm:mr-2" />
+              <span className="hidden sm:inline">New Assessment</span>
+              <span className="sm:hidden">New</span>
+            </Button>
+          </Link>
+        )}
       </div>
 
       {/* Stats Grid */}
@@ -281,7 +283,7 @@ export default function AssessmentsPage() {
                     ? "Try adjusting your search terms"
                     : "Start by creating your first assessment"}
                 </p>
-                {!searchQuery && (
+                {!searchQuery && canWrite && (
                   <Link href="/governance/assessments/new">
                     <Button>
                       <Plus className="w-4 h-4 mr-2" />

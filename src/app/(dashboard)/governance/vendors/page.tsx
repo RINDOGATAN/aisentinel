@@ -68,7 +68,7 @@ export default function VendorRiskPage() {
   const [activeTab, setActiveTab] = useState("all");
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
   const debouncedSearch = useDebounce(searchQuery);
-  const { organization } = useOrganization();
+  const { organization, canWrite } = useOrganization();
 
   const statusFilter = tabToStatus[activeTab];
 
@@ -115,13 +115,15 @@ export default function VendorRiskPage() {
             Manage third-party AI vendor risk and assessments
           </p>
         </div>
-        <Link href="/governance/vendors/new" className="flex-none">
-          <Button className="w-full sm:w-auto">
-            <Plus className="w-4 h-4 sm:mr-2" />
-            <span className="hidden sm:inline">Add Vendor</span>
-            <span className="sm:hidden">Add</span>
-          </Button>
-        </Link>
+        {canWrite && (
+          <Link href="/governance/vendors/new" className="flex-none">
+            <Button className="w-full sm:w-auto">
+              <Plus className="w-4 h-4 sm:mr-2" />
+              <span className="hidden sm:inline">Add Vendor</span>
+              <span className="sm:hidden">Add</span>
+            </Button>
+          </Link>
+        )}
       </div>
 
       {/* Stats Grid */}
@@ -354,7 +356,7 @@ export default function VendorRiskPage() {
                     ? "Try adjusting your search terms"
                     : "Start by adding your first AI vendor"}
                 </p>
-                {!searchQuery && (
+                {!searchQuery && canWrite && (
                   <Link href="/governance/vendors/new">
                     <Button>
                       <Plus className="w-4 h-4 mr-2" />

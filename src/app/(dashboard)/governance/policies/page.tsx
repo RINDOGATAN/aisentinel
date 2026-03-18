@@ -56,7 +56,7 @@ export default function PoliciesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const debouncedSearch = useDebounce(searchQuery);
-  const { organization } = useOrganization();
+  const { organization, canWrite } = useOrganization();
 
   const typeFilter = tabTypeMap[activeTab];
 
@@ -98,13 +98,15 @@ export default function PoliciesPage() {
             AI governance policies and standards
           </p>
         </div>
-        <Link href="/governance/policies/new" className="flex-none">
-          <Button className="w-full sm:w-auto">
-            <Plus className="w-4 h-4 sm:mr-2" />
-            <span className="hidden sm:inline">Create Policy</span>
-            <span className="sm:hidden">Create</span>
-          </Button>
-        </Link>
+        {canWrite && (
+          <Link href="/governance/policies/new" className="flex-none">
+            <Button className="w-full sm:w-auto">
+              <Plus className="w-4 h-4 sm:mr-2" />
+              <span className="hidden sm:inline">Create Policy</span>
+              <span className="sm:hidden">Create</span>
+            </Button>
+          </Link>
+        )}
       </div>
 
       {/* Stats Grid */}
@@ -270,7 +272,7 @@ export default function PoliciesPage() {
                     ? "Try adjusting your search terms"
                     : "Start by creating your first policy"}
                 </p>
-                {!searchQuery && (
+                {!searchQuery && canWrite && (
                   <Link href="/governance/policies/new">
                     <Button>
                       <Plus className="w-4 h-4 mr-2" />

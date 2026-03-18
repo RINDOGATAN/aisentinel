@@ -113,7 +113,7 @@ function buildNavGroups(isConsultant: boolean) {
 export function DashboardShell({ children }: { children: React.ReactNode }) {
   const { data: session } = useSession();
   const pathname = usePathname();
-  const { organization, organizations, isLoading: orgLoading } = useOrganization();
+  const { organization, organizations, isLoading: orgLoading, userRole } = useOrganization();
   const { needsOnboarding, isConsultant, isLoading: userTypeLoading } = useUserType();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
@@ -320,6 +320,15 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
             <div className="hidden sm:flex items-center gap-2 text-sm text-muted-foreground">
               <User className="w-4 h-4" />
               <span className="hidden lg:inline max-w-[150px] truncate">{session?.user?.email}</span>
+              {userRole && (
+                <span className={`text-[10px] font-medium uppercase tracking-wider px-1.5 py-0.5 rounded ${
+                  userRole === "VIEWER"
+                    ? "bg-muted text-muted-foreground"
+                    : "bg-primary/10 text-primary"
+                }`}>
+                  {userRole === "AI_OFFICER" ? "AI Officer" : userRole.charAt(0) + userRole.slice(1).toLowerCase()}
+                </span>
+              )}
             </div>
             <Button
               variant="ghost"

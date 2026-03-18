@@ -56,7 +56,7 @@ export default function ShadowAIPage() {
   const [activeTab, setActiveTab] = useState("all");
   const [showModal, setShowModal] = useState(false);
   const debouncedSearch = useDebounce(searchQuery);
-  const { organization } = useOrganization();
+  const { organization, canWrite } = useOrganization();
 
   const statusFilter = tabToStatus[activeTab];
 
@@ -173,13 +173,15 @@ export default function ShadowAIPage() {
             Discover and manage unauthorized AI tool usage
           </p>
         </div>
-        <Link href="/governance/shadow-ai/new" className="flex-none">
-          <Button className="w-full sm:w-auto">
-            <Plus className="w-4 h-4 sm:mr-2" />
-            <span className="hidden sm:inline">Report AI Tool</span>
-            <span className="sm:hidden">Report</span>
-          </Button>
-        </Link>
+        {canWrite && (
+          <Link href="/governance/shadow-ai/new" className="flex-none">
+            <Button className="w-full sm:w-auto">
+              <Plus className="w-4 h-4 sm:mr-2" />
+              <span className="hidden sm:inline">Report AI Tool</span>
+              <span className="sm:hidden">Report</span>
+            </Button>
+          </Link>
+        )}
       </div>
 
       {/* Stats Grid */}
@@ -358,7 +360,7 @@ export default function ShadowAIPage() {
                     ? "Try adjusting your search terms"
                     : "Start by reporting an AI tool in use"}
                 </p>
-                {!searchQuery && (
+                {!searchQuery && canWrite && (
                   <Link href="/governance/shadow-ai/new">
                     <Button>
                       <Plus className="w-4 h-4 mr-2" />

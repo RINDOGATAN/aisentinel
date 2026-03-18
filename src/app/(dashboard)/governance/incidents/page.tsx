@@ -66,7 +66,7 @@ export default function IncidentsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const debouncedSearch = useDebounce(searchQuery);
-  const { organization } = useOrganization();
+  const { organization, canWrite } = useOrganization();
 
   const typeFilter = tabTypeMap[activeTab];
 
@@ -108,13 +108,15 @@ export default function IncidentsPage() {
             Track AI-specific failures, severity, timeline & Art. 62 notifications
           </p>
         </div>
-        <Link href="/governance/incidents/new" className="flex-none">
-          <Button className="w-full sm:w-auto">
-            <Plus className="w-4 h-4 sm:mr-2" />
-            <span className="hidden sm:inline">Report Incident</span>
-            <span className="sm:hidden">Report</span>
-          </Button>
-        </Link>
+        {canWrite && (
+          <Link href="/governance/incidents/new" className="flex-none">
+            <Button className="w-full sm:w-auto">
+              <Plus className="w-4 h-4 sm:mr-2" />
+              <span className="hidden sm:inline">Report Incident</span>
+              <span className="sm:hidden">Report</span>
+            </Button>
+          </Link>
+        )}
       </div>
 
       {/* Stats Grid */}
@@ -264,7 +266,7 @@ export default function IncidentsPage() {
                     ? "Try adjusting your search terms"
                     : "No AI incidents have been reported yet"}
                 </p>
-                {!searchQuery && (
+                {!searchQuery && canWrite && (
                   <Link href="/governance/incidents/new">
                     <Button>
                       <Plus className="w-4 h-4 mr-2" />

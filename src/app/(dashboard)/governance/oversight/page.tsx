@@ -43,7 +43,7 @@ export default function OversightPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const debouncedSearch = useDebounce(searchQuery);
-  const { organization } = useOrganization();
+  const { organization, canWrite } = useOrganization();
 
   const gateTypeFilter = activeTab === "all" ? undefined : activeTab as "PRE_DEPLOYMENT" | "POST_DEPLOYMENT" | "PERIODIC_REVIEW" | "INCIDENT_TRIGGERED" | "MATERIAL_CHANGE";
 
@@ -85,13 +85,15 @@ export default function OversightPage() {
             Approval gates, decision logging &amp; Art. 14 compliance
           </p>
         </div>
-        <Link href="/governance/oversight/new" className="flex-none">
-          <Button className="w-full sm:w-auto">
-            <Plus className="w-4 h-4 sm:mr-2" />
-            <span className="hidden sm:inline">Create Gate</span>
-            <span className="sm:hidden">Create</span>
-          </Button>
-        </Link>
+        {canWrite && (
+          <Link href="/governance/oversight/new" className="flex-none">
+            <Button className="w-full sm:w-auto">
+              <Plus className="w-4 h-4 sm:mr-2" />
+              <span className="hidden sm:inline">Create Gate</span>
+              <span className="sm:hidden">Create</span>
+            </Button>
+          </Link>
+        )}
       </div>
 
       {/* Stats Grid */}
@@ -246,7 +248,7 @@ export default function OversightPage() {
                     ? "Try adjusting your search terms"
                     : "Start by creating your first oversight gate"}
                 </p>
-                {!searchQuery && (
+                {!searchQuery && canWrite && (
                   <Link href="/governance/oversight/new">
                     <Button>
                       <Plus className="w-4 h-4 mr-2" />

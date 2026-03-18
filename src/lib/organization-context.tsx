@@ -3,16 +3,23 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { trpc } from "@/lib/trpc";
 
+type OrganizationRole = "OWNER" | "ADMIN" | "AI_OFFICER" | "MEMBER" | "VIEWER";
+
 interface Organization {
   id: string;
   name: string;
   slug: string;
+  role?: OrganizationRole;
 }
 
 interface OrganizationContextType {
   organization: Organization | null;
   organizations: Organization[];
   isLoading: boolean;
+  /** Current user's role in the selected organization */
+  userRole: OrganizationRole | null;
+  /** Whether the current user can perform write operations (non-VIEWER) */
+  canWrite: boolean;
   setOrganization: (org: Organization) => void;
   refetchOrganizations: () => void;
 }
@@ -41,12 +48,17 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("currentOrganizationId", org.id);
   };
 
+  const userRole = organization?.role ?? null;
+  const canWrite = userRole !== null && userRole !== "VIEWER";
+
   return (
     <OrganizationContext.Provider
       value={{
         organization,
         organizations,
         isLoading,
+        userRole,
+        canWrite,
         setOrganization,
         refetchOrganizations: refetch,
       }}

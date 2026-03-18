@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createTRPCRouter, organizationProcedure } from "../../trpc";
+import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { TRPCError } from "@trpc/server";
 import { VendorStatus } from "@prisma/client";
 import {
@@ -253,7 +253,7 @@ export const quickstartRouter = createTRPCRouter({
   // ──────────────────────────────────────────────────
   // Execute quickstart — create all records in a transaction
   // ──────────────────────────────────────────────────
-  execute: organizationProcedure
+  execute: orgWriteProcedure
     .input(
       z.object({
         organizationId: z.string(),

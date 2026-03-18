@@ -265,6 +265,8 @@ Premium features (Shadow AI, Vendor Catalog, Conformity Assessment, Bias & Fairn
 - [x] Webhook signature verification
 - [x] Cross-tenant isolation on member operations
 - [x] Policy link/unlink org verification
+- [x] Org-scoped return queries (all `findUnique` after `updateMany` replaced with org-scoped `findFirst`)
+- [x] Consistent `updateMany` pattern for mutations (incident tasks/notifications)
 
 ### Future Improvements
 

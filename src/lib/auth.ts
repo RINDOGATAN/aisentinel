@@ -11,13 +11,14 @@ const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KE
 
 const isDev = process.env.NODE_ENV === "development";
 const isProduction = process.env.NODE_ENV === "production";
+const devAuthEnabled = isDev && process.env.DISABLE_DEV_AUTH !== "true";
 const cookieDomain = isProduction ? ".todo.law" : undefined;
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma) as NextAuthOptions["adapter"],
   providers: [
-    // Development-only credentials provider
-    ...(isDev
+    // Development-only credentials provider (requires NODE_ENV=development, blocked in production)
+    ...(devAuthEnabled
       ? [
           CredentialsProvider({
             id: "dev-credentials",
@@ -26,6 +27,11 @@ export const authOptions: NextAuthOptions = {
               email: { label: "Email", type: "email", placeholder: "dev@example.com" },
             },
             async authorize(credentials) {
+              // Double-check: never allow dev auth in production
+              if (process.env.VERCEL_ENV === "production" || process.env.NODE_ENV === "production") {
+                console.error("Dev credentials provider blocked in production environment");
+                return null;
+              }
               if (!credentials?.email) return null;
 
               let user = await prisma.user.findUnique({

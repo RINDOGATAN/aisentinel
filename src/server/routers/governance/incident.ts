@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createTRPCRouter, organizationProcedure } from "../../trpc";
+import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { TRPCError } from "@trpc/server";
 
 export const incidentRouter = createTRPCRouter({
@@ -69,7 +69,7 @@ export const incidentRouter = createTRPCRouter({
       return incident;
     }),
 
-  create: organizationProcedure
+  create: orgWriteProcedure
     .input(
       z.object({
         organizationId: z.string(),
@@ -122,7 +122,7 @@ export const incidentRouter = createTRPCRouter({
       return incident;
     }),
 
-  update: organizationProcedure
+  update: orgWriteProcedure
     .input(
       z.object({
         organizationId: z.string(),
@@ -190,7 +190,7 @@ export const incidentRouter = createTRPCRouter({
       return ctx.prisma.aIIncident.findUnique({ where: { id: input.id } });
     }),
 
-  addTimelineEntry: organizationProcedure
+  addTimelineEntry: orgWriteProcedure
     .input(
       z.object({
         organizationId: z.string(),
@@ -219,7 +219,7 @@ export const incidentRouter = createTRPCRouter({
       });
     }),
 
-  addTask: organizationProcedure
+  addTask: orgWriteProcedure
     .input(
       z.object({
         organizationId: z.string(),
@@ -249,7 +249,7 @@ export const incidentRouter = createTRPCRouter({
       });
     }),
 
-  updateTask: organizationProcedure
+  updateTask: orgWriteProcedure
     .input(
       z.object({
         organizationId: z.string(),
@@ -288,7 +288,7 @@ export const incidentRouter = createTRPCRouter({
       });
     }),
 
-  addNotification: organizationProcedure
+  addNotification: orgWriteProcedure
     .input(
       z.object({
         organizationId: z.string(),
@@ -318,7 +318,7 @@ export const incidentRouter = createTRPCRouter({
       });
     }),
 
-  updateNotification: organizationProcedure
+  updateNotification: orgWriteProcedure
     .input(
       z.object({
         organizationId: z.string(),

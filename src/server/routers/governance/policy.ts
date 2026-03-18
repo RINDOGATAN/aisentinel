@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createTRPCRouter, organizationProcedure } from "../../trpc";
+import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { TRPCError } from "@trpc/server";
 
 export const policyRouter = createTRPCRouter({
@@ -68,7 +68,7 @@ export const policyRouter = createTRPCRouter({
       return policy;
     }),
 
-  create: organizationProcedure
+  create: orgWriteProcedure
     .input(
       z.object({
         organizationId: z.string(),
@@ -121,7 +121,7 @@ export const policyRouter = createTRPCRouter({
       return policy;
     }),
 
-  update: organizationProcedure
+  update: orgWriteProcedure
     .input(
       z.object({
         organizationId: z.string(),
@@ -172,7 +172,7 @@ export const policyRouter = createTRPCRouter({
       return ctx.prisma.aIPolicy.findUnique({ where: { id } });
     }),
 
-  publishVersion: organizationProcedure
+  publishVersion: orgWriteProcedure
     .input(
       z.object({
         organizationId: z.string(),
@@ -237,7 +237,7 @@ export const policyRouter = createTRPCRouter({
       return updated;
     }),
 
-  approve: organizationProcedure
+  approve: orgWriteProcedure
     .input(z.object({ organizationId: z.string(), id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       // RBAC: OWNER, ADMIN, AI_OFFICER
@@ -279,7 +279,7 @@ export const policyRouter = createTRPCRouter({
       return updated;
     }),
 
-  linkSystem: organizationProcedure
+  linkSystem: orgWriteProcedure
     .input(
       z.object({
         organizationId: z.string(),
@@ -288,11 +288,21 @@ export const policyRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const system = await ctx.prisma.aISystem.findFirst({
-        where: { id: input.aiSystemId, organizationId: ctx.organization.id },
-        select: { id: true },
-      });
+      // Verify both policy and system belong to this organization
+      const [policy, system] = await Promise.all([
+        ctx.prisma.aIPolicy.findFirst({
+          where: { id: input.policyId, organizationId: ctx.organization.id },
+          select: { id: true },
+        }),
+        ctx.prisma.aISystem.findFirst({
+          where: { id: input.aiSystemId, organizationId: ctx.organization.id },
+          select: { id: true },
+        }),
+      ]);
 
+      if (!policy) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Policy not found" });
+      }
       if (!system) {
         throw new TRPCError({ code: "NOT_FOUND", message: "AI system not found" });
       }
@@ -305,7 +315,7 @@ export const policyRouter = createTRPCRouter({
       });
     }),
 
-  unlinkSystem: organizationProcedure
+  unlinkSystem: orgWriteProcedure
     .input(
       z.object({
         organizationId: z.string(),
@@ -314,6 +324,16 @@ export const policyRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      // Verify the policy belongs to this organization
+      const policy = await ctx.prisma.aIPolicy.findFirst({
+        where: { id: input.policyId, organizationId: ctx.organization.id },
+        select: { id: true },
+      });
+
+      if (!policy) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Policy not found" });
+      }
+
       return ctx.prisma.aIPolicySystemLink.deleteMany({
         where: {
           policyId: input.policyId,

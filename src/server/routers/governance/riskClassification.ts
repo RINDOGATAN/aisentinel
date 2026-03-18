@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { createTRPCRouter, organizationProcedure } from "../../trpc";
+import { TRPCError } from "@trpc/server";
+import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 
 export const riskClassificationRouter = createTRPCRouter({
   list: organizationProcedure
@@ -36,8 +37,8 @@ export const riskClassificationRouter = createTRPCRouter({
   getById: organizationProcedure
     .input(z.object({ organizationId: z.string(), aiSystemId: z.string() }))
     .query(async ({ ctx, input }) => {
-      return ctx.prisma.riskClassification.findUnique({
-        where: { aiSystemId: input.aiSystemId },
+      return ctx.prisma.riskClassification.findFirst({
+        where: { aiSystemId: input.aiSystemId, organizationId: ctx.organization.id },
         include: {
           aiSystem: true,
           history: { orderBy: { changedAt: "desc" } },
@@ -45,7 +46,7 @@ export const riskClassificationRouter = createTRPCRouter({
       });
     }),
 
-  classify: organizationProcedure
+  classify: orgWriteProcedure
     .input(
       z.object({
         organizationId: z.string(),
@@ -56,8 +57,17 @@ export const riskClassificationRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const existing = await ctx.prisma.riskClassification.findUnique({
-        where: { aiSystemId: input.aiSystemId },
+      // Verify the AI system belongs to this organization
+      const system = await ctx.prisma.aISystem.findFirst({
+        where: { id: input.aiSystemId, organizationId: ctx.organization.id },
+        select: { id: true },
+      });
+      if (!system) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "AI system not found" });
+      }
+
+      const existing = await ctx.prisma.riskClassification.findFirst({
+        where: { aiSystemId: input.aiSystemId, organizationId: ctx.organization.id },
       });
 
       if (existing) {
@@ -154,8 +164,8 @@ export const riskClassificationRouter = createTRPCRouter({
   getHistory: organizationProcedure
     .input(z.object({ organizationId: z.string(), aiSystemId: z.string() }))
     .query(async ({ ctx, input }) => {
-      const classification = await ctx.prisma.riskClassification.findUnique({
-        where: { aiSystemId: input.aiSystemId },
+      const classification = await ctx.prisma.riskClassification.findFirst({
+        where: { aiSystemId: input.aiSystemId, organizationId: ctx.organization.id },
       });
 
       if (!classification) return [];

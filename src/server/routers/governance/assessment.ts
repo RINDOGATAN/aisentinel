@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createTRPCRouter, organizationProcedure } from "../../trpc";
+import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { TRPCError } from "@trpc/server";
 import { checkAssessmentEntitlement, getEntitledAssessmentTypes } from "@/server/services/licensing/entitlement";
 
@@ -65,7 +65,7 @@ export const assessmentRouter = createTRPCRouter({
       return assessment;
     }),
 
-  create: organizationProcedure
+  create: orgWriteProcedure
     .input(
       z.object({
         organizationId: z.string(),
@@ -119,7 +119,7 @@ export const assessmentRouter = createTRPCRouter({
       return assessment;
     }),
 
-  update: organizationProcedure
+  update: orgWriteProcedure
     .input(
       z.object({
         organizationId: z.string(),
@@ -152,7 +152,7 @@ export const assessmentRouter = createTRPCRouter({
       });
     }),
 
-  submit: organizationProcedure
+  submit: orgWriteProcedure
     .input(z.object({ organizationId: z.string(), id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const result = await ctx.prisma.aIAssessment.updateMany({
@@ -173,7 +173,7 @@ export const assessmentRouter = createTRPCRouter({
       });
     }),
 
-  processApproval: organizationProcedure
+  processApproval: orgWriteProcedure
     .input(
       z.object({
         organizationId: z.string(),

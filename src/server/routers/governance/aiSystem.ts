@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createTRPCRouter, organizationProcedure } from "../../trpc";
+import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { TRPCError } from "@trpc/server";
 
 export const aiSystemRouter = createTRPCRouter({
@@ -72,7 +72,7 @@ export const aiSystemRouter = createTRPCRouter({
       return system;
     }),
 
-  create: organizationProcedure
+  create: orgWriteProcedure
     .input(
       z.object({
         organizationId: z.string(),
@@ -123,7 +123,7 @@ export const aiSystemRouter = createTRPCRouter({
       return system;
     }),
 
-  update: organizationProcedure
+  update: orgWriteProcedure
     .input(
       z.object({
         organizationId: z.string(),
@@ -168,7 +168,7 @@ export const aiSystemRouter = createTRPCRouter({
       return ctx.prisma.aISystem.findUnique({ where: { id } });
     }),
 
-  delete: organizationProcedure
+  delete: orgWriteProcedure
     .input(z.object({ organizationId: z.string(), id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       await ctx.prisma.aISystem.deleteMany({

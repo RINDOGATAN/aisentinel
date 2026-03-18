@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { createTRPCRouter, organizationProcedure, publicProcedure } from "../../trpc";
+import { createTRPCRouter, organizationProcedure, orgWriteProcedure, publicProcedure } from "../../trpc";
 
 export const complianceRouter = createTRPCRouter({
   listFrameworks: publicProcedure.query(async ({ ctx }) => {
@@ -112,7 +112,7 @@ export const complianceRouter = createTRPCRouter({
       });
     }),
 
-  updateMapping: organizationProcedure
+  updateMapping: orgWriteProcedure
     .input(
       z.object({
         organizationId: z.string(),
@@ -215,7 +215,7 @@ export const complianceRouter = createTRPCRouter({
       return { ...mapping, propagatedCount };
     }),
 
-  addEvidence: organizationProcedure
+  addEvidence: orgWriteProcedure
     .input(
       z.object({
         organizationId: z.string(),
@@ -260,7 +260,7 @@ export const complianceRouter = createTRPCRouter({
       return evidence;
     }),
 
-  removeEvidence: organizationProcedure
+  removeEvidence: orgWriteProcedure
     .input(
       z.object({
         organizationId: z.string(),

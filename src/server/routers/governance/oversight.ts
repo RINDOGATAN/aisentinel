@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createTRPCRouter, organizationProcedure } from "../../trpc";
+import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { TRPCError } from "@trpc/server";
 
 export const oversightRouter = createTRPCRouter({
@@ -68,7 +68,7 @@ export const oversightRouter = createTRPCRouter({
       return gate;
     }),
 
-  create: organizationProcedure
+  create: orgWriteProcedure
     .input(
       z.object({
         organizationId: z.string(),
@@ -107,7 +107,7 @@ export const oversightRouter = createTRPCRouter({
       return gate;
     }),
 
-  update: organizationProcedure
+  update: orgWriteProcedure
     .input(
       z.object({
         organizationId: z.string(),
@@ -154,7 +154,7 @@ export const oversightRouter = createTRPCRouter({
       return ctx.prisma.oversightGate.findUnique({ where: { id } });
     }),
 
-  addDecision: organizationProcedure
+  addDecision: orgWriteProcedure
     .input(
       z.object({
         organizationId: z.string(),

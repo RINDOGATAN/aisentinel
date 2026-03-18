@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createTRPCRouter, organizationProcedure } from "../../trpc";
+import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { TRPCError } from "@trpc/server";
 import { hasShadowAiAccess } from "@/server/services/licensing/entitlement";
 import type { ShadowAIStatus } from "@prisma/client";
@@ -121,7 +121,7 @@ export const shadowAiRouter = createTRPCRouter({
       return report;
     }),
 
-  createReport: organizationProcedure
+  createReport: orgWriteProcedure
     .input(
       z.object({
         organizationId: z.string(),
@@ -160,7 +160,7 @@ export const shadowAiRouter = createTRPCRouter({
       return report;
     }),
 
-  updateReport: organizationProcedure
+  updateReport: orgWriteProcedure
     .input(
       z.object({
         organizationId: z.string(),
@@ -226,7 +226,7 @@ export const shadowAiRouter = createTRPCRouter({
       return updated;
     }),
 
-  registerWithAutoCreate: organizationProcedure
+  registerWithAutoCreate: orgWriteProcedure
     .input(
       z.object({
         organizationId: z.string(),

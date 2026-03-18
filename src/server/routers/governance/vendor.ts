@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createTRPCRouter, organizationProcedure } from "../../trpc";
+import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { TRPCError } from "@trpc/server";
 
 export const vendorRouter = createTRPCRouter({
@@ -69,7 +69,7 @@ export const vendorRouter = createTRPCRouter({
       return vendor;
     }),
 
-  create: organizationProcedure
+  create: orgWriteProcedure
     .input(
       z.object({
         organizationId: z.string(),
@@ -120,7 +120,7 @@ export const vendorRouter = createTRPCRouter({
       return vendor;
     }),
 
-  createWithSystem: organizationProcedure
+  createWithSystem: orgWriteProcedure
     .input(
       z.object({
         organizationId: z.string(),
@@ -208,7 +208,7 @@ export const vendorRouter = createTRPCRouter({
       return result;
     }),
 
-  update: organizationProcedure
+  update: orgWriteProcedure
     .input(
       z.object({
         organizationId: z.string(),
@@ -262,7 +262,7 @@ export const vendorRouter = createTRPCRouter({
       return ctx.prisma.aIVendor.findUnique({ where: { id } });
     }),
 
-  delete: organizationProcedure
+  delete: orgWriteProcedure
     .input(z.object({ organizationId: z.string(), id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       await ctx.prisma.aIVendor.deleteMany({
@@ -282,7 +282,7 @@ export const vendorRouter = createTRPCRouter({
       return { success: true };
     }),
 
-  createAssessment: organizationProcedure
+  createAssessment: orgWriteProcedure
     .input(
       z.object({
         organizationId: z.string(),
@@ -327,7 +327,7 @@ export const vendorRouter = createTRPCRouter({
       return assessment;
     }),
 
-  updateAssessment: organizationProcedure
+  updateAssessment: orgWriteProcedure
     .input(
       z.object({
         organizationId: z.string(),

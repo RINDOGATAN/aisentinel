@@ -109,6 +109,54 @@ export const organizationProcedure = t.procedure
   .use(enforceUserIsAuthed)
   .use(withOrganization);
 
+// Write-protected organization procedure: blocks VIEWER from mutations
+const enforceWriteAccess = t.middleware(async ({ ctx, next, getRawInput }) => {
+  const rawInput = await getRawInput();
+  const input = rawInput as { organizationId?: string } | undefined;
+  const organizationId = input?.organizationId;
+
+  if (!ctx.session || !ctx.session.user) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+
+  if (!organizationId) {
+    throw new TRPCError({ code: "BAD_REQUEST", message: "Organization ID is required" });
+  }
+
+  const membership = await ctx.prisma.organizationMember.findUnique({
+    where: {
+      organizationId_userId: {
+        organizationId,
+        userId: ctx.session.user.id,
+      },
+    },
+    include: { organization: true },
+  });
+
+  if (!membership) {
+    throw new TRPCError({ code: "FORBIDDEN", message: "You do not have access to this organization" });
+  }
+
+  if (membership.role === "VIEWER") {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "Viewers have read-only access. Contact your organization admin for write permissions.",
+    });
+  }
+
+  return next({
+    ctx: {
+      session: { ...ctx.session, user: ctx.session.user },
+      organization: membership.organization,
+      membership,
+    },
+  });
+});
+
+export const orgWriteProcedure = t.procedure
+  .use(enforceUserIsAuthed)
+  .use(enforceWriteAccess);
+
 // Admin emails from environment variable (comma-separated)
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "")
   .split(",")

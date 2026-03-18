@@ -185,6 +185,14 @@ export const organizationRouter = createTRPCRouter({
         });
       }
 
+      // Verify member belongs to this organization
+      const member = await ctx.prisma.organizationMember.findFirst({
+        where: { id: input.memberId, organizationId: ctx.organization.id },
+      });
+      if (!member) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Member not found in this organization" });
+      }
+
       return ctx.prisma.organizationMember.update({
         where: { id: input.memberId },
         data: { role: input.role },
@@ -209,8 +217,8 @@ export const organizationRouter = createTRPCRouter({
         });
       }
 
-      const memberToRemove = await ctx.prisma.organizationMember.findUnique({
-        where: { id: input.memberId },
+      const memberToRemove = await ctx.prisma.organizationMember.findFirst({
+        where: { id: input.memberId, organizationId: ctx.organization.id },
       });
 
       if (!memberToRemove) {

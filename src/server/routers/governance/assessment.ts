@@ -143,8 +143,8 @@ export const assessmentRouter = createTRPCRouter({
         throw new TRPCError({ code: "NOT_FOUND", message: "Assessment not found" });
       }
 
-      return ctx.prisma.aIAssessment.findUnique({
-        where: { id },
+      return ctx.prisma.aIAssessment.findFirst({
+        where: { id, organizationId: ctx.organization.id },
         include: {
           template: true,
           aiSystem: { select: { id: true, name: true } },
@@ -164,8 +164,8 @@ export const assessmentRouter = createTRPCRouter({
         throw new TRPCError({ code: "NOT_FOUND", message: "Assessment not found" });
       }
 
-      return ctx.prisma.aIAssessment.findUnique({
-        where: { id: input.id },
+      return ctx.prisma.aIAssessment.findFirst({
+        where: { id: input.id, organizationId: ctx.organization.id },
         include: {
           template: true,
           aiSystem: { select: { id: true, name: true } },

@@ -165,7 +165,7 @@ export const aiSystemRouter = createTRPCRouter({
         },
       });
 
-      return ctx.prisma.aISystem.findUnique({ where: { id } });
+      return ctx.prisma.aISystem.findFirst({ where: { id, organizationId: ctx.organization.id } });
     }),
 
   delete: orgWriteProcedure

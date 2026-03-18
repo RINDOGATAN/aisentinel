@@ -158,8 +158,8 @@ export const incidentRouter = createTRPCRouter({
         updateData.resolvedAt = new Date();
       }
 
-      await ctx.prisma.aIIncident.update({
-        where: { id: input.id },
+      await ctx.prisma.aIIncident.updateMany({
+        where: { id: input.id, organizationId: ctx.organization.id },
         data: updateData as never,
       });
 
@@ -187,7 +187,7 @@ export const incidentRouter = createTRPCRouter({
         },
       });
 
-      return ctx.prisma.aIIncident.findUnique({ where: { id: input.id } });
+      return ctx.prisma.aIIncident.findFirst({ where: { id: input.id, organizationId: ctx.organization.id } });
     }),
 
   addTimelineEntry: orgWriteProcedure
@@ -282,9 +282,13 @@ export const incidentRouter = createTRPCRouter({
         updateData.completedAt = new Date();
       }
 
-      return ctx.prisma.aIIncidentTask.update({
-        where: { id: input.taskId },
+      await ctx.prisma.aIIncidentTask.updateMany({
+        where: { id: input.taskId, organizationId: ctx.organization.id },
         data: updateData as never,
+      });
+
+      return ctx.prisma.aIIncidentTask.findFirst({
+        where: { id: input.taskId, organizationId: ctx.organization.id },
       });
     }),
 
@@ -340,9 +344,13 @@ export const incidentRouter = createTRPCRouter({
       if (input.status !== undefined) updateData.status = input.status;
       if (input.sentAt !== undefined) updateData.sentAt = new Date(input.sentAt);
 
-      return ctx.prisma.aIIncidentNotification.update({
-        where: { id: input.notificationId },
+      await ctx.prisma.aIIncidentNotification.updateMany({
+        where: { id: input.notificationId, organizationId: ctx.organization.id },
         data: updateData as never,
+      });
+
+      return ctx.prisma.aIIncidentNotification.findFirst({
+        where: { id: input.notificationId, organizationId: ctx.organization.id },
       });
     }),
 

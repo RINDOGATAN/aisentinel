@@ -259,7 +259,7 @@ export const vendorRouter = createTRPCRouter({
         },
       });
 
-      return ctx.prisma.aIVendor.findUnique({ where: { id } });
+      return ctx.prisma.aIVendor.findFirst({ where: { id, organizationId: ctx.organization.id } });
     }),
 
   delete: orgWriteProcedure

@@ -151,7 +151,7 @@ export const oversightRouter = createTRPCRouter({
         },
       });
 
-      return ctx.prisma.oversightGate.findUnique({ where: { id } });
+      return ctx.prisma.oversightGate.findFirst({ where: { id, organizationId: ctx.organization.id } });
     }),
 
   addDecision: orgWriteProcedure

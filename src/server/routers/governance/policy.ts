@@ -169,7 +169,7 @@ export const policyRouter = createTRPCRouter({
         },
       });
 
-      return ctx.prisma.aIPolicy.findUnique({ where: { id } });
+      return ctx.prisma.aIPolicy.findFirst({ where: { id, organizationId: ctx.organization.id } });
     }),
 
   publishVersion: orgWriteProcedure

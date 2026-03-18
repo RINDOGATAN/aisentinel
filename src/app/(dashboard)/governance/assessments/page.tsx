@@ -62,7 +62,7 @@ export default function AssessmentsPage() {
   const debouncedSearch = useDebounce(searchQuery);
   const { organization } = useOrganization();
 
-  const typeFilter = activeTab === "all" ? undefined : activeTab.toUpperCase();
+  const typeFilter = activeTab === "all" ? undefined : activeTab.toUpperCase() as "FRIA" | "CONFORMITY" | "AI_RISK" | "BIAS_FAIRNESS" | "CUSTOM";
 
   const { data: statsData, isLoading: statsLoading } = trpc.assessment.getStats.useQuery(
     { organizationId: organization?.id ?? "" },

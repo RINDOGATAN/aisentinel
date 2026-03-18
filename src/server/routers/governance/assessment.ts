@@ -9,8 +9,8 @@ export const assessmentRouter = createTRPCRouter({
       z.object({
         organizationId: z.string(),
         search: z.string().optional(),
-        type: z.string().optional(),
-        status: z.string().optional(),
+        type: z.enum(["FRIA", "CONFORMITY", "AI_RISK", "BIAS_FAIRNESS", "CUSTOM"]).optional(),
+        status: z.enum(["DRAFT", "IN_PROGRESS", "UNDER_REVIEW", "APPROVED", "REJECTED"]).optional(),
         cursor: z.string().optional(),
         limit: z.number().min(1).max(50).default(20),
       })
@@ -23,8 +23,8 @@ export const assessmentRouter = createTRPCRouter({
             { title: { contains: input.search, mode: "insensitive" as const } },
           ],
         }),
-        ...(input.type && { type: input.type as never }),
-        ...(input.status && { status: input.status as never }),
+        ...(input.type && { type: input.type }),
+        ...(input.status && { status: input.status }),
       };
 
       const items = await ctx.prisma.aIAssessment.findMany({
@@ -201,7 +201,7 @@ export const assessmentRouter = createTRPCRouter({
     }),
 
   listTemplates: organizationProcedure
-    .input(z.object({ organizationId: z.string(), type: z.string().optional() }))
+    .input(z.object({ organizationId: z.string(), type: z.enum(["FRIA", "CONFORMITY", "AI_RISK", "BIAS_FAIRNESS", "CUSTOM"]).optional() }))
     .query(async ({ ctx, input }) => {
       return ctx.prisma.aIAssessmentTemplate.findMany({
         where: {
@@ -209,7 +209,7 @@ export const assessmentRouter = createTRPCRouter({
             { organizationId: ctx.organization.id },
             { isSystem: true },
           ],
-          ...(input.type && { type: input.type as never }),
+          ...(input.type && { type: input.type }),
         },
         orderBy: { name: "asc" },
       });

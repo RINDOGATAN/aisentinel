@@ -8,8 +8,8 @@ export const policyRouter = createTRPCRouter({
       z.object({
         organizationId: z.string(),
         search: z.string().optional(),
-        type: z.string().optional(),
-        status: z.string().optional(),
+        type: z.enum(["AI_USAGE", "AI_GOVERNANCE", "AI_ETHICS", "AI_RISK_MANAGEMENT", "AI_DATA_GOVERNANCE", "AI_PROCUREMENT", "AI_INCIDENT_RESPONSE", "AI_TRANSPARENCY", "CUSTOM"]).optional(),
+        status: z.enum(["DRAFT", "UNDER_REVIEW", "APPROVED", "PUBLISHED", "ARCHIVED"]).optional(),
         cursor: z.string().optional(),
         limit: z.number().min(1).max(50).default(20),
       })
@@ -23,8 +23,8 @@ export const policyRouter = createTRPCRouter({
             { description: { contains: input.search, mode: "insensitive" as const } },
           ],
         }),
-        ...(input.type && { type: input.type as never }),
-        ...(input.status && { status: input.status as never }),
+        ...(input.type && { type: input.type }),
+        ...(input.status && { status: input.status }),
       };
 
       const items = await ctx.prisma.aIPolicy.findMany({
@@ -73,7 +73,7 @@ export const policyRouter = createTRPCRouter({
       z.object({
         organizationId: z.string(),
         title: z.string().min(1).max(300),
-        type: z.string(),
+        type: z.enum(["AI_USAGE", "AI_GOVERNANCE", "AI_ETHICS", "AI_RISK_MANAGEMENT", "AI_DATA_GOVERNANCE", "AI_PROCUREMENT", "AI_INCIDENT_RESPONSE", "AI_TRANSPARENCY", "CUSTOM"]),
         description: z.string().optional(),
         content: z.string().optional(),
         effectiveDate: z.string().optional(),
@@ -85,7 +85,7 @@ export const policyRouter = createTRPCRouter({
         data: {
           organizationId: ctx.organization.id,
           title: input.title,
-          type: input.type as never,
+          type: input.type,
           description: input.description,
           content: input.content,
           effectiveDate: input.effectiveDate ? new Date(input.effectiveDate) : undefined,
@@ -131,7 +131,7 @@ export const policyRouter = createTRPCRouter({
         content: z.string().nullable().optional(),
         effectiveDate: z.string().nullable().optional(),
         reviewDate: z.string().nullable().optional(),
-        status: z.string().optional(),
+        status: z.enum(["DRAFT", "UNDER_REVIEW", "APPROVED", "PUBLISHED", "ARCHIVED"]).optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {

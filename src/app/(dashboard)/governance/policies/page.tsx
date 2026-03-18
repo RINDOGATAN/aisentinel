@@ -42,7 +42,9 @@ const statusColors: Record<string, string> = {
   ARCHIVED: "border-muted-foreground/50 text-muted-foreground/50",
 };
 
-const tabTypeMap: Record<string, string | undefined> = {
+type PolicyTypeFilter = "AI_USAGE" | "AI_GOVERNANCE" | "AI_ETHICS" | "AI_RISK_MANAGEMENT" | "AI_DATA_GOVERNANCE" | "AI_PROCUREMENT" | "AI_INCIDENT_RESPONSE" | "AI_TRANSPARENCY" | "CUSTOM";
+
+const tabTypeMap: Record<string, PolicyTypeFilter | undefined> = {
   all: undefined,
   usage: "AI_USAGE",
   governance: "AI_GOVERNANCE",

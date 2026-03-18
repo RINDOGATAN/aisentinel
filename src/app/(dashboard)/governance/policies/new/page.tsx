@@ -20,6 +20,8 @@ import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 
+type PolicyType = "AI_USAGE" | "AI_GOVERNANCE" | "AI_ETHICS" | "AI_RISK_MANAGEMENT" | "AI_DATA_GOVERNANCE" | "AI_PROCUREMENT" | "AI_INCIDENT_RESPONSE" | "AI_TRANSPARENCY" | "CUSTOM";
+
 const policyTypes = [
   { value: "AI_USAGE", label: "AI Usage" },
   { value: "AI_GOVERNANCE", label: "AI Governance" },
@@ -37,7 +39,14 @@ export default function NewPolicyPage() {
   const { organization } = useOrganization();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    title: string;
+    type: PolicyType | "";
+    description: string;
+    content: string;
+    effectiveDate: string;
+    reviewDate: string;
+  }>({
     title: "",
     type: "",
     description: "",
@@ -70,7 +79,7 @@ export default function NewPolicyPage() {
     createPolicy.mutate({
       organizationId: organization.id,
       title: formData.title,
-      type: formData.type,
+      type: formData.type as PolicyType,
       description: formData.description || undefined,
       content: formData.content || undefined,
       effectiveDate: formData.effectiveDate || undefined,
@@ -122,7 +131,7 @@ export default function NewPolicyPage() {
               <Label htmlFor="type">Policy Type *</Label>
               <Select
                 value={formData.type}
-                onValueChange={(value) => setFormData({ ...formData, type: value })}
+                onValueChange={(value) => setFormData({ ...formData, type: value as PolicyType })}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select policy type" />

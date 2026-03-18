@@ -52,7 +52,9 @@ const statusLabels: Record<string, string> = {
   TERMINATED: "Terminated",
 };
 
-const tabToStatus: Record<string, string | undefined> = {
+type VendorStatusFilter = "ACTIVE" | "UNDER_REVIEW" | "APPROVED" | "SUSPENDED" | "TERMINATED";
+
+const tabToStatus: Record<string, VendorStatusFilter | undefined> = {
   all: undefined,
   active: "ACTIVE",
   under_review: "UNDER_REVIEW",

@@ -45,7 +45,7 @@ export default function OversightPage() {
   const debouncedSearch = useDebounce(searchQuery);
   const { organization } = useOrganization();
 
-  const gateTypeFilter = activeTab === "all" ? undefined : activeTab;
+  const gateTypeFilter = activeTab === "all" ? undefined : activeTab as "PRE_DEPLOYMENT" | "POST_DEPLOYMENT" | "PERIODIC_REVIEW" | "INCIDENT_TRIGGERED" | "MATERIAL_CHANGE";
 
   const { data: statsData, isLoading: statsLoading } = trpc.oversight.getStats.useQuery(
     { organizationId: organization?.id ?? "" },

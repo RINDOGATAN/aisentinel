@@ -21,6 +21,10 @@ import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 
+type AITechnique = "MACHINE_LEARNING" | "DEEP_LEARNING" | "GENERATIVE_AI" | "AGENTIC_AI" | "NLP" | "COMPUTER_VISION" | "SPEECH_RECOGNITION" | "ROBOTICS" | "RULE_BASED" | "EXPERT_SYSTEM" | "STATISTICAL" | "OTHER";
+type AISystemRole = "PROVIDER" | "DEPLOYER" | "IMPORTER" | "DISTRIBUTOR" | "USER";
+type AISystemStatus = "DRAFT" | "DEVELOPMENT" | "TESTING" | "DEPLOYED" | "RETIRED";
+
 const techniques = [
   { value: "MACHINE_LEARNING", label: "Machine Learning" },
   { value: "DEEP_LEARNING", label: "Deep Learning" },
@@ -57,7 +61,18 @@ export default function NewAISystemPage() {
   const { organization } = useOrganization();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    name: string;
+    description: string;
+    technique: AITechnique | "";
+    role: AISystemRole | "";
+    status: AISystemStatus;
+    purpose: string;
+    businessOwner: string;
+    technicalOwner: string;
+    processesPersonalData: boolean;
+    vendorId: string;
+  }>({
     name: "",
     description: "",
     technique: "",
@@ -101,8 +116,8 @@ export default function NewAISystemPage() {
       organizationId: organization.id,
       name: formData.name,
       description: formData.description || undefined,
-      technique: formData.technique,
-      role: formData.role,
+      technique: formData.technique as AITechnique,
+      role: formData.role as AISystemRole,
       status: formData.status,
       purpose: formData.purpose || undefined,
       businessOwner: formData.businessOwner || undefined,
@@ -155,7 +170,7 @@ export default function NewAISystemPage() {
                 <Label htmlFor="technique">AI Technique *</Label>
                 <Select
                   value={formData.technique}
-                  onValueChange={(value) => setFormData({ ...formData, technique: value })}
+                  onValueChange={(value) => setFormData({ ...formData, technique: value as AITechnique })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select technique" />
@@ -189,7 +204,7 @@ export default function NewAISystemPage() {
                 <Label htmlFor="role">Organization Role *</Label>
                 <Select
                   value={formData.role}
-                  onValueChange={(value) => setFormData({ ...formData, role: value })}
+                  onValueChange={(value) => setFormData({ ...formData, role: value as AISystemRole })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select role" />
@@ -210,7 +225,7 @@ export default function NewAISystemPage() {
                 <Label htmlFor="status">Lifecycle Status</Label>
                 <Select
                   value={formData.status}
-                  onValueChange={(value) => setFormData({ ...formData, status: value })}
+                  onValueChange={(value) => setFormData({ ...formData, status: value as AISystemStatus })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select status" />

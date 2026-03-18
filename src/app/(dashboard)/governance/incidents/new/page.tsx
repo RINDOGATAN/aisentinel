@@ -21,6 +21,9 @@ import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 
+type AIIncidentType = "HALLUCINATION" | "BIAS_DISCRIMINATION" | "MODEL_DRIFT" | "ADVERSARIAL_ATTACK" | "PROMPT_INJECTION" | "UNAUTHORIZED_ACCESS" | "SAFETY_FAILURE" | "PERFORMANCE_DEGRADATION" | "DATA_POISONING" | "PRIVACY_VIOLATION" | "OTHER";
+type AIIncidentSeverity = "CRITICAL" | "HIGH" | "MEDIUM" | "LOW";
+
 const incidentTypes = [
   { value: "HALLUCINATION", label: "Hallucination" },
   { value: "BIAS_DISCRIMINATION", label: "Bias/Discrimination" },
@@ -47,7 +50,15 @@ export default function NewIncidentPage() {
   const { organization } = useOrganization();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    title: string;
+    description: string;
+    type: AIIncidentType | "";
+    severity: AIIncidentSeverity | "";
+    aiSystemId: string;
+    notificationRequired: boolean;
+    dpoCentralIncidentId: string;
+  }>({
     title: "",
     description: "",
     type: "",
@@ -95,8 +106,8 @@ export default function NewIncidentPage() {
       organizationId: organization.id,
       title: formData.title,
       description: formData.description,
-      type: formData.type,
-      severity: formData.severity,
+      type: formData.type as AIIncidentType,
+      severity: formData.severity as AIIncidentSeverity,
       aiSystemId: formData.aiSystemId || undefined,
       notificationRequired: formData.notificationRequired,
       dpoCentralIncidentId: formData.dpoCentralIncidentId || undefined,
@@ -161,7 +172,7 @@ export default function NewIncidentPage() {
                 <Label htmlFor="type">Incident Type *</Label>
                 <Select
                   value={formData.type}
-                  onValueChange={(value) => setFormData({ ...formData, type: value })}
+                  onValueChange={(value) => setFormData({ ...formData, type: value as AIIncidentType })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select incident type" />
@@ -179,7 +190,7 @@ export default function NewIncidentPage() {
                 <Label htmlFor="severity">Severity *</Label>
                 <Select
                   value={formData.severity}
-                  onValueChange={(value) => setFormData({ ...formData, severity: value })}
+                  onValueChange={(value) => setFormData({ ...formData, severity: value as AIIncidentSeverity })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select severity" />

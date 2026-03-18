@@ -20,6 +20,8 @@ import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 
+type OversightGateType = "PRE_DEPLOYMENT" | "POST_DEPLOYMENT" | "PERIODIC_REVIEW" | "INCIDENT_TRIGGERED" | "MATERIAL_CHANGE";
+
 const gateTypes = [
   { value: "PRE_DEPLOYMENT", label: "Pre-Deployment" },
   { value: "POST_DEPLOYMENT", label: "Post-Deployment" },
@@ -33,7 +35,14 @@ export default function NewOversightGatePage() {
   const { organization } = useOrganization();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    aiSystemId: string;
+    gateType: OversightGateType | "";
+    description: string;
+    reviewCadence: string;
+    nextReviewDate: string;
+    assignedTo: string;
+  }>({
     aiSystemId: "",
     gateType: "",
     description: "",
@@ -73,7 +82,7 @@ export default function NewOversightGatePage() {
     createGate.mutate({
       organizationId: organization.id,
       aiSystemId: formData.aiSystemId,
-      gateType: formData.gateType,
+      gateType: formData.gateType as OversightGateType,
       description: formData.description || undefined,
       reviewCadence: formData.reviewCadence || undefined,
       nextReviewDate: formData.nextReviewDate || undefined,
@@ -140,7 +149,7 @@ export default function NewOversightGatePage() {
                 <Label htmlFor="gateType">Gate Type *</Label>
                 <Select
                   value={formData.gateType}
-                  onValueChange={(value) => setFormData({ ...formData, gateType: value })}
+                  onValueChange={(value) => setFormData({ ...formData, gateType: value as OversightGateType })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select gate type" />

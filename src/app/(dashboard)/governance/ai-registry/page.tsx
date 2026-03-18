@@ -79,7 +79,7 @@ export default function AIRegistryPage() {
   const debouncedSearch = useDebounce(searchQuery);
   const { organization } = useOrganization();
 
-  const statusFilter = activeTab === "all" ? undefined : activeTab.toUpperCase();
+  const statusFilter = activeTab === "all" ? undefined : activeTab.toUpperCase() as "DRAFT" | "DEVELOPMENT" | "TESTING" | "DEPLOYED" | "RETIRED";
 
   const { data: statsData, isLoading: statsLoading } = trpc.aiSystem.getStats.useQuery(
     { organizationId: organization?.id ?? "" },

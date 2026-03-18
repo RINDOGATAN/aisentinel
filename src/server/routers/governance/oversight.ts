@@ -8,8 +8,8 @@ export const oversightRouter = createTRPCRouter({
       z.object({
         organizationId: z.string(),
         search: z.string().optional(),
-        gateType: z.string().optional(),
-        status: z.string().optional(),
+        gateType: z.enum(["PRE_DEPLOYMENT", "POST_DEPLOYMENT", "PERIODIC_REVIEW", "INCIDENT_TRIGGERED", "MATERIAL_CHANGE"]).optional(),
+        status: z.enum(["PENDING", "IN_REVIEW", "PASSED", "FAILED", "DEFERRED"]).optional(),
         cursor: z.string().optional(),
         limit: z.number().min(1).max(50).default(20),
       })
@@ -24,8 +24,8 @@ export const oversightRouter = createTRPCRouter({
             { assignedTo: { contains: input.search, mode: "insensitive" as const } },
           ],
         }),
-        ...(input.gateType && { gateType: input.gateType as never }),
-        ...(input.status && { status: input.status as never }),
+        ...(input.gateType && { gateType: input.gateType }),
+        ...(input.status && { status: input.status }),
       };
 
       const items = await ctx.prisma.oversightGate.findMany({
@@ -73,7 +73,7 @@ export const oversightRouter = createTRPCRouter({
       z.object({
         organizationId: z.string(),
         aiSystemId: z.string(),
-        gateType: z.string(),
+        gateType: z.enum(["PRE_DEPLOYMENT", "POST_DEPLOYMENT", "PERIODIC_REVIEW", "INCIDENT_TRIGGERED", "MATERIAL_CHANGE"]),
         description: z.string().optional(),
         reviewCadence: z.string().optional(),
         nextReviewDate: z.string().optional(),
@@ -85,7 +85,7 @@ export const oversightRouter = createTRPCRouter({
         data: {
           organizationId: ctx.organization.id,
           aiSystemId: input.aiSystemId,
-          gateType: input.gateType as never,
+          gateType: input.gateType,
           description: input.description,
           reviewCadence: input.reviewCadence,
           nextReviewDate: input.nextReviewDate ? new Date(input.nextReviewDate) : undefined,
@@ -112,7 +112,7 @@ export const oversightRouter = createTRPCRouter({
       z.object({
         organizationId: z.string(),
         id: z.string(),
-        status: z.string().optional(),
+        status: z.enum(["PENDING", "IN_REVIEW", "PASSED", "FAILED", "DEFERRED"]).optional(),
         description: z.string().optional(),
         reviewCadence: z.string().optional(),
         nextReviewDate: z.string().nullable().optional(),

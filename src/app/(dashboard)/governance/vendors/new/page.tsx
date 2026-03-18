@@ -24,6 +24,9 @@ import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
 import { suggestTechniqueFromCapabilities } from "@/lib/ai-technique-mapping";
 
+type VendorRiskLevel = "CRITICAL" | "HIGH" | "MEDIUM" | "LOW";
+type VendorStatus = "ACTIVE" | "UNDER_REVIEW" | "APPROVED" | "SUSPENDED" | "TERMINATED";
+
 const aiTechniques = [
   { value: "MACHINE_LEARNING", label: "Machine Learning" },
   { value: "DEEP_LEARNING", label: "Deep Learning" },
@@ -96,7 +99,19 @@ function NewVendorForm() {
   const debouncedCatalogQuery = useDebounce(catalogQuery, 300);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    name: string;
+    website: string;
+    description: string;
+    contactName: string;
+    contactEmail: string;
+    riskLevel: VendorRiskLevel | "";
+    status: VendorStatus;
+    contractStartDate: string;
+    contractExpiryDate: string;
+    dpoCentralVendorId: string;
+    notes: string;
+  }>({
     name: "",
     website: "",
     description: "",
@@ -245,8 +260,8 @@ function NewVendorForm() {
       description: formData.description || undefined,
       contactName: formData.contactName || undefined,
       contactEmail: formData.contactEmail || undefined,
-      riskLevel: formData.riskLevel || undefined,
-      status: formData.status,
+      riskLevel: (formData.riskLevel || undefined) as VendorRiskLevel | undefined,
+      status: formData.status as VendorStatus,
       contractStartDate: formData.contractStartDate || undefined,
       contractExpiryDate: formData.contractExpiryDate || undefined,
       dpoCentralVendorId: formData.dpoCentralVendorId || undefined,
@@ -545,7 +560,7 @@ function NewVendorForm() {
                 <Label htmlFor="riskLevel">Risk Level</Label>
                 <Select
                   value={formData.riskLevel}
-                  onValueChange={(value) => setFormData({ ...formData, riskLevel: value })}
+                  onValueChange={(value) => setFormData({ ...formData, riskLevel: value as VendorRiskLevel })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select risk level" />
@@ -563,7 +578,7 @@ function NewVendorForm() {
                 <Label htmlFor="status">Status</Label>
                 <Select
                   value={formData.status}
-                  onValueChange={(value) => setFormData({ ...formData, status: value })}
+                  onValueChange={(value) => setFormData({ ...formData, status: value as VendorStatus })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select status" />

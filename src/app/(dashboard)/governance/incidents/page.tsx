@@ -52,7 +52,9 @@ const typeLabels: Record<string, string> = {
   OTHER: "Other",
 };
 
-const tabTypeMap: Record<string, string | undefined> = {
+type IncidentTypeFilter = "HALLUCINATION" | "BIAS_DISCRIMINATION" | "MODEL_DRIFT" | "ADVERSARIAL_ATTACK" | "PROMPT_INJECTION" | "UNAUTHORIZED_ACCESS" | "SAFETY_FAILURE" | "PERFORMANCE_DEGRADATION" | "DATA_POISONING" | "PRIVACY_VIOLATION" | "OTHER";
+
+const tabTypeMap: Record<string, IncidentTypeFilter | undefined> = {
   all: undefined,
   hallucination: "HALLUCINATION",
   bias: "BIAS_DISCRIMINATION",

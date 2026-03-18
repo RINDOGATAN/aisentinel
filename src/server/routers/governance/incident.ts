@@ -8,9 +8,9 @@ export const incidentRouter = createTRPCRouter({
       z.object({
         organizationId: z.string(),
         search: z.string().optional(),
-        type: z.string().optional(),
-        severity: z.string().optional(),
-        status: z.string().optional(),
+        type: z.enum(["HALLUCINATION", "BIAS_DISCRIMINATION", "MODEL_DRIFT", "ADVERSARIAL_ATTACK", "PROMPT_INJECTION", "UNAUTHORIZED_ACCESS", "SAFETY_FAILURE", "PERFORMANCE_DEGRADATION", "DATA_POISONING", "PRIVACY_VIOLATION", "OTHER"]).optional(),
+        severity: z.enum(["CRITICAL", "HIGH", "MEDIUM", "LOW"]).optional(),
+        status: z.enum(["REPORTED", "INVESTIGATING", "MITIGATING", "RESOLVED", "CLOSED"]).optional(),
         cursor: z.string().optional(),
         limit: z.number().min(1).max(50).default(20),
       })
@@ -24,9 +24,9 @@ export const incidentRouter = createTRPCRouter({
             { description: { contains: input.search, mode: "insensitive" as const } },
           ],
         }),
-        ...(input.type && { type: input.type as never }),
-        ...(input.severity && { severity: input.severity as never }),
-        ...(input.status && { status: input.status as never }),
+        ...(input.type && { type: input.type }),
+        ...(input.severity && { severity: input.severity }),
+        ...(input.status && { status: input.status }),
       };
 
       const items = await ctx.prisma.aIIncident.findMany({
@@ -76,8 +76,8 @@ export const incidentRouter = createTRPCRouter({
         aiSystemId: z.string().optional(),
         title: z.string().min(1).max(300),
         description: z.string().min(1),
-        type: z.string(),
-        severity: z.string(),
+        type: z.enum(["HALLUCINATION", "BIAS_DISCRIMINATION", "MODEL_DRIFT", "ADVERSARIAL_ATTACK", "PROMPT_INJECTION", "UNAUTHORIZED_ACCESS", "SAFETY_FAILURE", "PERFORMANCE_DEGRADATION", "DATA_POISONING", "PRIVACY_VIOLATION", "OTHER"]),
+        severity: z.enum(["CRITICAL", "HIGH", "MEDIUM", "LOW"]),
         notificationRequired: z.boolean().default(false),
         dpoCentralIncidentId: z.string().optional(),
       })
@@ -89,8 +89,8 @@ export const incidentRouter = createTRPCRouter({
           aiSystemId: input.aiSystemId || undefined,
           title: input.title,
           description: input.description,
-          type: input.type as never,
-          severity: input.severity as never,
+          type: input.type,
+          severity: input.severity,
           notificationRequired: input.notificationRequired,
           dpoCentralIncidentId: input.dpoCentralIncidentId,
           reportedBy: ctx.session.user.id,
@@ -127,11 +127,11 @@ export const incidentRouter = createTRPCRouter({
       z.object({
         organizationId: z.string(),
         id: z.string(),
-        status: z.string().optional(),
+        status: z.enum(["REPORTED", "INVESTIGATING", "MITIGATING", "RESOLVED", "CLOSED"]).optional(),
         rootCauseCategory: z.string().nullable().optional(),
         rootCauseDescription: z.string().nullable().optional(),
         impactDescription: z.string().nullable().optional(),
-        severity: z.string().optional(),
+        severity: z.enum(["CRITICAL", "HIGH", "MEDIUM", "LOW"]).optional(),
         notificationRequired: z.boolean().optional(),
       })
     )
@@ -254,7 +254,7 @@ export const incidentRouter = createTRPCRouter({
       z.object({
         organizationId: z.string(),
         taskId: z.string(),
-        status: z.string().optional(),
+        status: z.enum(["PENDING", "IN_PROGRESS", "COMPLETED"]).optional(),
         title: z.string().optional(),
         assignedTo: z.string().nullable().optional(),
         dueDate: z.string().nullable().optional(),
@@ -323,7 +323,7 @@ export const incidentRouter = createTRPCRouter({
       z.object({
         organizationId: z.string(),
         notificationId: z.string(),
-        status: z.string().optional(),
+        status: z.enum(["PENDING", "SENT", "ACKNOWLEDGED"]).optional(),
         sentAt: z.string().optional(),
       })
     )

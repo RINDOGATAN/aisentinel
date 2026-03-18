@@ -37,6 +37,10 @@ import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 
+type AIIncidentStatus = "REPORTED" | "INVESTIGATING" | "MITIGATING" | "RESOLVED" | "CLOSED";
+type AINotificationStatus = "PENDING" | "SENT" | "ACKNOWLEDGED";
+type AITaskStatus = "PENDING" | "IN_PROGRESS" | "COMPLETED";
+
 const severityColors: Record<string, string> = {
   CRITICAL: "bg-destructive text-destructive-foreground",
   HIGH: "bg-destructive/80 text-destructive-foreground",
@@ -267,7 +271,7 @@ export default function IncidentDetailPage() {
                 updateIncident.mutate({
                   organizationId: organization?.id ?? "",
                   id: incident.id,
-                  status: nextStatus,
+                  status: nextStatus as AIIncidentStatus,
                 })
               }
               disabled={updateIncident.isPending}
@@ -470,7 +474,7 @@ export default function IncidentDetailPage() {
                           updateTask.mutate({
                             organizationId: organization?.id ?? "",
                             taskId: task.id,
-                            status: task.status === "COMPLETED" ? "PENDING" : "COMPLETED",
+                            status: (task.status === "COMPLETED" ? "PENDING" : "COMPLETED") as AITaskStatus,
                           })
                         }
                         className="shrink-0"
@@ -591,7 +595,7 @@ export default function IncidentDetailPage() {
                                   updateNotification.mutate({
                                     organizationId: organization?.id ?? "",
                                     notificationId: notif.id,
-                                    status: "SENT",
+                                    status: "SENT" as AINotificationStatus,
                                     sentAt: new Date().toISOString(),
                                   })
                                 }

@@ -71,7 +71,7 @@ export const shadowAiRouter = createTRPCRouter({
       z.object({
         organizationId: z.string(),
         search: z.string().optional(),
-        status: z.string().optional(),
+        status: z.enum(["DISCOVERED", "UNDER_REVIEW", "APPROVED", "PROHIBITED", "REGISTERED"]).optional(),
         cursor: z.string().optional(),
         limit: z.number().min(1).max(50).default(20),
       })
@@ -165,7 +165,7 @@ export const shadowAiRouter = createTRPCRouter({
       z.object({
         organizationId: z.string(),
         id: z.string(),
-        status: z.string().optional(),
+        status: z.enum(["DISCOVERED", "UNDER_REVIEW", "APPROVED", "PROHIBITED", "REGISTERED"]).optional(),
         department: z.string().nullable().optional(),
         usageDescription: z.string().nullable().optional(),
         registeredSystemId: z.string().nullable().optional(),

@@ -42,7 +42,9 @@ const statusLabels: Record<string, string> = {
   REGISTERED: "Registered",
 };
 
-const tabToStatus: Record<string, string | undefined> = {
+type ShadowAIStatus = "DISCOVERED" | "UNDER_REVIEW" | "APPROVED" | "PROHIBITED" | "REGISTERED";
+
+const tabToStatus: Record<string, ShadowAIStatus | undefined> = {
   all: undefined,
   discovered: "DISCOVERED",
   under_review: "UNDER_REVIEW",

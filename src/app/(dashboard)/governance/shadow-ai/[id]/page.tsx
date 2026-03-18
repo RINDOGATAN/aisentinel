@@ -183,7 +183,9 @@ export default function ShadowAIDetailPage() {
     },
   });
 
-  const handleStatusChange = (newStatus: string) => {
+  type ShadowAIStatus = "DISCOVERED" | "UNDER_REVIEW" | "APPROVED" | "PROHIBITED" | "REGISTERED";
+
+  const handleStatusChange = (newStatus: ShadowAIStatus) => {
     if (!organization?.id) return;
 
     if (newStatus === "REGISTERED") {
@@ -263,7 +265,7 @@ export default function ShadowAIDetailPage() {
   }
 
   // Determine available transitions
-  const transitions: { label: string; status: string; variant: "default" | "outline" | "destructive" }[] = [];
+  const transitions: { label: string; status: ShadowAIStatus; variant: "default" | "outline" | "destructive" }[] = [];
   if (report.status === "DISCOVERED") {
     transitions.push({ label: "Start Review", status: "UNDER_REVIEW", variant: "default" });
   } else if (report.status === "UNDER_REVIEW") {

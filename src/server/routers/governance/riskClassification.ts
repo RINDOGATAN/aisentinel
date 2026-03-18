@@ -8,7 +8,7 @@ export const riskClassificationRouter = createTRPCRouter({
       z.object({
         organizationId: z.string(),
         search: z.string().optional(),
-        riskLevel: z.string().optional(),
+        riskLevel: z.enum(["UNACCEPTABLE", "HIGH", "LIMITED", "MINIMAL"]).optional(),
       })
     )
     .query(async ({ ctx, input }) => {

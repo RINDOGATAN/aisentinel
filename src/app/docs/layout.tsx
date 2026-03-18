@@ -18,6 +18,7 @@ import {
   BookMarked,
   FileCheck,
   Activity,
+  Shield,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -35,6 +36,7 @@ const sidebarItems = [
   { href: "/docs/vendor-catalog", label: "AI Vendor Catalog", icon: BookMarked, premium: true },
   { href: "/docs/conformity-assessment", label: "Conformity Assessment", icon: FileCheck, premium: true },
   { href: "/docs/bias-fairness", label: "Bias & Fairness", icon: Activity, premium: true },
+  { href: "/docs/security", label: "Security & Trust", icon: Shield },
 ];
 
 export default function DocsLayout({ children }: { children: React.ReactNode }) {
@@ -163,6 +165,13 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
               className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors"
             >
               How It Works
+            </Link>
+            <span className="text-border">&middot;</span>
+            <Link
+              href="/docs/security"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors"
+            >
+              Security
             </Link>
           </div>
         </div>

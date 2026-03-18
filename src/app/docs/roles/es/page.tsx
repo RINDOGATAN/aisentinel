@@ -53,11 +53,11 @@ const roles = [
     color: "text-emerald-400",
     bg: "bg-emerald-400/10",
     border: "border-emerald-400/20",
-    summary: "Autoridad de gobernanza. Aprueba evaluaciones, publica pol\u00edticas y toma decisiones de supervisi\u00f3n.",
+    summary: "Autoridad de gobernanza. Aprueba evaluaciones, publica pol\u00edticas y decide en los puntos de control.",
     capabilities: [
       "Aprobar o rechazar evaluaciones",
       "Publicar versiones de pol\u00edticas",
-      "Tomar decisiones en puertas de supervisi\u00f3n",
+      "Tomar decisiones en puntos de control",
       "Aprobar pol\u00edticas",
       "Todas las capacidades de Miembro",
     ],
@@ -74,7 +74,7 @@ const roles = [
       "Registrar sistemas de IA",
       "Crear evaluaciones y enviarlas para revisi\u00f3n",
       "Informar de incidentes",
-      "Crear puertas de supervisi\u00f3n",
+      "Crear puntos de control",
       "Gestionar proveedores y pol\u00edticas",
       "Informar sobre uso de Shadow AI",
     ],
@@ -92,7 +92,7 @@ const roles = [
       "Consultar el registro de IA y clasificaciones de riesgo",
       "Ver evaluaciones, incidentes y pol\u00edticas",
       "Acceder a los informes de cumplimiento normativo",
-      "Ver informaci\u00f3n de proveedores y supervisi\u00f3n",
+      "Ver informaci\u00f3n de proveedores y puntos de control",
     ],
   },
 ];
@@ -103,7 +103,7 @@ const permissionMatrix = [
   { action: "Eliminar registros", OWNER: true, ADMIN: true, AI_OFFICER: true, MEMBER: true, VIEWER: false },
   { action: "Aprobar evaluaciones", OWNER: true, ADMIN: true, AI_OFFICER: true, MEMBER: false, VIEWER: false },
   { action: "Publicar pol\u00edticas", OWNER: true, ADMIN: true, AI_OFFICER: true, MEMBER: false, VIEWER: false },
-  { action: "Tomar decisiones de supervisi\u00f3n", OWNER: true, ADMIN: true, AI_OFFICER: true, MEMBER: false, VIEWER: false },
+  { action: "Decidir en puntos de control", OWNER: true, ADMIN: true, AI_OFFICER: true, MEMBER: false, VIEWER: false },
   { action: "Invitar y eliminar miembros", OWNER: true, ADMIN: true, AI_OFFICER: false, MEMBER: false, VIEWER: false },
   { action: "Cambiar roles de miembros", OWNER: true, ADMIN: false, AI_OFFICER: false, MEMBER: false, VIEWER: false },
   { action: "Gestionar facturaci\u00f3n", OWNER: true, ADMIN: false, AI_OFFICER: false, MEMBER: false, VIEWER: false },
@@ -263,7 +263,7 @@ export default function RolesDocsPageES() {
             <h3 className="font-semibold mb-2">Cambios de rol</h3>
             <p className="text-sm text-muted-foreground">
               Solo el Propietario de la organizaci&oacute;n puede cambiar los roles de los miembros.
-              Todos los cambios de rol quedan registrados en la pista de auditor&iacute;a.
+              Todos los cambios de rol quedan registrados en el registro de auditor&iacute;a.
             </p>
           </div>
         </div>

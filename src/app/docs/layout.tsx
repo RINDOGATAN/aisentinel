@@ -19,6 +19,7 @@ import {
   FileCheck,
   Activity,
   Shield,
+  Users,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -36,6 +37,7 @@ const sidebarItems = [
   { href: "/docs/vendor-catalog", label: "AI Vendor Catalog", icon: BookMarked, premium: true },
   { href: "/docs/conformity-assessment", label: "Conformity Assessment", icon: FileCheck, premium: true },
   { href: "/docs/bias-fairness", label: "Bias & Fairness", icon: Activity, premium: true },
+  { href: "/docs/roles", label: "Roles & Permissions", icon: Users },
   { href: "/docs/security", label: "Security & Trust", icon: Shield },
 ];
 

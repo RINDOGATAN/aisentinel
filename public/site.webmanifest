@@ -1,0 +1,21 @@
+{
+  "name": "AI SENTINEL",
+  "short_name": "AI Sentinel",
+  "description": "AI Governance Made Accountable",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a1a1a",
+  "theme_color": "#f5a623",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "32x32",
+      "type": "image/x-icon"
+    }
+  ]
+}

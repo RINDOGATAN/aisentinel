@@ -1,0 +1,239 @@
+# AI SENTINEL — Complete Reference
+
+> AI Governance Made Accountable
+
+AI SENTINEL by TODO.LAW is an open-core AI governance platform for organizations managing AI systems under the EU AI Act, NIST AI RMF, and ISO 42001. It provides a complete toolkit for AI system inventory, risk classification, compliance mapping, human oversight, incident management, and policy governance.
+
+Production: https://aisentinel.todo.law
+Documentation: https://aisentinel.todo.law/docs
+License: AGPL-3.0 (core) + proprietary premium add-ons
+Parent brand: TODO.LAW (https://todo.law)
+
+---
+
+## Core Modules (Open Source — AGPL-3.0)
+
+### AI Registry
+URL: https://aisentinel.todo.law/docs/ai-registry
+
+Maintain a comprehensive inventory of all AI systems, models, and agents across your organization. Each AI system record includes identity (name, description, version, purpose), ownership (department, responsible person), data sources and processing details, and full lifecycle tracking.
+
+**Lifecycle stages:** Draft → Development → Testing → Deployed → Retired
+
+**EU AI Act roles supported:** Provider, Deployer, Importer, Distributor, User
+
+**How it works:**
+1. Register a new AI system with name, description, and purpose
+2. Assign the EU AI Act role your organization plays
+3. Document AI models, training data, and processing activities
+4. Track the system through its lifecycle stages
+5. Link to risk classifications, assessments, and compliance mappings
+
+### Risk Classification
+URL: https://aisentinel.todo.law/docs/risk-classification
+
+Classify AI systems according to the EU AI Act's four-tier risk framework. Includes an Annex III high-risk category wizard and maintains a full classification history with audit trail.
+
+**Risk tiers:**
+- **Unacceptable Risk** — Prohibited AI practices (social scoring, real-time biometric identification in public spaces, manipulation of vulnerable groups, emotion recognition in workplace/education)
+- **High Risk** — AI in critical areas requiring strict compliance (biometrics, critical infrastructure, education, employment, essential services, law enforcement, migration, justice)
+- **Limited Risk** — AI with transparency obligations (chatbots, emotion recognition, deepfakes, AI-generated content)
+- **Minimal Risk** — Low-risk AI with no specific EU AI Act obligations (spam filters, AI-enhanced games, inventory management)
+
+**Annex III high-risk categories:** Biometric identification, Critical infrastructure management, Education and vocational training, Employment and worker management, Essential private and public services, Law enforcement, Migration and border control, Administration of justice
+
+### Assessments
+URL: https://aisentinel.todo.law/docs/assessments
+
+Conduct structured assessments of AI systems using built-in templates or custom questionnaires. Supports approval workflows and risk scoring.
+
+**Assessment templates:**
+- **FRIA (Fundamental Rights Impact Assessment)** — 22 questions covering rights to dignity, non-discrimination, privacy, freedom of expression, access to justice, and more. Required for high-risk AI systems under the EU AI Act.
+- **AI Risk Assessment** — 18 questions evaluating technical risks, data quality, security, transparency, and human oversight.
+- **Custom Assessment** — 6 baseline questions with the ability to add custom questions tailored to your organization.
+- **Conformity Assessment** (Premium) — 25 questions aligned with Art. 43 EU AI Act requirements across 9 evaluation areas.
+- **Bias & Fairness Assessment** (Premium) — 24 questions covering protected attributes, data representativeness, fairness metrics, proxy detection, mitigation measures, and monitoring.
+
+**Approval workflow:** Draft → In Progress → Under Review → Approved
+
+**Risk scoring levels:** Low, Medium, High, Critical
+
+### Compliance Mapping
+URL: https://aisentinel.todo.law/docs/compliance
+
+Map AI systems to regulatory requirements across three major frameworks. Track compliance status per requirement, attach evidence, and generate compliance snapshots.
+
+**Supported frameworks:**
+- **EU AI Act** — European Union's comprehensive AI regulation with requirements for risk management, data governance, transparency, human oversight, accuracy, and robustness
+- **NIST AI RMF** — U.S. National Institute of Standards and Technology AI Risk Management Framework with Govern, Map, Measure, and Manage functions
+- **ISO 42001** — International standard for AI Management Systems covering leadership, planning, support, operation, and performance evaluation
+
+**Cross-framework mappings:** 41 pre-seeded mappings linking equivalent and related requirements across all three frameworks (28 equivalent, 12 partial, 1 related). When you update compliance status for one framework requirement, related requirements in other frameworks are automatically flagged for review.
+
+**Compliance statuses:** Compliant, Partially Compliant, Non-Compliant, Not Applicable, Not Assessed
+
+**Features:** Compliance matrix view, evidence attachment, CSV and PDF export, auto-generated compliance snapshots, cross-framework propagation
+
+### Human Oversight
+URL: https://aisentinel.todo.law/docs/oversight
+
+Implement human-in-the-loop controls for AI systems as required by EU AI Act Article 14. Create approval gates at critical points in the AI lifecycle and log all oversight decisions.
+
+**Gate types:**
+- **Pre-deployment** — Review and approve before an AI system goes live
+- **Post-deployment** — Monitor and review after deployment
+- **Periodic Review** — Scheduled recurring reviews
+- **Incident-triggered** — Automatic review triggered by AI incidents
+- **Material Change** — Review required when significant changes are made
+
+**Decision options:** Approve, Reject, Defer (with rationale and conditions)
+
+### AI Incidents
+URL: https://aisentinel.todo.law/docs/incidents
+
+Report, track, and manage AI-specific incidents with structured workflows, severity classification, and regulatory notification support.
+
+**Incident types:** Hallucination, Bias/Discrimination, Model Drift, Adversarial Attack, Prompt Injection, Unauthorized Access, Safety Failure, Performance Degradation, Data Poisoning, Privacy Violation
+
+**Severity levels:** Low, Medium, High, Critical
+
+**Incident lifecycle:** Reported → Investigating → Mitigating → Resolved → Closed
+
+**Features:**
+- Timeline tracking with timestamped events
+- Task assignment and tracking
+- Art. 62 authority notification support (EU AI Act serious incident reporting)
+- Link to related AI systems and oversight gates
+- Optional link to DPO Central incidents for privacy-related AI failures
+
+### Vendor Risk
+URL: https://aisentinel.todo.law/docs/vendors
+
+Manage third-party AI vendors with risk assessments, contract tracking, and status workflows. Essential for organizations using external AI services that must comply with EU AI Act supply chain obligations.
+
+**Vendor risk levels:** Critical, High, Medium, Low
+
+**Vendor status workflow:** Under Review → Active → Approved → Suspended → Terminated
+
+**Vendor record includes:** Company details, risk and compliance information, contract details (start/end dates, renewal), vendor-specific assessments
+
+### Policy Management
+URL: https://aisentinel.todo.law/docs/policies
+
+Create, version, and manage AI governance policies with approval workflows and system linking.
+
+**Policy types:** AI Usage, AI Governance, AI Ethics, AI Risk Management, AI Data Governance, AI Procurement, AI Incident Response, AI Transparency, Custom
+
+**Policy status workflow:** Draft → Under Review → Approved → Published → Archived
+
+**Features:** Version history tracking, link policies to specific AI systems, approval workflow with reviewer assignment
+
+---
+
+## Premium Modules (€9/mo each)
+
+### Shadow AI Discovery
+URL: https://aisentinel.todo.law/docs/shadow-ai
+
+Identify and govern unauthorized AI tool usage across your organization. Shadow AI — AI tools adopted by employees without IT or compliance approval — affects an estimated 60% of organizations. This module provides visibility and a governance path.
+
+**Built-in catalog:** 36 AI tools across 8 categories:
+- LLM Chat (ChatGPT, Claude, Gemini, etc.)
+- Code Assistants (GitHub Copilot, Cursor, etc.)
+- Image Generation (Midjourney, DALL-E, Stable Diffusion, etc.)
+- Video & Audio (Synthesia, ElevenLabs, etc.)
+- Writing & Content (Jasper, Copy.ai, etc.)
+- Business Tools (Notion AI, Otter.ai, etc.)
+- Data & Analytics (obviously.ai, etc.)
+- Search (Perplexity, You.com, etc.)
+
+**Workflow:** Employee self-report → Triage (Under Review) → Approve or Prohibit → Register in AI Registry
+
+**Status lifecycle:** Discovered → Under Review → Approved → Prohibited → Registered
+
+**Difference from Vendor Risk:** Shadow AI Discovery focuses on tools adopted bottom-up by employees without approval. Vendor Risk manages formally procured AI vendors with contracts and SLAs.
+
+### AI Vendor Catalog
+URL: https://aisentinel.todo.law/docs/vendor-catalog
+
+Access a pre-audited catalog of 665+ AI vendors powered by Vendor.Watch. Each vendor profile includes AI model information, data and privacy practices, compliance certifications, and governance metadata.
+
+**Vendor profile includes:**
+- Identity (name, description, website, category)
+- AI Model Information (model names, training data sources, fine-tuning capabilities)
+- Data & Privacy (data retention, processing locations, sub-processors, DPA availability, DPA compliance score)
+- Compliance & Certifications (SOC 2, ISO 27001, GDPR, HIPAA, etc.)
+- Governance Metadata (AI ethics policy, bias testing, model cards, audit trail)
+
+**Workflow:** Browse/Search catalog → Review vendor profile → Inform procurement decision → Automatic sync to Vendor Risk module
+
+**Difference from Vendor Risk:** The Vendor Catalog is a reference database of pre-audited vendors. Vendor Risk tracks your organization's actual vendor relationships, contracts, and assessments.
+
+### Conformity Assessment
+URL: https://aisentinel.todo.law/docs/conformity-assessment
+
+Conduct EU AI Act Article 43 conformity assessments for high-risk AI systems. Provides a structured 25-question template across 9 evaluation areas.
+
+**Evaluation areas:**
+1. Risk Management System
+2. Data Governance
+3. Technical Documentation
+4. Record-keeping
+5. Transparency
+6. Human Oversight
+7. Accuracy, Robustness & Cybersecurity
+8. Quality Management
+9. Post-market Monitoring
+
+**Who needs it:** Providers of high-risk AI systems, Deployers of Annex III systems, Organizations seeking to demonstrate EU AI Act compliance
+
+### Bias & Fairness Assessment
+URL: https://aisentinel.todo.law/docs/bias-fairness
+
+Evaluate AI systems for bias and fairness across protected characteristics. Provides a structured 24-question template covering 6 evaluation areas.
+
+**Evaluation areas:**
+1. Protected Attributes — Identify which characteristics the AI system may affect (age, gender, ethnicity, disability, etc.)
+2. Data Representativeness — Assess whether training data adequately represents affected populations
+3. Fairness Metrics — Define and measure fairness using demographic parity, equalized odds, or other metrics
+4. Proxy Detection — Identify features that may serve as proxies for protected attributes
+5. Mitigation Measures — Document bias mitigation strategies applied during development and deployment
+6. Monitoring Plan — Establish ongoing monitoring for bias drift and fairness degradation
+
+**Types of AI bias covered:** Training data bias, Selection bias, Measurement bias, Aggregation bias, Deployment bias
+
+---
+
+## Platform Architecture
+
+- **Multi-tenant SaaS** — All data is organization-scoped with strict tenant isolation
+- **Role-based access control** — Owner > Admin > AI Officer > Member > Viewer
+- **Authentication** — Google OAuth and email magic links
+- **Tech stack** — Next.js, tRPC, Prisma, PostgreSQL
+- **Licensing** — Open-core model: AGPL-3.0 core + proprietary premium modules
+
+## Regulatory Coverage
+
+AI SENTINEL helps organizations comply with:
+
+- **EU AI Act (Regulation 2024/1689)** — The European Union's comprehensive AI regulation. AI SENTINEL covers risk classification (Art. 6-7), conformity assessment (Art. 43), fundamental rights impact assessment (Art. 27), human oversight (Art. 14), incident reporting (Art. 62), transparency obligations, and technical documentation requirements.
+- **NIST AI RMF 1.0** — The U.S. framework for managing AI risks across four functions: Govern, Map, Measure, and Manage. AI SENTINEL maps NIST controls to platform features and cross-references them with EU AI Act and ISO 42001 requirements.
+- **ISO 42001:2023** — The international standard for AI Management Systems. AI SENTINEL maps ISO 42001 clauses to platform capabilities including leadership commitment, risk assessment, operational controls, and performance evaluation.
+
+## Integration with DPO Central
+
+AI SENTINEL integrates with DPO Central (https://dpocentral.todo.law), TODO.LAW's privacy program management platform, through optional reference ID fields:
+- Link AI systems to DPO Central data assets
+- Link AI systems to DPO Central vendors
+- Link AI incidents to DPO Central privacy incidents
+
+Both platforms are part of the TODO.LAW compliance ecosystem.
+
+---
+
+## Contact & Links
+
+- Website: https://aisentinel.todo.law
+- Documentation: https://aisentinel.todo.law/docs
+- Parent brand: https://todo.law
+- Sister product: https://dpocentral.todo.law (Privacy/GDPR)

@@ -23,3 +23,7 @@ User-agent: Bytespider
 Disallow: /
 
 Sitemap: https://aisentinel.todo.law/sitemap.xml
+
+# LLM context files — see https://llmstxt.org
+# llms.txt: concise overview for AI assistants
+# llms-full.txt: detailed reference with all modules and features

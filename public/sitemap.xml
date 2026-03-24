@@ -41,7 +41,7 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://aisentinel.todo.law/docs/vendor-risk</loc>
+    <loc>https://aisentinel.todo.law/docs/vendors</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -71,9 +71,9 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://aisentinel.todo.law/docs/licensing</loc>
+    <loc>https://aisentinel.todo.law/llms.txt</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.3</priority>
   </url>
   <url>
     <loc>https://aisentinel.todo.law/docs/security</loc>

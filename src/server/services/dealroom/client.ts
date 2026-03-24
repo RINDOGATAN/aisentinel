@@ -89,30 +89,35 @@ export async function searchExperts(
     return filterMockExperts(params);
   }
 
-  const res = await fetch(`${DEALROOM_API_URL}/api/v1/experts/search`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${DEALROOM_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      query: params.query,
-      specialization: params.specialization,
-      country: params.country,
-      language: params.language,
-      expertType: params.expertType,
-      limit: params.limit ?? 20,
-      offset: params.offset ?? 0,
-    }),
-    next: { revalidate: 300 }, // 5-minute cache
-  });
+  try {
+    const res = await fetch(`${DEALROOM_API_URL}/api/v1/experts/search`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${DEALROOM_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        query: params.query,
+        specialization: params.specialization,
+        country: params.country,
+        language: params.language,
+        expertType: params.expertType,
+        limit: params.limit ?? 20,
+        offset: params.offset ?? 0,
+      }),
+      next: { revalidate: 300 }, // 5-minute cache
+    });
 
-  if (!res.ok) {
-    console.error("Dealroom search failed:", res.status);
-    return filterMockExperts(params); // Fallback to mock
+    if (!res.ok) {
+      console.error("Dealroom search failed:", res.status);
+      return filterMockExperts(params);
+    }
+
+    return res.json();
+  } catch (err) {
+    console.error("Dealroom search error:", err);
+    return filterMockExperts(params);
   }
-
-  return res.json();
 }
 
 export async function getExpertById(
@@ -122,18 +127,23 @@ export async function getExpertById(
     return mockExperts.find((e) => e.id === id) ?? null;
   }
 
-  const res = await fetch(`${DEALROOM_API_URL}/api/v1/experts/${id}`, {
-    headers: {
-      Authorization: `Bearer ${DEALROOM_API_KEY}`,
-    },
-    next: { revalidate: 3600 }, // 1-hour cache
-  });
+  try {
+    const res = await fetch(`${DEALROOM_API_URL}/api/v1/experts/${id}`, {
+      headers: {
+        Authorization: `Bearer ${DEALROOM_API_KEY}`,
+      },
+      next: { revalidate: 3600 }, // 1-hour cache
+    });
 
-  if (!res.ok) {
+    if (!res.ok) {
+      return mockExperts.find((e) => e.id === id) ?? null;
+    }
+
+    return res.json();
+  } catch (err) {
+    console.error("Dealroom getExpertById error:", err);
     return mockExperts.find((e) => e.id === id) ?? null;
   }
-
-  return res.json();
 }
 
 // --- Filter data (fetched from Dealroom API or mock fallback) ---

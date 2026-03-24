@@ -136,47 +136,96 @@ export async function getExpertById(
   return res.json();
 }
 
-export function getSpecializations(): string[] {
-  return specializations;
+// --- Filter data (fetched from Dealroom API or mock fallback) ---
+
+interface RemoteFilters {
+  specializations: string[];
+  countries: string[];
+  languages: string[];
+  expertTypes: string[];
 }
 
-export function getCountries(): { code: string; name: string }[] {
-  if (useMock) {
-    const codes = [
-      ...new Set(
-        mockExperts
-          .map((e) => e.location.country)
-          .filter((c): c is string => c != null)
-      ),
-    ].sort();
-    return codes.map((code) => ({
-      code,
-      name: countryNames[code] ?? code,
+async function fetchRemoteFilters(): Promise<RemoteFilters | null> {
+  if (useMock) return null;
+
+  try {
+    const res = await fetch(`${DEALROOM_API_URL}/api/v1/experts/filters`, {
+      headers: {
+        Authorization: `Bearer ${DEALROOM_API_KEY}`,
+      },
+      next: { revalidate: 300 }, // 5-minute cache
+    });
+
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
+}
+
+export async function getSpecializations(): Promise<string[]> {
+  const remote = await fetchRemoteFilters();
+  return remote?.specializations ?? specializations;
+}
+
+export async function getCountries(): Promise<{ code: string; name: string }[]> {
+  const remote = await fetchRemoteFilters();
+
+  if (remote) {
+    return remote.countries
+      .map((code) => ({ code, name: countryNames[code] ?? code }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  // Mock fallback
+  const codes = [
+    ...new Set(
+      mockExperts
+        .map((e) => e.location.country)
+        .filter((c): c is string => c != null)
+    ),
+  ].sort();
+  return codes.map((code) => ({
+    code,
+    name: countryNames[code] ?? code,
+  }));
+}
+
+export async function getLanguages(): Promise<{ code: string; name: string }[]> {
+  const remote = await fetchRemoteFilters();
+
+  if (remote) {
+    return remote.languages
+      .map((code) => ({ code, name: languageNames[code] ?? code }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  // Mock fallback
+  const codes = [
+    ...new Set(mockExperts.flatMap((e) => e.languages)),
+  ].sort();
+  return codes.map((code) => ({
+    code,
+    name: languageNames[code] ?? code,
+  }));
+}
+
+export async function getExpertTypes() {
+  const remote = await fetchRemoteFilters();
+
+  if (remote) {
+    const typeLabels: Record<string, string> = {
+      legal: "Legal",
+      technical: "Technical",
+      deployment: "Deployment",
+    };
+    return remote.expertTypes.map((value) => ({
+      value,
+      label: typeLabels[value] ?? value,
     }));
   }
-  // When using real API, return all known countries
-  return Object.entries(countryNames)
-    .map(([code, name]) => ({ code, name }))
-    .sort((a, b) => a.name.localeCompare(b.name));
-}
 
-export function getLanguages(): { code: string; name: string }[] {
-  if (useMock) {
-    const codes = [
-      ...new Set(mockExperts.flatMap((e) => e.languages)),
-    ].sort();
-    return codes.map((code) => ({
-      code,
-      name: languageNames[code] ?? code,
-    }));
-  }
-  return Object.entries(languageNames)
-    .map(([code, name]) => ({ code, name }))
-    .sort((a, b) => a.name.localeCompare(b.name));
-}
-
-export function getExpertTypes() {
-  return expertTypes;
+  return [...expertTypes];
 }
 
 // --- Expert contact requests (Dealroom API v1) ---

@@ -36,12 +36,14 @@ export const expertsRouter = createTRPCRouter({
     }),
 
   listFilters: protectedProcedure.query(async () => {
-    return {
-      specializations: getSpecializations(),
-      countries: getCountries(),
-      languages: getLanguages(),
-      expertTypes: getExpertTypes(),
-    };
+    const [specializations, countries, languages, expertTypes] =
+      await Promise.all([
+        getSpecializations(),
+        getCountries(),
+        getLanguages(),
+        getExpertTypes(),
+      ]);
+    return { specializations, countries, languages, expertTypes };
   }),
 
   contact: protectedProcedure

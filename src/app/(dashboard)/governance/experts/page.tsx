@@ -54,7 +54,9 @@ export default function ExpertsPage() {
 
   if (!features.expertDirectoryEnabled) return null;
 
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(
+    searchParams.get("query") ?? ""
+  );
   const [specialization, setSpecialization] = useState<string>(
     searchParams.get("specialization") ?? ""
   );

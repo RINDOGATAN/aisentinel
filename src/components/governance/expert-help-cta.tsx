@@ -30,10 +30,10 @@ const contextBodies: Record<CtaContext, string> = {
   quickstart: "Connect with an EU AI Act expert who can help you understand your obligations and build a compliance roadmap.",
 };
 
-const contextFilters: Partial<Record<CtaContext, string>> = {
-  assessment: "Conformity Assessment",
-  incident: "AI Incident Response",
-  "high-risk": "AI Risk Management",
+const contextQueries: Partial<Record<CtaContext, string>> = {
+  assessment: "conformity assessment",
+  incident: "incident response",
+  "high-risk": "AI risk management",
   quickstart: "EU AI Act",
 };
 
@@ -42,9 +42,9 @@ export function ExpertHelpCta({ context }: { context: CtaContext }) {
 
   if (!isBusinessUser || !features.expertDirectoryEnabled) return null;
 
-  const filter = contextFilters[context];
-  const href = filter
-    ? `/governance/experts?specialization=${encodeURIComponent(filter)}`
+  const query = contextQueries[context];
+  const href = query
+    ? `/governance/experts?query=${encodeURIComponent(query)}`
     : "/governance/experts";
 
   return (

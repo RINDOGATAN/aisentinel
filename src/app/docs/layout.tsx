@@ -57,11 +57,9 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
             >
               {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
-            <Link href="/" className="flex items-center">
-              <span className="text-lg font-bold tracking-tight text-muted-foreground">
-                TODO.LAW<sup className="text-xs align-super">™</sup>
-              </span>
-              <span className="text-lg font-bold tracking-tight ml-2">AI SENTINEL</span>
+            <Link href="/" className="flex items-center gap-2">
+              <img src="/logo-negative.svg" alt="TODO.LAW" style={{ height: "28px", width: "auto" }} />
+              <span className="text-lg tracking-tight" style={{ fontFamily: "var(--font-jost), 'Jost', sans-serif", fontWeight: 600 }}>AI SENTINEL</span>
             </Link>
           </div>
           <nav className="flex items-center gap-4">

@@ -48,7 +48,7 @@ export default function CrossLoginPage() {
     <div className="w-full max-w-md">
       <div className="card-brutal text-center">
         <div className="text-center mb-6">
-          <h1 className="text-3xl font-display mb-4 text-white uppercase tracking-wide">
+          <h1 className="text-3xl mb-4 text-white uppercase tracking-wide" style={{ fontFamily: "var(--font-jost), 'Jost', sans-serif", fontWeight: 600 }}>
             AI SENTINEL
           </h1>
         </div>

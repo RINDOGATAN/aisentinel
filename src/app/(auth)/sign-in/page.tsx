@@ -99,7 +99,7 @@ export default function SignInPage() {
     <div className="w-full max-w-md">
       <div className="card-brutal">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-display mb-4 text-white uppercase tracking-wide">AI SENTINEL</h1>
+          <h1 className="text-3xl mb-4 text-white uppercase tracking-wide" style={{ fontFamily: "var(--font-jost), 'Jost', sans-serif", fontWeight: 600 }}>AI SENTINEL</h1>
           <p className="text-muted-foreground text-sm">Cross-border AI Governance</p>
         </div>
 

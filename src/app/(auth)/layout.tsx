@@ -11,8 +11,9 @@ export default function AuthLayout({
     <div className="min-h-screen bg-background flex flex-col">
       <header className="border-b border-border">
         <div className="container mx-auto px-6 py-4">
-          <Link href="/" className="text-lg font-bold tracking-tight text-foreground">
-            TODO.LAW<sup className="text-xs align-super">™</sup> <span className="text-muted-foreground">AI SENTINEL</span>
+          <Link href="/" className="flex items-center gap-2">
+            <img src="/logo-negative.svg" alt="TODO.LAW" style={{ height: "28px", width: "auto" }} />
+            <span className="text-lg tracking-tight text-muted-foreground" style={{ fontFamily: "var(--font-jost), 'Jost', sans-serif", fontWeight: 600 }}>AI SENTINEL</span>
           </Link>
         </div>
       </header>

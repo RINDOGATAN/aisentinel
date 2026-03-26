@@ -154,7 +154,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
               <SheetContent side="left" className="w-[300px] sm:w-[320px]">
                 <SheetHeader>
                   <SheetTitle className="flex items-center gap-2">
-                    <span className="text-lg font-bold tracking-tight">AI SENTINEL</span>
+                    <span className="text-lg tracking-tight" style={{ fontFamily: "var(--font-jost), 'Jost', sans-serif", fontWeight: 600 }}>AI SENTINEL</span>
                   </SheetTitle>
                 </SheetHeader>
                 <nav className="mt-6 flex flex-col gap-0.5">
@@ -242,9 +242,9 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
               </SheetContent>
             </Sheet>
 
-            <Link href="/governance" className="flex items-center shrink-0">
-              <span className="text-lg font-bold tracking-tight text-muted-foreground">TODO.LAW<sup className="text-xs align-super">™</sup></span>
-              <span className="text-lg font-bold tracking-tight ml-2">AI SENTINEL</span>
+            <Link href="/governance" className="flex items-center gap-2 shrink-0">
+              <img src="/logo-negative.svg" alt="TODO.LAW" style={{ height: "28px", width: "auto" }} />
+              <span className="text-lg tracking-tight" style={{ fontFamily: "var(--font-jost), 'Jost', sans-serif", fontWeight: 600 }}>AI SENTINEL</span>
             </Link>
           </div>
 

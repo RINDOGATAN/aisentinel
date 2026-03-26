@@ -52,8 +52,9 @@ export function PersonaSelector() {
     <div className="min-h-screen bg-background flex items-center justify-center p-6">
       <div className="w-full max-w-lg space-y-6">
         <div className="text-center space-y-2">
-          <div className="text-lg font-bold tracking-tight text-foreground">
-            AI SENTINEL
+          <div className="flex items-center justify-center gap-2">
+            <img src="/logo-negative.svg" alt="TODO.LAW" style={{ height: "28px", width: "auto" }} />
+            <span className="text-lg tracking-tight" style={{ fontFamily: "var(--font-jost), 'Jost', sans-serif", fontWeight: 600 }}>AI SENTINEL</span>
           </div>
           <h1 className="text-xl font-semibold">How will you use AI SENTINEL?</h1>
           <p className="text-sm text-muted-foreground">

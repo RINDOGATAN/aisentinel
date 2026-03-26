@@ -48,8 +48,9 @@ export function OrganizationSetup() {
     <div className="min-h-screen bg-background flex items-center justify-center p-6">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-4 text-lg font-bold tracking-tight text-foreground">
-            TODO.LAW<sup className="text-xs align-super">™</sup> <span className="text-muted-foreground">AI SENTINEL</span>
+          <div className="mx-auto mb-4 flex items-center justify-center gap-2">
+            <img src="/logo-negative.svg" alt="TODO.LAW" style={{ height: "28px", width: "auto" }} />
+            <span className="text-lg tracking-tight text-muted-foreground" style={{ fontFamily: "var(--font-jost), 'Jost', sans-serif", fontWeight: 600 }}>AI SENTINEL</span>
           </div>
           <CardTitle>Welcome to AI SENTINEL</CardTitle>
           <CardDescription>

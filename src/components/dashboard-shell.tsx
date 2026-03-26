@@ -27,6 +27,7 @@ import {
   MessageSquareWarning,
   Settings,
   Shield,
+  Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -66,6 +67,13 @@ const navItems = [
 
 function buildNavGroups(isConsultant: boolean) {
   return [
+    {
+      label: "Get Started",
+      icon: Sparkles,
+      items: [
+        { href: "/governance/quickstart", label: "Quick Start", icon: Sparkles },
+      ],
+    },
     ...(isConsultant
       ? [{
           label: "Consulting",

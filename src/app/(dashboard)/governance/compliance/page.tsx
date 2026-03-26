@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -121,9 +122,10 @@ function exportComplianceCSV(
 export default function CompliancePage() {
   const { organization } = useOrganization();
   const orgId = organization?.id ?? "";
+  const searchParams = useSearchParams();
 
   const [selectedFrameworkId, setSelectedFrameworkId] = useState("");
-  const [selectedSystemId, setSelectedSystemId] = useState("");
+  const [selectedSystemId, setSelectedSystemId] = useState(searchParams.get("systemId") || "");
   const [expandedReqs, setExpandedReqs] = useState<Set<string>>(new Set());
 
   const { data: frameworks } = trpc.compliance.listFrameworks.useQuery();

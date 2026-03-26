@@ -31,6 +31,7 @@ import {
   CheckCircle,
   Upload,
   Archive,
+  RotateCcw,
   Edit,
   Cpu,
   Link2,
@@ -77,7 +78,7 @@ const systemStatusColors: Record<string, string> = {
 export default function PolicyDetailPage() {
   const params = useParams();
   const id = params.id as string;
-  const { organization } = useOrganization();
+  const { organization, canWrite } = useOrganization();
   const orgId = organization?.id ?? "";
 
   const [publishDialogOpen, setPublishDialogOpen] = useState(false);
@@ -86,6 +87,7 @@ export default function PolicyDetailPage() {
   const [editedContent, setEditedContent] = useState("");
   const [linkSystemDialogOpen, setLinkSystemDialogOpen] = useState(false);
   const [selectedSystemId, setSelectedSystemId] = useState("");
+  const [archiveConfirmOpen, setArchiveConfirmOpen] = useState(false);
 
   const utils = trpc.useUtils();
 
@@ -205,10 +207,31 @@ export default function PolicyDetailPage() {
   };
 
   const handleArchive = () => {
+    if (policy.systemLinks && policy.systemLinks.length > 0) {
+      setArchiveConfirmOpen(true);
+      return;
+    }
     updateMutation.mutate({
       organizationId: orgId,
       id: policy.id,
       status: "ARCHIVED",
+    });
+  };
+
+  const handleArchiveConfirmed = () => {
+    updateMutation.mutate({
+      organizationId: orgId,
+      id: policy.id,
+      status: "ARCHIVED",
+    });
+    setArchiveConfirmOpen(false);
+  };
+
+  const handleRevise = () => {
+    updateMutation.mutate({
+      organizationId: orgId,
+      id: policy.id,
+      status: "DRAFT",
     });
   };
 
@@ -320,19 +343,49 @@ export default function PolicyDetailPage() {
               Publish
             </Button>
           )}
-          {policy.status === "PUBLISHED" && (
+          {policy.status === "PUBLISHED" && canWrite && (
+            <>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleRevise}
+                disabled={updateMutation.isPending}
+              >
+                {updateMutation.isPending ? (
+                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                ) : (
+                  <RotateCcw className="w-4 h-4 mr-2" />
+                )}
+                Revise
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleArchive}
+                disabled={updateMutation.isPending}
+              >
+                {updateMutation.isPending ? (
+                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                ) : (
+                  <Archive className="w-4 h-4 mr-2" />
+                )}
+                Archive
+              </Button>
+            </>
+          )}
+          {policy.status === "ARCHIVED" && canWrite && (
             <Button
               variant="outline"
               size="sm"
-              onClick={handleArchive}
+              onClick={handleRevise}
               disabled={updateMutation.isPending}
             >
               {updateMutation.isPending ? (
                 <Loader2 className="w-4 h-4 animate-spin mr-2" />
               ) : (
-                <Archive className="w-4 h-4 mr-2" />
+                <RotateCcw className="w-4 h-4 mr-2" />
               )}
-              Archive
+              Unarchive
             </Button>
           )}
         </div>
@@ -716,6 +769,50 @@ export default function PolicyDetailPage() {
                 <>
                   <Link2 className="w-4 h-4 mr-2" />
                   Link System
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Archive Confirmation Dialog */}
+      <Dialog open={archiveConfirmOpen} onOpenChange={setArchiveConfirmOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Archive Policy</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              This policy has {policy.systemLinks?.length ?? 0} linked AI system{(policy.systemLinks?.length ?? 0) !== 1 ? "s" : ""}. Archiving it may affect their governance coverage.
+            </p>
+            <div className="space-y-1.5">
+              {policy.systemLinks?.map((link) => (
+                <div key={link.id} className="flex items-center gap-2 text-sm p-2 bg-muted/50 rounded-md">
+                  <Cpu className="w-4 h-4 text-primary shrink-0" />
+                  {link.aiSystem.name}
+                </div>
+              ))}
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setArchiveConfirmOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleArchiveConfirmed}
+              disabled={updateMutation.isPending}
+            >
+              {updateMutation.isPending ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Archiving...
+                </>
+              ) : (
+                <>
+                  <Archive className="w-4 h-4 mr-2" />
+                  Archive Anyway
                 </>
               )}
             </Button>

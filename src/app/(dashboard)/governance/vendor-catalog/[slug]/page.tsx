@@ -108,28 +108,36 @@ export default function VendorCatalogDetailPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center gap-4">
-        <Link href="/governance/vendor-catalog">
-          <Button variant="ghost" size="icon">
-            <ArrowLeft className="w-4 h-4" />
-          </Button>
-        </Link>
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl sm:text-2xl font-semibold">{entry.name}</h1>
-            {entry.isVerified && (
-              <CheckCircle className="w-5 h-5 text-success" />
-            )}
-          </div>
-          <div className="flex items-center gap-2 mt-1">
-            <Badge variant="secondary">{entry.category}</Badge>
-            {entry.subcategory && (
-              <Badge variant="outline" className="text-xs">
-                {entry.subcategory}
-              </Badge>
-            )}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <Link href="/governance/vendor-catalog">
+            <Button variant="ghost" size="icon">
+              <ArrowLeft className="w-4 h-4" />
+            </Button>
+          </Link>
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-xl sm:text-2xl font-semibold">{entry.name}</h1>
+              {entry.isVerified && (
+                <CheckCircle className="w-5 h-5 text-success" />
+              )}
+            </div>
+            <div className="flex items-center gap-2 mt-1">
+              <Badge variant="secondary">{entry.category}</Badge>
+              {entry.subcategory && (
+                <Badge variant="outline" className="text-xs">
+                  {entry.subcategory}
+                </Badge>
+              )}
+            </div>
           </div>
         </div>
+        <Button className="self-start sm:self-auto" asChild>
+          <Link href={`/governance/vendors/new?catalog=true&slug=${entry.slug}`}>
+            <Plus className="w-4 h-4 mr-2" />
+            Add to My Vendors
+          </Link>
+        </Button>
       </div>
 
       {/* Two-column layout */}

@@ -109,7 +109,7 @@ const riskIndicatorColors: Record<string, string> = {
 export default function ShadowAIDetailPage() {
   const params = useParams();
   const id = params.id as string;
-  const { organization } = useOrganization();
+  const { organization, canWrite } = useOrganization();
   const [registerDialogOpen, setRegisterDialogOpen] = useState(false);
   const [registerTab, setRegisterTab] = useState<string>("create");
   const [selectedSystemId, setSelectedSystemId] = useState("");
@@ -334,6 +334,23 @@ export default function ShadowAIDetailPage() {
           </div>
         )}
       </div>
+
+      {/* Approved CTA */}
+      {report.status === "APPROVED" && canWrite && (
+        <Card className="border-primary/50 bg-primary/5">
+          <CardContent className="p-4 flex items-center justify-between gap-4">
+            <div>
+              <p className="font-semibold text-sm">This tool has been approved</p>
+              <p className="text-xs text-muted-foreground">
+                Register it as an AI System to start governance tracking
+              </p>
+            </div>
+            <Button size="sm" onClick={() => handleStatusChange("REGISTERED")}>
+              Register as AI System
+            </Button>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Content Grid */}
       <div className="grid gap-6 md:grid-cols-3">

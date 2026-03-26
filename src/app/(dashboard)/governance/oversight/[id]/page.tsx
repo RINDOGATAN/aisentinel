@@ -38,6 +38,7 @@ import {
   XCircle,
   PauseCircle,
   FileText,
+  RotateCcw,
 } from "lucide-react";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
@@ -75,7 +76,7 @@ const decisionIcons: Record<string, React.ElementType> = {
 export default function OversightGateDetailPage() {
   const params = useParams();
   const id = params.id as string;
-  const { organization } = useOrganization();
+  const { organization, canWrite } = useOrganization();
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [decisionForm, setDecisionForm] = useState({
@@ -102,6 +103,14 @@ export default function OversightGateDetailPage() {
     },
     onError: (error) => {
       toast.error(error.message || "Failed to record decision");
+    },
+  });
+
+  const reopenMutation = trpc.oversight.update.useMutation({
+    onSuccess: () => {
+      toast.success("Gate reopened for review");
+      utils.oversight.getById.invalidate({ organizationId: organization?.id ?? "", id });
+      utils.oversight.getStats.invalidate();
     },
   });
 
@@ -180,9 +189,25 @@ export default function OversightGateDetailPage() {
             </div>
           </div>
         </div>
+        <div className="flex gap-2 self-start sm:self-auto">
+          {(gate.status === "PASSED" || gate.status === "FAILED") && canWrite && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => reopenMutation.mutate({ organizationId: organization!.id, id, status: "PENDING" })}
+              disabled={reopenMutation.isPending}
+            >
+              {reopenMutation.isPending ? (
+                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+              ) : (
+                <RotateCcw className="w-4 h-4 mr-2" />
+              )}
+              Reopen for Review
+            </Button>
+          )}
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="self-start sm:self-auto">
+            <Button>
               <Plus className="w-4 h-4 mr-2" />
               Add Decision
             </Button>
@@ -266,6 +291,7 @@ export default function OversightGateDetailPage() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+        </div>
       </div>
 
       {/* Overview Grid */}

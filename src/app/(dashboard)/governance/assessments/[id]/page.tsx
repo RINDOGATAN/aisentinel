@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, Save, Send, CheckCircle, XCircle, Loader2 } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
 import { formatDate } from "@/lib/utils";
 import Link from "next/link";
 
@@ -62,6 +63,11 @@ export default function AssessmentDetailPage() {
   const canSubmit = assessment.status === "IN_PROGRESS" || assessment.status === "DRAFT";
   const canApprove = assessment.status === "UNDER_REVIEW";
 
+  const allQuestions = sections.flatMap((s) => s.questions || []);
+  const totalQuestions = allQuestions.length;
+  const answeredQuestions = allQuestions.filter((q) => responses[q.id]?.toString().trim()).length;
+  const progressPercent = totalQuestions > 0 ? Math.round((answeredQuestions / totalQuestions) * 100) : 0;
+
   const handleSave = () => {
     updateMutation.mutate({
       organizationId: orgId,
@@ -105,6 +111,15 @@ export default function AssessmentDetailPage() {
           )}
         </div>
       </div>
+
+      {canEdit && totalQuestions > 0 && (
+        <div className="flex items-center gap-3">
+          <Progress value={progressPercent} className="h-2 flex-1" />
+          <span className="text-xs text-muted-foreground whitespace-nowrap">
+            {answeredQuestions} of {totalQuestions}
+          </span>
+        </div>
+      )}
 
       {canApprove && (
         <Card className="border-primary/50">

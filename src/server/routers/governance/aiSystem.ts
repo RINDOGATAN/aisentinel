@@ -61,6 +61,15 @@ export const aiSystemRouter = createTRPCRouter({
             orderBy: { updatedAt: "desc" },
           },
           oversightGates: { orderBy: { createdAt: "desc" } },
+          incidents: {
+            select: { id: true, title: true, type: true, severity: true, status: true, reportedAt: true },
+            orderBy: { reportedAt: "desc" as const },
+            take: 20,
+          },
+          policyLinks: {
+            include: { policy: { select: { id: true, title: true, type: true, status: true, currentVersion: true } } },
+            orderBy: { policy: { updatedAt: "desc" as const } },
+          },
           _count: { select: { complianceMappings: true } },
         },
       });
@@ -199,5 +208,206 @@ export const aiSystemRouter = createTRPCRouter({
       ]);
 
       return { total, draft, deployed, retired };
+    }),
+
+  addModel: orgWriteProcedure
+    .input(
+      z.object({
+        organizationId: z.string(),
+        aiSystemId: z.string(),
+        name: z.string().min(1).max(200),
+        provider: z.string().optional(),
+        modelType: z.string().optional(),
+        version: z.string().optional(),
+        trainingDataSummary: z.string().optional(),
+        knownLimitations: z.string().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const system = await ctx.prisma.aISystem.findFirst({
+        where: { id: input.aiSystemId, organizationId: ctx.organization.id },
+      });
+      if (!system) throw new TRPCError({ code: "NOT_FOUND", message: "AI system not found" });
+
+      const model = await ctx.prisma.aIModel.create({
+        data: {
+          aiSystemId: input.aiSystemId,
+          organizationId: ctx.organization.id,
+          name: input.name,
+          provider: input.provider,
+          modelType: input.modelType,
+          version: input.version,
+          trainingDataSummary: input.trainingDataSummary,
+          knownLimitations: input.knownLimitations,
+        },
+      });
+
+      await ctx.prisma.auditLog.create({
+        data: {
+          organizationId: ctx.organization.id,
+          userId: ctx.session.user.id,
+          entityType: "AIModel",
+          entityId: model.id,
+          action: "CREATE",
+          changes: { name: input.name, aiSystemId: input.aiSystemId },
+        },
+      });
+
+      return model;
+    }),
+
+  updateModel: orgWriteProcedure
+    .input(
+      z.object({
+        organizationId: z.string(),
+        modelId: z.string(),
+        name: z.string().min(1).max(200).optional(),
+        provider: z.string().optional(),
+        modelType: z.string().optional(),
+        version: z.string().optional(),
+        trainingDataSummary: z.string().optional(),
+        knownLimitations: z.string().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { modelId, organizationId, ...data } = input;
+      const result = await ctx.prisma.aIModel.updateMany({
+        where: { id: modelId, organizationId: ctx.organization.id },
+        data: data as never,
+      });
+      if (result.count === 0) throw new TRPCError({ code: "NOT_FOUND", message: "Model not found" });
+
+      await ctx.prisma.auditLog.create({
+        data: {
+          organizationId: ctx.organization.id,
+          userId: ctx.session.user.id,
+          entityType: "AIModel",
+          entityId: modelId,
+          action: "UPDATE",
+          changes: data,
+        },
+      });
+
+      return ctx.prisma.aIModel.findFirst({ where: { id: modelId, organizationId: ctx.organization.id } });
+    }),
+
+  deleteModel: orgWriteProcedure
+    .input(z.object({ organizationId: z.string(), modelId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const result = await ctx.prisma.aIModel.deleteMany({
+        where: { id: input.modelId, organizationId: ctx.organization.id },
+      });
+      if (result.count === 0) throw new TRPCError({ code: "NOT_FOUND", message: "Model not found" });
+
+      await ctx.prisma.auditLog.create({
+        data: {
+          organizationId: ctx.organization.id,
+          userId: ctx.session.user.id,
+          entityType: "AIModel",
+          entityId: input.modelId,
+          action: "DELETE",
+        },
+      });
+
+      return { success: true };
+    }),
+
+  addDataSource: orgWriteProcedure
+    .input(
+      z.object({
+        organizationId: z.string(),
+        aiSystemId: z.string(),
+        name: z.string().min(1).max(200),
+        sourceType: z.enum(["TRAINING", "FINE_TUNING", "VALIDATION", "INPUT", "OUTPUT"]),
+        description: z.string().optional(),
+        containsPersonalData: z.boolean().default(false),
+        dataCategories: z.array(z.string()).default([]),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const system = await ctx.prisma.aISystem.findFirst({
+        where: { id: input.aiSystemId, organizationId: ctx.organization.id },
+      });
+      if (!system) throw new TRPCError({ code: "NOT_FOUND", message: "AI system not found" });
+
+      const ds = await ctx.prisma.aISystemDataSource.create({
+        data: {
+          aiSystemId: input.aiSystemId,
+          organizationId: ctx.organization.id,
+          name: input.name,
+          sourceType: input.sourceType,
+          description: input.description,
+          containsPersonalData: input.containsPersonalData,
+          dataCategories: input.dataCategories,
+        },
+      });
+
+      await ctx.prisma.auditLog.create({
+        data: {
+          organizationId: ctx.organization.id,
+          userId: ctx.session.user.id,
+          entityType: "AISystemDataSource",
+          entityId: ds.id,
+          action: "CREATE",
+          changes: { name: input.name, aiSystemId: input.aiSystemId },
+        },
+      });
+
+      return ds;
+    }),
+
+  updateDataSource: orgWriteProcedure
+    .input(
+      z.object({
+        organizationId: z.string(),
+        dataSourceId: z.string(),
+        name: z.string().min(1).max(200).optional(),
+        sourceType: z.enum(["TRAINING", "FINE_TUNING", "VALIDATION", "INPUT", "OUTPUT"]).optional(),
+        description: z.string().optional(),
+        containsPersonalData: z.boolean().optional(),
+        dataCategories: z.array(z.string()).optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { dataSourceId, organizationId, ...data } = input;
+      const result = await ctx.prisma.aISystemDataSource.updateMany({
+        where: { id: dataSourceId, organizationId: ctx.organization.id },
+        data: data as never,
+      });
+      if (result.count === 0) throw new TRPCError({ code: "NOT_FOUND", message: "Data source not found" });
+
+      await ctx.prisma.auditLog.create({
+        data: {
+          organizationId: ctx.organization.id,
+          userId: ctx.session.user.id,
+          entityType: "AISystemDataSource",
+          entityId: dataSourceId,
+          action: "UPDATE",
+          changes: data,
+        },
+      });
+
+      return ctx.prisma.aISystemDataSource.findFirst({ where: { id: dataSourceId, organizationId: ctx.organization.id } });
+    }),
+
+  deleteDataSource: orgWriteProcedure
+    .input(z.object({ organizationId: z.string(), dataSourceId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const result = await ctx.prisma.aISystemDataSource.deleteMany({
+        where: { id: input.dataSourceId, organizationId: ctx.organization.id },
+      });
+      if (result.count === 0) throw new TRPCError({ code: "NOT_FOUND", message: "Data source not found" });
+
+      await ctx.prisma.auditLog.create({
+        data: {
+          organizationId: ctx.organization.id,
+          userId: ctx.session.user.id,
+          entityType: "AISystemDataSource",
+          entityId: input.dataSourceId,
+          action: "DELETE",
+        },
+      });
+
+      return { success: true };
     }),
 });

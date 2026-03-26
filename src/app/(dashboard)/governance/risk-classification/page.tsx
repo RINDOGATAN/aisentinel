@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -72,6 +73,7 @@ export default function RiskClassificationPage() {
     annexIIICategory: string;
   }>>({});
   const debouncedSearch = useDebounce(searchQuery);
+  const router = useRouter();
   const { organization } = useOrganization();
 
   const { data: stats, isLoading: statsLoading } = trpc.riskClassification.getStats.useQuery(
@@ -94,7 +96,12 @@ export default function RiskClassificationPage() {
       const mappingsMsg = data.complianceMappingsCreated
         ? ` — ${data.complianceMappingsCreated} compliance requirements initialized`
         : "";
-      toast.success(`${data.aiSystem.name} classified as ${data.riskLevel}${mappingsMsg}`);
+      toast.success(`${data.aiSystem.name} classified as ${data.riskLevel}${mappingsMsg}`, {
+        action: {
+          label: "View Compliance",
+          onClick: () => router.push(`/governance/compliance?systemId=${data.aiSystemId}`),
+        },
+      });
       utils.riskClassification.list.invalidate();
       utils.riskClassification.getStats.invalidate();
       setExpandedSystem(null);

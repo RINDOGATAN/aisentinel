@@ -20,6 +20,7 @@
     "db:sync-vendor-catalog": "tsx scripts/sync-vendor-catalog.ts",
     "db:seed-premium-templates": "tsx scripts/seed-assessment-templates.ts",
     "db:seed-cross-mappings": "tsx scripts/seed-cross-framework-mappings.ts",
+    "db:seed-video-demo": "tsx scripts/seed-video-demo.ts",
     "lint:security": "bash scripts/lint-security.sh"
   },
   "prisma": {

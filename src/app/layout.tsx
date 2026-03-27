@@ -63,7 +63,7 @@ export const metadata: Metadata = {
     siteName: brand.name,
     title: seoTitle,
     description: seoDescription,
-    images: [{ url: "/favicon.png", width: 512, height: 512, alt: "AI SENTINEL logo" }],
+    images: [{ url: "/apple-touch-icon.png", width: 180, height: 180, alt: "AI SENTINEL logo" }],
   },
   twitter: {
     card: "summary",
@@ -74,7 +74,8 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "32x32" },
-      { url: "/favicon.png", type: "image/png", sizes: "512x512" },
+      { url: "/favicon.png", type: "image/png", sizes: "32x32" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
     ],
     apple: "/apple-touch-icon.png",
   },

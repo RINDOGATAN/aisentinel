@@ -76,7 +76,7 @@ export const metadata: Metadata = {
       { url: "/favicon.ico", sizes: "32x32" },
       { url: "/favicon.png", type: "image/png", sizes: "512x512" },
     ],
-    apple: "/favicon.png",
+    apple: "/apple-touch-icon.png",
   },
   manifest: "/site.webmanifest",
   robots: {

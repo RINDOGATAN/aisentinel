@@ -43,6 +43,7 @@ import {
   User,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
@@ -76,6 +77,8 @@ const systemStatusColors: Record<string, string> = {
 };
 
 export default function PolicyDetailPage() {
+  const t = useTranslations("policyDetail");
+  const tc = useTranslations("common");
   const params = useParams();
   const id = params.id as string;
   const { organization, canWrite } = useOrganization();
@@ -172,11 +175,11 @@ export default function PolicyDetailPage() {
   if (!policy) {
     return (
       <div className="text-center py-12">
-        <p className="text-muted-foreground">Policy not found</p>
+        <p className="text-muted-foreground">{t("notFound")}</p>
         <Link href="/governance/policies">
           <Button variant="outline" className="mt-4">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Policies
+            {t("backToPolicies")}
           </Button>
         </Link>
       </div>
@@ -316,7 +319,7 @@ export default function PolicyDetailPage() {
               ) : (
                 <Send className="w-4 h-4 mr-2" />
               )}
-              Submit for Review
+              {t("submitForReview")}
             </Button>
           )}
           {policy.status === "UNDER_REVIEW" && (
@@ -331,7 +334,7 @@ export default function PolicyDetailPage() {
               ) : (
                 <CheckCircle className="w-4 h-4 mr-2" />
               )}
-              Approve
+              {t("approve")}
             </Button>
           )}
           {policy.status === "APPROVED" && (
@@ -340,7 +343,7 @@ export default function PolicyDetailPage() {
               onClick={() => setPublishDialogOpen(true)}
             >
               <Upload className="w-4 h-4 mr-2" />
-              Publish
+              {t("publish")}
             </Button>
           )}
           {policy.status === "PUBLISHED" && canWrite && (
@@ -356,7 +359,7 @@ export default function PolicyDetailPage() {
                 ) : (
                   <RotateCcw className="w-4 h-4 mr-2" />
                 )}
-                Revise
+                {t("revise")}
               </Button>
               <Button
                 variant="outline"
@@ -369,7 +372,7 @@ export default function PolicyDetailPage() {
                 ) : (
                   <Archive className="w-4 h-4 mr-2" />
                 )}
-                Archive
+                {t("archive")}
               </Button>
             </>
           )}
@@ -385,7 +388,7 @@ export default function PolicyDetailPage() {
               ) : (
                 <RotateCcw className="w-4 h-4 mr-2" />
               )}
-              Unarchive
+              {t("unarchive")}
             </Button>
           )}
         </div>
@@ -395,7 +398,7 @@ export default function PolicyDetailPage() {
       <div className="grid gap-6 md:grid-cols-3">
         <Card className="md:col-span-2">
           <CardHeader>
-            <CardTitle>Overview</CardTitle>
+            <CardTitle>{t("overviewTitle")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {policy.description && (
@@ -403,15 +406,15 @@ export default function PolicyDetailPage() {
             )}
             <div className="grid gap-4 grid-cols-2 md:grid-cols-3">
               <div>
-                <p className="text-sm text-muted-foreground">Effective Date</p>
+                <p className="text-sm text-muted-foreground">{t("labelEffectiveDate")}</p>
                 <p className="font-medium text-sm">{formatDate(policy.effectiveDate)}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Review Date</p>
+                <p className="text-sm text-muted-foreground">{t("labelReviewDate")}</p>
                 <p className="font-medium text-sm">{formatDate(policy.reviewDate)}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Approved By</p>
+                <p className="text-sm text-muted-foreground">{t("labelApprovedBy")}</p>
                 <p className="font-medium text-sm">{policy.approvedBy || "Not yet approved"}</p>
               </div>
               <div>
@@ -419,7 +422,7 @@ export default function PolicyDetailPage() {
                 <p className="font-medium text-sm">{formatDate(policy.approvedAt)}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Created By</p>
+                <p className="text-sm text-muted-foreground">{t("labelCreatedBy")}</p>
                 <p className="font-medium text-sm">{policy.createdBy || "Unknown"}</p>
               </div>
               <div>
@@ -432,16 +435,16 @@ export default function PolicyDetailPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Statistics</CardTitle>
+            <CardTitle>{t("statisticsTitle")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
               <p className="text-3xl font-bold text-primary">{policy.versions?.length ?? 0}</p>
-              <p className="text-sm text-muted-foreground">Versions</p>
+              <p className="text-sm text-muted-foreground">{t("versionsCount")}</p>
             </div>
             <div>
               <p className="text-3xl font-bold text-primary">{policy.systemLinks?.length ?? 0}</p>
-              <p className="text-sm text-muted-foreground">Linked Systems</p>
+              <p className="text-sm text-muted-foreground">{t("linkedSystemsCount")}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Last Updated</p>
@@ -455,13 +458,13 @@ export default function PolicyDetailPage() {
       <Tabs defaultValue="content">
         <TabsList className="w-full justify-start overflow-x-auto">
           <TabsTrigger value="content" className="text-xs sm:text-sm">
-            Content
+            {t("tabContent")}
           </TabsTrigger>
           <TabsTrigger value="versions" className="text-xs sm:text-sm">
-            Version History ({policy.versions?.length ?? 0})
+            {t("tabVersionHistory", { count: policy.versions?.length ?? 0 })}
           </TabsTrigger>
           <TabsTrigger value="systems" className="text-xs sm:text-sm">
-            Linked Systems ({policy.systemLinks?.length ?? 0})
+            {t("tabLinkedSystems", { count: policy.systemLinks?.length ?? 0 })}
           </TabsTrigger>
         </TabsList>
 
@@ -470,12 +473,12 @@ export default function PolicyDetailPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle>Policy Content</CardTitle>
-                <CardDescription>The full text of this policy</CardDescription>
+                <CardTitle>{t("policyContentTitle")}</CardTitle>
+                <CardDescription>{t("policyContentDescription")}</CardDescription>
               </div>
               <Button variant="outline" size="sm" onClick={handleEditContent}>
                 <Edit className="w-4 h-4 mr-2" />
-                Edit Content
+                {t("editContent")}
               </Button>
             </CardHeader>
             <CardContent>
@@ -488,11 +491,11 @@ export default function PolicyDetailPage() {
               ) : (
                 <div className="text-center py-8 text-muted-foreground">
                   <FileText className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p>No content yet</p>
+                  <p>{t("emptyContentTitle")}</p>
                   <p className="text-sm mb-4">Add content to define this policy</p>
                   <Button variant="outline" onClick={handleEditContent}>
                     <Edit className="w-4 h-4 mr-2" />
-                    Add Content
+                    {t("addContent")}
                   </Button>
                 </div>
               )}
@@ -506,7 +509,7 @@ export default function PolicyDetailPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <History className="w-5 h-5" />
-                Version History
+                {t("versionHistoryTitle")}
               </CardTitle>
               <CardDescription>Published versions of this policy</CardDescription>
             </CardHeader>
@@ -571,7 +574,7 @@ export default function PolicyDetailPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle>Linked AI Systems</CardTitle>
+                <CardTitle>{t("linkedSystemsTitle")}</CardTitle>
                 <CardDescription>
                   AI systems governed by this policy
                 </CardDescription>
@@ -582,7 +585,7 @@ export default function PolicyDetailPage() {
                 onClick={() => setLinkSystemDialogOpen(true)}
               >
                 <Plus className="w-4 h-4 mr-2" />
-                Link System
+                {t("linkSystem")}
               </Button>
             </CardHeader>
             <CardContent>
@@ -634,7 +637,7 @@ export default function PolicyDetailPage() {
                     onClick={() => setLinkSystemDialogOpen(true)}
                   >
                     <Plus className="w-4 h-4 mr-2" />
-                    Link System
+                    {t("linkSystem")}
                   </Button>
                 </div>
               )}
@@ -647,14 +650,14 @@ export default function PolicyDetailPage() {
       <Dialog open={publishDialogOpen} onOpenChange={setPublishDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Publish Policy</DialogTitle>
+            <DialogTitle>{t("publishDialogTitle")}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">
               Publishing will create version v{policy.currentVersion + 1} of this policy.
             </p>
             <div className="space-y-2">
-              <Label htmlFor="changeNotes">Change Notes</Label>
+              <Label htmlFor="changeNotes">{t("labelChangeNotes")}</Label>
               <Textarea
                 id="changeNotes"
                 placeholder="Describe what changed in this version..."
@@ -666,7 +669,7 @@ export default function PolicyDetailPage() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setPublishDialogOpen(false)}>
-              Cancel
+              {tc("cancel")}
             </Button>
             <Button
               onClick={handlePublish}
@@ -675,12 +678,12 @@ export default function PolicyDetailPage() {
               {publishMutation.isPending ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Publishing...
+                  {tc("saving")}
                 </>
               ) : (
                 <>
                   <Upload className="w-4 h-4 mr-2" />
-                  Publish
+                  {t("publish")}
                 </>
               )}
             </Button>
@@ -692,7 +695,7 @@ export default function PolicyDetailPage() {
       <Dialog open={editContentDialogOpen} onOpenChange={setEditContentDialogOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Edit Policy Content</DialogTitle>
+            <DialogTitle>{t("editContentDialogTitle")}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <Textarea
@@ -704,7 +707,7 @@ export default function PolicyDetailPage() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditContentDialogOpen(false)}>
-              Cancel
+              {tc("cancel")}
             </Button>
             <Button
               onClick={handleSaveContent}
@@ -713,10 +716,10 @@ export default function PolicyDetailPage() {
               {updateMutation.isPending ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Saving...
+                  {tc("saving")}
                 </>
               ) : (
-                "Save Content"
+                tc("saveChanges")
               )}
             </Button>
           </DialogFooter>
@@ -727,7 +730,7 @@ export default function PolicyDetailPage() {
       <Dialog open={linkSystemDialogOpen} onOpenChange={setLinkSystemDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Link AI System</DialogTitle>
+            <DialogTitle>{t("linkSystemDialogTitle")}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">
@@ -754,7 +757,7 @@ export default function PolicyDetailPage() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setLinkSystemDialogOpen(false)}>
-              Cancel
+              {tc("cancel")}
             </Button>
             <Button
               onClick={handleLinkSystem}
@@ -763,12 +766,12 @@ export default function PolicyDetailPage() {
               {linkSystemMutation.isPending ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Linking...
+                  {tc("saving")}
                 </>
               ) : (
                 <>
                   <Link2 className="w-4 h-4 mr-2" />
-                  Link System
+                  {t("linkSystem")}
                 </>
               )}
             </Button>
@@ -780,7 +783,7 @@ export default function PolicyDetailPage() {
       <Dialog open={archiveConfirmOpen} onOpenChange={setArchiveConfirmOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Archive Policy</DialogTitle>
+            <DialogTitle>{t("archiveDialogTitle")}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">
@@ -797,7 +800,7 @@ export default function PolicyDetailPage() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setArchiveConfirmOpen(false)}>
-              Cancel
+              {tc("cancel")}
             </Button>
             <Button
               variant="destructive"
@@ -812,7 +815,7 @@ export default function PolicyDetailPage() {
               ) : (
                 <>
                   <Archive className="w-4 h-4 mr-2" />
-                  Archive Anyway
+                  {t("archiveAnyway")}
                 </>
               )}
             </Button>

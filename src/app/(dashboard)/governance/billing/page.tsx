@@ -11,10 +11,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useTranslations } from "next-intl";
 import { features } from "@/config/features";
 import { formatPrice } from "@/lib/currency";
 
 export default function BillingPage() {
+  const t = useTranslations("billing");
   const { organization } = useOrganization();
   const [enableSkill, setEnableSkill] = useState<{
     id: string;
@@ -160,10 +162,10 @@ export default function BillingPage() {
       <div>
         <h1 className="text-2xl font-bold flex items-center gap-2">
           <CreditCard className="h-6 w-6 text-primary" />
-          Billing
+          {t("title")}
         </h1>
         <p className="text-muted-foreground mt-1">
-          Manage your premium add-on features
+          {t("subtitle")}
         </p>
       </div>
 
@@ -209,19 +211,19 @@ export default function BillingPage() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Card>
             <CardContent className="pt-6">
-              <p className="text-sm text-muted-foreground">Active Features</p>
+              <p className="text-sm text-muted-foreground">{t("summaryActiveFeatures")}</p>
               <p className="text-2xl font-bold">{activeCount}</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="pt-6">
-              <p className="text-sm text-muted-foreground">Monthly Total</p>
+              <p className="text-sm text-muted-foreground">{t("summaryMonthlyTotal")}</p>
               <p className="text-2xl font-bold">{formatPrice(monthlyTotal)}</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="pt-6">
-              <p className="text-sm text-muted-foreground">Plan</p>
+              <p className="text-sm text-muted-foreground">{t("summaryPlan")}</p>
               <p className="text-2xl font-bold capitalize">{status?.plan ?? "free"}</p>
             </CardContent>
           </Card>
@@ -233,7 +235,7 @@ export default function BillingPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-primary" />
-            Add-on Features
+            {t("addOnFeaturesTitle")}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -259,7 +261,7 @@ export default function BillingPage() {
                   {row.isActive && (
                     <Badge variant="secondary" className="bg-[#66b280]/20 text-[#66b280] text-xs">
                       <CheckCircle2 className="h-3 w-3 mr-1" />
-                      Active
+                      {t("badgeActive")}
                     </Badge>
                   )}
                 </div>
@@ -313,11 +315,11 @@ export default function BillingPage() {
                           setEnableSkill({ id: row.id, name: row.name })
                         }
                       >
-                        Enable
+                        {t("enable")}
                       </Button>
                     ) : !row.purchasable ? (
                       <Badge variant="secondary" className="text-xs">
-                        Coming Soon
+                        {t("badgeComingSoon")}
                       </Badge>
                     ) : null}
                   </>

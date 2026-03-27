@@ -54,6 +54,7 @@ import {
   Eye,
   Gavel,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
@@ -71,37 +72,6 @@ const riskLevelColors: Record<string, string> = {
   HIGH: "bg-destructive/80 text-destructive-foreground",
   LIMITED: "bg-warning/20 text-warning",
   MINIMAL: "bg-success/20 text-success",
-};
-
-const techniqueLabels: Record<string, string> = {
-  MACHINE_LEARNING: "Machine Learning",
-  DEEP_LEARNING: "Deep Learning",
-  GENERATIVE_AI: "Generative AI",
-  AGENTIC_AI: "Agentic AI",
-  NLP: "Natural Language Processing",
-  COMPUTER_VISION: "Computer Vision",
-  SPEECH_RECOGNITION: "Speech Recognition",
-  ROBOTICS: "Robotics",
-  RULE_BASED: "Rule-Based",
-  EXPERT_SYSTEM: "Expert System",
-  STATISTICAL: "Statistical",
-  OTHER: "Other",
-};
-
-const roleLabels: Record<string, string> = {
-  PROVIDER: "Provider",
-  DEPLOYER: "Deployer",
-  IMPORTER: "Importer",
-  DISTRIBUTOR: "Distributor",
-  USER: "User",
-};
-
-const dataSourceTypeLabels: Record<string, string> = {
-  TRAINING: "Training",
-  FINE_TUNING: "Fine-Tuning",
-  VALIDATION: "Validation",
-  INPUT: "Input",
-  OUTPUT: "Output",
 };
 
 const dataSourceTypeColors: Record<string, string> = {
@@ -149,18 +119,6 @@ const incidentStatusColors: Record<string, string> = {
   MITIGATING: "border-warning text-warning",
   RESOLVED: "border-success text-success",
   CLOSED: "border-muted-foreground/50 text-muted-foreground/50",
-};
-
-const policyTypeLabels: Record<string, string> = {
-  AI_USAGE: "AI Usage",
-  AI_GOVERNANCE: "AI Governance",
-  AI_ETHICS: "AI Ethics",
-  AI_RISK_MANAGEMENT: "Risk Management",
-  AI_DATA_GOVERNANCE: "Data Governance",
-  AI_PROCUREMENT: "Procurement",
-  AI_INCIDENT_RESPONSE: "Incident Response",
-  AI_TRANSPARENCY: "Transparency",
-  CUSTOM: "Custom",
 };
 
 const policyStatusColors: Record<string, string> = {
@@ -231,8 +189,124 @@ export default function AISystemDetailPage() {
   const params = useParams();
   const id = params.id as string;
   const { organization, canWrite } = useOrganization();
+  const t = useTranslations("aiRegistryDetail");
+  const tc = useTranslations("common");
   const utils = trpc.useUtils();
   const organizationId = organization?.id ?? "";
+
+  // --- Translated label helpers ---
+  const techniqueLabel = (key: string) => {
+    const map: Record<string, string> = {
+      MACHINE_LEARNING: tc("techniqueMachineLearning"),
+      DEEP_LEARNING: tc("techniqueDeepLearning"),
+      GENERATIVE_AI: tc("techniqueGenerativeAi"),
+      AGENTIC_AI: tc("techniqueAgenticAi"),
+      NLP: tc("techniqueNlp"),
+      COMPUTER_VISION: tc("techniqueComputerVision"),
+      SPEECH_RECOGNITION: tc("techniqueSpeechRecognition"),
+      ROBOTICS: tc("techniqueRobotics"),
+      RULE_BASED: tc("techniqueRuleBased"),
+      EXPERT_SYSTEM: tc("techniqueExpertSystem"),
+      STATISTICAL: tc("techniqueStatistical"),
+      OTHER: tc("techniqueOther"),
+    };
+    return map[key] || key;
+  };
+
+  const roleLabel = (key: string) => {
+    const map: Record<string, string> = {
+      PROVIDER: tc("roleProvider"),
+      DEPLOYER: tc("roleDeployer"),
+      IMPORTER: tc("roleImporter"),
+      DISTRIBUTOR: tc("roleDistributor"),
+      USER: tc("roleUser"),
+    };
+    return map[key] || key;
+  };
+
+  const dataSourceTypeLabel = (key: string) => {
+    const map: Record<string, string> = {
+      TRAINING: tc("dataSourceTypeTraining"),
+      FINE_TUNING: tc("dataSourceTypeFineTuning"),
+      VALIDATION: tc("dataSourceTypeValidation"),
+      INPUT: tc("dataSourceTypeInput"),
+      OUTPUT: tc("dataSourceTypeOutput"),
+    };
+    return map[key] || key;
+  };
+
+  const policyTypeLabel = (key: string) => {
+    const map: Record<string, string> = {
+      AI_USAGE: tc("policyTypeAiUsage"),
+      AI_GOVERNANCE: tc("policyTypeAiGovernance"),
+      AI_ETHICS: tc("policyTypeAiEthics"),
+      AI_RISK_MANAGEMENT: tc("policyTypeRiskManagement"),
+      AI_DATA_GOVERNANCE: tc("policyTypeDataGovernance"),
+      AI_PROCUREMENT: tc("policyTypeProcurement"),
+      AI_INCIDENT_RESPONSE: tc("policyTypeIncidentResponse"),
+      AI_TRANSPARENCY: tc("policyTypeTransparency"),
+      CUSTOM: tc("policyTypeCustom"),
+    };
+    return map[key] || key;
+  };
+
+  const statusLabel = (key: string) => {
+    const map: Record<string, string> = {
+      DRAFT: tc("statusDraft"),
+      DEVELOPMENT: tc("statusDevelopment"),
+      TESTING: tc("statusTesting"),
+      DEPLOYED: tc("statusDeployed"),
+      RETIRED: tc("statusRetired"),
+      IN_PROGRESS: tc("statusInProgress"),
+      UNDER_REVIEW: tc("statusUnderReview"),
+      APPROVED: tc("statusApproved"),
+      REJECTED: tc("statusRejected"),
+      PENDING: tc("statusPending"),
+      IN_REVIEW: tc("statusInReview"),
+      PASSED: tc("statusPassed"),
+      FAILED: tc("statusFailed"),
+      DEFERRED: tc("statusDeferred"),
+      REPORTED: tc("statusReported"),
+      INVESTIGATING: tc("statusInvestigating"),
+      MITIGATING: tc("statusMitigating"),
+      RESOLVED: tc("statusResolved"),
+      CLOSED: tc("statusClosed"),
+      PUBLISHED: tc("statusPublished"),
+      ARCHIVED: tc("statusArchived"),
+    };
+    return map[key] || key.replace(/_/g, " ");
+  };
+
+  const severityLabel = (key: string) => {
+    const map: Record<string, string> = {
+      CRITICAL: tc("severityCritical"),
+      HIGH: tc("severityHigh"),
+      MEDIUM: tc("severityMedium"),
+      LOW: tc("severityLow"),
+    };
+    return map[key] || key;
+  };
+
+  const gateTypeLabel = (key: string) => {
+    const map: Record<string, string> = {
+      PRE_DEPLOYMENT: tc("gateTypePreDeployment"),
+      POST_DEPLOYMENT: tc("gateTypePostDeployment"),
+      PERIODIC_REVIEW: tc("gateTypePeriodicReview"),
+      INCIDENT_TRIGGERED: tc("gateTypeIncidentTriggered"),
+      MATERIAL_CHANGE: tc("gateTypeMaterialChange"),
+    };
+    return map[key] || key.replace(/_/g, " ");
+  };
+
+  const riskLabel = (key: string) => {
+    const map: Record<string, string> = {
+      UNACCEPTABLE: tc("riskUnacceptable"),
+      HIGH: tc("riskHigh"),
+      LIMITED: tc("riskLimited"),
+      MINIMAL: tc("riskMinimal"),
+    };
+    return map[key] || key;
+  };
 
   // --- Edit dialog state ---
   const [editOpen, setEditOpen] = useState(false);
@@ -276,7 +350,7 @@ export default function AISystemDetailPage() {
   const updateSystem = trpc.aiSystem.update.useMutation({
     onSuccess: () => {
       utils.aiSystem.getById.invalidate({ organizationId, id });
-      toast.success("AI system updated");
+      toast.success(t("toastSystemUpdated"));
     },
     onError: (err) => toast.error(err.message),
   });
@@ -285,7 +359,7 @@ export default function AISystemDetailPage() {
     onSuccess: () => {
       utils.aiSystem.getById.invalidate({ organizationId, id });
       setModelOpen(false);
-      toast.success("Model added");
+      toast.success(t("toastModelAdded"));
     },
     onError: (err) => toast.error(err.message),
   });
@@ -294,7 +368,7 @@ export default function AISystemDetailPage() {
     onSuccess: () => {
       utils.aiSystem.getById.invalidate({ organizationId, id });
       setModelOpen(false);
-      toast.success("Model updated");
+      toast.success(t("toastModelUpdated"));
     },
     onError: (err) => toast.error(err.message),
   });
@@ -302,7 +376,7 @@ export default function AISystemDetailPage() {
   const deleteModel = trpc.aiSystem.deleteModel.useMutation({
     onSuccess: () => {
       utils.aiSystem.getById.invalidate({ organizationId, id });
-      toast.success("Model deleted");
+      toast.success(t("toastModelDeleted"));
     },
     onError: (err) => toast.error(err.message),
   });
@@ -311,7 +385,7 @@ export default function AISystemDetailPage() {
     onSuccess: () => {
       utils.aiSystem.getById.invalidate({ organizationId, id });
       setDataSourceOpen(false);
-      toast.success("Data source added");
+      toast.success(t("toastDataSourceAdded"));
     },
     onError: (err) => toast.error(err.message),
   });
@@ -320,7 +394,7 @@ export default function AISystemDetailPage() {
     onSuccess: () => {
       utils.aiSystem.getById.invalidate({ organizationId, id });
       setDataSourceOpen(false);
-      toast.success("Data source updated");
+      toast.success(t("toastDataSourceUpdated"));
     },
     onError: (err) => toast.error(err.message),
   });
@@ -328,7 +402,7 @@ export default function AISystemDetailPage() {
   const deleteDataSource = trpc.aiSystem.deleteDataSource.useMutation({
     onSuccess: () => {
       utils.aiSystem.getById.invalidate({ organizationId, id });
-      toast.success("Data source deleted");
+      toast.success(t("toastDataSourceDeleted"));
     },
     onError: (err) => toast.error(err.message),
   });
@@ -345,11 +419,11 @@ export default function AISystemDetailPage() {
   if (!system) {
     return (
       <div className="text-center py-12">
-        <p className="text-muted-foreground">AI system not found</p>
+        <p className="text-muted-foreground">{t("notFound")}</p>
         <Link href="/governance/ai-registry">
           <Button variant="outline" className="mt-4">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Registry
+            {t("backToRegistry")}
           </Button>
         </Link>
       </div>
@@ -498,7 +572,7 @@ export default function AISystemDetailPage() {
                   variant="outline"
                   className={statusColors[system.status] || ""}
                 >
-                  {system.status}
+                  {statusLabel(system.status)}
                 </Badge>
                 {canWrite && (
                   <Select
@@ -513,7 +587,7 @@ export default function AISystemDetailPage() {
                     <SelectContent>
                       {["DRAFT", "DEVELOPMENT", "TESTING", "DEPLOYED", "RETIRED"].map((s) => (
                         <SelectItem key={s} value={s}>
-                          {s}
+                          {statusLabel(s)}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -521,7 +595,7 @@ export default function AISystemDetailPage() {
                 )}
                 {riskLevel && (
                   <Badge className={riskLevelColors[riskLevel] || ""}>
-                    {riskLevel} Risk
+                    {tc("riskWithLevel", { level: riskLabel(riskLevel) })}
                   </Badge>
                 )}
               </div>
@@ -536,7 +610,7 @@ export default function AISystemDetailPage() {
             onClick={openEditDialog}
           >
             <Edit className="w-4 h-4 mr-2" />
-            Edit
+            {tc("edit")}
           </Button>
         )}
       </div>
@@ -545,7 +619,7 @@ export default function AISystemDetailPage() {
       <div className="grid gap-6 md:grid-cols-3">
         <Card className="md:col-span-2">
           <CardHeader>
-            <CardTitle>Overview</CardTitle>
+            <CardTitle>{t("overview")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {system.description && (
@@ -553,39 +627,39 @@ export default function AISystemDetailPage() {
             )}
             {system.purpose && (
               <div>
-                <p className="text-sm font-medium mb-1">Intended Purpose</p>
+                <p className="text-sm font-medium mb-1">{t("intendedPurpose")}</p>
                 <p className="text-sm text-muted-foreground">{system.purpose}</p>
               </div>
             )}
             <div className="grid gap-4 grid-cols-2 md:grid-cols-3">
               <div>
-                <p className="text-sm text-muted-foreground">Technique</p>
+                <p className="text-sm text-muted-foreground">{t("technique")}</p>
                 <p className="font-medium text-sm">
-                  {techniqueLabels[system.technique] || system.technique}
+                  {techniqueLabel(system.technique)}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Role</p>
+                <p className="text-sm text-muted-foreground">{t("role")}</p>
                 <p className="font-medium text-sm">
-                  {roleLabels[system.role] || system.role}
+                  {roleLabel(system.role)}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Personal Data</p>
+                <p className="text-sm text-muted-foreground">{t("personalData")}</p>
                 <p className="font-medium text-sm">
-                  {system.processesPersonalData ? "Yes" : "No"}
+                  {system.processesPersonalData ? tc("yes") : tc("no")}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Business Owner</p>
-                <p className="font-medium text-sm">{system.businessOwner || "Not specified"}</p>
+                <p className="text-sm text-muted-foreground">{t("businessOwner")}</p>
+                <p className="font-medium text-sm">{system.businessOwner || tc("notSpecified")}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Technical Owner</p>
-                <p className="font-medium text-sm">{system.technicalOwner || "Not specified"}</p>
+                <p className="text-sm text-muted-foreground">{t("technicalOwner")}</p>
+                <p className="font-medium text-sm">{system.technicalOwner || tc("notSpecified")}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Deployment Date</p>
+                <p className="text-sm text-muted-foreground">{t("deploymentDate")}</p>
                 <p className="font-medium text-sm">{formatDate(system.deploymentDate)}</p>
               </div>
             </div>
@@ -594,27 +668,27 @@ export default function AISystemDetailPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Statistics</CardTitle>
+            <CardTitle>{t("statistics")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
               <p className="text-3xl font-bold text-primary">{system.models?.length ?? 0}</p>
-              <p className="text-sm text-muted-foreground">Models</p>
+              <p className="text-sm text-muted-foreground">{t("statsModels")}</p>
             </div>
             <div>
               <p className="text-3xl font-bold text-primary">{system.dataSources?.length ?? 0}</p>
-              <p className="text-sm text-muted-foreground">Data Sources</p>
+              <p className="text-sm text-muted-foreground">{t("statsDataSources")}</p>
             </div>
             <div>
               <p className="text-3xl font-bold text-primary">{system.assessments?.length ?? 0}</p>
-              <p className="text-sm text-muted-foreground">Assessments</p>
+              <p className="text-sm text-muted-foreground">{t("statsAssessments")}</p>
             </div>
             <div>
               <p className="text-3xl font-bold text-primary">{system._count?.complianceMappings ?? 0}</p>
-              <p className="text-sm text-muted-foreground">Compliance Mappings</p>
+              <p className="text-sm text-muted-foreground">{t("statsComplianceMappings")}</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Last Updated</p>
+              <p className="text-sm text-muted-foreground">{t("lastUpdated")}</p>
               <p className="font-medium text-sm">{formatRelativeTime(system.updatedAt)}</p>
             </div>
           </CardContent>
@@ -629,15 +703,15 @@ export default function AISystemDetailPage() {
               <div>
                 <CardTitle className="flex items-center gap-2">
                   <Shield className="w-4 h-4" />
-                  Compliance Scorecard
+                  {t("complianceScorecard")}
                 </CardTitle>
                 <CardDescription className="mt-1">
-                  {scorecard.total} requirements across {scorecard.frameworks.length} framework{scorecard.frameworks.length !== 1 ? "s" : ""}
+                  {tc("requirementsAcrossFrameworks", { total: scorecard.total, count: scorecard.frameworks.length })}
                 </CardDescription>
               </div>
               <Link href="/governance/compliance" className="self-start">
                 <Button variant="outline" size="sm">
-                  View Matrix
+                  {t("viewMatrix")}
                   <ChevronRight className="w-4 h-4 ml-1" />
                 </Button>
               </Link>
@@ -652,10 +726,10 @@ export default function AISystemDetailPage() {
               <div className="flex-1 min-w-0">
                 <Progress value={scorecard.compliancePercent} className="h-3" />
                 <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1 text-xs text-muted-foreground">
-                  <span>{scorecard.totalCompliant} compliant</span>
-                  <span>{scorecard.totalPartial} partial</span>
-                  <span>{scorecard.totalNonCompliant} non-compliant</span>
-                  <span>{scorecard.total - scorecard.assessed - scorecard.totalNotApplicable} not assessed</span>
+                  <span>{scorecard.totalCompliant} {tc("compliant")}</span>
+                  <span>{scorecard.totalPartial} {tc("partial")}</span>
+                  <span>{scorecard.totalNonCompliant} {tc("nonCompliant")}</span>
+                  <span>{scorecard.total - scorecard.assessed - scorecard.totalNotApplicable} {tc("notAssessed")}</span>
                 </div>
               </div>
             </div>
@@ -697,7 +771,7 @@ export default function AISystemDetailPage() {
             {/* Top gaps */}
             {scorecard.frameworks.some((fw) => fw.gaps.length > 0) && (
               <div>
-                <p className="text-sm font-medium mb-3">Top Gaps</p>
+                <p className="text-sm font-medium mb-3">{t("topGaps")}</p>
                 <div className="space-y-2">
                   {scorecard.frameworks
                     .flatMap((fw) =>
@@ -731,7 +805,7 @@ export default function AISystemDetailPage() {
                                 : "bg-muted text-muted-foreground border-border"
                             }`}
                           >
-                            {gap.status === "NON_COMPLIANT" ? "Non-Compliant" : "Not Assessed"}
+                            {gap.status === "NON_COMPLIANT" ? tc("complianceNonCompliant") : tc("complianceNotAssessed")}
                           </Badge>
                         </div>
                         <p className="text-muted-foreground text-xs mt-1 ml-6 line-clamp-1">
@@ -752,10 +826,10 @@ export default function AISystemDetailPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <ExternalLink className="w-4 h-4" />
-              DPO Central Links
+              {t("dpoCentralLinks")}
             </CardTitle>
             <CardDescription>
-              Linked records in DPO Central privacy management platform
+              {t("dpoCentralLinksDescription")}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -763,7 +837,7 @@ export default function AISystemDetailPage() {
               <div className="flex items-center gap-3 p-3 bg-muted/50">
                 <User className="w-4 h-4 text-muted-foreground" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium">Vendor Record</p>
+                  <p className="text-sm font-medium">{t("vendorRecord")}</p>
                   <p className="text-xs text-muted-foreground truncate">
                     ID: {system.dpoCentralVendorId}
                   </p>
@@ -783,7 +857,7 @@ export default function AISystemDetailPage() {
               <div key={assetId} className="flex items-center gap-3 p-3 bg-muted/50">
                 <Database className="w-4 h-4 text-muted-foreground" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium">Data Asset</p>
+                  <p className="text-sm font-medium">{t("dataAsset")}</p>
                   <p className="text-xs text-muted-foreground truncate">
                     ID: {assetId}
                   </p>
@@ -809,10 +883,10 @@ export default function AISystemDetailPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Building2 className="w-4 h-4" />
-              Linked Vendor
+              {t("linkedVendor")}
             </CardTitle>
             <CardDescription>
-              Third-party AI vendor associated with this system
+              {t("linkedVendorDescription")}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -831,11 +905,11 @@ export default function AISystemDetailPage() {
                               ? "bg-warning/20 text-warning"
                               : "bg-success/20 text-success"
                         }`}>
-                          {system.vendor.riskLevel} Risk
+                          {tc("riskWithLevel", { level: riskLabel(system.vendor.riskLevel) })}
                         </Badge>
                       )}
                       <Badge variant="outline" className="text-xs">
-                        {system.vendor.status}
+                        {statusLabel(system.vendor.status)}
                       </Badge>
                       {system.vendor.website && (
                         <span className="text-xs text-muted-foreground flex items-center gap-1">
@@ -857,25 +931,25 @@ export default function AISystemDetailPage() {
       <Tabs defaultValue="models">
         <TabsList className="w-full justify-start overflow-x-auto">
           <TabsTrigger value="models" className="text-xs sm:text-sm">
-            Models ({system.models?.length ?? 0})
+            {t("tabModels", { count: system.models?.length ?? 0 })}
           </TabsTrigger>
           <TabsTrigger value="data-sources" className="text-xs sm:text-sm">
-            Data Sources ({system.dataSources?.length ?? 0})
+            {t("tabDataSources", { count: system.dataSources?.length ?? 0 })}
           </TabsTrigger>
           <TabsTrigger value="risk" className="text-xs sm:text-sm">
-            Risk Classification
+            {t("tabRiskClassification")}
           </TabsTrigger>
           <TabsTrigger value="assessments" className="text-xs sm:text-sm">
-            Assessments ({system.assessments?.length ?? 0})
+            {t("tabAssessments", { count: system.assessments?.length ?? 0 })}
           </TabsTrigger>
           <TabsTrigger value="oversight" className="text-xs sm:text-sm">
-            Oversight ({system.oversightGates?.length ?? 0})
+            {t("tabOversight", { count: system.oversightGates?.length ?? 0 })}
           </TabsTrigger>
           <TabsTrigger value="policies" className="text-xs sm:text-sm">
-            Policies ({system.policyLinks?.length ?? 0})
+            {t("tabPolicies", { count: system.policyLinks?.length ?? 0 })}
           </TabsTrigger>
           <TabsTrigger value="incidents" className="text-xs sm:text-sm">
-            Incidents ({system.incidents?.length ?? 0})
+            {t("tabIncidents", { count: system.incidents?.length ?? 0 })}
           </TabsTrigger>
         </TabsList>
 
@@ -884,13 +958,13 @@ export default function AISystemDetailPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle>AI Models</CardTitle>
-                <CardDescription>Models and algorithms used by this system</CardDescription>
+                <CardTitle>{t("aiModels")}</CardTitle>
+                <CardDescription>{t("aiModelsDescription")}</CardDescription>
               </div>
               {canWrite && (
                 <Button size="sm" variant="outline" onClick={openAddModel}>
                   <Plus className="w-4 h-4 mr-2" />
-                  Add Model
+                  {t("addModel")}
                 </Button>
               )}
             </CardHeader>
@@ -943,8 +1017,8 @@ export default function AISystemDetailPage() {
               ) : (
                 <div className="text-center py-8 text-muted-foreground">
                   <Brain className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p>No models registered yet</p>
-                  <p className="text-sm">Add models to document the AI components of this system</p>
+                  <p>{t("noModelsTitle")}</p>
+                  <p className="text-sm">{t("noModelsDescription")}</p>
                 </div>
               )}
             </CardContent>
@@ -956,13 +1030,13 @@ export default function AISystemDetailPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle>Data Sources</CardTitle>
-                <CardDescription>Training, validation, and input data sources</CardDescription>
+                <CardTitle>{t("dataSourcesTitle")}</CardTitle>
+                <CardDescription>{t("dataSourcesDescription")}</CardDescription>
               </div>
               {canWrite && (
                 <Button size="sm" variant="outline" onClick={openAddDataSource}>
                   <Plus className="w-4 h-4 mr-2" />
-                  Add Data Source
+                  {t("addDataSource")}
                 </Button>
               )}
             </CardHeader>
@@ -990,11 +1064,11 @@ export default function AISystemDetailPage() {
                           variant="outline"
                           className={`text-xs ${dataSourceTypeColors[ds.sourceType] || ""}`}
                         >
-                          {dataSourceTypeLabels[ds.sourceType] || ds.sourceType}
+                          {dataSourceTypeLabel(ds.sourceType)}
                         </Badge>
                         {ds.containsPersonalData && (
                           <Badge variant="outline" className="text-xs border-warning text-warning">
-                            Personal Data
+                            {tc("personalData")}
                           </Badge>
                         )}
                         {canWrite && (
@@ -1024,9 +1098,9 @@ export default function AISystemDetailPage() {
               ) : (
                 <div className="text-center py-8 text-muted-foreground">
                   <Database className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p>No data sources documented yet</p>
+                  <p>{t("noDataSourcesTitle")}</p>
                   <p className="text-sm">
-                    Document training, validation, and input data sources
+                    {t("noDataSourcesDescription")}
                   </p>
                 </div>
               )}
@@ -1040,9 +1114,9 @@ export default function AISystemDetailPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Shield className="w-5 h-5" />
-                Risk Classification
+                {t("riskClassificationTitle")}
               </CardTitle>
-              <CardDescription>EU AI Act four-tier risk classification</CardDescription>
+              <CardDescription>{t("riskClassificationDescription")}</CardDescription>
             </CardHeader>
             <CardContent>
               {system.riskClassification ? (
@@ -1053,23 +1127,23 @@ export default function AISystemDetailPage() {
                         riskLevelColors[system.riskClassification.riskLevel] || ""
                       }`}
                     >
-                      {system.riskClassification.riskLevel} Risk
+                      {tc("riskWithLevel", { level: riskLabel(system.riskClassification.riskLevel) })}
                     </Badge>
                     {system.riskClassification.annexIIICategory && (
                       <Badge variant="outline" className="text-xs">
-                        Annex III: {system.riskClassification.annexIIICategory}
+                        {t("annexIIIPrefix", { category: system.riskClassification.annexIIICategory })}
                       </Badge>
                     )}
                   </div>
                   <div>
-                    <p className="text-sm font-medium mb-1">Rationale</p>
+                    <p className="text-sm font-medium mb-1">{t("rationale")}</p>
                     <p className="text-sm text-muted-foreground">
                       {system.riskClassification.rationale}
                     </p>
                   </div>
                   <div className="flex items-center gap-4 text-xs text-muted-foreground">
                     <span>
-                      Classified {formatDate(system.riskClassification.classifiedAt)}
+                      {tc("classified", { date: formatDate(system.riskClassification.classifiedAt) })}
                     </span>
                   </div>
 
@@ -1077,7 +1151,7 @@ export default function AISystemDetailPage() {
                   {system.riskClassification.history &&
                     system.riskClassification.history.length > 0 && (
                       <div className="mt-4 pt-4 border-t">
-                        <p className="text-sm font-medium mb-3">Classification History</p>
+                        <p className="text-sm font-medium mb-3">{t("classificationHistory")}</p>
                         <div className="space-y-2">
                           {system.riskClassification.history.map((entry) => (
                             <div
@@ -1101,14 +1175,14 @@ export default function AISystemDetailPage() {
               ) : (
                 <div className="text-center py-8 text-muted-foreground">
                   <Shield className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p>Not classified yet</p>
+                  <p>{t("notClassifiedTitle")}</p>
                   <p className="text-sm mb-4">
-                    Classify this system under the EU AI Act risk framework
+                    {t("notClassifiedDescription")}
                   </p>
                   <Link href="/governance/risk-classification">
                     <Button variant="outline">
                       <Shield className="w-4 h-4 mr-2" />
-                      Classify Risk
+                      {t("classifyRisk")}
                     </Button>
                   </Link>
                 </div>
@@ -1122,15 +1196,15 @@ export default function AISystemDetailPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle>Assessments</CardTitle>
+                <CardTitle>{t("assessmentsTitle")}</CardTitle>
                 <CardDescription>
-                  FRIA, conformity, and other assessments for this system
+                  {t("assessmentsDescription")}
                 </CardDescription>
               </div>
               <Link href="/governance/assessments/new">
                 <Button size="sm" variant="outline">
                   <FileSearch className="w-4 h-4 mr-2" />
-                  New Assessment
+                  {t("newAssessment")}
                 </Button>
               </Link>
             </CardHeader>
@@ -1160,7 +1234,7 @@ export default function AISystemDetailPage() {
                             variant="outline"
                             className={`text-xs ${assessmentStatusColors[assessment.status] || ""}`}
                           >
-                            {assessment.status.replace("_", " ")}
+                            {statusLabel(assessment.status)}
                           </Badge>
                         </div>
                       </div>
@@ -1170,14 +1244,14 @@ export default function AISystemDetailPage() {
               ) : (
                 <div className="text-center py-8 text-muted-foreground">
                   <FileSearch className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p>No assessments yet</p>
+                  <p>{t("noAssessmentsTitle")}</p>
                   <p className="text-sm mb-4">
-                    Create a FRIA or other assessment for this AI system
+                    {t("noAssessmentsDescription")}
                   </p>
                   <Link href="/governance/assessments/new">
                     <Button variant="outline">
                       <FileSearch className="w-4 h-4 mr-2" />
-                      New Assessment
+                      {t("newAssessment")}
                     </Button>
                   </Link>
                 </div>
@@ -1193,16 +1267,16 @@ export default function AISystemDetailPage() {
               <div>
                 <CardTitle className="flex items-center gap-2">
                   <Eye className="w-5 h-5" />
-                  Oversight Gates
+                  {t("oversightGatesTitle")}
                 </CardTitle>
                 <CardDescription>
-                  Human oversight checkpoints for this AI system
+                  {t("oversightGatesDescription")}
                 </CardDescription>
               </div>
               <Link href="/governance/oversight/new">
                 <Button size="sm" variant="outline">
                   <Plus className="w-4 h-4 mr-2" />
-                  New Gate
+                  {t("newGate")}
                 </Button>
               </Link>
             </CardHeader>
@@ -1223,13 +1297,13 @@ export default function AISystemDetailPage() {
                                 variant="outline"
                                 className={`text-xs ${gateTypeColors[gate.gateType] || ""}`}
                               >
-                                {gate.gateType.replace(/_/g, " ")}
+                                {gateTypeLabel(gate.gateType)}
                               </Badge>
                               <Badge
                                 variant="outline"
                                 className={`text-xs ${gateStatusColors[gate.status] || ""}`}
                               >
-                                {gate.status.replace(/_/g, " ")}
+                                {statusLabel(gate.status)}
                               </Badge>
                             </div>
                             <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
@@ -1242,7 +1316,7 @@ export default function AISystemDetailPage() {
                               {gate.nextReviewDate && (
                                 <span className="flex items-center gap-1">
                                   <Calendar className="w-3 h-3" />
-                                  Next review: {formatDate(gate.nextReviewDate)}
+                                  {tc("nextReview", { date: formatDate(gate.nextReviewDate) })}
                                 </span>
                               )}
                             </div>
@@ -1256,14 +1330,14 @@ export default function AISystemDetailPage() {
               ) : (
                 <div className="text-center py-8 text-muted-foreground">
                   <Eye className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p>No oversight gates</p>
+                  <p>{t("noOversightTitle")}</p>
                   <p className="text-sm mb-4">
-                    Create human oversight checkpoints for this AI system
+                    {t("noOversightDescription")}
                   </p>
                   <Link href="/governance/oversight/new">
                     <Button variant="outline">
                       <Plus className="w-4 h-4 mr-2" />
-                      New Gate
+                      {t("newGate")}
                     </Button>
                   </Link>
                 </div>
@@ -1279,16 +1353,16 @@ export default function AISystemDetailPage() {
               <div>
                 <CardTitle className="flex items-center gap-2">
                   <ScrollText className="w-5 h-5" />
-                  Linked Policies
+                  {t("linkedPolicies")}
                 </CardTitle>
                 <CardDescription>
-                  Governance policies linked to this AI system
+                  {t("linkedPoliciesDescription")}
                 </CardDescription>
               </div>
               <Link href="/governance/policies/new">
                 <Button size="sm" variant="outline">
                   <Plus className="w-4 h-4 mr-2" />
-                  New Policy
+                  {tc("newPolicy")}
                 </Button>
               </Link>
             </CardHeader>
@@ -1314,13 +1388,13 @@ export default function AISystemDetailPage() {
                         </div>
                         <div className="flex items-center gap-2 shrink-0">
                           <Badge variant="outline" className="text-xs">
-                            {policyTypeLabels[link.policy.type] || link.policy.type}
+                            {policyTypeLabel(link.policy.type)}
                           </Badge>
                           <Badge
                             variant="outline"
                             className={`text-xs ${policyStatusColors[link.policy.status] || ""}`}
                           >
-                            {link.policy.status.replace(/_/g, " ")}
+                            {statusLabel(link.policy.status)}
                           </Badge>
                         </div>
                       </div>
@@ -1330,9 +1404,9 @@ export default function AISystemDetailPage() {
               ) : (
                 <div className="text-center py-8 text-muted-foreground">
                   <ScrollText className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p>No linked policies</p>
+                  <p>{t("noLinkedPoliciesTitle")}</p>
                   <p className="text-sm">
-                    Link governance policies to this AI system from the Policies module
+                    {t("noLinkedPoliciesDescription")}
                   </p>
                 </div>
               )}
@@ -1347,16 +1421,16 @@ export default function AISystemDetailPage() {
               <div>
                 <CardTitle className="flex items-center gap-2">
                   <AlertCircle className="w-5 h-5" />
-                  Incidents
+                  {t("incidentsTitle")}
                 </CardTitle>
                 <CardDescription>
-                  AI incidents reported for this system
+                  {t("incidentsDescription")}
                 </CardDescription>
               </div>
               <Link href="/governance/incidents/new">
                 <Button size="sm" variant="outline">
                   <Plus className="w-4 h-4 mr-2" />
-                  Report Incident
+                  {t("reportIncident")}
                 </Button>
               </Link>
             </CardHeader>
@@ -1374,7 +1448,7 @@ export default function AISystemDetailPage() {
                           <div className="min-w-0">
                             <p className="font-medium text-sm truncate">{incident.title}</p>
                             <p className="text-xs text-muted-foreground">
-                              Reported {formatDate(incident.reportedAt)}
+                              {tc("reported", { date: formatDate(incident.reportedAt) })}
                             </p>
                           </div>
                         </div>
@@ -1382,13 +1456,13 @@ export default function AISystemDetailPage() {
                           <Badge
                             className={`text-xs ${severityColors[incident.severity] || ""}`}
                           >
-                            {incident.severity}
+                            {severityLabel(incident.severity)}
                           </Badge>
                           <Badge
                             variant="outline"
                             className={`text-xs ${incidentStatusColors[incident.status] || ""}`}
                           >
-                            {incident.status.replace(/_/g, " ")}
+                            {statusLabel(incident.status)}
                           </Badge>
                         </div>
                       </div>
@@ -1398,14 +1472,14 @@ export default function AISystemDetailPage() {
               ) : (
                 <div className="text-center py-8 text-muted-foreground">
                   <AlertCircle className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p>No incidents reported</p>
+                  <p>{t("noIncidentsTitle")}</p>
                   <p className="text-sm mb-4">
-                    Report and track AI incidents for this system
+                    {t("noIncidentsDescription")}
                   </p>
                   <Link href="/governance/incidents/new">
                     <Button variant="outline">
                       <AlertCircle className="w-4 h-4 mr-2" />
-                      Report Incident
+                      {t("reportIncident")}
                     </Button>
                   </Link>
                 </div>
@@ -1421,14 +1495,14 @@ export default function AISystemDetailPage() {
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
         <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Edit AI System</DialogTitle>
+            <DialogTitle>{t("editDialogTitle")}</DialogTitle>
             <DialogDescription>
-              Update the details of this AI system.
+              {t("editDialogDescription")}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-2">
             <div className="space-y-2">
-              <Label htmlFor="edit-name">Name</Label>
+              <Label htmlFor="edit-name">{t("editNameLabel")}</Label>
               <Input
                 id="edit-name"
                 value={editForm.name}
@@ -1436,7 +1510,7 @@ export default function AISystemDetailPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit-description">Description</Label>
+              <Label htmlFor="edit-description">{t("editDescriptionLabel")}</Label>
               <Textarea
                 id="edit-description"
                 value={editForm.description}
@@ -1446,7 +1520,7 @@ export default function AISystemDetailPage() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Technique</Label>
+                <Label>{t("editTechniqueLabel")}</Label>
                 <Select
                   value={editForm.technique}
                   onValueChange={(val) => setEditForm((f) => ({ ...f, technique: val }))}
@@ -1455,16 +1529,16 @@ export default function AISystemDetailPage() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {techniques.map((t) => (
-                      <SelectItem key={t} value={t}>
-                        {techniqueLabels[t]}
+                    {techniques.map((tech) => (
+                      <SelectItem key={tech} value={tech}>
+                        {techniqueLabel(tech)}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label>Role</Label>
+                <Label>{t("editRoleLabel")}</Label>
                 <Select
                   value={editForm.role}
                   onValueChange={(val) => setEditForm((f) => ({ ...f, role: val }))}
@@ -1475,7 +1549,7 @@ export default function AISystemDetailPage() {
                   <SelectContent>
                     {roles.map((r) => (
                       <SelectItem key={r} value={r}>
-                        {roleLabels[r]}
+                        {roleLabel(r)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -1483,7 +1557,7 @@ export default function AISystemDetailPage() {
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit-purpose">Purpose</Label>
+              <Label htmlFor="edit-purpose">{t("editPurposeLabel")}</Label>
               <Textarea
                 id="edit-purpose"
                 value={editForm.purpose}
@@ -1493,7 +1567,7 @@ export default function AISystemDetailPage() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="edit-business-owner">Business Owner</Label>
+                <Label htmlFor="edit-business-owner">{t("editBusinessOwnerLabel")}</Label>
                 <Input
                   id="edit-business-owner"
                   value={editForm.businessOwner}
@@ -1501,7 +1575,7 @@ export default function AISystemDetailPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="edit-technical-owner">Technical Owner</Label>
+                <Label htmlFor="edit-technical-owner">{t("editTechnicalOwnerLabel")}</Label>
                 <Input
                   id="edit-technical-owner"
                   value={editForm.technicalOwner}
@@ -1515,19 +1589,19 @@ export default function AISystemDetailPage() {
                 checked={editForm.processesPersonalData}
                 onCheckedChange={(checked) => setEditForm((f) => ({ ...f, processesPersonalData: checked }))}
               />
-              <Label htmlFor="edit-personal-data">Processes Personal Data</Label>
+              <Label htmlFor="edit-personal-data">{tc("processesPersonalData")}</Label>
             </div>
             <div className="space-y-2">
-              <Label>Linked Vendor</Label>
+              <Label>{t("editLinkedVendorLabel")}</Label>
               <Select
                 value={editForm.vendorId ?? "none"}
                 onValueChange={(val) => setEditForm((f) => ({ ...f, vendorId: val === "none" ? null : val }))}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a vendor..." />
+                  <SelectValue placeholder={t("editSelectVendorPlaceholder")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="none">No vendor</SelectItem>
+                  <SelectItem value="none">{tc("noVendor")}</SelectItem>
                   {vendorData?.items?.map((v) => (
                     <SelectItem key={v.id} value={v.id}>
                       {v.name}
@@ -1539,14 +1613,14 @@ export default function AISystemDetailPage() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditOpen(false)}>
-              Cancel
+              {tc("cancel")}
             </Button>
             <Button
               onClick={submitEdit}
               disabled={!editForm.name || updateSystem.isPending}
             >
               {updateSystem.isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-              Save Changes
+              {tc("saveChanges")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -1556,76 +1630,76 @@ export default function AISystemDetailPage() {
       <Dialog open={modelOpen} onOpenChange={setModelOpen}>
         <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{modelForm.id ? "Edit Model" : "Add Model"}</DialogTitle>
+            <DialogTitle>{modelForm.id ? t("editModelDialogTitle") : t("addModelDialogTitle")}</DialogTitle>
             <DialogDescription>
               {modelForm.id
-                ? "Update the details of this AI model."
-                : "Add a new model to this AI system."}
+                ? t("editModelDialogDescription")
+                : t("addModelDialogDescription")}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-2">
             <div className="space-y-2">
-              <Label htmlFor="model-name">Name *</Label>
+              <Label htmlFor="model-name">{t("modelNameLabel")} *</Label>
               <Input
                 id="model-name"
                 value={modelForm.name}
                 onChange={(e) => setModelForm((f) => ({ ...f, name: e.target.value }))}
-                placeholder="e.g. GPT-4o, Claude 3.5 Sonnet"
+                placeholder={t("modelNamePlaceholder")}
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="model-provider">Provider</Label>
+                <Label htmlFor="model-provider">{t("modelProviderLabel")}</Label>
                 <Input
                   id="model-provider"
                   value={modelForm.provider}
                   onChange={(e) => setModelForm((f) => ({ ...f, provider: e.target.value }))}
-                  placeholder="e.g. OpenAI, Anthropic"
+                  placeholder={t("modelProviderPlaceholder")}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="model-type">Model Type</Label>
+                <Label htmlFor="model-type">{t("modelTypeLabel")}</Label>
                 <Input
                   id="model-type"
                   value={modelForm.modelType}
                   onChange={(e) => setModelForm((f) => ({ ...f, modelType: e.target.value }))}
-                  placeholder="e.g. LLM, Classifier"
+                  placeholder={t("modelTypePlaceholder")}
                 />
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="model-version">Version</Label>
+              <Label htmlFor="model-version">{t("modelVersionLabel")}</Label>
               <Input
                 id="model-version"
                 value={modelForm.version}
                 onChange={(e) => setModelForm((f) => ({ ...f, version: e.target.value }))}
-                placeholder="e.g. 1.0, 2024-03"
+                placeholder={t("modelVersionPlaceholder")}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="model-training">Training Data Summary</Label>
+              <Label htmlFor="model-training">{t("modelTrainingDataLabel")}</Label>
               <Textarea
                 id="model-training"
                 value={modelForm.trainingDataSummary}
                 onChange={(e) => setModelForm((f) => ({ ...f, trainingDataSummary: e.target.value }))}
                 rows={2}
-                placeholder="Describe the training data used..."
+                placeholder={t("modelTrainingDataPlaceholder")}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="model-limitations">Known Limitations</Label>
+              <Label htmlFor="model-limitations">{t("modelLimitationsLabel")}</Label>
               <Textarea
                 id="model-limitations"
                 value={modelForm.knownLimitations}
                 onChange={(e) => setModelForm((f) => ({ ...f, knownLimitations: e.target.value }))}
                 rows={2}
-                placeholder="Describe any known limitations..."
+                placeholder={t("modelLimitationsPlaceholder")}
               />
             </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setModelOpen(false)}>
-              Cancel
+              {tc("cancel")}
             </Button>
             <Button
               onClick={submitModel}
@@ -1634,7 +1708,7 @@ export default function AISystemDetailPage() {
               {(addModel.isPending || updateModel.isPending) && (
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
               )}
-              {modelForm.id ? "Save Changes" : "Add Model"}
+              {modelForm.id ? tc("saveChanges") : t("addModel")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -1644,25 +1718,25 @@ export default function AISystemDetailPage() {
       <Dialog open={dataSourceOpen} onOpenChange={setDataSourceOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>{dataSourceForm.id ? "Edit Data Source" : "Add Data Source"}</DialogTitle>
+            <DialogTitle>{dataSourceForm.id ? t("editDataSourceDialogTitle") : t("addDataSourceDialogTitle")}</DialogTitle>
             <DialogDescription>
               {dataSourceForm.id
-                ? "Update the details of this data source."
-                : "Add a new data source to this AI system."}
+                ? t("editDataSourceDialogDescription")
+                : t("addDataSourceDialogDescription")}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-2">
             <div className="space-y-2">
-              <Label htmlFor="ds-name">Name *</Label>
+              <Label htmlFor="ds-name">{t("dataSourceNameLabel")} *</Label>
               <Input
                 id="ds-name"
                 value={dataSourceForm.name}
                 onChange={(e) => setDataSourceForm((f) => ({ ...f, name: e.target.value }))}
-                placeholder="e.g. Customer Support Tickets"
+                placeholder={t("dataSourceNamePlaceholder")}
               />
             </div>
             <div className="space-y-2">
-              <Label>Source Type</Label>
+              <Label>{t("dataSourceTypeLabel")}</Label>
               <Select
                 value={dataSourceForm.sourceType}
                 onValueChange={(val) => setDataSourceForm((f) => ({ ...f, sourceType: val }))}
@@ -1671,22 +1745,22 @@ export default function AISystemDetailPage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {sourceTypes.map((t) => (
-                    <SelectItem key={t} value={t}>
-                      {dataSourceTypeLabels[t]}
+                  {sourceTypes.map((st) => (
+                    <SelectItem key={st} value={st}>
+                      {dataSourceTypeLabel(st)}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="ds-description">Description</Label>
+              <Label htmlFor="ds-description">{t("dataSourceDescriptionLabel")}</Label>
               <Textarea
                 id="ds-description"
                 value={dataSourceForm.description}
                 onChange={(e) => setDataSourceForm((f) => ({ ...f, description: e.target.value }))}
                 rows={3}
-                placeholder="Describe this data source..."
+                placeholder={t("dataSourceDescriptionPlaceholder")}
               />
             </div>
             <div className="flex items-center gap-3">
@@ -1695,12 +1769,12 @@ export default function AISystemDetailPage() {
                 checked={dataSourceForm.containsPersonalData}
                 onCheckedChange={(checked) => setDataSourceForm((f) => ({ ...f, containsPersonalData: checked }))}
               />
-              <Label htmlFor="ds-personal-data">Contains Personal Data</Label>
+              <Label htmlFor="ds-personal-data">{t("containsPersonalData")}</Label>
             </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDataSourceOpen(false)}>
-              Cancel
+              {tc("cancel")}
             </Button>
             <Button
               onClick={submitDataSource}
@@ -1709,7 +1783,7 @@ export default function AISystemDetailPage() {
               {(addDataSource.isPending || updateDataSource.isPending) && (
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
               )}
-              {dataSourceForm.id ? "Save Changes" : "Add Data Source"}
+              {dataSourceForm.id ? tc("saveChanges") : t("addDataSource")}
             </Button>
           </DialogFooter>
         </DialogContent>

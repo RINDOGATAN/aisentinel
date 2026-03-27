@@ -42,6 +42,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
@@ -107,6 +108,8 @@ const riskIndicatorColors: Record<string, string> = {
 };
 
 export default function ShadowAIDetailPage() {
+  const t = useTranslations("shadowAiDetail");
+  const tc = useTranslations("common");
   const params = useParams();
   const id = params.id as string;
   const { organization, canWrite } = useOrganization();
@@ -253,11 +256,11 @@ export default function ShadowAIDetailPage() {
   if (!report) {
     return (
       <div className="text-center py-12">
-        <p className="text-muted-foreground">Report not found</p>
+        <p className="text-muted-foreground">{t("notFound")}</p>
         <Link href="/governance/shadow-ai">
           <Button variant="outline" className="mt-4">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Shadow AI
+            {t("backToShadowAi")}
           </Button>
         </Link>
       </div>
@@ -267,12 +270,12 @@ export default function ShadowAIDetailPage() {
   // Determine available transitions
   const transitions: { label: string; status: ShadowAIStatus; variant: "default" | "outline" | "destructive" }[] = [];
   if (report.status === "DISCOVERED") {
-    transitions.push({ label: "Start Review", status: "UNDER_REVIEW", variant: "default" });
+    transitions.push({ label: t("startReview"), status: "UNDER_REVIEW", variant: "default" });
   } else if (report.status === "UNDER_REVIEW") {
-    transitions.push({ label: "Approve", status: "APPROVED", variant: "default" });
-    transitions.push({ label: "Prohibit", status: "PROHIBITED", variant: "destructive" });
+    transitions.push({ label: t("approve"), status: "APPROVED", variant: "default" });
+    transitions.push({ label: t("prohibit"), status: "PROHIBITED", variant: "destructive" });
   } else if (report.status === "APPROVED") {
-    transitions.push({ label: "Register as AI System", status: "REGISTERED", variant: "default" });
+    transitions.push({ label: t("registerAsAiSystem"), status: "REGISTERED", variant: "default" });
   }
 
   return (
@@ -340,13 +343,13 @@ export default function ShadowAIDetailPage() {
         <Card className="border-primary/50 bg-primary/5">
           <CardContent className="p-4 flex items-center justify-between gap-4">
             <div>
-              <p className="font-semibold text-sm">This tool has been approved</p>
+              <p className="font-semibold text-sm">{t("approvedCtaTitle")}</p>
               <p className="text-xs text-muted-foreground">
-                Register it as an AI System to start governance tracking
+                {t("approvedCtaDescription")}
               </p>
             </div>
             <Button size="sm" onClick={() => handleStatusChange("REGISTERED")}>
-              Register as AI System
+              {t("registerAsAiSystem")}
             </Button>
           </CardContent>
         </Card>
@@ -357,26 +360,26 @@ export default function ShadowAIDetailPage() {
         {/* Overview */}
         <Card className="md:col-span-2">
           <CardHeader>
-            <CardTitle>Overview</CardTitle>
+            <CardTitle>{t("overviewTitle")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {report.usageDescription && (
               <div>
-                <p className="text-sm text-muted-foreground mb-1">Usage Description</p>
+                <p className="text-sm text-muted-foreground mb-1">{t("labelUsageDescription")}</p>
                 <p className="text-sm">{report.usageDescription}</p>
               </div>
             )}
 
             <div className="grid gap-4 grid-cols-2 md:grid-cols-3">
               <div>
-                <p className="text-sm text-muted-foreground">Department</p>
+                <p className="text-sm text-muted-foreground">{t("labelDepartment")}</p>
                 <p className="font-medium text-sm flex items-center gap-1">
                   <Building2 className="w-3 h-3 text-muted-foreground" />
-                  {report.department || "Not specified"}
+                  {report.department || tc("notSpecified")}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Reported By</p>
+                <p className="text-sm text-muted-foreground">{t("labelReportedBy")}</p>
                 <p className="font-medium text-sm flex items-center gap-1">
                   <User className="w-3 h-3 text-muted-foreground" />
                   {report.reportedBy || "Unknown"}
@@ -403,7 +406,7 @@ export default function ShadowAIDetailPage() {
                 <div className="flex items-center gap-3 p-3 bg-muted/50">
                   <Cpu className="w-4 h-4 text-primary" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium">Registered AI System</p>
+                    <p className="text-sm font-medium">{t("registeredSystemTitle")}</p>
                     <p className="text-xs text-muted-foreground truncate">
                       ID: {report.registeredSystemId}
                     </p>
@@ -424,7 +427,7 @@ export default function ShadowAIDetailPage() {
         {/* Tool Info */}
         <Card>
           <CardHeader>
-            <CardTitle>Tool Info</CardTitle>
+            <CardTitle>{t("toolInfoTitle")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {report.tool ? (
@@ -500,12 +503,12 @@ export default function ShadowAIDetailPage() {
       <Dialog open={registerDialogOpen} onOpenChange={setRegisterDialogOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>Register as AI System</DialogTitle>
+            <DialogTitle>{t("registerDialogTitle")}</DialogTitle>
           </DialogHeader>
           <Tabs value={registerTab} onValueChange={setRegisterTab}>
             <TabsList className="w-full">
-              <TabsTrigger value="create" className="flex-1">Create New</TabsTrigger>
-              <TabsTrigger value="existing" className="flex-1">Link Existing</TabsTrigger>
+              <TabsTrigger value="create" className="flex-1">{t("registerTabCreateNew")}</TabsTrigger>
+              <TabsTrigger value="existing" className="flex-1">{t("registerTabLinkExisting")}</TabsTrigger>
             </TabsList>
 
             {/* Create New Tab */}
@@ -636,7 +639,7 @@ export default function ShadowAIDetailPage() {
                 setSelectedSystemId("");
               }}
             >
-              Cancel
+              {tc("cancel")}
             </Button>
             <Button
               onClick={handleRegister}

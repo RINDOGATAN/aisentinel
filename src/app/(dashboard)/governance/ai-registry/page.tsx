@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { keepPreviousData } from "@tanstack/react-query";
 import { trpc } from "@/lib/trpc";
+import { useTranslations } from "next-intl";
 import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
 import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
@@ -78,6 +79,8 @@ export default function AIRegistryPage() {
   const [activeTab, setActiveTab] = useState("all");
   const debouncedSearch = useDebounce(searchQuery);
   const { organization, canWrite } = useOrganization();
+  const t = useTranslations("aiRegistry");
+  const tc = useTranslations("common");
 
   const statusFilter = activeTab === "all" ? undefined : activeTab.toUpperCase() as "DRAFT" | "DEVELOPMENT" | "TESTING" | "DEPLOYED" | "RETIRED";
 
@@ -115,16 +118,16 @@ export default function AIRegistryPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl sm:text-2xl font-semibold">AI Registry</h1>
+          <h1 className="text-xl sm:text-2xl font-semibold">{t("title")}</h1>
           <p className="text-sm text-muted-foreground">
-            Inventory of all AI systems, models, and agents
+            {t("subtitle")}
           </p>
         </div>
         {canWrite && (
           <Link href="/governance/ai-registry/new" className="flex-none">
             <Button className="w-full sm:w-auto">
               <Plus className="w-4 h-4 sm:mr-2" />
-              <span className="hidden sm:inline">Register AI System</span>
+              <span className="hidden sm:inline">{t("registerAiSystem")}</span>
               <span className="sm:hidden">Register</span>
             </Button>
           </Link>
@@ -142,19 +145,19 @@ export default function AIRegistryPage() {
         <Card>
           <CardContent className="p-4 sm:pt-6">
             <div className="text-xl sm:text-2xl font-bold text-muted-foreground">{stats.draft}</div>
-            <p className="text-xs sm:text-sm text-muted-foreground">Draft</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">{tc("statusDraft")}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
             <div className="text-xl sm:text-2xl font-bold text-success">{stats.deployed}</div>
-            <p className="text-xs sm:text-sm text-muted-foreground">Deployed</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">{tc("statusDeployed")}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
             <div className="text-xl sm:text-2xl font-bold text-muted-foreground/50">{stats.retired}</div>
-            <p className="text-xs sm:text-sm text-muted-foreground">Retired</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">{tc("statusRetired")}</p>
           </CardContent>
         </Card>
       </div>
@@ -164,7 +167,7 @@ export default function AIRegistryPage() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search AI systems..."
+            placeholder={t("searchPlaceholder")}
             className="pl-9"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -179,19 +182,19 @@ export default function AIRegistryPage() {
             All ({stats.total})
           </TabsTrigger>
           <TabsTrigger value="draft" className="text-xs sm:text-sm">
-            Draft ({stats.draft})
+            {tc("statusDraft")} ({stats.draft})
           </TabsTrigger>
           <TabsTrigger value="development" className="text-xs sm:text-sm">
-            Development
+            {tc("statusDevelopment")}
           </TabsTrigger>
           <TabsTrigger value="testing" className="text-xs sm:text-sm">
-            Testing
+            {tc("statusTesting")}
           </TabsTrigger>
           <TabsTrigger value="deployed" className="text-xs sm:text-sm">
-            Deployed ({stats.deployed})
+            {tc("statusDeployed")} ({stats.deployed})
           </TabsTrigger>
           <TabsTrigger value="retired" className="text-xs sm:text-sm">
-            Retired ({stats.retired})
+            {tc("statusRetired")} ({stats.retired})
           </TabsTrigger>
         </TabsList>
 
@@ -270,7 +273,7 @@ export default function AIRegistryPage() {
                     {isFetchingNextPage && (
                       <Loader2 className="w-4 h-4 animate-spin mr-2" />
                     )}
-                    Load More
+                    {tc("loadMore")}
                   </Button>
                 </div>
               )}
@@ -279,17 +282,17 @@ export default function AIRegistryPage() {
             <Card>
               <CardContent className="py-8 text-center text-muted-foreground">
                 <Cpu className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                <p>No AI systems found</p>
+                <p>{t("emptyTitle")}</p>
                 <p className="text-sm mb-4">
                   {searchQuery
-                    ? "Try adjusting your search terms"
-                    : "Start by registering your first AI system"}
+                    ? t("emptySearchHint")
+                    : t("emptyDefaultHint")}
                 </p>
                 {!searchQuery && canWrite && (
                   <Link href="/governance/ai-registry/new">
                     <Button>
                       <Plus className="w-4 h-4 mr-2" />
-                      Register AI System
+                      {t("registerAiSystem")}
                     </Button>
                   </Link>
                 )}

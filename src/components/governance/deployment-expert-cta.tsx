@@ -4,11 +4,13 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Server, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { features } from "@/config/features";
 
 const DISMISS_KEY = "ais-deployment-cta-dismissed";
 
 export function DeploymentExpertCta() {
+  const t = useTranslations("experts");
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -29,15 +31,15 @@ export function DeploymentExpertCta() {
       <div className="flex items-center gap-3 flex-1 min-w-0">
         <Server className="w-4 h-4 text-muted-foreground shrink-0" />
         <div className="min-w-0">
-          <span className="text-sm font-medium">Want to self-host AI Sentinel?</span>
-          <span className="text-xs text-muted-foreground ml-2 hidden sm:inline">Deployment experts can help you set up and maintain your own instance.</span>
-          <p className="text-xs text-muted-foreground sm:hidden">Deployment experts can help you set up and maintain your own instance.</p>
+          <span className="text-sm font-medium">{t("deploymentCtaTitle")}</span>
+          <span className="text-xs text-muted-foreground ml-2 hidden sm:inline">{t("deploymentCtaDescription")}</span>
+          <p className="text-xs text-muted-foreground sm:hidden">{t("deploymentCtaDescription")}</p>
         </div>
       </div>
       <div className="flex items-center gap-2 shrink-0 ml-7 sm:ml-0">
         <Link href="/governance/experts?specialization=Self-Hosting+%2F+Deployment">
           <Button variant="outline" size="sm" className="h-7 text-xs">
-            Find Expert
+            {t("deploymentCtaButton")}
           </Button>
         </Link>
         <Button

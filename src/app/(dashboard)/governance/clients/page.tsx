@@ -12,6 +12,7 @@ import {
   ShieldAlert,
   Eye,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useRouter } from "next/navigation";
@@ -33,6 +34,7 @@ export default function ClientsPage() {
   const { data: clients, isLoading } = trpc.clients.listClients.useQuery();
   const { setOrganization } = useOrganization();
   const router = useRouter();
+  const t = useTranslations("clients");
 
   const totalAssessments = clients?.reduce((s, c) => s + c.activeAssessments, 0) ?? 0;
   const totalIncidents = clients?.reduce((s, c) => s + c.openIncidents, 0) ?? 0;
@@ -60,7 +62,7 @@ export default function ClientsPage() {
     <div className="space-y-4 sm:space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-xl sm:text-2xl font-semibold">My Clients</h1>
+        <h1 className="text-xl sm:text-2xl font-semibold">{t("title")}</h1>
         <p className="text-sm text-muted-foreground mt-1">
           {clients?.length ?? 0} organization{(clients?.length ?? 0) !== 1 ? "s" : ""} you manage
         </p>
@@ -71,19 +73,19 @@ export default function ClientsPage() {
         <Card>
           <CardContent className="p-4 sm:pt-6">
             <div className="text-xl sm:text-2xl font-bold text-foreground">{totalAssessments}</div>
-            <p className="text-xs sm:text-sm text-muted-foreground">Active Assessments</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">{t("statsActiveAssessments")}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
             <div className="text-xl sm:text-2xl font-bold text-foreground">{totalIncidents}</div>
-            <p className="text-xs sm:text-sm text-muted-foreground">Open Incidents</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">{t("statsOpenIncidents")}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
             <div className="text-xl sm:text-2xl font-bold text-foreground">{totalHighRisk}</div>
-            <p className="text-xs sm:text-sm text-muted-foreground">High-Risk Systems</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">{t("statsHighRiskSystems")}</p>
           </CardContent>
         </Card>
         <Card>
@@ -91,7 +93,7 @@ export default function ClientsPage() {
             <div className={`text-xl sm:text-2xl font-bold ${attentionCount > 0 ? "text-amber-400" : "text-foreground"}`}>
               {attentionCount}
             </div>
-            <p className="text-xs sm:text-sm text-muted-foreground">Need Attention</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">{t("statsNeedAttention")}</p>
           </CardContent>
         </Card>
       </div>
@@ -154,8 +156,8 @@ export default function ClientsPage() {
         <Card>
           <CardContent className="py-12 text-center text-muted-foreground">
             <Building2 className="w-12 h-12 mx-auto mb-4 opacity-50" />
-            <p>No client organizations yet</p>
-            <p className="text-sm mt-1">Organizations you&apos;re a member of will appear here</p>
+            <p>{t("emptyTitle")}</p>
+            <p className="text-sm mt-1">{t("emptyHint")}</p>
           </CardContent>
         </Card>
       )}

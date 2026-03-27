@@ -6,6 +6,8 @@ import "./globals.css";
 import { Providers } from "@/components/providers";
 import { Toaster } from "@/components/ui/sonner";
 import { brand } from "@/config/brand";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 
 const jost = Jost({
   subsets: ["latin"],
@@ -89,9 +91,11 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await getServerSession(authOptions);
+  const locale = await getLocale();
+  const messages = await getMessages();
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <head>
         <link rel="dns-prefetch" href="https://t.sealmetrics.com" />
         <script async src="https://t.sealmetrics.com/t.js?id=todolaw" />
@@ -135,8 +139,10 @@ export default async function RootLayout({
       </head>
       <body className={`${jost.variable} ${archivoBlack.variable} font-sans antialiased`}>
         <Providers session={session}>
-          {children}
-          <Toaster />
+          <NextIntlClientProvider messages={messages}>
+            {children}
+            <Toaster />
+          </NextIntlClientProvider>
         </Providers>
       </body>
     </html>

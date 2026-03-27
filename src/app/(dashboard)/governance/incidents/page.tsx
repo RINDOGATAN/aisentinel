@@ -22,6 +22,7 @@ import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
 import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
 import { formatRelativeTime } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 const severityColors: Record<string, string> = {
   CRITICAL: "bg-destructive text-destructive-foreground",
@@ -38,18 +39,18 @@ const statusColors: Record<string, string> = {
   CLOSED: "border-muted-foreground text-muted-foreground",
 };
 
-const typeLabels: Record<string, string> = {
-  HALLUCINATION: "Hallucination",
-  BIAS_DISCRIMINATION: "Bias/Discrimination",
-  MODEL_DRIFT: "Model Drift",
-  ADVERSARIAL_ATTACK: "Adversarial Attack",
-  PROMPT_INJECTION: "Prompt Injection",
-  UNAUTHORIZED_ACCESS: "Unauthorized Access",
-  SAFETY_FAILURE: "Safety Failure",
-  PERFORMANCE_DEGRADATION: "Performance Degradation",
-  DATA_POISONING: "Data Poisoning",
-  PRIVACY_VIOLATION: "Privacy Violation",
-  OTHER: "Other",
+const typeKeys: Record<string, string> = {
+  HALLUCINATION: "typeHallucination",
+  BIAS_DISCRIMINATION: "typeBias",
+  MODEL_DRIFT: "typeModelDrift",
+  ADVERSARIAL_ATTACK: "typeAdversarialAttack",
+  PROMPT_INJECTION: "typePromptInjection",
+  UNAUTHORIZED_ACCESS: "typeUnauthorizedAccess",
+  SAFETY_FAILURE: "typeSafetyFailure",
+  PERFORMANCE_DEGRADATION: "typePerformanceDegradation",
+  DATA_POISONING: "typeDataPoisoning",
+  PRIVACY_VIOLATION: "typePrivacyViolation",
+  OTHER: "typeOther",
 };
 
 type IncidentTypeFilter = "HALLUCINATION" | "BIAS_DISCRIMINATION" | "MODEL_DRIFT" | "ADVERSARIAL_ATTACK" | "PROMPT_INJECTION" | "UNAUTHORIZED_ACCESS" | "SAFETY_FAILURE" | "PERFORMANCE_DEGRADATION" | "DATA_POISONING" | "PRIVACY_VIOLATION" | "OTHER";
@@ -63,6 +64,8 @@ const tabTypeMap: Record<string, IncidentTypeFilter | undefined> = {
 };
 
 export default function IncidentsPage() {
+  const t = useTranslations("incidents");
+  const tc = useTranslations("common");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const debouncedSearch = useDebounce(searchQuery);
@@ -103,17 +106,17 @@ export default function IncidentsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl sm:text-2xl font-semibold">AI Incidents</h1>
+          <h1 className="text-xl sm:text-2xl font-semibold">{t("title")}</h1>
           <p className="text-sm text-muted-foreground">
-            Track AI-specific failures, severity, timeline & Art. 62 notifications
+            {t("description")}
           </p>
         </div>
         {canWrite && (
           <Link href="/governance/incidents/new" className="flex-none">
             <Button className="w-full sm:w-auto">
               <Plus className="w-4 h-4 sm:mr-2" />
-              <span className="hidden sm:inline">Report Incident</span>
-              <span className="sm:hidden">Report</span>
+              <span className="hidden sm:inline">{t("reportIncident")}</span>
+              <span className="sm:hidden">{t("reportIncident")}</span>
             </Button>
           </Link>
         )}
@@ -124,25 +127,25 @@ export default function IncidentsPage() {
         <Card>
           <CardContent className="p-4 sm:pt-6">
             <div className="text-xl sm:text-2xl font-bold text-primary">{stats.total}</div>
-            <p className="text-xs sm:text-sm text-muted-foreground">Total Incidents</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">{t("statsTotal")}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
             <div className="text-xl sm:text-2xl font-bold text-destructive">{stats.critical}</div>
-            <p className="text-xs sm:text-sm text-muted-foreground">Critical</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">{t("statsCritical")}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
             <div className="text-xl sm:text-2xl font-bold text-warning">{stats.open}</div>
-            <p className="text-xs sm:text-sm text-muted-foreground">Open</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">{t("statsOpen")}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
             <div className="text-xl sm:text-2xl font-bold text-success">{stats.resolved}</div>
-            <p className="text-xs sm:text-sm text-muted-foreground">Resolved</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">{t("statsResolved")}</p>
           </CardContent>
         </Card>
       </div>
@@ -152,7 +155,7 @@ export default function IncidentsPage() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search incidents..."
+            placeholder={t("searchPlaceholder")}
             className="pl-9"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -167,16 +170,16 @@ export default function IncidentsPage() {
             All ({stats.total})
           </TabsTrigger>
           <TabsTrigger value="hallucination" className="text-xs sm:text-sm">
-            Hallucination
+            {t("typeHallucination")}
           </TabsTrigger>
           <TabsTrigger value="bias" className="text-xs sm:text-sm">
-            Bias
+            {t("typeBias")}
           </TabsTrigger>
           <TabsTrigger value="drift" className="text-xs sm:text-sm">
-            Drift
+            {t("typeModelDrift")}
           </TabsTrigger>
           <TabsTrigger value="prompt_injection" className="text-xs sm:text-sm">
-            Prompt Injection
+            {t("typePromptInjection")}
           </TabsTrigger>
         </TabsList>
 
@@ -220,7 +223,7 @@ export default function IncidentsPage() {
                       <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
                         <div className="flex flex-wrap gap-1.5 mb-3">
                           <Badge variant="outline" className="text-xs">
-                            {typeLabels[incident.type] || incident.type}
+                            {typeKeys[incident.type] ? t(typeKeys[incident.type]) : incident.type}
                           </Badge>
                           {incident.aiSystem && (
                             <span className="text-xs text-muted-foreground flex items-center gap-1">
@@ -251,7 +254,7 @@ export default function IncidentsPage() {
                     {isFetchingNextPage && (
                       <Loader2 className="w-4 h-4 animate-spin mr-2" />
                     )}
-                    Load More
+                    {tc("loadMore")}
                   </Button>
                 </div>
               )}
@@ -260,17 +263,17 @@ export default function IncidentsPage() {
             <Card>
               <CardContent className="py-8 text-center text-muted-foreground">
                 <AlertTriangle className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                <p>No incidents found</p>
+                <p>{t("emptyTitle")}</p>
                 <p className="text-sm mb-4">
                   {searchQuery
-                    ? "Try adjusting your search terms"
-                    : "No AI incidents have been reported yet"}
+                    ? t("emptySearchHint")
+                    : t("emptyHint")}
                 </p>
                 {!searchQuery && canWrite && (
                   <Link href="/governance/incidents/new">
                     <Button>
                       <Plus className="w-4 h-4 mr-2" />
-                      Report Incident
+                      {t("reportIncident")}
                     </Button>
                   </Link>
                 )}

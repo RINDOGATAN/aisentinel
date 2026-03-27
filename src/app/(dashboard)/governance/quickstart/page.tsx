@@ -38,6 +38,7 @@ import {
   LayoutDashboard,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 
@@ -84,6 +85,8 @@ function RiskBadge({ level }: { level: string }) {
 
 export default function QuickstartPage() {
   const { organization } = useOrganization();
+  const t = useTranslations("quickstart");
+  const tc = useTranslations("common");
   const orgId = organization?.id ?? "";
 
   // Wizard state
@@ -266,15 +269,15 @@ export default function QuickstartPage() {
         <Link href="/governance">
           <Button variant="ghost" size="sm">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Dashboard
+            {t("backToDashboard")}
           </Button>
         </Link>
         <div>
           <h1 className="text-xl sm:text-2xl font-semibold">
-            AI Governance Quick Start
+            {t("title")}
           </h1>
           <p className="text-sm text-muted-foreground">
-            Bootstrap your AI governance program in minutes
+            {t("subtitle")}
           </p>
         </div>
       </div>
@@ -283,14 +286,14 @@ export default function QuickstartPage() {
       {step !== "success" && (
         <div className="flex items-center gap-2 text-sm flex-wrap">
           {[
-            { key: "choose", label: "Choose Path" },
+            { key: "choose", label: t("stepChoosePath") },
             ...(useVendors
-              ? [{ key: "vendors", label: "Select Vendors" }]
+              ? [{ key: "vendors", label: t("stepSelectVendors") }]
               : []),
             ...(useIndustry
-              ? [{ key: "industry", label: "Industry Template" }]
+              ? [{ key: "industry", label: t("stepIndustryTemplate") }]
               : []),
-            { key: "review", label: "Review & Build" },
+            { key: "review", label: t("stepReviewBuild") },
           ].map((s, i, arr) => (
             <span key={s.key} className="flex items-center gap-2">
               <span
@@ -347,7 +350,7 @@ export default function QuickstartPage() {
                       variant="outline"
                       className="text-green-600 border-green-600/50"
                     >
-                      5 Free
+                      5 {tc("free")}
                     </Badge>
                     {useVendors && (
                       <CheckCircle2 className="w-5 h-5 text-primary" />
@@ -355,12 +358,10 @@ export default function QuickstartPage() {
                   </div>
                 </div>
                 <CardTitle className="text-lg">
-                  Import from AI Vendor Catalog
+                  {t("vendorImportTitle")}
                 </CardTitle>
                 <CardDescription>
-                  Select AI vendors you use and auto-generate AI systems, risk
-                  classifications, and oversight gates from their known
-                  profiles.
+                  {t("vendorImportDescription")}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -389,7 +390,7 @@ export default function QuickstartPage() {
                       variant="outline"
                       className="text-green-600 border-green-600/50"
                     >
-                      Free
+                      {tc("free")}
                     </Badge>
                     {useIndustry && (
                       <CheckCircle2 className="w-5 h-5 text-primary" />
@@ -397,11 +398,10 @@ export default function QuickstartPage() {
                   </div>
                 </div>
                 <CardTitle className="text-lg">
-                  Start from Industry Template
+                  {t("industryTemplateTitle")}
                 </CardTitle>
                 <CardDescription>
-                  Pick your industry and get a pre-built AI governance program
-                  with common AI systems, risk classifications, and policies.
+                  {t("industryTemplateDescription")}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -420,7 +420,7 @@ export default function QuickstartPage() {
               onClick={handleProceedFromChoose}
               disabled={!useVendors && !useIndustry}
             >
-              Continue
+              {tc("continue")}
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </div>
@@ -434,10 +434,9 @@ export default function QuickstartPage() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-lg font-semibold">Select AI Vendors</h2>
+              <h2 className="text-lg font-semibold">{t("selectVendorsTitle")}</h2>
               <p className="text-sm text-muted-foreground">
-                Search the vendor catalog and select the AI tools your
-                organization uses.
+                {t("selectVendorsDescription")}
               </p>
             </div>
             <Button
@@ -446,7 +445,7 @@ export default function QuickstartPage() {
               onClick={() => setStep("choose")}
             >
               <ArrowLeft className="w-4 h-4 mr-1" />
-              Back
+              {tc("back")}
             </Button>
           </div>
 
@@ -483,7 +482,7 @@ export default function QuickstartPage() {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
-              placeholder="Search AI vendors (e.g. OpenAI, Anthropic, AWS...)"
+              placeholder={t("searchVendorsPlaceholder")}
               value={vendorSearch}
               onChange={(e) => handleSearchChange(e.target.value)}
               className="pl-10"
@@ -522,7 +521,7 @@ export default function QuickstartPage() {
                                 variant="outline"
                                 className="text-xs border-primary/50 text-primary"
                               >
-                                Verified
+                                {tc("verified")}
                               </Badge>
                             )}
                             {vendor.euAiActCompliant && (
@@ -553,7 +552,7 @@ export default function QuickstartPage() {
                 })
               ) : (
                 <p className="text-sm text-muted-foreground text-center py-4">
-                  No vendors found for &quot;{debouncedSearch}&quot;
+                  {t("noVendorsFound", { query: debouncedSearch })}
                 </p>
               )}
             </div>
@@ -605,7 +604,7 @@ export default function QuickstartPage() {
               onClick={handleProceedFromVendors}
               disabled={selectedSlugs.length === 0}
             >
-              {useIndustry ? "Next: Industry Template" : "Review & Build"}
+              {useIndustry ? t("stepIndustryTemplate") : t("stepReviewBuild")}
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </div>
@@ -620,10 +619,10 @@ export default function QuickstartPage() {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-lg font-semibold">
-                Select Industry Template
+                {t("selectIndustryTemplateTitle")}
               </h2>
               <p className="text-sm text-muted-foreground">
-                Choose your industry for a pre-built AI governance program.
+                {t("selectIndustryTemplateDescription")}
               </p>
             </div>
             <Button
@@ -634,7 +633,7 @@ export default function QuickstartPage() {
               }
             >
               <ArrowLeft className="w-4 h-4 mr-1" />
-              Back
+              {tc("back")}
             </Button>
           </div>
 
@@ -680,7 +679,7 @@ export default function QuickstartPage() {
             <Card className="bg-muted/30">
               <CardContent className="p-4 space-y-3">
                 <div className="flex items-center justify-between">
-                  <p className="text-sm font-medium">Template Preview</p>
+                  <p className="text-sm font-medium">{t("templatePreview")}</p>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -754,7 +753,7 @@ export default function QuickstartPage() {
                           )}
                           {s.alreadyExists && (
                             <Badge variant="secondary" className="text-[10px]">
-                              Exists
+                              {tc("exists")}
                             </Badge>
                           )}
                         </div>
@@ -792,7 +791,7 @@ export default function QuickstartPage() {
               onClick={handleProceedFromIndustry}
               disabled={!selectedIndustryId}
             >
-              Review & Build
+              {t("stepReviewBuild")}
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </div>
@@ -806,9 +805,9 @@ export default function QuickstartPage() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-lg font-semibold">Review & Build</h2>
+              <h2 className="text-lg font-semibold">{t("reviewTitle")}</h2>
               <p className="text-sm text-muted-foreground">
-                Review what will be created and build your AI governance program.
+                {t("reviewDescription")}
               </p>
             </div>
             <Button
@@ -825,7 +824,7 @@ export default function QuickstartPage() {
               }
             >
               <ArrowLeft className="w-4 h-4 mr-1" />
-              Back
+              {tc("back")}
             </Button>
           </div>
 
@@ -996,7 +995,7 @@ export default function QuickstartPage() {
                           )}
                           {s.alreadyExists && (
                             <Badge variant="secondary" className="text-[10px]">
-                              Exists
+                              {tc("exists")}
                             </Badge>
                           )}
                         </div>
@@ -1072,12 +1071,12 @@ export default function QuickstartPage() {
               {executeMutation.isPending ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Building...
+                  {t("building")}
                 </>
               ) : (
                 <>
                   <Sparkles className="w-4 h-4 mr-2" />
-                  Build AI Governance Program
+                  {t("buildAiGovernanceProgram")}
                 </>
               )}
             </Button>
@@ -1096,11 +1095,10 @@ export default function QuickstartPage() {
                 <CheckCircle2 className="w-12 h-12 text-primary" />
               </div>
               <h2 className="text-xl font-semibold">
-                AI Governance Program Created!
+                {t("successTitle")}
               </h2>
               <p className="text-muted-foreground max-w-md mx-auto">
-                Your AI governance program has been bootstrapped. You can now
-                explore and customize each module.
+                {t("successDescription")}
               </p>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-w-2xl mx-auto pt-4">

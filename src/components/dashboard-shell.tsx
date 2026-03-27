@@ -44,75 +44,63 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { useTranslations } from "next-intl";
 import { useOrganization } from "@/lib/organization-context";
 import { useUserType } from "@/lib/use-user-type";
 import { features } from "@/config/features";
 import { OrganizationSetup } from "@/components/governance/organization-setup";
 import { PersonaSelector } from "@/components/governance/persona-selector";
 import { FeedbackDialog } from "@/components/FeedbackDialog";
+import { LocaleSwitcher } from "@/components/locale-switcher";
 
-const navItems = [
-  { href: "/governance", label: "Dashboard", icon: LayoutDashboard, exact: true },
-  { href: "/governance/ai-registry", label: "AI Registry", icon: Brain },
-  { href: "/governance/risk-classification", label: "Risk", icon: ShieldAlert },
-  { href: "/governance/assessments", label: "Assessments", icon: ClipboardCheck },
-  { href: "/governance/oversight", label: "Oversight", icon: Eye },
-  { href: "/governance/incidents", label: "Incidents", icon: AlertTriangle },
-  { href: "/governance/compliance", label: "Compliance", icon: Scale },
-  { href: "/governance/vendors", label: "Vendors", icon: Building2 },
-  { href: "/governance/vendor-catalog", label: "Vendor Catalog", icon: Database, premium: true },
-  { href: "/governance/policies", label: "Policies", icon: ScrollText },
-  { href: "/governance/shadow-ai", label: "Shadow AI", icon: Search, premium: true },
-];
-
-function buildNavGroups(isConsultant: boolean) {
+function buildNavGroups(isConsultant: boolean, t: (key: string) => string) {
   return [
     {
-      label: "Get Started",
+      label: t("getStarted"),
       icon: Sparkles,
       items: [
-        { href: "/governance/quickstart", label: "Quick Start", icon: Sparkles },
+        { href: "/governance/quickstart", label: t("quickStart"), icon: Sparkles },
       ],
     },
     ...(isConsultant
       ? [{
-          label: "Consulting",
+          label: t("consulting"),
           icon: Briefcase,
           items: [
-            { href: "/governance/clients", label: "My Clients", icon: Briefcase },
+            { href: "/governance/clients", label: t("myClients"), icon: Briefcase },
           ],
         }]
       : []),
     {
-      label: "AI Systems",
+      label: t("aiSystemsGroup"),
       icon: Brain,
       items: [
-        { href: "/governance/ai-registry", label: "AI Registry", icon: Brain },
-        { href: "/governance/risk-classification", label: "Risk Classification", icon: ShieldAlert },
+        { href: "/governance/ai-registry", label: t("aiRegistry"), icon: Brain },
+        { href: "/governance/risk-classification", label: t("riskClassification"), icon: ShieldAlert },
       ],
     },
     {
-      label: "Governance",
+      label: t("governanceGroup"),
       icon: Scale,
       items: [
-        { href: "/governance/assessments", label: "Assessments", icon: ClipboardCheck },
-        { href: "/governance/oversight", label: "Oversight", icon: Eye },
-        { href: "/governance/compliance", label: "Compliance", icon: Scale },
-        { href: "/governance/policies", label: "Policies", icon: ScrollText },
+        { href: "/governance/assessments", label: t("assessments"), icon: ClipboardCheck },
+        { href: "/governance/oversight", label: t("oversight"), icon: Eye },
+        { href: "/governance/compliance", label: t("compliance"), icon: Scale },
+        { href: "/governance/policies", label: t("policies"), icon: ScrollText },
       ],
     },
     {
-      label: "Operations",
+      label: t("operationsGroup"),
       icon: AlertTriangle,
       items: [
-        { href: "/governance/incidents", label: "Incidents", icon: AlertTriangle },
-        { href: "/governance/vendors", label: "Vendors", icon: Building2 },
-        { href: "/governance/vendor-catalog", label: "Vendor Catalog", icon: Database, premium: true },
-        { href: "/governance/shadow-ai", label: "Shadow AI", icon: Search, premium: true },
+        { href: "/governance/incidents", label: t("incidents"), icon: AlertTriangle },
+        { href: "/governance/vendors", label: t("vendors"), icon: Building2 },
+        { href: "/governance/vendor-catalog", label: t("vendorCatalog"), icon: Database, premium: true },
+        { href: "/governance/shadow-ai", label: t("shadowAi"), icon: Search, premium: true },
         ...(features.expertDirectoryEnabled
-          ? [{ href: "/governance/experts", label: "Find AI Expert", icon: Search }]
+          ? [{ href: "/governance/experts", label: t("findAiExpert"), icon: Search }]
           : []),
-        { href: "/governance/billing", label: "Billing", icon: CreditCard },
+        { href: "/governance/billing", label: t("billing"), icon: CreditCard },
       ],
     },
   ];
@@ -125,8 +113,9 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
   const { needsOnboarding, isConsultant, isLoading: userTypeLoading } = useUserType();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
+  const t = useTranslations("nav");
 
-  const navGroups = buildNavGroups(isConsultant);
+  const navGroups = buildNavGroups(isConsultant, t);
 
   // Full-screen loading gate: prevent chrome from rendering before org is ready
   if (orgLoading || userTypeLoading) {
@@ -180,7 +169,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                       }`}
                     >
                       <LayoutDashboard className="w-5 h-5 shrink-0" />
-                      Dashboard
+                      {t("dashboard")}
                     </Button>
                   </Link>
 
@@ -235,7 +224,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                       }`}
                     >
                       <Settings className="w-5 h-5 shrink-0" />
-                      Settings
+                      {t("settings")}
                     </Button>
                   </Link>
                   <Button
@@ -244,7 +233,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                     onClick={() => { setMobileNavOpen(false); setFeedbackOpen(true); }}
                   >
                     <MessageSquareWarning className="w-5 h-5 shrink-0" />
-                    Feedback
+                    {t("feedback")}
                   </Button>
                 </nav>
               </SheetContent>
@@ -312,7 +301,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
               variant="ghost"
               size="icon"
               onClick={() => setFeedbackOpen(true)}
-              title="Feedback"
+              title={t("feedback")}
             >
               <MessageSquareWarning className="w-4 h-4" />
             </Button>
@@ -320,7 +309,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
               <Button
                 variant="ghost"
                 size="icon"
-                title="Settings"
+                title={t("settings")}
               >
                 <Settings className="w-4 h-4" />
               </Button>
@@ -338,6 +327,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                 </span>
               )}
             </div>
+            <LocaleSwitcher />
             <Button
               variant="ghost"
               size="icon"
@@ -345,7 +335,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                 await fetch("/api/auth/cross-logout", { method: "POST" });
                 window.location.href = "/sign-in";
               }}
-              title="Sign out"
+              title={t("signOut")}
             >
               <LogOut className="w-4 h-4" />
             </Button>
@@ -363,27 +353,27 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
           <div className="flex items-center justify-center gap-1">
             <a href="https://todo.law/terms" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors">
               <Scale className="w-3.5 h-3.5" />
-              Terms
+              {t("terms")}
             </a>
             <span className="text-border">&middot;</span>
             <a href="https://todo.law/privacy" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors">
               <BookOpen className="w-3.5 h-3.5" />
-              Privacy
+              {t("privacy")}
             </a>
             <span className="text-border">&middot;</span>
             <Link href="/governance/billing" className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors">
               <CreditCard className="w-3.5 h-3.5" />
-              Billing
+              {t("billing")}
             </Link>
             <span className="text-border">&middot;</span>
             <Link href="/docs" className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors">
               <BookOpen className="w-3.5 h-3.5" />
-              Docs
+              {t("docs")}
             </Link>
             <span className="text-border">&middot;</span>
             <Link href="/docs/security" className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors">
               <Shield className="w-3.5 h-3.5" />
-              Security
+              {t("security")}
             </Link>
           </div>
         </div>

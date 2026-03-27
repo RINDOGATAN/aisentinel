@@ -21,13 +21,14 @@ import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
 import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
 import { formatRelativeTime } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
-const assessmentTypeLabels: Record<string, string> = {
-  FRIA: "FRIA",
-  CONFORMITY: "Conformity",
-  AI_RISK: "AI Risk",
-  BIAS_FAIRNESS: "Bias & Fairness",
-  CUSTOM: "Custom",
+const assessmentTypeKeys: Record<string, string> = {
+  FRIA: "typeFria",
+  CONFORMITY: "typeConformity",
+  AI_RISK: "typeAiRisk",
+  BIAS_FAIRNESS: "typeBiasFairness",
+  CUSTOM: "typeCustom",
 };
 
 const assessmentTypeColors: Record<string, string> = {
@@ -38,11 +39,11 @@ const assessmentTypeColors: Record<string, string> = {
   CUSTOM: "border-muted-foreground text-muted-foreground",
 };
 
-const statusLabels: Record<string, string> = {
-  DRAFT: "Draft",
-  IN_PROGRESS: "In Progress",
-  UNDER_REVIEW: "Under Review",
-  APPROVED: "Approved",
+const statusKeys: Record<string, string> = {
+  DRAFT: "statsDraft",
+  IN_PROGRESS: "statsInProgress",
+  UNDER_REVIEW: "statsUnderReview",
+  APPROVED: "statsApproved",
   REJECTED: "Rejected",
 };
 
@@ -57,6 +58,8 @@ const statusColors: Record<string, string> = {
 const premiumTypes = ["CONFORMITY", "BIAS_FAIRNESS"];
 
 export default function AssessmentsPage() {
+  const t = useTranslations("assessments");
+  const tc = useTranslations("common");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const debouncedSearch = useDebounce(searchQuery);
@@ -107,17 +110,17 @@ export default function AssessmentsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl sm:text-2xl font-semibold">Assessments</h1>
+          <h1 className="text-xl sm:text-2xl font-semibold">{t("title")}</h1>
           <p className="text-sm text-muted-foreground">
-            FRIA, conformity, and risk assessments for AI systems
+            {t("description")}
           </p>
         </div>
         {canWrite && (
           <Link href="/governance/assessments/new" className="flex-none">
             <Button className="w-full sm:w-auto">
               <Plus className="w-4 h-4 sm:mr-2" />
-              <span className="hidden sm:inline">New Assessment</span>
-              <span className="sm:hidden">New</span>
+              <span className="hidden sm:inline">{t("newAssessment")}</span>
+              <span className="sm:hidden">{tc("create")}</span>
             </Button>
           </Link>
         )}
@@ -128,31 +131,31 @@ export default function AssessmentsPage() {
         <Card>
           <CardContent className="p-4 sm:pt-6">
             <div className="text-xl sm:text-2xl font-bold text-primary">{stats.total}</div>
-            <p className="text-xs sm:text-sm text-muted-foreground">Total</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">{t("statsTotal")}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
             <div className="text-xl sm:text-2xl font-bold text-muted-foreground">{stats.draft}</div>
-            <p className="text-xs sm:text-sm text-muted-foreground">Draft</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">{t("statsDraft")}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
             <div className="text-xl sm:text-2xl font-bold text-info">{stats.inProgress}</div>
-            <p className="text-xs sm:text-sm text-muted-foreground">In Progress</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">{t("statsInProgress")}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
             <div className="text-xl sm:text-2xl font-bold text-warning">{stats.underReview}</div>
-            <p className="text-xs sm:text-sm text-muted-foreground">Under Review</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">{t("statsUnderReview")}</p>
           </CardContent>
         </Card>
         <Card className="col-span-2 lg:col-span-1">
           <CardContent className="p-4 sm:pt-6">
             <div className="text-xl sm:text-2xl font-bold text-success">{stats.approved}</div>
-            <p className="text-xs sm:text-sm text-muted-foreground">Approved</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">{t("statsApproved")}</p>
           </CardContent>
         </Card>
       </div>
@@ -161,7 +164,7 @@ export default function AssessmentsPage() {
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
-          placeholder="Search assessments..."
+          placeholder={t("searchPlaceholder")}
           className="pl-9"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
@@ -175,25 +178,25 @@ export default function AssessmentsPage() {
             All ({stats.total})
           </TabsTrigger>
           <TabsTrigger value="fria" className="text-xs sm:text-sm">
-            FRIA
+            {t("typeFria")}
           </TabsTrigger>
           <TabsTrigger value="conformity" className="text-xs sm:text-sm">
-            <span>Conformity</span>
+            <span>{t("typeConformity")}</span>
             {isPremiumLocked("CONFORMITY") && (
               <Lock className="w-3 h-3 ml-1 text-warning" />
             )}
           </TabsTrigger>
           <TabsTrigger value="ai_risk" className="text-xs sm:text-sm">
-            AI Risk
+            {t("typeAiRisk")}
           </TabsTrigger>
           <TabsTrigger value="bias_fairness" className="text-xs sm:text-sm">
-            <span>Bias/Fairness</span>
+            <span>{t("typeBiasFairness")}</span>
             {isPremiumLocked("BIAS_FAIRNESS") && (
               <Lock className="w-3 h-3 ml-1 text-warning" />
             )}
           </TabsTrigger>
           <TabsTrigger value="custom" className="text-xs sm:text-sm">
-            Custom
+            {t("typeCustom")}
           </TabsTrigger>
         </TabsList>
 
@@ -219,7 +222,7 @@ export default function AssessmentsPage() {
                               variant="outline"
                               className={`text-xs ${assessmentTypeColors[assessment.type] || ""}`}
                             >
-                              {assessmentTypeLabels[assessment.type] || assessment.type}
+                              {assessmentTypeKeys[assessment.type] ? t(assessmentTypeKeys[assessment.type]) : assessment.type}
                               {premiumTypes.includes(assessment.type) && (
                                 <Lock className="w-3 h-3 ml-1" />
                               )}
@@ -228,7 +231,7 @@ export default function AssessmentsPage() {
                               variant="outline"
                               className={`text-xs ${statusColors[assessment.status] || ""}`}
                             >
-                              {statusLabels[assessment.status] || assessment.status}
+                              {statusKeys[assessment.status] ? t(statusKeys[assessment.status]) : assessment.status}
                             </Badge>
                           </div>
                         </div>
@@ -268,7 +271,7 @@ export default function AssessmentsPage() {
                     {isFetchingNextPage && (
                       <Loader2 className="w-4 h-4 animate-spin mr-2" />
                     )}
-                    Load More
+                    {tc("loadMore")}
                   </Button>
                 </div>
               )}
@@ -277,17 +280,17 @@ export default function AssessmentsPage() {
             <Card>
               <CardContent className="py-8 text-center text-muted-foreground">
                 <FileSearch className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                <p>No assessments found</p>
+                <p>{t("emptyTitle")}</p>
                 <p className="text-sm mb-4">
                   {searchQuery
-                    ? "Try adjusting your search terms"
-                    : "Start by creating your first assessment"}
+                    ? t("emptySearchHint")
+                    : t("emptyHint")}
                 </p>
                 {!searchQuery && canWrite && (
                   <Link href="/governance/assessments/new">
                     <Button>
                       <Plus className="w-4 h-4 mr-2" />
-                      New Assessment
+                      {t("newAssessment")}
                     </Button>
                   </Link>
                 )}

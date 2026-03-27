@@ -44,13 +44,14 @@ import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
-const gateTypeLabels: Record<string, string> = {
-  PRE_DEPLOYMENT: "Pre-Deployment",
-  POST_DEPLOYMENT: "Post-Deployment",
-  PERIODIC_REVIEW: "Periodic Review",
-  INCIDENT_TRIGGERED: "Incident Triggered",
-  MATERIAL_CHANGE: "Material Change",
+const gateTypeKeys: Record<string, string> = {
+  PRE_DEPLOYMENT: "gateTypePreDeployment",
+  POST_DEPLOYMENT: "gateTypePostDeployment",
+  PERIODIC_REVIEW: "gateTypePeriodicReview",
+  INCIDENT_TRIGGERED: "gateTypeIncidentTriggered",
+  MATERIAL_CHANGE: "gateTypeMaterialChange",
 };
 
 const gateStatusColors: Record<string, string> = {
@@ -74,6 +75,9 @@ const decisionIcons: Record<string, React.ElementType> = {
 };
 
 export default function OversightGateDetailPage() {
+  const t = useTranslations("oversightDetail");
+  const to = useTranslations("oversight");
+  const tc = useTranslations("common");
   const params = useParams();
   const id = params.id as string;
   const { organization, canWrite } = useOrganization();
@@ -94,7 +98,7 @@ export default function OversightGateDetailPage() {
 
   const addDecision = trpc.oversight.addDecision.useMutation({
     onSuccess: () => {
-      toast.success("Decision recorded successfully");
+      toast.success(t("toastSuccess"));
       utils.oversight.getById.invalidate({ organizationId: organization?.id ?? "", id });
       utils.oversight.list.invalidate();
       utils.oversight.getStats.invalidate();
@@ -102,13 +106,13 @@ export default function OversightGateDetailPage() {
       setDecisionForm({ decision: "", rationale: "", evidenceReviewed: "" });
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to record decision");
+      toast.error(error.message || t("toastError"));
     },
   });
 
   const reopenMutation = trpc.oversight.update.useMutation({
     onSuccess: () => {
-      toast.success("Gate reopened for review");
+      toast.success(t("toastReopenSuccess"));
       utils.oversight.getById.invalidate({ organizationId: organization?.id ?? "", id });
       utils.oversight.getStats.invalidate();
     },
@@ -142,11 +146,11 @@ export default function OversightGateDetailPage() {
   if (!gate) {
     return (
       <div className="text-center py-12">
-        <p className="text-muted-foreground">Oversight gate not found</p>
+        <p className="text-muted-foreground">{t("notFound")}</p>
         <Link href="/governance/oversight">
           <Button variant="outline" className="mt-4">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Oversight
+            {t("backToOversight")}
           </Button>
         </Link>
       </div>
@@ -173,7 +177,7 @@ export default function OversightGateDetailPage() {
             <div>
               <h1 className="text-xl sm:text-2xl font-semibold">
                 {gate.aiSystem?.name ?? "Unknown System"} &mdash;{" "}
-                {gateTypeLabels[gate.gateType] || gate.gateType}
+                {gateTypeKeys[gate.gateType] ? to(gateTypeKeys[gate.gateType]) : gate.gateType}
               </h1>
               <div className="flex items-center gap-2 mt-1 flex-wrap">
                 <Badge
@@ -183,7 +187,7 @@ export default function OversightGateDetailPage() {
                   {gate.status.replace("_", " ")}
                 </Badge>
                 <Badge variant="outline" className="text-xs">
-                  {gateTypeLabels[gate.gateType] || gate.gateType}
+                  {gateTypeKeys[gate.gateType] ? to(gateTypeKeys[gate.gateType]) : gate.gateType}
                 </Badge>
               </div>
             </div>
@@ -202,26 +206,26 @@ export default function OversightGateDetailPage() {
               ) : (
                 <RotateCcw className="w-4 h-4 mr-2" />
               )}
-              Reopen for Review
+              {t("reopenForReview")}
             </Button>
           )}
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
             <Button>
               <Plus className="w-4 h-4 mr-2" />
-              Add Decision
+              {t("addDecision")}
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Record Oversight Decision</DialogTitle>
+              <DialogTitle>{t("dialogTitle")}</DialogTitle>
               <DialogDescription>
-                Log a decision for this oversight gate. This will update the gate status automatically.
+                {t("dialogDescription")}
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label>Decision *</Label>
+                <Label>{t("decisionLabel")} *</Label>
                 <Select
                   value={decisionForm.decision}
                   onValueChange={(value) =>
@@ -229,19 +233,19 @@ export default function OversightGateDetailPage() {
                   }
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select decision" />
+                    <SelectValue placeholder={t("decisionPlaceholder")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="APPROVE">Approve</SelectItem>
-                    <SelectItem value="REJECT">Reject</SelectItem>
-                    <SelectItem value="DEFER">Defer</SelectItem>
+                    <SelectItem value="APPROVE">{t("decisionApprove")}</SelectItem>
+                    <SelectItem value="REJECT">{t("decisionReject")}</SelectItem>
+                    <SelectItem value="DEFER">{t("decisionDefer")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label>Rationale *</Label>
+                <Label>{t("rationaleLabel")} *</Label>
                 <Textarea
-                  placeholder="Provide the rationale for this decision..."
+                  placeholder={t("rationalePlaceholder")}
                   rows={4}
                   value={decisionForm.rationale}
                   onChange={(e) =>
@@ -250,9 +254,9 @@ export default function OversightGateDetailPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label>Evidence Reviewed</Label>
+                <Label>{t("evidenceReviewedLabel")}</Label>
                 <Input
-                  placeholder="e.g., Test report, Risk assessment, Bias audit (comma-separated)"
+                  placeholder={t("evidenceReviewedPlaceholder")}
                   value={decisionForm.evidenceReviewed}
                   onChange={(e) =>
                     setDecisionForm({ ...decisionForm, evidenceReviewed: e.target.value })
@@ -269,7 +273,7 @@ export default function OversightGateDetailPage() {
                 onClick={() => setDialogOpen(false)}
                 type="button"
               >
-                Cancel
+                {tc("cancel")}
               </Button>
               <Button
                 onClick={handleAddDecision}
@@ -282,10 +286,10 @@ export default function OversightGateDetailPage() {
                 {addDecision.isPending ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Recording...
+                    {t("recording")}
                   </>
                 ) : (
-                  "Record Decision"
+                  t("recordDecision")
                 )}
               </Button>
             </DialogFooter>
@@ -298,7 +302,7 @@ export default function OversightGateDetailPage() {
       <div className="grid gap-6 md:grid-cols-3">
         <Card className="md:col-span-2">
           <CardHeader>
-            <CardTitle>Overview</CardTitle>
+            <CardTitle>{t("overviewTitle")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {gate.description && (
@@ -306,28 +310,28 @@ export default function OversightGateDetailPage() {
             )}
             <div className="grid gap-4 grid-cols-2 md:grid-cols-3">
               <div>
-                <p className="text-sm text-muted-foreground">Assigned To</p>
+                <p className="text-sm text-muted-foreground">{t("assignedToLabel")}</p>
                 <div className="flex items-center gap-1.5 mt-1">
                   <User className="w-3.5 h-3.5 text-muted-foreground" />
-                  <p className="font-medium text-sm">{gate.assignedTo || "Not assigned"}</p>
+                  <p className="font-medium text-sm">{gate.assignedTo || t("notAssigned")}</p>
                 </div>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Review Cadence</p>
+                <p className="text-sm text-muted-foreground">{t("reviewCadenceLabel")}</p>
                 <div className="flex items-center gap-1.5 mt-1">
                   <Clock className="w-3.5 h-3.5 text-muted-foreground" />
-                  <p className="font-medium text-sm">{gate.reviewCadence || "Not set"}</p>
+                  <p className="font-medium text-sm">{gate.reviewCadence || t("notSet")}</p>
                 </div>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Next Review Date</p>
+                <p className="text-sm text-muted-foreground">{t("nextReviewDateLabel")}</p>
                 <div className="flex items-center gap-1.5 mt-1">
                   <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
                   <p className="font-medium text-sm">{formatDate(gate.nextReviewDate)}</p>
                 </div>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">AI System</p>
+                <p className="text-sm text-muted-foreground">{t("aiSystemLabel")}</p>
                 <p className="font-medium text-sm">
                   <Link
                     href={`/governance/ai-registry/${gate.aiSystem?.id}`}
@@ -338,7 +342,7 @@ export default function OversightGateDetailPage() {
                 </p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Created</p>
+                <p className="text-sm text-muted-foreground">{t("createdLabel")}</p>
                 <p className="font-medium text-sm">{formatDate(gate.createdAt)}</p>
               </div>
             </div>
@@ -347,17 +351,17 @@ export default function OversightGateDetailPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Statistics</CardTitle>
+            <CardTitle>{t("statisticsTitle")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
               <p className="text-3xl font-bold text-primary">{decisions.length}</p>
-              <p className="text-sm text-muted-foreground">Total Decisions</p>
+              <p className="text-sm text-muted-foreground">{t("totalDecisions")}</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Last Decision</p>
+              <p className="text-sm text-muted-foreground">{t("lastDecision")}</p>
               <p className="font-medium text-sm">
-                {lastDecision ? formatDate(lastDecision.decidedAt) : "No decisions yet"}
+                {lastDecision ? formatDate(lastDecision.decidedAt) : t("noDecisionsYet")}
               </p>
             </div>
             <div>
@@ -374,7 +378,7 @@ export default function OversightGateDetailPage() {
           <div>
             <CardTitle className="flex items-center gap-2">
               <MessageSquare className="w-5 h-5" />
-              Decision History
+              {t("decisionHistory")}
             </CardTitle>
           </div>
         </CardHeader>
@@ -436,13 +440,13 @@ export default function OversightGateDetailPage() {
           ) : (
             <div className="text-center py-8 text-muted-foreground">
               <MessageSquare className="w-12 h-12 mx-auto mb-4 opacity-50" />
-              <p>No decisions recorded yet</p>
+              <p>{t("emptyDecisionsTitle")}</p>
               <p className="text-sm mb-4">
-                Add a decision to log oversight activity for this gate
+                {t("emptyDecisionsHint")}
               </p>
               <Button onClick={() => setDialogOpen(true)}>
                 <Plus className="w-4 h-4 mr-2" />
-                Add Decision
+                {t("addDecision")}
               </Button>
             </div>
           )}

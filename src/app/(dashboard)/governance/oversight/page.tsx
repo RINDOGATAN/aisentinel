@@ -22,13 +22,14 @@ import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
 import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
 import { formatRelativeTime, formatDate } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
-const gateTypeLabels: Record<string, string> = {
-  PRE_DEPLOYMENT: "Pre-Deployment",
-  POST_DEPLOYMENT: "Post-Deployment",
-  PERIODIC_REVIEW: "Periodic Review",
-  INCIDENT_TRIGGERED: "Incident Triggered",
-  MATERIAL_CHANGE: "Material Change",
+const gateTypeKeys: Record<string, string> = {
+  PRE_DEPLOYMENT: "gateTypePreDeployment",
+  POST_DEPLOYMENT: "gateTypePostDeployment",
+  PERIODIC_REVIEW: "gateTypePeriodicReview",
+  INCIDENT_TRIGGERED: "gateTypeIncidentTriggered",
+  MATERIAL_CHANGE: "gateTypeMaterialChange",
 };
 
 const gateStatusColors: Record<string, string> = {
@@ -40,6 +41,8 @@ const gateStatusColors: Record<string, string> = {
 };
 
 export default function OversightPage() {
+  const t = useTranslations("oversight");
+  const tc = useTranslations("common");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const debouncedSearch = useDebounce(searchQuery);
@@ -80,17 +83,17 @@ export default function OversightPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl sm:text-2xl font-semibold">Human Oversight</h1>
+          <h1 className="text-xl sm:text-2xl font-semibold">{t("title")}</h1>
           <p className="text-sm text-muted-foreground">
-            Approval gates, decision logging &amp; Art. 14 compliance
+            {t("description")}
           </p>
         </div>
         {canWrite && (
           <Link href="/governance/oversight/new" className="flex-none">
             <Button className="w-full sm:w-auto">
               <Plus className="w-4 h-4 sm:mr-2" />
-              <span className="hidden sm:inline">Create Gate</span>
-              <span className="sm:hidden">Create</span>
+              <span className="hidden sm:inline">{t("createGate")}</span>
+              <span className="sm:hidden">{tc("create")}</span>
             </Button>
           </Link>
         )}
@@ -101,25 +104,25 @@ export default function OversightPage() {
         <Card>
           <CardContent className="p-4 sm:pt-6">
             <div className="text-xl sm:text-2xl font-bold text-warning">{stats.pending}</div>
-            <p className="text-xs sm:text-sm text-muted-foreground">Pending</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">{t("statsPending")}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
             <div className="text-xl sm:text-2xl font-bold text-info">{stats.inReview}</div>
-            <p className="text-xs sm:text-sm text-muted-foreground">In Review</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">{t("statsInReview")}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
             <div className="text-xl sm:text-2xl font-bold text-success">{stats.passed}</div>
-            <p className="text-xs sm:text-sm text-muted-foreground">Passed</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">{t("statsPassed")}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
             <div className="text-xl sm:text-2xl font-bold text-destructive">{stats.overdue}</div>
-            <p className="text-xs sm:text-sm text-destructive">Overdue</p>
+            <p className="text-xs sm:text-sm text-destructive">{t("statsOverdue")}</p>
           </CardContent>
         </Card>
       </div>
@@ -128,7 +131,7 @@ export default function OversightPage() {
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
-          placeholder="Search oversight gates..."
+          placeholder={t("searchPlaceholder")}
           className="pl-9"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
@@ -177,7 +180,7 @@ export default function OversightPage() {
                               {gate.status.replace("_", " ")}
                             </Badge>
                             <Badge variant="outline" className="text-xs">
-                              {gateTypeLabels[gate.gateType] || gate.gateType}
+                              {gateTypeKeys[gate.gateType] ? t(gateTypeKeys[gate.gateType]) : gate.gateType}
                             </Badge>
                           </div>
                         </div>
@@ -233,7 +236,7 @@ export default function OversightPage() {
                     {isFetchingNextPage && (
                       <Loader2 className="w-4 h-4 animate-spin mr-2" />
                     )}
-                    Load More
+                    {tc("loadMore")}
                   </Button>
                 </div>
               )}
@@ -242,17 +245,17 @@ export default function OversightPage() {
             <Card>
               <CardContent className="py-8 text-center text-muted-foreground">
                 <Eye className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                <p>No oversight gates found</p>
+                <p>{t("emptyTitle")}</p>
                 <p className="text-sm mb-4">
                   {searchQuery
-                    ? "Try adjusting your search terms"
-                    : "Start by creating your first oversight gate"}
+                    ? t("emptySearchHint")
+                    : t("emptyHint")}
                 </p>
                 {!searchQuery && canWrite && (
                   <Link href="/governance/oversight/new">
                     <Button>
                       <Plus className="w-4 h-4 mr-2" />
-                      Create Gate
+                      {t("createGate")}
                     </Button>
                   </Link>
                 )}

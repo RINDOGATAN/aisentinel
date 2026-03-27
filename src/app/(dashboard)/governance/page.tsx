@@ -28,6 +28,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useTranslations } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { formatRelativeTime } from "@/lib/utils";
@@ -35,6 +36,8 @@ import { DeploymentExpertCta } from "@/components/governance/deployment-expert-c
 
 export default function GovernanceDashboardPage() {
   const { organization, organizations, setOrganization, canWrite } = useOrganization();
+  const t = useTranslations("dashboard");
+  const tc = useTranslations("common");
 
   const { data: stats, isLoading } = trpc.organization.getDashboardStats.useQuery(
     { organizationId: organization?.id ?? "" },
@@ -92,7 +95,7 @@ export default function GovernanceDashboardPage() {
             {organization?.name || "AI Governance"}
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground">
-            Executive Dashboard
+            {t("subtitle")}
           </p>
         </div>
         {organizations.length > 1 && (
@@ -129,18 +132,18 @@ export default function GovernanceDashboardPage() {
             <div className="flex-1 min-w-0">
               <h3 className="font-semibold text-sm sm:text-base">
                 {(stats?.importedVendorCount ?? 0) > 0
-                  ? `We found ${stats?.importedVendorCount} AI vendors from Vendor.Watch — build governance around them?`
-                  : "Bootstrap your AI governance program in minutes"}
+                  ? t("quickstartHeadingVendors", { count: stats?.importedVendorCount ?? 0 })
+                  : t("quickstartHeadingDefault")}
               </h3>
               <p className="text-xs sm:text-sm text-muted-foreground mt-1">
                 {(stats?.importedVendorCount ?? 0) > 0
-                  ? "Auto-generate AI systems, risk classifications, and oversight gates from your vendor portfolio."
-                  : "Import from the AI Vendor Catalog or start from an industry template to get a head start."}
+                  ? t("quickstartDescriptionVendors")
+                  : t("quickstartDescriptionDefault")}
               </p>
             </div>
             <Link href="/governance/quickstart">
               <Button size="sm" className="shrink-0">
-                Quick Start
+                {t("quickStart")}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </Link>
@@ -155,13 +158,13 @@ export default function GovernanceDashboardPage() {
         <Card>
           <CardContent className="p-4">
             <div className="text-xl sm:text-2xl font-bold text-foreground">{stats?.totalSystems ?? 0}</div>
-            <p className="text-xs text-muted-foreground">Total Systems</p>
+            <p className="text-xs text-muted-foreground">{t("totalSystems")}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
             <div className="text-xl sm:text-2xl font-bold text-success">{stats?.deployedSystems ?? 0}</div>
-            <p className="text-xs text-muted-foreground">Deployed</p>
+            <p className="text-xs text-muted-foreground">{t("deployed")}</p>
           </CardContent>
         </Card>
         <Card>
@@ -169,7 +172,7 @@ export default function GovernanceDashboardPage() {
             <div className={`text-xl sm:text-2xl font-bold ${(stats?.highRiskSystems ?? 0) > 0 ? "text-destructive" : "text-muted-foreground"}`}>
               {stats?.highRiskSystems ?? 0}
             </div>
-            <p className="text-xs text-muted-foreground">High Risk</p>
+            <p className="text-xs text-muted-foreground">{t("highRisk")}</p>
           </CardContent>
         </Card>
         <Card>
@@ -177,7 +180,7 @@ export default function GovernanceDashboardPage() {
             <div className={`text-xl sm:text-2xl font-bold ${incidents.open > 0 ? "text-warning" : "text-muted-foreground"}`}>
               {incidents.open}
             </div>
-            <p className="text-xs text-muted-foreground">Open Incidents</p>
+            <p className="text-xs text-muted-foreground">{t("openIncidents")}</p>
           </CardContent>
         </Card>
         <Card>
@@ -185,13 +188,13 @@ export default function GovernanceDashboardPage() {
             <div className={`text-xl sm:text-2xl font-bold ${oversight.pending > 0 ? "text-warning" : "text-muted-foreground"}`}>
               {oversight.pending}
             </div>
-            <p className="text-xs text-muted-foreground">Pending Gates</p>
+            <p className="text-xs text-muted-foreground">{t("pendingGates")}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
             <div className="text-xl sm:text-2xl font-bold text-foreground">{stats?.activeAssessments ?? 0}</div>
-            <p className="text-xs text-muted-foreground">Active Assessments</p>
+            <p className="text-xs text-muted-foreground">{t("activeAssessments")}</p>
           </CardContent>
         </Card>
       </div>
@@ -201,9 +204,9 @@ export default function GovernanceDashboardPage() {
         {/* Risk Posture */}
         <Card>
           <CardHeader className="p-4 sm:p-6 pb-3">
-            <CardTitle className="text-base sm:text-lg">Risk Posture</CardTitle>
+            <CardTitle className="text-base sm:text-lg">{t("riskPosture")}</CardTitle>
             <CardDescription className="text-xs sm:text-sm">
-              EU AI Act risk classification distribution
+              {t("riskPostureDescription")}
             </CardDescription>
           </CardHeader>
           <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0 space-y-3">
@@ -248,24 +251,24 @@ export default function GovernanceDashboardPage() {
                 <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
                   <span className="flex items-center gap-1.5">
                     <span className="w-2.5 h-2.5 rounded-sm bg-destructive" />
-                    Unacceptable ({riskPosture.unacceptable})
+                    {tc("riskUnacceptable")} ({riskPosture.unacceptable})
                   </span>
                   <span className="flex items-center gap-1.5">
                     <span className="w-2.5 h-2.5 rounded-sm bg-destructive/70" />
-                    High ({riskPosture.high})
+                    {tc("riskHigh")} ({riskPosture.high})
                   </span>
                   <span className="flex items-center gap-1.5">
                     <span className="w-2.5 h-2.5 rounded-sm bg-warning/40" />
-                    Limited ({riskPosture.limited})
+                    {tc("riskLimited")} ({riskPosture.limited})
                   </span>
                   <span className="flex items-center gap-1.5">
                     <span className="w-2.5 h-2.5 rounded-sm bg-success/30" />
-                    Minimal ({riskPosture.minimal})
+                    {tc("riskMinimal")} ({riskPosture.minimal})
                   </span>
                 </div>
               </>
             ) : (
-              <p className="text-sm text-muted-foreground text-center py-4">No risk classifications yet</p>
+              <p className="text-sm text-muted-foreground text-center py-4">{t("noRiskClassificationsYet")}</p>
             )}
           </CardContent>
         </Card>
@@ -273,9 +276,9 @@ export default function GovernanceDashboardPage() {
         {/* Incident Summary */}
         <Card>
           <CardHeader className="p-4 sm:p-6 pb-3">
-            <CardTitle className="text-base sm:text-lg">Incident Summary</CardTitle>
+            <CardTitle className="text-base sm:text-lg">{t("incidentSummary")}</CardTitle>
             <CardDescription className="text-xs sm:text-sm">
-              AI incident tracking overview
+              {t("incidentSummaryDescription")}
             </CardDescription>
           </CardHeader>
           <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
@@ -284,23 +287,23 @@ export default function GovernanceDashboardPage() {
                 <div className={`text-2xl font-bold ${incidents.critical > 0 ? "text-destructive" : "text-muted-foreground"}`}>
                   {incidents.critical}
                 </div>
-                <p className="text-xs text-muted-foreground">Critical</p>
+                <p className="text-xs text-muted-foreground">{t("critical")}</p>
               </div>
               <div className="text-center">
                 <div className={`text-2xl font-bold ${incidents.open > 0 ? "text-warning" : "text-muted-foreground"}`}>
                   {incidents.open}
                 </div>
-                <p className="text-xs text-muted-foreground">Open</p>
+                <p className="text-xs text-muted-foreground">{t("open")}</p>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-muted-foreground">{incidents.total}</div>
-                <p className="text-xs text-muted-foreground">Total</p>
+                <p className="text-xs text-muted-foreground">{t("total")}</p>
               </div>
             </div>
             {incidents.total > 0 && (
               <Link href="/governance/incidents" className="block mt-3">
                 <Button variant="outline" size="sm" className="w-full">
-                  View Incidents <ArrowRight className="w-3 h-3 ml-1" />
+                  {t("viewIncidents")} <ArrowRight className="w-3 h-3 ml-1" />
                 </Button>
               </Link>
             )}
@@ -310,9 +313,9 @@ export default function GovernanceDashboardPage() {
         {/* Oversight Pipeline */}
         <Card>
           <CardHeader className="p-4 sm:p-6 pb-3">
-            <CardTitle className="text-base sm:text-lg">Oversight Pipeline</CardTitle>
+            <CardTitle className="text-base sm:text-lg">{t("oversightPipeline")}</CardTitle>
             <CardDescription className="text-xs sm:text-sm">
-              Human oversight gates status
+              {t("oversightPipelineDescription")}
             </CardDescription>
           </CardHeader>
           <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0 space-y-3">
@@ -321,7 +324,7 @@ export default function GovernanceDashboardPage() {
                 <div className={`text-2xl font-bold ${oversight.pending > 0 ? "text-warning" : "text-muted-foreground"}`}>
                   {oversight.pending}
                 </div>
-                <p className="text-xs text-muted-foreground">Pending</p>
+                <p className="text-xs text-muted-foreground">{t("pending")}</p>
               </div>
               <div>
                 <div className={`text-2xl font-bold ${oversight.overdue > 0 ? "text-destructive" : "text-muted-foreground"}`}>
@@ -329,16 +332,16 @@ export default function GovernanceDashboardPage() {
                 </div>
                 <p className="text-xs text-muted-foreground">
                   {oversight.overdue > 0 ? (
-                    <span className="bg-destructive/20 text-foreground px-1.5 py-0.5">Overdue</span>
+                    <span className="bg-destructive/20 text-foreground px-1.5 py-0.5">{t("overdue")}</span>
                   ) : (
-                    "Overdue"
+                    t("overdue")
                   )}
                 </p>
               </div>
             </div>
             <Link href="/governance/oversight">
               <Button variant="outline" size="sm" className="w-full">
-                View Oversight <ArrowRight className="w-3 h-3 ml-1" />
+                {t("viewOversight")} <ArrowRight className="w-3 h-3 ml-1" />
               </Button>
             </Link>
           </CardContent>
@@ -347,16 +350,16 @@ export default function GovernanceDashboardPage() {
         {/* Assessment Pipeline */}
         <Card>
           <CardHeader className="p-4 sm:p-6 pb-3">
-            <CardTitle className="text-base sm:text-lg">Assessment Pipeline</CardTitle>
+            <CardTitle className="text-base sm:text-lg">{t("assessmentPipeline")}</CardTitle>
             <CardDescription className="text-xs sm:text-sm">
-              Assessment workflow status
+              {t("assessmentPipelineDescription")}
             </CardDescription>
           </CardHeader>
           <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
             <div className="grid grid-cols-4 gap-2 text-center">
               <div>
                 <div className="text-lg font-bold text-muted-foreground">{pipeline.draft}</div>
-                <p className="text-[10px] text-muted-foreground">Draft</p>
+                <p className="text-[10px] text-muted-foreground">{tc("statusDraft")}</p>
               </div>
               <div>
                 <div className="text-lg font-bold text-info">{pipeline.inProgress}</div>
@@ -394,9 +397,9 @@ export default function GovernanceDashboardPage() {
         {/* Compliance Progress */}
         <Card className="lg:col-span-2">
           <CardHeader className="p-4 sm:p-6 pb-3">
-            <CardTitle className="text-base sm:text-lg">Compliance Progress</CardTitle>
+            <CardTitle className="text-base sm:text-lg">{t("complianceProgress")}</CardTitle>
             <CardDescription className="text-xs sm:text-sm">
-              Overall compliance mapping status
+              {t("complianceProgressDescription")}
             </CardDescription>
           </CardHeader>
           <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0 space-y-3">
@@ -448,58 +451,58 @@ export default function GovernanceDashboardPage() {
         {canWrite && (
           <Card>
             <CardHeader className="p-4 sm:p-6">
-              <CardTitle className="text-base sm:text-lg">Quick Actions</CardTitle>
+              <CardTitle className="text-base sm:text-lg">{t("quickActions")}</CardTitle>
               <CardDescription className="text-xs sm:text-sm">
-                Common governance tasks
+                {t("quickActionsDescription")}
               </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-2 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 p-4 pt-0 sm:p-6 sm:pt-0">
               <Link href="/governance/ai-registry/new">
                 <Button variant="outline" className="w-full justify-start h-11">
                   <Plus className="w-4 h-4 mr-2 shrink-0" />
-                  <span className="truncate">Register AI System</span>
+                  <span className="truncate">{t("registerAiSystem")}</span>
                 </Button>
               </Link>
               <Link href="/governance/oversight/new">
                 <Button variant="outline" className="w-full justify-start h-11">
                   <Eye className="w-4 h-4 mr-2 shrink-0" />
-                  <span className="truncate">Create Gate</span>
+                  <span className="truncate">{t("createGate")}</span>
                 </Button>
               </Link>
               <Link href="/governance/incidents/new">
                 <Button variant="outline" className="w-full justify-start h-11">
                   <AlertTriangle className="w-4 h-4 mr-2 shrink-0" />
-                  <span className="truncate">Report Incident</span>
+                  <span className="truncate">{t("reportIncident")}</span>
                 </Button>
               </Link>
               <Link href="/governance/assessments/new">
                 <Button variant="outline" className="w-full justify-start h-11">
                   <FileSearch className="w-4 h-4 mr-2 shrink-0" />
-                  <span className="truncate">New Assessment</span>
+                  <span className="truncate">{t("newAssessment")}</span>
                 </Button>
               </Link>
               <Link href="/governance/vendors/new">
                 <Button variant="outline" className="w-full justify-start h-11">
                   <Building2 className="w-4 h-4 mr-2 shrink-0" />
-                  <span className="truncate">Add Vendor</span>
+                  <span className="truncate">{t("addVendor")}</span>
                 </Button>
               </Link>
               <Link href="/governance/vendors/new?catalog=true">
                 <Button variant="outline" className="w-full justify-start h-11">
                   <ShieldCheck className="w-4 h-4 mr-2 shrink-0" />
-                  <span className="truncate">Vendor from Catalog</span>
+                  <span className="truncate">{t("vendorFromCatalog")}</span>
                 </Button>
               </Link>
               <Link href="/governance/shadow-ai/new">
                 <Button variant="outline" className="w-full justify-start h-11">
                   <Search className="w-4 h-4 mr-2 shrink-0" />
-                  <span className="truncate">Report Shadow AI</span>
+                  <span className="truncate">{t("reportShadowAi")}</span>
                 </Button>
               </Link>
               <Link href="/governance/policies/new">
                 <Button variant="outline" className="w-full justify-start h-11">
                   <ScrollText className="w-4 h-4 mr-2 shrink-0" />
-                  <span className="truncate">Create Policy</span>
+                  <span className="truncate">{t("createPolicy")}</span>
                 </Button>
               </Link>
             </CardContent>
@@ -509,9 +512,9 @@ export default function GovernanceDashboardPage() {
         {/* Recent Activity */}
         <Card>
           <CardHeader className="p-4 sm:p-6">
-            <CardTitle className="text-base sm:text-lg">Recent Activity</CardTitle>
+            <CardTitle className="text-base sm:text-lg">{t("recentActivity")}</CardTitle>
             <CardDescription className="text-xs sm:text-sm">
-              Latest updates across your AI governance program
+              {t("recentActivityDescription")}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3 sm:space-y-4 p-4 pt-0 sm:p-6 sm:pt-0">
@@ -542,7 +545,7 @@ export default function GovernanceDashboardPage() {
               ))
             ) : (
               <p className="text-sm text-muted-foreground text-center py-4">
-                No recent activity
+                {t("noRecentActivity")}
               </p>
             )}
           </CardContent>

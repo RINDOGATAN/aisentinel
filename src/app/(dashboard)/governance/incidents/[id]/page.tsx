@@ -36,6 +36,7 @@ import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 type AIIncidentStatus = "REPORTED" | "INVESTIGATING" | "MITIGATING" | "RESOLVED" | "CLOSED";
 type AINotificationStatus = "PENDING" | "SENT" | "ACKNOWLEDGED";
@@ -56,18 +57,18 @@ const statusColors: Record<string, string> = {
   CLOSED: "border-muted-foreground text-muted-foreground",
 };
 
-const typeLabels: Record<string, string> = {
-  HALLUCINATION: "Hallucination",
-  BIAS_DISCRIMINATION: "Bias/Discrimination",
-  MODEL_DRIFT: "Model Drift",
-  ADVERSARIAL_ATTACK: "Adversarial Attack",
-  PROMPT_INJECTION: "Prompt Injection",
-  UNAUTHORIZED_ACCESS: "Unauthorized Access",
-  SAFETY_FAILURE: "Safety Failure",
-  PERFORMANCE_DEGRADATION: "Performance Degradation",
-  DATA_POISONING: "Data Poisoning",
-  PRIVACY_VIOLATION: "Privacy Violation",
-  OTHER: "Other",
+const typeKeys: Record<string, string> = {
+  HALLUCINATION: "typeHallucination",
+  BIAS_DISCRIMINATION: "typeBias",
+  MODEL_DRIFT: "typeModelDrift",
+  ADVERSARIAL_ATTACK: "typeAdversarialAttack",
+  PROMPT_INJECTION: "typePromptInjection",
+  UNAUTHORIZED_ACCESS: "typeUnauthorizedAccess",
+  SAFETY_FAILURE: "typeSafetyFailure",
+  PERFORMANCE_DEGRADATION: "typePerformanceDegradation",
+  DATA_POISONING: "typeDataPoisoning",
+  PRIVACY_VIOLATION: "typePrivacyViolation",
+  OTHER: "typeOther",
 };
 
 const notificationStatusColors: Record<string, string> = {
@@ -84,6 +85,9 @@ const statusTransitions: Record<string, string[]> = {
 };
 
 export default function IncidentDetailPage() {
+  const t = useTranslations("incidentDetail");
+  const ti = useTranslations("incidents");
+  const tc = useTranslations("common");
   const params = useParams();
   const id = params.id as string;
   const { organization } = useOrganization();
@@ -212,11 +216,11 @@ export default function IncidentDetailPage() {
   if (!incident) {
     return (
       <div className="text-center py-12">
-        <p className="text-muted-foreground">Incident not found</p>
+        <p className="text-muted-foreground">{t("notFound")}</p>
         <Link href="/governance/incidents">
           <Button variant="outline" className="mt-4">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Incidents
+            {t("backToIncidents")}
           </Button>
         </Link>
       </div>
@@ -289,7 +293,7 @@ export default function IncidentDetailPage() {
       <div className="grid gap-6 md:grid-cols-3">
         <Card className="md:col-span-2">
           <CardHeader>
-            <CardTitle>Overview</CardTitle>
+            <CardTitle>{t("overviewTitle")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {incident.description && (
@@ -297,13 +301,13 @@ export default function IncidentDetailPage() {
             )}
             <div className="grid gap-4 grid-cols-2 md:grid-cols-3">
               <div>
-                <p className="text-sm text-muted-foreground">Type</p>
+                <p className="text-sm text-muted-foreground">{t("typeLabel")}</p>
                 <p className="font-medium text-sm">
-                  {typeLabels[incident.type] || incident.type}
+                  {typeKeys[incident.type] ? ti(typeKeys[incident.type]) : incident.type}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">AI System</p>
+                <p className="text-sm text-muted-foreground">{t("aiSystemLabel")}</p>
                 <p className="font-medium text-sm">
                   {incident.aiSystem ? (
                     <Link
@@ -313,27 +317,27 @@ export default function IncidentDetailPage() {
                       {incident.aiSystem.name}
                     </Link>
                   ) : (
-                    "Not linked"
+                    t("notLinked")
                   )}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Reported By</p>
+                <p className="text-sm text-muted-foreground">{t("reportedByLabel")}</p>
                 <p className="font-medium text-sm">{incident.reportedBy || "Unknown"}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Reported At</p>
+                <p className="text-sm text-muted-foreground">{t("reportedAtLabel")}</p>
                 <p className="font-medium text-sm">{formatDate(incident.reportedAt)}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Notification Required</p>
+                <p className="text-sm text-muted-foreground">{t("notificationRequiredLabel")}</p>
                 <p className="font-medium text-sm">
-                  {incident.notificationRequired ? "Yes (Art. 62)" : "No"}
+                  {incident.notificationRequired ? `${tc("yes")} (Art. 62)` : tc("no")}
                 </p>
               </div>
               {incident.resolvedAt && (
                 <div>
-                  <p className="text-sm text-muted-foreground">Resolved At</p>
+                  <p className="text-sm text-muted-foreground">{t("resolvedAtLabel")}</p>
                   <p className="font-medium text-sm">{formatDate(incident.resolvedAt)}</p>
                 </div>
               )}
@@ -343,7 +347,7 @@ export default function IncidentDetailPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Statistics</CardTitle>
+            <CardTitle>{t("statisticsTitle")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
@@ -370,16 +374,16 @@ export default function IncidentDetailPage() {
       <Tabs defaultValue="timeline">
         <TabsList className="w-full justify-start overflow-x-auto">
           <TabsTrigger value="timeline" className="text-xs sm:text-sm">
-            Timeline ({incident.timeline?.length ?? 0})
+            {t("tabTimeline", { count: incident.timeline?.length ?? 0 })}
           </TabsTrigger>
           <TabsTrigger value="tasks" className="text-xs sm:text-sm">
-            Tasks ({incident.tasks?.length ?? 0})
+            {t("tabTasks", { count: incident.tasks?.length ?? 0 })}
           </TabsTrigger>
           <TabsTrigger value="notifications" className="text-xs sm:text-sm">
-            Notifications ({incident.notifications?.length ?? 0})
+            {t("tabNotifications", { count: incident.notifications?.length ?? 0 })}
           </TabsTrigger>
           <TabsTrigger value="root-cause" className="text-xs sm:text-sm">
-            Root Cause
+            {t("tabRootCause")}
           </TabsTrigger>
         </TabsList>
 
@@ -388,8 +392,8 @@ export default function IncidentDetailPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle>Timeline</CardTitle>
-                <CardDescription>Chronological record of incident activity</CardDescription>
+                <CardTitle>{t("timelineTitle")}</CardTitle>
+                <CardDescription>{t("timelineDescription")}</CardDescription>
               </div>
               <Button
                 size="sm"
@@ -397,7 +401,7 @@ export default function IncidentDetailPage() {
                 onClick={() => setShowTimelineDialog(true)}
               >
                 <Plus className="w-4 h-4 mr-2" />
-                Add Entry
+                {t("addEntry")}
               </Button>
             </CardHeader>
             <CardContent>
@@ -435,8 +439,8 @@ export default function IncidentDetailPage() {
               ) : (
                 <div className="text-center py-8 text-muted-foreground">
                   <Clock className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p>No timeline entries yet</p>
-                  <p className="text-sm">Add entries to track incident progress</p>
+                  <p>{t("emptyTimelineTitle")}</p>
+                  <p className="text-sm">{t("emptyTimelineHint")}</p>
                 </div>
               )}
             </CardContent>
@@ -448,8 +452,8 @@ export default function IncidentDetailPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle>Tasks</CardTitle>
-                <CardDescription>Action items for incident resolution</CardDescription>
+                <CardTitle>{t("tasksTitle")}</CardTitle>
+                <CardDescription>{t("tasksDescription")}</CardDescription>
               </div>
               <Button
                 size="sm"
@@ -457,7 +461,7 @@ export default function IncidentDetailPage() {
                 onClick={() => setShowTaskDialog(true)}
               >
                 <Plus className="w-4 h-4 mr-2" />
-                Add Task
+                {t("addTask")}
               </Button>
             </CardHeader>
             <CardContent>
@@ -528,8 +532,8 @@ export default function IncidentDetailPage() {
               ) : (
                 <div className="text-center py-8 text-muted-foreground">
                   <ListTodo className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p>No tasks yet</p>
-                  <p className="text-sm">Add tasks to track resolution actions</p>
+                  <p>{t("emptyTasksTitle")}</p>
+                  <p className="text-sm">{t("emptyTasksHint")}</p>
                 </div>
               )}
             </CardContent>
@@ -541,9 +545,9 @@ export default function IncidentDetailPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle>Authority Notifications</CardTitle>
+                <CardTitle>{t("notificationsTitle")}</CardTitle>
                 <CardDescription>
-                  Art. 62 notifications to market surveillance authorities
+                  {t("notificationsDescription")}
                 </CardDescription>
               </div>
               <Button
@@ -552,7 +556,7 @@ export default function IncidentDetailPage() {
                 onClick={() => setShowNotificationDialog(true)}
               >
                 <Plus className="w-4 h-4 mr-2" />
-                Add Notification
+                {t("addNotification")}
               </Button>
             </CardHeader>
             <CardContent>
@@ -561,12 +565,12 @@ export default function IncidentDetailPage() {
                   <table className="w-full text-sm min-w-[600px]">
                     <thead>
                       <tr className="border-b text-left text-muted-foreground">
-                        <th className="pb-2 pr-4 font-medium">Authority</th>
-                        <th className="pb-2 pr-4 font-medium">Type</th>
-                        <th className="pb-2 pr-4 font-medium">Status</th>
-                        <th className="pb-2 pr-4 font-medium">Due By</th>
-                        <th className="pb-2 pr-4 font-medium">Sent At</th>
-                        <th className="pb-2 font-medium">Actions</th>
+                        <th className="pb-2 pr-4 font-medium">{t("tableAuthority")}</th>
+                        <th className="pb-2 pr-4 font-medium">{t("tableType")}</th>
+                        <th className="pb-2 pr-4 font-medium">{t("tableStatus")}</th>
+                        <th className="pb-2 pr-4 font-medium">{t("tableDueBy")}</th>
+                        <th className="pb-2 pr-4 font-medium">{t("tableSentAt")}</th>
+                        <th className="pb-2 font-medium">{t("tableActions")}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -602,7 +606,7 @@ export default function IncidentDetailPage() {
                                 disabled={updateNotification.isPending}
                               >
                                 <Send className="w-3 h-3 mr-1" />
-                                Mark Sent
+                                {t("markSent")}
                               </Button>
                             )}
                           </td>
@@ -614,9 +618,9 @@ export default function IncidentDetailPage() {
               ) : (
                 <div className="text-center py-8 text-muted-foreground">
                   <Bell className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p>No notifications yet</p>
+                  <p>{t("emptyNotificationsTitle")}</p>
                   <p className="text-sm">
-                    Add authority notification records for Art. 62 compliance
+                    {t("addNotification")}
                   </p>
                 </div>
               )}
@@ -628,36 +632,36 @@ export default function IncidentDetailPage() {
         <TabsContent value="root-cause" className="mt-4">
           <Card>
             <CardHeader>
-              <CardTitle>Root Cause Analysis</CardTitle>
+              <CardTitle>{t("rootCauseTitle")}</CardTitle>
               <CardDescription>
-                Document the root cause, category, and impact of the incident
+                {t("rootCauseDescription")}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="rootCauseCategory">Root Cause Category</Label>
+                <Label htmlFor="rootCauseCategory">{t("rootCauseCategoryLabel")}</Label>
                 <Input
                   id="rootCauseCategory"
-                  placeholder="e.g., Training Data Quality, Model Architecture, Configuration Error"
+                  placeholder={t("rootCauseCategoryPlaceholder")}
                   value={rootCauseCategory}
                   onChange={(e) => setRootCauseCategory(e.target.value)}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="rootCauseDescription">Root Cause Description</Label>
+                <Label htmlFor="rootCauseDescription">{t("rootCauseDescriptionLabel")}</Label>
                 <Textarea
                   id="rootCauseDescription"
-                  placeholder="Describe the root cause of the incident in detail..."
+                  placeholder={t("rootCauseDescriptionPlaceholder")}
                   rows={4}
                   value={rootCauseDescription}
                   onChange={(e) => setRootCauseDescription(e.target.value)}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="impactDescription">Impact Description</Label>
+                <Label htmlFor="impactDescription">{t("impactDescriptionLabel")}</Label>
                 <Textarea
                   id="impactDescription"
-                  placeholder="Describe the impact of the incident: affected users, business impact, regulatory implications..."
+                  placeholder={t("impactDescriptionPlaceholder")}
                   rows={4}
                   value={impactDescription}
                   onChange={(e) => setImpactDescription(e.target.value)}
@@ -681,7 +685,7 @@ export default function IncidentDetailPage() {
                   ) : (
                     <Save className="w-4 h-4 mr-2" />
                   )}
-                  Save Root Cause
+                  {t("saveRootCause")}
                 </Button>
               </div>
             </CardContent>
@@ -693,23 +697,23 @@ export default function IncidentDetailPage() {
       <Dialog open={showTimelineDialog} onOpenChange={setShowTimelineDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add Timeline Entry</DialogTitle>
+            <DialogTitle>{t("addTimelineDialogTitle")}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="timeline-action">Action *</Label>
+              <Label htmlFor="timeline-action">{t("timelineActionLabel")} *</Label>
               <Input
                 id="timeline-action"
-                placeholder="e.g., Escalated to ML team"
+                placeholder={t("timelineActionPlaceholder")}
                 value={timelineAction}
                 onChange={(e) => setTimelineAction(e.target.value)}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="timeline-description">Description</Label>
+              <Label htmlFor="timeline-description">{t("timelineDescriptionLabel")}</Label>
               <Textarea
                 id="timeline-description"
-                placeholder="Provide additional details about this action..."
+                placeholder={t("timelineDescriptionPlaceholder")}
                 rows={3}
                 value={timelineDescription}
                 onChange={(e) => setTimelineDescription(e.target.value)}
@@ -721,7 +725,7 @@ export default function IncidentDetailPage() {
               variant="outline"
               onClick={() => setShowTimelineDialog(false)}
             >
-              Cancel
+              {tc("cancel")}
             </Button>
             <Button
               disabled={!timelineAction || addTimelineEntry.isPending}
@@ -739,7 +743,7 @@ export default function IncidentDetailPage() {
               ) : (
                 <Plus className="w-4 h-4 mr-2" />
               )}
-              Add Entry
+              {t("addEntry")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -749,29 +753,29 @@ export default function IncidentDetailPage() {
       <Dialog open={showTaskDialog} onOpenChange={setShowTaskDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add Task</DialogTitle>
+            <DialogTitle>{t("addTaskDialogTitle")}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="task-title">Title *</Label>
+              <Label htmlFor="task-title">{t("taskTitleLabel")} *</Label>
               <Input
                 id="task-title"
-                placeholder="e.g., Review model training data"
+                placeholder={t("taskTitlePlaceholder")}
                 value={taskTitle}
                 onChange={(e) => setTaskTitle(e.target.value)}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="task-assigned-to">Assigned To</Label>
+              <Label htmlFor="task-assigned-to">{t("taskAssignedToLabel")}</Label>
               <Input
                 id="task-assigned-to"
-                placeholder="e.g., ML Engineering Team"
+                placeholder={t("taskAssignedToPlaceholder")}
                 value={taskAssignedTo}
                 onChange={(e) => setTaskAssignedTo(e.target.value)}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="task-due-date">Due Date</Label>
+              <Label htmlFor="task-due-date">{t("taskDueDateLabel")}</Label>
               <Input
                 id="task-due-date"
                 type="date"
@@ -785,7 +789,7 @@ export default function IncidentDetailPage() {
               variant="outline"
               onClick={() => setShowTaskDialog(false)}
             >
-              Cancel
+              {tc("cancel")}
             </Button>
             <Button
               disabled={!taskTitle || addTask.isPending}
@@ -804,7 +808,7 @@ export default function IncidentDetailPage() {
               ) : (
                 <Plus className="w-4 h-4 mr-2" />
               )}
-              Add Task
+              {t("addTask")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -814,29 +818,29 @@ export default function IncidentDetailPage() {
       <Dialog open={showNotificationDialog} onOpenChange={setShowNotificationDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add Authority Notification</DialogTitle>
+            <DialogTitle>{t("addNotificationDialogTitle")}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="notif-authority">Authority *</Label>
+              <Label htmlFor="notif-authority">{t("notifAuthorityLabel")} *</Label>
               <Input
                 id="notif-authority"
-                placeholder="e.g., National AI Office, Data Protection Authority"
+                placeholder={t("notifAuthorityPlaceholder")}
                 value={notifAuthority}
                 onChange={(e) => setNotifAuthority(e.target.value)}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="notif-type">Notification Type *</Label>
+              <Label htmlFor="notif-type">{t("notifTypeLabel")} *</Label>
               <Input
                 id="notif-type"
-                placeholder="e.g., Art. 62 Serious Incident Report"
+                placeholder={t("notifTypePlaceholder")}
                 value={notifType}
                 onChange={(e) => setNotifType(e.target.value)}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="notif-due-by">Due By</Label>
+              <Label htmlFor="notif-due-by">{t("notifDueByLabel")}</Label>
               <Input
                 id="notif-due-by"
                 type="date"
@@ -850,7 +854,7 @@ export default function IncidentDetailPage() {
               variant="outline"
               onClick={() => setShowNotificationDialog(false)}
             >
-              Cancel
+              {tc("cancel")}
             </Button>
             <Button
               disabled={!notifAuthority || !notifType || addNotification.isPending}
@@ -869,7 +873,7 @@ export default function IncidentDetailPage() {
               ) : (
                 <Plus className="w-4 h-4 mr-2" />
               )}
-              Add Notification
+              {t("addNotification")}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/select";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 
@@ -59,6 +60,8 @@ const statuses = [
 export default function NewAISystemPage() {
   const router = useRouter();
   const { organization } = useOrganization();
+  const t = useTranslations("aiRegistryNew");
+  const tc = useTranslations("common");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [formData, setFormData] = useState<{
@@ -95,13 +98,13 @@ export default function NewAISystemPage() {
 
   const createSystem = trpc.aiSystem.create.useMutation({
     onSuccess: (data) => {
-      toast.success("AI system registered successfully");
+      toast.success(t("toastSuccess"));
       utils.aiSystem.list.invalidate();
       utils.aiSystem.getStats.invalidate();
       router.push(`/governance/ai-registry/${data.id}`);
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to register AI system");
+      toast.error(error.message || t("toastError"));
       setIsSubmitting(false);
     },
   });
@@ -137,9 +140,9 @@ export default function NewAISystemPage() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-xl sm:text-2xl font-semibold">Register AI System</h1>
+          <h1 className="text-xl sm:text-2xl font-semibold">{t("title")}</h1>
           <p className="text-sm text-muted-foreground">
-            Add a new AI system to the registry
+            {t("subtitle")}
           </p>
         </div>
       </div>
@@ -147,9 +150,9 @@ export default function NewAISystemPage() {
       {/* Form */}
       <Card>
         <CardHeader>
-          <CardTitle>System Details</CardTitle>
+          <CardTitle>{t("systemDetails")}</CardTitle>
           <CardDescription>
-            Provide information about the AI system being registered
+            {t("systemDetailsDescription")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -157,23 +160,23 @@ export default function NewAISystemPage() {
             {/* Name & Technique */}
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="name">System Name *</Label>
+                <Label htmlFor="name">{t("systemNameLabel")} *</Label>
                 <Input
                   id="name"
-                  placeholder="e.g., Customer Support Chatbot"
+                  placeholder={t("systemNamePlaceholder")}
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="technique">AI Technique *</Label>
+                <Label htmlFor="technique">{t("techniqueLabel")} *</Label>
                 <Select
                   value={formData.technique}
                   onValueChange={(value) => setFormData({ ...formData, technique: value as AITechnique })}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select technique" />
+                    <SelectValue placeholder={t("techniquePlaceholder")} />
                   </SelectTrigger>
                   <SelectContent>
                     {techniques.map((t) => (
@@ -188,10 +191,10 @@ export default function NewAISystemPage() {
 
             {/* Description */}
             <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="description">{t("descriptionLabel")}</Label>
               <Textarea
                 id="description"
-                placeholder="Describe what this AI system does, its capabilities, and intended use..."
+                placeholder={t("descriptionPlaceholder")}
                 rows={3}
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -201,13 +204,13 @@ export default function NewAISystemPage() {
             {/* Role & Status */}
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="role">Organization Role *</Label>
+                <Label htmlFor="role">{t("roleLabel")} *</Label>
                 <Select
                   value={formData.role}
                   onValueChange={(value) => setFormData({ ...formData, role: value as AISystemRole })}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select role" />
+                    <SelectValue placeholder={t("rolePlaceholder")} />
                   </SelectTrigger>
                   <SelectContent>
                     {roles.map((r) => (
@@ -218,17 +221,17 @@ export default function NewAISystemPage() {
                   </SelectContent>
                 </Select>
                 <p className="text-xs text-muted-foreground">
-                  Your organization&apos;s role under the EU AI Act
+                  {t("roleHelp")}
                 </p>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="status">Lifecycle Status</Label>
+                <Label htmlFor="status">{t("statusLabel")}</Label>
                 <Select
                   value={formData.status}
                   onValueChange={(value) => setFormData({ ...formData, status: value as AISystemStatus })}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select status" />
+                    <SelectValue placeholder={t("statusPlaceholder")} />
                   </SelectTrigger>
                   <SelectContent>
                     {statuses.map((s) => (
@@ -243,13 +246,13 @@ export default function NewAISystemPage() {
 
             {/* Vendor */}
             <div className="space-y-2">
-              <Label htmlFor="vendor">Vendor</Label>
+              <Label htmlFor="vendor">{t("vendorLabel")}</Label>
               <Select
                 value={formData.vendorId}
                 onValueChange={(value) => setFormData({ ...formData, vendorId: value })}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select vendor (optional)" />
+                  <SelectValue placeholder={t("vendorPlaceholder")} />
                 </SelectTrigger>
                 <SelectContent>
                   {vendors.map((v) => (
@@ -260,41 +263,41 @@ export default function NewAISystemPage() {
                 </SelectContent>
               </Select>
               <p className="text-xs text-muted-foreground">
-                Link this system to a vendor from your vendor registry
+                {t("vendorHelp")}
               </p>
             </div>
 
             {/* Purpose */}
             <div className="space-y-2">
-              <Label htmlFor="purpose">Intended Purpose</Label>
+              <Label htmlFor="purpose">{t("purposeLabel")}</Label>
               <Textarea
                 id="purpose"
-                placeholder="Describe the intended purpose and use cases for this AI system..."
+                placeholder={t("purposePlaceholder")}
                 rows={3}
                 value={formData.purpose}
                 onChange={(e) => setFormData({ ...formData, purpose: e.target.value })}
               />
               <p className="text-xs text-muted-foreground">
-                Required for high-risk systems under the EU AI Act (Art. 13)
+                {t("purposeHelp")}
               </p>
             </div>
 
             {/* Owners */}
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="businessOwner">Business Owner</Label>
+                <Label htmlFor="businessOwner">{t("businessOwnerLabel")}</Label>
                 <Input
                   id="businessOwner"
-                  placeholder="e.g., Product Team Lead"
+                  placeholder={t("businessOwnerPlaceholder")}
                   value={formData.businessOwner}
                   onChange={(e) => setFormData({ ...formData, businessOwner: e.target.value })}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="technicalOwner">Technical Owner</Label>
+                <Label htmlFor="technicalOwner">{t("technicalOwnerLabel")}</Label>
                 <Input
                   id="technicalOwner"
-                  placeholder="e.g., ML Engineering Lead"
+                  placeholder={t("technicalOwnerPlaceholder")}
                   value={formData.technicalOwner}
                   onChange={(e) => setFormData({ ...formData, technicalOwner: e.target.value })}
                 />
@@ -311,20 +314,19 @@ export default function NewAISystemPage() {
                 }
               />
               <Label htmlFor="processesPersonalData">
-                This system processes personal data
+                {t("processesPersonalDataLabel")}
               </Label>
             </div>
             {formData.processesPersonalData && (
               <p className="text-xs text-muted-foreground ml-10">
-                A DPIA or FRIA may be required. You can link this system to DPO Central data
-                assets after creation.
+                {t("personalDataWarning")}
               </p>
             )}
 
             {/* Error */}
             {createSystem.error && (
               <div className="text-sm text-destructive">
-                Error: {createSystem.error.message}
+                {tc("error", { message: createSystem.error.message })}
               </div>
             )}
 
@@ -332,7 +334,7 @@ export default function NewAISystemPage() {
             <div className="flex justify-end gap-4">
               <Link href="/governance/ai-registry">
                 <Button variant="outline" type="button">
-                  Cancel
+                  {tc("cancel")}
                 </Button>
               </Link>
               <Button
@@ -342,10 +344,10 @@ export default function NewAISystemPage() {
                 {isSubmitting ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Registering...
+                    {t("registering")}
                   </>
                 ) : (
-                  "Register System"
+                  t("registerSystem")
                 )}
               </Button>
             </div>

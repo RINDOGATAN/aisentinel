@@ -11,8 +11,11 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Lock, Loader2, ClipboardCheck } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 export default function NewAssessmentPage() {
+  const t = useTranslations("assessmentsNew");
+  const tc = useTranslations("common");
   const router = useRouter();
   const { organization } = useOrganization();
   const orgId = organization?.id ?? "";
@@ -65,19 +68,19 @@ export default function NewAssessmentPage() {
           <Button variant="ghost" size="icon"><ArrowLeft className="w-4 h-4" /></Button>
         </Link>
         <div>
-          <h1 className="text-2xl font-bold">New Assessment</h1>
-          <p className="text-muted-foreground">Step {step} of 3</p>
+          <h1 className="text-2xl font-bold">{t("title")}</h1>
+          <p className="text-muted-foreground">{t("stepIndicator", { step })}</p>
         </div>
       </div>
 
       {step === 1 && (
         <Card>
           <CardHeader>
-            <CardTitle>Select AI System</CardTitle>
+            <CardTitle>{t("step1Title")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {systems.length === 0 ? (
-              <p className="text-muted-foreground">No AI systems registered yet. <Link href="/governance/ai-registry/new" className="text-primary hover:underline">Register one first</Link>.</p>
+              <p className="text-muted-foreground">{t("step1Empty")} <Link href="/governance/ai-registry/new" className="text-primary hover:underline">{t("step1EmptyLink")}</Link>.</p>
             ) : (
               systems.map((system) => (
                 <button
@@ -99,7 +102,7 @@ export default function NewAssessmentPage() {
       {step === 2 && (
         <Card>
           <CardHeader>
-            <CardTitle>Select Template</CardTitle>
+            <CardTitle>{t("step2Title")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {(templates ?? []).map((template) => {
@@ -132,7 +135,7 @@ export default function NewAssessmentPage() {
                 </button>
               );
             })}
-            <Button variant="ghost" onClick={() => setStep(1)}>Back</Button>
+            <Button variant="ghost" onClick={() => setStep(1)}>{tc("back")}</Button>
           </CardContent>
         </Card>
       )}
@@ -140,20 +143,20 @@ export default function NewAssessmentPage() {
       {step === 3 && (
         <Card>
           <CardHeader>
-            <CardTitle>Assessment Title</CardTitle>
+            <CardTitle>{t("step3Title")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label>Title</Label>
-              <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Assessment title" />
+              <Label>{t("titleLabel")}</Label>
+              <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={t("titlePlaceholder")} />
             </div>
             <div className="flex gap-3">
-              <Button variant="ghost" onClick={() => setStep(2)}>Back</Button>
+              <Button variant="ghost" onClick={() => setStep(2)}>{tc("back")}</Button>
               <Button onClick={handleCreate} disabled={!title || createMutation.isPending}>
                 {createMutation.isPending ? (
-                  <><Loader2 className="w-4 h-4 animate-spin mr-2" />Creating...</>
+                  <><Loader2 className="w-4 h-4 animate-spin mr-2" />{t("creating")}</>
                 ) : (
-                  <><ClipboardCheck className="w-4 h-4 mr-2" />Create Assessment</>
+                  <><ClipboardCheck className="w-4 h-4 mr-2" />{t("createButton")}</>
                 )}
               </Button>
             </div>

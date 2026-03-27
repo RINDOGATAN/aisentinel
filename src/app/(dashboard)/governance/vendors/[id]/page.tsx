@@ -33,6 +33,7 @@ import {
   Database,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { formatDate, formatRelativeTime, getDaysUntil } from "@/lib/utils";
@@ -83,6 +84,8 @@ const assessmentStatusLabels: Record<string, string> = {
 };
 
 export default function VendorDetailPage() {
+  const t = useTranslations("vendorDetail");
+  const tc = useTranslations("common");
   const params = useParams();
   const id = params.id as string;
   const { organization } = useOrganization();
@@ -155,11 +158,11 @@ export default function VendorDetailPage() {
   if (!vendor) {
     return (
       <div className="text-center py-12">
-        <p className="text-muted-foreground">Vendor not found</p>
+        <p className="text-muted-foreground">{t("notFound")}</p>
         <Link href="/governance/vendors">
           <Button variant="outline" className="mt-4">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Vendors
+            {t("backToVendors")}
           </Button>
         </Link>
       </div>
@@ -216,7 +219,7 @@ export default function VendorDetailPage() {
       <div className="grid gap-6 md:grid-cols-3">
         <Card className="md:col-span-2">
           <CardHeader>
-            <CardTitle>Overview</CardTitle>
+            <CardTitle>{t("overviewTitle")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {vendor.description && (
@@ -225,7 +228,7 @@ export default function VendorDetailPage() {
             <div className="grid gap-4 grid-cols-2 md:grid-cols-3">
               {vendor.website && (
                 <div>
-                  <p className="text-sm text-muted-foreground">Website</p>
+                  <p className="text-sm text-muted-foreground">{t("labelWebsite")}</p>
                   <a
                     href={vendor.website.startsWith("http") ? vendor.website : `https://${vendor.website}`}
                     target="_blank"
@@ -238,28 +241,28 @@ export default function VendorDetailPage() {
                 </div>
               )}
               <div>
-                <p className="text-sm text-muted-foreground">Contact Name</p>
+                <p className="text-sm text-muted-foreground">{t("labelContactName")}</p>
                 <p className="font-medium text-sm flex items-center gap-1">
                   <User className="w-3 h-3 text-muted-foreground" />
-                  {vendor.contactName || "Not specified"}
+                  {vendor.contactName || tc("notSpecified")}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Contact Email</p>
+                <p className="text-sm text-muted-foreground">{t("labelContactEmail")}</p>
                 <p className="font-medium text-sm flex items-center gap-1">
                   <Mail className="w-3 h-3 text-muted-foreground" />
-                  {vendor.contactEmail || "Not specified"}
+                  {vendor.contactEmail || tc("notSpecified")}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Contract Start</p>
+                <p className="text-sm text-muted-foreground">{t("labelContractStart")}</p>
                 <p className="font-medium text-sm flex items-center gap-1">
                   <Calendar className="w-3 h-3 text-muted-foreground" />
                   {formatDate(vendor.contractStartDate)}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Contract Expiry</p>
+                <p className="text-sm text-muted-foreground">{t("labelContractExpiry")}</p>
                 <p className="font-medium text-sm flex items-center gap-1">
                   <Calendar className="w-3 h-3 text-muted-foreground" />
                   {formatDate(vendor.contractExpiryDate)}
@@ -327,19 +330,19 @@ export default function VendorDetailPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Statistics</CardTitle>
+            <CardTitle>{t("statisticsTitle")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
               <p className="text-3xl font-bold text-primary">{vendor.systems?.length ?? 0}</p>
-              <p className="text-sm text-muted-foreground">Linked Systems</p>
+              <p className="text-sm text-muted-foreground">{t("linkedSystems")}</p>
             </div>
             <div>
               <p className="text-3xl font-bold text-primary">{vendor.assessments?.length ?? 0}</p>
-              <p className="text-sm text-muted-foreground">Assessments</p>
+              <p className="text-sm text-muted-foreground">{t("assessments")}</p>
             </div>
             <div className="pt-2 border-t">
-              <p className="text-sm text-muted-foreground">Contract Status</p>
+              <p className="text-sm text-muted-foreground">{t("contractStatus")}</p>
               {isExpired ? (
                 <p className="font-medium text-sm text-destructive">
                   Expired {Math.abs(daysUntilExpiry!)} days ago
@@ -370,10 +373,10 @@ export default function VendorDetailPage() {
       <Tabs defaultValue="systems">
         <TabsList className="w-full justify-start overflow-x-auto">
           <TabsTrigger value="systems" className="text-xs sm:text-sm">
-            Linked Systems ({vendor.systems?.length ?? 0})
+            {t("tabLinkedSystems", { count: vendor.systems?.length ?? 0 })}
           </TabsTrigger>
           <TabsTrigger value="assessments" className="text-xs sm:text-sm">
-            Assessments ({vendor.assessments?.length ?? 0})
+            {t("tabAssessments", { count: vendor.assessments?.length ?? 0 })}
           </TabsTrigger>
         </TabsList>
 
@@ -381,9 +384,9 @@ export default function VendorDetailPage() {
         <TabsContent value="systems" className="mt-4">
           <Card>
             <CardHeader>
-              <CardTitle>Linked AI Systems</CardTitle>
+              <CardTitle>{t("linkedSystemsTitle")}</CardTitle>
               <CardDescription>
-                AI systems associated with this vendor
+                {t("linkedSystemsDescription")}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -419,7 +422,7 @@ export default function VendorDetailPage() {
               ) : (
                 <div className="text-center py-8 text-muted-foreground">
                   <Cpu className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p>No linked systems</p>
+                  <p>{t("emptySystemsTitle")}</p>
                   <p className="text-sm">
                     AI systems using this vendor will appear here
                   </p>
@@ -434,9 +437,9 @@ export default function VendorDetailPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle>Vendor Assessments</CardTitle>
+                <CardTitle>{t("vendorAssessmentsTitle")}</CardTitle>
                 <CardDescription>
-                  Risk assessments and due diligence reviews
+                  {t("vendorAssessmentsDescription")}
                 </CardDescription>
               </div>
               <Button
@@ -445,7 +448,7 @@ export default function VendorDetailPage() {
                 onClick={() => setAssessmentDialogOpen(true)}
               >
                 <Plus className="w-4 h-4 mr-2" />
-                New Assessment
+                {t("newAssessment")}
               </Button>
             </CardHeader>
             <CardContent>
@@ -497,16 +500,16 @@ export default function VendorDetailPage() {
               ) : (
                 <div className="text-center py-8 text-muted-foreground">
                   <FileSearch className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p>No assessments yet</p>
+                  <p>{t("emptyAssessmentsTitle")}</p>
                   <p className="text-sm mb-4">
-                    Create a vendor risk assessment to evaluate this vendor
+                    {t("emptyAssessmentsHint")}
                   </p>
                   <Button
                     variant="outline"
                     onClick={() => setAssessmentDialogOpen(true)}
                   >
                     <Plus className="w-4 h-4 mr-2" />
-                    New Assessment
+                    {t("newAssessment")}
                   </Button>
                 </div>
               )}
@@ -519,21 +522,21 @@ export default function VendorDetailPage() {
       <Dialog open={assessmentDialogOpen} onOpenChange={setAssessmentDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>New Vendor Assessment</DialogTitle>
+            <DialogTitle>{t("dialogNewAssessmentTitle")}</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleCreateAssessment} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="assessmentTitle">Title *</Label>
+              <Label htmlFor="assessmentTitle">{t("labelAssessmentTitle")} *</Label>
               <Input
                 id="assessmentTitle"
-                placeholder="e.g., Annual Vendor Risk Review 2026"
+                placeholder={t("placeholderAssessmentTitle")}
                 value={assessmentForm.title}
                 onChange={(e) => setAssessmentForm({ ...assessmentForm, title: e.target.value })}
                 required
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="assessmentFindings">Findings</Label>
+              <Label htmlFor="assessmentFindings">{t("labelFindings")}</Label>
               <Textarea
                 id="assessmentFindings"
                 placeholder="Document initial findings, observations, or scope..."
@@ -548,7 +551,7 @@ export default function VendorDetailPage() {
                 variant="outline"
                 onClick={() => setAssessmentDialogOpen(false)}
               >
-                Cancel
+                {tc("cancel")}
               </Button>
               <Button
                 type="submit"
@@ -557,10 +560,10 @@ export default function VendorDetailPage() {
                 {isCreatingAssessment ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Creating...
+                    {tc("saving")}
                   </>
                 ) : (
-                  "Create Assessment"
+                  t("createAssessment")
                 )}
               </Button>
             </DialogFooter>

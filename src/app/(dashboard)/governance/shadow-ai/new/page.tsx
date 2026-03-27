@@ -11,11 +11,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Loader2, Search, PenLine, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
 
 export default function NewShadowAIReportPage() {
+  const t = useTranslations("shadowAiNew");
+  const tc = useTranslations("common");
   const router = useRouter();
   const { organization } = useOrganization();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -48,13 +51,13 @@ export default function NewShadowAIReportPage() {
 
   const createReport = trpc.shadowAi.createReport.useMutation({
     onSuccess: (data) => {
-      toast.success("AI tool reported successfully");
+      toast.success(t("toastSuccess"));
       utils.shadowAi.listReports.invalidate();
       utils.shadowAi.getStats.invalidate();
       router.push(`/governance/shadow-ai/${data.id}`);
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to report AI tool");
+      toast.error(error.message || t("toastError"));
       setIsSubmitting(false);
     },
   });
@@ -87,9 +90,9 @@ export default function NewShadowAIReportPage() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-xl sm:text-2xl font-semibold">Report AI Tool</h1>
+          <h1 className="text-xl sm:text-2xl font-semibold">{t("title")}</h1>
           <p className="text-sm text-muted-foreground">
-            Report an AI tool being used in your organization
+            {t("subtitle")}
           </p>
         </div>
       </div>
@@ -116,7 +119,7 @@ export default function NewShadowAIReportPage() {
                 className="flex-1"
               >
                 <Search className="w-4 h-4 mr-2" />
-                Search Catalog
+                {t("searchCatalog")}
               </Button>
               <Button
                 type="button"
@@ -128,7 +131,7 @@ export default function NewShadowAIReportPage() {
                 className="flex-1"
               >
                 <PenLine className="w-4 h-4 mr-2" />
-                Enter Custom Tool
+                {t("enterCustomTool")}
               </Button>
             </div>
 
@@ -138,7 +141,7 @@ export default function NewShadowAIReportPage() {
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
-                    placeholder="Search AI tools (e.g., ChatGPT, Copilot, Midjourney)..."
+                    placeholder={t("catalogSearchPlaceholder")}
                     className="pl-9"
                     value={catalogSearch}
                     onChange={(e) => setCatalogSearch(e.target.value)}
@@ -211,7 +214,7 @@ export default function NewShadowAIReportPage() {
             {/* Custom Mode */}
             {mode === "custom" && (
               <div className="space-y-2">
-                <Label htmlFor="customToolName">Tool Name *</Label>
+                <Label htmlFor="customToolName">{t("labelToolName")} *</Label>
                 <Input
                   id="customToolName"
                   placeholder="e.g., Internal LLM, Custom AI Agent"
@@ -224,7 +227,7 @@ export default function NewShadowAIReportPage() {
 
             {/* Department */}
             <div className="space-y-2">
-              <Label htmlFor="department">Department</Label>
+              <Label htmlFor="department">{t("labelDepartment")}</Label>
               <Input
                 id="department"
                 placeholder="e.g., Marketing, Engineering, Legal"
@@ -235,7 +238,7 @@ export default function NewShadowAIReportPage() {
 
             {/* Usage Description */}
             <div className="space-y-2">
-              <Label htmlFor="usageDescription">Usage Description</Label>
+              <Label htmlFor="usageDescription">{t("labelUsageDescription")}</Label>
               <Textarea
                 id="usageDescription"
                 placeholder="Describe how this tool is being used, by whom, and what data it processes..."
@@ -256,17 +259,17 @@ export default function NewShadowAIReportPage() {
             <div className="flex justify-end gap-4">
               <Link href="/governance/shadow-ai">
                 <Button variant="outline" type="button">
-                  Cancel
+                  {tc("cancel")}
                 </Button>
               </Link>
               <Button type="submit" disabled={isSubmitting || !toolName}>
                 {isSubmitting ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Reporting...
+                    {t("reporting")}
                   </>
                 ) : (
-                  "Report Tool"
+                  t("submitReportTool")
                 )}
               </Button>
             </div>

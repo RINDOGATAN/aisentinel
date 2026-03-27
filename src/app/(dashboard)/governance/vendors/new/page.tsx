@@ -19,6 +19,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { ArrowLeft, Loader2, Search, CheckCircle, X, Shield, Globe, Cpu } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -85,6 +86,8 @@ type CatalogVendor = {
 };
 
 function NewVendorForm() {
+  const t = useTranslations("vendorsNew");
+  const tc = useTranslations("common");
   const router = useRouter();
   const searchParams = useSearchParams();
   const isCatalogMode = searchParams.get("catalog") === "true";
@@ -217,13 +220,13 @@ function NewVendorForm() {
 
   const createVendor = trpc.vendor.create.useMutation({
     onSuccess: (data) => {
-      toast.success("Vendor added successfully");
+      toast.success(t("toastSuccess"));
       utils.vendor.list.invalidate();
       utils.vendor.getStats.invalidate();
       router.push(`/governance/vendors/${data.id}`);
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to add vendor");
+      toast.error(error.message || t("toastError"));
       setIsSubmitting(false);
     },
   });
@@ -231,18 +234,18 @@ function NewVendorForm() {
   const createVendorWithSystem = trpc.vendor.createWithSystem.useMutation({
     onSuccess: (data) => {
       if (data.system) {
-        toast.success("Vendor and AI system created successfully");
+        toast.success(t("toastSuccessWithSystem"));
         utils.aiSystem.list.invalidate();
         utils.aiSystem.getStats.invalidate();
       } else {
-        toast.success("Vendor added successfully");
+        toast.success(t("toastSuccess"));
       }
       utils.vendor.list.invalidate();
       utils.vendor.getStats.invalidate();
       router.push(`/governance/vendors/${data.vendor.id}`);
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to add vendor");
+      toast.error(error.message || t("toastError"));
       setIsSubmitting(false);
     },
   });
@@ -293,9 +296,9 @@ function NewVendorForm() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-xl sm:text-2xl font-semibold">Add Vendor</h1>
+          <h1 className="text-xl sm:text-2xl font-semibold">{t("title")}</h1>
           <p className="text-sm text-muted-foreground">
-            Register a new third-party AI vendor
+            {t("subtitle")}
           </p>
         </div>
       </div>
@@ -306,10 +309,10 @@ function NewVendorForm() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
               <Search className="w-5 h-5 text-primary" />
-              AI Vendor Catalog
+              {t("catalogSearchTitle")}
             </CardTitle>
             <CardDescription>
-              Search pre-audited AI vendors from the Vendor.Watch database to auto-fill vendor details
+              {t("catalogSearchDescription")}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -413,7 +416,7 @@ function NewVendorForm() {
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
-                    placeholder="Search AI vendors (e.g., OpenAI, Anthropic, Google)..."
+                    placeholder={t("catalogSearchPlaceholder")}
                     className="pl-9"
                     value={catalogQuery}
                     onChange={(e) => setCatalogQuery(e.target.value)}
@@ -467,7 +470,7 @@ function NewVendorForm() {
 
                 {showDropdown && catalogResults && catalogResults.length === 0 && debouncedCatalogQuery.length >= 2 && !catalogLoading && (
                   <div className="absolute z-50 w-full mt-1 bg-background border rounded-md shadow-lg p-3 text-sm text-muted-foreground text-center">
-                    No vendors found for &quot;{debouncedCatalogQuery}&quot;
+                    {t("catalogNoResults", { query: debouncedCatalogQuery })}
                   </div>
                 )}
               </div>
@@ -489,19 +492,19 @@ function NewVendorForm() {
       {/* Form */}
       <Card>
         <CardHeader>
-          <CardTitle>Vendor Details</CardTitle>
+          <CardTitle>{t("formTitle")}</CardTitle>
           <CardDescription>
-            Provide information about the third-party AI vendor
+            {t("formDescription")}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Name */}
             <div className="space-y-2">
-              <Label htmlFor="name">Vendor Name *</Label>
+              <Label htmlFor="name">{t("labelVendorName")} *</Label>
               <Input
                 id="name"
-                placeholder="e.g., OpenAI, Anthropic, Google Cloud AI"
+                placeholder={t("placeholderVendorName")}
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 required
@@ -510,7 +513,7 @@ function NewVendorForm() {
 
             {/* Website */}
             <div className="space-y-2">
-              <Label htmlFor="website">Website</Label>
+              <Label htmlFor="website">{t("labelWebsite")}</Label>
               <Input
                 id="website"
                 placeholder="e.g., https://example.com"
@@ -521,7 +524,7 @@ function NewVendorForm() {
 
             {/* Description */}
             <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="description">{t("labelDescription")}</Label>
               <Textarea
                 id="description"
                 placeholder="Describe the vendor, their AI services, and the nature of the relationship..."
@@ -534,7 +537,7 @@ function NewVendorForm() {
             {/* Contact Name & Email */}
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="contactName">Contact Name</Label>
+                <Label htmlFor="contactName">{t("labelContactName")}</Label>
                 <Input
                   id="contactName"
                   placeholder="e.g., John Smith"
@@ -543,7 +546,7 @@ function NewVendorForm() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="contactEmail">Contact Email</Label>
+                <Label htmlFor="contactEmail">{t("labelContactEmail")}</Label>
                 <Input
                   id="contactEmail"
                   type="email"
@@ -557,7 +560,7 @@ function NewVendorForm() {
             {/* Risk Level & Status */}
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="riskLevel">Risk Level</Label>
+                <Label htmlFor="riskLevel">{t("labelRiskLevel")}</Label>
                 <Select
                   value={formData.riskLevel}
                   onValueChange={(value) => setFormData({ ...formData, riskLevel: value as VendorRiskLevel })}
@@ -575,7 +578,7 @@ function NewVendorForm() {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="status">Status</Label>
+                <Label htmlFor="status">{t("labelStatus")}</Label>
                 <Select
                   value={formData.status}
                   onValueChange={(value) => setFormData({ ...formData, status: value as VendorStatus })}
@@ -597,7 +600,7 @@ function NewVendorForm() {
             {/* Contract Dates */}
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="contractStartDate">Contract Start Date</Label>
+                <Label htmlFor="contractStartDate">{t("labelContractStartDate")}</Label>
                 <Input
                   id="contractStartDate"
                   type="date"
@@ -606,7 +609,7 @@ function NewVendorForm() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="contractExpiryDate">Contract Expiry Date</Label>
+                <Label htmlFor="contractExpiryDate">{t("labelContractExpiryDate")}</Label>
                 <Input
                   id="contractExpiryDate"
                   type="date"
@@ -618,7 +621,7 @@ function NewVendorForm() {
 
             {/* DPO Central Vendor ID */}
             <div className="space-y-2">
-              <Label htmlFor="dpoCentralVendorId">DPO Central Vendor ID</Label>
+              <Label htmlFor="dpoCentralVendorId">{t("labelDpoCentralVendorId")}</Label>
               <Input
                 id="dpoCentralVendorId"
                 placeholder="e.g., clx1234567890"
@@ -646,10 +649,10 @@ function NewVendorForm() {
                 <div className="flex-1">
                   <Label htmlFor="createSystem" className="flex items-center gap-2 cursor-pointer">
                     <Cpu className="w-4 h-4 text-primary" />
-                    Also register as AI System
+                    {t("toggleCreateSystem")}
                   </Label>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    Create a linked AI system in the registry alongside this vendor
+                    {t("toggleCreateSystemHelp")}
                   </p>
                 </div>
               </div>
@@ -657,7 +660,7 @@ function NewVendorForm() {
               {createSystem && (
                 <div className="space-y-4 pl-0 sm:pl-10">
                   <div className="space-y-2">
-                    <Label htmlFor="systemName">System Name *</Label>
+                    <Label htmlFor="systemName">{t("labelSystemName")} *</Label>
                     <Input
                       id="systemName"
                       placeholder="e.g., OpenAI GPT-4 Integration"
@@ -668,7 +671,7 @@ function NewVendorForm() {
                   </div>
                   <div className="grid gap-4 md:grid-cols-2">
                     <div className="space-y-2">
-                      <Label htmlFor="systemRole">Organization Role</Label>
+                      <Label htmlFor="systemRole">{t("labelOrganizationRole")}</Label>
                       <Select
                         value={systemData.systemRole}
                         onValueChange={(value) => setSystemData({ ...systemData, systemRole: value })}
@@ -689,7 +692,7 @@ function NewVendorForm() {
                       </p>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="systemTechnique">AI Technique</Label>
+                      <Label htmlFor="systemTechnique">{t("labelAiTechnique")}</Label>
                       <Select
                         value={systemData.systemTechnique}
                         onValueChange={(value) => setSystemData({ ...systemData, systemTechnique: value })}
@@ -708,7 +711,7 @@ function NewVendorForm() {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="systemPurpose">Intended Purpose</Label>
+                    <Label htmlFor="systemPurpose">{t("labelIntendedPurpose")}</Label>
                     <Textarea
                       id="systemPurpose"
                       placeholder="Describe the intended purpose of the AI system..."
@@ -723,7 +726,7 @@ function NewVendorForm() {
 
             {/* Notes */}
             <div className="space-y-2">
-              <Label htmlFor="notes">Notes</Label>
+              <Label htmlFor="notes">{t("labelNotes")}</Label>
               <Textarea
                 id="notes"
                 placeholder="Additional notes about this vendor relationship..."
@@ -744,7 +747,7 @@ function NewVendorForm() {
             <div className="flex justify-end gap-4">
               <Link href="/governance/vendors">
                 <Button variant="outline" type="button">
-                  Cancel
+                  {tc("cancel")}
                 </Button>
               </Link>
               <Button
@@ -754,12 +757,12 @@ function NewVendorForm() {
                 {isSubmitting ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    {createSystem ? "Creating..." : "Adding..."}
+                    {tc("saving")}
                   </>
                 ) : createSystem ? (
-                  "Add Vendor & System"
+                  t("submitAddVendorAndSystem")
                 ) : (
-                  "Add Vendor"
+                  t("submitAddVendor")
                 )}
               </Button>
             </div>

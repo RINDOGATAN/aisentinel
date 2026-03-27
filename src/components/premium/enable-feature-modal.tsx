@@ -11,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useTranslations } from "next-intl";
 import { brand } from "@/config/brand";
 import { features } from "@/config/features";
 import { formatPrice } from "@/lib/currency";
@@ -32,6 +33,7 @@ export function EnableFeatureModal({
   skillName,
   skillDescription,
 }: EnableFeatureModalProps) {
+  const t = useTranslations("premium");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [fallbackContact, setFallbackContact] = useState(false);
@@ -68,7 +70,7 @@ export function EnableFeatureModal({
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              Contact us to enable this feature for your organization.
+              {t("contactDescription")}
             </p>
           </CardContent>
           <CardFooter className="flex justify-end gap-3">
@@ -84,7 +86,7 @@ export function EnableFeatureModal({
                 )}`}
               >
                 <Mail className="mr-2 h-4 w-4" />
-                Contact Us
+                {t("contactUs")}
               </a>
             </Button>
           </CardFooter>
@@ -176,10 +178,10 @@ export function EnableFeatureModal({
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Redirecting to payment...
+                {t("redirecting")}
               </>
             ) : (
-              "Enable Feature"
+              t("enableFeature")
             )}
           </Button>
         </CardFooter>

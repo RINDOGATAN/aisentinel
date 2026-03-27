@@ -28,6 +28,7 @@ import {
   Cpu,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { keepPreviousData } from "@tanstack/react-query";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
@@ -75,6 +76,8 @@ export default function RiskClassificationPage() {
   const debouncedSearch = useDebounce(searchQuery);
   const router = useRouter();
   const { organization } = useOrganization();
+  const t = useTranslations("riskClassification");
+  const tc = useTranslations("common");
 
   const { data: stats, isLoading: statsLoading } = trpc.riskClassification.getStats.useQuery(
     { organizationId: organization?.id ?? "" },
@@ -98,7 +101,7 @@ export default function RiskClassificationPage() {
         : "";
       toast.success(`${data.aiSystem.name} classified as ${data.riskLevel}${mappingsMsg}`, {
         action: {
-          label: "View Compliance",
+          label: t("viewCompliance"),
           onClick: () => router.push(`/governance/compliance?systemId=${data.aiSystemId}`),
         },
       });
@@ -149,9 +152,9 @@ export default function RiskClassificationPage() {
     <div className="space-y-4 sm:space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-xl sm:text-2xl font-semibold">Risk Classification</h1>
+        <h1 className="text-xl sm:text-2xl font-semibold">{t("title")}</h1>
         <p className="text-sm text-muted-foreground">
-          EU AI Act four-tier risk classification for your AI systems
+          {t("subtitle")}
         </p>
       </div>
 
@@ -162,7 +165,7 @@ export default function RiskClassificationPage() {
             <div className="text-lg sm:text-xl font-bold text-destructive">
               {riskStats.unacceptable}
             </div>
-            <p className="text-xs text-muted-foreground">Unacceptable</p>
+            <p className="text-xs text-muted-foreground">{tc("riskUnacceptable")}</p>
           </CardContent>
         </Card>
         <Card className="border-destructive/20">
@@ -170,7 +173,7 @@ export default function RiskClassificationPage() {
             <div className="text-lg sm:text-xl font-bold text-destructive/80">
               {riskStats.high}
             </div>
-            <p className="text-xs text-muted-foreground">High</p>
+            <p className="text-xs text-muted-foreground">{tc("riskHigh")}</p>
           </CardContent>
         </Card>
         <Card className="border-warning/30">
@@ -178,7 +181,7 @@ export default function RiskClassificationPage() {
             <div className="text-lg sm:text-xl font-bold text-warning">
               {riskStats.limited}
             </div>
-            <p className="text-xs text-muted-foreground">Limited</p>
+            <p className="text-xs text-muted-foreground">{tc("riskLimited")}</p>
           </CardContent>
         </Card>
         <Card className="border-success/30">
@@ -186,7 +189,7 @@ export default function RiskClassificationPage() {
             <div className="text-lg sm:text-xl font-bold text-success">
               {riskStats.minimal}
             </div>
-            <p className="text-xs text-muted-foreground">Minimal</p>
+            <p className="text-xs text-muted-foreground">{tc("riskMinimal")}</p>
           </CardContent>
         </Card>
         <Card className="col-span-2 sm:col-span-1">
@@ -194,7 +197,7 @@ export default function RiskClassificationPage() {
             <div className="text-lg sm:text-xl font-bold text-muted-foreground">
               {riskStats.unclassified}
             </div>
-            <p className="text-xs text-muted-foreground">Unclassified</p>
+            <p className="text-xs text-muted-foreground">{t("unclassified")}</p>
           </CardContent>
         </Card>
       </div>
@@ -203,7 +206,7 @@ export default function RiskClassificationPage() {
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
-          placeholder="Search AI systems..."
+          placeholder={t("searchPlaceholder")}
           className="pl-9"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
@@ -248,7 +251,7 @@ export default function RiskClassificationPage() {
                         </Badge>
                       ) : (
                         <Badge variant="outline" className="text-xs">
-                          Unclassified
+                          {t("unclassified")}
                         </Badge>
                       )}
                       <Button
@@ -273,7 +276,7 @@ export default function RiskClassificationPage() {
                       {/* Current Classification Info */}
                       {system.riskClassification && (
                         <div className="p-3 bg-muted/50 space-y-2">
-                          <p className="text-xs font-medium">Current Classification</p>
+                          <p className="text-xs font-medium">{t("currentClassification")}</p>
                           <div className="flex items-center gap-2">
                             <Badge
                               className={`text-xs ${
@@ -300,7 +303,7 @@ export default function RiskClassificationPage() {
                       {/* Classification Form */}
                       <div className="space-y-4">
                         <div className="space-y-2">
-                          <Label>Risk Level *</Label>
+                          <Label>{t("riskLevelLabel")} *</Label>
                           <Select
                             value={form.riskLevel}
                             onValueChange={(value) =>
@@ -308,45 +311,50 @@ export default function RiskClassificationPage() {
                             }
                           >
                             <SelectTrigger>
-                              <SelectValue placeholder="Select risk level" />
+                              <SelectValue placeholder={t("riskLevelPlaceholder")} />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="UNACCEPTABLE">
                                 <div className="flex items-center gap-2">
                                   <ShieldAlert className="w-4 h-4 text-destructive" />
-                                  Unacceptable
+                                  {tc("riskUnacceptable")}
                                 </div>
                               </SelectItem>
                               <SelectItem value="HIGH">
                                 <div className="flex items-center gap-2">
                                   <ShieldAlert className="w-4 h-4 text-destructive/80" />
-                                  High
+                                  {tc("riskHigh")}
                                 </div>
                               </SelectItem>
                               <SelectItem value="LIMITED">
                                 <div className="flex items-center gap-2">
                                   <ShieldQuestion className="w-4 h-4 text-warning" />
-                                  Limited
+                                  {tc("riskLimited")}
                                 </div>
                               </SelectItem>
                               <SelectItem value="MINIMAL">
                                 <div className="flex items-center gap-2">
                                   <ShieldCheck className="w-4 h-4 text-success" />
-                                  Minimal
+                                  {tc("riskMinimal")}
                                 </div>
                               </SelectItem>
                             </SelectContent>
                           </Select>
                           {form.riskLevel && (
                             <p className="text-xs text-muted-foreground">
-                              {riskLevelDescriptions[form.riskLevel]}
+                              {({
+                                UNACCEPTABLE: t("riskDescriptionUnacceptable"),
+                                HIGH: t("riskDescriptionHigh"),
+                                LIMITED: t("riskDescriptionLimited"),
+                                MINIMAL: t("riskDescriptionMinimal"),
+                              } as Record<string, string>)[form.riskLevel]}
                             </p>
                           )}
                         </div>
 
                         {(form.riskLevel === "HIGH" || form.riskLevel === "UNACCEPTABLE") && (
                           <div className="space-y-2">
-                            <Label>Annex III Category</Label>
+                            <Label>{t("annexIIICategoryLabel")}</Label>
                             <Select
                               value={form.annexIIICategory}
                               onValueChange={(value) =>
@@ -354,7 +362,7 @@ export default function RiskClassificationPage() {
                               }
                             >
                               <SelectTrigger>
-                                <SelectValue placeholder="Select category (optional)" />
+                                <SelectValue placeholder={t("annexIIICategoryPlaceholder")} />
                               </SelectTrigger>
                               <SelectContent>
                                 {annexIIICategories.map((cat) => (
@@ -368,9 +376,9 @@ export default function RiskClassificationPage() {
                         )}
 
                         <div className="space-y-2">
-                          <Label>Rationale *</Label>
+                          <Label>{t("rationaleLabel")} *</Label>
                           <Textarea
-                            placeholder="Explain why this risk level was assigned..."
+                            placeholder={t("rationalePlaceholder")}
                             rows={3}
                             value={form.rationale}
                             onChange={(e) =>
@@ -385,7 +393,7 @@ export default function RiskClassificationPage() {
                             size="sm"
                             onClick={() => setExpandedSystem(null)}
                           >
-                            Cancel
+                            {tc("cancel")}
                           </Button>
                           <Button
                             size="sm"
@@ -399,12 +407,12 @@ export default function RiskClassificationPage() {
                             {classifyMutation.isPending ? (
                               <>
                                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                Classifying...
+                                {t("classifying")}
                               </>
                             ) : (
                               <>
                                 <Shield className="w-4 h-4 mr-2" />
-                                {currentLevel ? "Reclassify" : "Classify"}
+                                {currentLevel ? t("reclassify") : t("classify")}
                               </>
                             )}
                           </Button>
@@ -421,15 +429,15 @@ export default function RiskClassificationPage() {
         <Card>
           <CardContent className="py-8 text-center text-muted-foreground">
             <Shield className="w-12 h-12 mx-auto mb-4 opacity-50" />
-            <p>No AI systems found</p>
+            <p>{t("emptyTitle")}</p>
             <p className="text-sm mb-4">
               {searchQuery
-                ? "Try adjusting your search terms"
-                : "Register AI systems first to classify their risk levels"}
+                ? t("emptySearchHint")
+                : t("emptyDefaultHint")}
             </p>
             {!searchQuery && (
               <Link href="/governance/ai-registry/new">
-                <Button>Register AI System</Button>
+                <Button>{t("registerAiSystem")}</Button>
               </Link>
             )}
           </CardContent>

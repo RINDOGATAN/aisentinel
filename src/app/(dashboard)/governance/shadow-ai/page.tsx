@@ -19,6 +19,7 @@ import {
   Cpu,
 } from "lucide-react";
 import { keepPreviousData } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -54,6 +55,8 @@ const tabToStatus: Record<string, ShadowAIStatus | undefined> = {
 };
 
 export default function ShadowAIPage() {
+  const t = useTranslations("shadowAi");
+  const tc = useTranslations("common");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const [showModal, setShowModal] = useState(false);
@@ -120,8 +123,8 @@ export default function ShadowAIPage() {
           <div>
             <h1 className="text-2xl font-bold flex items-center gap-2">
               <Search className="w-6 h-6 text-primary" />
-              Shadow AI Discovery
-              <Badge className="bg-primary/20 text-primary">Premium</Badge>
+              {t("title")}
+              <Badge className="bg-primary/20 text-primary">{t("premiumBadge")}</Badge>
             </h1>
             <p className="text-muted-foreground">
               Discover unauthorized AI tools, self-reporting portal & policy
@@ -143,7 +146,7 @@ export default function ShadowAIPage() {
             </p>
             <Button onClick={() => setShowModal(true)} className="mt-4">
               <Lock className="w-4 h-4 mr-2" />
-              Enable Shadow AI Discovery
+              {t("enableShadowAi")}
             </Button>
           </CardContent>
         </Card>
@@ -169,17 +172,17 @@ export default function ShadowAIPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-xl sm:text-2xl font-semibold">
-            Shadow AI Discovery
+            {t("title")}
           </h1>
           <p className="text-sm text-muted-foreground">
-            Discover and manage unauthorized AI tool usage
+            {t("subtitle")}
           </p>
         </div>
         {canWrite && (
           <Link href="/governance/shadow-ai/new" className="flex-none">
             <Button className="w-full sm:w-auto">
               <Plus className="w-4 h-4 sm:mr-2" />
-              <span className="hidden sm:inline">Report AI Tool</span>
+              <span className="hidden sm:inline">{t("reportAiTool")}</span>
               <span className="sm:hidden">Report</span>
             </Button>
           </Link>
@@ -194,7 +197,7 @@ export default function ShadowAIPage() {
               {stats.total}
             </div>
             <p className="text-xs sm:text-sm text-muted-foreground">
-              Total Reports
+              {t("statsTotalReports")}
             </p>
           </CardContent>
         </Card>
@@ -204,7 +207,7 @@ export default function ShadowAIPage() {
               {stats.discovered}
             </div>
             <p className="text-xs sm:text-sm text-muted-foreground">
-              Discovered
+              {t("statsDiscovered")}
             </p>
           </CardContent>
         </Card>
@@ -214,7 +217,7 @@ export default function ShadowAIPage() {
               {stats.underReview}
             </div>
             <p className="text-xs sm:text-sm text-muted-foreground">
-              Under Review
+              {t("statsUnderReview")}
             </p>
           </CardContent>
         </Card>
@@ -224,7 +227,7 @@ export default function ShadowAIPage() {
               {stats.prohibited}
             </div>
             <p className="text-xs sm:text-sm text-muted-foreground">
-              Prohibited
+              {t("statsProhibited")}
             </p>
           </CardContent>
         </Card>
@@ -235,7 +238,7 @@ export default function ShadowAIPage() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search reports..."
+            placeholder={t("searchPlaceholder")}
             className="pl-9"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -347,7 +350,7 @@ export default function ShadowAIPage() {
                     {isFetchingNextPage && (
                       <Loader2 className="w-4 h-4 animate-spin mr-2" />
                     )}
-                    Load More
+                    {tc("loadMore")}
                   </Button>
                 </div>
               )}
@@ -356,17 +359,17 @@ export default function ShadowAIPage() {
             <Card>
               <CardContent className="py-8 text-center text-muted-foreground">
                 <Search className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                <p>No reports found</p>
+                <p>{t("emptyTitle")}</p>
                 <p className="text-sm mb-4">
                   {searchQuery
-                    ? "Try adjusting your search terms"
-                    : "Start by reporting an AI tool in use"}
+                    ? t("emptySearchHint")
+                    : t("emptyHint")}
                 </p>
                 {!searchQuery && canWrite && (
                   <Link href="/governance/shadow-ai/new">
                     <Button>
                       <Plus className="w-4 h-4 mr-2" />
-                      Report AI Tool
+                      {t("reportAiTool")}
                     </Button>
                   </Link>
                 )}

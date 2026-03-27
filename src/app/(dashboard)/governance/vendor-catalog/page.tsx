@@ -20,6 +20,7 @@ import {
   Brain,
   ShieldCheck,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -28,6 +29,8 @@ import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
 import type { CatalogAIModel } from "@/lib/vendor-watch-types";
 
 export default function VendorCatalogPage() {
+  const t = useTranslations("vendorCatalog");
+  const tc = useTranslations("common");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
   const [showModal, setShowModal] = useState(false);
@@ -82,11 +85,11 @@ export default function VendorCatalogPage() {
           <div>
             <h1 className="text-2xl font-bold flex items-center gap-2">
               <Database className="w-6 h-6 text-primary" />
-              AI Vendor Catalog
-              <Badge className="bg-primary/20 text-primary">Premium</Badge>
+              {t("title")}
+              <Badge className="bg-primary/20 text-primary">{t("premiumBadge")}</Badge>
             </h1>
             <p className="text-muted-foreground">
-              Browse pre-audited AI vendors from the Vendor.Watch database
+              {t("subtitle")}
             </p>
           </div>
         </div>
@@ -104,7 +107,7 @@ export default function VendorCatalogPage() {
             </p>
             <Button onClick={() => setShowModal(true)} className="mt-4">
               <Lock className="w-4 h-4 mr-2" />
-              Enable AI Vendor Catalog
+              {t("enableCatalog")}
             </Button>
           </CardContent>
         </Card>
@@ -128,9 +131,9 @@ export default function VendorCatalogPage() {
     return (
       <div className="space-y-4 sm:space-y-6">
         <div>
-          <h1 className="text-xl sm:text-2xl font-semibold">AI Vendor Catalog</h1>
+          <h1 className="text-xl sm:text-2xl font-semibold">{t("title")}</h1>
           <p className="text-sm text-muted-foreground">
-            Browse pre-audited AI vendors from the Vendor.Watch database
+            {t("subtitle")}
           </p>
         </div>
         <ListPageSkeleton count={6} />
@@ -142,9 +145,9 @@ export default function VendorCatalogPage() {
     <div className="space-y-4 sm:space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-xl sm:text-2xl font-semibold">AI Vendor Catalog</h1>
+        <h1 className="text-xl sm:text-2xl font-semibold">{t("title")}</h1>
         <p className="text-sm text-muted-foreground">
-          Browse pre-audited AI vendors from the Vendor.Watch database
+          {t("subtitle")}
         </p>
       </div>
 
@@ -156,7 +159,7 @@ export default function VendorCatalogPage() {
               {stats?.total ?? 0}
             </div>
             <p className="text-xs sm:text-sm text-muted-foreground">
-              Total Vendors
+              {t("statsTotalVendors")}
             </p>
           </CardContent>
         </Card>
@@ -166,7 +169,7 @@ export default function VendorCatalogPage() {
               {stats?.withAiModels ?? 0}
             </div>
             <p className="text-xs sm:text-sm text-muted-foreground">
-              With AI Models
+              {t("statsWithAiModels")}
             </p>
           </CardContent>
         </Card>
@@ -176,7 +179,7 @@ export default function VendorCatalogPage() {
               {stats?.verified ?? 0}
             </div>
             <p className="text-xs sm:text-sm text-muted-foreground">
-              Verified
+              {tc("verified")}
             </p>
           </CardContent>
         </Card>
@@ -186,7 +189,7 @@ export default function VendorCatalogPage() {
               {stats?.euAiActCompliant ?? 0}
             </div>
             <p className="text-xs sm:text-sm text-muted-foreground">
-              EU AI Act Compliant
+              {t("statsEuAiActCompliant")}
             </p>
           </CardContent>
         </Card>
@@ -197,7 +200,7 @@ export default function VendorCatalogPage() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search vendors..."
+            placeholder={t("searchPlaceholder")}
             className="pl-9"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -331,10 +334,10 @@ export default function VendorCatalogPage() {
             <Card>
               <CardContent className="py-8 text-center text-muted-foreground">
                 <Database className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                <p>No vendors found</p>
+                <p>{t("emptyTitle")}</p>
                 <p className="text-sm">
                   {searchQuery
-                    ? "Try adjusting your search terms"
+                    ? t("emptySearchHint")
                     : "No vendors in this category yet"}
                 </p>
               </CardContent>

@@ -21,6 +21,7 @@ import {
   Lock,
 } from "lucide-react";
 import { keepPreviousData } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -64,6 +65,8 @@ const tabToStatus: Record<string, VendorStatusFilter | undefined> = {
 };
 
 export default function VendorRiskPage() {
+  const t = useTranslations("vendors");
+  const tc = useTranslations("common");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
@@ -110,17 +113,17 @@ export default function VendorRiskPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl sm:text-2xl font-semibold">Vendor Risk</h1>
+          <h1 className="text-xl sm:text-2xl font-semibold">{t("title")}</h1>
           <p className="text-sm text-muted-foreground">
-            Manage third-party AI vendor risk and assessments
+            {t("subtitle")}
           </p>
         </div>
         {canWrite && (
           <Link href="/governance/vendors/new" className="flex-none">
             <Button className="w-full sm:w-auto">
               <Plus className="w-4 h-4 sm:mr-2" />
-              <span className="hidden sm:inline">Add Vendor</span>
-              <span className="sm:hidden">Add</span>
+              <span className="hidden sm:inline">{t("addVendor")}</span>
+              <span className="sm:hidden">{tc("add")}</span>
             </Button>
           </Link>
         )}
@@ -131,25 +134,25 @@ export default function VendorRiskPage() {
         <Card>
           <CardContent className="p-4 sm:pt-6">
             <div className="text-xl sm:text-2xl font-bold text-primary">{stats.total}</div>
-            <p className="text-xs sm:text-sm text-muted-foreground">Total Vendors</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">{t("statsTotalVendors")}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
             <div className="text-xl sm:text-2xl font-bold text-destructive">{stats.critical}</div>
-            <p className="text-xs sm:text-sm text-muted-foreground">Critical Risk</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">{t("statsCriticalRisk")}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
             <div className="text-xl sm:text-2xl font-bold text-destructive/80">{stats.highRisk}</div>
-            <p className="text-xs sm:text-sm text-muted-foreground">High Risk</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">{t("statsHighRisk")}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
             <div className="text-xl sm:text-2xl font-bold text-warning">{stats.expiringSoon}</div>
-            <p className="text-xs sm:text-sm text-muted-foreground">Expiring Soon</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">{t("statsExpiringSoon")}</p>
           </CardContent>
         </Card>
       </div>
@@ -159,7 +162,7 @@ export default function VendorRiskPage() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search vendors..."
+            placeholder={t("searchPlaceholder")}
             className="pl-9"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -177,18 +180,18 @@ export default function VendorRiskPage() {
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="font-semibold text-sm sm:text-base">AI Vendor Catalog</h3>
+                  <h3 className="font-semibold text-sm sm:text-base">{t("catalogCardTitle")}</h3>
                   <Badge className="bg-success/20 text-success text-xs">Active</Badge>
                 </div>
                 <p className="text-xs sm:text-sm text-muted-foreground">
-                  Search pre-audited AI vendors from Vendor.Watch and auto-fill vendor records
+                  {t("catalogCardDescription")}
                 </p>
               </div>
             </div>
             <Link href="/governance/vendors/new?catalog=true" className="flex-none">
               <Button size="sm" className="w-full sm:w-auto">
                 <Database className="w-4 h-4 sm:mr-2" />
-                <span className="hidden sm:inline">Add from Catalog</span>
+                <span className="hidden sm:inline">{t("addFromCatalog")}</span>
                 <span className="sm:hidden">Catalog</span>
               </Button>
             </Link>
@@ -203,11 +206,11 @@ export default function VendorRiskPage() {
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="font-semibold text-sm sm:text-base">AI Vendor Catalog</h3>
+                  <h3 className="font-semibold text-sm sm:text-base">{t("catalogCardTitle")}</h3>
                   <Badge className="bg-amber-500/20 text-amber-500 text-xs">{formatPrice(9)}/mo</Badge>
                 </div>
                 <p className="text-xs sm:text-sm text-muted-foreground">
-                  Search pre-audited AI vendors from Vendor.Watch and auto-fill vendor records
+                  {t("catalogCardDescription")}
                 </p>
               </div>
             </div>
@@ -218,8 +221,8 @@ export default function VendorRiskPage() {
               onClick={() => setUpgradeModalOpen(true)}
             >
               <Lock className="w-4 h-4 sm:mr-2" />
-              <span className="hidden sm:inline">Enable</span>
-              <span className="sm:hidden">Enable</span>
+              <span className="hidden sm:inline">{t("enableCatalog")}</span>
+              <span className="sm:hidden">{t("enableCatalog")}</span>
             </Button>
           </CardContent>
         </Card>
@@ -341,7 +344,7 @@ export default function VendorRiskPage() {
                     {isFetchingNextPage && (
                       <Loader2 className="w-4 h-4 animate-spin mr-2" />
                     )}
-                    Load More
+                    {tc("loadMore")}
                   </Button>
                 </div>
               )}
@@ -350,17 +353,17 @@ export default function VendorRiskPage() {
             <Card>
               <CardContent className="py-8 text-center text-muted-foreground">
                 <Building2 className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                <p>No vendors found</p>
+                <p>{t("emptyTitle")}</p>
                 <p className="text-sm mb-4">
                   {searchQuery
-                    ? "Try adjusting your search terms"
-                    : "Start by adding your first AI vendor"}
+                    ? t("emptySearchHint")
+                    : t("emptyHint")}
                 </p>
                 {!searchQuery && canWrite && (
                   <Link href="/governance/vendors/new">
                     <Button>
                       <Plus className="w-4 h-4 mr-2" />
-                      Add Vendor
+                      {t("addVendor")}
                     </Button>
                   </Link>
                 )}

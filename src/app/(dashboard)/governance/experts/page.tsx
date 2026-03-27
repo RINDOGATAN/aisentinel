@@ -32,6 +32,7 @@ import {
   Send,
   Check,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { useDebounce } from "@/hooks/use-debounce";
 import { features } from "@/config/features";
@@ -42,6 +43,8 @@ import type { ExpertProfile } from "@/server/services/dealroom/client";
 const PAGE_SIZE = 20;
 
 export default function ExpertsPage() {
+  const t = useTranslations("experts");
+  const tc = useTranslations("common");
   const router = useRouter();
   const searchParams = useSearchParams();
   const { data: session } = useSession();
@@ -154,9 +157,9 @@ export default function ExpertsPage() {
     <div className="space-y-4 sm:space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-xl sm:text-2xl font-semibold">Find an AI Governance Expert</h1>
+        <h1 className="text-xl sm:text-2xl font-semibold">{t("title")}</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Connect with certified AI governance professionals who can help with your compliance needs
+          {t("subtitle")}
         </p>
       </div>
 
@@ -165,7 +168,7 @@ export default function ExpertsPage() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
-            placeholder="Search by name, firm, or expertise..."
+            placeholder={t("searchPlaceholder")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9"
@@ -174,7 +177,7 @@ export default function ExpertsPage() {
         <div className="flex gap-2 flex-wrap sm:flex-nowrap">
           <Select value={specialization} onValueChange={setSpecialization}>
             <SelectTrigger className="w-full sm:w-[180px]">
-              <SelectValue placeholder="Specialization" />
+              <SelectValue placeholder={t("filterSpecialization")} />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Specializations</SelectItem>
@@ -187,7 +190,7 @@ export default function ExpertsPage() {
           </Select>
           <Select value={expertType} onValueChange={setExpertType}>
             <SelectTrigger className="w-full sm:w-[150px]">
-              <SelectValue placeholder="Expert Type" />
+              <SelectValue placeholder={t("filterExpertType")} />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Types</SelectItem>
@@ -200,7 +203,7 @@ export default function ExpertsPage() {
           </Select>
           <Select value={country} onValueChange={setCountry}>
             <SelectTrigger className="w-full sm:w-[150px]">
-              <SelectValue placeholder="Country" />
+              <SelectValue placeholder={t("filterCountry")} />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Countries</SelectItem>
@@ -213,7 +216,7 @@ export default function ExpertsPage() {
           </Select>
           <Select value={language} onValueChange={setLanguage}>
             <SelectTrigger className="w-full sm:w-[140px]">
-              <SelectValue placeholder="Language" />
+              <SelectValue placeholder={t("filterLanguage")} />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Languages</SelectItem>
@@ -268,7 +271,7 @@ export default function ExpertsPage() {
                       {expert.acceptingClients && (
                         <span className="flex items-center gap-1 text-[10px] text-green-600">
                           <CheckCircle2 className="w-3 h-3" />
-                          Available
+                          {t("available")}
                         </span>
                       )}
                     </div>
@@ -319,7 +322,7 @@ export default function ExpertsPage() {
                     onClick={() => setContactExpert(expert)}
                   >
                     <Mail className="w-3.5 h-3.5" />
-                    {expert.acceptingClients ? "Contact Expert" : "Not Accepting Clients"}
+                    {expert.acceptingClients ? t("contactExpert") : t("notAcceptingClients")}
                   </Button>
                 </CardContent>
               </Card>
@@ -335,7 +338,7 @@ export default function ExpertsPage() {
                   size="sm"
                   onClick={() => setOffset(Math.max(0, offset - PAGE_SIZE))}
                 >
-                  Previous
+                  {t("previous")}
                 </Button>
               )}
               {hasMore && (
@@ -344,7 +347,7 @@ export default function ExpertsPage() {
                   size="sm"
                   onClick={() => setOffset(offset + PAGE_SIZE)}
                 >
-                  Next
+                  {t("next")}
                 </Button>
               )}
             </div>
@@ -355,8 +358,8 @@ export default function ExpertsPage() {
           <Search className="w-10 h-10 mx-auto mb-3 text-muted-foreground opacity-50" />
           <p className="text-sm text-muted-foreground">
             {hasFilters
-              ? "No experts found matching your criteria. Try adjusting your filters."
-              : "No experts available at this time."}
+              ? t("emptyWithFilters")
+              : t("emptyNoFilters")}
           </p>
         </div>
       )}
@@ -388,7 +391,7 @@ export default function ExpertsPage() {
           ) : (
             <>
               <DialogHeader>
-                <DialogTitle>Contact {contactExpert?.name ?? "Expert"}</DialogTitle>
+                <DialogTitle>{t("contactDialogTitle", { name: contactExpert?.name ?? "Expert" })}</DialogTitle>
                 <DialogDescription>
                   {contactExpert?.firm ? `${contactExpert.firm} — ` : ""}
                   Your request will be sent to the expert&apos;s inbox.
@@ -470,7 +473,7 @@ export default function ExpertsPage() {
                     size="sm"
                     onClick={closeContactDialog}
                   >
-                    Cancel
+                    {tc("cancel")}
                   </Button>
                   <Button
                     type="submit"

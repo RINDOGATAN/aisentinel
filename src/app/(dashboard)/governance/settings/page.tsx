@@ -2,54 +2,56 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Building2, Briefcase } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { useUserType } from "@/lib/use-user-type";
 import { DeploymentExpertCta } from "@/components/governance/deployment-expert-cta";
 
-const personaLabels = {
-  BUSINESS_USER: { icon: Building2, title: "Business User", description: "AI governance for your organization" },
-  AI_GOVERNANCE_CONSULTANT: { icon: Briefcase, title: "AI Governance Consultant", description: "Advising multiple organizations on AI governance" },
+const personaIcons = {
+  BUSINESS_USER: Building2,
+  AI_GOVERNANCE_CONSULTANT: Briefcase,
 } as const;
 
 export default function SettingsPage() {
   const { userType } = useUserType();
   const { data: profile } = trpc.user.getProfile.useQuery();
+  const t = useTranslations("settings");
 
-  const persona = userType ? personaLabels[userType as keyof typeof personaLabels] : null;
-  const Icon = persona?.icon;
+  const Icon = userType ? personaIcons[userType as keyof typeof personaIcons] : null;
+  const personaTitle = userType === "BUSINESS_USER" ? t("personaBusinessUser") : userType === "AI_GOVERNANCE_CONSULTANT" ? t("personaConsultant") : null;
 
   return (
     <div className="space-y-4 sm:space-y-6 max-w-2xl">
       <div>
-        <h1 className="text-xl sm:text-2xl font-semibold">Settings</h1>
-        <p className="text-sm text-muted-foreground mt-1">Manage your account preferences</p>
+        <h1 className="text-xl sm:text-2xl font-semibold">{t("title")}</h1>
+        <p className="text-sm text-muted-foreground mt-1">{t("subtitle")}</p>
       </div>
 
       {/* Profile Info */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Profile</CardTitle>
-          <CardDescription>Your account information</CardDescription>
+          <CardTitle className="text-base">{t("profileTitle")}</CardTitle>
+          <CardDescription>{t("profileDescription")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-2 text-sm">
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Name</span>
+            <span className="text-muted-foreground">{t("labelName")}</span>
             <span>{profile?.name ?? "\u2014"}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Email</span>
+            <span className="text-muted-foreground">{t("labelEmail")}</span>
             <span>{profile?.email ?? "\u2014"}</span>
           </div>
         </CardContent>
       </Card>
 
       {/* Account Type (read-only) */}
-      {persona && Icon && (
+      {personaTitle && Icon && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Account Type</CardTitle>
+            <CardTitle className="text-base">{t("accountTypeTitle")}</CardTitle>
             <CardDescription>
-              Set during registration. Contact support if you need to change this.
+              {t("accountTypeDescription")}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -58,8 +60,7 @@ export default function SettingsPage() {
                 <Icon className="w-5 h-5" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-medium text-sm">{persona.title}</p>
-                <p className="text-xs text-muted-foreground">{persona.description}</p>
+                <p className="font-medium text-sm">{personaTitle}</p>
               </div>
             </div>
           </CardContent>

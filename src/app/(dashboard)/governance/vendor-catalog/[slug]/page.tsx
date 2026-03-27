@@ -24,6 +24,7 @@ import {
   AlertTriangle,
   FileText,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import type { CatalogAIModel } from "@/lib/vendor-watch-types";
@@ -44,6 +45,7 @@ function getModelTypeBadgeClass(type: string): string {
 }
 
 export default function VendorCatalogDetailPage() {
+  const t = useTranslations("vendorCatalogDetail");
   const params = useParams();
   const slug = params.slug as string;
   const { organization } = useOrganization();
@@ -64,11 +66,11 @@ export default function VendorCatalogDetailPage() {
   if (!entry) {
     return (
       <div className="text-center py-12">
-        <p className="text-muted-foreground">Vendor not found in catalog</p>
+        <p className="text-muted-foreground">{t("notFound")}</p>
         <Link href="/governance/vendor-catalog">
           <Button variant="outline" className="mt-4">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Catalog
+            {t("backToCatalog")}
           </Button>
         </Link>
       </div>
@@ -135,7 +137,7 @@ export default function VendorCatalogDetailPage() {
         <Button className="self-start sm:self-auto" asChild>
           <Link href={`/governance/vendors/new?catalog=true&slug=${entry.slug}`}>
             <Plus className="w-4 h-4 mr-2" />
-            Add to My Vendors
+            {t("addToMyVendors")}
           </Link>
         </Button>
       </div>
@@ -148,7 +150,7 @@ export default function VendorCatalogDetailPage() {
           {entry.description && (
             <Card>
               <CardHeader>
-                <CardTitle>Description</CardTitle>
+                <CardTitle>{t("descriptionTitle")}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">{entry.description}</p>
@@ -159,7 +161,7 @@ export default function VendorCatalogDetailPage() {
           {/* Compliance */}
           <Card>
             <CardHeader>
-              <CardTitle>Compliance</CardTitle>
+              <CardTitle>{t("complianceTitle")}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex flex-wrap gap-2">
@@ -218,7 +220,7 @@ export default function VendorCatalogDetailPage() {
               {/* Certifications */}
               {entry.certifications.length > 0 && (
                 <div>
-                  <p className="text-sm font-medium mb-2">Certifications</p>
+                  <p className="text-sm font-medium mb-2">{t("certificationsTitle")}</p>
                   <div className="flex flex-wrap gap-1.5">
                     {entry.certifications.map((cert) => (
                       <Badge key={cert} variant="outline" className="text-xs">
@@ -249,7 +251,7 @@ export default function VendorCatalogDetailPage() {
           {(entry.aiCapabilities.length > 0 || entry.modelHosting) && (
             <Card>
               <CardHeader>
-                <CardTitle>AI Capabilities</CardTitle>
+                <CardTitle>{t("aiCapabilitiesTitle")}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {entry.aiCapabilities.length > 0 && (
@@ -279,7 +281,7 @@ export default function VendorCatalogDetailPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Brain className="w-5 h-5" />
-                  AI Models
+                  {t("aiModelsTitle")}
                   <Badge variant="secondary" className="text-xs ml-1">
                     {aiModels.length}
                   </Badge>
@@ -314,7 +316,7 @@ export default function VendorCatalogDetailPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <ShieldCheck className="w-5 h-5" />
-                  AI Governance
+                  {t("aiGovernanceTitle")}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -378,7 +380,7 @@ export default function VendorCatalogDetailPage() {
           {(entry.dataLocations.length > 0 || entry.hasEuDataCenter !== null) && (
             <Card>
               <CardHeader>
-                <CardTitle>Data Processing</CardTitle>
+                <CardTitle>{t("dataProcessingTitle")}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 {entry.dataLocations.length > 0 && (
@@ -411,7 +413,7 @@ export default function VendorCatalogDetailPage() {
           {externalLinks.length > 0 && (
             <Card>
               <CardHeader>
-                <CardTitle>External Links</CardTitle>
+                <CardTitle>{t("externalLinksTitle")}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 {externalLinks.map((link) => {
@@ -437,7 +439,7 @@ export default function VendorCatalogDetailPage() {
           {/* Your Organization */}
           <Card>
             <CardHeader>
-              <CardTitle>Your Organization</CardTitle>
+              <CardTitle>{t("yourOrganizationTitle")}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center gap-3">
@@ -452,7 +454,7 @@ export default function VendorCatalogDetailPage() {
               <Button className="w-full" asChild>
                 <Link href={`/governance/vendors/new?catalog=true&slug=${entry.slug}`}>
                   <Plus className="w-4 h-4 mr-2" />
-                  Add to My Vendors
+                  {t("addToMyVendors")}
                 </Link>
               </Button>
             </CardContent>

@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/select";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 
@@ -35,6 +36,8 @@ const policyTypes = [
 ];
 
 export default function NewPolicyPage() {
+  const t = useTranslations("policiesNew");
+  const tc = useTranslations("common");
   const router = useRouter();
   const { organization } = useOrganization();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -59,13 +62,13 @@ export default function NewPolicyPage() {
 
   const createPolicy = trpc.policy.create.useMutation({
     onSuccess: (data) => {
-      toast.success("Policy created successfully");
+      toast.success(t("toastSuccess"));
       utils.policy.list.invalidate();
       utils.policy.getStats.invalidate();
       router.push(`/governance/policies/${data.id}`);
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to create policy");
+      toast.error(error.message || t("toastError"));
       setIsSubmitting(false);
     },
   });
@@ -97,9 +100,9 @@ export default function NewPolicyPage() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-xl sm:text-2xl font-semibold">Create Policy</h1>
+          <h1 className="text-xl sm:text-2xl font-semibold">{t("title")}</h1>
           <p className="text-sm text-muted-foreground">
-            Define a new AI governance policy
+            {t("subtitle")}
           </p>
         </div>
       </div>
@@ -107,19 +110,19 @@ export default function NewPolicyPage() {
       {/* Form */}
       <Card>
         <CardHeader>
-          <CardTitle>Policy Details</CardTitle>
+          <CardTitle>{t("formTitle")}</CardTitle>
           <CardDescription>
-            Provide information about the policy being created
+            {t("formDescription")}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Title */}
             <div className="space-y-2">
-              <Label htmlFor="title">Title *</Label>
+              <Label htmlFor="title">{t("labelTitle")} *</Label>
               <Input
                 id="title"
-                placeholder="e.g., Acceptable AI Use Policy"
+                placeholder={t("placeholderTitle")}
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 required
@@ -128,7 +131,7 @@ export default function NewPolicyPage() {
 
             {/* Type */}
             <div className="space-y-2">
-              <Label htmlFor="type">Policy Type *</Label>
+              <Label htmlFor="type">{t("labelPolicyType")} *</Label>
               <Select
                 value={formData.type}
                 onValueChange={(value) => setFormData({ ...formData, type: value as PolicyType })}
@@ -148,7 +151,7 @@ export default function NewPolicyPage() {
 
             {/* Description */}
             <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="description">{t("labelDescription")}</Label>
               <Textarea
                 id="description"
                 placeholder="Briefly describe the purpose and scope of this policy..."
@@ -160,7 +163,7 @@ export default function NewPolicyPage() {
 
             {/* Content */}
             <div className="space-y-2">
-              <Label htmlFor="content">Content</Label>
+              <Label htmlFor="content">{t("labelContent")}</Label>
               <Textarea
                 id="content"
                 placeholder="Write your policy content here..."
@@ -173,7 +176,7 @@ export default function NewPolicyPage() {
             {/* Dates */}
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="effectiveDate">Effective Date</Label>
+                <Label htmlFor="effectiveDate">{t("labelEffectiveDate")}</Label>
                 <Input
                   id="effectiveDate"
                   type="date"
@@ -182,7 +185,7 @@ export default function NewPolicyPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="reviewDate">Review Date</Label>
+                <Label htmlFor="reviewDate">{t("labelReviewDate")}</Label>
                 <Input
                   id="reviewDate"
                   type="date"
@@ -203,7 +206,7 @@ export default function NewPolicyPage() {
             <div className="flex justify-end gap-4">
               <Link href="/governance/policies">
                 <Button variant="outline" type="button">
-                  Cancel
+                  {tc("cancel")}
                 </Button>
               </Link>
               <Button
@@ -213,10 +216,10 @@ export default function NewPolicyPage() {
                 {isSubmitting ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Creating...
+                    {t("creating")}
                   </>
                 ) : (
-                  "Create Policy"
+                  t("submitCreatePolicy")
                 )}
               </Button>
             </div>

@@ -20,32 +20,52 @@ import { ArrowLeft, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
+import { useTranslations } from "next-intl";
 
 type AIIncidentType = "HALLUCINATION" | "BIAS_DISCRIMINATION" | "MODEL_DRIFT" | "ADVERSARIAL_ATTACK" | "PROMPT_INJECTION" | "UNAUTHORIZED_ACCESS" | "SAFETY_FAILURE" | "PERFORMANCE_DEGRADATION" | "DATA_POISONING" | "PRIVACY_VIOLATION" | "OTHER";
 type AIIncidentSeverity = "CRITICAL" | "HIGH" | "MEDIUM" | "LOW";
 
-const incidentTypes = [
-  { value: "HALLUCINATION", label: "Hallucination" },
-  { value: "BIAS_DISCRIMINATION", label: "Bias/Discrimination" },
-  { value: "MODEL_DRIFT", label: "Model Drift" },
-  { value: "ADVERSARIAL_ATTACK", label: "Adversarial Attack" },
-  { value: "PROMPT_INJECTION", label: "Prompt Injection" },
-  { value: "UNAUTHORIZED_ACCESS", label: "Unauthorized Access" },
-  { value: "SAFETY_FAILURE", label: "Safety Failure" },
-  { value: "PERFORMANCE_DEGRADATION", label: "Performance Degradation" },
-  { value: "DATA_POISONING", label: "Data Poisoning" },
-  { value: "PRIVACY_VIOLATION", label: "Privacy Violation" },
-  { value: "OTHER", label: "Other" },
+const incidentTypeValues: AIIncidentType[] = [
+  "HALLUCINATION",
+  "BIAS_DISCRIMINATION",
+  "MODEL_DRIFT",
+  "ADVERSARIAL_ATTACK",
+  "PROMPT_INJECTION",
+  "UNAUTHORIZED_ACCESS",
+  "SAFETY_FAILURE",
+  "PERFORMANCE_DEGRADATION",
+  "DATA_POISONING",
+  "PRIVACY_VIOLATION",
+  "OTHER",
 ];
 
-const severities = [
-  { value: "CRITICAL", label: "Critical" },
-  { value: "HIGH", label: "High" },
-  { value: "MEDIUM", label: "Medium" },
-  { value: "LOW", label: "Low" },
-];
+const incidentTypeKeys: Record<string, string> = {
+  HALLUCINATION: "typeHallucination",
+  BIAS_DISCRIMINATION: "typeBias",
+  MODEL_DRIFT: "typeModelDrift",
+  ADVERSARIAL_ATTACK: "typeAdversarialAttack",
+  PROMPT_INJECTION: "typePromptInjection",
+  UNAUTHORIZED_ACCESS: "typeUnauthorizedAccess",
+  SAFETY_FAILURE: "typeSafetyFailure",
+  PERFORMANCE_DEGRADATION: "typePerformanceDegradation",
+  DATA_POISONING: "typeDataPoisoning",
+  PRIVACY_VIOLATION: "typePrivacyViolation",
+  OTHER: "typeOther",
+};
+
+const severityValues: AIIncidentSeverity[] = ["CRITICAL", "HIGH", "MEDIUM", "LOW"];
+
+const severityKeys: Record<string, string> = {
+  CRITICAL: "riskCritical",
+  HIGH: "riskHigh",
+  MEDIUM: "riskMedium",
+  LOW: "riskLow",
+};
 
 export default function NewIncidentPage() {
+  const t = useTranslations("incidentsNew");
+  const ti = useTranslations("incidents");
+  const tc = useTranslations("common");
   const router = useRouter();
   const { organization } = useOrganization();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -85,13 +105,13 @@ export default function NewIncidentPage() {
 
   const createIncident = trpc.incident.create.useMutation({
     onSuccess: (data) => {
-      toast.success("Incident reported successfully");
+      toast.success(t("toastSuccess"));
       utils.incident.list.invalidate();
       utils.incident.getStats.invalidate();
       router.push(`/governance/incidents/${data.id}`);
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to report incident");
+      toast.error(error.message || t("toastError"));
       setIsSubmitting(false);
     },
   });
@@ -124,9 +144,9 @@ export default function NewIncidentPage() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-xl sm:text-2xl font-semibold">Report Incident</h1>
+          <h1 className="text-xl sm:text-2xl font-semibold">{t("title")}</h1>
           <p className="text-sm text-muted-foreground">
-            Report a new AI incident for investigation and tracking
+            {t("description")}
           </p>
         </div>
       </div>
@@ -134,19 +154,19 @@ export default function NewIncidentPage() {
       {/* Form */}
       <Card>
         <CardHeader>
-          <CardTitle>Incident Details</CardTitle>
+          <CardTitle>{t("cardTitle")}</CardTitle>
           <CardDescription>
-            Provide information about the AI incident being reported
+            {t("cardDescription")}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Title */}
             <div className="space-y-2">
-              <Label htmlFor="title">Incident Title *</Label>
+              <Label htmlFor="title">{t("titleLabel")} *</Label>
               <Input
                 id="title"
-                placeholder="e.g., Chatbot generating harmful content"
+                placeholder={t("titlePlaceholder")}
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 required
@@ -155,10 +175,10 @@ export default function NewIncidentPage() {
 
             {/* Description */}
             <div className="space-y-2">
-              <Label htmlFor="description">Description *</Label>
+              <Label htmlFor="description">{t("descriptionLabel")} *</Label>
               <Textarea
                 id="description"
-                placeholder="Describe the incident in detail: what happened, when it was detected, the impact observed..."
+                placeholder={t("descriptionPlaceholder")}
                 rows={4}
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -169,36 +189,36 @@ export default function NewIncidentPage() {
             {/* Type & Severity */}
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="type">Incident Type *</Label>
+                <Label htmlFor="type">{t("typeLabel")} *</Label>
                 <Select
                   value={formData.type}
                   onValueChange={(value) => setFormData({ ...formData, type: value as AIIncidentType })}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select incident type" />
+                    <SelectValue placeholder={t("typePlaceholder")} />
                   </SelectTrigger>
                   <SelectContent>
-                    {incidentTypes.map((t) => (
-                      <SelectItem key={t.value} value={t.value}>
-                        {t.label}
+                    {incidentTypeValues.map((value) => (
+                      <SelectItem key={value} value={value}>
+                        {ti(incidentTypeKeys[value])}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="severity">Severity *</Label>
+                <Label htmlFor="severity">{t("severityLabel")} *</Label>
                 <Select
                   value={formData.severity}
                   onValueChange={(value) => setFormData({ ...formData, severity: value as AIIncidentSeverity })}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select severity" />
+                    <SelectValue placeholder={t("severityPlaceholder")} />
                   </SelectTrigger>
                   <SelectContent>
-                    {severities.map((s) => (
-                      <SelectItem key={s.value} value={s.value}>
-                        {s.label}
+                    {severityValues.map((value) => (
+                      <SelectItem key={value} value={value}>
+                        {tc(severityKeys[value])}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -208,13 +228,13 @@ export default function NewIncidentPage() {
 
             {/* AI System */}
             <div className="space-y-2">
-              <Label htmlFor="aiSystem">AI System (Optional)</Label>
+              <Label htmlFor="aiSystem">{t("aiSystemLabel")}</Label>
               <Select
                 value={formData.aiSystemId}
                 onValueChange={(value) => setFormData({ ...formData, aiSystemId: value })}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select affected AI system" />
+                  <SelectValue placeholder={t("aiSystemPlaceholder")} />
                 </SelectTrigger>
                 <SelectContent>
                   {aiSystems.map((system) => (
@@ -239,22 +259,21 @@ export default function NewIncidentPage() {
                 }
               />
               <Label htmlFor="notificationRequired">
-                Authority notification required (Art. 62)
+                {t("notificationRequiredLabel")}
               </Label>
             </div>
             {formData.notificationRequired && (
               <p className="text-xs text-muted-foreground ml-10">
-                Serious incidents involving AI systems must be notified to market surveillance
-                authorities under EU AI Act Article 62.
+                {t("notificationRequiredHint")}
               </p>
             )}
 
             {/* DPO Central Incident ID */}
             <div className="space-y-2">
-              <Label htmlFor="dpoCentralIncidentId">DPO Central Incident ID (Optional)</Label>
+              <Label htmlFor="dpoCentralIncidentId">{t("dpoCentralIdLabel")}</Label>
               <Input
                 id="dpoCentralIncidentId"
-                placeholder="e.g., inc_abc123..."
+                placeholder={t("dpoCentralIdPlaceholder")}
                 value={formData.dpoCentralIncidentId}
                 onChange={(e) =>
                   setFormData({ ...formData, dpoCentralIncidentId: e.target.value })
@@ -276,7 +295,7 @@ export default function NewIncidentPage() {
             <div className="flex justify-end gap-4">
               <Link href="/governance/incidents">
                 <Button variant="outline" type="button">
-                  Cancel
+                  {tc("cancel")}
                 </Button>
               </Link>
               <Button
@@ -292,10 +311,10 @@ export default function NewIncidentPage() {
                 {isSubmitting ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Reporting...
+                    {t("reporting")}
                   </>
                 ) : (
-                  "Report Incident"
+                  t("reportButton")
                 )}
               </Button>
             </div>

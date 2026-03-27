@@ -46,24 +46,27 @@ import {
   Link2,
 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useTranslations } from "next-intl";
 
-const statusOptions = [
-  { value: "NOT_ASSESSED", label: "Not Assessed", color: "bg-gray-500/20 text-gray-400" },
-  { value: "COMPLIANT", label: "Compliant", color: "bg-success/20 text-success" },
-  { value: "PARTIALLY_COMPLIANT", label: "Partial", color: "bg-warning/20 text-warning" },
-  { value: "NON_COMPLIANT", label: "Non-Compliant", color: "bg-destructive/20 text-destructive" },
-  { value: "NOT_APPLICABLE", label: "N/A", color: "bg-gray-500/20 text-gray-500" },
-];
+const statusOptionKeys: Record<string, { labelKey: string; color: string }> = {
+  NOT_ASSESSED: { labelKey: "statusNotAssessed", color: "bg-gray-500/20 text-gray-400" },
+  COMPLIANT: { labelKey: "statusCompliant", color: "bg-success/20 text-success" },
+  PARTIALLY_COMPLIANT: { labelKey: "statusPartial", color: "bg-warning/20 text-warning" },
+  NON_COMPLIANT: { labelKey: "statusNonCompliant", color: "bg-destructive/20 text-destructive" },
+  NOT_APPLICABLE: { labelKey: "statusNotApplicable", color: "bg-gray-500/20 text-gray-500" },
+};
 
-const evidenceTypeConfig: Record<string, { label: string; icon: typeof Shield }> = {
-  POLICY: { label: "Policy", icon: Shield },
-  DOCUMENT: { label: "Document", icon: FileText },
-  TEST_RESULT: { label: "Test Result", icon: TestTube },
-  MONITORING: { label: "Monitoring", icon: Activity },
-  AUDIT: { label: "Audit", icon: ClipboardCheck },
-  TRAINING: { label: "Training", icon: GraduationCap },
-  APPROVAL: { label: "Approval", icon: ThumbsUp },
-  OTHER: { label: "Other", icon: MoreHorizontal },
+const statusOptionValues = ["NOT_ASSESSED", "COMPLIANT", "PARTIALLY_COMPLIANT", "NON_COMPLIANT", "NOT_APPLICABLE"];
+
+const evidenceTypeKeys: Record<string, { labelKey: string; icon: typeof Shield }> = {
+  POLICY: { labelKey: "evidencePolicy", icon: Shield },
+  DOCUMENT: { labelKey: "evidenceDocument", icon: FileText },
+  TEST_RESULT: { labelKey: "evidenceTestResult", icon: TestTube },
+  MONITORING: { labelKey: "evidenceMonitoring", icon: Activity },
+  AUDIT: { labelKey: "evidenceAudit", icon: ClipboardCheck },
+  TRAINING: { labelKey: "evidenceTraining", icon: GraduationCap },
+  APPROVAL: { labelKey: "evidenceApproval", icon: ThumbsUp },
+  OTHER: { labelKey: "evidenceOther", icon: MoreHorizontal },
 };
 
 interface EvidenceItem {
@@ -120,6 +123,8 @@ function exportComplianceCSV(
 }
 
 export default function CompliancePage() {
+  const t = useTranslations("compliance");
+  const tc = useTranslations("common");
   const { organization } = useOrganization();
   const orgId = organization?.id ?? "";
   const searchParams = useSearchParams();
@@ -171,9 +176,9 @@ export default function CompliancePage() {
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
             <Scale className="w-6 h-6 text-primary" />
-            Compliance
+            {t("title")}
           </h1>
-          <p className="text-muted-foreground">Map AI system compliance against regulatory frameworks</p>
+          <p className="text-muted-foreground">{t("description")}</p>
         </div>
         {matrix && matrix.length > 0 && (
           <Button
@@ -182,7 +187,7 @@ export default function CompliancePage() {
             onClick={() => exportComplianceCSV(matrix as Parameters<typeof exportComplianceCSV>[0])}
           >
             <Download className="w-4 h-4 mr-2" />
-            Export CSV
+            {t("exportCsv")}
           </Button>
         )}
       </div>
@@ -190,7 +195,7 @@ export default function CompliancePage() {
       <div className="flex flex-col sm:flex-row gap-4">
         <Select value={selectedSystemId} onValueChange={setSelectedSystemId}>
           <SelectTrigger className="flex-1">
-            <SelectValue placeholder="Select AI System..." />
+            <SelectValue placeholder={t("selectSystemPlaceholder")} />
           </SelectTrigger>
           <SelectContent>
             {systemList.map((s) => (
@@ -218,14 +223,14 @@ export default function CompliancePage() {
               {!selectedSystemId ? (
                 <Card>
                   <CardContent className="p-8 text-center text-muted-foreground">
-                    Select an AI system above to view its compliance matrix.
+                    {t("selectSystemPrompt")}
                   </CardContent>
                 </Card>
               ) : !matrix ? (
                 <Card>
                   <CardContent className="p-8 text-center text-muted-foreground">
                     <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-3" />
-                    Loading compliance matrix...
+                    {t("loadingMatrix")}
                   </CardContent>
                 </Card>
               ) : (
@@ -242,8 +247,8 @@ export default function CompliancePage() {
                             <span className="font-medium">{req.title}</span>
                           </div>
                           {req.mapping && (
-                            <Badge className={statusOptions.find(s => s.value === req.mapping?.status)?.color}>
-                              {statusOptions.find(s => s.value === req.mapping?.status)?.label}
+                            <Badge className={statusOptionKeys[req.mapping?.status ?? ""]?.color}>
+                              {statusOptionKeys[req.mapping?.status ?? ""] ? t(statusOptionKeys[req.mapping?.status ?? ""].labelKey) : req.mapping?.status}
                             </Badge>
                           )}
                         </div>
@@ -274,8 +279,8 @@ export default function CompliancePage() {
                                   <span className="ml-2 text-sm">{child.title}</span>
                                 </div>
                                 {child.mapping && (
-                                  <Badge className={statusOptions.find(s => s.value === child.mapping?.status)?.color}>
-                                    {statusOptions.find(s => s.value === child.mapping?.status)?.label}
+                                  <Badge className={statusOptionKeys[child.mapping?.status ?? ""]?.color}>
+                                    {statusOptionKeys[child.mapping?.status ?? ""] ? t(statusOptionKeys[child.mapping?.status ?? ""].labelKey) : child.mapping?.status}
                                   </Badge>
                                 )}
                               </div>
@@ -330,6 +335,8 @@ function RequirementRow({
   isUpdatePending: boolean;
   isEvidencePending: boolean;
 }) {
+  const t = useTranslations("compliance");
+  const tc = useTranslations("common");
   const [status, setStatus] = useState(mapping?.status ?? "NOT_ASSESSED");
   const [notes, setNotes] = useState(mapping?.notes ?? "");
   const [dirty, setDirty] = useState(false);
@@ -375,17 +382,20 @@ function RequirementRow({
     <div className="space-y-3">
       {/* Status pills */}
       <div className="flex flex-wrap gap-1">
-        {statusOptions.map((opt) => (
-          <button
-            key={opt.value}
-            onClick={() => { setStatus(opt.value); setDirty(true); }}
-            className={`px-3 py-1 text-xs rounded-full border transition-colors ${
-              status === opt.value ? opt.color + " border-current" : "border-border text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            {opt.label}
-          </button>
-        ))}
+        {statusOptionValues.map((value) => {
+          const opt = statusOptionKeys[value];
+          return (
+            <button
+              key={value}
+              onClick={() => { setStatus(value); setDirty(true); }}
+              className={`px-3 py-1 text-xs rounded-full border transition-colors ${
+                status === value ? opt.color + " border-current" : "border-border text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {t(opt.labelKey)}
+            </button>
+          );
+        })}
       </div>
 
       {/* Evidence section */}
@@ -401,16 +411,16 @@ function RequirementRow({
             onClick={() => setShowAddDialog(true)}
           >
             <Plus className="w-3 h-3 mr-1" />
-            Add Evidence
+            {t("addEvidence")}
           </Button>
         </div>
 
         {evidenceItems.length === 0 ? (
-          <p className="text-xs text-muted-foreground italic py-1">No evidence attached</p>
+          <p className="text-xs text-muted-foreground italic py-1">{t("noEvidenceAttached")}</p>
         ) : (
           <div className="space-y-1">
             {evidenceItems.map((item) => {
-              const config = evidenceTypeConfig[item.type] ?? evidenceTypeConfig.OTHER;
+              const config = evidenceTypeKeys[item.type] ?? evidenceTypeKeys.OTHER;
               const Icon = config.icon;
               return (
                 <div
@@ -421,7 +431,7 @@ function RequirementRow({
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4 shrink-0">
-                        {config.label}
+                        {tc(config.labelKey)}
                       </Badge>
                       <span className="text-sm truncate">{item.title}</span>
                     </div>
@@ -458,7 +468,7 @@ function RequirementRow({
 
       {/* Notes */}
       <Textarea
-        placeholder="Notes..."
+        placeholder={t("notesPlaceholder")}
         value={notes}
         onChange={(e) => { setNotes(e.target.value); setDirty(true); }}
         rows={1}
@@ -520,7 +530,7 @@ function RequirementRow({
             disabled={isUpdatePending}
           >
             {isUpdatePending ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <Save className="w-3 h-3 mr-1" />}
-            Save
+            {tc("save")}
           </Button>
         </div>
       )}
@@ -529,21 +539,21 @@ function RequirementRow({
       <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add Evidence</DialogTitle>
+            <DialogTitle>{t("addEvidenceDialogTitle")}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label>Type</Label>
+              <Label>{t("typeLabel")}</Label>
               <Select value={newType} onValueChange={(v) => setNewType(v as EvidenceTypeValue)}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {Object.entries(evidenceTypeConfig).map(([value, { label, icon: TypeIcon }]) => (
+                  {Object.entries(evidenceTypeKeys).map(([value, { labelKey, icon: TypeIcon }]) => (
                     <SelectItem key={value} value={value}>
                       <span className="flex items-center gap-2">
                         <TypeIcon className="w-3.5 h-3.5" />
-                        {label}
+                        {tc(labelKey)}
                       </span>
                     </SelectItem>
                   ))}
@@ -551,25 +561,25 @@ function RequirementRow({
               </Select>
             </div>
             <div className="space-y-2">
-              <Label>Title</Label>
+              <Label>{t("titleLabel")}</Label>
               <Input
-                placeholder="e.g. Risk Management Policy RMS-001"
+                placeholder={t("titlePlaceholder")}
                 value={newTitle}
                 onChange={(e) => setNewTitle(e.target.value)}
               />
             </div>
             <div className="space-y-2">
-              <Label>URL (optional)</Label>
+              <Label>{t("urlLabel")}</Label>
               <Input
-                placeholder="https://..."
+                placeholder={t("urlPlaceholder")}
                 value={newUrl}
                 onChange={(e) => setNewUrl(e.target.value)}
               />
             </div>
             <div className="space-y-2">
-              <Label>Description (optional)</Label>
+              <Label>{t("descriptionLabel")}</Label>
               <Textarea
-                placeholder="Additional details about this evidence..."
+                placeholder={t("descriptionPlaceholder")}
                 value={newDescription}
                 onChange={(e) => setNewDescription(e.target.value)}
                 rows={2}
@@ -578,11 +588,11 @@ function RequirementRow({
           </div>
           <DialogFooter>
             <Button variant="ghost" onClick={() => { resetForm(); setShowAddDialog(false); }}>
-              Cancel
+              {tc("cancel")}
             </Button>
             <Button onClick={handleAddEvidence} disabled={!newTitle.trim() || isEvidencePending}>
               {isEvidencePending ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <Plus className="w-3 h-3 mr-1" />}
-              Add
+              {tc("add")}
             </Button>
           </DialogFooter>
         </DialogContent>

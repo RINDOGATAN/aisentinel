@@ -13,6 +13,7 @@ import { ArrowLeft, Save, Send, CheckCircle, XCircle, Loader2 } from "lucide-rea
 import { Progress } from "@/components/ui/progress";
 import { formatDate } from "@/lib/utils";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 const statusColors: Record<string, string> = {
   DRAFT: "bg-gray-500/20 text-gray-400",
@@ -23,6 +24,7 @@ const statusColors: Record<string, string> = {
 };
 
 export default function AssessmentDetailPage() {
+  const t = useTranslations("assessmentDetail");
   const params = useParams();
   const { organization } = useOrganization();
   const orgId = organization?.id ?? "";
@@ -54,7 +56,7 @@ export default function AssessmentDetailPage() {
   }
 
   if (!assessment) {
-    return <div className="text-muted-foreground">Assessment not found.</div>;
+    return <div className="text-muted-foreground">{t("notFound")}</div>;
   }
 
   const template = assessment.template;
@@ -101,12 +103,12 @@ export default function AssessmentDetailPage() {
           {canEdit && (
             <Button onClick={handleSave} disabled={updateMutation.isPending}>
               {updateMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
-              Save
+              {t("saveButton")}
             </Button>
           )}
           {canSubmit && (
             <Button variant="outline" onClick={() => submitMutation.mutate({ organizationId: orgId, id: assessment.id })} disabled={submitMutation.isPending}>
-              <Send className="w-4 h-4 mr-2" />Submit for Review
+              <Send className="w-4 h-4 mr-2" />{t("submitForReview")}
             </Button>
           )}
         </div>
@@ -124,13 +126,13 @@ export default function AssessmentDetailPage() {
       {canApprove && (
         <Card className="border-primary/50">
           <CardContent className="p-4 flex items-center justify-between">
-            <span className="font-medium">This assessment is awaiting your review.</span>
+            <span className="font-medium">{t("awaitingReview")}</span>
             <div className="flex gap-2">
               <Button onClick={() => approveMutation.mutate({ organizationId: orgId, id: assessment.id, decision: "APPROVED" })} className="bg-green-600 hover:bg-green-700">
-                <CheckCircle className="w-4 h-4 mr-2" />Approve
+                <CheckCircle className="w-4 h-4 mr-2" />{t("approve")}
               </Button>
               <Button variant="destructive" onClick={() => approveMutation.mutate({ organizationId: orgId, id: assessment.id, decision: "REJECTED" })}>
-                <XCircle className="w-4 h-4 mr-2" />Reject
+                <XCircle className="w-4 h-4 mr-2" />{t("reject")}
               </Button>
             </div>
           </CardContent>
@@ -170,7 +172,7 @@ export default function AssessmentDetailPage() {
                     disabled={!canEdit}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select an option..." />
+                      <SelectValue placeholder={t("selectPlaceholder")} />
                     </SelectTrigger>
                     <SelectContent>
                       {question.options.map((option) => (
@@ -183,7 +185,7 @@ export default function AssessmentDetailPage() {
                     value={responses[question.id] ?? ""}
                     onChange={(e) => setResponses({ ...responses, [question.id]: e.target.value })}
                     disabled={!canEdit}
-                    placeholder="Enter your response..."
+                    placeholder={t("textareaPlaceholder")}
                     rows={3}
                   />
                 )}

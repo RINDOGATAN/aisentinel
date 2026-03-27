@@ -19,18 +19,30 @@ import { ArrowLeft, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
+import { useTranslations } from "next-intl";
 
 type OversightGateType = "PRE_DEPLOYMENT" | "POST_DEPLOYMENT" | "PERIODIC_REVIEW" | "INCIDENT_TRIGGERED" | "MATERIAL_CHANGE";
 
-const gateTypes = [
-  { value: "PRE_DEPLOYMENT", label: "Pre-Deployment" },
-  { value: "POST_DEPLOYMENT", label: "Post-Deployment" },
-  { value: "PERIODIC_REVIEW", label: "Periodic Review" },
-  { value: "INCIDENT_TRIGGERED", label: "Incident Triggered" },
-  { value: "MATERIAL_CHANGE", label: "Material Change" },
+const gateTypeValues: OversightGateType[] = [
+  "PRE_DEPLOYMENT",
+  "POST_DEPLOYMENT",
+  "PERIODIC_REVIEW",
+  "INCIDENT_TRIGGERED",
+  "MATERIAL_CHANGE",
 ];
 
+const gateTypeKeys: Record<string, string> = {
+  PRE_DEPLOYMENT: "gateTypePreDeployment",
+  POST_DEPLOYMENT: "gateTypePostDeployment",
+  PERIODIC_REVIEW: "gateTypePeriodicReview",
+  INCIDENT_TRIGGERED: "gateTypeIncidentTriggered",
+  MATERIAL_CHANGE: "gateTypeMaterialChange",
+};
+
 export default function NewOversightGatePage() {
+  const t = useTranslations("oversightNew");
+  const to = useTranslations("oversight");
+  const tc = useTranslations("common");
   const router = useRouter();
   const { organization } = useOrganization();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -62,13 +74,13 @@ export default function NewOversightGatePage() {
 
   const createGate = trpc.oversight.create.useMutation({
     onSuccess: (data) => {
-      toast.success("Oversight gate created successfully");
+      toast.success(t("toastSuccess"));
       utils.oversight.list.invalidate();
       utils.oversight.getStats.invalidate();
       router.push(`/governance/oversight/${data.id}`);
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to create oversight gate");
+      toast.error(error.message || t("toastError"));
       setIsSubmitting(false);
     },
   });
@@ -100,9 +112,9 @@ export default function NewOversightGatePage() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-xl sm:text-2xl font-semibold">Create Oversight Gate</h1>
+          <h1 className="text-xl sm:text-2xl font-semibold">{t("title")}</h1>
           <p className="text-sm text-muted-foreground">
-            Add a new human oversight approval gate
+            {t("description")}
           </p>
         </div>
       </div>
@@ -110,9 +122,9 @@ export default function NewOversightGatePage() {
       {/* Form */}
       <Card>
         <CardHeader>
-          <CardTitle>Gate Details</CardTitle>
+          <CardTitle>{t("cardTitle")}</CardTitle>
           <CardDescription>
-            Configure the oversight gate for an AI system (Art. 14)
+            {t("cardDescription")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -120,13 +132,13 @@ export default function NewOversightGatePage() {
             {/* AI System & Gate Type */}
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="aiSystemId">AI System *</Label>
+                <Label htmlFor="aiSystemId">{t("aiSystemLabel")} *</Label>
                 <Select
                   value={formData.aiSystemId}
                   onValueChange={(value) => setFormData({ ...formData, aiSystemId: value })}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select AI system" />
+                    <SelectValue placeholder={t("aiSystemPlaceholder")} />
                   </SelectTrigger>
                   <SelectContent>
                     {systems.map((system) => (
@@ -146,18 +158,18 @@ export default function NewOversightGatePage() {
                 )}
               </div>
               <div className="space-y-2">
-                <Label htmlFor="gateType">Gate Type *</Label>
+                <Label htmlFor="gateType">{t("gateTypeLabel")} *</Label>
                 <Select
                   value={formData.gateType}
                   onValueChange={(value) => setFormData({ ...formData, gateType: value as OversightGateType })}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select gate type" />
+                    <SelectValue placeholder={t("gateTypePlaceholder")} />
                   </SelectTrigger>
                   <SelectContent>
-                    {gateTypes.map((t) => (
-                      <SelectItem key={t.value} value={t.value}>
-                        {t.label}
+                    {gateTypeValues.map((value) => (
+                      <SelectItem key={value} value={value}>
+                        {to(gateTypeKeys[value])}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -167,10 +179,10 @@ export default function NewOversightGatePage() {
 
             {/* Description */}
             <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="description">{t("descriptionLabel")}</Label>
               <Textarea
                 id="description"
-                placeholder="Describe the oversight requirements, criteria, and scope..."
+                placeholder={t("descriptionPlaceholder")}
                 rows={3}
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -180,10 +192,10 @@ export default function NewOversightGatePage() {
             {/* Review Cadence & Next Review Date */}
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="reviewCadence">Review Cadence</Label>
+                <Label htmlFor="reviewCadence">{t("reviewCadenceLabel")}</Label>
                 <Input
                   id="reviewCadence"
-                  placeholder="e.g., Quarterly, 6 months, Annual"
+                  placeholder={t("reviewCadencePlaceholder")}
                   value={formData.reviewCadence}
                   onChange={(e) => setFormData({ ...formData, reviewCadence: e.target.value })}
                 />
@@ -192,7 +204,7 @@ export default function NewOversightGatePage() {
                 </p>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="nextReviewDate">Next Review Date</Label>
+                <Label htmlFor="nextReviewDate">{t("nextReviewDateLabel")}</Label>
                 <Input
                   id="nextReviewDate"
                   type="date"
@@ -204,10 +216,10 @@ export default function NewOversightGatePage() {
 
             {/* Assigned To */}
             <div className="space-y-2">
-              <Label htmlFor="assignedTo">Assigned To</Label>
+              <Label htmlFor="assignedTo">{t("assignedToLabel")}</Label>
               <Input
                 id="assignedTo"
-                placeholder="e.g., AI Ethics Officer, John Doe"
+                placeholder={t("assignedToPlaceholder")}
                 value={formData.assignedTo}
                 onChange={(e) => setFormData({ ...formData, assignedTo: e.target.value })}
               />
@@ -227,7 +239,7 @@ export default function NewOversightGatePage() {
             <div className="flex justify-end gap-4">
               <Link href="/governance/oversight">
                 <Button variant="outline" type="button">
-                  Cancel
+                  {tc("cancel")}
                 </Button>
               </Link>
               <Button
@@ -237,10 +249,10 @@ export default function NewOversightGatePage() {
                 {isSubmitting ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Creating...
+                    {t("creating")}
                   </>
                 ) : (
-                  "Create Gate"
+                  t("createButton")
                 )}
               </Button>
             </div>

@@ -239,8 +239,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
               </SheetContent>
             </Sheet>
 
-            <Link href="/governance" className="flex items-center gap-2 shrink-0">
-              <img src="/logo-negative.svg" alt="TODO.LAW" style={{ height: "28px", width: "auto" }} />
+            <Link href="/governance" className="flex items-center shrink-0">
               <span className="text-lg tracking-tight" style={{ fontFamily: "var(--font-jost), 'Jost', sans-serif", fontWeight: 600 }}>AI SENTINEL</span>
             </Link>
           </div>

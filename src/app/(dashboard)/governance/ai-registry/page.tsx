@@ -8,6 +8,12 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   Cpu,
   Plus,
   Search,
@@ -18,6 +24,8 @@ import {
   Eye,
   Cog,
   Database,
+  Download,
+  FileText,
 } from "lucide-react";
 import { keepPreviousData } from "@tanstack/react-query";
 import { trpc } from "@/lib/trpc";
@@ -123,15 +131,35 @@ export default function AIRegistryPage() {
             {t("subtitle")}
           </p>
         </div>
-        {canWrite && (
-          <Link href="/governance/ai-registry/new" className="flex-none">
-            <Button className="w-full sm:w-auto">
-              <Plus className="w-4 h-4 sm:mr-2" />
-              <span className="hidden sm:inline">{t("registerAiSystem")}</span>
-              <span className="sm:hidden">Register</span>
-            </Button>
-          </Link>
-        )}
+        <div className="flex gap-2 flex-none">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="icon" className="shrink-0 sm:size-auto sm:px-4 sm:py-2">
+                <Download className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">{tc("export")}</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => window.open(`/api/export/ai-system-register?organizationId=${organization?.id}`, "_blank")}>
+                <FileText className="w-4 h-4 mr-2" />
+                AI System Register (PDF)
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => window.open(`/api/export/model-inventory?organizationId=${organization?.id}`, "_blank")}>
+                <FileText className="w-4 h-4 mr-2" />
+                Model Inventory (PDF)
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          {canWrite && (
+            <Link href="/governance/ai-registry/new">
+              <Button className="w-full sm:w-auto">
+                <Plus className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">{t("registerAiSystem")}</span>
+                <span className="sm:hidden">Register</span>
+              </Button>
+            </Link>
+          )}
+        </div>
       </div>
 
       {/* Stats Grid */}

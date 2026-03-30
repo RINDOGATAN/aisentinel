@@ -26,6 +26,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   Scale,
   ChevronDown,
   ChevronRight,
@@ -35,6 +41,7 @@ import {
   Trash2,
   ExternalLink,
   FileText,
+  FileSpreadsheet,
   Shield,
   TestTube,
   Activity,
@@ -181,14 +188,34 @@ export default function CompliancePage() {
           <p className="text-muted-foreground">{t("description")}</p>
         </div>
         {matrix && matrix.length > 0 && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => exportComplianceCSV(matrix as Parameters<typeof exportComplianceCSV>[0])}
-          >
-            <Download className="w-4 h-4 mr-2" />
-            {t("exportCsv")}
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">
+                <Download className="w-4 h-4 mr-2" />
+                {tc("export")}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem
+                onClick={() => {
+                  const fw = frameworks?.find((f) => f.id === (selectedFrameworkId || frameworks[0]?.id));
+                  if (fw && selectedSystemId && organization?.id) {
+                    window.open(
+                      `/api/export/compliance-summary?organizationId=${organization.id}&aiSystemId=${selectedSystemId}&frameworkId=${fw.id}`,
+                      "_blank"
+                    );
+                  }
+                }}
+              >
+                <FileText className="w-4 h-4 mr-2" />
+                Download as PDF
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => exportComplianceCSV(matrix as Parameters<typeof exportComplianceCSV>[0])}>
+                <FileSpreadsheet className="w-4 h-4 mr-2" />
+                {t("exportCsv")}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         )}
       </div>
 

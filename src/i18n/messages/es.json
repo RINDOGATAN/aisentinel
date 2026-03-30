@@ -18,6 +18,7 @@
     "add": "A\u00f1adir",
     "create": "Crear",
     "close": "Cerrar",
+    "export": "Exportar",
     "statusDraft": "Borrador",
     "statusDevelopment": "En desarrollo",
     "statusTesting": "En pruebas",

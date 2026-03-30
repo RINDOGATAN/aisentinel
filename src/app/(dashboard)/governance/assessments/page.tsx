@@ -14,6 +14,7 @@ import {
   Loader2,
   Lock,
   ClipboardCheck,
+  Download,
 } from "lucide-react";
 import { keepPreviousData } from "@tanstack/react-query";
 import { trpc } from "@/lib/trpc";
@@ -115,15 +116,32 @@ export default function AssessmentsPage() {
             {t("description")}
           </p>
         </div>
-        {canWrite && (
-          <Link href="/governance/assessments/new" className="flex-none">
-            <Button className="w-full sm:w-auto">
-              <Plus className="w-4 h-4 sm:mr-2" />
-              <span className="hidden sm:inline">{t("newAssessment")}</span>
-              <span className="sm:hidden">{tc("create")}</span>
-            </Button>
-          </Link>
-        )}
+        <div className="flex gap-2 flex-none">
+          <Button
+            variant="outline"
+            size="icon"
+            className="shrink-0 sm:size-auto sm:px-4 sm:py-2"
+            onClick={() =>
+              organization?.id &&
+              window.open(
+                `/api/export/assessment-portfolio?organizationId=${organization.id}`,
+                "_blank"
+              )
+            }
+          >
+            <Download className="w-4 h-4 sm:mr-2" />
+            <span className="hidden sm:inline">{tc("export")}</span>
+          </Button>
+          {canWrite && (
+            <Link href="/governance/assessments/new">
+              <Button className="w-full sm:w-auto">
+                <Plus className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">{t("newAssessment")}</span>
+                <span className="sm:hidden">{tc("create")}</span>
+              </Button>
+            </Link>
+          )}
+        </div>
       </div>
 
       {/* Stats Grid */}

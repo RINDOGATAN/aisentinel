@@ -13,7 +13,7 @@ interface ToolSeed {
 }
 
 const tools: ToolSeed[] = [
-  // LLM_CHAT (8)
+  // LLM_CHAT (12)
   {
     id: "shadow-tool-chatgpt",
     name: "ChatGPT",
@@ -86,8 +86,44 @@ const tools: ToolSeed[] = [
     website: "https://mistral.ai",
     riskIndicators: ["CLOUD_HOSTED", "ON_PREMISE_AVAILABLE", "GDPR_COMPLIANT", "REQUIRES_API_KEY"],
   },
+  {
+    id: "shadow-tool-deepseek",
+    name: "DeepSeek",
+    vendor: "DeepSeek",
+    category: "LLM_CHAT",
+    description: "Chinese AI assistant and code model. Free tier popular with developers; data is processed in mainland China.",
+    website: "https://deepseek.com",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "TRAINS_ON_INPUT", "CLOUD_HOSTED"],
+  },
+  {
+    id: "shadow-tool-poe",
+    name: "Poe",
+    vendor: "Quora",
+    category: "LLM_CHAT",
+    description: "Multi-model chat aggregator providing access to GPT, Claude, Gemini, and open-source models behind a single subscription.",
+    website: "https://poe.com",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED"],
+  },
+  {
+    id: "shadow-tool-character-ai",
+    name: "Character.AI",
+    vendor: "Character.AI",
+    category: "LLM_CHAT",
+    description: "Consumer conversational AI with user-created personas. Heavy personal data processing and long session histories.",
+    website: "https://character.ai",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "TRAINS_ON_INPUT", "CLOUD_HOSTED"],
+  },
+  {
+    id: "shadow-tool-qwen",
+    name: "Qwen",
+    vendor: "Alibaba",
+    category: "LLM_CHAT",
+    description: "Alibaba's open-weight and hosted LLM family. Available via Alibaba Cloud API or self-hosted from published weights.",
+    website: "https://qwenlm.ai",
+    riskIndicators: ["CLOUD_HOSTED", "ON_PREMISE_AVAILABLE", "REQUIRES_API_KEY"],
+  },
 
-  // CODE_ASSISTANT (5)
+  // CODE_ASSISTANT (10)
   {
     id: "shadow-tool-gh-copilot",
     name: "GitHub Copilot",
@@ -133,8 +169,53 @@ const tools: ToolSeed[] = [
     website: "https://replit.com",
     riskIndicators: ["PROCESSES_PERSONAL_DATA", "TRAINS_ON_INPUT", "CLOUD_HOSTED"],
   },
+  {
+    id: "shadow-tool-claude-code",
+    name: "Claude Code",
+    vendor: "Anthropic",
+    category: "CODE_ASSISTANT",
+    description: "Anthropic's terminal-based coding agent. Executes commands, edits files, and operates on the local repo via the Claude API.",
+    website: "https://claude.com/claude-code",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "SOC2_CERTIFIED", "REQUIRES_API_KEY"],
+  },
+  {
+    id: "shadow-tool-windsurf",
+    name: "Windsurf",
+    vendor: "Codeium",
+    category: "CODE_ASSISTANT",
+    description: "AI-native IDE from Codeium with agentic coding, multi-file edits, and codebase indexing. Successor to the Codeium editor plugin.",
+    website: "https://codeium.com/windsurf",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "SOC2_CERTIFIED"],
+  },
+  {
+    id: "shadow-tool-cody",
+    name: "Sourcegraph Cody",
+    vendor: "Sourcegraph",
+    category: "CODE_ASSISTANT",
+    description: "Enterprise code AI with deep codebase context from Sourcegraph's code graph. Self-hosted and BYO-model options available.",
+    website: "https://sourcegraph.com/cody",
+    riskIndicators: ["CLOUD_HOSTED", "ON_PREMISE_AVAILABLE", "SOC2_CERTIFIED", "REQUIRES_API_KEY"],
+  },
+  {
+    id: "shadow-tool-v0",
+    name: "v0",
+    vendor: "Vercel",
+    category: "CODE_ASSISTANT",
+    description: "AI-powered UI generator that produces React + Tailwind components from text prompts or design references.",
+    website: "https://v0.dev",
+    riskIndicators: ["CLOUD_HOSTED", "SOC2_CERTIFIED"],
+  },
+  {
+    id: "shadow-tool-bolt",
+    name: "Bolt.new",
+    vendor: "StackBlitz",
+    category: "CODE_ASSISTANT",
+    description: "Browser-based AI app builder. Generates, runs, and deploys full-stack apps in a WebContainer-powered sandbox.",
+    website: "https://bolt.new",
+    riskIndicators: ["CLOUD_HOSTED"],
+  },
 
-  // IMAGE_GENERATION (5)
+  // IMAGE_GENERATION (9)
   {
     id: "shadow-tool-midjourney",
     name: "Midjourney",
@@ -180,8 +261,44 @@ const tools: ToolSeed[] = [
     website: "https://leonardo.ai",
     riskIndicators: ["TRAINS_ON_INPUT", "CLOUD_HOSTED"],
   },
+  {
+    id: "shadow-tool-flux",
+    name: "Flux",
+    vendor: "Black Forest Labs",
+    category: "IMAGE_GENERATION",
+    description: "State-of-the-art open-weight image generation models. Available self-hosted or via partner APIs (Fal, Replicate, Together).",
+    website: "https://blackforestlabs.ai",
+    riskIndicators: ["ON_PREMISE_AVAILABLE", "CLOUD_HOSTED", "REQUIRES_API_KEY"],
+  },
+  {
+    id: "shadow-tool-ideogram",
+    name: "Ideogram",
+    vendor: "Ideogram",
+    category: "IMAGE_GENERATION",
+    description: "AI image generator with best-in-class text rendering. Popular for posters, logos, and graphic design workflows.",
+    website: "https://ideogram.ai",
+    riskIndicators: ["CLOUD_HOSTED"],
+  },
+  {
+    id: "shadow-tool-canva-ai",
+    name: "Canva Magic Studio",
+    vendor: "Canva",
+    category: "IMAGE_GENERATION",
+    description: "AI features inside Canva for image generation, background removal, and design drafting. Heavy enterprise marketing adoption.",
+    website: "https://canva.com/magic-studio",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "SOC2_CERTIFIED", "GDPR_COMPLIANT"],
+  },
+  {
+    id: "shadow-tool-imagen",
+    name: "Imagen",
+    vendor: "Google",
+    category: "IMAGE_GENERATION",
+    description: "Google's image generation model. Accessible via Gemini, Google Workspace, and Vertex AI.",
+    website: "https://deepmind.google/technologies/imagen-3",
+    riskIndicators: ["CLOUD_HOSTED", "SOC2_CERTIFIED", "GDPR_COMPLIANT"],
+  },
 
-  // VIDEO_AUDIO (5)
+  // VIDEO_AUDIO (10)
   {
     id: "shadow-tool-runway",
     name: "Runway",
@@ -227,8 +344,53 @@ const tools: ToolSeed[] = [
     website: "https://suno.com",
     riskIndicators: ["TRAINS_ON_INPUT", "CLOUD_HOSTED"],
   },
+  {
+    id: "shadow-tool-sora",
+    name: "Sora",
+    vendor: "OpenAI",
+    category: "VIDEO_AUDIO",
+    description: "OpenAI's text-to-video model. Generates photorealistic short clips; available via ChatGPT Plus/Pro plans.",
+    website: "https://sora.com",
+    riskIndicators: ["CLOUD_HOSTED", "SOC2_CERTIFIED"],
+  },
+  {
+    id: "shadow-tool-heygen",
+    name: "HeyGen",
+    vendor: "HeyGen",
+    category: "VIDEO_AUDIO",
+    description: "AI video platform with custom avatars and voice cloning. Used for training, marketing, and localized content.",
+    website: "https://heygen.com",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "SOC2_CERTIFIED", "GDPR_COMPLIANT"],
+  },
+  {
+    id: "shadow-tool-veo",
+    name: "Veo",
+    vendor: "Google",
+    category: "VIDEO_AUDIO",
+    description: "Google DeepMind's text-to-video model. Long-form HD output; available through Gemini and Vertex AI.",
+    website: "https://deepmind.google/technologies/veo",
+    riskIndicators: ["CLOUD_HOSTED", "SOC2_CERTIFIED", "GDPR_COMPLIANT"],
+  },
+  {
+    id: "shadow-tool-pika",
+    name: "Pika",
+    vendor: "Pika Labs",
+    category: "VIDEO_AUDIO",
+    description: "Text-to-video and image-to-video generator popular with creators and social media teams.",
+    website: "https://pika.art",
+    riskIndicators: ["TRAINS_ON_INPUT", "CLOUD_HOSTED"],
+  },
+  {
+    id: "shadow-tool-luma",
+    name: "Luma Dream Machine",
+    vendor: "Luma AI",
+    category: "VIDEO_AUDIO",
+    description: "Text- and image-to-video generation with strong motion realism. API and web app for creative workflows.",
+    website: "https://lumalabs.ai/dream-machine",
+    riskIndicators: ["CLOUD_HOSTED", "REQUIRES_API_KEY"],
+  },
 
-  // WRITING_PRODUCTIVITY (5)
+  // WRITING_PRODUCTIVITY (8)
   {
     id: "shadow-tool-jasper",
     name: "Jasper",
@@ -274,8 +436,35 @@ const tools: ToolSeed[] = [
     website: "https://copy.ai",
     riskIndicators: ["CLOUD_HOSTED"],
   },
+  {
+    id: "shadow-tool-fireflies",
+    name: "Fireflies.ai",
+    vendor: "Fireflies",
+    category: "WRITING_PRODUCTIVITY",
+    description: "AI meeting assistant that joins calls, transcribes, and summarizes. Integrates with Zoom, Google Meet, and Teams.",
+    website: "https://fireflies.ai",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "SOC2_CERTIFIED", "GDPR_COMPLIANT"],
+  },
+  {
+    id: "shadow-tool-writer",
+    name: "Writer.com",
+    vendor: "Writer",
+    category: "WRITING_PRODUCTIVITY",
+    description: "Enterprise generative AI platform for content, knowledge, and workflows. Palmyra models with data-residency controls.",
+    website: "https://writer.com",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "SOC2_CERTIFIED", "GDPR_COMPLIANT"],
+  },
+  {
+    id: "shadow-tool-mem",
+    name: "Mem",
+    vendor: "Mem Labs",
+    category: "WRITING_PRODUCTIVITY",
+    description: "AI-powered personal knowledge base. Auto-organizes notes, emails, and calendar entries using LLMs.",
+    website: "https://mem.ai",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED"],
+  },
 
-  // BUSINESS_TOOLS (3)
+  // BUSINESS_TOOLS (8)
   {
     id: "shadow-tool-einstein",
     name: "Salesforce Einstein",
@@ -303,8 +492,53 @@ const tools: ToolSeed[] = [
     website: "https://zendesk.com",
     riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "SOC2_CERTIFIED", "GDPR_COMPLIANT"],
   },
+  {
+    id: "shadow-tool-glean",
+    name: "Glean",
+    vendor: "Glean",
+    category: "BUSINESS_TOOLS",
+    description: "Enterprise AI search and assistant connecting Slack, Drive, Confluence, Jira, and more. Indexes sensitive corporate data.",
+    website: "https://glean.com",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "SOC2_CERTIFIED", "GDPR_COMPLIANT"],
+  },
+  {
+    id: "shadow-tool-harvey",
+    name: "Harvey",
+    vendor: "Harvey",
+    category: "BUSINESS_TOOLS",
+    description: "Legal AI platform for contract analysis, research, and drafting. Widely adopted by AmLaw 100 and global firms.",
+    website: "https://harvey.ai",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "SOC2_CERTIFIED"],
+  },
+  {
+    id: "shadow-tool-gong",
+    name: "Gong",
+    vendor: "Gong",
+    category: "BUSINESS_TOOLS",
+    description: "Revenue intelligence platform. Records, transcribes, and analyzes customer calls; processes PII at scale.",
+    website: "https://gong.io",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "SOC2_CERTIFIED", "GDPR_COMPLIANT"],
+  },
+  {
+    id: "shadow-tool-intercom-fin",
+    name: "Intercom Fin",
+    vendor: "Intercom",
+    category: "BUSINESS_TOOLS",
+    description: "AI customer service agent. Handles live customer conversations and resolves tickets autonomously.",
+    website: "https://intercom.com/fin",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "SOC2_CERTIFIED", "GDPR_COMPLIANT"],
+  },
+  {
+    id: "shadow-tool-moveworks",
+    name: "Moveworks",
+    vendor: "Moveworks",
+    category: "BUSINESS_TOOLS",
+    description: "AI copilot for IT, HR, and employee support. Automates internal ticket resolution across enterprise systems.",
+    website: "https://moveworks.com",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "SOC2_CERTIFIED"],
+  },
 
-  // DATA_ANALYTICS (3)
+  // DATA_ANALYTICS (6)
   {
     id: "shadow-tool-datarobot",
     name: "DataRobot",
@@ -332,8 +566,35 @@ const tools: ToolSeed[] = [
     website: "https://wandb.ai",
     riskIndicators: ["CLOUD_HOSTED", "ON_PREMISE_AVAILABLE", "SOC2_CERTIFIED", "REQUIRES_API_KEY"],
   },
+  {
+    id: "shadow-tool-databricks",
+    name: "Databricks Mosaic AI",
+    vendor: "Databricks",
+    category: "DATA_ANALYTICS",
+    description: "Enterprise platform for building, fine-tuning, and serving generative AI models on your own data.",
+    website: "https://databricks.com/product/machine-learning",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "ON_PREMISE_AVAILABLE", "SOC2_CERTIFIED", "GDPR_COMPLIANT"],
+  },
+  {
+    id: "shadow-tool-huggingface",
+    name: "Hugging Face",
+    vendor: "Hugging Face",
+    category: "DATA_ANALYTICS",
+    description: "Open model hub hosting 1M+ AI models and datasets. Inference API, Spaces, and self-hosted deployment options.",
+    website: "https://huggingface.co",
+    riskIndicators: ["CLOUD_HOSTED", "ON_PREMISE_AVAILABLE", "SOC2_CERTIFIED", "REQUIRES_API_KEY"],
+  },
+  {
+    id: "shadow-tool-julius",
+    name: "Julius AI",
+    vendor: "Julius AI",
+    category: "DATA_ANALYTICS",
+    description: "AI data analyst that runs Python in a sandbox to explore spreadsheets and generate charts from natural language.",
+    website: "https://julius.ai",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED"],
+  },
 
-  // SEARCH (2)
+  // SEARCH (4)
   {
     id: "shadow-tool-you",
     name: "You.com",
@@ -351,6 +612,24 @@ const tools: ToolSeed[] = [
     description: "Premium search engine with AI features. No ads, no tracking. Offers AI summarization and research tools.",
     website: "https://kagi.com",
     riskIndicators: ["CLOUD_HOSTED", "GDPR_COMPLIANT"],
+  },
+  {
+    id: "shadow-tool-phind",
+    name: "Phind",
+    vendor: "Phind",
+    category: "SEARCH",
+    description: "AI search engine optimized for developers. Returns answers with code examples and cited sources.",
+    website: "https://phind.com",
+    riskIndicators: ["CLOUD_HOSTED"],
+  },
+  {
+    id: "shadow-tool-exa",
+    name: "Exa",
+    vendor: "Exa Labs",
+    category: "SEARCH",
+    description: "Semantic search API designed for LLM applications. Neural search over the web with developer-friendly results.",
+    website: "https://exa.ai",
+    riskIndicators: ["CLOUD_HOSTED", "REQUIRES_API_KEY"],
   },
 ];
 
@@ -375,14 +654,14 @@ async function main() {
   }
 
   console.log(`Seeded ${count} AI tools across 8 categories:`);
-  console.log("  - LLM_CHAT: 8");
-  console.log("  - CODE_ASSISTANT: 5");
-  console.log("  - IMAGE_GENERATION: 5");
-  console.log("  - VIDEO_AUDIO: 5");
-  console.log("  - WRITING_PRODUCTIVITY: 5");
-  console.log("  - BUSINESS_TOOLS: 3");
-  console.log("  - DATA_ANALYTICS: 3");
-  console.log("  - SEARCH: 2");
+  console.log("  - LLM_CHAT: 12");
+  console.log("  - CODE_ASSISTANT: 10");
+  console.log("  - IMAGE_GENERATION: 9");
+  console.log("  - VIDEO_AUDIO: 10");
+  console.log("  - WRITING_PRODUCTIVITY: 8");
+  console.log("  - BUSINESS_TOOLS: 8");
+  console.log("  - DATA_ANALYTICS: 6");
+  console.log("  - SEARCH: 4");
 }
 
 main()

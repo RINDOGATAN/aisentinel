@@ -19,7 +19,7 @@ export interface ExpertSearchParams {
   specialization?: string;
   country?: string; // ISO 3166-1 alpha-2
   language?: string; // ISO 639-1
-  expertType?: "legal" | "technical" | "deployment";
+  expertType?: "technical" | "deployment";
   limit?: number;
   offset?: number;
 }
@@ -28,6 +28,22 @@ export interface ExpertSearchResult {
   results: ExpertProfile[];
   total: number;
   offset: number;
+}
+
+// Legal experts are no longer offered through the directory. The Dealroom API
+// guards this server-side; this client-side sanitizer is belt-and-braces so
+// legal-only profiles are never rendered even if the upstream still returns them.
+type RawExpertProfile = Omit<ExpertProfile, "expertTypes"> & {
+  expertTypes: string[];
+};
+
+function sanitizeExpert(raw: RawExpertProfile): ExpertProfile | null {
+  const expertTypes = raw.expertTypes.filter(
+    (t): t is ExpertProfile["expertTypes"][number] =>
+      t === "technical" || t === "deployment"
+  );
+  if (expertTypes.length === 0) return null; // legal-only expert: excluded
+  return { ...raw, expertTypes };
 }
 
 function filterMockExperts(params: ExpertSearchParams): ExpertSearchResult {
@@ -113,7 +129,19 @@ export async function searchExperts(
       return filterMockExperts(params);
     }
 
-    return res.json();
+    const data = (await res.json()) as {
+      results: RawExpertProfile[];
+      total: number;
+      offset: number;
+    };
+    const results = data.results
+      .map(sanitizeExpert)
+      .filter((e): e is ExpertProfile => e !== null);
+    return {
+      results,
+      total: data.total - (data.results.length - results.length),
+      offset: data.offset,
+    };
   } catch (err) {
     console.error("Dealroom search error:", err);
     return filterMockExperts(params);
@@ -139,7 +167,7 @@ export async function getExpertById(
       return mockExperts.find((e) => e.id === id) ?? null;
     }
 
-    return res.json();
+    return sanitizeExpert((await res.json()) as RawExpertProfile);
   } catch (err) {
     console.error("Dealroom getExpertById error:", err);
     return mockExperts.find((e) => e.id === id) ?? null;
@@ -225,14 +253,15 @@ export async function getExpertTypes() {
 
   if (remote) {
     const typeLabels: Record<string, string> = {
-      legal: "Legal",
       technical: "Technical",
       deployment: "Deployment",
     };
-    return remote.expertTypes.map((value) => ({
-      value,
-      label: typeLabels[value] ?? value,
-    }));
+    return remote.expertTypes
+      .filter((value) => value !== "legal")
+      .map((value) => ({
+        value,
+        label: typeLabels[value] ?? value,
+      }));
   }
 
   return [...expertTypes];

@@ -106,7 +106,7 @@ export default function ExpertsPage() {
     language: language && language !== "all" ? language : undefined,
     expertType:
       expertType && expertType !== "all"
-        ? (expertType as "legal" | "technical" | "deployment")
+        ? (expertType as "technical" | "deployment")
         : undefined,
     limit: PAGE_SIZE,
     offset,

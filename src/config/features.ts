@@ -16,7 +16,12 @@ const defaultFeatures: FeatureFlags = {
   selfServiceUpgrade: true,
   googleAuthEnabled: true,
   emailAuthEnabled: true,
-  devAuthEnabled: process.env.NODE_ENV === "development",
+  // Local (passwordless credentials) login: dev mode, or sovereign/self-hosted
+  // builds with NEXT_PUBLIC_LOCAL_AUTH_ENABLED=true (behind the firm's own
+  // network — see deploy/sovereign/README.md).
+  devAuthEnabled:
+    process.env.NODE_ENV === "development" ||
+    process.env.NEXT_PUBLIC_LOCAL_AUTH_ENABLED === "true",
   conformityEnabled: true,
   biasFairnessEnabled: true,
   shadowAiEnabled: true,
@@ -26,10 +31,14 @@ const defaultFeatures: FeatureFlags = {
 
 export function getFeatureFlags(): FeatureFlags {
   return {
+    // Default ON (cloud posture); NEXT_PUBLIC_STRIPE_ENABLED=false turns the
+    // billing/self-service surface off for sovereign/self-hosted deployments.
     stripeEnabled:
-      process.env.NEXT_PUBLIC_STRIPE_ENABLED === "true" || defaultFeatures.stripeEnabled,
+      process.env.NEXT_PUBLIC_STRIPE_ENABLED !== "false" && defaultFeatures.stripeEnabled,
     selfServiceUpgrade:
-      process.env.NEXT_PUBLIC_SELF_SERVICE_UPGRADE === "true" || defaultFeatures.selfServiceUpgrade,
+      process.env.NEXT_PUBLIC_SELF_SERVICE_UPGRADE !== "false" &&
+      process.env.NEXT_PUBLIC_STRIPE_ENABLED !== "false" &&
+      defaultFeatures.selfServiceUpgrade,
     googleAuthEnabled:
       process.env.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED !== "false" && defaultFeatures.googleAuthEnabled,
     emailAuthEnabled:

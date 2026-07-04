@@ -39,6 +39,12 @@ const defaultBrand: BrandConfig = {
 };
 
 export function getBrandConfig(): BrandConfig {
+  // Convenience aliases for white-label deployments (deploy/sovereign):
+  // NEXT_PUBLIC_BRAND_ACCENT sets primary + accent in one variable and
+  // NEXT_PUBLIC_BRAND_LOGO_URL overrides the logo. The fine-grained
+  // NEXT_PUBLIC_COLOR_* / NEXT_PUBLIC_LOGO_PATH vars still win if set.
+  const brandAccent = process.env.NEXT_PUBLIC_BRAND_ACCENT;
+
   return {
     name: process.env.NEXT_PUBLIC_BRAND_NAME || defaultBrand.name,
     tagline: process.env.NEXT_PUBLIC_BRAND_TAGLINE || defaultBrand.tagline,
@@ -48,14 +54,23 @@ export function getBrandConfig(): BrandConfig {
     termsOfUseUrl: process.env.NEXT_PUBLIC_TERMS_URL || defaultBrand.termsOfUseUrl,
     privacyPolicyUrl: process.env.NEXT_PUBLIC_PRIVACY_URL || defaultBrand.privacyPolicyUrl,
     supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL || defaultBrand.supportEmail,
-    logoPath: process.env.NEXT_PUBLIC_LOGO_PATH || defaultBrand.logoPath,
+    logoPath:
+      process.env.NEXT_PUBLIC_LOGO_PATH ||
+      process.env.NEXT_PUBLIC_BRAND_LOGO_URL ||
+      defaultBrand.logoPath,
     faviconPath: process.env.NEXT_PUBLIC_FAVICON_PATH || defaultBrand.faviconPath,
     colors: {
-      primary: process.env.NEXT_PUBLIC_COLOR_PRIMARY || defaultBrand.colors.primary,
+      primary:
+        process.env.NEXT_PUBLIC_COLOR_PRIMARY ||
+        brandAccent ||
+        defaultBrand.colors.primary,
       primaryForeground: process.env.NEXT_PUBLIC_COLOR_PRIMARY_FG || defaultBrand.colors.primaryForeground,
       background: process.env.NEXT_PUBLIC_COLOR_BACKGROUND || defaultBrand.colors.background,
       card: process.env.NEXT_PUBLIC_COLOR_CARD || defaultBrand.colors.card,
-      accent: process.env.NEXT_PUBLIC_COLOR_ACCENT || defaultBrand.colors.accent,
+      accent:
+        process.env.NEXT_PUBLIC_COLOR_ACCENT ||
+        brandAccent ||
+        defaultBrand.colors.accent,
     },
   };
 }

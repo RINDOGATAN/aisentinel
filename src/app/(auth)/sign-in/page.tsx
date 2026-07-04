@@ -5,8 +5,11 @@ import { signIn, getProviders, getCsrfToken } from "next-auth/react";
 import { Mail, ArrowRight, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { features } from "@/config/features";
 
-const isDev = process.env.NODE_ENV === "development";
+// Local (passwordless credentials) login: dev mode, or sovereign/self-hosted
+// builds with NEXT_PUBLIC_LOCAL_AUTH_ENABLED=true.
+const isDev = features.devAuthEnabled;
 
 export default function SignInPage() {
   const [email, setEmail] = useState("");

@@ -6,18 +6,32 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { Resend } from "resend";
 import { jwtVerify } from "jose";
 import prisma from "@/lib/prisma";
+import { features } from "@/config/features";
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 const isDev = process.env.NODE_ENV === "development";
 const isProduction = process.env.NODE_ENV === "production";
-const devAuthEnabled = isDev && process.env.DISABLE_DEV_AUTH !== "true";
-const cookieDomain = isProduction ? ".todo.law" : undefined;
+// Local credentials login: dev mode, and sovereign/self-hosted deployments
+// (NEXT_PUBLIC_LOCAL_AUTH_ENABLED=true — no external OAuth/mailer required
+// behind the firm's own network).
+const devAuthEnabled = features.devAuthEnabled && process.env.DISABLE_DEV_AUTH !== "true";
+// Cross-app SSO: share session cookie across *.todo.law subdomains.
+// Self-hosted/sovereign deployments set AUTH_COOKIE_DOMAIN="" to fall back to
+// NextAuth's defaults (host-only cookie) — the todo.law domain only applies
+// to the cloud deployment.
+const cookieDomain =
+  process.env.AUTH_COOKIE_DOMAIN !== undefined
+    ? process.env.AUTH_COOKIE_DOMAIN || undefined
+    : isProduction
+      ? ".todo.law"
+      : undefined;
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma) as NextAuthOptions["adapter"],
   providers: [
-    // Development-only credentials provider (requires NODE_ENV=development, blocked in production)
+    // Local credentials provider: dev mode, and sovereign/self-hosted
+    // deployments (NEXT_PUBLIC_LOCAL_AUTH_ENABLED=true).
     ...(devAuthEnabled
       ? [
           CredentialsProvider({
@@ -27,8 +41,14 @@ export const authOptions: NextAuthOptions = {
               email: { label: "Email", type: "email", placeholder: "dev@example.com" },
             },
             async authorize(credentials) {
-              // Double-check: never allow dev auth in production
-              if (process.env.VERCEL_ENV === "production" || process.env.NODE_ENV === "production") {
+              // Double-check: never allow on the cloud (Vercel) deployment, and
+              // never in a production build unless the sovereign local-auth
+              // posture is explicitly enabled.
+              if (
+                process.env.VERCEL_ENV === "production" ||
+                (process.env.NODE_ENV === "production" &&
+                  process.env.NEXT_PUBLIC_LOCAL_AUTH_ENABLED !== "true")
+              ) {
                 console.error("Dev credentials provider blocked in production environment");
                 return null;
               }

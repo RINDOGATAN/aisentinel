@@ -49,7 +49,7 @@ const modules = [
     href: "/docs/incidents",
     icon: AlertTriangle,
     title: "AI Incidents",
-    description: "Track AI-specific failures, coordinate response tasks, and manage Art. 62 authority notifications.",
+    description: "Track AI-specific failures, coordinate response tasks, and manage Art. 73 authority notifications.",
   },
   {
     href: "/docs/compliance",

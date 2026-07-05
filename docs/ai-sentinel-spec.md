@@ -60,7 +60,7 @@ DPO Central covers **data privacy** (GDPR, DSAR, incidents, vendor risk). DPOs a
 DPOs and AI governance officers face a fragmented landscape:
 
 - **DPO Central** handles data privacy compliance (GDPR, DSAR, breach tracking) but was never designed for AI-specific governance concerns.
-- **EU AI Act** (effective Aug 1, 2024; high-risk obligations due Aug 2, 2026) introduces new compliance requirements that don't map cleanly onto existing privacy tools: AI system registration (Art. 49), risk classification (Art. 5-6), conformity assessments (Art. 43), human oversight (Art. 14), and serious incident reporting (Art. 62).
+- **EU AI Act** (effective Aug 1, 2024; high-risk obligations due Aug 2, 2026) introduces new compliance requirements that don't map cleanly onto existing privacy tools: AI system registration (Art. 49), risk classification (Art. 5-6), conformity assessments (Art. 43), human oversight (Art. 14), and serious incident reporting (Art. 73).
 - **Shadow AI** proliferation means organizations have dozens of AI tools in use with no central inventory or policy governance. Studies show ~60% of employees use unapproved AI tools at work, yet most organizations have no visibility into this usage. Traditional vendor management only covers tools acquired through formal procurement — it cannot account for tools employees adopt on their own.
 - **Existing solutions** (OneTrust AI Governance, Credo AI, Holistic AI) are enterprise-priced and often bundled with broader GRC suites.
 
@@ -91,7 +91,7 @@ AI SENTINEL ships with 9 core modules and 1 premium module across 3 phases:
 | 3 | **Assessments** | Core + Premium | 1 | FRIA & AI Risk (core), Conformity & Bias/Fairness (premium) |
 | 4 | **Compliance** | Core | 1 | Framework mapping (EU AI Act, NIST AI RMF, ISO 42001), evidence management |
 | 5 | **Human Oversight** | Core | 2 | Approval gates, review scheduling, decision logging (Art. 14) |
-| 6 | **AI Incidents** | Core | 2 | AI-specific failures, bias events, timeline, tasks, authority notifications (Art. 62) |
+| 6 | **AI Incidents** | Core | 2 | AI-specific failures, bias events, timeline, tasks, authority notifications (Art. 73) |
 | 7 | **Vendor Risk** | Core | 2 | Third-party AI vendor management, risk assessment, contract tracking |
 | 8 | **Policy Management** | Core | 2 | AI policies with versioning, approval workflow, system linking |
 | 9 | **Executive Dashboard** | Core | 2 | Org-wide stats, module summaries, quick actions, activity feed |
@@ -164,7 +164,7 @@ AI-specific incident tracking, distinct from data breach incidents in DPO Centra
 - Root cause categorization
 - Timeline tracking
 - Task assignment
-- Authority notification tracking (Art. 62 serious incident reporting)
+- Authority notification tracking (Art. 73 serious incident reporting)
 - Optional cross-reference to DPO Central incidents (when AI incident also involves a data breach)
 - Status workflow: Reported → Investigating → Mitigating → Resolved → Closed
 
@@ -828,7 +828,7 @@ AI SENTINEL and DPO Central are **separate applications with separate databases*
 | Assessments (FRIA) | Art. 27 | Fundamental rights impact assessment for public-body deployers |
 | Assessments (Conformity) | Art. 43, Annex VI/VII | Conformity assessment procedures for high-risk AI |
 | Human Oversight | Art. 14 | Human oversight measures for high-risk AI systems |
-| AI Incidents | Art. 62 | Serious incident reporting to market surveillance authorities |
+| AI Incidents | Art. 73 | Serious incident reporting to market surveillance authorities |
 | Compliance | Art. 9 (risk management), Art. 10 (data governance), Art. 11/Annex IV (technical documentation), Art. 12 (record-keeping/logging), Art. 13 (transparency), Art. 15 (accuracy, robustness, cybersecurity) | Horizontal requirements for high-risk AI |
 | Vendor Risk | Art. 25 (responsibilities along the AI value chain), Art. 28 (obligations of distributors/importers) | Third-party AI supply chain governance |
 | Policy Management | Art. 4 (AI literacy), Art. 9 (risk management system), Art. 26 (deployer obligations) | Organizational AI governance policies |

@@ -51,7 +51,7 @@ export const VENDOR_AI_MAPPINGS: Record<string, VendorAIMapping> = {
       processesPersonalData: true,
     },
     riskLevel: "LIMITED",
-    riskRationale: "Generative AI system with transparency obligations under EU AI Act Art. 52. Users must be informed they are interacting with an AI system. Risk of hallucination and potential processing of personal data in prompts.",
+    riskRationale: "Generative AI system with transparency obligations under EU AI Act Art. 50. Users must be informed they are interacting with an AI system. Risk of hallucination and potential processing of personal data in prompts.",
     requiresOversightGate: false,
   },
 

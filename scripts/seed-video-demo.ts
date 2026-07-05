@@ -455,7 +455,7 @@ async function main() {
       assessedBy: userId, assessedAt: new Date("2026-01-15"),
     },
     {
-      aiSystemId: "demo-system-chatbot", reqCode: "Art. 62", reqMap: euReqs, status: "COMPLIANT",
+      aiSystemId: "demo-system-chatbot", reqCode: "Art. 73", reqMap: euReqs, status: "COMPLIANT",
       notes: "Incident reporting procedure covers chatbot incidents.",
       assessedBy: userId, assessedAt: new Date("2026-01-15"),
       evidence: [{ type: "POLICY", title: "AI Incident Reporting Procedure — All Systems" }],
@@ -543,12 +543,12 @@ async function main() {
       evidence: [{ type: "DOCUMENT", title: "FRIA Draft — Credit Risk Scoring (Under Review)" }],
     },
     {
-      aiSystemId: "demo-system-credit", reqCode: "Art. 61", reqMap: euReqs, status: "NOT_ASSESSED",
+      aiSystemId: "demo-system-credit", reqCode: "Art. 72", reqMap: euReqs, status: "NOT_ASSESSED",
       notes: "Post-market monitoring not applicable until deployment.",
       assessedBy: userId, assessedAt: new Date("2026-02-20"),
     },
     {
-      aiSystemId: "demo-system-credit", reqCode: "Art. 62", reqMap: euReqs, status: "COMPLIANT",
+      aiSystemId: "demo-system-credit", reqCode: "Art. 73", reqMap: euReqs, status: "COMPLIANT",
       notes: "Incident reporting procedure established.",
       assessedBy: userId, assessedAt: new Date("2026-02-20"),
       evidence: [{ type: "POLICY", title: "AI Incident Reporting Procedure" }],
@@ -579,7 +579,7 @@ async function main() {
       assessedBy: userId, assessedAt: new Date("2026-01-10"),
     },
     {
-      aiSystemId: "demo-system-pred-maint", reqCode: "Art. 62", reqMap: euReqs, status: "COMPLIANT",
+      aiSystemId: "demo-system-pred-maint", reqCode: "Art. 73", reqMap: euReqs, status: "COMPLIANT",
       notes: "Incident reporting procedure covers all deployed systems.",
       assessedBy: userId, assessedAt: new Date("2026-01-10"),
       evidence: [{ type: "POLICY", title: "AI Incident Reporting Procedure — All Systems" }],
@@ -671,7 +671,7 @@ async function main() {
       incidentId: "demo-incident-injection",
       organizationId: orgId,
       authority: "National AI Market Surveillance Authority",
-      notificationType: "Art. 62 Serious Incident Report",
+      notificationType: "Art. 73 Serious Incident Report",
       dueBy: new Date("2026-03-07"),
       status: "PENDING",
     },

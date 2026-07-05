@@ -1,5 +1,12 @@
 import { PrismaClient } from "@prisma/client";
 
+// EU AI Act content verified against the FINAL text of Regulation (EU)
+// 2024/1689 (OJ L, 2024/1689, 12.7.2024) — not the 2021 Commission proposal.
+// Key final-text anchors: Art. 4 (AI literacy), Art. 5(1)(a)-(h) prohibitions,
+// Art. 50 (transparency), Art. 72 (post-market monitoring), Art. 73 (serious
+// incidents), Art. 113 (applicability timeline).
+// lawReviewedAsOf: 2026-07-05
+
 const prisma = new PrismaClient();
 
 async function main() {
@@ -27,20 +34,23 @@ async function main() {
     { code: "Art. 1", title: "Subject matter", description: "Purpose of the regulation: improve the functioning of the internal market by laying down harmonised rules for AI systems.", applicableTo: ["UNACCEPTABLE", "HIGH", "LIMITED", "MINIMAL"], sortOrder: 1, children: [] },
     { code: "Art. 2", title: "Scope", description: "Applies to providers, deployers, importers, distributors, and users of AI systems within the Union.", applicableTo: ["UNACCEPTABLE", "HIGH", "LIMITED", "MINIMAL"], sortOrder: 2, children: [] },
     { code: "Art. 3", title: "Definitions", description: "Key definitions including AI system, provider, deployer, high-risk AI system, etc.", applicableTo: ["UNACCEPTABLE", "HIGH", "LIMITED", "MINIMAL"], sortOrder: 3, children: [] },
+    { code: "Art. 4", title: "AI literacy", description: "Providers and deployers of AI systems shall take measures to ensure, to their best extent, a sufficient level of AI literacy of their staff and other persons dealing with the operation and use of AI systems on their behalf. Applicable since 2 February 2025.", applicableTo: ["UNACCEPTABLE", "HIGH", "LIMITED", "MINIMAL"], sortOrder: 4, children: [] },
 
-    // TITLE II - Prohibited AI Practices
+    // CHAPTER II - Prohibited AI Practices
+    // Subparagraph lettering follows the FINAL Act (Reg. 2024/1689), which
+    // differs from the 2021 proposal.
     { code: "Art. 5", title: "Prohibited AI practices", description: "AI practices that are prohibited due to unacceptable risk.", applicableTo: ["UNACCEPTABLE"], sortOrder: 5, children: [
-      { code: "Art. 5(1)(a)", title: "Subliminal manipulation", description: "AI systems deploying subliminal techniques beyond a person's consciousness to materially distort behaviour.", sortOrder: 1 },
-      { code: "Art. 5(1)(b)", title: "Exploitation of vulnerabilities", description: "AI systems exploiting vulnerabilities of specific groups of persons due to age, disability, or social/economic situation.", sortOrder: 2 },
-      { code: "Art. 5(1)(c)", title: "Social scoring", description: "AI systems for evaluation or classification of natural persons based on social behaviour leading to detrimental treatment.", sortOrder: 3 },
-      { code: "Art. 5(1)(d)", title: "Real-time biometric identification", description: "Real-time remote biometric identification systems in publicly accessible spaces for law enforcement, subject to exceptions.", sortOrder: 4 },
-      { code: "Art. 5(1)(e)", title: "Biometric categorisation (sensitive)", description: "AI systems that categorise natural persons based on biometric data to deduce sensitive characteristics.", sortOrder: 5 },
-      { code: "Art. 5(1)(f)", title: "Emotion recognition in workplace/education", description: "AI systems for inferring emotions in the workplace and education institutions, except for safety/medical reasons.", sortOrder: 6 },
-      { code: "Art. 5(1)(g)", title: "Untargeted scraping for facial recognition", description: "AI systems that create or expand facial recognition databases through untargeted scraping.", sortOrder: 7 },
-      { code: "Art. 5(1)(h)", title: "Predictive policing (individual)", description: "AI systems making risk assessments of natural persons to predict criminal offences solely based on profiling or personality traits.", sortOrder: 8 },
+      { code: "Art. 5(1)(a)", title: "Subliminal manipulation", description: "AI systems deploying subliminal techniques beyond a person's consciousness, or purposefully manipulative or deceptive techniques, to materially distort behaviour.", sortOrder: 1 },
+      { code: "Art. 5(1)(b)", title: "Exploitation of vulnerabilities", description: "AI systems exploiting vulnerabilities of persons due to age, disability, or a specific social or economic situation.", sortOrder: 2 },
+      { code: "Art. 5(1)(c)", title: "Social scoring", description: "AI systems for evaluation or classification of natural persons based on social behaviour or personal characteristics, leading to detrimental or unfavourable treatment.", sortOrder: 3 },
+      { code: "Art. 5(1)(d)", title: "Predictive policing (individual)", description: "AI systems making risk assessments of natural persons in order to assess or predict the risk of committing a criminal offence, based solely on profiling or on assessing personality traits and characteristics.", sortOrder: 4 },
+      { code: "Art. 5(1)(e)", title: "Untargeted scraping for facial recognition", description: "AI systems that create or expand facial recognition databases through the untargeted scraping of facial images from the internet or CCTV footage.", sortOrder: 5 },
+      { code: "Art. 5(1)(f)", title: "Emotion recognition in workplace/education", description: "AI systems to infer emotions of a natural person in the areas of workplace and education institutions, except for medical or safety reasons.", sortOrder: 6 },
+      { code: "Art. 5(1)(g)", title: "Biometric categorisation (sensitive)", description: "Biometric categorisation systems that categorise natural persons based on biometric data to deduce or infer race, political opinions, trade union membership, religious or philosophical beliefs, sex life or sexual orientation.", sortOrder: 7 },
+      { code: "Art. 5(1)(h)", title: "Real-time remote biometric identification", description: "The use of 'real-time' remote biometric identification systems in publicly accessible spaces for the purposes of law enforcement, subject to narrow exceptions.", sortOrder: 8 },
     ]},
 
-    // TITLE III - High-Risk AI Systems
+    // CHAPTER III - High-Risk AI Systems
     { code: "Art. 6", title: "Classification rules for high-risk AI systems", description: "Rules for determining which AI systems are high-risk, including Annex III listing.", applicableTo: ["HIGH"], sortOrder: 6, children: [
       { code: "Art. 6(1)", title: "Product safety high-risk", description: "AI systems that are safety components of products or are themselves products covered by Union harmonisation legislation.", sortOrder: 1 },
       { code: "Art. 6(2)", title: "Annex III high-risk", description: "AI systems referred to in Annex III areas (biometrics, infrastructure, education, employment, services, law enforcement, migration, justice).", sortOrder: 2 },
@@ -65,7 +75,7 @@ async function main() {
       { code: "Art. 12(1)", title: "Automatic logging capability", description: "High-risk AI systems shall technically allow for the automatic recording of events.", sortOrder: 1 },
       { code: "Art. 12(2)", title: "Traceability of AI functioning", description: "Logging shall ensure traceability of the AI system's functioning throughout its lifecycle.", sortOrder: 2 },
     ]},
-    { code: "Art. 13", title: "Transparency and information to deployers", description: "High-risk AI systems shall be designed and developed to ensure their operation is sufficiently transparent.", applicableTo: ["HIGH", "LIMITED"], sortOrder: 13, children: [
+    { code: "Art. 13", title: "Transparency and information to deployers", description: "High-risk AI systems shall be designed and developed to ensure their operation is sufficiently transparent.", applicableTo: ["HIGH"], sortOrder: 13, children: [
       { code: "Art. 13(1)", title: "Sufficient transparency for interpretation", description: "Design and development to ensure operation is sufficiently transparent to enable deployers to interpret and use output appropriately.", sortOrder: 1 },
       { code: "Art. 13(2)", title: "Instructions for use", description: "Accompanied by instructions for use in appropriate digital format with concise, complete, correct and clear information.", sortOrder: 2 },
     ]},
@@ -79,16 +89,17 @@ async function main() {
       { code: "Art. 15(1)", title: "Appropriate accuracy levels", description: "Achieve an appropriate level of accuracy for their intended purpose.", sortOrder: 1 },
       { code: "Art. 15(2)", title: "Accuracy metrics in instructions", description: "Levels of accuracy and relevant accuracy metrics shall be declared in instructions for use.", sortOrder: 2 },
       { code: "Art. 15(3)", title: "Resilience to errors", description: "Designed to be resilient to errors, faults or inconsistencies within the system or its environment.", sortOrder: 3 },
-      { code: "Art. 15(4)", title: "Cybersecurity measures", description: "Appropriate technical redundancy solutions, including backup or fail-safe plans.", sortOrder: 4 },
+      { code: "Art. 15(4)", title: "Robustness and technical redundancy", description: "Robustness achieved through appropriate technical redundancy solutions, which may include backup or fail-safe plans; systems that continue learning must address the risk of biased feedback loops.", sortOrder: 4 },
+      { code: "Art. 15(5)", title: "Cybersecurity measures", description: "Resilience against attempts by unauthorised third parties to alter use, outputs or performance, including measures against data poisoning, model poisoning, adversarial examples and confidentiality attacks.", sortOrder: 5 },
     ]},
 
-    // TITLE III - Provider & Deployer Obligations
+    // CHAPTER III - Provider & Deployer Obligations
     { code: "Art. 16", title: "Obligations of providers of high-risk AI systems", description: "Providers shall ensure compliance with requirements, establish quality management system, and maintain documentation.", applicableTo: ["HIGH"], sortOrder: 16, children: [] },
     { code: "Art. 17", title: "Quality management system", description: "Providers shall put a quality management system in place ensuring compliance.", applicableTo: ["HIGH"], sortOrder: 17, children: [] },
     { code: "Art. 26", title: "Obligations of deployers of high-risk AI systems", description: "Deployers shall use systems in accordance with instructions, ensure human oversight, monitor operation.", applicableTo: ["HIGH"], sortOrder: 26, children: [
       { code: "Art. 26(1)", title: "Use in accordance with instructions", description: "Take appropriate technical and organisational measures to ensure use in accordance with instructions for use.", sortOrder: 1 },
       { code: "Art. 26(2)", title: "Assign human oversight", description: "Assign human oversight to natural persons who have the necessary competence, training and authority.", sortOrder: 2 },
-      { code: "Art. 26(5)", title: "FRIA for public bodies", description: "Deployers that are bodies governed by public law shall carry out a fundamental rights impact assessment.", sortOrder: 3 },
+      { code: "Art. 26(5)", title: "Monitor operation and report risks", description: "Deployers shall monitor the operation of the high-risk AI system on the basis of the instructions for use and, where relevant, inform the provider (Art. 72), and inform the provider/distributor and market surveillance authority of risks (Art. 79(1)) and serious incidents.", sortOrder: 3 },
     ]},
     { code: "Art. 27", title: "Fundamental rights impact assessment", description: "Deployers of high-risk AI systems shall perform an assessment of impact on fundamental rights before use.", applicableTo: ["HIGH"], sortOrder: 27, children: [
       { code: "Art. 27(1)", title: "FRIA before putting into use", description: "Perform assessment of impact on fundamental rights before putting the high-risk AI system into use.", sortOrder: 1 },
@@ -96,15 +107,15 @@ async function main() {
       { code: "Art. 27(3)", title: "Notify market surveillance authority", description: "Notify the relevant market surveillance authority of the result of the assessment.", sortOrder: 3 },
     ]},
 
-    // TITLE IV - Transparency
+    // CHAPTER IV - Transparency
     { code: "Art. 50", title: "Transparency obligations for certain AI systems", description: "Providers and deployers of certain AI systems shall ensure transparency.", applicableTo: ["LIMITED", "HIGH"], sortOrder: 50, children: [
       { code: "Art. 50(1)", title: "AI interaction disclosure", description: "Providers shall ensure that AI systems intended to interact with persons are designed so persons are informed they are interacting with AI.", sortOrder: 1 },
       { code: "Art. 50(2)", title: "Synthetic content marking", description: "Providers of AI systems generating synthetic audio, image, video or text content shall ensure outputs are marked in a machine-readable format.", sortOrder: 2 },
-      { code: "Art. 50(3)", title: "Emotion recognition disclosure", description: "Users of emotion recognition or biometric categorisation systems shall inform persons of the operation of the system.", sortOrder: 3 },
+      { code: "Art. 50(3)", title: "Emotion recognition disclosure", description: "Deployers of emotion recognition or biometric categorisation systems shall inform persons exposed to the operation of the system.", sortOrder: 3 },
       { code: "Art. 50(4)", title: "Deep fake disclosure", description: "Deployers of AI systems generating deep fakes shall disclose that the content has been artificially generated or manipulated.", sortOrder: 4 },
     ]},
 
-    // TITLE V - General-Purpose AI
+    // CHAPTER V - General-Purpose AI
     { code: "Art. 53", title: "Obligations for providers of GPAI models", description: "Providers of general-purpose AI models shall comply with obligations related to documentation and transparency.", applicableTo: ["HIGH", "LIMITED", "MINIMAL"], sortOrder: 53, children: [
       { code: "Art. 53(1)(a)", title: "Technical documentation", description: "Draw up and keep up to date the technical documentation of the model.", sortOrder: 1 },
       { code: "Art. 53(1)(b)", title: "Information for downstream providers", description: "Make available information and documentation to providers of AI systems who intend to integrate the model.", sortOrder: 2 },
@@ -112,14 +123,24 @@ async function main() {
       { code: "Art. 53(1)(d)", title: "Training data summary", description: "Draw up and make publicly available a sufficiently detailed summary of training data content.", sortOrder: 4 },
     ]},
 
-    // TITLE IX - Post-market & Incidents
-    { code: "Art. 61", title: "Post-market monitoring by providers", description: "Providers shall establish and document a post-market monitoring system proportionate to the AI technologies.", applicableTo: ["HIGH"], sortOrder: 61, children: [] },
-    { code: "Art. 62", title: "Reporting of serious incidents", description: "Providers of high-risk AI systems shall report any serious incident to market surveillance authorities.", applicableTo: ["HIGH"], sortOrder: 62, children: [
-      { code: "Art. 62(1)", title: "Report serious incidents", description: "Report any serious incident to the market surveillance authorities of the Member States where that incident occurred.", sortOrder: 1 },
-      { code: "Art. 62(2)", title: "Reporting timeline", description: "Report shall be made immediately after establishing a causal link, and in any event not later than 15 days.", sortOrder: 2 },
+    // CHAPTER IX - Post-market monitoring & serious incidents
+    // Final-Act numbering: Art. 72 (post-market monitoring) and Art. 73
+    // (serious incidents) — Arts. 61/62 were the 2021-proposal numbers.
+    { code: "Art. 72", title: "Post-market monitoring by providers", description: "Providers shall establish and document a post-market monitoring system proportionate to the nature of the AI technologies and the risks of the high-risk AI system.", applicableTo: ["HIGH"], sortOrder: 72, children: [] },
+    { code: "Art. 73", title: "Reporting of serious incidents", description: "Providers of high-risk AI systems placed on the Union market shall report any serious incident to the market surveillance authorities.", applicableTo: ["HIGH"], sortOrder: 73, children: [
+      { code: "Art. 73(1)", title: "Report serious incidents", description: "Report any serious incident to the market surveillance authorities of the Member States where that incident occurred.", sortOrder: 1 },
+      { code: "Art. 73(2)-(4)", title: "Reporting timelines", description: "Report immediately after establishing a causal link (or reasonable likelihood of one), and no later than 15 days after awareness; no later than 2 days for widespread infringements or serious incidents involving critical-infrastructure disruption; no later than 10 days in the event of death.", sortOrder: 2 },
     ]},
 
-    // TITLE XII - Penalties
+    // CHAPTER XIII - Final provisions: applicability timeline (Art. 113)
+    { code: "Art. 113", title: "Entry into force and application", description: "The AI Act entered into force on 1 August 2024 and applies in stages (see sub-entries). General date of application: 2 August 2026.", applicableTo: ["UNACCEPTABLE", "HIGH", "LIMITED", "MINIMAL"], sortOrder: 113, children: [
+      { code: "Art. 113(a) — 2 Feb 2025", title: "Prohibitions and AI literacy apply", description: "Chapters I and II apply from 2 February 2025: general provisions, AI literacy (Art. 4), and prohibited AI practices (Art. 5).", sortOrder: 1 },
+      { code: "Art. 113(b) — 2 Aug 2025", title: "GPAI, governance and penalties apply", description: "From 2 August 2025: notified-body rules (Chapter III, Section 4), GPAI model obligations (Chapter V), governance (Chapter VII), penalties (Chapter XII except Art. 101), and confidentiality (Art. 78).", sortOrder: 2 },
+      { code: "Art. 113 — 2 Aug 2026", title: "General application (incl. Annex III high-risk)", description: "From 2 August 2026 the Regulation applies generally, including Annex III high-risk obligations and Art. 50 transparency obligations.", sortOrder: 3 },
+      { code: "Art. 113(c) — 2 Aug 2027", title: "Annex I product-embedded high-risk AI", description: "From 2 August 2027: Art. 6(1) classification and corresponding obligations for high-risk AI that is a safety component of (or is itself) a product under Annex I Union harmonisation legislation (e.g. medical devices under the MDR).", sortOrder: 4 },
+    ]},
+
+    // CHAPTER XII - Penalties
     { code: "Art. 99", title: "Penalties", description: "Member States shall lay down rules on penalties applicable to infringements.", applicableTo: ["UNACCEPTABLE", "HIGH", "LIMITED", "MINIMAL"], sortOrder: 99, children: [
       { code: "Art. 99(3)", title: "Prohibited practices penalties", description: "Non-compliance with prohibited practices: up to EUR 35 million or 7% of total worldwide annual turnover.", sortOrder: 1 },
       { code: "Art. 99(4)", title: "High-risk non-compliance penalties", description: "Non-compliance with high-risk requirements: up to EUR 15 million or 3% of total worldwide annual turnover.", sortOrder: 2 },
@@ -191,7 +212,7 @@ async function main() {
     ]},
     { code: "MAP", title: "Map", description: "Establish context to frame risks related to an AI system.", sortOrder: 2, children: [
       { code: "MAP 1", title: "Intended context of use", description: "Context is established and understood: intended purposes, potentially beneficial uses, context-specific laws and norms.", sortOrder: 1 },
-      { code: "MAP 2", title: "Categorize AI system", description: "Interdisciplinary AI actors, competencies, skills, and capacities for establishing context reflect the state of AI science.", sortOrder: 2 },
+      { code: "MAP 2", title: "Categorize AI system", description: "Categorization of the AI system is performed, including task, methods, and knowledge limits.", sortOrder: 2 },
       { code: "MAP 3", title: "Benefits and costs", description: "AI capabilities, targeted usage, goals, and expected benefits and costs compared with appropriate benchmarks are understood.", sortOrder: 3 },
       { code: "MAP 4", title: "Risks and impacts", description: "Risks and benefits are mapped for all components of the AI system including third-party software and data.", sortOrder: 4 },
       { code: "MAP 5", title: "Likelihood and impact", description: "Likelihood and magnitude of each identified impact based on expected use, past uses, and foreseeable misuse/abuse.", sortOrder: 5 },

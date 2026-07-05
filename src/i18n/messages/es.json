@@ -544,7 +544,7 @@
   },
   "incidents": {
     "title": "Incidentes de IA",
-    "description": "Seguimiento de fallos de IA, gravedad, cronolog\u00eda y notificaciones del Art. 62",
+    "description": "Seguimiento de fallos de IA, gravedad, cronolog\u00eda y notificaciones del Art. 73",
     "reportIncident": "Notificar Incidente",
     "searchPlaceholder": "Buscar incidentes...",
     "statsTotal": "Total de Incidentes",
@@ -581,7 +581,7 @@
     "severityPlaceholder": "Seleccione la gravedad",
     "aiSystemLabel": "Sistema de IA (Opcional)",
     "aiSystemPlaceholder": "Seleccione el sistema de IA afectado",
-    "notificationRequiredLabel": "Notificaci\u00f3n a la autoridad requerida (Art. 62)",
+    "notificationRequiredLabel": "Notificaci\u00f3n a la autoridad requerida (Art. 73)",
     "notificationRequiredHint": "Los incidentes graves con sistemas de IA deben notificarse a las autoridades de vigilancia del mercado seg\u00fan el Art\u00edculo 62 del Reglamento de IA de la UE.",
     "dpoCentralIdLabel": "ID de Incidente en DPO Central (Opcional)",
     "dpoCentralIdPlaceholder": "p. ej., inc_abc123...",
@@ -617,7 +617,7 @@
     "emptyTasksTitle": "A\u00fan no hay tareas",
     "emptyTasksHint": "A\u00f1ada tareas para hacer seguimiento de las acciones de resoluci\u00f3n",
     "notificationsTitle": "Notificaciones a Autoridades",
-    "notificationsDescription": "Notificaciones del Art. 62 a las autoridades de vigilancia del mercado",
+    "notificationsDescription": "Notificaciones del Art. 73 a las autoridades de vigilancia del mercado",
     "addNotification": "A\u00f1adir Notificaci\u00f3n",
     "tableAuthority": "Autoridad",
     "tableType": "Tipo",
@@ -651,7 +651,7 @@
     "notifAuthorityLabel": "Autoridad",
     "notifAuthorityPlaceholder": "p. ej., Oficina Nacional de IA, Autoridad de Protecci\u00f3n de Datos",
     "notifTypeLabel": "Tipo de Notificaci\u00f3n",
-    "notifTypePlaceholder": "p. ej., Informe de Incidente Grave del Art. 62",
+    "notifTypePlaceholder": "p. ej., Informe de Incidente Grave del Art. 73",
     "notifDueByLabel": "Plazo"
   },
   "vendors": {

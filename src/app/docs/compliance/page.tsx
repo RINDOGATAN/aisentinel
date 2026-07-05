@@ -30,7 +30,7 @@ export default function ComplianceDocsPage() {
           {[
             {
               name: "EU AI Act",
-              description: "Full article mapping covering Art. 5-62 and relevant annexes. The primary regulatory framework for AI systems in the European Union.",
+              description: "Key-obligation mapping from Art. 4 (AI literacy) and Art. 5 (prohibited practices) through Art. 73 (serious incidents) and the Art. 113 applicability timeline, plus relevant annexes. The primary regulatory framework for AI systems in the European Union.",
               items: "Articles, Annexes, Recitals",
             },
             {
@@ -168,7 +168,7 @@ export default function ComplianceDocsPage() {
           </p>
           <p className="text-sm text-muted-foreground">
             For a High Risk system, this means 80+ requirements are instantly initialized across
-            EU AI Act (Art. 6-62), NIST AI RMF (all 23 practices), and ISO 42001 (all 31 clauses),
+            EU AI Act (Art. 6 through Art. 73 key requirements), NIST AI RMF (all 23 practices), and ISO 42001 clauses,
             each set to &ldquo;Not Assessed&rdquo; and ready for evaluation.
           </p>
         </div>

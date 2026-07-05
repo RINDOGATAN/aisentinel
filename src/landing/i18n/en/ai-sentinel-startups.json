@@ -40,7 +40,7 @@
   "workflow.s4.title": "Set up human oversight",
   "workflow.s4.desc": "Define approval gates at every stage — pre-deploy, post-deploy, periodic review, and incident-triggered.",
   "workflow.s5.title": "Track incidents & comply",
-  "workflow.s5.desc": "Log AI incidents with severity assessment, response timelines, and Art. 62 notification workflows.",
+  "workflow.s5.desc": "Log AI incidents with severity assessment, response timelines, and Art. 73 notification workflows.",
 
   "feat.label": "Core Capabilities",
   "feat.heading.prefix": "Everything AI governance ",
@@ -68,10 +68,10 @@
   "feat.oversight.h4": "Material change triggers",
   "feat.incidents.title": "Incident Tracking",
   "feat.incidents.headline": "From detection to authority notification.",
-  "feat.incidents.desc": "Log AI-specific incidents — hallucinations, bias, drift, adversarial attacks — with severity assessment and Art. 62 workflows.",
+  "feat.incidents.desc": "Log AI-specific incidents — hallucinations, bias, drift, adversarial attacks — with severity assessment and Art. 73 workflows.",
   "feat.incidents.h1": "AI-specific incident types",
   "feat.incidents.h2": "Severity & timeline tracking",
-  "feat.incidents.h3": "Art. 62 notification workflow",
+  "feat.incidents.h3": "Art. 73 notification workflow",
   "feat.incidents.h4": "Incident response management",
 
   "cta.heading.prefix": "Ready to make AI ",

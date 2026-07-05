@@ -343,9 +343,8 @@ async function main() {
     create: {
       aiSystemId: fraudDetection.id,
       organizationId: demoOrg.id,
-      riskLevel: "HIGH",
-      rationale: "AI system used for creditworthiness assessment and fraud detection in financial services. Falls under Annex III, Category 5(b). Decisions may affect access to financial services. Requires ongoing monitoring and human oversight for flagged transactions.",
-      annexIIICategory: "Access to and enjoyment of essential private and public services (Annex III, 5)",
+      riskLevel: "MINIMAL",
+      rationale: "Fraud-detection AI is NOT high-risk under the EU AI Act: Annex III 5(b) (creditworthiness/credit scoring) expressly excludes AI systems used for the purpose of detecting financial fraud. Automated transaction blocking can still engage GDPR Art. 22, so human review of flagged transactions and ongoing monitoring remain required.",
       classifiedBy: demoUser.id,
     },
   });

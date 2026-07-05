@@ -40,7 +40,7 @@
   "workflow.s4.title": "Configura supervisión humana",
   "workflow.s4.desc": "Define puertas de aprobación en cada etapa — pre-despliegue, post-despliegue, revisión periódica y activada por incidente.",
   "workflow.s5.title": "Rastrea incidentes y cumple",
-  "workflow.s5.desc": "Registra incidentes de IA con evaluación de severidad, cronogramas de respuesta y flujos de notificación Art. 62.",
+  "workflow.s5.desc": "Registra incidentes de IA con evaluación de severidad, cronogramas de respuesta y flujos de notificación Art. 73.",
 
   "feat.label": "Capacidades principales",
   "feat.heading.prefix": "Todo lo que la gobernanza IA ",
@@ -68,10 +68,10 @@
   "feat.oversight.h4": "Activadores de cambio material",
   "feat.incidents.title": "Seguimiento de incidentes",
   "feat.incidents.headline": "De la detección a la notificación.",
-  "feat.incidents.desc": "Registra incidentes específicos de IA — alucinaciones, sesgo, deriva, ataques adversarios — con evaluación de severidad y flujos Art. 62.",
+  "feat.incidents.desc": "Registra incidentes específicos de IA — alucinaciones, sesgo, deriva, ataques adversarios — con evaluación de severidad y flujos Art. 73.",
   "feat.incidents.h1": "Tipos de incidentes específicos de IA",
   "feat.incidents.h2": "Seguimiento de severidad y cronogramas",
-  "feat.incidents.h3": "Flujo de notificación Art. 62",
+  "feat.incidents.h3": "Flujo de notificación Art. 73",
   "feat.incidents.h4": "Gestión de respuesta a incidentes",
 
   "cta.heading.prefix": "¿Listo para hacer la IA ",

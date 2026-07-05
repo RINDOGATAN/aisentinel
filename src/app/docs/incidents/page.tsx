@@ -1,7 +1,7 @@
 export const metadata = {
   title: "AI Incidents — AI SENTINEL Docs",
   description:
-    "Track AI-specific failures, coordinate response tasks, and manage Art. 62 authority notifications.",
+    "Track AI-specific failures, coordinate response tasks, and manage Art. 73 authority notifications.",
 };
 
 export default function IncidentsDocsPage() {
@@ -14,7 +14,7 @@ export default function IncidentsDocsPage() {
         </h1>
         <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl">
           Track AI-specific incidents from initial report through resolution. Manage response
-          timelines, coordinate tasks, and handle Art. 62 authority notifications for serious
+          timelines, coordinate tasks, and handle Art. 73 authority notifications for serious
           incidents involving high-risk AI systems.
         </p>
       </section>
@@ -91,12 +91,12 @@ export default function IncidentsDocsPage() {
             {
               level: "High",
               color: "bg-orange-500/10 text-orange-400 border-orange-500/20",
-              description: "Significant impact. Likely requires authority notification under Art. 62.",
+              description: "Significant impact. Likely requires authority notification under Art. 73.",
             },
             {
               level: "Critical",
               color: "bg-red-500/10 text-red-400 border-red-500/20",
-              description: "Large-scale failure or safety risk. Immediate Art. 62 notification required.",
+              description: "Large-scale failure or safety risk. Immediate Art. 73 notification required.",
             },
           ].map((sev) => (
             <div
@@ -110,13 +110,13 @@ export default function IncidentsDocsPage() {
         </div>
       </section>
 
-      {/* Art. 62 Notifications */}
+      {/* Art. 73 Notifications */}
       <section>
         <h2 className="text-2xl font-display tracking-tight mb-6">
-          Art. 62 Authority Notifications
+          Art. 73 Authority Notifications
         </h2>
         <p className="text-muted-foreground mb-6">
-          Under EU AI Act Article 62, providers of high-risk AI systems must report serious
+          Under EU AI Act Article 73, providers of high-risk AI systems must report serious
           incidents to the relevant market surveillance authority. AI SENTINEL tracks notification
           deadlines, recipient authorities, and submission status.
         </p>
@@ -132,8 +132,11 @@ export default function IncidentsDocsPage() {
             <div>
               <h4 className="font-medium mb-2">Timeline</h4>
               <p className="text-muted-foreground">
-                Report to the authority without undue delay after becoming aware of the incident.
-                The system tracks elapsed time from the incident report date.
+                Report immediately after establishing a causal link (or its reasonable
+                likelihood) and no later than 15 days after awareness — 10 days if the
+                incident involves a death, 2 days for widespread infringements or serious
+                and irreversible disruption of critical infrastructure. The system tracks
+                elapsed time from the incident report date.
               </p>
             </div>
             <div>
@@ -159,7 +162,7 @@ export default function IncidentsDocsPage() {
             { time: "09:15", event: "Incident reported", badge: "CREATED" },
             { time: "09:45", event: "Assigned to investigation team", badge: "INVESTIGATING" },
             { time: "11:00", event: "Root cause identified — model drift detected", badge: "UPDATE" },
-            { time: "14:00", event: "Art. 62 notification sent to authority", badge: "NOTIFICATION" },
+            { time: "14:00", event: "Art. 73 notification sent to authority", badge: "NOTIFICATION" },
             { time: "16:30", event: "Mitigation deployed — model rolled back", badge: "MITIGATING" },
             { time: "18:00", event: "Incident resolved and closed", badge: "RESOLVED" },
           ].map((entry) => (
@@ -186,7 +189,7 @@ export default function IncidentsDocsPage() {
             { step: "1", role: "Reporter", title: "Report the incident", description: "Navigate to Operations → Incidents and click Report Incident. Provide initial details: affected AI system, incident type, and description." },
             { step: "2", role: "AI Officer", title: "Triage and assign severity", description: "Review the report, assign a severity level, and determine the response scope." },
             { step: "3", role: "IT Team", title: "Investigate and contain", description: "Gather evidence, identify the root cause, and implement immediate containment measures." },
-            { step: "4", role: "AI Officer", title: "Notify authorities if required", description: "For high-risk systems with serious incidents, prepare and submit the Art. 62 notification." },
+            { step: "4", role: "AI Officer", title: "Notify authorities if required", description: "For high-risk systems with serious incidents, prepare and submit the Art. 73 notification." },
             { step: "5", role: "AI Officer", title: "Resolve and close", description: "Document the resolution, lessons learned, and any corrective actions. Close the incident." },
           ].map((item) => (
             <div key={item.step} className="rounded-xl border border-border bg-card p-5 flex gap-4">

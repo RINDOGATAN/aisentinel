@@ -207,7 +207,7 @@ Use this flow with the fully seeded `acme-ai` org. Has 8 AI systems, incidents, 
 2. **Dramatic beat**: CRITICAL hallucination incident (red badge)
    - Click in to see timeline: detection → investigation → mitigation
    - Tasks assigned to team members
-   - Art. 62 authority notification status
+   - Art. 73 authority notification status
 3. Show other incidents: bias, drift, prompt injection
 
 ### Scene 9: Policies (10s)

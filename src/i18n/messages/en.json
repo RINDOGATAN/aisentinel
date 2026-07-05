@@ -544,7 +544,7 @@
   },
   "incidents": {
     "title": "AI Incidents",
-    "description": "Track AI-specific failures, severity, timeline & Art. 62 notifications",
+    "description": "Track AI-specific failures, severity, timeline & Art. 73 notifications",
     "reportIncident": "Report Incident",
     "searchPlaceholder": "Search incidents...",
     "statsTotal": "Total Incidents",
@@ -581,8 +581,8 @@
     "severityPlaceholder": "Select severity",
     "aiSystemLabel": "AI System (Optional)",
     "aiSystemPlaceholder": "Select affected AI system",
-    "notificationRequiredLabel": "Authority notification required (Art. 62)",
-    "notificationRequiredHint": "Serious incidents involving AI systems must be notified to market surveillance authorities under EU AI Act Article 62.",
+    "notificationRequiredLabel": "Authority notification required (Art. 73)",
+    "notificationRequiredHint": "Serious incidents involving AI systems must be notified to market surveillance authorities under EU AI Act Article 73.",
     "dpoCentralIdLabel": "DPO Central Incident ID (Optional)",
     "dpoCentralIdPlaceholder": "e.g., inc_abc123...",
     "reporting": "Reporting...",
@@ -617,7 +617,7 @@
     "emptyTasksTitle": "No tasks yet",
     "emptyTasksHint": "Add tasks to track resolution actions",
     "notificationsTitle": "Authority Notifications",
-    "notificationsDescription": "Art. 62 notifications to market surveillance authorities",
+    "notificationsDescription": "Art. 73 notifications to market surveillance authorities",
     "addNotification": "Add Notification",
     "tableAuthority": "Authority",
     "tableType": "Type",
@@ -651,7 +651,7 @@
     "notifAuthorityLabel": "Authority",
     "notifAuthorityPlaceholder": "e.g., National AI Office, Data Protection Authority",
     "notifTypeLabel": "Notification Type",
-    "notifTypePlaceholder": "e.g., Art. 62 Serious Incident Report",
+    "notifTypePlaceholder": "e.g., Art. 73 Serious Incident Report",
     "notifDueByLabel": "Due By"
   },
   "vendors": {

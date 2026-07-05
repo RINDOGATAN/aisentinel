@@ -332,7 +332,7 @@ export default function IncidentDetailPage() {
               <div>
                 <p className="text-sm text-muted-foreground">{t("notificationRequiredLabel")}</p>
                 <p className="font-medium text-sm">
-                  {incident.notificationRequired ? `${tc("yes")} (Art. 62)` : tc("no")}
+                  {incident.notificationRequired ? `${tc("yes")} (Art. 73)` : tc("no")}
                 </p>
               </div>
               {incident.resolvedAt && (

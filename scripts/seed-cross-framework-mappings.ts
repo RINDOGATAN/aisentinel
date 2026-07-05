@@ -84,8 +84,8 @@ const crossMappings: CrossMapping[] = [
   {
     a: "eu-art--13",
     b: "nist-map-1",
-    relationship: "equivalent",
-    notes: "Both require transparency about AI system capabilities for deployers and users.",
+    relationship: "partial",
+    notes: "EU AI Act Art. 13 imposes specific transparency/instructions-for-use duties on providers; NIST MAP 1 is broader context-setting. Overlapping but not mutually satisfying.",
   },
   {
     a: "eu-art--13",
@@ -104,8 +104,8 @@ const crossMappings: CrossMapping[] = [
   {
     a: "eu-art--14",
     b: "nist-govern-2",
-    relationship: "equivalent",
-    notes: "Both require accountability structures and human oversight mechanisms for AI systems.",
+    relationship: "partial",
+    notes: "EU AI Act Art. 14 requires design-level human oversight of high-risk systems; NIST GOVERN 2 addresses organizational accountability structures. Related duties, not equivalents.",
   },
   {
     a: "eu-art--14",
@@ -160,33 +160,35 @@ const crossMappings: CrossMapping[] = [
     notes: "Both require monitoring and measuring AI system performance characteristics.",
   },
   {
-    a: "eu-art--15-4-",
+    a: "eu-art--15-5-",
     b: "nist-manage-4",
     relationship: "partial",
-    notes: "EU AI Act focuses on cybersecurity measures; NIST requires documented risk treatments including security.",
+    notes: "EU AI Act Art. 15(5) focuses on cybersecurity measures; NIST requires documented risk treatments including security.",
   },
   {
-    a: "eu-art--15-4-",
+    a: "eu-art--15-5-",
     b: "iso-8-3",
     relationship: "partial",
     notes: "Both address implementing risk treatment measures including cybersecurity controls.",
   },
 
   // ── Post-market / Incidents ──
+  // Final-Act numbering: Art. 72 post-market monitoring, Art. 73 serious
+  // incidents (61/62 were 2021-proposal numbers).
   {
-    a: "eu-art--61",
+    a: "eu-art--72",
     b: "nist-measure-3",
     relationship: "equivalent",
     notes: "Both require ongoing monitoring and tracking of AI risks after deployment.",
   },
   {
-    a: "eu-art--61",
+    a: "eu-art--72",
     b: "iso-9-1",
     relationship: "equivalent",
     notes: "Both require post-deployment monitoring, measurement, and evaluation.",
   },
   {
-    a: "eu-art--62",
+    a: "eu-art--73",
     b: "iso-10-2",
     relationship: "equivalent",
     notes: "Both require responding to incidents/nonconformities and implementing corrective actions.",
@@ -218,8 +220,8 @@ const crossMappings: CrossMapping[] = [
   {
     a: "eu-art--27",
     b: "nist-map-5",
-    relationship: "equivalent",
-    notes: "Both require assessing likelihood and impact of AI systems on individuals and groups.",
+    relationship: "partial",
+    notes: "EU AI Act Art. 27 mandates a formal fundamental rights impact assessment for certain deployers; NIST MAP 5 characterizes impacts generally. MAP 5 work informs, but does not satisfy, a FRIA.",
   },
   {
     a: "eu-art--27",

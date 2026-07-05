@@ -3,6 +3,13 @@
  *
  * Each template provides a pre-built AI governance program scaffold with
  * common AI systems, risk classifications, oversight gates, and policies.
+ *
+ * EU AI Act citations verified against the FINAL text of Regulation (EU)
+ * 2024/1689 (transparency = Art. 50; Annex III 5(b) creditworthiness
+ * expressly EXCLUDES financial-fraud detection; medical-device AI is
+ * high-risk via Art. 6(1)/Annex I (MDR), not Annex III 5(a); emergency
+ * healthcare triage = Annex III 5(d)).
+ * lawReviewedAsOf: 2026-07-05
  */
 
 import type { AITechnique, AISystemRole, AIRiskLevel, GateType, PolicyType } from "@prisma/client";
@@ -61,10 +68,8 @@ export const AI_GOVERNANCE_TEMPLATES: AIGovernanceTemplate[] = [
         role: "DEPLOYER",
         purpose: "Personalize product recommendations to improve customer experience and increase conversion rates",
         processesPersonalData: true,
-        riskLevel: "HIGH",
-        riskRationale: "Profiling system that influences purchasing decisions based on behavioral data. EU AI Act Annex III covers AI systems intended to evaluate consumer creditworthiness or establish credit scores. Recommendation engines with significant influence warrant high-risk classification.",
-        annexIIICategory: "4. Employment, workers management and access to self-employment",
-        gateType: "PRE_DEPLOYMENT",
+        riskLevel: "MINIMAL",
+        riskRationale: "Product recommendation engines are not listed in EU AI Act Annex III and carry no Art. 50 transparency duty of their own, so they are minimal-risk under the Act. Obligations arise instead from the GDPR (profiling, Art. 22 where decisions are solely automated with significant effects) and, for online platforms, DSA Art. 27 recommender-system transparency.",
       },
       {
         name: "Customer Support Chatbot",
@@ -74,7 +79,7 @@ export const AI_GOVERNANCE_TEMPLATES: AIGovernanceTemplate[] = [
         purpose: "Provide automated customer support for common inquiries, reducing response time and improving customer satisfaction",
         processesPersonalData: true,
         riskLevel: "LIMITED",
-        riskRationale: "Conversational AI system with transparency obligations under EU AI Act Art. 52. Users must be clearly informed they are interacting with an AI system. Risk of hallucination in responses.",
+        riskRationale: "Conversational AI system with transparency obligations under EU AI Act Art. 50. Users must be clearly informed they are interacting with an AI system. Risk of hallucination in responses.",
       },
       {
         name: "Transaction Fraud Detection",
@@ -83,10 +88,8 @@ export const AI_GOVERNANCE_TEMPLATES: AIGovernanceTemplate[] = [
         role: "DEPLOYER",
         purpose: "Detect and prevent fraudulent transactions in real-time to protect customers and the business from financial losses",
         processesPersonalData: true,
-        riskLevel: "HIGH",
-        riskRationale: "AI system that can deny financial transactions based on automated risk scoring. Decisions directly affect individuals' ability to complete purchases. EU AI Act Annex III covers AI for credit and fraud assessment.",
-        annexIIICategory: "5b. Creditworthiness assessment",
-        gateType: "PRE_DEPLOYMENT",
+        riskLevel: "MINIMAL",
+        riskRationale: "NOT high-risk under the EU AI Act: Annex III 5(b) (creditworthiness/credit scoring) expressly excludes 'AI systems used for the purpose of detecting financial fraud'. Fraud detection is therefore outside Annex III. Automated blocking of transactions can still engage GDPR Art. 22 (right to human intervention), so human-review mechanisms remain required.",
       },
       {
         name: "Dynamic Pricing Engine",
@@ -120,7 +123,7 @@ export const AI_GOVERNANCE_TEMPLATES: AIGovernanceTemplate[] = [
         title: "AI Transparency Policy - E-commerce",
         type: "AI_TRANSPARENCY",
         description: "Ensures transparency in AI-driven customer interactions and decisions",
-        content: "This policy ensures customers are appropriately informed about AI systems that affect their shopping experience. In compliance with EU AI Act Article 52, all customer-facing AI systems must clearly disclose AI involvement.\n\nChatbots and virtual assistants must identify themselves as AI at the start of each conversation. AI-generated product recommendations must be labeled as such. Dynamic pricing must not discriminate based on protected characteristics, and customers must be able to request human review of AI-driven decisions that significantly affect them.\n\nRegular transparency reports must be published documenting which AI systems are in use, their purposes, and their impact on customer experiences.",
+        content: "This policy ensures customers are appropriately informed about AI systems that affect their shopping experience. In compliance with EU AI Act Article 50, all customer-facing AI systems must clearly disclose AI involvement.\n\nChatbots and virtual assistants must identify themselves as AI at the start of each conversation. AI-generated product recommendations must be labeled as such. Dynamic pricing must not discriminate based on protected characteristics, and customers must be able to request human review of AI-driven decisions that significantly affect them.\n\nRegular transparency reports must be published documenting which AI systems are in use, their purposes, and their impact on customer experiences.",
       },
     ],
   },
@@ -142,8 +145,8 @@ export const AI_GOVERNANCE_TEMPLATES: AIGovernanceTemplate[] = [
         purpose: "Support clinical decision-making by providing AI-driven diagnostic suggestions and treatment recommendations based on patient data and medical literature",
         processesPersonalData: true,
         riskLevel: "HIGH",
-        riskRationale: "AI system intended for use in healthcare that directly influences clinical decisions affecting patient health and safety. EU AI Act Annex III Section 5(a) explicitly covers AI systems intended for use as safety components in the management and operation of healthcare.",
-        annexIIICategory: "5a. Healthcare safety component",
+        riskRationale: "AI system intended for use in healthcare that directly influences clinical decisions affecting patient health and safety. High-risk via EU AI Act Art. 6(1): clinical decision support is typically software as a medical device under the MDR (Reg. (EU) 2017/745, Rule 11 — usually Class IIa or higher), i.e. a product covered by Annex I Union harmonisation legislation subject to third-party conformity assessment. Not an Annex III listing.",
+        annexIIICategory: "Art. 6(1) / Annex I (MDR) route — not Annex III",
         gateType: "PRE_DEPLOYMENT",
       },
       {
@@ -154,8 +157,8 @@ export const AI_GOVERNANCE_TEMPLATES: AIGovernanceTemplate[] = [
         purpose: "Assist radiologists by analyzing medical images for potential anomalies, improving diagnostic accuracy and reducing analysis time",
         processesPersonalData: true,
         riskLevel: "HIGH",
-        riskRationale: "AI system processing sensitive health data and directly influencing diagnostic decisions. As a medical device AI, it falls under EU AI Act Annex III healthcare provisions. Requires rigorous validation and human oversight.",
-        annexIIICategory: "5a. Healthcare safety component",
+        riskRationale: "AI system processing sensitive health data and directly influencing diagnostic decisions. As medical-device software under the MDR (Reg. (EU) 2017/745), it is high-risk via EU AI Act Art. 6(1)/Annex I — the medical-device route, not Annex III. Requires rigorous validation and human oversight.",
+        annexIIICategory: "Art. 6(1) / Annex I (MDR) route — not Annex III",
         gateType: "PRE_DEPLOYMENT",
       },
       {
@@ -166,8 +169,8 @@ export const AI_GOVERNANCE_TEMPLATES: AIGovernanceTemplate[] = [
         purpose: "Provide initial patient assessment and triage, directing patients to appropriate care levels based on reported symptoms",
         processesPersonalData: true,
         riskLevel: "HIGH",
-        riskRationale: "AI system making triage decisions that affect patient access to healthcare services. Incorrect triage could delay critical care. EU AI Act classifies healthcare access AI as high-risk. Requires robust human oversight and fallback mechanisms.",
-        annexIIICategory: "5a. Healthcare safety component",
+        riskRationale: "AI system making triage decisions that affect patient access to urgent care. Incorrect triage could delay critical care. Where used for emergency healthcare patient triage, it falls under EU AI Act Annex III 5(d) (evaluation/classification of emergency calls and emergency healthcare patient triage systems). Requires robust human oversight and fallback mechanisms.",
+        annexIIICategory: "5(d). Emergency healthcare patient triage",
         gateType: "PRE_DEPLOYMENT",
       },
       {
@@ -178,8 +181,8 @@ export const AI_GOVERNANCE_TEMPLATES: AIGovernanceTemplate[] = [
         purpose: "Detect potential drug interactions and contraindications to improve patient safety in medication management",
         processesPersonalData: true,
         riskLevel: "HIGH",
-        riskRationale: "Safety-critical AI system where errors could lead to adverse drug events. Directly impacts patient safety through medication-related decisions. Falls under healthcare safety provisions of EU AI Act.",
-        annexIIICategory: "5a. Healthcare safety component",
+        riskRationale: "Safety-critical AI system where errors could lead to adverse drug events. Directly impacts patient safety through medication-related decisions. As clinical software under the MDR, it is high-risk via EU AI Act Art. 6(1)/Annex I (medical-device route), not Annex III.",
+        annexIIICategory: "Art. 6(1) / Annex I (MDR) route — not Annex III",
         gateType: "PRE_DEPLOYMENT",
       },
     ],
@@ -222,8 +225,8 @@ export const AI_GOVERNANCE_TEMPLATES: AIGovernanceTemplate[] = [
         purpose: "Evaluate creditworthiness of natural persons for lending decisions, credit limit adjustments, and loan pricing",
         processesPersonalData: true,
         riskLevel: "HIGH",
-        riskRationale: "EU AI Act Annex III Section 5(b) explicitly lists AI systems intended to evaluate the creditworthiness of natural persons as high-risk. Decisions directly affect individuals' access to financial services. Requires explainability, bias testing, and human oversight.",
-        annexIIICategory: "5b. Creditworthiness assessment",
+        riskRationale: "EU AI Act Annex III 5(b) explicitly lists AI systems intended to evaluate the creditworthiness of natural persons or establish their credit score as high-risk (fraud-detection systems are excluded from that point). Decisions directly affect individuals' access to financial services. Requires explainability, bias testing, and human oversight.",
+        annexIIICategory: "5(b). Creditworthiness assessment / credit scoring",
         gateType: "PRE_DEPLOYMENT",
       },
       {
@@ -233,10 +236,8 @@ export const AI_GOVERNANCE_TEMPLATES: AIGovernanceTemplate[] = [
         role: "DEPLOYER",
         purpose: "Detect and prevent financial fraud in real-time by analyzing transaction patterns, behavioral biometrics, and account activity",
         processesPersonalData: true,
-        riskLevel: "HIGH",
-        riskRationale: "AI system that can block financial transactions and flag individuals for investigation. False positives deny access to financial services. Critical for financial crime prevention but requires human review mechanisms.",
-        annexIIICategory: "5b. Creditworthiness assessment",
-        gateType: "PRE_DEPLOYMENT",
+        riskLevel: "MINIMAL",
+        riskRationale: "NOT high-risk under the EU AI Act: Annex III 5(b) expressly excludes 'AI systems used for the purpose of detecting financial fraud' from the creditworthiness listing. False positives can still deny access to financial services, so GDPR Art. 22 human-review mechanisms and internal monitoring remain essential.",
       },
       {
         name: "Anti-Money Laundering Monitor",
@@ -267,7 +268,7 @@ export const AI_GOVERNANCE_TEMPLATES: AIGovernanceTemplate[] = [
         purpose: "Handle routine customer banking inquiries, provide account information, and assist with basic transactions",
         processesPersonalData: true,
         riskLevel: "LIMITED",
-        riskRationale: "Customer-facing AI system with transparency obligations under EU AI Act Art. 52. Must disclose AI nature to customers. Handles sensitive financial data requiring appropriate access controls.",
+        riskRationale: "Customer-facing AI system with transparency obligations under EU AI Act Art. 50. Must disclose AI nature to customers. Handles sensitive financial data requiring appropriate access controls.",
       },
     ],
     policies: [
@@ -319,7 +320,7 @@ export const AI_GOVERNANCE_TEMPLATES: AIGovernanceTemplate[] = [
         purpose: "Generate marketing content, documentation, and communications to improve content production efficiency",
         processesPersonalData: false,
         riskLevel: "LIMITED",
-        riskRationale: "Content generation AI with transparency obligations under EU AI Act Art. 52. AI-generated content must be labeled as such. Risk of hallucination, copyright issues, and brand misrepresentation.",
+        riskRationale: "Content generation AI with transparency obligations under EU AI Act Art. 50. AI-generated content must be labeled as such. Risk of hallucination, copyright issues, and brand misrepresentation.",
       },
       {
         name: "Product Analytics AI",

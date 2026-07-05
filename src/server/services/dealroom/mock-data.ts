@@ -60,33 +60,9 @@ export const languageNames: Record<string, string> = {
   sv: "Swedish",
 };
 
+// Placeholder directory shown when no Dealroom API keys are configured.
+// Deliberately contains no personal identities — only a generic team profile.
 export const mockExperts: ExpertProfile[] = [
-  {
-    id: "exp-001",
-    name: "Sergio Maldonado",
-    email: "sergio@todo.law",
-    title: "Managing Partner",
-    firm: "TODO.LAW",
-    bio: "Technologist with over 15 years of experience at the intersection of data protection, AI governance, and regulatory compliance. Helps organisations across the EU operationalise EU AI Act readiness, AI risk management, conformity assessments, bias auditing, and responsible AI deployment. Builder of AI Sentinel, DPO Central, and Vendor.Watch.",
-    expertTypes: ["technical"],
-    specializations: [
-      "EU AI Act",
-      "AI Risk Management",
-      "Conformity Assessment",
-      "Bias & Fairness Auditing",
-      "AI Ethics & Responsible AI",
-      "ISO 42001",
-      "AI & Data Protection (GDPR)",
-      "AI Auditing",
-    ],
-    certifications: ["CIPP/E"],
-    languages: ["en", "es"],
-    location: { city: "Stockholm", country: "SE" },
-    jurisdictions: ["EU", "SE", "ES"],
-    contactUrl: "https://todo.law/contact",
-    acceptingClients: true,
-    profileCompleteness: 95,
-  },
   {
     id: "exp-002",
     name: "AI Sentinel Deployment Team",

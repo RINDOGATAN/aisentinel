@@ -38,8 +38,10 @@ open http://localhost:8487
 ```
 
 Sign in at `/sign-in` with the local login box (any email creates an
-account; the seed also provides `demo@aisentinel.example` with the demo
-`Acme AI Corp` organization attached). Port 8487 — 8484/85/86 are
+account). The first-run seed is content-only — compliance frameworks,
+assessment templates, and the tool/vendor catalogs; no demo organization
+and no pre-created accounts (demo data is opt-in via `DEMO_SEED=true`,
+which the sovereign bundle never sets). Port 8487 — 8484/85/86 are
 LexBooks / DPO Central / DealRoom on this hardware.
 
 ## Day-2 operations
@@ -98,9 +100,8 @@ The short version:
 
 ## Notes & limits
 
-- Single-firm posture. The demo organization (`Acme AI Corp`) and its sample
-  AI systems are seeded for orientation; real work goes in your own
-  organization.
+- Single-firm posture. The seed ships reference content only (frameworks,
+  templates, catalogs) — create your own organization on first sign-in.
 - The Prisma datasource reads `ais_DATABASE_URL` (a Vercel-scoped variable
   name) — the compose file sets it; keep that name if you wire your own DB.
 - License: AGPL-3.0-or-later (see repo LICENSE) — self-hosting your own

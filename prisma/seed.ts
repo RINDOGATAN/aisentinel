@@ -83,7 +83,25 @@ async function main() {
   console.log(`Created ${skillPackages.length} skill packages`);
 
   // ============================================================
-  // PLATFORM ADMIN
+  // DEMO / OPERATOR DATA — opt-in only (DEMO_SEED=true)
+  //
+  // Everything below creates demo accounts, a demo organization, and
+  // sample governance records. Sovereign/self-hosted first-run must be
+  // content-only: no operator identities, no demo users. The hosted
+  // demo instance sets DEMO_SEED=true explicitly.
+  // ============================================================
+
+  if (process.env.DEMO_SEED !== "true") {
+    console.log(
+      "DEMO_SEED != true — content-only seed complete (no demo org/users created). " +
+        "Set DEMO_SEED=true to seed the demo organization and sample data."
+    );
+    console.log("\nSeeding completed!");
+    return;
+  }
+
+  // ============================================================
+  // PLATFORM ADMIN (demo/hosted operator only)
   // ============================================================
 
   console.log("Creating platform admin...");

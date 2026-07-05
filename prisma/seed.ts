@@ -107,11 +107,11 @@ async function main() {
   console.log("Creating platform admin...");
 
   await prisma.platformAdmin.upsert({
-    where: { email: "smaldonado@privacycloud.com" },
+    where: { email: "admin@acme-demo.example" },
     update: { isActive: true },
     create: {
-      email: "smaldonado@privacycloud.com",
-      name: "Sergio Maldonado",
+      email: "admin@acme-demo.example",
+      name: "Demo Platform Admin",
       isActive: true,
     },
   });
@@ -126,12 +126,12 @@ async function main() {
 
   const demoOrg = await prisma.organization.upsert({
     where: { slug: "acme-ai" },
-    update: { domain: "privacycloud.com" },
+    update: { domain: "acme-demo.example" },
     create: {
       id: "demo-organization",
       name: "Acme AI Corp (Demo)",
       slug: "acme-ai",
-      domain: "privacycloud.com",
+      domain: "acme-demo.example",
       settings: { isDemo: true },
     },
   });

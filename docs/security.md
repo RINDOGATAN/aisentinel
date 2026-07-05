@@ -102,11 +102,7 @@ Certain sensitive operations require `OWNER`, `ADMIN`, or `AI_OFFICER` roles:
 
 ### Domain-Based Auto-Join
 
-When a user signs in, their email domain is matched against `Organization.domain`. If matched, they are automatically added as `MEMBER` role. This is logged in the audit trail.
-
-### Internal Domain Entitlements
-
-The `privacycloud.com` email domain auto-provisions all premium entitlements. This is a controlled internal access mechanism for the platform operator.
+When a user signs in, their email domain is matched against `Organization.domain`. If matched, they are automatically added as `MEMBER` role. This is logged in the audit trail. No email domain receives premium entitlements or elevated roles automatically: sign-in never provisions entitlements.
 
 ---
 

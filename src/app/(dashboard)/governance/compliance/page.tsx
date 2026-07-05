@@ -152,13 +152,8 @@ export default function CompliancePage() {
   );
 
   const updateMapping = trpc.compliance.updateMapping.useMutation({
-    onSuccess: (result) => {
-      refetchMatrix();
-      if (result.propagatedCount > 0) {
-        // A simple alert is fine for now — could use toast in the future
-        console.log(`Propagated to ${result.propagatedCount} linked requirements`);
-      }
-    },
+    // Propagation to linked requirements is reflected by the matrix refetch.
+    onSuccess: () => refetchMatrix(),
   });
 
   const addEvidence = trpc.compliance.addEvidence.useMutation({

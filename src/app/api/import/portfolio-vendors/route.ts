@@ -137,7 +137,10 @@ export async function POST(request: Request) {
         },
       });
       exported++;
-    } catch {
+    } catch (err) {
+      // Skip the row but keep the reason observable — a silent counter made
+      // partial imports impossible to debug.
+      console.error(`[import/portfolio-vendors] skipped "${vendor.name}":`, err);
       skipped++;
     }
   }

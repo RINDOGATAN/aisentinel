@@ -83,7 +83,8 @@ export async function POST(request: NextRequest) {
         break;
 
       default:
-        console.log(`Unhandled event type: ${event.type}`);
+        // Unhandled event types are expected (Stripe sends many); ignore quietly.
+        break;
     }
 
     return NextResponse.json({ received: true });
@@ -185,9 +186,6 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     });
   }
 
-  console.log(
-    `Created entitlements for customer ${customer.id}, skills: ${skillPackageIds.join(", ")}`
-  );
 }
 
 async function handleSubscriptionChange(subscription: Stripe.Subscription) {
@@ -280,9 +278,6 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
     },
   });
 
-  console.log(
-    `Expired entitlements for customer ${customer.id}, skills: ${skillPackageIds.join(", ")}`
-  );
 }
 
 async function handlePaymentFailed(invoice: Stripe.Invoice) {
@@ -312,8 +307,6 @@ async function handlePaymentFailed(invoice: Stripe.Invoice) {
       status: "SUSPENDED",
     },
   });
-
-  console.log(`Suspended entitlements for customer ${customer.id} due to payment failure`);
 
   if (resend && customer.email) {
     try {

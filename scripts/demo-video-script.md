@@ -3,9 +3,9 @@
 ## Prerequisites
 
 ```bash
-cd /Users/bscan/DEV/aisentinel
-npm install                    # needed for framer-motion on landing page
-npm run dev                    # starts on port 3002
+cd <repo root>
+npm install
+npm run dev                    # starts on port 3003
 ```
 
 **Demo org**: `acme-ai` (Acme AI Corp)

@@ -28,6 +28,7 @@ import {
   Settings,
   Shield,
   Sparkles,
+  Code,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -48,6 +49,7 @@ import { useTranslations } from "next-intl";
 import { useOrganization } from "@/lib/organization-context";
 import { useUserType } from "@/lib/use-user-type";
 import { features } from "@/config/features";
+import { brand } from "@/config/brand";
 import { OrganizationSetup } from "@/components/governance/organization-setup";
 import { PersonaSelector } from "@/components/governance/persona-selector";
 import { FeedbackDialog } from "@/components/FeedbackDialog";
@@ -374,6 +376,16 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
               <Shield className="w-3.5 h-3.5" />
               {t("security")}
             </Link>
+            {/* AGPL section 13: offer the Corresponding Source to network users. */}
+            {brand.sourceUrl && (
+              <>
+                <span className="text-border">&middot;</span>
+                <a href={brand.sourceUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors">
+                  <Code className="w-3.5 h-3.5" />
+                  {t("sourceCode")}
+                </a>
+              </>
+            )}
           </div>
         </div>
       </footer>

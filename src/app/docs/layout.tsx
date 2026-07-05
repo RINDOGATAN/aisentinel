@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { brand } from "@/config/brand";
 import {
   Brain,
   ShieldAlert,
@@ -173,6 +174,20 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
             >
               Security
             </Link>
+            {/* AGPL section 13: offer the Corresponding Source to network users. */}
+            {brand.sourceUrl && (
+              <>
+                <span className="text-border">&middot;</span>
+                <a
+                  href={brand.sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors"
+                >
+                  Source code (AGPL-3.0)
+                </a>
+              </>
+            )}
           </div>
         </div>
       </footer>

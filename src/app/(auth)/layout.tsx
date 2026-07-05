@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { brand } from "@/config/brand";
 
 export default function AuthLayout({
   children,
@@ -24,11 +25,11 @@ export default function AuthLayout({
 
       <footer className="border-t border-border py-6">
         <div className="container mx-auto px-6 flex flex-col sm:flex-row items-center justify-center gap-4 text-sm text-muted-foreground">
-          <a href="https://todo.law/privacy" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">
+          <a href={brand.privacyPolicyUrl} target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">
             Privacy Policy
           </a>
           <span className="hidden sm:inline">&middot;</span>
-          <a href="https://todo.law/terms" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">
+          <a href={brand.termsOfUseUrl} target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">
             Terms of Service
           </a>
         </div>

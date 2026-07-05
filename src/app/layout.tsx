@@ -26,7 +26,8 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-const siteUrl = "https://aisentinel.todo.law";
+// Canonical origin comes from the brand system (NEXT_PUBLIC_SITE_URL override).
+const siteUrl = brand.siteUrl;
 const seoTitle = "AI SENTINEL — AI Governance Software for EU AI Act, NIST AI RMF & ISO 42001 Compliance";
 const seoDescription =
   "Open-source AI governance platform. AI system registry, EU AI Act risk classification, FRIA assessments, compliance mapping across EU AI Act, NIST AI RMF and ISO 42001, human oversight, and incident management. Responsible AI made accountable.";
@@ -104,7 +105,7 @@ export default async function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "SoftwareApplication",
-              name: "AI SENTINEL",
+              name: brand.name,
               url: siteUrl,
               description: seoDescription,
               applicationCategory: "BusinessApplication",
@@ -129,8 +130,8 @@ export default async function RootLayout({
               ],
               author: {
                 "@type": "Organization",
-                name: "TODO.LAW",
-                url: "https://todo.law",
+                name: brand.companyName,
+                url: brand.companyWebsite,
               },
             }),
           }}

@@ -33,6 +33,7 @@ import {
   Database,
 } from "lucide-react";
 import { toast } from "sonner";
+import { brand } from "@/config/brand";
 import { useTranslations } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
@@ -270,8 +271,8 @@ export default function VendorDetailPage() {
               </div>
             </div>
 
-            {/* DPO Central Link */}
-            {vendor.dpoCentralVendorId && (
+            {/* DPO Central Link (hidden when brand.dpoCentralUrl is unset) */}
+            {brand.dpoCentralUrl && vendor.dpoCentralVendorId && (
               <div className="pt-2 border-t">
                 <div className="flex items-center gap-3 p-3 bg-muted/50">
                   <ExternalLink className="w-4 h-4 text-muted-foreground" />
@@ -282,7 +283,7 @@ export default function VendorDetailPage() {
                     </p>
                   </div>
                   <a
-                    href={`https://dpocentral.todo.law/privacy/vendors/${vendor.dpoCentralVendorId}`}
+                    href={`${brand.dpoCentralUrl}/privacy/vendors/${vendor.dpoCentralVendorId}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >

@@ -13,6 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useTranslations } from "next-intl";
 import { features } from "@/config/features";
+import { brand } from "@/config/brand";
 import { formatPrice } from "@/lib/currency";
 
 export default function BillingPage() {
@@ -195,10 +196,10 @@ export default function BillingPage() {
               We received your payment but couldn&apos;t activate the features
               automatically. Please refresh the page or contact{" "}
               <a
-                href="mailto:support@todo.law"
+                href={`mailto:${brand.supportEmail}`}
                 className="text-primary underline"
               >
-                support@todo.law
+                {brand.supportEmail}
               </a>
               .
             </p>

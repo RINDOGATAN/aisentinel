@@ -33,7 +33,7 @@ All 10+ tRPC governance routers use `organizationProcedure` (read) or `orgWriteP
 These tables are intentionally shared across all orgs:
 
 - `ComplianceFramework` and `ComplianceRequirement` — reference data (EU AI Act, NIST, ISO 42001)
-- `ShadowAITool` — shared catalog of 36+ AI tools
+- `ShadowAITool` — shared catalog of 67 AI tools
 - `VendorCatalog` — shared vendor directory from Vendor.Watch
 - `AIAssessmentTemplate` — system-level templates (org templates are org-scoped)
 
@@ -85,8 +85,8 @@ Certain sensitive operations require `OWNER`, `ADMIN`, or `AI_OFFICER` roles:
 
 | Provider | Environment | Guard |
 |----------|-------------|-------|
-| Dev Credentials | Development only | `NODE_ENV === "development"` AND `DISABLE_DEV_AUTH !== "true"`. Additional runtime block checks `VERCEL_ENV !== "production"` |
-| Cross-Login SSO | All | JWT verification (`CROSS_LOGIN_SECRET`) or Google token verification |
+| Dev Credentials | Development, plus sovereign production builds that set `NEXT_PUBLIC_LOCAL_AUTH_ENABLED=true` | Enabled when `NODE_ENV === "development"` or `NEXT_PUBLIC_LOCAL_AUTH_ENABLED === "true"`, unless `DISABLE_DEV_AUTH === "true"`. A runtime check additionally refuses `VERCEL_ENV === "production"`. Honest caveat: this provider is passwordless and creates an account for any email typed into it, and it DOES work in sovereign production builds with the flag on. That is acceptable only behind 127.0.0.1 or a firewalled LAN; see the hardening section of `deploy/sovereign/README.md` |
+| Cross-Login SSO | Hosted cloud only by default | Provider registered only when `CROSS_LOGIN_ENABLED === "true"`, or by default when running on Vercel (`process.env.VERCEL`). Tokens verified via JWT (`CROSS_LOGIN_SECRET`) or Google userinfo |
 | Google OAuth | All (when configured) | Standard OAuth 2.0 flow with `state` check |
 | Email Magic Link | All (when configured) | Resend email delivery |
 
@@ -126,7 +126,7 @@ All tRPC inputs are validated using Zod schemas before reaching business logic. 
 ### SQL Injection Prevention
 
 - Prisma ORM provides parameterized queries for all database operations
-- No raw SQL (`$queryRaw`) is used anywhere in the codebase
+- No user-controlled raw SQL anywhere. The only `$queryRaw` in the app is the constant `SELECT 1` liveness probe in `/api/health`
 - Search inputs use Prisma's `contains` operator with `mode: "insensitive"`, which is safe
 
 ### String Length Limits
@@ -161,9 +161,12 @@ Configured in `next.config.ts`:
 | `/api/trpc/*` | NextAuth JWT session | All tRPC endpoints |
 | `/api/auth/*` | NextAuth built-in | Authentication flows |
 | `/api/billing/portal` | NextAuth session | Stripe billing portal redirect |
-| `/api/catalog/sync` | Bearer token (`CRON_SECRET`) | Vendor catalog cron sync |
-| `/api/import/portfolio-vendors` | API key (`IMPORT_API_KEY`) | Vendor portfolio import |
-| `/api/stripe/webhook` | Stripe webhook signature verification | Payment webhooks |
+| `/api/checkout/*` | NextAuth session + Stripe gating | Checkout session creation |
+| `/api/cron/sync-catalog` | Bearer token (`CRON_SECRET`) | Vendor catalog cron sync |
+| `/api/import/portfolio-vendors` | API key (`VW_IMPORT_API_KEYS`, comma-separated `x-api-key` values) | Vendor portfolio import |
+| `/api/webhooks/stripe` | Stripe webhook signature verification | Payment webhooks |
+| `/api/export/*` | JWT-authenticated GET + org-membership check + audit log | PDF report exports |
+| `/api/health` | Public (operational metadata only, no tenant data) | Liveness/DB probe for monitors and the sovereign Docker healthcheck |
 
 ### Webhook Verification
 
@@ -263,6 +266,8 @@ Premium features (Shadow AI, Vendor Catalog, Conformity Assessment, Bias & Fairn
 - [x] Policy link/unlink org verification
 - [x] Org-scoped return queries (all `findUnique` after `updateMany` replaced with org-scoped `findFirst`)
 - [x] Consistent `updateMany` pattern for mutations (incident tasks/notifications)
+- [x] `/api/health` endpoint (no secrets, no tenant data) + sovereign Docker healthcheck
+- [x] CI gates on every push: ESLint, security convention linter (`npm run lint:security`), `tsc --noEmit`, vitest regression tests (org isolation, auth callback, seed gate), production build
 
 ### Future Improvements
 

@@ -28,6 +28,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { brand } from "@/config/brand";
 import {
   ArrowLeft,
   Cpu,
@@ -431,8 +432,11 @@ export default function AISystemDetailPage() {
   }
 
   const riskLevel = system.riskClassification?.riskLevel;
+  // Deep links into DPO Central; hidden entirely when brand.dpoCentralUrl is
+  // unset (white-label / sovereign posture).
   const hasDpoCentralLinks =
-    system.dpoCentralVendorId || (system.dpoCentralAssetIds && system.dpoCentralAssetIds.length > 0);
+    Boolean(brand.dpoCentralUrl) &&
+    (system.dpoCentralVendorId || (system.dpoCentralAssetIds && system.dpoCentralAssetIds.length > 0));
 
   // --- Edit helpers ---
   const openEditDialog = () => {
@@ -843,7 +847,7 @@ export default function AISystemDetailPage() {
                   </p>
                 </div>
                 <a
-                  href={`https://dpocentral.todo.law/privacy/vendors/${system.dpoCentralVendorId}`}
+                  href={`${brand.dpoCentralUrl}/privacy/vendors/${system.dpoCentralVendorId}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -863,7 +867,7 @@ export default function AISystemDetailPage() {
                   </p>
                 </div>
                 <a
-                  href={`https://dpocentral.todo.law/privacy/data-inventory/${assetId}`}
+                  href={`${brand.dpoCentralUrl}/privacy/data-inventory/${assetId}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >

@@ -311,21 +311,21 @@ async function handlePaymentFailed(invoice: Stripe.Invoice) {
   if (resend && customer.email) {
     try {
       await resend.emails.send({
-        from: `${brand.name} by TODO.LAW <${process.env.EMAIL_FROM || "noreply@todo.law"}>`,
+        from: `${brand.name} by ${brand.companyName} <${brand.emailFrom}>`,
         to: customer.email,
         subject: `${brand.name} \u2014 Payment Failed`,
         html: `
-          <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 500px; margin: 0 auto; background: #1a1a1a; border-radius: 12px; overflow: hidden;">
+          <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 500px; margin: 0 auto; background: ${brand.colors.background}; border-radius: 12px; overflow: hidden;">
             <div style="padding: 24px 24px 16px; border-bottom: 1px solid #2a2a2a;">
-              <span style="font-size: 20px; font-weight: 700; color: #ffffff; letter-spacing: 0.05em;">AI SENTINEL</span>
+              <span style="font-size: 20px; font-weight: 700; color: #ffffff; letter-spacing: 0.05em;">${brand.name}</span>
             </div>
             <div style="padding: 32px 24px;">
               <p style="color: #e5e5e5; font-size: 15px; line-height: 1.6; margin: 0 0 16px;">We were unable to process your latest payment. Your premium features have been temporarily suspended.</p>
               <p style="color: #e5e5e5; font-size: 15px; line-height: 1.6; margin: 0 0 24px;">Please update your payment method to restore access.</p>
-              <a href="${process.env.NEXTAUTH_URL}/governance/billing" style="display: inline-block; background: #f5a623; color: #1a1a1a; padding: 12px 28px; text-decoration: none; font-weight: 600; font-size: 14px; border-radius: 24px;">Update Payment Method</a>
+              <a href="${process.env.NEXTAUTH_URL}/governance/billing" style="display: inline-block; background: ${brand.colors.primary}; color: ${brand.colors.primaryForeground}; padding: 12px 28px; text-decoration: none; font-weight: 600; font-size: 14px; border-radius: 24px;">Update Payment Method</a>
             </div>
             <div style="padding: 16px 24px; border-top: 1px solid #2a2a2a;">
-              <p style="color: #666666; font-size: 11px; margin: 0;">TODO.LAW\u2122 \u00b7 AI SENTINEL \u00b7 <a href="https://aisentinel.todo.law" style="color: #f5a623; text-decoration: none;">aisentinel.todo.law</a></p>
+              <p style="color: #666666; font-size: 11px; margin: 0;">${brand.companyName}\u2122 \u00b7 ${brand.name} \u00b7 <a href="${brand.siteUrl}" style="color: ${brand.colors.primary}; text-decoration: none;">${brand.siteUrl.replace(/^https?:\/\//, "")}</a></p>
             </div>
           </div>
         `,

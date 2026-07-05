@@ -1,3 +1,5 @@
+import { brand } from "@/config/brand";
+
 export const metadata = {
   title: "Security & Trust — AI SENTINEL Docs",
   description:
@@ -331,10 +333,10 @@ export default function SecurityDocsPage() {
           If you discover a security vulnerability or have questions about our security
           practices, please contact us at{" "}
           <a
-            href="mailto:security@todo.law"
+            href={`mailto:${brand.securityEmail}`}
             className="text-primary hover:text-primary/80 transition-colors"
           >
-            security@todo.law
+            {brand.securityEmail}
           </a>
           . We take all reports seriously and will respond promptly.
         </p>

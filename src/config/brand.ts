@@ -7,6 +7,16 @@ export interface BrandConfig {
   termsOfUseUrl: string;
   privacyPolicyUrl: string;
   supportEmail: string;
+  /** Security contact rendered on the public security page. */
+  securityEmail: string;
+  /** Canonical origin of this deployment (metadata, email footers). */
+  siteUrl: string;
+  /** From-address for transactional email (magic links, billing notices).
+   *  Server-side only; EMAIL_FROM keeps working as the canonical override. */
+  emailFrom: string;
+  /** Base URL for DPO Central deep links on vendor/AI-system detail pages.
+   *  Empty string hides those links entirely (white-label / sovereign). */
+  dpoCentralUrl: string;
   /** AGPL section 13 source offer: where users of the network service can
    *  obtain the Corresponding Source. White-label deployers running a
    *  modified version MUST point this at their own fork. */
@@ -32,6 +42,10 @@ const defaultBrand: BrandConfig = {
   termsOfUseUrl: "https://todo.law/terms",
   privacyPolicyUrl: "https://todo.law/privacy",
   supportEmail: "hello@todo.law",
+  securityEmail: "security@todo.law",
+  siteUrl: "https://aisentinel.todo.law",
+  emailFrom: "noreply@todo.law",
+  dpoCentralUrl: "https://dpocentral.todo.law",
   sourceUrl: "https://github.com/RINDOGATAN/aisentinel",
   licenseUrl: "https://www.gnu.org/licenses/agpl-3.0.html",
   logoPath: "/favicon.png",
@@ -61,6 +75,11 @@ export function getBrandConfig(): BrandConfig {
     termsOfUseUrl: process.env.NEXT_PUBLIC_TERMS_URL || defaultBrand.termsOfUseUrl,
     privacyPolicyUrl: process.env.NEXT_PUBLIC_PRIVACY_URL || defaultBrand.privacyPolicyUrl,
     supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL || defaultBrand.supportEmail,
+    securityEmail: process.env.NEXT_PUBLIC_SECURITY_EMAIL || defaultBrand.securityEmail,
+    siteUrl: process.env.NEXT_PUBLIC_SITE_URL || defaultBrand.siteUrl,
+    emailFrom: process.env.EMAIL_FROM || defaultBrand.emailFrom,
+    // ?? (not ||): an explicit empty string hides the DPO Central links.
+    dpoCentralUrl: process.env.NEXT_PUBLIC_DPO_CENTRAL_URL ?? defaultBrand.dpoCentralUrl,
     sourceUrl: process.env.NEXT_PUBLIC_SOURCE_URL || defaultBrand.sourceUrl,
     licenseUrl: process.env.NEXT_PUBLIC_LICENSE_URL || defaultBrand.licenseUrl,
     logoPath:

@@ -102,7 +102,11 @@ function buildNavGroups(isConsultant: boolean, t: (key: string) => string) {
         ...(features.expertDirectoryEnabled
           ? [{ href: "/governance/experts", label: t("findAiExpert"), icon: Search }]
           : []),
-        { href: "/governance/billing", label: t("billing"), icon: CreditCard },
+        // Billing is the hosted (Stripe) tier: hide the menu entry when the
+        // store is off (sovereign posture), same pattern as expert directory.
+        ...(features.stripeEnabled
+          ? [{ href: "/governance/billing", label: t("billing"), icon: CreditCard }]
+          : []),
       ],
     },
   ];
@@ -361,11 +365,15 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
               <BookOpen className="w-3.5 h-3.5" />
               {t("privacy")}
             </a>
-            <span className="text-border">&middot;</span>
-            <Link href="/governance/billing" className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors">
-              <CreditCard className="w-3.5 h-3.5" />
-              {t("billing")}
-            </Link>
+            {features.stripeEnabled && (
+              <>
+                <span className="text-border">&middot;</span>
+                <Link href="/governance/billing" className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors">
+                  <CreditCard className="w-3.5 h-3.5" />
+                  {t("billing")}
+                </Link>
+              </>
+            )}
             <span className="text-border">&middot;</span>
             <Link href="/docs" className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors">
               <BookOpen className="w-3.5 h-3.5" />

@@ -3,7 +3,7 @@
 # instant"). One command brings up the FULL app on firm hardware:
 #
 #   Postgres 16  ← the firm's AI-governance data, on the firm's disk
-#   migrator     ← one-shot: prisma db push + first-boot seed (catalogs + demo)
+#   migrator     ← one-shot: prisma migrate deploy + first-boot content seed
 #   app          ← the SAME Next.js app the cloud runs, standalone build
 #                  → http://localhost:8487
 #
@@ -51,11 +51,12 @@ services:
     # ports:
     #   - "127.0.0.1:55437:5432"
 
-  # One-shot: pushes the Prisma schema (the repo has no migrations dir), then
-  # seeds baseline data (skill packages, compliance frameworks, assessment
+  # One-shot: applies the committed prisma/migrations history (migrate
+  # deploy; pre-1.0.0 db-push installs are auto-baselined first), then seeds
+  # baseline CONTENT (skill packages, compliance frameworks, assessment
   # templates, Shadow-AI tool catalog, vendor catalog, cross-framework
-  # mappings, demo org/user) on FIRST boot only — an instance with users is
-  # never re-seeded. Safe to re-run any time: docker compose run --rm migrator
+  # mappings; no demo org/users) on FIRST boot only. An instance with users
+  # is never re-seeded. Safe to re-run any time: docker compose run --rm migrator
   migrator:
     build:
       <<: *app-build
@@ -112,6 +113,13 @@ services:
       NEXT_PUBLIC_BRAND_LOGO_URL: ${NEXT_PUBLIC_BRAND_LOGO_URL:-}
     ports:
       - "${BIND_ADDR:-127.0.0.1}:${PORT:-8487}:3003"
+    # /api/health checks the app AND its DB connectivity (200 ok / 503 db down).
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO /dev/null http://127.0.0.1:3003/api/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
     extra_hosts:
       - "host.docker.internal:host-gateway"
 

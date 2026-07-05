@@ -26,6 +26,15 @@ const cookieDomain =
     : isProduction
       ? ".todo.law"
       : undefined;
+// Cross-app SSO provider (accepts signed JWTs from sibling *.todo.law apps
+// and Google access tokens). This is a CLOUD concern: on a sovereign box it
+// would mint local accounts for any valid Google token, so it defaults ON
+// only when running on Vercel and OFF everywhere else. CROSS_LOGIN_ENABLED
+// overrides in either direction.
+const crossLoginEnabled =
+  process.env.CROSS_LOGIN_ENABLED !== undefined
+    ? process.env.CROSS_LOGIN_ENABLED === "true"
+    : Boolean(process.env.VERCEL);
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma) as NextAuthOptions["adapter"],
@@ -76,80 +85,84 @@ export const authOptions: NextAuthOptions = {
           }),
         ]
       : []),
-    // Cross-domain SSO from startups.todo.law
-    CredentialsProvider({
-      id: "cross-login",
-      name: "Cross Login",
-      credentials: {
-        token: { type: "text" },
-        method: { type: "text" },
-      },
-      async authorize(credentials) {
-        if (!credentials?.token || !credentials?.method) return null;
+    // Cross-domain SSO from startups.todo.law (cloud only; gated above)
+    ...(crossLoginEnabled
+      ? [
+        CredentialsProvider({
+          id: "cross-login",
+          name: "Cross Login",
+          credentials: {
+            token: { type: "text" },
+            method: { type: "text" },
+          },
+          async authorize(credentials) {
+            if (!credentials?.token || !credentials?.method) return null;
 
-        let email: string | undefined;
-        let name: string | undefined;
+            let email: string | undefined;
+            let name: string | undefined;
 
-        if (credentials.method === "magic-link") {
-          const secret = process.env.CROSS_LOGIN_SECRET;
-          if (!secret) {
-            console.error("CROSS_LOGIN_SECRET is not configured");
-            return null;
-          }
-          try {
-            const { payload } = await jwtVerify(
-              credentials.token,
-              new TextEncoder().encode(secret)
-            );
-            email = payload.email as string | undefined;
-            name = payload.name as string | undefined;
-          } catch (err) {
-            console.error("Cross-login JWT verification failed:", err);
-            return null;
-          }
-        } else if (credentials.method === "google") {
-          try {
-            const res = await fetch(
-              `https://www.googleapis.com/oauth2/v3/userinfo`,
-              { headers: { Authorization: `Bearer ${credentials.token}` } }
-            );
-            if (!res.ok) {
-              console.error("Google userinfo request failed:", res.status);
+            if (credentials.method === "magic-link") {
+              const secret = process.env.CROSS_LOGIN_SECRET;
+              if (!secret) {
+                console.error("CROSS_LOGIN_SECRET is not configured");
+                return null;
+              }
+              try {
+                const { payload } = await jwtVerify(
+                  credentials.token,
+                  new TextEncoder().encode(secret)
+                );
+                email = payload.email as string | undefined;
+                name = payload.name as string | undefined;
+              } catch (err) {
+                console.error("Cross-login JWT verification failed:", err);
+                return null;
+              }
+            } else if (credentials.method === "google") {
+              try {
+                const res = await fetch(
+                  `https://www.googleapis.com/oauth2/v3/userinfo`,
+                  { headers: { Authorization: `Bearer ${credentials.token}` } }
+                );
+                if (!res.ok) {
+                  console.error("Google userinfo request failed:", res.status);
+                  return null;
+                }
+                const profile = await res.json();
+                email = profile.email;
+                name = profile.name;
+              } catch (err) {
+                console.error("Cross-login Google token verification failed:", err);
+                return null;
+              }
+            } else {
               return null;
             }
-            const profile = await res.json();
-            email = profile.email;
-            name = profile.name;
-          } catch (err) {
-            console.error("Cross-login Google token verification failed:", err);
-            return null;
-          }
-        } else {
-          return null;
-        }
 
-        if (!email) return null;
+            if (!email) return null;
 
-        let user = await prisma.user.findUnique({
-          where: { email },
-        });
+            let user = await prisma.user.findUnique({
+              where: { email },
+            });
 
-        if (!user) {
-          user = await prisma.user.create({
-            data: {
-              email,
-              name: name ?? email.split("@")[0],
-            },
-          });
-        }
+            if (!user) {
+              user = await prisma.user.create({
+                data: {
+                  email,
+                  name: name ?? email.split("@")[0],
+                },
+              });
+            }
 
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-        };
-      },
-    }),
+            return {
+              id: user.id,
+              email: user.email,
+              name: user.name,
+            };
+          },
+        }),
+      ]
+      : []),
     // Google OAuth
     ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
       ? [

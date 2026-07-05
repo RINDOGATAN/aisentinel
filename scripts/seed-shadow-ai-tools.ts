@@ -1,5 +1,12 @@
 import { PrismaClient } from "@prisma/client";
 
+// Editorial catalog of commonly encountered AI tools. Entries are unverified
+// editorial data; each description carries a data as-of stamp. Risk
+// indicators are indicative, not legal determinations.
+// contentAsOf: 2026-01 (editorial snapshot) / provenance reviewed 2026-07-05
+
+const CATALOG_DATA_AS_OF = "2026-01";
+
 const prisma = new PrismaClient();
 
 interface ToolSeed {
@@ -19,8 +26,8 @@ const tools: ToolSeed[] = [
     name: "ChatGPT",
     vendor: "OpenAI",
     category: "LLM_CHAT",
-    description: "General-purpose conversational AI assistant. GPT-4o multimodal model with text, image, and code capabilities.",
-    website: "https://chat.openai.com",
+    description: "General-purpose conversational AI assistant built on OpenAI's GPT-5-class multimodal models, with text, image, and code capabilities.",
+    website: "https://chatgpt.com",
     riskIndicators: ["PROCESSES_PERSONAL_DATA", "TRAINS_ON_INPUT", "CLOUD_HOSTED", "SOC2_CERTIFIED"],
   },
   {
@@ -119,7 +126,7 @@ const tools: ToolSeed[] = [
     vendor: "Alibaba",
     category: "LLM_CHAT",
     description: "Alibaba's open-weight and hosted LLM family. Available via Alibaba Cloud API or self-hosted from published weights.",
-    website: "https://qwenlm.ai",
+    website: "https://chat.qwen.ai",
     riskIndicators: ["CLOUD_HOSTED", "ON_PREMISE_AVAILABLE", "REQUIRES_API_KEY"],
   },
 
@@ -139,7 +146,7 @@ const tools: ToolSeed[] = [
     vendor: "Anysphere",
     category: "CODE_ASSISTANT",
     description: "AI-first code editor with built-in chat, code generation, and codebase-aware completions.",
-    website: "https://cursor.sh",
+    website: "https://cursor.com",
     riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "REQUIRES_API_KEY"],
   },
   {
@@ -153,11 +160,11 @@ const tools: ToolSeed[] = [
   },
   {
     id: "shadow-tool-codewhisperer",
-    name: "Amazon CodeWhisperer",
+    name: "Amazon Q Developer",
     vendor: "Amazon Web Services",
     category: "CODE_ASSISTANT",
-    description: "AI coding companion from AWS. Generates code suggestions, scans for security vulnerabilities.",
-    website: "https://aws.amazon.com/codewhisperer",
+    description: "AI coding assistant from AWS (formerly Amazon CodeWhisperer, renamed in 2024). Generates code suggestions, scans for security vulnerabilities.",
+    website: "https://aws.amazon.com/q/developer/",
     riskIndicators: ["CLOUD_HOSTED", "SOC2_CERTIFIED", "REQUIRES_API_KEY"],
   },
   {
@@ -181,10 +188,10 @@ const tools: ToolSeed[] = [
   {
     id: "shadow-tool-windsurf",
     name: "Windsurf",
-    vendor: "Codeium",
+    vendor: "Windsurf (formerly Codeium; acquired by Cognition in 2025)",
     category: "CODE_ASSISTANT",
-    description: "AI-native IDE from Codeium with agentic coding, multi-file edits, and codebase indexing. Successor to the Codeium editor plugin.",
-    website: "https://codeium.com/windsurf",
+    description: "AI-native IDE with agentic coding, multi-file edits, and codebase indexing. Successor to the Codeium editor plugin; the company renamed to Windsurf in 2025 and was subsequently acquired by Cognition.",
+    website: "https://windsurf.com",
     riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "SOC2_CERTIFIED"],
   },
   {
@@ -644,11 +651,14 @@ async function main() {
         name: tool.name,
         vendor: tool.vendor,
         category: tool.category,
-        description: tool.description,
+        description: `${tool.description} (Catalog data as of ${CATALOG_DATA_AS_OF}; editorial, unverified.)`,
         website: tool.website,
         riskIndicators: tool.riskIndicators,
       },
-      create: tool,
+      create: {
+        ...tool,
+        description: `${tool.description} (Catalog data as of ${CATALOG_DATA_AS_OF}; editorial, unverified.)`,
+      },
     });
     count++;
   }

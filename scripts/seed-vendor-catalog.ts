@@ -1,5 +1,18 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 
+// PROVENANCE POLICY
+// - Seeded entries are EDITORIAL, UNVERIFIED data: isVerified is false and
+//   no verifiedAt/verifiedBy stamp is written. Verification stamps belong to
+//   a real review workflow (e.g. Vendor.Watch sync), never to a seed script.
+// - "EU AI Act compliant" is NOT a vendor-level binary (obligations are
+//   per-system, per-role, and phased), so no euAiActCompliant flag is seeded;
+//   the field stays null. Make claim-shaped, sourced, dated statements in
+//   the description instead if needed.
+// - Every description carries a data as-of stamp (CATALOG_DATA_AS_OF).
+// contentAsOf: 2026-01 (editorial snapshot) / provenance reviewed 2026-07-05
+
+const CATALOG_DATA_AS_OF = "2026-01";
+
 const prisma = new PrismaClient();
 
 interface CatalogAIModel {
@@ -19,7 +32,6 @@ interface VendorCatalogEntry {
   certifications: string[];
   frameworks: string[];
   gdprCompliant?: boolean;
-  euAiActCompliant?: boolean;
   hipaaCompliant?: boolean;
   dataLocations: string[];
   hasEuDataCenter?: boolean;
@@ -46,13 +58,12 @@ const vendors: VendorCatalogEntry[] = [
     slug: "openai",
     name: "OpenAI",
     category: "LLM Provider",
-    description: "Creator of GPT-4, ChatGPT, and DALL-E. Leading provider of large language models and generative AI APIs.",
+    description: "Creator of the GPT model family, ChatGPT, and Sora. Leading provider of large language models and generative AI APIs.",
     website: "https://openai.com",
     tags: ["AI", "LLM", "GPT", "Generative AI", "NLP"],
     certifications: ["SOC 2 Type II"],
     frameworks: ["NIST AI RMF"],
     gdprCompliant: true,
-    euAiActCompliant: false,
     hipaaCompliant: false,
     dataLocations: ["US", "EU"],
     hasEuDataCenter: true,
@@ -61,12 +72,12 @@ const vendors: VendorCatalogEntry[] = [
     privacyPolicyUrl: "https://openai.com/policies/privacy-policy",
     trustCenterUrl: "https://trust.openai.com",
     aiModels: [
-      { name: "GPT-4o", type: "LLM", source: "OpenAI" },
-      { name: "GPT-4o mini", type: "LLM", source: "OpenAI" },
-      { name: "o1", type: "LLM", source: "OpenAI" },
-      { name: "DALL-E 3", type: "Image Generation", source: "OpenAI" },
+      { name: "GPT-5.1", type: "LLM", source: "OpenAI" },
+      { name: "GPT-5", type: "LLM", source: "OpenAI" },
+      { name: "o3", type: "LLM (reasoning)", source: "OpenAI" },
+      { name: "GPT Image 1", type: "Image Generation", source: "OpenAI" },
+      { name: "Sora 2", type: "Video Generation", source: "OpenAI" },
       { name: "Whisper", type: "Speech", source: "OpenAI" },
-      { name: "TTS", type: "Speech", source: "OpenAI" },
       { name: "text-embedding-3-large", type: "Embedding", source: "OpenAI" },
     ],
     euAiActRole: "Provider",
@@ -86,7 +97,6 @@ const vendors: VendorCatalogEntry[] = [
     certifications: ["SOC 2 Type II"],
     frameworks: ["NIST AI RMF"],
     gdprCompliant: true,
-    euAiActCompliant: false,
     dataLocations: ["US"],
     hasEuDataCenter: false,
     aiCapabilities: ["LLM", "Computer Vision", "Code Generation"],
@@ -94,9 +104,9 @@ const vendors: VendorCatalogEntry[] = [
     privacyPolicyUrl: "https://www.anthropic.com/privacy",
     trustCenterUrl: "https://trust.anthropic.com",
     aiModels: [
-      { name: "Claude Opus 4", type: "LLM", source: "Anthropic" },
-      { name: "Claude Sonnet 4", type: "LLM", source: "Anthropic" },
-      { name: "Claude Haiku 3.5", type: "LLM", source: "Anthropic" },
+      { name: "Claude Opus 4.5", type: "LLM", source: "Anthropic" },
+      { name: "Claude Sonnet 4.5", type: "LLM", source: "Anthropic" },
+      { name: "Claude Haiku 4.5", type: "LLM", source: "Anthropic" },
     ],
     euAiActRole: "Provider",
     supportsExplainability: true,
@@ -115,7 +125,6 @@ const vendors: VendorCatalogEntry[] = [
     certifications: ["ISO 27001", "SOC 2 Type II", "ISO 27017", "ISO 27018"],
     frameworks: ["EU AI Act", "NIST AI RMF", "GDPR"],
     gdprCompliant: true,
-    euAiActCompliant: true,
     hipaaCompliant: true,
     dataLocations: ["US", "EU", "UK", "APAC"],
     hasEuDataCenter: true,
@@ -125,11 +134,12 @@ const vendors: VendorCatalogEntry[] = [
     trustCenterUrl: "https://cloud.google.com/security",
     dpaUrl: "https://cloud.google.com/terms/data-processing-addendum",
     aiModels: [
-      { name: "Gemini 2.5 Pro", type: "LLM", source: "Google DeepMind" },
+      { name: "Gemini 3 Pro", type: "LLM", source: "Google DeepMind" },
       { name: "Gemini 2.5 Flash", type: "LLM", source: "Google DeepMind" },
-      { name: "Imagen 3", type: "Image Generation", source: "Google DeepMind" },
+      { name: "Imagen 4", type: "Image Generation", source: "Google DeepMind" },
+      { name: "Veo 3", type: "Video Generation", source: "Google DeepMind" },
       { name: "Chirp", type: "Speech", source: "Google Cloud" },
-      { name: "text-embedding-005", type: "Embedding", source: "Google Cloud" },
+      { name: "gemini-embedding-001", type: "Embedding", source: "Google Cloud" },
     ],
     euAiActRole: "Provider",
     iso42001Certified: true,
@@ -173,7 +183,6 @@ const vendors: VendorCatalogEntry[] = [
     certifications: [],
     frameworks: ["EU AI Act", "GDPR"],
     gdprCompliant: true,
-    euAiActCompliant: true,
     dataLocations: ["EU"],
     hasEuDataCenter: true,
     aiCapabilities: ["LLM", "Code Generation"],
@@ -212,7 +221,7 @@ const vendors: VendorCatalogEntry[] = [
     slug: "ai21-labs",
     name: "AI21 Labs",
     category: "LLM Provider",
-    description: "AI company building Jamba, a foundation model for enterprise NLP tasks including summarization and text generation.",
+    description: "AI company building the Jamba family of foundation models and enterprise AI systems for tasks including summarization and text generation.",
     website: "https://www.ai21.com",
     tags: ["AI", "LLM", "Enterprise AI", "NLP"],
     certifications: ["SOC 2 Type II"],
@@ -228,13 +237,12 @@ const vendors: VendorCatalogEntry[] = [
     slug: "aleph-alpha",
     name: "Aleph Alpha",
     category: "LLM Provider",
-    description: "European sovereign AI company based in Heidelberg, Germany. Builds Luminous models with a focus on EU data sovereignty.",
+    description: "European sovereign AI company based in Heidelberg, Germany. Now centered on the PhariaAI enterprise stack (successor to its earlier Luminous models), with a focus on EU data sovereignty.",
     website: "https://www.aleph-alpha.com",
     tags: ["AI", "LLM", "European AI", "Sovereign AI", "NLP"],
     certifications: ["ISO 27001"],
     frameworks: ["EU AI Act", "GDPR"],
     gdprCompliant: true,
-    euAiActCompliant: true,
     dataLocations: ["EU"],
     hasEuDataCenter: true,
     aiCapabilities: ["LLM", "Multimodal"],
@@ -253,7 +261,6 @@ const vendors: VendorCatalogEntry[] = [
     certifications: ["ISO 27001", "SOC 2 Type II", "ISO 42001", "ISO 27017", "ISO 27018"],
     frameworks: ["EU AI Act", "NIST AI RMF", "GDPR"],
     gdprCompliant: true,
-    euAiActCompliant: true,
     hipaaCompliant: true,
     dataLocations: ["US", "EU", "UK", "APAC"],
     hasEuDataCenter: true,
@@ -292,7 +299,6 @@ const vendors: VendorCatalogEntry[] = [
     certifications: ["ISO 27001", "SOC 2 Type II", "ISO 27017", "ISO 27018"],
     frameworks: ["EU AI Act", "NIST AI RMF", "GDPR"],
     gdprCompliant: true,
-    euAiActCompliant: true,
     hipaaCompliant: true,
     dataLocations: ["US", "EU", "UK", "APAC"],
     hasEuDataCenter: true,
@@ -312,7 +318,6 @@ const vendors: VendorCatalogEntry[] = [
     certifications: ["ISO 27001", "SOC 2 Type II", "ISO 42001"],
     frameworks: ["EU AI Act", "NIST AI RMF", "GDPR"],
     gdprCompliant: true,
-    euAiActCompliant: true,
     hipaaCompliant: true,
     dataLocations: ["US", "EU", "UK"],
     hasEuDataCenter: true,
@@ -474,7 +479,7 @@ const vendors: VendorCatalogEntry[] = [
     slug: "langchain",
     name: "LangChain",
     category: "AI Agents & Automation",
-    description: "Open-source framework for building LLM-powered applications with chains, agents, and retrieval-augmented generation.",
+    description: "Open-source framework for building LLM-powered applications with chains, agents, and retrieval-augmented generation. Note: the framework itself is open source; certifications and compliance attributes relate to LangChain Inc. and its hosted LangSmith service, not to the library.",
     website: "https://www.langchain.com",
     tags: ["AI", "LLM", "Agents", "RAG", "Open Source"],
     certifications: ["SOC 2 Type II"],
@@ -525,7 +530,6 @@ const vendors: VendorCatalogEntry[] = [
     certifications: ["SOC 2 Type II"],
     frameworks: ["EU AI Act", "NIST AI RMF", "ISO 42001"],
     gdprCompliant: true,
-    euAiActCompliant: true,
     dataLocations: ["US"],
     hasEuDataCenter: false,
     aiCapabilities: ["AI Governance", "Risk Assessment"],
@@ -542,7 +546,6 @@ const vendors: VendorCatalogEntry[] = [
     certifications: [],
     frameworks: ["EU AI Act", "NIST AI RMF"],
     gdprCompliant: true,
-    euAiActCompliant: true,
     dataLocations: ["UK", "EU"],
     hasEuDataCenter: true,
     aiCapabilities: ["AI Auditing", "Bias Detection"],
@@ -630,13 +633,14 @@ async function main() {
       name: vendor.name,
       category: vendor.category,
       subcategory: vendor.subcategory,
-      description: vendor.description,
+      description: `${vendor.description} (Catalog data as of ${CATALOG_DATA_AS_OF}; editorial, unverified — confirm current status with the vendor.)`,
       website: vendor.website,
       tags: vendor.tags,
       certifications: vendor.certifications,
       frameworks: vendor.frameworks,
       gdprCompliant: vendor.gdprCompliant,
-      euAiActCompliant: vendor.euAiActCompliant,
+      // Deliberately null: "EU AI Act compliant" is not a vendor-level binary.
+      euAiActCompliant: null,
       hipaaCompliant: vendor.hipaaCompliant,
       dataLocations: vendor.dataLocations,
       hasEuDataCenter: vendor.hasEuDataCenter,
@@ -647,9 +651,10 @@ async function main() {
       dpaUrl: vendor.dpaUrl,
       securityPageUrl: vendor.securityPageUrl,
       source: "seed",
-      isVerified: true,
-      verifiedAt: new Date(),
-      verifiedBy: "AI SENTINEL seed",
+      // Seeded data is editorial and unverified — no fabricated stamps.
+      isVerified: false,
+      verifiedAt: null,
+      verifiedBy: null,
       // New fields
       ...(vendor.aiModels && { aiModels: vendor.aiModels as unknown as Prisma.InputJsonValue }),
       ...(vendor.euAiActRole && { euAiActRole: vendor.euAiActRole }),

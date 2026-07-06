@@ -114,7 +114,7 @@ export default async function RootLayout({
                 "@type": "Offer",
                 price: "0",
                 priceCurrency: "EUR",
-                description: "Free open-source core. Premium add-ons from \u20ac9/mo.",
+                description: "Free and open source under AGPL-3.0. All features included.",
               },
               featureList: [
                 "AI System Registry",

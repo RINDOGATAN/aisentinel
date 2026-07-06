@@ -23,6 +23,7 @@ import { useDebounce } from "@/hooks/use-debounce";
 import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
 import { formatRelativeTime } from "@/lib/utils";
 import { useTranslations } from "next-intl";
+import { features } from "@/config/features";
 
 const assessmentTypeKeys: Record<string, string> = {
   FRIA: "typeFria",
@@ -241,7 +242,7 @@ export default function AssessmentsPage() {
                               className={`text-xs ${assessmentTypeColors[assessment.type] || ""}`}
                             >
                               {assessmentTypeKeys[assessment.type] ? t(assessmentTypeKeys[assessment.type]) : assessment.type}
-                              {premiumTypes.includes(assessment.type) && (
+                              {premiumTypes.includes(assessment.type) && features.stripeEnabled && (
                                 <Lock className="w-3 h-3 ml-1" />
                               )}
                             </Badge>

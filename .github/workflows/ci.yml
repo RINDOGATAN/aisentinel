@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main, p1-quality-wave]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Security lint (org-isolation / RBAC conventions)
+        run: npm run lint:security
+
+      - name: Type-check
+        run: npx tsc --noEmit
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
+        env:
+          # Prisma needs a syntactically valid URL for `prisma generate`; no
+          # database is contacted during the build.
+          DATABASE_URL: "postgresql://user:pass@localhost:5432/db?schema=public"

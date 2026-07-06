@@ -41,6 +41,3 @@ next-env.d.ts
 # Prisma
 /prisma/*.db
 /prisma/*.db-journal
-
-# Release-generated vendor catalog snapshot (produced by vendor.watch; never committed)
-/vendors/catalog-snapshot.json

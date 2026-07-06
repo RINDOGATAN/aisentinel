@@ -144,7 +144,8 @@
     "terms": "Terms",
     "privacy": "Privacy",
     "docs": "Docs",
-    "security": "Security"
+    "security": "Security",
+    "sourceCode": "Source code (AGPL-3.0)"
   },
   "dashboard": {
     "title": "AI Governance",

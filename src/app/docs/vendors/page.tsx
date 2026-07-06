@@ -127,14 +127,14 @@ export default function VendorsDocsPage() {
             <div>
               <h4 className="font-medium mb-2">Auto-fill</h4>
               <p className="text-muted-foreground">
-                When adding a vendor from the catalog, the form is auto-filled with the vendor's
+                When adding a vendor from the catalog, the form is auto-filled with the vendor&apos;s
                 details — saving time and ensuring accuracy.
               </p>
             </div>
             <div>
               <h4 className="font-medium mb-2">Register as AI System</h4>
               <p className="text-muted-foreground">
-                Optionally register the vendor's product as an AI system in your registry at the
+                Optionally register the vendor&apos;s product as an AI system in your registry at the
                 same time, linking the vendor and system records.
               </p>
             </div>

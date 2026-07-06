@@ -27,7 +27,7 @@ import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
 import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
 import { EnableFeatureModal } from "@/components/premium/enable-feature-modal";
-import { formatRelativeTime, formatDate, getDaysUntil } from "@/lib/utils";
+import { formatRelativeTime, getDaysUntil } from "@/lib/utils";
 import { formatPrice } from "@/lib/currency";
 
 const riskLevelColors: Record<string, string> = {
@@ -80,7 +80,7 @@ export default function VendorRiskPage() {
     { enabled: !!organization?.id }
   );
 
-  const { data: statsData, isLoading: statsLoading } = trpc.vendor.getStats.useQuery(
+  const { data: statsData } = trpc.vendor.getStats.useQuery(
     { organizationId: organization?.id ?? "" },
     { enabled: !!organization?.id }
   );

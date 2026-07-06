@@ -6,6 +6,7 @@ import { Mail, ArrowRight, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { features } from "@/config/features";
+import { brand } from "@/config/brand";
 
 // Local (passwordless credentials) login: dev mode, or sovereign/self-hosted
 // builds with NEXT_PUBLIC_LOCAL_AUTH_ENABLED=true.
@@ -223,11 +224,11 @@ export default function SignInPage() {
         <div className="mt-6 pt-6 border-t border-border text-center">
           <p className="text-xs text-muted-foreground">
             By signing in, you agree to our{" "}
-            <a href="https://todo.law/terms" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+            <a href={brand.termsOfUseUrl} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
               Terms of Service
             </a>{" "}
             and{" "}
-            <a href="https://todo.law/privacy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+            <a href={brand.privacyPolicyUrl} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
               Privacy Policy
             </a>
           </p>

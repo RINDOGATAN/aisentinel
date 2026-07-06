@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, AIRiskLevel } from "@prisma/client";
 
 // EU AI Act content verified against the FINAL text of Regulation (EU)
 // 2024/1689 (OJ L, 2024/1689, 12.7.2024) — not the 2021 Commission proposal.
@@ -151,14 +151,14 @@ async function main() {
   for (const req of euRequirements) {
     const parent = await prisma.complianceRequirement.upsert({
       where: { id: `eu-${req.code.toLowerCase().replace(/[^a-z0-9]/g, "-")}` },
-      update: { title: req.title, description: req.description, applicableTo: req.applicableTo as any[], sortOrder: req.sortOrder },
+      update: { title: req.title, description: req.description, applicableTo: req.applicableTo as AIRiskLevel[], sortOrder: req.sortOrder },
       create: {
         id: `eu-${req.code.toLowerCase().replace(/[^a-z0-9]/g, "-")}`,
         frameworkId: euAiAct.id,
         code: req.code,
         title: req.title,
         description: req.description,
-        applicableTo: req.applicableTo as any[],
+        applicableTo: req.applicableTo as AIRiskLevel[],
         sortOrder: req.sortOrder,
       },
     });
@@ -173,7 +173,7 @@ async function main() {
           code: child.code,
           title: child.title,
           description: child.description,
-          applicableTo: req.applicableTo as any[],
+          applicableTo: req.applicableTo as AIRiskLevel[],
           parentId: parent.id,
           sortOrder: child.sortOrder,
         },

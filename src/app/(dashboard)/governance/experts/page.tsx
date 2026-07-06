@@ -42,12 +42,12 @@ import type { ExpertProfile } from "@/server/services/dealroom/client";
 
 const PAGE_SIZE = 20;
 
+// Feature gate lives in its own component: the early return used to sit
+// above the directory's hooks in one component, which violated
+// rules-of-hooks (conditional hook order). The flag is constant per build,
+// so behavior is unchanged; the structure is just correct now.
 export default function ExpertsPage() {
-  const t = useTranslations("experts");
-  const tc = useTranslations("common");
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const { data: session } = useSession();
 
   useEffect(() => {
     if (!features.expertDirectoryEnabled) {
@@ -56,6 +56,16 @@ export default function ExpertsPage() {
   }, [router]);
 
   if (!features.expertDirectoryEnabled) return null;
+
+  return <ExpertsDirectory />;
+}
+
+function ExpertsDirectory() {
+  const t = useTranslations("experts");
+  const tc = useTranslations("common");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { data: session } = useSession();
 
   const [searchQuery, setSearchQuery] = useState(
     searchParams.get("query") ?? ""
@@ -83,6 +93,9 @@ export default function ExpertsPage() {
   // Pre-fill form when dialog opens
   useEffect(() => {
     if (contactExpert) {
+      // Pre-fills the just-opened dialog from the session; cannot run in an
+      // event handler (session loads asynchronously).
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setContactForm((prev) => ({
         ...prev,
         requesterName: session?.user?.name ?? prev.requesterName,
@@ -94,6 +107,9 @@ export default function ExpertsPage() {
 
   // Reset pagination when filters change
   useEffect(() => {
+    // Debounced search cannot reset in an event handler; keep the reset
+    // coupled to the same dependency set the query uses.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setOffset(0);
   }, [debouncedSearch, specialization, country, language, expertType]);
 

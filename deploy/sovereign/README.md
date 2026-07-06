@@ -6,7 +6,7 @@ codebase, two postures, switched by env, never forked).
 
 ```
 Postgres 16      firm AI-governance data        db
-migrator         prisma db push + first-boot seed (one-shot)
+migrator         prisma migrate deploy + first-boot content seed (one-shot)
 Next.js app      the SAME app the cloud runs    app  → http://localhost:8487
 ```
 
@@ -25,6 +25,11 @@ Posture differences from cloud, all env-driven:
 - **Brand:** `NEXT_PUBLIC_BRAND_NAME`, `NEXT_PUBLIC_BRAND_ACCENT`,
   `NEXT_PUBLIC_BRAND_LOGO_URL` (plus the fine-grained `NEXT_PUBLIC_COLOR_*`
   set in `src/config/brand.ts`). Same UI, your name on it — no clones.
+  **Rebuild after rebranding**: all `NEXT_PUBLIC_*` values are baked into the
+  client bundle at build time, so after changing any of them run
+  `docker compose up -d --build app`. Editing `.env` alone changes nothing.
+  If you deploy a modified fork, point `NEXT_PUBLIC_SOURCE_URL` at your fork
+  (AGPL section 13 source offer in the footer).
 
 ## First run
 
@@ -46,8 +51,15 @@ LexBooks / DPO Central / DealRoom on this hardware.
 
 ## Day-2 operations
 
-- **Schema after `git pull`:** `docker compose run --rm migrator` — re-runs
-  `prisma db push`; the seed is skipped once the instance has users.
+- **Schema after `git pull`:** `docker compose run --rm migrator` runs
+  `prisma migrate deploy` against the committed migration history; the seed
+  is skipped once the instance has users. Installs created before 1.0.0
+  (the `db push` era) are baselined automatically on the first run (a
+  metadata-only step); see `prisma/migrations/README.md`.
+- **Health:** `curl http://localhost:8487/api/health` returns 200 with
+  `{ ok, version, services: { database } }` when app and DB are up, 503 when
+  the DB probe fails. The compose file wires this into a Docker healthcheck
+  for the app container.
 - **Rebuild after an update or brand/posture change:**
   `docker compose up -d --build app`. All `NEXT_PUBLIC_*` vars are baked in
   at build time — editing them in `.env` without a rebuild does nothing.
@@ -104,5 +116,7 @@ The short version:
   templates, catalogs) — create your own organization on first sign-in.
 - The Prisma datasource reads `ais_DATABASE_URL` (a Vercel-scoped variable
   name) — the compose file sets it; keep that name if you wire your own DB.
+- `vercel.json` in the repo root configures the HOSTED deployment's weekly
+  cron. It is inert off Vercel; nothing reads it in this bundle. Ignore it.
 - License: AGPL-3.0-or-later (see repo LICENSE) — self-hosting your own
   instance is exactly the intended use.

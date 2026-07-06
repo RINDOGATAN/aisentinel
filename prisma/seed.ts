@@ -1,8 +1,6 @@
 import { PrismaClient, AIAssessmentType } from "@prisma/client";
 
-const prisma = new PrismaClient();
-
-async function main() {
+export async function seedDatabase(prisma: PrismaClient) {
   console.log("Seeding AI SENTINEL database...");
 
   // ============================================================
@@ -107,11 +105,11 @@ async function main() {
   console.log("Creating platform admin...");
 
   await prisma.platformAdmin.upsert({
-    where: { email: "smaldonado@privacycloud.com" },
+    where: { email: "admin@acme-demo.example" },
     update: { isActive: true },
     create: {
-      email: "smaldonado@privacycloud.com",
-      name: "Sergio Maldonado",
+      email: "admin@acme-demo.example",
+      name: "Demo Platform Admin",
       isActive: true,
     },
   });
@@ -126,12 +124,12 @@ async function main() {
 
   const demoOrg = await prisma.organization.upsert({
     where: { slug: "acme-ai" },
-    update: { domain: "privacycloud.com" },
+    update: { domain: "acme-demo.example" },
     create: {
       id: "demo-organization",
       name: "Acme AI Corp (Demo)",
       slug: "acme-ai",
-      domain: "privacycloud.com",
+      domain: "acme-demo.example",
       settings: { isDemo: true },
     },
   });
@@ -499,11 +497,17 @@ async function main() {
   console.log("\nSeeding completed!");
 }
 
-main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+// Auto-run only when executed directly (tsx prisma/seed.ts). Under Vitest the
+// module is imported for the seed-gate test with an injected prisma double, so
+// we must not construct a real client or connect to a database here.
+if (!process.env.VITEST) {
+  const prisma = new PrismaClient();
+  seedDatabase(prisma)
+    .catch((e) => {
+      console.error(e);
+      process.exit(1);
+    })
+    .finally(async () => {
+      await prisma.$disconnect();
+    });
+}

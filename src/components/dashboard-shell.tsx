@@ -28,6 +28,7 @@ import {
   Settings,
   Shield,
   Sparkles,
+  Code,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -48,6 +49,7 @@ import { useTranslations } from "next-intl";
 import { useOrganization } from "@/lib/organization-context";
 import { useUserType } from "@/lib/use-user-type";
 import { features } from "@/config/features";
+import { brand } from "@/config/brand";
 import { OrganizationSetup } from "@/components/governance/organization-setup";
 import { PersonaSelector } from "@/components/governance/persona-selector";
 import { FeedbackDialog } from "@/components/FeedbackDialog";
@@ -100,6 +102,8 @@ function buildNavGroups(isConsultant: boolean, t: (key: string) => string) {
         ...(features.expertDirectoryEnabled
           ? [{ href: "/governance/experts", label: t("findAiExpert"), icon: Search }]
           : []),
+        // Billing is the hosted (Stripe) tier: hide the menu entry when the
+        // store is off (sovereign posture), same pattern as expert directory.
         ...(features.stripeEnabled
           ? [{ href: "/governance/billing", label: t("billing"), icon: CreditCard }]
           : []),
@@ -350,14 +354,14 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
 
       <footer className="border-t border-border mt-auto py-4">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 text-center text-xs text-muted-foreground space-y-2">
-          <p>AI SENTINEL is a <a href="https://todo.law" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">TODO.LAW</a> service.</p>
+          <p>{brand.name} is a <a href={brand.companyWebsite} target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">{brand.companyName}</a> service.</p>
           <div className="flex items-center justify-center gap-1">
-            <a href="https://todo.law/terms" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors">
+            <a href={brand.termsOfUseUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors">
               <Scale className="w-3.5 h-3.5" />
               {t("terms")}
             </a>
             <span className="text-border">&middot;</span>
-            <a href="https://todo.law/privacy" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors">
+            <a href={brand.privacyPolicyUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors">
               <BookOpen className="w-3.5 h-3.5" />
               {t("privacy")}
             </a>
@@ -380,6 +384,16 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
               <Shield className="w-3.5 h-3.5" />
               {t("security")}
             </Link>
+            {/* AGPL section 13: offer the Corresponding Source to network users. */}
+            {brand.sourceUrl && (
+              <>
+                <span className="text-border">&middot;</span>
+                <a href={brand.sourceUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors">
+                  <Code className="w-3.5 h-3.5" />
+                  {t("sourceCode")}
+                </a>
+              </>
+            )}
           </div>
         </div>
       </footer>

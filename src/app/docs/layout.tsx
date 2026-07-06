@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { brand } from "@/config/brand";
 import {
   Brain,
   ShieldAlert,
@@ -130,20 +131,20 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
       <footer className="border-t border-border mt-auto py-4">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 text-center text-xs text-muted-foreground space-y-2">
           <p>
-            AI SENTINEL is a{" "}
+            {brand.name} is a{" "}
             <a
-              href="https://todo.law"
+              href={brand.companyWebsite}
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-foreground transition-colors"
             >
-              TODO.LAW
+              {brand.companyName}
             </a>{" "}
             service.
           </p>
           <div className="flex items-center justify-center gap-1">
             <a
-              href="https://todo.law/privacy"
+              href={brand.privacyPolicyUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors"
@@ -152,7 +153,7 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
             </a>
             <span className="text-border">&middot;</span>
             <a
-              href="https://todo.law/terms"
+              href={brand.termsOfUseUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors"
@@ -173,6 +174,20 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
             >
               Security
             </Link>
+            {/* AGPL section 13: offer the Corresponding Source to network users. */}
+            {brand.sourceUrl && (
+              <>
+                <span className="text-border">&middot;</span>
+                <a
+                  href={brand.sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors"
+                >
+                  Source code (AGPL-3.0)
+                </a>
+              </>
+            )}
           </div>
         </div>
       </footer>

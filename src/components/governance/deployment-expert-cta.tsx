@@ -15,6 +15,8 @@ export function DeploymentExpertCta() {
 
   useEffect(() => {
     if (features.expertDirectoryEnabled && localStorage.getItem(DISMISS_KEY) !== "1") {
+      // SSR-safe mount-only reveal; localStorage cannot be read during render.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setVisible(true);
     }
   }, []);

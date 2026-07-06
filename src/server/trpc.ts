@@ -19,7 +19,7 @@ export const createInnerTRPCContext = (opts: CreateContextOptions) => {
   };
 };
 
-export const createTRPCContext = async (opts: { req: Request }) => {
+export const createTRPCContext = async (_opts: { req: Request }) => {
   const session = await getServerSession(authOptions);
   const cookieStore = await cookies();
 

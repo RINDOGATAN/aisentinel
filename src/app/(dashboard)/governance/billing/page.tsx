@@ -13,6 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useTranslations } from "next-intl";
 import { features } from "@/config/features";
+import { brand } from "@/config/brand";
 import { formatPrice } from "@/lib/currency";
 
 export default function BillingPage() {
@@ -81,6 +82,9 @@ export default function BillingPage() {
       !verifiedRef.current
     ) {
       verifiedRef.current = true;
+      // One-shot post-checkout verification kickoff, guarded by verifiedRef;
+      // an event handler is not possible (state arrives via redirect URL).
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCheckoutStatus("verifying");
       verifyCheckout.mutate({
         organizationId: organization.id,
@@ -195,10 +199,10 @@ export default function BillingPage() {
               We received your payment but couldn&apos;t activate the features
               automatically. Please refresh the page or contact{" "}
               <a
-                href="mailto:support@todo.law"
+                href={`mailto:${brand.supportEmail}`}
                 className="text-primary underline"
               >
-                support@todo.law
+                {brand.supportEmail}
               </a>
               .
             </p>
@@ -304,9 +308,15 @@ export default function BillingPage() {
                   </>
                 ) : (
                   <>
-                    <span className="text-sm text-muted-foreground">
-                      {formatPrice((row.priceAmount ?? 900) / 100)}/mo
-                    </span>
+                    {features.stripeEnabled ? (
+                      <span className="text-sm text-muted-foreground">
+                        {formatPrice((row.priceAmount ?? 900) / 100)}/mo
+                      </span>
+                    ) : (
+                      <Badge variant="secondary" className="text-xs">
+                        Included
+                      </Badge>
+                    )}
                     {features.selfServiceUpgrade && row.purchasable ? (
                       <Button
                         variant="outline"

@@ -144,7 +144,8 @@
     "terms": "Condiciones",
     "privacy": "Privacidad",
     "docs": "Documentaci\u00f3n",
-    "security": "Seguridad"
+    "security": "Seguridad",
+    "sourceCode": "Código fuente (AGPL-3.0)"
   },
   "dashboard": {
     "title": "Gobernanza de IA",

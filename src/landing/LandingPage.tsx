@@ -30,6 +30,8 @@ export default function LandingPage() {
   const [locale, setLocale] = useState<"en" | "es">("en");
 
   useEffect(() => {
+    // SSR-safe mount-only locale detection (URL/cookie are browser-only).
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLocale(detectLocale());
   }, []);
 

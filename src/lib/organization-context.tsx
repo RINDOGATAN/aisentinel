@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, useMemo, ReactNode } from "react";
 import { trpc } from "@/lib/trpc";
 
 type OrganizationRole = "OWNER" | "ADMIN" | "AI_OFFICER" | "MEMBER" | "VIEWER";
@@ -33,12 +33,15 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
     retry: false,
   });
 
-  const organizations = orgsData ?? [];
+  const organizations = useMemo(() => orgsData ?? [], [orgsData]);
 
   useEffect(() => {
     if (!organization && organizations.length > 0) {
       const savedOrgId = localStorage.getItem("currentOrganizationId");
       const savedOrg = organizations.find((o) => o.id === savedOrgId);
+      // Restores the persisted org selection once the org list query
+      // resolves; localStorage cannot be read during render.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setOrganizationState(savedOrg ?? organizations[0]);
     }
   }, [organizations, organization]);

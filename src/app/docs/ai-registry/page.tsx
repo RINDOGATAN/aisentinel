@@ -1,4 +1,3 @@
-import { Brain } from "lucide-react";
 
 export const metadata = {
   title: "AI Registry — AI SENTINEL Docs",

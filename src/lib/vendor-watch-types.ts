@@ -54,7 +54,7 @@ export interface VendorWatchVendor {
   hasBiasMonitoring: boolean | null;
   hasModelCard: boolean | null;
   aiIncidentNotificationSLA: string | null;
-  dataProcessingTransparency: string | null;
+  dataProcessingTransparency: boolean | string | null;
   transferSafeguards: string | null;
   supportsDsars: boolean | null;
   hasDesignatedDpo: boolean | null;

@@ -47,7 +47,13 @@ export function mapVendorToUpsert(v: VendorWatchVendor) {
     hasBiasMonitoring: v.hasBiasMonitoring,
     hasModelCard: v.hasModelCard,
     aiIncidentNotificationSLA: v.aiIncidentNotificationSLA,
-    dataProcessingTransparency: v.dataProcessingTransparency,
+    // AI Sentinel keeps this column as String? because the vendor-catalog UI
+    // renders the value as display text. vendor.watch may now send a boolean,
+    // so coerce boolean -> String and pass strings through unchanged.
+    dataProcessingTransparency:
+      typeof v.dataProcessingTransparency === "boolean"
+        ? String(v.dataProcessingTransparency)
+        : v.dataProcessingTransparency,
     transferSafeguards: v.transferSafeguards,
     supportsDsars: v.supportsDsars,
     hasDesignatedDpo: v.hasDesignatedDpo,

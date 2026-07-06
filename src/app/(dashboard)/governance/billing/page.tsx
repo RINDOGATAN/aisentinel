@@ -82,6 +82,9 @@ export default function BillingPage() {
       !verifiedRef.current
     ) {
       verifiedRef.current = true;
+      // One-shot post-checkout verification kickoff, guarded by verifiedRef;
+      // an event handler is not possible (state arrives via redirect URL).
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCheckoutStatus("verifying");
       verifyCheckout.mutate({
         organizationId: organization.id,

@@ -126,6 +126,9 @@ export default function IncidentDetailPage() {
 
   useEffect(() => {
     if (!rootCauseInitialized && incident) {
+      // One-time form initialization from fetched data, guarded by
+      // rootCauseInitialized.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setRootCauseCategory(incident.rootCauseCategory ?? "");
       setRootCauseDescription(incident.rootCauseDescription ?? "");
       setImpactDescription(incident.impactDescription ?? "");

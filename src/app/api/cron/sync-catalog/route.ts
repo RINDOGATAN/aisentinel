@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import type { VendorWatchVendor, VendorWatchSyncResponse } from "@/lib/vendor-watch-types";
+import type { VendorWatchSyncResponse } from "@/lib/vendor-watch-types";
 import { mapVendorToUpsert } from "@/lib/vendor-watch-mapper";
 
 export async function GET(request: Request) {

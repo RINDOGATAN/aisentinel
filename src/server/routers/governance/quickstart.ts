@@ -4,7 +4,6 @@ import { TRPCError } from "@trpc/server";
 import { VendorStatus } from "@prisma/client";
 import {
   findAIMappingForCategory,
-  GENERIC_AI_MAPPING,
   type VendorAIMapping,
 } from "../../../config/vendor-ai-mappings";
 import {

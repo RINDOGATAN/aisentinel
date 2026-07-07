@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2025-2026 Rindogatan LLC
+
 // Maps Shadow AI tool categories and Vendor Catalog categories to AITechnique enum values.
 // Used by the vendor "new" page and the shadow AI "register" dialog to pre-select technique.
 

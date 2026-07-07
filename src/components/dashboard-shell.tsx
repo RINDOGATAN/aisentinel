@@ -1,4 +1,6 @@
 "use client";
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2025-2026 Rindogatan LLC
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -395,6 +397,13 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
               </>
             )}
           </div>
+          {/* AGPL Appropriate Legal Notices (section 5d) + section 13 source offer. */}
+          <p className="text-[11px] text-muted-foreground/80">
+            AI Sentinel &middot; AGPL-3.0 &middot; &copy; Rindogatan LLC &middot;{" "}
+            <Link href="/licenses" className="underline underline-offset-2 hover:text-foreground transition-colors">
+              Source &amp; licence
+            </Link>
+          </p>
         </div>
       </footer>
 

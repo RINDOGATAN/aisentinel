@@ -41,6 +41,12 @@ than the linter.
 
 ## Conventions
 
+- **Licensing**: this project is published under **AGPL-3.0-or-later**, and
+  Rindogatan also offers it under a separate commercial licence. So that both
+  are possible, every contribution is covered by the
+  [Contributor License Agreement](CLA.md) and certified per commit with the
+  [Developer Certificate of Origin](DCO.txt). Do not submit code you don't have
+  the right to license this way.
 - **Multi-tenancy is the security model.** Organization-scoped procedures must
   resolve membership and scope every query by `organizationId`. By-id reads use
   org-scoped `findFirst`; writes use `updateMany`/`deleteMany` with an org
@@ -61,8 +67,41 @@ than the linter.
   `console.*` out of `src/`.
 - **Commits:** present tense, explain *why* in the body when the diff doesn't.
 
+## Licensing your contribution
+
+Two things travel with every contribution:
+
+1. **Sign off each commit (DCO).** Add `Signed-off-by: Your Name
+   <you@example.com>` to every commit — `git commit -s` does it for you. This
+   certifies you wrote the code or have the right to submit it (see
+   [DCO.txt](DCO.txt)). Use your real name.
+2. **Sign the CLA once.** The first time you open a PR, accept the
+   [Contributor License Agreement](CLA.md): add your name to [AUTHORS](AUTHORS)
+   in the same PR and state in the PR description that you have read and accept
+   the CLA. The CLA grants Rindogatan the relicensing right that makes the dual
+   licence (AGPL + commercial) possible. You keep the copyright to your work; it
+   is a licence, not an assignment. Contributing on behalf of an employer? Have
+   them execute a Corporate CLA (email legal@rindogatan.com).
+
+PRs without a DCO sign-off, or from a contributor who has not accepted the CLA,
+cannot be merged.
+
 ## Legal content changes
 
 Because this product is used by law firms, changes to the seeded frameworks,
 templates, or vendor catalog carry a `lawReviewedAsOf` stamp and should be
 listed verbatim in the PR description for counsel sign-off.
+
+## SPDX headers
+
+Every source file carries a machine-readable licence header as its first lines
+(after a shebang or a `"use client"` / `"use server"` directive, if present):
+
+```ts
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2025-2026 Rindogatan LLC
+```
+
+New source files must include it. These headers survive copy-paste into other
+codebases and make the licence and its owner unambiguous. Do not remove or alter
+them. `scripts/add-spdx-headers.mjs` adds the header to any file missing it.

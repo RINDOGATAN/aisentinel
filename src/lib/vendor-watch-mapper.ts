@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2025-2026 Rindogatan LLC
+
 /**
  * Shared mapper for converting Vendor.Watch API responses to Prisma upsert data.
  * Used by both the CLI sync script and the cron sync route.

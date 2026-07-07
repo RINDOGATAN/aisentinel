@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2025-2026 Rindogatan LLC
+
 import { PrismaClient, AIAssessmentType } from "@prisma/client";
 
 export async function seedDatabase(prisma: PrismaClient) {

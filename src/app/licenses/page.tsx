@@ -17,6 +17,10 @@ export const metadata: Metadata = {
 const SOURCE = process.env.NEXT_PUBLIC_SOURCE_URL || "https://github.com/RINDOGATAN/aisentinel";
 const COMMIT = process.env.NEXT_PUBLIC_COMMIT_SHA || process.env.VERCEL_GIT_COMMIT_SHA;
 const SOURCE_HREF = COMMIT ? `${SOURCE}/tree/${COMMIT}` : SOURCE;
+// The source repo is not public yet; until it is, offer the source at no
+// charge on request rather than link to a URL that would 404. Set
+// NEXT_PUBLIC_SOURCE_PUBLIC=true once the repo is published.
+const SOURCE_PUBLIC = process.env.NEXT_PUBLIC_SOURCE_PUBLIC === "true";
 
 export default function LicensesPage() {
   return (
@@ -43,21 +47,40 @@ export default function LicensesPage() {
           <h2 className="text-lg font-semibold tracking-tight mb-3 text-foreground">
             Complete corresponding source code
           </h2>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            Under AGPL-3.0 section 13, users interacting with this program over a
-            network are offered the complete corresponding source code of the
-            version running here:
-          </p>
-          <p className="mt-3 text-sm">
-            <a
-              href={SOURCE_HREF}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary underline underline-offset-4 break-all hover:text-foreground transition-colors"
-            >
-              {SOURCE_HREF}
-            </a>
-          </p>
+          {SOURCE_PUBLIC ? (
+            <>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Under AGPL-3.0 section 13, users interacting with this program
+                over a network are offered the complete corresponding source
+                code of the version running here:
+              </p>
+              <p className="mt-3 text-sm">
+                <a
+                  href={SOURCE_HREF}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary underline underline-offset-4 break-all hover:text-foreground transition-colors"
+                >
+                  {SOURCE_HREF}
+                </a>
+              </p>
+            </>
+          ) : (
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Under AGPL-3.0 section 13, users interacting with this program over
+              a network are offered the complete corresponding source code of the
+              version running here, at no charge. The public source repository is
+              being finalised; until it is published, request the corresponding
+              source by emailing{" "}
+              <a
+                href="mailto:support@rindogatan.com?subject=AGPL%20corresponding%20source%20request"
+                className="text-primary underline underline-offset-4 hover:text-foreground transition-colors"
+              >
+                support@rindogatan.com
+              </a>{" "}
+              and we will provide it.
+            </p>
+          )}
           {COMMIT && (
             <p className="mt-2 text-xs text-muted-foreground">
               Running commit: <code>{COMMIT}</code>

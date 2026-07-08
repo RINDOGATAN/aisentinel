@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2025-2026 Rindogatan LLC
+
 /**
  * Seeds AI Sentinel's vendor catalog from the release-generated snapshot at
  * vendors/catalog-snapshot.json (produced by vendor.watch). This is a thin

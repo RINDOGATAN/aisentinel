@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2025-2026 Rindogatan LLC
+
 export const metadata = {
   title: "Risk Classification — AI SENTINEL Docs",
   description: "EU AI Act four-tier risk classification with guided Annex III wizard.",

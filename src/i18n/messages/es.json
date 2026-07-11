@@ -260,6 +260,7 @@
     "dpoCentralLinksDescription": "Registros vinculados en la plataforma de gesti\u00f3n de privacidad DPO Central",
     "vendorRecord": "Registro del Proveedor",
     "dataAsset": "Activo de Datos",
+    "aiSystemRecord": "Sistema de IA en DPO Central",
     "linkedVendor": "Proveedor Vinculado",
     "linkedVendorDescription": "Proveedor externo de IA asociado a este sistema",
     "tabModels": "Modelos ({count})",

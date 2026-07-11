@@ -260,6 +260,7 @@
     "dpoCentralLinksDescription": "Linked records in DPO Central privacy management platform",
     "vendorRecord": "Vendor Record",
     "dataAsset": "Data Asset",
+    "aiSystemRecord": "AI System in DPO Central",
     "linkedVendor": "Linked Vendor",
     "linkedVendorDescription": "Third-party AI vendor associated with this system",
     "tabModels": "Models ({count})",

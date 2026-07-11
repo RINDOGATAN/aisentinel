@@ -436,9 +436,16 @@ export default function AISystemDetailPage() {
   const riskLevel = system.riskClassification?.riskLevel;
   // Deep links into DPO Central; hidden entirely when brand.dpoCentralUrl is
   // unset (white-label / sovereign posture).
+  // Systems imported from DPO Central carry the originating DPO system id in
+  // metadata (see AIS /api/import/dpc-ai-systems). Use it to link back to the
+  // privacy record, the reciprocal of DPO's "view in AI Sentinel" deep-link.
+  const dpcSystemId =
+    (system.metadata as { dpoCentralSystemId?: string } | null)?.dpoCentralSystemId ?? null;
   const hasDpoCentralLinks =
     Boolean(brand.dpoCentralUrl) &&
-    (system.dpoCentralVendorId || (system.dpoCentralAssetIds && system.dpoCentralAssetIds.length > 0));
+    (dpcSystemId ||
+      system.dpoCentralVendorId ||
+      (system.dpoCentralAssetIds && system.dpoCentralAssetIds.length > 0));
 
   // --- Edit helpers ---
   const openEditDialog = () => {
@@ -839,6 +846,26 @@ export default function AISystemDetailPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
+            {dpcSystemId && (
+              <div className="flex items-center gap-3 p-3 bg-muted/50">
+                <Cpu className="w-4 h-4 text-muted-foreground" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium">{t("aiSystemRecord")}</p>
+                  <p className="text-xs text-muted-foreground truncate">
+                    ID: {dpcSystemId}
+                  </p>
+                </div>
+                <a
+                  href={`${brand.dpoCentralUrl}/privacy/ai-systems/${dpcSystemId}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button variant="ghost" size="sm">
+                    <ExternalLink className="w-4 h-4" />
+                  </Button>
+                </a>
+              </div>
+            )}
             {system.dpoCentralVendorId && (
               <div className="flex items-center gap-3 p-3 bg-muted/50">
                 <User className="w-4 h-4 text-muted-foreground" />

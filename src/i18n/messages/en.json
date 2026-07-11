@@ -137,6 +137,7 @@
     "operationsGroup": "Operations",
     "findAiExpert": "Find AI Expert",
     "billing": "Billing",
+    "skills": "Skills",
     "settings": "Settings",
     "feedback": "Feedback",
     "signOut": "Sign out",
@@ -947,5 +948,25 @@
     "contactUs": "Contact Us",
     "enableFeature": "Enable Feature",
     "redirecting": "Redirecting to payment..."
+  },
+  "skills": {
+    "title": "Skills",
+    "subtitle": "Premium skills purchased on TODO.LAW. Upload the licence file from your confirmation email to activate them for this organization \u2014 verified locally, no network required.",
+    "activateTitle": "Activate with a licence file",
+    "activateHint": "Choose the .license.json file you received after your purchase. Only organization owners and admins can activate.",
+    "chooseFile": "Choose licence file",
+    "activate": "Activate skill",
+    "activating": "Activating...",
+    "badFile": "That file isn't a valid licence. Use the .license.json from your purchase email.",
+    "activated": "{name} activated.",
+    "packagesTitle": "Available skills",
+    "packagesNone": "No skill packages installed.",
+    "loading": "Loading...",
+    "statusActive": "Active",
+    "statusLocked": "Locked",
+    "expires": "Expires {date}",
+    "perpetual": "Perpetual licence",
+    "activations": "{used} of {max} activations used",
+    "perMonth": "/mo"
   }
 }

@@ -18,6 +18,10 @@ export async function seedDatabase(prisma: PrismaClient) {
   const STRIPE_PRICE_BIAS = process.env.STRIPE_PRICE_BIAS || STRIPE_PRICE_DEFAULT;
   const STRIPE_PRICE_SHADOW = process.env.STRIPE_PRICE_SHADOW || STRIPE_PRICE_DEFAULT;
   const STRIPE_PRICE_VENDOR_CATALOG = process.env.STRIPE_PRICE_VENDOR_CATALOG || STRIPE_PRICE_DEFAULT;
+  // These skillIds are the contract with the TODO.LAW storefront: offline
+  // licence files (see src/server/services/licensing/activation.ts) only
+  // activate when their skillId matches a row seeded here. A new sellable
+  // skill = a new entry in this array (+ an entitlement gate at its router).
   const skillPackages = [
     {
       id: "skill-conformity",

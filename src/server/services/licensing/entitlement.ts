@@ -5,13 +5,12 @@ import { AIAssessmentType, EntitlementStatus, LicenseType } from "@prisma/client
 import prisma from "@/lib/prisma";
 import { features } from "@/config/features";
 
-// When billing is disabled (sovereign / self-hosted posture, or the hosted
-// todo.law instance with Stripe removed), the previously-premium features
-// become free for everyone. The premium value has moved out to LQAI skill
-// downloads, so these in-app gates are vestigial. Keeping the check behind
-// features.stripeEnabled means the paid lock is fully reversible: flip the
-// flag back on and entitlement records gate access again.
-const BILLING_DISABLED_REASON = "Billing disabled; all features available";
+// On the hosted unpaywalled demo (Stripe off, NEXT_PUBLIC_ALL_SKILLS_FREE
+// unset) the previously-premium features are free for everyone. Deployments
+// that set NEXT_PUBLIC_ALL_SKILLS_FREE=false enforce entitlements — created
+// by Stripe checkout or by activating an offline licence file bought on
+// TODO.LAW (see ../licensing/activation.ts), the sovereign purchase path.
+const ALL_SKILLS_FREE_REASON = "All skills free on this deployment";
 
 export const PREMIUM_ASSESSMENT_TYPES: AIAssessmentType[] = [
   "CONFORMITY",
@@ -42,8 +41,8 @@ export async function checkAssessmentEntitlement(
     return { entitled: true, reason: "Free assessment type" };
   }
 
-  if (!features.stripeEnabled) {
-    return { entitled: true, reason: BILLING_DISABLED_REASON };
+  if (features.allSkillsFree) {
+    return { entitled: true, reason: ALL_SKILLS_FREE_REASON };
   }
 
   const skillPackage = await prisma.skillPackage.findFirst({
@@ -113,8 +112,8 @@ export async function checkSkillEntitlement(
   organizationId: string,
   skillId: string
 ): Promise<EntitlementCheckResult> {
-  if (!features.stripeEnabled) {
-    return { entitled: true, reason: BILLING_DISABLED_REASON };
+  if (features.allSkillsFree) {
+    return { entitled: true, reason: ALL_SKILLS_FREE_REASON };
   }
 
   const skillPackage = await prisma.skillPackage.findFirst({

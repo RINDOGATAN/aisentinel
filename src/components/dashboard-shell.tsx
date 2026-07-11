@@ -20,6 +20,7 @@ import {
   Menu,
   BookOpen,
   Lock,
+  KeyRound,
   LayoutDashboard,
   Building2,
   ScrollText,
@@ -104,6 +105,9 @@ function buildNavGroups(isConsultant: boolean, t: (key: string) => string) {
         ...(features.expertDirectoryEnabled
           ? [{ href: "/governance/experts", label: t("findAiExpert"), icon: Search }]
           : []),
+        // Offline licence activation for skills bought on TODO.LAW — always
+        // visible: it is the purchase path when the Stripe store is off.
+        { href: "/governance/skills", label: t("skills"), icon: KeyRound },
         // Billing is the hosted (Stripe) tier: hide the menu entry when the
         // store is off (sovereign posture), same pattern as expert directory.
         ...(features.stripeEnabled
@@ -209,7 +213,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                             >
                               <Icon className="w-5 h-5 shrink-0" />
                               {item.label}
-                              {item.premium && features.stripeEnabled && (
+                              {item.premium && !features.allSkillsFree && (
                                 <Lock className="w-3.5 h-3.5 ml-auto text-muted-foreground" />
                               )}
                             </Button>
@@ -292,7 +296,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                           >
                             <Icon className="w-4 h-4" />
                             {item.label}
-                            {item.premium && features.stripeEnabled && <Lock className="w-3 h-3 ml-auto text-muted-foreground" />}
+                            {item.premium && !features.allSkillsFree && <Lock className="w-3 h-3 ml-auto text-muted-foreground" />}
                           </Link>
                         </DropdownMenuItem>
                       );

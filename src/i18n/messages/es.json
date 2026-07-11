@@ -137,6 +137,7 @@
     "operationsGroup": "Operaciones",
     "findAiExpert": "Buscar Experto en IA",
     "billing": "Facturaci\u00f3n",
+    "skills": "Skills",
     "settings": "Configuraci\u00f3n",
     "feedback": "Sugerencias",
     "signOut": "Cerrar sesi\u00f3n",
@@ -947,5 +948,25 @@
     "contactUs": "Cont\u00e1ctenos",
     "enableFeature": "Activar Funcionalidad",
     "redirecting": "Redirigiendo al pago..."
+  },
+  "skills": {
+    "title": "Skills",
+    "subtitle": "Skills premium compradas en TODO.LAW. Suba el archivo de licencia de su correo de confirmaci\u00f3n para activarlas en esta organizaci\u00f3n: se verifica localmente, sin conexi\u00f3n.",
+    "activateTitle": "Activar con un archivo de licencia",
+    "activateHint": "Elija el archivo .license.json que recibi\u00f3 tras la compra. Solo los propietarios y administradores de la organizaci\u00f3n pueden activar.",
+    "chooseFile": "Elegir archivo de licencia",
+    "activate": "Activar skill",
+    "activating": "Activando...",
+    "badFile": "Ese archivo no es una licencia v\u00e1lida. Use el .license.json de su correo de compra.",
+    "activated": "{name} activada.",
+    "packagesTitle": "Skills disponibles",
+    "packagesNone": "No hay paquetes de skills instalados.",
+    "loading": "Cargando...",
+    "statusActive": "Activa",
+    "statusLocked": "Bloqueada",
+    "expires": "Caduca el {date}",
+    "perpetual": "Licencia perpetua",
+    "activations": "{used} de {max} activaciones usadas",
+    "perMonth": "/mes"
   }
 }

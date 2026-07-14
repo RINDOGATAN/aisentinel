@@ -3,7 +3,7 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { useState } from "react";
-import { Loader2, Sparkles, X, Mail } from "lucide-react";
+import { Loader2, Sparkles, X, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -13,7 +13,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { brand } from "@/config/brand";
 import { features } from "@/config/features";
 import { formatPrice } from "@/lib/currency";
 
@@ -37,8 +36,9 @@ export function EnableMultipleFeaturesModal({
 
   const total = skills.length * 9;
 
+  // Self-hosted builds have no in-app checkout. Free posture: already included.
+  // Sovereign licence posture: enabled by activating a licence on the Skills page.
   if (!features.selfServiceUpgrade) {
-    const skillNames = skills.map((s) => s.name).join(", ");
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center">
         <div
@@ -63,7 +63,9 @@ export function EnableMultipleFeaturesModal({
               </Button>
             </div>
             <CardDescription>
-              Contact us to enable these features for your organization.
+              {features.allSkillsFree
+                ? "These features are included in your self-hosted deployment."
+                : "Activate the licence files you received on the Skills page to enable these features."}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -73,22 +75,18 @@ export function EnableMultipleFeaturesModal({
               ))}
             </ul>
           </CardContent>
-          <CardFooter className="flex justify-end gap-3">
+          <CardFooter className="flex flex-wrap justify-end gap-3">
             <Button variant="outline" onClick={onClose}>
-              Cancel
+              Close
             </Button>
-            <Button asChild>
-              <a
-                href={`mailto:${brand.supportEmail}?subject=${encodeURIComponent(
-                  `${brand.name} - Enable ${skills.length} Features`
-                )}&body=${encodeURIComponent(
-                  `Hi,\n\nI would like to enable the following features for my organization:\n\n${skillNames}\n\nOrganization ID: ${organizationId}\n\nPlease contact me with next steps.\n\nThank you.`
-                )}`}
-              >
-                <Mail className="mr-2 h-4 w-4" />
-                Contact Us
-              </a>
-            </Button>
+            {!features.allSkillsFree && (
+              <Button asChild>
+                <a href="/governance/skills">
+                  <Package className="mr-2 h-4 w-4" />
+                  Go to Skills page
+                </a>
+              </Button>
+            )}
           </CardFooter>
         </Card>
       </div>
@@ -160,7 +158,7 @@ export function EnableMultipleFeaturesModal({
 
           <div className="rounded-lg bg-muted p-4">
             <p className="text-sm font-medium">
-              {formatPrice(total)}/month &mdash; cancel anytime
+              {formatPrice(total)}/month, cancel anytime
             </p>
           </div>
 

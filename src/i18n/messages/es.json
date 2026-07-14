@@ -965,6 +965,8 @@
     "loading": "Cargando...",
     "statusActive": "Activa",
     "statusLocked": "Bloqueada",
+    "statusIncluded": "Incluida",
+    "includedHint": "Incluida en tu instalación autoalojada",
     "expires": "Caduca el {date}",
     "perpetual": "Licencia perpetua",
     "activations": "{used} de {max} activaciones usadas",

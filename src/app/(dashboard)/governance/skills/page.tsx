@@ -18,6 +18,7 @@ import { useOrganization } from "@/lib/organization-context";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { formatPrice } from "@/lib/currency";
+import { features } from "@/config/features";
 
 // Minimal shape check before we send it to the server.
 function looksLikeLicense(x: unknown): x is Record<string, unknown> {
@@ -147,6 +148,10 @@ export default function SkillsPage() {
           <ul className="grid gap-3">
             {packages.map((pkg) => {
               const active = !!pkg.entitlement?.isActive;
+              // Self-hosted builds bypass every entitlement gate (allSkillsFree),
+              // so an unentitled package is simply included, not "locked". Only the
+              // hosted tier (selfServiceUpgrade) ever shows a per-month price.
+              const included = !active && features.allSkillsFree;
               return (
                 <li key={pkg.id}>
                   <Card className="flex items-center justify-between gap-3 p-4">
@@ -169,7 +174,10 @@ export default function SkillsPage() {
                               })}
                             </span>
                           </>
+                        ) : included ? (
+                          <span>{t("includedHint")}</span>
                         ) : (
+                          features.selfServiceUpgrade &&
                           pkg.priceAmount != null && (
                             <span>
                               {formatPrice(pkg.priceAmount / 100)}
@@ -179,10 +187,10 @@ export default function SkillsPage() {
                         )}
                       </div>
                     </div>
-                    {active ? (
+                    {active || included ? (
                       <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">
                         <CheckCircle2 className="h-3.5 w-3.5" />
-                        {t("statusActive")}
+                        {active ? t("statusActive") : t("statusIncluded")}
                       </span>
                     ) : (
                       <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">

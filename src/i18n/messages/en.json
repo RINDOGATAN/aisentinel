@@ -965,6 +965,8 @@
     "loading": "Loading...",
     "statusActive": "Active",
     "statusLocked": "Locked",
+    "statusIncluded": "Included",
+    "includedHint": "Included in your self-hosted deployment",
     "expires": "Expires {date}",
     "perpetual": "Perpetual licence",
     "activations": "{used} of {max} activations used",

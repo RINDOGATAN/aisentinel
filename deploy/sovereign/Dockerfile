@@ -21,7 +21,13 @@ COPY package.json package-lock.json ./
 # strict `npm ci` fails ("lock file's @swc/helpers@0.5.15 does not satisfy").
 # Skipping auto-install of peers reproduces the tree the lockfile records —
 # no lockfile churn, byte-identical installs.
-RUN npm ci --legacy-peer-deps
+# Retry on a clean tree: under QEMU emulation (arm64 built on an amd64 CI
+# runner) npm 11.x intermittently races on parallel dir creation and dies with
+# "ENOENT: mkdir .../node_modules/.../brace-expansion". The retry clears it;
+# native builds pass first try.
+RUN npm ci --legacy-peer-deps \
+  || (echo "npm ci failed (emulation race?) — retrying clean" && rm -rf node_modules && npm ci --legacy-peer-deps) \
+  || (rm -rf node_modules && npm ci --legacy-peer-deps)
 
 # ---- builder: prisma client + standalone Next build (also the migrator) ----
 FROM node:22-alpine AS builder

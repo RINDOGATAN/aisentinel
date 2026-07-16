@@ -217,7 +217,9 @@ export default function SignInPage() {
           </div>
         )}
 
-        {!hasEmail && !hasGoogle && providers !== null && (
+        {/* Only claim "no providers" when the local login is ALSO absent —
+            on self-host the local form above is a fully working provider. */}
+        {!hasEmail && !hasGoogle && !isDev && providers !== null && (
           <div className="p-4 bg-destructive/10 border border-destructive text-destructive text-sm">
             No sign-in providers configured. Please contact the administrator.
           </div>

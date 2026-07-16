@@ -13,7 +13,17 @@ import {
 const DEALROOM_API_URL = process.env.DEALROOM_API_URL;
 const DEALROOM_API_KEY = process.env.DEALROOM_API_KEY;
 
-const useMock = !DEALROOM_API_URL || !DEALROOM_API_KEY;
+// Mock experts are fictitious people (dev fixtures). They must never surface
+// in a production deployment: a self-hosted install without the Dealroom API
+// gets an EMPTY directory (the feature is flag-hidden there anyway), and a
+// hosted outage degrades to empty rather than impersonating humans. Demos can
+// opt back in explicitly with DEALROOM_MOCK_EXPERTS=true.
+const mockAllowed =
+  process.env.NODE_ENV !== "production" ||
+  process.env.DEALROOM_MOCK_EXPERTS === "true";
+const unconfigured = !DEALROOM_API_URL || !DEALROOM_API_KEY;
+const useMock = unconfigured && mockAllowed;
+const EMPTY_RESULT: ExpertSearchResult = { results: [], total: 0, offset: 0 };
 
 export type { ExpertProfile };
 
@@ -107,6 +117,9 @@ export async function searchExperts(
   if (useMock) {
     return filterMockExperts(params);
   }
+  if (unconfigured) {
+    return EMPTY_RESULT;
+  }
 
   try {
     const res = await fetch(`${DEALROOM_API_URL}/api/v1/experts/search`, {
@@ -129,7 +142,8 @@ export async function searchExperts(
 
     if (!res.ok) {
       console.error("Dealroom search failed:", res.status);
-      return filterMockExperts(params);
+      // Degrade honestly: an empty directory, never fictitious people.
+      return mockAllowed ? filterMockExperts(params) : EMPTY_RESULT;
     }
 
     const data = (await res.json()) as {
@@ -147,7 +161,7 @@ export async function searchExperts(
     };
   } catch (err) {
     console.error("Dealroom search error:", err);
-    return filterMockExperts(params);
+    return mockAllowed ? filterMockExperts(params) : EMPTY_RESULT;
   }
 }
 
@@ -156,6 +170,9 @@ export async function getExpertById(
 ): Promise<ExpertProfile | null> {
   if (useMock) {
     return mockExperts.find((e) => e.id === id) ?? null;
+  }
+  if (unconfigured) {
+    return null;
   }
 
   try {
@@ -167,13 +184,13 @@ export async function getExpertById(
     });
 
     if (!res.ok) {
-      return mockExperts.find((e) => e.id === id) ?? null;
+      return mockAllowed ? (mockExperts.find((e) => e.id === id) ?? null) : null;
     }
 
     return sanitizeExpert((await res.json()) as RawExpertProfile);
   } catch (err) {
     console.error("Dealroom getExpertById error:", err);
-    return mockExperts.find((e) => e.id === id) ?? null;
+    return mockAllowed ? (mockExperts.find((e) => e.id === id) ?? null) : null;
   }
 }
 
@@ -187,7 +204,7 @@ interface RemoteFilters {
 }
 
 async function fetchRemoteFilters(): Promise<RemoteFilters | null> {
-  if (useMock) return null;
+  if (useMock || unconfigured) return null;
 
   try {
     const res = await fetch(`${DEALROOM_API_URL}/api/v1/experts/filters`, {
@@ -313,6 +330,12 @@ export async function contactExpert(
       status: "pending",
       createdAt: new Date().toISOString(),
     };
+  }
+  if (unconfigured) {
+    // Never pretend a message was sent: fail honestly so the UI says so.
+    throw new Error(
+      "The expert directory is not connected on this deployment, so the message was not sent."
+    );
   }
 
   const res = await fetch(

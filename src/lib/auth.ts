@@ -20,14 +20,20 @@ const isProduction = process.env.NODE_ENV === "production";
 // (NEXT_PUBLIC_LOCAL_AUTH_ENABLED=true — no external OAuth/mailer required
 // behind the firm's own network).
 const devAuthEnabled = features.devAuthEnabled && process.env.DISABLE_DEV_AUTH !== "true";
+// Secure cookies require HTTPS. Keying this on NODE_ENV broke every
+// self-hosted install: the sovereign image runs NODE_ENV=production on plain
+// http://localhost, and browsers drop `Secure` (and `__Secure-`-prefixed)
+// cookies there — sign-in "succeeded" and the session evaporated. Key it on
+// the actual URL scheme instead.
+const useSecureCookies = (process.env.NEXTAUTH_URL ?? "").startsWith("https://");
 // Cross-app SSO: share session cookie across *.todo.law subdomains.
-// Self-hosted/sovereign deployments set AUTH_COOKIE_DOMAIN="" to fall back to
-// NextAuth's defaults (host-only cookie) — the todo.law domain only applies
-// to the cloud deployment.
+// That is a CLOUD concern — default the .todo.law domain only on Vercel
+// (same rule as crossLoginEnabled). Self-hosted boxes get a host-only cookie;
+// AUTH_COOKIE_DOMAIN still overrides in either direction ("" = host-only).
 const cookieDomain =
   process.env.AUTH_COOKIE_DOMAIN !== undefined
     ? process.env.AUTH_COOKIE_DOMAIN || undefined
-    : isProduction
+    : process.env.VERCEL
       ? ".todo.law"
       : undefined;
 // Cross-app SSO provider (accepts signed JWTs from sibling *.todo.law apps
@@ -318,21 +324,21 @@ export const authOptions: NextAuthOptions = {
   },
   cookies: {
     sessionToken: {
-      name: isProduction ? "__Secure-aisentinel.session-token" : "aisentinel.session-token",
+      name: useSecureCookies ? "__Secure-aisentinel.session-token" : "aisentinel.session-token",
       options: {
         httpOnly: true,
         sameSite: "lax" as const,
         path: "/",
-        secure: isProduction,
+        secure: useSecureCookies,
         ...(cookieDomain && { domain: cookieDomain }),
       },
     },
     callbackUrl: {
-      name: isProduction ? "__Secure-aisentinel.callback-url" : "aisentinel.callback-url",
+      name: useSecureCookies ? "__Secure-aisentinel.callback-url" : "aisentinel.callback-url",
       options: {
         sameSite: "lax" as const,
         path: "/",
-        secure: isProduction,
+        secure: useSecureCookies,
         ...(cookieDomain && { domain: cookieDomain }),
       },
     },
@@ -342,7 +348,7 @@ export const authOptions: NextAuthOptions = {
         httpOnly: true,
         sameSite: "lax" as const,
         path: "/",
-        secure: isProduction,
+        secure: useSecureCookies,
       },
     },
   },

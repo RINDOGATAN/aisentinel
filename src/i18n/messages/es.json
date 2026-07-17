@@ -1046,7 +1046,7 @@
       "off": "Desactivada — sin llamadas a IA",
       "local_gateway": "Pasarela local (motor autoalojado)",
       "cloud_eu": "Nube — proveedor de la UE",
-      "cloud_us": "Nube — proveedor de EE. UU."
+      "cloud_us": "LLM en la nube"
     },
     "postureCard": {
       "title": "Asistencia de IA",
@@ -1055,9 +1055,9 @@
       "engineConfigured": "Motor configurado: {provider}",
       "engineNotConfigured": "No hay ningún motor de IA configurado en este servidor. La IA permanece inactiva aunque se seleccione una postura.",
       "laneNames": {
-        "local_gateway": "Pasarela local",
+        "local_gateway": "Local",
         "cloud_eu": "Nube UE",
-        "cloud_us": "Nube EE. UU."
+        "cloud_us": "Nube"
       },
       "laneNoEngine": "Sin motor",
       "notConfiguredWarning": "Esta postura necesita un motor de IA en el servidor: configura LLM_GATEWAY_URL + LLM_MODEL_ALIAS (cualquier endpoint compatible con OpenAI, p. ej. un Ollama local) o una OPENAI_API_KEY / ANTHROPIC_API_KEY.",

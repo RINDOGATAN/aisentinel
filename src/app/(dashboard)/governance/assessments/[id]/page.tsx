@@ -16,6 +16,7 @@ import { Progress } from "@/components/ui/progress";
 import { formatDate } from "@/lib/utils";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { AiDraftPanel } from "@/components/ai/AiDraftPanel";
 
 const statusColors: Record<string, string> = {
   DRAFT: "bg-gray-500/20 text-gray-400",
@@ -48,6 +49,7 @@ export default function AssessmentDetailPage() {
   const updateMutation = trpc.assessment.update.useMutation({ onSuccess: () => refetch() });
   const submitMutation = trpc.assessment.submit.useMutation({ onSuccess: () => refetch() });
   const approveMutation = trpc.assessment.processApproval.useMutation({ onSuccess: () => refetch() });
+  const generateDraft = trpc.assessment.generateAiDraft.useMutation();
 
   if (isLoading || !orgId) {
     return (
@@ -183,13 +185,33 @@ export default function AssessmentDetailPage() {
                     </SelectContent>
                   </Select>
                 ) : (
-                  <Textarea
-                    value={responses[question.id] ?? ""}
-                    onChange={(e) => setResponses({ ...responses, [question.id]: e.target.value })}
-                    disabled={!canEdit}
-                    placeholder={t("textareaPlaceholder")}
-                    rows={3}
-                  />
+                  <>
+                    <Textarea
+                      value={responses[question.id] ?? ""}
+                      onChange={(e) => setResponses({ ...responses, [question.id]: e.target.value })}
+                      disabled={!canEdit}
+                      placeholder={t("textareaPlaceholder")}
+                      rows={3}
+                    />
+                    {/* Optional AI assist: drafts from registry facts; Insert
+                        puts the text in the editable field above — saving still
+                        flows through the normal save/submit/approve workflow. */}
+                    {canEdit && (
+                      <AiDraftPanel
+                        organizationId={orgId}
+                        onGenerate={() =>
+                          generateDraft.mutateAsync({
+                            organizationId: orgId,
+                            id: assessment.id,
+                            questionId: question.id,
+                          })
+                        }
+                        onInsert={(content) =>
+                          setResponses((prev) => ({ ...prev, [question.id]: content }))
+                        }
+                      />
+                    )}
+                  </>
                 )}
               </div>
             ))}

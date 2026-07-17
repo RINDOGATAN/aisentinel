@@ -4,6 +4,19 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
+import { screenAnnexIii } from "@/config/annex-iii-rules";
+import { chatComplete } from "../../services/ai/llm-door";
+import {
+  requireAi,
+  assertAiRateLimit,
+  recordGeneration,
+  postureLane,
+} from "../../services/ai/posture";
+import { buildSystemContext, promptLocale } from "../../services/ai/context";
+import {
+  buildRiskRationaleSystemPrompt,
+  buildRiskRationaleUserPrompt,
+} from "../../services/ai/prompts/risk-rationale";
 
 export const riskClassificationRouter = createTRPCRouter({
   list: organizationProcedure
@@ -204,5 +217,86 @@ export const riskClassificationRouter = createTRPCRouter({
       ]);
 
       return { unacceptable, high, limited, minimal, unclassified };
+    }),
+
+  // Deterministic Annex III / Art. 5 screening of one registered system.
+  // Pure rules over registry facts — NO AI involved, works with the AI
+  // posture off. This is the ground truth the optional AI rationale cites.
+  screen: organizationProcedure
+    .input(z.object({ organizationId: z.string(), aiSystemId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const { facts } = await buildSystemContext(
+        ctx.prisma,
+        ctx.organization.id,
+        input.aiSystemId,
+        ctx.organization.name
+      );
+      return screenAnnexIii(facts);
+    }),
+
+  // Optional AI assist: draft the classification RATIONALE, grounded in the
+  // deterministic screening hits. The user still picks the level — the draft
+  // only ever lands in the editable rationale field via explicit Insert.
+  generateAiRationale: orgWriteProcedure
+    .input(
+      z.object({
+        organizationId: z.string(),
+        aiSystemId: z.string(),
+        chosenLevel: z.enum(["UNACCEPTABLE", "HIGH", "LIMITED", "MINIMAL"]),
+        chosenCategory: z.string().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      // Posture gate FIRST — posture off/missing means zero AI calls and
+      // no prompt building at all.
+      const settings = await requireAi(ctx.prisma, ctx.organization.id);
+      await assertAiRateLimit(ctx.prisma, ctx.organization.id);
+
+      const { context, facts } = await buildSystemContext(
+        ctx.prisma,
+        ctx.organization.id,
+        input.aiSystemId,
+        ctx.organization.name
+      );
+      const screening = screenAnnexIii(facts);
+      const locale = promptLocale(ctx.getCookie("locale"));
+
+      // Route through the lane the organization acknowledged.
+      const result = await chatComplete({
+        system: buildRiskRationaleSystemPrompt(locale),
+        user: buildRiskRationaleUserPrompt({
+          context,
+          screening,
+          chosenLevel: input.chosenLevel,
+          chosenCategory: input.chosenCategory ?? null,
+        }),
+        lane: postureLane(settings.posture),
+      });
+
+      const generation = await recordGeneration(ctx.prisma, {
+        organizationId: ctx.organization.id,
+        userId: ctx.session.user.id,
+        feature: "risk_rationale",
+        entityType: "AISystem",
+        entityId: input.aiSystemId,
+        model: result?.model ?? null,
+        posture: settings.posture,
+        promptTokens: result?.usage?.promptTokens ?? null,
+        completionTokens: result?.usage?.completionTokens ?? null,
+        totalTokens: result?.usage?.totalTokens ?? null,
+        durationMs: result?.durationMs ?? null,
+        status: result ? "ok" : "error",
+      });
+
+      if (!result) {
+        throw new TRPCError({ code: "BAD_GATEWAY", message: "ai_failed" });
+      }
+
+      return {
+        generationId: generation.id,
+        model: result.model,
+        content: result.content,
+        screening,
+      };
     }),
 });

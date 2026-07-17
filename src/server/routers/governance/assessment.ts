@@ -5,6 +5,19 @@ import { z } from "zod";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { TRPCError } from "@trpc/server";
 import { checkAssessmentEntitlement, getEntitledAssessmentTypes } from "@/server/services/licensing/entitlement";
+import { chatComplete } from "../../services/ai/llm-door";
+import {
+  requireAi,
+  assertAiRateLimit,
+  recordGeneration,
+  markAccepted,
+  postureLane,
+} from "../../services/ai/posture";
+import { buildSystemContext, promptLocale } from "../../services/ai/context";
+import {
+  buildAssessmentDraftSystemPrompt,
+  buildAssessmentDraftUserPrompt,
+} from "../../services/ai/prompts/assessment-draft";
 
 export const assessmentRouter = createTRPCRouter({
   list: organizationProcedure
@@ -236,5 +249,102 @@ export const assessmentRouter = createTRPCRouter({
     .input(z.object({ organizationId: z.string() }))
     .query(async ({ ctx }) => {
       return getEntitledAssessmentTypes(ctx.organization.id);
+    }),
+
+  // Optional AI assist: draft ONE question's answer from the registry facts.
+  // Gated on the org's AI posture (off by default => PRECONDITION_FAILED
+  // before any prompt is built). The draft only ever lands in the editable
+  // response field via the user's explicit Insert — never written to the DB
+  // here; saving flows through the normal update/submit/approve workflow.
+  generateAiDraft: orgWriteProcedure
+    .input(
+      z.object({
+        organizationId: z.string(),
+        id: z.string(),
+        questionId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      // Posture gate FIRST — posture off/missing means zero AI calls and
+      // no prompt building at all.
+      const settings = await requireAi(ctx.prisma, ctx.organization.id);
+      await assertAiRateLimit(ctx.prisma, ctx.organization.id);
+
+      const assessment = await ctx.prisma.aIAssessment.findFirst({
+        where: { id: input.id, organizationId: ctx.organization.id },
+        include: { template: true },
+      });
+      if (!assessment) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Assessment not found" });
+      }
+
+      const sections = (assessment.template?.sections ?? []) as {
+        id: string;
+        title: string;
+        questions: { id: string; text: string; helpText?: string }[];
+      }[];
+      const section = sections.find((s) => s.questions?.some((q) => q.id === input.questionId));
+      const question = section?.questions.find((q) => q.id === input.questionId);
+      if (!section || !question) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Question not found in template" });
+      }
+
+      // Server-side context only (Prisma-derived, org-scoped).
+      const { context } = await buildSystemContext(
+        ctx.prisma,
+        ctx.organization.id,
+        assessment.aiSystemId,
+        ctx.organization.name
+      );
+
+      const responses = (assessment.responses ?? {}) as Record<string, string>;
+      const locale = promptLocale(ctx.getCookie("locale"));
+
+      // Route through the lane the organization acknowledged.
+      const result = await chatComplete({
+        system: buildAssessmentDraftSystemPrompt(assessment.type, locale),
+        user: buildAssessmentDraftUserPrompt({
+          context,
+          assessment: { title: assessment.title, type: assessment.type },
+          sectionTitle: section.title,
+          question: { text: question.text, helpText: question.helpText },
+          currentResponse: responses[input.questionId] ?? null,
+        }),
+        lane: postureLane(settings.posture),
+      });
+
+      const generation = await recordGeneration(ctx.prisma, {
+        organizationId: ctx.organization.id,
+        userId: ctx.session.user.id,
+        feature: "assessment_draft",
+        entityType: "AIAssessment",
+        entityId: assessment.id,
+        model: result?.model ?? null,
+        posture: settings.posture,
+        promptTokens: result?.usage?.promptTokens ?? null,
+        completionTokens: result?.usage?.completionTokens ?? null,
+        totalTokens: result?.usage?.totalTokens ?? null,
+        durationMs: result?.durationMs ?? null,
+        status: result ? "ok" : "error",
+      });
+
+      if (!result) {
+        throw new TRPCError({ code: "BAD_GATEWAY", message: "ai_failed" });
+      }
+
+      return {
+        generationId: generation.id,
+        model: result.model,
+        content: result.content,
+        questionId: input.questionId,
+      };
+    }),
+
+  // Audit: stamp acceptedAt when the user Inserts a draft (metadata only).
+  markAiAccepted: orgWriteProcedure
+    .input(z.object({ organizationId: z.string(), generationId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const accepted = await markAccepted(ctx.prisma, ctx.organization.id, input.generationId);
+      return { accepted };
     }),
 });

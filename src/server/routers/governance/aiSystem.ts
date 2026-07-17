@@ -4,6 +4,18 @@
 import { z } from "zod";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { TRPCError } from "@trpc/server";
+import { chatComplete } from "../../services/ai/llm-door";
+import {
+  requireAi,
+  assertAiRateLimit,
+  recordGeneration,
+  postureLane,
+} from "../../services/ai/posture";
+import { buildSystemContext, promptLocale } from "../../services/ai/context";
+import {
+  buildAnnexIvSystemPrompt,
+  buildAnnexIvUserPrompt,
+} from "../../services/ai/prompts/annex-iv";
 
 export const aiSystemRouter = createTRPCRouter({
   list: organizationProcedure
@@ -412,5 +424,62 @@ export const aiSystemRouter = createTRPCRouter({
       });
 
       return { success: true };
+    }),
+
+  // Optional AI assist: draft the Annex IV technical documentation as a
+  // sectioned markdown skeleton from registry facts. Gated on the org's AI
+  // posture (off by default => PRECONDITION_FAILED before any prompt is
+  // built). The draft is handed to the client for review/copy — never
+  // written to the DB here.
+  generateAnnexIv: orgWriteProcedure
+    .input(z.object({ organizationId: z.string(), id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      // Posture gate FIRST — posture off/missing means zero AI calls and
+      // no prompt building at all.
+      const settings = await requireAi(ctx.prisma, ctx.organization.id);
+      await assertAiRateLimit(ctx.prisma, ctx.organization.id);
+
+      // Server-side context only (Prisma-derived, org-scoped).
+      const { context } = await buildSystemContext(
+        ctx.prisma,
+        ctx.organization.id,
+        input.id,
+        ctx.organization.name
+      );
+      const locale = promptLocale(ctx.getCookie("locale"));
+
+      // Route through the lane the organization acknowledged. The Annex IV
+      // draft is a long, sectioned document — allow the full token ceiling.
+      const result = await chatComplete({
+        system: buildAnnexIvSystemPrompt(locale),
+        user: buildAnnexIvUserPrompt({ context }),
+        maxTokens: 4096,
+        lane: postureLane(settings.posture),
+      });
+
+      const generation = await recordGeneration(ctx.prisma, {
+        organizationId: ctx.organization.id,
+        userId: ctx.session.user.id,
+        feature: "annex_iv",
+        entityType: "AISystem",
+        entityId: input.id,
+        model: result?.model ?? null,
+        posture: settings.posture,
+        promptTokens: result?.usage?.promptTokens ?? null,
+        completionTokens: result?.usage?.completionTokens ?? null,
+        totalTokens: result?.usage?.totalTokens ?? null,
+        durationMs: result?.durationMs ?? null,
+        status: result ? "ok" : "error",
+      });
+
+      if (!result) {
+        throw new TRPCError({ code: "BAD_GATEWAY", message: "ai_failed" });
+      }
+
+      return {
+        generationId: generation.id,
+        model: result.model,
+        content: result.content,
+      };
     }),
 });

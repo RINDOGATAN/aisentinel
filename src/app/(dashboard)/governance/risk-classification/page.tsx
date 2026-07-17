@@ -37,6 +37,7 @@ import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
 import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
 import { formatDate } from "@/lib/utils";
+import { RiskScreeningPanel } from "@/components/ai/RiskScreeningPanel";
 
 const riskLevelColors: Record<string, string> = {
   UNACCEPTABLE: "bg-destructive text-destructive-foreground",
@@ -388,6 +389,19 @@ export default function RiskClassificationPage() {
                             }
                           />
                         </div>
+
+                        {/* Deterministic Annex III screening + optional AI-drafted
+                            rationale (grounded in the rule hits; Insert fills the
+                            editable rationale field — the user picks the level). */}
+                        <RiskScreeningPanel
+                          organizationId={organization?.id ?? ""}
+                          aiSystemId={system.id}
+                          chosenLevel={form.riskLevel}
+                          chosenCategory={form.annexIIICategory}
+                          onInsertRationale={(content) =>
+                            updateFormForSystem(system.id, { rationale: content })
+                          }
+                        />
 
                         <div className="flex justify-end gap-2">
                           <Button

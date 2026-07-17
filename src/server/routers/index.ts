@@ -20,6 +20,7 @@ import { expertsRouter } from "./governance/experts";
 import { billingRouter } from "./billing";
 import { feedbackRouter } from "./feedback";
 import { skillsRouter } from "./governance/skills";
+import { aiRouter } from "./governance/ai";
 
 export const appRouter = createTRPCRouter({
   organization: organizationRouter,
@@ -40,6 +41,7 @@ export const appRouter = createTRPCRouter({
   billing: billingRouter,
   feedback: feedbackRouter,
   skills: skillsRouter,
+  ai: aiRouter,
 });
 
 export type AppRouter = typeof appRouter;

@@ -44,3 +44,4 @@ next-env.d.ts
 
 # Internal dev context (like DPO Central) — kept locally, never shipped in the downloadable bundle
 /CLAUDE.md
+.env*.local

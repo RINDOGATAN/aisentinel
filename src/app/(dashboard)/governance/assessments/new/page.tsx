@@ -107,6 +107,15 @@ export default function NewAssessmentPage() {
             <CardTitle>{t("step2Title")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
+            {templates && templates.length === 0 && (
+              <p className="text-muted-foreground">
+                {t("step2Empty")}{" "}
+                <Link href="/governance/assessments/templates" className="text-primary hover:underline">
+                  {t("step2EmptyLink")}
+                </Link>
+                .
+              </p>
+            )}
             {(templates ?? []).map((template) => {
               const isEntitled = entitled.includes(template.type);
               return (

@@ -88,9 +88,16 @@ export default function AIRegistryPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const debouncedSearch = useDebounce(searchQuery);
-  const { organization, canWrite } = useOrganization();
+  const { organization, organizations, canWrite, isLoading: orgLoading } = useOrganization();
   const t = useTranslations("aiRegistry");
   const tc = useTranslations("common");
+
+  // While the organization context is still resolving, `canWrite` is false
+  // even for owners — don't hide the Register button on that transient state,
+  // show it disabled instead (UX B3: first-time empty state had no CTA).
+  // Covers both the query itself and the one-render gap before the selected
+  // org is restored from localStorage.
+  const orgResolving = orgLoading || (!organization && organizations.length > 0);
 
   const statusFilter = activeTab === "all" ? undefined : activeTab.toUpperCase() as "DRAFT" | "DEVELOPMENT" | "TESTING" | "DEPLOYED" | "RETIRED";
 
@@ -152,14 +159,22 @@ export default function AIRegistryPage() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          {canWrite && (
-            <Link href="/governance/ai-registry/new">
-              <Button className="w-full sm:w-auto">
-                <Plus className="w-4 h-4 sm:mr-2" />
-                <span className="hidden sm:inline">{t("registerAiSystem")}</span>
-                <span className="sm:hidden">Register</span>
-              </Button>
-            </Link>
+          {orgResolving ? (
+            <Button className="w-full sm:w-auto" disabled>
+              <Loader2 className="w-4 h-4 animate-spin sm:mr-2" />
+              <span className="hidden sm:inline">{t("registerAiSystem")}</span>
+              <span className="sm:hidden">Register</span>
+            </Button>
+          ) : (
+            canWrite && (
+              <Link href="/governance/ai-registry/new">
+                <Button className="w-full sm:w-auto">
+                  <Plus className="w-4 h-4 sm:mr-2" />
+                  <span className="hidden sm:inline">{t("registerAiSystem")}</span>
+                  <span className="sm:hidden">Register</span>
+                </Button>
+              </Link>
+            )
           )}
         </div>
       </div>
@@ -209,7 +224,7 @@ export default function AIRegistryPage() {
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="w-full justify-start overflow-x-auto">
           <TabsTrigger value="all" className="text-xs sm:text-sm">
-            All ({stats.total})
+            {tc("all")} ({stats.total})
           </TabsTrigger>
           <TabsTrigger value="draft" className="text-xs sm:text-sm">
             {tc("statusDraft")} ({stats.draft})
@@ -318,14 +333,22 @@ export default function AIRegistryPage() {
                     ? t("emptySearchHint")
                     : t("emptyDefaultHint")}
                 </p>
-                {!searchQuery && canWrite && (
-                  <Link href="/governance/ai-registry/new">
-                    <Button>
-                      <Plus className="w-4 h-4 mr-2" />
+                {!searchQuery &&
+                  (orgResolving ? (
+                    <Button disabled>
+                      <Loader2 className="w-4 h-4 animate-spin mr-2" />
                       {t("registerAiSystem")}
                     </Button>
-                  </Link>
-                )}
+                  ) : (
+                    canWrite && (
+                      <Link href="/governance/ai-registry/new">
+                        <Button>
+                          <Plus className="w-4 h-4 mr-2" />
+                          {t("registerAiSystem")}
+                        </Button>
+                      </Link>
+                    )
+                  ))}
               </CardContent>
             </Card>
           )}

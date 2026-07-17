@@ -330,8 +330,7 @@ export default function QuickstartPage() {
       {step === "choose" && (
         <div className="space-y-4">
           <p className="text-muted-foreground">
-            Choose how you want to bootstrap your AI governance program. You can
-            use both options together.
+            {t("choosePathDescription")}
           </p>
 
           <div className="grid gap-4 sm:grid-cols-2">
@@ -368,9 +367,9 @@ export default function QuickstartPage() {
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
-                  <Badge variant="secondary">AI Systems</Badge>
-                  <Badge variant="secondary">Risk Classifications</Badge>
-                  <Badge variant="secondary">Oversight Gates</Badge>
+                  <Badge variant="secondary">{t("chipAiSystems")}</Badge>
+                  <Badge variant="secondary">{t("chipRiskClassifications")}</Badge>
+                  <Badge variant="secondary">{t("chipOversightGates")}</Badge>
                 </div>
               </CardContent>
             </Card>
@@ -408,10 +407,10 @@ export default function QuickstartPage() {
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
-                  <Badge variant="secondary">AI Systems</Badge>
-                  <Badge variant="secondary">Risk Classifications</Badge>
-                  <Badge variant="secondary">Oversight Gates</Badge>
-                  <Badge variant="secondary">Policies</Badge>
+                  <Badge variant="secondary">{t("chipAiSystems")}</Badge>
+                  <Badge variant="secondary">{t("chipRiskClassifications")}</Badge>
+                  <Badge variant="secondary">{t("chipOversightGates")}</Badge>
+                  <Badge variant="secondary">{t("chipPolicies")}</Badge>
                 </div>
               </CardContent>
             </Card>

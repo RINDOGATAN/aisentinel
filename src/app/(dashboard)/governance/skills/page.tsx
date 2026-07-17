@@ -72,6 +72,15 @@ export default function SkillsPage() {
 
   const packages = list.data ?? [];
 
+  // Show the licence-upload form only when at least one listed skill could
+  // actually accept a licence. On self-hosted builds (allSkillsFree) every
+  // package is included/active, so the form is a dead end — replace it with
+  // a quiet one-liner. While the list is still loading (cloud posture) keep
+  // the form, matching the previous behaviour.
+  const licensingPossible =
+    !features.allSkillsFree &&
+    (!list.data || list.data.some((pkg) => !pkg.entitlement?.isActive));
+
   return (
     <div className="mx-auto w-full max-w-3xl">
       <header className="mb-8">
@@ -79,8 +88,12 @@ export default function SkillsPage() {
         <p className="mt-2 max-w-prose text-sm text-muted-foreground">{t("subtitle")}</p>
       </header>
 
+      {canActivate && !licensingPossible && (
+        <p className="text-sm text-muted-foreground">{t("nothingToLicense")}</p>
+      )}
+
       {/* Activate with a licence file (server enforces OWNER/ADMIN too) */}
-      {canActivate && (
+      {canActivate && licensingPossible && (
         <Card className="p-6">
           <div className="mb-1 flex items-center gap-2">
             <KeyRound className="h-4 w-4 text-primary" />

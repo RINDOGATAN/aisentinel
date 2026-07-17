@@ -8,6 +8,7 @@
     "edit": "Edit",
     "back": "Back",
     "loadMore": "Load More",
+    "all": "All",
     "continue": "Continue",
     "yes": "Yes",
     "no": "No",
@@ -146,7 +147,13 @@
     "privacy": "Privacy",
     "docs": "Docs",
     "security": "Security",
-    "sourceCode": "Source code (AGPL-3.0)"
+    "sourceCode": "Source code (AGPL-3.0)",
+    "footerService": "{app} is a <link>{company}</link> service.",
+    "roleOwner": "Owner",
+    "roleAdmin": "Admin",
+    "roleAiOfficer": "AI Officer",
+    "roleMember": "Member",
+    "roleViewer": "Viewer"
   },
   "dashboard": {
     "title": "AI Governance",
@@ -401,7 +408,12 @@
     "building": "Building...",
     "buildAiGovernanceProgram": "Build AI Governance Program",
     "successTitle": "AI Governance Program Created!",
-    "successDescription": "Your AI governance program has been bootstrapped. You can now explore and customize each module."
+    "successDescription": "Your AI governance program has been bootstrapped. You can now explore and customize each module.",
+    "choosePathDescription": "Choose how you want to bootstrap your AI governance program. You can use both options together.",
+    "chipAiSystems": "AI Systems",
+    "chipRiskClassifications": "Risk Classifications",
+    "chipOversightGates": "Oversight Gates",
+    "chipPolicies": "Policies"
   },
   "assessments": {
     "title": "Assessments",
@@ -972,6 +984,18 @@
     "expires": "Expires {date}",
     "perpetual": "Perpetual licence",
     "activations": "{used} of {max} activations used",
-    "perMonth": "/mo"
+    "perMonth": "/mo",
+    "nothingToLicense": "Nothing needs a licence right now."
+  },
+  "signIn": {
+    "localTitle": "Local sign-in",
+    "localBody": "Your account lives on this computer. Enter your email to open it — nothing is sent anywhere.",
+    "emailPlaceholder": "you@yourfirm.com",
+    "signInButton": "Sign in",
+    "signingIn": "Signing in...",
+    "passphraseLabel": "Workspace passphrase",
+    "passphraseHelp": "Set when the suite was installed. Recover it on the computer that runs the suite: ./suite.sh passphrase",
+    "wrongPassphrase": "Wrong passphrase — check ./suite.sh passphrase on the host computer.",
+    "localSignInFailed": "Local sign-in failed."
   }
 }

@@ -5,18 +5,24 @@
 import { useState, useEffect } from "react";
 import { signIn, getProviders, getCsrfToken } from "next-auth/react";
 import { Mail, ArrowRight, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { features } from "@/config/features";
 import { brand } from "@/config/brand";
 
 // Local (passwordless credentials) login: dev mode, or sovereign/self-hosted
-// builds with NEXT_PUBLIC_LOCAL_AUTH_ENABLED=true.
+// builds with NEXT_PUBLIC_LOCAL_AUTH_ENABLED=true. The NextAuth provider id
+// stays "dev-credentials" — auth flows reference it — even though the UI now
+// presents it as the plain local sign-in.
 const isDev = features.devAuthEnabled;
 
 export default function SignInPage() {
+  const t = useTranslations("signIn");
   const [email, setEmail] = useState("");
-  const [devEmail, setDevEmail] = useState("demo@aisentinel.example");
+  const [devEmail, setDevEmail] = useState("");
+  const [passphrase, setPassphrase] = useState("");
+  const [passphraseRequired, setPassphraseRequired] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [isDevLoading, setIsDevLoading] = useState(false);
@@ -27,7 +33,14 @@ export default function SignInPage() {
 
   useEffect(() => {
     getProviders().then((p) => setProviders(p));
-    getCsrfToken().then((t) => setCsrfToken(t ?? undefined));
+    getCsrfToken().then((token) => setCsrfToken(token ?? undefined));
+    // Runtime (never baked) flag: does the local sign-in need the workspace
+    // passphrase? Failure to fetch degrades to "not required" — the server
+    // still enforces it either way.
+    fetch("/api/self-host/auth-config")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => setPassphraseRequired(!!d?.passphraseRequired))
+      .catch(() => {});
   }, []);
 
   const hasEmail = !!providers?.email;
@@ -68,12 +81,22 @@ export default function SignInPage() {
     setError(null);
 
     try {
-      await signIn("dev-credentials", {
+      const result = await signIn("dev-credentials", {
         email: devEmail,
+        passphrase,
+        redirect: false,
         callbackUrl: "/governance",
       });
+      if (result?.error) {
+        // CredentialsSignin is the only failure the provider produces; when a
+        // passphrase is required, a wrong/missing one is by far the likeliest cause.
+        setError(passphraseRequired ? t("wrongPassphrase") : t("localSignInFailed"));
+        setIsDevLoading(false);
+      } else {
+        window.location.href = result?.url ?? "/governance";
+      }
     } catch {
-      setError("Dev sign-in failed.");
+      setError(t("localSignInFailed"));
       setIsDevLoading(false);
     }
   };
@@ -110,17 +133,35 @@ export default function SignInPage() {
         </div>
 
         {isDev && (
-          <div className="mb-6 p-4 border-2 border-primary bg-primary/5">
-            <p className="text-xs text-primary font-semibold mb-3">Development Mode</p>
+          <div className="mb-6 p-4 border border-border bg-secondary/30">
+            <p className="text-sm font-semibold mb-1">{t("localTitle")}</p>
+            <p className="text-xs text-muted-foreground mb-3">{t("localBody")}</p>
             <form onSubmit={handleDevSignIn} className="space-y-3">
               <Input
                 type="email"
                 value={devEmail}
                 onChange={(e) => setDevEmail(e.target.value)}
-                placeholder="dev@example.com"
+                placeholder={t("emailPlaceholder")}
                 className="input-brutal"
                 required
               />
+              {passphraseRequired && (
+                <div className="space-y-1">
+                  <Label htmlFor="workspace-passphrase" className="text-xs">
+                    {t("passphraseLabel")}
+                  </Label>
+                  <Input
+                    id="workspace-passphrase"
+                    type="password"
+                    value={passphrase}
+                    onChange={(e) => setPassphrase(e.target.value)}
+                    className="input-brutal"
+                    autoComplete="current-password"
+                    required
+                  />
+                  <p className="text-xs text-muted-foreground">{t("passphraseHelp")}</p>
+                </div>
+              )}
               <button
                 type="submit"
                 disabled={isDevLoading}
@@ -129,10 +170,10 @@ export default function SignInPage() {
                 {isDevLoading ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    Signing in...
+                    {t("signingIn")}
                   </>
                 ) : (
-                  "Dev Sign In (Instant)"
+                  t("signInButton")
                 )}
               </button>
             </form>

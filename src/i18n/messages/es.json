@@ -8,6 +8,7 @@
     "edit": "Editar",
     "back": "Volver",
     "loadMore": "Cargar m\u00e1s",
+    "all": "Todos",
     "continue": "Continuar",
     "yes": "S\u00ed",
     "no": "No",
@@ -146,7 +147,13 @@
     "privacy": "Privacidad",
     "docs": "Documentaci\u00f3n",
     "security": "Seguridad",
-    "sourceCode": "Código fuente (AGPL-3.0)"
+    "sourceCode": "Código fuente (AGPL-3.0)",
+    "footerService": "{app} es un servicio de <link>{company}</link>.",
+    "roleOwner": "Propietario",
+    "roleAdmin": "Administrador",
+    "roleAiOfficer": "Responsable de IA",
+    "roleMember": "Miembro",
+    "roleViewer": "Lector"
   },
   "dashboard": {
     "title": "Gobernanza de IA",
@@ -401,7 +408,12 @@
     "building": "Creando...",
     "buildAiGovernanceProgram": "Crear Programa de Gobernanza de IA",
     "successTitle": "\u00a1Programa de Gobernanza de IA Creado!",
-    "successDescription": "Su programa de gobernanza de IA ha sido configurado. Ahora puede explorar y personalizar cada m\u00f3dulo."
+    "successDescription": "Su programa de gobernanza de IA ha sido configurado. Ahora puede explorar y personalizar cada m\u00f3dulo.",
+    "choosePathDescription": "Elija c\u00f3mo quiere poner en marcha su programa de gobernanza de IA. Puede usar ambas opciones a la vez.",
+    "chipAiSystems": "Sistemas de IA",
+    "chipRiskClassifications": "Clasificaciones de riesgo",
+    "chipOversightGates": "Controles de supervisi\u00f3n",
+    "chipPolicies": "Pol\u00edticas"
   },
   "assessments": {
     "title": "Evaluaciones",
@@ -952,13 +964,13 @@
   },
   "skills": {
     "title": "Skills",
-    "subtitle": "Skills premium compradas en TODO.LAW. Suba el archivo de licencia de su correo de confirmaci\u00f3n para activarlas en esta organizaci\u00f3n: se verifica localmente, sin conexi\u00f3n.",
+    "subtitle": "Skills premium compradas en TODO.LAW. Sube el archivo de licencia de tu correo de confirmaci\u00f3n para activarlas en esta organizaci\u00f3n: se verifica localmente, sin conexi\u00f3n.",
     "activateTitle": "Activar con un archivo de licencia",
-    "activateHint": "Elija el archivo .license.json que recibi\u00f3 tras la compra. Solo los propietarios y administradores de la organizaci\u00f3n pueden activar.",
+    "activateHint": "Elige el archivo .license.json que recibiste tras la compra. Solo los propietarios y administradores de la organizaci\u00f3n pueden activar.",
     "chooseFile": "Elegir archivo de licencia",
     "activate": "Activar skill",
     "activating": "Activando...",
-    "badFile": "Ese archivo no es una licencia v\u00e1lida. Use el .license.json de su correo de compra.",
+    "badFile": "Ese archivo no es una licencia v\u00e1lida. Usa el .license.json de tu correo de compra.",
     "activated": "{name} activada.",
     "packagesTitle": "Skills disponibles",
     "packagesNone": "No hay paquetes de skills instalados.",
@@ -972,6 +984,18 @@
     "expires": "Caduca el {date}",
     "perpetual": "Licencia perpetua",
     "activations": "{used} de {max} activaciones usadas",
-    "perMonth": "/mes"
+    "perMonth": "/mes",
+    "nothingToLicense": "Ahora mismo nada necesita licencia."
+  },
+  "signIn": {
+    "localTitle": "Acceso local",
+    "localBody": "Tu cuenta vive en este ordenador. Introduce tu correo para abrirla: no se envía nada fuera.",
+    "emailPlaceholder": "tu@tudespacho.com",
+    "signInButton": "Iniciar sesión",
+    "signingIn": "Iniciando sesión...",
+    "passphraseLabel": "Contraseña del espacio de trabajo",
+    "passphraseHelp": "Se estableció al instalar la suite. Recupérala en el ordenador que ejecuta la suite: ./suite.sh passphrase",
+    "wrongPassphrase": "Contraseña incorrecta: comprueba ./suite.sh passphrase en el ordenador que ejecuta la suite.",
+    "localSignInFailed": "No se ha podido iniciar sesión."
   }
 }

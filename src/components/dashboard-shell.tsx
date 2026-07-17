@@ -334,7 +334,17 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                     ? "bg-muted text-muted-foreground"
                     : "bg-primary/10 text-primary"
                 }`}>
-                  {userRole === "AI_OFFICER" ? "AI Officer" : userRole.charAt(0) + userRole.slice(1).toLowerCase()}
+                  {t(
+                    (
+                      {
+                        OWNER: "roleOwner",
+                        ADMIN: "roleAdmin",
+                        AI_OFFICER: "roleAiOfficer",
+                        MEMBER: "roleMember",
+                        VIEWER: "roleViewer",
+                      } as const
+                    )[userRole]
+                  )}
                 </span>
               )}
             </div>
@@ -360,7 +370,17 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
 
       <footer className="border-t border-border mt-auto py-4">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 text-center text-xs text-muted-foreground space-y-2">
-          <p>{brand.name} is a <a href={brand.companyWebsite} target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">{brand.companyName}</a> service.</p>
+          <p>
+            {t.rich("footerService", {
+              app: brand.name,
+              company: brand.companyName,
+              link: (chunks) => (
+                <a href={brand.companyWebsite} target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">
+                  {chunks}
+                </a>
+              ),
+            })}
+          </p>
           <div className="flex items-center justify-center gap-1">
             <a href={brand.termsOfUseUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors">
               <Scale className="w-3.5 h-3.5" />

@@ -69,6 +69,21 @@ export const shadowAiRouter = createTRPCRouter({
       return { items, nextCursor };
     }),
 
+  // Distinct tool-catalog categories, for the browse-by-category filter.
+  listToolCategories: organizationProcedure
+    .input(z.object({ organizationId: z.string() }))
+    .query(async ({ ctx }) => {
+      await assertShadowAiAccess(ctx.organization.id);
+
+      const groups = await ctx.prisma.shadowAITool.groupBy({
+        by: ["category"],
+        _count: { category: true },
+        orderBy: { category: "asc" },
+      });
+
+      return groups.map((g) => ({ category: g.category, count: g._count.category }));
+    }),
+
   listReports: organizationProcedure
     .input(
       z.object({

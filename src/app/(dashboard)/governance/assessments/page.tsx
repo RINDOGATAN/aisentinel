@@ -16,6 +16,7 @@ import {
   Loader2,
   Lock,
   ClipboardCheck,
+  ClipboardList,
   Download,
 } from "lucide-react";
 import { keepPreviousData } from "@tanstack/react-query";
@@ -135,6 +136,12 @@ export default function AssessmentsPage() {
             <Download className="w-4 h-4 sm:mr-2" />
             <span className="hidden sm:inline">{tc("export")}</span>
           </Button>
+          <Link href="/governance/assessments/templates">
+            <Button variant="outline" className="w-full sm:w-auto">
+              <ClipboardList className="w-4 h-4 sm:mr-2" />
+              <span className="hidden sm:inline">{t("templatesButton")}</span>
+            </Button>
+          </Link>
           {canWrite && (
             <Link href="/governance/assessments/new">
               <Button className="w-full sm:w-auto">

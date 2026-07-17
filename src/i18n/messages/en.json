@@ -432,7 +432,8 @@
     "typeConformity": "Conformity",
     "typeAiRisk": "AI Risk",
     "typeBiasFairness": "Bias & Fairness",
-    "typeCustom": "Custom"
+    "typeCustom": "Custom",
+    "templatesButton": "Templates"
   },
   "assessmentsNew": {
     "title": "New Assessment",
@@ -445,7 +446,9 @@
     "titleLabel": "Title",
     "titlePlaceholder": "Assessment title",
     "creating": "Creating...",
-    "createButton": "Create Assessment"
+    "createButton": "Create Assessment",
+    "step2Empty": "No assessment templates are available yet — create or clone one on the",
+    "step2EmptyLink": "templates page"
   },
   "assessmentDetail": {
     "notFound": "Assessment not found.",
@@ -555,7 +558,9 @@
     "urlPlaceholder": "https://...",
     "descriptionLabel": "Description (optional)",
     "descriptionPlaceholder": "Additional details about this evidence...",
-    "notesPlaceholder": "Notes..."
+    "notesPlaceholder": "Notes...",
+    "noSystemsPrompt": "No AI systems registered yet — compliance tracking starts with a registered system.",
+    "noSystemsLink": "Register an AI system"
   },
   "incidents": {
     "title": "AI Incidents",
@@ -746,7 +751,14 @@
     "labelAssessmentTitle": "Title",
     "placeholderAssessmentTitle": "e.g., Annual Vendor Risk Review 2026",
     "labelFindings": "Findings",
-    "createAssessment": "Create Assessment"
+    "createAssessment": "Create Assessment",
+    "linkSystemButton": "Link system",
+    "linkSystemTitle": "Link an AI system",
+    "linkSystemDescription": "Select a registered AI system to link to this vendor.",
+    "linkSystemEmpty": "Every registered system is already linked, or none exist yet.",
+    "linkSystemEmptyLink": "Register an AI system",
+    "systemLinked": "System linked to this vendor",
+    "emptySystemsHint": "AI systems using this vendor will appear here."
   },
   "policies": {
     "title": "Policies",
@@ -854,7 +866,8 @@
     "reporting": "Reporting...",
     "submitReportTool": "Report Tool",
     "toastSuccess": "AI tool reported successfully",
-    "toastError": "Failed to report AI tool"
+    "toastError": "Failed to report AI tool",
+    "allCategories": "All categories"
   },
   "shadowAiDetail": {
     "notFound": "Report not found",
@@ -1014,5 +1027,42 @@
     "passphraseHelp": "Set when the suite was installed. Recover it on the computer that runs the suite: ./suite.sh passphrase",
     "wrongPassphrase": "Wrong passphrase — check ./suite.sh passphrase on the host computer.",
     "localSignInFailed": "Local sign-in failed."
+  },
+  "assessmentTemplates": {
+    "title": "Assessment Templates",
+    "subtitle": "Manage the questionnaires your assessments are built from",
+    "createButton": "Create template",
+    "searchPlaceholder": "Search templates...",
+    "systemTab": "System templates ({count})",
+    "customTab": "Custom templates ({count})",
+    "systemBadge": "System",
+    "sectionCount": "{count} sections",
+    "clone": "Clone",
+    "use": "Use",
+    "cloned": "Template cloned",
+    "created": "Template created",
+    "cloneTitle": "Clone template",
+    "cloneDescription": "Creates an editable copy of “{name}” owned by your organization.",
+    "cloneDefaultName": "{name} (Copy)",
+    "nameLabel": "Name",
+    "namePlaceholder": "e.g. FRIA for customer-facing systems",
+    "typeLabel": "Assessment type",
+    "descriptionLabel": "Description",
+    "sectionTitleLabel": "Section title",
+    "sectionTitlePlaceholder": "e.g. System description",
+    "questionsLabel": "Questions",
+    "questionsPlaceholder": "Describe the AI system and its intended purpose.\nWho are the affected persons?\nWhat data does the system process?",
+    "questionsHint": "One question per line. You can clone a system template instead for a full questionnaire.",
+    "createTitle": "Create template",
+    "createDescription": "A simple starter: one section with your questions. Clone a system template for the full multi-section questionnaires.",
+    "systemEmpty": "No system templates installed.",
+    "systemEmptyHint": "An administrator can install the standard EU AI Act questionnaires by running the template seed (db:seed-templates), or create a custom template.",
+    "customEmpty": "No custom templates yet.",
+    "customEmptyHint": "Clone a system template or create your own.",
+    "typeFria": "Fundamental Rights Impact Assessment (FRIA)",
+    "typeConformity": "Conformity Assessment",
+    "typeAiRisk": "AI Risk Assessment",
+    "typeBiasFairness": "Bias & Fairness Assessment",
+    "typeCustom": "Custom Assessment"
   }
 }

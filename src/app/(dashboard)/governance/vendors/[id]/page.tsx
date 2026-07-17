@@ -15,6 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogFooter,
@@ -91,12 +92,29 @@ export default function VendorDetailPage() {
   const tc = useTranslations("common");
   const params = useParams();
   const id = params.id as string;
-  const { organization } = useOrganization();
+  const { organization, canWrite } = useOrganization();
   const [assessmentDialogOpen, setAssessmentDialogOpen] = useState(false);
   const [assessmentForm, setAssessmentForm] = useState({ title: "", findings: "" });
   const [isCreatingAssessment, setIsCreatingAssessment] = useState(false);
+  const [linkSystemOpen, setLinkSystemOpen] = useState(false);
 
   const utils = trpc.useUtils();
+
+  // Systems available to link (loaded when the dialog opens; already-linked
+  // systems are filtered out client-side below).
+  const { data: allSystems } = trpc.aiSystem.list.useQuery(
+    { organizationId: organization?.id ?? "", limit: 50 },
+    { enabled: linkSystemOpen && !!organization?.id }
+  );
+
+  const linkSystem = trpc.aiSystem.update.useMutation({
+    onSuccess: () => {
+      toast.success(t("systemLinked"));
+      utils.vendor.getById.invalidate();
+      setLinkSystemOpen(false);
+    },
+    onError: (e) => toast.error(e.message),
+  });
 
   const { data: vendor, isLoading } = trpc.vendor.getById.useQuery(
     { organizationId: organization?.id ?? "", id },
@@ -387,10 +405,20 @@ export default function VendorDetailPage() {
         <TabsContent value="systems" className="mt-4">
           <Card>
             <CardHeader>
-              <CardTitle>{t("linkedSystemsTitle")}</CardTitle>
-              <CardDescription>
-                {t("linkedSystemsDescription")}
-              </CardDescription>
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <CardTitle>{t("linkedSystemsTitle")}</CardTitle>
+                  <CardDescription>
+                    {t("linkedSystemsDescription")}
+                  </CardDescription>
+                </div>
+                {canWrite && (
+                  <Button variant="outline" size="sm" onClick={() => setLinkSystemOpen(true)}>
+                    <Plus className="w-4 h-4 mr-2" />
+                    {t("linkSystemButton")}
+                  </Button>
+                )}
+              </div>
             </CardHeader>
             <CardContent>
               {vendor.systems && vendor.systems.length > 0 ? (
@@ -426,13 +454,75 @@ export default function VendorDetailPage() {
                 <div className="text-center py-8 text-muted-foreground">
                   <Cpu className="w-12 h-12 mx-auto mb-4 opacity-50" />
                   <p>{t("emptySystemsTitle")}</p>
-                  <p className="text-sm">
-                    AI systems using this vendor will appear here
-                  </p>
+                  <p className="text-sm">{t("emptySystemsHint")}</p>
+                  {canWrite && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="mt-4"
+                      onClick={() => setLinkSystemOpen(true)}
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      {t("linkSystemButton")}
+                    </Button>
+                  )}
                 </div>
               )}
             </CardContent>
           </Card>
+
+          {/* Link-system dialog: sets AISystem.vendorId via aiSystem.update */}
+          <Dialog open={linkSystemOpen} onOpenChange={setLinkSystemOpen}>
+            <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>{t("linkSystemTitle")}</DialogTitle>
+                <DialogDescription>{t("linkSystemDescription")}</DialogDescription>
+              </DialogHeader>
+              <div className="space-y-2">
+                {(() => {
+                  const linkedIds = new Set((vendor.systems ?? []).map((s) => s.id));
+                  const candidates = (allSystems?.items ?? []).filter((s) => !linkedIds.has(s.id));
+                  if (candidates.length === 0) {
+                    return (
+                      <p className="text-sm text-muted-foreground py-4 text-center">
+                        {t("linkSystemEmpty")}{" "}
+                        <Link href="/governance/ai-registry/new" className="text-primary hover:underline">
+                          {t("linkSystemEmptyLink")}
+                        </Link>
+                      </p>
+                    );
+                  }
+                  return candidates.map((system) => (
+                    <button
+                      key={system.id}
+                      disabled={linkSystem.isPending}
+                      onClick={() =>
+                        linkSystem.mutate({
+                          organizationId: organization?.id ?? "",
+                          id: system.id,
+                          vendorId: vendor.id,
+                        })
+                      }
+                      className="w-full text-left p-3 rounded-lg border border-border hover:border-primary/50 transition-colors disabled:opacity-50"
+                    >
+                      <div className="flex items-center gap-3">
+                        <Cpu className="w-4 h-4 text-primary shrink-0" />
+                        <div className="min-w-0">
+                          <p className="font-medium text-sm truncate">{system.name}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {system.status} · {system.technique.replace(/_/g, " ")}
+                          </p>
+                        </div>
+                        {linkSystem.isPending && (
+                          <Loader2 className="w-4 h-4 animate-spin ml-auto shrink-0" />
+                        )}
+                      </div>
+                    </button>
+                  ));
+                })()}
+              </div>
+            </DialogContent>
+          </Dialog>
         </TabsContent>
 
         {/* Assessments Tab */}

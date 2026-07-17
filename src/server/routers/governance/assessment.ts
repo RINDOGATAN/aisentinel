@@ -347,4 +347,111 @@ export const assessmentRouter = createTRPCRouter({
       const accepted = await markAccepted(ctx.prisma, ctx.organization.id, input.generationId);
       return { accepted };
     }),
+
+  // Create a custom org template (DPO Central parity: createTemplate).
+  // Templates are the questionnaire STRUCTURE only — entitlements gate
+  // assessment creation per type, not template authoring.
+  createTemplate: orgWriteProcedure
+    .input(
+      z.object({
+        organizationId: z.string(),
+        name: z.string().min(1),
+        type: z.enum(["FRIA", "CONFORMITY", "AI_RISK", "BIAS_FAIRNESS", "CUSTOM"]),
+        description: z.string().optional(),
+        sections: z
+          .array(
+            z.object({
+              id: z.string().min(1),
+              title: z.string().min(1),
+              questions: z
+                .array(
+                  z.object({
+                    id: z.string().min(1),
+                    text: z.string().min(1),
+                    type: z.enum(["textarea", "select"]).default("textarea"),
+                    required: z.boolean().default(true),
+                    helpText: z.string().optional(),
+                    options: z.array(z.string()).optional(),
+                  })
+                )
+                .min(1),
+            })
+          )
+          .min(1),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const template = await ctx.prisma.aIAssessmentTemplate.create({
+        data: {
+          organizationId: ctx.organization.id,
+          name: input.name,
+          type: input.type,
+          description: input.description,
+          sections: input.sections,
+          isSystem: false,
+        },
+      });
+
+      await ctx.prisma.auditLog.create({
+        data: {
+          organizationId: ctx.organization.id,
+          userId: ctx.session.user.id,
+          entityType: "AIAssessmentTemplate",
+          entityId: template.id,
+          action: "CREATE",
+          changes: { name: input.name, type: input.type },
+        },
+      });
+
+      return template;
+    }),
+
+  // Clone a system template (or one of the org's own) into an editable
+  // org-owned copy (DPO Central parity: cloneTemplate).
+  cloneTemplate: orgWriteProcedure
+    .input(
+      z.object({
+        organizationId: z.string(),
+        templateId: z.string(),
+        name: z.string().min(1),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      // Only system templates or templates from the caller's own org.
+      const source = await ctx.prisma.aIAssessmentTemplate.findFirst({
+        where: {
+          id: input.templateId,
+          OR: [{ isSystem: true }, { organizationId: ctx.organization.id }],
+        },
+      });
+
+      if (!source) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Template not found" });
+      }
+
+      const template = await ctx.prisma.aIAssessmentTemplate.create({
+        data: {
+          organizationId: ctx.organization.id,
+          name: input.name,
+          type: source.type,
+          description: source.description,
+          sections: source.sections as never,
+          frameworkRef: source.frameworkRef,
+          isSystem: false,
+        },
+      });
+
+      await ctx.prisma.auditLog.create({
+        data: {
+          organizationId: ctx.organization.id,
+          userId: ctx.session.user.id,
+          entityType: "AIAssessmentTemplate",
+          entityId: template.id,
+          action: "CREATE",
+          changes: { name: input.name, clonedFrom: source.id },
+        },
+      });
+
+      return template;
+    }),
 });

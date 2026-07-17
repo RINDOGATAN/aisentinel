@@ -937,7 +937,7 @@
     "accountTypeTitle": "Account Type",
     "accountTypeDescription": "Set during registration. Contact support if you need to change this.",
     "personaBusinessUser": "Business User",
-    "personaConsultant": "AI Governance Consultant"
+    "personaConsultant": "AI Governance Professional"
   },
   "clients": {
     "title": "My Clients",
@@ -946,7 +946,24 @@
     "statsHighRiskSystems": "High-Risk Systems",
     "statsNeedAttention": "Need Attention",
     "emptyTitle": "No client organizations yet",
-    "emptyHint": "Organizations you're a member of will appear here"
+    "emptyHint": "Organizations you're a member of will appear here",
+    "managedCount": "{count, plural, one {# organization you manage} other {# organizations you manage}}",
+    "addOrganization": "Add organization",
+    "addOrgTitle": "Add a managed organization",
+    "addOrgDescription": "Creates a new organization with you as its owner. You can switch between your organizations from this page.",
+    "orgNameLabel": "Organization name",
+    "orgNamePlaceholder": "e.g. Acme Industries",
+    "orgSlugLabel": "URL identifier",
+    "orgSlugHint": "Lowercase letters, numbers and hyphens.",
+    "orgDomainLabel": "Email domain (optional)",
+    "orgDomainPlaceholder": "acme.com",
+    "orgCreated": "Organization created — opening its quickstart",
+    "cardAssessments": "{count} assessments",
+    "cardIncidents": "{count} incidents",
+    "cardHighRisk": "{count} high-risk",
+    "cardVendors": "{count} vendors",
+    "lastActivity": "Last activity: {when}",
+    "noActivity": "No activity"
   },
   "experts": {
     "title": "Find an AI Governance Expert",

@@ -937,7 +937,7 @@
     "accountTypeTitle": "Tipo de Cuenta",
     "accountTypeDescription": "Establecido durante el registro. Contacte con soporte si necesita cambiarlo.",
     "personaBusinessUser": "Usuario Empresarial",
-    "personaConsultant": "Consultor de Gobernanza de IA"
+    "personaConsultant": "Profesional de Gobernanza de IA"
   },
   "clients": {
     "title": "Mis Clientes",
@@ -946,7 +946,24 @@
     "statsHighRiskSystems": "Sistemas de Alto Riesgo",
     "statsNeedAttention": "Requieren Atención",
     "emptyTitle": "Aún no hay organizaciones cliente",
-    "emptyHint": "Las organizaciones de las que sea miembro aparecerán aquí"
+    "emptyHint": "Las organizaciones de las que sea miembro aparecerán aquí",
+    "managedCount": "{count, plural, one {# organización gestionada} other {# organizaciones gestionadas}}",
+    "addOrganization": "Añadir organización",
+    "addOrgTitle": "Añadir una organización gestionada",
+    "addOrgDescription": "Crea una nueva organización de la que serás propietario. Puedes cambiar entre tus organizaciones desde esta página.",
+    "orgNameLabel": "Nombre de la organización",
+    "orgNamePlaceholder": "p. ej. Industrias Acme",
+    "orgSlugLabel": "Identificador de URL",
+    "orgSlugHint": "Minúsculas, números y guiones.",
+    "orgDomainLabel": "Dominio de correo (opcional)",
+    "orgDomainPlaceholder": "acme.com",
+    "orgCreated": "Organización creada — abriendo su asistente inicial",
+    "cardAssessments": "{count} evaluaciones",
+    "cardIncidents": "{count} incidentes",
+    "cardHighRisk": "{count} de alto riesgo",
+    "cardVendors": "{count} proveedores",
+    "lastActivity": "Última actividad: {when}",
+    "noActivity": "Sin actividad"
   },
   "experts": {
     "title": "Buscar un Experto en Gobernanza de IA",

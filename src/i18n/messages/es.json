@@ -432,7 +432,8 @@
     "typeConformity": "Conformidad",
     "typeAiRisk": "Riesgo de IA",
     "typeBiasFairness": "Sesgo y Equidad",
-    "typeCustom": "Personalizada"
+    "typeCustom": "Personalizada",
+    "templatesButton": "Plantillas"
   },
   "assessmentsNew": {
     "title": "Nueva Evaluación",
@@ -445,7 +446,9 @@
     "titleLabel": "Título",
     "titlePlaceholder": "Título de la evaluación",
     "creating": "Creando...",
-    "createButton": "Crear Evaluación"
+    "createButton": "Crear Evaluación",
+    "step2Empty": "Todavía no hay plantillas de evaluación disponibles — crea o clona una en la",
+    "step2EmptyLink": "página de plantillas"
   },
   "assessmentDetail": {
     "notFound": "Evaluación no encontrada.",
@@ -1007,5 +1010,42 @@
     "passphraseHelp": "Se estableció al instalar la suite. Recupérala en el ordenador que ejecuta la suite: ./suite.sh passphrase",
     "wrongPassphrase": "Contraseña incorrecta: comprueba ./suite.sh passphrase en el ordenador que ejecuta la suite.",
     "localSignInFailed": "No se ha podido iniciar sesión."
+  },
+  "assessmentTemplates": {
+    "title": "Plantillas de evaluación",
+    "subtitle": "Gestiona los cuestionarios sobre los que se construyen las evaluaciones",
+    "createButton": "Crear plantilla",
+    "searchPlaceholder": "Buscar plantillas...",
+    "systemTab": "Plantillas del sistema ({count})",
+    "customTab": "Plantillas propias ({count})",
+    "systemBadge": "Sistema",
+    "sectionCount": "{count} secciones",
+    "clone": "Clonar",
+    "use": "Usar",
+    "cloned": "Plantilla clonada",
+    "created": "Plantilla creada",
+    "cloneTitle": "Clonar plantilla",
+    "cloneDescription": "Crea una copia editable de «{name}» propiedad de tu organización.",
+    "cloneDefaultName": "{name} (copia)",
+    "nameLabel": "Nombre",
+    "namePlaceholder": "p. ej. FRIA para sistemas de cara al cliente",
+    "typeLabel": "Tipo de evaluación",
+    "descriptionLabel": "Descripción",
+    "sectionTitleLabel": "Título de la sección",
+    "sectionTitlePlaceholder": "p. ej. Descripción del sistema",
+    "questionsLabel": "Preguntas",
+    "questionsPlaceholder": "Describe el sistema de IA y su finalidad prevista.\n¿Quiénes son las personas afectadas?\n¿Qué datos trata el sistema?",
+    "questionsHint": "Una pregunta por línea. También puedes clonar una plantilla del sistema para obtener un cuestionario completo.",
+    "createTitle": "Crear plantilla",
+    "createDescription": "Un punto de partida sencillo: una sección con tus preguntas. Clona una plantilla del sistema para los cuestionarios completos por secciones.",
+    "systemEmpty": "No hay plantillas del sistema instaladas.",
+    "systemEmptyHint": "Un administrador puede instalar los cuestionarios estándar del Reglamento de IA de la UE ejecutando la siembra de plantillas (db:seed-templates), o crear una plantilla propia.",
+    "customEmpty": "Todavía no hay plantillas propias.",
+    "customEmptyHint": "Clona una plantilla del sistema o crea la tuya.",
+    "typeFria": "Evaluación de impacto en los derechos fundamentales (FRIA)",
+    "typeConformity": "Evaluación de la conformidad",
+    "typeAiRisk": "Evaluación de riesgos de IA",
+    "typeBiasFairness": "Evaluación de sesgos y equidad",
+    "typeCustom": "Evaluación personalizada"
   }
 }

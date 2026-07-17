@@ -19,10 +19,11 @@ const personas = [
     description: "I need AI governance for my organization",
   },
   {
+    // Enum value predates the wording — the label is the product term.
     type: "AI_GOVERNANCE_CONSULTANT" as UserType,
     icon: Briefcase,
-    title: "AI Governance Consultant",
-    description: "I advise multiple organizations on AI governance",
+    title: "AI Governance Professional",
+    description: "I manage AI governance for multiple organizations",
   },
 ] as const;
 

@@ -1,8 +1,8 @@
 {
   "common": {
-    "loading": "Loading\u2026",
+    "loading": "Loading…",
     "save": "Save",
-    "saving": "Saving\u2026",
+    "saving": "Saving…",
     "cancel": "Cancel",
     "delete": "Delete",
     "edit": "Edit",
@@ -196,7 +196,7 @@
     "recentActivityDescription": "Latest updates across your AI governance program",
     "noRecentActivity": "No recent activity",
     "quickStart": "Quick Start",
-    "quickstartHeadingVendors": "We found {count} AI vendors from Vendor.Watch \u2014 build governance around them?",
+    "quickstartHeadingVendors": "We found {count} AI vendors from Vendor.Watch — build governance around them?",
     "quickstartHeadingDefault": "Bootstrap your AI governance program in minutes",
     "quickstartDescriptionVendors": "Auto-generate AI systems, risk classifications, and oversight gates from your vendor portfolio.",
     "quickstartDescriptionDefault": "Import from the AI Vendor Catalog or start from an industry template to get a head start."
@@ -924,7 +924,7 @@
     "accountTypeTitle": "Account Type",
     "accountTypeDescription": "Set during registration. Contact support if you need to change this.",
     "personaBusinessUser": "Business User",
-    "personaConsultant": "AI Governance Consultant"
+    "personaConsultant": "AI Governance Professional"
   },
   "clients": {
     "title": "My Clients",
@@ -933,7 +933,24 @@
     "statsHighRiskSystems": "High-Risk Systems",
     "statsNeedAttention": "Need Attention",
     "emptyTitle": "No client organizations yet",
-    "emptyHint": "Organizations you're a member of will appear here"
+    "emptyHint": "Organizations you're a member of will appear here",
+    "managedCount": "{count, plural, one {# organization you manage} other {# organizations you manage}}",
+    "addOrganization": "Add organization",
+    "addOrgTitle": "Add a managed organization",
+    "addOrgDescription": "Creates a new organization with you as its owner. You can switch between your organizations from this page.",
+    "orgNameLabel": "Organization name",
+    "orgNamePlaceholder": "e.g. Acme Industries",
+    "orgSlugLabel": "URL identifier",
+    "orgSlugHint": "Lowercase letters, numbers and hyphens.",
+    "orgDomainLabel": "Email domain (optional)",
+    "orgDomainPlaceholder": "acme.com",
+    "orgCreated": "Organization created — opening its quickstart",
+    "cardAssessments": "{count} assessments",
+    "cardIncidents": "{count} incidents",
+    "cardHighRisk": "{count} high-risk",
+    "cardVendors": "{count} vendors",
+    "lastActivity": "Last activity: {when}",
+    "noActivity": "No activity"
   },
   "experts": {
     "title": "Find an AI Governance Expert",
@@ -964,7 +981,7 @@
   },
   "skills": {
     "title": "Skills",
-    "subtitle": "Premium skills purchased on TODO.LAW. Upload the licence file from your confirmation email to activate them for this organization \u2014 verified locally, no network required.",
+    "subtitle": "Premium skills purchased on TODO.LAW. Upload the licence file from your confirmation email to activate them for this organization — verified locally, no network required.",
     "activateTitle": "Activate with a licence file",
     "activateHint": "Choose the .license.json file you received after your purchase. Only organization owners and admins can activate.",
     "chooseFile": "Choose licence file",

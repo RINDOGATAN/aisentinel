@@ -7,7 +7,9 @@ import { Building2, Briefcase } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { useUserType } from "@/lib/use-user-type";
+import { useOrganization } from "@/lib/organization-context";
 import { DeploymentExpertCta } from "@/components/governance/deployment-expert-cta";
+import { AiPostureCard } from "@/components/ai/AiPostureCard";
 
 const personaIcons = {
   BUSINESS_USER: Building2,
@@ -17,6 +19,7 @@ const personaIcons = {
 export default function SettingsPage() {
   const { userType } = useUserType();
   const { data: profile } = trpc.user.getProfile.useQuery();
+  const { organization, userRole } = useOrganization();
   const t = useTranslations("settings");
 
   const Icon = userType ? personaIcons[userType as keyof typeof personaIcons] : null;
@@ -67,6 +70,14 @@ export default function SettingsPage() {
             </div>
           </CardContent>
         </Card>
+      )}
+
+      {/* Per-organization AI posture (off by default — no AI calls until enabled) */}
+      {organization && (
+        <AiPostureCard
+          organizationId={organization.id}
+          isAdmin={userRole !== null && ["OWNER", "ADMIN"].includes(userRole)}
+        />
       )}
 
       <DeploymentExpertCta />

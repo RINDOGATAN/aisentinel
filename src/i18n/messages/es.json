@@ -1028,6 +1028,75 @@
     "wrongPassphrase": "Contraseña incorrecta: comprueba ./suite.sh passphrase en el ordenador que ejecuta la suite.",
     "localSignInFailed": "No se ha podido iniciar sesión."
   },
+  "ai": {
+    "panel": {
+      "draftWithAi": "Redactar con IA",
+      "generating": "Redactando…",
+      "insert": "Insertar borrador",
+      "discard": "Descartar",
+      "cancel": "Cancelar",
+      "waitHint": "Esto puede tardar unos minutos con un modelo local.",
+      "cancelNote": "Se ha dejado de esperar. Puede que el servidor termine igualmente el borrador — cuenta para el límite horario de IA.",
+      "provenance": "Generado con IA ({model}) — revísalo antes de usarlo",
+      "inserted": "Borrador insertado — revísalo y guárdalo",
+      "offHint": "La asistencia de IA está desactivada en esta organización. Un administrador puede activarla en Ajustes.",
+      "notConfiguredHint": "La asistencia de IA está activada, pero todavía no hay ningún motor de IA disponible. Pide al administrador del servidor que configure un motor de IA (consulta el .env.example de la suite — la dirección de la pasarela es LLM_GATEWAY_URL)."
+    },
+    "posture": {
+      "off": "Desactivada — sin llamadas a IA",
+      "local_gateway": "Pasarela local (motor autoalojado)",
+      "cloud_eu": "Nube — proveedor de la UE",
+      "cloud_us": "Nube — proveedor de EE. UU."
+    },
+    "postureCard": {
+      "title": "Asistencia de IA",
+      "description": "Asistentes opcionales de redacción con IA (respuestas de evaluaciones, justificaciones de clasificación de riesgo, documentación del anexo IV). Desactivada por defecto: mientras la postura esté desactivada, este producto no realiza ninguna llamada a IA.",
+      "postureLabel": "Postura de IA",
+      "engineConfigured": "Motor configurado: {provider}",
+      "engineNotConfigured": "No hay ningún motor de IA configurado en este servidor. La IA permanece inactiva aunque se seleccione una postura.",
+      "laneNames": {
+        "local_gateway": "Pasarela local",
+        "cloud_eu": "Nube UE",
+        "cloud_us": "Nube EE. UU."
+      },
+      "laneNoEngine": "Sin motor",
+      "notConfiguredWarning": "Esta postura necesita un motor de IA en el servidor: configura LLM_GATEWAY_URL + LLM_MODEL_ALIAS (cualquier endpoint compatible con OpenAI, p. ej. un Ollama local) o una OPENAI_API_KEY / ANTHROPIC_API_KEY.",
+      "ackLabel": "Tengo autorización para activar la asistencia de IA en esta organización",
+      "ackBullets": {
+        "data": "Los datos seleccionados se envían al motor de IA de la postura elegida.",
+        "review": "El resultado de la IA es un borrador — debe revisarlo un profesional cualificado antes de usarse.",
+        "off": "Mientras la postura esté desactivada, no se realiza nunca ninguna llamada a IA."
+      },
+      "ackRequiredHint": "Marca la confirmación para continuar.",
+      "save": "Guardar postura",
+      "saved": "Postura de IA actualizada",
+      "acknowledgedBy": "Activada y confirmada por {name} el {date}",
+      "adminOnly": "Solo los propietarios y administradores de la organización pueden cambiar la postura de IA."
+    },
+    "screening": {
+      "title": "Cribado por reglas (Reglamento de IA de la UE)",
+      "suggested": "Las reglas sugieren: {level}",
+      "prohibitedHit": "Práctica prohibida — {article} (coincidencia: “{matched}”)",
+      "highRiskHit": "Alto riesgo — {article} (coincidencia: “{matched}”)",
+      "transparencyHit": "Obligación de transparencia — {article} (coincidencia: “{matched}”)",
+      "carveOutHit": "Exclusión aplicada — {article}: la detección de fraude financiero no es de alto riesgo por sí sola",
+      "none": "Ninguna regla de práctica prohibida, alto riesgo o transparencia coincide con los datos registrados.",
+      "disclaimer": "Cribado determinista por palabras clave de los datos registrados — una ayuda de triaje, no una determinación jurídica. La decisión de clasificación es tuya."
+    },
+    "annexIv": {
+      "title": "Documentación técnica del anexo IV",
+      "description": "Redacta el esqueleto de la documentación técnica del anexo IV a partir de los datos registrados de este sistema. Las lagunas quedan marcadas para que las complete la persona responsable.",
+      "copy": "Copiar markdown",
+      "copied": "Borrador del anexo IV copiado al portapapeles",
+      "disclaimer": "Un borrador de trabajo a partir de los datos del registro — la persona responsable del sistema debe completarlo y revisarlo antes de cualquier uso."
+    },
+    "errors": {
+      "ai_off": "La asistencia de IA está desactivada en esta organización. Un administrador puede activarla en Ajustes.",
+      "ai_not_configured": "Todavía no hay ningún motor de IA disponible. Pide al administrador del servidor que configure uno (consulta el .env.example de la suite — LLM_GATEWAY_URL).",
+      "ai_rate_limited": "Esta organización ha alcanzado su límite horario de IA. Inténtalo de nuevo más tarde.",
+      "ai_failed": "El motor de IA no ha devuelto ningún borrador. Inténtalo de nuevo."
+    }
+  },
   "assessmentTemplates": {
     "title": "Plantillas de evaluación",
     "subtitle": "Gestiona los cuestionarios sobre los que se construyen las evaluaciones",

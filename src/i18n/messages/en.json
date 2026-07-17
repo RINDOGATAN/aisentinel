@@ -1028,6 +1028,75 @@
     "wrongPassphrase": "Wrong passphrase — check ./suite.sh passphrase on the host computer.",
     "localSignInFailed": "Local sign-in failed."
   },
+  "ai": {
+    "panel": {
+      "draftWithAi": "Draft with AI",
+      "generating": "Drafting…",
+      "insert": "Insert draft",
+      "discard": "Discard",
+      "cancel": "Cancel",
+      "waitHint": "This can take a few minutes on a local model.",
+      "cancelNote": "Stopped waiting. The server may still finish this draft — it counts against the hourly AI limit.",
+      "provenance": "AI-generated with {model} — review before use",
+      "inserted": "Draft inserted — review it and save",
+      "offHint": "AI assistance is off for this organization. An administrator can enable it in Settings.",
+      "notConfiguredHint": "AI assistance is enabled, but no AI engine is available yet. Ask your server administrator to configure an AI engine (see the suite's .env.example — the gateway address is LLM_GATEWAY_URL)."
+    },
+    "posture": {
+      "off": "Off — no AI calls",
+      "local_gateway": "Local gateway (self-hosted engine)",
+      "cloud_eu": "Cloud — EU provider",
+      "cloud_us": "Cloud — US provider"
+    },
+    "postureCard": {
+      "title": "AI assistance",
+      "description": "Optional AI drafting assists (assessment answers, risk-classification rationales, Annex IV documentation). Off by default: while the posture is off, this product makes no AI calls at all.",
+      "postureLabel": "AI posture",
+      "engineConfigured": "Engine configured: {provider}",
+      "engineNotConfigured": "No AI engine is configured on this server. AI stays inactive even if a posture is selected.",
+      "laneNames": {
+        "local_gateway": "Local gateway",
+        "cloud_eu": "Cloud EU",
+        "cloud_us": "Cloud US"
+      },
+      "laneNoEngine": "No engine",
+      "notConfiguredWarning": "This posture needs an AI engine on the server: set LLM_GATEWAY_URL + LLM_MODEL_ALIAS (any OpenAI-compatible endpoint, e.g. a local Ollama), or an OPENAI_API_KEY / ANTHROPIC_API_KEY.",
+      "ackLabel": "I am authorized to enable AI assistance for this organization",
+      "ackBullets": {
+        "data": "The selected data is sent to the AI engine of the chosen posture.",
+        "review": "AI output is a draft — a qualified professional must review it before use.",
+        "off": "While the posture is Off, no AI calls are ever made."
+      },
+      "ackRequiredHint": "Tick the acknowledgment to continue.",
+      "save": "Save posture",
+      "saved": "AI posture updated",
+      "acknowledgedBy": "Enabled and acknowledged by {name} on {date}",
+      "adminOnly": "Only organization owners and admins can change the AI posture."
+    },
+    "screening": {
+      "title": "Rule screening (EU AI Act)",
+      "suggested": "Rules suggest: {level}",
+      "prohibitedHit": "Prohibited practice — {article} (matched “{matched}”)",
+      "highRiskHit": "High-risk — {article} (matched “{matched}”)",
+      "transparencyHit": "Transparency obligation — {article} (matched “{matched}”)",
+      "carveOutHit": "Carve-out applied — {article}: financial-fraud detection is not high-risk on its own",
+      "none": "No prohibited, high-risk, or transparency rules matched the registered facts.",
+      "disclaimer": "Deterministic keyword screening of the registered facts — a triage aid, not a legal determination. The classification decision is yours."
+    },
+    "annexIv": {
+      "title": "Annex IV technical documentation",
+      "description": "Draft the Annex IV technical-documentation skeleton from this system's registry facts. Gaps are marked for the owner to complete.",
+      "copy": "Copy markdown",
+      "copied": "Annex IV draft copied to the clipboard",
+      "disclaimer": "A working draft from registry facts — the system owner must complete and review it before any use."
+    },
+    "errors": {
+      "ai_off": "AI assistance is off for this organization. An administrator can enable it in Settings.",
+      "ai_not_configured": "No AI engine is available yet. Ask your server administrator to configure one (see the suite's .env.example — LLM_GATEWAY_URL).",
+      "ai_rate_limited": "This organization has reached its hourly AI limit. Try again later.",
+      "ai_failed": "The AI engine did not return a draft. Try again."
+    }
+  },
   "assessmentTemplates": {
     "title": "Assessment Templates",
     "subtitle": "Manage the questionnaires your assessments are built from",

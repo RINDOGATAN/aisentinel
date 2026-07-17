@@ -61,6 +61,7 @@ import { useTranslations } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
+import { AnnexIvCard } from "@/components/ai/AnnexIvCard";
 
 const statusColors: Record<string, string> = {
   DRAFT: "border-muted-foreground text-muted-foreground",
@@ -1521,6 +1522,9 @@ export default function AISystemDetailPage() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Optional AI assist: Annex IV technical-documentation draft */}
+      <AnnexIvCard organizationId={organizationId} aiSystemId={id} canWrite={canWrite} />
 
       {/* ========== DIALOGS ========== */}
 

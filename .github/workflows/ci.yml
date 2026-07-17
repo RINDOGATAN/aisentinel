@@ -34,8 +34,13 @@ jobs:
         run: npm test
 
       - name: Build
-        run: npm run build
+        # NOT `npm run build`: that script now runs `prisma migrate deploy`
+        # first (deploy-time migrations on Vercel — deal-room parity), which
+        # needs a reachable database. CI has none, so build the way the
+        # Dockerfile does: generate + next build only.
+        run: npx prisma generate && npx next build
         env:
           # Prisma needs a syntactically valid URL for `prisma generate`; no
-          # database is contacted during the build.
-          DATABASE_URL: "postgresql://user:pass@localhost:5432/db?schema=public"
+          # database is contacted during the build. (The datasource reads the
+          # Vercel-scoped name ais_DATABASE_URL, not DATABASE_URL.)
+          ais_DATABASE_URL: "postgresql://user:pass@localhost:5432/db?schema=public"

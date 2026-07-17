@@ -7,8 +7,10 @@ import { PrismaClient, AIRiskLevel } from "@prisma/client";
 // 2024/1689 (OJ L, 2024/1689, 12.7.2024) — not the 2021 Commission proposal.
 // Key final-text anchors: Art. 4 (AI literacy), Art. 5(1)(a)-(h) prohibitions,
 // Art. 50 (transparency), Art. 72 (post-market monitoring), Art. 73 (serious
-// incidents), Art. 113 (applicability timeline).
-// lawReviewedAsOf: 2026-07-05
+// incidents), Art. 113 (applicability timeline as amended by the Digital
+// Omnibus on AI — adopted 8 Jul 2026, OJ publication pending; re-verify the
+// final OJ text once the Regulation (EU) 2026/XXXX number exists).
+// lawReviewedAsOf: 2026-07-17
 
 const prisma = new PrismaClient();
 
@@ -136,11 +138,20 @@ async function main() {
     ]},
 
     // CHAPTER XIII - Final provisions: applicability timeline (Art. 113)
-    { code: "Art. 113", title: "Entry into force and application", description: "The AI Act entered into force on 1 August 2024 and applies in stages (see sub-entries). General date of application: 2 August 2026.", applicableTo: ["UNACCEPTABLE", "HIGH", "LIMITED", "MINIMAL"], sortOrder: 113, children: [
+    // As amended by the Digital Omnibus on AI (adopted: EP 16 Jun 2026,
+    // Council 29 Jun 2026, signed 8 Jul 2026 as PE-CONS 30/26; awaiting
+    // Official Journal publication as of 17 Jul 2026 — re-verify the final
+    // OJ number/text once published). The omnibus DEFERS Annex III high-risk
+    // to 2 Dec 2027 and Annex I embedded high-risk to 2 Aug 2028, keeps
+    // Art. 50 transparency at 2 Aug 2026, and adds two Art. 5 prohibitions
+    // from 2 Dec 2026.
+    { code: "Art. 113", title: "Entry into force and application", description: "The AI Act entered into force on 1 August 2024 and applies in stages (see sub-entries), as amended by the Digital Omnibus on AI (adopted 8 July 2026; Official Journal publication pending as of 17 July 2026).", applicableTo: ["UNACCEPTABLE", "HIGH", "LIMITED", "MINIMAL"], sortOrder: 113, children: [
       { code: "Art. 113(a) — 2 Feb 2025", title: "Prohibitions and AI literacy apply", description: "Chapters I and II apply from 2 February 2025: general provisions, AI literacy (Art. 4), and prohibited AI practices (Art. 5).", sortOrder: 1 },
       { code: "Art. 113(b) — 2 Aug 2025", title: "GPAI, governance and penalties apply", description: "From 2 August 2025: notified-body rules (Chapter III, Section 4), GPAI model obligations (Chapter V), governance (Chapter VII), penalties (Chapter XII except Art. 101), and confidentiality (Art. 78).", sortOrder: 2 },
-      { code: "Art. 113 — 2 Aug 2026", title: "General application (incl. Annex III high-risk)", description: "From 2 August 2026 the Regulation applies generally, including Annex III high-risk obligations and Art. 50 transparency obligations.", sortOrder: 3 },
-      { code: "Art. 113(c) — 2 Aug 2027", title: "Annex I product-embedded high-risk AI", description: "From 2 August 2027: Art. 6(1) classification and corresponding obligations for high-risk AI that is a safety component of (or is itself) a product under Annex I Union harmonisation legislation (e.g. medical devices under the MDR).", sortOrder: 4 },
+      { code: "Art. 113 — 2 Aug 2026", title: "Art. 50 transparency applies; GPAI enforcement begins", description: "From 2 August 2026: Art. 50 transparency obligations (chatbot disclosure, synthetic-content marking, deepfake labelling) apply — with a grace period to 2 December 2026 for machine-readable marking, only for systems placed on the market before 2 August 2026 — and the Commission's GPAI enforcement powers (Arts. 91-93, Art. 101 fines) begin. Annex III high-risk obligations do NOT apply on this date (deferred by the Digital Omnibus — see the 2 Dec 2027 entry).", sortOrder: 3 },
+      { code: "Art. 5 — 2 Dec 2026", title: "New prohibitions: AI-generated CSAM and non-consensual intimate imagery", description: "From 2 December 2026 (Digital Omnibus): prohibitions on AI systems for generating child sexual abuse material and non-consensual intimate imagery. Providers are in scope where such generation is intended or reasonably foreseeable absent safeguards; deployers on deliberate misuse.", sortOrder: 4 },
+      { code: "Art. 113 — 2 Dec 2027", title: "Annex III standalone high-risk obligations apply", description: "From 2 December 2027 (deferred from 2 August 2026 by the Digital Omnibus): the high-risk obligations for standalone Annex III systems apply, including conformity assessment, FRIA (Art. 27), registration, and Art. 72/73 post-market monitoring and serious-incident reporting.", sortOrder: 5 },
+      { code: "Art. 113(c) — 2 Aug 2028", title: "Annex I product-embedded high-risk AI", description: "From 2 August 2028 (deferred from 2 August 2027 by the Digital Omnibus): Art. 6(1) classification and corresponding obligations for high-risk AI that is a safety component of (or is itself) a product under Annex I Union harmonisation legislation (e.g. medical devices under the MDR).", sortOrder: 6 },
     ]},
 
     // CHAPTER XII - Penalties

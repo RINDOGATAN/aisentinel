@@ -558,7 +558,9 @@
     "urlPlaceholder": "https://...",
     "descriptionLabel": "Descripción (opcional)",
     "descriptionPlaceholder": "Detalles adicionales sobre esta evidencia...",
-    "notesPlaceholder": "Notas..."
+    "notesPlaceholder": "Notas...",
+    "noSystemsPrompt": "Todavía no hay sistemas de IA registrados — el seguimiento de cumplimiento empieza con un sistema registrado.",
+    "noSystemsLink": "Registrar un sistema de IA"
   },
   "incidents": {
     "title": "Incidentes de IA",
@@ -749,7 +751,14 @@
     "labelAssessmentTitle": "Título",
     "placeholderAssessmentTitle": "p. ej., Revisión Anual de Riesgo del Proveedor 2026",
     "labelFindings": "Hallazgos",
-    "createAssessment": "Crear Evaluación"
+    "createAssessment": "Crear Evaluación",
+    "linkSystemButton": "Vincular sistema",
+    "linkSystemTitle": "Vincular un sistema de IA",
+    "linkSystemDescription": "Selecciona un sistema de IA registrado para vincularlo a este proveedor.",
+    "linkSystemEmpty": "Todos los sistemas registrados ya están vinculados, o todavía no existe ninguno.",
+    "linkSystemEmptyLink": "Registrar un sistema de IA",
+    "systemLinked": "Sistema vinculado a este proveedor",
+    "emptySystemsHint": "Los sistemas de IA que usan este proveedor aparecerán aquí."
   },
   "policies": {
     "title": "Políticas",
@@ -857,7 +866,8 @@
     "reporting": "Notificando...",
     "submitReportTool": "Notificar Herramienta",
     "toastSuccess": "Herramienta de IA notificada correctamente",
-    "toastError": "No se ha podido notificar la herramienta de IA"
+    "toastError": "No se ha podido notificar la herramienta de IA",
+    "allCategories": "Todas las categorías"
   },
   "shadowAiDetail": {
     "notFound": "Informe no encontrado",

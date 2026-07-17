@@ -11,6 +11,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { ArrowLeft, Loader2, Search, PenLine, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
@@ -26,6 +33,7 @@ export default function NewShadowAIReportPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [mode, setMode] = useState<"catalog" | "custom">("catalog");
   const [catalogSearch, setCatalogSearch] = useState("");
+  const [catalogCategory, setCatalogCategory] = useState("all");
   const debouncedCatalogSearch = useDebounce(catalogSearch);
   const [selectedTool, setSelectedTool] = useState<{
     id: string;
@@ -44,10 +52,16 @@ export default function NewShadowAIReportPage() {
       {
         organizationId: organization?.id ?? "",
         search: debouncedCatalogSearch || undefined,
+        category: catalogCategory === "all" ? undefined : catalogCategory,
         limit: 50,
       },
       { enabled: !!organization?.id && mode === "catalog" }
     );
+
+  const { data: toolCategories } = trpc.shadowAi.listToolCategories.useQuery(
+    { organizationId: organization?.id ?? "" },
+    { enabled: !!organization?.id && mode === "catalog" }
+  );
 
   const tools = toolsData?.items ?? [];
 
@@ -140,14 +154,30 @@ export default function NewShadowAIReportPage() {
             {/* Catalog Mode */}
             {mode === "catalog" && (
               <div className="space-y-3">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder={t("catalogSearchPlaceholder")}
-                    className="pl-9"
-                    value={catalogSearch}
-                    onChange={(e) => setCatalogSearch(e.target.value)}
-                  />
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder={t("catalogSearchPlaceholder")}
+                      className="pl-9"
+                      value={catalogSearch}
+                      onChange={(e) => setCatalogSearch(e.target.value)}
+                    />
+                  </div>
+                  {/* Browse by category (wires listTools' category param) */}
+                  <Select value={catalogCategory} onValueChange={setCatalogCategory}>
+                    <SelectTrigger className="sm:w-56">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">{t("allCategories")}</SelectItem>
+                      {(toolCategories ?? []).map((entry) => (
+                        <SelectItem key={entry.category} value={entry.category}>
+                          {entry.category.replace(/_/g, " ")} ({entry.count})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div className="max-h-64 overflow-y-auto border rounded-md">

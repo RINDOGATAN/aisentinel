@@ -558,7 +558,9 @@
     "urlPlaceholder": "https://...",
     "descriptionLabel": "Description (optional)",
     "descriptionPlaceholder": "Additional details about this evidence...",
-    "notesPlaceholder": "Notes..."
+    "notesPlaceholder": "Notes...",
+    "noSystemsPrompt": "No AI systems registered yet — compliance tracking starts with a registered system.",
+    "noSystemsLink": "Register an AI system"
   },
   "incidents": {
     "title": "AI Incidents",
@@ -749,7 +751,14 @@
     "labelAssessmentTitle": "Title",
     "placeholderAssessmentTitle": "e.g., Annual Vendor Risk Review 2026",
     "labelFindings": "Findings",
-    "createAssessment": "Create Assessment"
+    "createAssessment": "Create Assessment",
+    "linkSystemButton": "Link system",
+    "linkSystemTitle": "Link an AI system",
+    "linkSystemDescription": "Select a registered AI system to link to this vendor.",
+    "linkSystemEmpty": "Every registered system is already linked, or none exist yet.",
+    "linkSystemEmptyLink": "Register an AI system",
+    "systemLinked": "System linked to this vendor",
+    "emptySystemsHint": "AI systems using this vendor will appear here."
   },
   "policies": {
     "title": "Policies",
@@ -857,7 +866,8 @@
     "reporting": "Reporting...",
     "submitReportTool": "Report Tool",
     "toastSuccess": "AI tool reported successfully",
-    "toastError": "Failed to report AI tool"
+    "toastError": "Failed to report AI tool",
+    "allCategories": "All categories"
   },
   "shadowAiDetail": {
     "notFound": "Report not found",

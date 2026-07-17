@@ -4,6 +4,7 @@
 
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -247,7 +248,20 @@ export default function CompliancePage() {
               {!selectedSystemId ? (
                 <Card>
                   <CardContent className="p-8 text-center text-muted-foreground">
-                    {t("selectSystemPrompt")}
+                    {systemList.length === 0 ? (
+                      <>
+                        {t("noSystemsPrompt")}{" "}
+                        <Link
+                          href="/governance/ai-registry/new"
+                          className="text-primary hover:underline"
+                        >
+                          {t("noSystemsLink")}
+                        </Link>
+                        .
+                      </>
+                    ) : (
+                      t("selectSystemPrompt")
+                    )}
                   </CardContent>
                 </Card>
               ) : !matrix ? (

@@ -458,7 +458,12 @@
     "approve": "Aprobar",
     "reject": "Rechazar",
     "selectPlaceholder": "Seleccione una opción...",
-    "textareaPlaceholder": "Introduzca su respuesta..."
+    "textareaPlaceholder": "Introduzca su respuesta...",
+    "progressCount": "{answered} de {total}",
+    "completeBeforeSubmit": "Faltan {count} pregunta(s) obligatoria(s) por responder antes de poder enviarla a revisión.",
+    "selfReviewWarning": "Tú enviaste esta evaluación. La decisión sobre tu propio envío quedará registrada en el registro de auditoría.",
+    "selfApprovedNote": "Aprobada por la misma persona que la envió.",
+    "approvedOn": "Aprobada el {date}"
   },
   "oversight": {
     "title": "Supervisión Humana",

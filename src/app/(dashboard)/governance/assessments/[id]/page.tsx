@@ -11,11 +11,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Save, Send, CheckCircle, XCircle, Loader2 } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ArrowLeft, Save, Send, CheckCircle, XCircle, Loader2, AlertTriangle } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { formatDate } from "@/lib/utils";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { useSession } from "next-auth/react";
 import { AiDraftPanel } from "@/components/ai/AiDraftPanel";
 
 const statusColors: Record<string, string> = {
@@ -38,17 +40,21 @@ export default function AssessmentDetailPage() {
     { enabled: !!orgId && !!id }
   );
 
+  const { data: session } = useSession();
   const [responses, setResponses] = useState<Record<string, string>>({});
   const [initialized, setInitialized] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
+  const [selfReviewAcknowledged, setSelfReviewAcknowledged] = useState(false);
 
   if (assessment && !initialized) {
     setResponses((assessment.responses as Record<string, string>) ?? {});
     setInitialized(true);
   }
 
-  const updateMutation = trpc.assessment.update.useMutation({ onSuccess: () => refetch() });
-  const submitMutation = trpc.assessment.submit.useMutation({ onSuccess: () => refetch() });
-  const approveMutation = trpc.assessment.processApproval.useMutation({ onSuccess: () => refetch() });
+  const onError = (error: { message: string }) => setActionError(error.message);
+  const updateMutation = trpc.assessment.update.useMutation({ onSuccess: () => refetch(), onError });
+  const submitMutation = trpc.assessment.submit.useMutation({ onSuccess: () => refetch(), onError });
+  const approveMutation = trpc.assessment.processApproval.useMutation({ onSuccess: () => refetch(), onError });
   const generateDraft = trpc.assessment.generateAiDraft.useMutation();
 
   if (isLoading || !orgId) {
@@ -74,12 +80,44 @@ export default function AssessmentDetailPage() {
   const answeredQuestions = allQuestions.filter((q) => responses[q.id]?.toString().trim()).length;
   const progressPercent = totalQuestions > 0 ? Math.round((answeredQuestions / totalQuestions) * 100) : 0;
 
+  // Mirrors the server's completeness gate (assessment.submit) so an
+  // incomplete assessment is visibly blocked rather than rejected after the
+  // fact. `required` defaults to true when a template omits the flag.
+  const missingRequired = allQuestions.filter(
+    (q) => q.required !== false && !responses[q.id]?.toString().trim()
+  );
+  const isComplete = missingRequired.length === 0;
+
+  // Approving your own submission stays possible — a sole practitioner has no
+  // one else — but it is called out and recorded rather than passing silently.
+  const submitter = assessment.submittedBy ?? assessment.createdBy;
+  const isSelfReview = !!session?.user?.id && submitter === session.user.id;
+
   const handleSave = () => {
-    updateMutation.mutate({
+    setActionError(null);
+    updateMutation.mutate({ organizationId: orgId, id: assessment.id, responses });
+  };
+
+  // Persist the answers on screen before submitting: the server gates on what
+  // is stored, so submitting unsaved edits would fail on answers the user can
+  // plainly see in front of them.
+  const handleSubmit = async () => {
+    setActionError(null);
+    try {
+      await updateMutation.mutateAsync({ organizationId: orgId, id: assessment.id, responses });
+      await submitMutation.mutateAsync({ organizationId: orgId, id: assessment.id });
+    } catch {
+      // onError already surfaced the message.
+    }
+  };
+
+  const handleDecision = (decision: "APPROVED" | "REJECTED") => {
+    setActionError(null);
+    approveMutation.mutate({
       organizationId: orgId,
       id: assessment.id,
-      responses,
-      status: assessment.status === "DRAFT" ? "IN_PROGRESS" : undefined,
+      decision,
+      acknowledgeSelfReview: selfReviewAcknowledged,
     });
   };
 
@@ -111,34 +149,77 @@ export default function AssessmentDetailPage() {
             </Button>
           )}
           {canSubmit && (
-            <Button variant="outline" onClick={() => submitMutation.mutate({ organizationId: orgId, id: assessment.id })} disabled={submitMutation.isPending}>
+            <Button
+              variant="outline"
+              onClick={handleSubmit}
+              disabled={submitMutation.isPending || updateMutation.isPending || !isComplete}
+              title={isComplete ? undefined : t("completeBeforeSubmit", { count: missingRequired.length })}
+            >
               <Send className="w-4 h-4 mr-2" />{t("submitForReview")}
             </Button>
           )}
         </div>
       </div>
 
+      {actionError && (
+        <Card className="border-destructive/50">
+          <CardContent className="p-4 flex items-start gap-2 text-destructive">
+            <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" />
+            <span className="text-sm">{actionError}</span>
+          </CardContent>
+        </Card>
+      )}
+
       {canEdit && totalQuestions > 0 && (
-        <div className="flex items-center gap-3">
-          <Progress value={progressPercent} className="h-2 flex-1" />
-          <span className="text-xs text-muted-foreground whitespace-nowrap">
-            {answeredQuestions} of {totalQuestions}
-          </span>
+        <div className="space-y-2">
+          <div className="flex items-center gap-3">
+            <Progress value={progressPercent} className="h-2 flex-1" />
+            <span className="text-xs text-muted-foreground whitespace-nowrap">
+              {t("progressCount", { answered: answeredQuestions, total: totalQuestions })}
+            </span>
+          </div>
+          {!isComplete && (
+            <p className="text-xs text-muted-foreground">
+              {t("completeBeforeSubmit", { count: missingRequired.length })}
+            </p>
+          )}
         </div>
       )}
 
       {canApprove && (
         <Card className="border-primary/50">
-          <CardContent className="p-4 flex items-center justify-between">
-            <span className="font-medium">{t("awaitingReview")}</span>
-            <div className="flex gap-2">
-              <Button onClick={() => approveMutation.mutate({ organizationId: orgId, id: assessment.id, decision: "APPROVED" })} className="bg-green-600 hover:bg-green-700">
-                <CheckCircle className="w-4 h-4 mr-2" />{t("approve")}
-              </Button>
-              <Button variant="destructive" onClick={() => approveMutation.mutate({ organizationId: orgId, id: assessment.id, decision: "REJECTED" })}>
-                <XCircle className="w-4 h-4 mr-2" />{t("reject")}
-              </Button>
+          <CardContent className="p-4 space-y-4">
+            <div className="flex items-center justify-between gap-4">
+              <span className="font-medium">{t("awaitingReview")}</span>
+              <div className="flex gap-2">
+                <Button
+                  onClick={() => handleDecision("APPROVED")}
+                  disabled={approveMutation.isPending || (isSelfReview && !selfReviewAcknowledged)}
+                  className="bg-green-600 hover:bg-green-700"
+                >
+                  <CheckCircle className="w-4 h-4 mr-2" />{t("approve")}
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={() => handleDecision("REJECTED")}
+                  disabled={approveMutation.isPending || (isSelfReview && !selfReviewAcknowledged)}
+                >
+                  <XCircle className="w-4 h-4 mr-2" />{t("reject")}
+                </Button>
+              </div>
             </div>
+            {isSelfReview && (
+              <div className="flex items-start gap-2 border-t border-border pt-4">
+                <Checkbox
+                  id="self-review"
+                  checked={selfReviewAcknowledged}
+                  onCheckedChange={(checked) => setSelfReviewAcknowledged(checked === true)}
+                />
+                <label htmlFor="self-review" className="text-sm text-muted-foreground">
+                  {t("selfReviewWarning")}
+                </label>
+              </div>
+            )}
           </CardContent>
         </Card>
       )}
@@ -148,8 +229,11 @@ export default function AssessmentDetailPage() {
           <CardContent className="p-4">
             <div className="flex items-center gap-2 text-success">
               <CheckCircle className="w-5 h-5" />
-              <span>Approved on {formatDate(assessment.approvedAt)}</span>
+              <span>{t("approvedOn", { date: formatDate(assessment.approvedAt) })}</span>
             </div>
+            {assessment.approvedBy === submitter && (
+              <p className="text-xs text-muted-foreground mt-1">{t("selfApprovedNote")}</p>
+            )}
           </CardContent>
         </Card>
       )}

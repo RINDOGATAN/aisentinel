@@ -458,7 +458,12 @@
     "approve": "Approve",
     "reject": "Reject",
     "selectPlaceholder": "Select an option...",
-    "textareaPlaceholder": "Enter your response..."
+    "textareaPlaceholder": "Enter your response...",
+    "progressCount": "{answered} of {total}",
+    "completeBeforeSubmit": "{count} required question(s) still need an answer before this can be submitted for review.",
+    "selfReviewWarning": "You submitted this assessment. Recording a decision on your own submission will be noted in the audit log.",
+    "selfApprovedNote": "Approved by the same person who submitted it.",
+    "approvedOn": "Approved on {date}"
   },
   "oversight": {
     "title": "Human Oversight",

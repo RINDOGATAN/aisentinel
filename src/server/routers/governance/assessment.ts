@@ -19,6 +19,41 @@ import {
   buildAssessmentDraftUserPrompt,
 } from "../../services/ai/prompts/assessment-draft";
 
+type TemplateQuestion = { id: string; text?: string; required?: boolean };
+type TemplateSection = { id?: string; title?: string; questions?: TemplateQuestion[] };
+
+/** Statuses in which an assessment is still a working document. */
+const EDITABLE_STATUSES = ["DRAFT", "IN_PROGRESS"];
+
+function isEditable(status: string) {
+  return EDITABLE_STATUSES.includes(status);
+}
+
+function readableStatus(status: string) {
+  return status.replace("_", " ").toLowerCase();
+}
+
+/**
+ * The questions a template marks as mandatory. `required` defaults to true in
+ * the template authoring schema (see createTemplate), so a missing flag counts
+ * as required — a template that omits it must not silently weaken the gate.
+ */
+function requiredQuestionsOf(sections: unknown): TemplateQuestion[] {
+  if (!Array.isArray(sections)) return [];
+  return (sections as TemplateSection[])
+    .flatMap((section) => section?.questions ?? [])
+    .filter((question) => question?.id && question.required !== false);
+}
+
+/** Required questions with no answer recorded against them. */
+function unansweredRequired(sections: unknown, responses: unknown): TemplateQuestion[] {
+  const answers = (responses ?? {}) as Record<string, unknown>;
+  return requiredQuestionsOf(sections).filter((question) => {
+    const answer = answers[question.id];
+    return answer === undefined || answer === null || String(answer).trim() === "";
+  });
+}
+
 export const assessmentRouter = createTRPCRouter({
   list: organizationProcedure
     .input(
@@ -144,20 +179,44 @@ export const assessmentRouter = createTRPCRouter({
         responses: z.record(z.string(), z.any()).optional(),
         mitigations: z.record(z.string(), z.any()).optional(),
         riskScore: z.number().optional(),
-        status: z.enum(["DRAFT", "IN_PROGRESS", "UNDER_REVIEW", "APPROVED", "REJECTED"]).optional(),
+        // `status` is deliberately absent: it is owned by submit and
+        // processApproval. Accepting it here let any writer promote an
+        // assessment straight to APPROVED, bypassing both the completeness
+        // gate and the approver role check.
       })
     )
     .mutation(async ({ ctx, input }) => {
       const { id, organizationId, ...data } = input;
 
-      const assessment = await ctx.prisma.aIAssessment.updateMany({
+      const existing = await ctx.prisma.aIAssessment.findFirst({
         where: { id, organizationId: ctx.organization.id },
-        data: data as never,
+        select: { status: true },
       });
 
-      if (assessment.count === 0) {
+      if (!existing) {
         throw new TRPCError({ code: "NOT_FOUND", message: "Assessment not found" });
       }
+
+      // Once an assessment leaves drafting it is a record of a decision, not a
+      // working document — editing it would rewrite what a reviewer approved.
+      // The UI disables the fields; this is the matching server-side guarantee.
+      if (!isEditable(existing.status)) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: `A ${readableStatus(existing.status)} assessment can no longer be edited`,
+        });
+      }
+
+      const patch: Record<string, unknown> = { ...data };
+      // Saving answers moves a fresh draft into progress.
+      if (existing.status === "DRAFT" && data.responses !== undefined) {
+        patch.status = "IN_PROGRESS";
+      }
+
+      await ctx.prisma.aIAssessment.updateMany({
+        where: { id, organizationId: ctx.organization.id },
+        data: patch as never,
+      });
 
       return ctx.prisma.aIAssessment.findFirst({
         where: { id, organizationId: ctx.organization.id },
@@ -171,14 +230,55 @@ export const assessmentRouter = createTRPCRouter({
   submit: orgWriteProcedure
     .input(z.object({ organizationId: z.string(), id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const result = await ctx.prisma.aIAssessment.updateMany({
+      const assessment = await ctx.prisma.aIAssessment.findFirst({
         where: { id: input.id, organizationId: ctx.organization.id },
-        data: { status: "UNDER_REVIEW" },
+        include: { template: true },
       });
 
-      if (result.count === 0) {
+      if (!assessment) {
         throw new TRPCError({ code: "NOT_FOUND", message: "Assessment not found" });
       }
+
+      if (!isEditable(assessment.status)) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: `This assessment is already ${readableStatus(assessment.status)}`,
+        });
+      }
+
+      // The completeness gate. An assessment is evidence that an analysis
+      // actually happened — an Art. 27 FRIA is exactly that — so a blank or
+      // half-finished one must never reach a reviewer looking finished.
+      const missing = unansweredRequired(assessment.template?.sections, assessment.responses);
+      if (missing.length > 0) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message:
+            missing.length === 1
+              ? "1 required question is still unanswered. Complete it before submitting for review."
+              : `${missing.length} required questions are still unanswered. Complete them before submitting for review.`,
+        });
+      }
+
+      await ctx.prisma.aIAssessment.updateMany({
+        where: { id: input.id, organizationId: ctx.organization.id },
+        data: {
+          status: "UNDER_REVIEW",
+          submittedBy: ctx.session.user.id,
+          submittedAt: new Date(),
+        },
+      });
+
+      await ctx.prisma.auditLog.create({
+        data: {
+          organizationId: ctx.organization.id,
+          userId: ctx.session.user.id,
+          entityType: "AIAssessment",
+          entityId: assessment.id,
+          action: "SUBMIT",
+          changes: { from: assessment.status, to: "UNDER_REVIEW" },
+        },
+      });
 
       return ctx.prisma.aIAssessment.findFirst({
         where: { id: input.id, organizationId: ctx.organization.id },
@@ -195,6 +295,10 @@ export const assessmentRouter = createTRPCRouter({
         organizationId: z.string(),
         id: z.string(),
         decision: z.enum(["APPROVED", "REJECTED"]),
+        // Set when the reviewer is also the person who submitted. Self-review
+        // stays possible — a two-person split is not realistic for a sole
+        // practitioner — but it must be a deliberate, recorded act.
+        acknowledgeSelfReview: z.boolean().default(false),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -205,13 +309,61 @@ export const assessmentRouter = createTRPCRouter({
         });
       }
 
-      return ctx.prisma.aIAssessment.updateMany({
+      const assessment = await ctx.prisma.aIAssessment.findFirst({
+        where: { id: input.id, organizationId: ctx.organization.id },
+        select: { id: true, status: true, submittedBy: true, createdBy: true },
+      });
+
+      if (!assessment) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Assessment not found" });
+      }
+
+      if (assessment.status !== "UNDER_REVIEW") {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Only an assessment that is under review can be approved or rejected",
+        });
+      }
+
+      // `submittedBy` is null for assessments submitted before this field
+      // existed; the author is the closest available stand-in.
+      const submitter = assessment.submittedBy ?? assessment.createdBy;
+      const isSelfReview = submitter === ctx.session.user.id;
+
+      if (isSelfReview && !input.acknowledgeSelfReview) {
+        throw new TRPCError({
+          code: "PRECONDITION_FAILED",
+          message:
+            "You submitted this assessment. Confirm you are reviewing your own work before recording a decision.",
+        });
+      }
+
+      await ctx.prisma.aIAssessment.updateMany({
         where: { id: input.id, organizationId: ctx.organization.id },
         data: {
           status: input.decision,
           ...(input.decision === "APPROVED"
             ? { approvedBy: ctx.session.user.id, approvedAt: new Date() }
             : { reviewedBy: ctx.session.user.id, reviewedAt: new Date() }),
+        },
+      });
+
+      await ctx.prisma.auditLog.create({
+        data: {
+          organizationId: ctx.organization.id,
+          userId: ctx.session.user.id,
+          entityType: "AIAssessment",
+          entityId: assessment.id,
+          action: input.decision === "APPROVED" ? "APPROVE" : "REJECT",
+          changes: { from: "UNDER_REVIEW", to: input.decision, selfReview: isSelfReview },
+        },
+      });
+
+      return ctx.prisma.aIAssessment.findFirst({
+        where: { id: input.id, organizationId: ctx.organization.id },
+        include: {
+          template: true,
+          aiSystem: { select: { id: true, name: true } },
         },
       });
     }),

@@ -361,6 +361,8 @@ model AIAssessment {
   riskScore      Float?
   responses      Json?
   mitigations    Json?
+  submittedBy    String?
+  submittedAt    DateTime?
   reviewedBy     String?
   reviewedAt     DateTime?
   approvedBy     String?

@@ -106,6 +106,7 @@ model Organization {
   aiModels              AIModel[]
   aiSystemDataSources   AISystemDataSource[]
   riskClassifications   RiskClassification[]
+  transparencyProfiles  TransparencyProfile[]
   assessmentTemplates   AIAssessmentTemplate[]
   assessments           AIAssessment[]
   oversightGates        OversightGate[]
@@ -209,16 +210,17 @@ model AISystem {
 
   vendorId String?
 
-  organization       Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  vendor             AIVendor?            @relation(fields: [vendorId], references: [id], onDelete: SetNull)
-  models             AIModel[]
-  dataSources        AISystemDataSource[]
-  riskClassification RiskClassification?
-  assessments        AIAssessment[]
-  oversightGates     OversightGate[]
-  incidents          AIIncident[]
-  complianceMappings ComplianceMapping[]
-  policyLinks        AIPolicySystemLink[]
+  organization        Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  vendor              AIVendor?            @relation(fields: [vendorId], references: [id], onDelete: SetNull)
+  models              AIModel[]
+  dataSources         AISystemDataSource[]
+  riskClassification  RiskClassification?
+  transparencyProfile TransparencyProfile?
+  assessments         AIAssessment[]
+  oversightGates      OversightGate[]
+  incidents           AIIncident[]
+  complianceMappings  ComplianceMapping[]
+  policyLinks         AIPolicySystemLink[]
 
   @@index([organizationId])
   @@index([vendorId])
@@ -309,6 +311,45 @@ model RiskClassificationHistory {
 
   @@index([riskClassificationId])
   @@map("risk_classification_history")
+}
+
+// ============================================================
+// ART. 50 TRANSPARENCY
+// ============================================================
+
+enum TransparencyObligationStatus {
+  NOT_APPLICABLE
+  REQUIRED
+  IMPLEMENTED
+}
+
+// One satellite row per AI system recording which EU AI Act Art. 50
+// transparency obligations apply and their implementation status.
+// Art. 50 applies since 2 Aug 2026; Reg. (EU) 2026/1744 Art. 1(38) grants
+// systems placed on the market before that date a machine-readable-marking
+// grace period until 2 Dec 2026 (the deadline math lives in
+// src/config/transparency-rules.ts, never in the DB).
+model TransparencyProfile {
+  id                           String                       @id @default(cuid())
+  aiSystemId                   String                       @unique
+  organizationId               String
+  art50InteractionStatus       TransparencyObligationStatus @default(NOT_APPLICABLE) // Art. 50(1), provider
+  art50MarkingStatus           TransparencyObligationStatus @default(NOT_APPLICABLE) // Art. 50(2), provider
+  art50EmotionStatus           TransparencyObligationStatus @default(NOT_APPLICABLE) // Art. 50(3), deployer
+  art50DeepfakeStatus          TransparencyObligationStatus @default(NOT_APPLICABLE) // Art. 50(4), deployer
+  markingMethods               String[] // z.enum-validated in the router (c2pa_manifest, invisible_watermark, ...)
+  placedOnMarketBefore2Aug2026 Boolean?
+  notes                        String?                      @db.Text
+  reviewedBy                   String
+  reviewedAt                   DateTime                     @default(now())
+  createdAt                    DateTime                     @default(now())
+  updatedAt                    DateTime                     @updatedAt
+
+  aiSystem     AISystem     @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@map("transparency_profiles")
 }
 
 // ============================================================
@@ -630,10 +671,10 @@ model ComplianceRequirement {
   sortOrder    Int           @default(0)
   createdAt    DateTime      @default(now())
 
-  framework ComplianceFramework     @relation(fields: [frameworkId], references: [id], onDelete: Cascade)
-  parent    ComplianceRequirement?  @relation("RequirementHierarchy", fields: [parentId], references: [id])
-  children  ComplianceRequirement[] @relation("RequirementHierarchy")
-  mappings  ComplianceMapping[]
+  framework      ComplianceFramework     @relation(fields: [frameworkId], references: [id], onDelete: Cascade)
+  parent         ComplianceRequirement?  @relation("RequirementHierarchy", fields: [parentId], references: [id])
+  children       ComplianceRequirement[] @relation("RequirementHierarchy")
+  mappings       ComplianceMapping[]
   crossMappingsA CrossFrameworkMapping[] @relation("CrossMappingA")
   crossMappingsB CrossFrameworkMapping[] @relation("CrossMappingB")
 
@@ -993,19 +1034,19 @@ model VendorCatalog {
   hasRecentBreach    Boolean?
 
   // AI-Specific
-  aiCapabilities              String[] // ["LLM", "Computer Vision", "Speech"]
-  modelHosting                String? // "Cloud", "On-Premise", "Hybrid"
-  aiModels                    Json?     // [{ name, type, source }] from Vendor.Watch
-  aiTechniques                String[]
-  euAiActRole                 String?   // "Provider", "Deployer", etc.
-  euAiActAnnexIIIDomains      String[]
-  iso42001Certified           Boolean?
-  supportsAuditLogs           Boolean?
-  supportsExplainability      Boolean?
-  hasBiasMonitoring           Boolean?
-  hasModelCard                Boolean?
-  aiIncidentNotificationSLA   String?
-  dataProcessingTransparency  String?
+  aiCapabilities             String[] // ["LLM", "Computer Vision", "Speech"]
+  modelHosting               String? // "Cloud", "On-Premise", "Hybrid"
+  aiModels                   Json? // [{ name, type, source }] from Vendor.Watch
+  aiTechniques               String[]
+  euAiActRole                String? // "Provider", "Deployer", etc.
+  euAiActAnnexIIIDomains     String[]
+  iso42001Certified          Boolean?
+  supportsAuditLogs          Boolean?
+  supportsExplainability     Boolean?
+  hasBiasMonitoring          Boolean?
+  hasModelCard               Boolean?
+  aiIncidentNotificationSLA  String?
+  dataProcessingTransparency String?
 
   // Metadata
   logoUrl    String?

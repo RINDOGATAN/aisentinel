@@ -107,7 +107,7 @@ export async function assertAiRateLimit(
 export interface RecordGenerationInput {
   organizationId: string;
   userId?: string | null;
-  feature: "assessment_draft" | "risk_rationale" | "annex_iv";
+  feature: "assessment_draft" | "risk_rationale" | "annex_iv" | "transparency_statement";
   entityType?: string | null;
   entityId?: string | null;
   model?: string | null;

@@ -1735,6 +1735,33 @@ async function main() {
   console.log(`  Created ${shadowReports.length} shadow AI reports`);
 
   // ============================================================
+  // 14. ART. 50 TRANSPARENCY PROFILES
+  // ============================================================
+
+  console.log("14. Creating transparency profiles...");
+
+  // Employee sentiment analysis: an emotion-recognition-adjacent deployment.
+  // The keyword screening deliberately does NOT fire on "sentiment" (text
+  // sentiment is not biometric emotion recognition), so this profile shows
+  // the other half of the workflow: the human reviewer recording a REQUIRED
+  // status the rules did not suggest, with the Art. 5(1)(f) question noted.
+  await prisma.transparencyProfile.upsert({
+    where: { aiSystemId: sentimentAnalysis.id },
+    update: {},
+    create: {
+      id: "demo-transparency-sentiment",
+      aiSystemId: sentimentAnalysis.id,
+      organizationId: orgId,
+      art50EmotionStatus: "REQUIRED",
+      notes:
+        "Deployment paused pending legal review of the Art. 5(1)(f) workplace emotion-recognition prohibition; if any lawful scope remains, exposed employees must be informed under Art. 50(3).",
+      reviewedBy: userId,
+    },
+  });
+
+  console.log("  Created 1 transparency profile");
+
+  // ============================================================
   // SUMMARY
   // ============================================================
 

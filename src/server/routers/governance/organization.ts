@@ -5,6 +5,7 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure, organizationProcedure } from "../../trpc";
 import { TRPCError } from "@trpc/server";
 import { OrganizationRole } from "@prisma/client";
+import { computeMarkingDeadline } from "@/config/transparency-rules";
 
 export const organizationRouter = createTRPCRouter({
   list: protectedProcedure.query(async ({ ctx }) => {
@@ -279,6 +280,8 @@ export const organizationRouter = createTRPCRouter({
         complianceNotAssessed,
         // Quickstart
         importedVendorCount,
+        // Art. 50 transparency (marking obligation rows; deadline math below)
+        markingRequiredRows,
       ] = await Promise.all([
         ctx.prisma.aISystem.count({ where: { organizationId: orgId } }),
         ctx.prisma.aISystem.count({ where: { organizationId: orgId, status: "DEPLOYED" } }),
@@ -331,7 +334,21 @@ export const organizationRouter = createTRPCRouter({
             metadata: { path: ["importedFrom"], equals: "vendorwatch" },
           },
         }),
+        // Art. 50: open marking obligations; overdue is computed with the
+        // pure rules module so the deadline math has a single source of truth.
+        ctx.prisma.transparencyProfile.findMany({
+          where: { organizationId: orgId, art50MarkingStatus: "REQUIRED" },
+          select: { placedOnMarketBefore2Aug2026: true },
+        }),
       ]);
+
+      const markingOverdue = markingRequiredRows.filter(
+        (row) =>
+          computeMarkingDeadline({
+            placedOnMarketBefore2Aug2026: row.placedOnMarketBefore2Aug2026,
+            markingStatus: "REQUIRED",
+          })?.overdue
+      ).length;
 
       return {
         totalSystems,
@@ -367,6 +384,10 @@ export const organizationRouter = createTRPCRouter({
           notAssessed: complianceNotAssessed,
         },
         importedVendorCount,
+        transparency: {
+          markingRequired: markingRequiredRows.length,
+          markingOverdue,
+        },
       };
     }),
 });

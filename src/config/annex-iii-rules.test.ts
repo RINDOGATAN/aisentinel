@@ -135,6 +135,12 @@ const CASES: Case[] = [
     level: "LIMITED",
     category: null,
   },
+  {
+    title: "retail emotion detection is transparency-only (Art. 50(3))",
+    facts: { name: "KioskMood", purpose: "Emotion detection at retail kiosks" },
+    level: "LIMITED",
+    category: null,
+  },
 
   // --- Nothing matched -> MINIMAL ---
   {
@@ -180,6 +186,16 @@ describe("screenAnnexIii (table-driven)", () => {
     expect(screening.prohibited.length).toBeGreaterThan(0);
     expect(screening.highRisk.length).toBeGreaterThan(0);
     expect(screening.transparency.length).toBeGreaterThan(0);
+  });
+
+  it("workplace emotion recognition stays UNACCEPTABLE even with the Art. 50(3) hit present", () => {
+    const screening = screenAnnexIii({
+      name: "MoodWatch",
+      purpose: "Emotion recognition in the workplace for productivity",
+    });
+    expect(screening.suggestedLevel).toBe("UNACCEPTABLE");
+    expect(screening.prohibited.map((p) => p.article)).toContain("Art. 5(1)(f)");
+    expect(screening.transparency.map((t) => t.article)).toContain("Art. 50(3)");
   });
 
   it("returns empty hits and MINIMAL for empty facts", () => {

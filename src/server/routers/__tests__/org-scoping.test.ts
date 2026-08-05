@@ -81,6 +81,24 @@ const H = vi.hoisted(() => {
         rows.push(row);
         return row;
       },
+      upsert: async ({
+        where,
+        create,
+        update,
+      }: {
+        where: Record<string, unknown>;
+        create: Row;
+        update: Row;
+      }) => {
+        const existing = rows.find((r) => matches(r, where));
+        if (existing) {
+          Object.assign(existing, update);
+          return existing;
+        }
+        const row = { id: create.id ?? `gen-${rows.length + 1}`, ...create };
+        rows.push(row);
+        return row;
+      },
     };
   }
 
@@ -108,12 +126,14 @@ const H = vi.hoisted(() => {
   const aISystem = makeTable();
   const aIIncident = makeTable();
   const aIVendor = makeTable();
+  const transparencyProfile = makeTable();
 
   const db = {
     organizationMember,
     aISystem,
     aIIncident,
     aIVendor,
+    transparencyProfile,
     aIModel: makeTable(),
     aISystemDataSource: makeTable(),
     aIIncidentTimeline: makeTable(),
@@ -125,9 +145,14 @@ const H = vi.hoisted(() => {
     memberRows.length = 0;
     // user-a is an OWNER of org-a only; user-a is NOT a member of org-b.
     memberRows.push({ organizationId: "org-a", userId: "user-a", role: "OWNER" });
+    // models/dataSources/riskClassification arrays are what buildSystemContext
+    // reads off the include — the fake ignores `include`, so seed them inline.
     aISystem.__set([
-      { id: "sys-a", organizationId: "org-a", name: "A System", status: "DRAFT" },
-      { id: "sys-b", organizationId: "org-b", name: "B System", status: "DEPLOYED" },
+      { id: "sys-a", organizationId: "org-a", name: "A System", status: "DRAFT", technique: "GENERATIVE_AI", role: "DEPLOYER", processesPersonalData: false, models: [], dataSources: [], riskClassification: null },
+      { id: "sys-b", organizationId: "org-b", name: "B System", status: "DEPLOYED", technique: "NLP", role: "PROVIDER", processesPersonalData: false, models: [], dataSources: [], riskClassification: null },
+    ]);
+    transparencyProfile.__set([
+      { id: "tp-b", aiSystemId: "sys-b", organizationId: "org-b", art50MarkingStatus: "REQUIRED", markingMethods: [] },
     ]);
     aIIncident.__set([
       { id: "inc-a", organizationId: "org-a", title: "A Incident", status: "REPORTED", severity: "LOW" },
@@ -155,6 +180,7 @@ import { createInnerTRPCContext } from "@/server/trpc";
 import { aiSystemRouter } from "@/server/routers/governance/aiSystem";
 import { incidentRouter } from "@/server/routers/governance/incident";
 import { vendorRouter } from "@/server/routers/governance/vendor";
+import { transparencyRouter } from "@/server/routers/governance/transparency";
 
 // --- Helpers -----------------------------------------------------------------
 
@@ -287,6 +313,61 @@ describe("vendor router org-scoping", () => {
     const caller = vendorRouter.createCaller(ctxFor(userA));
     const ven = await caller.getById({ organizationId: "org-a", id: "ven-a" });
     expect(ven.id).toBe("ven-a");
+  });
+});
+
+// --- transparency router -------------------------------------------------------
+
+describe("transparency router org-scoping", () => {
+  const upsertInput = {
+    art50InteractionStatus: "NOT_APPLICABLE" as const,
+    art50MarkingStatus: "IMPLEMENTED" as const,
+    art50EmotionStatus: "NOT_APPLICABLE" as const,
+    art50DeepfakeStatus: "NOT_APPLICABLE" as const,
+    markingMethods: [],
+  };
+
+  it("FORBIDDEN: user-a cannot target org-b (no membership)", async () => {
+    const caller = transparencyRouter.createCaller(ctxFor(userA));
+    await expect(
+      caller.get({ organizationId: "org-b", aiSystemId: "sys-b" })
+    ).rejects.toMatchObject({ code: "FORBIDDEN" });
+  });
+
+  it("NOT_FOUND: user-a reading org-b's system through their own org", async () => {
+    const caller = transparencyRouter.createCaller(ctxFor(userA));
+    await expect(
+      caller.get({ organizationId: "org-a", aiSystemId: "sys-b" })
+    ).rejects.toMatchObject({ code: "NOT_FOUND" });
+  });
+
+  it("NOT_FOUND: user-a cannot upsert a profile onto org-b's system", async () => {
+    const caller = transparencyRouter.createCaller(ctxFor(userA));
+    await expect(
+      caller.upsert({ organizationId: "org-a", aiSystemId: "sys-b", ...upsertInput })
+    ).rejects.toMatchObject({ code: "NOT_FOUND" });
+    // org-b's profile is untouched.
+    const row = H.db.transparencyProfile.__rows().find((r) => r.id === "tp-b");
+    expect(row?.art50MarkingStatus).toBe("REQUIRED");
+  });
+
+  it("positive control: user-a upserts and reads their own org's profile", async () => {
+    const caller = transparencyRouter.createCaller(ctxFor(userA));
+    const profile = await caller.upsert({
+      organizationId: "org-a",
+      aiSystemId: "sys-a",
+      ...upsertInput,
+    });
+    expect(profile.organizationId).toBe("org-a");
+    const result = await caller.get({ organizationId: "org-a", aiSystemId: "sys-a" });
+    expect(result.profile?.aiSystemId).toBe("sys-a");
+    // Generative technique keeps the marking suggestion (fallback regression).
+    const marking = result.suggestions.find((s) => s.obligation === "art50_marking");
+    expect(marking?.suggested).toBe(true);
+    // Audit trail row written for the create.
+    expect(
+      H.db.auditLog.__rows().some((r) => r.entityType === "TransparencyProfile")
+    ).toBe(true);
   });
 });
 

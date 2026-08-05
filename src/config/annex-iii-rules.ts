@@ -173,6 +173,9 @@ const FRAUD_CARVE_OUT: KeywordRule = {
 const TRANSPARENCY_RULES: KeywordRule[] = [
   { ruleId: "art50_interaction", article: "Art. 50(1)", keywords: ["chatbot", "conversational", "virtual assistant", "customer service bot"] },
   { ruleId: "art50_synthetic", article: "Art. 50(2)", keywords: ["synthetic content", "content generation", "generated content", "image generation", "text generation"] },
+  // Deliberately no "sentiment" keyword: text sentiment analysis is not
+  // emotion recognition from biometric data under the Act's definitions.
+  { ruleId: "art50_emotion", article: "Art. 50(3)", keywords: ["emotion recognition", "emotion detection", "facial expression analysis", "biometric categorisation system", "biometric categorization system"] },
   { ruleId: "art50_deepfake", article: "Art. 50(4)", keywords: ["deepfake", "deep fake", "face swap"] },
 ];
 

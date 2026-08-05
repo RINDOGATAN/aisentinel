@@ -24,6 +24,12 @@ import {
   ANNEX_IV_SECTIONS,
 } from "./annex-iv";
 import { screenAnnexIii } from "@/config/annex-iii-rules";
+import {
+  buildTransparencyStatementSystemPrompt,
+  buildTransparencyStatementUserPrompt,
+  TRANSPARENCY_STATEMENT_SECTIONS,
+} from "./transparency-statement";
+import { suggestArt50Obligations } from "@/config/transparency-rules";
 
 const context: AssessmentSystemContext = {
   organizationName: "Acme AI Corp",
@@ -159,5 +165,64 @@ describe("annex-iv prompts", () => {
     expect(prompt).toContain("rank-v2");
     expect(prompt).toContain("Underrepresents career switchers");
     expect(prompt).toContain("Risk classification: HIGH (Annex III category: employment)");
+  });
+});
+
+describe("transparency-statement prompts", () => {
+  const suggestions = suggestArt50Obligations({
+    name: "Concierge chatbot",
+    technique: "GENERATIVE_AI",
+  });
+
+  it("system prompt enumerates every statement heading in order and carries the doctrine", () => {
+    const prompt = buildTransparencyStatementSystemPrompt("en");
+    let lastIndex = -1;
+    for (const section of TRANSPARENCY_STATEMENT_SECTIONS) {
+      const index = prompt.indexOf(`## ${section}`);
+      expect(index).toBeGreaterThan(lastIndex);
+      lastIndex = index;
+    }
+    expect(prompt).toContain("never invent facts");
+    expect(prompt).toContain("Write the document in English.");
+    expect(buildTransparencyStatementSystemPrompt("es")).toContain("castellano peninsular");
+  });
+
+  it("user prompt serializes screening, profile, methods and deadline", () => {
+    const prompt = buildTransparencyStatementUserPrompt({
+      context,
+      profile: {
+        art50InteractionStatus: "IMPLEMENTED",
+        art50MarkingStatus: "REQUIRED",
+        art50EmotionStatus: "NOT_APPLICABLE",
+        art50DeepfakeStatus: "NOT_APPLICABLE",
+        markingMethods: ["c2pa_manifest", "invisible_watermark"],
+        placedOnMarketBefore2Aug2026: true,
+        notes: "Marking rollout scheduled for November.",
+      },
+      suggestions,
+      markingDeadline: { deadline: "2026-12-02", graceApplies: true, overdue: false },
+    });
+    expect(prompt).toContain("Art. 50(1)");
+    expect(prompt).toContain('trigger: "chatbot"');
+    expect(prompt).toContain("C2PA manifest, invisible watermark (SynthID-style)");
+    expect(prompt).toContain("Placed on the market before 2 August 2026: yes");
+    expect(prompt).toContain("2026-12-02");
+    expect(prompt).toContain("Reg. (EU) 2026/1744");
+    expect(prompt).toContain("Marking rollout scheduled for November.");
+  });
+
+  it("user prompt carries the prohibition warning and the no-profile state", () => {
+    const workplace = suggestArt50Obligations({
+      name: "MoodWatch",
+      purpose: "Emotion recognition in the workplace for productivity",
+    });
+    const prompt = buildTransparencyStatementUserPrompt({
+      context,
+      profile: null,
+      suggestions: workplace,
+      markingDeadline: null,
+    });
+    expect(prompt).toContain("PROHIBITION WARNING");
+    expect(prompt).toContain("No transparency profile has been recorded yet");
   });
 });

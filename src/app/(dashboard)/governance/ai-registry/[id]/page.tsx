@@ -62,6 +62,8 @@ import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { AnnexIvCard } from "@/components/ai/AnnexIvCard";
+import { TransparencyPanel } from "@/components/governance/TransparencyPanel";
+import { TransparencyStatementCard } from "@/components/ai/TransparencyStatementCard";
 
 const statusColors: Record<string, string> = {
   DRAFT: "border-muted-foreground text-muted-foreground",
@@ -973,6 +975,9 @@ export default function AISystemDetailPage() {
           <TabsTrigger value="risk" className="text-xs sm:text-sm">
             {t("tabRiskClassification")}
           </TabsTrigger>
+          <TabsTrigger value="transparency" className="text-xs sm:text-sm">
+            {t("tabTransparency")}
+          </TabsTrigger>
           <TabsTrigger value="assessments" className="text-xs sm:text-sm">
             {t("tabAssessments", { count: system.assessments?.length ?? 0 })}
           </TabsTrigger>
@@ -1223,6 +1228,24 @@ export default function AISystemDetailPage() {
               )}
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* Transparency Tab (Art. 50) */}
+        <TabsContent value="transparency" className="mt-4 space-y-4">
+          <Card>
+            <CardContent className="pt-6">
+              <TransparencyPanel
+                organizationId={organizationId}
+                aiSystemId={id}
+                canWrite={canWrite}
+              />
+            </CardContent>
+          </Card>
+          <TransparencyStatementCard
+            organizationId={organizationId}
+            aiSystemId={id}
+            canWrite={canWrite}
+          />
         </TabsContent>
 
         {/* Assessments Tab */}

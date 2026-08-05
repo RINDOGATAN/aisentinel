@@ -256,6 +256,50 @@ export async function seedDatabase(prisma: PrismaClient) {
   console.log("Created 4 sample AI systems");
 
   // ============================================================
+  // ART. 50 TRANSPARENCY PROFILES
+  // ============================================================
+
+  console.log("Creating sample transparency profiles...");
+
+  // Chatbot: interaction disclosure shipped; marking still open, but the
+  // system predates 2 Aug 2026 so the Reg. (EU) 2026/1744 grace period
+  // applies (deadline 2 Dec 2026 — a live countdown in the demo).
+  await prisma.transparencyProfile.upsert({
+    where: { aiSystemId: chatbot.id },
+    update: {},
+    create: {
+      aiSystemId: chatbot.id,
+      organizationId: demoOrg.id,
+      art50InteractionStatus: "IMPLEMENTED",
+      art50MarkingStatus: "REQUIRED",
+      markingMethods: ["visible_label"],
+      placedOnMarketBefore2Aug2026: true,
+      notes:
+        "Chat UI displays an AI-interaction notice at session start. Machine-readable marking of generated replies is scheduled within the Reg. (EU) 2026/1744 grace period.",
+      reviewedBy: demoUser.id,
+    },
+  });
+
+  // Content moderation agent: generates takedown notices; no grace period
+  // (not on the market before 2 Aug 2026), so the marking duty is already
+  // overdue — feeds the dashboard's overdue counter in the demo.
+  await prisma.transparencyProfile.upsert({
+    where: { aiSystemId: contentMod.id },
+    update: {},
+    create: {
+      aiSystemId: contentMod.id,
+      organizationId: demoOrg.id,
+      art50MarkingStatus: "REQUIRED",
+      placedOnMarketBefore2Aug2026: false,
+      notes:
+        "Moderation summaries shown to users are AI-generated text; marking approach not yet selected.",
+      reviewedBy: demoUser.id,
+    },
+  });
+
+  console.log("Created 2 transparency profiles");
+
+  // ============================================================
   // AI MODELS (linked to systems)
   // ============================================================
 

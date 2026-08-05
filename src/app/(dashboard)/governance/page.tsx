@@ -58,6 +58,7 @@ export default function GovernanceDashboardPage() {
   const riskPosture = stats?.riskPosture ?? { unacceptable: 0, high: 0, limited: 0, minimal: 0 };
   const incidents = stats?.incidents ?? { total: 0, critical: 0, open: 0 };
   const oversight = stats?.oversight ?? { pending: 0, overdue: 0 };
+  const transparency = stats?.transparency ?? { markingRequired: 0, markingOverdue: 0 };
   const pipeline = stats?.assessmentPipeline ?? { draft: 0, inProgress: 0, underReview: 0, approved: 0 };
   const compliance = stats?.complianceSummary ?? { compliant: 0, partial: 0, nonCompliant: 0, notAssessed: 0 };
 
@@ -344,6 +345,43 @@ export default function GovernanceDashboardPage() {
             <Link href="/governance/oversight">
               <Button variant="outline" size="sm" className="w-full">
                 {t("viewOversight")} <ArrowRight className="w-3 h-3 ml-1" />
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+
+        {/* Art. 50 Transparency */}
+        <Card>
+          <CardHeader className="p-4 sm:p-6 pb-3">
+            <CardTitle className="text-base sm:text-lg">{t("transparencyTitle")}</CardTitle>
+            <CardDescription className="text-xs sm:text-sm">
+              {t("transparencyDescription")}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0 space-y-3">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <div className={`text-2xl font-bold ${transparency.markingRequired > 0 ? "text-warning" : "text-muted-foreground"}`}>
+                  {transparency.markingRequired}
+                </div>
+                <p className="text-xs text-muted-foreground">{t("markingRequired")}</p>
+              </div>
+              <div>
+                <div className={`text-2xl font-bold ${transparency.markingOverdue > 0 ? "text-destructive" : "text-muted-foreground"}`}>
+                  {transparency.markingOverdue}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {transparency.markingOverdue > 0 ? (
+                    <span className="bg-destructive/20 text-foreground px-1.5 py-0.5">{t("markingOverdue")}</span>
+                  ) : (
+                    t("markingOverdue")
+                  )}
+                </p>
+              </div>
+            </div>
+            <Link href="/governance/ai-registry">
+              <Button variant="outline" size="sm" className="w-full">
+                {t("viewRegistry")} <ArrowRight className="w-3 h-3 ml-1" />
               </Button>
             </Link>
           </CardContent>

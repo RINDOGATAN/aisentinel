@@ -8,9 +8,9 @@ import { PrismaClient, AIRiskLevel } from "@prisma/client";
 // Key final-text anchors: Art. 4 (AI literacy), Art. 5(1)(a)-(h) prohibitions,
 // Art. 50 (transparency), Art. 72 (post-market monitoring), Art. 73 (serious
 // incidents), Art. 113 (applicability timeline as amended by the Digital
-// Omnibus on AI — adopted 8 Jul 2026, OJ publication pending; re-verify the
-// final OJ text once the Regulation (EU) 2026/XXXX number exists).
-// lawReviewedAsOf: 2026-07-17
+// Omnibus on AI — Regulation (EU) 2026/1744 of 8 July 2026, OJ L, 2026/1744,
+// 24.7.2026, in force 27 July 2026; timeline verified against the OJ text).
+// lawReviewedAsOf: 2026-08-05
 
 const prisma = new PrismaClient();
 
@@ -100,7 +100,7 @@ async function main() {
 
     // CHAPTER III - Provider & Deployer Obligations
     { code: "Art. 16", title: "Obligations of providers of high-risk AI systems", description: "Providers shall ensure compliance with requirements, establish quality management system, and maintain documentation.", applicableTo: ["HIGH"], sortOrder: 16, children: [] },
-    { code: "Art. 17", title: "Quality management system", description: "Providers shall put a quality management system in place ensuring compliance.", applicableTo: ["HIGH"], sortOrder: 17, children: [] },
+    { code: "Art. 17", title: "Quality management system", description: "Providers shall put a quality management system in place ensuring compliance. EN 18286:2026, the first candidate harmonised standard for this article, was published in July 2026 but is not yet cited in the Official Journal — no Art. 40 presumption of conformity is available yet.", applicableTo: ["HIGH"], sortOrder: 17, children: [] },
     { code: "Art. 26", title: "Obligations of deployers of high-risk AI systems", description: "Deployers shall use systems in accordance with instructions, ensure human oversight, monitor operation.", applicableTo: ["HIGH"], sortOrder: 26, children: [
       { code: "Art. 26(1)", title: "Use in accordance with instructions", description: "Take appropriate technical and organisational measures to ensure use in accordance with instructions for use.", sortOrder: 1 },
       { code: "Art. 26(2)", title: "Assign human oversight", description: "Assign human oversight to natural persons who have the necessary competence, training and authority.", sortOrder: 2 },
@@ -113,7 +113,7 @@ async function main() {
     ]},
 
     // CHAPTER IV - Transparency
-    { code: "Art. 50", title: "Transparency obligations for certain AI systems", description: "Providers and deployers of certain AI systems shall ensure transparency.", applicableTo: ["LIMITED", "HIGH"], sortOrder: 50, children: [
+    { code: "Art. 50", title: "Transparency obligations for certain AI systems", description: "Providers and deployers of certain AI systems shall ensure transparency. Applicable since 2 August 2026. Final Commission guidelines on transparency obligations adopted 20 July 2026; the Code of Practice on Transparency of AI-Generated Content was assessed adequate for Art. 50(2), (4) and (5) in July 2026.", applicableTo: ["LIMITED", "HIGH"], sortOrder: 50, children: [
       { code: "Art. 50(1)", title: "AI interaction disclosure", description: "Providers shall ensure that AI systems intended to interact with persons are designed so persons are informed they are interacting with AI.", sortOrder: 1 },
       { code: "Art. 50(2)", title: "Synthetic content marking", description: "Providers of AI systems generating synthetic audio, image, video or text content shall ensure outputs are marked in a machine-readable format.", sortOrder: 2 },
       { code: "Art. 50(3)", title: "Emotion recognition disclosure", description: "Deployers of emotion recognition or biometric categorisation systems shall inform persons exposed to the operation of the system.", sortOrder: 3 },
@@ -138,14 +138,14 @@ async function main() {
     ]},
 
     // CHAPTER XIII - Final provisions: applicability timeline (Art. 113)
-    // As amended by the Digital Omnibus on AI (adopted: EP 16 Jun 2026,
-    // Council 29 Jun 2026, signed 8 Jul 2026 as PE-CONS 30/26; awaiting
-    // Official Journal publication as of 17 Jul 2026 — re-verify the final
-    // OJ number/text once published). The omnibus DEFERS Annex III high-risk
-    // to 2 Dec 2027 and Annex I embedded high-risk to 2 Aug 2028, keeps
-    // Art. 50 transparency at 2 Aug 2026, and adds two Art. 5 prohibitions
-    // from 2 Dec 2026.
-    { code: "Art. 113", title: "Entry into force and application", description: "The AI Act entered into force on 1 August 2024 and applies in stages (see sub-entries), as amended by the Digital Omnibus on AI (adopted 8 July 2026; Official Journal publication pending as of 17 July 2026).", applicableTo: ["UNACCEPTABLE", "HIGH", "LIMITED", "MINIMAL"], sortOrder: 113, children: [
+    // As amended by the Digital Omnibus on AI — Regulation (EU) 2026/1744
+    // of 8 July 2026 (OJ L, 2026/1744, 24.7.2026; in force 27 July 2026).
+    // The omnibus DEFERS Annex III high-risk to 2 Dec 2027 and Annex I
+    // embedded high-risk to 2 Aug 2028, keeps Art. 50 transparency at
+    // 2 Aug 2026 (marking grace to 2 Dec 2026 for pre-existing systems,
+    // per Art. 1(38) — verified on EUR-Lex), and adds two Art. 5
+    // prohibitions (5(1)(ba) NCII, 5(1)(bb) CSAM) from 2 Dec 2026.
+    { code: "Art. 113", title: "Entry into force and application", description: "The AI Act entered into force on 1 August 2024 and applies in stages (see sub-entries), as amended by the Digital Omnibus on AI — Regulation (EU) 2026/1744 of 8 July 2026 (OJ L, 2026/1744, 24.7.2026), in force since 27 July 2026.", applicableTo: ["UNACCEPTABLE", "HIGH", "LIMITED", "MINIMAL"], sortOrder: 113, children: [
       { code: "Art. 113(a) — 2 Feb 2025", title: "Prohibitions and AI literacy apply", description: "Chapters I and II apply from 2 February 2025: general provisions, AI literacy (Art. 4), and prohibited AI practices (Art. 5).", sortOrder: 1 },
       { code: "Art. 113(b) — 2 Aug 2025", title: "GPAI, governance and penalties apply", description: "From 2 August 2025: notified-body rules (Chapter III, Section 4), GPAI model obligations (Chapter V), governance (Chapter VII), penalties (Chapter XII except Art. 101), and confidentiality (Art. 78).", sortOrder: 2 },
       { code: "Art. 113 — 2 Aug 2026", title: "Art. 50 transparency applies; GPAI enforcement begins", description: "From 2 August 2026: Art. 50 transparency obligations (chatbot disclosure, synthetic-content marking, deepfake labelling) apply — with a grace period to 2 December 2026 for machine-readable marking, only for systems placed on the market before 2 August 2026 — and the Commission's GPAI enforcement powers (Arts. 91-93, Art. 101 fines) begin. Annex III high-risk obligations do NOT apply on this date (deferred by the Digital Omnibus — see the 2 Dec 2027 entry).", sortOrder: 3 },

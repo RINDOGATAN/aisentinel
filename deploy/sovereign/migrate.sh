@@ -1,6 +1,6 @@
 #!/bin/sh
-# One-shot migrator for the sovereign bundle. Runs inside the builder image
-# (prisma CLI + tsx + seed scripts present). Safe to re-run any time:
+# One-shot migrator for the sovereign bundle. Runs inside the slim `migrator`
+# image (prisma CLI + tsx + seed scripts present). Safe to re-run any time:
 #
 #   docker compose run --rm migrator
 #

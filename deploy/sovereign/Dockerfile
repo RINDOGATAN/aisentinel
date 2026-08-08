@@ -2,8 +2,9 @@
 # ============================================================================
 # AI SENTINEL — sovereign image (deploy/sovereign/docker-compose.yml).
 # Multi-stage: deps → builder (prisma generate + standalone next build) →
-# runner (minimal). The `builder` stage doubles as the one-shot migrator
-# (it has the prisma CLI, tsx and the seed scripts).
+# runner (minimal app) + migrator (slim one-shot migrate/seed image with
+# ONLY the prisma CLI, generated client, tsx, and the seed scripts —
+# NOT the app's node_modules or build output).
 # The app code is UNCHANGED from cloud — only env differs.
 # ============================================================================
 
@@ -70,8 +71,11 @@ ENV NEXT_PUBLIC_LOCAL_AUTH_ENABLED=$NEXT_PUBLIC_LOCAL_AUTH_ENABLED \
 ENV ais_DATABASE_URL=postgresql://build:build@localhost:5432/build
 # The repo's `npm run build` also runs `prisma migrate deploy` (for the
 # hosted/Vercel lane) — that belongs to the migrator service, not an image
-# build with a placeholder DATABASE_URL. Invoke the buildable steps directly.
-RUN npx prisma generate && npx next build
+# build with a placeholder DATABASE_URL. Invoke the buildable steps directly,
+# as SEPARATE steps so nothing downstream of `prisma generate` ever waits on
+# (or is invalidated by) the app build.
+RUN npx prisma generate
+RUN npx next build
 
 # ---- runner: minimal standalone runtime -------------------------------------
 FROM node:22-alpine AS runner
@@ -87,3 +91,42 @@ COPY --from=builder --chown=node:node /app/.next/static ./.next/static
 USER node
 EXPOSE 3003
 CMD ["node", "server.js"]
+
+# ---- migrator: slim one-shot migrate + first-boot seed ----------------------
+# Published as ghcr.io/rindogatan/aisentinel-migrator. Contains ONLY what
+# deploy/sovereign/migrate.sh needs: the prisma CLI + generated client, tsx,
+# the append-only migrations history, and the seed scripts + their data.
+# Layers are ordered most-stable-first so a typical release republishes only
+# the final few-MB code layer, not the dependency layers.
+FROM node:22-alpine AS migrator
+RUN apk add --no-cache libc6-compat openssl
+WORKDIR /app
+ENV NODE_ENV=production \
+    NEXT_TELEMETRY_DISABLED=1
+# Layer 1 — ONLY the three tools migrate.sh needs, at the LOCKFILE's exact
+# versions (not floating). Deliberately installed WITHOUT the app package.json
+# in place: `npm install <pkg>` next to a package.json reconciles the app's
+# ENTIRE dependency tree (that is the 1.8 GB trap this stage exists to avoid).
+COPY package-lock.json /tmp/app-package-lock.json
+RUN node -e "const l=require('/tmp/app-package-lock.json').packages;const v=p=>l['node_modules/'+p].version;process.stdout.write(['prisma@'+v('prisma'),'@prisma/client@'+v('@prisma/client'),'tsx@'+v('tsx')].join(' '))" > /tmp/migrator-deps \
+ && npm install --no-save --no-audit --no-fund $(cat /tmp/migrator-deps) \
+ && npm cache clean --force \
+ && rm -rf /root/.npm /tmp/migrator-deps /tmp/app-package-lock.json package.json
+# Layer 2 — generated Prisma client (changes only when the schema changes).
+# generate needs no live DB; placeholder guards against accidental dial-out.
+ENV ais_DATABASE_URL=postgresql://build:build@localhost:5432/build
+COPY prisma/schema.prisma ./prisma/schema.prisma
+RUN npx prisma generate
+# Layer 3 — seed data snapshot (a few MB, changes on catalog refreshes).
+COPY vendors/catalog-snapshot.json ./vendors/catalog-snapshot.json
+# Layer 4 — package.json (npm run script lookup only — its deps are NOT
+# installed here), migrations + seed code + entrypoint script. Churns every
+# release but is only a few hundred KB.
+COPY package.json ./package.json
+COPY prisma ./prisma
+COPY scripts ./scripts
+COPY src/lib ./src/lib
+COPY deploy/sovereign/migrate.sh ./deploy/sovereign/migrate.sh
+# Same invocation contract as the suite kit (working_dir /app); the local
+# sovereign compose overrides this with its bind-mounted copy of migrate.sh.
+ENTRYPOINT ["/bin/sh", "deploy/sovereign/migrate.sh"]

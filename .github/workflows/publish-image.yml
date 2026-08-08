@@ -79,7 +79,7 @@ jobs:
         with:
           context: .
           file: deploy/sovereign/Dockerfile
-          target: builder
+          target: migrator
           platforms: ${{ matrix.platform }}
           build-args: |
             NEXT_PUBLIC_APP_URL=http://localhost:8487

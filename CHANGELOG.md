@@ -6,6 +6,20 @@ All notable changes to AI SENTINEL are documented here. The format follows
 
 ## [Unreleased]
 
+### Security
+
+- Cleared all 29 known dependency vulnerabilities (3 critical, 16 high). `npm audit`
+  is clean for both the production and development trees.
+- Next.js 16.1.4 to 16.3.1, resolving the Next, postcss and sharp advisories,
+  including middleware/proxy bypass, Server Actions CSRF and RSC cache poisoning.
+- `@auth/core` pinned to the patched 0.41.3 via an override. The Prisma adapter
+  hard-pins a release carrying three critical Auth.js advisories (homoglyph email
+  bypass, `getToken()` uncaught exception, and OAuth state/nonce/PKCE cookies not
+  being bound to the provider that created them). The override takes the fix without
+  the Auth.js v5 migration, as `@auth/core` is a type-only dependency of the adapter.
+- nodemailer to 9.0.5 and esbuild to 0.28.x (the latter via an override, as `tsx` and
+  `vite` both pin a vulnerable release).
+
 ### Changed
 
 - Payments and self-service billing removed from the hosted posture. When billing is disabled (NEXT_PUBLIC_STRIPE_ENABLED=false), the previously-premium assessments (Conformity, Bias and Fairness) and the Shadow AI and Vendor Catalog add-ons are available to everyone without an entitlement record. The premium value moves to LQAI skill downloads; the in-app paid gates stay dormant behind the feature flag and remain reversible if billing is switched back on.

@@ -137,7 +137,6 @@
     "aiSystemsGroup": "Sistemas de IA",
     "governanceGroup": "Gobernanza",
     "operationsGroup": "Operaciones",
-    "findAiExpert": "Buscar Experto en IA",
     "billing": "Facturación",
     "skills": "Skills",
     "settings": "Configuración",
@@ -1032,24 +1031,9 @@
     "noActivity": "Sin actividad"
   },
   "experts": {
-    "title": "Buscar un Experto en Gobernanza de IA",
-    "subtitle": "Conecte con profesionales certificados en gobernanza de IA que pueden ayudarle con sus necesidades de cumplimiento",
-    "searchPlaceholder": "Buscar por nombre, firma o especialidad...",
-    "filterSpecialization": "Especialización",
-    "filterExpertType": "Tipo de Experto",
-    "filterCountry": "País",
-    "filterLanguage": "Idioma",
-    "available": "Disponible",
-    "contactExpert": "Contactar con el Experto",
-    "notAcceptingClients": "No Acepta Clientes",
-    "previous": "Anterior",
-    "next": "Siguiente",
-    "emptyWithFilters": "No se han encontrado expertos con esos criterios. Pruebe a ajustar los filtros.",
-    "emptyNoFilters": "No hay expertos disponibles en este momento.",
-    "contactDialogTitle": "Contactar con {name}",
-    "deploymentCtaTitle": "¿Desea desplegar AI Sentinel en su propia infraestructura?",
-    "deploymentCtaDescription": "Los expertos en despliegue pueden ayudarle a configurar y mantener su propia instancia.",
-    "deploymentCtaButton": "Buscar Experto"
+    "deploymentCtaTitle": "Ejecute AI Sentinel en su propio hardware",
+    "deploymentCtaDescription": "Los ingenieros de TODO.LAW lo despliegan y mantienen en su infraestructura, incluso sin conexión.",
+    "deploymentCtaButton": "Hablemos"
   },
   "premium": {
     "enableTitle": "Activar {name}",

@@ -365,12 +365,6 @@ export default async function DocsPage() {
               description:
                 "For governance professionals running programmes for several clients: switch between organizations you manage.",
             },
-            {
-              href: "/governance/experts",
-              title: "Expert directory",
-              description:
-                "Find AI governance practitioners for deployment or assessment help.",
-            },
           ].map((item) => (
             <Link
               key={item.href}

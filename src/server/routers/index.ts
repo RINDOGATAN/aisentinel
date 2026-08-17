@@ -17,7 +17,6 @@ import { vendorCatalogRouter } from "./governance/vendorCatalog";
 import { userRouter } from "./user";
 import { quickstartRouter } from "./governance/quickstart";
 import { clientsRouter } from "./governance/clients";
-import { expertsRouter } from "./governance/experts";
 import { billingRouter } from "./billing";
 import { feedbackRouter } from "./feedback";
 import { skillsRouter } from "./governance/skills";
@@ -39,7 +38,6 @@ export const appRouter = createTRPCRouter({
   user: userRouter,
   quickstart: quickstartRouter,
   clients: clientsRouter,
-  experts: expertsRouter,
   billing: billingRouter,
   feedback: feedbackRouter,
   skills: skillsRouter,

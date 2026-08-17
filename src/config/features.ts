@@ -12,7 +12,6 @@ export interface FeatureFlags {
   biasFairnessEnabled: boolean;
   shadowAiEnabled: boolean;
   vendorCatalogEnabled: boolean;
-  expertDirectoryEnabled: boolean;
   aiAssistEnabled: boolean;
 }
 
@@ -32,7 +31,6 @@ const defaultFeatures: FeatureFlags = {
   biasFairnessEnabled: true,
   shadowAiEnabled: true,
   vendorCatalogEnabled: true,
-  expertDirectoryEnabled: true,
   // Embedded-AI assists: the capability is VISIBLE by default; the real
   // switch is the per-organization AI posture (off by default — zero AI
   // calls until an admin enables and acknowledges it). Set
@@ -67,9 +65,6 @@ export function getFeatureFlags(): FeatureFlags {
     biasFairnessEnabled: defaultFeatures.biasFairnessEnabled,
     shadowAiEnabled: defaultFeatures.shadowAiEnabled,
     vendorCatalogEnabled: defaultFeatures.vendorCatalogEnabled,
-    expertDirectoryEnabled:
-      process.env.NEXT_PUBLIC_EXPERT_DIRECTORY_ENABLED !== "false" &&
-      defaultFeatures.expertDirectoryEnabled,
     aiAssistEnabled:
       process.env.NEXT_PUBLIC_AI_ASSIST_ENABLED !== "false" &&
       defaultFeatures.aiAssistEnabled,

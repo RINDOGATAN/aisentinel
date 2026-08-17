@@ -102,14 +102,11 @@ function buildNavGroups(isConsultant: boolean, t: (key: string) => string) {
         { href: "/governance/vendors", label: t("vendors"), icon: Building2 },
         { href: "/governance/vendor-catalog", label: t("vendorCatalog"), icon: Database, premium: true },
         { href: "/governance/shadow-ai", label: t("shadowAi"), icon: Search, premium: true },
-        ...(features.expertDirectoryEnabled
-          ? [{ href: "/governance/experts", label: t("findAiExpert"), icon: Search }]
-          : []),
         // Offline licence activation for skills bought on TODO.LAW — always
         // visible: it is the purchase path when the Stripe store is off.
         { href: "/governance/skills", label: t("skills"), icon: KeyRound },
         // Billing is the hosted (Stripe) tier: hide the menu entry when the
-        // store is off (sovereign posture), same pattern as expert directory.
+        // store is off (sovereign posture).
         ...(features.stripeEnabled
           ? [{ href: "/governance/billing", label: t("billing"), icon: CreditCard }]
           : []),

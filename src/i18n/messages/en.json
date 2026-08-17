@@ -137,7 +137,6 @@
     "aiSystemsGroup": "AI Systems",
     "governanceGroup": "Governance",
     "operationsGroup": "Operations",
-    "findAiExpert": "Find AI Expert",
     "billing": "Billing",
     "skills": "Skills",
     "settings": "Settings",
@@ -1032,24 +1031,9 @@
     "noActivity": "No activity"
   },
   "experts": {
-    "title": "Find an AI Governance Expert",
-    "subtitle": "Connect with certified AI governance professionals who can help with your compliance needs",
-    "searchPlaceholder": "Search by name, firm, or expertise...",
-    "filterSpecialization": "Specialization",
-    "filterExpertType": "Expert Type",
-    "filterCountry": "Country",
-    "filterLanguage": "Language",
-    "available": "Available",
-    "contactExpert": "Contact Expert",
-    "notAcceptingClients": "Not Accepting Clients",
-    "previous": "Previous",
-    "next": "Next",
-    "emptyWithFilters": "No experts found matching your criteria. Try adjusting your filters.",
-    "emptyNoFilters": "No experts available at this time.",
-    "contactDialogTitle": "Contact {name}",
-    "deploymentCtaTitle": "Want to self-host AI Sentinel?",
-    "deploymentCtaDescription": "Deployment experts can help you set up and maintain your own instance.",
-    "deploymentCtaButton": "Find Expert"
+    "deploymentCtaTitle": "Run AI Sentinel on your own hardware",
+    "deploymentCtaDescription": "TODO.LAW engineers deploy and maintain it on your infrastructure — including fully offline.",
+    "deploymentCtaButton": "Talk to us"
   },
   "premium": {
     "enableTitle": "Enable {name}",

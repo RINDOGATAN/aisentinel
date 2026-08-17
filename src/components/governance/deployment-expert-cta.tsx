@@ -3,11 +3,10 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Server, X } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { features } from "@/config/features";
+import { brand } from "@/config/brand";
 
 const DISMISS_KEY = "ais-deployment-cta-dismissed";
 
@@ -16,7 +15,7 @@ export function DeploymentExpertCta() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    if (features.expertDirectoryEnabled && localStorage.getItem(DISMISS_KEY) !== "1") {
+    if (localStorage.getItem(DISMISS_KEY) !== "1") {
       // SSR-safe mount-only reveal; localStorage cannot be read during render.
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setVisible(true);
@@ -41,11 +40,15 @@ export function DeploymentExpertCta() {
         </div>
       </div>
       <div className="flex items-center gap-2 shrink-0 ml-7 sm:ml-0">
-        <Link href="/governance/experts?specialization=Self-Hosting+%2F+Deployment">
+        <a
+          href={`${brand.companyWebsite}/deploy`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <Button variant="outline" size="sm" className="h-7 text-xs">
             {t("deploymentCtaButton")}
           </Button>
-        </Link>
+        </a>
         <Button
           variant="ghost"
           size="icon"

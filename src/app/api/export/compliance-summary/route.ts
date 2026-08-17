@@ -3,6 +3,7 @@
 
 import { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
+import { SESSION_COOKIE_NAME, useSecureCookies } from "@/lib/session-cookie";
 import prisma from "@/lib/prisma";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { ComplianceSummaryReport, type ComplianceSummaryData, type ComplianceRequirementExport } from "@/server/services/export/compliance-summary";
@@ -23,7 +24,14 @@ export async function GET(request: NextRequest) {
     return Response.json({ error: "frameworkId is required" }, { status: 400 });
   }
 
-  const token = await getToken({ req: request });
+  const token = await getToken({
+    req: request,
+    // This app overrides NextAuth's default cookie names; without these,
+    // getToken looks for `next-auth.session-token`, never finds it, and 401s
+    // a valid session. See @/lib/session-cookie.
+    cookieName: SESSION_COOKIE_NAME,
+    secureCookie: useSecureCookies,
+  });
   const userEmail = token?.email as string | undefined;
   if (!userEmail) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });

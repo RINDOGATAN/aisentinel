@@ -10,6 +10,11 @@ import { Resend } from "resend";
 import { jwtVerify } from "jose";
 import prisma from "@/lib/prisma";
 import { features } from "@/config/features";
+import {
+  useSecureCookies,
+  SESSION_COOKIE_NAME,
+  CALLBACK_URL_COOKIE_NAME,
+} from "@/lib/session-cookie";
 import { brand } from "@/config/brand";
 import { verifyWorkspacePassphrase } from "@/lib/workspace-passphrase";
 
@@ -21,12 +26,8 @@ const isProduction = process.env.NODE_ENV === "production";
 // (NEXT_PUBLIC_LOCAL_AUTH_ENABLED=true — no external OAuth/mailer required
 // behind the firm's own network).
 const devAuthEnabled = features.devAuthEnabled && process.env.DISABLE_DEV_AUTH !== "true";
-// Secure cookies require HTTPS. Keying this on NODE_ENV broke every
-// self-hosted install: the sovereign image runs NODE_ENV=production on plain
-// http://localhost, and browsers drop `Secure` (and `__Secure-`-prefixed)
-// cookies there — sign-in "succeeded" and the session evaporated. Key it on
-// the actual URL scheme instead.
-const useSecureCookies = (process.env.NEXTAUTH_URL ?? "").startsWith("https://");
+// Cookie names + `useSecureCookies` live in @/lib/session-cookie, so that
+// getToken() callers outside the NextAuth handler resolve the same names.
 // Cross-app SSO: share session cookie across *.todo.law subdomains.
 // That is a CLOUD concern — default the .todo.law domain only on Vercel
 // (same rule as crossLoginEnabled). Self-hosted boxes get a host-only cookie;
@@ -334,7 +335,7 @@ export const authOptions: NextAuthOptions = {
   },
   cookies: {
     sessionToken: {
-      name: useSecureCookies ? "__Secure-aisentinel.session-token" : "aisentinel.session-token",
+      name: SESSION_COOKIE_NAME,
       options: {
         httpOnly: true,
         sameSite: "lax" as const,
@@ -344,7 +345,7 @@ export const authOptions: NextAuthOptions = {
       },
     },
     callbackUrl: {
-      name: useSecureCookies ? "__Secure-aisentinel.callback-url" : "aisentinel.callback-url",
+      name: CALLBACK_URL_COOKIE_NAME,
       options: {
         sameSite: "lax" as const,
         path: "/",

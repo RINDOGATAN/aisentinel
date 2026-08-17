@@ -115,7 +115,8 @@
     "compliant": "compliant",
     "partial": "partial",
     "nonCompliant": "non-compliant",
-    "notAssessed": "not assessed"
+    "notAssessed": "not assessed",
+    "updatedWhen": "Updated {when}"
   },
   "nav": {
     "dashboard": "Dashboard",

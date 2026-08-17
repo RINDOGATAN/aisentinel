@@ -295,7 +295,7 @@ export default function AIRegistryPage() {
                             <span>{t("countDataSources", { count: system._count?.dataSources ?? 0 })}</span>
                           </div>
                           <p className="text-xs text-muted-foreground mt-2">
-                            Updated {formatRelativeTime(system.updatedAt, locale)}
+                            {tc("updatedWhen", { when: formatRelativeTime(system.updatedAt, locale) })}
                           </p>
                         </CardContent>
                       </Card>

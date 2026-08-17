@@ -115,7 +115,8 @@
     "compliant": "conforme",
     "partial": "parcial",
     "nonCompliant": "no conforme",
-    "notAssessed": "sin evaluar"
+    "notAssessed": "sin evaluar",
+    "updatedWhen": "Actualizado {when}"
   },
   "nav": {
     "dashboard": "Panel de Control",

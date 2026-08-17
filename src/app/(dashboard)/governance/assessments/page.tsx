@@ -283,7 +283,7 @@ export default function AssessmentsPage() {
                           </p>
                         )}
                         <p className="text-xs text-muted-foreground">
-                          Updated {formatRelativeTime(assessment.updatedAt, locale)}
+                          {tc("updatedWhen", { when: formatRelativeTime(assessment.updatedAt, locale) })}
                         </p>
                       </CardContent>
                     </Card>

@@ -331,7 +331,7 @@ export default function VendorRiskPage() {
                             </div>
                           )}
                           <p className="text-xs text-muted-foreground mt-2">
-                            Updated {formatRelativeTime(vendor.updatedAt, locale)}
+                            {tc("updatedWhen", { when: formatRelativeTime(vendor.updatedAt, locale) })}
                           </p>
                         </CardContent>
                       </Card>

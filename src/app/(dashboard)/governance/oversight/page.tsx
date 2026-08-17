@@ -222,7 +222,7 @@ export default function OversightPage() {
                           </div>
                         </div>
                         <p className="text-xs text-muted-foreground mt-2">
-                          Updated {formatRelativeTime(gate.updatedAt, locale)}
+                          {tc("updatedWhen", { when: formatRelativeTime(gate.updatedAt, locale) })}
                         </p>
                       </CardContent>
                     </Card>

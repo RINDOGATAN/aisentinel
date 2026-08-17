@@ -246,7 +246,7 @@ export default function PoliciesPage() {
                           )}
                         </div>
                         <p className="text-xs text-muted-foreground mt-2">
-                          Updated {formatRelativeTime(policy.updatedAt, locale)}
+                          {tc("updatedWhen", { when: formatRelativeTime(policy.updatedAt, locale) })}
                         </p>
                       </CardContent>
                     </Card>

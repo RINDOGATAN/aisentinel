@@ -15,13 +15,42 @@ import {
   BookMarked,
   FileCheck,
   Activity,
+  Megaphone,
 } from "lucide-react";
+import prisma from "@/lib/prisma";
+import { features } from "@/config/features";
 
 export const metadata = {
   title: "Documentation — AI SENTINEL",
   description:
     "Learn how to use AI SENTINEL for AI governance, EU AI Act compliance, risk classification, and incident management.",
 };
+
+// Catalog sizes are read from the database rather than hardcoded: both grow on
+// every vendor.watch sync, and stale literals here previously understated them
+// by hundreds of entries. Revalidate hourly so docs traffic does not hit the DB
+// on every view.
+export const revalidate = 3600;
+
+async function getCatalogCounts() {
+  try {
+    const [vendors, tools] = await Promise.all([
+      prisma.vendorCatalog.count(),
+      prisma.shadowAITool.count(),
+    ]);
+    return { vendors, tools };
+  } catch {
+    // Docs must render even when the database is unreachable.
+    return { vendors: null, tools: null };
+  }
+}
+
+// Rounded down to the nearest 50 so the copy reads as a claim about scale
+// rather than a number that is wrong the moment the next sync lands.
+function approx(n: number | null) {
+  if (!n) return null;
+  return `${Math.floor(n / 50) * 50}+`;
+}
 
 const modules = [
   {
@@ -55,6 +84,12 @@ const modules = [
     description: "Track AI-specific failures, coordinate response tasks, and manage Art. 73 authority notifications.",
   },
   {
+    href: "/docs/transparency",
+    icon: Megaphone,
+    title: "Transparency (Art. 50)",
+    description: "Per-system Art. 50 obligations, the synthetic-content marking deadline, and the AI interaction statement.",
+  },
+  {
     href: "/docs/compliance",
     icon: Scale,
     title: "Compliance",
@@ -74,18 +109,22 @@ const modules = [
   },
 ];
 
-const premiumModules = [
+const premiumModulesFor = (counts: { vendors: number | null; tools: number | null }) => [
   {
     href: "/docs/shadow-ai",
     icon: Search,
     title: "Shadow AI Discovery",
-    description: "Discover unauthorized AI tools adopted by employees. Self-reporting portal, triage workflow, and promotion to formal governance.",
+    description: `Discover unauthorized AI tools adopted by employees, against a catalog of ${
+      counts.tools ?? "60+"
+    } known tools. Self-reporting portal, triage workflow, and promotion to formal governance.`,
   },
   {
     href: "/docs/vendor-catalog",
     icon: BookMarked,
     title: "AI Vendor Catalog",
-    description: "Pre-audited catalog of 665+ AI vendors with risk profiles, compliance certifications, and governance metadata.",
+    description: `Pre-audited catalog of ${
+      approx(counts.vendors) ?? "800+"
+    } AI vendors with risk profiles, compliance certifications, and governance metadata.`,
   },
   {
     href: "/docs/conformity-assessment",
@@ -124,7 +163,11 @@ const roles = [
   },
 ];
 
-export default function DocsPage() {
+export default async function DocsPage() {
+  const counts = await getCatalogCounts();
+  const premiumModules = premiumModulesFor(counts);
+  const allFree = features.allSkillsFree;
+
   return (
     <div className="space-y-16">
       {/* Hero */}
@@ -235,9 +278,26 @@ export default function DocsPage() {
 
       {/* Premium Modules */}
       <section>
-        <h2 className="text-2xl font-display tracking-tight mb-2">Premium Skills</h2>
+        <h2 className="text-2xl font-display tracking-tight mb-2">
+          {allFree ? "Add-on Modules" : "Premium Skills"}
+        </h2>
         <p className="text-sm text-muted-foreground mb-6">
-          Add-on modules available at &euro;9/mo each. Can be enabled from the billing page.
+          {allFree ? (
+            <>
+              Included on this instance — no licence or subscription required. These
+              modules were previously sold as add-ons; they are now enabled for
+              everyone here.
+            </>
+          ) : (
+            <>
+              Add-on modules, unlocked per organization with a TODO.LAW licence file
+              on the{" "}
+              <Link href="/governance/skills" className="text-primary hover:underline">
+                skills page
+              </Link>
+              .
+            </>
+          )}
         </p>
         <div className="grid sm:grid-cols-2 gap-4">
           {premiumModules.map((mod) => {
@@ -257,7 +317,7 @@ export default function DocsPage() {
                       {mod.title}
                     </h3>
                     <span className="px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground text-[10px] font-medium">
-                      Premium
+                      {allFree ? "Included" : "Licensed"}
                     </span>
                   </div>
                   <p className="text-sm text-muted-foreground leading-relaxed">
@@ -267,6 +327,64 @@ export default function DocsPage() {
               </Link>
             );
           })}
+        </div>
+      </section>
+
+      {/* Features without a dedicated guide yet */}
+      <section>
+        <h2 className="text-2xl font-display tracking-tight mb-2">
+          Also in the app
+        </h2>
+        <p className="text-sm text-muted-foreground mb-6">
+          Shipped features that do not have a full guide here yet. The links go to
+          the app itself, so you will be asked to sign in.
+        </p>
+        <div className="grid sm:grid-cols-2 gap-4">
+          {[
+            {
+              href: "/governance/quickstart",
+              title: "Quick Start wizard",
+              description:
+                "Bootstrap a programme from an industry template, or import an existing vendor portfolio.",
+            },
+            {
+              href: "/governance/settings",
+              title: "AI posture",
+              description:
+                "Choose whether embedded AI assists are off, use a cloud LLM, or route through a local gateway. Off by default — no AI call leaves your instance until an admin turns it on.",
+            },
+            {
+              href: "/governance/skills",
+              title: "Skills & licences",
+              description:
+                "Activate TODO.LAW licence files offline. Owner and admin only; a licence never installs code, it only unlocks an entitlement.",
+            },
+            {
+              href: "/governance/clients",
+              title: "Managed organizations",
+              description:
+                "For governance professionals running programmes for several clients: switch between organizations you manage.",
+            },
+            {
+              href: "/governance/experts",
+              title: "Expert directory",
+              description:
+                "Find AI governance practitioners for deployment or assessment help.",
+            },
+          ].map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="rounded-xl border border-border bg-card p-5 group hover:border-primary/30 transition-colors"
+            >
+              <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">
+                {item.title}
+              </h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {item.description}
+              </p>
+            </Link>
+          ))}
         </div>
       </section>
 
@@ -301,9 +419,17 @@ export default function DocsPage() {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>Conformity Assessment template (Art. 43)</li>
               <li>Bias &amp; Fairness Assessment</li>
-              <li>Shadow AI Discovery (36-tool catalog)</li>
-              <li>AI Vendor Catalog (Vendor.Watch integration)</li>
+              <li>
+                Shadow AI Discovery ({counts.tools ?? "60+"}-tool catalog)
+              </li>
+              <li>AI Vendor Catalog (vendor.watch integration)</li>
             </ul>
+            {allFree && (
+              <p className="mt-4 text-xs text-muted-foreground">
+                Enabled for everyone on this instance. The commercial path is an
+                offline licence file, not a subscription.
+              </p>
+            )}
           </div>
         </div>
       </section>

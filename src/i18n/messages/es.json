@@ -204,7 +204,26 @@
     "quickstartHeadingVendors": "Hemos encontrado {count} proveedores de IA en Vendor.Watch — ¿desea crear la gobernanza a partir de ellos?",
     "quickstartHeadingDefault": "Configure su programa de gobernanza de IA en minutos",
     "quickstartDescriptionVendors": "Genere automáticamente sistemas de IA, clasificaciones de riesgo y controles de supervisión a partir de su cartera de proveedores.",
-    "quickstartDescriptionDefault": "Importe desde el Catálogo de Proveedores de IA o parta de una plantilla sectorial para avanzar rápidamente."
+    "quickstartDescriptionDefault": "Importe desde el Catálogo de Proveedores de IA o parta de una plantilla sectorial para avanzar rápidamente.",
+    "complianceAssessedSummary": "{percent}% evaluado como conforme o parcialmente conforme",
+    "activityCreated": "Creó",
+    "activityUpdated": "Actualizó",
+    "activityDeleted": "Eliminó",
+    "activityApproved": "Aprobó",
+    "activityRejected": "Rechazó",
+    "activityPublished": "Publicó",
+    "activitySubmitted": "Envió",
+    "activityBulkUpdated": "Actualizó en bloque",
+    "entityAISystem": "Sistema de IA",
+    "entityRiskClassification": "Clasificación de Riesgo",
+    "entityAIAssessment": "Evaluación",
+    "entityComplianceMapping": "Mapeo de Cumplimiento",
+    "entityOrganization": "Organización",
+    "entityOversightGate": "Punto de Control",
+    "entityOversightDecision": "Decisión de Supervisión",
+    "entityAIIncident": "Incidente",
+    "entityAIVendor": "Proveedor",
+    "entityAIPolicy": "Política"
   },
   "aiRegistry": {
     "title": "Registro de IA",
@@ -213,7 +232,10 @@
     "searchPlaceholder": "Buscar sistemas de IA...",
     "emptyTitle": "No se han encontrado sistemas de IA",
     "emptySearchHint": "Pruebe a ajustar los términos de búsqueda",
-    "emptyDefaultHint": "Comience registrando su primer sistema de IA"
+    "emptyDefaultHint": "Comience registrando su primer sistema de IA",
+    "statsTotalSystems": "Sistemas Totales",
+    "countModels": "{count} modelos",
+    "countDataSources": "{count} fuentes de datos"
   },
   "aiRegistryNew": {
     "title": "Registrar Sistema de IA",
@@ -1062,14 +1084,25 @@
   },
   "signIn": {
     "localTitle": "Acceso local",
-    "localBody": "Tu cuenta vive en este ordenador. Introduce tu correo para abrirla: no se envía nada fuera.",
-    "emailPlaceholder": "tu@tudespacho.com",
+    "localBody": "Su cuenta vive en este ordenador. Introduzca su correo para abrirla: no se envía nada fuera.",
+    "emailPlaceholder": "usted@sudespacho.com",
     "signInButton": "Iniciar sesión",
     "signingIn": "Iniciando sesión...",
     "passphraseLabel": "Contraseña del espacio de trabajo",
-    "passphraseHelp": "Se estableció al instalar la suite. Recupérala en el ordenador que ejecuta la suite: ./suite.sh passphrase",
-    "wrongPassphrase": "Contraseña incorrecta: comprueba ./suite.sh passphrase en el ordenador que ejecuta la suite.",
-    "localSignInFailed": "No se ha podido iniciar sesión."
+    "passphraseHelp": "Se estableció al instalar la suite. Recupérela en el ordenador que ejecuta la suite: ./suite.sh passphrase",
+    "wrongPassphrase": "Contraseña incorrecta: compruebe ./suite.sh passphrase en el ordenador que ejecuta la suite.",
+    "localSignInFailed": "No se ha podido iniciar sesión.",
+    "emailLabel": "Correo electrónico",
+    "continueWithEmail": "Continuar con el correo",
+    "sending": "Enviando...",
+    "noPasswordNeeded": "No necesita contraseña. Le enviaremos un enlace seguro.",
+    "orContinueWith": "O continúe con",
+    "continueWithGoogle": "Continuar con Google",
+    "googleSigningIn": "Iniciando sesión...",
+    "legalPrefix": "Al iniciar sesión, acepta nuestros",
+    "termsOfService": "Términos del servicio",
+    "privacyPolicy": "Política de privacidad",
+    "legalAnd": "y"
   },
   "ai": {
     "panel": {

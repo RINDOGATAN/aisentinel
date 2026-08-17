@@ -31,6 +31,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
+import { useEnumLabels } from "@/lib/enum-labels";
 import { keepPreviousData } from "@tanstack/react-query";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
@@ -80,6 +81,7 @@ export default function RiskClassificationPage() {
   const router = useRouter();
   const { organization } = useOrganization();
   const t = useTranslations("riskClassification");
+  const { statusLabel, riskLabel } = useEnumLabels();
   const tc = useTranslations("common");
 
   const { data: stats, isLoading: statsLoading } = trpc.riskClassification.getStats.useQuery(
@@ -243,7 +245,7 @@ export default function RiskClassificationPage() {
                           {system.name}
                         </Link>
                         <p className="text-xs text-muted-foreground">
-                          {system.technique.replace("_", " ")} &middot; {system.status}
+                          {system.technique.replace("_", " ")} &middot; {statusLabel(system.status)}
                         </p>
                       </div>
                     </div>
@@ -286,7 +288,7 @@ export default function RiskClassificationPage() {
                                 riskLevelColors[system.riskClassification.riskLevel] || ""
                               }`}
                             >
-                              {system.riskClassification.riskLevel}
+                              {riskLabel(system.riskClassification.riskLevel)}
                             </Badge>
                             {system.riskClassification.annexIIICategory && (
                               <Badge variant="outline" className="text-xs">

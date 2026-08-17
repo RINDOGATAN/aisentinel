@@ -25,7 +25,7 @@ import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
 import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
 import { formatRelativeTime } from "@/lib/utils";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { features } from "@/config/features";
 
 const assessmentTypeKeys: Record<string, string> = {
@@ -64,6 +64,7 @@ const premiumTypes = ["CONFORMITY", "BIAS_FAIRNESS"];
 
 export default function AssessmentsPage() {
   const t = useTranslations("assessments");
+  const locale = useLocale();
   const tc = useTranslations("common");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
@@ -282,7 +283,7 @@ export default function AssessmentsPage() {
                           </p>
                         )}
                         <p className="text-xs text-muted-foreground">
-                          Updated {formatRelativeTime(assessment.updatedAt)}
+                          Updated {formatRelativeTime(assessment.updatedAt, locale)}
                         </p>
                       </CardContent>
                     </Card>

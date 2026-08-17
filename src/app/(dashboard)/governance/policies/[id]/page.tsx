@@ -45,7 +45,8 @@ import {
   User,
 } from "lucide-react";
 import { toast } from "sonner";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { useEnumLabels } from "@/lib/enum-labels";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
@@ -80,6 +81,8 @@ const systemStatusColors: Record<string, string> = {
 
 export default function PolicyDetailPage() {
   const t = useTranslations("policyDetail");
+  const { statusLabel } = useEnumLabels();
+  const locale = useLocale();
   const tc = useTranslations("common");
   const params = useParams();
   const id = params.id as string;
@@ -450,7 +453,7 @@ export default function PolicyDetailPage() {
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Last Updated</p>
-              <p className="font-medium text-sm">{formatRelativeTime(policy.updatedAt)}</p>
+              <p className="font-medium text-sm">{formatRelativeTime(policy.updatedAt, locale)}</p>
             </div>
           </CardContent>
         </Card>
@@ -612,7 +615,7 @@ export default function PolicyDetailPage() {
                           variant="outline"
                           className={`text-xs shrink-0 ${systemStatusColors[link.aiSystem.status] || ""}`}
                         >
-                          {link.aiSystem.status}
+                          {statusLabel(link.aiSystem.status)}
                         </Badge>
                       </Link>
                       <Button

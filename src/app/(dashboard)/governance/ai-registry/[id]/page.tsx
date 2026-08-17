@@ -57,7 +57,7 @@ import {
   Eye,
   Gavel,
 } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
@@ -196,6 +196,7 @@ export default function AISystemDetailPage() {
   const id = params.id as string;
   const { organization, canWrite } = useOrganization();
   const t = useTranslations("aiRegistryDetail");
+  const locale = useLocale();
   const tc = useTranslations("common");
   const utils = trpc.useUtils();
   const organizationId = organization?.id ?? "";
@@ -705,7 +706,7 @@ export default function AISystemDetailPage() {
             </div>
             <div>
               <p className="text-sm text-muted-foreground">{t("lastUpdated")}</p>
-              <p className="font-medium text-sm">{formatRelativeTime(system.updatedAt)}</p>
+              <p className="font-medium text-sm">{formatRelativeTime(system.updatedAt, locale)}</p>
             </div>
           </CardContent>
         </Card>

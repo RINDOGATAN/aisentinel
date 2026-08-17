@@ -46,7 +46,7 @@ import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
 const gateTypeKeys: Record<string, string> = {
   PRE_DEPLOYMENT: "gateTypePreDeployment",
@@ -78,6 +78,7 @@ const decisionIcons: Record<string, React.ElementType> = {
 
 export default function OversightGateDetailPage() {
   const t = useTranslations("oversightDetail");
+  const locale = useLocale();
   const to = useTranslations("oversight");
   const tc = useTranslations("common");
   const params = useParams();
@@ -368,7 +369,7 @@ export default function OversightGateDetailPage() {
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Last Updated</p>
-              <p className="font-medium text-sm">{formatRelativeTime(gate.updatedAt)}</p>
+              <p className="font-medium text-sm">{formatRelativeTime(gate.updatedAt, locale)}</p>
             </div>
           </CardContent>
         </Card>

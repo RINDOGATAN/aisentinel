@@ -14,9 +14,11 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Lock, Loader2, ClipboardCheck } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { useEnumLabels } from "@/lib/enum-labels";
 
 export default function NewAssessmentPage() {
   const t = useTranslations("assessmentsNew");
+  const { statusLabel } = useEnumLabels();
   const tc = useTranslations("common");
   const router = useRouter();
   const { organization } = useOrganization();
@@ -93,7 +95,7 @@ export default function NewAssessmentPage() {
                   }`}
                 >
                   <div className="font-medium">{system.name}</div>
-                  <div className="text-sm text-muted-foreground">{system.status} &middot; {system.technique}</div>
+                  <div className="text-sm text-muted-foreground">{statusLabel(system.status)} &middot; {system.technique}</div>
                 </button>
               ))
             )}

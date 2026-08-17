@@ -18,7 +18,7 @@ import {
   Link2,
 } from "lucide-react";
 import { keepPreviousData } from "@tanstack/react-query";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -57,6 +57,7 @@ const tabTypeMap: Record<string, PolicyTypeFilter | undefined> = {
 
 export default function PoliciesPage() {
   const t = useTranslations("policies");
+  const locale = useLocale();
   const tc = useTranslations("common");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
@@ -245,7 +246,7 @@ export default function PoliciesPage() {
                           )}
                         </div>
                         <p className="text-xs text-muted-foreground mt-2">
-                          Updated {formatRelativeTime(policy.updatedAt)}
+                          Updated {formatRelativeTime(policy.updatedAt, locale)}
                         </p>
                       </CardContent>
                     </Card>

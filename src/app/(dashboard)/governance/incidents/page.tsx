@@ -24,7 +24,8 @@ import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
 import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
 import { formatRelativeTime } from "@/lib/utils";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { useEnumLabels } from "@/lib/enum-labels";
 
 const severityColors: Record<string, string> = {
   CRITICAL: "bg-destructive text-destructive-foreground",
@@ -67,6 +68,8 @@ const tabTypeMap: Record<string, IncidentTypeFilter | undefined> = {
 
 export default function IncidentsPage() {
   const t = useTranslations("incidents");
+  const { severityLabel, statusLabel } = useEnumLabels();
+  const locale = useLocale();
   const tc = useTranslations("common");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
@@ -203,13 +206,13 @@ export default function IncidentsPage() {
                             <Badge
                               className={`text-xs ${severityColors[incident.severity] || ""}`}
                             >
-                              {incident.severity}
+                              {severityLabel(incident.severity)}
                             </Badge>
                             <Badge
                               variant="outline"
                               className={`text-xs ${statusColors[incident.status] || ""}`}
                             >
-                              {incident.status}
+                              {statusLabel(incident.status)}
                             </Badge>
                           </div>
                         </div>
@@ -237,7 +240,7 @@ export default function IncidentsPage() {
                         <div className="flex justify-between text-xs text-muted-foreground">
                           <span className="flex items-center gap-1">
                             <Clock className="w-3 h-3" />
-                            {formatRelativeTime(incident.reportedAt)}
+                            {formatRelativeTime(incident.reportedAt, locale)}
                           </span>
                           <span>{incident._count?.tasks ?? 0} tasks</span>
                         </div>

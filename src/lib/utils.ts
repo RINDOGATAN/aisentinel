@@ -28,26 +28,47 @@ export function formatDateTime(date: Date | string | null | undefined): string {
   });
 }
 
-export function formatRelativeTime(date: Date | string | null | undefined): string {
+/**
+ * Locale-aware "3 months ago" / "hace 3 meses".
+ *
+ * Built on Intl.RelativeTimeFormat rather than translation keys: it already
+ * knows every language's pluralisation and word order, so Spanish gets
+ * "hace 3 meses" (preposition first) instead of a key-per-bucket that would
+ * have to be written twice and kept in sync.
+ *
+ * `numeric: "auto"` is what produces "yesterday"/"ayer" rather than
+ * "1 day ago"/"hace 1 día".
+ *
+ * Pass the active locale from `useLocale()`; it defaults to English so a
+ * missed call site degrades to the previous behaviour rather than throwing.
+ */
+export function formatRelativeTime(
+  date: Date | string | null | undefined,
+  locale: string = "en"
+): string {
   if (!date) return "N/A";
   const now = new Date();
   const then = new Date(date);
   const diffMs = now.getTime() - then.getTime();
+  const diffMinutes = Math.floor(diffMs / (1000 * 60));
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
+  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: "auto" });
+
+  // Negative values read as the past ("hace 3 meses"), which is what every
+  // caller here displays.
   if (diffDays === 0) {
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
     if (diffHours === 0) {
-      const diffMinutes = Math.floor(diffMs / (1000 * 60));
-      return diffMinutes <= 1 ? "just now" : `${diffMinutes} minutes ago`;
+      if (diffMinutes <= 1) return rtf.format(0, "minute"); // "this minute"/"ahora"
+      return rtf.format(-diffMinutes, "minute");
     }
-    return diffHours === 1 ? "1 hour ago" : `${diffHours} hours ago`;
+    return rtf.format(-diffHours, "hour");
   }
-  if (diffDays === 1) return "yesterday";
-  if (diffDays < 7) return `${diffDays} days ago`;
-  if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
-  if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`;
-  return `${Math.floor(diffDays / 365)} years ago`;
+  if (diffDays < 7) return rtf.format(-diffDays, "day");
+  if (diffDays < 30) return rtf.format(-Math.floor(diffDays / 7), "week");
+  if (diffDays < 365) return rtf.format(-Math.floor(diffDays / 30), "month");
+  return rtf.format(-Math.floor(diffDays / 365), "year");
 }
 
 export function getDaysUntil(date: Date | string | null | undefined): number | null {

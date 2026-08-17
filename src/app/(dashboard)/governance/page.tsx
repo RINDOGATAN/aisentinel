@@ -30,7 +30,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { formatRelativeTime } from "@/lib/utils";
@@ -39,6 +39,7 @@ import { DeploymentExpertCta } from "@/components/governance/deployment-expert-c
 export default function GovernanceDashboardPage() {
   const { organization, organizations, setOrganization, canWrite } = useOrganization();
   const t = useTranslations("dashboard");
+  const locale = useLocale();
   const tc = useTranslations("common");
 
   const { data: stats, isLoading } = trpc.organization.getDashboardStats.useQuery(
@@ -66,27 +67,27 @@ export default function GovernanceDashboardPage() {
   const complianceTotal = compliance.compliant + compliance.partial + compliance.nonCompliant + compliance.notAssessed;
 
   const actionLabels: Record<string, string> = {
-    CREATE: "Created",
-    UPDATE: "Updated",
-    DELETE: "Deleted",
-    APPROVE: "Approved",
-    REJECT: "Rejected",
-    PUBLISH: "Published",
-    SUBMIT_FOR_REVIEW: "Submitted",
-    BULK_UPDATE: "Bulk updated",
+    CREATE: t("activityCreated"),
+    UPDATE: t("activityUpdated"),
+    DELETE: t("activityDeleted"),
+    APPROVE: t("activityApproved"),
+    REJECT: t("activityRejected"),
+    PUBLISH: t("activityPublished"),
+    SUBMIT_FOR_REVIEW: t("activitySubmitted"),
+    BULK_UPDATE: t("activityBulkUpdated"),
   };
 
   const entityLabels: Record<string, string> = {
-    AISystem: "AI System",
-    RiskClassification: "Risk Classification",
-    AIAssessment: "Assessment",
-    ComplianceMapping: "Compliance Mapping",
-    Organization: "Organization",
-    OversightGate: "Oversight Gate",
-    OversightDecision: "Oversight Decision",
-    AIIncident: "Incident",
-    AIVendor: "Vendor",
-    AIPolicy: "Policy",
+    AISystem: t("entityAISystem"),
+    RiskClassification: t("entityRiskClassification"),
+    AIAssessment: t("entityAIAssessment"),
+    ComplianceMapping: t("entityComplianceMapping"),
+    Organization: t("entityOrganization"),
+    OversightGate: t("entityOversightGate"),
+    OversightDecision: t("entityOversightDecision"),
+    AIIncident: t("entityAIIncident"),
+    AIVendor: t("entityAIVendor"),
+    AIPolicy: t("entityAIPolicy"),
   };
 
   return (
@@ -403,15 +404,15 @@ export default function GovernanceDashboardPage() {
               </div>
               <div>
                 <div className="text-lg font-bold text-info">{pipeline.inProgress}</div>
-                <p className="text-[10px] text-muted-foreground">In Progress</p>
+                <p className="text-[10px] text-muted-foreground">{tc("statusInProgress")}</p>
               </div>
               <div>
                 <div className="text-lg font-bold text-warning">{pipeline.underReview}</div>
-                <p className="text-[10px] text-muted-foreground">Review</p>
+                <p className="text-[10px] text-muted-foreground">{tc("statusUnderReview")}</p>
               </div>
               <div>
                 <div className="text-lg font-bold text-success">{pipeline.approved}</div>
-                <p className="text-[10px] text-muted-foreground">Approved</p>
+                <p className="text-[10px] text-muted-foreground">{tc("statusApproved")}</p>
               </div>
             </div>
             {/* Progress bar */}
@@ -462,23 +463,23 @@ export default function GovernanceDashboardPage() {
                 <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
                   <span className="flex items-center gap-1.5">
                     <span className="w-2.5 h-2.5 rounded-sm bg-success/60" />
-                    Compliant ({compliance.compliant})
+                    {tc("complianceCompliant")} ({compliance.compliant})
                   </span>
                   <span className="flex items-center gap-1.5">
                     <span className="w-2.5 h-2.5 rounded-sm bg-warning/50" />
-                    Partial ({compliance.partial})
+                    {tc("compliancePartial")} ({compliance.partial})
                   </span>
                   <span className="flex items-center gap-1.5">
                     <span className="w-2.5 h-2.5 rounded-sm bg-destructive/50" />
-                    Non-Compliant ({compliance.nonCompliant})
+                    {tc("complianceNonCompliant")} ({compliance.nonCompliant})
                   </span>
                   <span className="flex items-center gap-1.5">
                     <span className="w-2.5 h-2.5 rounded-sm bg-muted" />
-                    Not Assessed ({compliance.notAssessed})
+                    {tc("complianceNotAssessed")} ({compliance.notAssessed})
                   </span>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  {Math.round(((compliance.compliant + compliance.partial) / complianceTotal) * 100)}% assessed as compliant or partially compliant
+                  {t("complianceAssessedSummary", { percent: Math.round(((compliance.compliant + compliance.partial) / complianceTotal) * 100) })}
                 </p>
               </>
             ) : (
@@ -577,7 +578,7 @@ export default function GovernanceDashboardPage() {
                         {activity.user?.name || activity.user?.email || "System"}
                       </span>
                       <span className="text-xs text-muted-foreground">
-                        {formatRelativeTime(activity.createdAt)}
+                        {formatRelativeTime(activity.createdAt, locale)}
                       </span>
                     </div>
                   </div>

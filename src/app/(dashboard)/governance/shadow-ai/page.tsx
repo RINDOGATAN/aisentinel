@@ -21,7 +21,7 @@ import {
   Cpu,
 } from "lucide-react";
 import { keepPreviousData } from "@tanstack/react-query";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -58,6 +58,7 @@ const tabToStatus: Record<string, ShadowAIStatus | undefined> = {
 
 export default function ShadowAIPage() {
   const t = useTranslations("shadowAi");
+  const locale = useLocale();
   const tc = useTranslations("common");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
@@ -334,7 +335,7 @@ export default function ShadowAIPage() {
                             </p>
                           )}
                           <p className="text-xs text-muted-foreground">
-                            Reported {formatRelativeTime(report.createdAt)}
+                            Reported {formatRelativeTime(report.createdAt, locale)}
                           </p>
                         </CardContent>
                       </Card>

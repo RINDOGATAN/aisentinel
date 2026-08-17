@@ -37,7 +37,8 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { brand } from "@/config/brand";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { useEnumLabels } from "@/lib/enum-labels";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { formatDate, formatRelativeTime, getDaysUntil } from "@/lib/utils";
@@ -89,6 +90,8 @@ const assessmentStatusLabels: Record<string, string> = {
 
 export default function VendorDetailPage() {
   const t = useTranslations("vendorDetail");
+  const { riskLabel, statusLabel } = useEnumLabels();
+  const locale = useLocale();
   const tc = useTranslations("common");
   const params = useParams();
   const id = params.id as string;
@@ -227,7 +230,7 @@ export default function VendorDetailPage() {
                 </Badge>
                 {vendor.riskLevel && (
                   <Badge className={riskLevelColors[vendor.riskLevel] || ""}>
-                    {vendor.riskLevel} Risk
+                    {tc("riskWithLevel", { level: riskLabel(vendor.riskLevel) })}
                   </Badge>
                 )}
               </div>
@@ -384,7 +387,7 @@ export default function VendorDetailPage() {
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Last Updated</p>
-              <p className="font-medium text-sm">{formatRelativeTime(vendor.updatedAt)}</p>
+              <p className="font-medium text-sm">{formatRelativeTime(vendor.updatedAt, locale)}</p>
             </div>
           </CardContent>
         </Card>
@@ -444,7 +447,7 @@ export default function VendorDetailPage() {
                           variant="outline"
                           className={`text-xs ${systemStatusColors[system.status] || ""}`}
                         >
-                          {system.status}
+                          {statusLabel(system.status)}
                         </Badge>
                       </div>
                     </Link>
@@ -510,7 +513,7 @@ export default function VendorDetailPage() {
                         <div className="min-w-0">
                           <p className="font-medium text-sm truncate">{system.name}</p>
                           <p className="text-xs text-muted-foreground">
-                            {system.status} · {system.technique.replace(/_/g, " ")}
+                            {statusLabel(system.status)} · {system.technique.replace(/_/g, " ")}
                           </p>
                         </div>
                         {linkSystem.isPending && (

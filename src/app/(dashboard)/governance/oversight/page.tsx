@@ -24,7 +24,7 @@ import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
 import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
 import { formatRelativeTime, formatDate } from "@/lib/utils";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
 const gateTypeKeys: Record<string, string> = {
   PRE_DEPLOYMENT: "gateTypePreDeployment",
@@ -44,6 +44,7 @@ const gateStatusColors: Record<string, string> = {
 
 export default function OversightPage() {
   const t = useTranslations("oversight");
+  const locale = useLocale();
   const tc = useTranslations("common");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
@@ -221,7 +222,7 @@ export default function OversightPage() {
                           </div>
                         </div>
                         <p className="text-xs text-muted-foreground mt-2">
-                          Updated {formatRelativeTime(gate.updatedAt)}
+                          Updated {formatRelativeTime(gate.updatedAt, locale)}
                         </p>
                       </CardContent>
                     </Card>

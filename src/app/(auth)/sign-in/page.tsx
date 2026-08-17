@@ -190,7 +190,7 @@ export default function SignInPage() {
           <>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
+                <Label htmlFor="email">{t("emailLabel")}</Label>
                 <Input
                   id="email"
                   type="email"
@@ -211,11 +211,11 @@ export default function SignInPage() {
                 {isLoading ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    Sending...
+                    {t("sending")}
                   </>
                 ) : (
                   <>
-                    Continue with Email
+                    {t("continueWithEmail")}
                     <ArrowRight className="w-4 h-4" />
                   </>
                 )}
@@ -223,14 +223,14 @@ export default function SignInPage() {
             </form>
 
             <p className="mt-6 text-center text-sm text-muted-foreground">
-              No password needed. We&apos;ll send you a secure link.
+              {t("noPasswordNeeded")}
             </p>
           </>
         )}
 
         {hasGoogle && (
           <div className={hasEmail ? "mt-6 pt-6 border-t border-border" : ""}>
-            {hasEmail && <p className="text-xs text-muted-foreground text-center mb-4">Or continue with</p>}
+            {hasEmail && <p className="text-xs text-muted-foreground text-center mb-4">{t("orContinueWith")}</p>}
             {/* Native form POST avoids Safari ITP blocking fetch-based OAuth redirects */}
             <form method="post" action="/api/auth/signin/google" onSubmit={handleGoogleFormSubmit}>
               <input type="hidden" name="csrfToken" value={csrfToken ?? ""} />
@@ -251,7 +251,7 @@ export default function SignInPage() {
                   </svg>
                 )}
                 <span className="font-medium">
-                  {isGoogleLoading ? "Signing in..." : "Continue with Google"}
+                  {isGoogleLoading ? t("googleSigningIn") : t("continueWithGoogle")}
                 </span>
               </button>
             </form>
@@ -268,13 +268,13 @@ export default function SignInPage() {
 
         <div className="mt-6 pt-6 border-t border-border text-center">
           <p className="text-xs text-muted-foreground">
-            By signing in, you agree to our{" "}
+            {t("legalPrefix")}{" "}
             <a href={brand.termsOfUseUrl} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-              Terms of Service
+              {t("termsOfService")}
             </a>{" "}
-            and{" "}
+            {t("legalAnd")}{" "}
             <a href={brand.privacyPolicyUrl} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-              Privacy Policy
+              {t("privacyPolicy")}
             </a>
           </p>
         </div>

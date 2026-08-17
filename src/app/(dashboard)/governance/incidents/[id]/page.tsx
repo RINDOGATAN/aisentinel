@@ -38,7 +38,7 @@ import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
 type AIIncidentStatus = "REPORTED" | "INVESTIGATING" | "MITIGATING" | "RESOLVED" | "CLOSED";
 type AINotificationStatus = "PENDING" | "SENT" | "ACKNOWLEDGED";
@@ -88,6 +88,7 @@ const statusTransitions: Record<string, string[]> = {
 
 export default function IncidentDetailPage() {
   const t = useTranslations("incidentDetail");
+  const locale = useLocale();
   const ti = useTranslations("incidents");
   const tc = useTranslations("common");
   const params = useParams();
@@ -369,7 +370,7 @@ export default function IncidentDetailPage() {
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Last Updated</p>
-              <p className="font-medium text-sm">{formatRelativeTime(incident.updatedAt)}</p>
+              <p className="font-medium text-sm">{formatRelativeTime(incident.updatedAt, locale)}</p>
             </div>
           </CardContent>
         </Card>

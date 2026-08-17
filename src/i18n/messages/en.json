@@ -204,7 +204,26 @@
     "quickstartHeadingVendors": "We found {count} AI vendors from Vendor.Watch — build governance around them?",
     "quickstartHeadingDefault": "Bootstrap your AI governance program in minutes",
     "quickstartDescriptionVendors": "Auto-generate AI systems, risk classifications, and oversight gates from your vendor portfolio.",
-    "quickstartDescriptionDefault": "Import from the AI Vendor Catalog or start from an industry template to get a head start."
+    "quickstartDescriptionDefault": "Import from the AI Vendor Catalog or start from an industry template to get a head start.",
+    "complianceAssessedSummary": "{percent}% assessed as compliant or partially compliant",
+    "activityCreated": "Created",
+    "activityUpdated": "Updated",
+    "activityDeleted": "Deleted",
+    "activityApproved": "Approved",
+    "activityRejected": "Rejected",
+    "activityPublished": "Published",
+    "activitySubmitted": "Submitted",
+    "activityBulkUpdated": "Bulk updated",
+    "entityAISystem": "AI System",
+    "entityRiskClassification": "Risk Classification",
+    "entityAIAssessment": "Assessment",
+    "entityComplianceMapping": "Compliance Mapping",
+    "entityOrganization": "Organization",
+    "entityOversightGate": "Oversight Gate",
+    "entityOversightDecision": "Oversight Decision",
+    "entityAIIncident": "Incident",
+    "entityAIVendor": "Vendor",
+    "entityAIPolicy": "Policy"
   },
   "aiRegistry": {
     "title": "AI Registry",
@@ -213,7 +232,10 @@
     "searchPlaceholder": "Search AI systems...",
     "emptyTitle": "No AI systems found",
     "emptySearchHint": "Try adjusting your search terms",
-    "emptyDefaultHint": "Start by registering your first AI system"
+    "emptyDefaultHint": "Start by registering your first AI system",
+    "statsTotalSystems": "Total Systems",
+    "countModels": "{count} models",
+    "countDataSources": "{count} data sources"
   },
   "aiRegistryNew": {
     "title": "Register AI System",
@@ -1069,7 +1091,18 @@
     "passphraseLabel": "Workspace passphrase",
     "passphraseHelp": "Set when the suite was installed. Recover it on the computer that runs the suite: ./suite.sh passphrase",
     "wrongPassphrase": "Wrong passphrase — check ./suite.sh passphrase on the host computer.",
-    "localSignInFailed": "Local sign-in failed."
+    "localSignInFailed": "Local sign-in failed.",
+    "emailLabel": "Email Address",
+    "continueWithEmail": "Continue with Email",
+    "sending": "Sending...",
+    "noPasswordNeeded": "No password needed. We'll send you a secure link.",
+    "orContinueWith": "Or continue with",
+    "continueWithGoogle": "Continue with Google",
+    "googleSigningIn": "Signing in...",
+    "legalPrefix": "By signing in, you agree to our",
+    "termsOfService": "Terms of Service",
+    "privacyPolicy": "Privacy Policy",
+    "legalAnd": "and"
   },
   "ai": {
     "panel": {

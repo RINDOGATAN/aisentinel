@@ -44,7 +44,8 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { toast } from "sonner";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { useEnumLabels } from "@/lib/enum-labels";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
@@ -111,6 +112,8 @@ const riskIndicatorColors: Record<string, string> = {
 
 export default function ShadowAIDetailPage() {
   const t = useTranslations("shadowAiDetail");
+  const { statusLabel } = useEnumLabels();
+  const locale = useLocale();
   const tc = useTranslations("common");
   const params = useParams();
   const id = params.id as string;
@@ -397,7 +400,7 @@ export default function ShadowAIDetailPage() {
               <div>
                 <p className="text-sm text-muted-foreground">Last Updated</p>
                 <p className="font-medium text-sm">
-                  {formatRelativeTime(report.updatedAt)}
+                  {formatRelativeTime(report.updatedAt, locale)}
                 </p>
               </div>
             </div>
@@ -625,7 +628,7 @@ export default function ShadowAIDetailPage() {
                   <SelectContent>
                     {systems.map((system) => (
                       <SelectItem key={system.id} value={system.id}>
-                        {system.name} ({system.status})
+                        {system.name} ({statusLabel(system.status)})
                       </SelectItem>
                     ))}
                   </SelectContent>

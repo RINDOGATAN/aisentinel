@@ -31,7 +31,8 @@ import {
 } from "lucide-react";
 import { keepPreviousData } from "@tanstack/react-query";
 import { trpc } from "@/lib/trpc";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { useEnumLabels } from "@/lib/enum-labels";
 import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
 import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
@@ -76,21 +77,15 @@ const techniqueIcons: Record<string, React.ElementType> = {
   MACHINE_LEARNING: Cog,
 };
 
-const roleLabels: Record<string, string> = {
-  PROVIDER: "Provider",
-  DEPLOYER: "Deployer",
-  IMPORTER: "Importer",
-  DISTRIBUTOR: "Distributor",
-  USER: "User",
-};
-
 export default function AIRegistryPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const debouncedSearch = useDebounce(searchQuery);
   const { organization, organizations, canWrite, isLoading: orgLoading } = useOrganization();
   const t = useTranslations("aiRegistry");
+  const locale = useLocale();
   const tc = useTranslations("common");
+  const { statusLabel, riskLabel, roleLabel } = useEnumLabels();
 
   // While the organization context is still resolving, `canWrite` is false
   // even for owners — don't hide the Register button on that transient state,
@@ -184,7 +179,7 @@ export default function AIRegistryPage() {
         <Card>
           <CardContent className="p-4 sm:pt-6">
             <div className="text-xl sm:text-2xl font-bold text-primary">{stats.total}</div>
-            <p className="text-xs sm:text-sm text-muted-foreground">Total Systems</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">{t("statsTotalSystems")}</p>
           </CardContent>
         </Card>
         <Card>
@@ -266,13 +261,13 @@ export default function AIRegistryPage() {
                                 variant="outline"
                                 className={`text-xs ${statusColors[system.status] || ""}`}
                               >
-                                {system.status}
+                                {statusLabel(system.status)}
                               </Badge>
                               {riskLevel && (
                                 <Badge
                                   className={`text-xs ${riskLevelColors[riskLevel] || ""}`}
                                 >
-                                  {riskLevel}
+                                  {riskLabel(riskLevel)}
                                 </Badge>
                               )}
                             </div>
@@ -292,15 +287,15 @@ export default function AIRegistryPage() {
                               {techniqueLabels[system.technique] || system.technique}
                             </Badge>
                             <Badge variant="outline" className="text-xs">
-                              {roleLabels[system.role] || system.role}
+                              {roleLabel(system.role)}
                             </Badge>
                           </div>
                           <div className="flex justify-between text-xs text-muted-foreground">
-                            <span>{system._count?.models ?? 0} models</span>
-                            <span>{system._count?.dataSources ?? 0} data sources</span>
+                            <span>{t("countModels", { count: system._count?.models ?? 0 })}</span>
+                            <span>{t("countDataSources", { count: system._count?.dataSources ?? 0 })}</span>
                           </div>
                           <p className="text-xs text-muted-foreground mt-2">
-                            Updated {formatRelativeTime(system.updatedAt)}
+                            Updated {formatRelativeTime(system.updatedAt, locale)}
                           </p>
                         </CardContent>
                       </Card>

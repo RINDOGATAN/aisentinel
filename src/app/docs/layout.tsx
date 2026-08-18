@@ -4,7 +4,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { brand } from "@/config/brand";
+import { LocaleSwitcher } from "@/components/locale-switcher";
 import {
   Brain,
   ShieldAlert,
@@ -27,28 +29,37 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
-const sidebarItems = [
-  { href: "/docs", label: "Getting Started", icon: BookOpen, exact: true },
-  { href: "/docs/ai-registry", label: "AI Registry", icon: Brain },
-  { href: "/docs/risk-classification", label: "Risk Classification", icon: ShieldAlert },
-  { href: "/docs/assessments", label: "Assessments", icon: ClipboardCheck },
-  { href: "/docs/oversight", label: "Human Oversight", icon: Eye },
-  { href: "/docs/incidents", label: "AI Incidents", icon: AlertTriangle },
-  { href: "/docs/transparency", label: "Transparency (Art. 50)", icon: Megaphone },
-  { href: "/docs/compliance", label: "Compliance", icon: Scale },
-  { href: "/docs/vendors", label: "Vendor Risk", icon: Building2 },
-  { href: "/docs/policies", label: "Policy Management", icon: ScrollText },
-  { href: "/docs/shadow-ai", label: "Shadow AI Discovery", icon: Search, premium: true },
-  { href: "/docs/vendor-catalog", label: "AI Vendor Catalog", icon: BookMarked, premium: true },
-  { href: "/docs/conformity-assessment", label: "Conformity Assessment", icon: FileCheck, premium: true },
-  { href: "/docs/bias-fairness", label: "Bias & Fairness", icon: Activity, premium: true },
-  { href: "/docs/roles", label: "Roles & Permissions", icon: Users },
-  { href: "/docs/security", label: "Security & Trust", icon: Shield },
+type SidebarItem = {
+  href: string;
+  labelKey: string;
+  icon: React.ComponentType<{ className?: string }>;
+  exact?: boolean;
+  premium?: boolean;
+};
+
+const sidebarItems: SidebarItem[] = [
+  { href: "/docs", labelKey: "gettingStarted", icon: BookOpen, exact: true },
+  { href: "/docs/ai-registry", labelKey: "aiRegistry", icon: Brain },
+  { href: "/docs/risk-classification", labelKey: "riskClassification", icon: ShieldAlert },
+  { href: "/docs/assessments", labelKey: "assessments", icon: ClipboardCheck },
+  { href: "/docs/oversight", labelKey: "oversight", icon: Eye },
+  { href: "/docs/incidents", labelKey: "incidents", icon: AlertTriangle },
+  { href: "/docs/transparency", labelKey: "transparency", icon: Megaphone },
+  { href: "/docs/compliance", labelKey: "compliance", icon: Scale },
+  { href: "/docs/vendors", labelKey: "vendors", icon: Building2 },
+  { href: "/docs/policies", labelKey: "policies", icon: ScrollText },
+  { href: "/docs/shadow-ai", labelKey: "shadowAi", icon: Search, premium: true },
+  { href: "/docs/vendor-catalog", labelKey: "vendorCatalog", icon: BookMarked, premium: true },
+  { href: "/docs/conformity-assessment", labelKey: "conformity", icon: FileCheck, premium: true },
+  { href: "/docs/bias-fairness", labelKey: "biasFairness", icon: Activity, premium: true },
+  { href: "/docs/roles", labelKey: "roles", icon: Users },
+  { href: "/docs/security", labelKey: "security", icon: Shield },
 ];
 
 export default function DocsLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const t = useTranslations("docs.layout");
 
   return (
     <div className="min-h-screen bg-background">
@@ -72,14 +83,15 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
               href="/docs"
               className="text-sm font-medium text-primary hover:text-primary/80 transition-colors"
             >
-              Docs
+              {t("headerDocs")}
             </Link>
             <Link
               href="/sign-in"
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
-              Sign In
+              {t("headerSignIn")}
             </Link>
+            <LocaleSwitcher />
           </nav>
         </div>
       </header>
@@ -105,7 +117,7 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
                   <div key={item.href}>
                     {showPremiumLabel && (
                       <div className="px-3 pt-4 pb-1 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
-                        Premium
+                        {t("premiumLabel")}
                       </div>
                     )}
                     <Link
@@ -118,7 +130,7 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
                       }`}
                     >
                       <Icon className="w-4 h-4 shrink-0" />
-                      {item.label}
+                      {t(`nav.${item.labelKey}`)}
                     </Link>
                   </div>
                 );
@@ -135,16 +147,20 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
       <footer className="border-t border-border mt-auto py-4">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 text-center text-xs text-muted-foreground space-y-2">
           <p>
-            {brand.name} is a{" "}
-            <a
-              href={brand.companyWebsite}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-foreground transition-colors"
-            >
-              {brand.companyName}
-            </a>{" "}
-            service.
+            {t.rich("footer.service", {
+              app: brand.name,
+              company: brand.companyName,
+              link: (chunks) => (
+                <a
+                  href={brand.companyWebsite}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-foreground transition-colors"
+                >
+                  {chunks}
+                </a>
+              ),
+            })}
           </p>
           <div className="flex items-center justify-center gap-1">
             <a
@@ -153,7 +169,7 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors"
             >
-              Privacy Policy
+              {t("footer.privacyPolicy")}
             </a>
             <span className="text-border">&middot;</span>
             <a
@@ -162,21 +178,21 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors"
             >
-              Terms of Service
+              {t("footer.termsOfService")}
             </a>
             <span className="text-border">&middot;</span>
             <Link
               href="/docs"
               className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors"
             >
-              How It Works
+              {t("footer.howItWorks")}
             </Link>
             <span className="text-border">&middot;</span>
             <Link
               href="/docs/security"
               className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors"
             >
-              Security
+              {t("footer.security")}
             </Link>
             {/* AGPL section 13: offer the Corresponding Source to network users. */}
             {brand.sourceUrl && (
@@ -188,7 +204,7 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
                   rel="noopener noreferrer"
                   className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors"
                 >
-                  Source code (AGPL-3.0)
+                  {t("footer.sourceCode")}
                 </a>
               </>
             )}

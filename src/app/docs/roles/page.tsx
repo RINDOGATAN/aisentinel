@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025-2026 Rindogatan LLC
 
-import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import {
   Crown,
   ShieldCheck,
@@ -10,134 +10,102 @@ import {
   Eye,
   Check,
   X,
-  ArrowRight,
 } from "lucide-react";
 
-export const metadata = {
-  title: "Roles & Permissions — AI SENTINEL Docs",
-  description:
-    "Understand the five user roles in AI SENTINEL and what each role can do across all governance modules.",
-};
+export async function generateMetadata() {
+  const t = await getTranslations("docs.roles");
+  return {
+    title: t("metaTitle"),
+    description: t("metaDescription"),
+  };
+}
 
-const roles = [
+const roleStyles = [
   {
     key: "OWNER",
-    name: "Owner",
+    tKey: "owner",
     icon: Crown,
     color: "text-amber-400",
     bg: "bg-amber-400/10",
     border: "border-amber-400/20",
-    summary: "Full platform control. Billing, team management, and all governance operations.",
-    capabilities: [
-      "Manage billing & subscription",
-      "Invite and remove members",
-      "Change member roles",
-      "All Admin capabilities",
-    ],
   },
   {
     key: "ADMIN",
-    name: "Admin",
+    tKey: "admin",
     icon: ShieldCheck,
     color: "text-blue-400",
     bg: "bg-blue-400/10",
     border: "border-blue-400/20",
-    summary: "Organization management and full governance access without billing control.",
-    capabilities: [
-      "Invite and remove members",
-      "Configure organization settings",
-      "All AI Officer capabilities",
-    ],
   },
   {
     key: "AI_OFFICER",
-    name: "AI Officer",
+    tKey: "aiOfficer",
     icon: Gavel,
     color: "text-emerald-400",
     bg: "bg-emerald-400/10",
     border: "border-emerald-400/20",
-    summary: "Governance authority. Approves assessments, publishes policies, and makes oversight decisions.",
-    capabilities: [
-      "Approve or reject assessments",
-      "Publish policy versions",
-      "Make oversight gate decisions",
-      "Approve policies",
-      "All Member capabilities",
-    ],
   },
   {
     key: "MEMBER",
-    name: "Member",
+    tKey: "member",
     icon: Users,
     color: "text-violet-400",
     bg: "bg-violet-400/10",
     border: "border-violet-400/20",
-    summary: "Day-to-day governance work. Creates records, submits assessments, reports incidents.",
-    capabilities: [
-      "Register AI systems",
-      "Create assessments & submit for review",
-      "Report incidents",
-      "Create oversight gates",
-      "Manage vendors & policies",
-      "Report shadow AI usage",
-    ],
   },
   {
     key: "VIEWER",
-    name: "Viewer",
+    tKey: "viewer",
     icon: Eye,
     color: "text-gray-400",
     bg: "bg-gray-400/10",
     border: "border-gray-400/20",
-    summary: "Read-only access. Can view all dashboards, records, and reports but cannot make changes.",
-    capabilities: [
-      "View executive dashboard",
-      "Browse AI registry & risk classifications",
-      "View assessments, incidents, policies",
-      "Access compliance mapping reports",
-      "View vendor & oversight information",
-    ],
   },
-];
+] as const;
 
 const permissionMatrix = [
-  { action: "View dashboards & records", OWNER: true, ADMIN: true, AI_OFFICER: true, MEMBER: true, VIEWER: true },
-  { action: "Create & edit records", OWNER: true, ADMIN: true, AI_OFFICER: true, MEMBER: true, VIEWER: false },
-  { action: "Delete records", OWNER: true, ADMIN: true, AI_OFFICER: true, MEMBER: true, VIEWER: false },
-  { action: "Approve assessments", OWNER: true, ADMIN: true, AI_OFFICER: true, MEMBER: false, VIEWER: false },
-  { action: "Publish policies", OWNER: true, ADMIN: true, AI_OFFICER: true, MEMBER: false, VIEWER: false },
-  { action: "Make oversight decisions", OWNER: true, ADMIN: true, AI_OFFICER: true, MEMBER: false, VIEWER: false },
-  { action: "Invite & remove members", OWNER: true, ADMIN: true, AI_OFFICER: false, MEMBER: false, VIEWER: false },
-  { action: "Change member roles", OWNER: true, ADMIN: false, AI_OFFICER: false, MEMBER: false, VIEWER: false },
-  { action: "Manage billing", OWNER: true, ADMIN: false, AI_OFFICER: false, MEMBER: false, VIEWER: false },
-];
+  { key: "viewRecords", OWNER: true, ADMIN: true, AI_OFFICER: true, MEMBER: true, VIEWER: true },
+  { key: "createEdit", OWNER: true, ADMIN: true, AI_OFFICER: true, MEMBER: true, VIEWER: false },
+  { key: "deleteRecords", OWNER: true, ADMIN: true, AI_OFFICER: true, MEMBER: true, VIEWER: false },
+  { key: "approveAssessments", OWNER: true, ADMIN: true, AI_OFFICER: true, MEMBER: false, VIEWER: false },
+  { key: "publishPolicies", OWNER: true, ADMIN: true, AI_OFFICER: true, MEMBER: false, VIEWER: false },
+  { key: "oversightDecisions", OWNER: true, ADMIN: true, AI_OFFICER: true, MEMBER: false, VIEWER: false },
+  { key: "inviteMembers", OWNER: true, ADMIN: true, AI_OFFICER: false, MEMBER: false, VIEWER: false },
+  { key: "changeRoles", OWNER: true, ADMIN: false, AI_OFFICER: false, MEMBER: false, VIEWER: false },
+  { key: "manageBilling", OWNER: true, ADMIN: false, AI_OFFICER: false, MEMBER: false, VIEWER: false },
+] as const;
 
-export default function RolesDocsPage() {
+const assignCards = [
+  { titleKey: "creatorTitle", bodyKey: "creatorBody", roleColor: "text-amber-400" },
+  { titleKey: "invitedTitle", bodyKey: "invitedBody", roleColor: "text-violet-400" },
+  { titleKey: "viewerTitle", bodyKey: "viewerBody", roleColor: "text-gray-400" },
+  { titleKey: "changesTitle", bodyKey: "changesBody", roleColor: "text-amber-400" },
+] as const;
+
+export default async function RolesDocsPage() {
+  const t = await getTranslations("docs.roles");
+  const roles = roleStyles.map((style) => ({
+    ...style,
+    name: t(`roles.${style.tKey}.name`),
+    summary: t(`roles.${style.tKey}.summary`),
+    capabilities: t.raw(`roles.${style.tKey}.capabilities`) as string[],
+  }));
+
   return (
     <div className="space-y-16">
       {/* Hero */}
       <section>
-        <div className="flex items-center justify-between mb-4">
-          <h1 className="text-3xl sm:text-4xl font-display tracking-tight">
-            Roles & Permissions
-          </h1>
-          <Link
-            href="/docs/roles/es"
-            className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
-          >
-            Espa&ntilde;ol <ArrowRight className="w-3 h-3" />
-          </Link>
-        </div>
+        <h1 className="text-3xl sm:text-4xl font-display tracking-tight mb-4">
+          {t("title")}
+        </h1>
         <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl">
-          AI SENTINEL uses five roles to control access to governance operations.
-          Every action is enforced at the server level — the interface adapts to show
-          only what your role allows.
+          {t("intro")}
         </p>
       </section>
 
       {/* Role Hierarchy */}
       <section>
-        <h2 className="text-2xl font-display tracking-tight mb-6">Role Hierarchy</h2>
+        <h2 className="text-2xl font-display tracking-tight mb-6">{t("hierarchyTitle")}</h2>
         <div className="flex flex-col items-center gap-0">
           {roles.map((role, i) => {
             const Icon = role.icon;
@@ -170,13 +138,13 @@ export default function RolesDocsPage() {
           })}
         </div>
         <p className="text-xs text-muted-foreground text-center mt-4">
-          Each role inherits all capabilities from the roles below it.
+          {t("hierarchyNote")}
         </p>
       </section>
 
       {/* What Each Role Can Do */}
       <section>
-        <h2 className="text-2xl font-display tracking-tight mb-6">What Each Role Can Do</h2>
+        <h2 className="text-2xl font-display tracking-tight mb-6">{t("capabilitiesTitle")}</h2>
         <div className="grid gap-4">
           {roles.map((role) => {
             const Icon = role.icon;
@@ -204,12 +172,12 @@ export default function RolesDocsPage() {
 
       {/* Permissions Matrix */}
       <section>
-        <h2 className="text-2xl font-display tracking-tight mb-6">Permissions Matrix</h2>
+        <h2 className="text-2xl font-display tracking-tight mb-6">{t("matrixTitle")}</h2>
         <div className="rounded-xl border border-border bg-card overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">
-                <th className="text-left p-3 font-medium text-muted-foreground">Action</th>
+                <th className="text-left p-3 font-medium text-muted-foreground">{t("matrixAction")}</th>
                 {roles.map((r) => (
                   <th key={r.key} className="p-3 text-center font-medium whitespace-nowrap">
                     <span className={r.color}>{r.name}</span>
@@ -219,8 +187,8 @@ export default function RolesDocsPage() {
             </thead>
             <tbody>
               {permissionMatrix.map((row) => (
-                <tr key={row.action} className="border-b border-border last:border-0">
-                  <td className="p-3 text-muted-foreground">{row.action}</td>
+                <tr key={row.key} className="border-b border-border last:border-0">
+                  <td className="p-3 text-muted-foreground">{t(`matrix.${row.key}`)}</td>
                   {roles.map((r) => (
                     <td key={r.key} className="p-3 text-center">
                       {row[r.key as keyof typeof row] ? (
@@ -239,48 +207,29 @@ export default function RolesDocsPage() {
 
       {/* Default Role */}
       <section>
-        <h2 className="text-2xl font-display tracking-tight mb-6">How Roles Are Assigned</h2>
+        <h2 className="text-2xl font-display tracking-tight mb-6">{t("assignTitle")}</h2>
         <div className="grid sm:grid-cols-2 gap-4">
-          <div className="rounded-xl border border-border bg-card p-5">
-            <h3 className="font-semibold mb-2">Organization Creator</h3>
-            <p className="text-sm text-muted-foreground">
-              The user who creates an organization is automatically assigned the
-              <span className="text-amber-400 font-medium"> Owner</span> role.
-            </p>
-          </div>
-          <div className="rounded-xl border border-border bg-card p-5">
-            <h3 className="font-semibold mb-2">Invited or Auto-Joined Users</h3>
-            <p className="text-sm text-muted-foreground">
-              Users who are invited or who join via email domain matching receive the
-              <span className="text-violet-400 font-medium"> Member</span> role by default. An Owner can change their role at any time.
-            </p>
-          </div>
-          <div className="rounded-xl border border-border bg-card p-5">
-            <h3 className="font-semibold mb-2">Viewer Access</h3>
-            <p className="text-sm text-muted-foreground">
-              The Viewer role is assigned explicitly by an Owner or Admin. Viewers see a clean
-              read-only interface — create and edit buttons are hidden, not just disabled.
-            </p>
-          </div>
-          <div className="rounded-xl border border-border bg-card p-5">
-            <h3 className="font-semibold mb-2">Role Changes</h3>
-            <p className="text-sm text-muted-foreground">
-              Only the organization Owner can change member roles. All role changes are
-              recorded in the audit trail.
-            </p>
-          </div>
+          {assignCards.map((card) => (
+            <div key={card.titleKey} className="rounded-xl border border-border bg-card p-5">
+              <h3 className="font-semibold mb-2">{t(`assign.${card.titleKey}`)}</h3>
+              <p className="text-sm text-muted-foreground">
+                {t.rich(`assign.${card.bodyKey}`, {
+                  role: (chunks) => (
+                    <span className={`${card.roleColor} font-medium`}>{chunks}</span>
+                  ),
+                })}
+              </p>
+            </div>
+          ))}
         </div>
       </section>
 
       {/* Server-Side Enforcement */}
       <section>
-        <h2 className="text-2xl font-display tracking-tight mb-6">Server-Side Enforcement</h2>
+        <h2 className="text-2xl font-display tracking-tight mb-6">{t("enforcementTitle")}</h2>
         <div className="rounded-xl border border-primary/20 bg-primary/5 p-6">
           <p className="text-sm text-muted-foreground leading-relaxed">
-            All permissions are enforced at the API level, not just the interface.
-            Even if a user crafts a direct API request, the server verifies their role
-            and organization membership before processing any operation. This means
-            security does not depend on what the browser shows or hides.
+            {t("enforcementBody")}
           </p>
         </div>
       </section>

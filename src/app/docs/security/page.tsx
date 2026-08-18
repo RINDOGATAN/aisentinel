@@ -1,60 +1,52 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025-2026 Rindogatan LLC
 
+import { getTranslations } from "next-intl/server";
 import { brand } from "@/config/brand";
 
-export const metadata = {
-  title: "Security & Trust — AI SENTINEL Docs",
-  description:
-    "How AI SENTINEL protects your organization's data with enterprise-grade security controls.",
-};
+export async function generateMetadata() {
+  const t = await getTranslations("docs.security");
+  return {
+    title: t("metaTitle"),
+    description: t("metaDescription"),
+  };
+}
 
-export default function SecurityDocsPage() {
+// OWASP standards rows: which entries render as "Mitigated" vs "Active".
+// Must stay aligned with the standards.items order in the message files.
+const standardsMitigated = [true, true, true, true, true, false];
+
+export default async function SecurityDocsPage() {
+  const t = await getTranslations("docs.security");
+  const isolationItems = t.raw("isolation.items") as { title: string; description: string }[];
+  const roles = t.raw("accessControl.roles") as string[];
+  const authMethods = t.raw("auth.methods") as { title: string; description: string }[];
+  const sessionItems = t.raw("auth.sessionItems") as string[];
+  const validationItems = t.raw("validation.items") as { title: string; description: string }[];
+  const logItems = t.raw("audit.logItems") as string[];
+  const transportItems = t.raw("transport.items") as { title: string; description: string }[];
+  const standardsItems = t.raw("standards.items") as { category: string; description: string }[];
+
   return (
     <div className="space-y-16">
       {/* Hero */}
       <section>
         <h1 className="text-3xl sm:text-4xl font-display tracking-tight mb-4">
-          Security & Trust
+          {t("title")}
         </h1>
         <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl">
-          AI SENTINEL is built for organizations that manage sensitive AI governance data.
-          Security is embedded in every layer of the platform — from how we isolate your data
-          to how we control access and protect your information.
+          {t("intro")}
         </p>
       </section>
 
       {/* Data Isolation */}
       <section>
-        <h2 className="text-2xl font-display tracking-tight mb-6">Data Isolation</h2>
+        <h2 className="text-2xl font-display tracking-tight mb-6">{t("isolation.title")}</h2>
         <p className="text-muted-foreground mb-6">
-          Every organization on AI SENTINEL operates in a fully isolated environment.
-          Your AI systems, assessments, policies, incidents, and vendor data are
-          never accessible to other organizations.
+          {t("isolation.intro")}
         </p>
         <div className="grid sm:grid-cols-2 gap-3">
-          {[
-            {
-              title: "Organization-Scoped Queries",
-              description:
-                "Every database query is automatically scoped to your organization. There is no way to access another organization's data through the application.",
-            },
-            {
-              title: "Verified Membership",
-              description:
-                "Before any operation, we verify that the requesting user is an active member of the organization. Membership is checked on every single request.",
-            },
-            {
-              title: "Cross-Tenant Protection",
-              description:
-                "Operations that reference related entities (e.g., linking a policy to an AI system) verify that both entities belong to your organization.",
-            },
-            {
-              title: "Shared Reference Data Only",
-              description:
-                "Only non-sensitive reference data (compliance frameworks, assessment templates) is shared across organizations. Your governance data is never shared.",
-            },
-          ].map((item) => (
+          {isolationItems.map((item) => (
             <div key={item.title} className="rounded-xl border border-border bg-card p-4">
               <h3 className="font-semibold text-sm mb-1">{item.title}</h3>
               <p className="text-xs text-muted-foreground">{item.description}</p>
@@ -65,38 +57,32 @@ export default function SecurityDocsPage() {
 
       {/* Access Control */}
       <section>
-        <h2 className="text-2xl font-display tracking-tight mb-6">Access Control</h2>
+        <h2 className="text-2xl font-display tracking-tight mb-6">{t("accessControl.title")}</h2>
         <p className="text-muted-foreground mb-6">
-          AI SENTINEL enforces role-based access control (RBAC) across the entire platform.
-          Every action is checked against your role before it is executed.
+          {t("accessControl.intro")}
         </p>
         <div className="rounded-xl border border-border bg-card p-6 space-y-4">
           <div className="flex flex-wrap gap-3 mb-4">
-            {["Owner", "Admin", "AI Officer", "Member", "Viewer"].map(
-              (role, i) => (
-                <div key={role} className="flex items-center gap-2">
-                  <span className="px-3 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium">
-                    {role}
-                  </span>
-                  {i < 4 && <span className="text-muted-foreground">›</span>}
-                </div>
-              )
-            )}
+            {roles.map((role, i) => (
+              <div key={role} className="flex items-center gap-2">
+                <span className="px-3 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium">
+                  {role}
+                </span>
+                {i < roles.length - 1 && <span className="text-muted-foreground">›</span>}
+              </div>
+            ))}
           </div>
           <div className="grid sm:grid-cols-2 gap-4 text-sm">
             <div>
-              <h4 className="font-medium mb-2">Read-Only Enforcement</h4>
+              <h4 className="font-medium mb-2">{t("accessControl.readOnlyTitle")}</h4>
               <p className="text-muted-foreground">
-                Viewers have guaranteed read-only access. All write operations are blocked
-                at the server level, not just the UI — preventing unauthorized modifications
-                even through API calls.
+                {t("accessControl.readOnlyBody")}
               </p>
             </div>
             <div>
-              <h4 className="font-medium mb-2">Elevated Permissions</h4>
+              <h4 className="font-medium mb-2">{t("accessControl.elevatedTitle")}</h4>
               <p className="text-muted-foreground">
-                Sensitive operations like approving assessments, publishing policies, and
-                making oversight decisions require AI Officer, Admin, or Owner roles.
+                {t("accessControl.elevatedBody")}
               </p>
             </div>
           </div>
@@ -105,26 +91,12 @@ export default function SecurityDocsPage() {
 
       {/* Authentication */}
       <section>
-        <h2 className="text-2xl font-display tracking-tight mb-6">Authentication</h2>
+        <h2 className="text-2xl font-display tracking-tight mb-6">{t("auth.title")}</h2>
         <p className="text-muted-foreground mb-6">
-          We support industry-standard authentication methods with additional hardening
-          for production environments.
+          {t("auth.intro")}
         </p>
         <div className="grid sm:grid-cols-3 gap-3">
-          {[
-            {
-              title: "Google OAuth",
-              description: "Enterprise SSO via Google with OAuth 2.0",
-            },
-            {
-              title: "Magic Link",
-              description: "Passwordless email authentication for secure sign-in",
-            },
-            {
-              title: "Cross-Platform SSO",
-              description: "Single sign-on across the TODO.LAW platform",
-            },
-          ].map((item) => (
+          {authMethods.map((item) => (
             <div key={item.title} className="rounded-xl border border-border bg-card p-4">
               <h3 className="font-semibold text-sm mb-1">{item.title}</h3>
               <p className="text-xs text-muted-foreground">{item.description}</p>
@@ -132,27 +104,23 @@ export default function SecurityDocsPage() {
           ))}
         </div>
         <div className="rounded-xl border border-border bg-card p-6 mt-4">
-          <h4 className="font-medium mb-3 text-sm">Session Security</h4>
+          <h4 className="font-medium mb-3 text-sm">{t("auth.sessionTitle")}</h4>
           <div className="grid sm:grid-cols-2 gap-4 text-sm text-muted-foreground">
             <ul className="space-y-2">
-              <li className="flex items-start gap-2">
-                <span className="text-primary mt-0.5">•</span>
-                HTTP-only cookies prevent client-side access to session tokens
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-primary mt-0.5">•</span>
-                Secure cookie flag enforced in production (HTTPS only)
-              </li>
+              {sessionItems.slice(0, 2).map((item) => (
+                <li key={item} className="flex items-start gap-2">
+                  <span className="text-primary mt-0.5">•</span>
+                  {item}
+                </li>
+              ))}
             </ul>
             <ul className="space-y-2">
-              <li className="flex items-start gap-2">
-                <span className="text-primary mt-0.5">•</span>
-                CSRF protection on all authenticated requests
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-primary mt-0.5">•</span>
-                SameSite cookie policy prevents cross-site request forgery
-              </li>
+              {sessionItems.slice(2).map((item) => (
+                <li key={item} className="flex items-start gap-2">
+                  <span className="text-primary mt-0.5">•</span>
+                  {item}
+                </li>
+              ))}
             </ul>
           </div>
         </div>
@@ -160,29 +128,12 @@ export default function SecurityDocsPage() {
 
       {/* Input Validation */}
       <section>
-        <h2 className="text-2xl font-display tracking-tight mb-6">Input Validation</h2>
+        <h2 className="text-2xl font-display tracking-tight mb-6">{t("validation.title")}</h2>
         <p className="text-muted-foreground mb-6">
-          All user inputs are validated on the server before reaching business logic.
-          This protects against injection attacks and ensures data integrity.
+          {t("validation.intro")}
         </p>
         <div className="grid sm:grid-cols-3 gap-3">
-          {[
-            {
-              title: "Schema Validation",
-              description:
-                "Every API input is validated against a strict schema. Invalid data is rejected before it reaches the database.",
-            },
-            {
-              title: "Parameterized Queries",
-              description:
-                "All database queries use parameterized inputs. Raw SQL is never used, eliminating SQL injection risk.",
-            },
-            {
-              title: "Enum Enforcement",
-              description:
-                "Status fields, risk levels, and categories use strict enum validation. Only predefined values are accepted.",
-            },
-          ].map((item) => (
+          {validationItems.map((item) => (
             <div key={item.title} className="rounded-xl border border-border bg-card p-4">
               <h3 className="font-semibold text-sm mb-1">{item.title}</h3>
               <p className="text-xs text-muted-foreground">{item.description}</p>
@@ -193,32 +144,24 @@ export default function SecurityDocsPage() {
 
       {/* Audit Trail */}
       <section>
-        <h2 className="text-2xl font-display tracking-tight mb-6">Audit Trail</h2>
+        <h2 className="text-2xl font-display tracking-tight mb-6">{t("audit.title")}</h2>
         <p className="text-muted-foreground mb-6">
-          Every create, update, delete, and significant business operation is logged
-          to an immutable audit trail. This supports compliance requirements and
-          provides a complete record of governance activities.
+          {t("audit.intro")}
         </p>
         <div className="rounded-xl border border-border bg-card p-6">
           <div className="grid sm:grid-cols-2 gap-6 text-sm">
             <div>
-              <h4 className="font-medium mb-2">What We Log</h4>
+              <h4 className="font-medium mb-2">{t("audit.whatWeLogTitle")}</h4>
               <ul className="space-y-1.5 text-muted-foreground">
-                <li>• AI system lifecycle changes</li>
-                <li>• Risk classification decisions</li>
-                <li>• Assessment submissions and approvals</li>
-                <li>• Oversight decisions</li>
-                <li>• Policy changes and publications</li>
-                <li>• Incident management actions</li>
-                <li>• Organization membership changes</li>
+                {logItems.map((item) => (
+                  <li key={item}>• {item}</li>
+                ))}
               </ul>
             </div>
             <div>
-              <h4 className="font-medium mb-2">Retention</h4>
+              <h4 className="font-medium mb-2">{t("audit.retentionTitle")}</h4>
               <p className="text-muted-foreground">
-                Audit records are preserved even if the associated user or organization
-                is deleted. This ensures your compliance history remains intact
-                regardless of personnel changes.
+                {t("audit.retentionBody")}
               </p>
             </div>
           </div>
@@ -227,34 +170,12 @@ export default function SecurityDocsPage() {
 
       {/* Transport & Infrastructure */}
       <section>
-        <h2 className="text-2xl font-display tracking-tight mb-6">Transport & Infrastructure</h2>
+        <h2 className="text-2xl font-display tracking-tight mb-6">{t("transport.title")}</h2>
         <p className="text-muted-foreground mb-6">
-          Your data is protected in transit and at rest through industry-standard
-          security measures.
+          {t("transport.intro")}
         </p>
         <div className="grid sm:grid-cols-2 gap-3">
-          {[
-            {
-              title: "HTTPS Everywhere",
-              description:
-                "All connections are encrypted with TLS. HSTS headers ensure browsers always use secure connections.",
-            },
-            {
-              title: "Clickjacking Protection",
-              description:
-                "Security headers prevent the application from being embedded in frames on other sites.",
-            },
-            {
-              title: "Content Security",
-              description:
-                "MIME-type sniffing prevention and strict referrer policies protect against content-based attacks.",
-            },
-            {
-              title: "Minimal Permissions",
-              description:
-                "Browser APIs (camera, microphone, geolocation) are explicitly disabled — the application never requests unnecessary access.",
-            },
-          ].map((item) => (
+          {transportItems.map((item) => (
             <div key={item.title} className="rounded-xl border border-border bg-card p-4">
               <h3 className="font-semibold text-sm mb-1">{item.title}</h3>
               <p className="text-xs text-muted-foreground">{item.description}</p>
@@ -265,25 +186,22 @@ export default function SecurityDocsPage() {
 
       {/* Webhook & API Security */}
       <section>
-        <h2 className="text-2xl font-display tracking-tight mb-6">API Security</h2>
+        <h2 className="text-2xl font-display tracking-tight mb-6">{t("api.title")}</h2>
         <p className="text-muted-foreground mb-6">
-          All API endpoints require authentication. External integrations use
-          signature verification and token-based authentication.
+          {t("api.intro")}
         </p>
         <div className="rounded-xl border border-border bg-card p-6">
           <div className="grid sm:grid-cols-2 gap-6 text-sm">
             <div>
-              <h4 className="font-medium mb-2">Endpoint Protection</h4>
+              <h4 className="font-medium mb-2">{t("api.endpointTitle")}</h4>
               <p className="text-muted-foreground">
-                Every governance API endpoint requires an authenticated session with
-                verified organization membership. Unauthenticated requests are rejected.
+                {t("api.endpointBody")}
               </p>
             </div>
             <div>
-              <h4 className="font-medium mb-2">Webhook Verification</h4>
+              <h4 className="font-medium mb-2">{t("api.webhookTitle")}</h4>
               <p className="text-muted-foreground">
-                Payment and integration webhooks use cryptographic signature
-                verification. Unverified webhooks are discarded before processing.
+                {t("api.webhookBody")}
               </p>
             </div>
           </div>
@@ -293,30 +211,22 @@ export default function SecurityDocsPage() {
       {/* Compliance Standards */}
       <section>
         <h2 className="text-2xl font-display tracking-tight mb-6">
-          Security Standards
+          {t("standards.title")}
         </h2>
         <p className="text-muted-foreground mb-6">
-          AI SENTINEL&apos;s security controls are designed to address the OWASP Top 10
-          web application security risks.
+          {t("standards.intro")}
         </p>
         <div className="rounded-xl border border-border bg-card p-6 space-y-3">
-          {[
-            { category: "Access Control", status: "Mitigated", description: "Multi-tenant isolation, RBAC, cross-entity verification" },
-            { category: "Injection", status: "Mitigated", description: "Parameterized queries, strict input validation, no raw SQL" },
-            { category: "Authentication", status: "Mitigated", description: "Industry-standard OAuth, secure sessions, CSRF protection" },
-            { category: "Data Integrity", status: "Mitigated", description: "Webhook signature verification, schema validation" },
-            { category: "Security Configuration", status: "Mitigated", description: "Security headers, environment-guarded configurations" },
-            { category: "Logging & Monitoring", status: "Active", description: "Comprehensive audit trail for all governance operations" },
-          ].map((item) => (
+          {standardsItems.map((item, i) => (
             <div key={item.category} className="flex items-start gap-3 text-sm">
               <span
                 className={`px-2 py-0.5 rounded text-xs font-medium shrink-0 ${
-                  item.status === "Mitigated"
+                  standardsMitigated[i]
                     ? "bg-emerald-500/10 text-emerald-400"
                     : "bg-primary/10 text-primary"
                 }`}
               >
-                {item.status}
+                {standardsMitigated[i] ? t("standards.statusMitigated") : t("standards.statusActive")}
               </span>
               <div>
                 <span className="font-medium">{item.category}</span>
@@ -330,18 +240,20 @@ export default function SecurityDocsPage() {
       {/* Contact */}
       <section>
         <h2 className="text-2xl font-display tracking-tight mb-6">
-          Security Contact
+          {t("contact.title")}
         </h2>
         <p className="text-muted-foreground">
-          If you discover a security vulnerability or have questions about our security
-          practices, please contact us at{" "}
-          <a
-            href={`mailto:${brand.securityEmail}`}
-            className="text-primary hover:text-primary/80 transition-colors"
-          >
-            {brand.securityEmail}
-          </a>
-          . We take all reports seriously and will respond promptly.
+          {t.rich("contact.body", {
+            email: brand.securityEmail,
+            link: (chunks) => (
+              <a
+                href={`mailto:${brand.securityEmail}`}
+                className="text-primary hover:text-primary/80 transition-colors"
+              >
+                {chunks}
+              </a>
+            ),
+          })}
         </p>
       </section>
     </div>

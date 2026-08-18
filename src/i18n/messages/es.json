@@ -1087,7 +1087,16 @@
     "legalPrefix": "Al iniciar sesión, acepta nuestros",
     "termsOfService": "Términos del servicio",
     "privacyPolicy": "Política de privacidad",
-    "legalAnd": "y"
+    "legalAnd": "y",
+    "verifyTitle": "Revise su correo",
+    "verifyBody": "Le hemos enviado un enlace de acceso a su correo electrónico. Haga clic en el enlace para iniciar sesión.",
+    "verifyDidntReceive": "¿No lo ha recibido?",
+    "verifyTryAgain": "Inténtelo de nuevo",
+    "errorTitle": "Error de autenticación",
+    "errorBody": "Se ha producido un error al iniciar sesión. Puede que el enlace haya caducado o ya se haya utilizado.",
+    "errorTryAgain": "Intentar de nuevo",
+    "crossSigningIn": "Iniciando sesión...",
+    "crossFailed": "No se ha podido autenticar. Redirigiendo al inicio de sesión..."
   },
   "ai": {
     "panel": {
@@ -1201,5 +1210,1676 @@
     "typeAiRisk": "Evaluación de riesgos de IA",
     "typeBiasFairness": "Evaluación de sesgos y equidad",
     "typeCustom": "Evaluación personalizada"
+  },
+  "docs": {
+    "layout": {
+      "headerDocs": "Documentación",
+      "headerSignIn": "Iniciar sesión",
+      "premiumLabel": "Premium",
+      "nav": {
+        "gettingStarted": "Primeros Pasos",
+        "aiRegistry": "Registro de IA",
+        "riskClassification": "Clasificación de Riesgos",
+        "assessments": "Evaluaciones",
+        "oversight": "Supervisión Humana",
+        "incidents": "Incidentes de IA",
+        "transparency": "Transparencia (Art. 50)",
+        "compliance": "Cumplimiento",
+        "vendors": "Riesgo de Proveedores",
+        "policies": "Gestión de Políticas",
+        "shadowAi": "Detección de IA en la Sombra",
+        "vendorCatalog": "Catálogo de Proveedores de IA",
+        "conformity": "Evaluación de Conformidad",
+        "biasFairness": "Sesgo y Equidad",
+        "roles": "Roles y Permisos",
+        "security": "Seguridad y Confianza"
+      },
+      "footer": {
+        "service": "{app} es un servicio de <link>{company}</link>.",
+        "privacyPolicy": "Política de Privacidad",
+        "termsOfService": "Condiciones del Servicio",
+        "howItWorks": "Cómo Funciona",
+        "security": "Seguridad",
+        "sourceCode": "Código fuente (AGPL-3.0)"
+      }
+    },
+    "home": {
+      "metaTitle": "Documentación — AI SENTINEL",
+      "metaDescription": "Aprende a usar AI SENTINEL para la gobernanza de IA, el cumplimiento del Reglamento de IA de la UE, la clasificación de riesgos y la gestión de incidentes.",
+      "heroIntro": "Una plataforma diseñada específicamente para la gobernanza de IA. Gestiona tu inventario de sistemas de IA, el cumplimiento del Reglamento de IA de la UE, la clasificación de riesgos, la supervisión humana y los incidentes específicos de IA, todo en un mismo lugar.",
+      "quickStartTitle": "Inicio Rápido",
+      "quickStartSteps": [
+        {
+          "title": "Inicia sesión",
+          "description": "Inicia sesión mediante un enlace mágico por correo o con Google OAuth."
+        },
+        {
+          "title": "Crea tu organización o únete a una",
+          "description": "Configura tu organización e invita a los miembros de tu equipo. Los usuarios con un dominio de correo coincidente se unen automáticamente."
+        },
+        {
+          "title": "Registra tus sistemas de IA",
+          "description": "Construye tu inventario de IA registrando sistemas, modelos y agentes. Asigna niveles de riesgo y responsables."
+        },
+        {
+          "title": "Gobierna tu IA",
+          "description": "Realiza evaluaciones, configura puntos de control, mapea marcos normativos, gestiona proveedores y haz seguimiento de incidentes."
+        }
+      ],
+      "rolesTitle": "Roles de Usuario",
+      "roles": [
+        {
+          "name": "Propietario",
+          "description": "Facturación, gestión de equipo y configuración de la organización"
+        },
+        {
+          "name": "Administrador",
+          "description": "Gestión de usuarios, configuración de módulos y acceso completo a la gobernanza"
+        },
+        {
+          "name": "Responsable de IA",
+          "description": "Todos los módulos de gobernanza, evaluaciones, clasificación de riesgos y gestión de incidentes"
+        },
+        {
+          "name": "Miembro",
+          "description": "Crear y editar registros, enviar evaluaciones e informar de incidentes"
+        },
+        {
+          "name": "Lector",
+          "description": "Acceso de solo lectura a paneles e informes"
+        }
+      ],
+      "modulesTitle": "Módulos",
+      "modules": {
+        "aiRegistry": {
+          "title": "Registro de IA",
+          "description": "Inventaría todos los sistemas, modelos y agentes de IA con seguimiento del ciclo de vida y asignación de roles."
+        },
+        "riskClassification": {
+          "title": "Clasificación de Riesgos",
+          "description": "Clasificación de riesgo en cuatro niveles según el Reglamento de IA de la UE, con asistente guiado del Anexo III e historial de clasificaciones."
+        },
+        "assessments": {
+          "title": "Evaluaciones",
+          "description": "Evaluaciones FRIA, de conformidad, de riesgo de IA y de sesgo y equidad, con plantillas y flujos de aprobación."
+        },
+        "oversight": {
+          "title": "Supervisión Humana",
+          "description": "Puntos de control de aprobación, programación de revisiones y registro de decisiones para el cumplimiento del Art. 14."
+        },
+        "incidents": {
+          "title": "Incidentes de IA",
+          "description": "Haz seguimiento de fallos específicos de IA, coordina tareas de respuesta y gestiona las notificaciones a autoridades del Art. 73."
+        },
+        "transparency": {
+          "title": "Transparencia (Art. 50)",
+          "description": "Obligaciones del Art. 50 por sistema, el plazo de marcado de contenido sintético y la declaración de interacción con IA."
+        },
+        "compliance": {
+          "title": "Cumplimiento",
+          "description": "Mapeo de marcos normativos para el Reglamento de IA de la UE, NIST AI RMF e ISO 42001, con gestión de evidencias."
+        },
+        "vendors": {
+          "title": "Riesgo de Proveedores",
+          "description": "Gestión de proveedores externos de IA con evaluación de riesgos, seguimiento de contratos y diligencia debida."
+        },
+        "policies": {
+          "title": "Gestión de Políticas",
+          "description": "Políticas de gobernanza de IA con versionado, flujo de aprobación y vinculación a sistemas."
+        }
+      },
+      "premiumTitleFree": "Módulos Adicionales",
+      "premiumTitleLocked": "Skills Premium",
+      "premiumIntroFree": "Incluidos en esta instancia: no se requiere licencia ni suscripción. Estos módulos se vendían antes como complementos; ahora están habilitados aquí para todo el mundo.",
+      "premiumIntroLocked": "Módulos adicionales que se desbloquean por organización con un archivo de licencia de TODO.LAW en la <link>página de skills</link>.",
+      "badgeIncluded": "Incluido",
+      "badgeLicensed": "Con licencia",
+      "premiumModules": {
+        "shadowAi": {
+          "title": "Detección de IA en la Sombra",
+          "description": "Descubre herramientas de IA no autorizadas adoptadas por los empleados, contrastando con un catálogo de {count} herramientas conocidas. Portal de auto-declaración, flujo de triaje y promoción a la gobernanza formal."
+        },
+        "vendorCatalog": {
+          "title": "Catálogo de Proveedores de IA",
+          "description": "Catálogo preauditado de {count} proveedores de IA con perfiles de riesgo, certificaciones de cumplimiento y metadatos de gobernanza."
+        },
+        "conformity": {
+          "title": "Evaluación de Conformidad",
+          "description": "Plantilla de evaluación de conformidad del Art. 43 del Reglamento de IA de la UE para sistemas de IA de alto riesgo, con secciones de evaluación estructuradas."
+        },
+        "biasFairness": {
+          "title": "Evaluación de Sesgo y Equidad",
+          "description": "Evaluación estructurada de sesgo y equidad para sistemas de IA: detecta riesgos de discriminación y documenta las mitigaciones."
+        }
+      },
+      "alsoTitle": "También en la aplicación",
+      "alsoIntro": "Funcionalidades ya disponibles que todavía no tienen una guía completa aquí. Los enlaces llevan a la propia aplicación, por lo que se te pedirá iniciar sesión.",
+      "also": {
+        "quickstart": {
+          "title": "Asistente de Inicio Rápido",
+          "description": "Pon en marcha un programa a partir de una plantilla sectorial o importa un porfolio de proveedores existente."
+        },
+        "aiPosture": {
+          "title": "Postura de IA",
+          "description": "Elige si los asistentes de IA integrados están desactivados, usan un LLM en la nube o se enrutan a través de una pasarela local. Desactivados por defecto: ninguna llamada de IA sale de tu instancia hasta que un administrador los active."
+        },
+        "skills": {
+          "title": "Skills y licencias",
+          "description": "Activa archivos de licencia de TODO.LAW sin conexión. Solo para propietarios y administradores; una licencia nunca instala código, solo desbloquea un derecho de uso."
+        },
+        "clients": {
+          "title": "Organizaciones gestionadas",
+          "description": "Para profesionales de la gobernanza que llevan programas de varios clientes: cambia entre las organizaciones que gestionas."
+        }
+      },
+      "licensingTitle": "Licencias Open Core",
+      "licensing": {
+        "coreTitle": "Núcleo",
+        "coreItems": [
+          "Registro de IA y seguimiento del ciclo de vida",
+          "Clasificación de riesgos según el Reglamento de IA de la UE",
+          "Evaluaciones FRIA y de riesgo de IA",
+          "Supervisión humana y puntos de control de aprobación",
+          "Gestión de incidentes de IA",
+          "Mapeo de cumplimiento (Reglamento de IA de la UE, NIST, ISO 42001)",
+          "Gestión de riesgo de proveedores",
+          "Gestión de políticas",
+          "Panel ejecutivo"
+        ],
+        "commercialBadge": "Comercial",
+        "premiumTitle": "Premium",
+        "commercialConformity": "Plantilla de Evaluación de Conformidad (Art. 43)",
+        "commercialBiasFairness": "Evaluación de Sesgo y Equidad",
+        "commercialShadowAi": "Detección de IA en la Sombra (catálogo de {count} herramientas)",
+        "commercialVendorCatalog": "Catálogo de Proveedores de IA (integración con vendor.watch)",
+        "allFreeNote": "Habilitado para todo el mundo en esta instancia. La vía comercial es un archivo de licencia sin conexión, no una suscripción."
+      }
+    },
+    "aiRegistry": {
+      "metaTitle": "Registro de IA — Documentación de AI SENTINEL",
+      "metaDescription": "Registra y gestiona todos los sistemas de IA, modelos y agentes con seguimiento del ciclo de vida.",
+      "title": "Registro de IA",
+      "intro": "El inventario central de todos los sistemas de IA de tu organización. Todos los demás módulos —clasificación de riesgos, evaluaciones, supervisión, incidentes— hacen referencia a una ficha de sistema de IA. Construye una imagen completa de tu panorama de IA.",
+      "lifecycleTitle": "Ciclo de Vida del Sistema",
+      "lifecycleIntro": "Cada sistema de IA avanza por un ciclo de vida definido. Las transiciones de estado se registran con marcas de tiempo a efectos de auditoría.",
+      "lifecycle": [
+        "Borrador",
+        "En desarrollo",
+        "En pruebas",
+        "Desplegado",
+        "Retirado"
+      ],
+      "recordTitle": "Ficha del Sistema de IA",
+      "recordIntro": "Cada ficha de sistema de IA recoge la información necesaria para la gobernanza y el cumplimiento normativo.",
+      "recordGroups": [
+        {
+          "title": "Identidad",
+          "items": [
+            "Nombre y descripción del sistema",
+            "Finalidad y caso de uso",
+            "Técnica de IA (ML, aprendizaje profundo, PLN, etc.)"
+          ]
+        },
+        {
+          "title": "Responsabilidad",
+          "items": [
+            "Responsable de negocio",
+            "Responsable técnico",
+            "Rol según el Reglamento de IA de la UE (Proveedor, Responsable del despliegue, Importador, etc.)"
+          ]
+        },
+        {
+          "title": "Datos",
+          "items": [
+            "Indicador de tratamiento de datos personales",
+            "Fuentes de datos (entrenamiento, ajuste fino, entrada)",
+            "Referencias cruzadas con DPO Central"
+          ]
+        },
+        {
+          "title": "Ciclo de vida",
+          "items": [
+            "Estado (Borrador → Desplegado → Retirado)",
+            "Fechas de despliegue y retirada",
+            "Historial de versiones"
+          ]
+        }
+      ],
+      "modelsTitle": "Modelos de IA",
+      "modelsIntro": "Cada sistema de IA puede tener una o varias fichas de modelo vinculadas. Las fichas de modelo documentan el proveedor, el tipo, los datos de entrenamiento, las limitaciones conocidas y las métricas de rendimiento.",
+      "modelCols": [
+        {
+          "title": "Identidad del Modelo",
+          "items": [
+            "Nombre y versión",
+            "Proveedor (OpenAI, Anthropic, etc.)",
+            "Tipo de modelo (LLM, clasificador, etc.)"
+          ]
+        },
+        {
+          "title": "Datos de Entrenamiento",
+          "items": [
+            "Resumen de los datos de entrenamiento",
+            "Conjuntos de datos de ajuste fino",
+            "Metodología de validación"
+          ]
+        },
+        {
+          "title": "Rendimiento",
+          "items": [
+            "Limitaciones conocidas",
+            "Métricas de rendimiento",
+            "Resultados de la evaluación de sesgos"
+          ]
+        }
+      ],
+      "euRolesTitle": "Roles del Reglamento de IA de la UE",
+      "euRolesIntro": "El Reglamento de IA de la UE asigna obligaciones distintas según tu rol en la cadena de valor de la IA (Art. 3). Asigna el rol correcto a cada sistema para determinar los requisitos aplicables.",
+      "euRoles": [
+        {
+          "role": "Proveedor",
+          "description": "Desarrolla o introduce un sistema de IA en el mercado"
+        },
+        {
+          "role": "Responsable del despliegue",
+          "description": "Utiliza un sistema de IA bajo su autoridad"
+        },
+        {
+          "role": "Importador",
+          "description": "Introduce en el mercado de la UE un sistema de IA de un tercer país"
+        },
+        {
+          "role": "Distribuidor",
+          "description": "Comercializa un sistema de IA en la cadena de suministro"
+        },
+        {
+          "role": "Usuario",
+          "description": "Utiliza un sistema de IA a título profesional"
+        }
+      ],
+      "howToTitle": "Cómo Registrar un Sistema de IA",
+      "howToRole": "Responsable de IA",
+      "steps": [
+        {
+          "title": "Accede al Registro de IA",
+          "description": "Ve a Sistemas de IA → Registro de IA desde la navegación superior."
+        },
+        {
+          "title": "Pulsa Registrar Sistema de IA",
+          "description": "Usa el botón de la esquina superior derecha para abrir el formulario de registro."
+        },
+        {
+          "title": "Completa los datos del sistema",
+          "description": "Introduce el nombre, la descripción, la finalidad, la técnica de IA y el rol según el Reglamento de IA de la UE. Establece el estado en Borrador."
+        },
+        {
+          "title": "Añade modelos y fuentes de datos",
+          "description": "Desde la página de detalle del sistema, añade fichas de modelo y documenta las fuentes de datos usadas para entrenamiento y entrada."
+        },
+        {
+          "title": "Vincula registros relacionados",
+          "description": "Opcionalmente, vincula activos de DPO Central, asigna la clasificación de riesgo y asocia evaluaciones."
+        }
+      ]
+    },
+    "riskClassification": {
+      "metaTitle": "Clasificación de Riesgos — Documentación de AI SENTINEL",
+      "metaDescription": "Clasificación de riesgos en cuatro niveles según el Reglamento de IA de la UE, con asistente guiado del Anexo III.",
+      "title": "Clasificación de Riesgos",
+      "intro": "Clasifica tus sistemas de IA con el marco de cuatro niveles de riesgo del Reglamento de IA de la UE. El asistente guiado te acompaña por las categorías del Anexo III para determinar el nivel de riesgo correcto, con un historial completo de clasificaciones a efectos de auditoría.",
+      "tiersTitle": "Niveles de Riesgo",
+      "tiersIntro": "El Reglamento de IA de la UE define cuatro niveles de riesgo. Cada nivel conlleva obligaciones de cumplimiento distintas, desde la prohibición total hasta requisitos mínimos de transparencia.",
+      "tiers": {
+        "unacceptable": {
+          "level": "Inaceptable",
+          "description": "Sistemas de IA que suponen un riesgo inaceptable para la seguridad o los derechos fundamentales. Están prohibidos por el Art. 5.",
+          "examples": "Puntuación social, identificación biométrica remota en tiempo real en espacios públicos, técnicas de manipulación."
+        },
+        "high": {
+          "level": "Alto",
+          "description": "Sistemas de IA incluidos en el Anexo III o usados como componentes de seguridad. Sujetos a los requisitos completos de cumplimiento (Art. 6-51).",
+          "examples": "Identificación biométrica, infraestructuras críticas, decisiones de empleo, fuerzas del orden."
+        },
+        "limited": {
+          "level": "Limitado",
+          "description": "Sistemas de IA con obligaciones específicas de transparencia. Los usuarios deben ser informados de que interactúan con una IA (Art. 50).",
+          "examples": "Chatbots, generadores de deepfakes, sistemas de reconocimiento de emociones."
+        },
+        "minimal": {
+          "level": "Mínimo",
+          "description": "Sistemas de IA que suponen un riesgo mínimo. Sin requisitos obligatorios de cumplimiento, aunque se fomentan los códigos de conducta voluntarios.",
+          "examples": "Filtros de spam, videojuegos con IA, sistemas de gestión de inventario."
+        }
+      },
+      "examplesLabel": "Ejemplos:",
+      "annexTitle": "Categorías del Anexo III",
+      "annexIntro": "El asistente de clasificación te guía por las categorías de alto riesgo del Anexo III. Si tu sistema de IA encaja en alguna de estas áreas, es probable que se clasifique como de Alto Riesgo.",
+      "annexCategories": [
+        "Biometría",
+        "Infraestructuras críticas",
+        "Educación y formación profesional",
+        "Empleo y gestión de trabajadores",
+        "Acceso a servicios esenciales",
+        "Fuerzas del orden",
+        "Migración, asilo y control fronterizo",
+        "Administración de justicia"
+      ],
+      "historyTitle": "Historial de Clasificaciones",
+      "historyIntro": "Cada cambio de clasificación se versiona con la marca de tiempo, el autor, los niveles de riesgo anterior y nuevo, y una justificación. Esto proporciona un registro de auditoría completo para los reguladores.",
+      "historyEntries": [
+        {
+          "date": "2026-02-15",
+          "author": "Maria G.",
+          "from": "—",
+          "to": "Limitado",
+          "note": "Clasificación inicial basada en el caso de uso de chatbot."
+        },
+        {
+          "date": "2026-02-20",
+          "author": "Jan K.",
+          "from": "Limitado",
+          "to": "Alto",
+          "note": "Reclasificado tras la ampliación del alcance para incluir la selección de personal."
+        }
+      ],
+      "howToTitle": "Cómo Clasificar un Sistema de IA",
+      "howToRole": "Responsable de IA",
+      "steps": [
+        {
+          "title": "Abre el sistema de IA",
+          "description": "Accede al Registro de IA y selecciona el sistema que quieres clasificar."
+        },
+        {
+          "title": "Inicia el asistente de clasificación",
+          "description": "Ve a Sistemas de IA → Clasificación de Riesgos y pulsa Clasificar para lanzar el asistente guiado."
+        },
+        {
+          "title": "Responde a las preguntas del Anexo III",
+          "description": "El asistente pregunta si tu sistema encaja en alguna categoría de alto riesgo. Responde con honestidad: el resultado determina las obligaciones de cumplimiento."
+        },
+        {
+          "title": "Revisa el nivel de riesgo sugerido",
+          "description": "Según tus respuestas, el sistema sugiere un nivel de riesgo. Puedes aceptarlo o modificarlo con una justificación."
+        },
+        {
+          "title": "Documenta la justificación",
+          "description": "Añade una justificación que explique la decisión de clasificación. Se guarda en el historial de clasificaciones a efectos de auditoría."
+        }
+      ]
+    },
+    "assessments": {
+      "metaTitle": "Evaluaciones — Documentación de AI SENTINEL",
+      "metaDescription": "Realiza evaluaciones FRIA, de conformidad, de riesgo de IA y de sesgo y equidad con plantillas y flujos de aprobación.",
+      "title": "Evaluaciones",
+      "intro": "Realiza evaluaciones de impacto específicas de IA con plantillas configurables. Puntúa riesgos, documenta mitigaciones y gestiona flujos de aprobación para evaluaciones FRIA, de conformidad, de riesgo de IA y de sesgo y equidad.",
+      "templatesTitle": "Plantillas de Evaluación",
+      "premiumBadge": "Premium",
+      "templates": {
+        "fria": {
+          "label": "Evaluación de Impacto sobre los Derechos Fundamentales",
+          "description": "Obligatoria según el Art. 27 para IA de alto riesgo desplegada por organismos públicos o determinadas entidades privadas."
+        },
+        "aiRisk": {
+          "label": "Evaluación de Riesgos de IA",
+          "description": "Evaluación de riesgos de propósito general para cualquier sistema de IA. Evalúa riesgos operativos, éticos y de cumplimiento."
+        },
+        "custom": {
+          "label": "Evaluación Personalizada",
+          "description": "Crea tu propia plantilla de evaluación con preguntas y criterios de puntuación personalizados."
+        },
+        "conformity": {
+          "label": "Evaluación de Conformidad",
+          "description": "Evaluación de conformidad del Art. 43 y los Anexos VI/VII para sistemas de IA de alto riesgo. Obligatoria antes de la introducción en el mercado."
+        },
+        "biasFairness": {
+          "label": "Evaluación de Sesgo y Equidad",
+          "description": "Evaluación estructurada del sesgo, las métricas de equidad y el riesgo de discriminación entre categorías protegidas."
+        }
+      },
+      "workflowTitle": "Flujo de Aprobación",
+      "workflowIntro": "Cada evaluación sigue un flujo de aprobación estructurado. Las transiciones de estado se registran con la marca de tiempo y el usuario que actúa, para una auditabilidad completa.",
+      "stageLabel": "Fase {number}",
+      "stages": [
+        {
+          "status": "Borrador",
+          "description": "El autor crea la evaluación"
+        },
+        {
+          "status": "En Curso",
+          "description": "Cumplimentación de preguntas y puntuación"
+        },
+        {
+          "status": "En Revisión",
+          "description": "Enviada para aprobación"
+        },
+        {
+          "status": "Aprobada",
+          "description": "La evaluación recibe el visto bueno"
+        }
+      ],
+      "scoringTitle": "Puntuación de Riesgos",
+      "scoringIntro": "Las evaluaciones generan puntuaciones de riesgo a partir de las respuestas a las preguntas. Las puntuaciones pueden modificarse manualmente con justificación. El nivel de riesgo global determina los requisitos de revisión y las prioridades de mitigación.",
+      "scoringLevels": [
+        "Bajo",
+        "Medio",
+        "Alto",
+        "Crítico"
+      ],
+      "howToTitle": "Crear una Evaluación",
+      "steps": [
+        {
+          "role": "Responsable de IA",
+          "title": "Selecciona la plantilla",
+          "description": "Elige entre las plantillas FRIA, Riesgo de IA, Conformidad, Sesgo y Equidad o Personalizada."
+        },
+        {
+          "role": "Responsable de IA",
+          "title": "Define el alcance y vincula el sistema de IA",
+          "description": "Define el alcance de la evaluación y vincúlala al sistema de IA evaluado."
+        },
+        {
+          "role": "Responsable de IA",
+          "title": "Completa las preguntas",
+          "description": "Responde a las preguntas de la plantilla. El sistema calcula las puntuaciones de riesgo sobre la marcha."
+        },
+        {
+          "role": "Responsable de IA",
+          "title": "Documenta las mitigaciones",
+          "description": "Registra las medidas de mitigación, asigna responsables y establece plazos de implantación."
+        },
+        {
+          "role": "Responsable de IA",
+          "title": "Envía a revisión",
+          "description": "Envía la evaluación para su aprobación. Los revisores pueden aprobarla, rechazarla o solicitar cambios."
+        },
+        {
+          "role": "Aprobador",
+          "title": "Aprobación final",
+          "description": "Las evaluaciones aprobadas se bloquean y se almacenan como registros de cumplimiento."
+        }
+      ]
+    },
+    "oversight": {
+      "metaTitle": "Supervisión Humana — Documentación de AI SENTINEL",
+      "metaDescription": "Puntos de control de aprobación, programación de revisiones y registro de decisiones para el cumplimiento del Art. 14 del Reglamento de IA de la UE.",
+      "title": "Supervisión Humana",
+      "intro": "Implementa los requisitos de supervisión humana del Art. 14 para sistemas de IA de alto riesgo. Configura puntos de control de aprobación en las etapas clave del ciclo de vida, programa revisiones periódicas y mantén un registro completo de decisiones para los reguladores.",
+      "gateTypesTitle": "Tipos de Puntos de Control",
+      "gateTypesIntro": "Los puntos de control son verificaciones que requieren revisión y aprobación humanas antes de que un sistema de IA pueda avanzar. Cada punto de control está vinculado a un sistema de IA concreto y asignado a un revisor.",
+      "gateTypes": [
+        {
+          "type": "Pre-Despliegue",
+          "description": "Obligatorio antes de que un sistema de IA pase del estado de Pruebas a Desplegado. Garantiza que se cumplen todos los requisitos de cumplimiento."
+        },
+        {
+          "type": "Post-Despliegue",
+          "description": "Se activa tras el despliegue para verificar que el sistema funciona según lo esperado en producción. Vigila comportamientos inesperados."
+        },
+        {
+          "type": "Revisión Periódica",
+          "description": "Programada a intervalos regulares (p. ej., trimestral). Revisa el rendimiento continuo, la deriva y el cumplimiento sostenido."
+        },
+        {
+          "type": "Activado por Incidente",
+          "description": "Se solicita automáticamente cuando se notifica un incidente de IA sobre el sistema. Requiere revisión antes de continuar la operación."
+        },
+        {
+          "type": "Cambio Significativo",
+          "description": "Obligatorio cuando se realizan cambios importantes en el sistema de IA (nuevo modelo, fuentes de datos distintas, ampliación del alcance)."
+        }
+      ],
+      "decisionTitle": "Registro de Decisiones",
+      "decisionIntro": "Cada decisión de supervisión se registra con el revisor, la fecha y hora, el resultado y la justificación. Esto constituye el registro de auditoría del Art. 14 exigido para los sistemas de IA de alto riesgo.",
+      "decisions": {
+        "approve": {
+          "label": "Aprobar",
+          "body": "El sistema queda autorizado para avanzar. El revisor confirma que se cumplen todos los requisitos."
+        },
+        "reject": {
+          "label": "Rechazar",
+          "body": "El sistema no queda autorizado. El revisor documenta los motivos y las medidas correctoras necesarias."
+        },
+        "defer": {
+          "label": "Aplazar",
+          "body": "La decisión se pospone a la espera de información adicional. Se fija una fecha de seguimiento."
+        }
+      },
+      "setupTitle": "Configurar un Punto de Control",
+      "steps": [
+        {
+          "role": "Responsable de IA",
+          "title": "Accede a Supervisión",
+          "description": "Ve a Gobernanza → Supervisión desde la navegación superior."
+        },
+        {
+          "role": "Responsable de IA",
+          "title": "Crea un nuevo punto de control",
+          "description": "Haz clic en Crear Control. Selecciona el sistema de IA y el tipo de punto de control (pre-despliegue, periódico, etc.)."
+        },
+        {
+          "role": "Responsable de IA",
+          "title": "Asigna un revisor",
+          "description": "Selecciona al miembro del equipo responsable de la revisión. Recibirá una notificación cuando se active el punto de control."
+        },
+        {
+          "role": "Responsable de IA",
+          "title": "Establece la programación",
+          "description": "Para las revisiones periódicas, configura la cadencia de revisión (p. ej., trimestral, anual)."
+        },
+        {
+          "role": "Revisor",
+          "title": "Realiza la revisión",
+          "description": "Cuando se active el punto de control, revisa la documentación del sistema, las evidencias y el estado actual. Registra tu decisión con una justificación."
+        }
+      ]
+    },
+    "incidents": {
+      "metaTitle": "Incidentes de IA — Documentación de AI SENTINEL",
+      "metaDescription": "Haz seguimiento de fallos específicos de IA, coordina tareas de respuesta y gestiona las notificaciones a autoridades del Art. 73.",
+      "title": "Incidentes de IA",
+      "intro": "Haz seguimiento de los incidentes específicos de IA desde la notificación inicial hasta la resolución. Gestiona los plazos de respuesta, coordina tareas y tramita las notificaciones a autoridades del Art. 73 para incidentes graves que afecten a sistemas de IA de alto riesgo.",
+      "typesTitle": "Tipos de Incidente",
+      "typesIntro": "AI SENTINEL registra tipos de incidente específicos de los sistemas de IA, distintos de los incidentes de protección de datos gestionados en DPO Central.",
+      "types": [
+        "Alucinación",
+        "Sesgo / Discriminación",
+        "Deriva del Modelo",
+        "Ataque Adversario",
+        "Inyección de Prompt",
+        "Acceso No Autorizado",
+        "Fallo de Seguridad",
+        "Degradación del Rendimiento",
+        "Envenenamiento de Datos",
+        "Vulneración de Privacidad"
+      ],
+      "lifecycleTitle": "Ciclo de Vida del Incidente",
+      "lifecycleIntro": "Todo incidente sigue un flujo de trabajo estructurado. Las transiciones de estado y las marcas de tiempo se registran como evidencia de cumplimiento.",
+      "lifecycle": [
+        "Notificado",
+        "En Investigación",
+        "En Mitigación",
+        "Resuelto",
+        "Cerrado"
+      ],
+      "severityTitle": "Clasificación de Gravedad",
+      "severityIntro": "Los niveles de gravedad priorizan los esfuerzos de respuesta y determinan los requisitos de notificación.",
+      "severities": {
+        "low": {
+          "level": "Baja",
+          "description": "Incidente menor, impacto limitado. No requiere notificación a las autoridades."
+        },
+        "medium": {
+          "level": "Media",
+          "description": "Impacto moderado, contenido con rapidez. Se recomienda una revisión interna."
+        },
+        "high": {
+          "level": "Alta",
+          "description": "Impacto significativo. Probablemente requiere notificación a la autoridad conforme al Art. 73."
+        },
+        "critical": {
+          "level": "Crítica",
+          "description": "Fallo a gran escala o riesgo para la seguridad. Requiere notificación inmediata conforme al Art. 73."
+        }
+      },
+      "art73Title": "Notificaciones a Autoridades (Art. 73)",
+      "art73Intro": "Conforme al artículo 73 del Reglamento de IA de la UE, los proveedores de sistemas de IA de alto riesgo deben notificar los incidentes graves a la autoridad de vigilancia del mercado competente. AI SENTINEL registra los plazos de notificación, las autoridades destinatarias y el estado de presentación.",
+      "art73": {
+        "whenTitle": "Cuándo notificar",
+        "whenBody": "Incidentes graves que impliquen fallecimiento, daños graves a la salud, a los bienes o al medio ambiente, o una perturbación grave e irreversible de infraestructuras críticas.",
+        "timelineTitle": "Plazos",
+        "timelineBody": "Notifica inmediatamente después de establecer un nexo causal (o su probabilidad razonable) y, a más tardar, 15 días después de tener conocimiento; 10 días si el incidente implica un fallecimiento, 2 días para infracciones generalizadas o una perturbación grave e irreversible de infraestructuras críticas. El sistema calcula el tiempo transcurrido desde la fecha de notificación del incidente.",
+        "includeTitle": "Qué incluir",
+        "includeBody": "Descripción del incidente, sistema de IA afectado, gravedad, análisis de la causa raíz (si está disponible) y medidas correctoras adoptadas o previstas."
+      },
+      "timelineTitle": "Cronología del Incidente",
+      "timelineIntro": "Cada incidente mantiene una cronología detallada que registra todos los eventos, cambios de estado, asignaciones de tareas y comunicaciones.",
+      "timeline": {
+        "reported": {
+          "event": "Incidente notificado",
+          "badge": "CREADO"
+        },
+        "assigned": {
+          "event": "Asignado al equipo de investigación",
+          "badge": "EN INVESTIGACIÓN"
+        },
+        "rootCause": {
+          "event": "Causa raíz identificada: deriva del modelo detectada",
+          "badge": "ACTUALIZACIÓN"
+        },
+        "notification": {
+          "event": "Notificación del Art. 73 enviada a la autoridad",
+          "badge": "NOTIFICACIÓN"
+        },
+        "mitigation": {
+          "event": "Mitigación desplegada: modelo revertido",
+          "badge": "EN MITIGACIÓN"
+        },
+        "resolved": {
+          "event": "Incidente resuelto y cerrado",
+          "badge": "RESUELTO"
+        }
+      },
+      "reportTitle": "Notificar un Incidente",
+      "reportSteps": [
+        {
+          "role": "Notificante",
+          "title": "Notifica el incidente",
+          "description": "Ve a Operaciones → Incidentes y haz clic en Notificar Incidente. Aporta los datos iniciales: sistema de IA afectado, tipo de incidente y descripción."
+        },
+        {
+          "role": "Responsable de IA",
+          "title": "Clasifica y asigna la gravedad",
+          "description": "Revisa la notificación, asigna un nivel de gravedad y determina el alcance de la respuesta."
+        },
+        {
+          "role": "Equipo de TI",
+          "title": "Investiga y contén",
+          "description": "Reúne evidencias, identifica la causa raíz e implanta medidas de contención inmediatas."
+        },
+        {
+          "role": "Responsable de IA",
+          "title": "Notifica a las autoridades si procede",
+          "description": "Para sistemas de alto riesgo con incidentes graves, prepara y presenta la notificación del Art. 73."
+        },
+        {
+          "role": "Responsable de IA",
+          "title": "Resuelve y cierra",
+          "description": "Documenta la resolución, las lecciones aprendidas y las acciones correctoras. Cierra el incidente."
+        }
+      ]
+    },
+    "transparency": {
+      "metaTitle": "Transparencia (Art. 50) — Documentación de AI SENTINEL",
+      "metaDescription": "Haz seguimiento de las obligaciones de transparencia del Art. 50 del Reglamento de IA de la UE por sistema de IA: información de la interacción con IA, marcado de contenido sintético, reconocimiento de emociones y etiquetado de ultrafalsificaciones.",
+      "title": "Transparencia (Art. 50)",
+      "intro": "El artículo 50 del Reglamento de IA de la UE impone deberes de transparencia que atraviesan los niveles de riesgo: incluso un chatbot de riesgo mínimo debe informar. AI SENTINEL registra las cuatro obligaciones del Art. 50 por sistema de IA, las separa según quién las debe realmente y cuenta atrás el único plazo que tiene período transitorio.",
+      "applicabilityTitle": "Cuándo se aplica",
+      "applicabilityBody1": "El Art. 50 se aplica desde el <strong>2 de agosto de 2026</strong> (Art. 113). El Reglamento (UE) 2026/1744 —el Ómnibus Digital sobre IA, DO L de 24 de julio de 2026— concede a los sistemas introducidos en el mercado <em>antes</em> de esa fecha un período transitorio para la obligación de marcado legible por máquina del Art. 50(2), que se extiende hasta el <strong>2 de diciembre de 2026</strong>.",
+      "applicabilityBody2": "Ese período de gracia es el motivo por el que el Registro de IA pregunta si un sistema se introdujo en el mercado antes del 2 de agosto de 2026. Respóndelo con precisión: es el único dato que modifica el plazo de marcado, y el contador de «marcado vencido» del panel se deriva de él.",
+      "obligationsTitle": "Las cuatro obligaciones",
+      "obligationsIntro": "Dos corresponden al proveedor y dos al responsable del despliegue. Una misma organización suele desempeñar ambos papeles, pero registrarlas por separado es lo que te permite responder a un regulador que pregunte en calidad de qué actuabas.",
+      "obligations": [
+        {
+          "article": "Art. 50(1)",
+          "actorLabel": "Obligación del proveedor",
+          "title": "Información de la interacción con IA",
+          "description": "Los sistemas que interactúan directamente con personas deben dejar claro que son IA, salvo que resulte evidente para una persona razonablemente informada. Los chatbots y los agentes de voz son el caso típico."
+        },
+        {
+          "article": "Art. 50(2)",
+          "actorLabel": "Obligación del proveedor",
+          "title": "Marcado legible por máquina del contenido sintético",
+          "description": "Los sistemas que generan audio, imagen, vídeo o texto sintéticos deben marcar su salida en un formato legible por máquina que permita detectarla como generada artificialmente. Es la obligación con plazo transitorio — véase más abajo."
+        },
+        {
+          "article": "Art. 50(3)",
+          "actorLabel": "Obligación del responsable del despliegue",
+          "title": "Reconocimiento de emociones y categorización biométrica",
+          "description": "Los responsables del despliegue deben informar a las personas expuestas a un sistema de reconocimiento de emociones o de categorización biométrica de que está en uso. Ten en cuenta que varios de estos usos están directamente prohibidos por el Art. 5 — el módulo señala ese solapamiento en lugar de permitirte registrar una información sobre una práctica que no puedes ejercer legalmente."
+        },
+        {
+          "article": "Art. 50(4)",
+          "actorLabel": "Obligación del responsable del despliegue",
+          "title": "Etiquetado de ultrafalsificaciones y textos de interés público",
+          "description": "Los responsables del despliegue que publiquen ultrafalsificaciones deben revelar que el contenido ha sido generado o manipulado artificialmente. Lo mismo se aplica al texto generado por IA publicado para informar al público sobre asuntos de interés público."
+        }
+      ],
+      "statusesTitle": "Registro del estado",
+      "statuses": [
+        {
+          "name": "No aplicable",
+          "description": "Esta obligación no se aplica al sistema. Es el valor por defecto de cada obligación hasta que decidas lo contrario."
+        },
+        {
+          "name": "Requerida",
+          "description": "La obligación se aplica y aún no está satisfecha. Los sistemas en este estado alimentan los contadores de plazos del panel ejecutivo."
+        },
+        {
+          "name": "Implementada",
+          "description": "La obligación se aplica y la información o el marcado están en marcha. Documenta cómo en la declaración de IA para que la evidencia sobreviva a la rotación de personal."
+        }
+      ],
+      "workingTitle": "Cómo trabajarlo",
+      "workingSteps": [
+        {
+          "step": "Abre la pestaña de Transparencia del sistema",
+          "body": "Cada sistema de IA del registro tiene una pestaña de Transparencia (Art. 50) junto a Modelos, Fuentes de Datos y Clasificación de Riesgos."
+        },
+        {
+          "step": "Revisa las obligaciones sugeridas",
+          "body": "El módulo examina la finalidad y la técnica del sistema y sugiere cuáles de las cuatro obligaciones parecen aplicables. Tómalas como indicaciones, no como conclusiones: tú confirmas cada una."
+        },
+        {
+          "step": "Asigna un estado a cada obligación",
+          "body": "Marca cada una como No aplicable, Requerida o Implementada. Todo lo que quede como Requerida aparece en los contadores de transparencia del panel."
+        },
+        {
+          "step": "Redacta la declaración de IA",
+          "body": "Documenta el texto informativo y el método de marcado que realmente utilizas. Este es el artefacto que pedirá una autoridad de vigilancia del mercado; un campo de estado por sí solo no les bastará."
+        }
+      ],
+      "scopeTitle": "Una nota sobre el alcance",
+      "scopeBody": "Este módulo registra tu posición respecto al Art. 50; no marca el contenido por ti. El marcado legible por máquina se implementa en el propio sistema generador. AI SENTINEL es donde documentas qué sistemas deben cumplir la obligación, si está satisfecha y cómo — para que la respuesta exista antes de que alguien la pida."
+    },
+    "compliance": {
+      "metaTitle": "Cumplimiento — Documentación de AI SENTINEL",
+      "metaDescription": "Mapeo de marcos normativos para el Reglamento de IA de la UE, NIST AI RMF e ISO 42001 con gestión de evidencias y exportación.",
+      "title": "Cumplimiento",
+      "intro": "Mapea tus sistemas de IA frente a los principales marcos normativos. Sigue el estado de cumplimiento a nivel de requisito, adjunta evidencias y exporta paquetes de cumplimiento para reguladores y auditores.",
+      "frameworksTitle": "Marcos Normativos Compatibles",
+      "frameworksIntro": "AI SENTINEL incluye tres marcos precargados. Cada marco se desglosa en artículos, cláusulas o funciones con seguimiento de cumplimiento individual.",
+      "frameworks": {
+        "euAiAct": {
+          "name": "Reglamento de IA de la UE",
+          "description": "Mapeo de obligaciones clave desde el Art. 4 (alfabetización en IA) y el Art. 5 (prácticas prohibidas) hasta el Art. 73 (incidentes graves) y el calendario de aplicación del Art. 113, además de los anexos relevantes. El principal marco normativo para los sistemas de IA en la Unión Europea.",
+          "items": "Artículos, Anexos, Considerandos"
+        },
+        "nist": {
+          "name": "NIST AI RMF",
+          "description": "El Marco de Gestión de Riesgos de IA del Instituto Nacional de Estándares y Tecnología de EE. UU. Cuatro funciones principales con subcategorías.",
+          "items": "GOVERN, MAP, MEASURE, MANAGE"
+        },
+        "iso": {
+          "name": "ISO 42001",
+          "description": "Norma internacional para Sistemas de Gestión de IA. Abarca el contexto de la organización, el liderazgo, la planificación, el soporte y las operaciones.",
+          "items": "Cláusulas 4-10, Controles del Anexo A"
+        }
+      },
+      "statusesTitle": "Estados de Cumplimiento",
+      "statusesIntro": "Cada requisito puede evaluarse de forma independiente para cada sistema de IA. El estado refleja la situación de cumplimiento actual de ese requisito concreto.",
+      "statuses": {
+        "compliant": "Conforme",
+        "partiallyCompliant": "Parcialmente Conforme",
+        "nonCompliant": "No Conforme",
+        "notApplicable": "No Aplicable",
+        "notAssessed": "Sin Evaluar"
+      },
+      "matrixTitle": "Matriz de Cumplimiento",
+      "matrixIntro": "La matriz de cumplimiento ofrece una vista por sistema de IA de todos los requisitos del marco elegido. Para cada requisito puedes establecer el estado de cumplimiento, añadir notas y adjuntar documentos de evidencia.",
+      "matrixTrackingTitle": "Seguimiento por requisito",
+      "matrixTracking": [
+        "Estado de cumplimiento (5 niveles)",
+        "Evidencias adjuntas y notas",
+        "Filtrado de aplicabilidad por nivel de riesgo",
+        "Asignación de persona responsable"
+      ],
+      "matrixExportTitle": "Capacidades de exportación",
+      "matrixExport": [
+        "Exportación CSV para análisis en hoja de cálculo",
+        "Exportación PDF para presentaciones regulatorias",
+        "Paquetes de documentación técnica (Art. 11 / Anexo IV)",
+        "Informes de cumplimiento listos para auditoría"
+      ],
+      "crossTitle": "Mapeo entre Marcos",
+      "crossIntro": "Muchos requisitos del Reglamento de IA de la UE, NIST AI RMF e ISO 42001 se solapan conceptualmente. AI SENTINEL incluye 41 mapeos entre marcos predefinidos para que un mismo esfuerzo de cumplimiento pueda satisfacer requisitos de varios marcos simultáneamente.",
+      "crossBody1": "Cuando marcas un requisito como <s>Conforme</s> o <s>Parcialmente Conforme</s>, AI SENTINEL muestra los requisitos vinculados de otros marcos y ofrece propagar el estado automáticamente.",
+      "crossBody2": "Por ejemplo, marcar como conforme el Art. 9 del Reglamento de IA de la UE (Gestión de Riesgos) puede actualizar automáticamente NIST GOVERN 1 (Políticas de Gestión de Riesgos) y la Cláusula 6.1 de ISO 42001 (Acciones para Abordar Riesgos), porque cubren la misma obligación.",
+      "crossStats": {
+        "equivalent": "Mapeos equivalentes",
+        "partial": "Mapeos parciales",
+        "related": "Mapeo relacionado"
+      },
+      "snapshotTitle": "Instantánea de Cumplimiento Autogenerada",
+      "snapshotBody1": "Cuando clasificas el nivel de riesgo de un sistema de IA (p. ej., Alto Riesgo según el Reglamento de IA de la UE), AI SENTINEL crea automáticamente registros de mapeo de cumplimiento para cada requisito aplicable de los tres marcos. Llegas a la matriz de cumplimiento con todos los controles relevantes ya rellenados, sin configuración manual.",
+      "snapshotBody2": "Para un sistema de Alto Riesgo, esto supone inicializar al instante más de 80 requisitos del Reglamento de IA de la UE (requisitos clave del Art. 6 al Art. 73), NIST AI RMF (las 23 prácticas) y las cláusulas de ISO 42001, cada uno en estado «Sin Evaluar» y listo para su evaluación.",
+      "howTitle": "Mapear el Cumplimiento",
+      "steps": [
+        {
+          "role": "Responsable de IA",
+          "title": "Accede a Cumplimiento",
+          "description": "Ve a Gobernanza → Cumplimiento desde la navegación superior."
+        },
+        {
+          "role": "Responsable de IA",
+          "title": "Selecciona el marco y el sistema de IA",
+          "description": "Elige el marco (Reglamento de IA de la UE, NIST AI RMF o ISO 42001) y el sistema de IA a evaluar."
+        },
+        {
+          "role": "Responsable de IA",
+          "title": "Evalúa cada requisito",
+          "description": "Recorre la lista de requisitos. Para cada uno, establece el estado de cumplimiento y añade notas o evidencias."
+        },
+        {
+          "role": "Responsable de IA",
+          "title": "Filtra por aplicabilidad",
+          "description": "Usa el filtrado por nivel de riesgo para centrarte en los requisitos que aplican a la clasificación de tu sistema (p. ej., solo alto riesgo)."
+        },
+        {
+          "role": "Responsable de IA",
+          "title": "Exporta la documentación",
+          "description": "Genera informes CSV o PDF para presentaciones regulatorias, auditorías o partes interesadas internas."
+        }
+      ]
+    },
+    "vendors": {
+      "metaTitle": "Riesgo de Proveedores — Documentación de AI SENTINEL",
+      "metaDescription": "Gestión de proveedores externos de IA con evaluación de riesgos, seguimiento de contratos y diligencia debida.",
+      "title": "Riesgo de Proveedores",
+      "intro": "Gestiona los proveedores externos de IA con evaluación de riesgos, seguimiento del ciclo de vida de los contratos y documentación de diligencia debida. Mantén un registro completo de cada proveedor de IA del que depende tu organización.",
+      "riskTitle": "Niveles de Riesgo de Proveedor",
+      "riskIntro": "A cada proveedor se le asigna un nivel de riesgo según la criticidad de los servicios de IA que presta. El nivel de riesgo determina la frecuencia de revisión y los requisitos de diligencia debida.",
+      "riskLevels": {
+        "critical": {
+          "level": "Crítico",
+          "description": "Infraestructura de IA esencial, irreemplazable"
+        },
+        "high": {
+          "level": "Alto",
+          "description": "Dependencia significativa, alternativas limitadas"
+        },
+        "medium": {
+          "level": "Medio",
+          "description": "Dependencia moderada, existen alternativas"
+        },
+        "low": {
+          "level": "Bajo",
+          "description": "Dependencia mínima, fácilmente reemplazable"
+        }
+      },
+      "statusTitle": "Flujo de Estados del Proveedor",
+      "statusIntro": "Los proveedores avanzan por un flujo de revisión y aprobación antes de quedar autorizados para su uso.",
+      "statusFlow": [
+        "En Revisión",
+        "Activo",
+        "Aprobado",
+        "Suspendido",
+        "Rescindido"
+      ],
+      "recordTitle": "Ficha del Proveedor",
+      "recordIntro": "Cada ficha de proveedor recoge la información necesaria para la gestión de riesgos y la supervisión de contratos.",
+      "recordGroups": [
+        {
+          "title": "Datos de la Empresa",
+          "items": [
+            "Nombre y sitio web del proveedor",
+            "Contacto principal",
+            "País y jurisdicción",
+            "Servicios prestados"
+          ]
+        },
+        {
+          "title": "Riesgo y Cumplimiento",
+          "items": [
+            "Nivel de riesgo (Crítico/Alto/Medio/Bajo)",
+            "Indicador de conformidad con la CCPA",
+            "Lista de subencargados",
+            "Referencia cruzada con proveedores de DPO Central"
+          ]
+        },
+        {
+          "title": "Contrato",
+          "items": [
+            "Fechas de inicio y vencimiento del contrato",
+            "Alertas de renovación",
+            "Valor del contrato",
+            "Condiciones de SLA"
+          ]
+        },
+        {
+          "title": "Evaluaciones",
+          "items": [
+            "Evaluaciones de riesgo del proveedor",
+            "Documentación de diligencia debida",
+            "Calendario de revisiones",
+            "Hallazgos y remediación"
+          ]
+        }
+      ],
+      "catalogTitle": "Catálogo de Proveedores de IA",
+      "catalogPremium": "Premium",
+      "catalogIntro": "El Catálogo de Proveedores de IA (con tecnología de Vendor.Watch) ofrece una base de datos de proveedores de IA preauditados. Busca en el catálogo, consulta perfiles de proveedores y añádelos directamente a tu registro con los datos autocompletados.",
+      "catalogSearchTitle": "Buscar y Explorar",
+      "catalogSearchBody": "Busca por nombre de proveedor o explora por categoría. Cada entrada del catálogo incluye una descripción, el sitio web e indicadores de cumplimiento.",
+      "catalogAutofillTitle": "Autocompletado",
+      "catalogAutofillBody": "Al añadir un proveedor desde el catálogo, el formulario se autocompleta con los datos del proveedor, lo que ahorra tiempo y garantiza la precisión.",
+      "catalogRegisterTitle": "Registrar como Sistema de IA",
+      "catalogRegisterBody": "Opcionalmente, registra el producto del proveedor como sistema de IA en tu registro al mismo tiempo, vinculando las fichas del proveedor y del sistema.",
+      "howTitle": "Añadir un Proveedor",
+      "steps": [
+        {
+          "role": "Responsable de IA",
+          "title": "Accede a Proveedores",
+          "description": "Ve a Operaciones → Proveedores desde la navegación superior."
+        },
+        {
+          "role": "Responsable de IA",
+          "title": "Haz clic en Añadir Proveedor",
+          "description": "Usa el botón de la esquina superior derecha. Opcionalmente, busca en el Catálogo de Proveedores de IA para autocompletar los datos."
+        },
+        {
+          "role": "Responsable de IA",
+          "title": "Completa los datos del proveedor",
+          "description": "Introduce el nombre del proveedor, el sitio web, el contacto, los servicios y asigna un nivel de riesgo."
+        },
+        {
+          "role": "Responsable de IA",
+          "title": "Añade la información del contrato",
+          "description": "Documenta las fechas del contrato, las condiciones de renovación y los detalles del SLA."
+        },
+        {
+          "role": "Responsable de IA",
+          "title": "Programa evaluaciones de riesgo",
+          "description": "Desde la página de detalle del proveedor, crea evaluaciones de riesgo del proveedor y establece calendarios de revisión."
+        }
+      ]
+    },
+    "policies": {
+      "metaTitle": "Gestión de Políticas — Documentación de AI SENTINEL",
+      "metaDescription": "Políticas de gobernanza de IA con versionado, flujo de aprobación y vinculación de sistemas.",
+      "title": "Gestión de Políticas",
+      "intro": "Redacta, versiona y gestiona políticas de gobernanza de IA. Vincula políticas a sistemas de IA concretos, sigue los flujos de aprobación y mantén una biblioteca de políticas viva que evoluciona con tu organización.",
+      "typesTitle": "Tipos de Política",
+      "typesIntro": "AI SENTINEL admite una variedad de tipos de política que cubren todo el alcance de la gobernanza de IA. Cada tipo aborda un dominio de gobernanza específico.",
+      "types": [
+        {
+          "type": "Uso de IA",
+          "description": "Normas sobre cómo pueden utilizarse los sistemas de IA dentro de la organización"
+        },
+        {
+          "type": "Gobernanza de IA",
+          "description": "Estructura general de gobernanza, roles y responsabilidades"
+        },
+        {
+          "type": "Ética de IA",
+          "description": "Principios y directrices éticas para el desarrollo y despliegue de IA"
+        },
+        {
+          "type": "Gestión de Riesgos de IA",
+          "description": "Procedimientos de identificación, evaluación y mitigación de riesgos"
+        },
+        {
+          "type": "Gobernanza de Datos de IA",
+          "description": "Requisitos de calidad, procedencia y tratamiento de datos para IA"
+        },
+        {
+          "type": "Contratación de IA",
+          "description": "Estándares para evaluar y adquirir sistemas y servicios de IA"
+        },
+        {
+          "type": "Respuesta a Incidentes de IA",
+          "description": "Procedimientos de respuesta a incidentes relacionados con la IA"
+        },
+        {
+          "type": "Transparencia de IA",
+          "description": "Requisitos de divulgación y explicabilidad para las decisiones de IA"
+        },
+        {
+          "type": "Personalizada",
+          "description": "Tipo de política definido por el usuario para necesidades específicas de la organización"
+        }
+      ],
+      "workflowTitle": "Flujo de Aprobación",
+      "workflowIntro": "Las políticas siguen un ciclo de vida estructurado desde el borrador hasta la publicación. Cada transición de etapa queda registrada a efectos de auditoría.",
+      "workflowFlow": [
+        "Borrador",
+        "En Revisión",
+        "Aprobada",
+        "Publicada",
+        "Archivada"
+      ],
+      "versionsTitle": "Historial de Versiones",
+      "versionsIntro": "Cada cambio de contenido en una política crea una nueva versión. El sistema registra automáticamente el número de versión, las notas de cambio, el autor y la fecha. Las versiones anteriores siguen accesibles para su comparación.",
+      "versionNotes": [
+        "Requisitos de transparencia actualizados para sistemas de IA generativa",
+        "Añadidas directrices de contratación para proveedores externos de IA",
+        "Borrador inicial de la política con las normas de uso de IA"
+      ],
+      "linkingTitle": "Vinculación de Sistemas",
+      "linkingIntro": "Las políticas pueden vincularse a sistemas de IA concretos del registro. Esto crea trazabilidad entre las políticas de gobernanza y los sistemas a los que aplican, y facilita ver qué políticas rigen un sistema de IA determinado.",
+      "linkingFromPolicyTitle": "Desde la política",
+      "linkingFromPolicyBody": "Consulta y gestiona qué sistemas de IA están cubiertos por la política. Añade o elimina vínculos con sistemas desde la página de detalle de la política.",
+      "linkingFromSystemTitle": "Desde el sistema de IA",
+      "linkingFromSystemBody": "Consulta todas las políticas que aplican a un sistema de IA concreto. Esto ayuda a los responsables de IA a entender el contexto completo de gobernanza.",
+      "howTitle": "Crear una Política",
+      "steps": [
+        {
+          "role": "Responsable de IA",
+          "title": "Accede a Políticas",
+          "description": "Ve a Gobernanza → Políticas desde la navegación superior."
+        },
+        {
+          "role": "Responsable de IA",
+          "title": "Haz clic en Nueva Política",
+          "description": "Elige el tipo de política e introduce un título y una descripción."
+        },
+        {
+          "role": "Responsable de IA",
+          "title": "Redacta el contenido",
+          "description": "Escribe el contenido de la política. Cada guardado crea una nueva versión automáticamente."
+        },
+        {
+          "role": "Responsable de IA",
+          "title": "Vincula sistemas de IA",
+          "description": "Asocia la política con los sistemas de IA a los que aplica."
+        },
+        {
+          "role": "Responsable de IA",
+          "title": "Envíala a revisión",
+          "description": "Cambia el estado a En Revisión. Los aprobadores la revisarán y la aprobarán o solicitarán cambios."
+        },
+        {
+          "role": "Aprobador",
+          "title": "Publica",
+          "description": "Una vez aprobada, publica la política para hacerla visible en toda la organización. Establece una fecha de entrada en vigor y un calendario de revisiones."
+        }
+      ]
+    },
+    "shadowAi": {
+      "metaTitle": "Detección de IA en la Sombra — Documentación de AI SENTINEL",
+      "metaDescription": "Descubre las herramientas de IA no autorizadas en tu organización. Portal de autonotificación, flujo de triaje y promoción a la gobernanza formal.",
+      "premiumBadge": "Premium",
+      "title": "Detección de IA en la Sombra",
+      "intro": "La IA en la sombra son las herramientas de IA adoptadas por los empleados sin el conocimiento o la aprobación de la organización. Los estudios sugieren que en torno al 60% de los empleados utiliza herramientas de IA no aprobadas en el trabajo: desde ChatGPT y Copilot hasta generadores de imágenes y analítica basada en IA. Las organizaciones no pueden gobernar sistemas de IA que desconocen.",
+      "whatTitle": "¿Qué es la IA en la sombra?",
+      "whatP1": "La IA en la sombra es el equivalente en IA del Shadow IT: el uso de herramientas, servicios y aplicaciones basados en IA por parte de los empleados sin autorización organizativa explícita. A diferencia de los proveedores contratados formalmente, que pasan por evaluación de riesgos y revisión contractual, las herramientas de IA en la sombra entran en la organización por adopción individual: un ingeniero instala un asistente de código, un abogado usa ChatGPT para revisar contratos, un equipo de marketing se suscribe a una herramienta de redacción con IA.",
+      "whatP2": "Según el Reglamento de IA de la UE, las organizaciones que despliegan sistemas de IA tienen obligaciones específicas como responsables del despliegue, con independencia de que el despliegue estuviera autorizado o no. La IA en la sombra crea puntos ciegos en los programas de cumplimiento, protección de datos y gestión de riesgos.",
+      "whyTitle": "Por qué es importante",
+      "whyItems": [
+        {
+          "title": "Riesgo de cumplimiento",
+          "description": "Los sistemas de IA no registrados pueden entrar en categorías de alto riesgo sin las evaluaciones de conformidad, la supervisión humana o la documentación de riesgos adecuadas."
+        },
+        {
+          "title": "Protección de datos",
+          "description": "Los empleados pueden introducir datos personales, secretos comerciales o información de clientes en herramientas de IA que entrenan con las entradas de los usuarios o almacenan datos en jurisdicciones no conformes."
+        },
+        {
+          "title": "Exposición regulatoria",
+          "description": "Según el Reglamento de IA de la UE, los responsables del despliegue responden de los sistemas de IA utilizados en su organización, incluidos los adoptados informalmente por el personal."
+        },
+        {
+          "title": "Brecha de gobernanza",
+          "description": "No puedes clasificar riesgos, realizar evaluaciones ni establecer puntos de control para sistemas de IA cuya existencia desconoces. La IA en la sombra es el primer paso que falta."
+        }
+      ],
+      "vsTitle": "IA en la Sombra frente a Riesgo de Proveedores",
+      "vsIntro": "La Detección de IA en la Sombra y la Gestión de Riesgo de Proveedores resuelven problemas fundamentalmente distintos en direcciones opuestas. Son complementarias, no se solapan.",
+      "vsVendorTitle": "Riesgo de Proveedores",
+      "vsVendorItems": [
+        "La organización contrata al proveedor por canales formales",
+        "Conocido desde el primer día: la organización eligió al proveedor",
+        "Pregunta clave: «¿Es arriesgado este proveedor que hemos seleccionado?»",
+        "Ciclo de vida: Contratación → Evaluación → Seguimiento"
+      ],
+      "vsShadowTitle": "IA en la Sombra",
+      "vsShadowItems": [
+        "Los empleados adoptan herramientas de IA por su cuenta, al margen de compras",
+        "Desconocida hasta que se notifica o se descubre",
+        "Pregunta clave: «¿Qué herramientas de IA está usando realmente la gente?»",
+        "Ciclo de vida: Detección → Triaje → Aprobar o Prohibir"
+      ],
+      "howTitle": "Cómo funciona",
+      "howSteps": [
+        {
+          "title": "Los empleados autonotifican",
+          "description": "El personal busca en un catálogo precargado de 36 herramientas de IA conocidas en 8 categorías (chat LLM, asistentes de código, generación de imágenes, vídeo/audio, redacción, herramientas de negocio, analítica de datos, búsqueda) o introduce una herramienta personalizada. Indican su departamento, una descripción del uso y cómo utilizan la herramienta."
+        },
+        {
+          "title": "Triaje y revisión",
+          "description": "Las herramientas notificadas entran en la cola de revisión con estado DESCUBIERTA. El Responsable de IA o el equipo de gobernanza revisa cada herramienta evaluando indicadores de riesgo: ¿procesa datos personales?, ¿entrena con las entradas?, ¿está alojada en la nube?, ¿tiene certificación SOC2?, ¿cumple el RGPD?"
+        },
+        {
+          "title": "Aprobar o prohibir",
+          "description": "Cada herramienta se APRUEBA para seguir usándose (con condiciones) o se PROHÍBE y se marca para su retirada. Las herramientas prohibidas emiten una señal organizativa clara de que la herramienta no está autorizada."
+        },
+        {
+          "title": "Promoción a la gobernanza formal",
+          "description": "Las herramientas en la sombra aprobadas pueden promoverse al Registro de IA como Sistema de IA formal — y, opcionalmente, a un registro de Proveedor — en un solo paso. Así se conecta la detección informal con tu programa de gobernanza completo."
+        }
+      ],
+      "statusTitle": "Flujo de Estados",
+      "statusStages": [
+        {
+          "status": "Descubierta",
+          "description": "Notificada por un empleado"
+        },
+        {
+          "status": "En Revisión",
+          "description": "En evaluación por el equipo de gobernanza"
+        },
+        {
+          "status": "Aprobada",
+          "description": "Autorizada para su uso"
+        },
+        {
+          "status": "Prohibida",
+          "description": "Vetada: debe retirarse"
+        },
+        {
+          "status": "Registrada",
+          "description": "Promovida al Registro de IA"
+        }
+      ]
+    },
+    "vendorCatalog": {
+      "metaTitle": "Catálogo de Proveedores de IA — Documentación de AI SENTINEL",
+      "metaDescription": "Catálogo preauditado de más de 665 proveedores de IA con perfiles de riesgo, datos de cumplimiento y metadatos de gobernanza, impulsado por Vendor.Watch.",
+      "premiumBadge": "Premium",
+      "title": "Catálogo de Proveedores de IA",
+      "intro": "Evaluar proveedores de IA desde cero consume tiempo y es propenso a errores. El Catálogo de Proveedores de IA da a tu equipo de gobernanza una ventaja inicial con perfiles preauditados de más de 665 proveedores de IA, completos con indicadores de riesgo, certificaciones de cumplimiento y metadatos de despliegue.",
+      "whatTitle": "¿Qué es el Catálogo de Proveedores de IA?",
+      "whatP1": "El Catálogo de Proveedores de IA es un directorio precargado y con búsqueda de proveedores de herramientas y servicios de IA. Cada perfil de proveedor incluye datos de gobernanza estructurados: qué hace el proveedor, dónde se procesan los datos, qué certificaciones posee, si entrena con datos de clientes y su clasificación de riesgo según el Reglamento de IA de la UE.",
+      "whatP2": "El catálogo está impulsado por <vw>Vendor.Watch</vw>, un servicio independiente de inteligencia sobre proveedores de IA que audita y actualiza continuamente los perfiles. Los datos se sincronizan automáticamente, de modo que tu catálogo se mantiene al día sin investigación manual.",
+      "whyTitle": "Por qué es importante",
+      "whyItems": [
+        {
+          "title": "Diligencia debida a escala",
+          "description": "Investigar manualmente las prácticas de datos, certificaciones y postura de riesgo de cada proveedor de IA es inviable. El catálogo proporciona una base estandarizada para cada evaluación de proveedores."
+        },
+        {
+          "title": "Contratación más rápida",
+          "description": "Cuando un equipo solicita una nueva herramienta de IA, gobernanza puede consultar el catálogo de inmediato, sin ciclos de cuestionarios a proveedores de varias semanas para la evaluación inicial."
+        },
+        {
+          "title": "Cumplimiento normativo",
+          "description": "El Reglamento de IA de la UE exige a los responsables del despliegue conocer los sistemas de IA que utilizan. Los niveles de riesgo preclasificados y los indicadores de cumplimiento ayudan a cumplir las obligaciones de los Art. 6 y 26."
+        },
+        {
+          "title": "Actualizaciones continuas",
+          "description": "Los perfiles de riesgo de los proveedores cambian cuando las empresas actualizan sus condiciones, caducan certificaciones o evolucionan las prácticas de datos. La sincronización automática garantiza que tu catálogo refleje la realidad actual."
+        }
+      ],
+      "vsTitle": "Catálogo de Proveedores frente a Riesgo de Proveedores",
+      "vsIntro": "El Catálogo de Proveedores de IA y el módulo de Riesgo de Proveedores cumplen funciones distintas en el ciclo de vida de la gobernanza. Se complementan entre sí.",
+      "vsCatalogTitle": "Catálogo de Proveedores",
+      "vsCatalogItems": [
+        "Directorio precargado con más de 665 proveedores de IA",
+        "Inteligencia externa: datos de Vendor.Watch",
+        "Referencia de solo lectura para la diligencia debida inicial",
+        "Pregunta clave: «¿Qué sabemos de este proveedor?»"
+      ],
+      "vsRiskTitle": "Riesgo de Proveedores",
+      "vsRiskItems": [
+        "Los registros de proveedores de tu organización",
+        "Evaluaciones internas: los análisis de riesgo de tu equipo",
+        "CRUD completo con seguimiento de estados y gestión de contratos",
+        "Pregunta clave: «¿Cuánto riesgo supone este proveedor para nosotros?»"
+      ],
+      "profileTitle": "Qué contiene un perfil de proveedor",
+      "profileItems": [
+        {
+          "category": "Identidad",
+          "fields": "Nombre, slug, logotipo, sitio web, descripción, categoría, país de la sede"
+        },
+        {
+          "category": "Información de Modelos de IA",
+          "fields": "Nombres de modelos, tipos de modelo (propietario, código abierto, ajustado), transparencia de los datos de entrenamiento"
+        },
+        {
+          "category": "Datos y Privacidad",
+          "fields": "Ubicaciones de procesamiento de datos, política de retención de datos, entrena con datos de clientes (sí/no), subencargados divulgados"
+        },
+        {
+          "category": "Cumplimiento y Certificaciones",
+          "fields": "SOC 2, ISO 27001, estado de cumplimiento del RGPD, clasificación de riesgo según el Reglamento de IA de la UE, elegibilidad HIPAA"
+        },
+        {
+          "category": "Metadatos de Gobernanza",
+          "fields": "Fecha de la última auditoría, puntuación de riesgo de Vendor.Watch, marca temporal de sincronización del catálogo, URL de origen"
+        }
+      ],
+      "howTitle": "Cómo funciona",
+      "howSteps": [
+        {
+          "title": "Explora o busca",
+          "description": "Busca en el catálogo por nombre de proveedor, categoría o atributo de cumplimiento. Filtra por nivel de riesgo, estado de certificación o ubicación de procesamiento de datos."
+        },
+        {
+          "title": "Revisa el perfil",
+          "description": "Cada proveedor tiene una página de perfil detallada con datos de gobernanza estructurados: indicadores de riesgo, certificaciones de cumplimiento, prácticas de datos e información de modelos de IA."
+        },
+        {
+          "title": "Fundamenta tu decisión",
+          "description": "Utiliza los datos del catálogo para acelerar las evaluaciones de proveedores, respaldar decisiones de contratación o evaluar herramientas de IA en la sombra notificadas por los empleados."
+        },
+        {
+          "title": "Sincronización automática",
+          "description": "El catálogo se sincroniza con Vendor.Watch de forma periódica. Los nuevos proveedores se añaden y los perfiles existentes se actualizan automáticamente a medida que hay nueva inteligencia disponible."
+        }
+      ]
+    },
+    "conformity": {
+      "metaTitle": "Evaluación de Conformidad — Documentación de AI SENTINEL",
+      "metaDescription": "Plantilla de evaluación de conformidad del Art. 43 del Reglamento de IA de la UE para sistemas de IA de alto riesgo. Evaluación estructurada de la documentación técnica, la gestión de la calidad y el seguimiento poscomercialización.",
+      "premiumBadge": "Premium",
+      "title": "Evaluación de Conformidad",
+      "intro": "Los sistemas de IA de alto riesgo bajo el Reglamento de IA de la UE deben someterse a una evaluación de conformidad antes de su introducción en el mercado. AI SENTINEL proporciona una plantilla estructurada que guía a tu equipo por cada requisito — desde la documentación técnica hasta el seguimiento poscomercialización — para que nada se quede en el tintero.",
+      "whatTitle": "¿Qué es una Evaluación de Conformidad?",
+      "whatP1": "Una evaluación de conformidad es un proceso de evaluación formal exigido por el Art. 43 del Reglamento de IA de la UE para los sistemas de IA de alto riesgo. Verifica que el sistema de IA cumple todos los requisitos aplicables antes del despliegue, cubriendo la gobernanza de datos, la transparencia, la supervisión humana, la precisión, la solidez y la ciberseguridad.",
+      "whatP2": "Según el caso de uso, las evaluaciones de conformidad pueden realizarse internamente por el proveedor o a través de un organismo notificado externo. En ambos casos, la evaluación debe seguir una metodología estructurada y producir evidencia documentada del cumplimiento.",
+      "whoTitle": "¿Quién la necesita?",
+      "whoItems": [
+        {
+          "title": "Proveedores de IA",
+          "description": "Las organizaciones que desarrollan o introducen sistemas de IA de alto riesgo en el mercado de la UE deben completar una evaluación de conformidad antes del despliegue (Art. 16)."
+        },
+        {
+          "title": "Responsables del despliegue",
+          "description": "Las organizaciones que despliegan sistemas de IA de alto riesgo deben verificar que el proveedor ha completado la evaluación de conformidad y que el marcado CE está en su sitio (Art. 26)."
+        },
+        {
+          "title": "Sistemas del Anexo III",
+          "description": "Sistemas de IA utilizados en biometría, infraestructuras críticas, educación, empleo, servicios esenciales, aplicación de la ley, migración o administración de justicia (Art. 6, apartado 2)."
+        },
+        {
+          "title": "Equipos internos de cumplimiento",
+          "description": "Incluso cuando interviene un organismo notificado, los equipos internos necesitan un proceso estructurado para preparar la documentación, recopilar evidencias y hacer seguimiento de la corrección de deficiencias."
+        }
+      ],
+      "coversTitle": "Qué cubre la plantilla",
+      "coversItems": [
+        {
+          "area": "Sistema de Gestión de Riesgos",
+          "description": "Verificación de que existe un sistema de gestión de riesgos establecido y mantenido durante todo el ciclo de vida del sistema de IA (Art. 9)."
+        },
+        {
+          "area": "Gobernanza de Datos",
+          "description": "Evaluación de los datos de entrenamiento, validación y prueba, incluida su pertinencia, representatividad y el examen de sesgos (Art. 10)."
+        },
+        {
+          "area": "Documentación Técnica",
+          "description": "Revisión de la exhaustividad de la documentación técnica: descripción del sistema, especificaciones de diseño, proceso de desarrollo y métricas de rendimiento (Art. 11, Anexo IV)."
+        },
+        {
+          "area": "Registros y Trazabilidad",
+          "description": "Evaluación de las capacidades de registro automático para la trazabilidad, incluidos los registros de entradas/salidas y los eventos del sistema (Art. 12)."
+        },
+        {
+          "area": "Transparencia",
+          "description": "Evaluación de las instrucciones de uso, la divulgación de la naturaleza de IA y las medidas de interpretabilidad para responsables del despliegue y personas afectadas (Art. 13)."
+        },
+        {
+          "area": "Supervisión Humana",
+          "description": "Verificación de que el sistema incorpora por diseño medidas adecuadas de supervisión humana y de que están documentadas (Art. 14)."
+        },
+        {
+          "area": "Precisión, Solidez y Ciberseguridad",
+          "description": "Pruebas y validación de los niveles de precisión, la resiliencia frente a errores y ataques adversarios, y las medidas de ciberseguridad (Art. 15)."
+        },
+        {
+          "area": "Sistema de Gestión de la Calidad",
+          "description": "Revisión del sistema de gestión de la calidad del proveedor, que cubre los procesos de desarrollo, las pruebas y las obligaciones poscomercialización (Art. 17)."
+        },
+        {
+          "area": "Seguimiento Poscomercialización",
+          "description": "Verificación de que existe un plan de seguimiento poscomercialización para detectar y abordar problemas tras el despliegue (Art. 72)."
+        }
+      ],
+      "howTitle": "Cómo funciona",
+      "howSteps": [
+        {
+          "title": "Crea una nueva evaluación",
+          "description": "Selecciona la plantilla de Evaluación de Conformidad y vincúlala a un sistema de IA registrado. La plantilla precarga todas las áreas de evaluación requeridas."
+        },
+        {
+          "title": "Trabaja cada sección",
+          "description": "Cada sección presenta preguntas estructuradas alineadas con los requisitos del Reglamento de IA de la UE. Registra hallazgos, adjunta evidencias y anota las deficiencias."
+        },
+        {
+          "title": "Envía a revisión",
+          "description": "Una vez completada, envía la evaluación a revisión por el Responsable de IA o el líder de gobernanza. El flujo de aprobación registra la firma y los cambios solicitados."
+        },
+        {
+          "title": "Documenta y mantén",
+          "description": "La evaluación completada pasa a formar parte de tu expediente de cumplimiento. Vincúlala al mapeo de cumplimiento del sistema de IA y revísala cuando se produzcan cambios sustanciales."
+        }
+      ]
+    },
+    "biasFairness": {
+      "metaTitle": "Evaluación de Sesgo y Equidad — Documentación de AI SENTINEL",
+      "metaDescription": "Evaluación estructurada de sesgo y equidad para sistemas de IA. Detecta riesgos de discriminación, evalúa atributos protegidos y documenta medidas de mitigación.",
+      "premiumBadge": "Premium",
+      "title": "Evaluación de Sesgo y Equidad",
+      "intro": "Los sistemas de IA pueden producir resultados discriminatorios, a menudo de forma involuntaria. La Evaluación de Sesgo y Equidad proporciona una metodología estructurada para evaluar los riesgos de sesgo de tus sistemas de IA, documentar los atributos protegidos afectados y hacer seguimiento de las medidas de mitigación.",
+      "whatTitle": "¿Qué es una Evaluación de Sesgo y Equidad?",
+      "whatP1": "Una evaluación de sesgo y equidad es una evaluación sistemática del potencial de un sistema de IA para producir resultados que perjudiquen injustamente a personas o grupos por características protegidas, como la raza, el género, la edad, la discapacidad, el origen étnico o el nivel socioeconómico.",
+      "whatP2": "Según el Reglamento de IA de la UE, los proveedores de sistemas de IA de alto riesgo deben examinar los datos de entrenamiento en busca de posibles sesgos (Art. 10) e implantar medidas para prevenir resultados discriminatorios. La Carta de los Derechos Fundamentales de la UE (Art. 21) prohíbe explícitamente la discriminación, y los sistemas de IA que puntúan, clasifican o toman decisiones sobre personas están especialmente expuestos a este riesgo.",
+      "whyTitle": "Por qué es importante",
+      "whyItems": [
+        {
+          "title": "Obligación legal",
+          "description": "El Reglamento de IA de la UE exige examinar los sesgos de los datos de entrenamiento (Art. 10(2)(f)) y aplicar salvaguardias de no discriminación en los sistemas de alto riesgo. El incumplimiento conlleva multas de hasta el 3 % del volumen de negocio mundial."
+        },
+        {
+          "title": "Derechos fundamentales",
+          "description": "La discriminación provocada por la IA puede vulnerar el derecho a la no discriminación (Art. 21 de la Carta de la UE), las directivas de igualdad de trato y la legislación nacional en materia de igualdad."
+        },
+        {
+          "title": "Impacto en el mundo real",
+          "description": "La IA sesgada en contratación, calificación crediticia, triaje sanitario o actuación policial tiene consecuencias documentadas: candidatos rechazados, préstamos denegados, diagnósticos no detectados y detenciones injustas."
+        },
+        {
+          "title": "Riesgo reputacional",
+          "description": "La divulgación pública de resultados sesgados de la IA causa un daño reputacional duradero. Una evaluación proactiva demuestra ante reguladores, clientes y el público una gobernanza responsable de la IA."
+        }
+      ],
+      "typesTitle": "Tipos de sesgo en la IA",
+      "typesItems": [
+        {
+          "type": "Sesgo de los datos de entrenamiento",
+          "description": "Los datos históricos reflejan discriminaciones pasadas. Un modelo de contratación entrenado con decisiones históricas hereda los sesgos sobre quién fue contratado o ascendido anteriormente."
+        },
+        {
+          "type": "Sesgo de selección",
+          "description": "El conjunto de datos de entrenamiento no representa a la población a la que servirá el sistema. Los grupos infrarrepresentados reciben predicciones menos precisas."
+        },
+        {
+          "type": "Sesgo de medición",
+          "description": "Las variables o etiquetas utilizadas como aproximaciones están sesgadas en sí mismas. Usar códigos postales como variable puede codificar patrones de segregación racial."
+        },
+        {
+          "type": "Sesgo de agregación",
+          "description": "Se aplica un único modelo a grupos con distribuciones subyacentes diferentes. Una IA médica entrenada principalmente con un grupo demográfico puede rendir peor con otros."
+        },
+        {
+          "type": "Sesgo de despliegue",
+          "description": "El sistema se utiliza en un contexto distinto de aquel para el que fue diseñado, o sus resultados son interpretados de forma sesgada por los operadores humanos."
+        }
+      ],
+      "coversTitle": "Qué cubre la plantilla",
+      "coversItems": [
+        {
+          "area": "Atributos protegidos",
+          "description": "Identificación de qué características protegidas (edad, género, raza, discapacidad, etc.) son relevantes para el ámbito del sistema de IA y la población afectada."
+        },
+        {
+          "area": "Representatividad de los datos",
+          "description": "Evaluación de si los datos de entrenamiento y prueba representan adecuadamente a todos los grupos relevantes, incluidas las poblaciones históricamente infrarrepresentadas."
+        },
+        {
+          "area": "Métricas de equidad",
+          "description": "Selección y aplicación de métricas de equidad apropiadas: paridad demográfica (demographic parity), igualdad de probabilidades (equalized odds), paridad predictiva (predictive parity) o medidas de equidad individual."
+        },
+        {
+          "area": "Detección de variables proxy",
+          "description": "Análisis de si variables aparentemente neutras (ubicación, idioma, educación) actúan como aproximaciones (proxies) de atributos protegidos."
+        },
+        {
+          "area": "Medidas de mitigación",
+          "description": "Documentación de las técnicas de preprocesamiento, procesamiento interno (in-processing) o posprocesamiento utilizadas para reducir el sesgo identificado."
+        },
+        {
+          "area": "Plan de seguimiento",
+          "description": "Estrategia de seguimiento continuo para detectar la deriva del sesgo tras el despliegue, incluidos umbrales y procedimientos de escalado."
+        }
+      ],
+      "howTitle": "Cómo funciona",
+      "howSteps": [
+        {
+          "title": "Crea una nueva evaluación",
+          "description": "Selecciona la plantilla de Sesgo y Equidad y vincúlala a un sistema de IA registrado. La plantilla estructura la evaluación en torno al caso de uso específico del sistema y la población afectada."
+        },
+        {
+          "title": "Evalúa cada dimensión",
+          "description": "Recorre las secciones estructuradas: identifica los atributos protegidos relevantes, evalúa la representatividad de los datos, aplica métricas de equidad y comprueba la existencia de variables proxy."
+        },
+        {
+          "title": "Documenta hallazgos y mitigaciones",
+          "description": "Registra los riesgos de sesgo identificados con su nivel de gravedad. Para cada riesgo, documenta el enfoque de mitigación, ya sea técnico (corrección algorítmica de sesgos) o procedimental (revisión humana)."
+        },
+        {
+          "title": "Revisa y supervisa",
+          "description": "Envíala para su aprobación y establece después un seguimiento continuo. La evaluación se vincula al registro de tu sistema de IA, de modo que los hallazgos de sesgo informan la clasificación de riesgos y las decisiones de supervisión."
+        }
+      ]
+    },
+    "roles": {
+      "metaTitle": "Roles y Permisos — Documentación de AI SENTINEL",
+      "metaDescription": "Conoce los cinco roles de usuario en AI SENTINEL y las acciones que puede realizar cada uno en los módulos de gobernanza.",
+      "title": "Roles y Permisos",
+      "intro": "AI SENTINEL utiliza cinco roles para controlar el acceso a las operaciones de gobernanza. Todas las acciones se verifican en el servidor: la interfaz se adapta para mostrar solo lo que tu rol permite.",
+      "roles": {
+        "owner": {
+          "name": "Propietario",
+          "summary": "Control total de la plataforma. Facturación, gestión de equipo y todas las operaciones de gobernanza.",
+          "capabilities": [
+            "Gestionar facturación y suscripción",
+            "Invitar y eliminar miembros",
+            "Cambiar roles de miembros",
+            "Todas las capacidades de Administrador"
+          ]
+        },
+        "admin": {
+          "name": "Administrador",
+          "summary": "Gestión de la organización y acceso completo a la gobernanza, sin control de facturación.",
+          "capabilities": [
+            "Invitar y eliminar miembros",
+            "Configurar ajustes de la organización",
+            "Todas las capacidades de Responsable de IA"
+          ]
+        },
+        "aiOfficer": {
+          "name": "Responsable de IA",
+          "summary": "Autoridad de gobernanza. Aprueba evaluaciones, publica políticas y decide en los puntos de control.",
+          "capabilities": [
+            "Aprobar o rechazar evaluaciones",
+            "Publicar versiones de políticas",
+            "Tomar decisiones en puntos de control",
+            "Aprobar políticas",
+            "Todas las capacidades de Miembro"
+          ]
+        },
+        "member": {
+          "name": "Miembro",
+          "summary": "Trabajo diario de gobernanza. Crea registros, envía evaluaciones e informa de incidentes.",
+          "capabilities": [
+            "Registrar sistemas de IA",
+            "Crear evaluaciones y enviarlas para revisión",
+            "Informar de incidentes",
+            "Crear puntos de control",
+            "Gestionar proveedores y políticas",
+            "Informar sobre uso de IA en la sombra"
+          ]
+        },
+        "viewer": {
+          "name": "Lector",
+          "summary": "Acceso de solo lectura. Puede consultar todos los paneles, registros e informes, pero no puede realizar cambios.",
+          "capabilities": [
+            "Ver el panel ejecutivo",
+            "Consultar el registro de IA y clasificaciones de riesgo",
+            "Ver evaluaciones, incidentes y políticas",
+            "Acceder a los informes de cumplimiento normativo",
+            "Ver información de proveedores y puntos de control"
+          ]
+        }
+      },
+      "hierarchyTitle": "Jerarquía de Roles",
+      "hierarchyNote": "Cada rol hereda todas las capacidades de los roles inferiores.",
+      "capabilitiesTitle": "Capacidades de Cada Rol",
+      "matrixTitle": "Matriz de Permisos",
+      "matrixAction": "Acción",
+      "matrix": {
+        "viewRecords": "Ver paneles y registros",
+        "createEdit": "Crear y editar registros",
+        "deleteRecords": "Eliminar registros",
+        "approveAssessments": "Aprobar evaluaciones",
+        "publishPolicies": "Publicar políticas",
+        "oversightDecisions": "Decidir en puntos de control",
+        "inviteMembers": "Invitar y eliminar miembros",
+        "changeRoles": "Cambiar roles de miembros",
+        "manageBilling": "Gestionar facturación"
+      },
+      "assignTitle": "Asignación de Roles",
+      "assign": {
+        "creatorTitle": "Creador de la organización",
+        "creatorBody": "El usuario que crea una organización recibe automáticamente el rol de <role>Propietario</role>.",
+        "invitedTitle": "Usuarios invitados o auto-registrados",
+        "invitedBody": "Los usuarios que se unen por invitación o por coincidencia de dominio de correo reciben el rol de <role>Miembro</role> por defecto. Un Propietario puede cambiar su rol en cualquier momento.",
+        "viewerTitle": "Acceso de Lector",
+        "viewerBody": "El rol de Lector se asigna explícitamente por un Propietario o Administrador. Los Lectores ven una interfaz de solo lectura: los botones de crear y editar se ocultan, no simplemente se desactivan.",
+        "changesTitle": "Cambios de rol",
+        "changesBody": "Solo el Propietario de la organización puede cambiar los roles de los miembros. Todos los cambios de rol quedan registrados en el registro de auditoría."
+      },
+      "enforcementTitle": "Verificación en el Servidor",
+      "enforcementBody": "Todos los permisos se verifican en el servidor, no solo en la interfaz. Aunque un usuario realice una solicitud directa a la API, el servidor comprueba su rol y pertenencia a la organización antes de procesar cualquier operación. Esto significa que la seguridad no depende de lo que el navegador muestre u oculte."
+    },
+    "security": {
+      "metaTitle": "Seguridad y Confianza — Documentación de AI SENTINEL",
+      "metaDescription": "Cómo AI SENTINEL protege los datos de tu organización con controles de seguridad de nivel empresarial.",
+      "title": "Seguridad y Confianza",
+      "intro": "AI SENTINEL está diseñado para organizaciones que gestionan datos sensibles de gobernanza de IA. La seguridad está integrada en cada capa de la plataforma: desde cómo aislamos tus datos hasta cómo controlamos el acceso y protegemos tu información.",
+      "isolation": {
+        "title": "Aislamiento de Datos",
+        "intro": "Cada organización en AI SENTINEL opera en un entorno totalmente aislado. Tus sistemas de IA, evaluaciones, políticas, incidentes y datos de proveedores nunca son accesibles para otras organizaciones.",
+        "items": [
+          {
+            "title": "Consultas restringidas por organización",
+            "description": "Cada consulta a la base de datos se restringe automáticamente a tu organización. No hay forma de acceder a los datos de otra organización a través de la aplicación."
+          },
+          {
+            "title": "Pertenencia verificada",
+            "description": "Antes de cualquier operación, verificamos que el usuario solicitante es un miembro activo de la organización. La pertenencia se comprueba en cada solicitud."
+          },
+          {
+            "title": "Protección multi-tenant",
+            "description": "Las operaciones que hacen referencia a entidades relacionadas (por ejemplo, vincular una política a un sistema de IA) verifican que ambas entidades pertenecen a tu organización."
+          },
+          {
+            "title": "Solo se comparten datos de referencia",
+            "description": "Únicamente se comparten entre organizaciones datos de referencia no sensibles (marcos de cumplimiento, plantillas de evaluación). Tus datos de gobernanza nunca se comparten."
+          }
+        ]
+      },
+      "accessControl": {
+        "title": "Control de Acceso",
+        "intro": "AI SENTINEL aplica control de acceso basado en roles (RBAC) en toda la plataforma. Cada acción se comprueba contra tu rol antes de ejecutarse.",
+        "roles": [
+          "Propietario",
+          "Administrador",
+          "Responsable de IA",
+          "Miembro",
+          "Lector"
+        ],
+        "readOnlyTitle": "Solo lectura garantizada",
+        "readOnlyBody": "Los Lectores tienen acceso de solo lectura garantizado. Todas las operaciones de escritura se bloquean en el servidor, no solo en la interfaz, lo que impide modificaciones no autorizadas incluso mediante llamadas a la API.",
+        "elevatedTitle": "Permisos elevados",
+        "elevatedBody": "Las operaciones sensibles, como aprobar evaluaciones, publicar políticas y tomar decisiones de supervisión, requieren los roles de Responsable de IA, Administrador o Propietario."
+      },
+      "auth": {
+        "title": "Autenticación",
+        "intro": "Admitimos métodos de autenticación estándar del sector con refuerzos adicionales para entornos de producción.",
+        "methods": [
+          {
+            "title": "Google OAuth",
+            "description": "SSO corporativo mediante Google con OAuth 2.0"
+          },
+          {
+            "title": "Enlace mágico",
+            "description": "Autenticación por correo sin contraseña para un inicio de sesión seguro"
+          },
+          {
+            "title": "SSO multiplataforma",
+            "description": "Inicio de sesión único en toda la plataforma TODO.LAW"
+          }
+        ],
+        "sessionTitle": "Seguridad de las sesiones",
+        "sessionItems": [
+          "Las cookies HTTP-only impiden el acceso a los tokens de sesión desde el cliente",
+          "El indicador de cookie segura se aplica en producción (solo HTTPS)",
+          "Protección CSRF en todas las solicitudes autenticadas",
+          "La política de cookies SameSite previene la falsificación de solicitudes entre sitios"
+        ]
+      },
+      "validation": {
+        "title": "Validación de Entradas",
+        "intro": "Todas las entradas de usuario se validan en el servidor antes de llegar a la lógica de negocio. Esto protege frente a ataques de inyección y garantiza la integridad de los datos.",
+        "items": [
+          {
+            "title": "Validación de esquemas",
+            "description": "Cada entrada de la API se valida contra un esquema estricto. Los datos no válidos se rechazan antes de llegar a la base de datos."
+          },
+          {
+            "title": "Consultas parametrizadas",
+            "description": "Todas las consultas a la base de datos utilizan parámetros. Nunca se usa SQL en bruto, lo que elimina el riesgo de inyección SQL."
+          },
+          {
+            "title": "Validación de enumeraciones",
+            "description": "Los campos de estado, niveles de riesgo y categorías usan una validación estricta de enumeraciones. Solo se aceptan valores predefinidos."
+          }
+        ]
+      },
+      "audit": {
+        "title": "Registro de Auditoría",
+        "intro": "Cada operación de creación, actualización o borrado, y cada operación de negocio significativa, se registra en un registro de auditoría inmutable. Esto respalda los requisitos de cumplimiento y proporciona un historial completo de las actividades de gobernanza.",
+        "whatWeLogTitle": "Qué registramos",
+        "logItems": [
+          "Cambios en el ciclo de vida de los sistemas de IA",
+          "Decisiones de clasificación de riesgos",
+          "Envíos y aprobaciones de evaluaciones",
+          "Decisiones de supervisión",
+          "Cambios y publicaciones de políticas",
+          "Acciones de gestión de incidentes",
+          "Cambios de miembros de la organización"
+        ],
+        "retentionTitle": "Conservación",
+        "retentionBody": "Los registros de auditoría se conservan aunque se elimine el usuario o la organización asociados. Esto garantiza que tu historial de cumplimiento permanezca intacto independientemente de los cambios de personal."
+      },
+      "transport": {
+        "title": "Transporte e Infraestructura",
+        "intro": "Tus datos están protegidos en tránsito y en reposo mediante medidas de seguridad estándar del sector.",
+        "items": [
+          {
+            "title": "HTTPS en todas partes",
+            "description": "Todas las conexiones se cifran con TLS. Las cabeceras HSTS garantizan que los navegadores usen siempre conexiones seguras."
+          },
+          {
+            "title": "Protección contra clickjacking",
+            "description": "Las cabeceras de seguridad impiden que la aplicación se incruste en marcos de otros sitios."
+          },
+          {
+            "title": "Seguridad de contenidos",
+            "description": "La prevención del sniffing de tipos MIME y las políticas estrictas de referrer protegen frente a ataques basados en contenido."
+          },
+          {
+            "title": "Permisos mínimos",
+            "description": "Las API del navegador (cámara, micrófono, geolocalización) están explícitamente desactivadas: la aplicación nunca solicita accesos innecesarios."
+          }
+        ]
+      },
+      "api": {
+        "title": "Seguridad de la API",
+        "intro": "Todos los endpoints de la API requieren autenticación. Las integraciones externas utilizan verificación de firmas y autenticación basada en tokens.",
+        "endpointTitle": "Protección de endpoints",
+        "endpointBody": "Cada endpoint de la API de gobernanza requiere una sesión autenticada con pertenencia verificada a la organización. Las solicitudes no autenticadas se rechazan.",
+        "webhookTitle": "Verificación de webhooks",
+        "webhookBody": "Los webhooks de pagos e integraciones utilizan verificación de firmas criptográficas. Los webhooks no verificados se descartan antes de procesarse."
+      },
+      "standards": {
+        "title": "Estándares de Seguridad",
+        "intro": "Los controles de seguridad de AI SENTINEL están diseñados para abordar los riesgos del OWASP Top 10 de seguridad de aplicaciones web.",
+        "statusMitigated": "Mitigado",
+        "statusActive": "Activo",
+        "items": [
+          {
+            "category": "Control de acceso",
+            "description": "Aislamiento multi-tenant, RBAC, verificación entre entidades"
+          },
+          {
+            "category": "Inyección",
+            "description": "Consultas parametrizadas, validación estricta de entradas, sin SQL en bruto"
+          },
+          {
+            "category": "Autenticación",
+            "description": "OAuth estándar del sector, sesiones seguras, protección CSRF"
+          },
+          {
+            "category": "Integridad de los datos",
+            "description": "Verificación de firmas de webhooks, validación de esquemas"
+          },
+          {
+            "category": "Configuración de seguridad",
+            "description": "Cabeceras de seguridad, configuraciones protegidas por entorno"
+          },
+          {
+            "category": "Registro y monitorización",
+            "description": "Registro de auditoría completo de todas las operaciones de gobernanza"
+          }
+        ]
+      },
+      "contact": {
+        "title": "Contacto de Seguridad",
+        "body": "Si descubres una vulnerabilidad de seguridad o tienes preguntas sobre nuestras prácticas de seguridad, escríbenos a <link>{email}</link>. Nos tomamos en serio todos los avisos y responderemos con prontitud."
+      }
+    }
   }
 }

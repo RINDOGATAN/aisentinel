@@ -1,44 +1,52 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025-2026 Rindogatan LLC
 
-export const metadata = {
-  title: "Vendor Risk — AI SENTINEL Docs",
-  description:
-    "Third-party AI vendor management with risk assessment, contract tracking, and due diligence.",
-};
+import { getTranslations } from "next-intl/server";
 
-export default function VendorsDocsPage() {
+export async function generateMetadata() {
+  const t = await getTranslations("docs.vendors");
+  return {
+    title: t("metaTitle"),
+    description: t("metaDescription"),
+  };
+}
+
+const riskStyles = [
+  { key: "critical", color: "bg-red-500/10 text-red-400 border-red-500/20" },
+  { key: "high", color: "bg-orange-500/10 text-orange-400 border-orange-500/20" },
+  { key: "medium", color: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20" },
+  { key: "low", color: "bg-green-500/10 text-green-400 border-green-500/20" },
+] as const;
+
+export default async function VendorsDocsPage() {
+  const t = await getTranslations("docs.vendors");
+  const statusFlow = t.raw("statusFlow") as string[];
+  const recordGroups = t.raw("recordGroups") as { title: string; items: string[] }[];
+  const steps = t.raw("steps") as { role: string; title: string; description: string }[];
+
   return (
     <div className="space-y-16">
       {/* Hero */}
       <section>
         <h1 className="text-3xl sm:text-4xl font-display tracking-tight mb-4">
-          Vendor Risk
+          {t("title")}
         </h1>
         <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl">
-          Manage third-party AI vendors with risk assessment, contract lifecycle tracking, and due
-          diligence documentation. Maintain a complete registry of every AI vendor your organization
-          relies on.
+          {t("intro")}
         </p>
       </section>
 
       {/* Risk Levels */}
       <section>
-        <h2 className="text-2xl font-display tracking-tight mb-6">Vendor Risk Levels</h2>
+        <h2 className="text-2xl font-display tracking-tight mb-6">{t("riskTitle")}</h2>
         <p className="text-muted-foreground mb-6">
-          Each vendor is assigned a risk level based on the criticality of the AI services they
-          provide. Risk level determines review frequency and due diligence requirements.
+          {t("riskIntro")}
         </p>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[
-            { level: "Critical", color: "bg-red-500/10 text-red-400 border-red-500/20", description: "Core AI infrastructure, irreplaceable" },
-            { level: "High", color: "bg-orange-500/10 text-orange-400 border-orange-500/20", description: "Significant dependency, limited alternatives" },
-            { level: "Medium", color: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20", description: "Moderate dependency, alternatives exist" },
-            { level: "Low", color: "bg-green-500/10 text-green-400 border-green-500/20", description: "Minimal dependency, easily replaceable" },
-          ].map((risk) => (
-            <div key={risk.level} className={`rounded-xl border p-4 ${risk.color}`}>
-              <h3 className="font-semibold mb-1">{risk.level}</h3>
-              <p className="text-xs opacity-80">{risk.description}</p>
+          {riskStyles.map((risk) => (
+            <div key={risk.key} className={`rounded-xl border p-4 ${risk.color}`}>
+              <h3 className="font-semibold mb-1">{t(`riskLevels.${risk.key}.level`)}</h3>
+              <p className="text-xs opacity-80">{t(`riskLevels.${risk.key}.description`)}</p>
             </div>
           ))}
         </div>
@@ -46,50 +54,30 @@ export default function VendorsDocsPage() {
 
       {/* Vendor Status */}
       <section>
-        <h2 className="text-2xl font-display tracking-tight mb-6">Vendor Status Workflow</h2>
+        <h2 className="text-2xl font-display tracking-tight mb-6">{t("statusTitle")}</h2>
         <p className="text-muted-foreground mb-6">
-          Vendors progress through a review and approval workflow before being cleared for use.
+          {t("statusIntro")}
         </p>
         <div className="flex flex-wrap gap-3">
-          {["Under Review", "Active", "Approved", "Suspended", "Terminated"].map(
-            (status, i) => (
-              <div key={status} className="flex items-center gap-2">
-                <span className="px-3 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium">
-                  {status}
-                </span>
-                {i < 4 && <span className="text-muted-foreground">→</span>}
-              </div>
-            )
-          )}
+          {statusFlow.map((status, i) => (
+            <div key={status} className="flex items-center gap-2">
+              <span className="px-3 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium">
+                {status}
+              </span>
+              {i < statusFlow.length - 1 && <span className="text-muted-foreground">→</span>}
+            </div>
+          ))}
         </div>
       </section>
 
       {/* Vendor Record */}
       <section>
-        <h2 className="text-2xl font-display tracking-tight mb-6">Vendor Record</h2>
+        <h2 className="text-2xl font-display tracking-tight mb-6">{t("recordTitle")}</h2>
         <p className="text-muted-foreground mb-6">
-          Each vendor record captures the information needed for risk management and contract
-          oversight.
+          {t("recordIntro")}
         </p>
         <div className="grid sm:grid-cols-2 gap-4">
-          {[
-            {
-              title: "Company Details",
-              items: ["Vendor name and website", "Primary contact", "Country and jurisdiction", "Services provided"],
-            },
-            {
-              title: "Risk & Compliance",
-              items: ["Risk level (Critical/High/Medium/Low)", "CCPA compliant flag", "Subprocessors list", "DPO Central vendor cross-reference"],
-            },
-            {
-              title: "Contract",
-              items: ["Contract start and expiry dates", "Renewal alerts", "Contract value", "SLA terms"],
-            },
-            {
-              title: "Assessments",
-              items: ["Vendor risk assessments", "Due diligence documentation", "Review schedule", "Findings and remediation"],
-            },
-          ].map((group) => (
+          {recordGroups.map((group) => (
             <div key={group.title} className="rounded-xl border border-border bg-card p-5">
               <h3 className="font-semibold mb-3">{group.title}</h3>
               <ul className="space-y-2 text-sm text-muted-foreground">
@@ -108,37 +96,32 @@ export default function VendorsDocsPage() {
       {/* AI Vendor Catalog */}
       <section>
         <h2 className="text-2xl font-display tracking-tight mb-6">
-          AI Vendor Catalog
+          {t("catalogTitle")}
           <span className="ml-2 px-2 py-0.5 rounded-full bg-muted text-muted-foreground text-xs font-medium align-middle">
-            Premium
+            {t("catalogPremium")}
           </span>
         </h2>
         <p className="text-muted-foreground mb-6">
-          The AI Vendor Catalog (powered by Vendor.Watch) provides a pre-audited database of AI
-          vendors. Search the catalog, view vendor profiles, and add vendors directly to your
-          registry with auto-filled details.
+          {t("catalogIntro")}
         </p>
         <div className="rounded-xl border border-border bg-card p-6">
           <div className="grid sm:grid-cols-3 gap-6 text-sm">
             <div>
-              <h4 className="font-medium mb-2">Search & Browse</h4>
+              <h4 className="font-medium mb-2">{t("catalogSearchTitle")}</h4>
               <p className="text-muted-foreground">
-                Search by vendor name or browse by category. Each catalog entry includes a
-                description, website, and compliance flags.
+                {t("catalogSearchBody")}
               </p>
             </div>
             <div>
-              <h4 className="font-medium mb-2">Auto-fill</h4>
+              <h4 className="font-medium mb-2">{t("catalogAutofillTitle")}</h4>
               <p className="text-muted-foreground">
-                When adding a vendor from the catalog, the form is auto-filled with the vendor&apos;s
-                details — saving time and ensuring accuracy.
+                {t("catalogAutofillBody")}
               </p>
             </div>
             <div>
-              <h4 className="font-medium mb-2">Register as AI System</h4>
+              <h4 className="font-medium mb-2">{t("catalogRegisterTitle")}</h4>
               <p className="text-muted-foreground">
-                Optionally register the vendor&apos;s product as an AI system in your registry at the
-                same time, linking the vendor and system records.
+                {t("catalogRegisterBody")}
               </p>
             </div>
           </div>
@@ -148,19 +131,13 @@ export default function VendorsDocsPage() {
       {/* How to Add */}
       <section>
         <h2 className="text-2xl font-display tracking-tight mb-6">
-          Adding a Vendor
+          {t("howTitle")}
         </h2>
         <div className="space-y-4">
-          {[
-            { step: "1", role: "AI Officer", title: "Navigate to Vendors", description: "Go to Operations → Vendors from the top navigation." },
-            { step: "2", role: "AI Officer", title: "Click Add Vendor", description: "Use the button in the top-right corner. Optionally search the AI Vendor Catalog to auto-fill details." },
-            { step: "3", role: "AI Officer", title: "Complete vendor details", description: "Enter the vendor name, website, contact, services, and assign a risk level." },
-            { step: "4", role: "AI Officer", title: "Add contract information", description: "Document contract dates, renewal terms, and SLA details." },
-            { step: "5", role: "AI Officer", title: "Schedule risk assessments", description: "From the vendor detail page, create vendor risk assessments and set review schedules." },
-          ].map((item) => (
-            <div key={item.step} className="rounded-xl border border-border bg-card p-5 flex gap-4">
+          {steps.map((item, i) => (
+            <div key={item.title} className="rounded-xl border border-border bg-card p-5 flex gap-4">
               <div className="text-2xl font-display text-primary/40 shrink-0">
-                {item.step}
+                {i + 1}
               </div>
               <div>
                 <h3 className="font-semibold mb-1">

@@ -1087,7 +1087,16 @@
     "legalPrefix": "By signing in, you agree to our",
     "termsOfService": "Terms of Service",
     "privacyPolicy": "Privacy Policy",
-    "legalAnd": "and"
+    "legalAnd": "and",
+    "verifyTitle": "Check Your Email",
+    "verifyBody": "A sign-in link has been sent to your email address. Click the link to sign in.",
+    "verifyDidntReceive": "Didn't receive it?",
+    "verifyTryAgain": "Try again",
+    "errorTitle": "Authentication Error",
+    "errorBody": "Something went wrong during sign-in. The link may have expired or already been used.",
+    "errorTryAgain": "Try Again",
+    "crossSigningIn": "Signing you in...",
+    "crossFailed": "Authentication failed. Redirecting to sign-in..."
   },
   "ai": {
     "panel": {
@@ -1201,5 +1210,1676 @@
     "typeAiRisk": "AI Risk Assessment",
     "typeBiasFairness": "Bias & Fairness Assessment",
     "typeCustom": "Custom Assessment"
+  },
+  "docs": {
+    "layout": {
+      "headerDocs": "Docs",
+      "headerSignIn": "Sign In",
+      "premiumLabel": "Premium",
+      "nav": {
+        "gettingStarted": "Getting Started",
+        "aiRegistry": "AI Registry",
+        "riskClassification": "Risk Classification",
+        "assessments": "Assessments",
+        "oversight": "Human Oversight",
+        "incidents": "AI Incidents",
+        "transparency": "Transparency (Art. 50)",
+        "compliance": "Compliance",
+        "vendors": "Vendor Risk",
+        "policies": "Policy Management",
+        "shadowAi": "Shadow AI Discovery",
+        "vendorCatalog": "AI Vendor Catalog",
+        "conformity": "Conformity Assessment",
+        "biasFairness": "Bias & Fairness",
+        "roles": "Roles & Permissions",
+        "security": "Security & Trust"
+      },
+      "footer": {
+        "service": "{app} is a <link>{company}</link> service.",
+        "privacyPolicy": "Privacy Policy",
+        "termsOfService": "Terms of Service",
+        "howItWorks": "How It Works",
+        "security": "Security",
+        "sourceCode": "Source code (AGPL-3.0)"
+      }
+    },
+    "home": {
+      "metaTitle": "Documentation — AI SENTINEL",
+      "metaDescription": "Learn how to use AI SENTINEL for AI governance, EU AI Act compliance, risk classification, and incident management.",
+      "heroIntro": "A purpose-built platform for AI governance. Manage your AI system inventory, EU AI Act compliance, risk classification, human oversight, and AI-specific incidents — all in one place.",
+      "quickStartTitle": "Quick Start",
+      "quickStartSteps": [
+        {
+          "title": "Sign in",
+          "description": "Sign in via email magic link or Google OAuth."
+        },
+        {
+          "title": "Create or join your organization",
+          "description": "Set up your organization and invite team members. Users with a matching email domain are auto-joined."
+        },
+        {
+          "title": "Register your AI systems",
+          "description": "Build your AI inventory by registering systems, models, and agents. Assign risk levels and owners."
+        },
+        {
+          "title": "Govern your AI",
+          "description": "Run assessments, set up oversight gates, map compliance frameworks, manage vendors, and track incidents."
+        }
+      ],
+      "rolesTitle": "User Roles",
+      "roles": [
+        {
+          "name": "Owner",
+          "description": "Billing, team management, organization settings"
+        },
+        {
+          "name": "Admin",
+          "description": "User management, module configuration, full governance access"
+        },
+        {
+          "name": "AI Officer",
+          "description": "All governance modules, assessments, risk classification, incident management"
+        },
+        {
+          "name": "Member",
+          "description": "Create and edit records, submit assessments, report incidents"
+        },
+        {
+          "name": "Viewer",
+          "description": "Read-only dashboard and report access"
+        }
+      ],
+      "modulesTitle": "Modules",
+      "modules": {
+        "aiRegistry": {
+          "title": "AI Registry",
+          "description": "Inventory all AI systems, models, and agents with lifecycle tracking and role assignment."
+        },
+        "riskClassification": {
+          "title": "Risk Classification",
+          "description": "EU AI Act four-tier risk classification with guided Annex III wizard and classification history."
+        },
+        "assessments": {
+          "title": "Assessments",
+          "description": "FRIA, conformity, AI risk, and bias/fairness assessments with templates and approval workflows."
+        },
+        "oversight": {
+          "title": "Human Oversight",
+          "description": "Approval gates, review scheduling, and decision logging for Art. 14 compliance."
+        },
+        "incidents": {
+          "title": "AI Incidents",
+          "description": "Track AI-specific failures, coordinate response tasks, and manage Art. 73 authority notifications."
+        },
+        "transparency": {
+          "title": "Transparency (Art. 50)",
+          "description": "Per-system Art. 50 obligations, the synthetic-content marking deadline, and the AI interaction statement."
+        },
+        "compliance": {
+          "title": "Compliance",
+          "description": "Framework mapping for EU AI Act, NIST AI RMF, and ISO 42001 with evidence management."
+        },
+        "vendors": {
+          "title": "Vendor Risk",
+          "description": "Third-party AI vendor management with risk assessment, contract tracking, and due diligence."
+        },
+        "policies": {
+          "title": "Policy Management",
+          "description": "AI governance policies with versioning, approval workflow, and system linking."
+        }
+      },
+      "premiumTitleFree": "Add-on Modules",
+      "premiumTitleLocked": "Premium Skills",
+      "premiumIntroFree": "Included on this instance — no licence or subscription required. These modules were previously sold as add-ons; they are now enabled for everyone here.",
+      "premiumIntroLocked": "Add-on modules, unlocked per organization with a TODO.LAW licence file on the <link>skills page</link>.",
+      "badgeIncluded": "Included",
+      "badgeLicensed": "Licensed",
+      "premiumModules": {
+        "shadowAi": {
+          "title": "Shadow AI Discovery",
+          "description": "Discover unauthorized AI tools adopted by employees, against a catalog of {count} known tools. Self-reporting portal, triage workflow, and promotion to formal governance."
+        },
+        "vendorCatalog": {
+          "title": "AI Vendor Catalog",
+          "description": "Pre-audited catalog of {count} AI vendors with risk profiles, compliance certifications, and governance metadata."
+        },
+        "conformity": {
+          "title": "Conformity Assessment",
+          "description": "EU AI Act Art. 43 conformity assessment template for high-risk AI systems with structured evaluation sections."
+        },
+        "biasFairness": {
+          "title": "Bias & Fairness Assessment",
+          "description": "Structured bias and fairness evaluation for AI systems — detect discrimination risks and document mitigations."
+        }
+      },
+      "alsoTitle": "Also in the app",
+      "alsoIntro": "Shipped features that do not have a full guide here yet. The links go to the app itself, so you will be asked to sign in.",
+      "also": {
+        "quickstart": {
+          "title": "Quick Start wizard",
+          "description": "Bootstrap a programme from an industry template, or import an existing vendor portfolio."
+        },
+        "aiPosture": {
+          "title": "AI posture",
+          "description": "Choose whether embedded AI assists are off, use a cloud LLM, or route through a local gateway. Off by default — no AI call leaves your instance until an admin turns it on."
+        },
+        "skills": {
+          "title": "Skills & licences",
+          "description": "Activate TODO.LAW licence files offline. Owner and admin only; a licence never installs code, it only unlocks an entitlement."
+        },
+        "clients": {
+          "title": "Managed organizations",
+          "description": "For governance professionals running programmes for several clients: switch between organizations you manage."
+        }
+      },
+      "licensingTitle": "Open Core Licensing",
+      "licensing": {
+        "coreTitle": "Core",
+        "coreItems": [
+          "AI Registry & lifecycle tracking",
+          "EU AI Act risk classification",
+          "FRIA & AI Risk assessments",
+          "Human oversight & approval gates",
+          "AI incident management",
+          "Compliance mapping (EU AI Act, NIST, ISO 42001)",
+          "Vendor risk management",
+          "Policy management",
+          "Executive dashboard"
+        ],
+        "commercialBadge": "Commercial",
+        "premiumTitle": "Premium",
+        "commercialConformity": "Conformity Assessment template (Art. 43)",
+        "commercialBiasFairness": "Bias & Fairness Assessment",
+        "commercialShadowAi": "Shadow AI Discovery ({count}-tool catalog)",
+        "commercialVendorCatalog": "AI Vendor Catalog (vendor.watch integration)",
+        "allFreeNote": "Enabled for everyone on this instance. The commercial path is an offline licence file, not a subscription."
+      }
+    },
+    "aiRegistry": {
+      "metaTitle": "AI Registry — AI SENTINEL Docs",
+      "metaDescription": "Register and manage all AI systems, models, and agents with lifecycle tracking.",
+      "title": "AI Registry",
+      "intro": "The central inventory of all AI systems within your organization. Every other module — risk classification, assessments, oversight, incidents — references back to an AI system record. Build a complete picture of your AI landscape.",
+      "lifecycleTitle": "System Lifecycle",
+      "lifecycleIntro": "Every AI system progresses through a defined lifecycle. Status transitions are tracked with timestamps for audit purposes.",
+      "lifecycle": [
+        "Draft",
+        "Development",
+        "Testing",
+        "Deployed",
+        "Retired"
+      ],
+      "recordTitle": "AI System Record",
+      "recordIntro": "Each AI system record captures the information needed for governance and regulatory compliance.",
+      "recordGroups": [
+        {
+          "title": "Identity",
+          "items": [
+            "System name and description",
+            "Purpose and use case",
+            "AI technique (ML, deep learning, NLP, etc.)"
+          ]
+        },
+        {
+          "title": "Ownership",
+          "items": [
+            "Business owner",
+            "Technical owner",
+            "EU AI Act role (Provider, Deployer, Importer, etc.)"
+          ]
+        },
+        {
+          "title": "Data",
+          "items": [
+            "Processes personal data flag",
+            "Data sources (training, fine-tuning, input)",
+            "DPO Central cross-references"
+          ]
+        },
+        {
+          "title": "Lifecycle",
+          "items": [
+            "Status (Draft → Deployed → Retired)",
+            "Deployment and retirement dates",
+            "Version history"
+          ]
+        }
+      ],
+      "modelsTitle": "AI Models",
+      "modelsIntro": "Each AI system can have one or more linked model cards. Model cards document the provider, type, training data, known limitations, and performance metrics.",
+      "modelCols": [
+        {
+          "title": "Model Identity",
+          "items": [
+            "Name and version",
+            "Provider (OpenAI, Anthropic, etc.)",
+            "Model type (LLM, classifier, etc.)"
+          ]
+        },
+        {
+          "title": "Training Data",
+          "items": [
+            "Training data summary",
+            "Fine-tuning datasets",
+            "Validation methodology"
+          ]
+        },
+        {
+          "title": "Performance",
+          "items": [
+            "Known limitations",
+            "Performance metrics",
+            "Bias evaluation results"
+          ]
+        }
+      ],
+      "euRolesTitle": "EU AI Act Roles",
+      "euRolesIntro": "The EU AI Act assigns different obligations based on your role in the AI value chain (Art. 3). Assign the correct role to each system to determine applicable requirements.",
+      "euRoles": [
+        {
+          "role": "Provider",
+          "description": "Develops or places an AI system on the market"
+        },
+        {
+          "role": "Deployer",
+          "description": "Uses an AI system under its authority"
+        },
+        {
+          "role": "Importer",
+          "description": "Places a third-country AI system on the EU market"
+        },
+        {
+          "role": "Distributor",
+          "description": "Makes an AI system available in the supply chain"
+        },
+        {
+          "role": "User",
+          "description": "Uses an AI system in a professional capacity"
+        }
+      ],
+      "howToTitle": "How to Register an AI System",
+      "howToRole": "AI Officer",
+      "steps": [
+        {
+          "title": "Navigate to AI Registry",
+          "description": "Go to AI Systems → AI Registry from the top navigation."
+        },
+        {
+          "title": "Click Register AI System",
+          "description": "Use the button in the top-right corner to open the registration form."
+        },
+        {
+          "title": "Fill in system details",
+          "description": "Enter the system name, description, purpose, AI technique, and EU AI Act role. Set the status to Draft."
+        },
+        {
+          "title": "Add models and data sources",
+          "description": "From the system detail page, add model cards and document data sources used for training and input."
+        },
+        {
+          "title": "Link related records",
+          "description": "Optionally link to DPO Central assets, assign risk classification, and associate assessments."
+        }
+      ]
+    },
+    "riskClassification": {
+      "metaTitle": "Risk Classification — AI SENTINEL Docs",
+      "metaDescription": "EU AI Act four-tier risk classification with guided Annex III wizard.",
+      "title": "Risk Classification",
+      "intro": "Classify your AI systems using the EU AI Act four-tier risk framework. The guided wizard walks you through Annex III categories to determine the correct risk level, with full classification history for audit purposes.",
+      "tiersTitle": "Risk Tiers",
+      "tiersIntro": "The EU AI Act defines four risk levels. Each level carries different compliance obligations, from outright prohibition to minimal transparency requirements.",
+      "tiers": {
+        "unacceptable": {
+          "level": "Unacceptable",
+          "description": "AI systems that pose an unacceptable risk to safety or fundamental rights. These are prohibited under Art. 5.",
+          "examples": "Social scoring, real-time biometric identification in public spaces, manipulation techniques."
+        },
+        "high": {
+          "level": "High",
+          "description": "AI systems listed in Annex III or used as safety components. Subject to full compliance requirements (Art. 6-51).",
+          "examples": "Biometric identification, critical infrastructure, employment decisions, law enforcement."
+        },
+        "limited": {
+          "level": "Limited",
+          "description": "AI systems with specific transparency obligations. Users must be informed they are interacting with AI (Art. 50).",
+          "examples": "Chatbots, deepfake generators, emotion recognition systems."
+        },
+        "minimal": {
+          "level": "Minimal",
+          "description": "AI systems posing minimal risk. No mandatory compliance requirements, though voluntary codes of conduct are encouraged.",
+          "examples": "Spam filters, AI-enabled video games, inventory management systems."
+        }
+      },
+      "examplesLabel": "Examples:",
+      "annexTitle": "Annex III Categories",
+      "annexIntro": "The classification wizard guides you through the Annex III high-risk categories. If your AI system falls into any of these areas, it is likely classified as High Risk.",
+      "annexCategories": [
+        "Biometrics",
+        "Critical infrastructure",
+        "Education & vocational training",
+        "Employment & worker management",
+        "Access to essential services",
+        "Law enforcement",
+        "Migration, asylum & border control",
+        "Administration of justice"
+      ],
+      "historyTitle": "Classification History",
+      "historyIntro": "Every classification change is versioned with a timestamp, the author, the previous and new risk levels, and a rationale. This provides a complete audit trail for regulators.",
+      "historyEntries": [
+        {
+          "date": "2026-02-15",
+          "author": "Maria G.",
+          "from": "—",
+          "to": "Limited",
+          "note": "Initial classification based on chatbot use case."
+        },
+        {
+          "date": "2026-02-20",
+          "author": "Jan K.",
+          "from": "Limited",
+          "to": "High",
+          "note": "Re-classified after scope change to include employment screening."
+        }
+      ],
+      "howToTitle": "How to Classify an AI System",
+      "howToRole": "AI Officer",
+      "steps": [
+        {
+          "title": "Open the AI system",
+          "description": "Navigate to the AI Registry and select the system you want to classify."
+        },
+        {
+          "title": "Start the classification wizard",
+          "description": "Go to AI Systems → Risk Classification and click Classify to launch the guided wizard."
+        },
+        {
+          "title": "Answer the Annex III questions",
+          "description": "The wizard asks whether your system falls into any high-risk category. Answer honestly — the result determines compliance obligations."
+        },
+        {
+          "title": "Review the suggested risk level",
+          "description": "Based on your answers, the system suggests a risk tier. You can accept or override with justification."
+        },
+        {
+          "title": "Document the rationale",
+          "description": "Add a rationale explaining the classification decision. This is stored in the classification history for audit purposes."
+        }
+      ]
+    },
+    "assessments": {
+      "metaTitle": "Assessments — AI SENTINEL Docs",
+      "metaDescription": "Run FRIA, conformity, AI risk, and bias/fairness assessments with templates and approval workflows.",
+      "title": "Assessments",
+      "intro": "Conduct AI-specific impact assessments using configurable templates. Score risks, document mitigations, and manage approval workflows for FRIA, conformity, AI risk, and bias/fairness assessments.",
+      "templatesTitle": "Assessment Templates",
+      "premiumBadge": "Premium",
+      "templates": {
+        "fria": {
+          "label": "Fundamental Rights Impact Assessment",
+          "description": "Required under Art. 27 for high-risk AI deployed by public bodies or certain private entities."
+        },
+        "aiRisk": {
+          "label": "AI Risk Assessment",
+          "description": "General-purpose risk assessment for any AI system. Evaluates operational, ethical, and compliance risks."
+        },
+        "custom": {
+          "label": "Custom Assessment",
+          "description": "Create your own assessment template with custom questions and scoring criteria."
+        },
+        "conformity": {
+          "label": "Conformity Assessment",
+          "description": "Art. 43, Annex VI/VII conformity assessment for high-risk AI systems. Required before market placement."
+        },
+        "biasFairness": {
+          "label": "Bias & Fairness Assessment",
+          "description": "Structured evaluation of bias, fairness metrics, and discrimination risk across protected categories."
+        }
+      },
+      "workflowTitle": "Approval Workflow",
+      "workflowIntro": "Every assessment follows a structured approval workflow. Status transitions are logged with timestamps and the acting user for full auditability.",
+      "stageLabel": "Stage {number}",
+      "stages": [
+        {
+          "status": "Draft",
+          "description": "Author creates assessment"
+        },
+        {
+          "status": "In Progress",
+          "description": "Completing questions and scoring"
+        },
+        {
+          "status": "Under Review",
+          "description": "Submitted for approval"
+        },
+        {
+          "status": "Approved",
+          "description": "Assessment signed off"
+        }
+      ],
+      "scoringTitle": "Risk Scoring",
+      "scoringIntro": "Assessments generate risk scores based on question responses. Scores can be manually overridden with justification. The overall risk level determines review requirements and mitigation priorities.",
+      "scoringLevels": [
+        "Low",
+        "Medium",
+        "High",
+        "Critical"
+      ],
+      "howToTitle": "Creating an Assessment",
+      "steps": [
+        {
+          "role": "AI Officer",
+          "title": "Select template",
+          "description": "Choose from FRIA, AI Risk, Conformity, Bias/Fairness, or Custom templates."
+        },
+        {
+          "role": "AI Officer",
+          "title": "Set scope and link AI system",
+          "description": "Define the assessment scope and link it to the AI system being assessed."
+        },
+        {
+          "role": "AI Officer",
+          "title": "Complete questions",
+          "description": "Answer template questions. The system calculates risk scores as you go."
+        },
+        {
+          "role": "AI Officer",
+          "title": "Document mitigations",
+          "description": "Record mitigation measures, assign owners, and set implementation deadlines."
+        },
+        {
+          "role": "AI Officer",
+          "title": "Submit for review",
+          "description": "Submit the assessment for approval. Reviewers can approve, reject, or request changes."
+        },
+        {
+          "role": "Approver",
+          "title": "Final approval",
+          "description": "Approved assessments are locked and stored as compliance records."
+        }
+      ]
+    },
+    "oversight": {
+      "metaTitle": "Human Oversight — AI SENTINEL Docs",
+      "metaDescription": "Approval gates, review scheduling, and decision logging for EU AI Act Art. 14 compliance.",
+      "title": "Human Oversight",
+      "intro": "Implement Art. 14 human oversight requirements for high-risk AI systems. Configure approval gates at key lifecycle stages, schedule periodic reviews, and maintain a complete decision log for regulators.",
+      "gateTypesTitle": "Oversight Gate Types",
+      "gateTypesIntro": "Oversight gates are checkpoints that require human review and approval before an AI system can proceed. Each gate is linked to a specific AI system and assigned to a reviewer.",
+      "gateTypes": [
+        {
+          "type": "Pre-deployment",
+          "description": "Required before an AI system moves from Testing to Deployed status. Ensures all compliance requirements are met."
+        },
+        {
+          "type": "Post-deployment",
+          "description": "Triggered after deployment to verify the system performs as expected in production. Monitors for unexpected behavior."
+        },
+        {
+          "type": "Periodic Review",
+          "description": "Scheduled at regular intervals (e.g., quarterly). Reviews ongoing performance, drift, and continued compliance."
+        },
+        {
+          "type": "Incident-triggered",
+          "description": "Automatically requested when an AI incident is reported against the system. Requires review before continued operation."
+        },
+        {
+          "type": "Material Change",
+          "description": "Required when significant changes are made to the AI system (new model, different data sources, expanded scope)."
+        }
+      ],
+      "decisionTitle": "Decision Logging",
+      "decisionIntro": "Every oversight decision is logged with the reviewer, timestamp, decision outcome, and rationale. This forms the Art. 14 audit trail required for high-risk AI systems.",
+      "decisions": {
+        "approve": {
+          "label": "Approve",
+          "body": "System is cleared to proceed. The reviewer confirms all requirements are satisfied."
+        },
+        "reject": {
+          "label": "Reject",
+          "body": "System is not cleared. The reviewer documents the reasons and required remediation steps."
+        },
+        "defer": {
+          "label": "Defer",
+          "body": "Decision is postponed pending additional information. A follow-up date is set."
+        }
+      },
+      "setupTitle": "Setting Up an Oversight Gate",
+      "steps": [
+        {
+          "role": "AI Officer",
+          "title": "Navigate to Oversight",
+          "description": "Go to Governance → Oversight from the top navigation."
+        },
+        {
+          "role": "AI Officer",
+          "title": "Create a new gate",
+          "description": "Click New Oversight Gate. Select the AI system and gate type (pre-deployment, periodic, etc.)."
+        },
+        {
+          "role": "AI Officer",
+          "title": "Assign a reviewer",
+          "description": "Select the team member responsible for the review. They will be notified when the gate is triggered."
+        },
+        {
+          "role": "AI Officer",
+          "title": "Set the schedule",
+          "description": "For periodic reviews, configure the review cadence (e.g., quarterly, annually)."
+        },
+        {
+          "role": "Reviewer",
+          "title": "Conduct the review",
+          "description": "When the gate is triggered, review the system documentation, evidence, and current status. Log your decision with a rationale."
+        }
+      ]
+    },
+    "incidents": {
+      "metaTitle": "AI Incidents — AI SENTINEL Docs",
+      "metaDescription": "Track AI-specific failures, coordinate response tasks, and manage Art. 73 authority notifications.",
+      "title": "AI Incidents",
+      "intro": "Track AI-specific incidents from initial report through resolution. Manage response timelines, coordinate tasks, and handle Art. 73 authority notifications for serious incidents involving high-risk AI systems.",
+      "typesTitle": "Incident Types",
+      "typesIntro": "AI SENTINEL tracks incident types specific to AI systems, distinct from data protection incidents handled in DPO Central.",
+      "types": [
+        "Hallucination",
+        "Bias / Discrimination",
+        "Model Drift",
+        "Adversarial Attack",
+        "Prompt Injection",
+        "Unauthorized Access",
+        "Safety Failure",
+        "Performance Degradation",
+        "Data Poisoning",
+        "Privacy Violation"
+      ],
+      "lifecycleTitle": "Incident Lifecycle",
+      "lifecycleIntro": "Every incident follows a structured workflow. Status transitions and timestamps are tracked for compliance evidence.",
+      "lifecycle": [
+        "Reported",
+        "Investigating",
+        "Mitigating",
+        "Resolved",
+        "Closed"
+      ],
+      "severityTitle": "Severity Classification",
+      "severityIntro": "Severity levels prioritize response efforts and determine notification requirements.",
+      "severities": {
+        "low": {
+          "level": "Low",
+          "description": "Minor incident, limited impact. No regulatory notification required."
+        },
+        "medium": {
+          "level": "Medium",
+          "description": "Moderate impact, contained quickly. Internal review recommended."
+        },
+        "high": {
+          "level": "High",
+          "description": "Significant impact. Likely requires authority notification under Art. 73."
+        },
+        "critical": {
+          "level": "Critical",
+          "description": "Large-scale failure or safety risk. Immediate Art. 73 notification required."
+        }
+      },
+      "art73Title": "Art. 73 Authority Notifications",
+      "art73Intro": "Under EU AI Act Article 73, providers of high-risk AI systems must report serious incidents to the relevant market surveillance authority. AI SENTINEL tracks notification deadlines, recipient authorities, and submission status.",
+      "art73": {
+        "whenTitle": "When to notify",
+        "whenBody": "Serious incidents involving death, serious damage to health, property, or the environment, or serious and irreversible disruption of critical infrastructure.",
+        "timelineTitle": "Timeline",
+        "timelineBody": "Report immediately after establishing a causal link (or its reasonable likelihood) and no later than 15 days after awareness — 10 days if the incident involves a death, 2 days for widespread infringements or serious and irreversible disruption of critical infrastructure. The system tracks elapsed time from the incident report date.",
+        "includeTitle": "What to include",
+        "includeBody": "Description of the incident, affected AI system, severity, root cause analysis (if available), and corrective measures taken or planned."
+      },
+      "timelineTitle": "Incident Timeline",
+      "timelineIntro": "Each incident maintains a detailed timeline recording all events, status changes, task assignments, and communications.",
+      "timeline": {
+        "reported": {
+          "event": "Incident reported",
+          "badge": "CREATED"
+        },
+        "assigned": {
+          "event": "Assigned to investigation team",
+          "badge": "INVESTIGATING"
+        },
+        "rootCause": {
+          "event": "Root cause identified — model drift detected",
+          "badge": "UPDATE"
+        },
+        "notification": {
+          "event": "Art. 73 notification sent to authority",
+          "badge": "NOTIFICATION"
+        },
+        "mitigation": {
+          "event": "Mitigation deployed — model rolled back",
+          "badge": "MITIGATING"
+        },
+        "resolved": {
+          "event": "Incident resolved and closed",
+          "badge": "RESOLVED"
+        }
+      },
+      "reportTitle": "Reporting an Incident",
+      "reportSteps": [
+        {
+          "role": "Reporter",
+          "title": "Report the incident",
+          "description": "Navigate to Operations → Incidents and click Report Incident. Provide initial details: affected AI system, incident type, and description."
+        },
+        {
+          "role": "AI Officer",
+          "title": "Triage and assign severity",
+          "description": "Review the report, assign a severity level, and determine the response scope."
+        },
+        {
+          "role": "IT Team",
+          "title": "Investigate and contain",
+          "description": "Gather evidence, identify the root cause, and implement immediate containment measures."
+        },
+        {
+          "role": "AI Officer",
+          "title": "Notify authorities if required",
+          "description": "For high-risk systems with serious incidents, prepare and submit the Art. 73 notification."
+        },
+        {
+          "role": "AI Officer",
+          "title": "Resolve and close",
+          "description": "Document the resolution, lessons learned, and any corrective actions. Close the incident."
+        }
+      ]
+    },
+    "transparency": {
+      "metaTitle": "Transparency (Art. 50) — AI SENTINEL Docs",
+      "metaDescription": "Track EU AI Act Art. 50 transparency obligations per AI system: AI interaction disclosure, synthetic-content marking, emotion recognition, and deepfake labelling.",
+      "title": "Transparency (Art. 50)",
+      "intro": "Article 50 of the EU AI Act imposes transparency duties that cut across risk tiers: even a minimal-risk chatbot owes a disclosure. AI SENTINEL tracks the four Art. 50 obligations per AI system, splits them by who actually owes them, and counts down the one deadline that has a transitional period.",
+      "applicabilityTitle": "When it applies",
+      "applicabilityBody1": "Art. 50 has applied since <strong>2 August 2026</strong> (Art. 113). Regulation (EU) 2026/1744 — the Digital Omnibus on AI, OJ L of 24 July 2026 — grants systems placed on the market <em>before</em> that date a transitional period for the machine-readable marking duty in Art. 50(2), running to <strong>2 December 2026</strong>.",
+      "applicabilityBody2": "That grace period is the reason the AI Registry asks whether a system was placed on the market before 2 August 2026. Answer it accurately: it is the only input that moves the marking deadline, and the dashboard's “marking overdue” counter is derived from it.",
+      "obligationsTitle": "The four obligations",
+      "obligationsIntro": "Two are owed by the provider and two by the deployer. A single organization often holds both roles, but recording them separately is what lets you answer a regulator asking which hat you were wearing.",
+      "obligations": [
+        {
+          "article": "Art. 50(1)",
+          "actorLabel": "Provider obligation",
+          "title": "AI interaction disclosure",
+          "description": "Systems that interact directly with people must make clear they are AI, unless that is obvious to a reasonably well-informed person. Chatbots and voice agents are the typical case."
+        },
+        {
+          "article": "Art. 50(2)",
+          "actorLabel": "Provider obligation",
+          "title": "Machine-readable marking of synthetic content",
+          "description": "Systems generating synthetic audio, image, video, or text must mark their output in a machine-readable format detectable as artificially generated. This is the obligation with a transitional deadline — see below."
+        },
+        {
+          "article": "Art. 50(3)",
+          "actorLabel": "Deployer obligation",
+          "title": "Emotion recognition and biometric categorisation",
+          "description": "Deployers must inform the people exposed to an emotion-recognition or biometric-categorisation system that it is in use. Note that several such uses are prohibited outright under Art. 5 — the module flags that overlap rather than letting you record a disclosure for a practice you cannot lawfully run."
+        },
+        {
+          "article": "Art. 50(4)",
+          "actorLabel": "Deployer obligation",
+          "title": "Deepfake and public-interest text labelling",
+          "description": "Deployers publishing deepfakes must disclose that the content is artificially generated or manipulated. The same applies to AI-generated text published to inform the public on matters of public interest."
+        }
+      ],
+      "statusesTitle": "Recording status",
+      "statuses": [
+        {
+          "name": "Not applicable",
+          "description": "This obligation does not apply to the system. The default for every obligation until you decide otherwise."
+        },
+        {
+          "name": "Required",
+          "description": "The obligation applies and is not yet satisfied. Systems in this state drive the deadline counters on the executive dashboard."
+        },
+        {
+          "name": "Implemented",
+          "description": "The obligation applies and the disclosure or marking is in place. Record how in the AI statement so the evidence survives staff turnover."
+        }
+      ],
+      "workingTitle": "Working through it",
+      "workingSteps": [
+        {
+          "step": "Open the system's Transparency tab",
+          "body": "Every AI system in the registry has a Transparency (Art. 50) tab alongside Models, Data Sources, and Risk Classification."
+        },
+        {
+          "step": "Review the suggested obligations",
+          "body": "The module screens the system's purpose and technique and suggests which of the four obligations look applicable. Treat these as prompts, not conclusions — you confirm each one."
+        },
+        {
+          "step": "Set a status per obligation",
+          "body": "Mark each as Not applicable, Required, or Implemented. Anything left Required appears in the dashboard's transparency counters."
+        },
+        {
+          "step": "Write the AI statement",
+          "body": "Record the disclosure wording and the marking method you actually use. This is the artifact a market surveillance authority will ask for; a status field alone will not satisfy them."
+        }
+      ],
+      "scopeTitle": "A note on scope",
+      "scopeBody": "This module records your Art. 50 position; it does not mark content for you. Machine-readable marking is implemented in the generating system itself. AI SENTINEL is where you document which systems owe the duty, whether it is satisfied, and how — so the answer exists before someone asks for it."
+    },
+    "compliance": {
+      "metaTitle": "Compliance — AI SENTINEL Docs",
+      "metaDescription": "Framework mapping for EU AI Act, NIST AI RMF, and ISO 42001 with evidence management and export.",
+      "title": "Compliance",
+      "intro": "Map your AI systems against leading regulatory frameworks. Track compliance status at the requirement level, attach evidence, and export compliance packages for regulators and auditors.",
+      "frameworksTitle": "Supported Frameworks",
+      "frameworksIntro": "AI SENTINEL ships with three pre-loaded frameworks. Each framework is broken down into articles, clauses, or functions with individual compliance tracking.",
+      "frameworks": {
+        "euAiAct": {
+          "name": "EU AI Act",
+          "description": "Key-obligation mapping from Art. 4 (AI literacy) and Art. 5 (prohibited practices) through Art. 73 (serious incidents) and the Art. 113 applicability timeline, plus relevant annexes. The primary regulatory framework for AI systems in the European Union.",
+          "items": "Articles, Annexes, Recitals"
+        },
+        "nist": {
+          "name": "NIST AI RMF",
+          "description": "The US National Institute of Standards and Technology AI Risk Management Framework. Four core functions with sub-categories.",
+          "items": "GOVERN, MAP, MEASURE, MANAGE"
+        },
+        "iso": {
+          "name": "ISO 42001",
+          "description": "International standard for AI Management Systems. Covers organizational context, leadership, planning, support, and operations.",
+          "items": "Clauses 4-10, Annex A Controls"
+        }
+      },
+      "statusesTitle": "Compliance Statuses",
+      "statusesIntro": "Each requirement can be independently assessed for every AI system. The status reflects the current compliance posture for that specific requirement.",
+      "statuses": {
+        "compliant": "Compliant",
+        "partiallyCompliant": "Partially Compliant",
+        "nonCompliant": "Non-Compliant",
+        "notApplicable": "Not Applicable",
+        "notAssessed": "Not Assessed"
+      },
+      "matrixTitle": "Compliance Matrix",
+      "matrixIntro": "The compliance matrix provides a per-AI-system view of all requirements within a chosen framework. For each requirement, you can set the compliance status, add notes, and attach evidence documents.",
+      "matrixTrackingTitle": "Per-requirement tracking",
+      "matrixTracking": [
+        "Compliance status (5 levels)",
+        "Evidence attachments and notes",
+        "Applicability filtering by risk level",
+        "Responsible person assignment"
+      ],
+      "matrixExportTitle": "Export capabilities",
+      "matrixExport": [
+        "CSV export for spreadsheet analysis",
+        "PDF export for regulatory submissions",
+        "Technical documentation packages (Art. 11 / Annex IV)",
+        "Audit-ready compliance reports"
+      ],
+      "crossTitle": "Cross-Framework Mapping",
+      "crossIntro": "Many requirements across the EU AI Act, NIST AI RMF, and ISO 42001 overlap conceptually. AI SENTINEL includes 41 pre-built cross-framework mappings so that one compliance effort can satisfy requirements across multiple frameworks simultaneously.",
+      "crossBody1": "When you mark a requirement as <s>Compliant</s> or <s>Partially Compliant</s>, AI SENTINEL shows linked requirements from other frameworks and offers to propagate the status automatically.",
+      "crossBody2": "For example, marking EU AI Act Art. 9 (Risk Management) as compliant can automatically update NIST GOVERN 1 (Risk Management Policies) and ISO 42001 Clause 6.1 (Actions to Address Risks) — because they cover the same obligation.",
+      "crossStats": {
+        "equivalent": "Equivalent mappings",
+        "partial": "Partial mappings",
+        "related": "Related mapping"
+      },
+      "snapshotTitle": "Auto-Generated Compliance Snapshot",
+      "snapshotBody1": "When you classify an AI system's risk level (e.g., High Risk under the EU AI Act), AI SENTINEL automatically creates compliance mapping records for every applicable requirement across all three frameworks. You arrive at the compliance matrix with all relevant controls pre-populated — no manual setup needed.",
+      "snapshotBody2": "For a High Risk system, this means 80+ requirements are instantly initialized across EU AI Act (Art. 6 through Art. 73 key requirements), NIST AI RMF (all 23 practices), and ISO 42001 clauses, each set to “Not Assessed” and ready for evaluation.",
+      "howTitle": "Mapping Compliance",
+      "steps": [
+        {
+          "role": "AI Officer",
+          "title": "Navigate to Compliance",
+          "description": "Go to Governance → Compliance from the top navigation."
+        },
+        {
+          "role": "AI Officer",
+          "title": "Select framework and AI system",
+          "description": "Choose the framework (EU AI Act, NIST AI RMF, or ISO 42001) and the AI system to assess."
+        },
+        {
+          "role": "AI Officer",
+          "title": "Assess each requirement",
+          "description": "Work through the requirements list. For each, set the compliance status and add notes or evidence."
+        },
+        {
+          "role": "AI Officer",
+          "title": "Filter by applicability",
+          "description": "Use risk-level filtering to focus on requirements that apply to your system's classification (e.g., high-risk only)."
+        },
+        {
+          "role": "AI Officer",
+          "title": "Export documentation",
+          "description": "Generate CSV or PDF reports for regulatory submissions, audits, or internal stakeholders."
+        }
+      ]
+    },
+    "vendors": {
+      "metaTitle": "Vendor Risk — AI SENTINEL Docs",
+      "metaDescription": "Third-party AI vendor management with risk assessment, contract tracking, and due diligence.",
+      "title": "Vendor Risk",
+      "intro": "Manage third-party AI vendors with risk assessment, contract lifecycle tracking, and due diligence documentation. Maintain a complete registry of every AI vendor your organization relies on.",
+      "riskTitle": "Vendor Risk Levels",
+      "riskIntro": "Each vendor is assigned a risk level based on the criticality of the AI services they provide. Risk level determines review frequency and due diligence requirements.",
+      "riskLevels": {
+        "critical": {
+          "level": "Critical",
+          "description": "Core AI infrastructure, irreplaceable"
+        },
+        "high": {
+          "level": "High",
+          "description": "Significant dependency, limited alternatives"
+        },
+        "medium": {
+          "level": "Medium",
+          "description": "Moderate dependency, alternatives exist"
+        },
+        "low": {
+          "level": "Low",
+          "description": "Minimal dependency, easily replaceable"
+        }
+      },
+      "statusTitle": "Vendor Status Workflow",
+      "statusIntro": "Vendors progress through a review and approval workflow before being cleared for use.",
+      "statusFlow": [
+        "Under Review",
+        "Active",
+        "Approved",
+        "Suspended",
+        "Terminated"
+      ],
+      "recordTitle": "Vendor Record",
+      "recordIntro": "Each vendor record captures the information needed for risk management and contract oversight.",
+      "recordGroups": [
+        {
+          "title": "Company Details",
+          "items": [
+            "Vendor name and website",
+            "Primary contact",
+            "Country and jurisdiction",
+            "Services provided"
+          ]
+        },
+        {
+          "title": "Risk & Compliance",
+          "items": [
+            "Risk level (Critical/High/Medium/Low)",
+            "CCPA compliant flag",
+            "Subprocessors list",
+            "DPO Central vendor cross-reference"
+          ]
+        },
+        {
+          "title": "Contract",
+          "items": [
+            "Contract start and expiry dates",
+            "Renewal alerts",
+            "Contract value",
+            "SLA terms"
+          ]
+        },
+        {
+          "title": "Assessments",
+          "items": [
+            "Vendor risk assessments",
+            "Due diligence documentation",
+            "Review schedule",
+            "Findings and remediation"
+          ]
+        }
+      ],
+      "catalogTitle": "AI Vendor Catalog",
+      "catalogPremium": "Premium",
+      "catalogIntro": "The AI Vendor Catalog (powered by Vendor.Watch) provides a pre-audited database of AI vendors. Search the catalog, view vendor profiles, and add vendors directly to your registry with auto-filled details.",
+      "catalogSearchTitle": "Search & Browse",
+      "catalogSearchBody": "Search by vendor name or browse by category. Each catalog entry includes a description, website, and compliance flags.",
+      "catalogAutofillTitle": "Auto-fill",
+      "catalogAutofillBody": "When adding a vendor from the catalog, the form is auto-filled with the vendor's details — saving time and ensuring accuracy.",
+      "catalogRegisterTitle": "Register as AI System",
+      "catalogRegisterBody": "Optionally register the vendor's product as an AI system in your registry at the same time, linking the vendor and system records.",
+      "howTitle": "Adding a Vendor",
+      "steps": [
+        {
+          "role": "AI Officer",
+          "title": "Navigate to Vendors",
+          "description": "Go to Operations → Vendors from the top navigation."
+        },
+        {
+          "role": "AI Officer",
+          "title": "Click Add Vendor",
+          "description": "Use the button in the top-right corner. Optionally search the AI Vendor Catalog to auto-fill details."
+        },
+        {
+          "role": "AI Officer",
+          "title": "Complete vendor details",
+          "description": "Enter the vendor name, website, contact, services, and assign a risk level."
+        },
+        {
+          "role": "AI Officer",
+          "title": "Add contract information",
+          "description": "Document contract dates, renewal terms, and SLA details."
+        },
+        {
+          "role": "AI Officer",
+          "title": "Schedule risk assessments",
+          "description": "From the vendor detail page, create vendor risk assessments and set review schedules."
+        }
+      ]
+    },
+    "policies": {
+      "metaTitle": "Policy Management — AI SENTINEL Docs",
+      "metaDescription": "AI governance policies with versioning, approval workflow, and system linking.",
+      "title": "Policy Management",
+      "intro": "Author, version, and manage AI governance policies. Link policies to specific AI systems, track approval workflows, and maintain a living policy library that evolves with your organization.",
+      "typesTitle": "Policy Types",
+      "typesIntro": "AI SENTINEL supports a range of policy types covering the full scope of AI governance. Each type addresses a specific governance domain.",
+      "types": [
+        {
+          "type": "AI Usage",
+          "description": "Rules for how AI systems may be used within the organization"
+        },
+        {
+          "type": "AI Governance",
+          "description": "Overarching governance structure, roles, and responsibilities"
+        },
+        {
+          "type": "AI Ethics",
+          "description": "Ethical principles and guidelines for AI development and deployment"
+        },
+        {
+          "type": "AI Risk Management",
+          "description": "Risk identification, assessment, and mitigation procedures"
+        },
+        {
+          "type": "AI Data Governance",
+          "description": "Data quality, provenance, and handling requirements for AI"
+        },
+        {
+          "type": "AI Procurement",
+          "description": "Standards for evaluating and acquiring AI systems and services"
+        },
+        {
+          "type": "AI Incident Response",
+          "description": "Procedures for responding to AI-related incidents"
+        },
+        {
+          "type": "AI Transparency",
+          "description": "Disclosure and explainability requirements for AI decisions"
+        },
+        {
+          "type": "Custom",
+          "description": "User-defined policy type for organization-specific needs"
+        }
+      ],
+      "workflowTitle": "Approval Workflow",
+      "workflowIntro": "Policies follow a structured lifecycle from drafting through publication. Each stage transition is logged for audit purposes.",
+      "workflowFlow": [
+        "Draft",
+        "Under Review",
+        "Approved",
+        "Published",
+        "Archived"
+      ],
+      "versionsTitle": "Version History",
+      "versionsIntro": "Every content change to a policy creates a new version. The system automatically tracks the version number, change notes, author, and timestamp. Previous versions remain accessible for comparison.",
+      "versionNotes": [
+        "Updated transparency requirements for generative AI systems",
+        "Added procurement guidelines for third-party AI vendors",
+        "Initial policy draft covering AI usage rules"
+      ],
+      "linkingTitle": "System Linking",
+      "linkingIntro": "Policies can be linked to specific AI systems in the registry. This creates traceability between governance policies and the systems they apply to, making it easy to see which policies govern a particular AI system.",
+      "linkingFromPolicyTitle": "From the policy",
+      "linkingFromPolicyBody": "View and manage which AI systems are covered by the policy. Add or remove system links from the policy detail page.",
+      "linkingFromSystemTitle": "From the AI system",
+      "linkingFromSystemBody": "View all policies that apply to a specific AI system. This helps AI officers understand the full governance context.",
+      "howTitle": "Creating a Policy",
+      "steps": [
+        {
+          "role": "AI Officer",
+          "title": "Navigate to Policies",
+          "description": "Go to Governance → Policies from the top navigation."
+        },
+        {
+          "role": "AI Officer",
+          "title": "Click New Policy",
+          "description": "Choose the policy type and enter a title and description."
+        },
+        {
+          "role": "AI Officer",
+          "title": "Author the content",
+          "description": "Write the policy content. Each save creates a new version automatically."
+        },
+        {
+          "role": "AI Officer",
+          "title": "Link AI systems",
+          "description": "Associate the policy with the AI systems it applies to."
+        },
+        {
+          "role": "AI Officer",
+          "title": "Submit for review",
+          "description": "Change the status to Under Review. Approvers will review and either approve or request changes."
+        },
+        {
+          "role": "Approver",
+          "title": "Publish",
+          "description": "Once approved, publish the policy to make it visible organization-wide. Set an effective date and review schedule."
+        }
+      ]
+    },
+    "shadowAi": {
+      "metaTitle": "Shadow AI Discovery — AI SENTINEL Docs",
+      "metaDescription": "Discover unauthorized AI tools in your organization. Self-reporting portal, triage workflow, and promotion to formal governance.",
+      "premiumBadge": "Premium",
+      "title": "Shadow AI Discovery",
+      "intro": "Shadow AI refers to AI tools adopted by employees without the knowledge or approval of the organization. Research suggests that around 60% of employees use unapproved AI tools at work — from ChatGPT and Copilot to image generators and AI-powered analytics. Organizations cannot govern AI systems they do not know about.",
+      "whatTitle": "What is Shadow AI?",
+      "whatP1": "Shadow AI is the AI equivalent of Shadow IT — the use of AI-powered tools, services, and applications by employees without explicit organizational authorization. Unlike formally procured vendors that go through risk assessment and contract review, shadow AI tools enter the organization through individual adoption: an engineer installs a code assistant, a lawyer uses ChatGPT for contract review, a marketing team signs up for an AI copywriting tool.",
+      "whatP2": "Under the EU AI Act, organizations that deploy AI systems have specific obligations as deployers — regardless of whether the deployment was sanctioned or not. Shadow AI creates blind spots in compliance, data protection, and risk management programs.",
+      "whyTitle": "Why it matters",
+      "whyItems": [
+        {
+          "title": "Compliance risk",
+          "description": "Unregistered AI systems may fall under high-risk categories without appropriate conformity assessments, human oversight, or risk documentation."
+        },
+        {
+          "title": "Data protection",
+          "description": "Employees may input personal data, trade secrets, or client information into AI tools that train on user inputs or store data in non-compliant jurisdictions."
+        },
+        {
+          "title": "Regulatory exposure",
+          "description": "Under the EU AI Act, deployers are responsible for AI systems used within their organization — even those adopted informally by staff."
+        },
+        {
+          "title": "Governance gap",
+          "description": "You cannot classify risk, run assessments, or set oversight gates for AI systems you do not know exist. Shadow AI is the missing first step."
+        }
+      ],
+      "vsTitle": "Shadow AI vs Vendor Risk",
+      "vsIntro": "Shadow AI Discovery and Vendor Risk Management solve fundamentally different problems in opposite directions. They are complementary, not overlapping.",
+      "vsVendorTitle": "Vendor Risk",
+      "vsVendorItems": [
+        "Organization procures a vendor through formal channels",
+        "Known from day one — the org chose the vendor",
+        "Core question: “Is this vendor we selected risky?”",
+        "Lifecycle: Procurement → Assessment → Monitoring"
+      ],
+      "vsShadowTitle": "Shadow AI",
+      "vsShadowItems": [
+        "Employees adopt AI tools on their own, outside procurement",
+        "Unknown until reported or discovered",
+        "Core question: “What AI tools are people actually using?”",
+        "Lifecycle: Discovery → Triage → Approve or Prohibit"
+      ],
+      "howTitle": "How it works",
+      "howSteps": [
+        {
+          "title": "Employees self-report",
+          "description": "Staff search a pre-loaded catalog of 36 known AI tools across 8 categories (LLM Chat, Code Assistants, Image Generation, Video/Audio, Writing, Business Tools, Data Analytics, Search) or enter a custom tool. They specify their department, usage description, and how they use the tool."
+        },
+        {
+          "title": "Triage and review",
+          "description": "Reported tools enter the review queue with status DISCOVERED. The AI Officer or governance team reviews each tool, assessing risk indicators: Does it process personal data? Does it train on input? Is it cloud-hosted? SOC2 certified? GDPR compliant?"
+        },
+        {
+          "title": "Approve or prohibit",
+          "description": "Each tool is either APPROVED for continued use (with conditions) or PROHIBITED and flagged for removal. Prohibited tools trigger a clear organizational signal that the tool is not sanctioned."
+        },
+        {
+          "title": "Promote to formal governance",
+          "description": "Approved shadow tools can be promoted into the AI Registry as a formal AI System — and optionally into a Vendor record — in a single step. This bridges informal discovery into your full governance program."
+        }
+      ],
+      "statusTitle": "Status Workflow",
+      "statusStages": [
+        {
+          "status": "Discovered",
+          "description": "Reported by employee"
+        },
+        {
+          "status": "Under Review",
+          "description": "Being assessed by governance team"
+        },
+        {
+          "status": "Approved",
+          "description": "Sanctioned for use"
+        },
+        {
+          "status": "Prohibited",
+          "description": "Banned — must be removed"
+        },
+        {
+          "status": "Registered",
+          "description": "Promoted to AI Registry"
+        }
+      ]
+    },
+    "vendorCatalog": {
+      "metaTitle": "AI Vendor Catalog — AI SENTINEL Docs",
+      "metaDescription": "Pre-audited catalog of 665+ AI vendors with risk profiles, compliance data, and governance metadata powered by Vendor.Watch.",
+      "premiumBadge": "Premium",
+      "title": "AI Vendor Catalog",
+      "intro": "Evaluating AI vendors from scratch is time-consuming and error-prone. The AI Vendor Catalog gives your governance team a head start with pre-audited profiles for 665+ AI vendors — complete with risk indicators, compliance certifications, and deployment metadata.",
+      "whatTitle": "What is the AI Vendor Catalog?",
+      "whatP1": "The AI Vendor Catalog is a searchable, pre-populated directory of AI tool and service providers. Each vendor profile includes structured governance data: what the vendor does, where data is processed, what certifications they hold, whether they train on customer data, and their EU AI Act risk classification.",
+      "whatP2": "The catalog is powered by <vw>Vendor.Watch</vw>, an independent AI vendor intelligence service that continuously audits and updates vendor profiles. Data syncs automatically, so your catalog stays current without manual research.",
+      "whyTitle": "Why it matters",
+      "whyItems": [
+        {
+          "title": "Due diligence at scale",
+          "description": "Manually researching each AI vendor's data practices, certifications, and risk posture is impractical. The catalog provides a standardized baseline for every vendor evaluation."
+        },
+        {
+          "title": "Faster procurement",
+          "description": "When a team requests a new AI tool, governance can check the catalog immediately — no weeks-long vendor questionnaire cycle needed for initial assessment."
+        },
+        {
+          "title": "Regulatory compliance",
+          "description": "The EU AI Act requires deployers to understand the AI systems they use. Pre-classified vendor risk levels and compliance indicators help meet Art. 6 and Art. 26 obligations."
+        },
+        {
+          "title": "Continuous updates",
+          "description": "Vendor risk profiles change as companies update their terms, certifications expire, or data practices evolve. Automated sync ensures your catalog reflects current reality."
+        }
+      ],
+      "vsTitle": "Vendor Catalog vs Vendor Risk",
+      "vsIntro": "The AI Vendor Catalog and the Vendor Risk module serve different purposes in the governance lifecycle. They complement each other.",
+      "vsCatalogTitle": "Vendor Catalog",
+      "vsCatalogItems": [
+        "Pre-populated directory of 665+ AI vendors",
+        "External intelligence — data from Vendor.Watch",
+        "Read-only reference for initial due diligence",
+        "Core question: “What do we know about this vendor?”"
+      ],
+      "vsRiskTitle": "Vendor Risk",
+      "vsRiskItems": [
+        "Your organization's vendor records",
+        "Internal assessments — your team's risk evaluations",
+        "Full CRUD with status tracking and contract management",
+        "Core question: “How risky is this vendor for us?”"
+      ],
+      "profileTitle": "What's in a vendor profile",
+      "profileItems": [
+        {
+          "category": "Identity",
+          "fields": "Name, slug, logo, website, description, category, headquarters country"
+        },
+        {
+          "category": "AI Model Information",
+          "fields": "Model names, model types (proprietary, open-source, fine-tuned), training data transparency"
+        },
+        {
+          "category": "Data & Privacy",
+          "fields": "Data processing locations, data retention policy, trains on customer data (yes/no), sub-processors disclosed"
+        },
+        {
+          "category": "Compliance & Certifications",
+          "fields": "SOC 2, ISO 27001, GDPR compliance status, EU AI Act risk classification, HIPAA eligibility"
+        },
+        {
+          "category": "Governance Metadata",
+          "fields": "Last audit date, Vendor.Watch risk score, catalog sync timestamp, source URL"
+        }
+      ],
+      "howTitle": "How it works",
+      "howSteps": [
+        {
+          "title": "Browse or search",
+          "description": "Search the catalog by vendor name, category, or compliance attribute. Filter by risk level, certification status, or data processing location."
+        },
+        {
+          "title": "Review the profile",
+          "description": "Each vendor has a detailed profile page with structured governance data — risk indicators, compliance certifications, data practices, and AI model information."
+        },
+        {
+          "title": "Inform your decision",
+          "description": "Use the catalog data to accelerate vendor assessments, support procurement decisions, or evaluate shadow AI tools that employees have reported."
+        },
+        {
+          "title": "Automatic sync",
+          "description": "The catalog syncs with Vendor.Watch on a regular schedule. New vendors are added and existing profiles are updated automatically as intelligence becomes available."
+        }
+      ]
+    },
+    "conformity": {
+      "metaTitle": "Conformity Assessment — AI SENTINEL Docs",
+      "metaDescription": "EU AI Act Art. 43 conformity assessment template for high-risk AI systems. Structured evaluation of technical documentation, quality management, and post-market monitoring.",
+      "premiumBadge": "Premium",
+      "title": "Conformity Assessment",
+      "intro": "High-risk AI systems under the EU AI Act must undergo a conformity assessment before being placed on the market. AI SENTINEL provides a structured template that walks your team through every requirement — from technical documentation to post-market monitoring — so nothing falls through the cracks.",
+      "whatTitle": "What is a Conformity Assessment?",
+      "whatP1": "A conformity assessment is a formal evaluation process required by Art. 43 of the EU AI Act for high-risk AI systems. It verifies that the AI system meets all applicable requirements before deployment — covering data governance, transparency, human oversight, accuracy, robustness, and cybersecurity.",
+      "whatP2": "Depending on the use case, conformity assessments may be conducted internally by the provider or through a third-party notified body. In either case, the assessment must follow a structured methodology and produce documented evidence of compliance.",
+      "whoTitle": "Who needs it?",
+      "whoItems": [
+        {
+          "title": "AI Providers",
+          "description": "Organizations that develop or place high-risk AI systems on the EU market must complete a conformity assessment before deployment (Art. 16)."
+        },
+        {
+          "title": "AI Deployers",
+          "description": "Organizations deploying high-risk AI systems must verify that the provider has completed the conformity assessment and that the CE marking is in place (Art. 26)."
+        },
+        {
+          "title": "Annex III systems",
+          "description": "AI systems used in biometrics, critical infrastructure, education, employment, essential services, law enforcement, migration, or administration of justice (Art. 6(2))."
+        },
+        {
+          "title": "Internal compliance teams",
+          "description": "Even when a notified body is involved, internal teams need a structured process to prepare documentation, gather evidence, and track remediation of gaps."
+        }
+      ],
+      "coversTitle": "What the template covers",
+      "coversItems": [
+        {
+          "area": "Risk Management System",
+          "description": "Verification that a risk management system is established and maintained throughout the AI system lifecycle (Art. 9)."
+        },
+        {
+          "area": "Data Governance",
+          "description": "Assessment of training, validation, and testing data — including relevance, representativeness, and bias examination (Art. 10)."
+        },
+        {
+          "area": "Technical Documentation",
+          "description": "Review of technical documentation completeness: system description, design specifications, development process, and performance metrics (Art. 11, Annex IV)."
+        },
+        {
+          "area": "Record-keeping & Logging",
+          "description": "Evaluation of automatic logging capabilities for traceability, including input/output records and system events (Art. 12)."
+        },
+        {
+          "area": "Transparency",
+          "description": "Assessment of instructions for use, disclosure of AI nature, and interpretability measures for deployers and affected persons (Art. 13)."
+        },
+        {
+          "area": "Human Oversight",
+          "description": "Verification that appropriate human oversight measures are designed into the system and documented (Art. 14)."
+        },
+        {
+          "area": "Accuracy, Robustness & Cybersecurity",
+          "description": "Testing and validation of accuracy levels, resilience to errors and adversarial attacks, and cybersecurity measures (Art. 15)."
+        },
+        {
+          "area": "Quality Management System",
+          "description": "Review of the provider's quality management system covering development processes, testing, and post-market obligations (Art. 17)."
+        },
+        {
+          "area": "Post-market Monitoring",
+          "description": "Verification that a post-market monitoring plan is in place to detect and address issues after deployment (Art. 72)."
+        }
+      ],
+      "howTitle": "How it works",
+      "howSteps": [
+        {
+          "title": "Create a new assessment",
+          "description": "Select the Conformity Assessment template and link it to a registered AI system. The template pre-populates all required evaluation areas."
+        },
+        {
+          "title": "Work through each section",
+          "description": "Each section presents structured questions aligned to the EU AI Act requirements. Record findings, attach evidence, and note any gaps."
+        },
+        {
+          "title": "Submit for review",
+          "description": "Once complete, submit the assessment for review by the AI Officer or governance lead. The approval workflow tracks sign-off and any requested changes."
+        },
+        {
+          "title": "Document and maintain",
+          "description": "The completed assessment becomes part of your compliance record. Link it to the AI system's compliance mapping and revisit it when material changes occur."
+        }
+      ]
+    },
+    "biasFairness": {
+      "metaTitle": "Bias & Fairness Assessment — AI SENTINEL Docs",
+      "metaDescription": "Structured bias and fairness evaluation for AI systems. Detect discrimination risks, assess protected attributes, and document mitigation measures.",
+      "premiumBadge": "Premium",
+      "title": "Bias & Fairness Assessment",
+      "intro": "AI systems can produce discriminatory outcomes — often unintentionally. The Bias & Fairness Assessment provides a structured methodology to evaluate your AI systems for bias risks, document affected protected attributes, and track mitigation measures.",
+      "whatTitle": "What is a Bias & Fairness Assessment?",
+      "whatP1": "A bias and fairness assessment is a systematic evaluation of an AI system's potential to produce outcomes that unfairly disadvantage individuals or groups based on protected characteristics — such as race, gender, age, disability, ethnicity, or socioeconomic status.",
+      "whatP2": "Under the EU AI Act, providers of high-risk AI systems must examine training data for possible biases (Art. 10) and implement measures to prevent discriminatory outcomes. The EU Charter of Fundamental Rights (Art. 21) explicitly prohibits discrimination, and AI systems that score, rank, or make decisions about people are particularly exposed to this risk.",
+      "whyTitle": "Why it matters",
+      "whyItems": [
+        {
+          "title": "Legal obligation",
+          "description": "The EU AI Act requires bias examination of training data (Art. 10(2)(f)) and non-discrimination safeguards for high-risk systems. Failure to comply carries fines up to 3% of global turnover."
+        },
+        {
+          "title": "Fundamental rights",
+          "description": "AI-driven discrimination can violate the right to non-discrimination (EU Charter Art. 21), equal treatment directives, and national equality legislation."
+        },
+        {
+          "title": "Real-world impact",
+          "description": "Biased AI in hiring, credit scoring, healthcare triage, or law enforcement has documented consequences — rejected applicants, denied loans, missed diagnoses, and wrongful arrests."
+        },
+        {
+          "title": "Reputational risk",
+          "description": "Public disclosure of biased AI outcomes causes lasting reputational damage. Proactive assessment demonstrates responsible AI governance to regulators, customers, and the public."
+        }
+      ],
+      "typesTitle": "Types of AI bias",
+      "typesItems": [
+        {
+          "type": "Training data bias",
+          "description": "Historical data reflects past discrimination. A hiring model trained on historical decisions inherits biases in who was previously hired or promoted."
+        },
+        {
+          "type": "Selection bias",
+          "description": "The training dataset does not represent the population the system will serve. Underrepresented groups receive less accurate predictions."
+        },
+        {
+          "type": "Measurement bias",
+          "description": "The features or labels used as proxies are themselves biased. Using zip codes as a feature can encode racial segregation patterns."
+        },
+        {
+          "type": "Aggregation bias",
+          "description": "A single model is applied to groups with different underlying distributions. Medical AI trained primarily on one demographic may underperform for others."
+        },
+        {
+          "type": "Deployment bias",
+          "description": "The system is used in a context different from the one it was designed for, or its outputs are interpreted in a biased manner by human operators."
+        }
+      ],
+      "coversTitle": "What the template covers",
+      "coversItems": [
+        {
+          "area": "Protected attributes",
+          "description": "Identification of which protected characteristics (age, gender, race, disability, etc.) are relevant to the AI system's domain and affected population."
+        },
+        {
+          "area": "Data representativeness",
+          "description": "Evaluation of whether training and testing data adequately represents all relevant groups, including historically underrepresented populations."
+        },
+        {
+          "area": "Fairness metrics",
+          "description": "Selection and application of appropriate fairness metrics: demographic parity, equalized odds, predictive parity, or individual fairness measures."
+        },
+        {
+          "area": "Proxy detection",
+          "description": "Analysis of whether ostensibly neutral features (location, language, education) serve as proxies for protected attributes."
+        },
+        {
+          "area": "Mitigation measures",
+          "description": "Documentation of pre-processing, in-processing, or post-processing techniques used to reduce identified bias."
+        },
+        {
+          "area": "Monitoring plan",
+          "description": "Ongoing monitoring strategy to detect bias drift after deployment, including thresholds and escalation procedures."
+        }
+      ],
+      "howTitle": "How it works",
+      "howSteps": [
+        {
+          "title": "Create a new assessment",
+          "description": "Select the Bias & Fairness template and link it to a registered AI system. The template structures the evaluation around the system's specific use case and affected population."
+        },
+        {
+          "title": "Evaluate each dimension",
+          "description": "Work through the structured sections: identify relevant protected attributes, assess data representativeness, apply fairness metrics, and check for proxy variables."
+        },
+        {
+          "title": "Document findings and mitigations",
+          "description": "Record identified bias risks with severity ratings. For each risk, document the mitigation approach — whether technical (algorithmic debiasing) or procedural (human review)."
+        },
+        {
+          "title": "Review and monitor",
+          "description": "Submit for approval, then establish ongoing monitoring. The assessment links to your AI system's record so bias findings inform risk classification and oversight decisions."
+        }
+      ]
+    },
+    "roles": {
+      "metaTitle": "Roles & Permissions — AI SENTINEL Docs",
+      "metaDescription": "Understand the five user roles in AI SENTINEL and what each role can do across all governance modules.",
+      "title": "Roles & Permissions",
+      "intro": "AI SENTINEL uses five roles to control access to governance operations. Every action is enforced at the server level — the interface adapts to show only what your role allows.",
+      "roles": {
+        "owner": {
+          "name": "Owner",
+          "summary": "Full platform control. Billing, team management, and all governance operations.",
+          "capabilities": [
+            "Manage billing & subscription",
+            "Invite and remove members",
+            "Change member roles",
+            "All Admin capabilities"
+          ]
+        },
+        "admin": {
+          "name": "Admin",
+          "summary": "Organization management and full governance access without billing control.",
+          "capabilities": [
+            "Invite and remove members",
+            "Configure organization settings",
+            "All AI Officer capabilities"
+          ]
+        },
+        "aiOfficer": {
+          "name": "AI Officer",
+          "summary": "Governance authority. Approves assessments, publishes policies, and makes oversight decisions.",
+          "capabilities": [
+            "Approve or reject assessments",
+            "Publish policy versions",
+            "Make oversight gate decisions",
+            "Approve policies",
+            "All Member capabilities"
+          ]
+        },
+        "member": {
+          "name": "Member",
+          "summary": "Day-to-day governance work. Creates records, submits assessments, reports incidents.",
+          "capabilities": [
+            "Register AI systems",
+            "Create assessments & submit for review",
+            "Report incidents",
+            "Create oversight gates",
+            "Manage vendors & policies",
+            "Report shadow AI usage"
+          ]
+        },
+        "viewer": {
+          "name": "Viewer",
+          "summary": "Read-only access. Can view all dashboards, records, and reports but cannot make changes.",
+          "capabilities": [
+            "View executive dashboard",
+            "Browse AI registry & risk classifications",
+            "View assessments, incidents, policies",
+            "Access compliance mapping reports",
+            "View vendor & oversight information"
+          ]
+        }
+      },
+      "hierarchyTitle": "Role Hierarchy",
+      "hierarchyNote": "Each role inherits all capabilities from the roles below it.",
+      "capabilitiesTitle": "What Each Role Can Do",
+      "matrixTitle": "Permissions Matrix",
+      "matrixAction": "Action",
+      "matrix": {
+        "viewRecords": "View dashboards & records",
+        "createEdit": "Create & edit records",
+        "deleteRecords": "Delete records",
+        "approveAssessments": "Approve assessments",
+        "publishPolicies": "Publish policies",
+        "oversightDecisions": "Make oversight decisions",
+        "inviteMembers": "Invite & remove members",
+        "changeRoles": "Change member roles",
+        "manageBilling": "Manage billing"
+      },
+      "assignTitle": "How Roles Are Assigned",
+      "assign": {
+        "creatorTitle": "Organization Creator",
+        "creatorBody": "The user who creates an organization is automatically assigned the <role>Owner</role> role.",
+        "invitedTitle": "Invited or Auto-Joined Users",
+        "invitedBody": "Users who are invited or who join via email domain matching receive the <role>Member</role> role by default. An Owner can change their role at any time.",
+        "viewerTitle": "Viewer Access",
+        "viewerBody": "The Viewer role is assigned explicitly by an Owner or Admin. Viewers see a clean read-only interface — create and edit buttons are hidden, not just disabled.",
+        "changesTitle": "Role Changes",
+        "changesBody": "Only the organization Owner can change member roles. All role changes are recorded in the audit trail."
+      },
+      "enforcementTitle": "Server-Side Enforcement",
+      "enforcementBody": "All permissions are enforced at the API level, not just the interface. Even if a user crafts a direct API request, the server verifies their role and organization membership before processing any operation. This means security does not depend on what the browser shows or hides."
+    },
+    "security": {
+      "metaTitle": "Security & Trust — AI SENTINEL Docs",
+      "metaDescription": "How AI SENTINEL protects your organization's data with enterprise-grade security controls.",
+      "title": "Security & Trust",
+      "intro": "AI SENTINEL is built for organizations that manage sensitive AI governance data. Security is embedded in every layer of the platform — from how we isolate your data to how we control access and protect your information.",
+      "isolation": {
+        "title": "Data Isolation",
+        "intro": "Every organization on AI SENTINEL operates in a fully isolated environment. Your AI systems, assessments, policies, incidents, and vendor data are never accessible to other organizations.",
+        "items": [
+          {
+            "title": "Organization-Scoped Queries",
+            "description": "Every database query is automatically scoped to your organization. There is no way to access another organization's data through the application."
+          },
+          {
+            "title": "Verified Membership",
+            "description": "Before any operation, we verify that the requesting user is an active member of the organization. Membership is checked on every single request."
+          },
+          {
+            "title": "Cross-Tenant Protection",
+            "description": "Operations that reference related entities (e.g., linking a policy to an AI system) verify that both entities belong to your organization."
+          },
+          {
+            "title": "Shared Reference Data Only",
+            "description": "Only non-sensitive reference data (compliance frameworks, assessment templates) is shared across organizations. Your governance data is never shared."
+          }
+        ]
+      },
+      "accessControl": {
+        "title": "Access Control",
+        "intro": "AI SENTINEL enforces role-based access control (RBAC) across the entire platform. Every action is checked against your role before it is executed.",
+        "roles": [
+          "Owner",
+          "Admin",
+          "AI Officer",
+          "Member",
+          "Viewer"
+        ],
+        "readOnlyTitle": "Read-Only Enforcement",
+        "readOnlyBody": "Viewers have guaranteed read-only access. All write operations are blocked at the server level, not just the UI — preventing unauthorized modifications even through API calls.",
+        "elevatedTitle": "Elevated Permissions",
+        "elevatedBody": "Sensitive operations like approving assessments, publishing policies, and making oversight decisions require AI Officer, Admin, or Owner roles."
+      },
+      "auth": {
+        "title": "Authentication",
+        "intro": "We support industry-standard authentication methods with additional hardening for production environments.",
+        "methods": [
+          {
+            "title": "Google OAuth",
+            "description": "Enterprise SSO via Google with OAuth 2.0"
+          },
+          {
+            "title": "Magic Link",
+            "description": "Passwordless email authentication for secure sign-in"
+          },
+          {
+            "title": "Cross-Platform SSO",
+            "description": "Single sign-on across the TODO.LAW platform"
+          }
+        ],
+        "sessionTitle": "Session Security",
+        "sessionItems": [
+          "HTTP-only cookies prevent client-side access to session tokens",
+          "Secure cookie flag enforced in production (HTTPS only)",
+          "CSRF protection on all authenticated requests",
+          "SameSite cookie policy prevents cross-site request forgery"
+        ]
+      },
+      "validation": {
+        "title": "Input Validation",
+        "intro": "All user inputs are validated on the server before reaching business logic. This protects against injection attacks and ensures data integrity.",
+        "items": [
+          {
+            "title": "Schema Validation",
+            "description": "Every API input is validated against a strict schema. Invalid data is rejected before it reaches the database."
+          },
+          {
+            "title": "Parameterized Queries",
+            "description": "All database queries use parameterized inputs. Raw SQL is never used, eliminating SQL injection risk."
+          },
+          {
+            "title": "Enum Enforcement",
+            "description": "Status fields, risk levels, and categories use strict enum validation. Only predefined values are accepted."
+          }
+        ]
+      },
+      "audit": {
+        "title": "Audit Trail",
+        "intro": "Every create, update, delete, and significant business operation is logged to an immutable audit trail. This supports compliance requirements and provides a complete record of governance activities.",
+        "whatWeLogTitle": "What We Log",
+        "logItems": [
+          "AI system lifecycle changes",
+          "Risk classification decisions",
+          "Assessment submissions and approvals",
+          "Oversight decisions",
+          "Policy changes and publications",
+          "Incident management actions",
+          "Organization membership changes"
+        ],
+        "retentionTitle": "Retention",
+        "retentionBody": "Audit records are preserved even if the associated user or organization is deleted. This ensures your compliance history remains intact regardless of personnel changes."
+      },
+      "transport": {
+        "title": "Transport & Infrastructure",
+        "intro": "Your data is protected in transit and at rest through industry-standard security measures.",
+        "items": [
+          {
+            "title": "HTTPS Everywhere",
+            "description": "All connections are encrypted with TLS. HSTS headers ensure browsers always use secure connections."
+          },
+          {
+            "title": "Clickjacking Protection",
+            "description": "Security headers prevent the application from being embedded in frames on other sites."
+          },
+          {
+            "title": "Content Security",
+            "description": "MIME-type sniffing prevention and strict referrer policies protect against content-based attacks."
+          },
+          {
+            "title": "Minimal Permissions",
+            "description": "Browser APIs (camera, microphone, geolocation) are explicitly disabled — the application never requests unnecessary access."
+          }
+        ]
+      },
+      "api": {
+        "title": "API Security",
+        "intro": "All API endpoints require authentication. External integrations use signature verification and token-based authentication.",
+        "endpointTitle": "Endpoint Protection",
+        "endpointBody": "Every governance API endpoint requires an authenticated session with verified organization membership. Unauthenticated requests are rejected.",
+        "webhookTitle": "Webhook Verification",
+        "webhookBody": "Payment and integration webhooks use cryptographic signature verification. Unverified webhooks are discarded before processing."
+      },
+      "standards": {
+        "title": "Security Standards",
+        "intro": "AI SENTINEL's security controls are designed to address the OWASP Top 10 web application security risks.",
+        "statusMitigated": "Mitigated",
+        "statusActive": "Active",
+        "items": [
+          {
+            "category": "Access Control",
+            "description": "Multi-tenant isolation, RBAC, cross-entity verification"
+          },
+          {
+            "category": "Injection",
+            "description": "Parameterized queries, strict input validation, no raw SQL"
+          },
+          {
+            "category": "Authentication",
+            "description": "Industry-standard OAuth, secure sessions, CSRF protection"
+          },
+          {
+            "category": "Data Integrity",
+            "description": "Webhook signature verification, schema validation"
+          },
+          {
+            "category": "Security Configuration",
+            "description": "Security headers, environment-guarded configurations"
+          },
+          {
+            "category": "Logging & Monitoring",
+            "description": "Comprehensive audit trail for all governance operations"
+          }
+        ]
+      },
+      "contact": {
+        "title": "Security Contact",
+        "body": "If you discover a security vulnerability or have questions about our security practices, please contact us at <link>{email}</link>. We take all reports seriously and will respond promptly."
+      }
+    }
   }
 }

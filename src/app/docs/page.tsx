@@ -17,14 +17,17 @@ import {
   Activity,
   Megaphone,
 } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import prisma from "@/lib/prisma";
 import { features } from "@/config/features";
 
-export const metadata = {
-  title: "Documentation — AI SENTINEL",
-  description:
-    "Learn how to use AI SENTINEL for AI governance, EU AI Act compliance, risk classification, and incident management.",
-};
+export async function generateMetadata() {
+  const t = await getTranslations("docs.home");
+  return {
+    title: t("metaTitle"),
+    description: t("metaDescription"),
+  };
+}
 
 // Catalog sizes are read from the database rather than hardcoded: both grow on
 // every vendor.watch sync, and stale literals here previously understated them
@@ -52,121 +55,48 @@ function approx(n: number | null) {
   return `${Math.floor(n / 50) * 50}+`;
 }
 
-const modules = [
-  {
-    href: "/docs/ai-registry",
-    icon: Brain,
-    title: "AI Registry",
-    description: "Inventory all AI systems, models, and agents with lifecycle tracking and role assignment.",
-  },
-  {
-    href: "/docs/risk-classification",
-    icon: ShieldAlert,
-    title: "Risk Classification",
-    description: "EU AI Act four-tier risk classification with guided Annex III wizard and classification history.",
-  },
-  {
-    href: "/docs/assessments",
-    icon: ClipboardCheck,
-    title: "Assessments",
-    description: "FRIA, conformity, AI risk, and bias/fairness assessments with templates and approval workflows.",
-  },
-  {
-    href: "/docs/oversight",
-    icon: Eye,
-    title: "Human Oversight",
-    description: "Approval gates, review scheduling, and decision logging for Art. 14 compliance.",
-  },
-  {
-    href: "/docs/incidents",
-    icon: AlertTriangle,
-    title: "AI Incidents",
-    description: "Track AI-specific failures, coordinate response tasks, and manage Art. 73 authority notifications.",
-  },
-  {
-    href: "/docs/transparency",
-    icon: Megaphone,
-    title: "Transparency (Art. 50)",
-    description: "Per-system Art. 50 obligations, the synthetic-content marking deadline, and the AI interaction statement.",
-  },
-  {
-    href: "/docs/compliance",
-    icon: Scale,
-    title: "Compliance",
-    description: "Framework mapping for EU AI Act, NIST AI RMF, and ISO 42001 with evidence management.",
-  },
-  {
-    href: "/docs/vendors",
-    icon: Building2,
-    title: "Vendor Risk",
-    description: "Third-party AI vendor management with risk assessment, contract tracking, and due diligence.",
-  },
-  {
-    href: "/docs/policies",
-    icon: ScrollText,
-    title: "Policy Management",
-    description: "AI governance policies with versioning, approval workflow, and system linking.",
-  },
-];
+const moduleItems = [
+  { href: "/docs/ai-registry", icon: Brain, tKey: "aiRegistry" },
+  { href: "/docs/risk-classification", icon: ShieldAlert, tKey: "riskClassification" },
+  { href: "/docs/assessments", icon: ClipboardCheck, tKey: "assessments" },
+  { href: "/docs/oversight", icon: Eye, tKey: "oversight" },
+  { href: "/docs/incidents", icon: AlertTriangle, tKey: "incidents" },
+  { href: "/docs/transparency", icon: Megaphone, tKey: "transparency" },
+  { href: "/docs/compliance", icon: Scale, tKey: "compliance" },
+  { href: "/docs/vendors", icon: Building2, tKey: "vendors" },
+  { href: "/docs/policies", icon: ScrollText, tKey: "policies" },
+] as const;
 
-const premiumModulesFor = (counts: { vendors: number | null; tools: number | null }) => [
-  {
-    href: "/docs/shadow-ai",
-    icon: Search,
-    title: "Shadow AI Discovery",
-    description: `Discover unauthorized AI tools adopted by employees, against a catalog of ${
-      counts.tools ?? "60+"
-    } known tools. Self-reporting portal, triage workflow, and promotion to formal governance.`,
-  },
-  {
-    href: "/docs/vendor-catalog",
-    icon: BookMarked,
-    title: "AI Vendor Catalog",
-    description: `Pre-audited catalog of ${
-      approx(counts.vendors) ?? "800+"
-    } AI vendors with risk profiles, compliance certifications, and governance metadata.`,
-  },
-  {
-    href: "/docs/conformity-assessment",
-    icon: FileCheck,
-    title: "Conformity Assessment",
-    description: "EU AI Act Art. 43 conformity assessment template for high-risk AI systems with structured evaluation sections.",
-  },
-  {
-    href: "/docs/bias-fairness",
-    icon: Activity,
-    title: "Bias & Fairness Assessment",
-    description: "Structured bias and fairness evaluation for AI systems — detect discrimination risks and document mitigations.",
-  },
-];
+const premiumItems = [
+  { href: "/docs/shadow-ai", icon: Search, tKey: "shadowAi" },
+  { href: "/docs/vendor-catalog", icon: BookMarked, tKey: "vendorCatalog" },
+  { href: "/docs/conformity-assessment", icon: FileCheck, tKey: "conformity" },
+  { href: "/docs/bias-fairness", icon: Activity, tKey: "biasFairness" },
+] as const;
 
-const roles = [
-  {
-    name: "Owner",
-    description: "Billing, team management, organization settings",
-  },
-  {
-    name: "Admin",
-    description: "User management, module configuration, full governance access",
-  },
-  {
-    name: "AI Officer",
-    description: "All governance modules, assessments, risk classification, incident management",
-  },
-  {
-    name: "Member",
-    description: "Create and edit records, submit assessments, report incidents",
-  },
-  {
-    name: "Viewer",
-    description: "Read-only dashboard and report access",
-  },
-];
+const alsoItems = [
+  { href: "/governance/quickstart", tKey: "quickstart" },
+  { href: "/governance/settings", tKey: "aiPosture" },
+  { href: "/governance/skills", tKey: "skills" },
+  { href: "/governance/clients", tKey: "clients" },
+] as const;
 
 export default async function DocsPage() {
+  const t = await getTranslations("docs.home");
   const counts = await getCatalogCounts();
-  const premiumModules = premiumModulesFor(counts);
   const allFree = features.allSkillsFree;
+
+  const quickStartSteps = t.raw("quickStartSteps") as {
+    title: string;
+    description: string;
+  }[];
+  const roles = t.raw("roles") as { name: string; description: string }[];
+  const coreItems = t.raw("licensing.coreItems") as string[];
+
+  const premiumValues: Record<string, Record<string, string | number>> = {
+    shadowAi: { count: counts.tools ?? "60+" },
+    vendorCatalog: { count: approx(counts.vendors) ?? "800+" },
+  };
 
   return (
     <div className="space-y-16">
@@ -176,47 +106,21 @@ export default async function DocsPage() {
           AI SENTINEL
         </h1>
         <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl">
-          A purpose-built platform for AI governance. Manage your AI system inventory, EU AI Act
-          compliance, risk classification, human oversight, and AI-specific incidents — all in one
-          place.
+          {t("heroIntro")}
         </p>
       </section>
 
       {/* Quick Start */}
       <section>
-        <h2 className="text-2xl font-display tracking-tight mb-6">Quick Start</h2>
+        <h2 className="text-2xl font-display tracking-tight mb-6">{t("quickStartTitle")}</h2>
         <div className="grid sm:grid-cols-2 gap-4">
-          {[
-            {
-              step: "1",
-              title: "Sign in",
-              description: "Sign in via email magic link or Google OAuth.",
-            },
-            {
-              step: "2",
-              title: "Create or join your organization",
-              description:
-                "Set up your organization and invite team members. Users with a matching email domain are auto-joined.",
-            },
-            {
-              step: "3",
-              title: "Register your AI systems",
-              description:
-                "Build your AI inventory by registering systems, models, and agents. Assign risk levels and owners.",
-            },
-            {
-              step: "4",
-              title: "Govern your AI",
-              description:
-                "Run assessments, set up oversight gates, map compliance frameworks, manage vendors, and track incidents.",
-            },
-          ].map((item) => (
+          {quickStartSteps.map((item, i) => (
             <div
-              key={item.step}
+              key={i}
               className="rounded-xl border border-border bg-card p-5 flex gap-4"
             >
               <div className="text-2xl font-display text-primary/40 shrink-0">
-                {item.step}
+                {i + 1}
               </div>
               <div>
                 <h3 className="font-semibold mb-1">{item.title}</h3>
@@ -231,7 +135,7 @@ export default async function DocsPage() {
 
       {/* User Roles */}
       <section>
-        <h2 className="text-2xl font-display tracking-tight mb-6">User Roles</h2>
+        <h2 className="text-2xl font-display tracking-tight mb-6">{t("rolesTitle")}</h2>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {roles.map((role) => (
             <div
@@ -249,9 +153,9 @@ export default async function DocsPage() {
 
       {/* Modules */}
       <section>
-        <h2 className="text-2xl font-display tracking-tight mb-6">Modules</h2>
+        <h2 className="text-2xl font-display tracking-tight mb-6">{t("modulesTitle")}</h2>
         <div className="grid sm:grid-cols-2 gap-4">
-          {modules.map((mod) => {
+          {moduleItems.map((mod) => {
             const Icon = mod.icon;
             return (
               <Link
@@ -264,10 +168,10 @@ export default async function DocsPage() {
                 </div>
                 <div>
                   <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">
-                    {mod.title}
+                    {t(`modules.${mod.tKey}.title`)}
                   </h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    {mod.description}
+                    {t(`modules.${mod.tKey}.description`)}
                   </p>
                 </div>
               </Link>
@@ -279,28 +183,21 @@ export default async function DocsPage() {
       {/* Premium Modules */}
       <section>
         <h2 className="text-2xl font-display tracking-tight mb-2">
-          {allFree ? "Add-on Modules" : "Premium Skills"}
+          {allFree ? t("premiumTitleFree") : t("premiumTitleLocked")}
         </h2>
         <p className="text-sm text-muted-foreground mb-6">
-          {allFree ? (
-            <>
-              Included on this instance — no licence or subscription required. These
-              modules were previously sold as add-ons; they are now enabled for
-              everyone here.
-            </>
-          ) : (
-            <>
-              Add-on modules, unlocked per organization with a TODO.LAW licence file
-              on the{" "}
-              <Link href="/governance/skills" className="text-primary hover:underline">
-                skills page
-              </Link>
-              .
-            </>
-          )}
+          {allFree
+            ? t("premiumIntroFree")
+            : t.rich("premiumIntroLocked", {
+                link: (chunks) => (
+                  <Link href="/governance/skills" className="text-primary hover:underline">
+                    {chunks}
+                  </Link>
+                ),
+              })}
         </p>
         <div className="grid sm:grid-cols-2 gap-4">
-          {premiumModules.map((mod) => {
+          {premiumItems.map((mod) => {
             const Icon = mod.icon;
             return (
               <Link
@@ -314,14 +211,14 @@ export default async function DocsPage() {
                 <div>
                   <div className="flex items-center gap-2 mb-1">
                     <h3 className="font-semibold group-hover:text-primary transition-colors">
-                      {mod.title}
+                      {t(`premiumModules.${mod.tKey}.title`)}
                     </h3>
                     <span className="px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground text-[10px] font-medium">
-                      {allFree ? "Included" : "Licensed"}
+                      {allFree ? t("badgeIncluded") : t("badgeLicensed")}
                     </span>
                   </div>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    {mod.description}
+                    {t(`premiumModules.${mod.tKey}.description`, premiumValues[mod.tKey])}
                   </p>
                 </div>
               </Link>
@@ -333,49 +230,23 @@ export default async function DocsPage() {
       {/* Features without a dedicated guide yet */}
       <section>
         <h2 className="text-2xl font-display tracking-tight mb-2">
-          Also in the app
+          {t("alsoTitle")}
         </h2>
         <p className="text-sm text-muted-foreground mb-6">
-          Shipped features that do not have a full guide here yet. The links go to
-          the app itself, so you will be asked to sign in.
+          {t("alsoIntro")}
         </p>
         <div className="grid sm:grid-cols-2 gap-4">
-          {[
-            {
-              href: "/governance/quickstart",
-              title: "Quick Start wizard",
-              description:
-                "Bootstrap a programme from an industry template, or import an existing vendor portfolio.",
-            },
-            {
-              href: "/governance/settings",
-              title: "AI posture",
-              description:
-                "Choose whether embedded AI assists are off, use a cloud LLM, or route through a local gateway. Off by default — no AI call leaves your instance until an admin turns it on.",
-            },
-            {
-              href: "/governance/skills",
-              title: "Skills & licences",
-              description:
-                "Activate TODO.LAW licence files offline. Owner and admin only; a licence never installs code, it only unlocks an entitlement.",
-            },
-            {
-              href: "/governance/clients",
-              title: "Managed organizations",
-              description:
-                "For governance professionals running programmes for several clients: switch between organizations you manage.",
-            },
-          ].map((item) => (
+          {alsoItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               className="rounded-xl border border-border bg-card p-5 group hover:border-primary/30 transition-colors"
             >
               <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">
-                {item.title}
+                {t(`also.${item.tKey}.title`)}
               </h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                {item.description}
+                {t(`also.${item.tKey}.description`)}
               </p>
             </Link>
           ))}
@@ -385,43 +256,34 @@ export default async function DocsPage() {
       {/* Licensing */}
       <section>
         <h2 className="text-2xl font-display tracking-tight mb-6">
-          Open Core Licensing
+          {t("licensingTitle")}
         </h2>
         <div className="grid sm:grid-cols-2 gap-4">
           <div className="rounded-xl border border-border bg-card p-6">
             <div className="inline-block px-2.5 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium mb-4">
               AGPL-3.0
             </div>
-            <h3 className="text-lg font-semibold mb-3">Core</h3>
+            <h3 className="text-lg font-semibold mb-3">{t("licensing.coreTitle")}</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>AI Registry &amp; lifecycle tracking</li>
-              <li>EU AI Act risk classification</li>
-              <li>FRIA &amp; AI Risk assessments</li>
-              <li>Human oversight &amp; approval gates</li>
-              <li>AI incident management</li>
-              <li>Compliance mapping (EU AI Act, NIST, ISO 42001)</li>
-              <li>Vendor risk management</li>
-              <li>Policy management</li>
-              <li>Executive dashboard</li>
+              {coreItems.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
             </ul>
           </div>
           <div className="rounded-xl border border-border bg-card p-6">
             <div className="inline-block px-2.5 py-1 rounded-full bg-muted text-muted-foreground text-xs font-medium mb-4">
-              Commercial
+              {t("licensing.commercialBadge")}
             </div>
-            <h3 className="text-lg font-semibold mb-3">Premium</h3>
+            <h3 className="text-lg font-semibold mb-3">{t("licensing.premiumTitle")}</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>Conformity Assessment template (Art. 43)</li>
-              <li>Bias &amp; Fairness Assessment</li>
-              <li>
-                Shadow AI Discovery ({counts.tools ?? "60+"}-tool catalog)
-              </li>
-              <li>AI Vendor Catalog (vendor.watch integration)</li>
+              <li>{t("licensing.commercialConformity")}</li>
+              <li>{t("licensing.commercialBiasFairness")}</li>
+              <li>{t("licensing.commercialShadowAi", { count: counts.tools ?? "60+" })}</li>
+              <li>{t("licensing.commercialVendorCatalog")}</li>
             </ul>
             {allFree && (
               <p className="mt-4 text-xs text-muted-foreground">
-                Enabled for everyone on this instance. The commercial path is an
-                offline licence file, not a subscription.
+                {t("licensing.allFreeNote")}
               </p>
             )}
           </div>

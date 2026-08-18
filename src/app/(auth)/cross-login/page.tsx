@@ -6,12 +6,14 @@ import { useEffect, useRef, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function CrossLoginPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const attempted = useRef(false);
   const [error, setError] = useState<string | null>(null);
+  const t = useTranslations("signIn");
 
   const token = searchParams.get("token");
   const method = searchParams.get("method");
@@ -35,16 +37,16 @@ export default function CrossLoginPage() {
         if (result?.ok) {
           router.replace("/governance");
         } else {
-          setError("Authentication failed. Redirecting to sign-in...");
+          setError(t("crossFailed"));
           setTimeout(() => router.replace("/sign-in"), 2000);
         }
       },
       () => {
-        setError("Authentication failed. Redirecting to sign-in...");
+        setError(t("crossFailed"));
         setTimeout(() => router.replace("/sign-in"), 2000);
       }
     );
-  }, [token, method, router]);
+  }, [token, method, router, t]);
 
   return (
     <div className="w-full max-w-md">
@@ -62,7 +64,7 @@ export default function CrossLoginPage() {
         ) : (
           <div className="flex flex-col items-center gap-4">
             <Loader2 className="w-8 h-8 animate-spin text-primary" />
-            <p className="text-muted-foreground">Signing you in...</p>
+            <p className="text-muted-foreground">{t("crossSigningIn")}</p>
           </div>
         )}
       </div>

@@ -22,7 +22,9 @@
  * control gates, independent of the risk tier.
  *
  * lawReviewedAsOf: see LAWFIRM_LAW_REVIEWED_AS_OF. Professional-responsibility
- * sign-off pending — treat rationales and policy text as editorial until then.
+ * sign-off received 2026-08-18 (full-pack review: positions, rationales, and
+ * policy text in both languages). Future content edits require re-review and
+ * a new marker date.
  */
 
 import type {
@@ -92,12 +94,12 @@ export interface LawFirmPolicy {
 // REVIEW MARKER
 // ============================================================
 
-/** EU AI Act / professional-duty content review date. Sign-off pending. */
+/** EU AI Act / professional-duty content review date. Signed off 2026-08-18. */
 export const LAWFIRM_LAW_REVIEWED_AS_OF = "2026-08-18";
 
 export const LAWFIRM_REVIEW_MARKER: Localized = {
-  en: `Law reviewed as of ${LAWFIRM_LAW_REVIEWED_AS_OF}; professional-responsibility sign-off pending.`,
-  es: `Revisión jurídica a fecha de ${LAWFIRM_LAW_REVIEWED_AS_OF}; pendiente de validación de responsabilidad profesional.`,
+  en: `Law reviewed as of ${LAWFIRM_LAW_REVIEWED_AS_OF}.`,
+  es: `Revisión jurídica a fecha de ${LAWFIRM_LAW_REVIEWED_AS_OF}.`,
 };
 
 const withMarker = (l: Localized): Localized => ({

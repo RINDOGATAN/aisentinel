@@ -2366,10 +2366,10 @@
     },
     "vendorCatalog": {
       "metaTitle": "AI Vendor Catalog — AI SENTINEL Docs",
-      "metaDescription": "Pre-audited catalog of 665+ AI vendors with risk profiles, compliance data, and governance metadata powered by Vendor.Watch.",
+      "metaDescription": "Pre-audited catalog of 800+ AI vendors with risk profiles, compliance data, and governance metadata powered by Vendor.Watch.",
       "premiumBadge": "Premium",
       "title": "AI Vendor Catalog",
-      "intro": "Evaluating AI vendors from scratch is time-consuming and error-prone. The AI Vendor Catalog gives your governance team a head start with pre-audited profiles for 665+ AI vendors — complete with risk indicators, compliance certifications, and deployment metadata.",
+      "intro": "Evaluating AI vendors from scratch is time-consuming and error-prone. The AI Vendor Catalog gives your governance team a head start with pre-audited profiles for 800+ AI vendors — complete with risk indicators, compliance certifications, and deployment metadata.",
       "whatTitle": "What is the AI Vendor Catalog?",
       "whatP1": "The AI Vendor Catalog is a searchable, pre-populated directory of AI tool and service providers. Each vendor profile includes structured governance data: what the vendor does, where data is processed, what certifications they hold, whether they train on customer data, and their EU AI Act risk classification.",
       "whatP2": "The catalog is powered by <vw>Vendor.Watch</vw>, an independent AI vendor intelligence service that continuously audits and updates vendor profiles. Data syncs automatically, so your catalog stays current without manual research.",
@@ -2396,7 +2396,7 @@
       "vsIntro": "The AI Vendor Catalog and the Vendor Risk module serve different purposes in the governance lifecycle. They complement each other.",
       "vsCatalogTitle": "Vendor Catalog",
       "vsCatalogItems": [
-        "Pre-populated directory of 665+ AI vendors",
+        "Pre-populated directory of 800+ AI vendors",
         "External intelligence — data from Vendor.Watch",
         "Read-only reference for initial due diligence",
         "Core question: “What do we know about this vendor?”"

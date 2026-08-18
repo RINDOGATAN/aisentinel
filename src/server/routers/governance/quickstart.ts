@@ -14,6 +14,13 @@ import {
   AI_GOVERNANCE_TEMPLATES,
   type AIGovernanceTemplate,
 } from "../../../config/ai-governance-templates";
+import {
+  LAWFIRM_POLICY_PACK,
+  getLawFirmToolsById,
+  getLawFirmCategory,
+  getToolGovernance,
+  resolveContentLocale,
+} from "../../../config/lawfirm-ai-toolkit";
 import { hasVendorCatalogAccess } from "../../services/licensing/entitlement";
 
 // ============================================================
@@ -253,6 +260,105 @@ export const quickstartRouter = createTRPCRouter({
     }),
 
   // ──────────────────────────────────────────────────
+  // Preview what the law-firm toolkit selection would create
+  // (free path — no entitlement gate, like industry templates)
+  // ──────────────────────────────────────────────────
+  previewLawFirmToolkit: organizationProcedure
+    .input(
+      z.object({
+        organizationId: z.string(),
+        toolIds: z.array(z.string()).min(1).max(40),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const locale = resolveContentLocale(ctx.getCookie);
+      const tools = getLawFirmToolsById(input.toolIds);
+      if (tools.length !== new Set(input.toolIds).size) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Unknown law-firm tool selection",
+        });
+      }
+
+      const policyTitles = LAWFIRM_POLICY_PACK.map((p) => p.title[locale]);
+      const [existingSystemNames, existingVendorNames, existingPolicyTitles] =
+        await Promise.all([
+          ctx.prisma.aISystem
+            .findMany({
+              where: {
+                organizationId: ctx.organization.id,
+                name: { in: tools.map((t) => t.name) },
+              },
+              select: { name: true },
+            })
+            .then((s) => new Set(s.map((x) => x.name))),
+          ctx.prisma.aIVendor
+            .findMany({
+              where: {
+                organizationId: ctx.organization.id,
+                name: { in: tools.map((t) => t.vendor) },
+              },
+              select: { name: true },
+            })
+            .then((v) => new Set(v.map((x) => x.name))),
+          ctx.prisma.aIPolicy
+            .findMany({
+              where: {
+                organizationId: ctx.organization.id,
+                title: { in: policyTitles },
+              },
+              select: { title: true },
+            })
+            .then((p) => new Set(p.map((x) => x.title))),
+        ]);
+
+      const toolPreviews = tools.map((tool) => {
+        const governance = getToolGovernance(tool);
+        const category = getLawFirmCategory(tool.categoryId)!;
+        return {
+          toolId: tool.id,
+          name: tool.name,
+          vendorName: tool.vendor,
+          categoryId: category.id,
+          categoryLabel: category.label[locale],
+          description: tool.description[locale],
+          riskLevel: governance.riskLevel,
+          riskRationale: governance.riskRationale[locale],
+          gateType: governance.gateType,
+          alreadyExists: existingSystemNames.has(tool.name),
+        };
+      });
+
+      const policyPreviews = LAWFIRM_POLICY_PACK.map((policy) => ({
+        id: policy.id,
+        title: policy.title[locale],
+        type: policy.type,
+        description: policy.description[locale],
+        alreadyExists: existingPolicyTitles.has(policy.title[locale]),
+      }));
+
+      const newTools = toolPreviews.filter((t) => !t.alreadyExists);
+      const newVendorNames = new Set(
+        newTools
+          .map((t) => t.vendorName)
+          .filter((name) => !existingVendorNames.has(name)),
+      );
+
+      return {
+        locale,
+        tools: toolPreviews,
+        policies: policyPreviews,
+        totals: {
+          vendors: newVendorNames.size,
+          systems: newTools.length,
+          riskClassifications: newTools.length,
+          oversightGates: newTools.filter((t) => t.gateType).length,
+          policies: policyPreviews.filter((p) => !p.alreadyExists).length,
+        },
+      };
+    }),
+
+  // ──────────────────────────────────────────────────
   // Execute quickstart — create all records in a transaction
   // ──────────────────────────────────────────────────
   execute: orgWriteProcedure
@@ -261,6 +367,7 @@ export const quickstartRouter = createTRPCRouter({
         organizationId: z.string(),
         vendorSlugs: z.array(z.string()).max(20).default([]),
         industryId: z.string().optional(),
+        lawFirmToolIds: z.array(z.string()).max(40).default([]),
         skipSystemNames: z.array(z.string()).default([]),
         skipPolicyTitles: z.array(z.string()).default([]),
       }),
@@ -272,12 +379,27 @@ export const quickstartRouter = createTRPCRouter({
       const skipPolicies = new Set(input.skipPolicyTitles);
 
       // Validate at least one path is selected
-      if (input.vendorSlugs.length === 0 && !input.industryId) {
+      if (
+        input.vendorSlugs.length === 0 &&
+        !input.industryId &&
+        input.lawFirmToolIds.length === 0
+      ) {
         throw new TRPCError({
           code: "BAD_REQUEST",
-          message: "Select at least one vendor to import or an industry template",
+          message:
+            "Select at least one vendor to import, an industry template, or a law-firm toolkit",
         });
       }
+
+      // Validate law-firm tool selection (free path — no entitlement gate)
+      const lawFirmTools = getLawFirmToolsById(input.lawFirmToolIds);
+      if (lawFirmTools.length !== new Set(input.lawFirmToolIds).size) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Unknown law-firm tool selection",
+        });
+      }
+      const contentLocale = resolveContentLocale(ctx.getCookie);
 
       // Validate vendor catalog access if vendor path selected
       if (input.vendorSlugs.length > 0) {
@@ -319,12 +441,14 @@ export const quickstartRouter = createTRPCRouter({
             })
           : [];
 
-      // Fetch existing names for deduplication (parallel)
-      const [existingVendorNames, existingSystemNames, existingPolicyTitles] =
+      // Fetch existing names for deduplication (parallel).
+      // Vendors also carry their id so the law-firm path can link an existing
+      // vendor (e.g. OpenAI imported from the catalog) instead of duplicating it.
+      const [existingVendors, existingSystemNames, existingPolicyTitles] =
         await Promise.all([
           ctx.prisma.aIVendor
-            .findMany({ where: { organizationId: orgId }, select: { name: true } })
-            .then((v) => new Set(v.map((x) => x.name))),
+            .findMany({ where: { organizationId: orgId }, select: { id: true, name: true } })
+            .then((v) => new Map(v.map((x) => [x.name, x.id]))),
           ctx.prisma.aISystem
             .findMany({ where: { organizationId: orgId }, select: { name: true } })
             .then((s) => new Set(s.map((x) => x.name))),
@@ -354,12 +478,17 @@ export const quickstartRouter = createTRPCRouter({
 
           // ─── VENDOR PATH ──────────────────────────────
           for (const catalogVendor of catalogVendors) {
-            if (existingVendorNames.has(catalogVendor.name)) continue;
+            if (existingVendors.has(catalogVendor.name)) continue;
 
             const mapping = findAIMappingForCategory(
               catalogVendor.category,
               catalogVendor.subcategory,
             );
+
+            // Skip check runs BEFORE the vendor create: unchecking a system in
+            // the review step skips the whole import, never leaving an orphan vendor.
+            const systemName = `${catalogVendor.name} ${mapping.system.nameSuffix}`;
+            if (existingSystemNames.has(systemName) || skipSystems.has(systemName)) continue;
 
             // Create AIVendor
             const vendor = await tx.aIVendor.create({
@@ -379,7 +508,7 @@ export const quickstartRouter = createTRPCRouter({
               },
             });
             counts.vendors++;
-            existingVendorNames.add(catalogVendor.name);
+            existingVendors.set(catalogVendor.name, vendor.id);
             auditEntries.push({
               entityType: "AIVendor",
               entityId: vendor.id,
@@ -388,9 +517,6 @@ export const quickstartRouter = createTRPCRouter({
             });
 
             // Create AISystem
-            const systemName = `${catalogVendor.name} ${mapping.system.nameSuffix}`;
-            if (existingSystemNames.has(systemName) || skipSystems.has(systemName)) continue;
-
             const system = await tx.aISystem.create({
               data: {
                 organizationId: orgId,
@@ -580,6 +706,192 @@ export const quickstartRouter = createTRPCRouter({
                 changes: { source: "quickstart", template: template.id },
               });
             }
+          }
+
+          // ─── LAW-FIRM TOOLKIT PATH ──────────────────
+          for (const tool of lawFirmTools) {
+            // System name is the brand name (locale-invariant dedupe key)
+            if (existingSystemNames.has(tool.name) || skipSystems.has(tool.name)) {
+              continue;
+            }
+
+            const governance = getToolGovernance(tool);
+
+            // Create the vendor, or link the existing one (name collision with
+            // e.g. a catalog import means link, not duplicate)
+            let vendorId = existingVendors.get(tool.vendor);
+            if (!vendorId) {
+              const vendor = await tx.aIVendor.create({
+                data: {
+                  organizationId: orgId,
+                  name: tool.vendor,
+                  website: tool.website,
+                  status: VendorStatus.UNDER_REVIEW,
+                  riskLevel: governance.riskLevel === "HIGH" || governance.riskLevel === "UNACCEPTABLE"
+                    ? "HIGH"
+                    : governance.riskLevel === "LIMITED"
+                    ? "MEDIUM"
+                    : "LOW",
+                  metadata: { source: "quickstart", profile: "lawfirm" },
+                },
+              });
+              vendorId = vendor.id;
+              counts.vendors++;
+              existingVendors.set(tool.vendor, vendor.id);
+              auditEntries.push({
+                entityType: "AIVendor",
+                entityId: vendor.id,
+                action: "CREATE",
+                changes: { source: "quickstart", profile: "lawfirm", toolId: tool.id },
+              });
+            }
+
+            const system = await tx.aISystem.create({
+              data: {
+                organizationId: orgId,
+                name: tool.name,
+                description: tool.description[contentLocale],
+                technique: governance.technique,
+                role: governance.role,
+                status: "DRAFT",
+                purpose: governance.purpose[contentLocale],
+                processesPersonalData: governance.processesPersonalData,
+                vendorId,
+                metadata: {
+                  source: "quickstart",
+                  profile: "lawfirm",
+                  toolId: tool.id,
+                  locale: contentLocale,
+                },
+              },
+            });
+            counts.systems++;
+            existingSystemNames.add(tool.name);
+            auditEntries.push({
+              entityType: "AISystem",
+              entityId: system.id,
+              action: "CREATE",
+              changes: { source: "quickstart", profile: "lawfirm", toolId: tool.id },
+            });
+
+            await tx.riskClassification.create({
+              data: {
+                organizationId: orgId,
+                aiSystemId: system.id,
+                riskLevel: governance.riskLevel,
+                rationale: governance.riskRationale[contentLocale],
+                annexIIICategory: governance.annexIIICategory,
+                classifiedBy: userId,
+              },
+            });
+            counts.riskClassifications++;
+            auditEntries.push({
+              entityType: "RiskClassification",
+              entityId: system.id,
+              action: "CREATE",
+              changes: { source: "quickstart", profile: "lawfirm", riskLevel: governance.riskLevel },
+            });
+
+            const applicableReqs = await tx.complianceRequirement.findMany({
+              where: { applicableTo: { has: governance.riskLevel } },
+              select: { id: true },
+            });
+            if (applicableReqs.length > 0) {
+              const created = await tx.complianceMapping.createMany({
+                data: applicableReqs.map((req) => ({
+                  organizationId: orgId,
+                  aiSystemId: system.id,
+                  requirementId: req.id,
+                  status: "NOT_ASSESSED" as const,
+                })),
+                skipDuplicates: true,
+              });
+              counts.complianceMappings += created.count;
+            }
+
+            if (governance.gateType) {
+              await tx.oversightGate.create({
+                data: {
+                  organizationId: orgId,
+                  aiSystemId: system.id,
+                  gateType: governance.gateType,
+                  description:
+                    contentLocale === "es"
+                      ? `Punto de control previo al despliegue de ${tool.name}. Control interno del programa de gobernanza de IA del despacho.`
+                      : `Pre-deployment oversight gate for ${tool.name}. Internal control of the firm's AI governance program.`,
+                  status: "PENDING",
+                },
+              });
+              counts.oversightGates++;
+              auditEntries.push({
+                entityType: "OversightGate",
+                entityId: system.id,
+                action: "CREATE",
+                changes: { source: "quickstart", profile: "lawfirm", gateType: governance.gateType },
+              });
+            }
+          }
+
+          // Law-firm policy pack (locale-resolved titles are the dedupe key)
+          if (lawFirmTools.length > 0) {
+            for (const packPolicy of LAWFIRM_POLICY_PACK) {
+              const title = packPolicy.title[contentLocale];
+              if (existingPolicyTitles.has(title) || skipPolicies.has(title)) {
+                continue;
+              }
+
+              const policy = await tx.aIPolicy.create({
+                data: {
+                  organizationId: orgId,
+                  title,
+                  type: packPolicy.type,
+                  description: packPolicy.description[contentLocale],
+                  content: packPolicy.content[contentLocale],
+                  status: "DRAFT",
+                  createdBy: userId,
+                },
+              });
+              counts.policies++;
+              existingPolicyTitles.add(title);
+              auditEntries.push({
+                entityType: "AIPolicy",
+                entityId: policy.id,
+                action: "CREATE",
+                changes: { source: "quickstart", profile: "lawfirm", policyId: packPolicy.id },
+              });
+            }
+
+            // Persist the program profile on the organization (first writer of
+            // settings — merge non-destructively)
+            const org = await tx.organization.findUnique({
+              where: { id: orgId },
+              select: { settings: true },
+            });
+            const settings =
+              org?.settings && typeof org.settings === "object" && !Array.isArray(org.settings)
+                ? (org.settings as Record<string, unknown>)
+                : {};
+            await tx.organization.update({
+              where: { id: orgId },
+              data: {
+                settings: {
+                  ...settings,
+                  quickstart: {
+                    profile: "lawfirm",
+                    completedAt: new Date().toISOString(),
+                    locale: contentLocale,
+                    toolIds: lawFirmTools.map((t) => t.id),
+                    version: 1,
+                  },
+                },
+              },
+            });
+            auditEntries.push({
+              entityType: "Organization",
+              entityId: orgId,
+              action: "UPDATE",
+              changes: { source: "quickstart", profile: "lawfirm" },
+            });
           }
 
           // ─── AUDIT LOG ENTRIES (batch) ──────────────────

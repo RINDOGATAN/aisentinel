@@ -40,9 +40,14 @@ import {
   LayoutDashboard,
 } from "lucide-react";
 import { toast } from "sonner";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
+import {
+  LAWFIRM_TOOL_CATEGORIES,
+  LAWFIRM_TOOLS,
+  type ContentLocale,
+} from "@/config/lawfirm-ai-toolkit";
 
 // ============================================================
 // ICON MAP
@@ -61,7 +66,7 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
 // TYPES
 // ============================================================
 
-type WizardStep = "choose" | "vendors" | "industry" | "review" | "success";
+type WizardStep = "choose" | "vendors" | "industry" | "lawfirm" | "review" | "success";
 
 // ============================================================
 // RISK LEVEL BADGES
@@ -95,6 +100,14 @@ export default function QuickstartPage() {
   const [step, setStep] = useState<WizardStep>("choose");
   const [useVendors, setUseVendors] = useState(false);
   const [useIndustry, setUseIndustry] = useState(false);
+  const [useLawFirm, setUseLawFirm] = useState(false);
+
+  // Display locale for law-firm config labels (server resolves its own copy
+  // of the same cookie when writing records)
+  const contentLocale = (useLocale() === "es" ? "es" : "en") as ContentLocale;
+
+  // Law-firm tool selection
+  const [selectedLawFirmToolIds, setSelectedLawFirmToolIds] = useState<string[]>([]);
 
   // Vendor selection
   const [vendorSearch, setVendorSearch] = useState("");
@@ -164,6 +177,17 @@ export default function QuickstartPage() {
       { enabled: !!orgId && !!selectedIndustryId },
     );
 
+  const { data: lawFirmPreview } =
+    trpc.quickstart.previewLawFirmToolkit.useQuery(
+      { organizationId: orgId, toolIds: selectedLawFirmToolIds },
+      {
+        enabled:
+          !!orgId &&
+          selectedLawFirmToolIds.length > 0 &&
+          (step === "lawfirm" || step === "review"),
+      },
+    );
+
   const executeMutation = trpc.quickstart.execute.useMutation({
     onSuccess: (data) => {
       setExecutionResult(data);
@@ -205,11 +229,31 @@ export default function QuickstartPage() {
     setSelectedSlugs((prev) => prev.filter((s) => s !== slug));
   };
 
+  // Ordered list of active steps; next/back navigate this array
+  const stepOrder: WizardStep[] = [
+    "choose",
+    ...(useVendors ? (["vendors"] as const) : []),
+    ...(useIndustry ? (["industry"] as const) : []),
+    ...(useLawFirm ? (["lawfirm"] as const) : []),
+    "review",
+  ];
+  const goNext = (from: WizardStep) =>
+    setStep(stepOrder[stepOrder.indexOf(from) + 1] ?? "review");
+  const goBack = (from: WizardStep) =>
+    setStep(stepOrder[stepOrder.indexOf(from) - 1] ?? "choose");
+  const nextStepLabel = (from: WizardStep) => {
+    const next = stepOrder[stepOrder.indexOf(from) + 1];
+    if (next === "industry") return t("stepIndustryTemplate");
+    if (next === "lawfirm") return t("stepLawFirmTools");
+    return t("stepReviewBuild");
+  };
+
   const handleProceedFromChoose = () => {
-    if (useVendors && !useIndustry) setStep("vendors");
-    else if (useIndustry && !useVendors) setStep("industry");
-    else if (useVendors) setStep("vendors");
-    else toast.error("Select at least one option");
+    if (!useVendors && !useIndustry && !useLawFirm) {
+      toast.error("Select at least one option");
+      return;
+    }
+    goNext("choose");
   };
 
   const handleProceedFromVendors = () => {
@@ -217,8 +261,7 @@ export default function QuickstartPage() {
       toast.error("Select at least one vendor");
       return;
     }
-    if (useIndustry) setStep("industry");
-    else setStep("review");
+    goNext("vendors");
   };
 
   const handleProceedFromIndustry = () => {
@@ -226,7 +269,33 @@ export default function QuickstartPage() {
       toast.error("Select an industry template");
       return;
     }
-    setStep("review");
+    goNext("industry");
+  };
+
+  const handleProceedFromLawFirm = () => {
+    if (selectedLawFirmToolIds.length === 0) {
+      toast.error(t("selectAtLeastOneTool"));
+      return;
+    }
+    goNext("lawfirm");
+  };
+
+  const toggleLawFirmTool = (toolId: string) => {
+    setSelectedLawFirmToolIds((prev) =>
+      prev.includes(toolId)
+        ? prev.filter((id) => id !== toolId)
+        : [...prev, toolId],
+    );
+  };
+
+  const setCategorySelection = (categoryId: string, selected: boolean) => {
+    const categoryToolIds = LAWFIRM_TOOLS.filter(
+      (tool) => tool.categoryId === categoryId,
+    ).map((tool) => tool.id);
+    setSelectedLawFirmToolIds((prev) => {
+      const rest = prev.filter((id) => !categoryToolIds.includes(id));
+      return selected ? [...rest, ...categoryToolIds] : rest;
+    });
   };
 
   const handleExecute = () => {
@@ -234,6 +303,7 @@ export default function QuickstartPage() {
       organizationId: orgId,
       vendorSlugs: useVendors ? selectedSlugs : [],
       industryId: useIndustry ? selectedIndustryId ?? undefined : undefined,
+      lawFirmToolIds: useLawFirm ? selectedLawFirmToolIds : [],
       skipSystemNames,
       skipPolicyTitles,
     });
@@ -241,17 +311,24 @@ export default function QuickstartPage() {
 
   // Calculate totals for review step
   const reviewTotals = {
-    vendors: vendorPreview?.totals.vendors ?? 0,
+    vendors:
+      (vendorPreview?.totals.vendors ?? 0) +
+      (useLawFirm ? lawFirmPreview?.totals.vendors ?? 0 : 0),
     systems:
       (vendorPreview?.totals.systems ?? 0) +
-      (industryPreview?.totals.systems ?? 0),
+      (industryPreview?.totals.systems ?? 0) +
+      (useLawFirm ? lawFirmPreview?.totals.systems ?? 0 : 0),
     riskClassifications:
       (vendorPreview?.totals.riskClassifications ?? 0) +
-      (industryPreview?.totals.riskClassifications ?? 0),
+      (industryPreview?.totals.riskClassifications ?? 0) +
+      (useLawFirm ? lawFirmPreview?.totals.riskClassifications ?? 0 : 0),
     oversightGates:
       (vendorPreview?.totals.oversightGates ?? 0) +
-      (industryPreview?.totals.oversightGates ?? 0),
-    policies: industryPreview?.totals.policies ?? 0,
+      (industryPreview?.totals.oversightGates ?? 0) +
+      (useLawFirm ? lawFirmPreview?.totals.oversightGates ?? 0 : 0),
+    policies:
+      (industryPreview?.totals.policies ?? 0) +
+      (useLawFirm ? lawFirmPreview?.totals.policies ?? 0 : 0),
   };
 
   // ─── RENDER ───────────────────────────────────────
@@ -295,6 +372,9 @@ export default function QuickstartPage() {
             ...(useIndustry
               ? [{ key: "industry", label: t("stepIndustryTemplate") }]
               : []),
+            ...(useLawFirm
+              ? [{ key: "lawfirm", label: t("stepLawFirmTools") }]
+              : []),
             { key: "review", label: t("stepReviewBuild") },
           ].map((s, i, arr) => (
             <span key={s.key} className="flex items-center gap-2">
@@ -333,7 +413,7 @@ export default function QuickstartPage() {
             {t("choosePathDescription")}
           </p>
 
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {/* Vendor Import Card */}
             <Card
               className={`cursor-pointer transition-all ${
@@ -414,12 +494,53 @@ export default function QuickstartPage() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Law Firm Program Card */}
+            <Card
+              className={`cursor-pointer transition-all ${
+                useLawFirm
+                  ? "border-primary ring-2 ring-primary/20"
+                  : "hover:border-primary/50"
+              }`}
+              onClick={() => setUseLawFirm(!useLawFirm)}
+            >
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <Scale className="w-8 h-8 text-primary" />
+                  <div className="flex items-center gap-2">
+                    <Badge
+                      variant="outline"
+                      className="text-green-600 border-green-600/50"
+                    >
+                      {tc("free")}
+                    </Badge>
+                    {useLawFirm && (
+                      <CheckCircle2 className="w-5 h-5 text-primary" />
+                    )}
+                  </div>
+                </div>
+                <CardTitle className="text-lg">
+                  {t("lawFirmTitle")}
+                </CardTitle>
+                <CardDescription>
+                  {t("lawFirmDescription")}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  <Badge variant="secondary">{t("chipAiSystems")}</Badge>
+                  <Badge variant="secondary">{t("chipRiskClassifications")}</Badge>
+                  <Badge variant="secondary">{t("chipOversightGates")}</Badge>
+                  <Badge variant="secondary">{t("chipPolicies")}</Badge>
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
           <div className="flex justify-end">
             <Button
               onClick={handleProceedFromChoose}
-              disabled={!useVendors && !useIndustry}
+              disabled={!useVendors && !useIndustry && !useLawFirm}
             >
               {tc("continue")}
               <ArrowRight className="w-4 h-4 ml-2" />
@@ -443,7 +564,7 @@ export default function QuickstartPage() {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setStep("choose")}
+              onClick={() => goBack("vendors")}
             >
               <ArrowLeft className="w-4 h-4 mr-1" />
               {tc("back")}
@@ -605,7 +726,7 @@ export default function QuickstartPage() {
               onClick={handleProceedFromVendors}
               disabled={selectedSlugs.length === 0}
             >
-              {useIndustry ? t("stepIndustryTemplate") : t("stepReviewBuild")}
+              {nextStepLabel("vendors")}
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </div>
@@ -629,9 +750,7 @@ export default function QuickstartPage() {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() =>
-                setStep(useVendors ? "vendors" : "choose")
-              }
+              onClick={() => goBack("industry")}
             >
               <ArrowLeft className="w-4 h-4 mr-1" />
               {tc("back")}
@@ -792,6 +911,176 @@ export default function QuickstartPage() {
               onClick={handleProceedFromIndustry}
               disabled={!selectedIndustryId}
             >
+              {nextStepLabel("industry")}
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* ════════════════════════════════════════════════
+          STEP 2C: Law-Firm Tool Selection
+          ════════════════════════════════════════════════ */}
+      {step === "lawfirm" && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-semibold">
+                {t("selectLawFirmToolsTitle")}
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                {t("selectLawFirmToolsDescription")}
+              </p>
+            </div>
+            <Button variant="ghost" size="sm" onClick={() => goBack("lawfirm")}>
+              <ArrowLeft className="w-4 h-4 mr-1" />
+              {tc("back")}
+            </Button>
+          </div>
+
+          {selectedLawFirmToolIds.length > 0 && (
+            <p className="text-xs text-muted-foreground">
+              {t("toolsSelected", { count: selectedLawFirmToolIds.length })}
+            </p>
+          )}
+
+          {/* Tool checklist grouped by category */}
+          <div className="space-y-5">
+            {LAWFIRM_TOOL_CATEGORIES.map((category) => {
+              const categoryTools = LAWFIRM_TOOLS.filter(
+                (tool) => tool.categoryId === category.id,
+              );
+              const selectedInCategory = categoryTools.filter((tool) =>
+                selectedLawFirmToolIds.includes(tool.id),
+              ).length;
+              return (
+                <div key={category.id} className="space-y-2">
+                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                    <div>
+                      <p className="text-sm font-medium">
+                        {category.label[contentLocale]}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {category.description[contentLocale]}
+                      </p>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-xs"
+                      onClick={() =>
+                        setCategorySelection(
+                          category.id,
+                          selectedInCategory < categoryTools.length,
+                        )
+                      }
+                    >
+                      {selectedInCategory < categoryTools.length
+                        ? t("selectAllInCategory")
+                        : t("clearCategory")}
+                    </Button>
+                  </div>
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    {categoryTools.map((tool) => {
+                      const isSelected = selectedLawFirmToolIds.includes(
+                        tool.id,
+                      );
+                      return (
+                        <Card
+                          key={tool.id}
+                          className={`cursor-pointer transition-all ${
+                            isSelected
+                              ? "border-primary/50 bg-primary/5"
+                              : "hover:border-muted-foreground/30"
+                          }`}
+                          onClick={() => toggleLawFirmTool(tool.id)}
+                        >
+                          <CardContent className="p-3 flex items-start gap-3">
+                            <Checkbox checked={isSelected} className="mt-0.5" />
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className="font-medium text-sm">
+                                  {tool.name}
+                                </span>
+                                <span className="text-xs text-muted-foreground">
+                                  {tool.vendor}
+                                </span>
+                              </div>
+                              <span className="text-xs text-muted-foreground line-clamp-2">
+                                {tool.description[contentLocale]}
+                              </span>
+                            </div>
+                            {isSelected && (
+                              <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
+                            )}
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Preview totals */}
+          {lawFirmPreview && selectedLawFirmToolIds.length > 0 && (
+            <Card className="bg-muted/30">
+              <CardContent className="p-4">
+                <p className="text-sm font-medium mb-2">
+                  {t("lawFirmPreviewTitle")}
+                </p>
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 text-center">
+                  <div>
+                    <div className="text-lg font-bold">
+                      {lawFirmPreview.totals.vendors}
+                    </div>
+                    <p className="text-[10px] text-muted-foreground">
+                      {t("chipVendors")}
+                    </p>
+                  </div>
+                  <div>
+                    <div className="text-lg font-bold">
+                      {lawFirmPreview.totals.systems}
+                    </div>
+                    <p className="text-[10px] text-muted-foreground">
+                      {t("chipAiSystems")}
+                    </p>
+                  </div>
+                  <div>
+                    <div className="text-lg font-bold">
+                      {lawFirmPreview.totals.riskClassifications}
+                    </div>
+                    <p className="text-[10px] text-muted-foreground">
+                      {t("chipRiskClassifications")}
+                    </p>
+                  </div>
+                  <div>
+                    <div className="text-lg font-bold">
+                      {lawFirmPreview.totals.oversightGates}
+                    </div>
+                    <p className="text-[10px] text-muted-foreground">
+                      {t("chipOversightGates")}
+                    </p>
+                  </div>
+                  <div>
+                    <div className="text-lg font-bold">
+                      {lawFirmPreview.totals.policies}
+                    </div>
+                    <p className="text-[10px] text-muted-foreground">
+                      {t("chipPolicies")}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          <div className="flex justify-end">
+            <Button
+              onClick={handleProceedFromLawFirm}
+              disabled={selectedLawFirmToolIds.length === 0}
+            >
               {t("stepReviewBuild")}
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
@@ -814,15 +1103,7 @@ export default function QuickstartPage() {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() =>
-                setStep(
-                  useIndustry
-                    ? "industry"
-                    : useVendors
-                    ? "vendors"
-                    : "choose",
-                )
-              }
+              onClick={() => goBack("review")}
             >
               <ArrowLeft className="w-4 h-4 mr-1" />
               {tc("back")}
@@ -1052,6 +1333,129 @@ export default function QuickstartPage() {
                         {p.alreadyExists && (
                           <Badge variant="secondary" className="text-[10px]">
                             Exists
+                          </Badge>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Law-firm toolkit detail */}
+          {useLawFirm && lawFirmPreview && (
+            <Card>
+              <CardHeader className="p-4 pb-2">
+                <CardTitle className="text-sm">{t("lawFirmReviewTitle")}</CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 pt-0 space-y-3">
+                {/* Systems */}
+                <div className="space-y-2">
+                  <p className="text-xs font-medium text-muted-foreground">
+                    {t("chipAiSystems")}
+                  </p>
+                  {lawFirmPreview.tools.map((toolPreview) => {
+                    const isSkipped = skipSystemNames.includes(toolPreview.name);
+                    return (
+                      <div
+                        key={toolPreview.toolId}
+                        className={`flex items-center justify-between p-2 rounded border ${
+                          toolPreview.alreadyExists
+                            ? "opacity-50 border-dashed"
+                            : isSkipped
+                            ? "opacity-40"
+                            : ""
+                        }`}
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <Checkbox
+                            checked={!isSkipped && !toolPreview.alreadyExists}
+                            disabled={toolPreview.alreadyExists}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                setSkipSystemNames((prev) =>
+                                  prev.filter((n) => n !== toolPreview.name),
+                                );
+                              } else {
+                                setSkipSystemNames((prev) => [
+                                  ...prev,
+                                  toolPreview.name,
+                                ]);
+                              }
+                            }}
+                          />
+                          <div className="min-w-0">
+                            <p className="text-sm font-medium truncate">
+                              {toolPreview.name}
+                            </p>
+                            <p className="text-xs text-muted-foreground truncate">
+                              {toolPreview.vendorName} — {toolPreview.categoryLabel}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <RiskBadge level={toolPreview.riskLevel} />
+                          {toolPreview.gateType && (
+                            <Badge variant="outline" className="text-[10px]">
+                              Gate
+                            </Badge>
+                          )}
+                          {toolPreview.alreadyExists && (
+                            <Badge variant="secondary" className="text-[10px]">
+                              {tc("exists")}
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Policy pack */}
+                <div className="space-y-2">
+                  <p className="text-xs font-medium text-muted-foreground">
+                    {t("lawFirmPolicyPack")}
+                  </p>
+                  {lawFirmPreview.policies.map((p) => {
+                    const isSkipped = skipPolicyTitles.includes(p.title);
+                    return (
+                      <div
+                        key={p.id}
+                        className={`flex items-center justify-between p-2 rounded border ${
+                          p.alreadyExists
+                            ? "opacity-50 border-dashed"
+                            : isSkipped
+                            ? "opacity-40"
+                            : ""
+                        }`}
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <Checkbox
+                            checked={!isSkipped && !p.alreadyExists}
+                            disabled={p.alreadyExists}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                setSkipPolicyTitles((prev) =>
+                                  prev.filter((title) => title !== p.title),
+                                );
+                              } else {
+                                setSkipPolicyTitles((prev) => [...prev, p.title]);
+                              }
+                            }}
+                          />
+                          <div className="min-w-0">
+                            <span className="text-sm truncate block">
+                              {p.title}
+                            </span>
+                            <span className="text-xs text-muted-foreground">
+                              {p.type.replace(/_/g, " ")}
+                            </span>
+                          </div>
+                        </div>
+                        {p.alreadyExists && (
+                          <Badge variant="secondary" className="text-[10px]">
+                            {tc("exists")}
                           </Badge>
                         )}
                       </div>

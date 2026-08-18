@@ -282,6 +282,8 @@ export const organizationRouter = createTRPCRouter({
         importedVendorCount,
         // Art. 50 transparency (marking obligation rows; deadline math below)
         markingRequiredRows,
+        // Quickstart program profile (org settings)
+        orgSettingsRow,
       ] = await Promise.all([
         ctx.prisma.aISystem.count({ where: { organizationId: orgId } }),
         ctx.prisma.aISystem.count({ where: { organizationId: orgId, status: "DEPLOYED" } }),
@@ -340,7 +342,21 @@ export const organizationRouter = createTRPCRouter({
           where: { organizationId: orgId, art50MarkingStatus: "REQUIRED" },
           select: { placedOnMarketBefore2Aug2026: true },
         }),
+        ctx.prisma.organization.findUnique({
+          where: { id: orgId },
+          select: { settings: true },
+        }),
       ]);
+
+      const orgSettings =
+        orgSettingsRow?.settings &&
+        typeof orgSettingsRow.settings === "object" &&
+        !Array.isArray(orgSettingsRow.settings)
+          ? (orgSettingsRow.settings as {
+              quickstart?: { profile?: string };
+            })
+          : undefined;
+      const quickstartProfile = orgSettings?.quickstart?.profile ?? null;
 
       const markingOverdue = markingRequiredRows.filter(
         (row) =>
@@ -356,6 +372,7 @@ export const organizationRouter = createTRPCRouter({
         highRiskSystems,
         activeAssessments,
         recentAuditLogs,
+        quickstartProfile,
         riskPosture: {
           unacceptable: riskUnacceptable,
           high: riskHigh,

@@ -126,8 +126,10 @@ export default function GovernanceDashboardPage() {
         )}
       </div>
 
-      {/* Quickstart prompt — show when org has few systems */}
-      {(stats?.totalSystems ?? 0) <= 3 && (stats?.deployedSystems ?? 0) === 0 && (
+      {/* Quickstart prompt — show when org has few systems and no completed program profile */}
+      {(stats?.totalSystems ?? 0) <= 3 &&
+        (stats?.deployedSystems ?? 0) === 0 &&
+        !stats?.quickstartProfile && (
         <Card className="border-primary/30 bg-primary/5">
           <CardContent className="p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <div className="p-3 rounded-lg bg-primary/10 shrink-0">

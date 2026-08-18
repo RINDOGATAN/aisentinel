@@ -473,8 +473,17 @@ const tools: ToolSeed[] = [
     website: "https://mem.ai",
     riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED"],
   },
+  {
+    id: "shadow-tool-deepl",
+    name: "DeepL",
+    vendor: "DeepL",
+    category: "WRITING_PRODUCTIVITY",
+    description: "AI translation service widely used for business and legal documents. EU-based; free tier may use submitted texts for improvement, Pro tier does not.",
+    website: "https://deepl.com",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "TRAINS_ON_INPUT", "CLOUD_HOSTED", "SOC2_CERTIFIED", "GDPR_COMPLIANT"],
+  },
 
-  // BUSINESS_TOOLS (8)
+  // BUSINESS_TOOLS (7)
   {
     id: "shadow-tool-einstein",
     name: "Salesforce Einstein",
@@ -510,15 +519,6 @@ const tools: ToolSeed[] = [
     description: "Enterprise AI search and assistant connecting Slack, Drive, Confluence, Jira, and more. Indexes sensitive corporate data.",
     website: "https://glean.com",
     riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "SOC2_CERTIFIED", "GDPR_COMPLIANT"],
-  },
-  {
-    id: "shadow-tool-harvey",
-    name: "Harvey",
-    vendor: "Harvey",
-    category: "BUSINESS_TOOLS",
-    description: "Legal AI platform for contract analysis, research, and drafting. Widely adopted by AmLaw 100 and global firms.",
-    website: "https://harvey.ai",
-    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "SOC2_CERTIFIED"],
   },
   {
     id: "shadow-tool-gong",
@@ -641,6 +641,214 @@ const tools: ToolSeed[] = [
     website: "https://exa.ai",
     riskIndicators: ["CLOUD_HOSTED", "REQUIRES_API_KEY"],
   },
+
+  // LEGAL_RESEARCH (3)
+  {
+    id: "shadow-tool-lexis-plus-ai",
+    name: "Lexis+ AI",
+    vendor: "LexisNexis",
+    category: "LEGAL_RESEARCH",
+    description: "Generative AI legal research assistant integrated into Lexis+. Conversational search, drafting, and summarization grounded in the LexisNexis case-law and statute corpus.",
+    website: "https://www.lexisnexis.com/lexis-plus-ai",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "SOC2_CERTIFIED"],
+  },
+  {
+    id: "shadow-tool-westlaw-precision",
+    name: "Westlaw Precision AI",
+    vendor: "Thomson Reuters",
+    category: "LEGAL_RESEARCH",
+    description: "AI-assisted legal research on Westlaw Precision. Answers research questions with citations to primary law and editorial annotations.",
+    website: "https://legal.thomsonreuters.com/en/products/westlaw-precision",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "SOC2_CERTIFIED"],
+  },
+  {
+    id: "shadow-tool-vlex-vincent",
+    name: "vLex Vincent AI",
+    vendor: "vLex",
+    category: "LEGAL_RESEARCH",
+    description: "AI legal research assistant over vLex's multi-jurisdiction law library. Analyzes uploaded documents and builds cited research memos.",
+    website: "https://vlex.com/vincent-ai",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "GDPR_COMPLIANT"],
+  },
+
+  // CONTRACT_CLM (8)
+  {
+    id: "shadow-tool-harvey",
+    name: "Harvey",
+    vendor: "Harvey",
+    category: "CONTRACT_CLM",
+    description: "Legal AI platform for contract analysis, research, and drafting. Widely adopted by AmLaw 100 and global firms.",
+    website: "https://harvey.ai",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "SOC2_CERTIFIED"],
+  },
+  {
+    id: "shadow-tool-cocounsel",
+    name: "CoCounsel",
+    vendor: "Thomson Reuters",
+    category: "CONTRACT_CLM",
+    description: "Generative AI legal assistant (originally Casetext) for document review, deposition preparation, contract analysis, and research memos.",
+    website: "https://www.thomsonreuters.com/en/cocounsel",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "SOC2_CERTIFIED"],
+  },
+  {
+    id: "shadow-tool-spellbook",
+    name: "Spellbook",
+    vendor: "Spellbook",
+    category: "CONTRACT_CLM",
+    description: "AI contract drafting and review add-in for Microsoft Word aimed at transactional lawyers. Suggests redlines and flags missing clauses.",
+    website: "https://spellbook.legal",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "SOC2_CERTIFIED"],
+  },
+  {
+    id: "shadow-tool-luminance",
+    name: "Luminance",
+    vendor: "Luminance",
+    category: "CONTRACT_CLM",
+    description: "Legal-grade AI for contract review, negotiation, and due diligence. UK-based; deployed across law firms and in-house legal teams.",
+    website: "https://luminance.com",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "GDPR_COMPLIANT"],
+  },
+  {
+    id: "shadow-tool-kira",
+    name: "Kira",
+    vendor: "Litera",
+    category: "CONTRACT_CLM",
+    description: "Machine-learning contract analysis for due diligence. Extracts clauses and provisions across large document sets.",
+    website: "https://kirasystems.com",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "SOC2_CERTIFIED"],
+  },
+  {
+    id: "shadow-tool-robin-ai",
+    name: "Robin AI",
+    vendor: "Robin AI",
+    category: "CONTRACT_CLM",
+    description: "AI contract copilot for drafting, review, and repository search. UK-based, used by in-house teams and firms.",
+    website: "https://robinai.com",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "GDPR_COMPLIANT"],
+  },
+  {
+    id: "shadow-tool-legora",
+    name: "Legora",
+    vendor: "Legora",
+    category: "CONTRACT_CLM",
+    description: "Collaborative AI workspace for lawyers (formerly Leya). Tabular document review, research, and drafting; strong European firm adoption.",
+    website: "https://legora.com",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "GDPR_COMPLIANT"],
+  },
+  {
+    id: "shadow-tool-ironclad",
+    name: "Ironclad",
+    vendor: "Ironclad",
+    category: "CONTRACT_CLM",
+    description: "Contract lifecycle management platform with AI-assisted review, redlining, clause extraction, and workflow automation.",
+    website: "https://ironcladapp.com",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "SOC2_CERTIFIED", "GDPR_COMPLIANT"],
+  },
+
+  // EDISCOVERY (4)
+  {
+    id: "shadow-tool-relativity-air",
+    name: "Relativity aiR",
+    vendor: "Relativity",
+    category: "EDISCOVERY",
+    description: "Generative AI e-discovery suite on RelativityOne: aiR for Review, Privilege, and Case Strategy for large-scale document review.",
+    website: "https://www.relativity.com/data-solutions/air",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "ON_PREMISE_AVAILABLE", "SOC2_CERTIFIED"],
+  },
+  {
+    id: "shadow-tool-everlaw",
+    name: "Everlaw",
+    vendor: "Everlaw",
+    category: "EDISCOVERY",
+    description: "Cloud e-discovery platform with EverlawAI for document summarization, coding suggestions, and deposition analysis.",
+    website: "https://everlaw.com",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "SOC2_CERTIFIED"],
+  },
+  {
+    id: "shadow-tool-disco-cecilia",
+    name: "DISCO Cecilia",
+    vendor: "DISCO",
+    category: "EDISCOVERY",
+    description: "AI assistant on the DISCO e-discovery platform. Answers questions over the evidence corpus, summarizes documents, and drafts review criteria.",
+    website: "https://csdisco.com/products/cecilia",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "SOC2_CERTIFIED"],
+  },
+  {
+    id: "shadow-tool-logikcull",
+    name: "Logikcull",
+    vendor: "Reveal",
+    category: "EDISCOVERY",
+    description: "Self-service e-discovery and legal hold with AI-assisted culling and review. Now part of Reveal.",
+    website: "https://logikcull.com",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "SOC2_CERTIFIED"],
+  },
+
+  // TRANSCRIPTION_DICTATION (3)
+  {
+    id: "shadow-tool-dragon",
+    name: "Dragon Professional",
+    vendor: "Microsoft (Nuance)",
+    category: "TRANSCRIPTION_DICTATION",
+    description: "Speech-recognition dictation suite widely used in legal practice (Dragon Legal). Desktop-based with cloud-hosted Anywhere editions.",
+    website: "https://www.nuance.com/dragon.html",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "ON_PREMISE_AVAILABLE", "SOC2_CERTIFIED"],
+  },
+  {
+    id: "shadow-tool-rev",
+    name: "Rev",
+    vendor: "Rev",
+    category: "TRANSCRIPTION_DICTATION",
+    description: "Transcription service combining AI speech-to-text with optional human review. Used for depositions, hearings, and interviews.",
+    website: "https://rev.com",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "SOC2_CERTIFIED"],
+  },
+  {
+    id: "shadow-tool-verbit",
+    name: "Verbit",
+    vendor: "Verbit",
+    category: "TRANSCRIPTION_DICTATION",
+    description: "AI transcription and captioning platform with a legal vertical (court reporting, depositions) combining ASR with human editors.",
+    website: "https://verbit.ai",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "SOC2_CERTIFIED", "GDPR_COMPLIANT"],
+  },
+
+  // PRACTICE_MANAGEMENT (4)
+  {
+    id: "shadow-tool-clio-duo",
+    name: "Clio Duo",
+    vendor: "Clio",
+    category: "PRACTICE_MANAGEMENT",
+    description: "AI assistant inside the Clio practice-management suite. Summarizes matters, drafts communications, and surfaces billing and calendar insights.",
+    website: "https://clio.com/duo",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "SOC2_CERTIFIED"],
+  },
+  {
+    id: "shadow-tool-filevine",
+    name: "Filevine AI",
+    vendor: "Filevine",
+    category: "PRACTICE_MANAGEMENT",
+    description: "AI features across the Filevine case-management platform: document summarization, demand drafting, and deposition analysis.",
+    website: "https://filevine.com",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "SOC2_CERTIFIED"],
+  },
+  {
+    id: "shadow-tool-imanage-ai",
+    name: "iManage AI",
+    vendor: "iManage",
+    category: "PRACTICE_MANAGEMENT",
+    description: "AI services in the iManage Work document management system: document Q&A, summarization, and knowledge search over the firm's DMS.",
+    website: "https://imanage.com",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "SOC2_CERTIFIED"],
+  },
+  {
+    id: "shadow-tool-ndmax",
+    name: "NetDocuments ndMAX",
+    vendor: "NetDocuments",
+    category: "PRACTICE_MANAGEMENT",
+    description: "Generative AI suite on the NetDocuments DMS: document Q&A, drafting, and AI workflows grounded in matter workspaces.",
+    website: "https://netdocuments.com/products/ndmax",
+    riskIndicators: ["PROCESSES_PERSONAL_DATA", "CLOUD_HOSTED", "SOC2_CERTIFIED"],
+  },
 ];
 
 async function main() {
@@ -666,15 +874,20 @@ async function main() {
     count++;
   }
 
-  console.log(`Seeded ${count} AI tools across 8 categories:`);
+  console.log(`Seeded ${count} AI tools across 13 categories:`);
   console.log("  - LLM_CHAT: 12");
   console.log("  - CODE_ASSISTANT: 10");
   console.log("  - IMAGE_GENERATION: 9");
   console.log("  - VIDEO_AUDIO: 10");
-  console.log("  - WRITING_PRODUCTIVITY: 8");
-  console.log("  - BUSINESS_TOOLS: 8");
+  console.log("  - WRITING_PRODUCTIVITY: 9");
+  console.log("  - BUSINESS_TOOLS: 7");
   console.log("  - DATA_ANALYTICS: 6");
   console.log("  - SEARCH: 4");
+  console.log("  - LEGAL_RESEARCH: 3");
+  console.log("  - CONTRACT_CLM: 8");
+  console.log("  - EDISCOVERY: 4");
+  console.log("  - TRANSCRIPTION_DICTATION: 3");
+  console.log("  - PRACTICE_MANAGEMENT: 4");
 }
 
 main()

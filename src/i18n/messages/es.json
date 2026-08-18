@@ -473,7 +473,20 @@
     "chipAiSystems": "Sistemas de IA",
     "chipRiskClassifications": "Clasificaciones de riesgo",
     "chipOversightGates": "Controles de supervisión",
-    "chipPolicies": "Políticas"
+    "chipPolicies": "Políticas",
+    "stepLawFirmTools": "Herramientas del despacho",
+    "lawFirmTitle": "Programa para despachos de abogados",
+    "lawFirmDescription": "Selecciona las herramientas de IA que utiliza tu despacho y genera un programa de gobernanza completo: sistemas registrados, clasificaciones de riesgo, puntos de control y un paquete de políticas para despachos.",
+    "selectLawFirmToolsTitle": "Selecciona las herramientas de IA que utiliza tu despacho",
+    "selectLawFirmToolsDescription": "Agrupadas por categoría: desde asistentes generalistas hasta investigación jurídica, revisión contractual y e-discovery. Cada selección se convierte en un sistema de IA gobernado.",
+    "selectAtLeastOneTool": "Selecciona al menos una herramienta",
+    "toolsSelected": "{count} seleccionadas",
+    "selectAllInCategory": "Seleccionar todo",
+    "clearCategory": "Quitar selección",
+    "lawFirmPreviewTitle": "Vista previa del programa del despacho",
+    "lawFirmReviewTitle": "Kit de herramientas del despacho",
+    "lawFirmPolicyPack": "Paquete de políticas del despacho",
+    "chipVendors": "Proveedores"
   },
   "assessments": {
     "title": "Evaluaciones",

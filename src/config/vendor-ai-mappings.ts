@@ -60,7 +60,9 @@ export const VENDOR_AI_MAPPINGS: Record<string, VendorAIMapping> = {
 
   aiPlatform: {
     label: "AI Platform",
-    catalogCategories: ["AI Platform"],
+    // "AI & Machine Learning" is the snapshot's top-level AI category; subcategory
+    // matches (e.g. "LLM Provider") take precedence in findAIMappingForCategory.
+    catalogCategories: ["AI Platform", "AI & Machine Learning", "ML Platform", "Generative AI", "AI Tools"],
     system: {
       nameSuffix: "AI Platform",
       technique: "GENERATIVE_AI",
@@ -75,7 +77,7 @@ export const VENDOR_AI_MAPPINGS: Record<string, VendorAIMapping> = {
 
   mlops: {
     label: "MLOps & Infrastructure",
-    catalogCategories: ["MLOps & Infrastructure"],
+    catalogCategories: ["MLOps & Infrastructure", "ML Observability", "Vector Database"],
     system: {
       nameSuffix: "MLOps Infrastructure",
       technique: "MACHINE_LEARNING",
@@ -138,7 +140,7 @@ export const VENDOR_AI_MAPPINGS: Record<string, VendorAIMapping> = {
 
   speechNlp: {
     label: "Speech & NLP",
-    catalogCategories: ["Speech & NLP"],
+    catalogCategories: ["Speech & NLP", "Speech AI", "Translation"],
     system: {
       nameSuffix: "NLP System",
       technique: "NLP",

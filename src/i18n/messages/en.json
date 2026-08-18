@@ -473,7 +473,20 @@
     "chipAiSystems": "AI Systems",
     "chipRiskClassifications": "Risk Classifications",
     "chipOversightGates": "Oversight Gates",
-    "chipPolicies": "Policies"
+    "chipPolicies": "Policies",
+    "stepLawFirmTools": "Law Firm Tools",
+    "lawFirmTitle": "Law Firm Program",
+    "lawFirmDescription": "Pick the AI tools your firm uses and generate a complete governance program: registered systems, risk classifications, oversight gates, and a law-firm policy pack.",
+    "selectLawFirmToolsTitle": "Select the AI tools your firm uses",
+    "selectLawFirmToolsDescription": "Grouped by category — from general assistants to legal research, contract review, and e-discovery. Each selection becomes a governed AI system.",
+    "selectAtLeastOneTool": "Select at least one tool",
+    "toolsSelected": "{count} selected",
+    "selectAllInCategory": "Select all",
+    "clearCategory": "Clear",
+    "lawFirmPreviewTitle": "Law Firm Program Preview",
+    "lawFirmReviewTitle": "Law Firm Toolkit",
+    "lawFirmPolicyPack": "Law Firm Policy Pack",
+    "chipVendors": "Vendors"
   },
   "assessments": {
     "title": "Assessments",

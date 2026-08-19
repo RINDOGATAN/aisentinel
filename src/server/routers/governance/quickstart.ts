@@ -22,6 +22,11 @@ import {
   resolveContentLocale,
 } from "../../../config/lawfirm-ai-toolkit";
 import { hasVendorCatalogAccess } from "../../services/licensing/entitlement";
+import {
+  QUICKSTART_COMPLIANCE_BASELINE,
+  baselineRuleKey,
+  TRANSPARENCY_PROFILE_NOTES,
+} from "../../../config/quickstart-compliance-baseline";
 
 // ============================================================
 // HELPERS
@@ -433,6 +438,27 @@ export const quickstartRouter = createTRPCRouter({
         }
       }
 
+      // Program enrichment (policy links, transparency profiles, compliance
+      // baseline) applies when a policy-deriving path runs.
+      const enrichmentActive = lawFirmTools.length > 0 || !!input.industryId;
+      const requirementIdsByRule = new Map<string, string[]>();
+      if (enrichmentActive) {
+        const allRequirements = await ctx.prisma.complianceRequirement.findMany({
+          select: { id: true, code: true, framework: { select: { code: true } } },
+        });
+        for (const rule of QUICKSTART_COMPLIANCE_BASELINE) {
+          requirementIdsByRule.set(
+            baselineRuleKey(rule),
+            allRequirements
+              .filter(
+                (r) =>
+                  r.framework.code === rule.framework && r.code === rule.code,
+              )
+              .map((r) => r.id),
+          );
+        }
+      }
+
       // Fetch catalog vendors if needed
       const catalogVendors =
         input.vendorSlugs.length > 0
@@ -467,7 +493,18 @@ export const quickstartRouter = createTRPCRouter({
             complianceMappings: 0,
             oversightGates: 0,
             policies: 0,
+            policyLinks: 0,
+            transparencyProfiles: 0,
+            complianceBaselined: 0,
           };
+
+          // Systems created in this run, tracked for program enrichment
+          const createdSystems: {
+            id: string;
+            hasGate: boolean;
+            generative: boolean;
+            path: "vendor" | "industry" | "lawfirm";
+          }[] = [];
 
           const auditEntries: {
             entityType: string;
@@ -577,6 +614,13 @@ export const quickstartRouter = createTRPCRouter({
               counts.complianceMappings += created.count;
             }
 
+            createdSystems.push({
+              id: system.id,
+              hasGate: Boolean(mapping.requiresOversightGate && mapping.gateType),
+              generative: mapping.system.technique === "GENERATIVE_AI",
+              path: "vendor",
+            });
+
             // Create OversightGate if HIGH risk
             if (mapping.requiresOversightGate && mapping.gateType) {
               await tx.oversightGate.create({
@@ -661,6 +705,13 @@ export const quickstartRouter = createTRPCRouter({
                 });
                 counts.complianceMappings += created.count;
               }
+
+              createdSystems.push({
+                id: system.id,
+                hasGate: Boolean(templateSystem.gateType),
+                generative: templateSystem.technique === "GENERATIVE_AI",
+                path: "industry",
+              });
 
               // Create OversightGate for HIGH-risk systems
               if (templateSystem.gateType) {
@@ -809,6 +860,13 @@ export const quickstartRouter = createTRPCRouter({
               counts.complianceMappings += created.count;
             }
 
+            createdSystems.push({
+              id: system.id,
+              hasGate: Boolean(governance.gateType),
+              generative: governance.technique === "GENERATIVE_AI",
+              path: "lawfirm",
+            });
+
             if (governance.gateType) {
               await tx.oversightGate.create({
                 data: {
@@ -891,6 +949,106 @@ export const quickstartRouter = createTRPCRouter({
               entityId: orgId,
               action: "UPDATE",
               changes: { source: "quickstart", profile: "lawfirm" },
+            });
+          }
+
+          // ─── PROGRAM ENRICHMENT ─────────────────────────
+          // Turn the skeleton into a living program: link the drafted
+          // policies to the systems they govern, document the Art. 50
+          // deployer posture for generative systems, and pre-assess the
+          // framework requirements the generated artifacts genuinely
+          // evidence (never above PARTIALLY_COMPLIANT; never overwriting
+          // anything a human has assessed).
+          if (enrichmentActive && createdSystems.length > 0) {
+            // 1 · Policy ↔ system links, per policy-deriving path
+            for (const path of ["industry", "lawfirm"] as const) {
+              const pathSystems = createdSystems.filter((s) => s.path === path);
+              if (pathSystems.length === 0) continue;
+              const titles =
+                path === "lawfirm"
+                  ? LAWFIRM_POLICY_PACK.flatMap((p) => [p.title.en, p.title.es])
+                  : template
+                    ? template.policies.map((p) => p.title)
+                    : [];
+              if (titles.length === 0) continue;
+              const policyRows = await tx.aIPolicy.findMany({
+                where: { organizationId: orgId, title: { in: titles } },
+                select: { id: true },
+              });
+              if (policyRows.length === 0) continue;
+              const links = await tx.aIPolicySystemLink.createMany({
+                data: policyRows.flatMap((policy) =>
+                  pathSystems.map((sys) => ({
+                    policyId: policy.id,
+                    aiSystemId: sys.id,
+                  })),
+                ),
+                skipDuplicates: true,
+              });
+              counts.policyLinks += links.count;
+            }
+
+            // 2 · Art. 50 transparency profiles for generative systems
+            // (documented deployer-posture review; statuses N/A with reasons)
+            for (const sys of createdSystems.filter((s) => s.generative)) {
+              await tx.transparencyProfile.create({
+                data: {
+                  organizationId: orgId,
+                  aiSystemId: sys.id,
+                  art50InteractionStatus: "NOT_APPLICABLE",
+                  art50MarkingStatus: "NOT_APPLICABLE",
+                  art50EmotionStatus: "NOT_APPLICABLE",
+                  art50DeepfakeStatus: "NOT_APPLICABLE",
+                  notes: TRANSPARENCY_PROFILE_NOTES[contentLocale],
+                  reviewedBy: userId,
+                },
+              });
+              counts.transparencyProfiles++;
+            }
+
+            // 3 · Compliance baseline from generated artifacts
+            const assessedAt = new Date();
+            for (const rule of QUICKSTART_COMPLIANCE_BASELINE) {
+              const reqIds = requirementIdsByRule.get(baselineRuleKey(rule)) ?? [];
+              if (reqIds.length === 0) continue;
+              const targets = createdSystems
+                .filter(
+                  (s) =>
+                    (!rule.requiresGate || s.hasGate) &&
+                    (!rule.requiresPolicies || s.path !== "vendor") &&
+                    (!rule.requiresTransparencyProfile || s.generative),
+                )
+                .map((s) => s.id);
+              if (targets.length === 0) continue;
+              const updated = await tx.complianceMapping.updateMany({
+                where: {
+                  organizationId: orgId,
+                  aiSystemId: { in: targets },
+                  requirementId: { in: reqIds },
+                  status: "NOT_ASSESSED",
+                },
+                data: {
+                  status: rule.status,
+                  evidence: rule.evidence[contentLocale],
+                  assessedBy: userId,
+                  assessedAt,
+                },
+              });
+              counts.complianceBaselined += updated.count;
+            }
+
+            auditEntries.push({
+              entityType: "Organization",
+              entityId: orgId,
+              action: "UPDATE",
+              changes: {
+                source: "quickstart",
+                enrichment: {
+                  policyLinks: counts.policyLinks,
+                  transparencyProfiles: counts.transparencyProfiles,
+                  complianceBaselined: counts.complianceBaselined,
+                },
+              },
             });
           }
 

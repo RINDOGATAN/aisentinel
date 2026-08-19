@@ -491,7 +491,10 @@
     "lawFirmReviewTitle": "Kit de herramientas del despacho",
     "lawFirmPolicyPack": "Paquete de políticas del despacho",
     "chipVendors": "Proveedores",
-    "viewProgram": "Ver tu Programa de Gobernanza de IA"
+    "viewProgram": "Ver tu Programa de Gobernanza de IA",
+    "statPolicyLinks": "Vinculaciones de políticas",
+    "statTransparencyProfiles": "Perfiles del Art. 50",
+    "statComplianceBaselined": "Requisitos preevaluados"
   },
   "assessments": {
     "title": "Evaluaciones",

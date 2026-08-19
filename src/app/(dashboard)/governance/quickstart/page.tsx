@@ -130,6 +130,9 @@ export default function QuickstartPage() {
     complianceMappings: number;
     oversightGates: number;
     policies: number;
+    policyLinks: number;
+    transparencyProfiles: number;
+    complianceBaselined: number;
   } | null>(null);
 
   // Debounce search
@@ -1559,6 +1562,36 @@ export default function QuickstartPage() {
                       {executionResult.policies}
                     </div>
                     <p className="text-xs text-muted-foreground">Policies</p>
+                  </div>
+                )}
+                {executionResult.policyLinks > 0 && (
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-primary">
+                      {executionResult.policyLinks}
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      {t("statPolicyLinks")}
+                    </p>
+                  </div>
+                )}
+                {executionResult.transparencyProfiles > 0 && (
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-primary">
+                      {executionResult.transparencyProfiles}
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      {t("statTransparencyProfiles")}
+                    </p>
+                  </div>
+                )}
+                {executionResult.complianceBaselined > 0 && (
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-primary">
+                      {executionResult.complianceBaselined}
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      {t("statComplianceBaselined")}
+                    </p>
                   </div>
                 )}
               </div>

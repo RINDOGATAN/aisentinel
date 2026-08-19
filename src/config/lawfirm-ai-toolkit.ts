@@ -520,6 +520,17 @@ export const LAWFIRM_TOOLS: LawFirmTool[] = [
       es: "Plataforma de gestión del ciclo de vida contractual con revisión por IA e inteligencia sobre el repositorio.",
     },
   },
+  {
+    id: "donna-lqai",
+    name: "Donna + LQ.AI",
+    vendor: "LegalQuants",
+    website: "https://github.com/LegalQuants/Donna",
+    categoryId: "CONTRACT_CLM",
+    description: {
+      en: "Open-source, fully self-hosted legal AI stack (Donna frontend on the LQ.AI backend): drafting, review, playbooks, and research with verified citations — runs on the firm's own hardware, so matter data never leaves the office.",
+      es: "Stack de IA jurídica de código abierto y totalmente autoalojado (interfaz Donna sobre el backend LQ.AI): redacción, revisión, playbooks e investigación con citas verificadas; se ejecuta en el propio hardware del despacho, de modo que los datos de los asuntos nunca salen de la oficina.",
+    },
+  },
 
   // ---- E-discovery ------------------------------------------------------
   {
@@ -696,6 +707,26 @@ export const LAWFIRM_TOOLS: LawFirmTool[] = [
     description: {
       en: "Generative AI suite over the NetDocuments DMS, answering from the firm's governed document corpus.",
       es: "Suite de IA generativa sobre el DMS de NetDocuments, que responde a partir del corpus documental gobernado del despacho.",
+    },
+  },
+  {
+    id: "todolaw-suite",
+    name: "TODO.LAW Suite",
+    vendor: "TODO.LAW",
+    website: "https://www.todo.law",
+    categoryId: "DMS_KNOWLEDGE",
+    description: {
+      en: "Self-hostable, open-source AI-native legal suite: a deterministic harness of skills and knowledge bases for compliance, transactions, AI governance, and research — one-script deployment on the firm's own computer, no matter data leaves the premises.",
+      es: "Suite jurídica de IA nativa, de código abierto y autoalojable: un armazón determinista de skills y bases de conocimiento para cumplimiento, transacciones, gobernanza de IA e investigación; despliegue con un solo script en el ordenador del propio despacho, sin que los datos de los asuntos salgan de sus instalaciones.",
+    },
+    overrides: {
+      riskLevel: "MINIMAL",
+      // Added after the 2026-08-18 pack sign-off — carries its own PENDING
+      // marker and rides the next content sign-off round.
+      riskRationale: {
+        en: "Minimal risk as deployed: the suite runs on the firm's own hardware with no external data egress, its workflows are predominantly deterministic (auditable skills and versioned knowledge bases rather than free-form generation), no client data is used to train third-party models, and outputs remain subject to the firm's standard professional review. Transparency obligations under EU AI Act Art. 50 are correspondingly limited; the firm remains a private deployer outside Annex III 8(a).\n\nLaw reviewed as of 2026-08-18; professional-responsibility sign-off pending for this entry.",
+        es: "Riesgo mínimo tal como se despliega: la suite se ejecuta en el hardware del propio despacho sin salida de datos al exterior, sus flujos de trabajo son predominantemente deterministas (skills auditables y bases de conocimiento versionadas en lugar de generación libre), no se utilizan datos de clientes para entrenar modelos de terceros y los resultados siguen sujetos a la revisión profesional habitual del despacho. Las obligaciones de transparencia del Art. 50 del Reglamento de IA de la UE son, en consecuencia, limitadas; el despacho sigue siendo un responsable del despliegue privado fuera del Anexo III 8 a).\n\nRevisión jurídica a fecha de 2026-08-18; pendiente de validación de responsabilidad profesional para esta entrada.",
+      },
     },
   },
 ];

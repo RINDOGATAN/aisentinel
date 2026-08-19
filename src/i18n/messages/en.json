@@ -491,7 +491,10 @@
     "lawFirmReviewTitle": "Law Firm Toolkit",
     "lawFirmPolicyPack": "Law Firm Policy Pack",
     "chipVendors": "Vendors",
-    "viewProgram": "View your AI Governance Program"
+    "viewProgram": "View your AI Governance Program",
+    "statPolicyLinks": "Policy links",
+    "statTransparencyProfiles": "Art. 50 profiles",
+    "statComplianceBaselined": "Requirements pre-assessed"
   },
   "assessments": {
     "title": "Assessments",

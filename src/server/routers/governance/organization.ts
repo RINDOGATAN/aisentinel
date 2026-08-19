@@ -2,10 +2,16 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { z } from "zod";
-import { createTRPCRouter, protectedProcedure, organizationProcedure } from "../../trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  organizationProcedure,
+  orgWriteProcedure,
+} from "../../trpc";
 import { TRPCError } from "@trpc/server";
 import { OrganizationRole } from "@prisma/client";
 import { computeMarkingDeadline } from "@/config/transparency-rules";
+import { JURISDICTION_IDS } from "@/config/jurisdictions";
 
 export const organizationRouter = createTRPCRouter({
   list: protectedProcedure.query(async ({ ctx }) => {
@@ -108,6 +114,60 @@ export const organizationRouter = createTRPCRouter({
           entityId: organization.id,
           action: "CREATE",
           changes: { name: input.name, slug: input.slug },
+        },
+      });
+
+      return organization;
+    }),
+
+  /**
+   * Declare where the organization operates. This is what lets regulatory
+   * scoping distinguish "does not apply to you" from "we can't tell yet" — an
+   * empty array is a legitimate answer meaning UNDECLARED, so the mutation
+   * accepts it and simply leaves the review stamp unset.
+   */
+  setJurisdictions: orgWriteProcedure
+    .input(
+      z.object({
+        organizationId: z.string(),
+        // Validated against the shared vocabulary (test-guarded to match the
+        // Prisma enum member-for-member), so an unknown jurisdiction is a
+        // validation error rather than a silently stored string.
+        jurisdictions: z.array(z.enum(JURISDICTION_IDS)),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      // Deduplicate: the picker can't produce repeats, but a direct API call can.
+      const jurisdictions = [...new Set(input.jurisdictions)];
+      const declared = jurisdictions.length > 0;
+
+      const organization = await ctx.prisma.organization.update({
+        where: { id: ctx.organization.id },
+        data: {
+          operatingJurisdictions: jurisdictions,
+          // Only a positive declaration counts as reviewed. "I'm not sure yet"
+          // must not look like someone considered the question and answered it.
+          jurisdictionsReviewedBy: declared ? ctx.session.user.id : null,
+          jurisdictionsReviewedAt: declared ? new Date() : null,
+        },
+        select: {
+          id: true,
+          operatingJurisdictions: true,
+          jurisdictionsReviewedAt: true,
+        },
+      });
+
+      await ctx.prisma.auditLog.create({
+        data: {
+          organizationId: ctx.organization.id,
+          userId: ctx.session.user.id,
+          entityType: "Organization",
+          entityId: ctx.organization.id,
+          action: "UPDATE",
+          changes: {
+            operatingJurisdictions: organization.operatingJurisdictions,
+            declared,
+          },
         },
       });
 
@@ -344,7 +404,11 @@ export const organizationRouter = createTRPCRouter({
         }),
         ctx.prisma.organization.findUnique({
           where: { id: orgId },
-          select: { settings: true },
+          select: {
+            settings: true,
+            operatingJurisdictions: true,
+            jurisdictionsReviewedAt: true,
+          },
         }),
       ]);
 
@@ -373,6 +437,9 @@ export const organizationRouter = createTRPCRouter({
         activeAssessments,
         recentAuditLogs,
         quickstartProfile,
+        // Empty array = UNDECLARED. Consumers must not read it as "no regime applies".
+        operatingJurisdictions: orgSettingsRow?.operatingJurisdictions ?? [],
+        jurisdictionsReviewedAt: orgSettingsRow?.jurisdictionsReviewedAt ?? null,
         riskPosture: {
           unacceptable: riskUnacceptable,
           high: riskHigh,

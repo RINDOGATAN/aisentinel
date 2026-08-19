@@ -38,6 +38,10 @@ import {
   LAWFIRM_TOOLKIT_VERSION,
   LAWFIRM_LAW_REVIEWED_AS_OF,
 } from "./lawfirm-ai-toolkit";
+import {
+  REGULATORY_MILESTONES_VERSION,
+  REGULATORY_MILESTONES_LAW_REVIEWED_AS_OF,
+} from "./regulatory-milestones";
 import { MATURITY_MODEL_VERSION } from "@/server/services/program/maturity";
 
 export interface RulePackDescriptor {
@@ -74,6 +78,11 @@ export const RULE_PACKS = {
     version: LAWFIRM_TOOLKIT_VERSION,
     lawReviewedAsOf: LAWFIRM_LAW_REVIEWED_AS_OF,
     signOff: "signed-off",
+  },
+  "regulatory-milestones": {
+    version: REGULATORY_MILESTONES_VERSION,
+    lawReviewedAsOf: REGULATORY_MILESTONES_LAW_REVIEWED_AS_OF,
+    signOff: "pending",
   },
   "maturity-model": {
     version: MATURITY_MODEL_VERSION,

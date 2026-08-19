@@ -50,6 +50,8 @@ import {
   type ContentLocale,
 } from "@/config/lawfirm-ai-toolkit";
 import { ProgramMap } from "@/components/governance/program/ProgramMap";
+import { JurisdictionPicker } from "@/components/governance/jurisdiction-picker";
+import type { JurisdictionId } from "@/config/jurisdictions";
 
 // ============================================================
 // ICON MAP
@@ -96,6 +98,7 @@ export default function QuickstartPage() {
   const { organization } = useOrganization();
   const t = useTranslations("quickstart");
   const tc = useTranslations("common");
+  const tjur = useTranslations("jurisdictions");
   const orgId = organization?.id ?? "";
 
   // Wizard state
@@ -110,6 +113,18 @@ export default function QuickstartPage() {
 
   // Law-firm tool selection
   const [selectedLawFirmToolIds, setSelectedLawFirmToolIds] = useState<string[]>([]);
+
+  // Operating jurisdictions — asked once, up front, because it decides which
+  // regimes are even in play. Answering is optional: "not sure yet" is a real
+  // answer that leaves the org UNDECLARED rather than falsely out of scope.
+  const [selectedJurisdictions, setSelectedJurisdictions] = useState<
+    JurisdictionId[]
+  >([]);
+  const [jurisdictionsUnsure, setJurisdictionsUnsure] = useState(false);
+  const [jurisdictionsTouched, setJurisdictionsTouched] = useState(false);
+  const setJurisdictions = trpc.organization.setJurisdictions.useMutation({
+    onError: (err) => toast.error(err.message),
+  });
 
   // Vendor selection
   const [vendorSearch, setVendorSearch] = useState("");
@@ -268,6 +283,15 @@ export default function QuickstartPage() {
       toast.error("Select at least one option");
       return;
     }
+    // Persist the jurisdiction answer on the way past. "Not sure yet" saves an
+    // empty set, which the model treats as UNDECLARED rather than "nowhere" —
+    // it never blocks the wizard.
+    if (jurisdictionsTouched && orgId) {
+      setJurisdictions.mutate({
+        organizationId: orgId,
+        jurisdictions: jurisdictionsUnsure ? [] : selectedJurisdictions,
+      });
+    }
     goNext("choose");
   };
 
@@ -424,6 +448,40 @@ export default function QuickstartPage() {
           ════════════════════════════════════════════════ */}
       {step === "choose" && (
         <div className="space-y-4">
+          {/* Where do you operate? Decides which regimes are in play at all. */}
+          <Card>
+            <CardContent className="p-4 space-y-3">
+              <div>
+                <p className="text-sm font-medium">{tjur("wizardQuestion")}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {tjur("wizardHint")}
+                </p>
+              </div>
+
+              <JurisdictionPicker
+                compact
+                value={selectedJurisdictions}
+                disabled={jurisdictionsUnsure}
+                onChange={(next) => {
+                  setSelectedJurisdictions(next);
+                  setJurisdictionsTouched(true);
+                }}
+              />
+
+              <label className="flex items-center gap-2 text-xs text-muted-foreground cursor-pointer">
+                <Checkbox
+                  checked={jurisdictionsUnsure}
+                  onCheckedChange={(v) => {
+                    setJurisdictionsUnsure(!!v);
+                    setJurisdictionsTouched(true);
+                    if (v) setSelectedJurisdictions([]);
+                  }}
+                />
+                {tjur("notSureYet")}
+              </label>
+            </CardContent>
+          </Card>
+
           <p className="text-muted-foreground">
             {t("choosePathDescription")}
           </p>

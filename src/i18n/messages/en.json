@@ -154,7 +154,8 @@
     "roleAiOfficer": "AI Officer",
     "roleMember": "Member",
     "roleViewer": "Viewer",
-    "program": "Program"
+    "program": "Program",
+    "obligations": "Obligations"
   },
   "dashboard": {
     "title": "AI Governance",
@@ -3293,5 +3294,117 @@
     "diffGapsOpened": "Gaps opened",
     "diffRulePacks": "Rule packs changed",
     "diffRulePacksHint": "A score can move because the rules moved. These packs changed between the two snapshots."
+  },
+  "jurisdictions": {
+    "title": "Operating jurisdictions",
+    "description": "Where your organization operates. This decides which regulatory regimes we apply to your AI systems.",
+    "undeclaredHint": "You haven't told us where you operate yet, so we can't say which regimes apply. Until this is set, regulatory scoping reads as \"not yet determined\" rather than \"does not apply\".",
+    "saved": "Operating jurisdictions saved",
+    "reviewedOn": "Last reviewed {date}",
+    "neverReviewed": "Not reviewed yet",
+    "wizardQuestion": "Where does your organization operate?",
+    "wizardHint": "Optional, and you can change it later. It decides which regimes we check against — for example California's ADMT rules or the EU AI Act.",
+    "notSureYet": "I'm not sure yet",
+    "group": {
+      "eu": "Europe",
+      "us": "United States",
+      "other": "Rest of world"
+    },
+    "option": {
+      "EU": "European Union",
+      "EEA": "EEA (non-EU)",
+      "UK": "United Kingdom",
+      "SWITZERLAND": "Switzerland",
+      "US_FEDERAL": "United States (federal)",
+      "US_CA": "California",
+      "US_CO": "Colorado",
+      "US_CT": "Connecticut",
+      "US_IL": "Illinois",
+      "US_NY": "New York",
+      "US_TX": "Texas",
+      "US_UT": "Utah",
+      "US_VA": "Virginia",
+      "US_WA": "Washington",
+      "CANADA": "Canada",
+      "BRAZIL": "Brazil",
+      "CHINA": "China",
+      "JAPAN": "Japan",
+      "SOUTH_KOREA": "South Korea",
+      "AUSTRALIA": "Australia",
+      "INDIA": "India",
+      "OTHER": "Other"
+    }
+  },
+  "obligations": {
+    "title": "Obligations calendar",
+    "subtitle": "Regulatory deadlines plotted against your own AI inventory.",
+    "ariaLabel": "Regulatory obligations timeline",
+    "assumedJurisdictions": "Showing obligations for: {jurisdictions}",
+    "jurisdictionsUndeclared": "You haven't told us where you operate, so US obligations show as undetermined rather than out of scope.",
+    "declareJurisdictions": "Declare your operating jurisdictions",
+    "empty": "No regulatory milestones match your current setup.",
+    "next": {
+      "countdownDays": "{days} days until {title}",
+      "countdownToday": "{title} applies today",
+      "overdue": "{title} applied {days} days ago",
+      "affectsSystems": "affects {count} of your systems",
+      "affectsOrganization": "affects your organization",
+      "scopeUnknown": "scope not yet determined",
+      "viewAll": "View all obligations"
+    },
+    "phase": {
+      "past": "In force",
+      "imminent": "Within 90 days",
+      "upcoming": "Within a year",
+      "future": "Later"
+    },
+    "tone": {
+      "overdue": "Overdue",
+      "imminent": "Imminent",
+      "upcoming": "Upcoming",
+      "past-satisfied": "Satisfied",
+      "not-applicable": "Does not apply",
+      "unknown": "Scope unknown"
+    },
+    "counts": {
+      "inScope": "{count} systems",
+      "inScopeWithUndetermined": "{inScope} in scope · {undetermined} undetermined",
+      "undeterminedOnly": "Scope not yet determined for {count} systems",
+      "organization": "Applies to your organization",
+      "notApplicable": "Does not apply to your inventory",
+      "satisfied": "{satisfied} of {total} evidenced",
+      "outstanding": "{count} not yet evidenced"
+    },
+    "reason": {
+      "no-jurisdictions": "We don't know where you operate yet",
+      "no-admt-determination": "No automated-decision determination recorded",
+      "unclassified-system": "System has no risk classification",
+      "no-revenue-tier": "No revenue tier recorded",
+      "no-annex-i-determination": "Not recorded whether this is a product-embedded system",
+      "no-market-placement-date": "Not recorded when this system was placed on the market",
+      "no-sell-share-determination": "Not recorded whether you sell or share personal information"
+    },
+    "card": {
+      "whatItMeans": "What this means",
+      "citation": "Citation",
+      "affectedSystems": "Systems in scope",
+      "undeterminedSystems": "Scope not yet determined",
+      "resolve": "Resolve this",
+      "viewRequirements": "View requirements",
+      "trueInterval": "{days} days",
+      "appliesToday": "applies today",
+      "daysRemaining": "in {days} days",
+      "daysAgo": "{days} days ago"
+    },
+    "legend": {
+      "title": "Legend",
+      "today": "Today",
+      "breakMarker": "Compressed interval — true gap shown"
+    },
+    "reviewMarkerLabel": "Legal review status",
+    "allMilestones": "All milestones",
+    "emptyInventoryTitle": "No AI systems registered yet",
+    "emptyInventoryBody": "These deadlines are real, but until your AI systems are registered we can't tell you which of them each one touches.",
+    "emptyInventoryCta": "Run Quick Start"
   }
 }

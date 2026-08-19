@@ -10,6 +10,7 @@ import {
   Brain,
   Briefcase,
   Network,
+  CalendarClock,
   ShieldAlert,
   ClipboardCheck,
   Scale,
@@ -90,6 +91,7 @@ function buildNavGroups(isConsultant: boolean, t: (key: string) => string) {
       icon: Scale,
       items: [
         { href: "/governance/program", label: t("program"), icon: Network },
+        { href: "/governance/obligations", label: t("obligations"), icon: CalendarClock },
         { href: "/governance/assessments", label: t("assessments"), icon: ClipboardCheck },
         { href: "/governance/oversight", label: t("oversight"), icon: Eye },
         { href: "/governance/compliance", label: t("compliance"), icon: Scale },

@@ -154,7 +154,8 @@
     "roleAiOfficer": "Responsable de IA",
     "roleMember": "Miembro",
     "roleViewer": "Lector",
-    "program": "Programa"
+    "program": "Programa",
+    "obligations": "Obligaciones"
   },
   "dashboard": {
     "title": "Gobernanza de IA",
@@ -3293,5 +3294,117 @@
     "diffGapsOpened": "Carencias abiertas",
     "diffRulePacks": "Paquetes de reglas modificados",
     "diffRulePacksHint": "Una puntuación puede variar porque han variado las reglas. Estos paquetes cambiaron entre ambas instantáneas."
+  },
+  "jurisdictions": {
+    "title": "Jurisdicciones de actividad",
+    "description": "Dónde opera tu organización. Determina qué regímenes normativos aplicamos a tus sistemas de IA.",
+    "undeclaredHint": "Todavía no nos has indicado dónde operas, así que no podemos determinar qué regímenes aplican. Hasta que se indique, el alcance normativo figura como «pendiente de determinar», no como «no aplica».",
+    "saved": "Jurisdicciones de actividad guardadas",
+    "reviewedOn": "Última revisión: {date}",
+    "neverReviewed": "Sin revisar todavía",
+    "wizardQuestion": "¿Dónde opera tu organización?",
+    "wizardHint": "Opcional, y podrás cambiarlo más adelante. Determina qué regímenes comprobamos, por ejemplo las normas ADMT de California o el Reglamento de IA de la UE.",
+    "notSureYet": "Todavía no lo sé",
+    "group": {
+      "eu": "Europa",
+      "us": "Estados Unidos",
+      "other": "Resto del mundo"
+    },
+    "option": {
+      "EU": "Unión Europea",
+      "EEA": "EEE (fuera de la UE)",
+      "UK": "Reino Unido",
+      "SWITZERLAND": "Suiza",
+      "US_FEDERAL": "Estados Unidos (federal)",
+      "US_CA": "California",
+      "US_CO": "Colorado",
+      "US_CT": "Connecticut",
+      "US_IL": "Illinois",
+      "US_NY": "Nueva York",
+      "US_TX": "Texas",
+      "US_UT": "Utah",
+      "US_VA": "Virginia",
+      "US_WA": "Washington",
+      "CANADA": "Canadá",
+      "BRAZIL": "Brasil",
+      "CHINA": "China",
+      "JAPAN": "Japón",
+      "SOUTH_KOREA": "Corea del Sur",
+      "AUSTRALIA": "Australia",
+      "INDIA": "India",
+      "OTHER": "Otra"
+    }
+  },
+  "obligations": {
+    "title": "Calendario de obligaciones",
+    "subtitle": "Plazos normativos proyectados sobre tu propio inventario de IA.",
+    "ariaLabel": "Cronología de obligaciones normativas",
+    "assumedJurisdictions": "Mostrando obligaciones para: {jurisdictions}",
+    "jurisdictionsUndeclared": "No nos has indicado dónde operas, así que las obligaciones de EE. UU. se muestran como no determinadas y no como fuera de alcance.",
+    "declareJurisdictions": "Declara tus jurisdicciones de operación",
+    "empty": "Ningún hito normativo coincide con tu configuración actual.",
+    "next": {
+      "countdownDays": "Quedan {days} días para: {title}",
+      "countdownToday": "{title} se aplica hoy",
+      "overdue": "{title} se aplica desde hace {days} días",
+      "affectsSystems": "afecta a {count} de tus sistemas",
+      "affectsOrganization": "afecta a tu organización",
+      "scopeUnknown": "alcance aún sin determinar",
+      "viewAll": "Ver todas las obligaciones"
+    },
+    "phase": {
+      "past": "En vigor",
+      "imminent": "En menos de 90 días",
+      "upcoming": "En menos de un año",
+      "future": "Más adelante"
+    },
+    "tone": {
+      "overdue": "Vencida",
+      "imminent": "Inminente",
+      "upcoming": "Próxima",
+      "past-satisfied": "Cumplida",
+      "not-applicable": "No aplicable",
+      "unknown": "Alcance sin determinar"
+    },
+    "counts": {
+      "inScope": "{count} sistemas",
+      "inScopeWithUndetermined": "{inScope} en alcance · {undetermined} sin determinar",
+      "undeterminedOnly": "Alcance aún sin determinar para {count} sistemas",
+      "organization": "Aplica a tu organización",
+      "notApplicable": "No aplica a tu inventario",
+      "satisfied": "{satisfied} de {total} evidenciados",
+      "outstanding": "{count} aún sin evidenciar"
+    },
+    "reason": {
+      "no-jurisdictions": "Todavía no sabemos dónde operas",
+      "no-admt-determination": "No consta ninguna determinación sobre decisiones automatizadas",
+      "unclassified-system": "El sistema no tiene clasificación de riesgo",
+      "no-revenue-tier": "No consta el tramo de ingresos",
+      "no-annex-i-determination": "No consta si se trata de un sistema integrado en un producto",
+      "no-market-placement-date": "No consta cuándo se introdujo el sistema en el mercado",
+      "no-sell-share-determination": "No consta si vendes o compartes información personal"
+    },
+    "card": {
+      "whatItMeans": "Qué significa",
+      "citation": "Referencia normativa",
+      "affectedSystems": "Sistemas en alcance",
+      "undeterminedSystems": "Alcance aún sin determinar",
+      "resolve": "Resolver",
+      "viewRequirements": "Ver requisitos",
+      "trueInterval": "{days} días",
+      "appliesToday": "se aplica hoy",
+      "daysRemaining": "en {days} días",
+      "daysAgo": "hace {days} días"
+    },
+    "legend": {
+      "title": "Leyenda",
+      "today": "Hoy",
+      "breakMarker": "Intervalo comprimido: se indica la distancia real"
+    },
+    "reviewMarkerLabel": "Estado de la revisión jurídica",
+    "allMilestones": "Todos los hitos",
+    "emptyInventoryTitle": "Aún no hay sistemas de IA registrados",
+    "emptyInventoryBody": "Estos plazos son reales, pero hasta que registres tus sistemas de IA no podemos indicarte a cuáles afecta cada uno.",
+    "emptyInventoryCta": "Ejecutar Inicio Rápido"
   }
 }

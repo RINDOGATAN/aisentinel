@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useTranslations, useLocale } from "next-intl";
 import { trpc } from "@/lib/trpc";
+import { NextObligationStrip } from "@/components/governance/obligations/NextObligationStrip";
 import { useOrganization } from "@/lib/organization-context";
 import { formatRelativeTime } from "@/lib/utils";
 import { DeploymentExpertCta } from "@/components/governance/deployment-expert-cta";
@@ -184,6 +185,9 @@ export default function GovernanceDashboardPage() {
       )}
 
       <DeploymentExpertCta />
+
+      {/* Next regulatory deadline, bound to this org's own inventory */}
+      <NextObligationStrip />
 
       {/* KPI Row - 6 cards */}
       <div className="grid gap-3 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">

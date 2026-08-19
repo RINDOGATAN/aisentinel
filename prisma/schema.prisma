@@ -91,6 +91,35 @@ enum OrganizationRole {
   VIEWER
 }
 
+/// Operating jurisdictions, used to scope which regulatory regimes apply.
+/// Deliberately a typed enum rather than free strings or a settings blob: the
+/// value must be queryable (GIN-indexed) and z.enum-checkable at the router.
+/// OTHER is the escape hatch so no customer is ever blocked on a release.
+enum Jurisdiction {
+  EU
+  EEA
+  UK
+  US_FEDERAL
+  US_CA
+  US_CO
+  US_CT
+  US_IL
+  US_NY
+  US_TX
+  US_UT
+  US_VA
+  US_WA
+  CANADA
+  BRAZIL
+  CHINA
+  JAPAN
+  SOUTH_KOREA
+  AUSTRALIA
+  INDIA
+  SWITZERLAND
+  OTHER
+}
+
 model Organization {
   id        String   @id @default(cuid())
   name      String
@@ -100,6 +129,15 @@ model Organization {
   settings  Json?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  /// Where this organization operates, driving regulatory scoping.
+  /// An EMPTY array means UNDECLARED — "we have not been told yet" — and must
+  /// never be read as "operates nowhere" or "no regime applies". Every
+  /// pre-existing org and every fresh self-host install starts empty, so any
+  /// consumer has to distinguish undeclared from out-of-scope.
+  operatingJurisdictions  Jurisdiction[]
+  jurisdictionsReviewedBy String?
+  jurisdictionsReviewedAt DateTime?
 
   members               OrganizationMember[]
   aiSystems             AISystem[]
@@ -127,6 +165,8 @@ model Organization {
   aiGenerations         AiGeneration[]
   programSnapshots      ProgramSnapshotRecord[]
 
+  /// GIN so `operatingJurisdictions has 'US_CA'` scoping queries stay indexed.
+  @@index([operatingJurisdictions], type: Gin)
   @@map("organizations")
 }
 
@@ -223,8 +263,15 @@ model AISystem {
   dpoCentralVendorId    String?
   dpoCentralAssetIds    String[]
   metadata              Json?
-  createdAt             DateTime       @default(now())
-  updatedAt             DateTime       @updatedAt
+
+  /// Narrowing-only override of the organization's jurisdictions.
+  /// EMPTY = inherit the org set (the common case). Non-empty means the
+  /// effective set is orgSet ∩ override; if that intersection is empty the
+  /// state is a CONFLICT for a human to resolve, never a silent zeroing of
+  /// obligations. See resolveEffectiveJurisdictions() in src/config/jurisdictions.ts.
+  jurisdictionOverride Jurisdiction[]
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
 
   vendorId String?
 

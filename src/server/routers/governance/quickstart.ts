@@ -586,6 +586,8 @@ export const quickstartRouter = createTRPCRouter({
                 rationale: mapping.riskRationale,
                 annexIIICategory: mapping.annexIIICategory,
                 classifiedBy: userId,
+                provenance: "AUTO_TEMPLATE",
+                sourceRef: "quickstart:risk-classification",
               },
             });
             counts.riskClassifications++;
@@ -635,6 +637,8 @@ export const quickstartRouter = createTRPCRouter({
                   gateType: mapping.gateType,
                   description: `Pre-deployment oversight gate for ${systemName}. Required due to ${mapping.riskLevel} risk classification.`,
                   status: "PENDING",
+                  provenance: "AUTO_TEMPLATE",
+                  sourceRef: "quickstart:oversight-gate",
                 },
               });
               counts.oversightGates++;
@@ -689,6 +693,8 @@ export const quickstartRouter = createTRPCRouter({
                   rationale: templateSystem.riskRationale,
                   annexIIICategory: templateSystem.annexIIICategory,
                   classifiedBy: userId,
+                  provenance: "AUTO_TEMPLATE",
+                  sourceRef: "quickstart:risk-classification",
                 },
               });
               counts.riskClassifications++;
@@ -732,6 +738,8 @@ export const quickstartRouter = createTRPCRouter({
                     gateType: templateSystem.gateType,
                     description: `Pre-deployment oversight gate for ${templateSystem.name}. Required due to ${templateSystem.riskLevel} risk classification.`,
                     status: "PENDING",
+                    provenance: "AUTO_TEMPLATE",
+                    sourceRef: "quickstart:oversight-gate",
                   },
                 });
                 counts.oversightGates++;
@@ -756,6 +764,8 @@ export const quickstartRouter = createTRPCRouter({
                   content: templatePolicy.content,
                   status: "DRAFT",
                   createdBy: userId,
+                  provenance: "AUTO_TEMPLATE",
+                  sourceRef: "quickstart:policy-pack",
                 },
               });
               counts.policies++;
@@ -843,6 +853,8 @@ export const quickstartRouter = createTRPCRouter({
                 rationale: governance.riskRationale[contentLocale],
                 annexIIICategory: governance.annexIIICategory,
                 classifiedBy: userId,
+                provenance: "AUTO_TEMPLATE",
+                sourceRef: "quickstart:risk-classification",
               },
             });
             counts.riskClassifications++;
@@ -893,6 +905,8 @@ export const quickstartRouter = createTRPCRouter({
                       ? `Punto de control previo al despliegue de ${tool.name}. Control interno del programa de gobernanza de IA del despacho.`
                       : `Pre-deployment oversight gate for ${tool.name}. Internal control of the firm's AI governance program.`,
                   status: "PENDING",
+                  provenance: "AUTO_TEMPLATE",
+                  sourceRef: "quickstart:oversight-gate",
                 },
               });
               counts.oversightGates++;
@@ -922,6 +936,8 @@ export const quickstartRouter = createTRPCRouter({
                   content: packPolicy.content[contentLocale],
                   status: "DRAFT",
                   createdBy: userId,
+                  provenance: "AUTO_TEMPLATE",
+                  sourceRef: "quickstart:policy-pack",
                 },
               });
               counts.policies++;
@@ -1016,6 +1032,8 @@ export const quickstartRouter = createTRPCRouter({
                   art50DeepfakeStatus: "NOT_APPLICABLE",
                   notes: TRANSPARENCY_PROFILE_NOTES[contentLocale],
                   reviewedBy: userId,
+                  provenance: "AUTO_TEMPLATE",
+                  sourceRef: "quickstart:transparency-profile",
                 },
               });
               counts.transparencyProfiles++;

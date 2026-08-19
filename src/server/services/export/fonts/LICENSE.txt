@@ -1,0 +1,16 @@
+Inter (Regular, Medium, SemiBold, Bold) — v4
+Copyright (c) 2016 The Inter Project Authors (https://github.com/rsms/inter)
+Designed by Rasmus Andersson.
+
+Licensed under the SIL Open Font License, Version 1.1.
+Full license text: https://openfontlicense.org/open-font-license-official-text/
+
+These font files are vendored unchanged for deterministic server-side PDF
+rendering by @react-pdf/renderer (src/server/services/export/design-system/
+fonts.ts). They are not served to browsers and are not part of the web UI,
+which uses Jost and Archivo Black via next/font.
+
+Summary of OFL 1.1 (not a substitute for the license): the fonts may be
+used, studied, modified and redistributed freely, provided they are not
+sold by themselves; renamed derivatives must not use the reserved font
+name "Inter"; the copyright and license notices must be retained.

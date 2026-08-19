@@ -153,7 +153,8 @@
     "roleAdmin": "Admin",
     "roleAiOfficer": "AI Officer",
     "roleMember": "Member",
-    "roleViewer": "Viewer"
+    "roleViewer": "Viewer",
+    "program": "Program"
   },
   "dashboard": {
     "title": "AI Governance",
@@ -223,7 +224,10 @@
     "entityOversightDecision": "Oversight Decision",
     "entityAIIncident": "Incident",
     "entityAIVendor": "Vendor",
-    "entityAIPolicy": "Policy"
+    "entityAIPolicy": "Policy",
+    "programCtaTitle": "Your AI Governance Program is live",
+    "programCtaDescription": "See the governance map, maturity scorecard, and 90-day plan — and export the program as a PDF to share.",
+    "programCtaButton": "View program"
   },
   "aiRegistry": {
     "title": "AI Registry",
@@ -486,7 +490,8 @@
     "lawFirmPreviewTitle": "Law Firm Program Preview",
     "lawFirmReviewTitle": "Law Firm Toolkit",
     "lawFirmPolicyPack": "Law Firm Policy Pack",
-    "chipVendors": "Vendors"
+    "chipVendors": "Vendors",
+    "viewProgram": "View your AI Governance Program"
   },
   "assessments": {
     "title": "Assessments",
@@ -2893,6 +2898,240 @@
         "title": "Security Contact",
         "body": "If you discover a security vulnerability or have questions about our security practices, please contact us at <link>{email}</link>. We take all reports seriously and will respond promptly."
       }
+    }
+  },
+  "program": {
+    "page": {
+      "title": "AI Governance Program",
+      "subtitle": "The living picture of how your organization governs AI — map, maturity, and the road ahead.",
+      "exportPdf": "Export PDF",
+      "mapTitle": "Governance Map",
+      "mapSubtitle": "Every AI system, its risk tier, controls, and the vendors behind them — gaps included.",
+      "scorecardTitle": "Program Scorecard",
+      "scorecardSubtitle": "Maturity across eight dimensions, mapped to the NIST AI RMF functions.",
+      "nistTitle": "NIST AI RMF profile — current vs target",
+      "dimensionsTitle": "Maturity dimensions",
+      "planTitle": "Next 90 days",
+      "planSubtitle": "Actions derived from your program's actual gaps, ordered by severity.",
+      "rolloutTitle": "Recommended rollout by tool category",
+      "rolloutSubtitle": "How to employ each class of tool in the coming quarter.",
+      "dutiesTitle": "Professional duties coverage",
+      "dutiesSubtitle": "How the program's controls map to counsel's professional obligations.",
+      "emptyTitle": "No AI systems registered yet",
+      "emptyBody": "Run the quick start to build your governance program — the map, scorecard, and action plan appear here the moment it completes.",
+      "emptyCta": "Open Quick Start"
+    },
+    "tiles": {
+      "overall": "Overall maturity",
+      "systemsGoverned": "Systems classified",
+      "highRisk": "High-risk under oversight",
+      "policyCoverage": "Core policies",
+      "complianceAssessed": "Compliance assessed",
+      "openGaps": "Open gaps"
+    },
+    "dimension": {
+      "inventory": "Inventory",
+      "classification": "Classification",
+      "oversight": "Oversight",
+      "policies": "Policies",
+      "compliance": "Compliance",
+      "transparency": "Transparency",
+      "vendorRisk": "Vendor risk",
+      "shadowAi": "Shadow AI"
+    },
+    "nist": {
+      "GOVERN": "GOVERN",
+      "MAP": "MAP",
+      "MEASURE": "MEASURE",
+      "MANAGE": "MANAGE",
+      "ariaLabel": "NIST AI RMF maturity radar"
+    },
+    "plan": {
+      "bucket1": "Days 1–30",
+      "bucket2": "Days 31–60",
+      "bucket3": "Days 61–90",
+      "empty": "Nothing scheduled",
+      "effort": "Effort: {effort}"
+    },
+    "stage": {
+      "ADOPT": "Adopt",
+      "PILOT": "Pilot",
+      "RESTRICT": "Restrict",
+      "HOLD": "Hold"
+    },
+    "duties": {
+      "status": {
+        "inPlace": "In place",
+        "partial": "In progress",
+        "missing": "Missing",
+        "recommended": "Recommended"
+      },
+      "controlGate": "Oversight gate: {gateType}",
+      "control": {
+        "register": "AI register",
+        "transparency": "Art. 50 transparency"
+      }
+    },
+    "map": {
+      "ariaLabel": "AI governance map",
+      "ungrouped": "Other systems",
+      "vendorSystems": "{count} systems",
+      "tier": {
+        "UNACCEPTABLE": "Unacceptable",
+        "HIGH": "High",
+        "LIMITED": "Limited",
+        "MINIMAL": "Minimal",
+        "UNCLASSIFIED": "Unclassified"
+      },
+      "filters": {
+        "showPreDeployment": "Include pre-deployment",
+        "gapsOnly": "Gaps only"
+      },
+      "stage": {
+        "ADOPT": "Adopt",
+        "PILOT": "Pilot",
+        "RESTRICT": "Restrict",
+        "HOLD": "Hold"
+      },
+      "legend": {
+        "risk-unacceptable": "Unacceptable risk",
+        "risk-high": "High risk",
+        "risk-limited": "Limited risk",
+        "risk-minimal": "Minimal risk",
+        "risk-unclassified": "Unclassified",
+        "glyph-gate": "Oversight gate",
+        "glyph-policy": "Linked policies",
+        "glyph-transparency": "Transparency (Art. 50)",
+        "glyph-personal-data": "Personal data"
+      }
+    }
+  },
+  "programReport": {
+    "title": "AI Governance Program",
+    "coverEyebrow": "Program Report",
+    "coverLead": "This report presents the organization's AI governance program: every AI system in use, its risk classification and oversight controls, the policy framework, and the maturity of the program measured against the NIST AI RMF functions.",
+    "maturityLabel": "Overall maturity",
+    "maturitySublabel": "of 100, mean of the four NIST AI RMF functions",
+    "confidential": "CONFIDENTIAL",
+    "disclaimer": "Generated by AI SENTINEL from the organization's live governance records. Not legal advice.",
+    "map": {
+      "eyebrow": "Governance Map",
+      "title": "The AI landscape, governed"
+    },
+    "legend": {
+      "risk-unacceptable": "Unacceptable risk",
+      "risk-high": "High risk",
+      "risk-limited": "Limited risk",
+      "risk-minimal": "Minimal risk",
+      "risk-unclassified": "Not yet classified",
+      "glyph-gate": "Oversight gate",
+      "glyph-policy": "Policy links",
+      "glyph-transparency": "Art. 50 transparency",
+      "glyph-personal-data": "Processes personal data"
+    },
+    "scorecard": {
+      "eyebrow": "Scorecard",
+      "title": "Program scorecard",
+      "radarCaption": "NIST AI RMF functions — current vs target",
+      "current": "Current",
+      "target": "Target"
+    },
+    "tiles": {
+      "overall": "Overall maturity",
+      "systemsGoverned": "Systems classified",
+      "highRiskOversight": "High-risk under oversight",
+      "policyCoverage": "Core policies in place",
+      "complianceAssessed": "Compliance assessed",
+      "openGaps": "Open gaps"
+    },
+    "nist": {
+      "GOVERN": "GOVERN",
+      "MAP": "MAP",
+      "MEASURE": "MEASURE",
+      "MANAGE": "MANAGE"
+    },
+    "dimension": {
+      "inventory": "Inventory",
+      "classification": "Classification",
+      "oversight": "Oversight",
+      "policies": "Policies",
+      "compliance": "Compliance",
+      "transparency": "Transparency",
+      "vendorRisk": "Vendor risk",
+      "shadowAi": "Shadow AI"
+    },
+    "compliance": {
+      "title": "Compliance mappings",
+      "compliant": "Compliant",
+      "partial": "Partially compliant",
+      "other": "Non-compliant / N.A.",
+      "notAssessed": "Not assessed"
+    },
+    "systems": {
+      "eyebrow": "System Register",
+      "title": "Systems by category",
+      "colSystem": "System",
+      "colRisk": "Risk",
+      "colStatus": "Status",
+      "colVendor": "Vendor",
+      "colGates": "Gates",
+      "colCompliance": "Compliance",
+      "ungrouped": "Other systems"
+    },
+    "risk": {
+      "UNACCEPTABLE": "Unacceptable",
+      "HIGH": "High",
+      "LIMITED": "Limited",
+      "MINIMAL": "Minimal",
+      "unclassified": "Unclassified"
+    },
+    "status": {
+      "DRAFT": "Draft",
+      "DEVELOPMENT": "Development",
+      "TESTING": "Testing",
+      "DEPLOYED": "Deployed"
+    },
+    "plan": {
+      "eyebrow": "Action Plan",
+      "title": "The next 90 days",
+      "bucket": {
+        "1-30": "Days 1–30",
+        "31-60": "Days 31–60",
+        "61-90": "Days 61–90"
+      }
+    },
+    "rollout": {
+      "title": "Recommended rollout by tool category"
+    },
+    "stage": {
+      "ADOPT": "Adopt",
+      "PILOT": "Pilot",
+      "RESTRICT": "Restrict",
+      "HOLD": "Hold"
+    },
+    "duties": {
+      "eyebrow": "Professional Duties",
+      "title": "Professional duties coverage",
+      "lead": "How the program's controls map to the professional duties governing the use of AI in legal practice."
+    },
+    "dutyStatus": {
+      "inPlace": "In place",
+      "partial": "In progress",
+      "missing": "Missing",
+      "recommended": "Recommended"
+    },
+    "dutyControl": {
+      "register": "AI system register",
+      "transparency": "Transparency profiles"
+    },
+    "annex": {
+      "eyebrow": "Annex",
+      "title": "Methodology",
+      "methodology": "Every score in this report is computed from the organization's live governance records. Each of the eight dimensions is scored 0–100 by the formulas below; ratios are clamped to [0, 1] and scores to [0, 100]. The four NIST AI RMF function scores are weighted means of the dimension scores, and the overall maturity is the mean of the four functions.",
+      "dimensionsTitle": "Dimension formulas",
+      "nistTitle": "NIST AI RMF mapping (weights and targets)",
+      "target": "target",
+      "generated": "Generated"
     }
   }
 }

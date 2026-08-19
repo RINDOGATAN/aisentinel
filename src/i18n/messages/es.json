@@ -153,7 +153,8 @@
     "roleAdmin": "Administrador",
     "roleAiOfficer": "Responsable de IA",
     "roleMember": "Miembro",
-    "roleViewer": "Lector"
+    "roleViewer": "Lector",
+    "program": "Programa"
   },
   "dashboard": {
     "title": "Gobernanza de IA",
@@ -223,7 +224,10 @@
     "entityOversightDecision": "Decisión de Supervisión",
     "entityAIIncident": "Incidente",
     "entityAIVendor": "Proveedor",
-    "entityAIPolicy": "Política"
+    "entityAIPolicy": "Política",
+    "programCtaTitle": "Tu Programa de Gobernanza de IA está activo",
+    "programCtaDescription": "Consulta el mapa de gobernanza, el cuadro de madurez y el plan de 90 días, y exporta el programa en PDF para compartirlo.",
+    "programCtaButton": "Ver programa"
   },
   "aiRegistry": {
     "title": "Registro de IA",
@@ -486,7 +490,8 @@
     "lawFirmPreviewTitle": "Vista previa del programa del despacho",
     "lawFirmReviewTitle": "Kit de herramientas del despacho",
     "lawFirmPolicyPack": "Paquete de políticas del despacho",
-    "chipVendors": "Proveedores"
+    "chipVendors": "Proveedores",
+    "viewProgram": "Ver tu Programa de Gobernanza de IA"
   },
   "assessments": {
     "title": "Evaluaciones",
@@ -2893,6 +2898,240 @@
         "title": "Contacto de Seguridad",
         "body": "Si descubres una vulnerabilidad de seguridad o tienes preguntas sobre nuestras prácticas de seguridad, escríbenos a <link>{email}</link>. Nos tomamos en serio todos los avisos y responderemos con prontitud."
       }
+    }
+  },
+  "program": {
+    "page": {
+      "title": "Programa de Gobernanza de IA",
+      "subtitle": "La imagen viva de cómo tu organización gobierna la IA: mapa, madurez y el camino por delante.",
+      "exportPdf": "Exportar PDF",
+      "mapTitle": "Mapa de Gobernanza",
+      "mapSubtitle": "Cada sistema de IA, su nivel de riesgo, sus controles y los proveedores detrás, con las carencias a la vista.",
+      "scorecardTitle": "Cuadro de Madurez",
+      "scorecardSubtitle": "Madurez en ocho dimensiones, proyectada sobre las funciones del NIST AI RMF.",
+      "nistTitle": "Perfil NIST AI RMF: actual frente a objetivo",
+      "dimensionsTitle": "Dimensiones de madurez",
+      "planTitle": "Próximos 90 días",
+      "planSubtitle": "Acciones derivadas de las carencias reales de tu programa, ordenadas por gravedad.",
+      "rolloutTitle": "Despliegue recomendado por categoría de herramienta",
+      "rolloutSubtitle": "Cómo emplear cada clase de herramienta durante el próximo trimestre.",
+      "dutiesTitle": "Cobertura de deberes profesionales",
+      "dutiesSubtitle": "Cómo los controles del programa responden a las obligaciones profesionales del abogado.",
+      "emptyTitle": "Aún no hay sistemas de IA registrados",
+      "emptyBody": "Ejecuta el inicio rápido para construir tu programa de gobernanza: el mapa, el cuadro de madurez y el plan de acción aparecerán aquí en cuanto termine.",
+      "emptyCta": "Abrir Inicio Rápido"
+    },
+    "tiles": {
+      "overall": "Madurez global",
+      "systemsGoverned": "Sistemas clasificados",
+      "highRisk": "Alto riesgo bajo supervisión",
+      "policyCoverage": "Políticas esenciales",
+      "complianceAssessed": "Cumplimiento evaluado",
+      "openGaps": "Carencias abiertas"
+    },
+    "dimension": {
+      "inventory": "Inventario",
+      "classification": "Clasificación",
+      "oversight": "Supervisión",
+      "policies": "Políticas",
+      "compliance": "Cumplimiento",
+      "transparency": "Transparencia",
+      "vendorRisk": "Riesgo de proveedores",
+      "shadowAi": "IA en la sombra"
+    },
+    "nist": {
+      "GOVERN": "GOVERN",
+      "MAP": "MAP",
+      "MEASURE": "MEASURE",
+      "MANAGE": "MANAGE",
+      "ariaLabel": "Radar de madurez NIST AI RMF"
+    },
+    "plan": {
+      "bucket1": "Días 1–30",
+      "bucket2": "Días 31–60",
+      "bucket3": "Días 61–90",
+      "empty": "Nada programado",
+      "effort": "Esfuerzo: {effort}"
+    },
+    "stage": {
+      "ADOPT": "Adoptar",
+      "PILOT": "Pilotar",
+      "RESTRICT": "Restringir",
+      "HOLD": "Detener"
+    },
+    "duties": {
+      "status": {
+        "inPlace": "Implantado",
+        "partial": "En curso",
+        "missing": "Ausente",
+        "recommended": "Recomendado"
+      },
+      "controlGate": "Punto de control: {gateType}",
+      "control": {
+        "register": "Registro de IA",
+        "transparency": "Transparencia (Art. 50)"
+      }
+    },
+    "map": {
+      "ariaLabel": "Mapa de gobernanza de IA",
+      "ungrouped": "Otros sistemas",
+      "vendorSystems": "{count} sistemas",
+      "tier": {
+        "UNACCEPTABLE": "Inaceptable",
+        "HIGH": "Alto",
+        "LIMITED": "Limitado",
+        "MINIMAL": "Mínimo",
+        "UNCLASSIFIED": "Sin clasificar"
+      },
+      "filters": {
+        "showPreDeployment": "Incluir previos al despliegue",
+        "gapsOnly": "Solo carencias"
+      },
+      "stage": {
+        "ADOPT": "Adoptar",
+        "PILOT": "Pilotar",
+        "RESTRICT": "Restringir",
+        "HOLD": "En espera"
+      },
+      "legend": {
+        "risk-unacceptable": "Riesgo inaceptable",
+        "risk-high": "Riesgo alto",
+        "risk-limited": "Riesgo limitado",
+        "risk-minimal": "Riesgo mínimo",
+        "risk-unclassified": "Sin clasificar",
+        "glyph-gate": "Punto de control",
+        "glyph-policy": "Políticas vinculadas",
+        "glyph-transparency": "Transparencia (Art. 50)",
+        "glyph-personal-data": "Datos personales"
+      }
+    }
+  },
+  "programReport": {
+    "title": "Programa de Gobernanza de IA",
+    "coverEyebrow": "Informe del programa",
+    "coverLead": "Este informe presenta el programa de gobernanza de IA de la organización: todos los sistemas de IA en uso, su clasificación de riesgo y puntos de control, el marco de políticas y la madurez del programa medida según las funciones del NIST AI RMF.",
+    "maturityLabel": "Madurez global",
+    "maturitySublabel": "sobre 100, media de las cuatro funciones del NIST AI RMF",
+    "confidential": "CONFIDENCIAL",
+    "disclaimer": "Generado por AI SENTINEL a partir de los registros de gobernanza de la organización. No constituye asesoramiento jurídico.",
+    "map": {
+      "eyebrow": "Mapa de gobernanza",
+      "title": "El panorama de IA, gobernado"
+    },
+    "legend": {
+      "risk-unacceptable": "Riesgo inaceptable",
+      "risk-high": "Riesgo alto",
+      "risk-limited": "Riesgo limitado",
+      "risk-minimal": "Riesgo mínimo",
+      "risk-unclassified": "Sin clasificar",
+      "glyph-gate": "Punto de control",
+      "glyph-policy": "Políticas vinculadas",
+      "glyph-transparency": "Transparencia Art. 50",
+      "glyph-personal-data": "Trata datos personales"
+    },
+    "scorecard": {
+      "eyebrow": "Cuadro de mando",
+      "title": "Cuadro de mando del programa",
+      "radarCaption": "Funciones del NIST AI RMF — actual frente a objetivo",
+      "current": "Actual",
+      "target": "Objetivo"
+    },
+    "tiles": {
+      "overall": "Madurez global",
+      "systemsGoverned": "Sistemas clasificados",
+      "highRiskOversight": "Alto riesgo con control",
+      "policyCoverage": "Políticas esenciales",
+      "complianceAssessed": "Cumplimiento evaluado",
+      "openGaps": "Carencias abiertas"
+    },
+    "nist": {
+      "GOVERN": "GOVERN",
+      "MAP": "MAP",
+      "MEASURE": "MEASURE",
+      "MANAGE": "MANAGE"
+    },
+    "dimension": {
+      "inventory": "Inventario",
+      "classification": "Clasificación",
+      "oversight": "Supervisión",
+      "policies": "Políticas",
+      "compliance": "Cumplimiento",
+      "transparency": "Transparencia",
+      "vendorRisk": "Riesgo de proveedores",
+      "shadowAi": "IA en la sombra"
+    },
+    "compliance": {
+      "title": "Correspondencias de cumplimiento",
+      "compliant": "Conforme",
+      "partial": "Parcialmente conforme",
+      "other": "No conforme / N.A.",
+      "notAssessed": "Sin evaluar"
+    },
+    "systems": {
+      "eyebrow": "Registro de sistemas",
+      "title": "Sistemas por categoría",
+      "colSystem": "Sistema",
+      "colRisk": "Riesgo",
+      "colStatus": "Estado",
+      "colVendor": "Proveedor",
+      "colGates": "Controles",
+      "colCompliance": "Cumplimiento",
+      "ungrouped": "Otros sistemas"
+    },
+    "risk": {
+      "UNACCEPTABLE": "Inaceptable",
+      "HIGH": "Alto",
+      "LIMITED": "Limitado",
+      "MINIMAL": "Mínimo",
+      "unclassified": "Sin clasificar"
+    },
+    "status": {
+      "DRAFT": "Borrador",
+      "DEVELOPMENT": "En desarrollo",
+      "TESTING": "En pruebas",
+      "DEPLOYED": "Desplegado"
+    },
+    "plan": {
+      "eyebrow": "Plan de acción",
+      "title": "Los próximos 90 días",
+      "bucket": {
+        "1-30": "Días 1–30",
+        "31-60": "Días 31–60",
+        "61-90": "Días 61–90"
+      }
+    },
+    "rollout": {
+      "title": "Despliegue recomendado por categoría de herramienta"
+    },
+    "stage": {
+      "ADOPT": "Adoptar",
+      "PILOT": "Pilotar",
+      "RESTRICT": "Restringir",
+      "HOLD": "Retener"
+    },
+    "duties": {
+      "eyebrow": "Deberes profesionales",
+      "title": "Cobertura de deberes profesionales",
+      "lead": "Cómo los controles del programa se corresponden con los deberes profesionales que rigen el uso de la IA en el ejercicio de la abogacía."
+    },
+    "dutyStatus": {
+      "inPlace": "Implantado",
+      "partial": "En curso",
+      "missing": "Ausente",
+      "recommended": "Recomendado"
+    },
+    "dutyControl": {
+      "register": "Registro de sistemas de IA",
+      "transparency": "Perfiles de transparencia"
+    },
+    "annex": {
+      "eyebrow": "Anexo",
+      "title": "Metodología",
+      "methodology": "Todas las puntuaciones de este informe se calculan a partir de los registros de gobernanza de la organización. Cada una de las ocho dimensiones se puntúa de 0 a 100 con las fórmulas siguientes; las razones se acotan a [0, 1] y las puntuaciones a [0, 100]. Las puntuaciones de las cuatro funciones del NIST AI RMF son medias ponderadas de las dimensiones, y la madurez global es la media de las cuatro funciones.",
+      "dimensionsTitle": "Fórmulas por dimensión",
+      "nistTitle": "Correspondencia NIST AI RMF (pesos y objetivos)",
+      "target": "objetivo",
+      "generated": "Generado"
     }
   }
 }

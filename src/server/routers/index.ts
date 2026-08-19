@@ -16,6 +16,7 @@ import { shadowAiRouter } from "./governance/shadowAi";
 import { vendorCatalogRouter } from "./governance/vendorCatalog";
 import { userRouter } from "./user";
 import { quickstartRouter } from "./governance/quickstart";
+import { programRouter } from "./governance/program";
 import { clientsRouter } from "./governance/clients";
 import { billingRouter } from "./billing";
 import { feedbackRouter } from "./feedback";
@@ -37,6 +38,7 @@ export const appRouter = createTRPCRouter({
   vendorCatalog: vendorCatalogRouter,
   user: userRouter,
   quickstart: quickstartRouter,
+  program: programRouter,
   clients: clientsRouter,
   billing: billingRouter,
   feedback: feedbackRouter,

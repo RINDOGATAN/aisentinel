@@ -23,6 +23,7 @@ import {
   ScrollText,
   Search,
   Sparkles,
+  Network,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -125,6 +126,31 @@ export default function GovernanceDashboardPage() {
           </DropdownMenu>
         )}
       </div>
+
+      {/* Program CTA — once a quickstart profile is completed, the flagship
+          deliverable is the Governance Program page */}
+      {stats?.quickstartProfile && (
+        <Card className="border-primary/30 bg-primary/5">
+          <CardContent className="p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+            <div className="p-3 rounded-lg bg-primary/10 shrink-0">
+              <Network className="w-6 h-6 text-primary" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="font-semibold text-sm sm:text-base">
+                {t("programCtaTitle")}
+              </h3>
+              <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+                {t("programCtaDescription")}
+              </p>
+            </div>
+            <Link href="/governance/program">
+              <Button size="sm" className="shrink-0">
+                {t("programCtaButton")}
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Quickstart prompt — show when org has few systems and no completed program profile */}
       {(stats?.totalSystems ?? 0) <= 3 &&

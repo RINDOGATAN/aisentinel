@@ -1565,6 +1565,16 @@ export default function QuickstartPage() {
             </CardContent>
           </Card>
 
+          {/* Primary: the flagship deliverable */}
+          <div className="flex justify-center">
+            <Link href="/governance/program">
+              <Button size="lg">
+                <Sparkles className="w-4 h-4 mr-2" />
+                {t("viewProgram")}
+              </Button>
+            </Link>
+          </div>
+
           {/* Quick nav cards */}
           <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
             <Link href="/governance/ai-registry">

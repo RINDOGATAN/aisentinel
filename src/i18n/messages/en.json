@@ -646,7 +646,11 @@
     "descriptionPlaceholder": "Additional details about this evidence...",
     "notesPlaceholder": "Notes...",
     "noSystemsPrompt": "No AI systems registered yet — compliance tracking starts with a registered system.",
-    "noSystemsLink": "Register an AI system"
+    "noSystemsLink": "Register an AI system",
+    "mappingSaved": "Assessment saved",
+    "mappingSavedPropagated": "Assessment saved — applied to {count} linked requirements",
+    "evidenceAdded": "Evidence added",
+    "evidenceRemoved": "Evidence removed"
   },
   "incidents": {
     "title": "AI Incidents",

@@ -646,7 +646,11 @@
     "descriptionPlaceholder": "Detalles adicionales sobre esta evidencia...",
     "notesPlaceholder": "Notas...",
     "noSystemsPrompt": "Todavía no hay sistemas de IA registrados — el seguimiento de cumplimiento empieza con un sistema registrado.",
-    "noSystemsLink": "Registrar un sistema de IA"
+    "noSystemsLink": "Registrar un sistema de IA",
+    "mappingSaved": "Evaluación guardada",
+    "mappingSavedPropagated": "Evaluación guardada: aplicada a {count} requisitos vinculados",
+    "evidenceAdded": "Evidencia añadida",
+    "evidenceRemoved": "Evidencia eliminada"
   },
   "incidents": {
     "title": "Incidentes de IA",

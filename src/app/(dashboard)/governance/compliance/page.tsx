@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { trpc } from "@/lib/trpc";
+import { toast } from "sonner";
 import { useOrganization } from "@/lib/organization-context";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -154,17 +155,35 @@ export default function CompliancePage() {
     { enabled: !!orgId && !!selectedSystemId && !!selectedFrameworkId }
   );
 
+  // Every mutation surfaces its outcome: a silent failure here reads as the
+  // form "stalling", because the save button hides itself on click.
   const updateMapping = trpc.compliance.updateMapping.useMutation({
-    // Propagation to linked requirements is reflected by the matrix refetch.
-    onSuccess: () => refetchMatrix(),
+    onSuccess: (data) => {
+      toast.success(
+        data.propagatedCount > 0
+          ? t("mappingSavedPropagated", { count: data.propagatedCount })
+          : t("mappingSaved"),
+      );
+      // Propagation to linked requirements is reflected by the matrix refetch.
+      refetchMatrix();
+    },
+    onError: (err) => toast.error(err.message),
   });
 
   const addEvidence = trpc.compliance.addEvidence.useMutation({
-    onSuccess: () => refetchMatrix(),
+    onSuccess: () => {
+      toast.success(t("evidenceAdded"));
+      refetchMatrix();
+    },
+    onError: (err) => toast.error(err.message),
   });
 
   const removeEvidence = trpc.compliance.removeEvidence.useMutation({
-    onSuccess: () => refetchMatrix(),
+    onSuccess: () => {
+      toast.success(t("evidenceRemoved"));
+      refetchMatrix();
+    },
+    onError: (err) => toast.error(err.message),
   });
 
   const systemList = systems?.items ?? [];

@@ -127,6 +127,17 @@ export const complianceRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      // The unique key (aiSystemId, requirementId) is not org-scoped —
+      // verify the system belongs to this organization before upserting,
+      // or a crafted aiSystemId could write into another org's mapping.
+      const ownedSystem = await ctx.prisma.aISystem.findFirst({
+        where: { id: input.aiSystemId, organizationId: ctx.organization.id },
+        select: { id: true },
+      });
+      if (!ownedSystem) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "AI system not found" });
+      }
+
       const mapping = await ctx.prisma.complianceMapping.upsert({
         where: {
           aiSystemId_requirementId: {
@@ -215,6 +226,17 @@ export const complianceRouter = createTRPCRouter({
         }
       }
 
+      await ctx.prisma.auditLog.create({
+        data: {
+          organizationId: ctx.organization.id,
+          userId: ctx.session.user.id,
+          entityType: "ComplianceMapping",
+          entityId: mapping.id,
+          action: "UPDATE",
+          changes: { status: input.status, propagatedCount },
+        },
+      });
+
       return { ...mapping, propagatedCount };
     }),
 
@@ -231,6 +253,16 @@ export const complianceRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      // Same org-scoping guard as updateMapping: the unique key is not
+      // org-scoped, so verify system ownership first.
+      const ownedSystem = await ctx.prisma.aISystem.findFirst({
+        where: { id: input.aiSystemId, organizationId: ctx.organization.id },
+        select: { id: true },
+      });
+      if (!ownedSystem) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "AI system not found" });
+      }
+
       // Upsert the mapping first (create with NOT_ASSESSED if it doesn't exist)
       const mapping = await ctx.prisma.complianceMapping.upsert({
         where: {
@@ -260,6 +292,17 @@ export const complianceRouter = createTRPCRouter({
         },
       });
 
+      await ctx.prisma.auditLog.create({
+        data: {
+          organizationId: ctx.organization.id,
+          userId: ctx.session.user.id,
+          entityType: "ComplianceEvidence",
+          entityId: evidence.id,
+          action: "CREATE",
+          changes: { type: input.type, title: input.title },
+        },
+      });
+
       return evidence;
     }),
 
@@ -284,6 +327,17 @@ export const complianceRouter = createTRPCRouter({
 
       await ctx.prisma.complianceEvidence.delete({
         where: { id: input.evidenceId },
+      });
+
+      await ctx.prisma.auditLog.create({
+        data: {
+          organizationId: ctx.organization.id,
+          userId: ctx.session.user.id,
+          entityType: "ComplianceEvidence",
+          entityId: input.evidenceId,
+          action: "DELETE",
+          changes: { title: evidence.title },
+        },
       });
 
       return { success: true };

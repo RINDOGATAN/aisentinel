@@ -37,6 +37,13 @@
  * defaults; incident-response readiness joins MANAGE in a later version.
  */
 
+/**
+ * Scoring-model version. Bump when a formula, weight or target changes —
+ * exported artifacts state it so a score can always be traced to the model
+ * that produced it. See src/config/rule-pack-versions.ts.
+ */
+export const MATURITY_MODEL_VERSION = "1.0.0";
+
 // ── Snapshot input ──────────────────────────────────────────────────
 
 export interface ProgramSnapshot {

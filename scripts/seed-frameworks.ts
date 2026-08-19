@@ -112,6 +112,9 @@ async function main() {
       { code: "Art. 27(3)", title: "Notify market surveillance authority", description: "Notify the relevant market surveillance authority of the result of the assessment.", sortOrder: 3 },
     ]},
 
+    // CHAPTER III, Section 5 - Registration
+    { code: "Art. 49", title: "Registration", description: "Before placing a high-risk AI system listed in Annex III on the market or putting it into service, the provider (or authorised representative) shall register themselves and the system in the EU database referred to in Art. 71. Deployers that are public authorities or Union bodies shall also register their use.", applicableTo: ["HIGH"], sortOrder: 49, children: [] },
+
     // CHAPTER IV - Transparency
     { code: "Art. 50", title: "Transparency obligations for certain AI systems", description: "Providers and deployers of certain AI systems shall ensure transparency. Applicable since 2 August 2026. Final Commission guidelines on transparency obligations adopted 20 July 2026; the Code of Practice on Transparency of AI-Generated Content was assessed adequate for Art. 50(2), (4) and (5) in July 2026.", applicableTo: ["LIMITED", "HIGH"], sortOrder: 50, children: [
       { code: "Art. 50(1)", title: "AI interaction disclosure", description: "Providers shall ensure that AI systems intended to interact with persons are designed so persons are informed they are interacting with AI.", sortOrder: 1 },
@@ -136,6 +139,9 @@ async function main() {
       { code: "Art. 73(1)", title: "Report serious incidents", description: "Report any serious incident to the market surveillance authorities of the Member States where that incident occurred.", sortOrder: 1 },
       { code: "Art. 73(2)-(4)", title: "Reporting timelines", description: "Report immediately after establishing a causal link (or reasonable likelihood of one), and no later than 15 days after awareness; no later than 2 days for widespread infringements or serious incidents involving critical-infrastructure disruption; no later than 10 days in the event of death.", sortOrder: 2 },
     ]},
+
+    // CHAPTER IX, Section 4 - Remedies
+    { code: "Art. 86", title: "Right to explanation of individual decision-making", description: "Any affected person subject to a decision taken by a deployer on the basis of the output of a high-risk AI system listed in Annex III (other than point 2) which produces legal effects or similarly significantly affects them in a way they consider adversely to impact their health, safety or fundamental rights, has the right to obtain from the deployer clear and meaningful explanations of the role of the AI system in the decision procedure and the main elements of the decision taken.", applicableTo: ["HIGH"], sortOrder: 86, children: [] },
 
     // CHAPTER XIII - Final provisions: applicability timeline (Art. 113)
     // As amended by the Digital Omnibus on AI — Regulation (EU) 2026/1744

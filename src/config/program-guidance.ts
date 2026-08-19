@@ -25,6 +25,13 @@ import {
 
 // ── Review marker ───────────────────────────────────────────────────
 
+/**
+ * Rule-pack version. Bump on any content change (rollout stages, action
+ * templates, duty grid) so exported artifacts can state which revision
+ * produced them. See src/config/rule-pack-versions.ts.
+ */
+export const PROGRAM_GUIDANCE_VERSION = "2026.08.1";
+
 /** Guidance content review date. Sign-off pending. */
 export const PROGRAM_GUIDANCE_LAW_REVIEWED_AS_OF = "2026-08-18";
 

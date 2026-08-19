@@ -23,6 +23,14 @@
 
 import { screenAnnexIii, type AnnexIiiFacts } from "./annex-iii-rules";
 
+/**
+ * Rule-pack version. Bump on any content change (obligation triggers, marking
+ * methods, deadline arithmetic) so exported artifacts can state which revision
+ * produced them. See src/config/rule-pack-versions.ts.
+ */
+export const TRANSPARENCY_RULES_VERSION = "2026.08.1";
+export const TRANSPARENCY_RULES_LAW_REVIEWED_AS_OF = "2026-08-05";
+
 // ---------------------------------------------------------------------------
 // Dates and vocabularies
 // ---------------------------------------------------------------------------

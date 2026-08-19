@@ -94,6 +94,13 @@ export interface LawFirmPolicy {
 // REVIEW MARKER
 // ============================================================
 
+/**
+ * Rule-pack version. Bump on any content change (categories, tools, policy
+ * pack) so exported artifacts can state which revision produced them.
+ * See src/config/rule-pack-versions.ts.
+ */
+export const LAWFIRM_TOOLKIT_VERSION = "2026.08.2";
+
 /** EU AI Act / professional-duty content review date. Signed off 2026-08-18. */
 export const LAWFIRM_LAW_REVIEWED_AS_OF = "2026-08-18";
 

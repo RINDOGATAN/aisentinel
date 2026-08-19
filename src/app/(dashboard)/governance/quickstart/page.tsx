@@ -38,6 +38,7 @@ import {
   ScrollText,
   Scale,
   LayoutDashboard,
+  Download,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations, useLocale } from "next-intl";
@@ -48,6 +49,7 @@ import {
   LAWFIRM_TOOLS,
   type ContentLocale,
 } from "@/config/lawfirm-ai-toolkit";
+import { ProgramMap } from "@/components/governance/program/ProgramMap";
 
 // ============================================================
 // ICON MAP
@@ -191,9 +193,19 @@ export default function QuickstartPage() {
       },
     );
 
+  // The generated program, fetched once the wizard lands on success so the
+  // hand-off can show the real artifact rather than a counter grid.
+  const { data: programGraph } = trpc.program.getProgramGraph.useQuery(
+    { organizationId: orgId, locale: contentLocale },
+    { enabled: !!orgId && step === "success" },
+  );
+
+  const utils = trpc.useUtils();
+
   const executeMutation = trpc.quickstart.execute.useMutation({
     onSuccess: (data) => {
       setExecutionResult(data);
+      void utils.program.getProgramGraph.invalidate();
       const total = data.systems + data.vendors + data.policies;
       if (total === 0) {
         toast.info("All records already exist — nothing new to create");
@@ -1509,104 +1521,72 @@ export default function QuickstartPage() {
                 {t("successDescription")}
               </p>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-w-2xl mx-auto pt-4">
-                {executionResult.vendors > 0 && (
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-primary">
-                      {executionResult.vendors}
-                    </div>
-                    <p className="text-xs text-muted-foreground">Vendors</p>
+              {/* The artifact itself — the peak moment hands over something
+                  the user can look at and forward, not a receipt. */}
+              {programGraph && programGraph.systems.length > 0 && (
+                <div className="pt-4 space-y-2">
+                  <div className="rounded-xl border border-border overflow-hidden bg-background">
+                    <ProgramMap graph={programGraph} interactive={false} maxWidth={720} />
                   </div>
-                )}
-                {executionResult.systems > 0 && (
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-primary">
-                      {executionResult.systems}
-                    </div>
-                    <p className="text-xs text-muted-foreground">AI Systems</p>
-                  </div>
-                )}
-                {executionResult.riskClassifications > 0 && (
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-primary">
-                      {executionResult.riskClassifications}
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      Risk Classifications
-                    </p>
-                  </div>
-                )}
-                {executionResult.oversightGates > 0 && (
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-primary">
-                      {executionResult.oversightGates}
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      Oversight Gates
-                    </p>
-                  </div>
-                )}
-                {executionResult.complianceMappings > 0 && (
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-primary">
-                      {executionResult.complianceMappings}
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      Compliance Reqs
-                    </p>
-                  </div>
-                )}
-                {executionResult.policies > 0 && (
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-primary">
-                      {executionResult.policies}
-                    </div>
-                    <p className="text-xs text-muted-foreground">Policies</p>
-                  </div>
-                )}
-                {executionResult.policyLinks > 0 && (
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-primary">
-                      {executionResult.policyLinks}
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      {t("statPolicyLinks")}
-                    </p>
-                  </div>
-                )}
-                {executionResult.transparencyProfiles > 0 && (
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-primary">
-                      {executionResult.transparencyProfiles}
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      {t("statTransparencyProfiles")}
-                    </p>
-                  </div>
-                )}
-                {executionResult.complianceBaselined > 0 && (
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-primary">
-                      {executionResult.complianceBaselined}
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      {t("statComplianceBaselined")}
-                    </p>
-                  </div>
-                )}
+                  <p className="text-xs text-muted-foreground">
+                    {t("handoffMapCaption")}
+                  </p>
+                </div>
+              )}
+
+              {/* Actions */}
+              <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+                <Button
+                  size="lg"
+                  onClick={() =>
+                    window.open(
+                      `/api/export/governance-program?organizationId=${orgId}&locale=${contentLocale}`,
+                      "_blank",
+                    )
+                  }
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  {t("downloadProgramPdf")}
+                </Button>
+                <Link href="/governance/program">
+                  <Button size="lg" variant="outline">
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    {t("viewProgram")}
+                  </Button>
+                </Link>
               </div>
+
+              {/* The numbers, demoted to a receipt line */}
+              <p className="text-xs text-muted-foreground pt-2">
+                {[
+                  executionResult.vendors > 0 && `${executionResult.vendors} ${t("statVendors")}`,
+                  executionResult.systems > 0 && `${executionResult.systems} ${t("statSystems")}`,
+                  executionResult.riskClassifications > 0 &&
+                    `${executionResult.riskClassifications} ${t("statRiskClassifications")}`,
+                  executionResult.oversightGates > 0 &&
+                    `${executionResult.oversightGates} ${t("statOversightGates")}`,
+                  executionResult.complianceMappings > 0 &&
+                    `${executionResult.complianceMappings} ${t("statComplianceMappings")}`,
+                  executionResult.policies > 0 && `${executionResult.policies} ${t("statPolicies")}`,
+                  executionResult.policyLinks > 0 &&
+                    `${executionResult.policyLinks} ${t("statPolicyLinks")}`,
+                  executionResult.transparencyProfiles > 0 &&
+                    `${executionResult.transparencyProfiles} ${t("statTransparencyProfiles")}`,
+                ]
+                  .filter(Boolean)
+                  .join(" · ")}
+              </p>
+
+              {/* Honesty line: auto-assessed content is waiting for a human */}
+              {executionResult.complianceBaselined > 0 && (
+                <p className="text-xs text-muted-foreground">
+                  {t("handoffConfirmPrompt", {
+                    count: executionResult.complianceBaselined,
+                  })}
+                </p>
+              )}
             </CardContent>
           </Card>
-
-          {/* Primary: the flagship deliverable */}
-          <div className="flex justify-center">
-            <Link href="/governance/program">
-              <Button size="lg">
-                <Sparkles className="w-4 h-4 mr-2" />
-                {t("viewProgram")}
-              </Button>
-            </Link>
-          </div>
 
           {/* Quick nav cards */}
           <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">

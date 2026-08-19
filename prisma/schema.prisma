@@ -125,6 +125,7 @@ model Organization {
   customerLinks         CustomerOrganization[]
   aiSettings            OrganizationAiSettings?
   aiGenerations         AiGeneration[]
+  programSnapshots      ProgramSnapshotRecord[]
 
   @@map("organizations")
 }
@@ -143,6 +144,23 @@ model OrganizationMember {
 
   @@unique([organizationId, userId])
   @@map("organization_members")
+}
+
+// ============================================================
+// PROVENANCE (cross-cutting)
+// ============================================================
+
+// Where a governance artifact came from. Defaults to USER_ENTERED so every
+// pre-existing row is already correct and needs no backfill; auto-generators
+// opt in explicitly. Confirmation (confirmedBy/confirmedAt) is orthogonal:
+// provenance records the ORIGIN, confirmation records that a human took
+// ownership. Editing an artifact through a normal mutation counts as confirming.
+enum Provenance {
+  USER_ENTERED // a human typed it
+  AUTO_CATALOG // derived from a curated catalog (vendor catalog, law-firm toolkit)
+  AUTO_TEMPLATE // generated from a template or baseline rule pack
+  AUTO_RULE // derived by a deterministic rule module (annex-iii-rules, transparency-rules)
+  IMPORTED // pushed in from a sibling app (vendor.watch, DPO Central)
 }
 
 // ============================================================
@@ -290,6 +308,12 @@ model RiskClassification {
   classifiedAt     DateTime    @default(now())
   updatedAt        DateTime    @updatedAt
 
+  // Provenance: origin of this artifact + whether a human has taken ownership.
+  provenance  Provenance @default(USER_ENTERED)
+  sourceRef   String?
+  confirmedBy String?
+  confirmedAt DateTime?
+
   aiSystem     AISystem                    @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
   organization Organization                @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   history      RiskClassificationHistory[]
@@ -344,6 +368,12 @@ model TransparencyProfile {
   reviewedAt                   DateTime                     @default(now())
   createdAt                    DateTime                     @default(now())
   updatedAt                    DateTime                     @updatedAt
+
+  // Provenance: origin of this artifact + whether a human has taken ownership.
+  provenance  Provenance @default(USER_ENTERED)
+  sourceRef   String?
+  confirmedBy String?
+  confirmedAt DateTime?
 
   aiSystem     AISystem     @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
@@ -459,6 +489,12 @@ model OversightGate {
   assignedTo     String?
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
+
+  // Provenance: origin of this artifact + whether a human has taken ownership.
+  provenance  Provenance @default(USER_ENTERED)
+  sourceRef   String?
+  confirmedBy String?
+  confirmedAt DateTime?
 
   organization Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   aiSystem     AISystem            @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
@@ -696,6 +732,12 @@ model ComplianceMapping {
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
 
+  // Provenance: origin of this artifact + whether a human has taken ownership.
+  provenance  Provenance @default(USER_ENTERED)
+  sourceRef   String?
+  confirmedBy String?
+  confirmedAt DateTime?
+
   organization  Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   aiSystem      AISystem              @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
   requirement   ComplianceRequirement @relation(fields: [requirementId], references: [id], onDelete: Cascade)
@@ -703,6 +745,9 @@ model ComplianceMapping {
 
   @@unique([aiSystemId, requirementId])
   @@index([organizationId])
+  // The only high-cardinality provenance table: the assurance summary counts
+  // confirmed vs unconfirmed rows per org straight off this index.
+  @@index([organizationId, provenance, confirmedAt])
   @@map("compliance_mappings")
 }
 
@@ -1106,6 +1151,12 @@ model AIPolicy {
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
 
+  // Provenance: origin of this artifact + whether a human has taken ownership.
+  provenance  Provenance @default(USER_ENTERED)
+  sourceRef   String?
+  confirmedBy String?
+  confirmedAt DateTime?
+
   organization Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   versions     AIPolicyVersion[]
   systemLinks  AIPolicySystemLink[]
@@ -1235,4 +1286,56 @@ model AiGeneration {
 
   @@index([organizationId, createdAt])
   @@map("ai_generations")
+}
+
+// ============================================================
+// PROGRAM SNAPSHOTS
+// ============================================================
+
+// Why a snapshot exists at all: a governance artifact that leaves the building
+// must be reproducible months later against a database that has since moved on.
+// A snapshot freezes exactly what program-data.ts returned — no reshaping, so
+// the screen, the PDF and the archived copy cannot diverge — plus the rule-pack
+// versions in force, which is what lets a diff separate "the program improved"
+// from "the law moved".
+//
+// Immutable by construction: the service exposes create/read/delete only.
+// NOTE: named ProgramSnapshotRecord, not ProgramSnapshot — the latter is
+// already an exported TypeScript interface in services/program/maturity.ts and
+// a Prisma model of that name would collide on the @prisma/client export.
+enum SnapshotReason {
+  QUICKSTART
+  MANUAL
+  EXPORT
+  SCHEDULED
+}
+
+model ProgramSnapshotRecord {
+  id             String         @id @default(cuid())
+  organizationId String
+  label          String?
+  reason         SnapshotReason
+  /// Content locale the payload was resolved in ("en" | "es")
+  locale         String
+  /// ProgramGraph, verbatim
+  graph          Json
+  /// ProgramScorecardData, verbatim
+  scorecard      Json
+  /// AssuranceResult when confirmation tracking is enabled; null otherwise
+  assurance      Json?
+  /// Denormalized for history lists and trend lines without scanning JSON
+  overall        Int
+  systemCount    Int
+  confirmedPct   Int
+  /// Rule-pack id → version at capture time
+  rulePacks      Json
+  /// sha256 of the canonicalized {graph, scorecard, rulePacks} payload
+  payloadHash    String
+  createdBy      String
+  createdAt      DateTime       @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, createdAt])
+  @@map("program_snapshots")
 }

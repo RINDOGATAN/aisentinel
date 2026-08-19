@@ -101,6 +101,10 @@ export const transparencyRouter = createTRPCRouter({
         notes: input.notes ?? null,
         reviewedBy: ctx.session.user.id,
         reviewedAt: new Date(),
+        // A human editing an artifact IS confirming it; provenance keeps its
+        // historical origin (where the row came from, not who vouches for it).
+        confirmedBy: ctx.session.user.id,
+        confirmedAt: new Date(),
       };
 
       const profile = await ctx.prisma.transparencyProfile.upsert({

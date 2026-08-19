@@ -22,7 +22,8 @@
     "db:sync-vendor-catalog": "tsx scripts/sync-vendor-catalog.ts",
     "db:seed-cross-mappings": "tsx scripts/seed-cross-framework-mappings.ts",
     "db:seed-video-demo": "tsx scripts/seed-video-demo.ts",
-    "lint:security": "bash scripts/lint-security.sh"
+    "lint:security": "bash scripts/lint-security.sh",
+    "db:backfill-provenance": "tsx scripts/backfill-provenance.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

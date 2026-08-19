@@ -494,7 +494,16 @@
     "viewProgram": "View your AI Governance Program",
     "statPolicyLinks": "Policy links",
     "statTransparencyProfiles": "Art. 50 profiles",
-    "statComplianceBaselined": "Requirements pre-assessed"
+    "statComplianceBaselined": "Requirements pre-assessed",
+    "handoffMapCaption": "Your governance map — every AI system, its risk tier, controls and vendors.",
+    "downloadProgramPdf": "Download your AI Governance Program (PDF)",
+    "handoffConfirmPrompt": "{count} requirements were auto-assessed from the artifacts just created and are waiting for your confirmation.",
+    "statVendors": "vendors",
+    "statSystems": "AI systems",
+    "statRiskClassifications": "risk classifications",
+    "statOversightGates": "oversight gates",
+    "statComplianceMappings": "compliance requirements",
+    "statPolicies": "policies"
   },
   "assessments": {
     "title": "Assessments",
@@ -650,7 +659,10 @@
     "mappingSaved": "Assessment saved",
     "mappingSavedPropagated": "Assessment saved — applied to {count} linked requirements",
     "evidenceAdded": "Evidence added",
-    "evidenceRemoved": "Evidence removed"
+    "evidenceRemoved": "Evidence removed",
+    "evidenceCount": "Evidence ({count})",
+    "linkedAcrossFrameworks": "Linked across frameworks ({count})",
+    "alsoApplyToEquivalent": "Also apply to {count} equivalent requirements across frameworks"
   },
   "incidents": {
     "title": "AI Incidents",
@@ -3139,6 +3151,147 @@
       "nistTitle": "NIST AI RMF mapping (weights and targets)",
       "target": "target",
       "generated": "Generated"
+    },
+    "methodology": {
+      "eyebrow": "Methodology",
+      "derivationTitle": "How this report was derived",
+      "neverAsserts": "Automated assessment never asserts full compliance. The strongest status this system sets automatically is PARTIALLY COMPLIANT, always with evidence naming the artifact it relies on; NOT APPLICABLE is used only where the reason is structural and stated. Everything else is left NOT ASSESSED for a person to decide.",
+      "confirmationDisabled": "Confirmation tracking is not yet enabled for this organization, so this report cannot state how much of its content has been reviewed by a person. Every automatically derived item remains subject to the limits described above.",
+      "colClass": "Artifact class",
+      "colTotal": "Total",
+      "colAuto": "Auto-derived",
+      "colConfirmed": "Human-confirmed",
+      "colPct": "Confirmed",
+      "weighted": "Weighted confirmation across classes",
+      "class": {
+        "riskClassification": "Risk classifications",
+        "compliance": "Compliance assessments",
+        "policy": "Policies",
+        "oversight": "Oversight gates",
+        "transparency": "Transparency profiles"
+      },
+      "rulePacksTitle": "Rule packs and versions",
+      "colPack": "Rule pack",
+      "colVersion": "Version",
+      "colReviewed": "Law reviewed",
+      "colSignOff": "Sign-off",
+      "signOff": {
+        "signed-off": "Signed off",
+        "pending": "Pending"
+      },
+      "determinismTitle": "Determinism",
+      "determinism": "Every score in this report comes from the documented formulas in the maturity model, and every diagram from the shared deterministic layout engine that also draws the on-screen map. No generative AI takes part in deriving, scoring or laying out this document: the same inputs always produce the same output, and each figure can be traced back to the rule pack and version listed above.",
+      "snapshotTitle": "Snapshot identity",
+      "snapshotIntro": "This report was rendered from an immutable snapshot. Quoting the identifier and hash below reproduces exactly this content, even after the underlying records have moved on.",
+      "snapshotId": "Snapshot",
+      "snapshotHash": "Payload hash (sha256, first 12)",
+      "snapshotCaptured": "Captured",
+      "trendTitle": "Change since the previous snapshot",
+      "comparedWith": "Compared with the snapshot captured",
+      "overallDelta": "Overall maturity change",
+      "gapsClosed": "Gaps closed",
+      "gapsOpened": "Gaps opened",
+      "noPrevious": "This is the first snapshot for this organization, so there is nothing to compare it against yet. Future reports will show what changed since this one.",
+      "rulePackChangesTitle": "Rule packs that changed",
+      "rulePackChangesIntro": "These rule packs moved between the two snapshots. Where a score changed, check here first: a difference may reflect a change in the rules rather than a change in your program."
     }
+  },
+  "provenance": {
+    "chip": {
+      "auto": "Auto",
+      "autoTooltip": "Auto-assessed by {source} — not yet confirmed by a person",
+      "confirmed": "Confirmed",
+      "confirmedTooltip": "Confirmed by a person on {date}",
+      "human": "Entered by a person"
+    },
+    "state": {
+      "human": "Entered by a person",
+      "confirmed": "Confirmed",
+      "unconfirmed": "Awaiting confirmation"
+    },
+    "origin": {
+      "USER_ENTERED": "Entered by a person",
+      "AUTO_CATALOG": "Derived from the tool catalog",
+      "AUTO_TEMPLATE": "Generated from a template",
+      "AUTO_RULE": "Derived by a rule",
+      "IMPORTED": "Imported from a connected app"
+    },
+    "entity": {
+      "RiskClassification": "Risk classification",
+      "ComplianceMapping": "Compliance requirement",
+      "OversightGate": "Oversight gate",
+      "AIPolicy": "Policy",
+      "TransparencyProfile": "Art. 50 profile"
+    },
+    "queue": {
+      "title": "Review queue",
+      "subtitle": "Auto-assessed items waiting for a person to take ownership.",
+      "empty": "Nothing to confirm — every artifact has been reviewed.",
+      "filterAll": "All types",
+      "selectAll": "Select all",
+      "clearSelection": "Clear",
+      "selectedCount": "{count} selected",
+      "confirmSelected": "Confirm selected",
+      "loadMore": "Load more"
+    },
+    "meter": {
+      "title": "Assurance",
+      "headline": "{percent}% of your program is human-confirmed",
+      "detail": "{confirmed} of {total} items",
+      "reviewCta": "Review the rest",
+      "empty": "Nothing to confirm yet"
+    },
+    "actions": {
+      "confirm": "Confirm",
+      "unconfirm": "Withdraw confirmation",
+      "confirmed": "Confirmed",
+      "confirmedToast": "Confirmed {count} items",
+      "unconfirmedToast": "Withdrew confirmation for {count} items"
+    },
+    "report": {
+      "coverLine": "{percent}% human-confirmed ({confirmed} of {total} program items)",
+      "unconfirmedPill": "Contains auto-generated content pending review",
+      "legend": "Items marked with this symbol were auto-assessed and are awaiting human confirmation."
+    }
+  },
+  "snapshots": {
+    "title": "Snapshots",
+    "subtitle": "Immutable captures of your program, so any figure you shared can be explained later.",
+    "capture": "Capture snapshot",
+    "captureLabel": "Label (optional)",
+    "capturePlaceholder": "e.g. Board pack, Q3",
+    "captured": "Snapshot captured",
+    "captureFailed": "Could not capture the snapshot",
+    "deleted": "Snapshot deleted",
+    "deleteFailed": "Could not delete the snapshot",
+    "delete": "Delete",
+    "deleteConfirm": "Delete this snapshot? The record of what was reported at that moment is lost permanently.",
+    "empty": "No snapshots yet. One is captured automatically each time you export the program report.",
+    "columnDate": "Captured",
+    "columnLabel": "Label",
+    "columnReason": "Source",
+    "columnOverall": "Maturity",
+    "columnSystems": "Systems",
+    "columnConfirmed": "Confirmed",
+    "columnHash": "Hash",
+    "reason": {
+      "QUICKSTART": "Quick Start",
+      "MANUAL": "Manual",
+      "EXPORT": "PDF export",
+      "SCHEDULED": "Scheduled"
+    },
+    "truncated": "This snapshot stored a partial map: the program exceeded the size a single record can hold.",
+    "diffTitle": "What changed",
+    "diffAgainst": "Compared with {date}",
+    "diffNoPrevious": "Nothing to compare yet — this is the earliest snapshot.",
+    "diffOverall": "Overall maturity",
+    "diffAssurance": "Human-confirmed",
+    "diffAssuranceUnknown": "Not tracked in the earlier snapshot",
+    "diffSystemsAdded": "Systems added",
+    "diffSystemsRemoved": "Systems removed",
+    "diffGapsClosed": "Gaps closed",
+    "diffGapsOpened": "Gaps opened",
+    "diffRulePacks": "Rule packs changed",
+    "diffRulePacksHint": "A score can move because the rules moved. These packs changed between the two snapshots."
   }
 }

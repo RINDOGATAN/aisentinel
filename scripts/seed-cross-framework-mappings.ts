@@ -332,6 +332,17 @@ async function main() {
   }
 
   console.log(`Created ${created} cross-framework mappings (${skipped} skipped)`);
+
+  // A skipped mapping is a silent content bug: the target requirement code does
+  // not exist in the seeded framework, so the cross-reference simply vanishes.
+  // CI and the release checklist run this with --strict so that fails loudly.
+  if (skipped > 0 && process.argv.includes("--strict")) {
+    console.error(
+      `\nFAIL (--strict): ${skipped} cross-mapping target(s) unresolved. ` +
+        `Fix the requirement codes above, or seed the missing requirements first.`,
+    );
+    process.exit(1);
+  }
   console.log("\nBreakdown:");
   const equivalent = crossMappings.filter((m) => m.relationship === "equivalent").length;
   const partial = crossMappings.filter((m) => m.relationship === "partial").length;

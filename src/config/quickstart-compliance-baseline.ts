@@ -28,6 +28,14 @@
 
 import type { Localized } from "@/config/lawfirm-ai-toolkit";
 
+/**
+ * Rule-pack version. Bump on any content change (rules, statuses, evidence
+ * text) so exported artifacts can state which revision produced them.
+ * See src/config/rule-pack-versions.ts.
+ */
+export const QUICKSTART_BASELINE_VERSION = "2026.08.1";
+export const QUICKSTART_BASELINE_LAW_REVIEWED_AS_OF = "2026-08-18";
+
 export type BaselineFramework = "EU_AI_ACT" | "NIST_AI_RMF" | "ISO_42001";
 export type BaselineStatus = "PARTIALLY_COMPLIANT" | "NOT_APPLICABLE";
 

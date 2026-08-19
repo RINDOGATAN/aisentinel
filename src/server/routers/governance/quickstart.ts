@@ -608,6 +608,11 @@ export const quickstartRouter = createTRPCRouter({
                   aiSystemId: system.id,
                   requirementId: req.id,
                   status: "NOT_ASSESSED" as const,
+                  // Machine-created placeholder slots. Recording the
+                  // origin keeps the assurance number honest: these were
+                  // never reviewed by a person.
+                  provenance: "AUTO_TEMPLATE" as const,
+                  sourceRef: "quickstart:compliance-mappings",
                 })),
                 skipDuplicates: true,
               });
@@ -700,6 +705,11 @@ export const quickstartRouter = createTRPCRouter({
                     aiSystemId: system.id,
                     requirementId: req.id,
                     status: "NOT_ASSESSED" as const,
+                  // Machine-created placeholder slots. Recording the
+                  // origin keeps the assurance number honest: these were
+                  // never reviewed by a person.
+                  provenance: "AUTO_TEMPLATE" as const,
+                  sourceRef: "quickstart:compliance-mappings",
                   })),
                   skipDuplicates: true,
                 });
@@ -854,6 +864,11 @@ export const quickstartRouter = createTRPCRouter({
                   aiSystemId: system.id,
                   requirementId: req.id,
                   status: "NOT_ASSESSED" as const,
+                  // Machine-created placeholder slots. Recording the
+                  // origin keeps the assurance number honest: these were
+                  // never reviewed by a person.
+                  provenance: "AUTO_TEMPLATE" as const,
+                  sourceRef: "quickstart:compliance-mappings",
                 })),
                 skipDuplicates: true,
               });

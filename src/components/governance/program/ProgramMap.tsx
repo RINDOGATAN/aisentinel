@@ -121,11 +121,24 @@ function Glyph({ glyph, x, y }: { glyph: GlyphSpec; x: number; y: number }) {
 
 // ── Component ───────────────────────────────────────────────────────
 
-export function ProgramMap({ graph }: { graph: ProgramGraph }) {
+export function ProgramMap({
+  graph,
+  interactive = true,
+  maxWidth,
+}: {
+  graph: ProgramGraph;
+  /** false = static preview: no toolbar, no hover dimming, no click-through */
+  interactive?: boolean;
+  /** layout width budget; defaults to the layout module's own default */
+  maxWidth?: number;
+}) {
   const t = useTranslations("program.map");
   const router = useRouter();
 
-  const layout = useMemo(() => computeProgramMapLayout(graph), [graph]);
+  const layout = useMemo(
+    () => computeProgramMapLayout(graph, maxWidth ? { maxWidth } : undefined),
+    [graph, maxWidth],
+  );
 
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [activeTiers, setActiveTiers] = useState<Set<TierId>>(
@@ -173,6 +186,9 @@ export function ProgramMap({ graph }: { graph: ProgramGraph }) {
     hoveredId === null || id === hoveredId || adjacency.get(hoveredId)?.has(id);
 
   const elementStyle = (id: string): React.CSSProperties => {
+    // Static preview renders everything at full strength — no filters are
+    // reachable and no hover state exists, so dimming would only confuse.
+    if (!interactive) return {};
     const matches = matching.has(id);
     const focused = inFocus(id);
     return {
@@ -183,6 +199,7 @@ export function ProgramMap({ graph }: { graph: ProgramGraph }) {
   };
 
   const edgeOpacity = (sourceId: string, targetId: string): number => {
+    if (!interactive) return 1;
     if (!matching.has(sourceId) || !matching.has(targetId)) return 0;
     if (hoveredId === null) return 1;
     return sourceId === hoveredId || targetId === hoveredId ? 1 : 0.12;
@@ -200,8 +217,11 @@ export function ProgramMap({ graph }: { graph: ProgramGraph }) {
 
   return (
     <div className="space-y-3">
-      {/* Filter toolbar (dark theme, matches the app) */}
-      <div className="flex items-center gap-2 flex-wrap">
+      {/* Filter toolbar (dark theme, matches the app) — interactive mode only */}
+      <div
+        className="flex items-center gap-2 flex-wrap"
+        style={interactive ? undefined : { display: "none" }}
+      >
         {ALL_TIERS.map((tier) => {
           const active = activeTiers.has(tier);
           return (
@@ -257,7 +277,7 @@ export function ProgramMap({ graph }: { graph: ProgramGraph }) {
             minWidth: 720,
             fontFamily: "var(--font-jost), 'Jost', sans-serif",
           }}
-          onMouseLeave={() => setHoveredId(null)}
+          onMouseLeave={interactive ? () => setHoveredId(null) : undefined}
         >
           <defs>
             <pattern id="program-map-dots" width={22} height={22} patternUnits="userSpaceOnUse">
@@ -337,9 +357,16 @@ export function ProgramMap({ graph }: { graph: ProgramGraph }) {
           {layout.nodes.map((node) => (
             <g
               key={node.id}
-              style={{ ...elementStyle(node.id), cursor: "pointer" }}
-              onMouseEnter={() => setHoveredId(node.id)}
-              onClick={() => router.push(`/governance/ai-registry/${node.id}`)}
+              style={{
+                ...elementStyle(node.id),
+                cursor: interactive ? "pointer" : "default",
+              }}
+              onMouseEnter={interactive ? () => setHoveredId(node.id) : undefined}
+              onClick={
+                interactive
+                  ? () => router.push(`/governance/ai-registry/${node.id}`)
+                  : undefined
+              }
             >
               <rect
                 x={node.x}
@@ -406,7 +433,9 @@ export function ProgramMap({ graph }: { graph: ProgramGraph }) {
             <g
               key={vendor.id}
               style={elementStyle(vendor.id)}
-              onMouseEnter={() => setHoveredId(vendor.id)}
+              onMouseEnter={
+                interactive ? () => setHoveredId(vendor.id) : undefined
+              }
             >
               <rect
                 x={vendor.x}

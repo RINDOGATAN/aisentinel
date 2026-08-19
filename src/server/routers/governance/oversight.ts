@@ -134,6 +134,11 @@ export const oversightRouter = createTRPCRouter({
       }
       if (data.assignedTo !== undefined) updateData.assignedTo = data.assignedTo;
 
+      // A human editing an artifact IS confirming it; provenance keeps its
+      // historical origin (where the row came from, not who vouches for it).
+      updateData.confirmedBy = ctx.session.user.id;
+      updateData.confirmedAt = new Date();
+
       const result = await ctx.prisma.oversightGate.updateMany({
         where: { id, organizationId: ctx.organization.id },
         data: updateData as never,

@@ -107,6 +107,10 @@ export const riskClassificationRouter = createTRPCRouter({
             annexIIICategory: input.annexIIICategory,
             classifiedBy: ctx.session.user.id,
             classifiedAt: new Date(),
+            // A human editing an artifact IS confirming it; provenance keeps
+            // its historical origin.
+            confirmedBy: ctx.session.user.id,
+            confirmedAt: new Date(),
           },
           include: { aiSystem: true },
         });

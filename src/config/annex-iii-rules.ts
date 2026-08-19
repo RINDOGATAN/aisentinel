@@ -20,6 +20,14 @@
  * AGPL-3.0 License - Part of the open-source core
  */
 
+/**
+ * Rule-pack version. Bump on any content change (screening keywords, Annex III
+ * categories, prohibited-practice triggers) so exported artifacts can state
+ * which revision produced them. See src/config/rule-pack-versions.ts.
+ */
+export const ANNEX_III_RULES_VERSION = "2026.08.1";
+export const ANNEX_III_RULES_LAW_REVIEWED_AS_OF = "2026-08-05";
+
 // ---------------------------------------------------------------------------
 // Types (plain data so callers can build facts from Prisma or from tests)
 // ---------------------------------------------------------------------------

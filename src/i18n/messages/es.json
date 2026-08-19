@@ -494,7 +494,16 @@
     "viewProgram": "Ver tu Programa de Gobernanza de IA",
     "statPolicyLinks": "Vinculaciones de políticas",
     "statTransparencyProfiles": "Perfiles del Art. 50",
-    "statComplianceBaselined": "Requisitos preevaluados"
+    "statComplianceBaselined": "Requisitos preevaluados",
+    "handoffMapCaption": "Tu mapa de gobernanza: cada sistema de IA, su nivel de riesgo, sus controles y sus proveedores.",
+    "downloadProgramPdf": "Descargar tu Programa de Gobernanza de IA (PDF)",
+    "handoffConfirmPrompt": "{count} requisitos se han preevaluado a partir de los artefactos recién creados y esperan tu confirmación.",
+    "statVendors": "proveedores",
+    "statSystems": "sistemas de IA",
+    "statRiskClassifications": "clasificaciones de riesgo",
+    "statOversightGates": "puntos de control",
+    "statComplianceMappings": "requisitos de cumplimiento",
+    "statPolicies": "políticas"
   },
   "assessments": {
     "title": "Evaluaciones",
@@ -650,7 +659,10 @@
     "mappingSaved": "Evaluación guardada",
     "mappingSavedPropagated": "Evaluación guardada: aplicada a {count} requisitos vinculados",
     "evidenceAdded": "Evidencia añadida",
-    "evidenceRemoved": "Evidencia eliminada"
+    "evidenceRemoved": "Evidencia eliminada",
+    "evidenceCount": "Evidencia ({count})",
+    "linkedAcrossFrameworks": "Vinculado entre marcos ({count})",
+    "alsoApplyToEquivalent": "Aplicar también a {count} requisitos equivalentes de otros marcos"
   },
   "incidents": {
     "title": "Incidentes de IA",
@@ -3139,6 +3151,147 @@
       "nistTitle": "Correspondencia NIST AI RMF (pesos y objetivos)",
       "target": "objetivo",
       "generated": "Generado"
+    },
+    "methodology": {
+      "eyebrow": "Metodología",
+      "derivationTitle": "Cómo se ha elaborado este informe",
+      "neverAsserts": "La evaluación automática nunca afirma un cumplimiento pleno. El estado más favorable que este sistema asigna de forma automática es PARCIALMENTE CONFORME, siempre con evidencia que identifica el artefacto en el que se apoya; NO APLICABLE se emplea únicamente cuando el motivo es estructural y queda expresado. Todo lo demás permanece SIN EVALUAR para que lo decida una persona.",
+      "confirmationDisabled": "El seguimiento de confirmaciones aún no está activado en esta organización, por lo que este informe no puede indicar qué proporción de su contenido ha sido revisada por una persona. Todo elemento derivado automáticamente sigue sujeto a los límites descritos más arriba.",
+      "colClass": "Tipo de artefacto",
+      "colTotal": "Total",
+      "colAuto": "Derivados automáticamente",
+      "colConfirmed": "Confirmados por una persona",
+      "colPct": "Confirmado",
+      "weighted": "Confirmación ponderada entre tipos",
+      "class": {
+        "riskClassification": "Clasificaciones de riesgo",
+        "compliance": "Evaluaciones de cumplimiento",
+        "policy": "Políticas",
+        "oversight": "Puntos de control",
+        "transparency": "Perfiles de transparencia"
+      },
+      "rulePacksTitle": "Paquetes de reglas y versiones",
+      "colPack": "Paquete de reglas",
+      "colVersion": "Versión",
+      "colReviewed": "Revisión jurídica",
+      "colSignOff": "Validación",
+      "signOff": {
+        "signed-off": "Validado",
+        "pending": "Pendiente"
+      },
+      "determinismTitle": "Determinismo",
+      "determinism": "Todas las puntuaciones de este informe proceden de las fórmulas documentadas en el modelo de madurez, y todos los diagramas del mismo motor de composición determinista que dibuja el mapa en pantalla. Ninguna IA generativa interviene en la derivación, la puntuación ni la composición de este documento: las mismas entradas producen siempre el mismo resultado, y cada cifra puede rastrearse hasta el paquete de reglas y la versión indicados más arriba.",
+      "snapshotTitle": "Identidad de la instantánea",
+      "snapshotIntro": "Este informe se ha generado a partir de una instantánea inmutable. Citando el identificador y el hash siguientes se reproduce exactamente este contenido, incluso después de que los registros subyacentes hayan cambiado.",
+      "snapshotId": "Instantánea",
+      "snapshotHash": "Hash del contenido (sha256, primeros 12)",
+      "snapshotCaptured": "Capturada",
+      "trendTitle": "Cambios desde la instantánea anterior",
+      "comparedWith": "Comparada con la instantánea capturada el",
+      "overallDelta": "Variación de la madurez global",
+      "gapsClosed": "Carencias resueltas",
+      "gapsOpened": "Carencias abiertas",
+      "noPrevious": "Esta es la primera instantánea de la organización, por lo que todavía no hay nada con lo que compararla. Los informes futuros mostrarán qué ha cambiado desde esta.",
+      "rulePackChangesTitle": "Paquetes de reglas modificados",
+      "rulePackChangesIntro": "Estos paquetes de reglas han cambiado entre ambas instantáneas. Si una puntuación ha variado, conviene revisarlo aquí primero: la diferencia puede deberse a un cambio en las reglas y no en su programa."
     }
+  },
+  "provenance": {
+    "chip": {
+      "auto": "Automático",
+      "autoTooltip": "Evaluado automáticamente por {source}: aún sin confirmar por una persona",
+      "confirmed": "Confirmado",
+      "confirmedTooltip": "Confirmado por una persona el {date}",
+      "human": "Introducido por una persona"
+    },
+    "state": {
+      "human": "Introducido por una persona",
+      "confirmed": "Confirmado",
+      "unconfirmed": "Pendiente de confirmación"
+    },
+    "origin": {
+      "USER_ENTERED": "Introducido por una persona",
+      "AUTO_CATALOG": "Derivado del catálogo de herramientas",
+      "AUTO_TEMPLATE": "Generado a partir de una plantilla",
+      "AUTO_RULE": "Derivado por una regla",
+      "IMPORTED": "Importado de una aplicación conectada"
+    },
+    "entity": {
+      "RiskClassification": "Clasificación de riesgo",
+      "ComplianceMapping": "Requisito de cumplimiento",
+      "OversightGate": "Punto de control",
+      "AIPolicy": "Política",
+      "TransparencyProfile": "Perfil del Art. 50"
+    },
+    "queue": {
+      "title": "Cola de revisión",
+      "subtitle": "Elementos evaluados automáticamente a la espera de que una persona los asuma.",
+      "empty": "Nada que confirmar: todos los artefactos han sido revisados.",
+      "filterAll": "Todos los tipos",
+      "selectAll": "Seleccionar todo",
+      "clearSelection": "Quitar selección",
+      "selectedCount": "{count} seleccionados",
+      "confirmSelected": "Confirmar seleccionados",
+      "loadMore": "Cargar más"
+    },
+    "meter": {
+      "title": "Garantía",
+      "headline": "El {percent}% de tu programa está confirmado por una persona",
+      "detail": "{confirmed} de {total} elementos",
+      "reviewCta": "Revisar el resto",
+      "empty": "Aún no hay nada que confirmar"
+    },
+    "actions": {
+      "confirm": "Confirmar",
+      "unconfirm": "Retirar la confirmación",
+      "confirmed": "Confirmado",
+      "confirmedToast": "{count} elementos confirmados",
+      "unconfirmedToast": "Confirmación retirada de {count} elementos"
+    },
+    "report": {
+      "coverLine": "{percent}% confirmado por una persona ({confirmed} de {total} elementos del programa)",
+      "unconfirmedPill": "Contiene contenido generado automáticamente pendiente de revisión",
+      "legend": "Los elementos marcados con este símbolo se evaluaron automáticamente y están pendientes de confirmación humana."
+    }
+  },
+  "snapshots": {
+    "title": "Instantáneas",
+    "subtitle": "Capturas inmutables de tu programa, para poder explicar más adelante cualquier cifra que hayas compartido.",
+    "capture": "Capturar instantánea",
+    "captureLabel": "Etiqueta (opcional)",
+    "capturePlaceholder": "p. ej. Dosier del consejo, T3",
+    "captured": "Instantánea capturada",
+    "captureFailed": "No se ha podido capturar la instantánea",
+    "deleted": "Instantánea eliminada",
+    "deleteFailed": "No se ha podido eliminar la instantánea",
+    "delete": "Eliminar",
+    "deleteConfirm": "¿Eliminar esta instantánea? El registro de lo que se informó en ese momento se pierde de forma permanente.",
+    "empty": "Aún no hay instantáneas. Se captura una automáticamente cada vez que exportas el informe del programa.",
+    "columnDate": "Capturada",
+    "columnLabel": "Etiqueta",
+    "columnReason": "Origen",
+    "columnOverall": "Madurez",
+    "columnSystems": "Sistemas",
+    "columnConfirmed": "Confirmado",
+    "columnHash": "Hash",
+    "reason": {
+      "QUICKSTART": "Inicio rápido",
+      "MANUAL": "Manual",
+      "EXPORT": "Exportación a PDF",
+      "SCHEDULED": "Programada"
+    },
+    "truncated": "Esta instantánea ha guardado un mapa parcial: el programa superaba el tamaño que admite un único registro.",
+    "diffTitle": "Qué ha cambiado",
+    "diffAgainst": "Comparada con {date}",
+    "diffNoPrevious": "Todavía no hay nada que comparar: esta es la instantánea más antigua.",
+    "diffOverall": "Madurez global",
+    "diffAssurance": "Confirmado por una persona",
+    "diffAssuranceUnknown": "No se registraba en la instantánea anterior",
+    "diffSystemsAdded": "Sistemas añadidos",
+    "diffSystemsRemoved": "Sistemas eliminados",
+    "diffGapsClosed": "Carencias resueltas",
+    "diffGapsOpened": "Carencias abiertas",
+    "diffRulePacks": "Paquetes de reglas modificados",
+    "diffRulePacksHint": "Una puntuación puede variar porque han variado las reglas. Estos paquetes cambiaron entre ambas instantáneas."
   }
 }

@@ -59,6 +59,17 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { useTranslations } from "next-intl";
 
+/**
+ * Short chip labels for cross-framework links. Falls back to the raw framework
+ * code, so a newly seeded framework can never silently render as another one.
+ */
+const FRAMEWORK_ABBREVIATIONS: Record<string, string> = {
+  EU_AI_ACT: "EU",
+  NIST_AI_RMF: "NIST",
+  ISO_42001: "ISO",
+  CA_CCPA_ADMT: "CA",
+};
+
 const statusOptionKeys: Record<string, { labelKey: string; color: string }> = {
   NOT_ASSESSED: { labelKey: "statusNotAssessed", color: "bg-gray-500/20 text-gray-400" },
   COMPLIANT: { labelKey: "statusCompliant", color: "bg-success/20 text-success" },
@@ -459,7 +470,7 @@ function RequirementRow({
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-            Evidence ({evidenceItems.length})
+            {t("evidenceCount", { count: evidenceItems.length })}
           </span>
           <Button
             variant="ghost"
@@ -537,7 +548,7 @@ function RequirementRow({
         <div className="space-y-2">
           <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1">
             <Link2 className="w-3 h-3" />
-            Linked across frameworks ({crossMappings.length})
+            {t("linkedAcrossFrameworks", { count: crossMappings.length })}
           </span>
           <div className="flex flex-wrap gap-1.5">
             {crossMappings.map((cm) => (
@@ -550,7 +561,7 @@ function RequirementRow({
                 }`}
                 title={cm.notes ?? undefined}
               >
-                <span className="font-medium">{cm.frameworkCode === "EU_AI_ACT" ? "EU" : cm.frameworkCode === "NIST_AI_RMF" ? "NIST" : "ISO"}</span>
+                <span className="font-medium">{FRAMEWORK_ABBREVIATIONS[cm.frameworkCode] ?? cm.frameworkCode}</span>
                 <span>{cm.code}</span>
               </span>
             ))}
@@ -568,7 +579,9 @@ function RequirementRow({
                   checked={propagate}
                   onCheckedChange={(v) => setPropagate(!!v)}
                 />
-                Also apply to {crossMappings.filter((cm) => cm.relationship === "equivalent").length} equivalent requirement{crossMappings.filter((cm) => cm.relationship === "equivalent").length !== 1 ? "s" : ""} across frameworks
+                {t("alsoApplyToEquivalent", {
+                  count: crossMappings.filter((cm) => cm.relationship === "equivalent").length,
+                })}
               </label>
             )}
           <Button

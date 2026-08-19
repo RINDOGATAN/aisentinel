@@ -41,6 +41,7 @@ import {
   type SemanticTone,
 } from "./design-system";
 import { ProgramMapSvg } from "./design-system/charts/ProgramMapSvg";
+import { rulePackList } from "@/config/rule-pack-versions";
 
 // ── Map page geometry ───────────────────────────────────────────────
 // A4 landscape ≈ 842×595pt; PageFrame margins 48/48/56 + header/footer rows.
@@ -218,7 +219,47 @@ const s = StyleSheet.create({
     marginBottom: tokens.space[6],
   },
   dimsCol: { flex: 1, marginLeft: tokens.space[7] },
+  // ── Methodology annex ──
+  annexTableHead: {
+    flexDirection: "row",
+    borderBottomWidth: 1,
+    borderBottomColor: tokens.color.border.rule,
+    paddingBottom: tokens.space[2],
+    marginBottom: tokens.space[2],
+  },
+  annexRow: {
+    flexDirection: "row",
+    paddingVertical: tokens.space[1],
+    borderBottomWidth: 0.5,
+    borderBottomColor: tokens.color.border.hairline,
+  },
+  annexCell: {
+    fontSize: tokens.typography.size.micro,
+    color: tokens.color.text.secondary,
+  },
+  annexCellHead: {
+    fontSize: tokens.typography.size.micro,
+    color: tokens.color.text.primary,
+    fontFamily: "Inter",
+    fontWeight: 600,
+  },
+  annexNote: {
+    fontSize: tokens.typography.size.micro,
+    color: tokens.color.text.muted,
+    lineHeight: tokens.typography.lineHeight.relaxed,
+    marginTop: tokens.space[3],
+  },
+  annexKeyLine: {
+    fontSize: tokens.typography.size.caption,
+    color: tokens.color.text.primary,
+    lineHeight: tokens.typography.lineHeight.relaxed,
+    marginBottom: tokens.space[3],
+  },
 });
+
+/** Column widths for the annex tables (flex units). */
+const DERIVATION_COLS = [2.4, 1, 1.2, 1.4, 0.9];
+const RULE_PACK_COLS = [2.4, 1.2, 1.4, 1.2];
 
 const RISK_TONE: Record<string, SemanticTone> = {
   UNACCEPTABLE: "danger",
@@ -267,16 +308,51 @@ const NIST_MAPPING: Array<[string, string, number]> = [
   ["MANAGE", "oversight 1.0", 75],
 ];
 
+/**
+ * Provenance breakdown for the derivation table. Absent when confirmation
+ * tracking is not enabled — rendered as an explicit "not yet enabled" line
+ * rather than as zeros, because a fabricated 0% is worse than no number.
+ */
+export interface DerivationSummary {
+  byClass: {
+    id: string;
+    total: number;
+    autoDerived: number;
+    confirmed: number;
+  }[];
+  weightedPct: number;
+}
+
+/** Snapshot identity + trend, stamped into the annex by the export route. */
+export interface SnapshotContext {
+  id: string;
+  payloadHash: string;
+  capturedAt: string;
+  previous?: {
+    id: string;
+    capturedAt: string;
+    overallDelta: number;
+    dimensionDeltas: { id: string; delta: number }[];
+    gapsClosed: string[];
+    gapsOpened: string[];
+    rulePackChanges: { pack: string; from: string | null; to: string | null }[];
+  } | null;
+}
+
 export async function renderProgramReport({
   orgName,
   locale,
   graph,
   scorecard,
+  derivation,
+  snapshot,
 }: {
   orgName: string;
   locale: ContentLocale;
   graph: ProgramGraph;
   scorecard: ProgramScorecardData;
+  derivation?: DerivationSummary | null;
+  snapshot?: SnapshotContext | null;
 }) {
   registerReportFonts();
 
@@ -665,6 +741,176 @@ export async function renderProgramReport({
           </Text>
         </View>
       </PageFrame>
+
+      {/* ── 8 · Annex: derivation & provenance ────────────────── */}
+      <PageFrame
+        eyebrow={t("methodology.eyebrow")}
+        orgName={orgName}
+        date={date}
+        disclaimer={disclaimer}
+      >
+        <SectionHeading title={t("methodology.derivationTitle")} first />
+
+        {/* The claim that does the defensibility work — stated out loud,
+            because it is the enforced invariant of the baseline rule pack. */}
+        <Text style={s.annexKeyLine}>{t("methodology.neverAsserts")}</Text>
+
+        {derivation ? (
+          <>
+            <View style={s.annexTableHead}>
+              {[
+                t("methodology.colClass"),
+                t("methodology.colTotal"),
+                t("methodology.colAuto"),
+                t("methodology.colConfirmed"),
+                t("methodology.colPct"),
+              ].map((label, i) => (
+                <Text
+                  key={label}
+                  style={[s.annexCellHead, { flex: DERIVATION_COLS[i] }]}
+                >
+                  {label}
+                </Text>
+              ))}
+            </View>
+            {derivation.byClass.map((row) => (
+              <View key={row.id} style={s.annexRow}>
+                <Text style={[s.annexCell, { flex: DERIVATION_COLS[0] }]}>
+                  {t(`methodology.class.${row.id}`)}
+                </Text>
+                <Text style={[s.annexCell, { flex: DERIVATION_COLS[1] }]}>
+                  {row.total}
+                </Text>
+                <Text style={[s.annexCell, { flex: DERIVATION_COLS[2] }]}>
+                  {row.autoDerived}
+                </Text>
+                <Text style={[s.annexCell, { flex: DERIVATION_COLS[3] }]}>
+                  {row.confirmed}
+                </Text>
+                <Text style={[s.annexCell, { flex: DERIVATION_COLS[4] }]}>
+                  {row.total > 0
+                    ? `${Math.round((100 * row.confirmed) / row.total)}%`
+                    : "—"}
+                </Text>
+              </View>
+            ))}
+            <Text style={s.annexNote}>
+              {`${t("methodology.weighted")}: ${Math.round(derivation.weightedPct)}%`}
+            </Text>
+          </>
+        ) : (
+          <Text style={s.annexText}>{t("methodology.confirmationDisabled")}</Text>
+        )}
+
+        <SectionHeading title={t("methodology.rulePacksTitle")} level={3} />
+        <View style={s.annexTableHead}>
+          {[
+            t("methodology.colPack"),
+            t("methodology.colVersion"),
+            t("methodology.colReviewed"),
+            t("methodology.colSignOff"),
+          ].map((label, i) => (
+            <Text
+              key={label}
+              style={[s.annexCellHead, { flex: RULE_PACK_COLS[i] }]}
+            >
+              {label}
+            </Text>
+          ))}
+        </View>
+        {rulePackList().map((pack) => (
+          <View key={pack.id} style={s.annexRow}>
+            <Text style={[s.annexCell, { flex: RULE_PACK_COLS[0] }]}>
+              {pack.id}
+            </Text>
+            <Text style={[s.annexCell, { flex: RULE_PACK_COLS[1] }]}>
+              {pack.version}
+            </Text>
+            <Text style={[s.annexCell, { flex: RULE_PACK_COLS[2] }]}>
+              {pack.lawReviewedAsOf}
+            </Text>
+            <Text style={[s.annexCell, { flex: RULE_PACK_COLS[3] }]}>
+              {t(`methodology.signOff.${pack.signOff}`)}
+            </Text>
+          </View>
+        ))}
+
+        <SectionHeading title={t("methodology.determinismTitle")} level={3} />
+        <Text style={s.annexText}>{t("methodology.determinism")}</Text>
+      </PageFrame>
+
+      {/* ── 9 · Annex: snapshot identity & trend ──────────────── */}
+      {snapshot && (
+        <PageFrame
+          eyebrow={t("methodology.eyebrow")}
+          orgName={orgName}
+          date={date}
+          disclaimer={disclaimer}
+        >
+          <SectionHeading title={t("methodology.snapshotTitle")} first />
+          <Text style={s.annexText}>{t("methodology.snapshotIntro")}</Text>
+          <Text style={s.annexMono}>
+            {`${t("methodology.snapshotId")}: ${snapshot.id}`}
+          </Text>
+          <Text style={s.annexMono}>
+            {`${t("methodology.snapshotHash")}: ${snapshot.payloadHash.slice(0, 12)}`}
+          </Text>
+          <Text style={s.annexMono}>
+            {`${t("methodology.snapshotCaptured")}: ${snapshot.capturedAt}`}
+          </Text>
+
+          <SectionHeading title={t("methodology.trendTitle")} level={3} />
+          {snapshot.previous ? (
+            <>
+              <Text style={s.annexText}>
+                {`${t("methodology.comparedWith")}: ${snapshot.previous.capturedAt}`}
+              </Text>
+              <Text style={s.annexKeyLine}>
+                {`${t("methodology.overallDelta")}: ${
+                  snapshot.previous.overallDelta >= 0 ? "+" : ""
+                }${snapshot.previous.overallDelta}`}
+              </Text>
+              {snapshot.previous.dimensionDeltas
+                .filter((d) => d.delta !== 0)
+                .map((d) => (
+                  <Text key={d.id} style={s.annexMono}>
+                    {`${t(`dimension.${d.id}`)}  ${d.delta >= 0 ? "+" : ""}${d.delta}`}
+                  </Text>
+                ))}
+              {snapshot.previous.gapsClosed.length > 0 && (
+                <Text style={s.annexNote}>
+                  {`${t("methodology.gapsClosed")}: ${snapshot.previous.gapsClosed.join(", ")}`}
+                </Text>
+              )}
+              {snapshot.previous.gapsOpened.length > 0 && (
+                <Text style={s.annexNote}>
+                  {`${t("methodology.gapsOpened")}: ${snapshot.previous.gapsOpened.join(", ")}`}
+                </Text>
+              )}
+              {/* The distinction that matters: did the program change, or did
+                  the law change underneath it? */}
+              {snapshot.previous.rulePackChanges.length > 0 && (
+                <>
+                  <SectionHeading
+                    title={t("methodology.rulePackChangesTitle")}
+                    level={3}
+                  />
+                  <Text style={s.annexText}>
+                    {t("methodology.rulePackChangesIntro")}
+                  </Text>
+                  {snapshot.previous.rulePackChanges.map((change) => (
+                    <Text key={change.pack} style={s.annexMono}>
+                      {`${change.pack}: ${change.from ?? "—"} → ${change.to ?? "—"}`}
+                    </Text>
+                  ))}
+                </>
+              )}
+            </>
+          ) : (
+            <Text style={s.annexText}>{t("methodology.noPrevious")}</Text>
+          )}
+        </PageFrame>
+      )}
     </Document>
   );
 }

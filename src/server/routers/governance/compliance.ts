@@ -150,6 +150,11 @@ export const complianceRouter = createTRPCRouter({
           notes: input.notes,
           assessedBy: ctx.session.user.id,
           assessedAt: new Date(),
+          // A human editing an artifact IS confirming it. Provenance keeps its
+          // historical origin: it records where the row came from, not who
+          // vouches for it now.
+          confirmedBy: ctx.session.user.id,
+          confirmedAt: new Date(),
         },
         create: {
           organizationId: ctx.organization.id,
@@ -159,6 +164,8 @@ export const complianceRouter = createTRPCRouter({
           notes: input.notes,
           assessedBy: ctx.session.user.id,
           assessedAt: new Date(),
+          confirmedBy: ctx.session.user.id,
+          confirmedAt: new Date(),
         },
         include: { evidenceItems: true },
       });

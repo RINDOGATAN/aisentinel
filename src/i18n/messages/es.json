@@ -390,7 +390,8 @@
     "toastModelDeleted": "Modelo eliminado",
     "toastDataSourceAdded": "Fuente de datos añadida",
     "toastDataSourceUpdated": "Fuente de datos actualizada",
-    "toastDataSourceDeleted": "Fuente de datos eliminada"
+    "toastDataSourceDeleted": "Fuente de datos eliminada",
+    "tabAdmt": "ADMT de California"
   },
   "transparency": {
     "title": "Obligaciones de Transparencia del Art. 50",
@@ -3406,5 +3407,171 @@
     "emptyInventoryTitle": "Aún no hay sistemas de IA registrados",
     "emptyInventoryBody": "Estos plazos son reales, pero hasta que registres tus sistemas de IA no podemos indicarte a cuáles afecta cada uno.",
     "emptyInventoryCta": "Ejecutar Inicio Rápido"
+  },
+  "admt": {
+    "title": "ADMT de California",
+    "subtitle": "Tecnología de decisiones automatizadas conforme al reglamento de la CCPA (Cal. Code Regs. tít. 11, §§ 7001-7222).",
+    "reviewMarkerNote": "Esta evaluación se genera a partir de los datos registrados en este sistema. Es un punto de partida para la revisión, no una conclusión jurídica.",
+    "state": {
+      "JURISDICTION_UNDECLARED": "Todavía no podemos determinarlo",
+      "JURISDICTION_CONFLICT": "Jurisdicciones en conflicto",
+      "OUT_OF_SCOPE_NO_CA_NEXUS": "No resulta de aplicación",
+      "COVERED_BUSINESS_NOT_ASSESSED": "Umbral de empresa sin responder",
+      "PROFILE_NOT_ASSESSED": "Pendiente de determinación",
+      "ARTICLE_10_ONLY": "Se aplican las evaluaciones de riesgo",
+      "ARTICLE_10_AND_11": "Se aplican el aviso previo, la exclusión y el acceso"
+    },
+    "stateDetail": {
+      "JURISDICTION_UNDECLARED": "Indícanos dónde opera tu organización y podremos determinar si las normas ADMT de California alcanzan a este sistema.",
+      "JURISDICTION_CONFLICT": "Este sistema está restringido a jurisdicciones que tu organización no ha declarado. Resuelve el conflicto para obtener una respuesta.",
+      "OUT_OF_SCOPE_NO_CA_NEXUS": "Las jurisdicciones declaradas no incluyen California, por lo que los artículos 10 y 11 no alcanzan a este sistema.",
+      "COVERED_BUSINESS_NOT_ASSESSED": "Responde a las preguntas sobre el umbral de empresa de la CCPA para completar esta evaluación.",
+      "PROFILE_NOT_ASSESSED": "Responde a las preguntas del § 7001(e) que figuran abajo para determinar si esta tecnología es ADMT.",
+      "ARTICLE_10_ONLY": "Se aplican los deberes de evaluación de riesgos del artículo 10. Este sistema no adopta una decisión significativa, por lo que no se aplican el aviso previo, la exclusión ni el acceso del artículo 11.",
+      "ARTICLE_10_AND_11": "Este sistema utiliza ADMT para adoptar una decisión significativa. Se aplican el aviso previo, el derecho de exclusión y el derecho de acceso, y el plazo de cumplimiento venció el 1 de enero de 2027."
+    },
+    "reason": {
+      "jurisdictionsUndeclared": "No se han declarado las jurisdicciones de operación",
+      "jurisdictionConflict": "Las jurisdicciones de este sistema no coinciden con las de la organización",
+      "noCaliforniaNexus": "California no figura entre las jurisdicciones declaradas",
+      "coveredBusinessUnanswered": "El cuestionario del umbral de empresa de la CCPA está sin responder",
+      "coveredBusinessNo": "La organización no alcanza ningún umbral de empresa de la CCPA",
+      "noProfile": "No se ha registrado ninguna determinación ADMT para este sistema",
+      "determinationUnanswered": "La determinación del § 7001(e) está sin responder",
+      "prongsUnresolved": "La prueba de intervención humana solo está respondida en parte",
+      "excludedTechnology": "Tecnología enumerada en el § 7001(e)(3)",
+      "humanInvolvementSubstantive": "Una persona revisora interpreta el resultado, valora otra información y puede modificar la decisión",
+      "prongFailedInterpret": "La persona revisora no sabe interpretar ni utilizar el resultado (§ 7001(e)(1)(A))",
+      "prongFailedReview": "La persona revisora no contrasta el resultado con otra información pertinente (§ 7001(e)(1)(B))",
+      "prongFailedAuthority": "La persona revisora carece de autoridad para modificar la decisión (§ 7001(e)(1)(C))",
+      "noSignificantDecision": "No consta ningún ámbito de decisión significativa del § 7001(ddd)",
+      "significantDecisionPresent": "Este sistema adopta una decisión significativa conforme al § 7001(ddd)",
+      "riskAssessmentTriggersPresent": "Concurren uno o varios supuestos de evaluación de riesgos del § 7150(b)",
+      "noRiskAssessmentTriggers": "No consta ningún supuesto de evaluación de riesgos del § 7150(b)",
+      "optOutExceptionRelied": "Se invoca una excepción al derecho de exclusión del § 7221(b)"
+    },
+    "openQuestion": {
+      "declareJurisdictions": "Declara dónde opera tu organización",
+      "answerCoveredBusiness": "Responde a las preguntas sobre el umbral de empresa de la CCPA",
+      "createProfile": "Registra una determinación ADMT para este sistema",
+      "answerDetermination": "Indica si esta tecnología es ADMT",
+      "answerProngs": "Responde a las tres preguntas sobre intervención humana",
+      "answerSignificantDecisionDomains": "Registra qué decisiones significativas adopta este sistema, si adopta alguna",
+      "answerRiskAssessmentTriggers": "Registra qué actividades del § 7150(b) implica este sistema",
+      "answerSoleFactor": "Indica si el resultado es el único factor de la decisión",
+      "answerOptOutBasis": "Indica cómo pueden excluirse los consumidores o en qué excepción te amparas",
+      "evidenceWorksForPurpose": "Adjunta pruebas de que la tecnología cumple su finalidad",
+      "evidenceNonDiscrimination": "Adjunta pruebas de que la tecnología no discrimina ilícitamente"
+    },
+    "determination": {
+      "label": "¿Es ADMT?",
+      "isAdmt": "Sí, es ADMT",
+      "isNotAdmt": "No, no es ADMT",
+      "unresolved": "Pendiente de determinación",
+      "decidedByDeclared": "Registrado directamente",
+      "decidedByProngFailed": "Determinado por la prueba de intervención humana",
+      "decidedByProngsSatisfied": "Se cumplen los tres requisitos de intervención humana",
+      "decidedByExcluded": "Tecnología enumerada en el § 7001(e)(3)"
+    },
+    "prong": {
+      "legend": "Intervención humana (§ 7001(e)(1)): deben cumplirse los tres requisitos; de lo contrario, la tecnología sustituye sustancialmente la decisión humana",
+      "interpretOutput": "La persona revisora sabe interpretar y utilizar el resultado",
+      "reviewsOutputAndOtherInfo": "La persona revisora contrasta el resultado con otra información pertinente",
+      "authorityToChange": "La persona revisora tiene autoridad para adoptar o modificar la decisión",
+      "NOT_ASSESSED": "Sin responder",
+      "SATISFIED": "Sí",
+      "NOT_SATISFIED": "No"
+    },
+    "domain": {
+      "legend": "Decisiones significativas (§ 7001(ddd)): la publicidad queda expresamente excluida",
+      "financial_lending": "Servicios financieros o de crédito",
+      "housing": "Vivienda",
+      "education_enrollment": "Admisión u oportunidades educativas",
+      "employment_contracting": "Oportunidades o retribución en el empleo o la contratación independiente",
+      "healthcare": "Servicios sanitarios"
+    },
+    "trigger": {
+      "legend": "Supuestos de evaluación de riesgos (§ 7150(b)): en vigor desde el 1 de enero de 2026",
+      "sell_share_pi": "Venta o cesión de información personal",
+      "sensitive_pi": "Tratamiento de información personal sensible",
+      "admt_significant_decision": "Uso de ADMT para una decisión significativa",
+      "work_education_profiling": "Elaboración de perfiles de personal, candidatos o estudiantes mediante observación sistemática",
+      "sensitive_location_profiling": "Elaboración de perfiles de consumidores en una ubicación sensible",
+      "training_admt_or_biometric": "Entrenamiento de ADMT o de tecnología de identificación biométrica"
+    },
+    "soleFactor": {
+      "legend": "¿Es el resultado el único factor de la decisión? (§ 7220(c)(5)(B), § 7222(b)(3))",
+      "NOT_ASSESSED": "Sin responder",
+      "SOLE_FACTOR": "Es el único factor",
+      "ONE_OF_SEVERAL": "Es uno de varios factores",
+      "NOT_USED": "No se utiliza en la decisión"
+    },
+    "optOutBasis": {
+      "legend": "Exclusión voluntaria (§ 7221). Existen exactamente tres excepciones; la seguridad, el fraude y la seguridad física no figuran entre ellas: solo limitan lo que debe divulgarse.",
+      "NOT_ASSESSED": "Sin responder",
+      "NONE_OPT_OUT_OFFERED": "Sin excepción: se ofrece la exclusión",
+      "HUMAN_APPEAL_7221_B_1": "Recurso ante una persona (§ 7221(b)(1))",
+      "ADMISSION_ACCEPTANCE_HIRING_7221_B_2": "Evaluación de admisión, aceptación o contratación (§ 7221(b)(2))",
+      "ALLOCATION_COMPENSATION_7221_B_3": "Asignación de trabajo o retribución (§ 7221(b)(3))"
+    },
+    "field": {
+      "designatedReviewer": "Persona revisora designada",
+      "appealRouteDescription": "Cómo presentan los consumidores un recurso",
+      "nonQualifyingHumanRole": "Función de la persona que no cumple el § 7001(e)(1)",
+      "worksForPurposeEvidence": "Pruebas de que la tecnología cumple su finalidad",
+      "nonDiscriminationEvidence": "Pruebas de que la tecnología no discrimina ilícitamente",
+      "processingInitiatedAt": "Fecha de inicio del tratamiento",
+      "notes": "Notas"
+    },
+    "deadline": {
+      "article_10_duty_live": "Evaluación de riesgos exigible antes del inicio del tratamiento",
+      "article_11_compliance": "Aviso previo, exclusión y acceso implantados",
+      "risk_assessment_backfill": "Evaluaciones pendientes del tratamiento anterior a 2026",
+      "risk_assessment_review": "Revisión trienal de la evaluación de riesgos",
+      "first_submission": "Primera presentación y certificación directiva ante la CPPA",
+      "cyber_audit_report": "Informe y certificación de la auditoría de ciberseguridad",
+      "notAssessed": "Todavía no determinable",
+      "overdue": "Vencido",
+      "unitCalendar": "días naturales",
+      "unitBusiness": "días hábiles"
+    },
+    "thresholds": {
+      "unpublished": "La CPPA no ha publicado el ajuste por IPC previsto para el 1 de enero de 2027. Verifica las cifras vigentes antes de basarte en ellas.",
+      "noSmallBusinessExemption": "No existe exención para pequeñas empresas: el umbral de 100 000 consumidores no tiene mínimo de facturación, y candidatos, personal y contratistas cuentan como consumidores."
+    },
+    "ui": {
+      "loading": "Cargando…",
+      "save": "Guardar la determinación",
+      "saving": "Guardando…",
+      "syncRequirements": "Sincronizar los requisitos de cumplimiento",
+      "syncing": "Sincronizando…",
+      "syncUnavailable": "Disponible cuando la determinación resuelva un ámbito de aplicación.",
+      "toastSaved": "Determinación ADMT guardada",
+      "toastSynced": "Se han añadido {count} requisitos de California a este sistema",
+      "toastSyncedNone": "No hay requisitos nuevos que añadir: este sistema ya se corresponde con su ámbito",
+      "openQuestionsTitle": "Para resolverlo",
+      "resolveLink": "Responder a esto",
+      "sectionProngs": "¿Es tecnología de decisión automatizada?",
+      "sectionDomains": "Decisiones significativas",
+      "sectionTriggers": "Supuestos que activan la evaluación de riesgos",
+      "sectionOptOut": "Base de la exclusión voluntaria",
+      "sectionOutput": "Uso del resultado",
+      "sectionDeadlines": "Plazos legales",
+      "prongLetter": "Requisito {letter}",
+      "prongConjunctive": "Los tres deben cumplirse para que exista intervención humana. El incumplimiento de uno solo implica que la tecnología sustituye sustancialmente la decisión humana y que el régimen resulta aplicable.",
+      "prongDecided": "El requisito {letter} no se cumple, y eso basta por sí solo: se trata de ADMT.",
+      "determinationOption": {
+        "NOT_ASSESSED": "Sin evaluar: que decidan los tres requisitos",
+        "NOT_ADMT": "No es ADMT (constatado tras el análisis)",
+        "ADMT": "Sí es ADMT (constatado tras el análisis)",
+        "ADMT_EXCLUDED_7001_E_3": "Tecnología excluida conforme al § 7001(e)(3)"
+      },
+      "advertisingExcluded": "El § 7001(ddd)(6) excluye expresamente la publicidad dirigida al consumidor. Por automatizada que sea, la segmentación o recomendación publicitaria no constituye una decisión significativa.",
+      "article10LiveSince": "El deber de realizar una evaluación de riesgos antes de iniciar cualquiera de estos supuestos está vigente desde el 1 de enero de 2026. La mera venta o cesión de datos personales ya lo activa.",
+      "securityFraudNotAnException": "Existen exactamente tres excepciones a la exclusión voluntaria. La seguridad, la prevención del fraude y la seguridad física no figuran entre ellas: solo limitan qué debe divulgarse conforme al § 7220(d) y al § 7222(c), nunca si debe ofrecerse la exclusión.",
+      "humanAppealRequires": "Esta excepción solo procede si una persona revisora designada valora la información aportada por el consumidor, sabe interpretar el resultado y tiene autoridad para modificar la decisión.",
+      "twoPartTest": "Es una prueba de dos partes: la tecnología debe funcionar conforme a su finalidad Y no debe discriminar ilícitamente. Acreditar una sin la otra deja la excepción sin cumplir.",
+      "processingInitiatedHelp": "Fecha de inicio del tratamiento que activa la obligación. Si se deja en blanco, no puede determinarse el plazo de regularización del § 7155(b), que alcanza a los tratamientos iniciados antes del 1 de enero de 2026."
+    }
   }
 }

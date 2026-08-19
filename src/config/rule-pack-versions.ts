@@ -39,6 +39,22 @@ import {
   LAWFIRM_LAW_REVIEWED_AS_OF,
 } from "./lawfirm-ai-toolkit";
 import {
+  ADMT_RULES_VERSION,
+  ADMT_RULES_LAW_REVIEWED_AS_OF,
+} from "./admt-rules";
+import {
+  ADMT_REQUIREMENTS_VERSION,
+  ADMT_REQUIREMENTS_LAW_REVIEWED_AS_OF,
+} from "./admt-requirements";
+import {
+  CCPA_THRESHOLDS_VERSION,
+  CCPA_THRESHOLDS_LAW_REVIEWED_AS_OF,
+} from "./ccpa-thresholds";
+import {
+  ADMT_DEADLINES_VERSION,
+  ADMT_DEADLINES_LAW_REVIEWED_AS_OF,
+} from "./admt-deadlines";
+import {
   REGULATORY_MILESTONES_VERSION,
   REGULATORY_MILESTONES_LAW_REVIEWED_AS_OF,
 } from "./regulatory-milestones";
@@ -82,6 +98,26 @@ export const RULE_PACKS = {
   "regulatory-milestones": {
     version: REGULATORY_MILESTONES_VERSION,
     lawReviewedAsOf: REGULATORY_MILESTONES_LAW_REVIEWED_AS_OF,
+    signOff: "pending",
+  },
+  "admt-rules": {
+    version: ADMT_RULES_VERSION,
+    lawReviewedAsOf: ADMT_RULES_LAW_REVIEWED_AS_OF,
+    signOff: "pending",
+  },
+  "admt-requirements": {
+    version: ADMT_REQUIREMENTS_VERSION,
+    lawReviewedAsOf: ADMT_REQUIREMENTS_LAW_REVIEWED_AS_OF,
+    signOff: "pending",
+  },
+  "ccpa-thresholds": {
+    version: CCPA_THRESHOLDS_VERSION,
+    lawReviewedAsOf: CCPA_THRESHOLDS_LAW_REVIEWED_AS_OF,
+    signOff: "pending",
+  },
+  "admt-deadlines": {
+    version: ADMT_DEADLINES_VERSION,
+    lawReviewedAsOf: ADMT_DEADLINES_LAW_REVIEWED_AS_OF,
     signOff: "pending",
   },
   "maturity-model": {

@@ -145,6 +145,7 @@ model Organization {
   aiSystemDataSources   AISystemDataSource[]
   riskClassifications   RiskClassification[]
   transparencyProfiles  TransparencyProfile[]
+  admtProfiles          AdmtProfile[]
   assessmentTemplates   AIAssessmentTemplate[]
   assessments           AIAssessment[]
   oversightGates        OversightGate[]
@@ -281,6 +282,7 @@ model AISystem {
   dataSources         AISystemDataSource[]
   riskClassification  RiskClassification?
   transparencyProfile TransparencyProfile?
+  admtProfile         AdmtProfile?
   assessments         AIAssessment[]
   oversightGates      OversightGate[]
   incidents           AIIncident[]
@@ -427,6 +429,98 @@ model TransparencyProfile {
 
   @@index([organizationId])
   @@map("transparency_profiles")
+}
+
+// ============================================================
+// CALIFORNIA ADMT (Cal. Code Regs. tit. 11, §§ 7001-7222)
+// ============================================================
+
+// The § 7001(e) determination. Four states rather than a boolean:
+// "excluded because enumerated in § 7001(e)(3)" is legally distinct from
+// "not ADMT because a human genuinely decides".
+enum AdmtDetermination {
+  NOT_ASSESSED
+  NOT_ADMT
+  ADMT
+  ADMT_EXCLUDED_7001_E_3
+}
+
+// One § 7001(e)(1) prong. NOT_ASSESSED is a real third state.
+enum AdmtProngStatus {
+  NOT_ASSESSED
+  SATISFIED
+  NOT_SATISFIED
+}
+
+// Feeds § 7220(c)(5)(B) and § 7222(b)(3) notice text.
+enum AdmtSoleFactor {
+  NOT_ASSESSED
+  SOLE_FACTOR
+  ONE_OF_SEVERAL
+  NOT_USED
+}
+
+// The CLOSED list of § 7221(b) opt-out exceptions — there are exactly three.
+// Security/fraud/physical-safety is NOT an opt-out exception (it is only a
+// disclosure-scope limiter under § 7220(d) / § 7222(c)); encoding the closed
+// list makes that error unrepresentable.
+enum AdmtOptOutBasis {
+  NOT_ASSESSED
+  NONE_OPT_OUT_OFFERED
+  HUMAN_APPEAL_7221_B_1
+  ADMISSION_ACCEPTANCE_HIRING_7221_B_2
+  ALLOCATION_COMPENSATION_7221_B_3
+}
+
+model AdmtProfile {
+  id             String            @id @default(cuid())
+  aiSystemId     String            @unique
+  organizationId String
+  determination  AdmtDetermination @default(NOT_ASSESSED)
+
+  // § 7001(e)(1)(A)-(C), stored separately because the test is conjunctive:
+  // failing any one prong means the technology IS ADMT, and the UI must be able
+  // to say which prong decided it.
+  prongInterpretOutput           AdmtProngStatus @default(NOT_ASSESSED) // (A) knows how to interpret the output
+  prongReviewsOutputAndOtherInfo AdmtProngStatus @default(NOT_ASSESSED) // (B) reviews output + other relevant information
+  prongAuthorityToChange         AdmtProngStatus @default(NOT_ASSESSED) // (C) has authority to make or change the decision
+
+  significantDecisionDomains String[] // § 7001(ddd)(1)-(5); z.enum-validated in the router
+  riskAssessmentTriggers     String[] // § 7150(b)(1)-(6); z.enum-validated in the router
+
+  soleFactor             AdmtSoleFactor  @default(NOT_ASSESSED)
+  nonQualifyingHumanRole String?         @db.Text // role of a human who does NOT satisfy § 7001(e)(1)
+  optOutBasis            AdmtOptOutBasis @default(NOT_ASSESSED)
+  designatedReviewer     String? // § 7221(b)(1)(A) reviewer with authority to change the decision
+  appealRouteDescription String?         @db.Text
+
+  // § 7221(b)(2)/(b)(3) impose a TWO-part test. Two fields, so satisfying half
+  // of it cannot look complete.
+  worksForPurposeEvidence   String? @db.Text
+  nonDiscriminationEvidence String? @db.Text
+
+  // Drives the § 7150(b) "before initiating" test and the § 7155(b) backfill
+  // deadline. Null means unknown, which yields a NOT_ASSESSED deadline rather
+  // than a computed one.
+  processingInitiatedAt DateTime?
+
+  notes      String?  @db.Text
+  reviewedBy String
+  reviewedAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Provenance: origin of this artifact + whether a human has taken ownership.
+  provenance  Provenance @default(USER_ENTERED)
+  sourceRef   String?
+  confirmedBy String?
+  confirmedAt DateTime?
+
+  aiSystem     AISystem     @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@map("admt_profiles")
 }
 
 // ============================================================
@@ -709,6 +803,7 @@ enum FrameworkCode {
   EU_AI_ACT
   NIST_AI_RMF
   ISO_42001
+  CA_CCPA_ADMT
 }
 
 enum ComplianceStatus {
@@ -750,6 +845,12 @@ model ComplianceRequirement {
   title        String
   description  String?       @db.Text
   applicableTo AIRiskLevel[]
+  // Second applicability axis, for regimes that are not keyed to EU risk tiers.
+  // California ADMT rows carry tags like `jurisdiction:US_CA`, `admt:art11` or
+  // `admt:art10:trigger:sell_share_pi`; src/config/admt-rules.ts owns the logic
+  // that decides which tags a given system's facts select. ADMT rows keep
+  // applicableTo EMPTY so the risk-tier auto-mapping paths can never match them.
+  applicabilityTags String[]  @default([])
   parentId     String?
   sortOrder    Int           @default(0)
   createdAt    DateTime      @default(now())
@@ -763,6 +864,7 @@ model ComplianceRequirement {
 
   @@index([frameworkId])
   @@index([parentId])
+  @@index([applicabilityTags], type: Gin)
   @@map("compliance_requirements")
 }
 

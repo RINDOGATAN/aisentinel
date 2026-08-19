@@ -19,6 +19,7 @@ import { quickstartRouter } from "./governance/quickstart";
 import { programRouter } from "./governance/program";
 import { provenanceRouter } from "./governance/provenance";
 import { obligationsRouter } from "./governance/obligations";
+import { admtRouter } from "./governance/admt";
 import { clientsRouter } from "./governance/clients";
 import { billingRouter } from "./billing";
 import { feedbackRouter } from "./feedback";
@@ -43,6 +44,7 @@ export const appRouter = createTRPCRouter({
   program: programRouter,
   provenance: provenanceRouter,
   obligations: obligationsRouter,
+  admt: admtRouter,
   clients: clientsRouter,
   billing: billingRouter,
   feedback: feedbackRouter,

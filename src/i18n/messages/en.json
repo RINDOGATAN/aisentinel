@@ -390,7 +390,8 @@
     "toastModelDeleted": "Model deleted",
     "toastDataSourceAdded": "Data source added",
     "toastDataSourceUpdated": "Data source updated",
-    "toastDataSourceDeleted": "Data source deleted"
+    "toastDataSourceDeleted": "Data source deleted",
+    "tabAdmt": "California ADMT"
   },
   "transparency": {
     "title": "Art. 50 Transparency Obligations",
@@ -3406,5 +3407,171 @@
     "emptyInventoryTitle": "No AI systems registered yet",
     "emptyInventoryBody": "These deadlines are real, but until your AI systems are registered we can't tell you which of them each one touches.",
     "emptyInventoryCta": "Run Quick Start"
+  },
+  "admt": {
+    "title": "California ADMT",
+    "subtitle": "Automated decision-making technology under the CCPA regulations (Cal. Code Regs. tit. 11, §§ 7001–7222).",
+    "reviewMarkerNote": "This assessment is generated from the facts recorded on this system. It is a starting point for review, not a legal conclusion.",
+    "state": {
+      "JURISDICTION_UNDECLARED": "We can't tell yet",
+      "JURISDICTION_CONFLICT": "Jurisdictions conflict",
+      "OUT_OF_SCOPE_NO_CA_NEXUS": "Does not apply",
+      "COVERED_BUSINESS_NOT_ASSESSED": "Business threshold not answered",
+      "PROFILE_NOT_ASSESSED": "Not yet determined",
+      "ARTICLE_10_ONLY": "Risk assessments apply",
+      "ARTICLE_10_AND_11": "Notice, opt-out and access apply"
+    },
+    "stateDetail": {
+      "JURISDICTION_UNDECLARED": "Tell us where your organisation operates and we can say whether California's ADMT rules reach this system.",
+      "JURISDICTION_CONFLICT": "This system is restricted to jurisdictions your organisation has not declared. Resolve the conflict to get an answer.",
+      "OUT_OF_SCOPE_NO_CA_NEXUS": "Your declared jurisdictions do not include California, so Articles 10 and 11 do not attach to this system.",
+      "COVERED_BUSINESS_NOT_ASSESSED": "Answer the CCPA business-threshold questions to complete this assessment.",
+      "PROFILE_NOT_ASSESSED": "Answer the § 7001(e) questions below to determine whether this technology is ADMT.",
+      "ARTICLE_10_ONLY": "Risk-assessment duties under Article 10 attach. This system does not make a significant decision, so the Article 11 notice, opt-out and access rights do not.",
+      "ARTICLE_10_AND_11": "This system uses ADMT to make a significant decision. Pre-use notice, opt-out and access rights all attach, and compliance was due 1 January 2027."
+    },
+    "reason": {
+      "jurisdictionsUndeclared": "Operating jurisdictions have not been declared",
+      "jurisdictionConflict": "This system's jurisdictions do not overlap the organisation's",
+      "noCaliforniaNexus": "California is not among the declared jurisdictions",
+      "coveredBusinessUnanswered": "The CCPA business-threshold screen is unanswered",
+      "coveredBusinessNo": "The organisation does not meet a CCPA business threshold",
+      "noProfile": "No ADMT determination has been recorded for this system",
+      "determinationUnanswered": "The § 7001(e) determination is unanswered",
+      "prongsUnresolved": "The human-involvement test is only partly answered",
+      "excludedTechnology": "Enumerated technology under § 7001(e)(3)",
+      "humanInvolvementSubstantive": "A human reviewer interprets the output, weighs other information, and can change the decision",
+      "prongFailedInterpret": "The reviewer does not know how to interpret and use the output (§ 7001(e)(1)(A))",
+      "prongFailedReview": "The reviewer does not review the output against other relevant information (§ 7001(e)(1)(B))",
+      "prongFailedAuthority": "The reviewer has no authority to change the decision (§ 7001(e)(1)(C))",
+      "noSignificantDecision": "No significant-decision domain under § 7001(ddd) is recorded",
+      "significantDecisionPresent": "This system makes a significant decision under § 7001(ddd)",
+      "riskAssessmentTriggersPresent": "One or more § 7150(b) risk-assessment triggers apply",
+      "noRiskAssessmentTriggers": "No § 7150(b) risk-assessment trigger is recorded",
+      "optOutExceptionRelied": "An opt-out exception under § 7221(b) is relied on"
+    },
+    "openQuestion": {
+      "declareJurisdictions": "Declare where your organisation operates",
+      "answerCoveredBusiness": "Answer the CCPA business-threshold questions",
+      "createProfile": "Record an ADMT determination for this system",
+      "answerDetermination": "Answer whether this technology is ADMT",
+      "answerProngs": "Answer all three human-involvement questions",
+      "answerSignificantDecisionDomains": "Record which significant decisions this system makes, if any",
+      "answerRiskAssessmentTriggers": "Record which § 7150(b) activities this system involves",
+      "answerSoleFactor": "Record whether the output is the sole factor in the decision",
+      "answerOptOutBasis": "Record how consumers can opt out, or which exception you rely on",
+      "evidenceWorksForPurpose": "Attach evidence that the technology works for its intended purpose",
+      "evidenceNonDiscrimination": "Attach evidence that the technology does not unlawfully discriminate"
+    },
+    "determination": {
+      "label": "Is this ADMT?",
+      "isAdmt": "Yes — this is ADMT",
+      "isNotAdmt": "No — this is not ADMT",
+      "unresolved": "Not yet determined",
+      "decidedByDeclared": "Recorded directly",
+      "decidedByProngFailed": "Decided by the human-involvement test",
+      "decidedByProngsSatisfied": "All three human-involvement prongs are satisfied",
+      "decidedByExcluded": "Enumerated technology under § 7001(e)(3)"
+    },
+    "prong": {
+      "legend": "Human involvement (§ 7001(e)(1)) — all three must hold, or the technology substantially replaces human decisionmaking",
+      "interpretOutput": "The reviewer knows how to interpret and use the output",
+      "reviewsOutputAndOtherInfo": "The reviewer reviews the output and other relevant information",
+      "authorityToChange": "The reviewer has authority to make or change the decision",
+      "NOT_ASSESSED": "Not answered",
+      "SATISFIED": "Yes",
+      "NOT_SATISFIED": "No"
+    },
+    "domain": {
+      "legend": "Significant decisions (§ 7001(ddd)) — advertising is expressly excluded",
+      "financial_lending": "Financial or lending services",
+      "housing": "Housing",
+      "education_enrollment": "Education enrolment or opportunities",
+      "employment_contracting": "Employment or independent-contracting opportunities or compensation",
+      "healthcare": "Healthcare services"
+    },
+    "trigger": {
+      "legend": "Risk-assessment triggers (§ 7150(b)) — live since 1 January 2026",
+      "sell_share_pi": "Selling or sharing personal information",
+      "sensitive_pi": "Processing sensitive personal information",
+      "admt_significant_decision": "Using ADMT for a significant decision",
+      "work_education_profiling": "Profiling workers, applicants or students by systematic observation",
+      "sensitive_location_profiling": "Profiling consumers in a sensitive location",
+      "training_admt_or_biometric": "Training ADMT or biometric identification technology"
+    },
+    "soleFactor": {
+      "legend": "Is the output the sole factor in the decision? (§ 7220(c)(5)(B), § 7222(b)(3))",
+      "NOT_ASSESSED": "Not answered",
+      "SOLE_FACTOR": "It is the sole factor",
+      "ONE_OF_SEVERAL": "It is one of several factors",
+      "NOT_USED": "It is not used in the decision"
+    },
+    "optOutBasis": {
+      "legend": "Opt-out (§ 7221). There are exactly three exceptions — security, fraud and physical safety are not among them; they only limit what must be disclosed.",
+      "NOT_ASSESSED": "Not answered",
+      "NONE_OPT_OUT_OFFERED": "No exception — an opt-out is offered",
+      "HUMAN_APPEAL_7221_B_1": "Human appeal (§ 7221(b)(1))",
+      "ADMISSION_ACCEPTANCE_HIRING_7221_B_2": "Admission, acceptance or hiring assessment (§ 7221(b)(2))",
+      "ALLOCATION_COMPENSATION_7221_B_3": "Work allocation or compensation (§ 7221(b)(3))"
+    },
+    "field": {
+      "designatedReviewer": "Designated human reviewer",
+      "appealRouteDescription": "How consumers submit an appeal",
+      "nonQualifyingHumanRole": "Role of a human who does not satisfy § 7001(e)(1)",
+      "worksForPurposeEvidence": "Evidence the technology works for its purpose",
+      "nonDiscriminationEvidence": "Evidence the technology does not unlawfully discriminate",
+      "processingInitiatedAt": "When this processing began",
+      "notes": "Notes"
+    },
+    "deadline": {
+      "article_10_duty_live": "Risk assessment required before processing began",
+      "article_11_compliance": "Notice, opt-out and access in place",
+      "risk_assessment_backfill": "Backfill assessments for pre-2026 processing",
+      "risk_assessment_review": "Three-yearly review of the risk assessment",
+      "first_submission": "First submission and executive attestation to the CPPA",
+      "cyber_audit_report": "Cybersecurity audit report and certification",
+      "notAssessed": "Not yet determinable",
+      "overdue": "Overdue",
+      "unitCalendar": "calendar days",
+      "unitBusiness": "business days"
+    },
+    "thresholds": {
+      "unpublished": "The CPI adjustment due 1 January 2027 has not been published by the CPPA. Verify the current figures before relying on them.",
+      "noSmallBusinessExemption": "There is no small-business exemption: the 100,000-consumer threshold has no revenue floor, and applicants, employees and contractors count as consumers."
+    },
+    "ui": {
+      "loading": "Loading…",
+      "save": "Save determination",
+      "saving": "Saving…",
+      "syncRequirements": "Sync compliance requirements",
+      "syncing": "Syncing…",
+      "syncUnavailable": "Available once the determination resolves to a scope.",
+      "toastSaved": "ADMT determination saved",
+      "toastSynced": "Added {count} California requirements to this system",
+      "toastSyncedNone": "No new requirements to add — this system is already in step with its scope",
+      "openQuestionsTitle": "To resolve this",
+      "resolveLink": "Answer this",
+      "sectionProngs": "Is this automated decisionmaking technology?",
+      "sectionDomains": "Significant decisions",
+      "sectionTriggers": "Risk-assessment triggers",
+      "sectionOptOut": "Opt-out basis",
+      "sectionOutput": "How the output is used",
+      "sectionDeadlines": "Statutory clocks",
+      "prongLetter": "Prong {letter}",
+      "prongConjunctive": "All three must hold for a human to count as involved. Failing any one means the technology substantially replaces human decisionmaking, and the regime applies.",
+      "prongDecided": "Prong {letter} is not satisfied, which is enough on its own: this is ADMT.",
+      "determinationOption": {
+        "NOT_ASSESSED": "Not assessed — let the prongs decide",
+        "NOT_ADMT": "Not ADMT (recorded after analysis)",
+        "ADMT": "Is ADMT (recorded after analysis)",
+        "ADMT_EXCLUDED_7001_E_3": "Excluded technology under § 7001(e)(3)"
+      },
+      "advertisingExcluded": "§ 7001(ddd)(6) expressly excludes advertising to a consumer. However automated it is, targeting or recommending advertising is not a significant decision.",
+      "article10LiveSince": "The duty to complete a risk assessment before initiating any of these has been live since 1 January 2026. Merely selling or sharing personal information is a trigger.",
+      "securityFraudNotAnException": "There are exactly three opt-out exceptions. Security, fraud prevention and physical safety are not among them — they limit only what must be disclosed under § 7220(d) and § 7222(c), never whether the opt-out must be offered.",
+      "humanAppealRequires": "This exception holds only if a named reviewer considers information the consumer submits, knows how to interpret the output, and has authority to change the decision.",
+      "twoPartTest": "A two-part test: the technology must work for its intended purpose AND must not unlawfully discriminate. Evidencing one without the other leaves the exception unmet.",
+      "processingInitiatedHelp": "When the triggering processing began. Left blank, the § 7155(b) backfill deadline cannot be determined — it reaches processing that started before 1 January 2026."
+    }
   }
 }

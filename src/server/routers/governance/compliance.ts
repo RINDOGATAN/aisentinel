@@ -5,6 +5,44 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure, publicProcedure } from "../../trpc";
 
+/**
+ * Jurisdiction tags gate whether a framework reaches an organization at all;
+ * they do not pick out rows within it. Every California requirement carries
+ * `jurisdiction:US_CA`, and every positive ADMT scope emits it, so matching on
+ * the raw tag sets would put all 92 rows in scope for everyone the regime
+ * touches — an Article-10-only business would be shown the 59 Article 11
+ * notice, opt-out and access requirements it has no duty under. Matching runs
+ * on the remaining tags, which are the ones that actually select.
+ */
+const JURISDICTION_TAG_PREFIX = "jurisdiction:";
+
+const selectorTags = (tags: readonly string[]) =>
+  tags.filter((tag) => !tag.startsWith(JURISDICTION_TAG_PREFIX));
+
+/**
+ * Builds the in-scope predicate for one resolved scope.
+ *
+ * `scopeTags === undefined` means the caller is not scoping — every row stands.
+ * An empty array means the rules layer resolved and admitted nothing, which is
+ * a different answer and must admit nothing. Untagged requirements always
+ * stand: they belong to frameworks that scope by risk tier instead, and
+ * dropping them would empty the EU AI Act matrix.
+ */
+function buildScopeFilter(scopeTags: readonly string[] | undefined) {
+  if (scopeTags === undefined) return () => true;
+
+  const selectors = selectorTags(scopeTags);
+
+  return (r: { applicabilityTags: string[] }) => {
+    if (r.applicabilityTags.length === 0) return true;
+    if (selectors.length === 0) return false;
+    const rowSelectors = selectorTags(r.applicabilityTags);
+    // Scoped by jurisdiction alone ⇒ applies wherever the framework applies.
+    if (rowSelectors.length === 0) return true;
+    return rowSelectors.some((tag) => selectors.includes(tag));
+  };
+}
+
 export const complianceRouter = createTRPCRouter({
   listFrameworks: publicProcedure.query(async ({ ctx }) => {
     return ctx.prisma.complianceFramework.findMany({
@@ -35,12 +73,96 @@ export const complianceRouter = createTRPCRouter({
       });
     }),
 
+  /**
+   * In-scope requirement counts per framework, for the framework tabs.
+   *
+   * `listFrameworks` is a public procedure and reports every seeded row, which
+   * is right for the framework itself and wrong for a tab label: a framework
+   * whose applicability is scoped (California ADMT) would advertise ~50
+   * requirements to an organization none of them reach. Frameworks whose rows
+   * carry no applicability tags keep their full count, so nothing changes for
+   * the EU AI Act, NIST or ISO.
+   */
+  getFrameworkCounts: organizationProcedure
+    .input(
+      z.object({
+        organizationId: z.string(),
+        /**
+         * Omitted and empty mean different things, and the difference is the
+         * whole point. Omitted = the caller is not scoping (or cannot yet:
+         * the rules layer has not resolved), so report every row. Empty =
+         * the rules layer resolved and nothing tagged is in scope, so report
+         * only the untagged rows. Collapsing the two would let an
+         * undetermined scope render as a confident zero.
+         */
+        applicabilityTags: z.array(z.string()).optional(),
+        /**
+         * The framework those tags govern. Applicability tags are specific to
+         * one regime — California's mean nothing to the EU AI Act — so without
+         * this a future tagged framework would be scoped by a foreign
+         * vocabulary, match nothing, and silently report zero.
+         */
+        scopedFrameworkCode: z.string().optional(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const frameworks = await ctx.prisma.complianceFramework.findMany({
+        select: { id: true, code: true },
+      });
+
+      const counts = await Promise.all(
+        frameworks.map(async (fw) => {
+          // Scoping applies only to the framework the tags belong to; every
+          // other framework reports its full size, exactly as before.
+          const scoped = input.scopedFrameworkCode === undefined
+            || input.scopedFrameworkCode === fw.code;
+
+          if (!scoped || input.applicabilityTags === undefined) {
+            return {
+              frameworkId: fw.id,
+              code: fw.code,
+              count: await ctx.prisma.complianceRequirement.count({
+                where: { frameworkId: fw.id },
+              }),
+            };
+          }
+
+          // Counted in memory rather than with `hasSome`, so it agrees with
+          // getMatrix: both must use the same selector-tag semantics.
+          const rows = await ctx.prisma.complianceRequirement.findMany({
+            where: { frameworkId: fw.id },
+            select: { applicabilityTags: true },
+          });
+
+          const inScope = buildScopeFilter(input.applicabilityTags);
+          return {
+            frameworkId: fw.id,
+            code: fw.code,
+            count: rows.filter(inScope).length,
+          };
+        })
+      );
+
+      return counts;
+    }),
+
   getMatrix: organizationProcedure
     .input(
       z.object({
         organizationId: z.string(),
         aiSystemId: z.string(),
         frameworkId: z.string(),
+        /**
+         * Applicability tags from the rules layer (currently the California
+         * ADMT resolver). When present, only requirements carrying at least one
+         * of these tags are returned — without it the ADMT tab would show every
+         * seeded row for every system regardless of scope.
+         *
+         * Untagged requirements are always returned: they belong to frameworks
+         * that scope by risk tier instead, and filtering them out here would
+         * empty the EU AI Act matrix.
+         */
+        applicabilityTags: z.array(z.string()).optional(),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -51,6 +173,18 @@ export const complianceRouter = createTRPCRouter({
           children: { orderBy: { sortOrder: "asc" } },
         },
       });
+
+      // Scope filtering runs in memory rather than in the `where`, because the
+      // children arrive through a relation include that a top-level `where`
+      // does not reach: filtering only the parents would return a scoped parent
+      // with all of its out-of-scope children attached.
+      const inScope = buildScopeFilter(input.applicabilityTags);
+
+      const scoped = requirements
+        .map((req) => ({ ...req, children: req.children.filter(inScope) }))
+        // A parent survives if it is itself in scope or still has a child that
+        // is — dropping it would strand the child.
+        .filter((req) => inScope(req) || req.children.length > 0);
 
       const mappings = await ctx.prisma.complianceMapping.findMany({
         where: {
@@ -66,7 +200,7 @@ export const complianceRouter = createTRPCRouter({
       const mappingMap = new Map(mappings.map((m) => [m.requirementId, m]));
 
       // Build hierarchical structure
-      const topLevel = requirements.filter((r) => !r.parentId);
+      const topLevel = scoped.filter((r) => !r.parentId);
 
       return topLevel.map((req) => ({
         ...req,

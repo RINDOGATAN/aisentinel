@@ -58,6 +58,7 @@ import {
 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useTranslations } from "next-intl";
+import type { AdmtScopeState } from "@/config/admt-rules";
 
 /**
  * Short chip labels for cross-framework links. Falls back to the raw framework
@@ -161,8 +162,46 @@ export default function CompliancePage() {
     { enabled: !!orgId }
   );
 
+  // California ADMT applicability is decided by the rules layer, per system.
+  // Its tags both filter the matrix and drive the scope banner; without them
+  // the tab would list every seeded requirement for every system regardless of
+  // whether the regime reaches it.
+  const { data: admtScope } = trpc.admt.getScope.useQuery(
+    { organizationId: orgId, aiSystemId: selectedSystemId },
+    { enabled: !!orgId && !!selectedSystemId }
+  );
+
+  const selectedFramework = frameworks?.find((f) => f.id === selectedFrameworkId)
+    ?? frameworks?.[0];
+  const isAdmtFramework = selectedFramework?.code === "CA_CCPA_ADMT";
+
+  // Only three of the seven states are answers; the rest mean nobody has
+  // decided yet. An undetermined scope must not be scoped down to nothing —
+  // that would render "we do not know" as "none of this applies to you" — so
+  // its tags are withheld and every requirement stands until someone decides.
+  const admtScopeResolved =
+    admtScope?.scope.state === "OUT_OF_SCOPE_NO_CA_NEXUS" ||
+    admtScope?.scope.state === "ARTICLE_10_ONLY" ||
+    admtScope?.scope.state === "ARTICLE_10_AND_11";
+  const admtTags = admtScopeResolved ? admtScope.scope.tags : undefined;
+
+  const { data: frameworkCounts } = trpc.compliance.getFrameworkCounts.useQuery(
+    {
+      organizationId: orgId,
+      applicabilityTags: admtTags,
+      scopedFrameworkCode: "CA_CCPA_ADMT",
+    },
+    { enabled: !!orgId }
+  );
+
   const { data: matrix, refetch: refetchMatrix } = trpc.compliance.getMatrix.useQuery(
-    { organizationId: orgId, aiSystemId: selectedSystemId, frameworkId: selectedFrameworkId },
+    {
+      organizationId: orgId,
+      aiSystemId: selectedSystemId,
+      frameworkId: selectedFrameworkId,
+      // Only scoped frameworks pass tags; everything else keeps its full matrix.
+      applicabilityTags: isAdmtFramework ? admtTags : undefined,
+    },
     { enabled: !!orgId && !!selectedSystemId && !!selectedFrameworkId }
   );
 
@@ -266,15 +305,25 @@ export default function CompliancePage() {
           onValueChange={setSelectedFrameworkId}
         >
           <TabsList className="overflow-x-auto">
-            {frameworks.map((fw) => (
-              <TabsTrigger key={fw.id} value={fw.id}>
-                {fw.name} ({fw._count.requirements})
-              </TabsTrigger>
-            ))}
+            {frameworks.map((fw) => {
+              // Prefer the org-scoped count: a scoped framework must not
+              // advertise requirements that do not reach this organization.
+              const scoped = frameworkCounts?.find(
+                (c) => c.frameworkId === fw.id,
+              );
+              return (
+                <TabsTrigger key={fw.id} value={fw.id}>
+                  {fw.name} ({scoped?.count ?? fw._count.requirements})
+                </TabsTrigger>
+              );
+            })}
           </TabsList>
 
           {frameworks.map((fw) => (
             <TabsContent key={fw.id} value={fw.id}>
+              {fw.code === "CA_CCPA_ADMT" && selectedSystemId && admtScope && (
+                <AdmtScopeBanner state={admtScope.scope.state} />
+              )}
               {!selectedSystemId ? (
                 <Card>
                   <CardContent className="p-8 text-center text-muted-foreground">
@@ -667,6 +716,50 @@ function RequirementRow({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+    </div>
+  );
+}
+
+/**
+ * Scope banner for the California ADMT tab.
+ *
+ * The copy discipline matters more than the styling: an undetermined state is
+ * rendered neutrally and names the question that would resolve it. It is never
+ * dressed up as "does not apply", because telling an organization that
+ * California is irrelevant when nobody has checked is the failure this whole
+ * feature exists to prevent.
+ */
+function AdmtScopeBanner({ state }: { state: AdmtScopeState }) {
+  const t = useTranslations("admt");
+
+  const tone =
+    state === "ARTICLE_10_AND_11"
+      ? "border-warning/40 bg-warning/10"
+      : state === "ARTICLE_10_ONLY"
+        ? "border-success/40 bg-success/10"
+        : state === "JURISDICTION_CONFLICT"
+          ? "border-destructive/40 bg-destructive/10"
+          : state === "OUT_OF_SCOPE_NO_CA_NEXUS"
+            ? "border-border bg-background"
+            : "border-border bg-muted/40";
+
+  const needsSettings =
+    state === "JURISDICTION_UNDECLARED" ||
+    state === "COVERED_BUSINESS_NOT_ASSESSED" ||
+    state === "JURISDICTION_CONFLICT";
+
+  return (
+    <div className={`rounded-md border p-3 mb-4 space-y-1 ${tone}`}>
+      <p className="text-sm font-medium">{t(`state.${state}`)}</p>
+      <p className="text-xs">{t(`stateDetail.${state}`)}</p>
+      {needsSettings && (
+        <Link
+          href="/governance/settings"
+          className="text-xs text-primary hover:underline inline-block"
+        >
+          {t("ui.resolveLink")}
+        </Link>
+      )}
     </div>
   );
 }

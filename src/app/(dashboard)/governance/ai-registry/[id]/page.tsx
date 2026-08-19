@@ -63,6 +63,7 @@ import { useOrganization } from "@/lib/organization-context";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { AnnexIvCard } from "@/components/ai/AnnexIvCard";
 import { TransparencyPanel } from "@/components/governance/TransparencyPanel";
+import { AdmtPanel } from "@/components/governance/AdmtPanel";
 import { TransparencyStatementCard } from "@/components/ai/TransparencyStatementCard";
 
 const statusColors: Record<string, string> = {
@@ -200,6 +201,17 @@ export default function AISystemDetailPage() {
   const tc = useTranslations("common");
   const utils = trpc.useUtils();
   const organizationId = organization?.id ?? "";
+
+  // The ADMT tab is shown only where California could reach this system: a
+  // declared US_CA nexus, or nobody having declared yet. An organization that
+  // has said it operates elsewhere gets no dead tab. The resolver is the single
+  // source of that judgement — the page does not re-derive it from jurisdictions.
+  const { data: admtScope } = trpc.admt.getScope.useQuery(
+    { organizationId, aiSystemId: id },
+    { enabled: !!organizationId && !!id },
+  );
+  const showAdmtTab =
+    !!admtScope && admtScope.scope.state !== "OUT_OF_SCOPE_NO_CA_NEXUS";
 
   // --- Translated label helpers ---
   const techniqueLabel = (key: string) => {
@@ -991,6 +1003,11 @@ export default function AISystemDetailPage() {
           <TabsTrigger value="incidents" className="text-xs sm:text-sm">
             {t("tabIncidents", { count: system.incidents?.length ?? 0 })}
           </TabsTrigger>
+          {showAdmtTab && (
+            <TabsTrigger value="admt" className="text-xs sm:text-sm">
+              {t("tabAdmt")}
+            </TabsTrigger>
+          )}
         </TabsList>
 
         {/* Models Tab */}
@@ -1471,6 +1488,21 @@ export default function AISystemDetailPage() {
             </CardContent>
           </Card>
         </TabsContent>
+
+        {/* ADMT Tab — California only (or undeclared, where we cannot yet tell) */}
+        {showAdmtTab && (
+          <TabsContent value="admt" className="mt-4">
+            <Card>
+              <CardContent className="pt-6">
+                <AdmtPanel
+                  organizationId={organizationId}
+                  aiSystemId={id}
+                  canWrite={canWrite}
+                />
+              </CardContent>
+            </Card>
+          </TabsContent>
+        )}
 
         {/* Incidents Tab */}
         <TabsContent value="incidents" className="mt-4">

@@ -123,9 +123,16 @@ COPY vendors/catalog-snapshot.json ./vendors/catalog-snapshot.json
 # installed here), migrations + seed code + entrypoint script. Churns every
 # release but is only a few hundred KB.
 COPY package.json ./package.json
+# tsconfig carries the "@/*" path alias that the seed content modules use to
+# reference each other; without it tsx cannot resolve them.
+COPY tsconfig.json ./tsconfig.json
 COPY prisma ./prisma
 COPY scripts ./scripts
 COPY src/lib ./src/lib
+# Regulatory content the seed scripts import: framework requirement trees
+# (EU Art. 113 timeline, California ADMT), the toolkit vocabularies they share,
+# and the rules modules those pull in. Seeding cannot run without these.
+COPY src/config ./src/config
 COPY deploy/sovereign/migrate.sh ./deploy/sovereign/migrate.sh
 # Same invocation contract as the suite kit (working_dir /app); the local
 # sovereign compose overrides this with its bind-mounted copy of migrate.sh.

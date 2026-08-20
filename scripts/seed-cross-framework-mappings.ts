@@ -632,6 +632,37 @@ async function main() {
     );
     process.exit(1);
   }
+
+  // Reconcile: drop rows this config no longer asserts.
+  //
+  // cross_framework_mappings is pure catalog — no organizationId, no
+  // user-editable fields, and the app only ever reads it — so this array is its
+  // complete source of truth. Upserting alone is not enough: when a mapping is
+  // re-pointed (as happened when the EU AI Act corrections moved cybersecurity
+  // from Art. 15(4) to Art. 15(5)), the upsert writes the new pair and the
+  // superseded one lingers forever on every database seeded before the fix.
+  // A fresh install would then disagree with an upgraded one — divergence in
+  // legal citations, which is the one place it is least acceptable.
+  //
+  // Refused when anything was skipped: an unresolved target means the framework
+  // seeds have not run yet, and pruning against a half-loaded picture would
+  // delete valid rows.
+  if (skipped === 0) {
+    const asserted = new Set(crossMappings.map((m) => `${m.a}|${m.b}`));
+    const existing = await prisma.crossFrameworkMapping.findMany({
+      select: { id: true, requirementAId: true, requirementBId: true },
+    });
+    const stale = existing.filter((r) => !asserted.has(`${r.requirementAId}|${r.requirementBId}`));
+    if (stale.length > 0) {
+      for (const row of stale) {
+        console.log(`  PRUNE (no longer asserted): ${row.requirementAId} -> ${row.requirementBId}`);
+      }
+      await prisma.crossFrameworkMapping.deleteMany({ where: { id: { in: stale.map((r) => r.id) } } });
+      console.log(`Pruned ${stale.length} superseded cross-framework mapping(s).`);
+    }
+  } else {
+    console.warn("Skipping reconciliation: unresolved targets mean the asserted set is incomplete.");
+  }
   console.log("\nBreakdown:");
   const equivalent = crossMappings.filter((m) => m.relationship === "equivalent").length;
   const partial = crossMappings.filter((m) => m.relationship === "partial").length;

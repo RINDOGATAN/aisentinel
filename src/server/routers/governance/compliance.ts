@@ -4,44 +4,7 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure, publicProcedure } from "../../trpc";
-
-/**
- * Jurisdiction tags gate whether a framework reaches an organization at all;
- * they do not pick out rows within it. Every California requirement carries
- * `jurisdiction:US_CA`, and every positive ADMT scope emits it, so matching on
- * the raw tag sets would put all 92 rows in scope for everyone the regime
- * touches — an Article-10-only business would be shown the 59 Article 11
- * notice, opt-out and access requirements it has no duty under. Matching runs
- * on the remaining tags, which are the ones that actually select.
- */
-const JURISDICTION_TAG_PREFIX = "jurisdiction:";
-
-const selectorTags = (tags: readonly string[]) =>
-  tags.filter((tag) => !tag.startsWith(JURISDICTION_TAG_PREFIX));
-
-/**
- * Builds the in-scope predicate for one resolved scope.
- *
- * `scopeTags === undefined` means the caller is not scoping — every row stands.
- * An empty array means the rules layer resolved and admitted nothing, which is
- * a different answer and must admit nothing. Untagged requirements always
- * stand: they belong to frameworks that scope by risk tier instead, and
- * dropping them would empty the EU AI Act matrix.
- */
-function buildScopeFilter(scopeTags: readonly string[] | undefined) {
-  if (scopeTags === undefined) return () => true;
-
-  const selectors = selectorTags(scopeTags);
-
-  return (r: { applicabilityTags: string[] }) => {
-    if (r.applicabilityTags.length === 0) return true;
-    if (selectors.length === 0) return false;
-    const rowSelectors = selectorTags(r.applicabilityTags);
-    // Scoped by jurisdiction alone ⇒ applies wherever the framework applies.
-    if (rowSelectors.length === 0) return true;
-    return rowSelectors.some((tag) => selectors.includes(tag));
-  };
-}
+import { buildScopeFilter } from "@/lib/applicability-scope";
 
 export const complianceRouter = createTRPCRouter({
   listFrameworks: publicProcedure.query(async ({ ctx }) => {

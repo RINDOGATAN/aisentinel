@@ -60,6 +60,22 @@ if [ -n "$UNSAFE_ENUMS" ]; then
   done <<< "$UNSAFE_ENUMS"
 fi
 
+# 4. Applicability tags matched with Prisma `hasSome`
+# `hasSome` matches a row sharing ANY tag, which includes the jurisdiction tag
+# every row in a jurisdictional framework carries — so it selects the whole
+# framework for anyone it reaches. Scope must resolve through
+# buildScopeFilter() in src/lib/applicability-scope.ts, which strips
+# jurisdiction tags before matching. This shipped once: it wrote 59 California
+# Article 11 duties into the record of systems determined NOT to be ADMT.
+RAW_TAG_MATCH=$(grep -rn 'applicabilityTags: { hasSome' "$ROUTERS_DIR" || true)
+if [ -n "$RAW_TAG_MATCH" ]; then
+  while IFS= read -r line; do
+    echo "FAIL: applicabilityTags matched with hasSome (use buildScopeFilter)"
+    echo "  $line"
+    ERRORS=$((ERRORS + 1))
+  done <<< "$RAW_TAG_MATCH"
+fi
+
 echo "────────────────────────────────────────"
 if [ $ERRORS -eq 0 ]; then
   echo "PASS: No security issues found"

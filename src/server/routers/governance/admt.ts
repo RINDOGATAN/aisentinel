@@ -39,6 +39,7 @@ import {
 } from "@/config/admt-rules";
 import { computeAdmtDeadlines } from "@/config/admt-deadlines";
 import type { JurisdictionId } from "@/config/jurisdictions";
+import { buildScopeFilter } from "@/lib/applicability-scope";
 
 // Every enum input is a z.enum over the shared vocabulary rather than
 // z.nativeEnum over the generated client: a stale client would otherwise make
@@ -391,13 +392,20 @@ export const admtRouter = createTRPCRouter({
         return { created: 0, state: scope.state };
       }
 
-      const requirements = await ctx.prisma.complianceRequirement.findMany({
-        where: {
-          framework: { code: "CA_CCPA_ADMT" },
-          applicabilityTags: { hasSome: scope.tags },
-        },
-        select: { id: true },
+      // Scope resolution runs in memory through the shared predicate rather
+      // than as a `hasSome` on the tag column. `hasSome` would match any row
+      // sharing ANY tag, and every California row carries `jurisdiction:US_CA`
+      // — which every positive scope also emits — so it selected all 92 rows
+      // for everyone, writing the 59 Article 11 duties into the record of
+      // systems expressly determined NOT to be ADMT. Jurisdiction tags decide
+      // whether the framework reaches you; they never pick out rows.
+      const candidates = await ctx.prisma.complianceRequirement.findMany({
+        where: { framework: { code: "CA_CCPA_ADMT" } },
+        select: { id: true, applicabilityTags: true },
       });
+
+      const inScope = buildScopeFilter(scope.tags);
+      const requirements = candidates.filter(inScope);
       if (requirements.length === 0) {
         return { created: 0, state: scope.state };
       }

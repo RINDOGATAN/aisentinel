@@ -20,7 +20,7 @@
  */
 
 export const CCPA_THRESHOLDS_VERSION = "2026.08.1";
-export const CCPA_THRESHOLDS_LAW_REVIEWED_AS_OF = "2026-08-19";
+export const CCPA_THRESHOLDS_LAW_REVIEWED_AS_OF = "2026-08-21";
 
 export interface CcpaThresholdEpoch {
   /** ISO date this set became operative. */
@@ -35,7 +35,11 @@ export interface CcpaThresholdEpoch {
   sellShareRevenueSharePct: number;
   /** § 1798.155(a), CPI-adjusted. */
   penaltyPerViolationUsd: number;
-  /** § 1798.155(a): intentional violations, or violations involving a minor. */
+  /**
+   * § 1798.155(a): intentional violations, or violations involving a consumer
+   * the business has ACTUAL KNOWLEDGE is under 16. Not "a minor" — in
+   * California that would mean under 18, a wider class than the statute.
+   */
   penaltyIntentionalOrMinorUsd: number;
   citation: string;
 }

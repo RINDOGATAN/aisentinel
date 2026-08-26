@@ -47,8 +47,8 @@ import { resolveEffectiveJurisdictions } from "./jurisdictions";
  * behaviour, reason keys) so exported artifacts can state which revision
  * produced them. See src/config/rule-pack-versions.ts.
  */
-export const ADMT_RULES_VERSION = "2026.08.1";
-export const ADMT_RULES_LAW_REVIEWED_AS_OF = "2026-08-19";
+export const ADMT_RULES_VERSION = "2026.08.2";
+export const ADMT_RULES_LAW_REVIEWED_AS_OF = "2026-08-21";
 
 export interface LocalizedText {
   en: string;
@@ -181,10 +181,32 @@ export type RevenueBand =
   | "UNDER_50M"
   | "NOT_ASSESSED";
 
+/** Tri-state answer to a yes/no screening question. Absent is never "no". */
+export type ScreeningAnswer = "YES" | "NO" | "NOT_ASSESSED";
+
 export interface AdmtOrgFacts {
   operatingJurisdictions: readonly JurisdictionId[];
   coveredBusiness: CoveredBusinessAnswer;
   revenueBand: RevenueBand;
+  /**
+   * § 7120(b)(1) via Civ. Code § 1798.140(d)(1)(C): does the business derive
+   * 50% or more of its annual revenue from selling or sharing personal
+   * information? On its own this puts the business in Article 9.
+   */
+  sellShareRevenue50Plus: ScreeningAnswer;
+  /**
+   * § 7120(b)(2) first limb, Civ. Code § 1798.140(d)(1)(A): annual gross
+   * revenue above the CPI-adjusted threshold ($26,625,000 for 2025-2026).
+   * Deliberately NOT derived from `revenueBand`, whose UNDER_50M band spans
+   * both sides of that figure.
+   */
+  revenueOverCcpaThreshold: ScreeningAnswer;
+  /**
+   * § 7120(b)(2) second limb: personal information of 250,000+ consumers or
+   * households, or sensitive personal information of 50,000+ consumers, in the
+   * preceding calendar year.
+   */
+  largeProcessingVolume: ScreeningAnswer;
 }
 
 export interface AdmtProngs {
@@ -253,6 +275,7 @@ export type AdmtReasonKey =
 export type AdmtOpenQuestionKey =
   | "declareJurisdictions"
   | "answerCoveredBusiness"
+  | "answerAuditThreshold"
   | "createProfile"
   | "answerDetermination"
   | "answerProngs"
@@ -349,6 +372,50 @@ export function evaluateAdmtDefinition(
   return allSatisfied
     ? { isAdmt: false, decidedBy: "prongs_satisfied", failedProng: null }
     : { isAdmt: null, decidedBy: null, failedProng: null };
+}
+
+// ---------------------------------------------------------------------------
+// § 7120(b) — who must complete a cybersecurity audit
+// ---------------------------------------------------------------------------
+
+/** Whether Article 9's audit duty reaches this business. */
+export type CyberAuditScope = "IN_SCOPE" | "OUT_OF_SCOPE" | "NOT_ASSESSED";
+
+/**
+ * Resolve § 7120(b).
+ *
+ * The duty attaches if EITHER limb is met:
+ *
+ *   (1) Civ. Code § 1798.140(d)(1)(C) — 50%+ of annual revenue from selling or
+ *       sharing personal information; or
+ *   (2) Civ. Code § 1798.140(d)(1)(A) revenue threshold AND processing of
+ *       250,000+ consumers/households, or 50,000+ consumers' sensitive
+ *       personal information, in the preceding calendar year.
+ *
+ * Revenue BAND is not an input. It selects the § 7121(a) phase-in tier once a
+ * business is already in scope; it never decides scope. Treating it as the
+ * trigger told every business that named a band to commission an independent
+ * audit and certify its completion under penalty of perjury.
+ *
+ * Returning OUT_OF_SCOPE requires enough answers to rule BOTH limbs out. A
+ * single unanswered fact that could still carry a limb yields NOT_ASSESSED.
+ */
+export function resolveCyberAuditScope(org: AdmtOrgFacts): CyberAuditScope {
+  if (org.sellShareRevenue50Plus === "YES") return "IN_SCOPE";
+  if (
+    org.revenueOverCcpaThreshold === "YES" &&
+    org.largeProcessingVolume === "YES"
+  ) {
+    return "IN_SCOPE";
+  }
+
+  // Limb 1 is ruled out only by an explicit NO.
+  const limb1Closed = org.sellShareRevenue50Plus === "NO";
+  // Limb 2 is ruled out by an explicit NO on either of its conjuncts.
+  const limb2Closed =
+    org.revenueOverCcpaThreshold === "NO" || org.largeProcessingVolume === "NO";
+
+  return limb1Closed && limb2Closed ? "OUT_OF_SCOPE" : "NOT_ASSESSED";
 }
 
 // ---------------------------------------------------------------------------
@@ -616,10 +683,19 @@ export function resolveAdmtOrgScope(
     for (const question of result.openQuestions) openQuestions.add(question);
   }
 
-  if (org.revenueBand === "NOT_ASSESSED") {
-    openQuestions.add("answerCoveredBusiness");
-  } else {
+  // Article 9 attaches on the § 7120(b) test, never on revenue band. An
+  // unresolved test leaves the question open rather than asserting an audit
+  // duty the section may not impose.
+  const auditScope = resolveCyberAuditScope(org);
+  if (auditScope === "IN_SCOPE") {
     tags.add("admt:art9");
+    // The phase-in tier still needs a band; § 7121(a) cannot be dated without
+    // one, and computeAdmtDeadlines already reports that as not-assessed.
+    if (org.revenueBand === "NOT_ASSESSED") {
+      openQuestions.add("answerCoveredBusiness");
+    }
+  } else if (auditScope === "NOT_ASSESSED") {
+    openQuestions.add("answerAuditThreshold");
   }
 
   const anyArticle11 = positive.some((r) => r.state === "ARTICLE_10_AND_11");

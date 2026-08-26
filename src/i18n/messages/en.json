@@ -3461,7 +3461,8 @@
       "answerSoleFactor": "Record whether the output is the sole factor in the decision",
       "answerOptOutBasis": "Record how consumers can opt out, or which exception you rely on",
       "evidenceWorksForPurpose": "Attach evidence that the technology works for its intended purpose",
-      "evidenceNonDiscrimination": "Attach evidence that the technology does not unlawfully discriminate"
+      "evidenceNonDiscrimination": "Attach evidence that the technology does not unlawfully discriminate",
+      "answerAuditThreshold": "Answer the § 7120(b) cybersecurity-audit threshold questions"
     },
     "determination": {
       "label": "Is this ADMT?",
@@ -3572,6 +3573,43 @@
       "humanAppealRequires": "This exception holds only if a named reviewer considers information the consumer submits, knows how to interpret the output, and has authority to change the decision.",
       "twoPartTest": "A two-part test: the technology must work for its intended purpose AND must not unlawfully discriminate. Evidencing one without the other leaves the exception unmet.",
       "processingInitiatedHelp": "When the triggering processing began. Left blank, the § 7155(b) backfill deadline cannot be determined — it reaches processing that started before 1 January 2026."
+    },
+    "screening": {
+      "title": "California CCPA screening",
+      "description": "Five answers that decide which California duties reach you. Anything you leave unanswered stays visibly unanswered — we never read silence as “no”.",
+      "saved": "California screening saved",
+      "auditIntro": "The next three decide the Article 9 cybersecurity audit under § 7120(b). Revenue band alone never puts you in scope — it only selects the phase-in tier once you already are.",
+      "answer": {
+        "YES": "Yes",
+        "NO": "No",
+        "NOT_ASSESSED": "Not answered"
+      },
+      "band": {
+        "OVER_100M": "Over $100M",
+        "BETWEEN_50M_AND_100M": "$50M–$100M",
+        "UNDER_50M": "Under $50M",
+        "NOT_ASSESSED": "Not answered"
+      },
+      "coveredBusiness": {
+        "label": "Is the organisation a “business” under the CCPA?",
+        "help": "Met by any one of: annual gross revenue above the CPI-adjusted threshold ($26,625,000 for 2025–2026); buying, selling or sharing the personal information of 100,000+ consumers or households; or deriving 50% or more of annual revenue from selling or sharing personal information. There is no small-business exemption — the thresholds are the carve-out."
+      },
+      "sellShareRevenue50Plus": {
+        "label": "Does 50% or more of annual revenue come from selling or sharing personal information?",
+        "help": "On its own this puts the organisation into the Article 9 cybersecurity-audit regime."
+      },
+      "revenueOverCcpaThreshold": {
+        "label": "Is annual gross revenue above the CPI-adjusted CCPA threshold?",
+        "help": "$26,625,000 for 2025–2026. The next CPI adjustment is due 1 January 2027 and has not been published. Asked separately from the revenue band because the under-$50M band spans both sides of this figure."
+      },
+      "largeProcessingVolume": {
+        "label": "Did you process the personal information of 250,000+ consumers or households, or the sensitive personal information of 50,000+ consumers, last calendar year?",
+        "help": "Combined with the previous answer, this is the second route into the Article 9 audit duty."
+      },
+      "revenueBand": {
+        "label": "Which revenue band applies, for the audit phase-in?",
+        "help": "Selects the § 7121(a) deadline once you are in scope: over $100M reports by 1 April 2028, $50M–$100M by 1 April 2029, under $50M by 1 April 2030. Each tier measures a different revenue year."
+      }
     }
   }
 }

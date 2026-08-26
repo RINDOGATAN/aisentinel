@@ -311,8 +311,8 @@ const crossMappings: CrossMapping[] = [
   {
     a: "ca-7222-b-2",
     b: "eu-art--86",
-    relationship: "equivalent",
-    notes: "Both entitle the affected person to meaningful information about the logic of the decision; the CCPA text adds the parameters and the specific output explicitly.",
+    relationship: "partial",
+    notes: "Related but NOT equivalent, and satisfying Art. 86 does not discharge § 7222(b)(2). Art. 86 confers explanations of the ROLE of the AI system in the decision procedure and the main elements of the decision taken; § 7222(b)(2) additionally requires the logic of the ADMT, including the parameters that generated the output. The closer EU counterpart is GDPR Art. 22(3) and Art. 15(1)(h), which cannot be mapped here because no GDPR framework is seeded.",
   },
   {
     a: "ca-7222-b-3",

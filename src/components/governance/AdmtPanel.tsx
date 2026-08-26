@@ -119,6 +119,7 @@ const STATE_TONE: Record<
 const QUESTION_LINKS: Partial<Record<string, string>> = {
   declareJurisdictions: "/governance/settings",
   answerCoveredBusiness: "/governance/settings",
+  answerAuditThreshold: "/governance/settings",
 };
 
 interface FormState {

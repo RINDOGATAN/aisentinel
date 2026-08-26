@@ -44,8 +44,8 @@ import {
  * predicates) so exported artifacts can state which revision produced them.
  * See src/config/rule-pack-versions.ts.
  */
-export const REGULATORY_MILESTONES_VERSION = "2026.08.1";
-export const REGULATORY_MILESTONES_LAW_REVIEWED_AS_OF = "2026-08-19";
+export const REGULATORY_MILESTONES_VERSION = "2026.08.2";
+export const REGULATORY_MILESTONES_LAW_REVIEWED_AS_OF = "2026-08-21";
 
 export const REGULATORY_MILESTONES_REVIEW_MARKER: Localized = {
   en: `Law reviewed as of ${REGULATORY_MILESTONES_LAW_REVIEWED_AS_OF}; legal sign-off pending.`,
@@ -990,8 +990,8 @@ export const REGULATORY_MILESTONES: RegulatoryMilestone[] = [
       es: "Se aplica el nuevo régimen de transparencia ADMT de Colorado",
     },
     whatItMeans: {
-      en: "SB 26-189 repealed and replaced the original Colorado AI Act rather than merely delaying it: the duty of care, deployer risk-management programmes and impact assessments are gone. What takes effect on 1 January 2027 is a narrower transparency regime around automated decision-making that materially influences a consequential decision — advance notice, post-decision disclosures and consumer rights, structurally close to California's ADMT rules.",
-      es: "La SB 26-189 derogó y sustituyó la ley de IA original de Colorado, en lugar de limitarse a aplazarla: desaparecen el deber de diligencia, los programas de gestión de riesgos del responsable del despliegue y las evaluaciones de impacto. Lo que entra en vigor el 1 de enero de 2027 es un régimen de transparencia más estrecho sobre la decisión automatizada que influya materialmente en una decisión con consecuencias: aviso previo, información posterior a la decisión y derechos del consumidor, estructuralmente próximo a las normas ADMT de California.",
+      en: "SB 26-189 repealed and replaced the original Colorado AI Act rather than merely delaying it: the duty of care, deployer risk-management programmes and impact assessments are gone. What takes effect on 1 January 2027 is a narrower transparency regime around automated decision-making that materially influences a consequential decision — advance notice, post-decision disclosures and consumer rights, structurally close to California's ADMT rules. NOTE: enforcement is subject to a pending federal challenge (xAI LLC v. Weiser, D. Colo.), in which the United States intervened and the court stayed enforcement of the predecessor statute; reporting indicates the stay reaches SB 26-189 and runs until shortly after the preliminary-injunction ruling. Treat the date as the statutory one and confirm the current posture with Colorado counsel before relying on it.",
+      es: "La SB 26-189 derogó y sustituyó la ley de IA original de Colorado, en lugar de limitarse a aplazarla: desaparecen el deber de diligencia, los programas de gestión de riesgos del responsable del despliegue y las evaluaciones de impacto. Lo que entra en vigor el 1 de enero de 2027 es un régimen de transparencia más estrecho sobre la decisión automatizada que influya materialmente en una decisión con consecuencias: aviso previo, información posterior a la decisión y derechos del consumidor, estructuralmente próximo a las normas ADMT de California. NOTA: su aplicación está sujeta a un litigio federal pendiente (xAI LLC v. Weiser, D. Colo.), en el que intervino el Gobierno de los Estados Unidos y en el que el tribunal suspendió la aplicación de la norma anterior; según la información disponible, la suspensión alcanza también a la SB 26-189 y se prolonga hasta poco después de la resolución sobre la medida cautelar. Considere la fecha como la legal y confirme la situación actual con asesoría jurídica de Colorado antes de basarse en ella.",
     },
     orgApplies: (org) => jurisdictionGate(org, "US_CO") ?? "in-scope",
     undeterminedReason: () => "no-jurisdictions",

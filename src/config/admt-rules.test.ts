@@ -19,6 +19,7 @@ import {
   evaluateAdmtDefinition,
   resolveAdmtOrgScope,
   resolveAdmtScope,
+  resolveCyberAuditScope,
   triggerTag,
   type AdmtOrgFacts,
   type AdmtProngs,
@@ -34,6 +35,11 @@ const CA_ORG: AdmtOrgFacts = {
   operatingJurisdictions: ["EU", "US_CA"],
   coveredBusiness: "YES",
   revenueBand: "OVER_100M",
+  // § 7120(b) unanswered by default: revenue band alone must not put a
+  // business into the cybersecurity-audit regime.
+  sellShareRevenue50Plus: "NOT_ASSESSED",
+  revenueOverCcpaThreshold: "NOT_ASSESSED",
+  largeProcessingVolume: "NOT_ASSESSED",
 };
 
 const PRONGS_ALL_SATISFIED: AdmtProngs = {
@@ -482,10 +488,12 @@ describe("resolveAdmtOrgScope", () => {
     expect(result.tags).toContain("admt:art10:trigger:sell_share_pi");
     expect(result.tags).toContain("admt:art10:trigger:sensitive_pi");
     expect(result.tags).toContain("admt:art11");
-    expect(result.tags).toContain("admt:art9"); // revenue band known
+    // NOT admt:art9 — CA_ORG names a revenue band but has not answered the
+    // § 7120(b) test, and band alone never puts a business in Article 9.
+    expect(result.tags).not.toContain("admt:art9");
   });
 
-  it("withholds the Article 9 audit tag until a revenue band is known", () => {
+  it("withholds the Article 9 audit tag until the § 7120(b) test resolves", () => {
     const result = resolveAdmtOrgScope(
       { ...CA_ORG, revenueBand: "NOT_ASSESSED" },
       [
@@ -496,6 +504,17 @@ describe("resolveAdmtOrgScope", () => {
       ],
     );
     expect(result.tags).not.toContain("admt:art9");
+    expect(result.openQuestions).toContain("answerAuditThreshold");
+  });
+
+  it("asks for the phase-in band once § 7120(b) puts the business in scope", () => {
+    // In scope on the 50%-of-revenue limb, but no band yet: § 7121(a) cannot
+    // be dated, so the band becomes the open question rather than the trigger.
+    const result = resolveAdmtOrgScope(
+      { ...CA_ORG, revenueBand: "NOT_ASSESSED", sellShareRevenue50Plus: "YES" },
+      [system({ determination: "ADMT", riskAssessmentTriggers: ["sell_share_pi"] })],
+    );
+    expect(result.tags).toContain("admt:art9");
     expect(result.openQuestions).toContain("answerCoveredBusiness");
   });
 
@@ -547,5 +566,80 @@ describe("two-axis applicability invariant", () => {
         (t) => t.startsWith("admt:") || t.startsWith("jurisdiction:"),
       ),
     ).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// § 7120(b) — cybersecurity-audit scope
+// ---------------------------------------------------------------------------
+
+describe("resolveCyberAuditScope (§ 7120(b))", () => {
+  const blank = {
+    sellShareRevenue50Plus: "NOT_ASSESSED",
+    revenueOverCcpaThreshold: "NOT_ASSESSED",
+    largeProcessingVolume: "NOT_ASSESSED",
+  } as const;
+
+  it("is NOT_ASSESSED until the facts are answered", () => {
+    expect(resolveCyberAuditScope({ ...CA_ORG, ...blank })).toBe("NOT_ASSESSED");
+  });
+
+  it("ignores revenue band entirely — band picks the tier, not the scope", () => {
+    for (const revenueBand of ["OVER_100M", "BETWEEN_50M_AND_100M", "UNDER_50M"] as const) {
+      expect(
+        resolveCyberAuditScope({ ...CA_ORG, ...blank, revenueBand }),
+        revenueBand,
+      ).toBe("NOT_ASSESSED");
+    }
+  });
+
+  it("is IN_SCOPE on the 50%-of-revenue limb alone", () => {
+    expect(
+      resolveCyberAuditScope({ ...CA_ORG, ...blank, sellShareRevenue50Plus: "YES" }),
+    ).toBe("IN_SCOPE");
+  });
+
+  it("needs BOTH conjuncts of the second limb", () => {
+    expect(
+      resolveCyberAuditScope({ ...CA_ORG, ...blank, revenueOverCcpaThreshold: "YES" }),
+    ).toBe("NOT_ASSESSED");
+    expect(
+      resolveCyberAuditScope({
+        ...CA_ORG,
+        ...blank,
+        revenueOverCcpaThreshold: "YES",
+        largeProcessingVolume: "YES",
+      }),
+    ).toBe("IN_SCOPE");
+  });
+
+  it("is OUT_OF_SCOPE only when both limbs are explicitly ruled out", () => {
+    // One NO is not enough while the other limb is still unanswered.
+    expect(
+      resolveCyberAuditScope({ ...CA_ORG, ...blank, sellShareRevenue50Plus: "NO" }),
+    ).toBe("NOT_ASSESSED");
+    expect(
+      resolveCyberAuditScope({
+        ...CA_ORG,
+        ...blank,
+        sellShareRevenue50Plus: "NO",
+        largeProcessingVolume: "NO",
+      }),
+    ).toBe("OUT_OF_SCOPE");
+  });
+
+  it("emits the art9 tag only when the test resolves IN_SCOPE", () => {
+    const inScope = resolveAdmtOrgScope(
+      { ...CA_ORG, ...blank, sellShareRevenue50Plus: "YES" },
+      [system({ determination: "NOT_ADMT", riskAssessmentTriggers: ["sell_share_pi"] })],
+    );
+    expect(inScope.tags).toContain("admt:art9");
+
+    const unanswered = resolveAdmtOrgScope(
+      { ...CA_ORG, ...blank, revenueBand: "OVER_100M" },
+      [system({ determination: "NOT_ADMT", riskAssessmentTriggers: ["sell_share_pi"] })],
+    );
+    expect(unanswered.tags).not.toContain("admt:art9");
+    expect(unanswered.openQuestions).toContain("answerAuditThreshold");
   });
 });

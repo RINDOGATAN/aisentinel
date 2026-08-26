@@ -62,6 +62,9 @@ const CA_ORG: AdmtOrgFacts = {
   operatingJurisdictions: ["US_CA"],
   coveredBusiness: "YES",
   revenueBand: "UNDER_50M",
+  sellShareRevenue50Plus: "NOT_ASSESSED",
+  revenueOverCcpaThreshold: "NOT_ASSESSED",
+  largeProcessingVolume: "NOT_ASSESSED",
 };
 
 const BLANK_SYSTEM: AdmtSystemFacts = {
@@ -88,7 +91,7 @@ describe("California scope matrix", () => {
   it("creates nothing when no jurisdiction has been declared", () => {
     expect(
       selectedRows(
-        { operatingJurisdictions: [], coveredBusiness: "NOT_ASSESSED", revenueBand: "NOT_ASSESSED" },
+        { ...CA_ORG, operatingJurisdictions: [], coveredBusiness: "NOT_ASSESSED", revenueBand: "NOT_ASSESSED" },
         BLANK_SYSTEM,
       ),
     ).toHaveLength(0);
@@ -97,7 +100,7 @@ describe("California scope matrix", () => {
   it("creates nothing for an organization with no California nexus", () => {
     expect(
       selectedRows(
-        { operatingJurisdictions: ["EU"], coveredBusiness: "YES", revenueBand: "UNDER_50M" },
+        { ...CA_ORG, operatingJurisdictions: ["EU"] },
         BLANK_SYSTEM,
       ),
     ).toHaveLength(0);
@@ -138,6 +141,19 @@ describe("California scope matrix", () => {
       significantDecisionDomains: ["employment_contracting"],
     });
     expect(selected.filter(isArticle11).length).toBeGreaterThan(50);
+  });
+
+  it("does not attach cybersecurity-audit rows on revenue band alone", () => {
+    // § 7120(b) turns on the selling-revenue share or the consumer-volume
+    // test, never on revenue band — band only picks the § 7121(a) phase-in
+    // tier once the business is already in scope.
+    const selected = selectedRows(
+      { ...CA_ORG, revenueBand: "OVER_100M" },
+      { ...BLANK_SYSTEM, determination: "NOT_ADMT", riskAssessmentTriggers: ["sell_share_pi"] },
+    );
+    expect(
+      selected.filter((r) => r.applicabilityTags.includes("admt:art9")),
+    ).toHaveLength(0);
   });
 
   it("selects strictly fewer rows for Article 10 only than for Article 10 + 11", () => {

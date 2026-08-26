@@ -52,8 +52,8 @@ import type { AdmtApplicabilityTag } from "@/config/admt-rules";
 // ============================================================
 
 /** Bump on any content change so exports can state which revision produced them. */
-export const ADMT_REQUIREMENTS_VERSION = "2026.08.1";
-export const ADMT_REQUIREMENTS_LAW_REVIEWED_AS_OF = "2026-08-19";
+export const ADMT_REQUIREMENTS_VERSION = "2026.08.2";
+export const ADMT_REQUIREMENTS_LAW_REVIEWED_AS_OF = "2026-08-21";
 
 export const ADMT_REQUIREMENTS_REVIEW_MARKER: Localized = {
   en: `Law reviewed as of ${ADMT_REQUIREMENTS_LAW_REVIEWED_AS_OF}; California legal sign-off pending.`,
@@ -96,11 +96,15 @@ const ART10_ORG: AdmtApplicabilityTag[] = [
   "admt:art10",
   "admt:org",
 ];
-const ART9_ORG: AdmtApplicabilityTag[] = [
-  "jurisdiction:US_CA",
-  "admt:art9",
-  "admt:org",
-];
+/**
+ * Article 9 rows carry `admt:art9` ONLY — deliberately not `admt:org`.
+ *
+ * `admt:org` is emitted by every positive system-level scope, so tagging the
+ * audit rows with it made them arrive for any business with an Article 10
+ * trigger, regardless of § 7120(b). The audit duty has its own threshold and
+ * must be selected by its own tag.
+ */
+const ART9_ORG: AdmtApplicabilityTag[] = ["jurisdiction:US_CA", "admt:art9"];
 const GATE: AdmtApplicabilityTag[] = [
   "jurisdiction:US_CA",
   "admt:art10",
@@ -766,8 +770,8 @@ const clusterD: AdmtRequirementSeed[] = [
           es: "El acceso SÍ exige verificación",
         },
         description: {
-          en: "The business must verify the consumer under Article 5 before responding to a request to access ADMT, and must inform the requester where the request cannot be verified. This is the deliberate opposite of § 7221(f), which forbids verifying an opt-out.",
-          es: "La empresa debe verificar la identidad del consumidor conforme al artículo 5 antes de responder a una solicitud de acceso a la ADMT, e informar a quien la presentó cuando no sea posible verificarla. Es lo contrario, deliberadamente, del § 7221(f), que prohíbe verificar una exclusión.",
+          en: "The business must verify the consumer under Article 5 before responding to a request to access ADMT, and must inform the requester where the request cannot be verified. This is the deliberate opposite of § 7221(f), which forbids REQUIRING a verifiable consumer request for an opt-out — though the business may still ask for the information needed to identify the consumer.",
+          es: "La empresa debe verificar la identidad del consumidor conforme al artículo 5 antes de responder a una solicitud de acceso a la ADMT, e informar a quien la presentó cuando no sea posible verificarla. Es lo contrario, deliberadamente, del § 7221(f), que prohíbe EXIGIR una solicitud verificable del consumidor para la exclusión, si bien la empresa sí puede pedir la información necesaria para identificarlo.",
         },
         applicabilityTags: ART11,
         sortOrder: 8,
@@ -912,8 +916,8 @@ const clusterE: AdmtRequirementSeed[] = [
       es: "Métricas anuales de solicitudes antes del 1 de julio",
     },
     description: {
-      en: "A business that handles the personal information of ten million or more consumers in a calendar year must compile and publish by 1 July each year the number of requests to access ADMT and requests to opt out of ADMT received, complied with in whole or in part, and denied.",
-      es: "La empresa que trate datos personales de diez millones o más de consumidores en un año natural debe recopilar y publicar antes del 1 de julio de cada año el número de solicitudes de acceso a la ADMT y de exclusión de la ADMT recibidas, atendidas total o parcialmente, y denegadas.",
+      en: "A business that buys, sells, shares, receives for commercial purposes, or otherwise makes available for commercial purposes the personal information of ten million or more consumers in a calendar year must compile and publish by 1 July each year the number of requests to access ADMT and requests to opt out of ADMT received, complied with in whole or in part, and denied.",
+      es: "La empresa que compre, venda, comunique, reciba con fines comerciales o ponga de otro modo a disposición con fines comerciales los datos personales de diez millones o más de consumidores en un año natural debe recopilar y publicar antes del 1 de julio de cada año el número de solicitudes de acceso a la ADMT y de exclusión de la ADMT recibidas, atendidas total o parcialmente, y denegadas.",
     },
     // Article 11 as well as org-level: the counts being reported are counts of
     // ADMT access and opt-out requests, which only exist where Article 11 bites.
@@ -1203,8 +1207,8 @@ const clusterF: AdmtRequirementSeed[] = [
           es: "Aprobación fechada con nombres y cargos",
         },
         description: {
-          en: "Document the date the assessment was reviewed and approved, together with the names and positions of the individuals who reviewed and approved it. An approver must have authority to participate in deciding whether to initiate the processing. Nothing generated automatically can satisfy this row.",
-          es: "Documente la fecha de revisión y aprobación de la evaluación, junto con los nombres y cargos de quienes la revisaron y aprobaron. Quien apruebe debe tener autoridad para participar en la decisión de iniciar el tratamiento. Ningún elemento generado automáticamente puede satisfacer este requisito.",
+          en: "Document the date the assessment was reviewed and approved, together with the names and positions of the individuals who reviewed or approved it — except legal counsel who provided legal advice, who need not be named. An approver must have authority to participate in deciding whether the business will initiate the processing. Nothing generated automatically can satisfy this row.",
+          es: "Documente la fecha de revisión y aprobación de la evaluación, junto con los nombres y cargos de quienes la revisaron o aprobaron, salvo los de la asesoría jurídica que haya prestado asesoramiento legal, a la que no es necesario identificar. Quien apruebe debe tener autoridad para participar en la decisión de que la empresa inicie el tratamiento. Ningún elemento generado automáticamente puede satisfacer este requisito.",
         },
         applicabilityTags: ART10,
         sortOrder: 10,

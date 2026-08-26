@@ -3461,7 +3461,8 @@
       "answerSoleFactor": "Indica si el resultado es el único factor de la decisión",
       "answerOptOutBasis": "Indica cómo pueden excluirse los consumidores o en qué excepción te amparas",
       "evidenceWorksForPurpose": "Adjunta pruebas de que la tecnología cumple su finalidad",
-      "evidenceNonDiscrimination": "Adjunta pruebas de que la tecnología no discrimina ilícitamente"
+      "evidenceNonDiscrimination": "Adjunta pruebas de que la tecnología no discrimina ilícitamente",
+      "answerAuditThreshold": "Responda a las preguntas sobre el umbral de auditoría de ciberseguridad del § 7120(b)"
     },
     "determination": {
       "label": "¿Es ADMT?",
@@ -3572,6 +3573,43 @@
       "humanAppealRequires": "Esta excepción solo procede si una persona revisora designada valora la información aportada por el consumidor, sabe interpretar el resultado y tiene autoridad para modificar la decisión.",
       "twoPartTest": "Es una prueba de dos partes: la tecnología debe funcionar conforme a su finalidad Y no debe discriminar ilícitamente. Acreditar una sin la otra deja la excepción sin cumplir.",
       "processingInitiatedHelp": "Fecha de inicio del tratamiento que activa la obligación. Si se deja en blanco, no puede determinarse el plazo de regularización del § 7155(b), que alcanza a los tratamientos iniciados antes del 1 de enero de 2026."
+    },
+    "screening": {
+      "title": "Evaluación preliminar CCPA (California)",
+      "description": "Cinco respuestas que determinan qué obligaciones de California le alcanzan. Lo que deje sin responder permanece visiblemente sin responder: el silencio nunca se interpreta como «no».",
+      "saved": "Evaluación de California guardada",
+      "auditIntro": "Las tres siguientes determinan la auditoría de ciberseguridad del artículo 9 conforme al § 7120(b). El tramo de ingresos por sí solo nunca genera la obligación: únicamente selecciona el calendario escalonado cuando esta ya existe.",
+      "answer": {
+        "YES": "Sí",
+        "NO": "No",
+        "NOT_ASSESSED": "Sin responder"
+      },
+      "band": {
+        "OVER_100M": "Más de 100 M USD",
+        "BETWEEN_50M_AND_100M": "Entre 50 y 100 M USD",
+        "UNDER_50M": "Menos de 50 M USD",
+        "NOT_ASSESSED": "Sin responder"
+      },
+      "coveredBusiness": {
+        "label": "¿Es la organización una «business» conforme a la CCPA?",
+        "help": "Basta con cumplir uno de estos supuestos: ingresos brutos anuales superiores al umbral ajustado por IPC (26.625.000 USD para 2025-2026); comprar, vender o comunicar datos personales de 100.000 o más consumidores u hogares; u obtener el 50 % o más de los ingresos anuales de la venta o comunicación de datos personales. No existe exención para pequeñas empresas: los umbrales son la propia excepción."
+      },
+      "sellShareRevenue50Plus": {
+        "label": "¿Procede el 50 % o más de los ingresos anuales de la venta o comunicación de datos personales?",
+        "help": "Por sí solo, este supuesto sitúa a la organización en el régimen de auditoría de ciberseguridad del artículo 9."
+      },
+      "revenueOverCcpaThreshold": {
+        "label": "¿Superan los ingresos brutos anuales el umbral de la CCPA ajustado por IPC?",
+        "help": "26.625.000 USD para 2025-2026. El siguiente ajuste por IPC corresponde al 1 de enero de 2027 y aún no se ha publicado. Se pregunta por separado del tramo de ingresos porque el tramo inferior a 50 M USD abarca ambos lados de esa cifra."
+      },
+      "largeProcessingVolume": {
+        "label": "¿Trató datos personales de 250.000 o más consumidores u hogares, o datos personales sensibles de 50.000 o más consumidores, el año natural anterior?",
+        "help": "Junto con la respuesta anterior, constituye la segunda vía de entrada en la obligación de auditoría del artículo 9."
+      },
+      "revenueBand": {
+        "label": "¿Qué tramo de ingresos corresponde, a efectos del calendario de auditoría?",
+        "help": "Determina el plazo del § 7121(a) cuando la obligación ya existe: más de 100 M USD informa antes del 1 de abril de 2028; de 50 a 100 M USD, antes del 1 de abril de 2029; menos de 50 M USD, antes del 1 de abril de 2030. Cada tramo mide un año de ingresos distinto."
+      }
     }
   }
 }

@@ -14,6 +14,7 @@ import { useOrganization } from "@/lib/organization-context";
 import { DeploymentExpertCta } from "@/components/governance/deployment-expert-cta";
 import { AiPostureCard } from "@/components/ai/AiPostureCard";
 import { JurisdictionPicker } from "@/components/governance/jurisdiction-picker";
+import { CaliforniaScreeningCard } from "@/components/governance/california-screening-card";
 import type { JurisdictionId } from "@/config/jurisdictions";
 
 const personaIcons = {
@@ -86,6 +87,16 @@ export default function SettingsPage() {
           canWrite={canWrite}
           tj={tj}
           tc={tc}
+        />
+      )}
+
+      {/* California CCPA screening. Self-gating on a declared California nexus;
+          it is what lets the ADMT resolver leave COVERED_BUSINESS_NOT_ASSESSED,
+          so without it the whole California framework stays unreachable. */}
+      {organization && (
+        <CaliforniaScreeningCard
+          organizationId={organization.id}
+          canWrite={canWrite}
         />
       )}
 

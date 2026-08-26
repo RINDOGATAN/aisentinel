@@ -31,11 +31,13 @@ import {
   SIGNIFICANT_DECISION_DOMAINS,
   resolveAdmtOrgScope,
   resolveAdmtScope,
+  resolveCyberAuditScope,
   type AdmtOrgFacts,
   type AdmtProngStatusValue,
   type AdmtSystemFacts,
   type CoveredBusinessAnswer,
   type RevenueBand,
+  type ScreeningAnswer,
 } from "@/config/admt-rules";
 import { computeAdmtDeadlines } from "@/config/admt-deadlines";
 import type { JurisdictionId } from "@/config/jurisdictions";
@@ -64,22 +66,43 @@ const OPT_OUT_BASIS = z.enum([
   "ADMISSION_ACCEPTANCE_HIRING_7221_B_2",
   "ALLOCATION_COMPENSATION_7221_B_3",
 ]);
+const SCREENING = z.enum(["NOT_ASSESSED", "YES", "NO"]);
+const COVERED_BUSINESS = z.enum(["NOT_ASSESSED", "YES", "NO"]);
+const REVENUE_BAND = z.enum([
+  "NOT_ASSESSED",
+  "OVER_100M",
+  "BETWEEN_50M_AND_100M",
+  "UNDER_50M",
+]);
 
 /** Screening answers live in Organization.settings, not in a queried column. */
 interface AdmtOrgSettings {
   coveredBusiness?: CoveredBusinessAnswer;
   revenueBand?: RevenueBand;
+  sellShareRevenue50Plus?: ScreeningAnswer;
+  revenueOverCcpaThreshold?: ScreeningAnswer;
+  largeProcessingVolume?: ScreeningAnswer;
 }
 
+/**
+ * Every fact defaults to NOT_ASSESSED. That is load-bearing: the resolver must
+ * be able to tell "nobody has answered" apart from "the answer is no", and an
+ * organization that has said nothing must never be told California is
+ * irrelevant to it.
+ */
 function readOrgFacts(org: {
   operatingJurisdictions: string[];
   settings: unknown;
 }): AdmtOrgFacts {
   const settings = org.settings as { admt?: AdmtOrgSettings } | null;
+  const admt = settings?.admt;
   return {
     operatingJurisdictions: org.operatingJurisdictions as JurisdictionId[],
-    coveredBusiness: settings?.admt?.coveredBusiness ?? "NOT_ASSESSED",
-    revenueBand: settings?.admt?.revenueBand ?? "NOT_ASSESSED",
+    coveredBusiness: admt?.coveredBusiness ?? "NOT_ASSESSED",
+    revenueBand: admt?.revenueBand ?? "NOT_ASSESSED",
+    sellShareRevenue50Plus: admt?.sellShareRevenue50Plus ?? "NOT_ASSESSED",
+    revenueOverCcpaThreshold: admt?.revenueOverCcpaThreshold ?? "NOT_ASSESSED",
+    largeProcessingVolume: admt?.largeProcessingVolume ?? "NOT_ASSESSED",
   };
 }
 
@@ -254,7 +277,74 @@ export const admtRouter = createTRPCRouter({
         systems: perSystem,
         coveredBusiness: orgFacts.coveredBusiness,
         revenueBand: orgFacts.revenueBand,
+        sellShareRevenue50Plus: orgFacts.sellShareRevenue50Plus,
+        revenueOverCcpaThreshold: orgFacts.revenueOverCcpaThreshold,
+        largeProcessingVolume: orgFacts.largeProcessingVolume,
+        cyberAuditScope: resolveCyberAuditScope(orgFacts),
       };
+    }),
+
+  /**
+   * Record the organization-level California screening answers.
+   *
+   * These live in `Organization.settings.admt` rather than in columns: they are
+   * screening answers a human gives, not queried facts. Without this mutation
+   * nothing could ever write them, so every organization sat permanently at
+   * COVERED_BUSINESS_NOT_ASSESSED and no California requirement could be
+   * mapped at all — the whole framework was seeded but unreachable.
+   *
+   * Merged non-destructively: `settings` is shared with the quickstart profile.
+   */
+  setOrgFacts: orgWriteProcedure
+    .input(
+      z.object({
+        organizationId: z.string(),
+        coveredBusiness: COVERED_BUSINESS,
+        revenueBand: REVENUE_BAND,
+        sellShareRevenue50Plus: SCREENING,
+        revenueOverCcpaThreshold: SCREENING,
+        largeProcessingVolume: SCREENING,
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const org = await ctx.prisma.organization.findUnique({
+        where: { id: ctx.organization.id },
+        select: { settings: true },
+      });
+
+      const settings =
+        org?.settings && typeof org.settings === "object" && !Array.isArray(org.settings)
+          ? (org.settings as Record<string, unknown>)
+          : {};
+
+      // `satisfies` rather than a type annotation: the inferred literal type is
+      // what Prisma's InputJsonObject accepts, while a named interface without
+      // an index signature is not.
+      const admt = {
+        coveredBusiness: input.coveredBusiness,
+        revenueBand: input.revenueBand,
+        sellShareRevenue50Plus: input.sellShareRevenue50Plus,
+        revenueOverCcpaThreshold: input.revenueOverCcpaThreshold,
+        largeProcessingVolume: input.largeProcessingVolume,
+      } satisfies AdmtOrgSettings;
+
+      await ctx.prisma.organization.update({
+        where: { id: ctx.organization.id },
+        data: { settings: { ...settings, admt } },
+      });
+
+      await ctx.prisma.auditLog.create({
+        data: {
+          organizationId: ctx.organization.id,
+          userId: ctx.session.user.id,
+          entityType: "Organization",
+          entityId: ctx.organization.id,
+          action: "UPDATE",
+          changes: { source: "admt-screening", ...admt },
+        },
+      });
+
+      return admt;
     }),
 
   upsertProfile: orgWriteProcedure

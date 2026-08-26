@@ -28,7 +28,7 @@
 import type { RevenueBand } from "./admt-rules";
 
 export const ADMT_DEADLINES_VERSION = "2026.08.1";
-export const ADMT_DEADLINES_LAW_REVIEWED_AS_OF = "2026-08-19";
+export const ADMT_DEADLINES_LAW_REVIEWED_AS_OF = "2026-08-21";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 

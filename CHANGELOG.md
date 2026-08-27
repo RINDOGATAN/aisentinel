@@ -6,6 +6,55 @@ All notable changes to AI SENTINEL are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- **California requirements could never attach to anything.** Nothing wrote the
+  organisation's CCPA screening answers: no mutation accepted them and no page
+  collected them, so every organisation stayed at "business threshold not
+  answered" and none of the 92 seeded California requirements could be mapped.
+  The ADMT panel sent users to Settings to answer a question that was not there.
+  Adds the `admt.setOrgFacts` mutation and a California screening card, shown
+  once a Californian nexus is declared.
+- **Article 11 duties could attach to systems that are not ADMT.** Compliance
+  mappings were selected with `hasSome` over the raw scope tags. Every
+  California row carries `jurisdiction:US_CA` and every positive scope emits it,
+  so the jurisdiction tag alone matched everything and the Article tags never
+  narrowed the set. The matrix already stripped jurisdiction tags before
+  matching; the mutation that writes the record did not. Both now share one
+  implementation in `src/lib/applicability-scope.ts`, and `lint:security`
+  rejects `hasSome` on `applicabilityTags`.
+- **Cybersecurity audits attached on revenue band alone.** Article 9 applies
+  under § 7120(b) — 50% or more of revenue from selling or sharing personal
+  information, or the § 1798.140(d)(1)(A) threshold together with 250,000
+  consumers/households or 50,000 consumers' sensitive data. Revenue band only
+  selects the § 7121(a) phase-in tier once a business is already in scope.
+  Adds `resolveCyberAuditScope` and the three screening facts it needs; ruling
+  the duty out requires closing both limbs, so one unanswered fact stays
+  undetermined rather than resolving to "no".
+- Superseded cross-framework mappings are now pruned. Upserting alone left
+  rows behind when a mapping was re-pointed, so an upgraded database disagreed
+  with a fresh install about which article a duty cites.
+- Self-hosted installations never received regulatory content updates: the
+  content seeds ran on first boot only, and the migrator image was missing
+  `src/config` and `tsconfig.json`, so they could not have run at all.
+
+### Changed
+
+- California content verified line-by-line against the OAL-approved text
+  (approved 22 September 2025, effective 1 January 2026). Corrections, both
+  locales: § 7152(a)(9) gains the "except for legal counsel who provided legal
+  advice" carve-out; § 7222(e) no longer states that § 7221(f) forbids verifying
+  an opt-out, which forbids *requiring a verifiable consumer request*; § 7102
+  uses the statutory verbs rather than "handles".
+- `ca-7222-b-2 → eu-art--86` downgraded from equivalent to partial. EU Art. 86
+  confers an explanation of the role of the system and the main elements of the
+  decision, not the logic or parameters that § 7222(b)(2) requires.
+- The Colorado SB 26-189 milestone records the pending federal challenge and
+  enforcement stay. The 1 January 2027 date is unchanged — it is the statutory
+  one.
+- Release procedure documented in `docs/releasing.md`, including the step most
+  easily missed: hosted does not run the content seeds on deploy.
+
 ### Security
 
 - Cleared all 29 known dependency vulnerabilities (3 critical, 16 high). `npm audit`

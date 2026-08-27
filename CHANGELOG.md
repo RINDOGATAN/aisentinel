@@ -6,6 +6,11 @@ All notable changes to AI SENTINEL are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.2.5] - 2026-08-27
+
+Covers everything since the 1.0.0 baseline below: the `v0.1.x` and `v0.2.x`
+tags in between were release tags only and were never recorded here separately.
+
 ### Fixed
 
 - **California requirements could never attach to anything.** Nothing wrote the
@@ -74,6 +79,11 @@ All notable changes to AI SENTINEL are documented here. The format follows
 - Payments and self-service billing removed from the hosted posture. When billing is disabled (NEXT_PUBLIC_STRIPE_ENABLED=false), the previously-premium assessments (Conformity, Bias and Fairness) and the Shadow AI and Vendor Catalog add-ons are available to everyone without an entitlement record. The premium value moves to LQAI skill downloads; the in-app paid gates stay dormant behind the feature flag and remain reversible if billing is switched back on.
 
 ## [1.0.0] - 2026-07-05
+
+This heading predates the release-tag series, which began at `v0.1.0` on
+2026-07-11; 1.0.0 was a repository-quality milestone and was never tagged.
+Releases are numbered from the tag series, which is why the entry above it
+is 0.2.5.
 
 First public release of AI SENTINEL, an AI governance registry for the EU AI
 Act (Reg. (EU) 2024/1689), NIST AI RMF and ISO/IEC 42001, in English and

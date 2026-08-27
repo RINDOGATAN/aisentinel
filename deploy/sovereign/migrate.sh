@@ -5,10 +5,10 @@
 #   docker compose run --rm migrator
 #
 # Schema: applied with `prisma migrate deploy` from the committed
-# prisma/migrations history. Installs created before 1.0.0 were deployed via
-# `prisma db push` (no _prisma_migrations bookkeeping); for those we mark the
-# 0_init baseline as already applied (a metadata-only step that changes no
-# data) before deploying. See prisma/migrations/README.md.
+# prisma/migrations history. Installs created before the 0_init baseline were
+# deployed via `prisma db push` (no _prisma_migrations bookkeeping); for those
+# we mark the 0_init baseline as already applied (a metadata-only step that
+# changes no data) before deploying. See prisma/migrations/README.md.
 #
 # Seed: CONTENT ONLY. Baseline catalogs (skill packages, compliance
 # frameworks, assessment templates, Shadow-AI tools, vendor catalog,
@@ -20,7 +20,7 @@
 set -eu
 cd /app
 
-# Pre-1.0.0 install detection: tables exist (db push era) but the migrations
+# Pre-baseline install detection: tables exist (db push era) but the migrations
 # ledger does not. Baseline once, then migrate deploy takes over forever.
 cat > /tmp/baseline-check.js <<'EOF'
 const { PrismaClient } = require("@prisma/client");

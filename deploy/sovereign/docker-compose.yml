@@ -55,7 +55,7 @@ services:
     #   - "127.0.0.1:55437:5432"
 
   # One-shot: applies the committed prisma/migrations history (migrate
-  # deploy; pre-1.0.0 db-push installs are auto-baselined first), then seeds
+  # deploy; pre-baseline db-push installs are auto-baselined first), then seeds
   # baseline CONTENT (skill packages, compliance frameworks, assessment
   # templates, Shadow-AI tool catalog, vendor catalog, cross-framework
   # mappings; no demo org/users) on FIRST boot only. An instance with users

@@ -41,6 +41,19 @@ npm run build
 npm run test -- license-crypto   # Ed25519 golden parity — see below
 ```
 
+`npm run build` starts with `prisma migrate deploy`, so it needs a reachable
+database. On a machine without one, build the way CI and the Dockerfile do —
+no database is contacted:
+
+```bash
+ais_DATABASE_URL="postgresql://user:pass@localhost:5432/db?schema=public" \
+  npx prisma generate && npx next build
+```
+
+If `tsc` or the tests fail on a checkout that CI reports green, suspect a
+stale generated Prisma client (`npx prisma generate`) or stale `.next` route
+types left behind by a deleted page (`rm -rf .next`), not the working tree.
+
 The parity test is not optional. The licence canonical bytes are a cross-app
 contract with the storefront and both sibling apps; a tag that breaks parity
 breaks paid activation everywhere at once, and self-hosters pull `:latest`

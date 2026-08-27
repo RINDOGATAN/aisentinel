@@ -53,8 +53,8 @@ LexBooks / DPO Central / DealRoom on this hardware.
 
 - **Schema after `git pull`:** `docker compose run --rm migrator` runs
   `prisma migrate deploy` against the committed migration history; the seed
-  is skipped once the instance has users. Installs created before 1.0.0
-  (the `db push` era) are baselined automatically on the first run (a
+  is skipped once the instance has users. Installs created before the `0_init`
+  baseline (the `db push` era) are baselined automatically on the first run (a
   metadata-only step); see `prisma/migrations/README.md`.
 - **Health:** `curl http://localhost:8487/api/health` returns 200 with
   `{ ok, version, services: { database } }` when app and DB are up, 503 when

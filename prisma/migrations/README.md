@@ -16,7 +16,7 @@ care about: push has no history and can drop columns on drift.
 
 ## Baselining an EXISTING database (one-time)
 
-A database created before migrations existed (any pre-1.0.0 install, and the
+A database created before migrations existed (any pre-baseline install, and the
 hosted Neon instance) already has all the tables but no `_prisma_migrations`
 bookkeeping. Mark the baseline as applied WITHOUT running it, then deploy:
 

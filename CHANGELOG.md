@@ -6,6 +6,18 @@ All notable changes to AI SENTINEL are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- **The migrator could not upgrade a db-push-era install.** The pre-baseline
+  check in `deploy/sovereign/migrate.sh` ran from `/tmp`, where `require` could
+  not find the generated Prisma client, and it looked for a table named `User`
+  when the table is `users`. Both faults made the check answer "no baseline
+  needed", so `prisma migrate deploy` then stopped with P3005 on any database
+  created before the `0_init` baseline. Verified against the published
+  `v0.2.5` migrator: a 0_init-shaped database with users is now baselined,
+  receives the nine later migrations and the content refresh, and a second run
+  is a no-op. Clean installs and already-migrated installs are unchanged.
+
 ## [0.2.5] - 2026-08-27
 
 Covers everything since the 1.0.0 baseline below: the `v0.1.x` and `v0.2.x`

@@ -174,6 +174,14 @@ Check three things:
    first-boot bootstrap`, still refreshes regulatory content, and leaves
    accounts and organisation-owned rows untouched.
 3. A third run changes nothing — the whole chain is idempotent.
+4. A database created before the `0_init` baseline (apply
+   `prisma/migrations/0_init/migration.sql` by hand, insert one user, no
+   `_prisma_migrations` table) logs `pre-migrations install detected;
+   baselining 0_init`, then applies the later migrations and the content
+   refresh. Skipping this check is what let the baseline path ship broken.
+
+Last run in full: 2026-09-07 against the published `v0.2.5` migrator (all four
+checks green after the `migrate.sh` baseline fix).
 
 ---
 

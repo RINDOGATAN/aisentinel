@@ -27,14 +27,16 @@ const { PrismaClient } = require("@prisma/client");
 const p = new PrismaClient();
 (async () => {
   const [row] = await p.$queryRawUnsafe(
-    "SELECT to_regclass('public.\"User\"')::text AS users, to_regclass('public._prisma_migrations')::text AS ledger"
+    "SELECT to_regclass('public.users')::text AS users, to_regclass('public._prisma_migrations')::text AS ledger"
   );
   await p.$disconnect();
   // exit 0 = needs baseline (tables exist, no migrations ledger)
   process.exit(row.users !== null && row.ledger === null ? 0 : 1);
 })().catch(() => process.exit(1));
 EOF
-if node /tmp/baseline-check.js; then
+# NODE_PATH: the script lives outside /app, so bare `require` would not find
+# the generated client. The users table is @@map("users") in schema.prisma.
+if NODE_PATH=/app/node_modules node /tmp/baseline-check.js; then
   echo "[migrate] pre-migrations install detected; baselining 0_init (metadata only)..."
   npx prisma migrate resolve --applied 0_init
 fi

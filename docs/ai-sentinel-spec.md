@@ -49,7 +49,7 @@ DPO Central covers **data privacy** (GDPR, DSAR, incidents, vendor risk). DPOs a
 | **Background** | `#1a1a1a` (dark) |
 | **Theme** | Always dark (matches DPO Central) |
 | **Local dev port** | `3002` (DPO Central is `3001`) |
-| **Repository folder** | `/Users/sme/NEL/ai-sentinel` |
+| **Repository folder** | `aisentinel/` (your local checkout of `RINDOGATAN/aisentinel`) |
 
 ---
 
@@ -888,7 +888,7 @@ OWNER > ADMIN > AI_OFFICER > MEMBER > VIEWER
 ## 10. Folder Structure
 
 ```
-/Users/sme/NEL/aisentinel/
+aisentinel/
   CLAUDE.md                        # Project instructions
   LICENSE                          # AGPL-3.0
   package.json                     # name: "aisentinel", port 3002

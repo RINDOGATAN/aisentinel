@@ -4,7 +4,7 @@ Cross-border AI governance registry for organizations that deploy or provide AI 
 
 One codebase, two postures:
 
-- **Hosted**: the cloud instance at [aisentinel.todo.law](https://aisentinel.todo.law) (demo and subscription tiers).
+- **Hosted**: the cloud instance at [aisentinel.todo.law](https://aisentinel.todo.law). Every feature is included; build your AI governance programme there and move it to your own deployment when the data becomes too sensitive for the cloud.
 - **Sovereign**: the same app self-hosted on your own hardware via Docker Compose. See [deploy/sovereign/README.md](deploy/sovereign/README.md).
 
 ## Stack
@@ -26,7 +26,7 @@ npm run db:seed-cross-mappings    # cross-framework mappings
 npm run dev                       # http://localhost:3003
 ```
 
-Demo data (demo org, demo user, sample systems) is opt-in: set `DEMO_SEED=true` before `npm run db:seed`. First-run seeding without that flag is content-only.
+Sample data (a fictional organisation, user and systems, for local development only) is opt-in: set `DEMO_SEED=true` before `npm run db:seed`. First-run seeding without that flag is content-only, and the hosted instance carries no fictional data.
 
 To self-host the full stack (Postgres included) with one command, use the sovereign bundle instead: [deploy/sovereign/README.md](deploy/sovereign/README.md).
 

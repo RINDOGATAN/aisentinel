@@ -2,7 +2,7 @@
 
 How a tagged release reaches the two lanes, and what has to be done by hand.
 
-`main` is always releasable. The hosted demo deploys from it automatically and is
+`main` is always releasable. The hosted instance deploys from it automatically and is
 the daily canary; self-hosters only move when a semver tag is pushed.
 
 Nothing here needs a specific machine — any checkout with `gh`, the Vercel CLI

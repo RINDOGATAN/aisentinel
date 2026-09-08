@@ -46,7 +46,7 @@ export function getFeatureFlags(): FeatureFlags {
       process.env.NEXT_PUBLIC_STRIPE_ENABLED !== "false" && defaultFeatures.stripeEnabled,
     // Bypass every premium entitlement gate (same concept as Dealroom's
     // allSkillsFree). Defaults to free whenever Stripe is off — the hosted
-    // unpaywalled-demo posture — unless explicitly set to "false", which is
+    // unpaywalled cloud posture — unless explicitly set to "false", which is
     // the sovereign posture where offline licence files are the purchase path.
     allSkillsFree:
       process.env.NEXT_PUBLIC_ALL_SKILLS_FREE === "true" ||

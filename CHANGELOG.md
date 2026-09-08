@@ -21,6 +21,15 @@ All notable changes to AI SENTINEL are documented here. The format follows
   Pure helpers in `src/lib/supply-chain.ts` tolerate the column's older
   shapes; EN and ES strings added.
 
+### Changed
+
+- **The hosted instance is a real product, not a demo.** The fictional
+  organisation, its user and all sample rows were removed from the cloud
+  database; every feature is enabled there through the explicit
+  `NEXT_PUBLIC_ALL_SKILLS_FREE=true` build flag. Sample data remains opt-in
+  for local development via `DEMO_SEED=true`. README and runbook wording
+  updated to match.
+
 ### Fixed
 
 - **The migrator could not upgrade a db-push-era install.** The pre-baseline

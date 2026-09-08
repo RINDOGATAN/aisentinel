@@ -5,7 +5,7 @@ import { AIAssessmentType, EntitlementStatus, LicenseType } from "@prisma/client
 import prisma from "@/lib/prisma";
 import { features } from "@/config/features";
 
-// On the hosted unpaywalled demo (Stripe off, NEXT_PUBLIC_ALL_SKILLS_FREE
+// On the hosted unpaywalled cloud instance (Stripe off, NEXT_PUBLIC_ALL_SKILLS_FREE
 // unset) the previously-premium features are free for everyone. Deployments
 // that set NEXT_PUBLIC_ALL_SKILLS_FREE=false enforce entitlements — created
 // by Stripe checkout or by activating an offline licence file bought on

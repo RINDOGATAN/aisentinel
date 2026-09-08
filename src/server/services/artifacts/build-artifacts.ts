@@ -398,7 +398,7 @@ const NOTICE_ADDENDA: AddendumSpec[] = [
   {
     tag: "wa:genai-provenance",
     heading: { en: "Washington — generated content", es: "Washington — contenido generado" },
-    citations: ["WA HB 1170 (2026)", "EU AI Act Art. 50(2)"],
+    citations: ["WA HB 1170 (2026 c 167)", "EU AI Act Art. 50(2)"],
     questionIds: ["not_provenance"],
     statements: [
       {

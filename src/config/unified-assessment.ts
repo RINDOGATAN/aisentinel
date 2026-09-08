@@ -827,7 +827,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         required: true,
         overlay: "wa:genai-provenance",
         satisfies: [
-          { framework: "WA_AI_RULES", code: "HB 1170 (2026)" },
+          { framework: "WA_AI_RULES", code: "HB 1170 (2026 c 167)" },
           { framework: "EU_AI_ACT", code: "Art. 50(2)" },
         ],
         feeds: ["assessment", "notice"],

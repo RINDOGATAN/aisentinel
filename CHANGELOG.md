@@ -6,6 +6,21 @@ All notable changes to AI SENTINEL are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- **Washington prior-authorisation duties were dated a year late.** The
+  content said the limits on AI-only coverage denials began on 1 January 2027,
+  reading that date off the RCW page. Verified against the session law: the
+  artificial-intelligence duties are new in ESSB 5395 (2026 c 157) and took
+  effect on **11 June 2026** with the act's general date. The January 2027 date
+  belongs to section 3, which reenacts the same RCW section to reconcile two
+  2025 amendments. The eight conditions a carrier using AI must satisfy are now
+  stated, and the annual report of the percentage of denials aided by AI is
+  dated correctly to 1 October 2026 under RCW 48.43.0161, not 2027.
+- Washington chapter numbers confirmed and carried in the citations: HB 1170 is
+  2026 c 167 (effective 1 February 2027) and HB 2225 is 2026 c 168 (effective
+  1 January 2027).
+
 ## [0.3.0] - 2026-09-08
 
 ### Added

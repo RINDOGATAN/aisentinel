@@ -3002,7 +3002,7 @@
         },
         {
           "name": "Washington",
-          "detail": "No existe una ley única, sino cinco instrumentos: la ley My Health My Data para la inferencia algorítmica de salud, la HB 1170 sobre procedencia, la HB 2225 sobre chatbots de compañía, los límites a la autorización previa del RCW 48.43.830 y el RCW 43.105 para las entidades públicas.",
+          "detail": "No existe una ley única, sino cinco instrumentos: la ley My Health My Data para la inferencia algorítmica de salud, la HB 1170 sobre procedencia (2026 c 167, desde el 1 de febrero de 2027), la HB 2225 sobre chatbots de compañía (2026 c 168, desde el 1 de enero de 2027), los límites a las denegaciones basadas solo en IA en la autorización previa del RCW 48.43.830 (en vigor desde el 11 de junio de 2026) y el RCW 43.105 para las entidades públicas.",
           "count": "16 requisitos"
         }
       ],
@@ -3152,7 +3152,7 @@
         }
       ],
       "pendingTitle": "Todavía pendiente",
-      "pendingBody": "El contenido normativo de los nuevos regímenes lleva una fecha de revisión jurídica y una marca de validación pendiente. Dos aspectos de Washington requieren confirmación en particular: los números de capítulo de las leyes de 2026 y la fecha de entrada en vigor de la autorización previa, en la que la sección codificada y la información de la época no coinciden. Ambos están señalados en el propio contenido.",
+      "pendingBody": "El contenido normativo de los nuevos regímenes lleva una fecha de revisión jurídica y una marca de validación pendiente. Los dos aspectos de Washington señalados antes como no confirmados se verificaron con las leyes de sesión el 8 de septiembre de 2026: la HB 1170 es el capítulo 167 de las Leyes de 2026, en vigor el 1 de febrero de 2027, y la HB 2225 es el capítulo 168 de las Leyes de 2026, en vigor el 1 de enero de 2027. Los límites a la autorización previa están en vigor desde el 11 de junio de 2026, no desde 2027: la fecha de enero de 2027 que figura junto al RCW 48.43.830 corresponde a una sección posterior que concilia dos modificaciones de 2025, no a los deberes sobre inteligencia artificial.",
       "ctaTitle": "Véalo en el producto",
       "ctaBody": "Abra cualquier sistema de IA y elija la pestaña Regímenes transfronterizos.",
       "ctaLink": "Leer la documentación transfronteriza"

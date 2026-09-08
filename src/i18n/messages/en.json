@@ -3002,7 +3002,7 @@
         },
         {
           "name": "Washington",
-          "detail": "No single act, so five instruments: the My Health My Data Act for algorithmic health inference, HB 1170 provenance, HB 2225 companion chatbots, the prior-authorisation limits in RCW 48.43.830, and RCW 43.105 for public agencies.",
+          "detail": "No single act, so five instruments: the My Health My Data Act for algorithmic health inference, HB 1170 provenance (2026 c 167, from 1 February 2027), HB 2225 companion chatbots (2026 c 168, from 1 January 2027), the prior-authorisation limits on AI-only denials in RCW 48.43.830 (in force since 11 June 2026), and RCW 43.105 for public agencies.",
           "count": "16 requirements"
         }
       ],
@@ -3152,7 +3152,7 @@
         }
       ],
       "pendingTitle": "Still pending",
-      "pendingBody": "Regulatory content across the new regimes carries a law-review date and a pending legal sign-off marker. Two Washington items need confirming in particular: the 2026 bill chapter numbers, and the prior-authorisation effective date, where the codified section and contemporaneous reporting disagree. Both are flagged in the content itself.",
+      "pendingBody": "Regulatory content across the new regimes carries a law-review date and a pending legal sign-off marker. The two Washington items previously flagged as unconfirmed were verified against the session laws on 8 September 2026: HB 1170 is chapter 167, Laws of 2026, effective 1 February 2027, and HB 2225 is chapter 168, Laws of 2026, effective 1 January 2027. The prior-authorisation limits are in force from 11 June 2026, not 2027: the January 2027 date shown against RCW 48.43.830 belongs to a later section that reconciles two 2025 amendments, not to the artificial-intelligence duties themselves.",
       "ctaTitle": "See it in the product",
       "ctaBody": "Open any AI system and choose the Cross-border regimes tab.",
       "ctaLink": "Read the cross-border documentation"

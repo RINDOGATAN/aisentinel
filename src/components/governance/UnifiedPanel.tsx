@@ -62,7 +62,7 @@ const CITATIONS: Record<SystemFactKey, string> = {
   solelyAutomatedLegalEffect: "GDPR Art. 22",
   processesSpecialCategoryData: "GDPR Art. 9 · RCW 19.373",
   materiallyInfluencesConsequentialDecision: "SB 26-189",
-  isCompanionChatbot: "HB 2225 (2026)",
+  isCompanionChatbot: "HB 2225 (2026 c 168)",
   usedInPriorAuthorization: "RCW 48.43.830",
   interactsWithConsumers: "TRAIGA § 552.051(a)",
   handsOffToAutonomousAgent: "—",

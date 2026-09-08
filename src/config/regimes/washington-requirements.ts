@@ -7,13 +7,18 @@
  * duties beneath it:
  *   - My Health My Data Act, RCW 19.373 (HB 1155): consumer health data,
  *     including health inferred by algorithms. Live since 31 Mar 2024.
- *   - HB 1170 (2026): provenance data in generative-AI image, video and audio
- *     from covered providers. Signed 24 Mar 2026, effective 1 Feb 2027.
- *   - HB 2225 (2026): AI companion chatbots. Signed 24 Mar 2026, effective
- *     1 Jan 2027. Private right of action.
- *   - SB 5395 (2026), RCW 48.43.830: prior-authorisation decisions by health
- *     carriers may not rely solely on AI. The codified section states an
- *     effective date of 1 Jan 2027; some reporting gives 11 Jun 2026.
+ *   - HB 1170 (2026 c 167): provenance data in generative-AI image, video and
+ *     audio from covered providers. Signed 24 Mar 2026, effective 1 Feb 2027.
+ *   - HB 2225 (2026 c 168): AI companion chatbots. Signed 24 Mar 2026,
+ *     effective 1 Jan 2027. Private right of action.
+ *   - ESSB 5395 (2026 c 157), RCW 48.43.830: prior-authorisation decisions by
+ *     health carriers may not rely solely on AI. VERIFIED 2026-09-08 against
+ *     the session law: the AI duties are NEW in this act (underlined in
+ *     § 2(3)(a)-(b)) and take effect 11 Jun 2026 with the act's general date.
+ *     The "Effective January 1, 2027" label on the RCW page belongs to § 3,
+ *     which reenacts the same section to reconcile two 2025 amendments; it is
+ *     not the start of the AI duties. Annual reporting of the percentage of
+ *     denials aided by AI runs from 1 Oct 2026 under RCW 48.43.0161 (§ 8).
  *   - RCW 43.105 and the state AI policy (DATA-04): automated decision
  *     systems and AI in public agencies.
  * ESSB 5838 (2024) created the AI Task Force under the Attorney General; it
@@ -32,15 +37,15 @@ export const WASHINGTON_FRAMEWORK: RegimeFramework = {
   code: "WA_AI_RULES",
   idPrefix: "wa",
   name: "Washington AI rules (domain instruments)",
-  version: "RCW 19.373; HB 1170 (2026); HB 2225 (2026); RCW 48.43.830; RCW 43.105",
+  version: "RCW 19.373; 2026 c 167 (HB 1170); 2026 c 168 (HB 2225); RCW 48.43.830 (2026 c 157); RCW 43.105",
   abbreviation: "WA",
   description:
     "Washington's AI obligations by domain: the My Health My Data Act for health data and health inferences, HB 1170 provenance duties for covered generative-AI providers, HB 2225 duties for AI companion chatbots, the prior-authorisation limits on automated denials in RCW 48.43.830, and the automated decision-system rules for public agencies under RCW 43.105. The AI Task Force created by ESSB 5838 (2024) under the Attorney General monitors generative AI and issues recommendations; it imposes no duty of its own.",
-  contentVersion: "2026.09.1",
+  contentVersion: "2026.09.2",
   lawReviewedAsOf: REVIEWED,
   reviewMarker: {
-    en: `Law reviewed as of ${REVIEWED}; Washington legal sign-off pending. HB 1170 and HB 2225 are 2026 enactments; verify final chapter numbers.`,
-    es: `Revisión jurídica a fecha de ${REVIEWED}; pendiente de validación jurídica en Washington. HB 1170 y HB 2225 son leyes de 2026; verifique los números de capítulo definitivos.`,
+    en: `Law reviewed as of ${REVIEWED}; Washington legal sign-off pending. Chapter numbers and effective dates verified against the session laws on ${REVIEWED}.`,
+    es: `Revisión jurídica a fecha de ${REVIEWED}; pendiente de validación jurídica en Washington. Números de capítulo y fechas de entrada en vigor verificados con las leyes de sesión el ${REVIEWED}.`,
   },
 };
 
@@ -121,7 +126,7 @@ export const WASHINGTON_REQUIREMENTS: RegimeRequirementSeed[] = [
   },
   {
     slug: "hb1170",
-    code: "HB 1170 (2026)",
+    code: "HB 1170 (2026 c 167)",
     title: { en: "Provenance data in generative-AI content", es: "Datos de procedencia en el contenido generado por IA" },
     description: {
       en: "From 1 February 2027 a covered provider, one that creates a generative AI system with more than one million monthly users that is publicly accessible in Washington for personal use, must include provenance data in image, video or audio content its system creates or materially alters, so users can determine the content's origin. Enforced by the Attorney General under the Consumer Protection Act; no private right of action.",
@@ -132,7 +137,7 @@ export const WASHINGTON_REQUIREMENTS: RegimeRequirementSeed[] = [
     children: [
       {
         slug: "hb1170-durable",
-        code: "HB 1170 § 2",
+        code: "HB 1170 § 2 (2026 c 167)",
         title: { en: "Provenance must be difficult to remove or tamper with", es: "La procedencia debe ser difícil de eliminar o manipular" },
         description: {
           en: "The provenance data may be a watermark or metadata and must be difficult to remove or alter without degrading the content. Align the method with the EU AI Act Art. 50(2) marking measures so one implementation serves both.",
@@ -145,7 +150,7 @@ export const WASHINGTON_REQUIREMENTS: RegimeRequirementSeed[] = [
   },
   {
     slug: "hb2225",
-    code: "HB 2225 (2026)",
+    code: "HB 2225 (2026 c 168)",
     title: { en: "AI companion chatbots", es: "Chatbots de compañía basados en IA" },
     description: {
       en: "From 1 January 2027 an operator of an AI companion chatbot, one that provides adaptive, human-like responses and is capable of sustaining a relationship across sessions, owes disclosure, minor-protection and crisis-response duties, enforceable by the Attorney General and through a private right of action.",
@@ -194,19 +199,19 @@ export const WASHINGTON_REQUIREMENTS: RegimeRequirementSeed[] = [
     code: "RCW 48.43.830",
     title: { en: "Prior authorisation: no denial by AI alone", es: "Autorización previa: sin denegación solo por IA" },
     description: {
-      en: "A health carrier may not rely solely on an AI or automated decision tool to deny, delay or modify health care services. A denial based on medical necessity must be made by a licensed physician or licensed health professional acting within their scope. Tools must consider the individual patient's information, not only group data. The codified section states 1 January 2027; some reporting on SB 5395 gives 11 June 2026. Confirm with counsel.",
-      es: "Una aseguradora sanitaria no puede basarse únicamente en una herramienta de IA o de decisión automatizada para denegar, retrasar o modificar servicios sanitarios. La denegación por necesidad médica debe adoptarla un médico o profesional sanitario colegiado dentro de su ámbito. Las herramientas deben considerar la información individual del paciente, no solo datos de grupo. La sección codificada indica el 1 de enero de 2027; alguna información sobre la SB 5395 indica el 11 de junio de 2026. Confírmelo con asesoría jurídica.",
+      en: "In force since 11 June 2026 (ESSB 5395, 2026 c 157 § 2). A health carrier may not use artificial intelligence as the sole means to deny, delay or modify health care services. Algorithms may process and approve a request, but may not deny care on medical necessity without human review, and only a licensed physician or licensed health professional acting within their scope may make that denial. A carrier using AI must also ensure it decides on the enrollee's own clinical history and circumstances rather than a group data set alone, does not discriminate, is applied fairly, is open to audit by the insurance commissioner, is periodically reviewed for accuracy, and does not use patient data beyond its stated purpose. The 1 January 2027 date shown against this section is the reenactment in § 3 that reconciles two 2025 amendments, not the start of these duties.",
+      es: "En vigor desde el 11 de junio de 2026 (ESSB 5395, 2026 c 157 § 2). Una aseguradora sanitaria no puede utilizar la inteligencia artificial como único medio para denegar, retrasar o modificar servicios sanitarios. Los algoritmos pueden tramitar y aprobar una solicitud, pero no pueden denegar la asistencia por necesidad médica sin revisión humana, y solo un médico o profesional sanitario colegiado que actúe dentro de su ámbito puede adoptar esa denegación. La aseguradora que use IA debe además garantizar que esta decide a partir del historial y las circunstancias clínicas del propio asegurado y no únicamente de un conjunto de datos de grupo, que no discrimina, que se aplica de forma equitativa, que está sujeta a auditoría del comisionado de seguros, que se revisa periódicamente para asegurar su exactitud y que no usa los datos del paciente más allá de la finalidad declarada. La fecha del 1 de enero de 2027 que figura junto a esta sección corresponde a la reactivación del § 3, que concilia dos modificaciones de 2025, y no al inicio de estos deberes.",
     },
     applicabilityTags: PA,
     sortOrder: 400,
     children: [
       {
         slug: "prior-auth-reporting",
-        code: "RCW 48.43.830 (reporting)",
-        title: { en: "Annual AI transparency reporting", es: "Informe anual de transparencia sobre la IA" },
+        code: "RCW 48.43.0161 (reporting)",
+        title: { en: "Annual reporting of AI-aided denials", es: "Informe anual de denegaciones asistidas por IA" },
         description: {
-          en: "Report annually, from 2027, on the use of AI in prior-authorisation determinations as the Office of the Insurance Commissioner prescribes. Keep per-system logs of automated recommendations and the human determinations that followed.",
-          es: "Informe anualmente, desde 2027, sobre el uso de la IA en las determinaciones de autorización previa según prescriba la Oficina del Comisionado de Seguros. Conserve registros por sistema de las recomendaciones automatizadas y de las determinaciones humanas posteriores.",
+          en: "By 1 October 2026, and annually thereafter, a carrier above the one per cent premium threshold reports to the Insurance Commissioner the percentage of total denials that were aided by artificial intelligence, alongside its other prior-authorisation data (ESSB 5395 § 8, amending RCW 48.43.0161). Keep per-system logs of automated recommendations and the human determinations that followed, or the percentage cannot be evidenced.",
+          es: "Antes del 1 de octubre de 2026, y anualmente a partir de entonces, la aseguradora que supere el umbral del uno por ciento de las primas comunica al comisionado de seguros el porcentaje del total de denegaciones que contaron con la asistencia de inteligencia artificial, junto con sus demás datos de autorización previa (§ 8 de la ESSB 5395, que modifica el RCW 48.43.0161). Conserve registros por sistema de las recomendaciones automatizadas y de las determinaciones humanas posteriores, o el porcentaje no podrá acreditarse.",
         },
         applicabilityTags: PA,
         sortOrder: 402,

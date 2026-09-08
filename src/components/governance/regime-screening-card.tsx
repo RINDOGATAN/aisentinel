@@ -45,7 +45,7 @@ const CITATIONS: Record<OrgFactKey, string> = {
   isPublicAgency: "TRAIGA § 552.051(a) · RCW 43.105",
   isHealthCarrier: "RCW 48.43.830",
   isHealthcareProvider: "TRAIGA § 552.051(b)",
-  isCoveredGenAiProvider: "HB 1170 (2026)",
+  isCoveredGenAiProvider: "HB 1170 (2026 c 167)",
   processesConsumerHealthData: "RCW 19.373",
 };
 

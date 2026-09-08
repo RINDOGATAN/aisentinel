@@ -34,6 +34,15 @@ All notable changes to AI SENTINEL are documented here. The format follows
   resolves the whole regulatory picture for a system in one place, so the
   compliance matrix and the generated documents can never disagree about which
   regimes apply.
+- **The cross-border workflow, in the product.** A Cross-border regimes tab on
+  each AI system walks the whole path in the order a practitioner works
+  through it: which regimes apply and which are still undetermined, the system
+  screening that resolves them, attaching the requirements, the unified
+  assessment with its question counts, the four documents to download, and the
+  agentic stress test findings. An organisation screening card in settings
+  carries the five organisation-level facts, and each question self-gates on a
+  declared jurisdiction that turns on it, so a purely European organisation is
+  never asked whether it is a Washington health carrier. EN and ES throughout.
 - **Three generated artifacts, and an agentic stress test.** From one answered
   unified assessment the product now assembles the unified AI impact
   assessment, a multi-jurisdictional AI notice built as a universal core plus

@@ -15,6 +15,7 @@ import { DeploymentExpertCta } from "@/components/governance/deployment-expert-c
 import { AiPostureCard } from "@/components/ai/AiPostureCard";
 import { JurisdictionPicker } from "@/components/governance/jurisdiction-picker";
 import { CaliforniaScreeningCard } from "@/components/governance/california-screening-card";
+import { RegimeScreeningCard } from "@/components/governance/regime-screening-card";
 import type { JurisdictionId } from "@/config/jurisdictions";
 
 const personaIcons = {
@@ -98,6 +99,14 @@ export default function SettingsPage() {
           organizationId={organization.id}
           canWrite={canWrite}
         />
+      )}
+
+      {/* Cross-border regime screening: GDPR, Colorado, Texas and Washington.
+          Each question self-gates on a declared jurisdiction that turns on it,
+          so a purely European organization is never asked about Washington
+          health carriers. */}
+      {organization && (
+        <RegimeScreeningCard organizationId={organization.id} canWrite={canWrite} />
       )}
 
       {/* Per-organization AI posture (off by default — no AI calls until enabled) */}

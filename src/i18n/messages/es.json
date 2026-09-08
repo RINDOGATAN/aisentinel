@@ -3649,5 +3649,114 @@
         "help": "Determina el plazo del § 7121(a) cuando la obligación ya existe: más de 100 M USD informa antes del 1 de abril de 2028; de 50 a 100 M USD, antes del 1 de abril de 2029; menos de 50 M USD, antes del 1 de abril de 2030. Cada tramo mide un año de ingresos distinto."
       }
     }
+  },
+  "regimes": {
+    "title": "Regímenes transfronterizos",
+    "description": "El RGPD, Colorado, Texas y Washington junto al Reglamento de IA de la UE y California. Cada régimen resuelve su propio ámbito a partir de las jurisdicciones declaradas y de unas pocas respuestas de cribado.",
+    "reviewMarkerNote": "El contenido normativo lleva una marca de validación jurídica pendiente.",
+    "orgTitle": "Cribado de la organización",
+    "orgDescription": "Cinco hechos sobre la organización. Cada uno tiene tres estados: sin responder permanece visiblemente sin responder y nunca se lee como un no.",
+    "systemTitle": "Cribado del sistema",
+    "systemDescription": "Qué hace este sistema, en los términos que examina cada régimen. Estas respuestas deciden qué preguntas complementarias plantea la evaluación unificada.",
+    "saved": "Respuestas de cribado guardadas",
+    "stateInScope": "Se aplica",
+    "stateOutOfScope": "No se aplica",
+    "stateUndetermined": "Sin determinar",
+    "openQuestions": "Pendiente de responder",
+    "attachRequirements": "Adjuntar requisitos",
+    "attachedCount": "{count} requisitos adjuntados a este sistema",
+    "attachDone": "{count} requisitos adjuntados",
+    "attachNothing": "Todavía no hay nada que adjuntar: ningún régimen ha resultado aplicable.",
+    "declareJurisdictionsFirst": "Declare en la configuración las jurisdicciones en las que opera la organización antes de que ningún régimen pueda resolverse.",
+    "answer": {
+      "YES": "Sí",
+      "NO": "No",
+      "NOT_ASSESSED": "Sin responder"
+    },
+    "org": {
+      "isPublicAgency": {
+        "label": "¿Es la organización una entidad pública o administrativa?",
+        "help": "La TRAIGA de Texas añade deberes de información y prohibiciones de puntuación social para la Administración; el RCW 43.105 de Washington regula el uso de sistemas de decisión automatizada por las entidades públicas."
+      },
+      "isHealthCarrier": {
+        "label": "¿Es la organización una aseguradora sanitaria que adopta decisiones de autorización previa?",
+        "help": "El RCW 48.43.830 de Washington impide que una herramienta de IA deniegue, retrase o modifique la cobertura por sí sola."
+      },
+      "isHealthcareProvider": {
+        "label": "¿Es la organización un prestador de servicios sanitarios?",
+        "help": "La TRAIGA de Texas exige informar al paciente cuando se usa IA en su atención."
+      },
+      "isCoveredGenAiProvider": {
+        "label": "¿Ofrece la organización un sistema de IA generativa con más de un millón de usuarios mensuales, accesible al público en Washington?",
+        "help": "Es la prueba de proveedor cubierto de la HB 1170 de Washington, que exige datos de procedencia en el contenido generado."
+      },
+      "processesConsumerHealthData": {
+        "label": "¿Trata la organización datos de salud de consumidores de Washington?",
+        "help": "La ley My Health My Data comprende la salud inferida por algoritmos a partir de información no sanitaria."
+      }
+    },
+    "system": {
+      "solelyAutomatedLegalEffect": {
+        "label": "¿Es una decisión basada únicamente en un tratamiento automatizado con efectos jurídicos o similarmente significativos?",
+        "help": "Art. 22 del RGPD. Una persona revisora que se limita a confirmar el resultado no saca la decisión de su ámbito."
+      },
+      "processesSpecialCategoryData": {
+        "label": "¿El sistema trata o infiere datos de categorías especiales?",
+        "help": "Salud, biométricos, genéticos, origen racial o étnico, opiniones políticas, convicciones religiosas, afiliación sindical, vida sexual u orientación sexual. Las inferencias cuentan."
+      },
+      "materiallyInfluencesConsequentialDecision": {
+        "label": "¿El sistema influye de forma material en una decisión con consecuencias para un consumidor?",
+        "help": "SB 26-189 de Colorado: educación, empleo, vivienda, servicios financieros o de crédito, seguros, asistencia sanitaria, servicios jurídicos o servicios públicos esenciales."
+      },
+      "isCompanionChatbot": {
+        "label": "¿Es un chatbot de compañía basado en IA?",
+        "help": "HB 2225 de Washington: respuestas adaptativas de apariencia humana capaces de mantener una relación a lo largo de varias sesiones."
+      },
+      "usedInPriorAuthorization": {
+        "label": "¿Se utiliza el sistema en determinaciones de autorización previa?",
+        "help": "RCW 48.43.830 de Washington. La herramienta puede aprobar; no puede denegar."
+      },
+      "interactsWithConsumers": {
+        "label": "¿Interactúan los consumidores directamente con este sistema?",
+        "help": "Determina los deberes de información sobre la interacción con IA."
+      },
+      "handsOffToAutonomousAgent": {
+        "label": "¿Este sistema entrega su resultado a un agente autónomo que puede actuar sin intervención humana?",
+        "help": "Es lo que examina la prueba de esfuerzo agéntica. Todavía ninguna ley se apoya en ello, que es precisamente la laguna que documenta el anexo agéntico."
+      }
+    }
+  },
+  "unified": {
+    "title": "Evaluación de impacto unificada",
+    "subtitle": "Un único cuestionario que responde a la vez al Reglamento de IA de la UE, al RGPD, a la ADMT de California, a Colorado, a Texas y a Washington.",
+    "scopeTitle": "Regímenes aplicables",
+    "counts": "{total} preguntas: {core} del núcleo común y {overlay} que añaden los regímenes aplicables",
+    "noOverlays": "Todavía no se ha resuelto ninguna capa de régimen. El núcleo común sigue siendo respondible, y la evaluación indicará qué regímenes quedan sin determinar.",
+    "create": "Crear la evaluación",
+    "created": "Evaluación creada",
+    "openAssessment": "Abrir la evaluación",
+    "declareFirst": "Declare las jurisdicciones en las que opera la organización antes de generar una evaluación unificada: sin ellas no puede resolverse ninguna capa.",
+    "previewTitle": "Qué se preguntará sobre este sistema",
+    "reasonCore": "Núcleo común",
+    "satisfies": "Acredita",
+    "artifactsTitle": "Documentos",
+    "artifactsDescription": "Se componen a partir del registro y de las últimas respuestas de la evaluación. Las preguntas sin responder aparecen como lagunas visibles con la obligación que habrían acreditado.",
+    "downloadAssessment": "Evaluación de impacto",
+    "downloadNotice": "Aviso multijurisdiccional",
+    "downloadProtocol": "Protocolo de revisión y recurso",
+    "downloadAddendum": "Anexo agéntico",
+    "download": "Descargar en Markdown",
+    "noAssessmentYet": "Todavía no consta ninguna respuesta de evaluación. Los documentos se generarán como un conjunto completo de lagunas.",
+    "stressTitle": "Prueba de esfuerzo agéntica",
+    "stressDescription": "Dónde se rompe cada documento cuando este sistema entrega su resultado a un agente autónomo posterior.",
+    "stressNotDeclared": "Nadie ha respondido si este sistema entrega su resultado a un agente autónomo. Respóndalo en el cribado del sistema para ejecutar la prueba de esfuerzo.",
+    "stressCounts": "{breaks} rompen, {weakens} debilitan, {watch} a vigilar",
+    "severityBreaks": "Rompe",
+    "severityWeakens": "Debilita",
+    "severityWatch": "Vigilar",
+    "assumption": "Lo que asumía el régimen",
+    "breakage": "Qué rompe la delegación",
+    "provision": "Disposición que exige la capa agéntica",
+    "affects": "Afecta a"
   }
 }

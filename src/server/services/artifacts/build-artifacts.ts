@@ -115,6 +115,40 @@ export function applicableFrameworks(scope: SystemScope): Set<string> {
   return out;
 }
 
+/**
+ * Prefixes of the free-text citation strings used by the notice addenda and
+ * the stress-test findings, so those can be scope-filtered too. Structured
+ * `Citation` objects carry their framework; these do not.
+ */
+const CITATION_PREFIXES: [string, string][] = [
+  ["EU AI Act", "EU_AI_ACT"],
+  ["EU GDPR", "EU_GDPR"],
+  ["CA CCPA ADMT", "CA_CCPA_ADMT"],
+  ["CO SB 26-189", "CO_SB_26_189"],
+  ["TX TRAIGA", "TX_TRAIGA"],
+  ["WA ", "WA_AI_RULES"],
+  ["NIST", "NIST_AI_RMF"],
+  ["ISO", "ISO_42001"],
+];
+
+/**
+ * Drop citation strings whose framework does not reach this system. A finding
+ * or an addendum that cites a state the organisation does not operate in is
+ * the boilerplate that makes a practitioner distrust every other citation in
+ * the document.
+ */
+export function filterCitationStrings(
+  citations: readonly string[],
+  applicable: ReadonlySet<string>,
+): string[] {
+  return citations.filter((citation) => {
+    const match = CITATION_PREFIXES.find(([prefix]) => citation.startsWith(prefix));
+    // An unrecognised prefix is kept: silently dropping a citation we failed to
+    // classify would be a worse failure than showing one too many.
+    return !match || applicable.has(match[1]);
+  });
+}
+
 function citationText(citations: readonly Citation[], applicable?: ReadonlySet<string>): string[] {
   return citations
     .filter((c) => !applicable || applicable.has(c.framework))
@@ -438,7 +472,10 @@ export function buildNoticeArtifact(input: ArtifactInput): Artifact {
     scopeSection(input),
     {
       heading: locale === "es" ? "Núcleo universal" : "Universal core",
-      citations: ["EU GDPR Art. 12", "EU AI Act Art. 26", "CA CCPA ADMT § 7220", "CO SB 26-189 CO-DEP-1"],
+      citations: filterCitationStrings(
+        ["EU GDPR Art. 12", "EU AI Act Art. 26", "CA CCPA ADMT § 7220", "CO SB 26-189 CO-DEP-1"],
+        applicable,
+      ),
       blocks: coreBlocks,
     },
   ];
@@ -452,7 +489,11 @@ export function buildNoticeArtifact(input: ArtifactInput): Artifact {
       if (!question) continue;
       blocks.push(...answerBlocks(input, question, locale, applicable));
     }
-    addenda.push({ heading: spec.heading[locale], citations: spec.citations, blocks });
+    addenda.push({
+      heading: spec.heading[locale],
+      citations: filterCitationStrings(spec.citations, applicable),
+      blocks,
+    });
   }
 
   if (addenda.length > 0) {
@@ -683,6 +724,7 @@ export function buildProtocolArtifact(input: ArtifactInput): Artifact {
 
 export function buildAgenticAddendumArtifact(input: ArtifactInput): Artifact {
   const { locale, scope } = input;
+  const applicable = applicableFrameworks(scope);
   const result = runAgenticStressTest(scope.overlayTags);
   const byId = new Map(allUnifiedQuestions().map(({ question }) => [question.id, question]));
 
@@ -765,13 +807,14 @@ export function buildAgenticAddendumArtifact(input: ArtifactInput): Artifact {
         list(answered.map((e) => `${e.question!.text[locale]} — ${e.answer}`)),
       );
     }
+    const findingCitations = filterCitationStrings(finding.citations, applicable);
     for (const missing of evidence.filter((e) => !e.answer)) {
-      blocks.push(gap(missing.question!.text[locale], finding.citations));
+      blocks.push(gap(missing.question!.text[locale], findingCitations));
     }
 
     sections.push({
       heading: `${severityLabel[finding.severity][locale]} — ${finding.title[locale]}`,
-      citations: finding.citations,
+      citations: findingCitations,
       blocks,
     });
   }

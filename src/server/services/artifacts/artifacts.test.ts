@@ -14,6 +14,7 @@ import {
   buildProtocolArtifact,
   buildAgenticAddendumArtifact,
   regimeLabels,
+  filterCitationStrings,
 } from "./build-artifacts";
 import { renderArtifactMarkdown } from "./render-markdown";
 import { runAgenticStressTest, AGENTIC_FINDINGS } from "@/config/agentic-stress-test";
@@ -308,6 +309,47 @@ describe("citations never name a regime that does not apply", () => {
     const md = renderArtifactMarkdown(buildAssessmentArtifact(input({ scope })));
     expect(md).toContain("EU AI ACT");
     expect(md).not.toContain("EU GDPR");
+  });
+});
+
+describe("free-text citations are scoped too", () => {
+  const agenticNonCalifornia = () =>
+    buildSystemScope(
+      baseSystem({
+        metadata: {
+          regimeFacts: {
+            handsOffToAutonomousAgent: "YES",
+            solelyAutomatedLegalEffect: "YES",
+            materiallyInfluencesConsequentialDecision: "YES",
+          },
+        },
+      }),
+      baseOrg({ operatingJurisdictions: ["EU", "US_CO"] }),
+    );
+
+  it("the agentic addendum never cites California to an organisation with no California nexus", () => {
+    const md = renderArtifactMarkdown(
+      buildAgenticAddendumArtifact(input({ scope: agenticNonCalifornia() })),
+    );
+    // The reversal finding applies to everyone and its citation list names
+    // California; that citation must not survive here.
+    expect(md).toContain("reviews a decision the agent has already carried out");
+    expect(md).not.toContain("CA CCPA ADMT");
+    expect(md).toContain("EU GDPR Art. 22(3)");
+  });
+
+  it("the notice's universal core drops the California section number", () => {
+    const md = renderArtifactMarkdown(buildNoticeArtifact(input({ scope: agenticNonCalifornia() })));
+    expect(md).toContain("Universal core");
+    expect(md).not.toContain("CA CCPA ADMT § 7220");
+    expect(md).toContain("CO SB 26-189 CO-DEP-1");
+  });
+
+  it("keeps a citation whose prefix it cannot classify rather than dropping it", () => {
+    const applicable = new Set(["EU_GDPR"]);
+    expect(filterCitationStrings(["Some unrecognised source", "CA CCPA ADMT § 7221"], applicable)).toEqual([
+      "Some unrecognised source",
+    ]);
   });
 });
 

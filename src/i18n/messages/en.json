@@ -3649,5 +3649,114 @@
         "help": "Selects the § 7121(a) deadline once you are in scope: over $100M reports by 1 April 2028, $50M–$100M by 1 April 2029, under $50M by 1 April 2030. Each tier measures a different revenue year."
       }
     }
+  },
+  "regimes": {
+    "title": "Cross-border regimes",
+    "description": "GDPR, Colorado, Texas and Washington alongside the EU AI Act and California. Each regime resolves its own scope from your declared jurisdictions and a few screening answers.",
+    "reviewMarkerNote": "Regulatory content carries a pending legal sign-off marker.",
+    "orgTitle": "Organisation screening",
+    "orgDescription": "Five facts about the organisation. Each is tri-state: not answered stays visibly unanswered and never reads as no.",
+    "systemTitle": "System screening",
+    "systemDescription": "What this system does, in the terms each regime tests. Answers here decide which overlay questions the unified assessment asks.",
+    "saved": "Screening answers saved",
+    "stateInScope": "Applies",
+    "stateOutOfScope": "Does not apply",
+    "stateUndetermined": "Undetermined",
+    "openQuestions": "Still to answer",
+    "attachRequirements": "Attach requirements",
+    "attachedCount": "{count} requirements attached to this system",
+    "attachDone": "{count} requirements attached",
+    "attachNothing": "Nothing to attach yet: no regime has resolved into scope.",
+    "declareJurisdictionsFirst": "Declare the organisation's operating jurisdictions in settings before any regime can resolve.",
+    "answer": {
+      "YES": "Yes",
+      "NO": "No",
+      "NOT_ASSESSED": "Not answered"
+    },
+    "org": {
+      "isPublicAgency": {
+        "label": "Is the organisation a public agency or governmental entity?",
+        "help": "Texas TRAIGA adds disclosure and social-scoring duties for government; Washington RCW 43.105 governs agency use of automated decision systems."
+      },
+      "isHealthCarrier": {
+        "label": "Is the organisation a health carrier making prior-authorisation decisions?",
+        "help": "Washington RCW 48.43.830 bars an AI tool from denying, delaying or modifying coverage on its own."
+      },
+      "isHealthcareProvider": {
+        "label": "Is the organisation a health care service provider?",
+        "help": "Texas TRAIGA requires telling the patient when AI is used in their care."
+      },
+      "isCoveredGenAiProvider": {
+        "label": "Does the organisation provide a generative AI system with more than one million monthly users, publicly available in Washington?",
+        "help": "That is the covered-provider test in Washington HB 1170, which requires provenance data in generated media."
+      },
+      "processesConsumerHealthData": {
+        "label": "Does the organisation process consumer health data of Washington consumers?",
+        "help": "The My Health My Data Act includes health inferred by algorithms from non-health information."
+      }
+    },
+    "system": {
+      "solelyAutomatedLegalEffect": {
+        "label": "Is this a decision based solely on automated processing with legal or similarly significant effects?",
+        "help": "GDPR Art. 22. A reviewer who only confirms the output does not take the decision outside it."
+      },
+      "processesSpecialCategoryData": {
+        "label": "Does the system process or infer special-category data?",
+        "help": "Health, biometric, genetic, racial or ethnic origin, political, religious, trade-union, sex life or sexual orientation. Inferences count."
+      },
+      "materiallyInfluencesConsequentialDecision": {
+        "label": "Does the system materially influence a consequential decision about a consumer?",
+        "help": "Colorado SB 26-189: education, employment, housing, financial or lending services, insurance, health care, legal services or essential government services."
+      },
+      "isCompanionChatbot": {
+        "label": "Is this an AI companion chatbot?",
+        "help": "Washington HB 2225: adaptive, human-like responses capable of sustaining a relationship across sessions."
+      },
+      "usedInPriorAuthorization": {
+        "label": "Is the system used in prior-authorisation determinations?",
+        "help": "Washington RCW 48.43.830. The tool may approve; it may not deny."
+      },
+      "interactsWithConsumers": {
+        "label": "Do consumers interact with this system directly?",
+        "help": "Drives the AI-interaction disclosure duties."
+      },
+      "handsOffToAutonomousAgent": {
+        "label": "Does this system hand its output to an autonomous agent that can act without a person?",
+        "help": "This is what the agentic stress test examines. No statute keys off it yet, which is precisely the gap the agentic addendum documents."
+      }
+    }
+  },
+  "unified": {
+    "title": "Unified impact assessment",
+    "subtitle": "One question set answering the EU AI Act, the GDPR, California ADMT, Colorado, Texas and Washington at once.",
+    "scopeTitle": "Regimes in scope",
+    "counts": "{total} questions: {core} in the common core, {overlay} added by the regimes that apply",
+    "noOverlays": "No regime overlay has resolved yet. The common core is still answerable, and the assessment will say which regimes remain undetermined.",
+    "create": "Create the assessment",
+    "created": "Assessment created",
+    "openAssessment": "Open the assessment",
+    "declareFirst": "Declare the organisation's operating jurisdictions before generating a unified assessment: without them no overlay can be resolved.",
+    "previewTitle": "What this system will be asked",
+    "reasonCore": "Common core",
+    "satisfies": "Evidences",
+    "artifactsTitle": "Documents",
+    "artifactsDescription": "Assembled from the registry and the latest assessment answers. Unanswered questions appear as visible gaps carrying the obligation they would have evidenced.",
+    "downloadAssessment": "Impact assessment",
+    "downloadNotice": "Multi-jurisdictional notice",
+    "downloadProtocol": "Review and appeal protocol",
+    "downloadAddendum": "Agentic addendum",
+    "download": "Download Markdown",
+    "noAssessmentYet": "No assessment answers recorded yet. The documents will generate as a complete set of gaps.",
+    "stressTitle": "Agentic stress test",
+    "stressDescription": "Where each document breaks when this system hands its output to an autonomous downstream agent.",
+    "stressNotDeclared": "Nobody has answered whether this system hands its output to an autonomous agent. Answer that in the system screening to run the stress test.",
+    "stressCounts": "{breaks} break, {weakens} weaken, {watch} to watch",
+    "severityBreaks": "Breaks",
+    "severityWeakens": "Weakens",
+    "severityWatch": "Watch",
+    "assumption": "What the regime assumed",
+    "breakage": "What the handoff breaks",
+    "provision": "Provision the agentic layer demands",
+    "affects": "Affects"
   }
 }

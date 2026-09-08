@@ -64,6 +64,7 @@ import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { AnnexIvCard } from "@/components/ai/AnnexIvCard";
 import { TransparencyPanel } from "@/components/governance/TransparencyPanel";
 import { AdmtPanel } from "@/components/governance/AdmtPanel";
+import { UnifiedPanel } from "@/components/governance/UnifiedPanel";
 import { TransparencyStatementCard } from "@/components/ai/TransparencyStatementCard";
 
 const statusColors: Record<string, string> = {
@@ -199,6 +200,7 @@ export default function AISystemDetailPage() {
   const t = useTranslations("aiRegistryDetail");
   const locale = useLocale();
   const tc = useTranslations("common");
+  const tRegimes = useTranslations("regimes");
   const utils = trpc.useUtils();
   const organizationId = organization?.id ?? "";
 
@@ -1008,6 +1010,9 @@ export default function AISystemDetailPage() {
               {t("tabAdmt")}
             </TabsTrigger>
           )}
+          <TabsTrigger value="unified" className="text-xs sm:text-sm">
+            {tRegimes("title")}
+          </TabsTrigger>
         </TabsList>
 
         {/* Models Tab */}
@@ -1503,6 +1508,19 @@ export default function AISystemDetailPage() {
             </Card>
           </TabsContent>
         )}
+
+        {/* Cross-border regimes: scope, screening, the unified assessment,
+            the three documents and the agentic stress test. Always shown —
+            unlike the California tab this one is where a user discovers which
+            regimes reach them, so hiding it until a regime resolves would
+            leave the discovery with no entry point. */}
+        <TabsContent value="unified" className="mt-4">
+          <UnifiedPanel
+            organizationId={organizationId}
+            aiSystemId={id}
+            canWrite={canWrite}
+          />
+        </TabsContent>
 
         {/* Incidents Tab */}
         <TabsContent value="incidents" className="mt-4">

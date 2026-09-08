@@ -804,6 +804,10 @@ enum FrameworkCode {
   NIST_AI_RMF
   ISO_42001
   CA_CCPA_ADMT
+  EU_GDPR
+  CO_SB_26_189
+  TX_TRAIGA
+  WA_AI_RULES
 }
 
 enum ComplianceStatus {

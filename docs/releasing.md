@@ -122,6 +122,7 @@ export ais_DATABASE_URL="$(grep '^ais_POSTGRES_URL_NON_POOLING=' /tmp/prod.env \
 
 npm run db:seed-frameworks
 npm run db:seed-admt
+npm run db:seed-regimes
 npm run db:seed-cross-mappings -- --strict
 
 rm -f /tmp/prod.env          # it holds every production secret

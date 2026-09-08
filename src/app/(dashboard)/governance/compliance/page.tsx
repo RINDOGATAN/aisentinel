@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025-2026 Rindogatan LLC
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { trpc } from "@/lib/trpc";
@@ -69,6 +69,10 @@ const FRAMEWORK_ABBREVIATIONS: Record<string, string> = {
   NIST_AI_RMF: "NIST",
   ISO_42001: "ISO",
   CA_CCPA_ADMT: "CA",
+  EU_GDPR: "GDPR",
+  CO_SB_26_189: "CO",
+  TX_TRAIGA: "TX",
+  WA_AI_RULES: "WA",
 };
 
 const statusOptionKeys: Record<string, { labelKey: string; color: string }> = {
@@ -185,11 +189,30 @@ export default function CompliancePage() {
     admtScope?.scope.state === "ARTICLE_10_AND_11";
   const admtTags = admtScopeResolved ? admtScope.scope.tags : undefined;
 
+  // The regime frameworks (GDPR, Colorado, Texas, Washington) resolve their own
+  // scope per system. Same rule as California: only a resolved state narrows
+  // the matrix — an UNDETERMINED regime keeps every requirement visible, so
+  // "nobody has answered yet" never renders as "none of this applies".
+  const { data: regimeScope } = trpc.regimes.getScope.useQuery(
+    { organizationId: orgId, aiSystemId: selectedSystemId },
+    { enabled: !!orgId && !!selectedSystemId }
+  );
+
+  const regimeScopeTags = useMemo(() => {
+    const map: Record<string, string[]> = {};
+    for (const scope of regimeScope?.scopes ?? []) {
+      if (scope.state === "UNDETERMINED") continue;
+      map[scope.framework] = scope.tags;
+    }
+    return map;
+  }, [regimeScope]);
+
   const { data: frameworkCounts } = trpc.compliance.getFrameworkCounts.useQuery(
     {
       organizationId: orgId,
       applicabilityTags: admtTags,
       scopedFrameworkCode: "CA_CCPA_ADMT",
+      scopes: regimeScopeTags,
     },
     { enabled: !!orgId }
   );
@@ -200,7 +223,11 @@ export default function CompliancePage() {
       aiSystemId: selectedSystemId,
       frameworkId: selectedFrameworkId,
       // Only scoped frameworks pass tags; everything else keeps its full matrix.
-      applicabilityTags: isAdmtFramework ? admtTags : undefined,
+      applicabilityTags: isAdmtFramework
+        ? admtTags
+        : selectedFramework
+          ? regimeScopeTags[selectedFramework.code]
+          : undefined,
     },
     { enabled: !!orgId && !!selectedSystemId && !!selectedFrameworkId }
   );

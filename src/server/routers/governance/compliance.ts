@@ -66,6 +66,15 @@ export const complianceRouter = createTRPCRouter({
          * vocabulary, match nothing, and silently report zero.
          */
         scopedFrameworkCode: z.string().optional(),
+        /**
+         * Several tagged frameworks at once: framework code -> the tags that
+         * framework's own rules layer resolved. A code absent from the map is
+         * not scoped and reports its full size. This is how the regime
+         * frameworks (GDPR, Colorado, Texas, Washington) report org-scoped
+         * counts alongside California, whose tags arrive through
+         * `applicabilityTags` + `scopedFrameworkCode`.
+         */
+        scopes: z.record(z.string(), z.array(z.string())).optional(),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -77,10 +86,13 @@ export const complianceRouter = createTRPCRouter({
         frameworks.map(async (fw) => {
           // Scoping applies only to the framework the tags belong to; every
           // other framework reports its full size, exactly as before.
-          const scoped = input.scopedFrameworkCode === undefined
-            || input.scopedFrameworkCode === fw.code;
+          const mappedTags = input.scopes?.[fw.code];
+          const singleScoped =
+            (input.scopedFrameworkCode === undefined || input.scopedFrameworkCode === fw.code)
+            && input.applicabilityTags !== undefined;
+          const tags = mappedTags ?? (singleScoped ? input.applicabilityTags : undefined);
 
-          if (!scoped || input.applicabilityTags === undefined) {
+          if (tags === undefined) {
             return {
               frameworkId: fw.id,
               code: fw.code,
@@ -97,7 +109,7 @@ export const complianceRouter = createTRPCRouter({
             select: { applicabilityTags: true },
           });
 
-          const inScope = buildScopeFilter(input.applicabilityTags);
+          const inScope = buildScopeFilter(tags);
           return {
             frameworkId: fw.id,
             code: fw.code,

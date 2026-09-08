@@ -21,6 +21,7 @@
     "db:seed-vendor-catalog": "tsx scripts/seed-vendor-catalog.ts",
     "db:sync-vendor-catalog": "tsx scripts/sync-vendor-catalog.ts",
     "db:seed-admt": "tsx scripts/seed-admt-framework.ts",
+    "db:seed-regimes": "tsx scripts/seed-regimes.ts",
     "db:seed-cross-mappings": "tsx scripts/seed-cross-framework-mappings.ts",
     "db:seed-video-demo": "tsx scripts/seed-video-demo.ts",
     "lint:security": "bash scripts/lint-security.sh",

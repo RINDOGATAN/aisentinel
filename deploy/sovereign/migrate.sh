@@ -68,6 +68,7 @@ fi
 echo "[migrate] refreshing regulatory content…"
 npm run db:seed-frameworks
 npm run db:seed-admt
+npm run db:seed-regimes
 npm run db:seed-cross-mappings
 npm run db:seed-templates
 npm run db:seed-shadow-ai-tools

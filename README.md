@@ -1,6 +1,8 @@
 # AI SENTINEL
 
-Cross-border AI governance registry for organizations that deploy or provide AI systems. Register AI systems, classify risk under the EU AI Act (Reg. (EU) 2024/1689), run FRIA and conformity assessments, map compliance across EU AI Act, NIST AI RMF and ISO/IEC 42001, manage human oversight gates, incidents, vendors and policies. Bilingual EN/ES.
+Cross-border AI governance registry for organizations that deploy or provide AI systems. Register AI systems, classify risk under the EU AI Act (Reg. (EU) 2024/1689), run FRIA and conformity assessments, manage human oversight gates, incidents, vendors and policies. Bilingual EN/ES.
+
+**One assessment, six regimes.** Compliance is mapped across eight frameworks: EU AI Act, GDPR (the AI-relevant articles), NIST AI RMF, ISO/IEC 42001, the California CCPA ADMT regulations, Colorado SB 26-189, Texas TRAIGA and Washington's domain instruments. A single unified impact assessment answers all of them, built as a common core drafted to the strictest formulation among the regimes plus overlays that appear only where a regime applies. From it the product generates a multi-jurisdictional AI notice, a human review and appeal protocol, and an agentic addendum that stress-tests all three against a handoff to an autonomous agent. Regulatory content carries a law-review date and a pending legal sign-off marker.
 
 One codebase, two postures:
 
@@ -19,6 +21,8 @@ npm install
 npx prisma migrate deploy         # apply schema
 npm run db:seed                   # content-only seed (skill packages)
 npm run db:seed-frameworks        # EU AI Act, NIST AI RMF, ISO 42001
+npm run db:seed-admt              # California CCPA ADMT
+npm run db:seed-regimes           # GDPR, Colorado, Texas, Washington
 npm run db:seed-templates         # assessment templates
 npm run db:seed-shadow-ai-tools   # Shadow AI tool catalog
 npm run db:seed-vendor-catalog    # AI vendor catalog

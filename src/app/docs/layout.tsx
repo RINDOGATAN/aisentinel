@@ -26,6 +26,8 @@ import {
   Activity,
   Shield,
   Users,
+  Globe2,
+  Sparkles,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -45,6 +47,7 @@ const sidebarItems: SidebarItem[] = [
   { href: "/docs/oversight", labelKey: "oversight", icon: Eye },
   { href: "/docs/incidents", labelKey: "incidents", icon: AlertTriangle },
   { href: "/docs/transparency", labelKey: "transparency", icon: Megaphone },
+  { href: "/docs/cross-border", labelKey: "crossBorder", icon: Globe2 },
   { href: "/docs/compliance", labelKey: "compliance", icon: Scale },
   { href: "/docs/vendors", labelKey: "vendors", icon: Building2 },
   { href: "/docs/policies", labelKey: "policies", icon: ScrollText },
@@ -54,6 +57,7 @@ const sidebarItems: SidebarItem[] = [
   { href: "/docs/bias-fairness", labelKey: "biasFairness", icon: Activity, premium: true },
   { href: "/docs/roles", labelKey: "roles", icon: Users },
   { href: "/docs/security", labelKey: "security", icon: Shield },
+  { href: "/docs/whats-new", labelKey: "whatsNew", icon: Sparkles },
 ];
 
 export default function DocsLayout({ children }: { children: React.ReactNode }) {

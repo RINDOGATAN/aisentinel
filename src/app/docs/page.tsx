@@ -16,6 +16,7 @@ import {
   FileCheck,
   Activity,
   Megaphone,
+  Globe2,
 } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import prisma from "@/lib/prisma";
@@ -62,6 +63,7 @@ const moduleItems = [
   { href: "/docs/oversight", icon: Eye, tKey: "oversight" },
   { href: "/docs/incidents", icon: AlertTriangle, tKey: "incidents" },
   { href: "/docs/transparency", icon: Megaphone, tKey: "transparency" },
+  { href: "/docs/cross-border", icon: Globe2, tKey: "crossBorder" },
   { href: "/docs/compliance", icon: Scale, tKey: "compliance" },
   { href: "/docs/vendors", icon: Building2, tKey: "vendors" },
   { href: "/docs/policies", icon: ScrollText, tKey: "policies" },

@@ -1309,7 +1309,9 @@
         "conformity": "Conformity Assessment",
         "biasFairness": "Bias & Fairness",
         "roles": "Roles & Permissions",
-        "security": "Security & Trust"
+        "security": "Security & Trust",
+        "crossBorder": "Cross-border regimes",
+        "whatsNew": "What's new"
       },
       "footer": {
         "service": "{app} is a <link>{company}</link> service.",
@@ -1394,7 +1396,7 @@
         },
         "compliance": {
           "title": "Compliance",
-          "description": "Framework mapping for EU AI Act, NIST AI RMF, and ISO 42001 with evidence management."
+          "description": "Framework mapping across the EU AI Act, GDPR, NIST AI RMF, ISO 42001, California ADMT, Colorado, Texas and Washington, with evidence management and cross-framework links."
         },
         "vendors": {
           "title": "Vendor Risk",
@@ -1403,6 +1405,10 @@
         "policies": {
           "title": "Policy Management",
           "description": "AI governance policies with versioning, approval workflow, and system linking."
+        },
+        "crossBorder": {
+          "title": "Cross-border regimes",
+          "description": "One impact assessment answering the EU AI Act, the GDPR, California ADMT, Colorado, Texas and Washington, and the three documents it generates."
         }
       },
       "premiumTitleFree": "Add-on Modules",
@@ -2957,6 +2963,199 @@
         "title": "Security Contact",
         "body": "If you discover a security vulnerability or have questions about our security practices, please contact us at <link>{email}</link>. We take all reports seriously and will respond promptly."
       }
+    },
+    "crossBorder": {
+      "metaTitle": "Cross-border AI governance — one assessment, six regimes | AI SENTINEL",
+      "metaDescription": "Answer the EU AI Act, the GDPR, California ADMT, Colorado, Texas and Washington from a single impact assessment, and generate the notice and appeal protocol that follow.",
+      "title": "Cross-border regimes",
+      "intro": "Most organisations deploying AI answer to several regulators at once, and each asks a version of the same question in different words. AI SENTINEL resolves which regimes reach each system, asks one question set drafted to the strictest of them, and generates the documents each regime expects.",
+      "architectureTitle": "Highest common denominator, plus overlays",
+      "architectureBody1": "The assessment has a <strong>common core</strong> that is always asked. Each core question is drafted to the strictest formulation among the regimes, so answering it once satisfies every regime that asks a weaker version of the same thing.",
+      "architectureBody2": "On top of that core sit <strong>jurisdictional overlays</strong>. An overlay question appears only when that regime's rules have put the system in scope, so a European deployer is never asked about Washington health carriers, and a Texas-only business never sees a California section number.",
+      "architectureBody3": "Every question declares which requirement codes its answer evidences. That is what lets one answer stand as evidence in several compliance registers at the same time, and it is what the generated documents cite.",
+      "regimesTitle": "The regimes",
+      "regimes": [
+        {
+          "name": "EU AI Act",
+          "detail": "Regulation (EU) 2024/1689. Risk classification, Annex III screening, the Article 27 fundamental rights impact assessment, Article 50 transparency, Annex IV technical documentation and the obligation calendar.",
+          "count": "83 requirements"
+        },
+        {
+          "name": "GDPR",
+          "detail": "The AI-relevant articles, with Article 22 on solely automated decisions and Article 35 on impact assessments in full, including the CJEU reading that an automatically generated score can itself be the decision.",
+          "count": "26 requirements"
+        },
+        {
+          "name": "California CCPA ADMT",
+          "detail": "The OAL-approved regulations: the three-prong human-involvement test, significant-decision domains, pre-use notice, opt-out, access, and the risk-assessment regime that has been live since January 2026.",
+          "count": "92 requirements"
+        },
+        {
+          "name": "Colorado SB 26-189",
+          "detail": "The replacement statute that repealed the original Colorado AI Act. Advance notice, post-decision disclosure, correction and review, and developer documentation. Effective 1 January 2027, subject to pending federal litigation.",
+          "count": "10 requirements"
+        },
+        {
+          "name": "Texas TRAIGA",
+          "detail": "House Bill 149, in force since January 2026. Intent-based prohibitions, government and health care disclosure duties, the NIST safe harbour and the regulatory sandbox.",
+          "count": "11 requirements"
+        },
+        {
+          "name": "Washington",
+          "detail": "No single act, so five instruments: the My Health My Data Act for algorithmic health inference, HB 1170 provenance, HB 2225 companion chatbots, the prior-authorisation limits in RCW 48.43.830, and RCW 43.105 for public agencies.",
+          "count": "16 requirements"
+        }
+      ],
+      "scopeTitle": "How scope is decided",
+      "scopeBody": "Each regime has its own deterministic rules module. It reads the jurisdictions your organisation has declared plus a handful of screening answers, and returns one of three states.",
+      "scopeStates": [
+        {
+          "name": "Applies",
+          "description": "The regime reaches this system, and its overlay questions and requirements attach."
+        },
+        {
+          "name": "Does not apply",
+          "description": "Someone answered the questions that rule it out. This is an assertion, so it is only ever made from answers a person actually gave."
+        },
+        {
+          "name": "Undetermined",
+          "description": "Nobody has answered yet. Nothing attaches, and the state is shown as an open question rather than being read as a no. An unanswered question is a visible gap, never a silent one."
+        }
+      ],
+      "reuseTitle": "Answers you already gave",
+      "reuseBody": "Where two regimes ask the same legal question, the product reuses the answer rather than asking twice. A California ADMT determination that finds the technology is the sole factor in a significant decision also answers the GDPR Article 22 question, and a positive determination with a named decision domain answers the Colorado covered-technology test. The assessment records which answer it inferred from, so the reasoning stays auditable.",
+      "artifactsTitle": "What you take away",
+      "artifactsBody": "From one answered assessment the product assembles four documents. Assembly is deterministic: no model is called, so a document that cites statute is reproducible and every sentence traces to an answer. They download as Markdown so they can go straight into your own systems of record.",
+      "artifacts": [
+        {
+          "name": "Unified impact assessment",
+          "description": "One record answering the EU AI Act fundamental rights impact assessment, the GDPR data protection impact assessment, the California risk assessment and the state regimes."
+        },
+        {
+          "name": "Multi-jurisdictional AI notice",
+          "description": "A universal core drafted to the strictest regime, plus one addendum for each jurisdiction that adds obligations of its own. The addenda never mix."
+        },
+        {
+          "name": "Human review and appeal protocol",
+          "description": "One review workflow satisfying GDPR Article 22(3), the California human-appeal exception, the Colorado review right and the EU AI Act right to an explanation, with a table of what each jurisdiction words differently."
+        },
+        {
+          "name": "Agentic addendum",
+          "description": "The stress test as a document: where each of the three breaks when the system hands off to an autonomous agent, and the provisions that layer demands."
+        }
+      ],
+      "gapsTitle": "Gaps are shown, not hidden",
+      "gapsBody": "An unanswered question does not silently drop the paragraph it would have filled. It becomes a visible gap carrying the obligation it would have evidenced, and every gap is collected into an open-items summary at the top of the document. A generated document that quietly omits an unanswered obligation is worse than no document, because it reads as complete.",
+      "agenticTitle": "The agentic stress test",
+      "agenticBody1": "Every regime in this product was written for a system that produces an output which a person then uses. An autonomous agent that acts on that output breaks that assumption in a different place in each regime.",
+      "agenticBody2": "The stress test runs eleven findings over the system, each naming the document it breaks, the assumption the regime made, what the handoff does to it, and the provision the agentic layer demands. Findings are gated on the regimes that actually apply, so a Texas deployer is not shown a GDPR failure.",
+      "agenticExamples": [
+        {
+          "name": "The Article 22 boundary moves to the agent",
+          "description": "Your analysis said the decision is not solely automated because a person reviews the output. If an agent then acts on it and nobody reviews the action, the decision the person experiences is solely automated after all."
+        },
+        {
+          "name": "The human-involvement prongs fail at the handoff",
+          "description": "The California test requires a reviewer with authority to change the decision. An agent that executes before review completes removes that authority in practice, and the test is conjunctive."
+        },
+        {
+          "name": "The protocol reviews what cannot be reversed",
+          "description": "With an agent in the chain the action is often complete before anyone appeals. Review without reversal is not the human intervention the GDPR requires."
+        }
+      ],
+      "startTitle": "Getting started",
+      "startSteps": [
+        {
+          "step": "Declare your jurisdictions",
+          "body": "In Settings, record where the organisation operates. Nothing can resolve until this is done, and the product says so rather than guessing."
+        },
+        {
+          "step": "Answer the organisation screening",
+          "body": "Five questions, each shown only if a jurisdiction you declared turns on it. Whether you are a public agency, a health carrier, a health care provider, a covered generative AI provider, or process Washington consumer health data."
+        },
+        {
+          "step": "Open a system's Cross-border regimes tab",
+          "body": "See which regimes apply and which are still undetermined, then answer the system screening: how automated the decision is, whether special-category data is involved, and whether the output goes to an autonomous agent."
+        },
+        {
+          "step": "Attach the requirements and create the assessment",
+          "body": "The in-scope requirements attach to the system's compliance record, and the unified assessment is created with the question set that system actually needs."
+        },
+        {
+          "step": "Generate the documents",
+          "body": "Download the assessment, the notice, the protocol and the agentic addendum. Answer more questions and regenerate: the gaps close as you go."
+        }
+      ],
+      "reviewNote": "Regulatory content in this module carries a pending legal sign-off marker, shown on every generated document. It is a drafting aid, not legal advice."
+    },
+    "whatsNew": {
+      "metaTitle": "What's new in AI SENTINEL",
+      "metaDescription": "One assessment answering six regulatory regimes, three generated documents, an agentic stress test and the vendor supply chain.",
+      "title": "What's new",
+      "intro": "The releases below are listed newest first. Every regulatory addition carries a law-review date and a pending legal sign-off marker.",
+      "releases": [
+        {
+          "version": "0.3.0",
+          "date": "8 September 2026",
+          "headline": "One assessment, five regimes",
+          "summary": "Most organisations deploying AI now answer to several regulators at once, and reconciling them by hand is where governance programmes stall. This release makes one impact assessment answer all of them, and generates the documents each regime expects.",
+          "items": [
+            {
+              "title": "Four more regulatory regimes",
+              "body": "GDPR, Colorado SB 26-189, Texas TRAIGA and Washington's five domain instruments join the EU AI Act, NIST AI RMF, ISO 42001 and California ADMT. That is 294 requirements across eight frameworks and 115 cross-framework mappings, all bilingual. Each regime resolves its own scope from your declared jurisdictions and a few screening answers, and an unanswered question stays visibly undetermined rather than quietly reading as a no."
+            },
+            {
+              "title": "The unified impact assessment",
+              "body": "One question set with a common core drafted to the strictest formulation among the regimes, plus overlays that appear only where a regime applies. Every question declares the requirement codes its answer evidences, so one answer stands as evidence in several compliance registers at once. Where two regimes ask the same legal question the product reuses the answer: a California ADMT sole-factor finding also answers the GDPR Article 22 question."
+            },
+            {
+              "title": "Three documents you can take away",
+              "body": "The unified impact assessment, a multi-jurisdictional notice built as a universal core plus one addendum per jurisdiction, and a human review and appeal protocol with a table of what each jurisdiction words differently. Assembly is deterministic, so a document that cites statute is reproducible. They download as Markdown, to go straight into your own systems of record."
+            },
+            {
+              "title": "Gaps are shown, not hidden",
+              "body": "An unanswered question becomes a visible gap carrying the obligation it would have evidenced, collected into an open-items summary at the top of every document. Citations are filtered to the regimes that actually apply, so a document never names a state you do not operate in."
+            },
+            {
+              "title": "The agentic stress test",
+              "body": "Eleven findings covering where each document breaks when the system hands its output to an autonomous downstream agent: the Article 22 boundary moving to the agent, the California human-involvement prongs failing at the handoff, a notice that no longer describes the decision, a protocol that reviews what cannot be reversed, records that trace the output rather than the action, and an agent that reaches past the processing contract. Each names the assumption the regime made and the provision the agentic layer demands."
+            },
+            {
+              "title": "The vendor supply chain",
+              "body": "The vendor catalog has carried structured subprocessor lists for 254 vendors, with 604 entries cross-linked to other catalog vendors. They are now rendered: a supply chain on each catalog entry with the reverse view of who depends on it, a supply-chain tab on each of your vendors marking the subprocessors you already govern, and a shared-subprocessors card showing the providers sitting beneath more than one of your vendors. The Annex IV draft receives the list too."
+            },
+            {
+              "title": "A self-hosting upgrade fix",
+              "body": "The migrator's pre-baseline check had never fired, so installs created before the migrations baseline could not upgrade. Both faults are fixed and the upgrade path is now verified against the published image on every release."
+            }
+          ]
+        },
+        {
+          "version": "0.2.x",
+          "date": "August 2026",
+          "headline": "California, jurisdictions and the obligation calendar",
+          "summary": "The releases that made the product multi-jurisdictional in the first place.",
+          "items": [
+            {
+              "title": "California CCPA ADMT",
+              "body": "The fourth compliance framework: 92 requirements, the three-prong human-involvement determination, significant-decision domains, opt-out basis, designated reviewer and appeal route, and the risk-assessment deadlines."
+            },
+            {
+              "title": "Jurisdictions and the regulatory calendar",
+              "body": "A jurisdiction model on the organisation and per system, driving a dated obligation timeline bound to your own inventory rather than a generic list of deadlines."
+            },
+            {
+              "title": "Article 50 transparency",
+              "body": "Per-system transparency profiles, the four obligations, marking methods and generated transparency statements."
+            }
+          ]
+        }
+      ],
+      "pendingTitle": "Still pending",
+      "pendingBody": "Regulatory content across the new regimes carries a law-review date and a pending legal sign-off marker. Two Washington items need confirming in particular: the 2026 bill chapter numbers, and the prior-authorisation effective date, where the codified section and contemporaneous reporting disagree. Both are flagged in the content itself.",
+      "ctaTitle": "See it in the product",
+      "ctaBody": "Open any AI system and choose the Cross-border regimes tab.",
+      "ctaLink": "Read the cross-border documentation"
     }
   },
   "program": {

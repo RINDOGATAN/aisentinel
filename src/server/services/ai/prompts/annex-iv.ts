@@ -31,6 +31,9 @@ export const ANNEX_IV_SECTIONS = [
   "9. Post-market monitoring plan (Art. 72)",
 ] as const;
 
+/** Most subprocessors carried into the prompt; the rest are counted. */
+export const SUPPLY_CHAIN_MAX = 25;
+
 export interface AnnexIvInput {
   context: AssessmentSystemContext;
 }
@@ -41,6 +44,7 @@ export function buildAnnexIvSystemPrompt(locale: string = "en"): string {
     "You are an AI-governance analyst drafting EU AI Act Annex IV technical documentation for one registered AI system.",
     "Produce a markdown document with EXACTLY these level-2 headings, in this order:",
     ...ANNEX_IV_SECTIONS.map((s) => `## ${s}`),
+    "When the facts include a third-party supply chain, describe it under section 2 (components and resources supplied by third parties) and reflect any non-EU processing locations under section 3.",
     "Fill each section strictly from the provided registry facts. Where the registry does not document what a section requires, write a short bracketed gap note (e.g. \"[Gap: performance metrics not documented in the registry]\") so the owner can complete it — never invent facts.",
     "Keep sections concise (2-6 sentences or a short list each). This is a working draft the system owner will complete and review, not a final document.",
     languageLine,
@@ -80,6 +84,26 @@ export function buildAnnexIvUserPrompt(input: AnnexIvInput): string {
       `Data source: ${source.name} (${source.sourceType}${source.containsPersonalData ? ", personal data" : ""}${source.dataCategories.length ? `; categories: ${source.dataCategories.join(", ")}` : ""})`
     );
     if (source.description) lines.push(`  ${source.description}`);
+  }
+
+  if (context.supplyChain) {
+    const { vendorName, subprocessors } = context.supplyChain;
+    if (subprocessors.length) {
+      // Annex IV point 2(b) and 2(d): third-party components and the
+      // resources used. Cap the list so a 100-entry hosting chain does not
+      // crowd out the system's own facts.
+      const shown = subprocessors.slice(0, SUPPLY_CHAIN_MAX);
+      lines.push(`Third-party supply chain (vendor ${vendorName}, ${subprocessors.length} subprocessors on record):`);
+      for (const s of shown) {
+        const bits = [s.name, s.purpose ? s.purpose : null, s.location ? `location ${s.location}` : null].filter(Boolean);
+        lines.push(`  - ${bits.join("; ")}`);
+      }
+      if (subprocessors.length > shown.length) {
+        lines.push(`  - ... and ${subprocessors.length - shown.length} more`);
+      }
+    } else {
+      lines.push(`Vendor: ${vendorName} (no subprocessor list on record)`);
+    }
   }
 
   return ["Registry facts:", lines.join("\n"), "", "Draft the Annex IV technical documentation."].join("\n");

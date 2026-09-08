@@ -22,6 +22,7 @@ import {
   buildAnnexIvSystemPrompt,
   buildAnnexIvUserPrompt,
   ANNEX_IV_SECTIONS,
+  SUPPLY_CHAIN_MAX,
 } from "./annex-iv";
 import { screenAnnexIii } from "@/config/annex-iii-rules";
 import {
@@ -165,6 +166,29 @@ describe("annex-iv prompts", () => {
     expect(prompt).toContain("rank-v2");
     expect(prompt).toContain("Underrepresents career switchers");
     expect(prompt).toContain("Risk classification: HIGH (Annex III category: employment)");
+    expect(prompt).not.toContain("Third-party supply chain");
+  });
+
+  it("user prompt carries the vendor supply chain, capped, and the system prompt places it", () => {
+    const subprocessors = Array.from({ length: SUPPLY_CHAIN_MAX + 3 }, (_, i) => ({
+      name: `Sub ${i + 1}`,
+      purpose: i === 0 ? "Model hosting" : null,
+      location: i === 0 ? "US" : null,
+    }));
+    const prompt = buildAnnexIvUserPrompt({
+      context: { ...context, supplyChain: { vendorName: "Chatbot Co", subprocessors } },
+    });
+    expect(prompt).toContain(`Third-party supply chain (vendor Chatbot Co, ${SUPPLY_CHAIN_MAX + 3} subprocessors on record)`);
+    expect(prompt).toContain("  - Sub 1; Model hosting; location US");
+    expect(prompt).toContain(`  - Sub ${SUPPLY_CHAIN_MAX}`);
+    expect(prompt).not.toContain(`  - Sub ${SUPPLY_CHAIN_MAX + 1}`);
+    expect(prompt).toContain("... and 3 more");
+    expect(buildAnnexIvSystemPrompt("en")).toContain("third-party supply chain");
+
+    const bare = buildAnnexIvUserPrompt({
+      context: { ...context, supplyChain: { vendorName: "Chatbot Co", subprocessors: [] } },
+    });
+    expect(bare).toContain("Vendor: Chatbot Co (no subprocessor list on record)");
   });
 });
 

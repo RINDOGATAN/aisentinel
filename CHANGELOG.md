@@ -6,6 +6,21 @@ All notable changes to AI SENTINEL are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- **Vendor supply chain.** The catalog has carried structured subprocessor
+  lists for 254 vendors (604 entries cross-linked to other catalog vendors)
+  without showing them anywhere. Three surfaces now read them: a supply-chain
+  card on each catalog entry, with the reverse view of which catalog vendors
+  depend on that entry and which of them are already among your vendors; a
+  supply-chain tab on the vendor risk detail page that marks the subprocessors
+  you already govern; and a shared-subprocessors card on the vendor risk list
+  showing the providers that sit beneath more than one of your vendors. The
+  Annex IV draft now receives the system vendor's subprocessor list for
+  section 2 (third-party components) and section 3 (processing locations).
+  Pure helpers in `src/lib/supply-chain.ts` tolerate the column's older
+  shapes; EN and ES strings added.
+
 ### Fixed
 
 - **The migrator could not upgrade a db-push-era install.** The pre-baseline

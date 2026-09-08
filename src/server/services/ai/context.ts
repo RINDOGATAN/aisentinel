@@ -13,6 +13,7 @@
  */
 
 import { TRPCError } from "@trpc/server";
+import { parseSubprocessors } from "@/lib/supply-chain";
 import type { PrismaClient } from "@prisma/client";
 import type { AnnexIiiFacts } from "@/config/annex-iii-rules";
 import type { AssessmentSystemContext } from "./prompts/assessment-draft";
@@ -31,6 +32,12 @@ export async function buildSystemContext(
       models: true,
       dataSources: true,
       riskClassification: true,
+      vendor: {
+        select: {
+          name: true,
+          catalogEntry: { select: { subprocessors: true } },
+        },
+      },
     },
   });
 
@@ -68,6 +75,16 @@ export async function buildSystemContext(
     })),
     riskLevel: system.riskClassification?.riskLevel ?? null,
     annexIIICategory: system.riskClassification?.annexIIICategory ?? null,
+    supplyChain: system.vendor
+      ? {
+          vendorName: system.vendor.name,
+          subprocessors: parseSubprocessors(system.vendor.catalogEntry?.subprocessors).map((s) => ({
+            name: s.name,
+            purpose: s.purpose,
+            location: s.location,
+          })),
+        }
+      : null,
   };
 
   const facts: AnnexIiiFacts = {

@@ -105,7 +105,36 @@ export const vendorCatalogRouter = createTRPCRouter({
         throw new TRPCError({ code: "NOT_FOUND", message: "Vendor catalog entry not found" });
       }
 
-      return entry;
+      // Reverse supply chain: catalog vendors that list this entry as one of
+      // their subprocessors. `subprocessors` is jsonb, so containment finds
+      // the linked entries with an index-friendly predicate; the slug is a
+      // bound parameter, never interpolated.
+      const dependents = await ctx.prisma.$queryRaw<
+        { slug: string; name: string; category: string }[]
+      >(Prisma.sql`
+        SELECT slug, name, category
+        FROM vendor_catalog
+        WHERE subprocessors @> ${JSON.stringify([{ catalogVendorSlug: input.slug }])}::jsonb
+          AND slug <> ${input.slug}
+        ORDER BY name ASC
+        LIMIT 200
+      `);
+
+      // Which of the caller's own vendor records sit on top of this entry:
+      // org-scoped, and only through catalog links the org itself made.
+      const dependentSlugs = dependents.map((d) => d.slug);
+      const yourDependents = dependentSlugs.length
+        ? await ctx.prisma.aIVendor.findMany({
+            where: {
+              organizationId: ctx.organization.id,
+              catalogSlug: { in: dependentSlugs },
+            },
+            select: { id: true, name: true, catalogSlug: true, riskLevel: true },
+            orderBy: { name: "asc" },
+          })
+        : [];
+
+      return { ...entry, dependents, yourDependents };
     }),
 
   listCategories: organizationProcedure

@@ -21,6 +21,7 @@ import {
   FileSearch,
   Database,
   Lock,
+  Network,
 } from "lucide-react";
 import { keepPreviousData } from "@tanstack/react-query";
 import { useTranslations, useLocale } from "next-intl";
@@ -83,6 +84,11 @@ export default function VendorRiskPage() {
   const { data: catalogAccess } = trpc.vendorCatalog.checkAccess.useQuery(
     { organizationId: organization?.id ?? "" },
     { enabled: !!organization?.id }
+  );
+
+  const { data: portfolioChain } = trpc.vendor.getPortfolioSupplyChain.useQuery(
+    { organizationId: organization?.id ?? "", limit: 8 },
+    { enabled: !!organization?.id && !!catalogAccess?.hasAccess }
   );
 
   const { data: statsData } = trpc.vendor.getStats.useQuery(
@@ -229,6 +235,60 @@ export default function VendorRiskPage() {
               <span className="hidden sm:inline">{t("enableCatalog")}</span>
               <span className="sm:hidden">{t("enableCatalog")}</span>
             </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Shared subprocessors across the portfolio */}
+      {catalogAccess?.hasAccess && portfolioChain && portfolioChain.vendorsLinked > 0 && (
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Network className="w-5 h-5" />
+              {t("sharedTitle")}
+            </CardTitle>
+            <p className="text-xs text-muted-foreground">{t("sharedSubtitle")}</p>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {portfolioChain.vendorsWithChain === 0 ? (
+              <p className="text-sm text-muted-foreground">{t("sharedNoData")}</p>
+            ) : portfolioChain.shared.length === 0 ? (
+              <p className="text-sm text-muted-foreground">{t("sharedNone")}</p>
+            ) : (
+              <ul className="grid gap-2 sm:grid-cols-2">
+                {portfolioChain.shared.map((s) => (
+                  <li
+                    key={s.key}
+                    className="flex items-center justify-between gap-2 rounded-md border border-border/50 bg-muted/20 px-3 py-2"
+                  >
+                    <div className="min-w-0">
+                      {s.catalogVendorSlug ? (
+                        <Link
+                          href={`/governance/vendor-catalog/${s.catalogVendorSlug}`}
+                          className="text-sm font-medium truncate block hover:underline"
+                        >
+                          {s.name}
+                        </Link>
+                      ) : (
+                        <span className="text-sm font-medium truncate block">{s.name}</span>
+                      )}
+                      <p className="text-xs text-muted-foreground truncate">
+                        {s.dependents.map((d) => d.name).join(", ")}
+                      </p>
+                    </div>
+                    <Badge variant="secondary" className="shrink-0 text-xs">
+                      {t("sharedDependents", { count: s.dependents.length })}
+                    </Badge>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <p className="text-xs text-muted-foreground">
+              {t("sharedFootnote", {
+                withChain: portfolioChain.vendorsWithChain,
+                linked: portfolioChain.vendorsLinked,
+              })}
+            </p>
           </CardContent>
         </Card>
       )}

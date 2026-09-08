@@ -43,6 +43,11 @@ export interface AssessmentSystemContext {
   }[];
   riskLevel?: string | null;
   annexIIICategory?: string | null;
+  /** Third-party supply chain behind the system's vendor (catalog data). */
+  supplyChain?: {
+    vendorName: string;
+    subprocessors: { name: string; purpose?: string | null; location?: string | null }[];
+  } | null;
 }
 
 export interface AssessmentDraftInput {

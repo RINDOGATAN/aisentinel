@@ -24,11 +24,15 @@ import {
   ShieldCheck,
   AlertTriangle,
   FileText,
+  Network,
+  Layers,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import type { CatalogAIModel } from "@/lib/vendor-watch-types";
+import { parseSubprocessors, summarizeSupplyChain } from "@/lib/supply-chain";
+import { SubprocessorTable } from "@/components/supply-chain/subprocessor-table";
 
 const MODEL_TYPE_COLORS: Record<string, string> = {
   "LLM": "bg-primary/20 text-primary",
@@ -80,6 +84,11 @@ export default function VendorCatalogDetailPage() {
 
   const linkedVendorCount = entry._count?.vendors ?? 0;
   const aiModels = (entry.aiModels as CatalogAIModel[] | null) ?? [];
+  const subprocessors = parseSubprocessors(entry.subprocessors);
+  const supplyChain = summarizeSupplyChain(subprocessors);
+  const dependents = entry.dependents ?? [];
+  const yourDependents = entry.yourDependents ?? [];
+  const yourDependentSlugs = new Set(yourDependents.map((v) => v.catalogSlug));
 
   // Check if any governance boolean is non-null
   const hasGovernanceData =
@@ -311,6 +320,42 @@ export default function VendorCatalogDetailPage() {
             </Card>
           )}
 
+          {/* Supply chain */}
+          {subprocessors.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Network className="w-5 h-5" />
+                  {t("supplyChainTitle")}
+                  <Badge variant="secondary" className="text-xs ml-1">
+                    {supplyChain.total}
+                  </Badge>
+                </CardTitle>
+                <p className="text-xs text-muted-foreground mt-1">{t("supplyChainSubtitle")}</p>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                  <span>{t("supplyChainLinked", { count: supplyChain.linked, total: supplyChain.total })}</span>
+                  {supplyChain.locations.slice(0, 6).map((loc) => (
+                    <Badge key={loc.location} variant="outline" className="text-[10px]">
+                      {loc.location} · {loc.count}
+                    </Badge>
+                  ))}
+                </div>
+                <SubprocessorTable
+                  rows={subprocessors}
+                  labels={{
+                    inCatalog: t("supplyChainInCatalog"),
+                    governed: "",
+                    viewSource: t("supplyChainViewSource"),
+                    showAll: (count) => t("supplyChainShowAll", { count }),
+                    showLess: t("supplyChainShowLess"),
+                  }}
+                />
+              </CardContent>
+            </Card>
+          )}
+
           {/* AI Governance */}
           {hasGovernanceData && (
             <Card>
@@ -433,6 +478,60 @@ export default function VendorCatalogDetailPage() {
                     </a>
                   );
                 })}
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Used as a subprocessor by */}
+          {dependents.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Layers className="w-5 h-5" />
+                  {t("dependentsTitle")}
+                  <Badge variant="secondary" className="text-xs ml-1">
+                    {dependents.length}
+                  </Badge>
+                </CardTitle>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {t("dependentsSubtitle", { name: entry.name })}
+                </p>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {yourDependents.length > 0 && (
+                  <div className="rounded-md border border-primary/40 bg-primary/5 p-3 space-y-1.5">
+                    <p className="text-xs font-medium text-primary">
+                      {t("dependentsYourVendorsTitle", { name: entry.name })}
+                    </p>
+                    <ul className="space-y-1">
+                      {yourDependents.map((v) => (
+                        <li key={v.id}>
+                          <Link href={`/governance/vendors/${v.id}`} className="text-sm hover:underline">
+                            {v.name}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                <ul className="space-y-1 max-h-72 overflow-y-auto pr-1">
+                  {dependents.map((d) => (
+                    <li key={d.slug} className="flex items-center justify-between gap-2">
+                      <Link
+                        href={`/governance/vendor-catalog/${d.slug}`}
+                        className="text-sm truncate hover:underline"
+                      >
+                        {d.name}
+                      </Link>
+                      <span className="flex items-center gap-1 shrink-0">
+                        {yourDependentSlugs.has(d.slug) && (
+                          <Badge className="bg-success/20 text-success text-[10px]">{t("dependentsYours")}</Badge>
+                        )}
+                        <Badge variant="outline" className="text-[10px]">{d.category}</Badge>
+                      </span>
+                    </li>
+                  ))}
+                </ul>
               </CardContent>
             </Card>
           )}

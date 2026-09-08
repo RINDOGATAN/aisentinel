@@ -34,7 +34,9 @@ import {
   Plus,
   CheckCircle,
   Database,
+  Network,
 } from "lucide-react";
+import { SubprocessorTable } from "@/components/supply-chain/subprocessor-table";
 import { toast } from "sonner";
 import { brand } from "@/config/brand";
 import { useTranslations, useLocale } from "next-intl";
@@ -120,6 +122,11 @@ export default function VendorDetailPage() {
   });
 
   const { data: vendor, isLoading } = trpc.vendor.getById.useQuery(
+    { organizationId: organization?.id ?? "", id },
+    { enabled: !!organization?.id && !!id }
+  );
+
+  const { data: supplyChain } = trpc.vendor.getSupplyChain.useQuery(
     { organizationId: organization?.id ?? "", id },
     { enabled: !!organization?.id && !!id }
   );
@@ -402,7 +409,93 @@ export default function VendorDetailPage() {
           <TabsTrigger value="assessments" className="text-xs sm:text-sm">
             {t("tabAssessments", { count: vendor.assessments?.length ?? 0 })}
           </TabsTrigger>
+          <TabsTrigger value="supply-chain" className="text-xs sm:text-sm">
+            {t("tabSupplyChain", { count: supplyChain?.summary.total ?? 0 })}
+          </TabsTrigger>
         </TabsList>
+
+        {/* Supply Chain Tab */}
+        <TabsContent value="supply-chain" className="mt-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Network className="w-5 h-5" />
+                {t("supplyChainTitle")}
+              </CardTitle>
+              <p className="text-xs text-muted-foreground mt-1">{t("supplyChainSubtitle")}</p>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {!supplyChain ? null : !supplyChain.hasCatalogLink ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Database className="w-10 h-10 mx-auto mb-3 opacity-50" />
+                  <p className="text-sm max-w-md mx-auto">{t("supplyChainNoCatalog")}</p>
+                </div>
+              ) : supplyChain.subprocessors.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Network className="w-10 h-10 mx-auto mb-3 opacity-50" />
+                  <p className="text-sm">{t("supplyChainEmpty")}</p>
+                  {supplyChain.catalogSlug && (
+                    <Link
+                      href={`/governance/vendor-catalog/${supplyChain.catalogSlug}`}
+                      className="text-xs text-primary hover:underline mt-2 inline-block"
+                    >
+                      {t("supplyChainOpenCatalog")}
+                    </Link>
+                  )}
+                </div>
+              ) : (
+                <>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    {[
+                      { label: t("supplyChainStatTotal"), value: supplyChain.summary.total },
+                      { label: t("supplyChainStatLinked"), value: supplyChain.summary.linked },
+                      {
+                        label: t("supplyChainStatGoverned"),
+                        value: supplyChain.subprocessors.filter((s) => s.ownVendor).length,
+                      },
+                      { label: t("supplyChainStatLocations"), value: supplyChain.summary.locations.length },
+                    ].map((stat) => (
+                      <div key={stat.label} className="rounded-md border border-border/50 bg-muted/20 p-3">
+                        <p className="text-xl font-bold text-primary">{stat.value}</p>
+                        <p className="text-xs text-muted-foreground">{stat.label}</p>
+                      </div>
+                    ))}
+                  </div>
+                  {supplyChain.summary.locations.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5">
+                      {supplyChain.summary.locations.map((loc) => (
+                        <Badge key={loc.location} variant="outline" className="text-[10px]">
+                          {loc.location} · {loc.count}
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                  <SubprocessorTable
+                    rows={supplyChain.subprocessors}
+                    showGovernance
+                    labels={{
+                      inCatalog: t("supplyChainStatLinked"),
+                      governed: t("supplyChainGoverned"),
+                      notGoverned: t("supplyChainNotGoverned"),
+                      viewSource: t("supplyChainViewSource"),
+                      showAll: (count) => t("supplyChainShowAll", { count }),
+                      showLess: t("supplyChainShowLess"),
+                    }}
+                  />
+                  {supplyChain.catalogSlug && (
+                    <Link
+                      href={`/governance/vendor-catalog/${supplyChain.catalogSlug}`}
+                      className="text-xs text-primary hover:underline inline-flex items-center gap-1"
+                    >
+                      <ExternalLink className="w-3 h-3" />
+                      {t("supplyChainOpenCatalog")}
+                    </Link>
+                  )}
+                </>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
 
         {/* Linked Systems Tab */}
         <TabsContent value="systems" className="mt-4">

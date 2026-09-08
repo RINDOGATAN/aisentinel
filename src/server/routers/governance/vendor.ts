@@ -4,6 +4,11 @@
 import { z } from "zod";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { TRPCError } from "@trpc/server";
+import {
+  parseSubprocessors,
+  summarizeSupplyChain,
+  computeSharedSubprocessors,
+} from "@/lib/supply-chain";
 
 export const vendorRouter = createTRPCRouter({
   list: organizationProcedure
@@ -382,6 +387,101 @@ export const vendorRouter = createTRPCRouter({
       });
 
       return updated;
+    }),
+
+  // Supply chain of one vendor: the subprocessor list carried by its catalog
+  // entry, with each linked subprocessor resolved against the caller's own
+  // vendor records so the page can say "you already govern this provider".
+  getSupplyChain: organizationProcedure
+    .input(z.object({ organizationId: z.string(), id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const vendor = await ctx.prisma.aIVendor.findFirst({
+        where: { id: input.id, organizationId: ctx.organization.id },
+        select: {
+          id: true,
+          name: true,
+          catalogSlug: true,
+          catalogEntry: { select: { slug: true, name: true, subprocessors: true } },
+        },
+      });
+
+      if (!vendor) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Vendor not found" });
+      }
+
+      const subprocessors = parseSubprocessors(vendor.catalogEntry?.subprocessors);
+      const linkedSlugs = subprocessors
+        .map((s) => s.catalogVendorSlug)
+        .filter((s): s is string => !!s);
+
+      const [catalogMatches, ownVendors] = await Promise.all([
+        linkedSlugs.length
+          ? ctx.prisma.vendorCatalog.findMany({
+              where: { slug: { in: linkedSlugs } },
+              select: { slug: true, name: true, category: true, dataLocations: true },
+            })
+          : Promise.resolve([]),
+        linkedSlugs.length
+          ? ctx.prisma.aIVendor.findMany({
+              where: {
+                organizationId: ctx.organization.id,
+                catalogSlug: { in: linkedSlugs },
+              },
+              select: { id: true, name: true, catalogSlug: true, riskLevel: true, status: true },
+            })
+          : Promise.resolve([]),
+      ]);
+
+      const catalogBySlug = new Map(catalogMatches.map((c) => [c.slug, c]));
+      const ownBySlug = new Map(ownVendors.map((v) => [v.catalogSlug, v]));
+
+      return {
+        hasCatalogLink: !!vendor.catalogEntry,
+        catalogSlug: vendor.catalogEntry?.slug ?? null,
+        summary: summarizeSupplyChain(subprocessors),
+        subprocessors: subprocessors.map((s) => ({
+          ...s,
+          catalog: s.catalogVendorSlug ? (catalogBySlug.get(s.catalogVendorSlug) ?? null) : null,
+          ownVendor: s.catalogVendorSlug ? (ownBySlug.get(s.catalogVendorSlug) ?? null) : null,
+        })),
+      };
+    }),
+
+  // Portfolio concentration: subprocessors shared by more than one of the
+  // organisation's vendors. Read entirely from the caller's own vendor rows
+  // and their catalog links.
+  getPortfolioSupplyChain: organizationProcedure
+    .input(z.object({ organizationId: z.string(), limit: z.number().min(1).max(50).default(10) }))
+    .query(async ({ ctx, input }) => {
+      const vendors = await ctx.prisma.aIVendor.findMany({
+        where: { organizationId: ctx.organization.id, catalogSlug: { not: null } },
+        select: {
+          id: true,
+          name: true,
+          catalogSlug: true,
+          catalogEntry: { select: { subprocessors: true } },
+        },
+      });
+
+      const shared = computeSharedSubprocessors(
+        vendors.map((v) => ({
+          id: v.id,
+          name: v.name,
+          catalogSlug: v.catalogSlug,
+          subprocessors: v.catalogEntry?.subprocessors ?? null,
+        })),
+      );
+
+      const vendorsWithChain = vendors.filter(
+        (v) => parseSubprocessors(v.catalogEntry?.subprocessors).length > 0,
+      ).length;
+
+      return {
+        vendorsWithChain,
+        vendorsLinked: vendors.length,
+        distinctSubprocessors: shared.length,
+        shared: shared.filter((s) => s.dependents.length > 1).slice(0, input.limit),
+      };
     }),
 
   getStats: organizationProcedure

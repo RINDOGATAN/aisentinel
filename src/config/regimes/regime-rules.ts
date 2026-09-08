@@ -60,6 +60,13 @@ export interface RegimeSystemFacts {
   usedInPriorAuthorization: ScreeningAnswer;
   /** Texas / Colorado: consumers interact with the system directly. */
   interactsWithConsumers: ScreeningAnswer;
+  /**
+   * Does this system hand its output to an autonomous downstream agent that
+   * can act without a person? Drives the agentic overlay and stress test. Not
+   * a regime scope input: no statute keys off it yet, which is precisely the
+   * gap the agentic addendum documents.
+   */
+  handsOffToAutonomousAgent: ScreeningAnswer;
 }
 
 export type RegimeScopeState = "IN_SCOPE" | "OUT_OF_SCOPE" | "UNDETERMINED";
@@ -320,6 +327,7 @@ export const DEFAULT_SYSTEM_SCREENING: Pick<
   | "isCompanionChatbot"
   | "usedInPriorAuthorization"
   | "interactsWithConsumers"
+  | "handsOffToAutonomousAgent"
 > = {
   solelyAutomatedLegalEffect: "NOT_ASSESSED",
   processesSpecialCategoryData: "NOT_ASSESSED",
@@ -327,4 +335,5 @@ export const DEFAULT_SYSTEM_SCREENING: Pick<
   isCompanionChatbot: "NOT_ASSESSED",
   usedInPriorAuthorization: "NOT_ASSESSED",
   interactsWithConsumers: "NOT_ASSESSED",
+  handsOffToAutonomousAgent: "NOT_ASSESSED",
 };

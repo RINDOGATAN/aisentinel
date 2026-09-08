@@ -8,6 +8,32 @@ All notable changes to AI SENTINEL are documented here. The format follows
 
 ### Added
 
+- **Four more regulatory regimes, so one assessment can answer five of them.**
+  GDPR (the AI-relevant articles, with Art. 22 and Art. 35 in full), Colorado
+  SB 26-189, Texas TRAIGA (HB 149) and Washington's domain instruments (the My
+  Health My Data Act, HB 1170 provenance, HB 2225 companion chatbots, the
+  prior-authorisation limits in RCW 48.43.830, and RCW 43.105 for public
+  agencies) seed as compliance frameworks alongside the EU AI Act, NIST, ISO
+  42001 and California ADMT. 63 new bilingual requirements and 30 new
+  cross-framework mappings tying them to the EU AI Act spine and to
+  California. A deterministic rules module resolves each regime's scope from
+  the organisation's declared jurisdictions and a handful of screening facts,
+  reusing the California ADMT determination as a proxy where the legal tests
+  coincide; an unanswered question yields "undetermined", never a silent "does
+  not apply". Every regime carries a pending legal sign-off marker.
+- **The unified impact assessment.** One question set that answers the EU AI
+  Act fundamental rights impact assessment, the GDPR data protection impact
+  assessment and Article 22 analysis, the California ADMT risk assessment,
+  Colorado, Texas and Washington at once, built as a highest-common-denominator
+  core with jurisdictional overlays. Core questions are drafted to the
+  strictest formulation among the regimes and are always asked; overlay
+  questions appear only when that regime's rules layer has put the system in
+  scope. Every question declares the requirement codes its answer evidences,
+  so one answer stands as evidence in several compliance registers, and every
+  question is tagged with the artifacts it feeds. A shared scope service now
+  resolves the whole regulatory picture for a system in one place, so the
+  compliance matrix and the generated documents can never disagree about which
+  regimes apply.
 - **Vendor supply chain.** The catalog has carried structured subprocessor
   lists for 254 vendors (604 entries cross-linked to other catalog vendors)
   without showing them anywhere. Three surfaces now read them: a supply-chain

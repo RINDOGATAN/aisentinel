@@ -54,6 +54,7 @@ const systemFactsInput = z.object({
   isCompanionChatbot: answer.optional(),
   usedInPriorAuthorization: answer.optional(),
   interactsWithConsumers: answer.optional(),
+  handsOffToAutonomousAgent: answer.optional(),
 });
 
 type OrgRegimeSettings = Partial<Omit<RegimeOrgFacts, "operatingJurisdictions">>;
@@ -66,6 +67,7 @@ type SystemRegimeFacts = Partial<
     | "isCompanionChatbot"
     | "usedInPriorAuthorization"
     | "interactsWithConsumers"
+    | "handsOffToAutonomousAgent"
   >
 >;
 
@@ -121,6 +123,7 @@ function readSystemFacts(system: SystemRow): RegimeSystemFacts {
     isCompanionChatbot: asAnswer(f.isCompanionChatbot),
     usedInPriorAuthorization: asAnswer(f.usedInPriorAuthorization),
     interactsWithConsumers: asAnswer(f.interactsWithConsumers),
+    handsOffToAutonomousAgent: asAnswer(f.handsOffToAutonomousAgent),
   };
 }
 
@@ -206,6 +209,7 @@ export const regimesRouter = createTRPCRouter({
           isCompanionChatbot: systemFacts.isCompanionChatbot,
           usedInPriorAuthorization: systemFacts.usedInPriorAuthorization,
           interactsWithConsumers: systemFacts.interactsWithConsumers,
+          handsOffToAutonomousAgent: systemFacts.handsOffToAutonomousAgent,
         },
         jurisdictionsDeclared: orgFacts.operatingJurisdictions.length > 0,
         scopes,

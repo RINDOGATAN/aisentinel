@@ -34,6 +34,22 @@ All notable changes to AI SENTINEL are documented here. The format follows
   resolves the whole regulatory picture for a system in one place, so the
   compliance matrix and the generated documents can never disagree about which
   regimes apply.
+- **Three generated artifacts, and an agentic stress test.** From one answered
+  unified assessment the product now assembles the unified AI impact
+  assessment, a multi-jurisdictional AI notice built as a universal core plus
+  one addendum per jurisdiction in scope, and a human review and appeal
+  protocol with a table of what each jurisdiction adds. Assembly is
+  deterministic, so a document that cites statute is reproducible and every
+  sentence traces to an answer. Gaps are first class: an unanswered question
+  becomes a visible gap marker carrying the obligation it would have
+  evidenced, rather than a silently missing paragraph, and citations are
+  filtered to the regimes that actually apply so a document never names a
+  state the organisation does not operate in. A fourth artifact, the agentic
+  addendum, runs eleven findings over the system: where each document breaks
+  when the output is handed to an autonomous downstream agent, the assumption
+  the regime made, and the provision the agentic layer demands. Artifacts
+  download as Markdown so they can be taken straight into the organisation's
+  own systems of record.
 - **Vendor supply chain.** The catalog has carried structured subprocessor
   lists for 254 vendors (604 entries cross-linked to other catalog vendors)
   without showing them anywhere. Three surfaces now read them: a supply-chain

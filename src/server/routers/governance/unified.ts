@@ -16,6 +16,14 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { loadSystemScope } from "@/server/services/scope/system-scope";
+import { runAgenticStressTest } from "@/config/agentic-stress-test";
+import {
+  buildAgenticAddendumArtifact,
+  buildAssessmentArtifact,
+  buildNoticeArtifact,
+  buildProtocolArtifact,
+} from "@/server/services/artifacts/build-artifacts";
+import { renderArtifactMarkdown } from "@/server/services/artifacts/render-markdown";
 import {
   UNIFIED_ASSESSMENT_LAW_REVIEWED_AS_OF,
   UNIFIED_ASSESSMENT_REVIEW_MARKER,
@@ -157,5 +165,91 @@ export const unifiedRouter = createTRPCRouter({
       });
 
       return { assessmentId: assessment.id, templateId: template.id, overlayTags: scope.overlayTags };
+    }),
+
+  /**
+   * The agentic stress test: where each artifact breaks when the system hands
+   * its output to an autonomous downstream agent, and what the agentic layer
+   * demands. Returns nothing at all until a handoff has been declared.
+   */
+  stressTest: organizationProcedure
+    .input(z.object({ organizationId: z.string(), aiSystemId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const scope = await loadSystemScope(ctx.prisma, ctx.organization.id, input.aiSystemId);
+      const locale = localeFrom(ctx.getCookie("locale"));
+      const result = runAgenticStressTest(scope.overlayTags);
+      return {
+        declared: scope.overlayTags.includes("agentic"),
+        counts: result.counts,
+        findings: result.applicable.map((f) => ({
+          id: f.id,
+          severity: f.severity,
+          artifacts: f.artifacts,
+          title: f.title[locale],
+          assumption: f.assumption[locale],
+          breakage: f.breakage[locale],
+          provision: f.provision[locale],
+          citations: f.citations,
+          evidencedBy: f.evidencedBy,
+        })),
+      };
+    }),
+
+  /**
+   * Generate one of the four artifacts as Markdown.
+   *
+   * Answers come from the most recent unified assessment on the system unless
+   * a specific assessment is named. Deterministic: no model is called, so the
+   * same facts always produce the same document.
+   */
+  generateArtifact: organizationProcedure
+    .input(
+      z.object({
+        organizationId: z.string(),
+        aiSystemId: z.string(),
+        kind: z.enum(["assessment", "notice", "protocol", "agentic-addendum"]),
+        assessmentId: z.string().optional(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const scope = await loadSystemScope(ctx.prisma, ctx.organization.id, input.aiSystemId);
+      const locale = localeFrom(ctx.getCookie("locale"));
+
+      // Org-scoped on both axes: the assessment must belong to this
+      // organisation AND to the system being documented.
+      const assessment = await ctx.prisma.aIAssessment.findFirst({
+        where: {
+          organizationId: ctx.organization.id,
+          aiSystemId: input.aiSystemId,
+          ...(input.assessmentId ? { id: input.assessmentId } : {}),
+        },
+        orderBy: { updatedAt: "desc" },
+        select: { id: true, title: true, responses: true, updatedAt: true },
+      });
+
+      const answers = (assessment?.responses ?? {}) as Record<string, unknown>;
+      const artifactInput = {
+        scope,
+        answers,
+        locale,
+        generatedAt: new Date().toISOString().slice(0, 10),
+      };
+
+      const artifact =
+        input.kind === "assessment"
+          ? buildAssessmentArtifact(artifactInput)
+          : input.kind === "notice"
+            ? buildNoticeArtifact(artifactInput)
+            : input.kind === "protocol"
+              ? buildProtocolArtifact(artifactInput)
+              : buildAgenticAddendumArtifact(artifactInput);
+
+      return {
+        artifact,
+        markdown: renderArtifactMarkdown(artifact),
+        sourceAssessment: assessment
+          ? { id: assessment.id, title: assessment.title, updatedAt: assessment.updatedAt }
+          : null,
+      };
     }),
 });

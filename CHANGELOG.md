@@ -6,6 +6,8 @@ All notable changes to AI SENTINEL are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-09-08
+
 ### Added
 
 - **Four more regulatory regimes, so one assessment can answer five of them.**

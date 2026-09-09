@@ -169,7 +169,7 @@ const clusterA: AdmtRequirementSeed[] = [
     },
     description: {
       en: "Document, for each system, whether a human reviewer (A) knows how to interpret and use the technology's output to make the decision, (B) reviews and analyses that output together with any other information relevant to making or changing the decision, and (C) has authority to make or change the decision based on that analysis. The test is conjunctive: failing any one prong means the technology substantially replaces human decisionmaking and IS ADMT. Rubber-stamp review — a reviewer without authority to overturn — does not satisfy it.",
-      es: "Documente, para cada sistema, si la persona revisora (A) sabe interpretar y utilizar el resultado de la tecnología para adoptar la decisión, (B) revisa y analiza ese resultado junto con cualquier otra información pertinente para adoptar o modificar la decisión, y (C) tiene autoridad para adoptar o modificar la decisión con base en ese análisis. El test es acumulativo: el incumplimiento de cualquiera de los tres requisitos implica que la tecnología sustituye sustancialmente la decisión humana y ES ADMT. Una revisión meramente formal —sin autoridad para revocar— no lo satisface.",
+      es: "Documenta, para cada sistema, si la persona revisora (A) sabe interpretar y utilizar el resultado de la tecnología para adoptar la decisión, (B) revisa y analiza ese resultado junto con cualquier otra información pertinente para adoptar o modificar la decisión, y (C) tiene autoridad para adoptar o modificar la decisión con base en ese análisis. El test es acumulativo: el incumplimiento de cualquiera de los tres requisitos implica que la tecnología sustituye sustancialmente la decisión humana y ES ADMT. Una revisión meramente formal —sin autoridad para revocar— no lo satisface.",
     },
     applicabilityTags: GATE,
     sortOrder: 7001,
@@ -187,7 +187,7 @@ const clusterB: AdmtRequirementSeed[] = [
     title: { en: "Pre-use Notice", es: "Aviso previo al uso" },
     description: {
       en: "Before using ADMT for a significant decision, provide a Pre-use Notice informing consumers of the use and of their rights to opt out and to access the ADMT. It may be delivered within the Notice at Collection provided that notice carries every element required by subsections (b) and (c).",
-      es: "Antes de utilizar ADMT para una decisión significativa, facilite un aviso previo al uso que informe al consumidor de dicho uso y de sus derechos de exclusión voluntaria y de acceso a la ADMT. Puede incorporarse al aviso en el momento de la recogida siempre que este contenga todos los elementos exigidos por los apartados (b) y (c).",
+      es: "Antes de utilizar ADMT para una decisión significativa, facilita un aviso previo al uso que informe al consumidor de dicho uso y de sus derechos de exclusión voluntaria y de acceso a la ADMT. Puede incorporarse al aviso en el momento de la recogida siempre que este contenga todos los elementos exigidos por los apartados (b) y (c).",
     },
     applicabilityTags: ART11,
     sortOrder: 7220,
@@ -245,7 +245,7 @@ const clusterB: AdmtRequirementSeed[] = [
         title: { en: "Specific purpose stated", es: "Finalidad específica" },
         description: {
           en: "A plain-language explanation of the specific purpose for which the ADMT will be used. Generic phrasing such as 'to make a significant decision about you' is expressly insufficient.",
-          es: "Una explicación en lenguaje sencillo de la finalidad específica para la que se utilizará la ADMT. Formulaciones genéricas como «para tomar una decisión significativa sobre usted» son expresamente insuficientes.",
+          es: "Una explicación en lenguaje sencillo de la finalidad específica para la que se utilizará la ADMT. Formulaciones genéricas como «para tomar una decisión significativa sobre ti» son expresamente insuficientes.",
         },
         applicabilityTags: ART11,
         sortOrder: 5,
@@ -402,7 +402,7 @@ const clusterC: AdmtRequirementSeed[] = [
     },
     description: {
       en: "Provide consumers the ability to opt out of the use of ADMT for significant decisions, subject only to the three exceptions in subsection (b).",
-      es: "Facilite a los consumidores la posibilidad de excluirse del uso de ADMT para decisiones significativas, con sujeción únicamente a las tres excepciones del apartado (b).",
+      es: "Facilita a los consumidores la posibilidad de excluirse del uso de ADMT para decisiones significativas, con sujeción únicamente a las tres excepciones del apartado (b).",
     },
     applicabilityTags: ART11,
     sortOrder: 7221,
@@ -469,7 +469,7 @@ const clusterC: AdmtRequirementSeed[] = [
         },
         description: {
           en: "Provide at least two designated methods for submitting an opt-out, at least one of which reflects the manner in which the business primarily interacts with the consumer. A business operating online must at minimum offer an interactive form reached through an opt-out link in the Pre-use Notice, titled to state what is being opted out of (for example 'Opt out of Automated Decisionmaking Technology').",
-          es: "Facilite al menos dos vías designadas para presentar la exclusión, de las cuales al menos una debe reflejar el medio por el que la empresa se relaciona principalmente con el consumidor. La empresa que opere en línea deberá ofrecer, como mínimo, un formulario interactivo accesible mediante un enlace de exclusión incluido en el aviso previo, cuyo título indique de qué se está excluyendo (por ejemplo, «Excluirse de la tecnología de decisión automatizada»).",
+          es: "Facilita al menos dos vías designadas para presentar la exclusión, de las cuales al menos una debe reflejar el medio por el que la empresa se relaciona principalmente con el consumidor. La empresa que opere en línea deberá ofrecer, como mínimo, un formulario interactivo accesible mediante un enlace de exclusión incluido en el aviso previo, cuyo título indique de qué se está excluyendo (por ejemplo, «Excluirse de la tecnología de decisión automatizada»).",
         },
         applicabilityTags: ART11,
         sortOrder: 5,
@@ -547,7 +547,7 @@ const clusterC: AdmtRequirementSeed[] = [
         title: { en: "Confirmation mechanism", es: "Mecanismo de confirmación" },
         description: {
           en: "Provide a means by which the consumer can confirm that their opt-out request has been processed.",
-          es: "Facilite un medio por el que el consumidor pueda confirmar que su solicitud de exclusión ha sido tramitada.",
+          es: "Facilita un medio por el que el consumidor pueda confirmar que su solicitud de exclusión ha sido tramitada.",
         },
         applicabilityTags: ART11,
         sortOrder: 11,
@@ -625,7 +625,7 @@ const clusterC: AdmtRequirementSeed[] = [
         },
         description: {
           en: "Where the opt-out arrives after processing has begun, cease processing that consumer's personal information with that ADMT as soon as feasibly possible and no later than fifteen BUSINESS days from receipt. Note this clock runs in business days, unlike the § 7157(e) production clock, which runs in calendar days.",
-          es: "Cuando la exclusión llegue una vez iniciado el tratamiento, cese el tratamiento de los datos personales de ese consumidor con esa ADMT tan pronto como sea posible y, a más tardar, en quince días HÁBILES desde su recepción. Este plazo se computa en días hábiles, a diferencia del plazo de entrega del § 7157(e), que se computa en días naturales.",
+          es: "Cuando la exclusión llegue una vez iniciado el tratamiento, cesa el tratamiento de los datos personales de ese consumidor con esa ADMT tan pronto como sea posible y, a más tardar, en quince días HÁBILES desde su recepción. Este plazo se computa en días hábiles, a diferencia del plazo de entrega del § 7157(e), que se computa en días naturales.",
         },
         applicabilityTags: ART11,
         sortOrder: 17,
@@ -639,7 +639,7 @@ const clusterC: AdmtRequirementSeed[] = [
         },
         description: {
           en: "Notify every service provider, contractor and other person to whom the personal information was disclosed or made available for that ADMT, and instruct them to comply within the same fifteen-business-day window.",
-          es: "Notifique a todo encargado, contratista y demás terceros a quienes se hubieran comunicado o puesto a disposición los datos personales para esa ADMT, y ordéneles cumplir dentro del mismo plazo de quince días hábiles.",
+          es: "Notifica a todo encargado, contratista y demás terceros a quienes se hubieran comunicado o puesto a disposición los datos personales para esa ADMT, y ordénales cumplir dentro del mismo plazo de quince días hábiles.",
         },
         applicabilityTags: ART11,
         sortOrder: 18,
@@ -662,7 +662,7 @@ const clusterD: AdmtRequirementSeed[] = [
     },
     description: {
       en: "Respond to a verified consumer request to access ADMT with the information required by subsection (b), subject to the redactions permitted by subsection (c).",
-      es: "Atienda la solicitud verificada de acceso a la ADMT facilitando la información exigida por el apartado (b), con las supresiones permitidas por el apartado (c).",
+      es: "Atiende la solicitud verificada de acceso a la ADMT facilitando la información exigida por el apartado (b), con las supresiones permitidas por el apartado (c).",
     },
     applicabilityTags: ART11,
     sortOrder: 7222,
@@ -715,7 +715,7 @@ const clusterD: AdmtRequirementSeed[] = [
         },
         description: {
           en: "Where the output will be used for a future significant decision, explain how — with the same sole-factor, other-factors and human-role breakdown, stated prospectively.",
-          es: "Cuando el resultado vaya a utilizarse para una futura decisión significativa, explique cómo, con el mismo desglose de factor único, demás factores y papel de la persona, formulado de forma prospectiva.",
+          es: "Cuando el resultado vaya a utilizarse para una futura decisión significativa, explica cómo, con el mismo desglose de factor único, demás factores y papel de la persona, formulado de forma prospectiva.",
         },
         applicabilityTags: ART11,
         sortOrder: 4,
@@ -729,7 +729,7 @@ const clusterD: AdmtRequirementSeed[] = [
         },
         description: {
           en: "State the prohibition on retaliation and give instructions, with direct links or a portal, for exercising the consumer's other CCPA rights. A link must land on the specific section of the privacy policy — linking to the top of the policy does not satisfy this.",
-          es: "Indique la prohibición de represalias y facilite instrucciones, con enlaces directos o un portal, para ejercer los demás derechos del consumidor conforme a la CCPA. El enlace debe dirigir a la sección concreta de la política de privacidad: enlazar al inicio de la política no cumple este requisito.",
+          es: "Indica la prohibición de represalias y facilita instrucciones, con enlaces directos o un portal, para ejercer los demás derechos del consumidor conforme a la CCPA. El enlace debe dirigir a la sección concreta de la política de privacidad: enlazar al inicio de la política no cumple este requisito.",
         },
         applicabilityTags: ART11,
         sortOrder: 5,
@@ -743,7 +743,7 @@ const clusterD: AdmtRequirementSeed[] = [
         },
         description: {
           en: "Trade secrets and security, fraud-resistance or physical-safety information may be withheld — the same three-part carve-out as § 7220(d) — but only from subsections (b)(2) and (b)(3). Record each redaction and its ground.",
-          es: "Pueden omitirse los secretos empresariales y la información relativa a seguridad, resistencia al fraude o seguridad física —la misma salvedad triple del § 7220(d)—, pero únicamente respecto de los apartados (b)(2) y (b)(3). Deje constancia de cada supresión y de su fundamento.",
+          es: "Pueden omitirse los secretos empresariales y la información relativa a seguridad, resistencia al fraude o seguridad física —la misma salvedad triple del § 7220(d)—, pero únicamente respecto de los apartados (b)(2) y (b)(3). Deja constancia de cada supresión y de su fundamento.",
         },
         applicabilityTags: ART11,
         sortOrder: 6,
@@ -782,7 +782,7 @@ const clusterD: AdmtRequirementSeed[] = [
         title: { en: "Denial explanation", es: "Explicación de la denegación" },
         description: {
           en: "Where a request is denied in whole or in part because of a conflict with law or a CCPA exception, inform the consumer and explain the basis unless prohibited by law; where partial, disclose the remainder.",
-          es: "Cuando se deniegue una solicitud total o parcialmente por conflicto con la ley o por una excepción de la CCPA, informe al consumidor y explique el fundamento, salvo que la ley lo prohíba; si la denegación es parcial, facilite el resto.",
+          es: "Cuando se deniegue una solicitud total o parcialmente por conflicto con la ley o por una excepción de la CCPA, informa al consumidor y explica el fundamento, salvo que la ley lo prohíba; si la denegación es parcial, facilita el resto.",
         },
         applicabilityTags: ART11,
         sortOrder: 9,
@@ -796,7 +796,7 @@ const clusterD: AdmtRequirementSeed[] = [
         },
         description: {
           en: "Use reasonable security when transmitting the response. A business with password-protected accounts may respond through a secure self-service portal providing a portable copy, full disclosure, reasonable access controls and Article 5 verification.",
-          es: "Emplee medidas de seguridad razonables al transmitir la respuesta. La empresa que disponga de cuentas protegidas con contraseña puede responder mediante un portal seguro de autoservicio que facilite una copia portable, la divulgación completa, controles de acceso razonables y verificación conforme al artículo 5.",
+          es: "Emplea medidas de seguridad razonables al transmitir la respuesta. La empresa que disponga de cuentas protegidas con contraseña puede responder mediante un portal seguro de autoservicio que facilite una copia portable, la divulgación completa, controles de acceso razonables y verificación conforme al artículo 5.",
         },
         applicabilityTags: ART11,
         sortOrder: 10,
@@ -861,7 +861,7 @@ const clusterE: AdmtRequirementSeed[] = [
     },
     description: {
       en: "Confirm receipt of a request to access ADMT, or to appeal an ADMT decision, within ten business days, describing the verification process and the expected timing of the response.",
-      es: "Confirme la recepción de una solicitud de acceso a la ADMT, o de recurso frente a una decisión de ADMT, en el plazo de diez días hábiles, describiendo el proceso de verificación y el plazo previsto de respuesta.",
+      es: "Confirma la recepción de una solicitud de acceso a la ADMT, o de recurso frente a una decisión de ADMT, en el plazo de diez días hábiles, describiendo el proceso de verificación y el plazo previsto de respuesta.",
     },
     applicabilityTags: ART11,
     sortOrder: 7021,
@@ -875,7 +875,7 @@ const clusterE: AdmtRequirementSeed[] = [
     },
     description: {
       en: "Respond substantively within forty-five calendar days of receipt. One further forty-five-day extension is permitted — ninety days maximum — with notice to the consumer and an explanation.",
-      es: "Responda de forma sustantiva en el plazo de cuarenta y cinco días naturales desde la recepción. Se permite una única prórroga de otros cuarenta y cinco días —noventa como máximo— previa notificación al consumidor con explicación de los motivos.",
+      es: "Responde de forma sustantiva en el plazo de cuarenta y cinco días naturales desde la recepción. Se permite una única prórroga de otros cuarenta y cinco días —noventa como máximo— previa notificación al consumidor con explicación de los motivos.",
     },
     applicabilityTags: ART11,
     sortOrder: 7022,
@@ -940,7 +940,7 @@ const clusterF: AdmtRequirementSeed[] = [
     },
     description: {
       en: "Conduct and document a risk assessment BEFORE initiating any of the six processing activities listed in subsection (b). This duty has been live since 1 January 2026; processing that began before that date and continues must be assessed by 31 December 2027 under § 7155(b).",
-      es: "Realice y documente una evaluación de riesgos ANTES de iniciar cualquiera de las seis actividades de tratamiento enumeradas en el apartado (b). Esta obligación está en vigor desde el 1 de enero de 2026; los tratamientos iniciados antes de esa fecha que continúen deberán evaluarse antes del 31 de diciembre de 2027 conforme al § 7155(b).",
+      es: "Realiza y documenta una evaluación de riesgos ANTES de iniciar cualquiera de las seis actividades de tratamiento enumeradas en el apartado (b). Esta obligación está en vigor desde el 1 de enero de 2026; los tratamientos iniciados antes de esa fecha que continúen deberán evaluarse antes del 31 de diciembre de 2027 conforme al § 7155(b).",
     },
     applicabilityTags: ART10,
     sortOrder: 7150,
@@ -1089,7 +1089,7 @@ const clusterF: AdmtRequirementSeed[] = [
         title: { en: "Specific purpose", es: "Finalidad específica" },
         description: {
           en: "Document the specific purpose of the processing. A generic statement of purpose does not satisfy this.",
-          es: "Documente la finalidad específica del tratamiento. Una declaración genérica de finalidad no lo satisface.",
+          es: "Documenta la finalidad específica del tratamiento. Una declaración genérica de finalidad no lo satisface.",
         },
         applicabilityTags: ART10,
         sortOrder: 1,
@@ -1103,7 +1103,7 @@ const clusterF: AdmtRequirementSeed[] = [
         },
         description: {
           en: "Document the categories of personal information processed, including sensitive personal information, AND the minimum personal information necessary to achieve the stated purpose.",
-          es: "Documente las categorías de datos personales tratados, incluidos los datos personales sensibles, Y el mínimo de datos personales necesario para lograr la finalidad declarada.",
+          es: "Documenta las categorías de datos personales tratados, incluidos los datos personales sensibles, Y el mínimo de datos personales necesario para lograr la finalidad declarada.",
         },
         applicabilityTags: ART10,
         sortOrder: 2,
@@ -1114,7 +1114,7 @@ const clusterF: AdmtRequirementSeed[] = [
         title: { en: "Operational elements", es: "Elementos operativos" },
         description: {
           en: "Document: (A) the method of collection, use, disclosure and retention and its sources; (B) retention periods or the criteria that set them; (C) the method and purpose of interaction with consumers; (D) the approximate number of consumers affected; (E) disclosures made or planned and how; and (F) the names or categories of service providers, contractors and third parties receiving the information and the purpose of disclosure.",
-          es: "Documente: (A) el método de recogida, uso, comunicación y conservación y sus fuentes; (B) los plazos de conservación o los criterios que los determinan; (C) el método y la finalidad de la interacción con los consumidores; (D) el número aproximado de consumidores afectados; (E) las comunicaciones realizadas o previstas y su forma; y (F) los nombres o categorías de encargados, contratistas y terceros receptores y la finalidad de la comunicación.",
+          es: "Documenta: (A) el método de recogida, uso, comunicación y conservación y sus fuentes; (B) los plazos de conservación o los criterios que los determinan; (C) el método y la finalidad de la interacción con los consumidores; (D) el número aproximado de consumidores afectados; (E) las comunicaciones realizadas o previstas y su forma; y (F) los nombres o categorías de encargados, contratistas y terceros receptores y la finalidad de la comunicación.",
         },
         applicabilityTags: ART10,
         sortOrder: 3,
@@ -1128,7 +1128,7 @@ const clusterF: AdmtRequirementSeed[] = [
         },
         description: {
           en: "For § 7150(b)(3) ADMT uses, additionally identify (i) the logic of the ADMT, including any assumptions or limitations of that logic, and (ii) the output, and how the business will use the output to make a significant decision.",
-          es: "En los usos de ADMT del § 7150(b)(3), identifique además (i) la lógica de la ADMT, incluidas las hipótesis o limitaciones de dicha lógica, y (ii) el resultado y el modo en que la empresa lo utilizará para adoptar una decisión significativa.",
+          es: "En los usos de ADMT del § 7150(b)(3), identifica además (i) la lógica de la ADMT, incluidas las hipótesis o limitaciones de dicha lógica, y (ii) el resultado y el modo en que la empresa lo utilizará para adoptar una decisión significativa.",
         },
         applicabilityTags: [
           "jurisdiction:US_CA",
@@ -1144,7 +1144,7 @@ const clusterF: AdmtRequirementSeed[] = [
         title: { en: "Benefits identified", es: "Beneficios identificados" },
         description: {
           en: "Identify the benefits of the processing to the business, the consumer, other stakeholders and the public. Generic benefit statements do not satisfy this.",
-          es: "Identifique los beneficios del tratamiento para la empresa, el consumidor, otras partes interesadas y el público. Las declaraciones genéricas de beneficio no lo satisfacen.",
+          es: "Identifica los beneficios del tratamiento para la empresa, el consumidor, otras partes interesadas y el público. Las declaraciones genéricas de beneficio no lo satisfacen.",
         },
         applicabilityTags: ART10,
         sortOrder: 5,
@@ -1158,7 +1158,7 @@ const clusterF: AdmtRequirementSeed[] = [
         },
         description: {
           en: "Identify the negative impacts on consumer privacy and their sources and causes. The enumerated categories are: unauthorized access, destruction, use, modification or disclosure, and loss of availability; discrimination on protected characteristics; impairment of consumer control over personal information; coercion, including through dark patterns; economic harms, including limiting economic opportunities, higher prices, or lower compensation based upon profiling; physical harms; reputational harms; and psychological harms.",
-          es: "Identifique los impactos negativos sobre la privacidad del consumidor y sus fuentes y causas. Las categorías enumeradas son: acceso, destrucción, uso, modificación o comunicación no autorizados, y pérdida de disponibilidad; discriminación por características protegidas; menoscabo del control del consumidor sobre sus datos personales; coacción, incluso mediante patrones engañosos; perjuicios económicos, incluida la limitación de oportunidades económicas, precios más altos o retribuciones más bajas derivados de la elaboración de perfiles; daños físicos; daños reputacionales; y daños psicológicos.",
+          es: "Identifica los impactos negativos sobre la privacidad del consumidor y sus fuentes y causas. Las categorías enumeradas son: acceso, destrucción, uso, modificación o comunicación no autorizados, y pérdida de disponibilidad; discriminación por características protegidas; menoscabo del control del consumidor sobre sus datos personales; coacción, incluso mediante patrones engañosos; perjuicios económicos, incluida la limitación de oportunidades económicas, precios más altos o retribuciones más bajas derivados de la elaboración de perfiles; daños físicos; daños reputacionales; y daños psicológicos.",
         },
         applicabilityTags: ART10,
         sortOrder: 6,
@@ -1169,7 +1169,7 @@ const clusterF: AdmtRequirementSeed[] = [
         title: { en: "Safeguards", es: "Salvaguardias" },
         description: {
           en: "Document the safeguards planned. The illustrative list includes encryption, segmentation, access controls, change management and monitoring; privacy-enhancing technologies such as trusted execution environments, federated learning, homomorphic encryption and differential privacy; consulting external parties for emergent-risk knowledge; and policies, procedures and training to ensure that the business's ADMT works for the business's purpose and does not unlawfully discriminate based upon protected characteristics. That last item is what makes bias testing effectively mandatory documentation.",
-          es: "Documente las salvaguardias previstas. La lista ilustrativa comprende cifrado, segmentación, controles de acceso, gestión de cambios y supervisión; tecnologías de mejora de la privacidad como entornos de ejecución confiables, aprendizaje federado, cifrado homomórfico y privacidad diferencial; la consulta a terceros para conocer riesgos emergentes; y políticas, procedimientos y formación que garanticen que la ADMT de la empresa funciona para su finalidad y no discrimina ilícitamente por características protegidas. Este último elemento convierte la verificación de sesgos en documentación materialmente obligatoria.",
+          es: "Documenta las salvaguardias previstas. La lista ilustrativa comprende cifrado, segmentación, controles de acceso, gestión de cambios y supervisión; tecnologías de mejora de la privacidad como entornos de ejecución confiables, aprendizaje federado, cifrado homomórfico y privacidad diferencial; la consulta a terceros para conocer riesgos emergentes; y políticas, procedimientos y formación que garanticen que la ADMT de la empresa funciona para su finalidad y no discrimina ilícitamente por características protegidas. Este último elemento convierte la verificación de sesgos en documentación materialmente obligatoria.",
         },
         applicabilityTags: ART10,
         sortOrder: 7,
@@ -1183,7 +1183,7 @@ const clusterF: AdmtRequirementSeed[] = [
         },
         description: {
           en: "Document whether the business will initiate the processing, having weighed the negative impacts against the benefits.",
-          es: "Documente si la empresa iniciará el tratamiento, tras ponderar los impactos negativos frente a los beneficios.",
+          es: "Documenta si la empresa iniciará el tratamiento, tras ponderar los impactos negativos frente a los beneficios.",
         },
         applicabilityTags: ART10,
         sortOrder: 8,
@@ -1194,7 +1194,7 @@ const clusterF: AdmtRequirementSeed[] = [
         title: { en: "Contributor log", es: "Registro de intervinientes" },
         description: {
           en: "Document the individuals who provided information for the assessment, excluding legal counsel giving legal advice.",
-          es: "Documente las personas que aportaron información para la evaluación, excluidos los letrados que presten asesoramiento jurídico.",
+          es: "Documenta las personas que aportaron información para la evaluación, excluidos los letrados que presten asesoramiento jurídico.",
         },
         applicabilityTags: ART10,
         sortOrder: 9,
@@ -1208,7 +1208,7 @@ const clusterF: AdmtRequirementSeed[] = [
         },
         description: {
           en: "Document the date the assessment was reviewed and approved, together with the names and positions of the individuals who reviewed or approved it — except legal counsel who provided legal advice, who need not be named. An approver must have authority to participate in deciding whether the business will initiate the processing. Nothing generated automatically can satisfy this row.",
-          es: "Documente la fecha de revisión y aprobación de la evaluación, junto con los nombres y cargos de quienes la revisaron o aprobaron, salvo los de la asesoría jurídica que haya prestado asesoramiento legal, a la que no es necesario identificar. Quien apruebe debe tener autoridad para participar en la decisión de que la empresa inicie el tratamiento. Ningún elemento generado automáticamente puede satisfacer este requisito.",
+          es: "Documenta la fecha de revisión y aprobación de la evaluación, junto con los nombres y cargos de quienes la revisaron o aprobaron, salvo los de la asesoría jurídica que haya prestado asesoramiento legal, a la que no es necesario identificar. Quien apruebe debe tener autoridad para participar en la decisión de que la empresa inicie el tratamiento. Ningún elemento generado automáticamente puede satisfacer este requisito.",
         },
         applicabilityTags: ART10,
         sortOrder: 10,
@@ -1252,7 +1252,7 @@ const clusterF: AdmtRequirementSeed[] = [
     },
     description: {
       en: "Conduct the assessment before initiating the processing; review and update it at least every three years; update it within forty-five calendar days of a material change; complete assessments for pre-1 January 2026 processing that continues by 31 December 2027; and retain each assessment for as long as the processing continues or five years after completion, whichever is later.",
-      es: "Realice la evaluación antes de iniciar el tratamiento; revísela y actualícela al menos cada tres años; actualícela en los cuarenta y cinco días naturales siguientes a un cambio sustancial; complete antes del 31 de diciembre de 2027 las evaluaciones de los tratamientos anteriores al 1 de enero de 2026 que continúen; y conserve cada evaluación mientras dure el tratamiento o cinco años desde su finalización, si este plazo fuera mayor.",
+      es: "Realiza la evaluación antes de iniciar el tratamiento; revísala y actualízala al menos cada tres años; actualízala en los cuarenta y cinco días naturales siguientes a un cambio sustancial; completa antes del 31 de diciembre de 2027 las evaluaciones de los tratamientos anteriores al 1 de enero de 2026 que continúen; y conserva cada evaluación mientras dure el tratamiento o cinco años desde su finalización, si este plazo fuera mayor.",
     },
     applicabilityTags: ART10,
     sortOrder: 7155,
@@ -1294,7 +1294,7 @@ const clusterF: AdmtRequirementSeed[] = [
         },
         description: {
           en: "Submit to the Agency via cppa.ca.gov: business name and point of contact; the period covered by month and year; the number of risk assessments conducted or updated in total and for each § 7150(b) activity; whether they involved each category of personal and sensitive personal information; the verbatim attestation under penalty of perjury; and the submitter's name, title and date. The submitter must be a member of the executive management team directly responsible for compliance, with sufficient knowledge and authority to submit. You submit COUNTS and an attestation — not the reports themselves. The first submission is due 1 April 2028, covering 2026 and 2027.",
-          es: "Presente a la Agencia a través de cppa.ca.gov: la denominación de la empresa y su punto de contacto; el periodo cubierto, expresado en mes y año; el número de evaluaciones de riesgos realizadas o actualizadas, en total y por cada actividad del § 7150(b); si afectaron a cada categoría de datos personales y de datos personales sensibles; la declaración literal bajo pena de perjurio; y el nombre, cargo y fecha de quien presenta. Quien presente debe ser miembro del equipo directivo, directamente responsable del cumplimiento, con conocimiento suficiente y autoridad para presentarla. Se presentan RECUENTOS y una declaración, no los informes. La primera presentación vence el 1 de abril de 2028 y cubre 2026 y 2027.",
+          es: "Presenta a la Agencia a través de cppa.ca.gov: la denominación de la empresa y su punto de contacto; el periodo cubierto, expresado en mes y año; el número de evaluaciones de riesgos realizadas o actualizadas, en total y por cada actividad del § 7150(b); si afectaron a cada categoría de datos personales y de datos personales sensibles; la declaración literal bajo pena de perjurio; y el nombre, cargo y fecha de quien presenta. Quien presente debe ser miembro del equipo directivo, directamente responsable del cumplimiento, con conocimiento suficiente y autoridad para presentarla. Se presentan RECUENTOS y una declaración, no los informes. La primera presentación vence el 1 de abril de 2028 y cubre 2026 y 2027.",
         },
         applicabilityTags: ART10_ORG,
         sortOrder: 1,
@@ -1384,7 +1384,7 @@ const clusterG: AdmtRequirementSeed[] = [
         title: { en: "Scope of assessment", es: "Alcance de la evaluación" },
         description: {
           en: "Assess the establishment, implementation and maintenance of the cybersecurity program and its written documentation, proportionate to the size and complexity of the business and the nature and scope of its processing, taking into account the state of the art and cost of implementation; each applicable listed component; and how the business implements and ENFORCES compliance. Enumerated components include multi-factor authentication (phishing-resistant for personnel, service providers and contractors), strong unique passwords, encryption at rest and in transit, account management and least-privilege access controls.",
-          es: "Evalúe el establecimiento, la implantación y el mantenimiento del programa de ciberseguridad y su documentación escrita, de forma proporcionada al tamaño y la complejidad de la empresa y a la naturaleza y el alcance de su tratamiento, atendiendo al estado de la técnica y al coste de implantación; cada componente aplicable de la lista; y cómo la empresa implanta y HACE CUMPLIR el cumplimiento. Entre los componentes enumerados figuran la autenticación multifactor (resistente al phishing para personal, encargados y contratistas), contraseñas robustas y únicas, cifrado en reposo y en tránsito, y controles de gestión de cuentas y de mínimo privilegio.",
+          es: "Evalúa el establecimiento, la implantación y el mantenimiento del programa de ciberseguridad y su documentación escrita, de forma proporcionada al tamaño y la complejidad de la empresa y a la naturaleza y el alcance de su tratamiento, atendiendo al estado de la técnica y al coste de implantación; cada componente aplicable de la lista; y cómo la empresa implanta y HACE CUMPLIR el cumplimiento. Entre los componentes enumerados figuran la autenticación multifactor (resistente al phishing para personal, encargados y contratistas), contraseñas robustas y únicas, cifrado en reposo y en tránsito, y controles de gestión de cuentas y de mínimo privilegio.",
         },
         applicabilityTags: ART9_ORG,
         sortOrder: 1,
@@ -1428,7 +1428,7 @@ const clusterG: AdmtRequirementSeed[] = [
     },
     description: {
       en: "For each year an audit is required, submit a written certification to the Agency via cppa.ca.gov by 1 April following the audit year, signed by a member of the executive management team who is directly responsible, sufficiently knowledgeable and authorised. It must include the business name and contact, a statement that the audit was completed, the period covered by month and year, the verbatim electronically signed attestation under penalty of perjury — which includes an affirmative statement that the business has not made any attempt to influence the auditor's decisions or assessments — and the submitter's name, title and date.",
-      es: "Por cada ejercicio en que se exija auditoría, presente a la Agencia a través de cppa.ca.gov, antes del 1 de abril siguiente al año auditado, una certificación escrita firmada por un miembro del equipo directivo directamente responsable, con conocimiento suficiente y debidamente autorizado. Deberá incluir la denominación y el contacto de la empresa, la manifestación de que la auditoría se completó, el periodo cubierto expresado en mes y año, la declaración literal firmada electrónicamente bajo pena de perjurio —que incorpora la afirmación expresa de que la empresa no ha intentado influir en las decisiones o valoraciones del auditor— y el nombre, cargo y fecha de quien la presenta.",
+      es: "Por cada ejercicio en que se exija auditoría, presenta a la Agencia a través de cppa.ca.gov, antes del 1 de abril siguiente al año auditado, una certificación escrita firmada por un miembro del equipo directivo directamente responsable, con conocimiento suficiente y debidamente autorizado. Deberá incluir la denominación y el contacto de la empresa, la manifestación de que la auditoría se completó, el periodo cubierto expresado en mes y año, la declaración literal firmada electrónicamente bajo pena de perjurio —que incorpora la afirmación expresa de que la empresa no ha intentado influir en las decisiones o valoraciones del auditor— y el nombre, cargo y fecha de quien la presenta.",
     },
     applicabilityTags: ART9_ORG,
     sortOrder: 7124,

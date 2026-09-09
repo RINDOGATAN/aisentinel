@@ -44,7 +44,7 @@ export type ContentLocale = "en" | "es";
 
 const DISCLAIMER_BASE: Record<ContentLocale, string> = {
   en: "This document was assembled from the AI registry and the answers recorded in the unified impact assessment. It is a drafting aid, not legal advice. Review every section before it leaves the organisation.",
-  es: "Este documento se ha compuesto a partir del registro de IA y de las respuestas recogidas en la evaluación de impacto unificada. Es una ayuda a la redacción, no asesoramiento jurídico. Revise cada apartado antes de que salga de la organización.",
+  es: "Este documento se ha compuesto a partir del registro de IA y de las respuestas recogidas en la evaluación de impacto unificada. Es una ayuda a la redacción, no asesoramiento jurídico. Revisa cada apartado antes de que salga de la organización.",
 };
 
 /** Which content packs a document for this system actually draws on. */
@@ -356,11 +356,11 @@ const NOTICE_ADDENDA: AddendumSpec[] = [
     statements: [
       {
         en: "This decision is made by automated means. You have the right to obtain human intervention, to express your point of view and to contest the decision.",
-        es: "Esta decisión se adopta por medios automatizados. Tiene derecho a obtener intervención humana, a expresar su punto de vista y a impugnar la decisión.",
+        es: "Esta decisión se adopta por medios automatizados. Tienes derecho a obtener intervención humana, a expresar tu punto de vista y a impugnar la decisión.",
       },
       {
         en: "You may ask us at any time to confirm whether automated decision-making is used about you, and to explain the logic, significance and consequences.",
-        es: "Puede pedirnos en cualquier momento que confirmemos si se adoptan decisiones automatizadas sobre usted y que expliquemos la lógica, la importancia y las consecuencias.",
+        es: "Puedes pedirnos en cualquier momento que confirmemos si se adoptan decisiones automatizadas sobre ti y que expliquemos la lógica, la importancia y las consecuencias.",
       },
     ],
   },
@@ -372,11 +372,11 @@ const NOTICE_ADDENDA: AddendumSpec[] = [
     statements: [
       {
         en: "We use automated decision-making technology to make a significant decision about you. This notice is given before that use.",
-        es: "Utilizamos tecnología de decisión automatizada para adoptar una decisión significativa sobre usted. Este aviso se facilita antes de ese uso.",
+        es: "Utilizamos tecnología de decisión automatizada para adoptar una decisión significativa sobre ti. Este aviso se facilita antes de ese uso.",
       },
       {
         en: "You may opt out of that use, or, where we rely on the human-appeal exception, ask a designated reviewer with authority to change the decision to review it. You may also ask for access to information about how the technology reached its output about you.",
-        es: "Puede oponerse a ese uso o, cuando nos amparemos en la excepción de recurso humano, solicitar que una persona revisora designada con autoridad para cambiar la decisión la revise. También puede solicitar acceso a la información sobre cómo la tecnología llegó a su resultado.",
+        es: "Puedes oponerte a ese uso o, cuando nos amparemos en la excepción de recurso humano, solicitar que una persona revisora designada con autoridad para cambiar la decisión la revise. También puedes solicitar acceso a la información sobre cómo la tecnología llegó a su resultado.",
       },
     ],
   },
@@ -388,7 +388,7 @@ const NOTICE_ADDENDA: AddendumSpec[] = [
     statements: [
       {
         en: "Automated decision-making technology is used in this consequential decision about you. If the outcome is adverse, we will tell you the principal reasons, the categories of personal data that drove it, and how to correct inaccurate data and seek review.",
-        es: "En esta decisión con consecuencias sobre usted se utiliza tecnología de decisión automatizada. Si el resultado le es desfavorable, le informaremos de las razones principales, de las categorías de datos personales que la determinaron y de cómo corregir datos inexactos y solicitar una revisión.",
+        es: "En esta decisión con consecuencias sobre ti se utiliza tecnología de decisión automatizada. Si el resultado te es desfavorable, te informaremos de las razones principales, de las categorías de datos personales que la determinaron y de cómo corregir datos inexactos y solicitar una revisión.",
       },
     ],
   },
@@ -400,7 +400,7 @@ const NOTICE_ADDENDA: AddendumSpec[] = [
     statements: [
       {
         en: "You are interacting with an artificial intelligence system.",
-        es: "Está interactuando con un sistema de inteligencia artificial.",
+        es: "Estás interactuando con un sistema de inteligencia artificial.",
       },
     ],
   },
@@ -412,7 +412,7 @@ const NOTICE_ADDENDA: AddendumSpec[] = [
     statements: [
       {
         en: "An artificial intelligence system is used in connection with your care. This is disclosed to you no later than the date the service is first provided, or as soon as reasonably possible in an emergency.",
-        es: "Se utiliza un sistema de inteligencia artificial en relación con su atención. Se le informa de ello a más tardar en la fecha en que se preste el servicio por primera vez, o tan pronto como sea razonablemente posible en caso de urgencia.",
+        es: "Se utiliza un sistema de inteligencia artificial en relación con tu atención. Se te informa de ello a más tardar en la fecha en que se preste el servicio por primera vez, o tan pronto como sea razonablemente posible en caso de urgencia.",
       },
     ],
   },
@@ -424,7 +424,7 @@ const NOTICE_ADDENDA: AddendumSpec[] = [
     statements: [
       {
         en: "This system may derive health data about you from information that is not itself health information. We collect and share that data only with your consent, and you may confirm, access, withdraw consent and ask for deletion.",
-        es: "Este sistema puede derivar datos de salud sobre usted a partir de información que no es sanitaria. Recogemos y compartimos esos datos únicamente con su consentimiento, y usted puede confirmarlos, acceder a ellos, retirar el consentimiento y solicitar su supresión.",
+        es: "Este sistema puede derivar datos de salud sobre ti a partir de información que no es sanitaria. Recogemos y compartimos esos datos únicamente con tu consentimiento, y puedes confirmarlos, acceder a ellos, retirar el consentimiento y solicitar su supresión.",
       },
     ],
   },
@@ -436,7 +436,7 @@ const NOTICE_ADDENDA: AddendumSpec[] = [
     statements: [
       {
         en: "Image, video and audio content this system creates or materially alters carries provenance data so you can determine its origin.",
-        es: "El contenido de imagen, vídeo y audio que este sistema crea o altera de forma sustancial incorpora datos de procedencia para que pueda determinar su origen.",
+        es: "El contenido de imagen, vídeo y audio que este sistema crea o altera de forma sustancial incorpora datos de procedencia para que puedas determinar su origen.",
       },
     ],
   },
@@ -448,7 +448,7 @@ const NOTICE_ADDENDA: AddendumSpec[] = [
     statements: [
       {
         en: "This companion is artificial and not human. You will be reminded of this at least every three hours, and every hour if you are under 18. If you express thoughts of suicide or self-harm, the system will respond with crisis resources under our published protocol.",
-        es: "Este acompañante es artificial y no humano. Se le recordará al menos cada tres horas, y cada hora si es menor de 18 años. Si expresa pensamientos de suicidio o autolesión, el sistema responderá con recursos de crisis conforme a nuestro protocolo publicado.",
+        es: "Este acompañante es artificial y no humano. Se te recordará al menos cada tres horas, y cada hora si eres menor de 18 años. Si expresas pensamientos de suicidio o autolesión, el sistema responderá con recursos de crisis conforme a nuestro protocolo publicado.",
       },
     ],
   },
@@ -460,7 +460,7 @@ const NOTICE_ADDENDA: AddendumSpec[] = [
     statements: [
       {
         en: "You are interacting with an AI system, and content it generates or manipulates is disclosed as artificially generated.",
-        es: "Está interactuando con un sistema de IA, y el contenido que genera o manipula se identifica como generado artificialmente.",
+        es: "Estás interactuando con un sistema de IA, y el contenido que genera o manipula se identifica como generado artificialmente.",
       },
     ],
   },
@@ -547,7 +547,7 @@ export function buildNoticeArtifact(input: ArtifactInput): Artifact {
       blocks: [
         gap(
           locale === "es"
-            ? "Ningún régimen resuelto añade obligaciones de información. Confirme las jurisdicciones de la organización y el cuestionario de aplicabilidad antes de publicar este aviso."
+            ? "Ningún régimen resuelto añade obligaciones de información. Confirma las jurisdicciones de la organización y el cuestionario de aplicabilidad antes de publicar este aviso."
             : "No resolved regime adds a notice obligation. Confirm the organisation's jurisdictions and the applicability screening before publishing this notice.",
           [],
         ),
@@ -775,7 +775,7 @@ export function buildAgenticAddendumArtifact(input: ArtifactInput): Artifact {
           blocks: [
             gap(
               locale === "es"
-                ? "Nadie ha respondido si este sistema entrega su resultado a un agente autónomo. Responda esa pregunta antes de dar por cerrado el análisis: la prueba de esfuerzo agéntica no se ha ejecutado."
+                ? "Nadie ha respondido si este sistema entrega su resultado a un agente autónomo. Responde esa pregunta antes de dar por cerrado el análisis: la prueba de esfuerzo agéntica no se ha ejecutado."
                 : "Nobody has answered whether this system hands its output to an autonomous agent. Answer that before treating the analysis as closed: the agentic stress test has not run.",
               [],
             ),

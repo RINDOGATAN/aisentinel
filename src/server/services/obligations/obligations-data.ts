@@ -27,6 +27,8 @@ import type { ContentLocale } from "@/config/lawfirm-ai-toolkit";
 
 export interface ObligationRow {
   id: string;
+  /** Jurisdiction codes this milestone belongs to, for the calendar filter. */
+  jurisdictions: string[];
   instrument: string;
   citation: string;
   provision: string;
@@ -88,6 +90,18 @@ function toneFor(evaluation: MilestoneEvaluation): TimelineTone {
  * nearest milestone that actually applies; then the nearest one whose scope
  * we cannot determine (phrased as such, never as a zero).
  */
+/**
+ * The jurisdiction codes a milestone belongs to, for the calendar's filter.
+ * A city sits inside its state, because someone filtering to New York expects
+ * the city rule with it.
+ */
+function jurisdictionsForScope(scope: { kind: string; state?: string; city?: string }): string[] {
+  if (scope.kind === "eu") return ["EU", "EEA"];
+  if (scope.kind === "us-state" && scope.state) return [`US_${scope.state}`];
+  if (scope.kind === "us-city") return scope.city === "NYC" ? ["US_NY"] : [];
+  return [];
+}
+
 function pickNext(rows: ObligationRow[]): ObligationRow | null {
   return (
     rows.find((r) => r.overdue) ??
@@ -207,6 +221,7 @@ export async function getObligationsData(
 
   const rows: ObligationRow[] = evaluations.map((e) => ({
     id: e.milestone.id,
+    jurisdictions: jurisdictionsForScope(e.milestone.scope),
     instrument: e.milestone.instrument,
     citation: e.milestone.citation,
     provision: e.milestone.provision,

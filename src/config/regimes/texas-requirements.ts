@@ -65,7 +65,7 @@ export const TEXAS_REQUIREMENTS: RegimeRequirementSeed[] = [
     title: { en: "Prohibition: manipulation of human behaviour to cause harm", es: "Prohibición: manipulación del comportamiento humano para causar daño" },
     description: {
       en: "No person may develop or deploy an AI system in a manner that intentionally aims to incite or encourage a person to commit physical self-harm, including suicide, to harm another person, or to engage in criminal activity. Document the safety measures that prevent these outputs.",
-      es: "Nadie puede desarrollar ni desplegar un sistema de IA de un modo que pretenda intencionadamente incitar o animar a una persona a autolesionarse, incluido el suicidio, a dañar a otra persona o a cometer actividades delictivas. Documente las medidas de seguridad que impiden estos resultados.",
+      es: "Nadie puede desarrollar ni desplegar un sistema de IA de un modo que pretenda intencionadamente incitar o animar a una persona a autolesionarse, incluido el suicidio, a dañar a otra persona o a cometer actividades delictivas. Documenta las medidas de seguridad que impiden estos resultados.",
     },
     applicabilityTags: CORE,
     sortOrder: 520,
@@ -109,7 +109,7 @@ export const TEXAS_REQUIREMENTS: RegimeRequirementSeed[] = [
     title: { en: "Prohibition: intentional unlawful discrimination", es: "Prohibición: discriminación ilícita intencionada" },
     description: {
       en: "No person may develop or deploy an AI system with the intent to unlawfully discriminate against a protected class in violation of state or federal law. Disparate impact alone is expressly insufficient to show intent. Keep the design rationale and testing records that evidence the absence of discriminatory intent.",
-      es: "Nadie puede desarrollar ni desplegar un sistema de IA con la intención de discriminar ilícitamente a una clase protegida en contra del Derecho estatal o federal. El impacto dispar por sí solo es expresamente insuficiente para acreditar la intención. Conserve la justificación del diseño y los registros de pruebas que evidencien la ausencia de intención discriminatoria.",
+      es: "Nadie puede desarrollar ni desplegar un sistema de IA con la intención de discriminar ilícitamente a una clase protegida en contra del Derecho estatal o federal. El impacto dispar por sí solo es expresamente insuficiente para acreditar la intención. Conserva la justificación del diseño y los registros de pruebas que evidencien la ausencia de intención discriminatoria.",
     },
     applicabilityTags: CORE,
     sortOrder: 560,
@@ -131,7 +131,7 @@ export const TEXAS_REQUIREMENTS: RegimeRequirementSeed[] = [
     title: { en: "Enforcement, 60-day cure period and safe harbours", es: "Aplicación, plazo de subsanación de 60 días y puertos seguros" },
     description: {
       en: "The Attorney General enforces the act; there is no private right of action. Before suit, the AG must give written notice and a 60-day cure period. Substantial compliance with the NIST AI Risk Management Framework or a comparable recognised framework, and discovery of a violation through internal testing or red-teaming followed by a cure, are affirmative defences. Map this system to the NIST AI RMF framework in this product to evidence the safe harbour.",
-      es: "La Fiscalía General aplica la ley; no existe acción privada. Antes de demandar, debe notificar por escrito y conceder un plazo de subsanación de 60 días. El cumplimiento sustancial del Marco de Gestión de Riesgos de IA del NIST o de un marco reconocido comparable, y el descubrimiento de una infracción mediante pruebas internas o ejercicios de equipo rojo seguido de su subsanación, son eximentes. Vincule este sistema al marco NIST AI RMF en este producto para acreditar el puerto seguro.",
+      es: "La Fiscalía General aplica la ley; no existe acción privada. Antes de demandar, debe notificar por escrito y conceder un plazo de subsanación de 60 días. El cumplimiento sustancial del Marco de Gestión de Riesgos de IA del NIST o de un marco reconocido comparable, y el descubrimiento de una infracción mediante pruebas internas o ejercicios de equipo rojo seguido de su subsanación, son eximentes. Vincula este sistema al marco NIST AI RMF en este producto para acreditar el puerto seguro.",
     },
     applicabilityTags: CORE,
     sortOrder: 600,
@@ -142,7 +142,7 @@ export const TEXAS_REQUIREMENTS: RegimeRequirementSeed[] = [
     title: { en: "Regulatory sandbox programme", es: "Programa de espacio controlado de pruebas" },
     description: {
       en: "The act creates a regulatory sandbox administered by the Department of Information Resources under which a participant may test an AI system for up to 36 months with relief from certain licensing and regulatory requirements, subject to quarterly reporting. Record whether this system is, or should be, enrolled.",
-      es: "La ley crea un espacio controlado de pruebas administrado por el Departamento de Recursos de Información en el que un participante puede probar un sistema de IA durante un máximo de 36 meses con exención de determinados requisitos de licencia y regulatorios, sujeto a informes trimestrales. Deje constancia de si este sistema está, o debería estar, inscrito.",
+      es: "La ley crea un espacio controlado de pruebas administrado por el Departamento de Recursos de Información en el que un participante puede probar un sistema de IA durante un máximo de 36 meses con exención de determinados requisitos de licencia y regulatorios, sujeto a informes trimestrales. Deja constancia de si este sistema está, o debería estar, inscrito.",
     },
     applicabilityTags: CORE,
     sortOrder: 700,

@@ -15,7 +15,7 @@ import type { AssessmentSystemContext } from "./assessment-draft";
 
 const LOCALE_INSTRUCTIONS: Record<string, string> = {
   en: "Write the document in English.",
-  es: "Redacta el documento en español de España (castellano peninsular), con la terminología del Reglamento de IA de la UE.",
+  es: "Redacta el documento en español de España (castellano peninsular), con la terminología del Reglamento de IA de la UE. Trata siempre de tú al lector, nunca de usted.",
 };
 
 /** The Annex IV headings the draft must follow, in order. */

@@ -17,7 +17,7 @@ import type { AssessmentSystemContext } from "./assessment-draft";
 
 const LOCALE_INSTRUCTIONS: Record<string, string> = {
   en: "Write the rationale in English.",
-  es: "Redacta la justificación en español de España (castellano peninsular), con la terminología del Reglamento de IA de la UE.",
+  es: "Redacta la justificación en español de España (castellano peninsular), con la terminología del Reglamento de IA de la UE. Trata siempre de tú al lector, nunca de usted.",
 };
 
 export interface RiskRationaleInput {

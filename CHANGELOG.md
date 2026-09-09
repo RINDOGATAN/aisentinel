@@ -8,6 +8,23 @@ All notable changes to AI SENTINEL are documented here. The format follows
 
 ### Fixed
 
+- **The obligations calendar showed the whole catalogue whatever you declared.**
+  Every seeded milestone was rendered in one flat list, and the jurisdictions
+  an organisation selected changed only the label on each card, never whether
+  it appeared. A European organisation saw 23 cards of which 21 said "does not
+  apply", 9 of them for dates that had already passed, and the timeline plotted
+  all 23. Choosing more jurisdictions did not add clutter; the clutter was
+  there from the start. The calendar is now grouped by what the reader can act
+  on: overdue, next 90 days, later this year, future. What has already taken
+  effect and what was checked and ruled out are kept but folded away with a
+  count, because "we considered this and it does not reach you" is an answer
+  rather than noise to delete. The timeline plots only what is ahead and
+  applies, and the jurisdiction filter offers only places the organisation
+  actually declared. For an EU organisation the visible list goes from 23 cards
+  to 2, and for one operating across the EU and every US state, from 23 to 11.
+
+### Fixed
+
 - **The quickstart wizard left the new regimes unattached.** It creates systems
   and maps requirements by risk tier, which by design matches only the EU AI
   Act, NIST and ISO: every regime pack seeds with an empty tier precisely so it

@@ -67,7 +67,7 @@ export interface AssessmentDraftInput {
 
 const LOCALE_INSTRUCTIONS: Record<string, string> = {
   en: "Write the draft in English.",
-  es: "Redacta el borrador en español de España (castellano peninsular), con la terminología del Reglamento de IA de la UE.",
+  es: "Redacta el borrador en español de España (castellano peninsular), con la terminología del Reglamento de IA de la UE. Trata siempre de tú al lector, nunca de usted.",
 };
 
 const TYPE_FRAMING: Record<string, string> = {

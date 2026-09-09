@@ -71,7 +71,7 @@ export const WASHINGTON_REQUIREMENTS: RegimeRequirementSeed[] = [
         title: { en: "Consumer health data privacy policy", es: "Política de privacidad de datos de salud del consumidor" },
         description: {
           en: "Maintain and prominently link a consumer health data privacy policy that discloses the categories collected, the purposes including how the data are used, the categories of sources and of third parties and affiliates with whom data are shared, and how consumers exercise their rights.",
-          es: "Mantenga y enlace de forma destacada una política de privacidad de datos de salud del consumidor que indique las categorías recogidas, las finalidades y el modo de uso, las categorías de fuentes y de terceros y entidades vinculadas con quienes se comparten, y cómo ejercen los consumidores sus derechos.",
+          es: "Mantén y enlaza de forma destacada una política de privacidad de datos de salud del consumidor que indique las categorías recogidas, las finalidades y el modo de uso, las categorías de fuentes y de terceros y entidades vinculadas con quienes se comparten, y cómo ejercen los consumidores sus derechos.",
         },
         applicabilityTags: MHMDA,
         sortOrder: 102,
@@ -82,7 +82,7 @@ export const WASHINGTON_REQUIREMENTS: RegimeRequirementSeed[] = [
         title: { en: "Opt-in consent for collection and sharing", es: "Consentimiento previo para la recogida y la puesta a disposición" },
         description: {
           en: "Collect or share consumer health data only with the consumer's consent for a specified purpose, or to the extent necessary to provide a product or service the consumer requested. Consent is a clear affirmative act, freely given, specific, informed, opt-in and unambiguous; inferring health data to train or run a model is collection.",
-          es: "Recoja o comparta datos de salud del consumidor solo con su consentimiento para una finalidad determinada, o en la medida necesaria para prestar un producto o servicio que haya solicitado. El consentimiento es un acto afirmativo claro, libre, específico, informado, previo e inequívoco; inferir datos de salud para entrenar o ejecutar un modelo es recogida.",
+          es: "Recoge o comparte datos de salud del consumidor solo con su consentimiento para una finalidad determinada, o en la medida necesaria para prestar un producto o servicio que haya solicitado. El consentimiento es un acto afirmativo claro, libre, específico, informado, previo e inequívoco; inferir datos de salud para entrenar o ejecutar un modelo es recogida.",
         },
         applicabilityTags: MHMDA,
         sortOrder: 103,
@@ -139,7 +139,7 @@ export const WASHINGTON_REQUIREMENTS: RegimeRequirementSeed[] = [
         title: { en: "Provenance must be difficult to remove or tamper with", es: "La procedencia debe ser difícil de eliminar o manipular" },
         description: {
           en: "The provenance data may be a watermark or metadata and must be difficult to remove or alter without degrading the content. Align the method with the EU AI Act Art. 50(2) marking measures so one implementation serves both.",
-          es: "Los datos de procedencia pueden ser una marca de agua o metadatos y deben ser difíciles de eliminar o alterar sin degradar el contenido. Alinee el método con las medidas de marcado del art. 50.2 del Reglamento de IA de la UE para que una sola implementación sirva para ambos.",
+          es: "Los datos de procedencia pueden ser una marca de agua o metadatos y deben ser difíciles de eliminar o alterar sin degradar el contenido. Alinea el método con las medidas de marcado del art. 50.2 del Reglamento de IA de la UE para que una sola implementación sirva para ambos.",
         },
         applicabilityTags: PROV,
         sortOrder: 202,
@@ -163,7 +163,7 @@ export const WASHINGTON_REQUIREMENTS: RegimeRequirementSeed[] = [
         title: { en: "Disclose that the chatbot is not human, with periodic reminders", es: "Informar de que el chatbot no es humano, con recordatorios periódicos" },
         description: {
           en: "Clearly and conspicuously disclose that the companion is artificial and not human, and repeat the reminder during continuing interactions: at least every three hours for adults and every hour for users known to be minors.",
-          es: "Informe de forma clara y visible de que el acompañante es artificial y no humano, y repita el recordatorio durante las interacciones continuadas: al menos cada tres horas para adultos y cada hora para usuarios que se sepa que son menores.",
+          es: "Informa de forma clara y visible de que el acompañante es artificial y no humano, y repite el recordatorio durante las interacciones continuadas: al menos cada tres horas para adultos y cada hora para usuarios que se sepa que son menores.",
         },
         applicabilityTags: COMP,
         sortOrder: 302,
@@ -174,7 +174,7 @@ export const WASHINGTON_REQUIREMENTS: RegimeRequirementSeed[] = [
         title: { en: "Published protocol for suicidal ideation and self-harm", es: "Protocolo publicado ante ideación suicida y autolesiones" },
         description: {
           en: "Maintain, and publish on the operator's website, a protocol to detect and respond to expressions of suicidal ideation, self-harm or a mental-health crisis, including referral to crisis services. When the protocol triggers, the system must respond with crisis resources rather than continue the ordinary conversation.",
-          es: "Mantenga, y publique en el sitio web del operador, un protocolo para detectar y responder a expresiones de ideación suicida, autolesión o crisis de salud mental, incluida la derivación a servicios de crisis. Cuando el protocolo se active, el sistema debe responder con recursos de crisis en lugar de continuar la conversación ordinaria.",
+          es: "Mantén, y publica en el sitio web del operador, un protocolo para detectar y responder a expresiones de ideación suicida, autolesión o crisis de salud mental, incluida la derivación a servicios de crisis. Cuando el protocolo se active, el sistema debe responder con recursos de crisis en lugar de continuar la conversación ordinaria.",
         },
         applicabilityTags: COMP,
         sortOrder: 304,
@@ -185,7 +185,7 @@ export const WASHINGTON_REQUIREMENTS: RegimeRequirementSeed[] = [
         title: { en: "Protections for minors", es: "Protección de menores" },
         description: {
           en: "For companions directed at minors, or where the operator knows the user is a minor, implement reasonable measures to prevent sexually explicit content or suggestive dialogue, and apply the hourly reminder. Document the age-signal logic and the content safeguards.",
-          es: "En los acompañantes dirigidos a menores, o cuando el operador sepa que el usuario es menor, adopte medidas razonables para impedir contenido sexual explícito o diálogo sugerente, y aplique el recordatorio cada hora. Documente la lógica de detección de edad y las salvaguardas de contenido.",
+          es: "En los acompañantes dirigidos a menores, o cuando el operador sepa que el usuario es menor, adopta medidas razonables para impedir contenido sexual explícito o diálogo sugerente, y aplica el recordatorio cada hora. Documenta la lógica de detección de edad y las salvaguardas de contenido.",
         },
         applicabilityTags: COMP,
         sortOrder: 306,
@@ -209,7 +209,7 @@ export const WASHINGTON_REQUIREMENTS: RegimeRequirementSeed[] = [
         title: { en: "Annual reporting of AI-aided denials", es: "Informe anual de denegaciones asistidas por IA" },
         description: {
           en: "By 1 October 2026, and annually thereafter, a carrier above the one per cent premium threshold reports to the Insurance Commissioner the percentage of total denials that were aided by artificial intelligence, alongside its other prior-authorisation data (ESSB 5395 § 8, amending RCW 48.43.0161). Keep per-system logs of automated recommendations and the human determinations that followed, or the percentage cannot be evidenced.",
-          es: "Antes del 1 de octubre de 2026, y anualmente a partir de entonces, la aseguradora que supere el umbral del uno por ciento de las primas comunica al comisionado de seguros el porcentaje del total de denegaciones que contaron con la asistencia de inteligencia artificial, junto con sus demás datos de autorización previa (§ 8 de la ESSB 5395, que modifica el RCW 48.43.0161). Conserve registros por sistema de las recomendaciones automatizadas y de las determinaciones humanas posteriores, o el porcentaje no podrá acreditarse.",
+          es: "Antes del 1 de octubre de 2026, y anualmente a partir de entonces, la aseguradora que supere el umbral del uno por ciento de las primas comunica al comisionado de seguros el porcentaje del total de denegaciones que contaron con la asistencia de inteligencia artificial, junto con sus demás datos de autorización previa (§ 8 de la ESSB 5395, que modifica el RCW 48.43.0161). Conserva registros por sistema de las recomendaciones automatizadas y de las determinaciones humanas posteriores, o el porcentaje no podrá acreditarse.",
         },
         applicabilityTags: PA,
         sortOrder: 402,
@@ -222,7 +222,7 @@ export const WASHINGTON_REQUIREMENTS: RegimeRequirementSeed[] = [
     title: { en: "Public agencies: automated decision systems and AI", es: "Entidades públicas: sistemas de decisión automatizada e IA" },
     description: {
       en: "State agencies developing, procuring or using automated decision systems follow the rules and minimum standards set under RCW 43.105 by the state chief privacy officer and the state AI policy issued by WaTech (DATA-04). No agency may use a system that discriminates on a basis listed in RCW 49.60.010. Confirm which provisions are statute and which are policy before citing them externally.",
-      es: "Las entidades estatales que desarrollen, adquieran o utilicen sistemas de decisión automatizada siguen las normas y estándares mínimos fijados conforme al RCW 43.105 por el responsable estatal de privacidad y la política estatal de IA emitida por WaTech (DATA-04). Ninguna entidad puede usar un sistema que discrimine por alguno de los motivos del RCW 49.60.010. Confirme qué disposiciones son ley y cuáles son política antes de citarlas externamente.",
+      es: "Las entidades estatales que desarrollen, adquieran o utilicen sistemas de decisión automatizada siguen las normas y estándares mínimos fijados conforme al RCW 43.105 por el responsable estatal de privacidad y la política estatal de IA emitida por WaTech (DATA-04). Ninguna entidad puede usar un sistema que discrimine por alguno de los motivos del RCW 49.60.010. Confirma qué disposiciones son ley y cuáles son política antes de citarlas externamente.",
     },
     applicabilityTags: GOV,
     sortOrder: 500,

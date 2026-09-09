@@ -354,7 +354,7 @@ export const REGULATORY_MILESTONES: RegulatoryMilestone[] = [
     },
     whatItMeans: {
       en: "Since 2 August 2025: general-purpose AI model obligations, the governance architecture, the confidentiality rules and the penalty regime apply. Relevant to you as a deployer mainly through your providers' obligations and the contractual assurances you should be collecting from them.",
-      es: "Desde el 2 de agosto de 2025 se aplican las obligaciones para modelos de IA de uso general, la arquitectura de gobernanza, las normas de confidencialidad y el régimen sancionador. Le afecta como responsable del despliegue sobre todo a través de las obligaciones de sus proveedores y de las garantías contractuales que debería estar recabando de ellos.",
+      es: "Desde el 2 de agosto de 2025 se aplican las obligaciones para modelos de IA de uso general, la arquitectura de gobernanza, las normas de confidencialidad y el régimen sancionador. Te afecta como responsable del despliegue sobre todo a través de las obligaciones de tus proveedores y de las garantías contractuales que deberías estar recabando de ellos.",
     },
     orgApplies: (org) => euGate(org) ?? "in-scope",
     undeterminedReason: () => "no-jurisdictions",
@@ -626,7 +626,7 @@ export const REGULATORY_MILESTONES: RegulatoryMilestone[] = [
     },
     whatItMeans: {
       en: "Where automated decision-making technology makes a significant decision — financial or lending services, housing, education, employment or independent contracting, or healthcare — you must publish a pre-use notice, offer an opt-out, and answer access requests explaining the logic and the outcome. This lands eleven months before the EU's Annex III high-risk duties.",
-      es: "Cuando una tecnología de decisión automatizada adopta una decisión significativa —servicios financieros o crediticios, vivienda, educación, empleo o contratación independiente, o asistencia sanitaria—, debe publicar un aviso previo, ofrecer un derecho de exclusión y responder a las solicitudes de acceso explicando la lógica y el resultado. Llega once meses antes de los deberes de alto riesgo del anexo III de la UE.",
+      es: "Cuando una tecnología de decisión automatizada adopta una decisión significativa —servicios financieros o crediticios, vivienda, educación, empleo o contratación independiente, o asistencia sanitaria—, debes publicar un aviso previo, ofrecer un derecho de exclusión y responder a las solicitudes de acceso explicando la lógica y el resultado. Llega once meses antes de los deberes de alto riesgo del anexo III de la UE.",
     },
     applies: admtArticle11Scope,
     satisfiedBy: (sys) =>
@@ -690,7 +690,7 @@ export const REGULATORY_MILESTONES: RegulatoryMilestone[] = [
     },
     whatItMeans: {
       en: "By 1 April 2028 you must submit to the CPPA the number of risk assessments conducted in 2026 and 2027 — counts and personal-information categories, not the reports themselves — together with an attestation signed under penalty of perjury by a member of executive management. Separately, § 7157(e) lets the CPPA or the Attorney General demand the actual reports on 30 calendar days' notice.",
-      es: "Antes del 1 de abril de 2028 debe presentar a la CPPA el número de evaluaciones de riesgo realizadas en 2026 y 2027 —recuentos y categorías de información personal, no los informes— junto con una certificación firmada bajo pena de perjurio por un miembro de la alta dirección. Por separado, el § 7157(e) permite a la CPPA o al Fiscal General exigir los informes en un plazo de 30 días naturales.",
+      es: "Antes del 1 de abril de 2028 debes presentar a la CPPA el número de evaluaciones de riesgo realizadas en 2026 y 2027 —recuentos y categorías de información personal, no los informes— junto con una certificación firmada bajo pena de perjurio por un miembro de la alta dirección. Por separado, el § 7157(e) permite a la CPPA o al Fiscal General exigir los informes en un plazo de 30 días naturales.",
     },
     orgApplies: (org) => jurisdictionGate(org, "US_CA") ?? "in-scope",
     undeterminedReason: () => "no-jurisdictions",
@@ -714,7 +714,7 @@ export const REGULATORY_MILESTONES: RegulatoryMilestone[] = [
     },
     whatItMeans: {
       en: "Businesses whose 2026 annual gross revenue exceeded $100 million must complete their first cybersecurity audit (covering 1 January 2027 to 1 January 2028) and file the § 7124 certification of completion by 1 April 2028. Each revenue tier measures a different year — check yours.",
-      es: "Las empresas cuyos ingresos brutos anuales de 2026 superaron los 100 millones de dólares deben completar su primera auditoría de ciberseguridad (que cubre del 1 de enero de 2027 al 1 de enero de 2028) y presentar la certificación de finalización del § 7124 antes del 1 de abril de 2028. Cada tramo de ingresos mide un año distinto: compruebe el suyo.",
+      es: "Las empresas cuyos ingresos brutos anuales de 2026 superaron los 100 millones de dólares deben completar su primera auditoría de ciberseguridad (que cubre del 1 de enero de 2027 al 1 de enero de 2028) y presentar la certificación de finalización del § 7124 antes del 1 de abril de 2028. Cada tramo de ingresos mide un año distinto: comprueba el tuyo.",
     },
     orgApplies: (org) => {
       const gate = jurisdictionGate(org, "US_CA");
@@ -776,7 +776,7 @@ export const REGULATORY_MILESTONES: RegulatoryMilestone[] = [
     },
     whatItMeans: {
       en: "Businesses whose 2028 annual gross revenue was below $50 million must complete their first cybersecurity audit (covering calendar 2029) and file the certification by 1 April 2030. Note that the audit duty itself is triggered by the § 7120(b) test, not by revenue alone.",
-      es: "Las empresas cuyos ingresos brutos anuales de 2028 fueron inferiores a 50 millones de dólares deben completar su primera auditoría de ciberseguridad (que cubre el año natural 2029) y presentar la certificación antes del 1 de abril de 2030. Tenga en cuenta que el deber de auditoría se activa por la prueba del § 7120(b), no solo por los ingresos.",
+      es: "Las empresas cuyos ingresos brutos anuales de 2028 fueron inferiores a 50 millones de dólares deben completar su primera auditoría de ciberseguridad (que cubre el año natural 2029) y presentar la certificación antes del 1 de abril de 2030. Ten en cuenta que el deber de auditoría se activa por la prueba del § 7120(b), no solo por los ingresos.",
     },
     orgApplies: (org) => {
       const gate = jurisdictionGate(org, "US_CA");
@@ -991,7 +991,7 @@ export const REGULATORY_MILESTONES: RegulatoryMilestone[] = [
     },
     whatItMeans: {
       en: "SB 26-189 repealed and replaced the original Colorado AI Act rather than merely delaying it: the duty of care, deployer risk-management programmes and impact assessments are gone. What takes effect on 1 January 2027 is a narrower transparency regime around automated decision-making that materially influences a consequential decision — advance notice, post-decision disclosures and consumer rights, structurally close to California's ADMT rules. NOTE: enforcement is subject to a pending federal challenge (xAI LLC v. Weiser, D. Colo.), in which the United States intervened and the court stayed enforcement of the predecessor statute; reporting indicates the stay reaches SB 26-189 and runs until shortly after the preliminary-injunction ruling. Treat the date as the statutory one and confirm the current posture with Colorado counsel before relying on it.",
-      es: "La SB 26-189 derogó y sustituyó la ley de IA original de Colorado, en lugar de limitarse a aplazarla: desaparecen el deber de diligencia, los programas de gestión de riesgos del responsable del despliegue y las evaluaciones de impacto. Lo que entra en vigor el 1 de enero de 2027 es un régimen de transparencia más estrecho sobre la decisión automatizada que influya materialmente en una decisión con consecuencias: aviso previo, información posterior a la decisión y derechos del consumidor, estructuralmente próximo a las normas ADMT de California. NOTA: su aplicación está sujeta a un litigio federal pendiente (xAI LLC v. Weiser, D. Colo.), en el que intervino el Gobierno de los Estados Unidos y en el que el tribunal suspendió la aplicación de la norma anterior; según la información disponible, la suspensión alcanza también a la SB 26-189 y se prolonga hasta poco después de la resolución sobre la medida cautelar. Considere la fecha como la legal y confirme la situación actual con asesoría jurídica de Colorado antes de basarse en ella.",
+      es: "La SB 26-189 derogó y sustituyó la ley de IA original de Colorado, en lugar de limitarse a aplazarla: desaparecen el deber de diligencia, los programas de gestión de riesgos del responsable del despliegue y las evaluaciones de impacto. Lo que entra en vigor el 1 de enero de 2027 es un régimen de transparencia más estrecho sobre la decisión automatizada que influya materialmente en una decisión con consecuencias: aviso previo, información posterior a la decisión y derechos del consumidor, estructuralmente próximo a las normas ADMT de California. NOTA: su aplicación está sujeta a un litigio federal pendiente (xAI LLC v. Weiser, D. Colo.), en el que intervino el Gobierno de los Estados Unidos y en el que el tribunal suspendió la aplicación de la norma anterior; según la información disponible, la suspensión alcanza también a la SB 26-189 y se prolonga hasta poco después de la resolución sobre la medida cautelar. Considera la fecha como la legal y confirma la situación actual con asesoría jurídica de Colorado antes de basarte en ella.",
     },
     orgApplies: (org) => jurisdictionGate(org, "US_CO") ?? "in-scope",
     undeterminedReason: () => "no-jurisdictions",

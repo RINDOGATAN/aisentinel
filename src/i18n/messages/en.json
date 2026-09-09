@@ -3643,7 +3643,21 @@
     "allMilestones": "All milestones",
     "emptyInventoryTitle": "No AI systems registered yet",
     "emptyInventoryBody": "These deadlines are real, but until your AI systems are registered we can't tell you which of them each one touches.",
-    "emptyInventoryCta": "Run Quick Start"
+    "emptyInventoryCta": "Run Quick Start",
+    "groupOverdue": "Overdue",
+    "groupImminent": "Next 90 days",
+    "groupUpcoming": "Later this year",
+    "groupFuture": "Future",
+    "groupPast": "Already in force",
+    "groupPastHint": "Dates that have passed. They still bind you; they are here so the list ahead stays readable.",
+    "groupNotApplicable": "Checked, does not reach you",
+    "groupNotApplicableHint": "Assessed against your declared jurisdictions and found not to apply. Kept so you can see what was considered.",
+    "showGroup": "Show {count}",
+    "hideGroup": "Hide",
+    "filterAll": "All jurisdictions",
+    "filterLabel": "Jurisdiction",
+    "showingCount": "{shown} of {total} milestones",
+    "nothingAhead": "Nothing ahead in your declared jurisdictions. The sections below show what has already taken effect and what was checked and found not to apply."
   },
   "admt": {
     "title": "California ADMT",

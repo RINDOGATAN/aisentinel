@@ -11,7 +11,7 @@
  * undetermined and out-of-scope are always three distinct answers.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { Card, CardContent } from "@/components/ui/card";
@@ -21,6 +21,13 @@ import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { ObligationsTimeline } from "@/components/governance/obligations/ObligationsTimeline";
 import { ObligationCard } from "@/components/governance/obligations/ObligationCard";
+import {
+  aheadCount,
+  filterByJurisdiction,
+  groupObligations,
+  jurisdictionsIn,
+  timelineRows,
+} from "@/lib/obligations-grouping";
 
 export default function ObligationsPage() {
   const { organization } = useOrganization();
@@ -39,6 +46,9 @@ export default function ObligationsPage() {
       : window.location.hash.replace("#", "") || null,
   );
 
+  const [jurisdictionFilter, setJurisdictionFilter] = useState<string | null>(null);
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
+
   const { data, isLoading } = trpc.obligations.getObligations.useQuery(
     { organizationId: orgId, locale: contentLocale },
     { enabled: !!orgId },
@@ -52,6 +62,22 @@ export default function ObligationsPage() {
     });
   }, [selectedId, data]);
 
+  // Derived before the loading return so the hook order never changes.
+  // `data?.rows ?? []` builds a fresh array on every render, which would make
+  // every memo below recompute; memoising it keeps them honest.
+  const allRows = useMemo(() => data?.rows ?? [], [data]);
+  const filtered = useMemo(
+    () => filterByJurisdiction(allRows, jurisdictionFilter),
+    [allRows, jurisdictionFilter],
+  );
+  const groups = useMemo(() => groupObligations(filtered), [filtered]);
+  const plotted = useMemo(() => timelineRows(filtered), [filtered]);
+  const availableJurisdictions = useMemo(
+    () => jurisdictionsIn(allRows, data?.assumedJurisdictions),
+    [allRows, data],
+  );
+  const ahead = aheadCount(filtered);
+
   if (!orgId || isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -60,8 +86,7 @@ export default function ObligationsPage() {
     );
   }
 
-  const rows = data?.rows ?? [];
-  const hasInventory = rows.some(
+  const hasInventory = allRows.some(
     (r) => r.inScope.length > 0 || r.undetermined.length > 0,
   );
 
@@ -102,7 +127,7 @@ export default function ObligationsPage() {
         </p>
       ) : null}
 
-      {rows.length === 0 ? (
+      {allRows.length === 0 ? (
         <Card>
           <CardContent className="p-8 text-center text-sm text-muted-foreground">
             {t("empty")}
@@ -110,11 +135,54 @@ export default function ObligationsPage() {
         </Card>
       ) : (
         <>
-          <ObligationsTimeline
-            rows={rows}
-            selectedId={selectedId}
-            onSelect={(id) => setSelectedId(id === selectedId ? null : id)}
-          />
+          {/* The timeline plots only what is ahead and reaches this
+              organisation. Spending the horizontal room on a passed date, or
+              on a rule that does not apply, buys the reader nothing. */}
+          {plotted.length > 0 && (
+            <ObligationsTimeline
+              rows={plotted}
+              selectedId={selectedId}
+              onSelect={(id) => setSelectedId(id === selectedId ? null : id)}
+            />
+          )}
+
+          {/* Jurisdiction filter, offered only where there is something to
+              narrow. */}
+          {availableJurisdictions.length > 1 && (
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-xs text-muted-foreground">{t("filterLabel")}</span>
+              <button
+                type="button"
+                onClick={() => setJurisdictionFilter(null)}
+                className={[
+                  "rounded-md border px-2.5 py-1 text-xs transition-colors",
+                  jurisdictionFilter === null
+                    ? "border-primary bg-primary/10 text-primary font-medium"
+                    : "border-border text-muted-foreground hover:border-primary/40",
+                ].join(" ")}
+              >
+                {t("filterAll")}
+              </button>
+              {availableJurisdictions.map((j) => (
+                <button
+                  key={j}
+                  type="button"
+                  onClick={() => setJurisdictionFilter(j === jurisdictionFilter ? null : j)}
+                  className={[
+                    "rounded-md border px-2.5 py-1 text-xs transition-colors",
+                    jurisdictionFilter === j
+                      ? "border-primary bg-primary/10 text-primary font-medium"
+                      : "border-border text-muted-foreground hover:border-primary/40",
+                  ].join(" ")}
+                >
+                  {tjur(`option.${j}`)}
+                </button>
+              ))}
+              <span className="text-xs text-muted-foreground ml-auto">
+                {t("showingCount", { shown: filtered.length, total: allRows.length })}
+              </span>
+            </div>
+          )}
 
           {/* Inventory is what makes the calendar specific rather than generic */}
           {!hasInventory && (
@@ -136,21 +204,73 @@ export default function ObligationsPage() {
             </Card>
           )}
 
-          <div className="space-y-2">
-            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-              {t("allMilestones")}
-            </h2>
-            {rows.map((row) => (
-              <ObligationCard
-                key={row.id}
-                row={row}
-                expanded={selectedId === row.id}
-                onToggle={() =>
-                  setSelectedId(selectedId === row.id ? null : row.id)
-                }
-              />
-            ))}
-          </div>
+          {ahead === 0 && (
+            <Card className="border-border">
+              <CardContent className="p-4 text-sm text-muted-foreground">
+                {t("nothingAhead")}
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Grouped by what the reader can act on. The two archival groups
+              stay in the page but folded, because "we checked this and it does
+              not reach you" is an answer, not noise to delete. */}
+          {groups.map((group) => {
+            const isOpen = openGroups[group.id] ?? !group.collapsedByDefault;
+            const hint =
+              group.id === "past"
+                ? t("groupPastHint")
+                : group.id === "notApplicable"
+                  ? t("groupNotApplicableHint")
+                  : null;
+            return (
+              <div key={group.id} className="space-y-2">
+                <div className="flex items-center justify-between gap-3 flex-wrap">
+                  <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+                    {t(
+                      group.id === "overdue"
+                        ? "groupOverdue"
+                        : group.id === "imminent"
+                          ? "groupImminent"
+                          : group.id === "upcoming"
+                            ? "groupUpcoming"
+                            : group.id === "future"
+                              ? "groupFuture"
+                              : group.id === "past"
+                                ? "groupPast"
+                                : "groupNotApplicable",
+                    )}{" "}
+                    <span className="text-muted-foreground/60">({group.rows.length})</span>
+                  </h2>
+                  {group.collapsedByDefault && (
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() =>
+                        setOpenGroups((prev) => ({ ...prev, [group.id]: !isOpen }))
+                      }
+                    >
+                      {isOpen ? t("hideGroup") : t("showGroup", { count: group.rows.length })}
+                    </Button>
+                  )}
+                </div>
+                {hint && isOpen && (
+                  <p className="text-xs text-muted-foreground">{hint}</p>
+                )}
+                {isOpen &&
+                  group.rows.map((row) => (
+                    <ObligationCard
+                      key={row.id}
+                      row={row}
+                      expanded={selectedId === row.id}
+                      onToggle={() =>
+                        setSelectedId(selectedId === row.id ? null : row.id)
+                      }
+                    />
+                  ))}
+              </div>
+            );
+          })}
 
           {data && (
             <p className="text-xs text-muted-foreground border-t border-border pt-4">

@@ -66,7 +66,7 @@ export const GDPR_REQUIREMENTS: RegimeRequirementSeed[] = [
         title: { en: "Purpose limitation", es: "Limitación de la finalidad" },
         description: {
           en: "Personal data collected for one purpose may not be used to train or run an AI system for an incompatible purpose. Document the compatibility assessment for any re-use of existing data as training data.",
-          es: "Los datos personales recogidos para una finalidad no pueden usarse para entrenar o ejecutar un sistema de IA con una finalidad incompatible. Documente el análisis de compatibilidad de cualquier reutilización de datos existentes como datos de entrenamiento.",
+          es: "Los datos personales recogidos para una finalidad no pueden usarse para entrenar o ejecutar un sistema de IA con una finalidad incompatible. Documenta el análisis de compatibilidad de cualquier reutilización de datos existentes como datos de entrenamiento.",
         },
         applicabilityTags: CORE,
         sortOrder: 52,
@@ -77,7 +77,7 @@ export const GDPR_REQUIREMENTS: RegimeRequirementSeed[] = [
         title: { en: "Data minimisation", es: "Minimización de datos" },
         description: {
           en: "Training, validation and inference data must be adequate, relevant and limited to what is necessary. Record why each category of input is needed for the system's stated purpose.",
-          es: "Los datos de entrenamiento, validación e inferencia deben ser adecuados, pertinentes y limitados a lo necesario. Deje constancia de por qué cada categoría de entrada es necesaria para la finalidad declarada del sistema.",
+          es: "Los datos de entrenamiento, validación e inferencia deben ser adecuados, pertinentes y limitados a lo necesario. Deja constancia de por qué cada categoría de entrada es necesaria para la finalidad declarada del sistema.",
         },
         applicabilityTags: CORE,
         sortOrder: 53,
@@ -88,7 +88,7 @@ export const GDPR_REQUIREMENTS: RegimeRequirementSeed[] = [
         title: { en: "Accuracy, including inferred data", es: "Exactitud, incluidos los datos inferidos" },
         description: {
           en: "Outputs, scores and inferences about a person are personal data and must be accurate and kept up to date, with reasonable steps to erase or rectify inaccurate ones. Establish how a person can challenge an inaccurate inference.",
-          es: "Los resultados, puntuaciones e inferencias sobre una persona son datos personales y deben ser exactos y estar actualizados, con medidas razonables para suprimir o rectificar los inexactos. Establezca cómo puede una persona impugnar una inferencia inexacta.",
+          es: "Los resultados, puntuaciones e inferencias sobre una persona son datos personales y deben ser exactos y estar actualizados, con medidas razonables para suprimir o rectificar los inexactos. Establece cómo puede una persona impugnar una inferencia inexacta.",
         },
         applicabilityTags: CORE,
         sortOrder: 54,
@@ -101,7 +101,7 @@ export const GDPR_REQUIREMENTS: RegimeRequirementSeed[] = [
     title: { en: "Lawful basis for processing", es: "Base jurídica del tratamiento" },
     description: {
       en: "Identify and record the lawful basis for each processing operation the AI system performs: training, evaluation, inference and any re-use of outputs. Where legitimate interests are relied on, keep the balancing test.",
-      es: "Identifique y documente la base jurídica de cada operación de tratamiento que realice el sistema de IA: entrenamiento, evaluación, inferencia y cualquier reutilización de los resultados. Si se invoca el interés legítimo, conserve la ponderación.",
+      es: "Identifica y documenta la base jurídica de cada operación de tratamiento que realice el sistema de IA: entrenamiento, evaluación, inferencia y cualquier reutilización de los resultados. Si se invoca el interés legítimo, conserva la ponderación.",
     },
     applicabilityTags: CORE,
     sortOrder: 60,
@@ -134,7 +134,7 @@ export const GDPR_REQUIREMENTS: RegimeRequirementSeed[] = [
     title: { en: "Information on automated decision-making at collection", es: "Información sobre decisiones automatizadas en el momento de la recogida" },
     description: {
       en: "When personal data are collected, tell the person whether automated decision-making including profiling under Art. 22 exists, and give meaningful information about the logic involved and the significance and envisaged consequences for them. This is the GDPR anchor of the multi-jurisdictional AI notice.",
-      es: "Al recoger los datos personales, informe a la persona de si existen decisiones automatizadas, incluida la elaboración de perfiles, en el sentido del art. 22, y facilite información significativa sobre la lógica aplicada y sobre la importancia y las consecuencias previstas para ella. Es el anclaje en el RGPD del aviso de IA multijurisdiccional.",
+      es: "Al recoger los datos personales, informa a la persona de si existen decisiones automatizadas, incluida la elaboración de perfiles, en el sentido del art. 22, y facilita información significativa sobre la lógica aplicada y sobre la importancia y las consecuencias previstas para ella. Es el anclaje en el RGPD del aviso de IA multijurisdiccional.",
     },
     applicabilityTags: ADM,
     sortOrder: 130,
@@ -178,7 +178,7 @@ export const GDPR_REQUIREMENTS: RegimeRequirementSeed[] = [
         title: { en: "Permitted grounds", es: "Supuestos permitidos" },
         description: {
           en: "The solely automated decision is allowed only if it is necessary for entering into or performing a contract with the person, authorised by Union or Member State law with suitable safeguards, or based on the person's explicit consent. Record which ground the system relies on.",
-          es: "La decisión únicamente automatizada solo se permite si es necesaria para celebrar o ejecutar un contrato con la persona, está autorizada por el Derecho de la Unión o de un Estado miembro con garantías adecuadas, o se basa en el consentimiento explícito de la persona. Deje constancia del supuesto en que se apoya el sistema.",
+          es: "La decisión únicamente automatizada solo se permite si es necesaria para celebrar o ejecutar un contrato con la persona, está autorizada por el Derecho de la Unión o de un Estado miembro con garantías adecuadas, o se basa en el consentimiento explícito de la persona. Deja constancia del supuesto en que se apoya el sistema.",
         },
         applicabilityTags: ADM,
         sortOrder: 222,
@@ -200,7 +200,7 @@ export const GDPR_REQUIREMENTS: RegimeRequirementSeed[] = [
         title: { en: "Special-category data in automated decisions", es: "Datos de categorías especiales en decisiones automatizadas" },
         description: {
           en: "Solely automated decisions may not be based on special categories of personal data unless Art. 9(2)(a) or (g) applies and suitable safeguards are in place. Check whether the model infers protected attributes as proxies.",
-          es: "Las decisiones únicamente automatizadas no pueden basarse en categorías especiales de datos personales salvo que se aplique el art. 9.2.a o g y existan garantías adecuadas. Compruebe si el modelo infiere atributos protegidos como variables sustitutivas.",
+          es: "Las decisiones únicamente automatizadas no pueden basarse en categorías especiales de datos personales salvo que se aplique el art. 9.2.a o g y existan garantías adecuadas. Comprueba si el modelo infiere atributos protegidos como variables sustitutivas.",
         },
         applicabilityTags: ADM,
         sortOrder: 224,
@@ -224,7 +224,7 @@ export const GDPR_REQUIREMENTS: RegimeRequirementSeed[] = [
     title: { en: "Processors and model providers", es: "Encargados del tratamiento y proveedores de modelos" },
     description: {
       en: "An AI vendor that processes personal data on the controller's behalf is a processor and needs an Art. 28 contract, including sub-processor controls. Confirm whether the vendor also uses the data for its own model training, which makes it a controller for that purpose.",
-      es: "Un proveedor de IA que trate datos personales por cuenta del responsable es un encargado y necesita un contrato conforme al art. 28, con control de los subencargados. Confirme si el proveedor usa además los datos para entrenar sus propios modelos, lo que lo convierte en responsable para esa finalidad.",
+      es: "Un proveedor de IA que trate datos personales por cuenta del responsable es un encargado y necesita un contrato conforme al art. 28, con control de los subencargados. Confirma si el proveedor usa además los datos para entrenar sus propios modelos, lo que lo convierte en responsable para esa finalidad.",
     },
     applicabilityTags: CORE,
     sortOrder: 280,
@@ -246,7 +246,7 @@ export const GDPR_REQUIREMENTS: RegimeRequirementSeed[] = [
     title: { en: "Security of processing", es: "Seguridad del tratamiento" },
     description: {
       en: "Apply technical and organisational measures appropriate to the risk, including against model-specific threats such as training-data extraction, prompt injection and membership inference.",
-      es: "Aplique medidas técnicas y organizativas adecuadas al riesgo, incluidas las frente a amenazas propias de los modelos, como la extracción de datos de entrenamiento, la inyección de instrucciones y la inferencia de pertenencia.",
+      es: "Aplica medidas técnicas y organizativas adecuadas al riesgo, incluidas las frente a amenazas propias de los modelos, como la extracción de datos de entrenamiento, la inyección de instrucciones y la inferencia de pertenencia.",
     },
     applicabilityTags: CORE,
     sortOrder: 320,
@@ -290,7 +290,7 @@ export const GDPR_REQUIREMENTS: RegimeRequirementSeed[] = [
         title: { en: "Seeking the views of data subjects", es: "Recabar la opinión de los interesados" },
         description: {
           en: "Where appropriate, seek the views of data subjects or their representatives on the intended processing. Record whom you consulted, or why consultation was not appropriate.",
-          es: "Cuando proceda, recabe la opinión de los interesados o de sus representantes sobre el tratamiento previsto. Deje constancia de a quién consultó, o de por qué la consulta no era procedente.",
+          es: "Cuando proceda, recaba la opinión de los interesados o de sus representantes sobre el tratamiento previsto. Deja constancia de a quién consultaste, o de por qué la consulta no era procedente.",
         },
         applicabilityTags: DPIA,
         sortOrder: 359,
@@ -301,7 +301,7 @@ export const GDPR_REQUIREMENTS: RegimeRequirementSeed[] = [
         title: { en: "Review when the risk changes", es: "Revisión cuando cambie el riesgo" },
         description: {
           en: "Review the assessment when the risk represented by the processing changes: a new model version, new data sources, a new use case, or a handoff to an autonomous agent all qualify.",
-          es: "Revise la evaluación cuando cambie el riesgo que representa el tratamiento: una nueva versión del modelo, nuevas fuentes de datos, un nuevo caso de uso o la delegación en un agente autónomo son cambios relevantes.",
+          es: "Revisa la evaluación cuando cambie el riesgo que representa el tratamiento: una nueva versión del modelo, nuevas fuentes de datos, un nuevo caso de uso o la delegación en un agente autónomo son cambios relevantes.",
         },
         applicabilityTags: DPIA,
         sortOrder: 361,
@@ -314,7 +314,7 @@ export const GDPR_REQUIREMENTS: RegimeRequirementSeed[] = [
     title: { en: "Prior consultation of the supervisory authority", es: "Consulta previa a la autoridad de control" },
     description: {
       en: "If the assessment shows the processing would result in a high risk that the controller cannot mitigate, consult the supervisory authority before processing starts.",
-      es: "Si la evaluación indica que el tratamiento entrañaría un alto riesgo que el responsable no puede mitigar, consulte a la autoridad de control antes de iniciar el tratamiento.",
+      es: "Si la evaluación indica que el tratamiento entrañaría un alto riesgo que el responsable no puede mitigar, consulta a la autoridad de control antes de iniciar el tratamiento.",
     },
     applicabilityTags: DPIA,
     sortOrder: 360,

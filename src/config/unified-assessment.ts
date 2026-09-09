@@ -118,18 +118,18 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
     title: t("1. System, purpose and role", "1. Sistema, finalidad y papel"),
     intro: t(
       "The description every regime opens with. Answer once, to the level of detail the EU AI Act Annex IV expects, and it serves the GDPR record, the California risk assessment and the Colorado notice.",
-      "La descripción con la que empieza cada régimen. Respóndala una vez, con el detalle que espera el anexo IV del Reglamento de IA de la UE, y sirve para el registro del RGPD, la evaluación de riesgos de California y el aviso de Colorado.",
+      "La descripción con la que empieza cada régimen. Respóndela una vez, con el detalle que espera el anexo IV del Reglamento de IA de la UE, y sirve para el registro del RGPD, la evaluación de riesgos de California y el aviso de Colorado.",
     ),
     questions: [
       {
         id: "sys_description",
         text: t(
           "Describe the AI system: name, version, provider, what it does and how it is integrated into your processes.",
-          "Describa el sistema de IA: nombre, versión, proveedor, qué hace y cómo se integra en sus procesos.",
+          "Describe el sistema de IA: nombre, versión, proveedor, qué hace y cómo se integra en tus procesos.",
         ),
         helpText: t(
           "Include the model or technique, whether it was built in-house or procured, and the business process it sits in.",
-          "Incluya el modelo o la técnica, si es propio o adquirido, y el proceso de negocio en el que se inserta.",
+          "Incluye el modelo o la técnica, si es propio o adquirido, y el proceso de negocio en el que se inserta.",
         ),
         type: "textarea",
         required: true,
@@ -146,11 +146,11 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         id: "sys_purpose",
         text: t(
           "State the intended purpose and the specific decision or output the system produces.",
-          "Indique la finalidad prevista y la decisión o el resultado concreto que produce el sistema.",
+          "Indica la finalidad prevista y la decisión o el resultado concreto que produce el sistema.",
         ),
         helpText: t(
           "Be specific about the decision: 'ranks applicants for interview' rather than 'supports recruitment'.",
-          "Sea concreto respecto de la decisión: «ordena a los candidatos para la entrevista», no «apoya la selección».",
+          "Sé concreto respecto de la decisión: «ordena a los candidatos para la entrevista», no «apoya la selección».",
         ),
         type: "textarea",
         required: true,
@@ -166,7 +166,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         id: "sys_role",
         text: t(
           "State your role for this system and the period and frequency of use.",
-          "Indique su papel respecto de este sistema y el período y la frecuencia de uso.",
+          "Indica tu papel respecto de este sistema y el período y la frecuencia de uso.",
         ),
         helpText: t(
           "Provider or deployer under the EU AI Act; developer or deployer under Colorado; controller or processor under the GDPR. The duties differ by role.",
@@ -214,7 +214,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         id: "ppl_categories",
         text: t(
           "Identify the categories of natural persons and groups likely to be affected, and the expected number.",
-          "Identifique las categorías de personas físicas y los grupos que probablemente resulten afectados, y el número previsto.",
+          "Identifica las categorías de personas físicas y los grupos que probablemente resulten afectados, y el número previsto.",
         ),
         type: "textarea",
         required: true,
@@ -229,7 +229,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         id: "ppl_vulnerable",
         text: t(
           "Are children, employees, patients, benefit claimants or other people in a position of dependence or vulnerability affected? Explain the imbalance of power.",
-          "¿Resultan afectados menores, personas trabajadoras, pacientes, solicitantes de prestaciones u otras personas en situación de dependencia o vulnerabilidad? Explique el desequilibrio de poder.",
+          "¿Resultan afectados menores, personas trabajadoras, pacientes, solicitantes de prestaciones u otras personas en situación de dependencia o vulnerabilidad? Explica el desequilibrio de poder.",
         ),
         helpText: t(
           "This drives the Art. 5 prohibitions, the Annex III categories, the GDPR fairness analysis and the Washington minor protections.",
@@ -247,7 +247,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         id: "ppl_consultation",
         text: t(
           "Whose views did you seek on this processing, or why was consultation not appropriate?",
-          "¿A quién consultó sobre este tratamiento, o por qué no procedía la consulta?",
+          "¿A quién consultaste sobre este tratamiento, o por qué no procedía la consulta?",
         ),
         helpText: t(
           "GDPR Art. 35(9). Works councils, unions, patient representatives and affected communities are the usual answers.",
@@ -270,7 +270,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         id: "data_categories",
         text: t(
           "List the categories of personal data used as input, for training and for evaluation, and their sources.",
-          "Enumere las categorías de datos personales utilizadas como entrada, para entrenamiento y para evaluación, y sus fuentes.",
+          "Enumera las categorías de datos personales utilizadas como entrada, para entrenamiento y para evaluación, y sus fuentes.",
         ),
         type: "textarea",
         required: true,
@@ -287,7 +287,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         id: "data_lawful_basis",
         text: t(
           "State the lawful basis for each processing operation, and for any re-use of existing data as training data, the compatibility assessment.",
-          "Indique la base jurídica de cada operación de tratamiento y, para cualquier reutilización de datos existentes como datos de entrenamiento, el análisis de compatibilidad.",
+          "Indica la base jurídica de cada operación de tratamiento y, para cualquier reutilización de datos existentes como datos de entrenamiento, el análisis de compatibilidad.",
         ),
         type: "textarea",
         required: true,
@@ -337,7 +337,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         id: "data_retention_transfers",
         text: t(
           "State the retention period for inputs, outputs and logs, and any transfer outside the EEA with its safeguard.",
-          "Indique el plazo de conservación de entradas, resultados y registros, y cualquier transferencia fuera del EEE con su garantía.",
+          "Indica el plazo de conservación de entradas, resultados y registros, y cualquier transferencia fuera del EEE con su garantía.",
         ),
         type: "textarea",
         required: true,
@@ -377,7 +377,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         id: "dec_description",
         text: t(
           "Describe the decision the system informs and the consequence for the person if it goes against them.",
-          "Describa la decisión en la que interviene el sistema y la consecuencia para la persona si le resulta desfavorable.",
+          "Describe la decisión en la que interviene el sistema y la consecuencia para la persona si le resulta desfavorable.",
         ),
         type: "textarea",
         required: true,
@@ -393,11 +393,11 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         id: "dec_human_role",
         text: t(
           "Describe exactly what the human in the loop does: what they see, what else they consider, and whether they can change the outcome.",
-          "Describa exactamente qué hace la persona que interviene: qué ve, qué más valora y si puede cambiar el resultado.",
+          "Describe exactamente qué hace la persona que interviene: qué ve, qué más valora y si puede cambiar el resultado.",
         ),
         helpText: t(
           "The California three-prong test and the CJEU reading of GDPR Art. 22 both fail a reviewer who only rubber-stamps. Name the role and the authority it carries.",
-          "La prueba de tres elementos de California y la interpretación del art. 22 del RGPD por el TJUE rechazan a quien se limita a ratificar. Nombre el puesto y la autoridad que tiene.",
+          "La prueba de tres elementos de California y la interpretación del art. 22 del RGPD por el TJUE rechazan a quien se limita a ratificar. Nombra el puesto y la autoridad que tiene.",
         ),
         type: "textarea",
         required: true,
@@ -428,7 +428,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         ),
         helpText: t(
           "This single answer serves GDPR Arts. 13(2)(f) and 15(1)(h), the California post-decision explanation and the Colorado adverse-decision disclosure. Describe the procedure and the principles applied, not the source code.",
-          "Esta única respuesta sirve para los arts. 13.2.f y 15.1.h del RGPD, la explicación posterior a la decisión de California y la información de decisión desfavorable de Colorado. Describa el procedimiento y los principios aplicados, no el código fuente.",
+          "Esta única respuesta sirve para los arts. 13.2.f y 15.1.h del RGPD, la explicación posterior a la decisión de California y la información de decisión desfavorable de Colorado. Describe el procedimiento y los principios aplicados, no el código fuente.",
         ),
         type: "textarea",
         required: true,
@@ -459,7 +459,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         id: "dec_prior_auth",
         text: t(
           "Confirm that no coverage denial, delay or modification is made by the tool alone, and name the licensed professional who decides.",
-          "Confirme que ninguna denegación, retraso o modificación de cobertura la adopta la herramienta por sí sola, e identifique al profesional colegiado que decide.",
+          "Confirma que ninguna denegación, retraso o modificación de cobertura la adopta la herramienta por sí sola, e identifica al profesional colegiado que decide.",
         ),
         helpText: t(
           "Washington RCW 48.43.830. The tool may approve; it may not deny. The determination must use the individual patient's information, not only group data.",
@@ -487,7 +487,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         id: "risk_rights",
         text: t(
           "Identify the specific risks of harm to the people affected, including to their rights and freedoms, and rate likelihood and severity.",
-          "Identifique los riesgos concretos de daño para las personas afectadas, incluidos sus derechos y libertades, y valore la probabilidad y la gravedad.",
+          "Identifica los riesgos concretos de daño para las personas afectadas, incluidos sus derechos y libertades, y valora la probabilidad y la gravedad.",
         ),
         type: "textarea",
         required: true,
@@ -507,7 +507,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         ),
         helpText: t(
           "Texas requires the absence of discriminatory intent and treats disparate impact alone as insufficient; Illinois and the EU look at effect. Record both the intent evidence and the impact testing.",
-          "Texas exige la ausencia de intención discriminatoria y considera insuficiente el mero impacto dispar; Illinois y la UE atienden al efecto. Documente tanto la prueba de intención como el análisis de impacto.",
+          "Texas exige la ausencia de intención discriminatoria y considera insuficiente el mero impacto dispar; Illinois y la UE atienden al efecto. Documenta tanto la prueba de intención como el análisis de impacto.",
         ),
         type: "textarea",
         required: true,
@@ -551,7 +551,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         id: "risk_prohibited",
         text: t(
           "Confirm the system is not used to manipulate behaviour to cause harm, to score people socially, or to infringe constitutional rights, and describe the controls that prevent it.",
-          "Confirme que el sistema no se usa para manipular el comportamiento causando daño, para puntuar socialmente a las personas ni para vulnerar derechos constitucionales, y describa los controles que lo impiden.",
+          "Confirma que el sistema no se usa para manipular el comportamiento causando daño, para puntuar socialmente a las personas ni para vulnerar derechos constitucionales, y describe los controles que lo impiden.",
         ),
         helpText: t(
           "Texas prohibitions are intent-based; the EU Art. 5 prohibitions are effect-based. The same control description answers both.",
@@ -579,7 +579,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         id: "meas_mitigations",
         text: t(
           "For each risk identified, state the measure that addresses it and the residual risk that remains.",
-          "Para cada riesgo identificado, indique la medida que lo aborda y el riesgo residual que permanece.",
+          "Para cada riesgo identificado, indica la medida que lo aborda y el riesgo residual que permanece.",
         ),
         type: "textarea",
         required: true,
@@ -594,7 +594,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         id: "meas_oversight",
         text: t(
           "Describe the human oversight arrangement: who oversees, what they can do, their training, and how automation bias is countered.",
-          "Describa el mecanismo de supervisión humana: quién supervisa, qué puede hacer, su formación y cómo se contrarresta el sesgo de automatización.",
+          "Describe el mecanismo de supervisión humana: quién supervisa, qué puede hacer, su formación y cómo se contrarresta el sesgo de automatización.",
         ),
         type: "textarea",
         required: true,
@@ -610,7 +610,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         id: "meas_prior_consultation",
         text: t(
           "If a high residual risk remains that you cannot mitigate, record the prior consultation of the supervisory authority.",
-          "Si permanece un riesgo residual alto que no puede mitigar, deje constancia de la consulta previa a la autoridad de control.",
+          "Si permanece un riesgo residual alto que no puedes mitigar, deja constancia de la consulta previa a la autoridad de control.",
         ),
         type: "textarea",
         required: false,
@@ -667,7 +667,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         id: "rev_reviewer",
         text: t(
           "Name the reviewer role, and confirm it has the authority and the information to change the decision.",
-          "Identifique el puesto de la persona revisora y confirme que tiene la autoridad y la información necesarias para cambiar la decisión.",
+          "Identifica el puesto de la persona revisora y confirma que tiene la autoridad y la información necesarias para cambiar la decisión.",
         ),
         helpText: t(
           "California § 7221(b)(1)(A) requires a designated reviewer with authority to change the decision; GDPR Art. 22(3) requires the intervention to be meaningful. A reviewer without authority satisfies neither.",
@@ -686,7 +686,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         id: "rev_timing",
         text: t(
           "State the service levels: acknowledgement, decision and communication of the outcome, with the deadlines you commit to.",
-          "Indique los niveles de servicio: acuse de recibo, decisión y comunicación del resultado, con los plazos que asume.",
+          "Indica los niveles de servicio: acuse de recibo, decisión y comunicación del resultado, con los plazos que asumes.",
         ),
         type: "textarea",
         required: true,
@@ -716,7 +716,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         id: "rev_optout",
         text: t(
           "Describe the opt-out from the automated process, or the exception relied on instead.",
-          "Describa la exclusión voluntaria del proceso automatizado, o la excepción en la que se ampara.",
+          "Describe la exclusión voluntaria del proceso automatizado, o la excepción en la que se ampara.",
         ),
         helpText: t(
           "California requires an opt-out unless an exception applies; the human-appeal exception itself requires the designated reviewer above.",
@@ -779,7 +779,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         id: "not_ca_preuse",
         text: t(
           "Record the pre-use notice: how it is delivered before the decision and how it presents the opt-out and access rights.",
-          "Documente el aviso previo al uso: cómo se entrega antes de la decisión y cómo presenta los derechos de exclusión y de acceso.",
+          "Documenta el aviso previo al uso: cómo se entrega antes de la decisión y cómo presenta los derechos de exclusión y de acceso.",
         ),
         type: "textarea",
         required: true,
@@ -794,7 +794,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         id: "not_co_public",
         text: t(
           "Record the public statement on ADMT use and where it is published.",
-          "Documente la declaración pública sobre el uso de ADMT y dónde se publica.",
+          "Documenta la declaración pública sobre el uso de ADMT y dónde se publica.",
         ),
         type: "textarea",
         required: true,
@@ -840,7 +840,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         id: "not_companion",
         text: t(
           "Record the companion-chatbot disclosures: the artificial-nature statement, the reminder cadence, and the crisis protocol you publish.",
-          "Documente la información del chatbot de compañía: la declaración de naturaleza artificial, la periodicidad del recordatorio y el protocolo de crisis que publica.",
+          "Documenta la información del chatbot de compañía: la declaración de naturaleza artificial, la periodicidad del recordatorio y el protocolo de crisis que publicas.",
         ),
         helpText: t(
           "Washington HB 2225 requires a reminder at least every three hours for adults and every hour for minors, and a published protocol for suicidal ideation and self-harm.",
@@ -880,7 +880,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         id: "gov_owners",
         text: t(
           "Name the business owner, the technical owner and the person accountable for this assessment.",
-          "Identifique al responsable de negocio, al responsable técnico y a la persona responsable de esta evaluación.",
+          "Identifica al responsable de negocio, al responsable técnico y a la persona responsable de esta evaluación.",
         ),
         type: "textarea",
         required: true,
@@ -930,7 +930,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         id: "gov_registration",
         text: t(
           "Record any registration, filing or submission this system requires and its status.",
-          "Documente cualquier registro, presentación o comunicación que exija este sistema y su situación.",
+          "Documenta cualquier registro, presentación o comunicación que exija este sistema y su situación.",
         ),
         type: "textarea",
         required: false,
@@ -941,7 +941,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         id: "gov_agency_inventory",
         text: t(
           "Confirm the system is in the agency's AI inventory and record the risk assessment carried out before implementation.",
-          "Confirme que el sistema figura en el inventario de IA de la entidad y documente la evaluación de riesgos realizada antes de su implantación.",
+          "Confirma que el sistema figura en el inventario de IA de la entidad y documenta la evaluación de riesgos realizada antes de su implantación.",
         ),
         type: "textarea",
         required: true,
@@ -955,7 +955,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         id: "gov_developer_docs",
         text: t(
           "Record the documentation supplied to deployers: intended uses, training-data categories, known limitations and human-review instructions.",
-          "Documente la información facilitada a los responsables del despliegue: usos previstos, categorías de datos de entrenamiento, limitaciones conocidas e instrucciones de revisión humana.",
+          "Documenta la información facilitada a los responsables del despliegue: usos previstos, categorías de datos de entrenamiento, limitaciones conocidas e instrucciones de revisión humana.",
         ),
         type: "textarea",
         required: true,
@@ -981,7 +981,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         id: "agt_handoff",
         text: t(
           "Describe the handoff: which agent receives the output, what actions it can take without a person, and where its authority ends.",
-          "Describa la delegación: qué agente recibe el resultado, qué acciones puede realizar sin intervención humana y dónde termina su autoridad.",
+          "Describe la delegación: qué agente recibe el resultado, qué acciones puede realizar sin intervención humana y dónde termina su autoridad.",
         ),
         type: "textarea",
         required: true,
@@ -996,7 +996,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         id: "agt_still_human",
         text: t(
           "With the agent in the chain, is any decision still meaningfully reviewed by a person before it takes effect? Identify the point at which that stops being true.",
-          "Con el agente en la cadena, ¿sigue habiendo una decisión revisada de forma real por una persona antes de que produzca efectos? Identifique el punto en el que eso deja de ser cierto.",
+          "Con el agente en la cadena, ¿sigue habiendo una decisión revisada de forma real por una persona antes de que produzca efectos? Identifica el punto en el que eso deja de ser cierto.",
         ),
         helpText: t(
           "This is the question that decides whether the decision has become solely automated for GDPR Art. 22 and whether the California human-involvement prongs still hold.",

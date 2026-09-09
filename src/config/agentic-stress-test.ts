@@ -62,7 +62,7 @@ export const AGENTIC_FINDINGS: AgenticFinding[] = [
     ),
     assumption: L(
       "Your Art. 22 analysis concluded the decision is not solely automated because a person reviews the model's output before it takes effect.",
-      "Su análisis del art. 22 concluyó que la decisión no es únicamente automatizada porque una persona revisa el resultado del modelo antes de que produzca efectos.",
+      "Tu análisis del art. 22 concluyó que la decisión no es únicamente automatizada porque una persona revisa el resultado del modelo antes de que produzca efectos.",
     ),
     breakage: L(
       "When an agent acts on the output, the decision the person experiences is the agent's action, not the model's score. If nobody reviews the action, that decision is solely automated even though the score was reviewed. The CJEU already treats an automatically generated score as a decision when a third party draws heavily on it; an agent that acts on the score is a stronger case, not a weaker one.",
@@ -70,7 +70,7 @@ export const AGENTIC_FINDINGS: AgenticFinding[] = [
     ),
     provision: L(
       "State, in the assessment and in the protocol, where the decision ends for Art. 22 purposes. Either the agent may not execute an action with legal or similarly significant effect until a reviewer with authority has approved it, or you accept the decision is solely automated and provide the Art. 22(3) safeguards on the agent's action itself.",
-      "Establezca, en la evaluación y en el protocolo, dónde termina la decisión a efectos del art. 22. O bien el agente no puede ejecutar una acción con efectos jurídicos o similarmente significativos hasta que una persona revisora con autoridad la haya aprobado, o bien acepta que la decisión es únicamente automatizada y ofrece las garantías del art. 22.3 sobre la propia acción del agente.",
+      "Establece, en la evaluación y en el protocolo, dónde termina la decisión a efectos del art. 22. O bien el agente no puede ejecutar una acción con efectos jurídicos o similarmente significativos hasta que una persona revisora con autoridad la haya aprobado, o bien aceptas que la decisión es únicamente automatizada y ofreces las garantías del art. 22.3 sobre la propia acción del agente.",
     ),
     citations: ["EU GDPR Art. 22", "EU GDPR Art. 22(3)"],
     evidencedBy: ["agt_still_human", "agt_handoff"],
@@ -94,7 +94,7 @@ export const AGENTIC_FINDINGS: AgenticFinding[] = [
     ),
     provision: L(
       "Record whether the agent can act before review completes. If it can, re-run the ADMT determination on that basis and attach the Article 11 duties, rather than relying on a human-involvement finding the workflow no longer supports.",
-      "Documente si el agente puede actuar antes de que concluya la revisión. Si puede, rehaga la determinación de ADMT sobre esa base y adjunte los deberes del artículo 11, en lugar de apoyarse en una conclusión de intervención humana que el flujo ya no sostiene.",
+      "Documenta si el agente puede actuar antes de que concluya la revisión. Si puede, rehaz la determinación de ADMT sobre esa base y adjunta los deberes del artículo 11, en lugar de apoyarte en una conclusión de intervención humana que el flujo ya no sostiene.",
     ),
     citations: ["CA CCPA ADMT § 7001(e)(1)", "CA CCPA ADMT § 7221"],
     evidencedBy: ["agt_still_human", "dec_human_role"],
@@ -118,7 +118,7 @@ export const AGENTIC_FINDINGS: AgenticFinding[] = [
     ),
     provision: L(
       "Describe the agent's authority in the notice as a bounded scope: the categories of action it may take without a person, and the point at which a person is involved. Say plainly that some steps are carried out by an autonomous agent, and how the person is told when one acted on their case.",
-      "Describa en el aviso la autoridad del agente como un ámbito acotado: las categorías de acción que puede realizar sin intervención humana y el punto en que interviene una persona. Diga con claridad que algunas fases las ejecuta un agente autónomo y cómo se informa a la persona cuando uno ha actuado en su expediente.",
+      "Describe en el aviso la autoridad del agente como un ámbito acotado: las categorías de acción que puede realizar sin intervención humana y el punto en que interviene una persona. Di con claridad que algunas fases las ejecuta un agente autónomo y cómo se informa a la persona cuando uno ha actuado en su expediente.",
     ),
     citations: ["EU GDPR Art. 13(2)(f) / 14(2)(g)", "EU AI Act Art. 50(1)", "CO SB 26-189 CO-DEP-1"],
     evidencedBy: ["agt_notice_coverage", "agt_handoff"],
@@ -142,7 +142,7 @@ export const AGENTIC_FINDINGS: AgenticFinding[] = [
     ),
     provision: L(
       "Add a reversal procedure to the protocol, distinct from review: what can be undone, by whom, within what period, and what compensating step is taken where an action cannot be undone. State the deadline within which an agent-initiated action can still be reversed.",
-      "Añada al protocolo un procedimiento de reversión, distinto de la revisión: qué puede deshacerse, quién puede hacerlo, en qué plazo y qué medida compensatoria se adopta cuando una acción no puede deshacerse. Indique el plazo dentro del cual sigue siendo posible revertir una acción iniciada por el agente.",
+      "Añade al protocolo un procedimiento de reversión, distinto de la revisión: qué puede deshacerse, quién puede hacerlo, en qué plazo y qué medida compensatoria se adopta cuando una acción no puede deshacerse. Indica el plazo dentro del cual sigue siendo posible revertir una acción iniciada por el agente.",
     ),
     citations: ["EU GDPR Art. 22(3)", "CA CCPA ADMT § 7221(b)(1)", "CO SB 26-189 CO-DEP-4"],
     evidencedBy: ["agt_killswitch", "rev_timing"],
@@ -166,7 +166,7 @@ export const AGENTIC_FINDINGS: AgenticFinding[] = [
     ),
     provision: L(
       "Log every agent-initiated action with the decision id, the model version, the input data reference and the authority under which the agent acted, and retain it for the longest applicable period.",
-      "Registre cada acción iniciada por el agente con el identificador de la decisión, la versión del modelo, la referencia a los datos de entrada y la habilitación en virtud de la cual actuó el agente, y consérvelo durante el plazo aplicable más largo.",
+      "Registra cada acción iniciada por el agente con el identificador de la decisión, la versión del modelo, la referencia a los datos de entrada y la habilitación en virtud de la cual actuó el agente, y consérvalo durante el plazo aplicable más largo.",
     ),
     citations: ["EU AI Act Art. 12(1)", "CO SB 26-189 CO-REC-1"],
     evidencedBy: ["agt_traceability", "gov_records"],
@@ -190,7 +190,7 @@ export const AGENTIC_FINDINGS: AgenticFinding[] = [
     ),
     provision: L(
       "Require the agent to record its own decisive factors at the moment it acts, in the same plain language the adverse-decision disclosure uses, and include them in that disclosure.",
-      "Exija que el agente registre sus propios factores determinantes en el momento en que actúa, en el mismo lenguaje sencillo que emplea la información de decisión desfavorable, e inclúyalos en ella.",
+      "Exige que el agente registre sus propios factores determinantes en el momento en que actúa, en el mismo lenguaje sencillo que emplea la información de decisión desfavorable, e inclúyelos en ella.",
     ),
     citations: ["CO SB 26-189 CO-DEP-3"],
     evidencedBy: ["agt_traceability", "dec_logic"],
@@ -214,7 +214,7 @@ export const AGENTIC_FINDINGS: AgenticFinding[] = [
     ),
     provision: L(
       "Document a stop control: who can halt the agent, how quickly it takes effect, what happens to actions in flight, and how the halt is tested. Name the person accountable for exercising it.",
-      "Documente un control de parada: quién puede detener al agente, con qué rapidez surte efecto, qué ocurre con las acciones en curso y cómo se prueba esa parada. Identifique a la persona responsable de ejercerlo.",
+      "Documenta un control de parada: quién puede detener al agente, con qué rapidez surte efecto, qué ocurre con las acciones en curso y cómo se prueba esa parada. Identifica a la persona responsable de ejercerlo.",
     ),
     citations: ["EU AI Act Art. 14(4)", "EU AI Act Art. 14(1)"],
     evidencedBy: ["agt_killswitch"],
@@ -234,11 +234,11 @@ export const AGENTIC_FINDINGS: AgenticFinding[] = [
     ),
     breakage: L(
       "An agent with tool access can call services nobody assessed: a search API, a messaging provider, a second model, a customer system. Each may receive personal data under no contract, and some sit outside the transfer safeguards you documented.",
-      "Un agente con acceso a herramientas puede llamar a servicios que nadie evaluó: una API de búsqueda, un proveedor de mensajería, un segundo modelo, un sistema de clientes. Cada uno puede recibir datos personales sin contrato alguno, y algunos quedan fuera de las garantías de transferencia que documentó.",
+      "Un agente con acceso a herramientas puede llamar a servicios que nadie evaluó: una API de búsqueda, un proveedor de mensajería, un segundo modelo, un sistema de clientes. Cada uno puede recibir datos personales sin contrato alguno, y algunos quedan fuera de las garantías de transferencia que documentaste.",
     ),
     provision: L(
       "Enumerate the tools and services the agent may call, restrict it to that list, and bring each within the processing contract and the transfer analysis before it is enabled.",
-      "Enumere las herramientas y servicios a los que el agente puede llamar, restrínjalo a esa lista e incorpore cada uno al contrato de tratamiento y al análisis de transferencias antes de habilitarlo.",
+      "Enumera las herramientas y servicios a los que el agente puede llamar, restríngelo a esa lista e incorpora cada uno al contrato de tratamiento y al análisis de transferencias antes de habilitarlo.",
     ),
     citations: ["EU GDPR Art. 28", "EU GDPR Art. 44", "EU AI Act Art. 26(1)"],
     evidencedBy: ["agt_downstream_vendors"],
@@ -262,7 +262,7 @@ export const AGENTIC_FINDINGS: AgenticFinding[] = [
     ),
     provision: L(
       "Constrain the agent's action space explicitly against the prohibited categories, and record that constraint as part of the design rationale. An unconstrained objective is the fact a regulator will read as intent.",
-      "Restrinja de forma expresa el espacio de acción del agente frente a las categorías prohibidas y documente esa restricción como parte de la justificación del diseño. Un objetivo sin restricciones es el hecho que un regulador leerá como intención.",
+      "Restringe de forma expresa el espacio de acción del agente frente a las categorías prohibidas y documenta esa restricción como parte de la justificación del diseño. Un objetivo sin restricciones es el hecho que un regulador leerá como intención.",
     ),
     citations: ["TX TRAIGA § 552.052", "TX TRAIGA § 552.056"],
     evidencedBy: ["risk_prohibited", "agt_handoff"],
@@ -286,7 +286,7 @@ export const AGENTIC_FINDINGS: AgenticFinding[] = [
     ),
     provision: L(
       "Require the crisis-detection layer and the published protocol to apply to every agent and channel in the chain, and test the handoff against the protocol before enabling it.",
-      "Exija que la capa de detección de crisis y el protocolo publicado se apliquen a todos los agentes y canales de la cadena, y pruebe la transferencia frente al protocolo antes de habilitarla.",
+      "Exige que la capa de detección de crisis y el protocolo publicado se apliquen a todos los agentes y canales de la cadena, y prueba la transferencia frente al protocolo antes de habilitarla.",
     ),
     citations: ["WA HB 2225 § 4", "WA HB 2225 § 5"],
     evidencedBy: ["not_companion", "agt_handoff"],
@@ -310,7 +310,7 @@ export const AGENTIC_FINDINGS: AgenticFinding[] = [
     ),
     provision: L(
       "Re-run and re-date the assessment when an agent is added or its authority widens, and record the agent change as the trigger.",
-      "Rehaga y vuelva a fechar la evaluación cuando se añada un agente o se amplíe su autoridad, y deje constancia del cambio del agente como desencadenante.",
+      "Rehaz y vuelve a fechar la evaluación cuando se añada un agente o se amplíe su autoridad, y deja constancia del cambio del agente como desencadenante.",
     ),
     citations: ["EU GDPR Art. 35(11)"],
     evidencedBy: ["gov_review"],

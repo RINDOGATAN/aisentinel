@@ -45,7 +45,7 @@ export const COLORADO_REQUIREMENTS: RegimeRequirementSeed[] = [
     title: { en: "Covered ADMT and consequential decisions", es: "ADMT cubierta y decisiones con consecuencias" },
     description: {
       en: "The act reaches automated decision-making technology used to materially influence a consequential decision about a Colorado consumer: access to or the cost or terms of education, employment or employment opportunity, housing, a financial or lending service, insurance, health care, legal services or an essential government service. Record, per system, the decision domain and how the technology influences the outcome.",
-      es: "La ley alcanza a la tecnología de decisión automatizada utilizada para influir de forma material en una decisión con consecuencias para un consumidor de Colorado: el acceso, el coste o las condiciones de la educación, el empleo o una oportunidad laboral, la vivienda, un servicio financiero o de crédito, un seguro, la asistencia sanitaria, los servicios jurídicos o un servicio público esencial. Deje constancia, por sistema, del ámbito de la decisión y de cómo influye la tecnología en el resultado.",
+      es: "La ley alcanza a la tecnología de decisión automatizada utilizada para influir de forma material en una decisión con consecuencias para un consumidor de Colorado: el acceso, el coste o las condiciones de la educación, el empleo o una oportunidad laboral, la vivienda, un servicio financiero o de crédito, un seguro, la asistencia sanitaria, los servicios jurídicos o un servicio público esencial. Deja constancia, por sistema, del ámbito de la decisión y de cómo influye la tecnología en el resultado.",
     },
     applicabilityTags: CORE,
     sortOrder: 10,
@@ -67,7 +67,7 @@ export const COLORADO_REQUIREMENTS: RegimeRequirementSeed[] = [
     title: { en: "Developer: keep documentation current", es: "Desarrollador: mantener la documentación actualizada" },
     description: {
       en: "Update the documentation when the technology is materially modified, so that deployers' notices and human-review instructions do not describe a system that no longer exists.",
-      es: "Actualice la documentación cuando la tecnología se modifique de forma sustancial, para que los avisos y las instrucciones de revisión humana del responsable del despliegue no describan un sistema que ya no existe.",
+      es: "Actualiza la documentación cuando la tecnología se modifique de forma sustancial, para que los avisos y las instrucciones de revisión humana del responsable del despliegue no describan un sistema que ya no existe.",
     },
     applicabilityTags: DEV,
     sortOrder: 110,
@@ -78,7 +78,7 @@ export const COLORADO_REQUIREMENTS: RegimeRequirementSeed[] = [
     title: { en: "Deployer: notice at the point of interaction", es: "Responsable del despliegue: aviso en el punto de interacción" },
     description: {
       en: "Provide clear and conspicuous notice to the consumer, at the point of interaction with the covered ADMT and before the decision, that automated decision-making technology is used in a consequential decision about them, in plain language and in an accessible format.",
-      es: "Facilite al consumidor un aviso claro y visible, en el punto de interacción con la ADMT cubierta y antes de la decisión, de que se utiliza tecnología de decisión automatizada en una decisión con consecuencias sobre él, en lenguaje sencillo y en un formato accesible.",
+      es: "Facilita al consumidor un aviso claro y visible, en el punto de interacción con la ADMT cubierta y antes de la decisión, de que se utiliza tecnología de decisión automatizada en una decisión con consecuencias sobre él, en lenguaje sencillo y en un formato accesible.",
     },
     applicabilityTags: DEP,
     sortOrder: 200,
@@ -89,7 +89,7 @@ export const COLORADO_REQUIREMENTS: RegimeRequirementSeed[] = [
     title: { en: "Deployer: content of the advance notice", es: "Responsable del despliegue: contenido del aviso previo" },
     description: {
       en: "The advance notice must describe the purpose of the ADMT, the nature of the consequential decision it influences, the categories of personal data it uses, and the consumer's rights under the act, including how to exercise them. Align its wording with the California pre-use notice so one layered notice serves both states.",
-      es: "El aviso previo debe describir la finalidad de la ADMT, la naturaleza de la decisión con consecuencias en la que influye, las categorías de datos personales que utiliza y los derechos del consumidor conforme a la ley, incluida la forma de ejercerlos. Alinee su redacción con el aviso previo al uso de California para que un único aviso por capas sirva en ambos estados.",
+      es: "El aviso previo debe describir la finalidad de la ADMT, la naturaleza de la decisión con consecuencias en la que influye, las categorías de datos personales que utiliza y los derechos del consumidor conforme a la ley, incluida la forma de ejercerlos. Alinea su redacción con el aviso previo al uso de California para que un único aviso por capas sirva en ambos estados.",
     },
     applicabilityTags: DEP,
     sortOrder: 210,
@@ -100,7 +100,7 @@ export const COLORADO_REQUIREMENTS: RegimeRequirementSeed[] = [
     title: { en: "Deployer: post-decision disclosure after an adverse outcome", es: "Responsable del despliegue: información posterior a una decisión desfavorable" },
     description: {
       en: "After a consequential decision adverse to the consumer in which covered ADMT was used, disclose that it was used, the principal reasons for the decision in plain language, the categories of personal data that drove it, and the consumer's rights to correct data and to seek review.",
-      es: "Tras una decisión con consecuencias desfavorable para el consumidor en la que se haya utilizado una ADMT cubierta, informe de que se utilizó, de las razones principales de la decisión en lenguaje sencillo, de las categorías de datos personales que la determinaron y de los derechos del consumidor a corregir sus datos y a solicitar una revisión.",
+      es: "Tras una decisión con consecuencias desfavorable para el consumidor en la que se haya utilizado una ADMT cubierta, informa de que se utilizó, de las razones principales de la decisión en lenguaje sencillo, de las categorías de datos personales que la determinaron y de los derechos del consumidor a corregir sus datos y a solicitar una revisión.",
     },
     applicabilityTags: DEP,
     sortOrder: 220,
@@ -111,7 +111,7 @@ export const COLORADO_REQUIREMENTS: RegimeRequirementSeed[] = [
     title: { en: "Deployer: correction of data and human review", es: "Responsable del despliegue: corrección de datos y revisión humana" },
     description: {
       en: "Give the consumer a route to correct inaccurate personal data used by the ADMT and to have the adverse decision reviewed by a person with authority to change it. This is the Colorado anchor of the human-review and appeal protocol.",
-      es: "Ofrezca al consumidor una vía para corregir los datos personales inexactos utilizados por la ADMT y para que una persona con autoridad para cambiarla revise la decisión desfavorable. Es el anclaje en Colorado del protocolo de revisión humana y recurso.",
+      es: "Ofrece al consumidor una vía para corregir los datos personales inexactos utilizados por la ADMT y para que una persona con autoridad para cambiarla revise la decisión desfavorable. Es el anclaje en Colorado del protocolo de revisión humana y recurso.",
     },
     applicabilityTags: DEP,
     sortOrder: 230,
@@ -122,7 +122,7 @@ export const COLORADO_REQUIREMENTS: RegimeRequirementSeed[] = [
     title: { en: "Deployer: public statement on ADMT use", es: "Responsable del despliegue: declaración pública sobre el uso de ADMT" },
     description: {
       en: "Maintain a clear, readily available public statement summarising the types of covered ADMT the deployer uses, how it manages the risks of those uses, and the nature and sources of information collected and used.",
-      es: "Mantenga una declaración pública clara y fácilmente accesible que resuma los tipos de ADMT cubierta que utiliza, cómo gestiona los riesgos de esos usos y la naturaleza y las fuentes de la información recogida y utilizada.",
+      es: "Mantén una declaración pública clara y fácilmente accesible que resuma los tipos de ADMT cubierta que utiliza, cómo gestiona los riesgos de esos usos y la naturaleza y las fuentes de la información recogida y utilizada.",
     },
     applicabilityTags: DEP,
     sortOrder: 240,
@@ -144,7 +144,7 @@ export const COLORADO_REQUIREMENTS: RegimeRequirementSeed[] = [
     title: { en: "Enforcement and litigation posture", es: "Aplicación y situación procesal" },
     description: {
       en: "The Attorney General has exclusive enforcement authority; there is no private right of action. A federal challenge to the predecessor statute is pending and the court stayed its enforcement; reporting indicates the stay reaches SB 26-189. Treat 1 January 2027 as the statutory date and confirm the current posture with Colorado counsel.",
-      es: "La Fiscalía General tiene la competencia exclusiva de aplicación; no existe acción privada. Está pendiente un litigio federal contra la norma anterior y el tribunal suspendió su aplicación; según la información disponible, la suspensión alcanza a la SB 26-189. Considere el 1 de enero de 2027 como la fecha legal y confirme la situación actual con asesoría jurídica de Colorado.",
+      es: "La Fiscalía General tiene la competencia exclusiva de aplicación; no existe acción privada. Está pendiente un litigio federal contra la norma anterior y el tribunal suspendió su aplicación; según la información disponible, la suspensión alcanza a la SB 26-189. Considera el 1 de enero de 2027 como la fecha legal y confirma la situación actual con asesoría jurídica de Colorado.",
     },
     applicabilityTags: CORE,
     sortOrder: 400,

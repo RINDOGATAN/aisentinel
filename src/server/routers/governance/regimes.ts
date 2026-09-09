@@ -20,7 +20,7 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
-import { buildScopeFilter } from "@/lib/applicability-scope";
+import { attachRegimeMappings } from "@/server/services/scope/attach-regimes";
 import type { JurisdictionId } from "@/config/jurisdictions";
 import {
   DEFAULT_ORG_FACTS,
@@ -321,59 +321,12 @@ export const regimesRouter = createTRPCRouter({
       if (input.frameworkCode !== undefined && !isRegimeCode(input.frameworkCode)) {
         throw new TRPCError({ code: "BAD_REQUEST", message: "Not a regime framework" });
       }
-      const system = await ctx.prisma.aISystem.findFirst({
-        where: { id: input.aiSystemId, organizationId: ctx.organization.id },
-        select: SYSTEM_SELECT,
-      });
-      if (!system) {
-        throw new TRPCError({ code: "NOT_FOUND", message: "AI system not found" });
-      }
-      const org = await ctx.prisma.organization.findUnique({
-        where: { id: ctx.organization.id },
-        select: { operatingJurisdictions: true, settings: true },
-      });
-      const orgFacts = readOrgFacts(
-        org
-          ? {
-              operatingJurisdictions: org.operatingJurisdictions as unknown as string[],
-              settings: org.settings,
-            }
-          : null,
+      const { created, results } = await attachRegimeMappings(
+        ctx.prisma,
+        ctx.organization.id,
+        input.aiSystemId,
+        input.frameworkCode,
       );
-      const scopes = resolveAllRegimeScopes(orgFacts, readSystemFacts(system as unknown as SystemRow));
-
-      const results: { framework: string; state: string; created: number }[] = [];
-      for (const scope of scopes) {
-        if (input.frameworkCode && scope.framework !== input.frameworkCode) continue;
-        if (scope.tags.length === 0) {
-          results.push({ framework: scope.framework, state: scope.state, created: 0 });
-          continue;
-        }
-        const candidates = await ctx.prisma.complianceRequirement.findMany({
-          where: { framework: { code: scope.framework } },
-          select: { id: true, applicabilityTags: true },
-        });
-        const requirements = candidates.filter(buildScopeFilter(scope.tags));
-        if (requirements.length === 0) {
-          results.push({ framework: scope.framework, state: scope.state, created: 0 });
-          continue;
-        }
-        const { count } = await ctx.prisma.complianceMapping.createMany({
-          data: requirements.map((r) => ({
-            organizationId: ctx.organization.id,
-            aiSystemId: input.aiSystemId,
-            requirementId: r.id,
-            status: "NOT_ASSESSED" as const,
-            // Derived by a deterministic rule module, not typed by a person.
-            provenance: "AUTO_RULE" as const,
-            sourceRef: "regime-rules",
-          })),
-          skipDuplicates: true,
-        });
-        results.push({ framework: scope.framework, state: scope.state, created: count });
-      }
-
-      const created = results.reduce((total, r) => total + r.created, 0);
       if (created > 0) {
         await ctx.prisma.auditLog.create({
           data: {
@@ -382,7 +335,7 @@ export const regimesRouter = createTRPCRouter({
             action: "CREATE",
             entityType: "ComplianceMapping",
             entityId: input.aiSystemId,
-            changes: { source: "regime-rules", results },
+            changes: { source: "regime-rules", results: results as unknown as object[] },
           },
         });
       }

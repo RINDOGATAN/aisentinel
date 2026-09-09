@@ -27,6 +27,7 @@ import {
   baselineRuleKey,
   TRANSPARENCY_PROFILE_NOTES,
 } from "../../../config/quickstart-compliance-baseline";
+import { attachRegimeMappings } from "../../services/scope/attach-regimes";
 
 // ============================================================
 // HELPERS
@@ -486,6 +487,7 @@ export const quickstartRouter = createTRPCRouter({
       // Execute everything in a transaction
       const result = await ctx.prisma.$transaction(
         async (tx) => {
+          const createdSystemIds: string[] = [];
           const counts = {
             vendors: 0,
             systems: 0,
@@ -569,6 +571,7 @@ export const quickstartRouter = createTRPCRouter({
               },
             });
             counts.systems++;
+            createdSystemIds.push(system.id);
             existingSystemNames.add(systemName);
             auditEntries.push({
               entityType: "AISystem",
@@ -676,6 +679,7 @@ export const quickstartRouter = createTRPCRouter({
                 },
               });
               counts.systems++;
+              createdSystemIds.push(system.id);
               existingSystemNames.add(templateSystem.name);
               auditEntries.push({
                 entityType: "AISystem",
@@ -837,6 +841,7 @@ export const quickstartRouter = createTRPCRouter({
               },
             });
             counts.systems++;
+            createdSystemIds.push(system.id);
             existingSystemNames.add(tool.name);
             auditEntries.push({
               entityType: "AISystem",
@@ -1100,11 +1105,64 @@ export const quickstartRouter = createTRPCRouter({
             });
           }
 
-          return counts;
+          return { counts, createdSystemIds };
         },
         { timeout: 30000 },
       );
 
-      return result;
+      // Cross-border coverage, after the transaction so a slow scope
+      // resolution cannot hold the write lock.
+      //
+      // The mappings created inside the transaction come from a risk-tier
+      // query, which by design only ever matches the EU AI Act, NIST and ISO:
+      // every regime pack seeds with an empty tier so it can never be
+      // auto-attached by tier alone. Without this pass a programme set up
+      // through the wizard would show EU coverage and nothing else, and the
+      // GDPR, Colorado, Texas and Washington duties would sit unattached until
+      // someone opened each system by hand.
+      //
+      // The usual gate still holds inside: a regime that has not resolved
+      // contributes nothing, so an organisation that skipped the jurisdiction
+      // step gets no speculative rows.
+      const regimeResults: { framework: string; state: string; created: number }[] = [];
+      let regimeMappings = 0;
+      for (const systemId of result.createdSystemIds) {
+        try {
+          const attached = await attachRegimeMappings(ctx.prisma, orgId, systemId);
+          regimeMappings += attached.created;
+          for (const row of attached.results) {
+            const existing = regimeResults.find((r) => r.framework === row.framework);
+            if (existing) existing.created += row.created;
+            else regimeResults.push({ ...row });
+          }
+        } catch {
+          // One system failing to resolve must not lose the whole wizard run;
+          // its cross-border tab still offers the attach button.
+        }
+      }
+
+      if (regimeMappings > 0) {
+        await ctx.prisma.auditLog.create({
+          data: {
+            organizationId: orgId,
+            userId,
+            entityType: "ComplianceMapping",
+            entityId: orgId,
+            action: "CREATE",
+            changes: {
+              source: "quickstart-regimes",
+              created: regimeMappings,
+              results: regimeResults as unknown as object[],
+            },
+            metadata: { source: "quickstart" },
+          },
+        });
+      }
+
+      return {
+        ...result.counts,
+        regimeMappings,
+        regimeResults,
+      };
     }),
 });

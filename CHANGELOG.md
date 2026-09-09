@@ -6,6 +6,20 @@ All notable changes to AI SENTINEL are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- **The quickstart wizard left the new regimes unattached.** It creates systems
+  and maps requirements by risk tier, which by design matches only the EU AI
+  Act, NIST and ISO: every regime pack seeds with an empty tier precisely so it
+  can never be auto-attached that way. A programme set up through the wizard
+  therefore showed EU coverage and nothing else, and the GDPR, Colorado, Texas
+  and Washington duties sat unattached until someone opened each system by
+  hand. The wizard now runs the regime scope pass over the systems it creates,
+  using the same resolver and the same gate as the per-system button, so an
+  organisation that declared its jurisdictions in step one comes out of the
+  wizard with cross-border coverage in one pass. A regime that has not resolved
+  still contributes nothing.
+
 ### Added
 
 - **A sign-off record, so a marker can never drift from the fact.**

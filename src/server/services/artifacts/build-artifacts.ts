@@ -274,7 +274,7 @@ function scopeSection(input: ArtifactInput): ArtifactSection {
     blocks.push(
       gap(
         locale === "es"
-          ? `Quedan regímenes sin determinar (${scope.undetermined.map((u) => u.framework.replace(/_/g, " ")).join(", ")}). Responda su cuestionario de aplicabilidad antes de considerar cerrado este documento.`
+          ? `Quedan regímenes sin determinar (${scope.undetermined.map((u) => u.framework.replace(/_/g, " ")).join(", ")}). Responde su cuestionario de aplicabilidad antes de considerar cerrado este documento.`
           : `Some regimes remain undetermined (${scope.undetermined.map((u) => u.framework.replace(/_/g, " ")).join(", ")}). Answer their applicability screening before treating this document as complete.`,
         scope.undetermined.flatMap((u) => u.openQuestions.map((q) => `${u.framework.replace(/_/g, " ")}: ${q}`)),
       ),

@@ -555,7 +555,20 @@
     "completeBeforeSubmit": "Faltan {count} pregunta(s) obligatoria(s) por responder antes de poder enviarla a revisión.",
     "selfReviewWarning": "Tú enviaste esta evaluación. La decisión sobre tu propio envío quedará registrada en el registro de auditoría.",
     "selfApprovedNote": "Aprobada por la misma persona que la envió.",
-    "approvedOn": "Aprobada el {date}"
+    "approvedOn": "Aprobada el {date}",
+    "coverageTitle": "Qué acredita esta evaluación",
+    "coverageSummary": "{evidenced} de {total} obligaciones acreditadas en {frameworks} marcos.",
+    "coverageHint": "Una sola respuesta puede acreditar una obligación en varios regímenes a la vez. Una obligación se considera acreditada en cuanto se responde a cualquiera de las preguntas que la citan.",
+    "coverageRegimes": "Se pregunta porque se aplican estos regímenes",
+    "whyCore": "Se pregunta para todos los sistemas",
+    "whyOverlay": "Se pregunta porque se aplica {regime}",
+    "evidences": "Acredita",
+    "evidencesNone": "Contexto: esta respuesta no la cita ninguna obligación por sí sola.",
+    "feedsInto": "Se incorpora a",
+    "feedsAssessment": "la evaluación de impacto",
+    "feedsNotice": "el aviso",
+    "feedsProtocol": "el protocolo de revisión",
+    "answeredMark": "Respondida"
   },
   "oversight": {
     "title": "Supervisión Humana",

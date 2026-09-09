@@ -6,6 +6,29 @@ All notable changes to AI SENTINEL are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- **The assessment now shows why each question is asked and what answering it
+  closes.** The unified template records, on every question, the reason it
+  appears and the requirement codes its answer evidences. All of it was carried
+  through the database and then discarded at the answering screen, which is
+  where it is worth the most. Each question now states whether it is asked of
+  every system or because a particular regime applies, lists the obligations
+  its answer evidences, and names which of the generated documents the answer
+  travels into. Above them, a summary of what the whole assessment evidences:
+  the count of obligations closed against the total, broken down by framework,
+  and the regimes that put those questions there. For a five-jurisdiction
+  employment system that reads as 67 obligations across 8 frameworks, and a
+  single answer visibly closes four of them at once. Templates that predate
+  this, including the four seeded ones, carry none of the metadata and render
+  exactly as before.
+
+### Fixed
+
+- Generated documents named their regimes in English regardless of locale. The
+  labels are now bilingual and shared with the interface, so a document and a
+  screen describing the same system use the same words for it.
+
 ### Changed
 
 - **Spanish addresses the reader as "tú" throughout.** 276 strings across the

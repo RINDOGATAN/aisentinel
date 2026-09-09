@@ -28,6 +28,7 @@ import {
 } from "@/config/unified-assessment";
 import { runAgenticStressTest } from "@/config/agentic-stress-test";
 import { pendingPacks } from "@/config/legal-signoff";
+import { overlayLabels } from "@/config/overlay-labels";
 import type { SystemScope } from "@/server/services/scope/system-scope";
 import {
   collectGaps,
@@ -79,31 +80,10 @@ function disclaimerFor(scope: SystemScope, locale: ContentLocale): string {
     : base + " The regulatory content it cites for " + names + " is pending legal sign-off.";
 }
 
-const REGIME_LABELS: Record<string, string> = {
-  "eu:high-risk": "EU AI Act (high-risk)",
-  "eu:art50": "EU AI Act Art. 50 (transparency)",
-  "gdpr:core": "GDPR",
-  "gdpr:adm": "GDPR Art. 22 (automated decisions)",
-  "gdpr:dpia": "GDPR Art. 35 (impact assessment)",
-  "gdpr:special": "GDPR Art. 9 (special categories)",
-  "admt:art10": "California CCPA risk assessments (Art. 10)",
-  "admt:art11": "California CCPA ADMT (Art. 11)",
-  "co:developer": "Colorado SB 26-189 (developer)",
-  "co:deployer": "Colorado SB 26-189 (deployer)",
-  "tx:core": "Texas TRAIGA",
-  "tx:government": "Texas TRAIGA (government)",
-  "tx:healthcare": "Texas TRAIGA (health care)",
-  "wa:mhmda": "Washington My Health My Data Act",
-  "wa:genai-provenance": "Washington HB 1170 (provenance)",
-  "wa:companion": "Washington HB 2225 (companion chatbots)",
-  "wa:prior-auth": "Washington RCW 48.43.830 (prior authorisation)",
-  "wa:public-agency": "Washington RCW 43.105 (public agencies)",
-  agentic: "Agentic layer",
-};
-
-export function regimeLabels(tags: readonly string[]): string[] {
-  const labels = tags.map((t) => REGIME_LABELS[t]).filter((l): l is string => !!l);
-  return labels.length > 0 ? [...new Set(labels)] : ["No regime resolved yet"];
+export function regimeLabels(tags: readonly string[], locale: ContentLocale = "en"): string[] {
+  const labels = overlayLabels(tags, locale);
+  if (labels.length > 0) return labels;
+  return [locale === "es" ? "Todavía no se ha resuelto ningún régimen" : "No regime resolved yet"];
 }
 
 /** Which framework each overlay tag belongs to. */
@@ -244,7 +224,7 @@ function header(input: ArtifactInput, kind: Artifact["kind"], title: string, sub
     contentVersion: UNIFIED_ASSESSMENT_VERSION,
     lawReviewedAsOf: UNIFIED_ASSESSMENT_LAW_REVIEWED_AS_OF,
     disclaimer: disclaimerFor(input.scope, input.locale),
-    regimes: regimeLabels(input.scope.overlayTags),
+    regimes: regimeLabels(input.scope.overlayTags, input.locale),
     sections,
     gaps: collectGaps(sections),
   };
@@ -262,7 +242,7 @@ function scopeSection(input: ArtifactInput): ArtifactSection {
     table(
       locale === "es" ? ["Régimen", "Situación"] : ["Regime", "Status"],
       [
-        ...regimeLabels(scope.overlayTags).map((label) => [label, locale === "es" ? "Aplica" : "Applies"]),
+        ...regimeLabels(scope.overlayTags, locale).map((label) => [label, locale === "es" ? "Aplica" : "Applies"]),
         ...scope.undetermined.map((u) => [
           u.framework.replace(/_/g, " "),
           locale === "es" ? "Sin determinar" : "Undetermined",

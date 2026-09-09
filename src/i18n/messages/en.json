@@ -555,7 +555,20 @@
     "completeBeforeSubmit": "{count} required question(s) still need an answer before this can be submitted for review.",
     "selfReviewWarning": "You submitted this assessment. Recording a decision on your own submission will be noted in the audit log.",
     "selfApprovedNote": "Approved by the same person who submitted it.",
-    "approvedOn": "Approved on {date}"
+    "approvedOn": "Approved on {date}",
+    "coverageTitle": "What this assessment evidences",
+    "coverageSummary": "{evidenced} of {total} obligations evidenced across {frameworks} frameworks.",
+    "coverageHint": "One answer can evidence an obligation in several regimes at once. An obligation counts as evidenced as soon as any question citing it is answered.",
+    "coverageRegimes": "Asked because these apply",
+    "whyCore": "Asked of every system",
+    "whyOverlay": "Asked because {regime} applies",
+    "evidences": "Evidences",
+    "evidencesNone": "Background: this answer is not cited by an obligation on its own.",
+    "feedsInto": "Goes into",
+    "feedsAssessment": "the impact assessment",
+    "feedsNotice": "the notice",
+    "feedsProtocol": "the review protocol",
+    "answeredMark": "Answered"
   },
   "oversight": {
     "title": "Human Oversight",

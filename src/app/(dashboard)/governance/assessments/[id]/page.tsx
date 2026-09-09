@@ -5,6 +5,12 @@
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import { trpc } from "@/lib/trpc";
+import {
+  assessmentCoverage,
+  citationText,
+  readQuestionMeta,
+} from "@/lib/assessment-metadata";
+import { overlayLabel } from "@/config/overlay-labels";
 import { useOrganization } from "@/lib/organization-context";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -16,7 +22,7 @@ import { ArrowLeft, Save, Send, CheckCircle, XCircle, Loader2, AlertTriangle } f
 import { Progress } from "@/components/ui/progress";
 import { formatDate } from "@/lib/utils";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useSession } from "next-auth/react";
 import { AiDraftPanel } from "@/components/ai/AiDraftPanel";
 
@@ -30,6 +36,7 @@ const statusColors: Record<string, string> = {
 
 export default function AssessmentDetailPage() {
   const t = useTranslations("assessmentDetail");
+  const locale = useLocale();
   const params = useParams();
   const { organization } = useOrganization();
   const orgId = organization?.id ?? "";
@@ -79,6 +86,10 @@ export default function AssessmentDetailPage() {
   const totalQuestions = allQuestions.length;
   const answeredQuestions = allQuestions.filter((q) => responses[q.id]?.toString().trim()).length;
   const progressPercent = totalQuestions > 0 ? Math.round((answeredQuestions / totalQuestions) * 100) : 0;
+  // The unified template carries, per question, why it is asked and what the
+  // answer evidences. Older templates carry none of it and render unchanged.
+  const coverage = assessmentCoverage(sections, responses);
+  const contentLocale = locale === "es" ? "es" : "en";
 
   // Mirrors the server's completeness gate (assessment.submit) so an
   // incomplete assessment is visibly blocked rather than rejected after the
@@ -238,6 +249,56 @@ export default function AssessmentDetailPage() {
         </Card>
       )}
 
+      {/* What this assessment evidences. Shown only for templates that carry
+          the unified metadata; the seeded FRIA and conformity templates do not,
+          and render exactly as they always have. */}
+      {coverage.hasMetadata && (
+        <Card className="border-primary/30 bg-primary/5">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base">{t("coverageTitle")}</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <p className="text-sm">
+              {t("coverageSummary", {
+                evidenced: coverage.evidencedObligations,
+                total: coverage.totalObligations,
+                frameworks: coverage.byFramework.length,
+              })}
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {coverage.byFramework.map((f) => (
+                <Badge
+                  key={f.framework}
+                  variant="outline"
+                  className={
+                    f.evidenced === f.total
+                      ? "text-xs border-success/50 text-success"
+                      : "text-xs"
+                  }
+                >
+                  {f.framework.replace(/_/g, " ")} {f.evidenced}/{f.total}
+                </Badge>
+              ))}
+            </div>
+            {coverage.reasons.length > 0 && (
+              <div className="pt-1">
+                <p className="text-xs text-muted-foreground mb-1.5">{t("coverageRegimes")}</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {coverage.reasons.map((reason) => (
+                    <Badge key={reason} variant="secondary" className="text-[10px]">
+                      {overlayLabel(reason, contentLocale)}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+            <p className="text-xs text-muted-foreground border-t border-border/50 pt-3">
+              {t("coverageHint")}
+            </p>
+          </CardContent>
+        </Card>
+      )}
+
       {sections.map((section) => (
         <Card key={section.id}>
           <CardHeader>
@@ -246,6 +307,17 @@ export default function AssessmentDetailPage() {
           <CardContent className="space-y-6">
             {section.questions.map((question) => (
               <div key={question.id} className="space-y-2">
+                {(() => {
+                  const meta = readQuestionMeta(question);
+                  if (!meta.reason) return null;
+                  return (
+                    <p className="text-[11px] text-muted-foreground">
+                      {meta.reason === "core"
+                        ? t("whyCore")
+                        : t("whyOverlay", { regime: overlayLabel(meta.reason, contentLocale) })}
+                    </p>
+                  );
+                })()}
                 <label className="text-sm font-medium">
                   {question.text}
                   {question.required && <span className="text-destructive ml-1">*</span>}
@@ -297,6 +369,53 @@ export default function AssessmentDetailPage() {
                     )}
                   </>
                 )}
+                {/* What answering this closes, and where the answer travels.
+                    This is the payoff of the shared core: one answer standing
+                    as evidence in several registers at once. */}
+                {(() => {
+                  const meta = readQuestionMeta(question);
+                  if (meta.satisfies.length === 0 && meta.feeds.length === 0) return null;
+                  const answered = !!responses[question.id]?.toString().trim();
+                  const feedLabel = (target: string) =>
+                    target === "notice"
+                      ? t("feedsNotice")
+                      : target === "protocol"
+                        ? t("feedsProtocol")
+                        : t("feedsAssessment");
+                  return (
+                    <div className="pt-1 space-y-1.5">
+                      {meta.satisfies.length > 0 && (
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <span className="text-[11px] text-muted-foreground">
+                            {t("evidences")}
+                          </span>
+                          {meta.satisfies.map((citation) => (
+                            <Badge
+                              key={`${citation.framework}-${citation.code}`}
+                              variant="outline"
+                              className={
+                                answered
+                                  ? "text-[10px] border-success/50 text-success"
+                                  : "text-[10px] text-muted-foreground"
+                              }
+                            >
+                              {citationText(citation)}
+                            </Badge>
+                          ))}
+                          {answered && (
+                            <span className="text-[10px] text-success">{t("answeredMark")}</span>
+                          )}
+                        </div>
+                      )}
+                      {meta.feeds.length > 0 && (
+                        <p className="text-[11px] text-muted-foreground">
+                          {t("feedsInto")}{" "}
+                          {meta.feeds.map((f) => feedLabel(f)).join(", ")}.
+                        </p>
+                      )}
+                    </div>
+                  );
+                })()}
               </div>
             ))}
           </CardContent>

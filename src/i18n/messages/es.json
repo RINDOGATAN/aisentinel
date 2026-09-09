@@ -181,7 +181,7 @@
     "overdue": "Vencido",
     "viewOversight": "Ver Supervisión",
     "transparencyTitle": "Transparencia (Art. 50)",
-    "transparencyDescription": "Marcado de contenido sintético — el período de gracia termina el 2 dic 2026",
+    "transparencyDescription": "Marcado de contenido sintético: el período de gracia termina el 2 dic 2026",
     "markingRequired": "Marcado requerido",
     "markingOverdue": "Marcado vencido",
     "viewRegistry": "Ver Registro de IA",
@@ -203,7 +203,7 @@
     "recentActivityDescription": "Últimas novedades en su programa de gobernanza de IA",
     "noRecentActivity": "No hay actividad reciente",
     "quickStart": "Inicio Rápido",
-    "quickstartHeadingVendors": "Hemos encontrado {count} proveedores de IA en Vendor.Watch — ¿desea crear la gobernanza a partir de ellos?",
+    "quickstartHeadingVendors": "Hemos encontrado {count} proveedores de IA en Vendor.Watch: ¿desea crear la gobernanza a partir de ellos?",
     "quickstartHeadingDefault": "Configure su programa de gobernanza de IA en minutos",
     "quickstartDescriptionVendors": "Genere automáticamente sistemas de IA, clasificaciones de riesgo y controles de supervisión a partir de su cartera de proveedores.",
     "quickstartDescriptionDefault": "Importe desde el Catálogo de Proveedores de IA o parta de una plantilla sectorial para avanzar rápidamente.",
@@ -397,10 +397,10 @@
     "title": "Obligaciones de Transparencia del Art. 50",
     "description": "Obligaciones de información y marcado del artículo 50 del Reglamento de IA de la UE, aplicables desde el 2 de agosto de 2026",
     "loading": "Cargando el perfil de transparencia…",
-    "obligationInteraction": "Informar de la interacción con IA — Art. 50(1)",
-    "obligationMarking": "Marcado legible por máquina del contenido sintético — Art. 50(2)",
-    "obligationEmotion": "Informar del reconocimiento de emociones / categorización biométrica — Art. 50(3)",
-    "obligationDeepfake": "Etiquetar ultrafalsificaciones y textos de interés público generados por IA — Art. 50(4)",
+    "obligationInteraction": "Informar de la interacción con IA (Art. 50(1))",
+    "obligationMarking": "Marcado legible por máquina del contenido sintético (Art. 50(2))",
+    "obligationEmotion": "Informar del reconocimiento de emociones / categorización biométrica (Art. 50(3))",
+    "obligationDeepfake": "Etiquetar ultrafalsificaciones y textos de interés público generados por IA (Art. 50(4))",
     "actorProvider": "Obligación del proveedor",
     "actorDeployer": "Obligación del responsable del despliegue",
     "statusNotApplicable": "No aplicable",
@@ -539,7 +539,7 @@
     "titlePlaceholder": "Título de la evaluación",
     "creating": "Creando...",
     "createButton": "Crear Evaluación",
-    "step2Empty": "Todavía no hay plantillas de evaluación disponibles — crea o clona una en la",
+    "step2Empty": "Todavía no hay plantillas de evaluación disponibles: crea o clona una en la",
     "step2EmptyLink": "página de plantillas"
   },
   "assessmentDetail": {
@@ -656,7 +656,7 @@
     "descriptionLabel": "Descripción (opcional)",
     "descriptionPlaceholder": "Detalles adicionales sobre esta evidencia...",
     "notesPlaceholder": "Notas...",
-    "noSystemsPrompt": "Todavía no hay sistemas de IA registrados — el seguimiento de cumplimiento empieza con un sistema registrado.",
+    "noSystemsPrompt": "Todavía no hay sistemas de IA registrados: el seguimiento de cumplimiento empieza con un sistema registrado.",
     "noSystemsLink": "Registrar un sistema de IA",
     "mappingSaved": "Evaluación guardada",
     "mappingSavedPropagated": "Evaluación guardada: aplicada a {count} requisitos vinculados",
@@ -1099,7 +1099,7 @@
     "orgSlugHint": "Minúsculas, números y guiones.",
     "orgDomainLabel": "Dominio de correo (opcional)",
     "orgDomainPlaceholder": "acme.com",
-    "orgCreated": "Organización creada — abriendo su asistente inicial",
+    "orgCreated": "Organización creada: abriendo su asistente inicial",
     "cardAssessments": "{count} evaluaciones",
     "cardIncidents": "{count} incidentes",
     "cardHighRisk": "{count} de alto riesgo",
@@ -1146,13 +1146,13 @@
   },
   "signIn": {
     "localTitle": "Acceso local",
-    "localBody": "Su cuenta vive en este ordenador. Introduzca su correo para abrirla: no se envía nada fuera.",
+    "localBody": "Su cuenta reside en este ordenador. Introduzca su correo electrónico para abrirla. No se envía nada a ningún sitio.",
     "emailPlaceholder": "usted@sudespacho.com",
     "signInButton": "Iniciar sesión",
     "signingIn": "Iniciando sesión...",
     "passphraseLabel": "Contraseña del espacio de trabajo",
     "passphraseHelp": "Se estableció al instalar la suite. Recupérela en el ordenador que ejecuta la suite: ./suite.sh passphrase",
-    "wrongPassphrase": "Contraseña incorrecta: compruebe ./suite.sh passphrase en el ordenador que ejecuta la suite.",
+    "wrongPassphrase": "Contraseña incorrecta. Consulte ./suite.sh passphrase en el ordenador anfitrión.",
     "localSignInFailed": "No se ha podido iniciar sesión.",
     "emailLabel": "Correo electrónico",
     "continueWithEmail": "Continuar con el correo",
@@ -1183,16 +1183,16 @@
       "discard": "Descartar",
       "cancel": "Cancelar",
       "waitHint": "Esto puede tardar unos minutos con un modelo local.",
-      "cancelNote": "Se ha dejado de esperar. Puede que el servidor termine igualmente el borrador — cuenta para el límite horario de IA.",
-      "provenance": "Generado con IA ({model}) — revísalo antes de usarlo",
-      "inserted": "Borrador insertado — revísalo y guárdalo",
+      "cancelNote": "Se ha dejado de esperar. Puede que el servidor termine igualmente el borrador: cuenta para el límite horario de IA.",
+      "provenance": "Generado con IA ({model}): revísalo antes de usarlo",
+      "inserted": "Borrador insertado: revísalo y guárdalo",
       "offHint": "La asistencia de IA está desactivada en esta organización. Un administrador puede activarla en Ajustes.",
-      "notConfiguredHint": "La asistencia de IA está activada, pero todavía no hay ningún motor de IA disponible. Pide al administrador del servidor que configure un motor de IA (consulta el .env.example de la suite — la dirección de la pasarela es LLM_GATEWAY_URL)."
+      "notConfiguredHint": "La asistencia de IA está activada, pero todavía no hay ningún motor de IA disponible. Pide al administrador del servidor que configure un motor de IA (consulta el .env.example de la suite: la dirección de la pasarela es LLM_GATEWAY_URL)."
     },
     "posture": {
-      "off": "Desactivada — sin llamadas a IA",
+      "off": "Desactivada: sin llamadas a IA",
       "local_gateway": "Pasarela local (motor autoalojado)",
-      "cloud_eu": "Nube — proveedor de la UE",
+      "cloud_eu": "Nube: proveedor de la UE",
       "cloud_us": "LLM en la nube"
     },
     "postureCard": {
@@ -1211,7 +1211,7 @@
       "ackLabel": "Tengo autorización para activar la asistencia de IA en esta organización",
       "ackBullets": {
         "data": "Los datos seleccionados se envían al motor de IA de la postura elegida.",
-        "review": "El resultado de la IA es un borrador — debe revisarlo un profesional cualificado antes de usarse.",
+        "review": "El resultado de la IA es un borrador: debe revisarlo un profesional cualificado antes de usarse.",
         "off": "Mientras la postura esté desactivada, no se realiza nunca ninguna llamada a IA."
       },
       "ackRequiredHint": "Marca la confirmación para continuar.",
@@ -1223,30 +1223,30 @@
     "screening": {
       "title": "Cribado por reglas (Reglamento de IA de la UE)",
       "suggested": "Las reglas sugieren: {level}",
-      "prohibitedHit": "Práctica prohibida — {article} (coincidencia: “{matched}”)",
-      "highRiskHit": "Alto riesgo — {article} (coincidencia: “{matched}”)",
-      "transparencyHit": "Obligación de transparencia — {article} (coincidencia: “{matched}”)",
-      "carveOutHit": "Exclusión aplicada — {article}: la detección de fraude financiero no es de alto riesgo por sí sola",
+      "prohibitedHit": "Práctica prohibida: {article} (coincidencia: “{matched}”)",
+      "highRiskHit": "Alto riesgo: {article} (coincidencia: “{matched}”)",
+      "transparencyHit": "Obligación de transparencia: {article} (coincidencia: “{matched}”)",
+      "carveOutHit": "Exclusión aplicada: {article}: la detección de fraude financiero no es de alto riesgo por sí sola",
       "none": "Ninguna regla de práctica prohibida, alto riesgo o transparencia coincide con los datos registrados.",
-      "disclaimer": "Cribado determinista por palabras clave de los datos registrados — una ayuda de triaje, no una determinación jurídica. La decisión de clasificación es tuya."
+      "disclaimer": "Cribado determinista por palabras clave de los datos registrados: una ayuda de triaje, no una determinación jurídica. La decisión de clasificación es tuya."
     },
     "annexIv": {
       "title": "Documentación técnica del anexo IV",
       "description": "Redacta el esqueleto de la documentación técnica del anexo IV a partir de los datos registrados de este sistema. Las lagunas quedan marcadas para que las complete la persona responsable.",
       "copy": "Copiar markdown",
       "copied": "Borrador del anexo IV copiado al portapapeles",
-      "disclaimer": "Un borrador de trabajo a partir de los datos del registro — la persona responsable del sistema debe completarlo y revisarlo antes de cualquier uso."
+      "disclaimer": "Un borrador de trabajo a partir de los datos del registro: la persona responsable del sistema debe completarlo y revisarlo antes de cualquier uso."
     },
     "transparencyStatement": {
       "title": "Declaración de transparencia del Art. 50",
       "description": "Redacta una declaración de transparencia a partir de los datos registrados de este sistema, las obligaciones anotadas y el cribado determinista del Art. 50. Las lagunas quedan marcadas para que las complete la persona responsable.",
       "copy": "Copiar markdown",
       "copied": "Borrador de la declaración de transparencia copiado al portapapeles",
-      "disclaimer": "Un borrador de trabajo a partir de los datos del registro — la persona responsable del sistema debe completarlo y revisarlo antes de cualquier uso."
+      "disclaimer": "Un borrador de trabajo a partir de los datos del registro: la persona responsable del sistema debe completarlo y revisarlo antes de cualquier uso."
     },
     "errors": {
       "ai_off": "La asistencia de IA está desactivada en esta organización. Un administrador puede activarla en Ajustes.",
-      "ai_not_configured": "Todavía no hay ningún motor de IA disponible. Pide al administrador del servidor que configure uno (consulta el .env.example de la suite — LLM_GATEWAY_URL).",
+      "ai_not_configured": "Todavía no hay ningún motor de IA disponible. Pide al administrador del servidor que configure uno (consulta el .env.example de la suite: LLM_GATEWAY_URL).",
       "ai_rate_limited": "Esta organización ha alcanzado su límite horario de IA. Inténtalo de nuevo más tarde.",
       "ai_failed": "El motor de IA no ha devuelto ningún borrador. Inténtalo de nuevo."
     }
@@ -1323,7 +1323,7 @@
       }
     },
     "home": {
-      "metaTitle": "Documentación — AI SENTINEL",
+      "metaTitle": "Documentación: AI SENTINEL",
       "metaDescription": "Aprende a usar AI SENTINEL para la gobernanza de IA, el cumplimiento del Reglamento de IA de la UE, la clasificación de riesgos y la gestión de incidentes.",
       "heroIntro": "Una plataforma diseñada específicamente para la gobernanza de IA. Gestiona tu inventario de sistemas de IA, el cumplimiento del Reglamento de IA de la UE, la clasificación de riesgos, la supervisión humana y los incidentes específicos de IA, todo en un mismo lugar.",
       "quickStartTitle": "Inicio Rápido",
@@ -1479,10 +1479,10 @@
       }
     },
     "aiRegistry": {
-      "metaTitle": "Registro de IA — Documentación de AI SENTINEL",
+      "metaTitle": "Registro de IA: Documentación de AI SENTINEL",
       "metaDescription": "Registra y gestiona todos los sistemas de IA, modelos y agentes con seguimiento del ciclo de vida.",
       "title": "Registro de IA",
-      "intro": "El inventario central de todos los sistemas de IA de tu organización. Todos los demás módulos —clasificación de riesgos, evaluaciones, supervisión, incidentes— hacen referencia a una ficha de sistema de IA. Construye una imagen completa de tu panorama de IA.",
+      "intro": "El inventario central de todos los sistemas de IA de tu organización. Todos los demás módulos (clasificación de riesgos, evaluaciones, supervisión, incidentes) hacen referencia a una ficha de sistema de IA. Construye una imagen completa de tu panorama de IA.",
       "lifecycleTitle": "Ciclo de Vida del Sistema",
       "lifecycleIntro": "Cada sistema de IA avanza por un ciclo de vida definido. Las transiciones de estado se registran con marcas de tiempo a efectos de auditoría.",
       "lifecycle": [
@@ -1606,7 +1606,7 @@
       ]
     },
     "riskClassification": {
-      "metaTitle": "Clasificación de Riesgos — Documentación de AI SENTINEL",
+      "metaTitle": "Clasificación de Riesgos: Documentación de AI SENTINEL",
       "metaDescription": "Clasificación de riesgos en cuatro niveles según el Reglamento de IA de la UE, con asistente guiado del Anexo III.",
       "title": "Clasificación de Riesgos",
       "intro": "Clasifica tus sistemas de IA con el marco de cuatro niveles de riesgo del Reglamento de IA de la UE. El asistente guiado te acompaña por las categorías del Anexo III para determinar el nivel de riesgo correcto, con un historial completo de clasificaciones a efectos de auditoría.",
@@ -1653,7 +1653,7 @@
         {
           "date": "2026-02-15",
           "author": "Maria G.",
-          "from": "—",
+          "from": "Ninguna",
           "to": "Limitado",
           "note": "Clasificación inicial basada en el caso de uso de chatbot."
         },
@@ -1691,7 +1691,7 @@
       ]
     },
     "assessments": {
-      "metaTitle": "Evaluaciones — Documentación de AI SENTINEL",
+      "metaTitle": "Evaluaciones: Documentación de AI SENTINEL",
       "metaDescription": "Realiza evaluaciones FRIA, de conformidad, de riesgo de IA y de sesgo y equidad con plantillas y flujos de aprobación.",
       "title": "Evaluaciones",
       "intro": "Realiza evaluaciones de impacto específicas de IA con plantillas configurables. Puntúa riesgos, documenta mitigaciones y gestiona flujos de aprobación para evaluaciones FRIA, de conformidad, de riesgo de IA y de sesgo y equidad.",
@@ -1783,7 +1783,7 @@
       ]
     },
     "oversight": {
-      "metaTitle": "Supervisión Humana — Documentación de AI SENTINEL",
+      "metaTitle": "Supervisión Humana: Documentación de AI SENTINEL",
       "metaDescription": "Puntos de control de aprobación, programación de revisiones y registro de decisiones para el cumplimiento del Art. 14 del Reglamento de IA de la UE.",
       "title": "Supervisión Humana",
       "intro": "Implementa los requisitos de supervisión humana del Art. 14 para sistemas de IA de alto riesgo. Configura puntos de control de aprobación en las etapas clave del ciclo de vida, programa revisiones periódicas y mantén un registro completo de decisiones para los reguladores.",
@@ -1857,7 +1857,7 @@
       ]
     },
     "incidents": {
-      "metaTitle": "Incidentes de IA — Documentación de AI SENTINEL",
+      "metaTitle": "Incidentes de IA: Documentación de AI SENTINEL",
       "metaDescription": "Haz seguimiento de fallos específicos de IA, coordina tareas de respuesta y gestiona las notificaciones a autoridades del Art. 73.",
       "title": "Incidentes de IA",
       "intro": "Haz seguimiento de los incidentes específicos de IA desde la notificación inicial hasta la resolución. Gestiona los plazos de respuesta, coordina tareas y tramita las notificaciones a autoridades del Art. 73 para incidentes graves que afecten a sistemas de IA de alto riesgo.",
@@ -1972,12 +1972,12 @@
       ]
     },
     "transparency": {
-      "metaTitle": "Transparencia (Art. 50) — Documentación de AI SENTINEL",
+      "metaTitle": "Transparencia (Art. 50): Documentación de AI SENTINEL",
       "metaDescription": "Haz seguimiento de las obligaciones de transparencia del Art. 50 del Reglamento de IA de la UE por sistema de IA: información de la interacción con IA, marcado de contenido sintético, reconocimiento de emociones y etiquetado de ultrafalsificaciones.",
       "title": "Transparencia (Art. 50)",
       "intro": "El artículo 50 del Reglamento de IA de la UE impone deberes de transparencia que atraviesan los niveles de riesgo: incluso un chatbot de riesgo mínimo debe informar. AI SENTINEL registra las cuatro obligaciones del Art. 50 por sistema de IA, las separa según quién las debe realmente y cuenta atrás el único plazo que tiene período transitorio.",
       "applicabilityTitle": "Cuándo se aplica",
-      "applicabilityBody1": "El Art. 50 se aplica desde el <strong>2 de agosto de 2026</strong> (Art. 113). El Reglamento (UE) 2026/1744 —el Ómnibus Digital sobre IA, DO L de 24 de julio de 2026— concede a los sistemas introducidos en el mercado <em>antes</em> de esa fecha un período transitorio para la obligación de marcado legible por máquina del Art. 50(2), que se extiende hasta el <strong>2 de diciembre de 2026</strong>.",
+      "applicabilityBody1": "El Art. 50 se aplica desde el <strong>2 de agosto de 2026</strong> (Art. 113). El Reglamento (UE) 2026/1744 (el Ómnibus Digital sobre IA, DO L de 24 de julio de 2026) concede a los sistemas introducidos en el mercado <em>antes</em> de esa fecha un período transitorio para la obligación de marcado legible por máquina del Art. 50(2), que se extiende hasta el <strong>2 de diciembre de 2026</strong>.",
       "applicabilityBody2": "Ese período de gracia es el motivo por el que el Registro de IA pregunta si un sistema se introdujo en el mercado antes del 2 de agosto de 2026. Respóndelo con precisión: es el único dato que modifica el plazo de marcado, y el contador de «marcado vencido» del panel se deriva de él.",
       "obligationsTitle": "Las cuatro obligaciones",
       "obligationsIntro": "Dos corresponden al proveedor y dos al responsable del despliegue. Una misma organización suele desempeñar ambos papeles, pero registrarlas por separado es lo que te permite responder a un regulador que pregunte en calidad de qué actuabas.",
@@ -1992,13 +1992,13 @@
           "article": "Art. 50(2)",
           "actorLabel": "Obligación del proveedor",
           "title": "Marcado legible por máquina del contenido sintético",
-          "description": "Los sistemas que generan audio, imagen, vídeo o texto sintéticos deben marcar su salida en un formato legible por máquina que permita detectarla como generada artificialmente. Es la obligación con plazo transitorio — véase más abajo."
+          "description": "Los sistemas que generan audio, imagen, vídeo o texto sintéticos deben marcar su salida en un formato legible por máquina que permita detectarla como generada artificialmente. Es la obligación con plazo transitorio: véase más abajo."
         },
         {
           "article": "Art. 50(3)",
           "actorLabel": "Obligación del responsable del despliegue",
           "title": "Reconocimiento de emociones y categorización biométrica",
-          "description": "Los responsables del despliegue deben informar a las personas expuestas a un sistema de reconocimiento de emociones o de categorización biométrica de que está en uso. Ten en cuenta que varios de estos usos están directamente prohibidos por el Art. 5 — el módulo señala ese solapamiento en lugar de permitirte registrar una información sobre una práctica que no puedes ejercer legalmente."
+          "description": "Los responsables del despliegue deben informar a las personas expuestas a un sistema de reconocimiento de emociones o de categorización biométrica de que está en uso. Ten en cuenta que varios de estos usos están directamente prohibidos por el Art. 5: el módulo señala ese solapamiento en lugar de permitirte registrar una información sobre una práctica que no puedes ejercer legalmente."
         },
         {
           "article": "Art. 50(4)",
@@ -2042,10 +2042,10 @@
         }
       ],
       "scopeTitle": "Una nota sobre el alcance",
-      "scopeBody": "Este módulo registra tu posición respecto al Art. 50; no marca el contenido por ti. El marcado legible por máquina se implementa en el propio sistema generador. AI SENTINEL es donde documentas qué sistemas deben cumplir la obligación, si está satisfecha y cómo — para que la respuesta exista antes de que alguien la pida."
+      "scopeBody": "Este módulo registra tu posición respecto al Art. 50; no marca el contenido por ti. El marcado legible por máquina se implementa en el propio sistema generador. AI SENTINEL es donde documentas qué sistemas deben cumplir la obligación, si está satisfecha y cómo: para que la respuesta exista antes de que alguien la pida."
     },
     "compliance": {
-      "metaTitle": "Cumplimiento — Documentación de AI SENTINEL",
+      "metaTitle": "Cumplimiento: Documentación de AI SENTINEL",
       "metaDescription": "Mapeo de marcos normativos para el Reglamento de IA de la UE, NIST AI RMF e ISO 42001 con gestión de evidencias y exportación.",
       "title": "Cumplimiento",
       "intro": "Mapea tus sistemas de IA frente a los principales marcos normativos. Sigue el estado de cumplimiento a nivel de requisito, adjunta evidencias y exporta paquetes de cumplimiento para reguladores y auditores.",
@@ -2135,7 +2135,7 @@
       ]
     },
     "vendors": {
-      "metaTitle": "Riesgo de Proveedores — Documentación de AI SENTINEL",
+      "metaTitle": "Riesgo de Proveedores: Documentación de AI SENTINEL",
       "metaDescription": "Gestión de proveedores externos de IA con evaluación de riesgos, seguimiento de contratos y diligencia debida.",
       "title": "Riesgo de Proveedores",
       "intro": "Gestiona los proveedores externos de IA con evaluación de riesgos, seguimiento del ciclo de vida de los contratos y documentación de diligencia debida. Mantén un registro completo de cada proveedor de IA del que depende tu organización.",
@@ -2247,7 +2247,7 @@
       ]
     },
     "policies": {
-      "metaTitle": "Gestión de Políticas — Documentación de AI SENTINEL",
+      "metaTitle": "Gestión de Políticas: Documentación de AI SENTINEL",
       "metaDescription": "Políticas de gobernanza de IA con versionado, flujo de aprobación y vinculación de sistemas.",
       "title": "Gestión de Políticas",
       "intro": "Redacta, versiona y gestiona políticas de gobernanza de IA. Vincula políticas a sistemas de IA concretos, sigue los flujos de aprobación y mantén una biblioteca de políticas viva que evoluciona con tu organización.",
@@ -2348,7 +2348,7 @@
       ]
     },
     "shadowAi": {
-      "metaTitle": "Detección de IA en la Sombra — Documentación de AI SENTINEL",
+      "metaTitle": "Detección de IA en la Sombra: Documentación de AI SENTINEL",
       "metaDescription": "Descubre las herramientas de IA no autorizadas en tu organización. Portal de autonotificación, flujo de triaje y promoción a la gobernanza formal.",
       "premiumBadge": "Premium",
       "title": "Detección de IA en la Sombra",
@@ -2407,7 +2407,7 @@
         },
         {
           "title": "Promoción a la gobernanza formal",
-          "description": "Las herramientas en la sombra aprobadas pueden promoverse al Registro de IA como Sistema de IA formal — y, opcionalmente, a un registro de Proveedor — en un solo paso. Así se conecta la detección informal con tu programa de gobernanza completo."
+          "description": "Las herramientas en la sombra aprobadas pueden promoverse al Registro de IA como Sistema de IA formal (y, opcionalmente, a un registro de Proveedor) en un solo paso. Así se conecta la detección informal con tu programa de gobernanza completo."
         }
       ],
       "statusTitle": "Flujo de Estados",
@@ -2435,7 +2435,7 @@
       ]
     },
     "vendorCatalog": {
-      "metaTitle": "Catálogo de Proveedores de IA — Documentación de AI SENTINEL",
+      "metaTitle": "Catálogo de Proveedores de IA: Documentación de AI SENTINEL",
       "metaDescription": "Catálogo preauditado de más de 665 proveedores de IA con perfiles de riesgo, datos de cumplimiento y metadatos de gobernanza, impulsado por Vendor.Watch.",
       "premiumBadge": "Premium",
       "title": "Catálogo de Proveedores de IA",
@@ -2522,11 +2522,11 @@
       ]
     },
     "conformity": {
-      "metaTitle": "Evaluación de Conformidad — Documentación de AI SENTINEL",
+      "metaTitle": "Evaluación de Conformidad: Documentación de AI SENTINEL",
       "metaDescription": "Plantilla de evaluación de conformidad del Art. 43 del Reglamento de IA de la UE para sistemas de IA de alto riesgo. Evaluación estructurada de la documentación técnica, la gestión de la calidad y el seguimiento poscomercialización.",
       "premiumBadge": "Premium",
       "title": "Evaluación de Conformidad",
-      "intro": "Los sistemas de IA de alto riesgo bajo el Reglamento de IA de la UE deben someterse a una evaluación de conformidad antes de su introducción en el mercado. AI SENTINEL proporciona una plantilla estructurada que guía a tu equipo por cada requisito — desde la documentación técnica hasta el seguimiento poscomercialización — para que nada se quede en el tintero.",
+      "intro": "Los sistemas de IA de alto riesgo bajo el Reglamento de IA de la UE deben someterse a una evaluación de conformidad antes de su introducción en el mercado. AI SENTINEL proporciona una plantilla estructurada que guía a tu equipo por cada requisito (desde la documentación técnica hasta el seguimiento poscomercialización) para que nada se quede en el tintero.",
       "whatTitle": "¿Qué es una Evaluación de Conformidad?",
       "whatP1": "Una evaluación de conformidad es un proceso de evaluación formal exigido por el Art. 43 del Reglamento de IA de la UE para los sistemas de IA de alto riesgo. Verifica que el sistema de IA cumple todos los requisitos aplicables antes del despliegue, cubriendo la gobernanza de datos, la transparencia, la supervisión humana, la precisión, la solidez y la ciberseguridad.",
       "whatP2": "Según el caso de uso, las evaluaciones de conformidad pueden realizarse internamente por el proveedor o a través de un organismo notificado externo. En ambos casos, la evaluación debe seguir una metodología estructurada y producir evidencia documentada del cumplimiento.",
@@ -2609,7 +2609,7 @@
       ]
     },
     "biasFairness": {
-      "metaTitle": "Evaluación de Sesgo y Equidad — Documentación de AI SENTINEL",
+      "metaTitle": "Evaluación de Sesgo y Equidad: Documentación de AI SENTINEL",
       "metaDescription": "Evaluación estructurada de sesgo y equidad para sistemas de IA. Detecta riesgos de discriminación, evalúa atributos protegidos y documenta medidas de mitigación.",
       "premiumBadge": "Premium",
       "title": "Evaluación de Sesgo y Equidad",
@@ -2707,7 +2707,7 @@
       ]
     },
     "roles": {
-      "metaTitle": "Roles y Permisos — Documentación de AI SENTINEL",
+      "metaTitle": "Roles y Permisos: Documentación de AI SENTINEL",
       "metaDescription": "Conoce los cinco roles de usuario en AI SENTINEL y las acciones que puede realizar cada uno en los módulos de gobernanza.",
       "title": "Roles y Permisos",
       "intro": "AI SENTINEL utiliza cinco roles para controlar el acceso a las operaciones de gobernanza. Todas las acciones se verifican en el servidor: la interfaz se adapta para mostrar solo lo que tu rol permite.",
@@ -2797,7 +2797,7 @@
       "enforcementBody": "Todos los permisos se verifican en el servidor, no solo en la interfaz. Aunque un usuario realice una solicitud directa a la API, el servidor comprueba su rol y pertenencia a la organización antes de procesar cualquier operación. Esto significa que la seguridad no depende de lo que el navegador muestre u oculte."
     },
     "security": {
-      "metaTitle": "Seguridad y Confianza — Documentación de AI SENTINEL",
+      "metaTitle": "Seguridad y Confianza: Documentación de AI SENTINEL",
       "metaDescription": "Cómo AI SENTINEL protege los datos de tu organización con controles de seguridad de nivel empresarial.",
       "title": "Seguridad y Confianza",
       "intro": "AI SENTINEL está diseñado para organizaciones que gestionan datos sensibles de gobernanza de IA. La seguridad está integrada en cada capa de la plataforma: desde cómo aislamos tus datos hasta cómo controlamos el acceso y protegemos tu información.",
@@ -3290,7 +3290,7 @@
     "scorecard": {
       "eyebrow": "Cuadro de mando",
       "title": "Cuadro de mando del programa",
-      "radarCaption": "Funciones del NIST AI RMF — actual frente a objetivo",
+      "radarCaption": "Funciones del NIST AI RMF: actual frente a objetivo",
       "current": "Actual",
       "target": "Objetivo"
     },

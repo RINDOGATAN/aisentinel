@@ -26,6 +26,7 @@ const system = (over: Record<string, unknown> = {}) =>
     metadata: null,
     riskClassification: null,
     admtProfile: null,
+    agentProfile: null,
     transparencyProfile: null,
     ...over,
   }) as Parameters<typeof buildSystemScope>[0];

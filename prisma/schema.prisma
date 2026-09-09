@@ -146,6 +146,7 @@ model Organization {
   riskClassifications   RiskClassification[]
   transparencyProfiles  TransparencyProfile[]
   admtProfiles          AdmtProfile[]
+  agentProfiles         AgentProfile[]
   assessmentTemplates   AIAssessmentTemplate[]
   assessments           AIAssessment[]
   oversightGates        OversightGate[]
@@ -282,6 +283,7 @@ model AISystem {
   dataSources         AISystemDataSource[]
   riskClassification  RiskClassification?
   transparencyProfile TransparencyProfile?
+  agentProfile        AgentProfile?
   admtProfile         AdmtProfile?
   assessments         AIAssessment[]
   oversightGates      OversightGate[]
@@ -402,6 +404,67 @@ enum TransparencyObligationStatus {
 // systems placed on the market before that date a machine-readable-marking
 // grace period until 2 Dec 2026 (the deadline math lives in
 // src/config/transparency-rules.ts, never in the DB).
+/// How much a system does on its own, and who is accountable when it acts.
+///
+/// Every regime this product carries was written for a system that produces an
+/// output a person then uses. An agent that acts on that output breaks the
+/// assumption, and the agentic stress test reasons about where it breaks.
+/// Until now the whole agentic layer turned on a single yes-or-no screening
+/// answer, which cannot answer "who can stop it" or "what can it reach".
+enum AgentAutonomy {
+  NOT_ASSESSED
+  /// Produces an output a person reads and acts on. Not an agent.
+  NONE
+  /// Proposes an action; a person carries it out.
+  SUGGESTS
+  /// Carries out the action itself, but only after explicit human approval.
+  ACTS_WITH_APPROVAL
+  /// Carries out the action with no person in the loop.
+  ACTS_AUTONOMOUSLY
+}
+
+model AgentProfile {
+  id             String        @id @default(cuid())
+  aiSystemId     String        @unique
+  organizationId String
+  autonomy       AgentAutonomy @default(NOT_ASSESSED)
+  /// What the agent may do without a person, as a bounded scope.
+  actionScope String? @db.Text
+  /// Which agents or systems receive its output and act further.
+  downstreamAgents String? @db.Text
+  /// Tools, connectors and services the agent may call. An agent reaches
+  /// further than the system's own contract does, so this is the list that
+  /// has to sit inside the processing agreement.
+  tools String[]
+  /// The named person accountable for what the agent does.
+  humanSponsor String?
+  /// Who can stop it, how quickly, and what happens to actions in flight.
+  killSwitch String? @db.Text
+  /// Oversight that has never been exercised is a claim, not a control.
+  killSwitchTestedAt DateTime?
+  /// How long an agent-initiated action can still be reversed.
+  reversalWindow String?
+  /// How an action is traced back to the decision, model version and data.
+  traceability String?   @db.Text
+  notes        String?   @db.Text
+  reviewedBy   String
+  reviewedAt   DateTime  @default(now())
+
+  provenance  Provenance @default(USER_ENTERED)
+  sourceRef   String?
+  confirmedBy String?
+  confirmedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  aiSystem     AISystem     @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@map("agent_profiles")
+}
+
 model TransparencyProfile {
   id                           String                       @id @default(cuid())
   aiSystemId                   String                       @unique

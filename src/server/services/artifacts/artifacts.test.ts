@@ -36,6 +36,7 @@ const baseSystem = (over: Record<string, unknown> = {}) =>
     metadata: null,
     riskClassification: { riskLevel: "HIGH", annexIIICategory: "employment" },
     admtProfile: null,
+    agentProfile: null,
     transparencyProfile: null,
     ...over,
   }) as Parameters<typeof buildSystemScope>[0];

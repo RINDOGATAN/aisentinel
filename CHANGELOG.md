@@ -8,6 +8,22 @@ All notable changes to AI SENTINEL are documented here. The format follows
 
 ### Added
 
+- **Agent governance in the registry.** Every AI system can now record how much
+  it does on its own, on a five-point scale from producing an output a person
+  acts on, through proposing an action, to acting with no person in the loop.
+  That one answer decides the rest: whether the agentic overlay applies,
+  whether the stress test runs, and which controls the system is expected to
+  have recorded. A system that only proposes is asked for a bounded action
+  scope and a named sponsor; one that acts by itself is asked for those plus
+  the tools it may call, who can stop it, how long an action can be reversed,
+  how an action traces back to the decision, and a date on which stopping it
+  was actually exercised, because a control that has never been used is a
+  claim rather than a control. The agentic layer previously turned on a single
+  yes-or-no screening answer, which was enough to run the stress test but could
+  not answer any of the questions the stress test raises. That answer is still
+  honoured where no profile exists, so nothing in scope yesterday falls out of
+  scope today.
+
 - **The assessment now shows why each question is asked and what answering it
   closes.** The unified template records, on every question, the reason it
   appears and the requirement codes its answer evidences. All of it was carried

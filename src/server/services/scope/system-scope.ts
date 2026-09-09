@@ -35,6 +35,14 @@ import {
   type ScreeningAnswer,
 } from "@/config/regimes";
 import { deriveOverlayTags, undeterminedRegimes } from "@/lib/overlay-tags";
+import {
+  assessAgent,
+  autonomyIsAgentic,
+  EMPTY_AGENT_FACTS,
+  type AgentAssessment,
+  type AgentAutonomyValue,
+  type AgentProfileFacts,
+} from "@/config/agent-rules";
 import type { OverlayTag } from "@/config/unified-assessment";
 
 /**
@@ -85,6 +93,9 @@ export interface SystemScope {
   hasArt50Obligation: boolean;
   admt: AdmtScopeResult;
   admtResolved: boolean;
+  /** The agent facts as recorded, and what they imply. */
+  agent: AgentProfileFacts;
+  agentAssessment: AgentAssessment;
   regimes: RegimeScope[];
   overlayTags: OverlayTag[];
   undetermined: { framework: string; openQuestions: string[] }[];
@@ -104,6 +115,19 @@ const SYSTEM_INCLUDE = {
       optOutBasis: true,
       designatedReviewer: true,
       appealRouteDescription: true,
+    },
+  },
+  agentProfile: {
+    select: {
+      autonomy: true,
+      actionScope: true,
+      downstreamAgents: true,
+      tools: true,
+      humanSponsor: true,
+      killSwitch: true,
+      killSwitchTestedAt: true,
+      reversalWindow: true,
+      traceability: true,
     },
   },
   transparencyProfile: {
@@ -142,6 +166,17 @@ interface RawSystem {
     optOutBasis: string;
     designatedReviewer: string | null;
     appealRouteDescription: string | null;
+  } | null;
+  agentProfile: {
+    autonomy: string;
+    actionScope: string | null;
+    downstreamAgents: string | null;
+    tools: string[];
+    humanSponsor: string | null;
+    killSwitch: string | null;
+    killSwitchTestedAt: Date | null;
+    reversalWindow: string | null;
+    traceability: string | null;
   } | null;
   transparencyProfile: {
     art50InteractionStatus: string;
@@ -245,6 +280,31 @@ export function buildSystemScope(system: RawSystem, org: RawOrg | null): SystemS
     tp.art50DeepfakeStatus,
   ].some((status) => status !== "NOT_APPLICABLE");
 
+  const agentProfile = system.agentProfile;
+  const agent: AgentProfileFacts = agentProfile
+    ? {
+        autonomy: agentProfile.autonomy as AgentAutonomyValue,
+        actionScope: agentProfile.actionScope,
+        downstreamAgents: agentProfile.downstreamAgents,
+        tools: agentProfile.tools,
+        humanSponsor: agentProfile.humanSponsor,
+        killSwitch: agentProfile.killSwitch,
+        killSwitchTestedAt: agentProfile.killSwitchTestedAt,
+        reversalWindow: agentProfile.reversalWindow,
+        traceability: agentProfile.traceability,
+      }
+    : EMPTY_AGENT_FACTS;
+  const agentAssessment = assessAgent(agent);
+
+  // The profile is the better answer where it exists. The old screening
+  // answer still counts, so a system that was agentic yesterday does not
+  // quietly fall out of scope today just because no profile has been filled
+  // in yet.
+  const agentic =
+    autonomyIsAgentic(agent.autonomy) ||
+    (agent.autonomy === "NOT_ASSESSED" &&
+      regimeSystemFacts.handsOffToAutonomousAgent === "YES");
+
   const overlayTags = deriveOverlayTags({
     admtTags: admtResolved ? admt.tags : undefined,
     regimeScopes: regimes,
@@ -252,7 +312,7 @@ export function buildSystemScope(system: RawSystem, org: RawOrg | null): SystemS
     annexIiiCategory: system.riskClassification?.annexIIICategory ?? null,
     hasArt50Obligation,
     technique: system.technique,
-    handsOffToAutonomousAgent: regimeSystemFacts.handsOffToAutonomousAgent,
+    handsOffToAutonomousAgent: agentic ? "YES" : "NO",
   });
 
   return {
@@ -276,6 +336,8 @@ export function buildSystemScope(system: RawSystem, org: RawOrg | null): SystemS
     hasArt50Obligation,
     admt,
     admtResolved,
+    agent,
+    agentAssessment,
     regimes,
     overlayTags,
     undetermined: undeterminedRegimes(regimes),

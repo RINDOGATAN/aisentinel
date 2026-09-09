@@ -65,6 +65,7 @@ import { AnnexIvCard } from "@/components/ai/AnnexIvCard";
 import { TransparencyPanel } from "@/components/governance/TransparencyPanel";
 import { AdmtPanel } from "@/components/governance/AdmtPanel";
 import { UnifiedPanel } from "@/components/governance/UnifiedPanel";
+import { AgentPanel } from "@/components/governance/AgentPanel";
 import { TransparencyStatementCard } from "@/components/ai/TransparencyStatementCard";
 
 const statusColors: Record<string, string> = {
@@ -201,6 +202,7 @@ export default function AISystemDetailPage() {
   const locale = useLocale();
   const tc = useTranslations("common");
   const tRegimes = useTranslations("regimes");
+  const tAgent = useTranslations("agent");
   const utils = trpc.useUtils();
   const organizationId = organization?.id ?? "";
 
@@ -1013,6 +1015,9 @@ export default function AISystemDetailPage() {
           <TabsTrigger value="unified" className="text-xs sm:text-sm">
             {tRegimes("title")}
           </TabsTrigger>
+          <TabsTrigger value="agent" className="text-xs sm:text-sm">
+            {tAgent("tabLabel")}
+          </TabsTrigger>
         </TabsList>
 
         {/* Models Tab */}
@@ -1516,6 +1521,18 @@ export default function AISystemDetailPage() {
             leave the discovery with no entry point. */}
         <TabsContent value="unified" className="mt-4">
           <UnifiedPanel
+            organizationId={organizationId}
+            aiSystemId={id}
+            canWrite={canWrite}
+          />
+        </TabsContent>
+
+        {/* Agent governance: autonomy, reach, accountability and the stop
+            control. Always shown — a system that is not an agent is an answer
+            worth recording, and hiding the tab until it is one leaves nowhere
+            to record it. */}
+        <TabsContent value="agent" className="mt-4">
+          <AgentPanel
             organizationId={organizationId}
             aiSystemId={id}
             canWrite={canWrite}

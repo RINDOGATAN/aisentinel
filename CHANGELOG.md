@@ -6,6 +6,24 @@ All notable changes to AI SENTINEL are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- **A sign-off record, so a marker can never drift from the fact.**
+  `src/config/legal-signoff.ts` is now the one place that says whether a pack of
+  regulatory content has been confirmed, by whom, when, and on what basis. Every
+  review marker is generated from it, and the tests assert the two can never
+  disagree: a signed-off pack needs a named confirmer, a date and a stated
+  basis, and an unknown pack is treated as not signed off, because silence is
+  not confirmation.
+- **The GDPR, Colorado, Texas and Washington packs, the unified assessment and
+  the agentic stress test are signed off** as of 8 September 2026, confirmed as
+  a body by the product owner after sampling the review console. The record says
+  so in those words rather than implying an item-by-item reading. The EU AI Act
+  and California ADMT packs keep their own review dates and remain pending.
+- Generated documents now state the sign-off status of the content they
+  actually cite, instead of carrying one blanket warning. A document citing only
+  signed-off packs says so; one that also cites a pending pack names which.
+
 ### Fixed
 
 - **Washington prior-authorisation duties were dated a year late.** The

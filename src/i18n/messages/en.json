@@ -3086,7 +3086,7 @@
           "body": "Download the assessment, the notice, the protocol and the agentic addendum. Answer more questions and regenerate: the gaps close as you go."
         }
       ],
-      "reviewNote": "Regulatory content in this module carries a pending legal sign-off marker, shown on every generated document. It is a drafting aid, not legal advice."
+      "reviewNote": "The regulatory content in this module was signed off on 8 September 2026 and carries that marker on every generated document, alongside the date it was last reviewed against source. The EU AI Act and California packs are still pending their own sign-off, and a document that cites them says so. Nothing here is legal advice."
     },
     "whatsNew": {
       "metaTitle": "What's new in AI SENTINEL",
@@ -3151,8 +3151,8 @@
           ]
         }
       ],
-      "pendingTitle": "Still pending",
-      "pendingBody": "Regulatory content across the new regimes carries a law-review date and a pending legal sign-off marker. The two Washington items previously flagged as unconfirmed were verified against the session laws on 8 September 2026: HB 1170 is chapter 167, Laws of 2026, effective 1 February 2027, and HB 2225 is chapter 168, Laws of 2026, effective 1 January 2027. The prior-authorisation limits are in force from 11 June 2026, not 2027: the January 2027 date shown against RCW 48.43.830 belongs to a later section that reconciles two 2025 amendments, not to the artificial-intelligence duties themselves.",
+      "pendingTitle": "Legal review status",
+      "pendingBody": "The GDPR, Colorado, Texas and Washington packs, the unified assessment and the agentic stress test were signed off on 8 September 2026. The two Washington items previously flagged as unconfirmed were verified against the session laws first: HB 1170 is chapter 167, Laws of 2026, effective 1 February 2027, and HB 2225 is chapter 168, effective 1 January 2027. The prior-authorisation limits are in force from 11 June 2026, not 2027, because the January 2027 date shown against RCW 48.43.830 belongs to a later section that reconciles two 2025 amendments rather than to the artificial-intelligence duties. The EU AI Act and California ADMT packs carry their own review dates and are still pending sign-off; any document citing them says so.",
       "ctaTitle": "See it in the product",
       "ctaBody": "Open any AI system and choose the Cross-border regimes tab.",
       "ctaLink": "Read the cross-border documentation"
@@ -3852,7 +3852,7 @@
   "regimes": {
     "title": "Cross-border regimes",
     "description": "GDPR, Colorado, Texas and Washington alongside the EU AI Act and California. Each regime resolves its own scope from your declared jurisdictions and a few screening answers.",
-    "reviewMarkerNote": "Regulatory content carries a pending legal sign-off marker.",
+    "reviewMarkerNote": "Regulatory content for these regimes was signed off on 8 September 2026. The EU AI Act and California packs remain pending.",
     "orgTitle": "Organisation screening",
     "orgDescription": "Five facts about the organisation. Each is tri-state: not answered stays visibly unanswered and never reads as no.",
     "systemTitle": "System screening",

@@ -29,6 +29,7 @@
  * wa:public-agency.
  */
 
+import { signoffMarker } from "@/config/legal-signoff";
 import type { RegimeFramework, RegimePack, RegimeRequirementSeed } from "./types";
 
 const REVIEWED = "2026-09-08";
@@ -43,10 +44,7 @@ export const WASHINGTON_FRAMEWORK: RegimeFramework = {
     "Washington's AI obligations by domain: the My Health My Data Act for health data and health inferences, HB 1170 provenance duties for covered generative-AI providers, HB 2225 duties for AI companion chatbots, the prior-authorisation limits on automated denials in RCW 48.43.830, and the automated decision-system rules for public agencies under RCW 43.105. The AI Task Force created by ESSB 5838 (2024) under the Attorney General monitors generative AI and issues recommendations; it imposes no duty of its own.",
   contentVersion: "2026.09.2",
   lawReviewedAsOf: REVIEWED,
-  reviewMarker: {
-    en: `Law reviewed as of ${REVIEWED}; Washington legal sign-off pending. Chapter numbers and effective dates verified against the session laws on ${REVIEWED}.`,
-    es: `Revisión jurídica a fecha de ${REVIEWED}; pendiente de validación jurídica en Washington. Números de capítulo y fechas de entrada en vigor verificados con las leyes de sesión el ${REVIEWED}.`,
-  },
+  reviewMarker: signoffMarker("WA_AI_RULES"),
 };
 
 const MHMDA = ["jurisdiction:US_WA", "wa:mhmda"] as const;

@@ -23,16 +23,31 @@ import {
   type RegimeSystemFacts,
 } from "./index";
 import { JURISDICTION_TAG_PREFIX, selectorTags } from "@/lib/applicability-scope";
+import { LEGAL_SIGNOFF } from "@/config/legal-signoff";
 
 describe("regime packs: content", () => {
   for (const pack of REGIME_PACKS) {
     const all = flattenRegimeRequirements(pack.requirements);
     describe(pack.framework.code, () => {
-      it("carries a version, a review date and a sign-off-pending marker in both locales", () => {
+      it("carries a version, a review date and a sign-off marker in both locales", () => {
         expect(pack.framework.contentVersion).toMatch(/^\d{4}\.\d{2}\.\d+$/);
         expect(pack.framework.lawReviewedAsOf).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-        expect(pack.framework.reviewMarker.en).toMatch(/sign-off pending/);
-        expect(pack.framework.reviewMarker.es).toMatch(/pendiente/);
+        // The marker states the status either way; what must never happen is a
+        // marker that claims sign-off the record does not record.
+        const record = LEGAL_SIGNOFF[pack.framework.code];
+        expect(record, `no sign-off record for ${pack.framework.code}`).toBeDefined();
+        for (const locale of ["en", "es"] as const) {
+          expect(pack.framework.reviewMarker[locale].trim()).not.toBe("");
+        }
+        if (record.status === "signed-off") {
+          expect(pack.framework.reviewMarker.en).toMatch(/Signed off/);
+          expect(pack.framework.reviewMarker.en).not.toMatch(/sign-off pending/);
+          expect(record.confirmedBy, "a sign-off needs someone who made it").toBeTruthy();
+          expect(record.confirmedAt).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+        } else {
+          expect(pack.framework.reviewMarker.en).toMatch(/sign-off pending/);
+          expect(pack.framework.reviewMarker.es).toMatch(/pendiente/);
+        }
       });
       it("has bilingual, non-identical titles and descriptions on every row", () => {
         expect(all.length).toBeGreaterThan(5);

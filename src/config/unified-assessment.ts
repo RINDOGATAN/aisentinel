@@ -30,13 +30,17 @@
  * Pure data and pure selection. Legal sign-off PENDING for every citation.
  */
 
+import { signoffMarker } from "@/config/legal-signoff";
 import type { Localized } from "@/config/lawfirm-ai-toolkit";
 
 export const UNIFIED_ASSESSMENT_VERSION = "2026.09.1";
 export const UNIFIED_ASSESSMENT_LAW_REVIEWED_AS_OF = "2026-09-08";
-export const UNIFIED_ASSESSMENT_REVIEW_MARKER: Localized = {
-  en: `Law reviewed as of ${UNIFIED_ASSESSMENT_LAW_REVIEWED_AS_OF}; legal sign-off pending. This template is a drafting aid, not legal advice.`,
-  es: `Revisión jurídica a fecha de ${UNIFIED_ASSESSMENT_LAW_REVIEWED_AS_OF}; pendiente de validación jurídica. Esta plantilla es una ayuda a la redacción, no asesoramiento jurídico.`,
+export const UNIFIED_ASSESSMENT_REVIEW_MARKER: Localized = signoffMarker("UNIFIED_ASSESSMENT");
+
+/** Always stated alongside the marker: this is a drafting aid, not advice. */
+export const UNIFIED_ASSESSMENT_NOT_ADVICE: Localized = {
+  en: "This template is a drafting aid, not legal advice.",
+  es: "Esta plantilla es una ayuda a la redacción, no asesoramiento jurídico.",
 };
 
 /** The scope tag that gates an overlay question. `null` means always asked. */

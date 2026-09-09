@@ -17,15 +17,25 @@ import {
   type OverlayTag,
 } from "./unified-assessment";
 import { deriveOverlayTags, undeterminedRegimes } from "@/lib/overlay-tags";
+import { LEGAL_SIGNOFF } from "@/config/legal-signoff";
 import type { RegimeScope } from "@/config/regimes";
 
 const all = allUnifiedQuestions();
 
 describe("unified assessment: content", () => {
-  it("carries a version and a sign-off-pending marker in both locales", () => {
+  it("carries a version and a sign-off marker matching the record", () => {
     expect(UNIFIED_ASSESSMENT_VERSION).toMatch(/^\d{4}\.\d{2}\.\d+$/);
-    expect(UNIFIED_ASSESSMENT_REVIEW_MARKER.en).toContain("sign-off pending");
-    expect(UNIFIED_ASSESSMENT_REVIEW_MARKER.es).toContain("pendiente");
+    const record = LEGAL_SIGNOFF.UNIFIED_ASSESSMENT;
+    expect(record).toBeDefined();
+    for (const locale of ["en", "es"] as const) {
+      expect(UNIFIED_ASSESSMENT_REVIEW_MARKER[locale].trim()).not.toBe("");
+    }
+    if (record.status === "signed-off") {
+      expect(UNIFIED_ASSESSMENT_REVIEW_MARKER.en).toMatch(/Signed off/);
+      expect(UNIFIED_ASSESSMENT_REVIEW_MARKER.en).not.toMatch(/sign-off pending/);
+    } else {
+      expect(UNIFIED_ASSESSMENT_REVIEW_MARKER.en).toContain("sign-off pending");
+    }
   });
 
   it("has unique question ids and unique section ids", () => {

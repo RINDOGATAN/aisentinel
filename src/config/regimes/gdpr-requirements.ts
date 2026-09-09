@@ -14,6 +14,7 @@
  * the CJEU reading of Art. 22 (C-634/21, 7 Dec 2023) is noted where it bites.
  */
 
+import { signoffMarker } from "@/config/legal-signoff";
 import type { RegimeFramework, RegimePack, RegimeRequirementSeed } from "./types";
 
 const REVIEWED = "2026-09-08";
@@ -28,10 +29,7 @@ export const GDPR_FRAMEWORK: RegimeFramework = {
     "The General Data Protection Regulation provisions that govern AI systems processing personal data: principles, lawful basis, transparency about automated decision-making, the Article 22 right not to be subject to solely automated decisions, and the Article 35 data protection impact assessment.",
   contentVersion: "2026.09.1",
   lawReviewedAsOf: REVIEWED,
-  reviewMarker: {
-    en: `Law reviewed as of ${REVIEWED}; legal sign-off pending.`,
-    es: `Revisión jurídica a fecha de ${REVIEWED}; pendiente de validación jurídica.`,
-  },
+  reviewMarker: signoffMarker("EU_GDPR"),
 };
 
 const CORE = ["jurisdiction:EU", "gdpr:core"] as const;

@@ -16,6 +16,7 @@
  * co:developer, co:deployer. Legal sign-off PENDING.
  */
 
+import { signoffMarker } from "@/config/legal-signoff";
 import type { RegimeFramework, RegimePack, RegimeRequirementSeed } from "./types";
 
 const REVIEWED = "2026-09-08";
@@ -30,10 +31,7 @@ export const COLORADO_FRAMEWORK: RegimeFramework = {
     "Colorado's replacement automated decision-making law: notice, post-decision disclosure and consumer recourse for ADMT that materially influences consequential decisions in education, employment, housing, financial or lending services, insurance, health care, legal services and government services. Developers owe deployers technical documentation. Enforcement by the Attorney General; a federal challenge to the predecessor statute is pending.",
   contentVersion: "2026.09.1",
   lawReviewedAsOf: REVIEWED,
-  reviewMarker: {
-    en: `Law reviewed as of ${REVIEWED}; Colorado legal sign-off pending. Enforcement posture affected by pending federal litigation.`,
-    es: `Revisión jurídica a fecha de ${REVIEWED}; pendiente de validación jurídica en Colorado. La aplicación está condicionada por un litigio federal pendiente.`,
-  },
+  reviewMarker: signoffMarker("CO_SB_26_189"),
 };
 
 const CORE = ["jurisdiction:US_CO", "co:core"] as const;

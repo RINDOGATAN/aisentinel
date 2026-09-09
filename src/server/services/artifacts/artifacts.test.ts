@@ -88,6 +88,11 @@ describe("artifact assembly: gaps are first class", () => {
   it("always carries the disclaimer, the version and the review date", () => {
     const artifact = buildAssessmentArtifact(input());
     expect(artifact.disclaimer).toContain("not legal advice");
+    // The disclaimer states the status of the content this document cites.
+    // A system in EU scope cites GDPR and the EU AI Act; the latter is still
+    // pending, so the document must say so rather than claim a clean bill.
+    expect(artifact.disclaimer).toContain("pending legal sign-off");
+    expect(artifact.disclaimer).toContain("EU AI ACT");
     expect(artifact.contentVersion).toMatch(/^\d{4}\.\d{2}\.\d+$/);
     expect(artifact.lawReviewedAsOf).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(renderArtifactMarkdown(artifact)).toContain("law reviewed as of");

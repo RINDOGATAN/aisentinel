@@ -14,6 +14,7 @@
  * tx:healthcare.
  */
 
+import { signoffMarker } from "@/config/legal-signoff";
 import type { RegimeFramework, RegimePack, RegimeRequirementSeed } from "./types";
 
 const REVIEWED = "2026-09-08";
@@ -28,10 +29,7 @@ export const TEXAS_FRAMEWORK: RegimeFramework = {
     "The Texas Responsible Artificial Intelligence Governance Act: intent-based prohibitions on manipulation, constitutional-rights infringement, unlawful discrimination and unlawful explicit content; disclosure duties for government agencies and health care providers; a ban on government social scoring and non-consensual biometric identification; Attorney General enforcement with a cure period; a NIST AI RMF safe harbour and a 36-month regulatory sandbox.",
   contentVersion: "2026.09.1",
   lawReviewedAsOf: REVIEWED,
-  reviewMarker: {
-    en: `Law reviewed as of ${REVIEWED}; Texas legal sign-off pending.`,
-    es: `Revisión jurídica a fecha de ${REVIEWED}; pendiente de validación jurídica en Texas.`,
-  },
+  reviewMarker: signoffMarker("TX_TRAIGA"),
 };
 
 const CORE = ["jurisdiction:US_TX", "tx:core"] as const;

@@ -3086,7 +3086,7 @@
           "body": "Descargue la evaluación, el aviso, el protocolo y el anexo agéntico. Responda a más preguntas y vuelva a generarlos: las lagunas se van cerrando."
         }
       ],
-      "reviewNote": "El contenido normativo de este módulo lleva una marca de validación jurídica pendiente, visible en cada documento generado. Es una ayuda a la redacción, no asesoramiento jurídico."
+      "reviewNote": "El contenido normativo de este módulo se validó el 8 de septiembre de 2026 y lleva esa marca en cada documento generado, junto con la fecha de la última revisión frente a la fuente. Los paquetes del Reglamento de IA de la UE y de California siguen pendientes de su propia validación, y todo documento que los cite lo indica. Nada de esto es asesoramiento jurídico."
     },
     "whatsNew": {
       "metaTitle": "Novedades de AI SENTINEL",
@@ -3151,8 +3151,8 @@
           ]
         }
       ],
-      "pendingTitle": "Todavía pendiente",
-      "pendingBody": "El contenido normativo de los nuevos regímenes lleva una fecha de revisión jurídica y una marca de validación pendiente. Los dos aspectos de Washington señalados antes como no confirmados se verificaron con las leyes de sesión el 8 de septiembre de 2026: la HB 1170 es el capítulo 167 de las Leyes de 2026, en vigor el 1 de febrero de 2027, y la HB 2225 es el capítulo 168 de las Leyes de 2026, en vigor el 1 de enero de 2027. Los límites a la autorización previa están en vigor desde el 11 de junio de 2026, no desde 2027: la fecha de enero de 2027 que figura junto al RCW 48.43.830 corresponde a una sección posterior que concilia dos modificaciones de 2025, no a los deberes sobre inteligencia artificial.",
+      "pendingTitle": "Situación de la revisión jurídica",
+      "pendingBody": "Los paquetes del RGPD, Colorado, Texas y Washington, la evaluación unificada y la prueba de esfuerzo agéntica se validaron el 8 de septiembre de 2026. Antes se verificaron con las leyes de sesión los dos aspectos de Washington señalados como no confirmados: la HB 1170 es el capítulo 167 de las Leyes de 2026, en vigor el 1 de febrero de 2027, y la HB 2225 es el capítulo 168, en vigor el 1 de enero de 2027. Los límites a la autorización previa están en vigor desde el 11 de junio de 2026, no desde 2027, porque la fecha de enero de 2027 que figura junto al RCW 48.43.830 corresponde a una sección posterior que concilia dos modificaciones de 2025 y no a los deberes sobre inteligencia artificial. Los paquetes del Reglamento de IA de la UE y de la ADMT de California llevan sus propias fechas de revisión y siguen pendientes de validación; todo documento que los cite lo indica.",
       "ctaTitle": "Véalo en el producto",
       "ctaBody": "Abra cualquier sistema de IA y elija la pestaña Regímenes transfronterizos.",
       "ctaLink": "Leer la documentación transfronteriza"
@@ -3852,7 +3852,7 @@
   "regimes": {
     "title": "Regímenes transfronterizos",
     "description": "El RGPD, Colorado, Texas y Washington junto al Reglamento de IA de la UE y California. Cada régimen resuelve su propio ámbito a partir de las jurisdicciones declaradas y de unas pocas respuestas de cribado.",
-    "reviewMarkerNote": "El contenido normativo lleva una marca de validación jurídica pendiente.",
+    "reviewMarkerNote": "El contenido normativo de estos regímenes se validó el 8 de septiembre de 2026. Los paquetes del Reglamento de IA de la UE y de California siguen pendientes.",
     "orgTitle": "Cribado de la organización",
     "orgDescription": "Cinco hechos sobre la organización. Cada uno tiene tres estados: sin responder permanece visiblemente sin responder y nunca se lee como un no.",
     "systemTitle": "Cribado del sistema",

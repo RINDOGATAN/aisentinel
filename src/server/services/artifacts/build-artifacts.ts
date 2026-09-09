@@ -27,6 +27,7 @@ import {
   type UnifiedQuestion,
 } from "@/config/unified-assessment";
 import { runAgenticStressTest } from "@/config/agentic-stress-test";
+import { pendingPacks } from "@/config/legal-signoff";
 import type { SystemScope } from "@/server/services/scope/system-scope";
 import {
   collectGaps,
@@ -41,10 +42,42 @@ import {
 
 export type ContentLocale = "en" | "es";
 
-const DISCLAIMER: Record<ContentLocale, string> = {
-  en: "This document was assembled from the AI registry and the answers recorded in the unified impact assessment. It is a drafting aid, not legal advice, and the regulatory content it cites is pending legal sign-off. Review every section before it leaves the organisation.",
-  es: "Este documento se ha compuesto a partir del registro de IA y de las respuestas recogidas en la evaluación de impacto unificada. Es una ayuda a la redacción, no asesoramiento jurídico, y el contenido normativo que cita está pendiente de validación jurídica. Revise cada apartado antes de que salga de la organización.",
+const DISCLAIMER_BASE: Record<ContentLocale, string> = {
+  en: "This document was assembled from the AI registry and the answers recorded in the unified impact assessment. It is a drafting aid, not legal advice. Review every section before it leaves the organisation.",
+  es: "Este documento se ha compuesto a partir del registro de IA y de las respuestas recogidas en la evaluación de impacto unificada. Es una ayuda a la redacción, no asesoramiento jurídico. Revise cada apartado antes de que salga de la organización.",
 };
+
+/** Which content packs a document for this system actually draws on. */
+function citedPacks(scope: SystemScope): string[] {
+  const packs = new Set<string>(["UNIFIED_ASSESSMENT"]);
+  for (const framework of applicableFrameworks(scope)) {
+    // NIST and ISO are voluntary standards, not regulatory content we sign off.
+    if (framework === "NIST_AI_RMF" || framework === "ISO_42001") continue;
+    packs.add(framework);
+  }
+  if (scope.overlayTags.includes("agentic")) packs.add("AGENTIC_STRESS_TEST");
+  return [...packs];
+}
+
+/**
+ * The disclaimer names the sign-off status of the content this particular
+ * document cites, rather than asserting one status for everything. A document
+ * citing only signed-off packs should not carry a pending warning, and one
+ * that cites a pending pack must say which.
+ */
+function disclaimerFor(scope: SystemScope, locale: ContentLocale): string {
+  const pending = pendingPacks(citedPacks(scope));
+  const base = DISCLAIMER_BASE[locale];
+  if (pending.length === 0) {
+    return locale === "es"
+      ? base + " El contenido normativo que cita cuenta con validación jurídica."
+      : base + " The regulatory content it cites has been signed off.";
+  }
+  const names = pending.map((p) => p.replace(/_/g, " ")).join(", ");
+  return locale === "es"
+    ? base + " El contenido normativo de " + names + " está pendiente de validación jurídica."
+    : base + " The regulatory content it cites for " + names + " is pending legal sign-off.";
+}
 
 const REGIME_LABELS: Record<string, string> = {
   "eu:high-risk": "EU AI Act (high-risk)",
@@ -210,7 +243,7 @@ function header(input: ArtifactInput, kind: Artifact["kind"], title: string, sub
     generatedAt: input.generatedAt,
     contentVersion: UNIFIED_ASSESSMENT_VERSION,
     lawReviewedAsOf: UNIFIED_ASSESSMENT_LAW_REVIEWED_AS_OF,
-    disclaimer: DISCLAIMER[input.locale],
+    disclaimer: disclaimerFor(input.scope, input.locale),
     regimes: regimeLabels(input.scope.overlayTags),
     sections,
     gaps: collectGaps(sections),

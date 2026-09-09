@@ -17,11 +17,13 @@
  * Pure data and pure selection. Legal sign-off PENDING.
  */
 
+import { signoffMarker } from "@/config/legal-signoff";
 import type { Localized } from "@/config/lawfirm-ai-toolkit";
 import type { OverlayTag } from "@/config/unified-assessment";
 
 export const AGENTIC_STRESS_TEST_VERSION = "2026.09.1";
 export const AGENTIC_STRESS_TEST_LAW_REVIEWED_AS_OF = "2026-09-08";
+export const AGENTIC_STRESS_TEST_REVIEW_MARKER: Localized = signoffMarker("AGENTIC_STRESS_TEST");
 
 /** Which of the three artifacts the finding breaks. */
 export type BreakingArtifact = "assessment" | "notice" | "protocol";

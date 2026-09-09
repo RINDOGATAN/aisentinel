@@ -568,7 +568,15 @@
     "feedsAssessment": "la evaluación de impacto",
     "feedsNotice": "el aviso",
     "feedsProtocol": "el protocolo de revisión",
-    "answeredMark": "Respondida"
+    "answeredMark": "Respondida",
+    "registerTitle": "Aplica estas respuestas al registro de cumplimiento",
+    "registerBody": "Cada respuesta se adjunta como prueba a todos los requisitos que cita, y un requisito que nadie ha valorado todavía pasa a parcialmente conforme. Un estado que ya hayas fijado no se modifica nunca, y nada se marca como conforme de forma automática.",
+    "registerReady": "{evidenced} requisitos recibirán pruebas; {lifted} de ellos pasarán de sin valorar.",
+    "registerNothing": "Todavía no hay nada que aplicar. Responde a una pregunta que cite un requisito y aparecerá aquí.",
+    "registerAlready": "{count} ya tienen esta prueba.",
+    "registerUnmapped": "{count} requisitos citados no alcanzan a este sistema, así que se omiten. Adjúntalos desde la pestaña de cumplimiento del sistema si procede.",
+    "registerApply": "Aplicar al registro",
+    "registerApplied": "Pruebas adjuntadas a {count} requisitos"
   },
   "oversight": {
     "title": "Supervisión Humana",

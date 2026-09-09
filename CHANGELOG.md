@@ -8,6 +8,20 @@ All notable changes to AI SENTINEL are documented here. The format follows
 
 ### Added
 
+- **Answering the assessment now fills in the compliance register.** Each
+  question already declared which requirements its answer evidences, and none
+  of it reached the register: someone could answer the whole assessment
+  thoroughly and their compliance matrix would still read "not assessed" from
+  top to bottom, with the only remedy being to open each requirement and paste
+  the same answer again. Applying an assessment attaches every answer as
+  evidence to each requirement it cites. Two restraints are deliberate and
+  tested: a requirement nobody has judged moves to partially compliant, never
+  to compliant, because an answer is documentation rather than a verdict; and a
+  status a person has already set is never changed in either direction. The
+  action is explicit rather than automatic, shows the count before it runs, and
+  is idempotent. Six answered questions on a real system produced evidence on
+  twelve requirements across three frameworks.
+
 - **Agent governance in the registry.** Every AI system can now record how much
   it does on its own, on a five-point scale from producing an output a person
   acts on, through proposing an action, to acting with no person in the loop.

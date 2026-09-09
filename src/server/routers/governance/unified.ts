@@ -25,6 +25,12 @@ import {
 } from "@/server/services/artifacts/build-artifacts";
 import { renderArtifactMarkdown } from "@/server/services/artifacts/render-markdown";
 import {
+  evidenceTitle,
+  planRegisterUpdate,
+  type MappingRow,
+  type RequirementRow,
+} from "@/lib/assessment-to-register";
+import {
   UNIFIED_ASSESSMENT_LAW_REVIEWED_AS_OF,
   UNIFIED_ASSESSMENT_REVIEW_MARKER,
   UNIFIED_ASSESSMENT_VERSION,
@@ -252,4 +258,149 @@ export const unifiedRouter = createTRPCRouter({
           : null,
       };
     }),
+
+  /**
+   * What applying this assessment to the compliance register would do, and
+   * doing it.
+   *
+   * Answering the unified assessment produces text tied to specific
+   * requirements. Without this the register stayed at NOT_ASSESSED and the
+   * only way to close the gap was to open each requirement and paste the same
+   * answer again.
+   */
+  previewRegisterUpdate: organizationProcedure
+    .input(z.object({ organizationId: z.string(), assessmentId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const plan = await buildPlan(ctx, input.assessmentId);
+      return plan.summary;
+    }),
+
+  applyToRegister: orgWriteProcedure
+    .input(z.object({ organizationId: z.string(), assessmentId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { plan, assessment } = await buildPlan(ctx, input.assessmentId);
+      if (plan.evidence.length === 0) {
+        return { ...plan.counts, applied: 0 };
+      }
+      const reviewer = ctx.session.user.name ?? ctx.session.user.email ?? ctx.session.user.id;
+      const mappingIdByRequirement = plan.mappingIdByRequirement;
+
+      let applied = 0;
+      for (const item of plan.evidence) {
+        const mappingId = mappingIdByRequirement.get(item.requirementId);
+        if (!mappingId) continue;
+        await ctx.prisma.complianceEvidence.create({
+          data: {
+            complianceMappingId: mappingId,
+            organizationId: ctx.organization.id,
+            type: "DOCUMENT",
+            title: item.title,
+            description: item.description,
+            addedBy: reviewer,
+          },
+        });
+        if (item.liftStatus) {
+          // Documented, not yet judged sufficient. Only a person sets
+          // COMPLIANT, and the provenance says where this came from.
+          await ctx.prisma.complianceMapping.update({
+            where: { id: mappingId },
+            data: {
+              status: "PARTIALLY_COMPLIANT",
+              provenance: "AUTO_TEMPLATE",
+              sourceRef: `assessment:${input.assessmentId}`,
+            },
+          });
+        }
+        applied += 1;
+      }
+
+      await ctx.prisma.auditLog.create({
+        data: {
+          organizationId: ctx.organization.id,
+          userId: ctx.session.user.id,
+          action: "CREATE",
+          entityType: "ComplianceEvidence",
+          entityId: assessment.id,
+          changes: {
+            source: "unified-assessment",
+            evidenceAdded: applied,
+            statusesLifted: plan.counts.lifted,
+          },
+        },
+      });
+
+      return { ...plan.counts, applied };
+    }),
 });
+
+/**
+ * Shared by the preview and the apply, so the number shown is the number that
+ * happens.
+ */
+async function buildPlan(
+  ctx: {
+    prisma: typeof import("@/lib/prisma").default;
+    organization: { id: string };
+  },
+  assessmentId: string,
+) {
+  const assessment = await ctx.prisma.aIAssessment.findFirst({
+    where: { id: assessmentId, organizationId: ctx.organization.id },
+    select: {
+      id: true,
+      title: true,
+      aiSystemId: true,
+      responses: true,
+      template: { select: { sections: true } },
+    },
+  });
+  if (!assessment) {
+    throw new TRPCError({ code: "NOT_FOUND", message: "Assessment not found" });
+  }
+
+  const sections = (assessment.template?.sections ?? []) as unknown as {
+    questions?: { id: string; satisfies?: unknown }[];
+  }[];
+  const responses = (assessment.responses ?? {}) as Record<string, unknown>;
+
+  const [requirementRows, mappingRows] = await Promise.all([
+    ctx.prisma.complianceRequirement.findMany({
+      select: { id: true, code: true, framework: { select: { code: true } } },
+    }),
+    ctx.prisma.complianceMapping.findMany({
+      where: { organizationId: ctx.organization.id, aiSystemId: assessment.aiSystemId },
+      select: {
+        id: true,
+        requirementId: true,
+        status: true,
+        evidenceItems: { select: { title: true } },
+      },
+    }),
+  ]);
+
+  const requirements: RequirementRow[] = requirementRows.map((r) => ({
+    id: r.id,
+    code: r.code,
+    frameworkCode: r.framework.code,
+  }));
+  const mappings: MappingRow[] = mappingRows.map((m) => ({
+    requirementId: m.requirementId,
+    status: m.status,
+    evidenceTitles: m.evidenceItems.map((e) => e.title),
+  }));
+
+  const plan = planRegisterUpdate(sections, responses, requirements, mappings, assessment.title);
+  const mappingIdByRequirement = new Map(mappingRows.map((m) => [m.requirementId, m.id]));
+
+  return {
+    assessment,
+    plan: { ...plan, mappingIdByRequirement },
+    summary: {
+      counts: plan.counts,
+      unmapped: plan.unmapped,
+      unknown: plan.unknown,
+      // What the evidence will be titled, so the preview is concrete.
+      sampleTitle: plan.evidence[0] ? plan.evidence[0].title : evidenceTitle(assessment.title, "…"),
+    },
+  };
+}

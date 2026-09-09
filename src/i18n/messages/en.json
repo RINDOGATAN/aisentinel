@@ -568,7 +568,15 @@
     "feedsAssessment": "the impact assessment",
     "feedsNotice": "the notice",
     "feedsProtocol": "the review protocol",
-    "answeredMark": "Answered"
+    "answeredMark": "Answered",
+    "registerTitle": "Apply these answers to the compliance register",
+    "registerBody": "Each answer is attached as evidence to every requirement it cites, and a requirement nobody has judged yet moves to partially compliant. A status you have already set is never changed, and nothing is ever marked compliant automatically.",
+    "registerReady": "{evidenced} requirements will receive evidence, {lifted} of them moving from not assessed.",
+    "registerNothing": "Nothing to apply yet. Answer a question that cites a requirement, and it will appear here.",
+    "registerAlready": "{count} already carry this evidence.",
+    "registerUnmapped": "{count} cited requirements do not reach this system, so they are skipped. Attach them from the system's compliance tab if they should.",
+    "registerApply": "Apply to the register",
+    "registerApplied": "Evidence attached to {count} requirements"
   },
   "oversight": {
     "title": "Human Oversight",

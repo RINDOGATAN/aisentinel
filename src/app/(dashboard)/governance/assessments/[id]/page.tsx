@@ -4,6 +4,7 @@
 
 import { useState } from "react";
 import { useParams } from "next/navigation";
+import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import {
   assessmentCoverage,
@@ -37,6 +38,7 @@ const statusColors: Record<string, string> = {
 export default function AssessmentDetailPage() {
   const t = useTranslations("assessmentDetail");
   const locale = useLocale();
+  const utils = trpc.useUtils();
   const params = useParams();
   const { organization } = useOrganization();
   const orgId = organization?.id ?? "";
@@ -103,6 +105,21 @@ export default function AssessmentDetailPage() {
   // one else — but it is called out and recorded rather than passing silently.
   const submitter = assessment.submittedBy ?? assessment.createdBy;
   const isSelfReview = !!session?.user?.id && submitter === session.user.id;
+
+  // What answering this would do to the compliance register.
+  const { data: registerPlan } = trpc.unified.previewRegisterUpdate.useQuery(
+    { organizationId: orgId, assessmentId: id },
+    { enabled: !!orgId && !!id },
+  );
+  const applyToRegister = trpc.unified.applyToRegister.useMutation({
+    onSuccess: (res) => {
+      toast.success(t("registerApplied", { count: res.applied }));
+      void utils.unified.previewRegisterUpdate.invalidate();
+      void utils.compliance.getMatrix.invalidate();
+      void utils.compliance.getSystemScorecard.invalidate();
+    },
+    onError: (err) => setActionError(err.message),
+  });
 
   const handleSave = () => {
     setActionError(null);
@@ -295,6 +312,57 @@ export default function AssessmentDetailPage() {
             <p className="text-xs text-muted-foreground border-t border-border/50 pt-3">
               {t("coverageHint")}
             </p>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Answering closes obligations in the register, not just in this form.
+          Explicit rather than automatic on save: the count is shown first, and
+          the restraints are stated, because this writes into the compliance
+          record. */}
+      {coverage.hasMetadata && registerPlan && (
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base">{t("registerTitle")}</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <p className="text-sm text-muted-foreground">{t("registerBody")}</p>
+            {registerPlan.counts.evidenced > 0 ? (
+              <p className="text-sm">
+                {t("registerReady", {
+                  evidenced: registerPlan.counts.evidenced,
+                  lifted: registerPlan.counts.lifted,
+                })}
+              </p>
+            ) : (
+              <p className="text-sm text-muted-foreground">{t("registerNothing")}</p>
+            )}
+            {registerPlan.counts.alreadyPresent > 0 && (
+              <p className="text-xs text-muted-foreground">
+                {t("registerAlready", { count: registerPlan.counts.alreadyPresent })}
+              </p>
+            )}
+            {registerPlan.unmapped.length > 0 && (
+              <p className="text-xs text-muted-foreground">
+                {t("registerUnmapped", { count: registerPlan.unmapped.length })}
+              </p>
+            )}
+            {canEdit && registerPlan.counts.evidenced > 0 && (
+              <div className="flex justify-end">
+                <Button
+                  size="sm"
+                  disabled={applyToRegister.isPending}
+                  onClick={() =>
+                    applyToRegister.mutate({ organizationId: orgId, assessmentId: id })
+                  }
+                >
+                  {applyToRegister.isPending && (
+                    <Loader2 className="w-3 h-3 mr-2 animate-spin" />
+                  )}
+                  {t("registerApply")}
+                </Button>
+              </div>
+            )}
           </CardContent>
         </Card>
       )}

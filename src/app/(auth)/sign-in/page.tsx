@@ -21,8 +21,6 @@ export default function SignInPage() {
   const t = useTranslations("signIn");
   const [email, setEmail] = useState("");
   const [devEmail, setDevEmail] = useState("");
-  const [passphrase, setPassphrase] = useState("");
-  const [passphraseRequired, setPassphraseRequired] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [isDevLoading, setIsDevLoading] = useState(false);
@@ -34,13 +32,6 @@ export default function SignInPage() {
   useEffect(() => {
     getProviders().then((p) => setProviders(p));
     getCsrfToken().then((token) => setCsrfToken(token ?? undefined));
-    // Runtime (never baked) flag: does the local sign-in need the workspace
-    // passphrase? Failure to fetch degrades to "not required" — the server
-    // still enforces it either way.
-    fetch("/api/self-host/auth-config")
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => setPassphraseRequired(!!d?.passphraseRequired))
-      .catch(() => {});
   }, []);
 
   const hasEmail = !!providers?.email;
@@ -83,14 +74,11 @@ export default function SignInPage() {
     try {
       const result = await signIn("dev-credentials", {
         email: devEmail,
-        passphrase,
         redirect: false,
         callbackUrl: "/governance",
       });
       if (result?.error) {
-        // CredentialsSignin is the only failure the provider produces; when a
-        // passphrase is required, a wrong/missing one is by far the likeliest cause.
-        setError(passphraseRequired ? t("wrongPassphrase") : t("localSignInFailed"));
+        setError(t("localSignInFailed"));
         setIsDevLoading(false);
       } else {
         window.location.href = result?.url ?? "/governance";
@@ -145,23 +133,6 @@ export default function SignInPage() {
                 className="input-brutal"
                 required
               />
-              {passphraseRequired && (
-                <div className="space-y-1">
-                  <Label htmlFor="workspace-passphrase" className="text-xs">
-                    {t("passphraseLabel")}
-                  </Label>
-                  <Input
-                    id="workspace-passphrase"
-                    type="password"
-                    value={passphrase}
-                    onChange={(e) => setPassphrase(e.target.value)}
-                    className="input-brutal"
-                    autoComplete="current-password"
-                    required
-                  />
-                  <p className="text-xs text-muted-foreground">{t("passphraseHelp")}</p>
-                </div>
-              )}
               <button
                 type="submit"
                 disabled={isDevLoading}

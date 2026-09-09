@@ -16,7 +16,6 @@ import {
   CALLBACK_URL_COOKIE_NAME,
 } from "@/lib/session-cookie";
 import { brand } from "@/config/brand";
-import { verifyWorkspacePassphrase } from "@/lib/workspace-passphrase";
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
@@ -60,7 +59,6 @@ export const authOptions: NextAuthOptions = {
             name: "Dev Login",
             credentials: {
               email: { label: "Email", type: "email", placeholder: "dev@example.com" },
-              passphrase: { label: "Workspace passphrase", type: "password" },
             },
             async authorize(credentials) {
               // Double-check: never allow on the cloud (Vercel) deployment, and
@@ -72,14 +70,6 @@ export const authOptions: NextAuthOptions = {
                   process.env.NEXT_PUBLIC_LOCAL_AUTH_ENABLED !== "true")
               ) {
                 console.error("Dev credentials provider blocked in production environment");
-                return null;
-              }
-              // Workspace passphrase gate. Read at call time (RUNTIME env,
-              // deliberately NOT NEXT_PUBLIC — must not be baked into the
-              // bundle). Empty/unset → exactly the previous behaviour, so
-              // existing installs are never locked out.
-              const required = (process.env.WORKSPACE_PASSPHRASE ?? "").trim();
-              if (!verifyWorkspacePassphrase(credentials?.passphrase, required)) {
                 return null;
               }
               if (!credentials?.email) return null;

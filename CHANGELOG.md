@@ -6,6 +6,16 @@ All notable changes to AI SENTINEL are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- **Spanish addresses the reader as "tú" throughout.** 276 strings across the
+  interface, the seeded regulatory content, the generated documents and the AI
+  prompt instructions moved from the formal second person to the informal one,
+  in every surface. The register is unchanged: the vocabulary stays precise and
+  professional, only the grammatical person is informal. Third-person "su" and
+  "puede" were left alone, since those refer to the system, the vendor or the
+  consumer rather than to the reader.
+
 ### Fixed
 
 - **The obligations calendar showed the whole catalogue whatever you declared.**

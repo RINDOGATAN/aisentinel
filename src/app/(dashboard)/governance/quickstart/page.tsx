@@ -422,11 +422,26 @@ export default function QuickstartPage() {
     localizeCorePolicy(c, contentLocale),
   );
 
+  const catalogVendorNames = new Set(
+    (vendorPreview?.previews ?? [])
+      .filter((p) => !(vendorPreview?.existingVendorNames ?? []).includes(p.vendorName))
+      .map((p) => p.vendorName),
+  );
+  const sharedVendorCount = new Set(
+    (lawFirmPreview?.tools ?? [])
+      .filter((tool) => !tool.alreadyExists && catalogVendorNames.has(tool.vendorName))
+      .map((tool) => tool.vendorName),
+  ).size;
+
   // Calculate totals for review step
   const reviewTotals = {
+    // A catalogue vendor and a Legal tool can share a vendor (e.g. a chat
+    // assistant's maker picked on both steps); the build links it once, so
+    // the preview counts it once.
     vendors:
       (vendorPreview?.totals.vendors ?? 0) +
-      (useLawFirm ? lawFirmPreview?.totals.vendors ?? 0 : 0),
+      (useLawFirm ? lawFirmPreview?.totals.vendors ?? 0 : 0) -
+      (useLawFirm ? sharedVendorCount : 0),
     systems:
       (vendorPreview?.totals.systems ?? 0) +
       (industryPreview?.totals.systems ?? 0) +

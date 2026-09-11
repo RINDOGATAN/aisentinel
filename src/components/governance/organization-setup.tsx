@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
+import { useUserType } from "@/lib/use-user-type";
 
 export function OrganizationSetup() {
   const [name, setName] = useState("");
@@ -20,6 +21,9 @@ export function OrganizationSetup() {
   const { setOrganization, refetchOrganizations } = useOrganization();
   const router = useRouter();
   const t = useTranslations("onboarding");
+  // A consultant's first organization is their first client; more are added
+  // later from My clients. Same flow, words that match what they are doing.
+  const { isConsultant } = useUserType();
 
   const createOrg = trpc.organization.create.useMutation({
     onSuccess: (org) => {
@@ -67,12 +71,12 @@ export function OrganizationSetup() {
             <span className="text-lg tracking-tight text-muted-foreground" style={{ fontFamily: "var(--font-jost), 'Jost', sans-serif", fontWeight: 600 }}>AI SENTINEL</span>
           </div>
           <CardTitle>{t("welcomeTitle")}</CardTitle>
-          <CardDescription>{t("orgDescription")}</CardDescription>
+          <CardDescription>{isConsultant ? t("orgDescriptionClient") : t("orgDescription")}</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="org-name">{t("orgNameLabel")}</Label>
+              <Label htmlFor="org-name">{isConsultant ? t("orgNameLabelClient") : t("orgNameLabel")}</Label>
               <Input
                 id="org-name"
                 placeholder={t("orgNamePlaceholder")}

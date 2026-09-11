@@ -55,6 +55,7 @@ import { JurisdictionPicker } from "@/components/governance/jurisdiction-picker"
 import { RegimeScreeningCard } from "@/components/governance/regime-screening-card";
 import type { JurisdictionId } from "@/config/jurisdictions";
 import { features } from "@/config/features";
+import { useEnumLabels } from "@/lib/enum-labels";
 import { corePoliciesMissingFrom, localizeCorePolicy } from "@/config/core-policy-pack";
 
 // ============================================================
@@ -109,6 +110,7 @@ type WizardStep = "choose" | "vendors" | "industry" | "lawfirm" | "review" | "su
 // ============================================================
 
 function RiskBadge({ level }: { level: string }) {
+  const { riskLabel } = useEnumLabels();
   const styles: Record<string, string> = {
     UNACCEPTABLE: "bg-destructive/20 text-destructive border-destructive/30",
     HIGH: "bg-destructive/15 text-destructive border-destructive/20",
@@ -117,10 +119,23 @@ function RiskBadge({ level }: { level: string }) {
   };
   return (
     <Badge variant="outline" className={`text-[10px] ${styles[level] ?? ""}`}>
-      {level}
+      {riskLabel(level)}
     </Badge>
   );
 }
+
+// Policy type codes onto the shared labels in the "common" namespace.
+const POLICY_TYPE_KEY: Record<string, string> = {
+  AI_USAGE: "policyTypeAiUsage",
+  AI_GOVERNANCE: "policyTypeAiGovernance",
+  AI_ETHICS: "policyTypeAiEthics",
+  AI_RISK_MANAGEMENT: "policyTypeRiskManagement",
+  AI_DATA_GOVERNANCE: "policyTypeDataGovernance",
+  AI_PROCUREMENT: "policyTypeProcurement",
+  AI_INCIDENT_RESPONSE: "policyTypeIncidentResponse",
+  AI_TRANSPARENCY: "policyTypeTransparency",
+  CUSTOM: "policyTypeCustom",
+};
 
 // ============================================================
 // PAGE COMPONENT
@@ -1481,7 +1496,7 @@ export default function QuickstartPage() {
                               {p.title}
                             </span>
                             <span className="text-xs text-muted-foreground">
-                              {p.type.replace(/_/g, " ")}
+                              {POLICY_TYPE_KEY[p.type] ? tc(POLICY_TYPE_KEY[p.type]) : p.type}
                             </span>
                           </div>
                         </div>
@@ -1604,7 +1619,7 @@ export default function QuickstartPage() {
                               {p.title}
                             </span>
                             <span className="text-xs text-muted-foreground">
-                              {p.type.replace(/_/g, " ")}
+                              {POLICY_TYPE_KEY[p.type] ? tc(POLICY_TYPE_KEY[p.type]) : p.type}
                             </span>
                           </div>
                         </div>

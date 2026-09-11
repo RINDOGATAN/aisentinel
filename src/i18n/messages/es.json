@@ -505,8 +505,8 @@
     "lawFirmPolicyPack": "Paquete de políticas del despacho",
     "chipVendors": "Proveedores",
     "viewProgram": "Ver tu programa de gobernanza de IA",
-    "statPolicyLinks": "Vinculaciones de políticas",
-    "statTransparencyProfiles": "Perfiles del Art. 50",
+    "statPolicyLinks": "vínculos entre políticas y sistemas",
+    "statTransparencyProfiles": "perfiles del art. 50",
     "statComplianceBaselined": "Requisitos preevaluados",
     "handoffMapCaption": "Tu mapa de gobernanza: cada sistema de IA, su nivel de riesgo, sus controles y sus proveedores.",
     "downloadProgramPdf": "Descargar tu programa de gobernanza de IA (PDF)",
@@ -4394,7 +4394,9 @@
     "orgNamePlaceholder": "p. ej., Acme Pagos",
     "createAndContinue": "Crear la organización y continuar",
     "creating": "Creando…",
-    "createFailed": "No se ha podido crear la organización. Inténtalo de nuevo."
+    "createFailed": "No se ha podido crear la organización. Inténtalo de nuevo.",
+    "orgDescriptionClient": "Pon nombre a tu primera organización cliente. A continuación, un asistente breve crea su programa de gobernanza de la IA; podrás añadir más clientes desde Mis clientes.",
+    "orgNameLabelClient": "Nombre de la organización cliente"
   },
   "inventoryImport": {
     "button": "Importar hoja de cálculo",

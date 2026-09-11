@@ -3,6 +3,7 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { brand } from "@/config/brand";
 
 export default function AuthLayout({
@@ -10,6 +11,7 @@ export default function AuthLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const t = useTranslations("signIn");
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="border-b border-border">
@@ -28,11 +30,11 @@ export default function AuthLayout({
       <footer className="border-t border-border py-6">
         <div className="container mx-auto px-6 flex flex-col sm:flex-row items-center justify-center gap-4 text-sm text-muted-foreground">
           <a href={brand.privacyPolicyUrl} target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">
-            Privacy Policy
+            {t("privacyPolicy")}
           </a>
           <span className="hidden sm:inline">&middot;</span>
           <a href={brand.termsOfUseUrl} target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">
-            Terms of Service
+            {t("termsOfService")}
           </a>
         </div>
       </footer>

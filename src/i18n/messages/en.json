@@ -505,7 +505,7 @@
     "lawFirmPolicyPack": "Law Firm Policy Pack",
     "chipVendors": "Vendors",
     "viewProgram": "View your AI Governance Program",
-    "statPolicyLinks": "Policy links",
+    "statPolicyLinks": "policy links",
     "statTransparencyProfiles": "Art. 50 profiles",
     "statComplianceBaselined": "Requirements pre-assessed",
     "handoffMapCaption": "Your governance map: every AI system, its risk tier, controls and vendors.",
@@ -4394,7 +4394,9 @@
     "orgNamePlaceholder": "e.g. Acme Payments",
     "createAndContinue": "Create organization and continue",
     "creating": "Creating…",
-    "createFailed": "The organization could not be created. Please try again."
+    "createFailed": "The organization could not be created. Please try again.",
+    "orgDescriptionClient": "Name your first client organization. A short wizard then builds its AI governance program; add more clients later from My clients.",
+    "orgNameLabelClient": "Client organization name"
   },
   "inventoryImport": {
     "button": "Import spreadsheet",

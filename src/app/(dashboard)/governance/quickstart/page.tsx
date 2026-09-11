@@ -1712,6 +1712,19 @@ export default function QuickstartPage() {
                     {t("viewProgram")}
                   </Button>
                 </Link>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  onClick={() =>
+                    window.open(
+                      `/api/export/program-pack?organizationId=${orgId}&locale=${contentLocale}`,
+                      "_blank",
+                    )
+                  }
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  {t("downloadProgramPack")}
+                </Button>
               </div>
 
               {/* The numbers, demoted to a receipt line */}

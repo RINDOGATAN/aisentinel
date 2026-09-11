@@ -13,7 +13,7 @@ import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Download, History, Loader2, Sparkles, Network, ShieldCheck } from "lucide-react";
+import { Download, History, Loader2, Sparkles, Network, Package, ShieldCheck } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { ProgramMap } from "@/components/governance/program/ProgramMap";
@@ -79,6 +79,7 @@ export default function ProgramPage() {
               </Button>
             </Link>
             <Button
+              variant="outline"
               onClick={() =>
                 window.open(
                   `/api/export/governance-program?organizationId=${orgId}&locale=${locale}`,
@@ -88,6 +89,17 @@ export default function ProgramPage() {
             >
               <Download className="w-4 h-4 mr-2" />
               {t("exportPdf")}
+            </Button>
+            <Button
+              onClick={() =>
+                window.open(
+                  `/api/export/program-pack?organizationId=${orgId}&locale=${locale}`,
+                  "_blank",
+                )
+              }
+            >
+              <Package className="w-4 h-4 mr-2" />
+              {t("exportPack")}
             </Button>
           </div>
         )}

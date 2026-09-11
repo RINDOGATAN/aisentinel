@@ -547,7 +547,8 @@
     "statStarterVendorReviews": "{count, plural, one {# vendor review drafted} other {# vendor reviews drafted}}",
     "corePoliciesTitle": "Core policies added to complete your set",
     "corePoliciesDescription": "Your program needs six core AI policies. These drafts cover the ones your choices above do not, in your language. Review and approve them in Policies.",
-    "handoffConfirmLink": "Open the review queue"
+    "handoffConfirmLink": "Open the review queue",
+    "downloadProgramPack": "Download the full program pack (ZIP)"
   },
   "assessments": {
     "title": "Assessments",
@@ -3253,7 +3254,8 @@
       "emptyCta": "Open Quick Start",
       "reviewLink": "Review queue",
       "historyLink": "History",
-      "historyFootnote": "A snapshot is captured automatically each time the program PDF is exported. Scores are computed by the maturity model version recorded in each snapshot."
+      "historyFootnote": "A snapshot is captured automatically each time the program PDF is exported. Scores are computed by the maturity model version recorded in each snapshot.",
+      "exportPack": "Download program pack (ZIP)"
     },
     "tiles": {
       "overall": "Overall maturity",

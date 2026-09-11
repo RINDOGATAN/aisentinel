@@ -6,7 +6,8 @@ import { getToken } from "next-auth/jwt";
 import { SESSION_COOKIE_NAME, useSecureCookies } from "@/lib/session-cookie";
 import prisma from "@/lib/prisma";
 import { renderToBuffer } from "@react-pdf/renderer";
-import { AISystemRegisterReport, type AISystemExportData } from "@/server/services/export/ai-system-register";
+import { AISystemRegisterReport } from "@/server/services/export/ai-system-register";
+import { loadRegisterExportData } from "@/server/services/export/register-data";
 import { fmtDate } from "@/server/services/export/pdf-styles";
 
 export async function GET(request: NextRequest) {
@@ -37,46 +38,7 @@ export async function GET(request: NextRequest) {
     return Response.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const systems = await prisma.aISystem.findMany({
-    where: { organizationId },
-    include: {
-      riskClassification: true,
-      vendor: true,
-      _count: {
-        select: {
-          models: true,
-          dataSources: true,
-          assessments: true,
-          incidents: true,
-          complianceMappings: true,
-        },
-      },
-    },
-    orderBy: { name: "asc" },
-  });
-
-  const data: AISystemExportData[] = systems.map((sys) => ({
-    id: sys.id,
-    name: sys.name,
-    description: sys.description,
-    technique: sys.technique,
-    role: sys.role,
-    status: sys.status,
-    purpose: sys.purpose,
-    businessOwner: sys.businessOwner,
-    technicalOwner: sys.technicalOwner,
-    deploymentDate: sys.deploymentDate,
-    retirementDate: sys.retirementDate,
-    processesPersonalData: sys.processesPersonalData,
-    riskLevel: sys.riskClassification?.riskLevel ?? null,
-    rationale: sys.riskClassification?.rationale ?? null,
-    vendorName: sys.vendor?.name ?? null,
-    modelCount: sys._count.models,
-    dataSourceCount: sys._count.dataSources,
-    assessmentCount: sys._count.assessments,
-    incidentCount: sys._count.incidents,
-    complianceMappingCount: sys._count.complianceMappings,
-  }));
+  const data = await loadRegisterExportData(prisma, organizationId);
 
   const orgName = membership.organization.name;
   const dateStr = fmtDate(new Date());

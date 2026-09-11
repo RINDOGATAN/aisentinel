@@ -547,7 +547,8 @@
     "statStarterVendorReviews": "{count, plural, one {# revisión de proveedor en borrador} other {# revisiones de proveedor en borrador}}",
     "corePoliciesTitle": "Políticas básicas que completan tu conjunto",
     "corePoliciesDescription": "Tu programa necesita seis políticas básicas de IA. Estos borradores cubren las que no aportan tus elecciones anteriores, en tu idioma. Revísalas y apruébalas en Políticas.",
-    "handoffConfirmLink": "Abrir la cola de revisión"
+    "handoffConfirmLink": "Abrir la cola de revisión",
+    "downloadProgramPack": "Descargar el paquete completo del programa (ZIP)"
   },
   "assessments": {
     "title": "Evaluaciones",
@@ -3253,7 +3254,8 @@
       "emptyCta": "Abrir Inicio Rápido",
       "reviewLink": "Cola de revisión",
       "historyLink": "Historial",
-      "historyFootnote": "Se captura una instantánea automáticamente cada vez que se exporta el PDF del programa. Las puntuaciones se calculan con la versión del modelo de madurez registrada en cada instantánea."
+      "historyFootnote": "Se captura una instantánea automáticamente cada vez que se exporta el PDF del programa. Las puntuaciones se calculan con la versión del modelo de madurez registrada en cada instantánea.",
+      "exportPack": "Descargar paquete del programa (ZIP)"
     },
     "tiles": {
       "overall": "Madurez global",

@@ -1,25 +1,28 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025-2026 Rindogatan LLC
 
+/**
+ * GET /api/export/program-pack?organizationId=&locale=
+ * The whole program in one ZIP (see src/server/services/export/program-pack.ts).
+ * Same authentication as the other exports: the session JWT, then membership
+ * of the requested organization.
+ */
+
 import { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 import { SESSION_COOKIE_NAME, useSecureCookies } from "@/lib/session-cookie";
 import prisma from "@/lib/prisma";
 import { resolveContentLocale } from "@/config/lawfirm-ai-toolkit";
-import { renderProgramPdf } from "@/server/services/export/program-pdf";
+import { buildProgramPack } from "@/server/services/export/program-pack";
 
 export async function GET(request: NextRequest) {
   const organizationId = request.nextUrl.searchParams.get("organizationId");
-
   if (!organizationId) {
     return Response.json({ error: "organizationId is required" }, { status: 400 });
   }
 
   const token = await getToken({
     req: request,
-    // This app overrides NextAuth's default cookie names; without these,
-    // getToken looks for `next-auth.session-token`, never finds it, and 401s
-    // a valid session. See @/lib/session-cookie.
     cookieName: SESSION_COOKIE_NAME,
     secureCookie: useSecureCookies,
   });
@@ -36,27 +39,24 @@ export async function GET(request: NextRequest) {
     return Response.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  // ?locale= wins; otherwise the same cookie next-intl reads.
   const localeParam = request.nextUrl.searchParams.get("locale");
   const locale =
     localeParam === "es" || localeParam === "en"
       ? localeParam
       : resolveContentLocale((name) => request.cookies.get(name)?.value);
 
-  const orgName = membership.organization.name;
-  const { buffer, dateStr } = await renderProgramPdf(prisma, {
+  const { zip, filename } = await buildProgramPack(prisma, {
     organizationId,
     userId: membership.userId,
-    orgName,
+    orgName: membership.organization.name,
     locale,
   });
 
-  const filename = `AI-Governance-Program-${orgName.replace(/[^a-zA-Z0-9]/g, "-")}-${dateStr}.pdf`;
-
-  return new Response(new Uint8Array(buffer), {
+  return new Response(new Blob([zip as BlobPart], { type: "application/zip" }), {
     headers: {
-      "Content-Type": "application/pdf",
+      "Content-Type": "application/zip",
       "Content-Disposition": `attachment; filename="${filename}"`,
+      "Cache-Control": "no-store",
     },
   });
 }

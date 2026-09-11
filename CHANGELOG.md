@@ -6,6 +6,8 @@ All notable changes to AI SENTINEL are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.4.2] - 2026-09-11
+
 ### Fixed
 
 - **Upgraded installs now match a fresh install on the EU AI Act timeline.**

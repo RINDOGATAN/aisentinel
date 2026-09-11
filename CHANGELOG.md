@@ -6,6 +6,18 @@ All notable changes to AI SENTINEL are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.4.1] - 2026-09-11
+
+### Security
+
+- **Next.js 16.3.4.** Clears two critical advisories fixed in 16.3.3: remote
+  code execution on Windows-hosted servers (GHSA-p293-qw3h-jr36) and remote code
+  execution through the image library when optimising AVIF files
+  (GHSA-2xp9-vwfh-vxw4). Also moves nodemailer to 9.1.1 and sharp to 0.35.4 for
+  their high-severity advisories. `npm audit` reports no vulnerabilities.
+  Self-hosted installs were not realistically exposed (Linux containers bound to
+  localhost, no remote image sources configured), but should update.
+
 ## [0.4.0] - 2026-09-11
 
 ### Removed

@@ -159,7 +159,8 @@
     "review": "Cola de revisión",
     "loading": "Cargando…",
     "openMenu": "Abrir menú",
-    "sourceAndLicence": "Código fuente y licencia"
+    "sourceAndLicence": "Código fuente y licencia",
+    "auditTrail": "Registro de auditoría"
   },
   "dashboard": {
     "title": "Gobernanza de IA",
@@ -4449,5 +4450,35 @@
     "confirmLabel": "Nombre de la organización, para confirmar",
     "button": "Eliminar de forma permanente",
     "deleted": "Organización eliminada."
+  },
+  "audit": {
+    "title": "Registro de auditoría",
+    "subtitle": "Todos los cambios registrados, del más reciente al más antiguo: quién, sobre qué y cuándo. El registro lo escriben las propias acciones y aquí no puede modificarse.",
+    "restricted": "El registro de auditoría está disponible para propietarios, administradores y responsables de IA.",
+    "empty": "Todavía no hay nada registrado en esta organización.",
+    "emptyFiltered": "Ninguna entrada coincide con estos filtros.",
+    "filters": {
+      "action": "Acción",
+      "entityType": "Tipo de registro",
+      "actor": "Persona",
+      "from": "Desde",
+      "to": "Hasta",
+      "all": "Todo",
+      "clear": "Quitar filtros"
+    },
+    "columns": {
+      "when": "Cuándo",
+      "who": "Quién",
+      "action": "Acción",
+      "entity": "Registro",
+      "detail": "Detalle registrado"
+    },
+    "export": "Exportar en CSV",
+    "exportHint": "La exportación incluye la hora de generación, la versión de la aplicación y las versiones de los paquetes de reglas vigentes, de modo que el fichero puede incorporarse a un registro de entrega.",
+    "loadMore": "Cargar más",
+    "showing": "Se muestran {count} de {total} entradas",
+    "since": "El registro empieza el {date}",
+    "actorRemoved": "Cuenta eliminada",
+    "noDetail": "Sin detalle registrado"
   }
 }

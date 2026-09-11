@@ -23,6 +23,7 @@ import {
   buildProtocolArtifact,
 } from "@/server/services/artifacts/build-artifacts";
 import { renderArtifactMarkdown } from "@/server/services/artifacts/render-markdown";
+import { exportStamp, sha256, stampLines } from "@/server/services/export/integrity";
 
 const KINDS = ["assessment", "notice", "protocol", "agentic-addendum"] as const;
 type Kind = (typeof KINDS)[number];
@@ -114,7 +115,22 @@ export async function GET(request: NextRequest) {
           ? buildProtocolArtifact(input)
           : buildAgenticAddendumArtifact(input);
 
-  const markdown = renderArtifactMarkdown(artifact);
+  const body = renderArtifactMarkdown(artifact);
+  // The document states what produced it. Without this a reader cannot tell,
+  // later, which version of the rules the citations came from — the first
+  // question asked of any generated legal document.
+  const stamp = await exportStamp();
+  const provenance = [
+    "",
+    "---",
+    "",
+    locale === "es" ? "## Procedencia de este documento" : "## How this document was produced",
+    "",
+    ...stampLines(stamp, locale).map((l) => `- ${l}`),
+    `- ${locale === "es" ? "Huella SHA-256 del texto anterior" : "SHA-256 of the text above"}: \`${sha256(body)}\``,
+    "",
+  ].join("\n");
+  const markdown = `${body}${provenance}`;
 
   await prisma.auditLog.create({
     data: {
@@ -130,6 +146,10 @@ export async function GET(request: NextRequest) {
         sourceAssessmentId: assessment?.id ?? null,
         gaps: artifact.gaps.length,
         regimes: artifact.regimes,
+        appVersion: stamp.appVersion,
+        commit: stamp.commit,
+        generatedAt: stamp.generatedAt,
+        sha256: sha256(body),
       },
     },
   });

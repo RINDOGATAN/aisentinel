@@ -159,7 +159,8 @@
     "review": "Review queue",
     "loading": "Loading…",
     "openMenu": "Open menu",
-    "sourceAndLicence": "Source & licence"
+    "sourceAndLicence": "Source & licence",
+    "auditTrail": "Audit trail"
   },
   "dashboard": {
     "title": "AI Governance",
@@ -4449,5 +4450,35 @@
     "confirmLabel": "Organization name, to confirm",
     "button": "Delete permanently",
     "deleted": "Organization deleted."
+  },
+  "audit": {
+    "title": "Audit trail",
+    "subtitle": "Every recorded change, newest first: who did it, to what, and when. The trail is written by the actions themselves and cannot be edited here.",
+    "restricted": "The audit trail is available to owners, admins and AI officers.",
+    "empty": "Nothing recorded yet for this organization.",
+    "emptyFiltered": "No entries match these filters.",
+    "filters": {
+      "action": "Action",
+      "entityType": "Record type",
+      "actor": "Person",
+      "from": "From",
+      "to": "To",
+      "all": "All",
+      "clear": "Clear filters"
+    },
+    "columns": {
+      "when": "When",
+      "who": "Who",
+      "action": "Action",
+      "entity": "Record",
+      "detail": "Recorded detail"
+    },
+    "export": "Export as CSV",
+    "exportHint": "The export carries the generation time, the application version and the rule-pack versions in force, so the file can be placed in a production log.",
+    "loadMore": "Load more",
+    "showing": "Showing {count} of {total} entries",
+    "since": "Trail starts {date}",
+    "actorRemoved": "Account removed",
+    "noDetail": "No detail recorded"
   }
 }

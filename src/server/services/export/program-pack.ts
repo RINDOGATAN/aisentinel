@@ -38,6 +38,12 @@ import {
 } from "@/server/services/artifacts/build-artifacts";
 import { renderArtifactMarkdown } from "@/server/services/artifacts/render-markdown";
 import { pendingPacks } from "@/config/legal-signoff";
+import {
+  exportStamp,
+  renderManifest,
+  sha256,
+  type ManifestEntry,
+} from "@/server/services/export/integrity";
 
 type Locale = "en" | "es";
 
@@ -52,6 +58,7 @@ const L = {
     systemsDir: "05-systems",
     vendors: "06-vendor-due-diligence.md",
     inventory: "07-ai-inventory.csv",
+    manifest: "08-MANIFEST.txt",
     title: "AI governance program pack",
     generated: "Generated",
     contents: "Contents",
@@ -63,6 +70,7 @@ const L = {
       systems: "Per system: the unified impact assessment, the multi-jurisdiction notice and the human-review protocol (and the agentic addendum where it applies). Unanswered questions appear as open items, never as silence.",
       vendors: "The due-diligence reviews of each AI vendor: what is known, and what is still open.",
       inventory: "The AI inventory as a spreadsheet, in the format the import accepts.",
+      manifest: "The integrity manifest: a SHA-256 digest for every file above, the application version that produced them, and the version and legal review date of every rule pack in force at that moment.",
     },
     status: "Status of this pack",
     assurance: "{pct}% of the auto-generated items have been confirmed by a person ({confirmed} of {total}).",
@@ -102,6 +110,7 @@ const L = {
     systemsDir: "05-sistemas",
     vendors: "06-diligencia-debida-de-proveedores.md",
     inventory: "07-inventario-de-ia.csv",
+    manifest: "08-MANIFIESTO.txt",
     title: "Paquete del programa de gobernanza de la IA",
     generated: "Generado",
     contents: "Contenido",
@@ -113,6 +122,7 @@ const L = {
       systems: "Por sistema: la evaluación de impacto unificada, el aviso multijurisdiccional y el protocolo de revisión humana (y el anexo agéntico cuando procede). Las preguntas sin responder figuran como puntos abiertos, nunca como silencio.",
       vendors: "Las revisiones de diligencia debida de cada proveedor de IA: lo que se sabe y lo que sigue abierto.",
       inventory: "El inventario de IA como hoja de cálculo, en el formato que admite la importación.",
+      manifest: "El manifiesto de integridad: una huella SHA-256 de cada fichero anterior, la versión de la aplicación que los generó y la versión y la fecha de revisión jurídica de cada paquete de reglas vigente en ese momento.",
     },
     status: "Estado de este paquete",
     assurance: "El {pct}% de los elementos generados automáticamente ha sido confirmado por una persona ({confirmed} de {total}).",
@@ -418,6 +428,7 @@ export async function buildProgramPack(
     `- \`${l.systemsDir}/\`: ${jurisdictionsDeclared ? l.items.systems : l.noJurisdictions}`,
     `- \`${l.vendors}\`: ${l.items.vendors}`,
     `- \`${l.inventory}\`: ${l.items.inventory}`,
+    `- \`${l.manifest}\`: ${l.items.manifest}`,
     "",
     `## ${l.status}`,
     "",
@@ -441,6 +452,19 @@ export async function buildProgramPack(
     }
   }
 
+  // The manifest goes in last and covers every other file: a reader can check
+  // any single file in the archive without trusting the archive as a whole.
+  const stamp = await exportStamp();
+  const manifestEntries: ManifestEntry[] = entries.map((e) => {
+    const bytes =
+      typeof e.data === "string" ? new TextEncoder().encode(e.data) : e.data;
+    return { name: e.name, bytes: bytes.length, sha256: sha256(bytes) };
+  });
+  entries.push({
+    name: l.manifest,
+    data: renderManifest(stamp, manifestEntries, locale),
+  });
+
   await prisma.auditLog.create({
     data: {
       organizationId,
@@ -448,7 +472,14 @@ export async function buildProgramPack(
       entityType: "Organization",
       entityId: organizationId,
       action: "EXPORT_PROGRAM_PACK",
-      changes: { format: "zip", locale, files: entries.length },
+      changes: {
+        format: "zip",
+        locale,
+        files: entries.length,
+        appVersion: stamp.appVersion,
+        commit: stamp.commit,
+        generatedAt: stamp.generatedAt,
+      },
     },
   });
 

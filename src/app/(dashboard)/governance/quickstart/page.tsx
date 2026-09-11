@@ -46,6 +46,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import {
+  LAWFIRM_POLICY_PACK,
   LAWFIRM_TOOL_CATEGORIES,
   LAWFIRM_TOOLS,
   type ContentLocale,
@@ -70,6 +71,10 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   Briefcase,
   Factory,
 };
+
+// The Legal entry in the industry list. Not a server template: choosing it
+// runs the law-firm tool step (src/config/lawfirm-ai-toolkit.ts).
+const LEGAL_INDUSTRY_ID = "legal";
 
 // Where to go after the build. Titles and hints live in quickstart.nav.<key>.
 const SUCCESS_NAV = [
@@ -146,6 +151,9 @@ export default function QuickstartPage() {
   const utilsForJurisdictions = trpc.useUtils();
   const t = useTranslations("quickstart");
   const tc = useTranslations("common");
+  // The template grid names its loop variable `t`; this alias reaches the
+  // quickstart messages from inside that loop.
+  const tq = useTranslations("quickstart");
   const tjur = useTranslations("jurisdictions");
   const orgId = organization?.id ?? "";
 
@@ -153,7 +161,6 @@ export default function QuickstartPage() {
   const [step, setStep] = useState<WizardStep>("choose");
   const [useVendors, setUseVendors] = useState(false);
   const [useIndustry, setUseIndustry] = useState(false);
-  const [useLawFirm, setUseLawFirm] = useState(false);
 
   // Display locale for law-firm config labels (server resolves its own copy
   // of the same cookie when writing records)
@@ -248,7 +255,7 @@ export default function QuickstartPage() {
   const { data: industryPreview } =
     trpc.quickstart.previewIndustryTemplate.useQuery(
       { organizationId: orgId, industryId: selectedIndustryId ?? "" },
-      { enabled: !!orgId && !!selectedIndustryId },
+      { enabled: !!orgId && !!selectedIndustryId && selectedIndustryId !== LEGAL_INDUSTRY_ID },
     );
 
   const { data: lawFirmPreview } =
@@ -304,6 +311,10 @@ export default function QuickstartPage() {
     setSelectedSlugs((prev) => prev.filter((s) => s !== slug));
   };
 
+  // Legal is chosen from the industry list; it opens the law-firm tool step
+  // (named tools, the law-firm policy pack) instead of a fixed template.
+  const useLawFirm = useIndustry && selectedIndustryId === LEGAL_INDUSTRY_ID;
+
   // Ordered list of active steps; next/back navigate this array
   const stepOrder: WizardStep[] = [
     "choose",
@@ -324,7 +335,7 @@ export default function QuickstartPage() {
   };
 
   const handleProceedFromChoose = () => {
-    if (!useVendors && !useIndustry && !useLawFirm) {
+    if (!useVendors && !useIndustry) {
       toast.error(t("selectAtLeastOneOption"));
       return;
     }
@@ -386,7 +397,7 @@ export default function QuickstartPage() {
     executeMutation.mutate({
       organizationId: orgId,
       vendorSlugs: useVendors ? selectedSlugs : [],
-      industryId: useIndustry ? selectedIndustryId ?? undefined : undefined,
+      industryId: useIndustry && !useLawFirm ? selectedIndustryId ?? undefined : undefined,
       lawFirmToolIds: useLawFirm ? selectedLawFirmToolIds : [],
       skipSystemNames,
       skipPolicyTitles,
@@ -550,7 +561,7 @@ export default function QuickstartPage() {
             {t("choosePathDescription")}
           </p>
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2">
             {/* Vendor Import Card */}
             <Card
               className={`cursor-pointer transition-all ${
@@ -632,52 +643,12 @@ export default function QuickstartPage() {
               </CardContent>
             </Card>
 
-            {/* Law Firm Program Card */}
-            <Card
-              className={`cursor-pointer transition-all ${
-                useLawFirm
-                  ? "border-primary ring-2 ring-primary/20"
-                  : "hover:border-primary/50"
-              }`}
-              onClick={() => setUseLawFirm(!useLawFirm)}
-            >
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <Scale className="w-8 h-8 text-primary" />
-                  <div className="flex items-center gap-2">
-                    <Badge
-                      variant="outline"
-                      className="text-green-600 border-green-600/50"
-                    >
-                      {tc("free")}
-                    </Badge>
-                    {useLawFirm && (
-                      <CheckCircle2 className="w-5 h-5 text-primary" />
-                    )}
-                  </div>
-                </div>
-                <CardTitle className="text-lg">
-                  {t("lawFirmTitle")}
-                </CardTitle>
-                <CardDescription>
-                  {t("lawFirmDescription")}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-wrap gap-2">
-                  <Badge variant="secondary">{t("chipAiSystems")}</Badge>
-                  <Badge variant="secondary">{t("chipRiskClassifications")}</Badge>
-                  <Badge variant="secondary">{t("chipOversightGates")}</Badge>
-                  <Badge variant="secondary">{t("chipPolicies")}</Badge>
-                </div>
-              </CardContent>
-            </Card>
           </div>
 
           <div className="flex justify-end">
             <Button
               onClick={handleProceedFromChoose}
-              disabled={!useVendors && !useIndustry && !useLawFirm}
+              disabled={!useVendors && !useIndustry}
             >
               {tc("continue")}
               <ArrowRight className="w-4 h-4 ml-2" />
@@ -946,14 +917,41 @@ export default function QuickstartPage() {
                       {t.description}
                     </p>
                     <div className="flex gap-2 mt-2 text-[10px] text-muted-foreground">
-                      <span>{t.systemCount} systems</span>
+                      <span>{tq("countSystems", { count: t.systemCount })}</span>
                       <span>&middot;</span>
-                      <span>{t.policyCount} policies</span>
+                      <span>{tq("countPolicies", { count: t.policyCount })}</span>
                     </div>
                   </CardContent>
                 </Card>
               );
             })}
+            {/* Legal: the law-firm program, chosen like any other industry */}
+            <Card
+              className={`cursor-pointer transition-all ${
+                selectedIndustryId === LEGAL_INDUSTRY_ID
+                  ? "border-primary ring-2 ring-primary/20"
+                  : "hover:border-primary/50"
+              }`}
+              onClick={() => setSelectedIndustryId(LEGAL_INDUSTRY_ID)}
+            >
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <Scale className="w-6 h-6 text-primary" />
+                  {selectedIndustryId === LEGAL_INDUSTRY_ID && (
+                    <CheckCircle2 className="w-5 h-5 text-primary" />
+                  )}
+                </div>
+                <p className="font-medium">{tq("legalIndustryName")}</p>
+                <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                  {tq("legalIndustryDescription")}
+                </p>
+                <div className="flex gap-2 mt-2 text-[10px] text-muted-foreground">
+                  <span>{tq("legalIndustryTools", { count: LAWFIRM_TOOLS.length })}</span>
+                  <span>&middot;</span>
+                  <span>{tq("countPolicies", { count: LAWFIRM_POLICY_PACK.length })}</span>
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Industry preview */}

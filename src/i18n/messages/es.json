@@ -571,7 +571,10 @@
       "importPreview": "Vista previa de la importación",
       "vendorImports": "Proveedores importados",
       "industryTemplate": "Plantilla sectorial: {name}"
-    }
+    },
+    "legalIndustryName": "Legal",
+    "legalIndustryDescription": "Despachos de abogados y asesorías jurídicas: elige las herramientas de IA que usas (investigación jurídica, redacción, revisión contractual, e-discovery, traducción) y obtén el paquete de políticas para despachos.",
+    "legalIndustryTools": "{count} herramientas para elegir"
   },
   "assessments": {
     "title": "Evaluaciones",
@@ -2419,7 +2422,7 @@
       "title": "Cumplimiento",
       "intro": "Mapea tus sistemas de IA frente a los principales marcos normativos. Sigue el estado de cumplimiento a nivel de requisito, adjunta evidencias y exporta paquetes de cumplimiento para reguladores y auditores.",
       "frameworksTitle": "Marcos normativos compatibles",
-      "frameworksIntro": "AI SENTINEL incluye tres marcos precargados. Cada marco se desglosa en artículos, cláusulas o funciones con seguimiento de cumplimiento individual.",
+      "frameworksIntro": "AI SENTINEL incluye ocho marcos precargados: tres que se aplican según el nivel de riesgo (el Reglamento de IA de la UE, el NIST AI RMF y la ISO/IEC 42001) y cinco que se aplican según la jurisdicción (el RGPD y las normas de IA de California, Colorado, Texas y Washington). Cada marco se desglosa en artículos, cláusulas o funciones con seguimiento de cumplimiento individual.",
       "frameworks": {
         "euAiAct": {
           "name": "Reglamento de IA de la UE",
@@ -2472,7 +2475,7 @@
         "related": "Mapeo relacionado"
       },
       "snapshotTitle": "Instantánea de cumplimiento autogenerada",
-      "snapshotBody1": "Cuando clasificas el nivel de riesgo de un sistema de IA (p. ej., Alto Riesgo según el Reglamento de IA de la UE), AI SENTINEL crea automáticamente registros de mapeo de cumplimiento para cada requisito aplicable de los tres marcos. Llegas a la matriz de cumplimiento con todos los controles relevantes ya rellenados, sin configuración manual.",
+      "snapshotBody1": "Cuando clasificas el nivel de riesgo de un sistema de IA (p. ej., alto riesgo según el Reglamento de IA de la UE), AI SENTINEL crea automáticamente registros de mapeo de cumplimiento para cada requisito aplicable del Reglamento de IA, el NIST AI RMF y la ISO/IEC 42001. El RGPD y las normas estatales de EE. UU. se incorporan en cuanto se responden las jurisdicciones y las preguntas de cribado de la organización. Llegas a la matriz de cumplimiento con los controles pertinentes ya rellenados, sin configuración manual.",
       "snapshotBody2": "Para un sistema de Alto Riesgo, esto supone inicializar al instante más de 80 requisitos del Reglamento de IA de la UE (requisitos clave del Art. 6 al Art. 73), NIST AI RMF (las 23 prácticas) y las cláusulas de ISO 42001, cada uno en estado «Sin Evaluar» y listo para su evaluación.",
       "howTitle": "Mapear el cumplimiento",
       "steps": [

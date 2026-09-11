@@ -95,7 +95,7 @@ export default function LandingPage() {
     desc: t(`value.v${n}.desc`),
   }));
 
-  const socialProofs = [t("social.s1"), t("social.s2"), t("social.s3")];
+  const socialProofs = [t("social.s1"), t("social.s2"), t("social.s3"), t("social.s4")];
 
   return (
     <>

@@ -571,7 +571,10 @@
       "importPreview": "Import preview",
       "vendorImports": "Vendor imports",
       "industryTemplate": "Industry template: {name}"
-    }
+    },
+    "legalIndustryName": "Legal",
+    "legalIndustryDescription": "Law firms and in-house legal teams: pick the AI tools you use (legal research, drafting, contract review, e-discovery, translation) and get the law-firm policy pack.",
+    "legalIndustryTools": "{count} tools to choose from"
   },
   "assessments": {
     "title": "Assessments",
@@ -2419,7 +2422,7 @@
       "title": "Compliance",
       "intro": "Map your AI systems against leading regulatory frameworks. Track compliance status at the requirement level, attach evidence, and export compliance packages for regulators and auditors.",
       "frameworksTitle": "Supported Frameworks",
-      "frameworksIntro": "AI SENTINEL ships with three pre-loaded frameworks. Each framework is broken down into articles, clauses, or functions with individual compliance tracking.",
+      "frameworksIntro": "AI SENTINEL ships with eight pre-loaded frameworks: three that apply by risk tier (the EU AI Act, NIST AI RMF and ISO/IEC 42001) and five that apply by jurisdiction (the GDPR and the California, Colorado, Texas and Washington AI rules). Each framework is broken down into articles, clauses or functions with individual compliance tracking.",
       "frameworks": {
         "euAiAct": {
           "name": "EU AI Act",
@@ -2472,7 +2475,7 @@
         "related": "Related mapping"
       },
       "snapshotTitle": "Auto-Generated Compliance Snapshot",
-      "snapshotBody1": "When you classify an AI system's risk level (e.g., High Risk under the EU AI Act), AI SENTINEL automatically creates compliance mapping records for every applicable requirement across all three frameworks. You arrive at the compliance matrix with all relevant controls pre-populated: no manual setup needed.",
+      "snapshotBody1": "When you classify an AI system's risk level (e.g., high risk under the EU AI Act), AI SENTINEL automatically creates compliance mapping records for every applicable requirement of the EU AI Act, NIST AI RMF and ISO/IEC 42001. The GDPR and the US state rules attach once the organization's jurisdictions and screening questions are answered. You arrive at the compliance matrix with the relevant controls pre-populated: no manual setup needed.",
       "snapshotBody2": "For a High Risk system, this means 80+ requirements are instantly initialized across EU AI Act (Art. 6 through Art. 73 key requirements), NIST AI RMF (all 23 practices), and ISO 42001 clauses, each set to “Not Assessed” and ready for evaluation.",
       "howTitle": "Mapping Compliance",
       "steps": [

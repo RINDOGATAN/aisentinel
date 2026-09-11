@@ -155,7 +155,8 @@
     "roleMember": "Miembro",
     "roleViewer": "Lector",
     "program": "Programa",
-    "obligations": "Obligaciones"
+    "obligations": "Obligaciones",
+    "review": "Cola de revisión"
   },
   "dashboard": {
     "title": "Gobernanza de IA",
@@ -545,7 +546,8 @@
     "statStarterAssessments": "{count, plural, one {# evaluación de impacto en borrador} other {# evaluaciones de impacto en borrador}}",
     "statStarterVendorReviews": "{count, plural, one {# revisión de proveedor en borrador} other {# revisiones de proveedor en borrador}}",
     "corePoliciesTitle": "Políticas básicas que completan tu conjunto",
-    "corePoliciesDescription": "Tu programa necesita seis políticas básicas de IA. Estos borradores cubren las que no aportan tus elecciones anteriores, en tu idioma. Revísalas y apruébalas en Políticas."
+    "corePoliciesDescription": "Tu programa necesita seis políticas básicas de IA. Estos borradores cubren las que no aportan tus elecciones anteriores, en tu idioma. Revísalas y apruébalas en Políticas.",
+    "handoffConfirmLink": "Abrir la cola de revisión"
   },
   "assessments": {
     "title": "Evaluaciones",
@@ -3248,7 +3250,10 @@
       "dutiesSubtitle": "Cómo los controles del programa responden a las obligaciones profesionales del abogado.",
       "emptyTitle": "Aún no hay sistemas de IA registrados",
       "emptyBody": "Ejecuta el inicio rápido para construir tu programa de gobernanza: el mapa, el cuadro de madurez y el plan de acción aparecerán aquí en cuanto termine.",
-      "emptyCta": "Abrir Inicio Rápido"
+      "emptyCta": "Abrir Inicio Rápido",
+      "reviewLink": "Cola de revisión",
+      "historyLink": "Historial",
+      "historyFootnote": "Se captura una instantánea automáticamente cada vez que se exporta el PDF del programa. Las puntuaciones se calculan con la versión del modelo de madurez registrada en cada instantánea."
     },
     "tiles": {
       "overall": "Madurez global",
@@ -3524,7 +3529,7 @@
       "AUTO_CATALOG": "Derivado del catálogo de herramientas",
       "AUTO_TEMPLATE": "Generado a partir de una plantilla",
       "AUTO_RULE": "Derivado por una regla",
-      "IMPORTED": "Importado de una aplicación conectada"
+      "IMPORTED": "Importado de otra fuente"
     },
     "entity": {
       "RiskClassification": "Clasificación de riesgo",
@@ -3542,7 +3547,9 @@
       "clearSelection": "Quitar selección",
       "selectedCount": "{count} seleccionados",
       "confirmSelected": "Confirmar seleccionados",
-      "loadMore": "Cargar más"
+      "loadMore": "Cargar más",
+      "approverOnly": "Solo los propietarios, administradores y responsables de IA pueden confirmar elementos. Puedes abrir cada uno para revisarlo.",
+      "moreAfterConfirm": "Se muestran los {count} elementos más recientes. Al confirmarlos aparecen los siguientes."
     },
     "meter": {
       "title": "Garantía",
@@ -4121,5 +4128,17 @@
       "technicalOwner": "Responsable técnico",
       "description": "Descripción"
     }
+  },
+  "team": {
+    "title": "Equipo",
+    "description": "Quién trabaja en la gobernanza de la IA de esta organización y con qué rol. Los propietarios, administradores y responsables de IA pueden aprobar; los miembros documentan; los lectores consultan.",
+    "emailPlaceholder": "colega@ejemplo.com",
+    "add": "Añadir",
+    "addHint": "La persona debe haber iniciado sesión en AI SENTINEL una vez con este correo. Solo los propietarios pueden conceder el rol de propietario o cambiar roles.",
+    "added": "Miembro añadido.",
+    "updated": "Rol actualizado.",
+    "removed": "Miembro eliminado.",
+    "remove": "Eliminar miembro",
+    "notFound": "Todavía no hay ninguna cuenta con ese correo. Pide a tu colega que inicie sesión una vez y después añádelo aquí."
   }
 }

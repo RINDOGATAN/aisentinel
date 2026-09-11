@@ -31,6 +31,8 @@ const ALL_GAP_IDS: GapId[] = [
   "unassessed-vendors",
   "untriaged-shadow-reports",
   "unassessed-compliance",
+  "high-risk-without-assessment",
+  "unconfirmed-items",
 ];
 
 const STAGES = ["ADOPT", "PILOT", "RESTRICT", "HOLD"];

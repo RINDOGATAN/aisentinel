@@ -34,7 +34,7 @@ import {
   Shield,
   Sparkles,
   Code,
-} from "lucide-react";
+ ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -91,6 +91,7 @@ function buildNavGroups(isConsultant: boolean, t: (key: string) => string) {
       icon: Scale,
       items: [
         { href: "/governance/program", label: t("program"), icon: Network },
+        { href: "/governance/review", label: t("review"), icon: ShieldCheck },
         { href: "/governance/obligations", label: t("obligations"), icon: CalendarClock },
         { href: "/governance/assessments", label: t("assessments"), icon: ClipboardCheck },
         { href: "/governance/oversight", label: t("oversight"), icon: Eye },

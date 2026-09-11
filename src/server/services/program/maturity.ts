@@ -19,7 +19,7 @@
  * | compliance     | 50·(assessed/mappings) + 50·((compliant + 0.5·partial)/mappings)           | 0 mappings → 0                    |
  * | transparency   | 100·(withProfile/relevant) − 15·min(markingOverdue,3)                      | 0 relevant systems → 100          |
  * | vendorRisk     | 50·(systemsWithVendor/systems) + 50·(vendorsAssessed/vendors)              | 0 systems → 0; 0 vendors → term 0 |
- * | shadowAi       | 100·(triaged/reports)                                                      | 0 reports → 100 (no shadow signal is not a gap) |
+ * | shadowAi       | 100·(triaged/reports)                                                      | 0 reports → 50 (not yet surveyed: neither a gap nor a strength) |
  *
  * All ratios are clamped to [0, 1] before weighting; every score is rounded
  * and clamped to [0, 100].
@@ -35,6 +35,17 @@
  *
  * Overall = rounded mean of the four axis scores. Targets are fixed v1
  * defaults; incident-response readiness joins MANAGE in a later version.
+ *
+ * ## 1.1.0 (2026-09-11)
+ *
+ * - shadowAi with no reports scores 50, not 100. An organisation that has
+ *   never looked for unsanctioned AI use has shown nothing either way, and a
+ *   full score on a brand-new program read as an achievement.
+ * - Two gaps that make a new program's first month concrete:
+ *   `high-risk-without-assessment` (high-risk systems with no approved impact
+ *   assessment) and `unconfirmed-items` (machine-drafted artifacts nobody has
+ *   taken ownership of). Both snapshot inputs are optional so snapshots
+ *   stored by 1.0.0 still read; absent means zero.
  */
 
 /**
@@ -42,7 +53,7 @@
  * exported artifacts state it so a score can always be traced to the model
  * that produced it. See src/config/rule-pack-versions.ts.
  */
-export const MATURITY_MODEL_VERSION = "1.0.0";
+export const MATURITY_MODEL_VERSION = "1.1.0";
 
 // ── Snapshot input ──────────────────────────────────────────────────
 
@@ -99,6 +110,16 @@ export interface ProgramSnapshot {
     /** status != DISCOVERED */
     triaged: number;
   };
+  /** Added in 1.1.0; absent in older stored snapshots. */
+  assessments?: {
+    highRiskSystems: number;
+    /** high-risk systems with at least one APPROVED assessment */
+    highRiskWithApprovedAssessment: number;
+  };
+  /** Added in 1.1.0: machine-drafted artifacts awaiting confirmation. */
+  provenance?: {
+    unconfirmed: number;
+  };
 }
 
 // ── Output types ────────────────────────────────────────────────────
@@ -138,7 +159,9 @@ export type GapId =
   | "marking-overdue"
   | "unassessed-vendors"
   | "untriaged-shadow-reports"
-  | "unassessed-compliance";
+  | "unassessed-compliance"
+  | "high-risk-without-assessment"
+  | "unconfirmed-items";
 
 export type GapSeverity = "critical" | "high" | "medium";
 
@@ -259,7 +282,7 @@ function scoreVendorRisk(s: ProgramSnapshot): number {
 
 function scoreShadowAi(s: ProgramSnapshot): number {
   const { reports, triaged } = s.shadowAi;
-  if (reports === 0) return 100;
+  if (reports === 0) return 50;
   return clampScore(100 * ratio(triaged, reports));
 }
 
@@ -299,6 +322,19 @@ function deriveGaps(s: ProgramSnapshot): ProgramGap[] {
       id: "unassessed-compliance",
       severity: "high",
       count: Math.max(0, s.compliance.totalMappings - s.compliance.assessed),
+    },
+    {
+      id: "high-risk-without-assessment",
+      severity: "high",
+      count: Math.max(
+        0,
+        (s.assessments?.highRiskSystems ?? 0) - (s.assessments?.highRiskWithApprovedAssessment ?? 0),
+      ),
+    },
+    {
+      id: "unconfirmed-items",
+      severity: "high",
+      count: s.provenance?.unconfirmed ?? 0,
     },
     {
       id: "draft-policies",

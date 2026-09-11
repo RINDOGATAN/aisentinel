@@ -13,7 +13,7 @@ import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Download, Loader2, Sparkles, Network } from "lucide-react";
+import { Download, History, Loader2, Sparkles, Network, ShieldCheck } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { ProgramMap } from "@/components/governance/program/ProgramMap";
@@ -65,17 +65,31 @@ export default function ProgramPage() {
           <p className="text-sm text-muted-foreground mt-1">{t("subtitle")}</p>
         </div>
         {!isEmpty && (
-          <Button
-            onClick={() =>
-              window.open(
-                `/api/export/governance-program?organizationId=${orgId}&locale=${locale}`,
-                "_blank",
-              )
-            }
-          >
-            <Download className="w-4 h-4 mr-2" />
-            {t("exportPdf")}
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Link href="/governance/review">
+              <Button variant="outline">
+                <ShieldCheck className="w-4 h-4 mr-2" />
+                {t("reviewLink")}
+              </Button>
+            </Link>
+            <Link href="/governance/program/history">
+              <Button variant="outline">
+                <History className="w-4 h-4 mr-2" />
+                {t("historyLink")}
+              </Button>
+            </Link>
+            <Button
+              onClick={() =>
+                window.open(
+                  `/api/export/governance-program?organizationId=${orgId}&locale=${locale}`,
+                  "_blank",
+                )
+              }
+            >
+              <Download className="w-4 h-4 mr-2" />
+              {t("exportPdf")}
+            </Button>
+          </div>
         )}
       </div>
 

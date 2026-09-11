@@ -31,6 +31,7 @@ import {
   type ContentLocale,
 } from "@/config/lawfirm-ai-toolkit";
 import { computeMarkingDeadline } from "@/config/transparency-rules";
+import { getConfirmationCounts } from "@/server/services/provenance/summary";
 
 // ── Locale helpers ──────────────────────────────────────────────────
 
@@ -126,11 +127,6 @@ function lawfirmCategoriesPresent(records: SystemRecord[]): string[] {
 const CORE_POLICY_TYPES = new Set(LAWFIRM_POLICY_PACK.map((p) => p.type));
 const ACTIVE_POLICY_STATUSES = new Set(["APPROVED", "PUBLISHED"]);
 
-const SEVERITY_BUCKET: Record<GapSeverity, "1-30" | "31-60" | "61-90"> = {
-  critical: "1-30",
-  high: "31-60",
-  medium: "61-90",
-};
 
 export type DutyControlStatus =
   | "inPlace"
@@ -221,6 +217,8 @@ export async function getProgramScorecardData(
     shadowTotal,
     shadowTriaged,
     organization,
+    approvedAssessmentSystems,
+    confirmationCounts,
   ] = await Promise.all([
     prisma.aISystem.findMany({
       where: { organizationId },
@@ -256,6 +254,12 @@ export async function getProgramScorecardData(
       where: { id: organizationId },
       select: { settings: true },
     }),
+    prisma.aIAssessment.findMany({
+      where: { organizationId, status: "APPROVED" },
+      select: { aiSystemId: true },
+      distinct: ["aiSystemId"],
+    }),
+    getConfirmationCounts(prisma, organizationId),
   ]);
 
   const systems = (records as SystemRecord[]).filter(
@@ -355,15 +359,36 @@ export async function getProgramScorecardData(
       ).length,
     },
     shadowAi: { reports: shadowTotal, triaged: shadowTriaged },
+    assessments: (() => {
+      const approved = new Set(approvedAssessmentSystems.map((a) => a.aiSystemId));
+      const high = systems.filter((s) => s.riskClassification?.riskLevel === "HIGH");
+      return {
+        highRiskSystems: high.length,
+        highRiskWithApprovedAssessment: high.filter((s) => approved.has(s.id)).length,
+      };
+    })(),
+    provenance: {
+      unconfirmed: Object.values(confirmationCounts).reduce(
+        (n, c) => n + Math.max(0, c.total - c.confirmed),
+        0,
+      ),
+    },
   };
 
   const maturity = computeMaturity(snapshot);
 
-  // 90-day plan: gaps → localized action templates, severity-bucketed
-  const plan = (["1-30", "31-60", "61-90"] as const).map((bucket) => ({
+  // 90-day plan: gaps → localized action templates, severity-bucketed.
+  // The most severe gaps present always open the plan: with no critical gap,
+  // high-severity work moves into days 1–30 rather than leaving the first
+  // month reading "nothing scheduled" on a program full of drafts.
+  const BUCKETS = ["1-30", "31-60", "61-90"] as const;
+  const RANK: Record<GapSeverity, number> = { critical: 0, high: 1, medium: 2 };
+  const shift = maturity.gaps.length > 0 ? Math.min(...maturity.gaps.map((g) => RANK[g.severity])) : 0;
+  const bucketOf = (severity: GapSeverity) => BUCKETS[Math.max(0, RANK[severity] - shift)];
+  const plan = BUCKETS.map((bucket) => ({
     bucket,
     items: maturity.gaps
-      .filter((gap) => SEVERITY_BUCKET[gap.severity] === bucket)
+      .filter((gap) => bucketOf(gap.severity) === bucket)
       .map((gap) => {
         const template = getActionTemplate(gap.id as GapId);
         return {

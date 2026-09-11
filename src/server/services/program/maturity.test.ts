@@ -69,7 +69,7 @@ describe("computeMaturity — dimension formulas", () => {
     expect(dim(r, "compliance")).toBe(0);
     expect(dim(r, "transparency")).toBe(100); // nothing Art. 50-relevant
     expect(dim(r, "vendorRisk")).toBe(0);
-    expect(dim(r, "shadowAi")).toBe(100); // absence of reports is not a gap
+    expect(dim(r, "shadowAi")).toBe(50); // not yet surveyed: neither gap nor strength (1.1.0)
   });
 
   it("fresh law-firm quickstart org scores honestly", () => {
@@ -81,7 +81,7 @@ describe("computeMaturity — dimension formulas", () => {
     expect(dim(r, "compliance")).toBe(0);
     expect(dim(r, "transparency")).toBe(0);
     expect(dim(r, "vendorRisk")).toBe(100);
-    expect(dim(r, "shadowAi")).toBe(100);
+    expect(dim(r, "shadowAi")).toBe(50);
   });
 
   it("inventory: 40 base + owner and purpose thirds", () => {
@@ -178,11 +178,11 @@ describe("computeMaturity — NIST axes and overall", () => {
   it("fresh quickstart axis math matches the documented weights", () => {
     const r = computeMaturity(FRESH_QUICKSTART);
     const axis = (id: string) => r.nist.find((a) => a.id === id)!;
-    expect(axis("GOVERN").score).toBe(70); // .6·50 + .4·100
+    expect(axis("GOVERN").score).toBe(50); // .6·50 + .4·50 (shadowAi unsurveyed, 1.1.0)
     expect(axis("MAP").score).toBe(88); // .4·70 + .35·100 + .25·100
     expect(axis("MEASURE").score).toBe(0);
     expect(axis("MANAGE").score).toBe(60);
-    expect(r.overall).toBe(55); // round(mean(70,88,0,60))
+    expect(r.overall).toBe(50); // round(mean(50,88,0,60))
     expect(axis("GOVERN").target).toBe(80);
     expect(axis("MAP").target).toBe(85);
     expect(axis("MEASURE").target).toBe(75);
@@ -269,5 +269,27 @@ describe("computeMaturity — gaps", () => {
       }),
     );
     expect(r.gaps.some((g) => g.id === "unlinked-policies")).toBe(false);
+  });
+});
+
+describe("computeMaturity — 1.1.0 gaps", () => {
+  it("counts high-risk systems without an approved assessment, and unconfirmed drafts", () => {
+    const r = computeMaturity({
+      ...FRESH_QUICKSTART,
+      assessments: { highRiskSystems: 3, highRiskWithApprovedAssessment: 1 },
+      provenance: { unconfirmed: 42 },
+    });
+    expect(r.gaps.find((g) => g.id === "high-risk-without-assessment")).toEqual({
+      id: "high-risk-without-assessment",
+      severity: "high",
+      count: 2,
+    });
+    expect(r.gaps.find((g) => g.id === "unconfirmed-items")?.count).toBe(42);
+  });
+
+  it("reads a snapshot stored before 1.1.0 (no assessments or provenance) without those gaps", () => {
+    const r = computeMaturity(FRESH_QUICKSTART);
+    expect(r.gaps.map((g) => g.id)).not.toContain("high-risk-without-assessment");
+    expect(r.gaps.map((g) => g.id)).not.toContain("unconfirmed-items");
   });
 });

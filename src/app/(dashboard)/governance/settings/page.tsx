@@ -16,6 +16,7 @@ import { AiPostureCard } from "@/components/ai/AiPostureCard";
 import { JurisdictionPicker } from "@/components/governance/jurisdiction-picker";
 import { CaliforniaScreeningCard } from "@/components/governance/california-screening-card";
 import { RegimeScreeningCard } from "@/components/governance/regime-screening-card";
+import { TeamCard } from "@/components/governance/team-card";
 import type { JurisdictionId } from "@/config/jurisdictions";
 
 const personaIcons = {
@@ -97,6 +98,15 @@ export default function SettingsPage() {
             </div>
           </CardContent>
         </Card>
+      )}
+
+      {/* Team: members and roles */}
+      {organization && (
+        <TeamCard
+          organizationId={organization.id}
+          currentRole={userRole}
+          currentUserId={profile?.id ?? null}
+        />
       )}
 
       {/* Operating jurisdictions — drives which regulatory regimes apply */}

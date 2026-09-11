@@ -198,9 +198,17 @@ export const organizationRouter = createTRPCRouter({
           message: "You do not have permission to add members",
         });
       }
+      // Granting ownership is an owner's decision: an admin must not be able
+      // to create an owner (including a second account of their own).
+      if (input.role === "OWNER" && ctx.membership.role !== "OWNER") {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Only owners can add another owner",
+        });
+      }
 
-      const user = await ctx.prisma.user.findUnique({
-        where: { email: input.email },
+      const user = await ctx.prisma.user.findFirst({
+        where: { email: { equals: input.email.trim(), mode: "insensitive" } },
       });
 
       if (!user) {
@@ -239,6 +247,17 @@ export const organizationRouter = createTRPCRouter({
         },
       });
 
+      await ctx.prisma.auditLog.create({
+        data: {
+          organizationId: ctx.organization.id,
+          userId: ctx.session.user.id,
+          entityType: "OrganizationMember",
+          entityId: membership.id,
+          action: "CREATE",
+          changes: { memberUserId: user.id, role: input.role },
+        },
+      });
+
       return membership;
     }),
 
@@ -265,14 +284,39 @@ export const organizationRouter = createTRPCRouter({
       if (!member) {
         throw new TRPCError({ code: "NOT_FOUND", message: "Member not found in this organization" });
       }
+      // Never leave an organization without an owner.
+      if (member.role === "OWNER" && input.role !== "OWNER") {
+        const ownerCount = await ctx.prisma.organizationMember.count({
+          where: { organizationId: ctx.organization.id, role: "OWNER" },
+        });
+        if (ownerCount <= 1) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Cannot change the role of the last owner of an organization",
+          });
+        }
+      }
 
-      return ctx.prisma.organizationMember.update({
+      const updated = await ctx.prisma.organizationMember.update({
         where: { id: input.memberId },
         data: { role: input.role },
         include: {
           user: { select: { id: true, name: true, email: true } },
         },
       });
+
+      await ctx.prisma.auditLog.create({
+        data: {
+          organizationId: ctx.organization.id,
+          userId: ctx.session.user.id,
+          entityType: "OrganizationMember",
+          entityId: member.id,
+          action: "UPDATE",
+          changes: { memberUserId: member.userId, from: member.role, to: input.role },
+        },
+      });
+
+      return updated;
     }),
 
   removeMember: organizationProcedure
@@ -298,6 +342,13 @@ export const organizationRouter = createTRPCRouter({
         throw new TRPCError({ code: "NOT_FOUND", message: "Member not found" });
       }
 
+      if (memberToRemove.role === "OWNER" && ctx.membership.role !== "OWNER") {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Only owners can remove an owner",
+        });
+      }
+
       if (memberToRemove.role === "OWNER") {
         const ownerCount = await ctx.prisma.organizationMember.count({
           where: { organizationId: ctx.organization.id, role: "OWNER" },
@@ -311,6 +362,16 @@ export const organizationRouter = createTRPCRouter({
       }
 
       await ctx.prisma.organizationMember.delete({ where: { id: input.memberId } });
+      await ctx.prisma.auditLog.create({
+        data: {
+          organizationId: ctx.organization.id,
+          userId: ctx.session.user.id,
+          entityType: "OrganizationMember",
+          entityId: memberToRemove.id,
+          action: "DELETE",
+          changes: { memberUserId: memberToRemove.userId, role: memberToRemove.role },
+        },
+      });
       return { success: true };
     }),
 

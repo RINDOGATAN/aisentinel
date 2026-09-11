@@ -1746,7 +1746,10 @@ export default function QuickstartPage() {
                 <p className="text-xs text-muted-foreground">
                   {t("handoffConfirmPrompt", {
                     count: executionResult.complianceBaselined,
-                  })}
+                  })}{" "}
+                  <Link href="/governance/review" className="text-primary underline underline-offset-2">
+                    {t("handoffConfirmLink")}
+                  </Link>
                 </p>
               )}
             </CardContent>

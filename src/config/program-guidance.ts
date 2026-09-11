@@ -85,7 +85,9 @@ export type GapId =
   | "marking-overdue"
   | "unassessed-vendors"
   | "untriaged-shadow-reports"
-  | "unassessed-compliance";
+  | "unassessed-compliance"
+  | "high-risk-without-assessment"
+  | "unconfirmed-items";
 
 export interface ActionTemplate {
   id: GapId;
@@ -290,6 +292,32 @@ export const LAWFIRM_ROLLOUT_RECOMMENDATIONS: RolloutRecommendation[] = [
 // ── Action templates (90-day plan) ──────────────────────────────────
 
 export const PROGRAM_ACTION_TEMPLATES: ActionTemplate[] = [
+  {
+    id: "unconfirmed-items",
+    title: {
+      en: "Confirm what the product drafted",
+      es: "Confirmar lo que ha redactado el producto",
+    },
+    detail: {
+      en: "Classifications, requirements, gates, policies and Art. 50 profiles generated from templates or rules are drafts until a person takes ownership. Review them in the queue and confirm what you stand behind.",
+      es: "Las clasificaciones, requisitos, puntos de control, políticas y perfiles del art. 50 generados a partir de plantillas o reglas son borradores hasta que una persona los asume. Revísalos en la cola y confirma lo que respaldas.",
+    },
+    href: "/governance/review",
+    effort: "M",
+  },
+  {
+    id: "high-risk-without-assessment",
+    title: {
+      en: "Complete the impact assessments for high-risk systems",
+      es: "Completar las evaluaciones de impacto de los sistemas de alto riesgo",
+    },
+    detail: {
+      en: "Answer and approve the impact assessment drafted for each high-risk system. It covers the GDPR data protection impact assessment (Art. 35), which applies now, and prepares the fundamental rights impact assessment the EU AI Act requires of certain deployers from 2 December 2027 (Art. 27).",
+      es: "Responde y aprueba la evaluación de impacto preparada para cada sistema de alto riesgo. Cubre la evaluación de impacto relativa a la protección de datos del RGPD (art. 35), que ya es aplicable, y prepara la evaluación de impacto sobre los derechos fundamentales que el Reglamento de IA exige a determinados responsables del despliegue a partir del 2 de diciembre de 2027 (art. 27).",
+    },
+    href: "/governance/assessments",
+    effort: "L",
+  },
   {
     id: "no-systems",
     title: { en: "Run the quick start", es: "Ejecutar el inicio rápido" },

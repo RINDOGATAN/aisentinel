@@ -155,7 +155,8 @@
     "roleMember": "Member",
     "roleViewer": "Viewer",
     "program": "Program",
-    "obligations": "Obligations"
+    "obligations": "Obligations",
+    "review": "Review queue"
   },
   "dashboard": {
     "title": "AI Governance",
@@ -545,7 +546,8 @@
     "statStarterAssessments": "{count, plural, one {# impact assessment drafted} other {# impact assessments drafted}}",
     "statStarterVendorReviews": "{count, plural, one {# vendor review drafted} other {# vendor reviews drafted}}",
     "corePoliciesTitle": "Core policies added to complete your set",
-    "corePoliciesDescription": "Your program needs six core AI policies. These drafts cover the ones your choices above do not, in your language. Review and approve them in Policies."
+    "corePoliciesDescription": "Your program needs six core AI policies. These drafts cover the ones your choices above do not, in your language. Review and approve them in Policies.",
+    "handoffConfirmLink": "Open the review queue"
   },
   "assessments": {
     "title": "Assessments",
@@ -3248,7 +3250,10 @@
       "dutiesSubtitle": "How the program's controls map to counsel's professional obligations.",
       "emptyTitle": "No AI systems registered yet",
       "emptyBody": "Run the quick start to build your governance program: the map, scorecard, and action plan appear here the moment it completes.",
-      "emptyCta": "Open Quick Start"
+      "emptyCta": "Open Quick Start",
+      "reviewLink": "Review queue",
+      "historyLink": "History",
+      "historyFootnote": "A snapshot is captured automatically each time the program PDF is exported. Scores are computed by the maturity model version recorded in each snapshot."
     },
     "tiles": {
       "overall": "Overall maturity",
@@ -3524,7 +3529,7 @@
       "AUTO_CATALOG": "Derived from the tool catalog",
       "AUTO_TEMPLATE": "Generated from a template",
       "AUTO_RULE": "Derived by a rule",
-      "IMPORTED": "Imported from a connected app"
+      "IMPORTED": "Imported from another source"
     },
     "entity": {
       "RiskClassification": "Risk classification",
@@ -3542,7 +3547,9 @@
       "clearSelection": "Clear",
       "selectedCount": "{count} selected",
       "confirmSelected": "Confirm selected",
-      "loadMore": "Load more"
+      "loadMore": "Load more",
+      "approverOnly": "Only owners, admins and AI officers can confirm items. You can open each one to review it.",
+      "moreAfterConfirm": "Showing the {count} most recent items. Confirming them brings the next ones into view."
     },
     "meter": {
       "title": "Assurance",
@@ -4121,5 +4128,17 @@
       "technicalOwner": "Technical owner",
       "description": "Description"
     }
+  },
+  "team": {
+    "title": "Team",
+    "description": "Who works on this organization's AI governance, and with which role. Owners, admins and AI officers can approve; members document; viewers read.",
+    "emailPlaceholder": "colleague@example.com",
+    "add": "Add",
+    "addHint": "The person must have signed in to AI SENTINEL once with this email. Only owners can grant the owner role or change roles.",
+    "added": "Member added.",
+    "updated": "Role updated.",
+    "removed": "Member removed.",
+    "remove": "Remove member",
+    "notFound": "No account uses that email yet. Ask your colleague to sign in once, then add them here."
   }
 }

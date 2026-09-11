@@ -24,7 +24,7 @@ const personaIcons = {
 } as const;
 
 export default function SettingsPage() {
-  const { userType } = useUserType();
+  const { userType, refreshSession } = useUserType();
   const { data: profile } = trpc.user.getProfile.useQuery();
   const { organization, userRole, canWrite } = useOrganization();
   const t = useTranslations("settings");
@@ -33,6 +33,15 @@ export default function SettingsPage() {
 
   const Icon = userType ? personaIcons[userType as keyof typeof personaIcons] : null;
   const personaTitle = userType === "BUSINESS_USER" ? t("personaBusinessUser") : userType === "AI_GOVERNANCE_CONSULTANT" ? t("personaConsultant") : null;
+  const otherPersona = userType === "BUSINESS_USER" ? "AI_GOVERNANCE_CONSULTANT" : "BUSINESS_USER";
+  const otherPersonaTitle = otherPersona === "BUSINESS_USER" ? t("personaBusinessUser") : t("personaConsultant");
+  const setUserType = trpc.user.setUserType.useMutation({
+    onSuccess: async () => {
+      await refreshSession();
+      toast.success(t("switched"));
+    },
+    onError: (err) => toast.error(err.message),
+  });
 
   return (
     <div className="space-y-4 sm:space-y-6 max-w-2xl">
@@ -59,7 +68,7 @@ export default function SettingsPage() {
         </CardContent>
       </Card>
 
-      {/* Account Type (read-only) */}
+      {/* Account type: one organization, or several client organizations */}
       {personaTitle && Icon && (
         <Card>
           <CardHeader>
@@ -76,6 +85,15 @@ export default function SettingsPage() {
               <div className="flex-1 min-w-0">
                 <p className="font-medium text-sm">{personaTitle}</p>
               </div>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={setUserType.isPending}
+                onClick={() => setUserType.mutate({ userType: otherPersona })}
+              >
+                {setUserType.isPending && <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />}
+                {t("switchTo", { persona: otherPersonaTitle })}
+              </Button>
             </div>
           </CardContent>
         </Card>

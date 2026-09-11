@@ -12,6 +12,7 @@ import { TRPCError } from "@trpc/server";
 import { OrganizationRole } from "@prisma/client";
 import { computeMarkingDeadline } from "@/config/transparency-rules";
 import { JURISDICTION_IDS } from "@/config/jurisdictions";
+import { firstFreeSlug } from "@/lib/unique-slug";
 
 export const organizationRouter = createTRPCRouter({
   list: protectedProcedure.query(async ({ ctx }) => {
@@ -80,11 +81,19 @@ export const organizationRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const existing = await ctx.prisma.organization.findUnique({
-        where: { slug: input.slug },
-      });
-
-      if (existing) {
+      // Two organizations can share a name ("Acme" the client, "Acme" the
+      // firm's own). The slug is only an internal handle, so a taken one gets
+      // the next free numeric suffix rather than refusing the user.
+      const taken = new Set(
+        (
+          await ctx.prisma.organization.findMany({
+            where: { slug: { startsWith: input.slug } },
+            select: { slug: true },
+          })
+        ).map((o) => o.slug),
+      );
+      const slug = firstFreeSlug(input.slug, taken);
+      if (!slug) {
         throw new TRPCError({
           code: "CONFLICT",
           message: "An organization with this slug already exists",
@@ -94,7 +103,7 @@ export const organizationRouter = createTRPCRouter({
       const organization = await ctx.prisma.organization.create({
         data: {
           name: input.name,
-          slug: input.slug,
+          slug,
           domain: input.domain,
           members: {
             create: {
@@ -113,7 +122,7 @@ export const organizationRouter = createTRPCRouter({
           entityType: "Organization",
           entityId: organization.id,
           action: "CREATE",
-          changes: { name: input.name, slug: input.slug },
+          changes: { name: input.name, slug },
         },
       });
 

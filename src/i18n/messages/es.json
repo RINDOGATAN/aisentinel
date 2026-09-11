@@ -475,7 +475,7 @@
     "buildAiGovernanceProgram": "Crear Programa de Gobernanza de IA",
     "successTitle": "¡Programa de Gobernanza de IA Creado!",
     "successDescription": "Tu programa de gobernanza de IA ha sido configurado. Ahora puedes explorar y personalizar cada módulo.",
-    "choosePathDescription": "Elige cómo quieres poner en marcha tu programa de gobernanza de IA. Puedes usar ambas opciones a la vez.",
+    "choosePathDescription": "Elige cómo quieres poner en marcha tu programa de gobernanza de la IA. Puedes combinar estas opciones.",
     "chipAiSystems": "Sistemas de IA",
     "chipRiskClassifications": "Clasificaciones de riesgo",
     "chipOversightGates": "Controles de supervisión",
@@ -505,7 +505,43 @@
     "statRiskClassifications": "clasificaciones de riesgo",
     "statOversightGates": "puntos de control",
     "statComplianceMappings": "requisitos de cumplimiento",
-    "statPolicies": "políticas"
+    "statPolicies": "políticas",
+    "popularVendors": "Proveedores de IA habituales: elige los que usa tu organización o busca en el catálogo completo.",
+    "vendorsSelected": "{count, plural, one {# seleccionado} other {# seleccionados}}",
+    "toastNothingNew": "Todo existe ya: no hay nada nuevo que crear.",
+    "toastCreated": "Creado: {summary}",
+    "countVendors": "{count, plural, one {# proveedor} other {# proveedores}}",
+    "countSystems": "{count, plural, one {# sistema} other {# sistemas}}",
+    "countPolicies": "{count, plural, one {# política} other {# políticas}}",
+    "selectAtLeastOneOption": "Selecciona al menos una opción.",
+    "selectAtLeastOneVendor": "Selecciona al menos un proveedor.",
+    "selectIndustryTemplate": "Selecciona una plantilla de sector.",
+    "nav": {
+      "registry": {
+        "title": "Registro de IA",
+        "hint": "Ver sistemas"
+      },
+      "risk": {
+        "title": "Clasificación de riesgos",
+        "hint": "Revisar niveles de riesgo"
+      },
+      "compliance": {
+        "title": "Cumplimiento",
+        "hint": "Evaluar requisitos"
+      },
+      "oversight": {
+        "title": "Supervisión",
+        "hint": "Revisar puntos de control"
+      },
+      "policies": {
+        "title": "Políticas",
+        "hint": "Revisar y aprobar políticas"
+      },
+      "dashboard": {
+        "title": "Panel",
+        "hint": "Ver resumen"
+      }
+    }
   },
   "assessments": {
     "title": "Evaluaciones",
@@ -1098,9 +1134,11 @@
     "labelName": "Nombre",
     "labelEmail": "Correo Electrónico",
     "accountTypeTitle": "Tipo de Cuenta",
-    "accountTypeDescription": "Establecido durante el registro. Contacta con soporte si necesitas cambiarlo.",
-    "personaBusinessUser": "Usuario Empresarial",
-    "personaConsultant": "Profesional de Gobernanza de IA"
+    "accountTypeDescription": "Determina si empiezas con una organización o llevas varias organizaciones cliente. Puedes cambiarlo cuando quieras.",
+    "personaBusinessUser": "Para mi organización",
+    "personaConsultant": "Para organizaciones cliente",
+    "switchTo": "Cambiar a: {persona}",
+    "switched": "Tipo de cuenta actualizado."
   },
   "clients": {
     "title": "Mis Clientes",
@@ -4020,5 +4058,23 @@
     "fieldTraceabilityHelp": "La decisión, la versión del modelo y los datos que la sustentan.",
     "fieldNotes": "Notas",
     "reviewedBy": "Documentado por {name} el {date}"
+  },
+  "onboarding": {
+    "personaTitle": "¿Cómo vas a usar AI SENTINEL?",
+    "personaSubtitle": "Así preparamos el punto de partida adecuado. Puedes cambiarlo más adelante en Configuración.",
+    "personaOwnTitle": "Para mi organización",
+    "personaOwnDescription": "Llevo la gobernanza de la IA dentro de una organización: asesoría jurídica interna, cumplimiento normativo, delegado de protección de datos o responsable de IA.",
+    "personaClientsTitle": "Para organizaciones cliente",
+    "personaClientsDescription": "Configuro y llevo la gobernanza de la IA de varios clientes: una consultora o un despacho que asesora a clientes.",
+    "continue": "Continuar",
+    "settingUp": "Preparando…",
+    "genericError": "Algo ha fallado. Inténtalo de nuevo.",
+    "welcomeTitle": "Te damos la bienvenida a AI SENTINEL",
+    "orgDescription": "Pon nombre a tu organización. A continuación, un asistente breve crea tu programa de gobernanza de la IA.",
+    "orgNameLabel": "Nombre de la organización",
+    "orgNamePlaceholder": "p. ej., Acme Pagos",
+    "createAndContinue": "Crear la organización y continuar",
+    "creating": "Creando…",
+    "createFailed": "No se ha podido crear la organización. Inténtalo de nuevo."
   }
 }

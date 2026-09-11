@@ -6,14 +6,34 @@ import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure, publicProcedure } from "../../trpc";
 import { buildScopeFilter } from "@/lib/applicability-scope";
 
+const FRAMEWORK_ORDER = [
+  "EU_AI_ACT",
+  "EU_GDPR",
+  "ISO_42001",
+  "NIST_AI_RMF",
+  "CA_CCPA_ADMT",
+  "CO_SB_26_189",
+  "TX_TRAIGA",
+  "WA_AI_RULES",
+];
+const frameworkRank = (code: string) => {
+  const i = FRAMEWORK_ORDER.indexOf(code);
+  return i === -1 ? FRAMEWORK_ORDER.length : i;
+};
+
 export const complianceRouter = createTRPCRouter({
   listFrameworks: publicProcedure.query(async ({ ctx }) => {
-    return ctx.prisma.complianceFramework.findMany({
-      orderBy: { name: "asc" },
+    const frameworks = await ctx.prisma.complianceFramework.findMany({
       include: {
         _count: { select: { requirements: true } },
       },
     });
+    // The first tab is the one every page opens on. Alphabetical order put
+    // California first for everyone, including organisations that operate
+    // only in Europe; the EU AI Act is the framework every user has.
+    return frameworks.sort(
+      (a, b) => frameworkRank(a.code) - frameworkRank(b.code) || a.name.localeCompare(b.name),
+    );
   }),
 
   listRequirements: publicProcedure

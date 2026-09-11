@@ -475,7 +475,7 @@
     "buildAiGovernanceProgram": "Build AI Governance Program",
     "successTitle": "AI Governance Program Created!",
     "successDescription": "Your AI governance program has been bootstrapped. You can now explore and customize each module.",
-    "choosePathDescription": "Choose how you want to bootstrap your AI governance program. You can use both options together.",
+    "choosePathDescription": "Choose how to bootstrap your AI governance program. You can combine these options.",
     "chipAiSystems": "AI Systems",
     "chipRiskClassifications": "Risk Classifications",
     "chipOversightGates": "Oversight Gates",
@@ -505,7 +505,43 @@
     "statRiskClassifications": "risk classifications",
     "statOversightGates": "oversight gates",
     "statComplianceMappings": "compliance requirements",
-    "statPolicies": "policies"
+    "statPolicies": "policies",
+    "popularVendors": "Common AI vendors: pick the ones your organization uses, or search the full catalog above.",
+    "vendorsSelected": "{count, plural, one {# selected} other {# selected}}",
+    "toastNothingNew": "Everything already exists: nothing new to create.",
+    "toastCreated": "Created {summary}",
+    "countVendors": "{count, plural, one {# vendor} other {# vendors}}",
+    "countSystems": "{count, plural, one {# system} other {# systems}}",
+    "countPolicies": "{count, plural, one {# policy} other {# policies}}",
+    "selectAtLeastOneOption": "Select at least one option.",
+    "selectAtLeastOneVendor": "Select at least one vendor.",
+    "selectIndustryTemplate": "Select an industry template.",
+    "nav": {
+      "registry": {
+        "title": "AI Registry",
+        "hint": "View systems"
+      },
+      "risk": {
+        "title": "Risk Classification",
+        "hint": "Review risk tiers"
+      },
+      "compliance": {
+        "title": "Compliance",
+        "hint": "Assess requirements"
+      },
+      "oversight": {
+        "title": "Oversight",
+        "hint": "Review gates"
+      },
+      "policies": {
+        "title": "Policies",
+        "hint": "Review and approve policies"
+      },
+      "dashboard": {
+        "title": "Dashboard",
+        "hint": "View overview"
+      }
+    }
   },
   "assessments": {
     "title": "Assessments",
@@ -1098,9 +1134,11 @@
     "labelName": "Name",
     "labelEmail": "Email",
     "accountTypeTitle": "Account Type",
-    "accountTypeDescription": "Set during registration. Contact support if you need to change this.",
-    "personaBusinessUser": "Business User",
-    "personaConsultant": "AI Governance Professional"
+    "accountTypeDescription": "Decides whether you start with one organization or run several client organizations. You can switch at any time.",
+    "personaBusinessUser": "For my organization",
+    "personaConsultant": "For client organizations",
+    "switchTo": "Switch to: {persona}",
+    "switched": "Account type updated."
   },
   "clients": {
     "title": "My Clients",
@@ -4020,5 +4058,23 @@
     "fieldTraceabilityHelp": "The decision, the model version and the data behind it.",
     "fieldNotes": "Notes",
     "reviewedBy": "Recorded by {name} on {date}"
+  },
+  "onboarding": {
+    "personaTitle": "How will you use AI SENTINEL?",
+    "personaSubtitle": "This sets the right starting point. You can change it later in Settings.",
+    "personaOwnTitle": "For my organization",
+    "personaOwnDescription": "I run AI governance inside one organization: in-house counsel, compliance, a data protection officer or an AI lead.",
+    "personaClientsTitle": "For client organizations",
+    "personaClientsDescription": "I set up and run AI governance for several clients: a consultancy, or a firm advising clients.",
+    "continue": "Continue",
+    "settingUp": "Setting up…",
+    "genericError": "Something went wrong. Please try again.",
+    "welcomeTitle": "Welcome to AI SENTINEL",
+    "orgDescription": "Name your organization. A short wizard then builds your AI governance program.",
+    "orgNameLabel": "Organization name",
+    "orgNamePlaceholder": "e.g. Acme Payments",
+    "createAndContinue": "Create organization and continue",
+    "creating": "Creating…",
+    "createFailed": "The organization could not be created. Please try again."
   }
 }

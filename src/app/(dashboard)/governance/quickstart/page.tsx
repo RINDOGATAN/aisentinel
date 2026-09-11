@@ -39,6 +39,7 @@ import {
   Scale,
   LayoutDashboard,
   Download,
+  Check,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations, useLocale } from "next-intl";
@@ -51,7 +52,9 @@ import {
 } from "@/config/lawfirm-ai-toolkit";
 import { ProgramMap } from "@/components/governance/program/ProgramMap";
 import { JurisdictionPicker } from "@/components/governance/jurisdiction-picker";
+import { RegimeScreeningCard } from "@/components/governance/regime-screening-card";
 import type { JurisdictionId } from "@/config/jurisdictions";
+import { features } from "@/config/features";
 
 // ============================================================
 // ICON MAP
@@ -65,6 +68,34 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   Briefcase,
   Factory,
 };
+
+// Where to go after the build. Titles and hints live in quickstart.nav.<key>.
+const SUCCESS_NAV = [
+  { href: "/governance/ai-registry", icon: Brain, key: "registry" },
+  { href: "/governance/risk-classification", icon: ShieldAlert, key: "risk" },
+  { href: "/governance/compliance", icon: Scale, key: "compliance" },
+  { href: "/governance/oversight", icon: Eye, key: "oversight" },
+  { href: "/governance/policies", icon: ScrollText, key: "policies" },
+  { href: "/governance", icon: LayoutDashboard, key: "dashboard" },
+] as const;
+
+// Offered on the vendor step before anything is typed. Slugs are catalogue
+// keys (vendors/catalog-snapshot.json); a slug missing from a database simply
+// fails the preview for that vendor rather than the step.
+const POPULAR_VENDORS = [
+  { slug: "openai", name: "OpenAI" },
+  { slug: "microsoft-365", name: "Microsoft 365" },
+  { slug: "google-gemini", name: "Google Gemini" },
+  { slug: "anthropic", name: "Anthropic" },
+  { slug: "github", name: "GitHub" },
+  { slug: "salesforce", name: "Salesforce" },
+  { slug: "amazon-web-services", name: "Amazon Web Services" },
+  { slug: "mistral-ai", name: "Mistral AI" },
+  { slug: "zendesk", name: "Zendesk" },
+  { slug: "hubspot", name: "HubSpot" },
+  { slug: "deepl", name: "DeepL" },
+  { slug: "notion", name: "Notion" },
+] as const;
 
 // ============================================================
 // TYPES
@@ -95,7 +126,8 @@ function RiskBadge({ level }: { level: string }) {
 // ============================================================
 
 export default function QuickstartPage() {
-  const { organization } = useOrganization();
+  const { organization, canWrite } = useOrganization();
+  const utilsForJurisdictions = trpc.useUtils();
   const t = useTranslations("quickstart");
   const tc = useTranslations("common");
   const tjur = useTranslations("jurisdictions");
@@ -124,6 +156,9 @@ export default function QuickstartPage() {
   const [jurisdictionsTouched, setJurisdictionsTouched] = useState(false);
   const setJurisdictions = trpc.organization.setJurisdictions.useMutation({
     onError: (err) => toast.error(err.message),
+    // The review step's screening card reads the declared jurisdictions to
+    // decide which questions to ask.
+    onSuccess: () => void utilsForJurisdictions.organization.getById.invalidate(),
   });
 
   // Vendor selection
@@ -223,22 +258,13 @@ export default function QuickstartPage() {
       void utils.program.getProgramGraph.invalidate();
       const total = data.systems + data.vendors + data.policies;
       if (total === 0) {
-        toast.info("All records already exist — nothing new to create");
+        toast.info(t("toastNothingNew"));
       } else {
-        const parts = [];
-        if (data.vendors > 0)
-          parts.push(
-            `${data.vendors} vendor${data.vendors !== 1 ? "s" : ""}`,
-          );
-        if (data.systems > 0)
-          parts.push(
-            `${data.systems} system${data.systems !== 1 ? "s" : ""}`,
-          );
-        if (data.policies > 0)
-          parts.push(
-            `${data.policies} polic${data.policies !== 1 ? "ies" : "y"}`,
-          );
-        toast.success(`Created ${parts.join(", ")}`);
+        const parts: string[] = [];
+        if (data.vendors > 0) parts.push(t("countVendors", { count: data.vendors }));
+        if (data.systems > 0) parts.push(t("countSystems", { count: data.systems }));
+        if (data.policies > 0) parts.push(t("countPolicies", { count: data.policies }));
+        toast.success(t("toastCreated", { summary: parts.join(", ") }));
       }
       setStep("success");
     },
@@ -280,7 +306,7 @@ export default function QuickstartPage() {
 
   const handleProceedFromChoose = () => {
     if (!useVendors && !useIndustry && !useLawFirm) {
-      toast.error("Select at least one option");
+      toast.error(t("selectAtLeastOneOption"));
       return;
     }
     // Persist the jurisdiction answer on the way past. "Not sure yet" saves an
@@ -297,7 +323,7 @@ export default function QuickstartPage() {
 
   const handleProceedFromVendors = () => {
     if (selectedSlugs.length === 0) {
-      toast.error("Select at least one vendor");
+      toast.error(t("selectAtLeastOneVendor"));
       return;
     }
     goNext("vendors");
@@ -305,7 +331,7 @@ export default function QuickstartPage() {
 
   const handleProceedFromIndustry = () => {
     if (!selectedIndustryId) {
-      toast.error("Select an industry template");
+      toast.error(t("selectIndustryTemplate"));
       return;
     }
     goNext("industry");
@@ -504,7 +530,7 @@ export default function QuickstartPage() {
                       variant="outline"
                       className="text-green-600 border-green-600/50"
                     >
-                      5 {tc("free")}
+                      {features.allSkillsFree ? tc("free") : `5 ${tc("free")}`}
                     </Badge>
                     {useVendors && (
                       <CheckCircle2 className="w-5 h-5 text-primary" />
@@ -644,6 +670,17 @@ export default function QuickstartPage() {
             </Button>
           </div>
 
+          {/* Search */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              placeholder={t("searchVendorsPlaceholder")}
+              value={vendorSearch}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+
           {/* Selected vendors */}
           {selectedSlugs.length > 0 && (
             <div className="flex flex-wrap gap-2">
@@ -668,21 +705,34 @@ export default function QuickstartPage() {
                 );
               })}
               <span className="text-xs text-muted-foreground self-center">
-                {selectedSlugs.length} selected
+                {t("vendorsSelected", { count: selectedSlugs.length })}
               </span>
             </div>
           )}
 
-          {/* Search */}
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input
-              placeholder={t("searchVendorsPlaceholder")}
-              value={vendorSearch}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              className="pl-10"
-            />
-          </div>
+          {/* Common vendors, so an empty search box is never a dead end */}
+          {debouncedSearch.length < 2 && (
+            <div className="space-y-2">
+              <p className="text-xs text-muted-foreground">{t("popularVendors")}</p>
+              <div className="flex flex-wrap gap-2">
+                {POPULAR_VENDORS.map((v) => {
+                  const isSelected = selectedSlugs.includes(v.slug);
+                  return (
+                    <Button
+                      key={v.slug}
+                      type="button"
+                      size="sm"
+                      variant={isSelected ? "default" : "outline"}
+                      onClick={() => toggleVendorSlug(v.slug)}
+                    >
+                      {isSelected && <Check className="w-3.5 h-3.5 mr-1" />}
+                      {v.name}
+                    </Button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* Catalog results */}
           {debouncedSearch.length >= 2 && (
@@ -1183,6 +1233,14 @@ export default function QuickstartPage() {
             </Button>
           </div>
 
+          {/* Texas and Washington turn on a few organisation facts. Asked
+              here, before the build, so their obligations attach with the
+              rest instead of waiting in Settings. Renders nothing when no
+              declared jurisdiction needs them. */}
+          {orgId && (
+            <RegimeScreeningCard organizationId={orgId} canWrite={canWrite} />
+          )}
+
           {/* Summary stat cards */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             <Card>
@@ -1648,82 +1706,19 @@ export default function QuickstartPage() {
 
           {/* Quick nav cards */}
           <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
-            <Link href="/governance/ai-registry">
-              <Card className="hover:border-primary/50 transition-all cursor-pointer h-full">
-                <CardContent className="p-4 flex items-center gap-3">
-                  <Brain className="w-5 h-5 text-primary shrink-0" />
-                  <div>
-                    <p className="text-sm font-medium">AI Registry</p>
-                    <p className="text-xs text-muted-foreground">
-                      View systems
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
-            <Link href="/governance/risk-classification">
-              <Card className="hover:border-primary/50 transition-all cursor-pointer h-full">
-                <CardContent className="p-4 flex items-center gap-3">
-                  <ShieldAlert className="w-5 h-5 text-primary shrink-0" />
-                  <div>
-                    <p className="text-sm font-medium">Risk Classification</p>
-                    <p className="text-xs text-muted-foreground">Review risks</p>
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
-            <Link href="/governance/compliance">
-              <Card className="hover:border-primary/50 transition-all cursor-pointer h-full">
-                <CardContent className="p-4 flex items-center gap-3">
-                  <Scale className="w-5 h-5 text-primary shrink-0" />
-                  <div>
-                    <p className="text-sm font-medium">Compliance</p>
-                    <p className="text-xs text-muted-foreground">
-                      Assess requirements
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
-            <Link href="/governance/oversight">
-              <Card className="hover:border-primary/50 transition-all cursor-pointer h-full">
-                <CardContent className="p-4 flex items-center gap-3">
-                  <Eye className="w-5 h-5 text-primary shrink-0" />
-                  <div>
-                    <p className="text-sm font-medium">Oversight</p>
-                    <p className="text-xs text-muted-foreground">
-                      Review gates
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
-            <Link href="/governance/policies">
-              <Card className="hover:border-primary/50 transition-all cursor-pointer h-full">
-                <CardContent className="p-4 flex items-center gap-3">
-                  <ScrollText className="w-5 h-5 text-primary shrink-0" />
-                  <div>
-                    <p className="text-sm font-medium">Policies</p>
-                    <p className="text-xs text-muted-foreground">
-                      Edit policies
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
-            <Link href="/governance">
-              <Card className="hover:border-primary/50 transition-all cursor-pointer h-full">
-                <CardContent className="p-4 flex items-center gap-3">
-                  <LayoutDashboard className="w-5 h-5 text-primary shrink-0" />
-                  <div>
-                    <p className="text-sm font-medium">Dashboard</p>
-                    <p className="text-xs text-muted-foreground">
-                      View overview
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
+            {SUCCESS_NAV.map(({ href, icon: Icon, key }) => (
+              <Link key={href} href={href}>
+                <Card className="hover:border-primary/50 transition-all cursor-pointer h-full">
+                  <CardContent className="p-4 flex items-center gap-3">
+                    <Icon className="w-5 h-5 text-primary shrink-0" />
+                    <div>
+                      <p className="text-sm font-medium">{t(`nav.${key}.title`)}</p>
+                      <p className="text-xs text-muted-foreground">{t(`nav.${key}.hint`)}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
           </div>
         </div>
       )}

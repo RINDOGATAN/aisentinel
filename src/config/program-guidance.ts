@@ -40,6 +40,17 @@ export const PROGRAM_GUIDANCE_REVIEW_MARKER: Localized = {
   es: `Revisión jurídica a fecha de ${PROGRAM_GUIDANCE_LAW_REVIEWED_AS_OF}; pendiente de validación de responsabilidad profesional.`,
 };
 
+/**
+ * The same review date for organisations that are not law firms. The
+ * "professional-responsibility" sign-off concerns lawyers' duties, and a
+ * payments company or a hospital reading it on its own program would rightly
+ * wonder what it refers to.
+ */
+export const PROGRAM_GUIDANCE_REVIEW_MARKER_GENERAL: Localized = {
+  en: `Law reviewed as of ${PROGRAM_GUIDANCE_LAW_REVIEWED_AS_OF}; legal sign-off pending.`,
+  es: `Revisión jurídica a fecha de ${PROGRAM_GUIDANCE_LAW_REVIEWED_AS_OF}; pendiente de validación jurídica.`,
+};
+
 const withMarker = (l: Localized): Localized => ({
   en: `${l.en}\n\n${PROGRAM_GUIDANCE_REVIEW_MARKER.en}`,
   es: `${l.es}\n\n${PROGRAM_GUIDANCE_REVIEW_MARKER.es}`,

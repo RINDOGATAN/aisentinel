@@ -3,6 +3,7 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Building2, Briefcase, Loader2 } from "lucide-react";
@@ -11,19 +12,21 @@ import { useUserType } from "@/lib/use-user-type";
 import { toast } from "sonner";
 import type { UserType } from "@prisma/client";
 
+// In-house counsel, compliance leads and DPOs are governance professionals
+// too, so the choice is framed by whose AI is governed, not by job title.
+// Enum values predate the wording.
 const personas = [
   {
     type: "BUSINESS_USER" as UserType,
     icon: Building2,
-    title: "Business User",
-    description: "I need AI governance for my organization",
+    titleKey: "personaOwnTitle",
+    descriptionKey: "personaOwnDescription",
   },
   {
-    // Enum value predates the wording — the label is the product term.
     type: "AI_GOVERNANCE_CONSULTANT" as UserType,
     icon: Briefcase,
-    title: "AI Governance Professional",
-    description: "I manage AI governance for multiple organizations",
+    titleKey: "personaClientsTitle",
+    descriptionKey: "personaClientsDescription",
   },
 ] as const;
 
@@ -31,6 +34,7 @@ export function PersonaSelector() {
   const [selected, setSelected] = useState<UserType | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { refreshSession } = useUserType();
+  const t = useTranslations("onboarding");
 
   const setUserType = trpc.user.setUserType.useMutation({
     onSuccess: async () => {
@@ -45,7 +49,7 @@ export function PersonaSelector() {
       await setUserType.mutateAsync({ userType: selected });
     } catch (error) {
       console.error("Failed to set user type:", error);
-      toast.error("Something went wrong. Please try again.");
+      toast.error(t("genericError"));
     } finally {
       setIsSubmitting(false);
     }
@@ -59,10 +63,8 @@ export function PersonaSelector() {
             <img src="/logo-negative.svg" alt="TODO.LAW" style={{ height: "28px", width: "auto" }} />
             <span className="text-lg tracking-tight" style={{ fontFamily: "var(--font-jost), 'Jost', sans-serif", fontWeight: 600 }}>AI SENTINEL</span>
           </div>
-          <h1 className="text-xl font-semibold">How will you use AI SENTINEL?</h1>
-          <p className="text-sm text-muted-foreground">
-            This helps us tailor your experience. You can change this later in settings.
-          </p>
+          <h1 className="text-xl font-semibold">{t("personaTitle")}</h1>
+          <p className="text-sm text-muted-foreground">{t("personaSubtitle")}</p>
         </div>
 
         <div className="grid gap-3">
@@ -88,8 +90,8 @@ export function PersonaSelector() {
                     <Icon className="w-6 h-6" />
                   </div>
                   <div>
-                    <p className="font-medium">{persona.title}</p>
-                    <p className="text-sm text-muted-foreground">{persona.description}</p>
+                    <p className="font-medium">{t(persona.titleKey)}</p>
+                    <p className="text-sm text-muted-foreground">{t(persona.descriptionKey)}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -105,10 +107,10 @@ export function PersonaSelector() {
           {isSubmitting ? (
             <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              Setting up...
+              {t("settingUp")}
             </>
           ) : (
-            "Continue"
+            t("continue")
           )}
         </Button>
       </div>

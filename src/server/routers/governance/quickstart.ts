@@ -1090,6 +1090,48 @@ export const quickstartRouter = createTRPCRouter({
             });
           }
 
+          // ─── PROGRAM PROFILE (industry / vendor paths) ──
+          // The law-firm branch records its own profile above. Every other
+          // path records one too: the dashboard's Program banner and the
+          // program's review footer read it, and without it an industry or
+          // vendor build never pointed its owner at the program it produced.
+          // An existing law-firm profile is never overwritten by a later run.
+          if (lawFirmTools.length === 0) {
+            const org = await tx.organization.findUnique({
+              where: { id: orgId },
+              select: { settings: true },
+            });
+            const settings =
+              org?.settings && typeof org.settings === "object" && !Array.isArray(org.settings)
+                ? (org.settings as Record<string, unknown>)
+                : {};
+            const previous = settings.quickstart as { profile?: string } | undefined;
+            if (previous?.profile !== "lawfirm") {
+              const profile = input.industryId ? "industry" : "vendors";
+              await tx.organization.update({
+                where: { id: orgId },
+                data: {
+                  settings: {
+                    ...settings,
+                    quickstart: {
+                      profile,
+                      industryId: input.industryId ?? null,
+                      completedAt: new Date().toISOString(),
+                      locale: contentLocale,
+                      version: 1,
+                    },
+                  },
+                },
+              });
+              auditEntries.push({
+                entityType: "Organization",
+                entityId: orgId,
+                action: "UPDATE",
+                changes: { source: "quickstart", profile },
+              });
+            }
+          }
+
           // ─── AUDIT LOG ENTRIES (batch) ──────────────────
           if (auditEntries.length > 0) {
             await tx.auditLog.createMany({

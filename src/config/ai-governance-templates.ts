@@ -249,8 +249,8 @@ export const AI_GOVERNANCE_TEMPLATES: AIGovernanceTemplate[] = [
         role: "DEPLOYER",
         purpose: "Monitor transactions for potential money laundering, terrorist financing, and sanctions violations as required by regulatory obligations",
         processesPersonalData: true,
-        riskLevel: "HIGH",
-        riskRationale: "Regulatory compliance system that can trigger account restrictions and reporting to financial intelligence units. Affects individuals' access to financial services. Must balance regulatory obligations with privacy rights.",
+        riskLevel: "MINIMAL",
+        riskRationale: "NOT high-risk under the EU AI Act: transaction monitoring by an obliged entity is not listed in Annex III (point 6 covers law-enforcement authorities, and point 5(b) concerns creditworthiness), consistent with this template's governance policy. It still triggers account restrictions and reports to financial intelligence units, so it stays under model risk management, AML rules on documentation and review, and GDPR Art. 22 human-review safeguards, with a pre-deployment validation gate.",
         gateType: "PRE_DEPLOYMENT",
       },
       {

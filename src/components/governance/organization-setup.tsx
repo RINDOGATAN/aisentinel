@@ -3,6 +3,9 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,11 +18,16 @@ export function OrganizationSetup() {
   const [name, setName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { setOrganization, refetchOrganizations } = useOrganization();
+  const router = useRouter();
+  const t = useTranslations("onboarding");
 
   const createOrg = trpc.organization.create.useMutation({
     onSuccess: (org) => {
       setOrganization(org);
       refetchOrganizations();
+      // A new organization has nothing in it yet: the wizard is the next
+      // useful screen, not an empty dashboard.
+      router.push("/governance/quickstart");
     },
   });
 
@@ -37,10 +45,14 @@ export function OrganizationSetup() {
 
     setIsSubmitting(true);
     try {
-      const slug = generateSlug(name);
+      // The server makes the slug unique; a name that yields too short a
+      // slug (e.g. only non-Latin characters) still gets a valid one.
+      const base = generateSlug(name);
+      const slug = base.length >= 2 ? base.slice(0, 40) : "org";
       await createOrg.mutateAsync({ name: name.trim(), slug });
     } catch (error) {
       console.error("Failed to create organization:", error);
+      toast.error(t("createFailed"));
     } finally {
       setIsSubmitting(false);
     }
@@ -54,18 +66,16 @@ export function OrganizationSetup() {
             <img src="/logo-negative.svg" alt="TODO.LAW" style={{ height: "28px", width: "auto" }} />
             <span className="text-lg tracking-tight text-muted-foreground" style={{ fontFamily: "var(--font-jost), 'Jost', sans-serif", fontWeight: 600 }}>AI SENTINEL</span>
           </div>
-          <CardTitle>Welcome to AI SENTINEL</CardTitle>
-          <CardDescription>
-            Create your organization to get started with AI governance
-          </CardDescription>
+          <CardTitle>{t("welcomeTitle")}</CardTitle>
+          <CardDescription>{t("orgDescription")}</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="org-name">Organization Name</Label>
+              <Label htmlFor="org-name">{t("orgNameLabel")}</Label>
               <Input
                 id="org-name"
-                placeholder="e.g., Acme AI Corp"
+                placeholder={t("orgNamePlaceholder")}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
@@ -75,10 +85,10 @@ export function OrganizationSetup() {
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Creating...
+                  {t("creating")}
                 </>
               ) : (
-                "Create Organization"
+                t("createAndContinue")
               )}
             </Button>
           </form>

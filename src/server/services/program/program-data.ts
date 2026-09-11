@@ -21,6 +21,7 @@ import {
   getActionTemplate,
   getRolloutForCategory,
   PROGRAM_GUIDANCE_REVIEW_MARKER,
+  PROGRAM_GUIDANCE_REVIEW_MARKER_GENERAL,
   type GapId,
 } from "@/config/program-guidance";
 import {
@@ -505,6 +506,8 @@ export async function getProgramScorecardData(
     plan,
     rollout,
     duties,
-    reviewMarker: PROGRAM_GUIDANCE_REVIEW_MARKER[locale],
+    reviewMarker: (isLawfirm
+      ? PROGRAM_GUIDANCE_REVIEW_MARKER
+      : PROGRAM_GUIDANCE_REVIEW_MARKER_GENERAL)[locale],
   };
 }

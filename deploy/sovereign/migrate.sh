@@ -57,9 +57,19 @@ fi
 # Law does not stand still, and neither do our corrections to it. These seeds
 # define frameworks, requirements, cross-framework mappings, system assessment
 # templates and the tool/vendor catalogs. They are idempotent upserts keyed on
-# stable ids, and they write only to catalog tables — an organization's own
-# compliance mappings, assessments, policies and evidence live in different
-# tables and are never touched.
+# stable ids, and they write to catalog tables, with two deliberate exceptions:
+#
+#   - db:seed-frameworks ends by reconciling requirement codes that were
+#     retired or re-used (src/config/requirement-supersessions.ts). It moves an
+#     organization's compliance links, and any evidence on them, off the old
+#     row, never overwrites a status a person has set, deletes the retired row,
+#     and logs every move as "[reconcile] ...". A second run does nothing.
+#   - db:seed-vendor-catalog runs with --prune, dropping catalogue rows
+#     vendor.watch no longer lists, except rows an organization's vendor links
+#     to. Without it an upgraded install keeps every vendor ever published.
+#
+# Assessments, policies and everything else an organization owns are never
+# touched.
 #
 # Skipping these on upgrade (as this script used to) meant a self-hoster could
 # update to a release whose CODE knew about a framework its DATABASE had never
@@ -72,6 +82,6 @@ npm run db:seed-regimes
 npm run db:seed-cross-mappings
 npm run db:seed-templates
 npm run db:seed-shadow-ai-tools
-npm run db:seed-vendor-catalog
+npm run db:seed-vendor-catalog -- --prune
 
 echo "[migrate] done."

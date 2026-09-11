@@ -10,6 +10,10 @@
  * Usage:
  *   npm run db:seed-vendor-catalog            # upsert only
  *   npm run db:seed-vendor-catalog -- --prune # also prune stale pipeline rows
+ *
+ * deploy/sovereign/migrate.sh runs it with --prune on every boot, so an
+ * upgraded install carries the same catalogue as a fresh one. Rows an
+ * organisation's vendor links to are never pruned.
  */
 
 import { PrismaClient } from "@prisma/client";
@@ -29,6 +33,12 @@ async function main() {
     `Done. ${result.created} created, ${result.updated} updated, ` +
       `${result.pruned} pruned. Total in snapshot: ${result.total}.`,
   );
+  if (result.keptLinked > 0) {
+    console.log(
+      `Kept ${result.keptLinked} catalogue row(s) that vendor.watch no longer lists, ` +
+        `because an organisation's vendor still links to them.`,
+    );
+  }
 }
 
 main()

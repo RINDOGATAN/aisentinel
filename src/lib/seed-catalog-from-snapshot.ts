@@ -41,6 +41,8 @@ export interface SeedCatalogResult {
   created: number;
   updated: number;
   pruned: number;
+  /** Stale rows kept because an organisation's vendor still links to them. */
+  keptLinked: number;
   total: number;
 }
 
@@ -94,12 +96,16 @@ export async function seedCatalogFromSnapshot(
   }
 
   let pruned = 0;
+  let keptLinked = 0;
 
   // Prune is opt-in and never runs against a small snapshot (already guarded by
   // the MIN_VENDOR_COUNT throw above). It removes only stale rows this pipeline
-  // owns and NEVER deletes verified rows, rows with a verifiedBy stamp, or rows
-  // from a foreign source. (AI Sentinel has no publicProfileEnabled column, so
-  // that protection is not applicable here.)
+  // owns and NEVER deletes verified rows, rows with a verifiedBy stamp, rows
+  // from a foreign source, or rows an organisation's vendor links to: the
+  // ai_vendors.catalogSlug foreign key is ON DELETE SET NULL, so deleting such
+  // a row would silently cut that vendor off from its catalogue profile. (AI
+  // Sentinel has no publicProfileEnabled column, so that protection is not
+  // applicable here.)
   if (opts.prune && vendors.length >= MIN_VENDOR_COUNT) {
     const snapshotSlugs = new Set(vendors.map((v) => v.slug));
 
@@ -110,10 +116,11 @@ export async function seedCatalogFromSnapshot(
         source: true,
         isVerified: true,
         verifiedBy: true,
+        _count: { select: { vendors: true } },
       },
     });
 
-    const toDelete = existing.filter(
+    const stale = existing.filter(
       (row) =>
         !snapshotSlugs.has(row.slug) &&
         row.source != null &&
@@ -121,6 +128,8 @@ export async function seedCatalogFromSnapshot(
         row.isVerified !== true &&
         row.verifiedBy == null,
     );
+    const toDelete = stale.filter((row) => row._count.vendors === 0);
+    keptLinked = stale.length - toDelete.length;
 
     if (toDelete.length > 0) {
       const res = await prisma.vendorCatalog.deleteMany({
@@ -130,5 +139,5 @@ export async function seedCatalogFromSnapshot(
     }
   }
 
-  return { created, updated, pruned, total: vendors.length };
+  return { created, updated, pruned, keptLinked, total: vendors.length };
 }

@@ -85,24 +85,27 @@ describe("seedCatalogFromSnapshot", () => {
     expect(catalog.deleteMany).not.toHaveBeenCalled();
   });
 
-  it("prunes only stale pipeline-owned rows, protecting verified and foreign-source rows", async () => {
+  it("prunes only stale pipeline-owned rows, protecting verified, foreign-source and linked rows", async () => {
     const snapshot = makeSnapshot(320);
     mockSnapshot(snapshot);
     const { prisma, catalog } = makePrisma();
 
+    const linked = (n: number) => ({ _count: { vendors: n } });
     catalog.findMany.mockResolvedValue([
       // In snapshot -> kept regardless.
-      { id: "keep-in-snapshot", slug: "vendor-0", source: "vendor-watch", isVerified: false, verifiedBy: null },
+      { id: "keep-in-snapshot", slug: "vendor-0", source: "vendor-watch", isVerified: false, verifiedBy: null, ...linked(0) },
       // Stale + pipeline source + unverified -> the only deletable row.
-      { id: "stale-seed", slug: "gone-1", source: "seed", isVerified: false, verifiedBy: null },
+      { id: "stale-seed", slug: "gone-1", source: "seed", isVerified: false, verifiedBy: null, ...linked(0) },
       // Stale but verified -> protected.
-      { id: "verified", slug: "gone-2", source: "vendor-watch", isVerified: true, verifiedBy: null },
+      { id: "verified", slug: "gone-2", source: "vendor-watch", isVerified: true, verifiedBy: null, ...linked(0) },
       // Stale but has a verifiedBy stamp -> protected.
-      { id: "stamped", slug: "gone-3", source: "vendor-watch", isVerified: false, verifiedBy: "reviewer@nel" },
+      { id: "stamped", slug: "gone-3", source: "vendor-watch", isVerified: false, verifiedBy: "reviewer@nel", ...linked(0) },
       // Stale but foreign source -> protected.
-      { id: "manual", slug: "gone-4", source: "manual", isVerified: false, verifiedBy: null },
+      { id: "manual", slug: "gone-4", source: "manual", isVerified: false, verifiedBy: null, ...linked(0) },
       // Stale but null source -> protected.
-      { id: "nullsrc", slug: "gone-5", source: null, isVerified: false, verifiedBy: null },
+      { id: "nullsrc", slug: "gone-5", source: null, isVerified: false, verifiedBy: null, ...linked(0) },
+      // Stale but an organisation's vendor links to it -> protected.
+      { id: "linked", slug: "gone-6", source: "vendor-watch", isVerified: false, verifiedBy: null, ...linked(2) },
     ]);
     catalog.deleteMany.mockResolvedValue({ count: 1 });
 
@@ -112,6 +115,7 @@ describe("seedCatalogFromSnapshot", () => {
     const deleteArg = catalog.deleteMany.mock.calls[0][0];
     expect(deleteArg.where.id.in).toEqual(["stale-seed"]);
     expect(result.pruned).toBe(1);
+    expect(result.keptLinked).toBe(1);
   });
 
   it("throws on an undersized snapshot and never writes", async () => {

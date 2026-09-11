@@ -6,6 +6,34 @@ All notable changes to AI SENTINEL are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- **Upgraded installs now match a fresh install on the EU AI Act timeline.**
+  Requirement codes carry their date, and the framework seed upserts by code
+  without ever removing or re-linking anything. When the Digital Omnibus
+  deferred Annex I product-embedded obligations, the seed added the 2 Aug 2028
+  row and left the 2 Aug 2027 row in place, with every organisation's links
+  still pointing at the obsolete one (an upgraded v0.3.0 install reported 84
+  EU AI Act requirements against 83 fresh). The same change re-used the code
+  for 2 Aug 2026, which had meant general application including Annex III
+  high-risk, for Art. 50 transparency, so systems linked to it for the
+  high-risk date were silently linked to a transparency milestone instead. The
+  framework seed now ends with a reconciliation step driven by an explicit list
+  of retired and re-used codes: it moves links, and any evidence on them, to
+  the successor, never overwrites a status a person has set, deletes the
+  retired row, records each move in the organisation's audit log, and does
+  nothing on a second run. The list also covers two older changes that
+  pre-July installs still carry: the 2021-proposal Arts. 61 and 62 (now 72 and
+  73), and the Art. 5(1)(d) to (h) letters, which were re-ordered to match the
+  final Act. Where it cannot tell which meaning a person had in mind, it leaves
+  the link alone and flags it for review.
+
+- **Self-hosted vendor catalogues are now pruned on upgrade.** The migrator runs
+  the catalogue seed with `--prune`, so vendors that vendor.watch no longer
+  lists are removed (an upgraded install carried 900 rows against 884 fresh).
+  The prune now keeps any row an organisation's vendor links to, because
+  deleting it would silently cut that vendor off from its catalogue profile.
+
 ## [0.4.1] - 2026-09-11
 
 ### Security

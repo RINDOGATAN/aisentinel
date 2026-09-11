@@ -3,6 +3,12 @@
 
 import { PrismaClient, AIRiskLevel } from "@prisma/client";
 import { EU_ART113_SUBTREE } from "../src/config/eu-timeline-requirements";
+import { euRequirementId } from "../src/config/requirement-supersessions";
+import {
+  reconcileSupersededRequirements,
+  rowsStillCarryingOldTitles,
+  snapshotSupersededTitles,
+} from "../src/lib/requirement-reconciliation";
 
 // EU AI Act content verified against the FINAL text of Regulation (EU)
 // 2024/1689 (OJ L, 2024/1689, 12.7.2024) — not the 2021 Commission proposal.
@@ -17,6 +23,20 @@ const prisma = new PrismaClient();
 
 async function main() {
   console.log("Seeding compliance frameworks...");
+
+  // Titles of retired and re-used rows as they stand BEFORE this seed rewrites
+  // them: a row still carrying its old title tells the reconciliation below
+  // that every link on it was made under the old meaning.
+  const preSeedTitles = await snapshotSupersededTitles(prisma);
+  // Their new wording is written by the reconciliation, in the same
+  // transaction as the moves, so a failed run leaves that evidence in place.
+  const heldBack = rowsStillCarryingOldTitles(preSeedTitles);
+  const deferredContent: Record<string, { title: string; description: string }> = {};
+  const wording = (id: string, title: string, description: string) => {
+    if (!heldBack.has(id)) return { title, description };
+    deferredContent[id] = { title, description };
+    return {};
+  };
 
   // ============================================================
   // EU AI ACT
@@ -160,10 +180,10 @@ async function main() {
 
   for (const req of euRequirements) {
     const parent = await prisma.complianceRequirement.upsert({
-      where: { id: `eu-${req.code.toLowerCase().replace(/[^a-z0-9]/g, "-")}` },
-      update: { title: req.title, description: req.description, applicableTo: req.applicableTo as AIRiskLevel[], sortOrder: req.sortOrder },
+      where: { id: euRequirementId(req.code) },
+      update: { ...wording(euRequirementId(req.code), req.title, req.description), applicableTo: req.applicableTo as AIRiskLevel[], sortOrder: req.sortOrder },
       create: {
-        id: `eu-${req.code.toLowerCase().replace(/[^a-z0-9]/g, "-")}`,
+        id: euRequirementId(req.code),
         frameworkId: euAiAct.id,
         code: req.code,
         title: req.title,
@@ -175,10 +195,10 @@ async function main() {
 
     for (const child of req.children) {
       await prisma.complianceRequirement.upsert({
-        where: { id: `eu-${child.code.toLowerCase().replace(/[^a-z0-9]/g, "-")}` },
-        update: { title: child.title, description: child.description, sortOrder: child.sortOrder },
+        where: { id: euRequirementId(child.code) },
+        update: { ...wording(euRequirementId(child.code), child.title, child.description), sortOrder: child.sortOrder },
         create: {
-          id: `eu-${child.code.toLowerCase().replace(/[^a-z0-9]/g, "-")}`,
+          id: euRequirementId(child.code),
           frameworkId: euAiAct.id,
           code: child.code,
           title: child.title,
@@ -376,6 +396,12 @@ async function main() {
   console.log(`  Created ISO 42001: ${isoTotal} requirements`);
 
   console.log(`\nDone! Total: ${euTotal + nistTotal + isoTotal} compliance requirements across 3 frameworks.`);
+
+  // Upserts never remove or re-link anything. Move organisations' links off
+  // codes that were retired or re-used, and delete the retired rows, so an
+  // upgraded database matches a fresh one. See src/config/requirement-supersessions.ts.
+  console.log("\nReconciling superseded requirement codes...");
+  await reconcileSupersededRequirements(prisma, { preSeedTitles, deferredContent });
 }
 
 main()

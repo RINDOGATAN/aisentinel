@@ -120,6 +120,7 @@ npx vercel env pull /tmp/prod.env --environment=production --yes
 export ais_DATABASE_URL="$(grep '^ais_POSTGRES_URL_NON_POOLING=' /tmp/prod.env \
   | cut -d= -f2- | tr -d '"')"
 
+npm run db:reconcile-requirements -- --dry-run   # read-only: what the next step will move
 npm run db:seed-frameworks
 npm run db:seed-admt
 npm run db:seed-regimes
@@ -127,6 +128,14 @@ npm run db:seed-cross-mappings -- --strict
 
 rm -f /tmp/prod.env          # it holds every production secret
 ```
+
+`db:seed-frameworks` ends with a `[reconcile]` block: it moves organisations'
+compliance links off requirement codes that were retired or re-used (listed in
+`src/config/requirement-supersessions.ts`) and deletes the retired rows. Read
+what it prints. On a database that is already reconciled it prints `superseded
+requirement codes: nothing to do.` Any line ending `left in place for review`
+names a link it could not safely move; it is also recorded in that
+organisation's audit log.
 
 Notes that have cost time before:
 
@@ -139,10 +148,13 @@ Notes that have cost time before:
   `.env.development.local`.
 - **`--strict` matters.** Without it an unresolved cross-mapping target is a
   warning and the script still exits 0, silently dropping the mapping.
-- The seeds are idempotent upserts against catalog tables. The only destructive
-  operations are the cross-mapping reconciliation (which prunes rows the config
+- The seeds are idempotent upserts against catalog tables. The destructive
+  operations are the requirement reconciliation at the end of
+  `db:seed-frameworks` (moves links, then deletes retired rows; one
+  transaction), the cross-mapping reconciliation (which prunes rows the config
   no longer asserts, and refuses to run if anything was skipped) and
-  `db:seed-vendor-catalog -- --prune`, which is opt-in.
+  `db:seed-vendor-catalog -- --prune` (which keeps any row an organisation's
+  vendor links to).
 
 Then verify, and check `/api/health` reports the expected commit:
 
@@ -151,9 +163,11 @@ curl -s https://aisentinel.todo.law/api/health
 ```
 
 Expected framework counts after a full content seed: EU AI Act 83, NIST AI RMF
-23, ISO 42001 33, California CCPA ADMT 92 — 231 requirements, 85 cross-framework
+23, ISO 42001 33, California CCPA ADMT 92, EU GDPR 26, Colorado SB 26-189 10,
+Texas TRAIGA 11, Washington 16 — 294 requirements, 115 cross-framework
 mappings. A fresh install and an upgraded one must report the same numbers; if
-they differ, the seeds did not all run.
+they differ, the seeds did not all run, or a code was retired without an entry
+in `src/config/requirement-supersessions.ts`. The query is in section 5.
 
 ## 5. Self-hosted: confirm the upgrade path
 
@@ -167,7 +181,7 @@ docker run --rm \
   ghcr.io/rindogatan/aisentinel-migrator:latest
 ```
 
-Check three things:
+Check these things:
 
 1. A clean database reaches the counts above and creates **no demo data**
    (demo rows are gated behind `DEMO_SEED`, which the bundle never sets).
@@ -181,8 +195,38 @@ Check three things:
    baselining 0_init`, then applies the later migrations and the content
    refresh. Skipping this check is what let the baseline path ship broken.
 
+5. **An upgraded database reports the same counts as a fresh one.** Restore a
+   backup taken on an older release into a scratch database, run the migrator
+   against it, and run the migrator against an empty scratch database. Then run
+   this query on both and compare the output line by line:
+
+   ```sql
+   select 'framework ' || f.code, count(r.id) from compliance_frameworks f
+     left join compliance_requirements r on r."frameworkId" = f.id group by 1
+   union all select 'requirements', count(*) from compliance_requirements
+   union all select 'cross_framework_mappings', count(*) from cross_framework_mappings
+   union all select 'vendor_catalog', count(*) from vendor_catalog
+   union all select 'assessment_templates', count(*) from ai_assessment_templates
+   union all select 'shadow_ai_tools', count(*) from shadow_ai_tools
+   order by 1;
+   ```
+
+   Every line must match. The only permitted difference is `vendor_catalog`,
+   and only by rows the prune protects on purpose: rows an organisation's
+   vendor still links to (the migrator logs `Kept N catalogue row(s)` when that
+   happens) and rows marked verified. A self-hosted backup restores
+   with `openssl enc -d -aes-256-cbc -pbkdf2 -pass "pass:$BACKUP_PASSPHRASE"
+   -in <file>.sql.gz.enc | gunzip | psql <scratch-db-url>`, the passphrase
+   being `BACKUP_PASSPHRASE` in that install's `.env`. The migrator's log shows
+   what the reconciliation moved (`[reconcile] ...`); a second run must log
+   `superseded requirement codes: nothing to do.` This is the check that caught
+   the Art. 113 rows left behind by the Digital Omnibus change: an upgraded
+   v0.3.0 install reported 84 EU AI Act requirements and 295 in total, against
+   83 and 294 fresh.
+
 Last run in full: 2026-09-07 against the published `v0.2.5` migrator (all four
-checks green after the `migrate.sh` baseline fix).
+checks green after the `migrate.sh` baseline fix). Check 5 was first run on
+2026-09-11 against a local build of the migrator, with a real v0.3.0 backup.
 
 ---
 

@@ -109,7 +109,12 @@ The two digests per image must match. Also check each manifest lists both
 ## 4. Hosted: run the content seeds
 
 Only needed when the release changes seeded content — framework requirements,
-applicability tags, cross-framework mappings, templates or catalogs.
+applicability tags, cross-framework mappings, templates or catalogs. Run the
+whole block, not only the seeds the release touched: it is the same list
+`migrate.sh` runs for self-hosters on every boot, and running part of it is how
+hosted drifted (on 2026-09-11 it had 67 Shadow AI tools against 89 fresh, and
+vendor data older than the committed snapshot, because this block used to stop
+at the cross-framework mappings).
 
 The Prisma datasource reads `ais_DATABASE_URL` (a Vercel-scoped name, not
 `DATABASE_URL`). Pull production values into a **scratch file**, never over
@@ -125,6 +130,9 @@ npm run db:seed-frameworks
 npm run db:seed-admt
 npm run db:seed-regimes
 npm run db:seed-cross-mappings -- --strict
+npm run db:seed-templates
+npm run db:seed-shadow-ai-tools
+npm run db:seed-vendor-catalog -- --prune
 
 rm -f /tmp/prod.env          # it holds every production secret
 ```

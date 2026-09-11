@@ -32,6 +32,7 @@ import {
 import { keepPreviousData } from "@tanstack/react-query";
 import { trpc } from "@/lib/trpc";
 import { useTranslations, useLocale } from "next-intl";
+import { InventoryImportDialog } from "@/components/governance/InventoryImportDialog";
 import { useEnumLabels } from "@/lib/enum-labels";
 import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -162,6 +163,8 @@ export default function AIRegistryPage() {
             </Button>
           ) : (
             canWrite && (
+              <>
+              {organization && <InventoryImportDialog organizationId={organization.id} />}
               <Link href="/governance/ai-registry/new">
                 <Button className="w-full sm:w-auto">
                   <Plus className="w-4 h-4 sm:mr-2" />
@@ -169,6 +172,7 @@ export default function AIRegistryPage() {
                   <span className="sm:hidden">Register</span>
                 </Button>
               </Link>
+              </>
             )
           )}
         </div>
@@ -336,12 +340,15 @@ export default function AIRegistryPage() {
                     </Button>
                   ) : (
                     canWrite && (
-                      <Link href="/governance/ai-registry/new">
-                        <Button>
-                          <Plus className="w-4 h-4 mr-2" />
-                          {t("registerAiSystem")}
-                        </Button>
-                      </Link>
+                      <div className="flex flex-wrap justify-center gap-2">
+                        {organization && <InventoryImportDialog organizationId={organization.id} variant="default" />}
+                        <Link href="/governance/ai-registry/new">
+                          <Button variant="outline">
+                            <Plus className="w-4 h-4 mr-2" />
+                            {t("registerAiSystem")}
+                          </Button>
+                        </Link>
+                      </div>
                     )
                   ))}
               </CardContent>

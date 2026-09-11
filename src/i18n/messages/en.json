@@ -541,7 +541,11 @@
         "title": "Dashboard",
         "hint": "View overview"
       }
-    }
+    },
+    "statStarterAssessments": "{count, plural, one {# impact assessment drafted} other {# impact assessments drafted}}",
+    "statStarterVendorReviews": "{count, plural, one {# vendor review drafted} other {# vendor reviews drafted}}",
+    "corePoliciesTitle": "Core policies added to complete your set",
+    "corePoliciesDescription": "Your program needs six core AI policies. These drafts cover the ones your choices above do not, in your language. Review and approve them in Policies."
   },
   "assessments": {
     "title": "Assessments",
@@ -983,7 +987,18 @@
     "creating": "Creating...",
     "submitCreatePolicy": "Create Policy",
     "toastSuccess": "Policy created successfully",
-    "toastError": "Failed to create policy"
+    "toastError": "Failed to create policy",
+    "labelTemplate": "Start from a template (optional)",
+    "placeholderTemplate": "Choose a policy text to start from",
+    "templateHint": "Fills in the fields below. The text is a first draft: adapt it, then send it for approval.",
+    "templateGroup": {
+      "core": "core set",
+      "lawfirm": "law firm",
+      "industry": "industry, English"
+    },
+    "placeholderType": "Select policy type",
+    "placeholderDescription": "Briefly describe the purpose and scope of this policy",
+    "placeholderContent": "Write the policy text here"
   },
   "policyDetail": {
     "notFound": "Policy not found",
@@ -4076,5 +4091,35 @@
     "createAndContinue": "Create organization and continue",
     "creating": "Creating…",
     "createFailed": "The organization could not be created. Please try again."
+  },
+  "inventoryImport": {
+    "button": "Import spreadsheet",
+    "title": "Import your AI inventory",
+    "description": "Upload a CSV export of your inventory spreadsheet. You will see what will be created before anything is saved.",
+    "chooseFile": "Choose a CSV file",
+    "downloadTemplate": "Download a template",
+    "formatHint": "Columns are recognised in English or Spanish: name (required), vendor, purpose, technique, role, status, risk level, personal data, owners, description. Commas or semicolons both work. A risk level is imported only when the sheet states one; otherwise the system stays unclassified for you to classify.",
+    "errorNoName": "No column with the system name was found. Add a column called Name (or Nombre).",
+    "errorNoRows": "The file has no data rows.",
+    "summary": "{rows, plural, one {# system} other {# systems}} ready to import; {unclassified, plural, =0 {all with a stated risk level} one {# without a risk level (it will stay unclassified)} other {# without a risk level (they will stay unclassified)}}.",
+    "unclassified": "unclassified",
+    "skippedNoName": "{count, plural, one {# row without a name will be skipped} other {# rows without a name will be skipped}}.",
+    "truncated": "{count, plural, one {# row beyond the 500-row limit will not be imported} other {# rows beyond the 500-row limit will not be imported}}.",
+    "importButton": "{count, plural, one {Import # system} other {Import # systems}}",
+    "done": "Imported {created} systems ({classified} classified, {vendors} new vendors, {assessments} impact assessments drafted).",
+    "skippedExisting": "{count, plural, one {# system already existed and was skipped} other {# systems already existed and were skipped}}.",
+    "field": {
+      "name": "Name",
+      "vendor": "Vendor",
+      "purpose": "Purpose",
+      "technique": "Technique",
+      "role": "Role",
+      "status": "Status",
+      "riskLevel": "Risk level",
+      "personalData": "Personal data",
+      "businessOwner": "Business owner",
+      "technicalOwner": "Technical owner",
+      "description": "Description"
+    }
   }
 }

@@ -19,27 +19,71 @@ import {
 } from "@/components/ui/select";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { CORE_POLICY_PACK, localizeCorePolicy } from "@/config/core-policy-pack";
+import { LAWFIRM_POLICY_PACK } from "@/config/lawfirm-ai-toolkit";
+import { AI_GOVERNANCE_TEMPLATES } from "@/config/ai-governance-templates";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 
 type PolicyType = "AI_USAGE" | "AI_GOVERNANCE" | "AI_ETHICS" | "AI_RISK_MANAGEMENT" | "AI_DATA_GOVERNANCE" | "AI_PROCUREMENT" | "AI_INCIDENT_RESPONSE" | "AI_TRANSPARENCY" | "CUSTOM";
 
 const policyTypes = [
-  { value: "AI_USAGE", label: "AI Usage" },
-  { value: "AI_GOVERNANCE", label: "AI Governance" },
-  { value: "AI_ETHICS", label: "AI Ethics" },
-  { value: "AI_RISK_MANAGEMENT", label: "Risk Management" },
-  { value: "AI_DATA_GOVERNANCE", label: "Data Governance" },
-  { value: "AI_PROCUREMENT", label: "Procurement" },
-  { value: "AI_INCIDENT_RESPONSE", label: "Incident Response" },
-  { value: "AI_TRANSPARENCY", label: "Transparency" },
-  { value: "CUSTOM", label: "Custom" },
-];
+  { value: "AI_USAGE", labelKey: "policyTypeAiUsage" },
+  { value: "AI_GOVERNANCE", labelKey: "policyTypeAiGovernance" },
+  { value: "AI_ETHICS", labelKey: "policyTypeAiEthics" },
+  { value: "AI_RISK_MANAGEMENT", labelKey: "policyTypeRiskManagement" },
+  { value: "AI_DATA_GOVERNANCE", labelKey: "policyTypeDataGovernance" },
+  { value: "AI_PROCUREMENT", labelKey: "policyTypeProcurement" },
+  { value: "AI_INCIDENT_RESPONSE", labelKey: "policyTypeIncidentResponse" },
+  { value: "AI_TRANSPARENCY", labelKey: "policyTypeTransparency" },
+  { value: "CUSTOM", labelKey: "policyTypeCustom" },
+] as const;
+
+interface PolicyTemplateOption {
+  id: string;
+  group: "core" | "lawfirm" | "industry";
+  title: string;
+  type: PolicyType;
+  description: string;
+  content: string;
+}
+
+/**
+ * Every policy text the product ships, as starting points: the sector-neutral
+ * core pack and the law-firm pack in the reader's language, and the industry
+ * templates' policies (English only for now).
+ */
+function policyTemplateOptions(locale: "en" | "es"): PolicyTemplateOption[] {
+  return [
+    ...CORE_POLICY_PACK.map((p) => ({ id: p.id, group: "core" as const, ...localizeCorePolicy(p, locale), type: p.type as PolicyType })),
+    ...LAWFIRM_POLICY_PACK.map((p) => ({
+      id: p.id,
+      group: "lawfirm" as const,
+      title: p.title[locale],
+      type: p.type as PolicyType,
+      description: p.description[locale],
+      content: p.content[locale],
+    })),
+    ...AI_GOVERNANCE_TEMPLATES.flatMap((tpl) =>
+      tpl.policies.map((p, i) => ({
+        id: `${tpl.id}-${i}`,
+        group: "industry" as const,
+        title: p.title,
+        type: p.type as PolicyType,
+        description: p.description,
+        content: p.content,
+      })),
+    ),
+  ];
+}
 
 export default function NewPolicyPage() {
   const t = useTranslations("policiesNew");
+  const tp = useTranslations("policies");
   const tc = useTranslations("common");
+  const locale = useLocale() === "es" ? "es" : "en";
+  const templates = policyTemplateOptions(locale);
   const router = useRouter();
   const { organization } = useOrganization();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -119,6 +163,37 @@ export default function NewPolicyPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Start from a shipped policy text (optional) */}
+            <div className="space-y-2">
+              <Label>{t("labelTemplate")}</Label>
+              <Select
+                onValueChange={(id) => {
+                  const tpl = templates.find((x) => x.id === id);
+                  if (!tpl) return;
+                  setFormData((prev) => ({
+                    ...prev,
+                    title: tpl.title,
+                    type: tpl.type,
+                    description: tpl.description,
+                    content: tpl.content,
+                  }));
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder={t("placeholderTemplate")} />
+                </SelectTrigger>
+                <SelectContent>
+                  {templates.map((tpl) => (
+                    <SelectItem key={tpl.id} value={tpl.id}>
+                      {tpl.title}
+                      <span className="text-muted-foreground"> · {t(`templateGroup.${tpl.group}`)}</span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground">{t("templateHint")}</p>
+            </div>
+
             {/* Title */}
             <div className="space-y-2">
               <Label htmlFor="title">{t("labelTitle")} *</Label>
@@ -139,12 +214,12 @@ export default function NewPolicyPage() {
                 onValueChange={(value) => setFormData({ ...formData, type: value as PolicyType })}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select policy type" />
+                  <SelectValue placeholder={t("placeholderType")} />
                 </SelectTrigger>
                 <SelectContent>
-                  {policyTypes.map((t) => (
-                    <SelectItem key={t.value} value={t.value}>
-                      {t.label}
+                  {policyTypes.map((pt) => (
+                    <SelectItem key={pt.value} value={pt.value}>
+                      {tp(pt.labelKey)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -156,7 +231,7 @@ export default function NewPolicyPage() {
               <Label htmlFor="description">{t("labelDescription")}</Label>
               <Textarea
                 id="description"
-                placeholder="Briefly describe the purpose and scope of this policy..."
+                placeholder={t("placeholderDescription")}
                 rows={3}
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -168,7 +243,7 @@ export default function NewPolicyPage() {
               <Label htmlFor="content">{t("labelContent")}</Label>
               <Textarea
                 id="content"
-                placeholder="Write your policy content here..."
+                placeholder={t("placeholderContent")}
                 rows={8}
                 value={formData.content}
                 onChange={(e) => setFormData({ ...formData, content: e.target.value })}

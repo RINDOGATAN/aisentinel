@@ -25,6 +25,10 @@ import {
 } from "@/server/services/artifacts/build-artifacts";
 import { renderArtifactMarkdown } from "@/server/services/artifacts/render-markdown";
 import {
+  createUnifiedAssessmentDraft,
+  toTemplateSections,
+} from "@/server/services/program/starter-artifacts";
+import {
   evidenceTitle,
   planRegisterUpdate,
   type MappingRow,
@@ -36,35 +40,12 @@ import {
   UNIFIED_ASSESSMENT_VERSION,
   citationsFor,
   selectUnifiedQuestions,
-  type SelectedSection,
 } from "@/config/unified-assessment";
 
 type ContentLocale = "en" | "es";
 
 function localeFrom(cookie: string | undefined): ContentLocale {
   return cookie === "es" ? "es" : "en";
-}
-
-/** The template shape the existing assessment renderer understands. */
-function toTemplateSections(sections: SelectedSection[], locale: ContentLocale) {
-  return sections.map((section) => ({
-    id: section.id,
-    title: section.title[locale],
-    intro: section.intro?.[locale],
-    questions: section.questions.map((q) => ({
-      id: q.id,
-      text: q.text[locale],
-      helpText: q.helpText?.[locale],
-      type: q.type,
-      required: q.required,
-      options: q.options,
-      // Carried through so the renderer can show why a question is asked and
-      // what answering it evidences. Extra keys are ignored by the renderer.
-      reason: q.reason,
-      satisfies: q.satisfies,
-      feeds: q.feeds ?? ["assessment"],
-    })),
-  }));
 }
 
 export const unifiedRouter = createTRPCRouter({
@@ -116,61 +97,21 @@ export const unifiedRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const scope = await loadSystemScope(ctx.prisma, ctx.organization.id, input.aiSystemId);
-      if (!scope.jurisdictionsDeclared) {
+      const draft = await createUnifiedAssessmentDraft(ctx.prisma, {
+        organizationId: ctx.organization.id,
+        aiSystemId: input.aiSystemId,
+        userId: ctx.session.user.id,
+        locale: localeFrom(ctx.getCookie("locale")),
+        title: input.title,
+      });
+      if (!draft.created) {
         throw new TRPCError({
           code: "PRECONDITION_FAILED",
           message:
             "Declare the organisation's operating jurisdictions before generating a unified assessment: without them no overlay can be resolved.",
         });
       }
-      const locale = localeFrom(ctx.getCookie("locale"));
-      const sections = selectUnifiedQuestions(scope.overlayTags);
-      const templateSections = toTemplateSections(sections, locale);
-      const name = input.title ?? `Unified AI impact assessment — ${scope.system.name}`;
-
-      const template = await ctx.prisma.aIAssessmentTemplate.create({
-        data: {
-          organizationId: ctx.organization.id,
-          name,
-          type: "CUSTOM",
-          description: `Unified impact assessment calibrated to ${scope.jurisdictions.join(", ")}. Content ${UNIFIED_ASSESSMENT_VERSION}; law reviewed ${UNIFIED_ASSESSMENT_LAW_REVIEWED_AS_OF}; legal sign-off pending.`,
-          frameworkRef: "Unified: EU AI Act Art. 27 / GDPR Art. 35 / CCPA ADMT / CO / TX / WA",
-          sections: templateSections as unknown as object[],
-          isSystem: false,
-        },
-      });
-
-      const assessment = await ctx.prisma.aIAssessment.create({
-        data: {
-          organizationId: ctx.organization.id,
-          aiSystemId: input.aiSystemId,
-          templateId: template.id,
-          type: "CUSTOM",
-          title: name,
-          status: "DRAFT",
-          responses: {},
-          createdBy: ctx.session.user.id,
-        },
-      });
-
-      await ctx.prisma.auditLog.create({
-        data: {
-          organizationId: ctx.organization.id,
-          userId: ctx.session.user.id,
-          action: "CREATE",
-          entityType: "AIAssessment",
-          entityId: assessment.id,
-          changes: {
-            source: "unified-assessment",
-            version: UNIFIED_ASSESSMENT_VERSION,
-            overlayTags: scope.overlayTags,
-            questionCount: templateSections.reduce((n, s) => n + s.questions.length, 0),
-          },
-        },
-      });
-
-      return { assessmentId: assessment.id, templateId: template.id, overlayTags: scope.overlayTags };
+      return { assessmentId: draft.assessmentId, templateId: draft.templateId, overlayTags: draft.overlayTags };
     }),
 
   /**

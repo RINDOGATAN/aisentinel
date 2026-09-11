@@ -28,6 +28,12 @@ import {
   TRANSPARENCY_PROFILE_NOTES,
 } from "../../../config/quickstart-compliance-baseline";
 import { attachRegimeMappings } from "../../services/scope/attach-regimes";
+import { createStarterArtifacts } from "@/server/services/program/starter-artifacts";
+import {
+  CORE_POLICY_PACK_VERSION,
+  corePoliciesMissingFrom,
+  localizeCorePolicy,
+} from "../../../config/core-policy-pack";
 
 // ============================================================
 // HELPERS
@@ -988,6 +994,56 @@ export const quickstartRouter = createTRPCRouter({
             });
           }
 
+          // ─── CORE POLICY PACK ───────────────────────────
+          // The scorecard measures six core policy types. Industry templates
+          // ship two or three of them and the vendor path none, so every new
+          // program opened with a visible policy gap. Whatever types the
+          // organisation still lacks after the paths above are filled from the
+          // sector-neutral core pack, in the user's language, as drafts linked
+          // to every system just created (they are organisation-wide).
+          {
+            const presentTypes = new Set(
+              (
+                await tx.aIPolicy.findMany({
+                  where: { organizationId: orgId },
+                  select: { type: true },
+                })
+              ).map((p) => p.type as string),
+            );
+            for (const core of corePoliciesMissingFrom(presentTypes)) {
+              const localized = localizeCorePolicy(core, contentLocale);
+              if (existingPolicyTitles.has(localized.title)) continue;
+              const policy = await tx.aIPolicy.create({
+                data: {
+                  organizationId: orgId,
+                  title: localized.title,
+                  type: localized.type,
+                  description: localized.description,
+                  content: localized.content,
+                  status: "DRAFT",
+                  createdBy: userId,
+                  provenance: "AUTO_TEMPLATE",
+                  sourceRef: `quickstart:core-policy-pack:${core.id}`,
+                },
+              });
+              counts.policies++;
+              existingPolicyTitles.add(localized.title);
+              auditEntries.push({
+                entityType: "AIPolicy",
+                entityId: policy.id,
+                action: "CREATE",
+                changes: { source: "quickstart", corePolicy: core.id, version: CORE_POLICY_PACK_VERSION },
+              });
+              if (createdSystems.length > 0) {
+                const links = await tx.aIPolicySystemLink.createMany({
+                  data: createdSystems.map((sys) => ({ policyId: policy.id, aiSystemId: sys.id })),
+                  skipDuplicates: true,
+                });
+                counts.policyLinks += links.count;
+              }
+            }
+          }
+
           // ─── PROGRAM ENRICHMENT ─────────────────────────
           // Turn the skeleton into a living program: link the drafted
           // policies to the systems they govern, document the Art. 50
@@ -1201,10 +1257,30 @@ export const quickstartRouter = createTRPCRouter({
         });
       }
 
+      // Drafts the program starts with: an impact assessment for each
+      // high-risk system and a due-diligence review for each catalogue
+      // vendor. Outside the transaction for the same reason as the regime
+      // pass; a failure here leaves the program intact and the drafts can
+      // still be created from each record.
+      let starter = { assessments: 0, vendorReviews: 0, assessmentsSkippedUndeclared: 0 };
+      try {
+        starter = await createStarterArtifacts(ctx.prisma, {
+          organizationId: orgId,
+          userId,
+          locale: contentLocale,
+          systemIds: result.createdSystemIds,
+        });
+      } catch {
+        // Deliberately silent to the user: the build itself succeeded.
+      }
+
       return {
         ...result.counts,
         regimeMappings,
         regimeResults,
+        starterAssessments: starter.assessments,
+        starterVendorReviews: starter.vendorReviews,
+        starterAssessmentsSkippedUndeclared: starter.assessmentsSkippedUndeclared,
       };
     }),
 });

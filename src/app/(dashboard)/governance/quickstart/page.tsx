@@ -55,6 +55,7 @@ import { JurisdictionPicker } from "@/components/governance/jurisdiction-picker"
 import { RegimeScreeningCard } from "@/components/governance/regime-screening-card";
 import type { JurisdictionId } from "@/config/jurisdictions";
 import { features } from "@/config/features";
+import { corePoliciesMissingFrom, localizeCorePolicy } from "@/config/core-policy-pack";
 
 // ============================================================
 // ICON MAP
@@ -185,6 +186,9 @@ export default function QuickstartPage() {
     policyLinks: number;
     transparencyProfiles: number;
     complianceBaselined: number;
+    starterAssessments?: number;
+    starterVendorReviews?: number;
+    regimeMappings?: number;
   } | null>(null);
 
   // Debounce search
@@ -374,6 +378,24 @@ export default function QuickstartPage() {
     });
   };
 
+  // Core policies the build will add to complete the six core types: those
+  // not already covered by the template or law-firm policies being created.
+  const plannedPolicyTypes = new Set<string>([
+    ...(useIndustry
+      ? (industryPreview?.policies ?? [])
+          .filter((p) => !skipPolicyTitles.includes(p.title))
+          .map((p) => p.type as string)
+      : []),
+    ...(useLawFirm
+      ? (lawFirmPreview?.policies ?? [])
+          .filter((p) => !skipPolicyTitles.includes(p.title))
+          .map((p) => p.type as string)
+      : []),
+  ]);
+  const corePoliciesToAdd = corePoliciesMissingFrom(plannedPolicyTypes).map((c) =>
+    localizeCorePolicy(c, contentLocale),
+  );
+
   // Calculate totals for review step
   const reviewTotals = {
     vendors:
@@ -393,7 +415,8 @@ export default function QuickstartPage() {
       (useLawFirm ? lawFirmPreview?.totals.oversightGates ?? 0 : 0),
     policies:
       (industryPreview?.totals.policies ?? 0) +
-      (useLawFirm ? lawFirmPreview?.totals.policies ?? 0 : 0),
+      (useLawFirm ? lawFirmPreview?.totals.policies ?? 0 : 0) +
+      corePoliciesToAdd.length,
   };
 
   // ─── RENDER ───────────────────────────────────────
@@ -681,35 +704,6 @@ export default function QuickstartPage() {
             />
           </div>
 
-          {/* Selected vendors */}
-          {selectedSlugs.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {selectedSlugs.map((slug) => {
-                const vendor = vendorPreview?.previews.find(
-                  (p) => p.vendorSlug === slug,
-                );
-                return (
-                  <Badge
-                    key={slug}
-                    variant="secondary"
-                    className="gap-1 pl-2 pr-1 py-1"
-                  >
-                    {vendor?.vendorName ?? slug}
-                    <button
-                      onClick={() => removeVendorSlug(slug)}
-                      className="ml-1 hover:bg-muted rounded"
-                    >
-                      <X className="w-3 h-3" />
-                    </button>
-                  </Badge>
-                );
-              })}
-              <span className="text-xs text-muted-foreground self-center">
-                {t("vendorsSelected", { count: selectedSlugs.length })}
-              </span>
-            </div>
-          )}
-
           {/* Common vendors, so an empty search box is never a dead end */}
           {debouncedSearch.length < 2 && (
             <div className="space-y-2">
@@ -804,6 +798,36 @@ export default function QuickstartPage() {
           )}
 
           {/* Preview totals */}
+          {/* Selected vendors: below the lists, so picking one never moves
+              the list being clicked */}
+          {selectedSlugs.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {selectedSlugs.map((slug) => {
+                const vendor = vendorPreview?.previews.find(
+                  (p) => p.vendorSlug === slug,
+                );
+                return (
+                  <Badge
+                    key={slug}
+                    variant="secondary"
+                    className="gap-1 pl-2 pr-1 py-1"
+                  >
+                    {vendor?.vendorName ?? slug}
+                    <button
+                      onClick={() => removeVendorSlug(slug)}
+                      className="ml-1 hover:bg-muted rounded"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </Badge>
+                );
+              })}
+              <span className="text-xs text-muted-foreground self-center">
+                {t("vendorsSelected", { count: selectedSlugs.length })}
+              </span>
+            </div>
+          )}
+
           {vendorPreview && selectedSlugs.length > 0 && (
             <Card className="bg-muted/30">
               <CardContent className="p-4">
@@ -1597,6 +1621,24 @@ export default function QuickstartPage() {
             </Card>
           )}
 
+          {/* Core policies that complete the six core types */}
+          {corePoliciesToAdd.length > 0 && (
+            <Card>
+              <CardContent className="p-4 space-y-2">
+                <p className="text-sm font-medium">{t("corePoliciesTitle")}</p>
+                <p className="text-xs text-muted-foreground">{t("corePoliciesDescription")}</p>
+                {corePoliciesToAdd.map((p) => (
+                  <div key={p.title} className="flex items-center justify-between p-2 rounded border">
+                    <div className="min-w-0">
+                      <span className="text-sm truncate block">{p.title}</span>
+                      <span className="text-xs text-muted-foreground">{p.description}</span>
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          )}
+
           {/* Build button */}
           <div className="flex justify-end">
             <Button
@@ -1681,13 +1723,19 @@ export default function QuickstartPage() {
                     `${executionResult.riskClassifications} ${t("statRiskClassifications")}`,
                   executionResult.oversightGates > 0 &&
                     `${executionResult.oversightGates} ${t("statOversightGates")}`,
-                  executionResult.complianceMappings > 0 &&
-                    `${executionResult.complianceMappings} ${t("statComplianceMappings")}`,
+                  // Tier requirements plus the cross-border regimes attached after
+                  // the build: the same total the program's scorecard counts.
+                  executionResult.complianceMappings + (executionResult.regimeMappings ?? 0) > 0 &&
+                    `${executionResult.complianceMappings + (executionResult.regimeMappings ?? 0)} ${t("statComplianceMappings")}`,
                   executionResult.policies > 0 && `${executionResult.policies} ${t("statPolicies")}`,
                   executionResult.policyLinks > 0 &&
                     `${executionResult.policyLinks} ${t("statPolicyLinks")}`,
                   executionResult.transparencyProfiles > 0 &&
                     `${executionResult.transparencyProfiles} ${t("statTransparencyProfiles")}`,
+                  (executionResult.starterAssessments ?? 0) > 0 &&
+                    t("statStarterAssessments", { count: executionResult.starterAssessments ?? 0 }),
+                  (executionResult.starterVendorReviews ?? 0) > 0 &&
+                    t("statStarterVendorReviews", { count: executionResult.starterVendorReviews ?? 0 }),
                 ]
                   .filter(Boolean)
                   .join(" · ")}

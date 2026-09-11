@@ -541,7 +541,11 @@
         "title": "Panel",
         "hint": "Ver resumen"
       }
-    }
+    },
+    "statStarterAssessments": "{count, plural, one {# evaluación de impacto en borrador} other {# evaluaciones de impacto en borrador}}",
+    "statStarterVendorReviews": "{count, plural, one {# revisión de proveedor en borrador} other {# revisiones de proveedor en borrador}}",
+    "corePoliciesTitle": "Políticas básicas que completan tu conjunto",
+    "corePoliciesDescription": "Tu programa necesita seis políticas básicas de IA. Estos borradores cubren las que no aportan tus elecciones anteriores, en tu idioma. Revísalas y apruébalas en Políticas."
   },
   "assessments": {
     "title": "Evaluaciones",
@@ -983,7 +987,18 @@
     "creating": "Creando...",
     "submitCreatePolicy": "Crear Política",
     "toastSuccess": "Política creada correctamente",
-    "toastError": "No se ha podido crear la política"
+    "toastError": "No se ha podido crear la política",
+    "labelTemplate": "Partir de una plantilla (opcional)",
+    "placeholderTemplate": "Elige un texto de política como punto de partida",
+    "templateHint": "Rellena los campos siguientes. El texto es un primer borrador: adáptalo y después envíalo a aprobación.",
+    "templateGroup": {
+      "core": "conjunto básico",
+      "lawfirm": "despacho",
+      "industry": "sector, en inglés"
+    },
+    "placeholderType": "Selecciona el tipo de política",
+    "placeholderDescription": "Describe brevemente la finalidad y el alcance de esta política",
+    "placeholderContent": "Escribe aquí el texto de la política"
   },
   "policyDetail": {
     "notFound": "Política no encontrada",
@@ -4076,5 +4091,35 @@
     "createAndContinue": "Crear la organización y continuar",
     "creating": "Creando…",
     "createFailed": "No se ha podido crear la organización. Inténtalo de nuevo."
+  },
+  "inventoryImport": {
+    "button": "Importar hoja de cálculo",
+    "title": "Importa tu inventario de IA",
+    "description": "Sube una exportación CSV de tu hoja de inventario. Verás lo que se va a crear antes de guardar nada.",
+    "chooseFile": "Elegir un archivo CSV",
+    "downloadTemplate": "Descargar una plantilla",
+    "formatHint": "Las columnas se reconocen en español o en inglés: nombre (obligatoria), proveedor, finalidad, técnica, rol, estado, nivel de riesgo, datos personales, responsables y descripción. Sirven tanto comas como puntos y coma. El nivel de riesgo solo se importa cuando la hoja lo indica; si no, el sistema queda sin clasificar para que lo clasifiques tú.",
+    "errorNoName": "No se ha encontrado ninguna columna con el nombre del sistema. Añade una columna llamada Nombre (o Name).",
+    "errorNoRows": "El archivo no tiene filas de datos.",
+    "summary": "{rows, plural, one {# sistema} other {# sistemas}} listos para importar; {unclassified, plural, =0 {todos con nivel de riesgo indicado} one {# sin nivel de riesgo (quedará sin clasificar)} other {# sin nivel de riesgo (quedarán sin clasificar)}}.",
+    "unclassified": "sin clasificar",
+    "skippedNoName": "{count, plural, one {Se omitirá # fila sin nombre} other {Se omitirán # filas sin nombre}}.",
+    "truncated": "{count, plural, one {No se importará # fila que supera el límite de 500} other {No se importarán # filas que superan el límite de 500}}.",
+    "importButton": "{count, plural, one {Importar # sistema} other {Importar # sistemas}}",
+    "done": "Importados {created} sistemas ({classified} clasificados, {vendors} proveedores nuevos, {assessments} evaluaciones de impacto en borrador).",
+    "skippedExisting": "{count, plural, one {# sistema ya existía y se ha omitido} other {# sistemas ya existían y se han omitido}}.",
+    "field": {
+      "name": "Nombre",
+      "vendor": "Proveedor",
+      "purpose": "Finalidad",
+      "technique": "Técnica",
+      "role": "Rol",
+      "status": "Estado",
+      "riskLevel": "Nivel de riesgo",
+      "personalData": "Datos personales",
+      "businessOwner": "Responsable de negocio",
+      "technicalOwner": "Responsable técnico",
+      "description": "Descripción"
+    }
   }
 }

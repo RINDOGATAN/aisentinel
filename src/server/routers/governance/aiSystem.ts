@@ -2,6 +2,15 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { z } from "zod";
+import {
+  MAX_IMPORT_ROWS,
+  RISK_LEVELS,
+  ROLES,
+  STATUSES,
+  TECHNIQUES,
+} from "@/lib/inventory-import";
+import { importInventoryRows } from "@/server/services/inventory/import-systems";
+import { createStarterArtifacts } from "@/server/services/program/starter-artifacts";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { TRPCError } from "@trpc/server";
 import { chatComplete } from "../../services/ai/llm-door";
@@ -95,6 +104,66 @@ export const aiSystemRouter = createTRPCRouter({
       }
 
       return system;
+    }),
+
+  /**
+   * Spreadsheet import. Rows arrive parsed and mapped by the browser (see
+   * src/lib/inventory-import.ts) and are validated again here against the
+   * same vocabularies; the server never trusts the client's mapping.
+   */
+  importRows: orgWriteProcedure
+    .input(
+      z.object({
+        organizationId: z.string(),
+        fileName: z.string().max(200).optional(),
+        rows: z
+          .array(
+            z.object({
+              name: z.string().trim().min(1).max(200),
+              description: z.string().max(5000).optional(),
+              purpose: z.string().max(5000).optional(),
+              vendor: z.string().trim().max(200).optional(),
+              technique: z.enum(TECHNIQUES),
+              role: z.enum(ROLES),
+              status: z.enum(STATUSES),
+              businessOwner: z.string().max(200).optional(),
+              technicalOwner: z.string().max(200).optional(),
+              processesPersonalData: z.boolean().nullable(),
+              riskLevel: z.enum(RISK_LEVELS).nullable(),
+            }),
+          )
+          .min(1)
+          .max(MAX_IMPORT_ROWS),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const result = await importInventoryRows(ctx.prisma, {
+        organizationId: ctx.organization.id,
+        userId: ctx.session.user.id,
+        rows: input.rows,
+        fileName: input.fileName,
+      });
+      // High-risk rows get the same starting drafts the wizard creates.
+      let starterAssessments = 0;
+      try {
+        const starter = await createStarterArtifacts(ctx.prisma, {
+          organizationId: ctx.organization.id,
+          userId: ctx.session.user.id,
+          locale: ctx.getCookie("locale") === "es" ? "es" : "en",
+          systemIds: result.createdSystemIds,
+        });
+        starterAssessments = starter.assessments;
+      } catch {
+        // The import itself succeeded; drafts can be created per system.
+      }
+      return {
+        created: result.created,
+        skippedExisting: result.skippedExisting,
+        vendorsCreated: result.vendorsCreated,
+        classified: result.classified,
+        complianceMappings: result.complianceMappings,
+        starterAssessments,
+      };
     }),
 
   create: orgWriteProcedure

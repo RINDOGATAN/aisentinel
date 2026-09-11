@@ -328,8 +328,8 @@ export const REGULATORY_MILESTONES: RegulatoryMilestone[] = [
       es: "Prácticas prohibidas y alfabetización en IA de la UE en vigor",
     },
     whatItMeans: {
-      en: "The Art. 5 prohibitions have applied since 2 February 2025, as has the Art. 4 duty to ensure a sufficient level of AI literacy among staff and anyone operating AI on your behalf. The literacy duty was not deferred by the Digital Omnibus and applies to every deployer with EU staff — training records are the evidence.",
-      es: "Las prohibiciones del art. 5 se aplican desde el 2 de febrero de 2025, al igual que el deber del art. 4 de garantizar un nivel suficiente de alfabetización en IA entre el personal y quienes operen IA por cuenta de la organización. El Ómnibus Digital no aplazó este deber y afecta a todo responsable del despliegue con personal en la UE: los registros de formación son la prueba.",
+      en: "The Art. 5 prohibitions have applied since 2 February 2025, as has the Art. 4 duty on AI literacy. The Digital Omnibus did not defer that duty, but it did soften it: you must take measures to support the development of AI literacy among staff and anyone operating AI on your behalf, and you are not required to guarantee any particular level. It applies to every deployer with EU staff — training records are the evidence.",
+      es: "Las prohibiciones del art. 5 se aplican desde el 2 de febrero de 2025, al igual que el deber del art. 4 sobre alfabetización en IA. El Ómnibus Digital no aplazó ese deber, pero sí lo suavizó: tienes que adoptar medidas para apoyar la promoción de la alfabetización en IA del personal y de quienes operen IA por cuenta de la organización, sin que se exija garantizar ningún nivel concreto. Afecta a todo responsable del despliegue con personal en la UE: los registros de formación son la prueba.",
     },
     orgApplies: (org) => euGate(org) ?? "in-scope",
     undeterminedReason: () => "no-jurisdictions",

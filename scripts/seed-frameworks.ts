@@ -17,7 +17,7 @@ import {
 // incidents), Art. 113 (applicability timeline as amended by the Digital
 // Omnibus on AI — Regulation (EU) 2026/1744 of 8 July 2026, OJ L, 2026/1744,
 // 24.7.2026, in force 27 July 2026; timeline verified against the OJ text).
-// lawReviewedAsOf: 2026-08-05
+// lawReviewedAsOf: 2026-09-11 (Art. 4 re-verified against Reg. (EU) 2026/1744)
 
 const prisma = new PrismaClient();
 
@@ -60,7 +60,7 @@ async function main() {
     { code: "Art. 1", title: "Subject matter", description: "Purpose of the regulation: improve the functioning of the internal market by laying down harmonised rules for AI systems.", applicableTo: ["UNACCEPTABLE", "HIGH", "LIMITED", "MINIMAL"], sortOrder: 1, children: [] },
     { code: "Art. 2", title: "Scope", description: "Applies to providers, deployers, importers, distributors, and users of AI systems within the Union.", applicableTo: ["UNACCEPTABLE", "HIGH", "LIMITED", "MINIMAL"], sortOrder: 2, children: [] },
     { code: "Art. 3", title: "Definitions", description: "Key definitions including AI system, provider, deployer, high-risk AI system, etc.", applicableTo: ["UNACCEPTABLE", "HIGH", "LIMITED", "MINIMAL"], sortOrder: 3, children: [] },
-    { code: "Art. 4", title: "AI literacy", description: "Providers and deployers of AI systems shall take measures to ensure, to their best extent, a sufficient level of AI literacy of their staff and other persons dealing with the operation and use of AI systems on their behalf. Applicable since 2 February 2025.", applicableTo: ["UNACCEPTABLE", "HIGH", "LIMITED", "MINIMAL"], sortOrder: 4, children: [] },
+    { code: "Art. 4", title: "AI literacy", description: "Providers and deployers of AI systems shall take measures to support the development of AI literacy of their staff and other persons dealing with the operation and use of AI systems on their behalf, taking into account their technical knowledge, experience, education and training and the context of use. No specific level of AI literacy of any individual has to be guaranteed. Applicable since 2 February 2025, in the wording given by Regulation (EU) 2026/1744.", applicableTo: ["UNACCEPTABLE", "HIGH", "LIMITED", "MINIMAL"], sortOrder: 4, children: [] },
 
     // CHAPTER II - Prohibited AI Practices
     // Subparagraph lettering follows the FINAL Act (Reg. 2024/1689), which

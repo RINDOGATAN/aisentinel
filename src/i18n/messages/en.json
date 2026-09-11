@@ -4480,5 +4480,18 @@
     "since": "Trail starts {date}",
     "actorRemoved": "Account removed",
     "noDetail": "No detail recorded"
+  },
+  "assessmentVersions": {
+    "title": "Version history",
+    "intro": "Each saved change, submission and decision is kept as a dated version, with a digest of its content. Versions are appended and cannot be edited or deleted.",
+    "empty": "No versions yet. One is kept the first time the answers are saved.",
+    "reasonEdit": "Answers saved",
+    "reasonSubmit": "Submitted for review",
+    "reasonApprove": "Approved",
+    "reasonReject": "Rejected",
+    "answered": "{count} answered",
+    "hashLabel": "Content digest (SHA-256)",
+    "noAnswers": "No answers were recorded in this version.",
+    "collapse": "Close"
   }
 }

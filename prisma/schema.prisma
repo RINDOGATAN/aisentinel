@@ -149,6 +149,7 @@ model Organization {
   agentProfiles         AgentProfile[]
   assessmentTemplates   AIAssessmentTemplate[]
   assessments           AIAssessment[]
+  assessmentVersions    AIAssessmentVersion[]
   oversightGates        OversightGate[]
   oversightDecisions    OversightDecision[]
   incidents             AIIncident[]
@@ -649,10 +650,50 @@ model AIAssessment {
   organization Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   aiSystem     AISystem             @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
   template     AIAssessmentTemplate @relation(fields: [templateId], references: [id])
+  versions     AIAssessmentVersion[]
 
   @@index([organizationId])
   @@index([aiSystemId])
   @@map("ai_assessments")
+}
+
+/// A dated copy of an assessment's answers, appended and never edited.
+///
+/// An impact assessment is evidence of an analysis that happened on a date.
+/// Without versions the live row answers "what does it say now", and nobody
+/// can answer "what did it say when the decision was taken", which is the
+/// question asked in an investigation or in discovery. A version is written
+/// when answers change, when the assessment is submitted, and when it is
+/// approved or rejected, so the record can be reconstructed for any past date.
+///
+/// There is deliberately no update or delete path in the application.
+model AIAssessmentVersion {
+  id             String           @id @default(cuid())
+  organizationId String
+  assessmentId   String
+  /// 1-based, contiguous per assessment.
+  version        Int
+  /// Why this version exists: EDIT, SUBMIT, APPROVE, REJECT.
+  reason         String
+  /// The status the assessment held immediately after this version was taken.
+  status         AssessmentStatus
+  title          String
+  riskScore      Float?
+  responses      Json?
+  mitigations    Json?
+  /// SHA-256 over the canonical JSON of {title, responses, mitigations}. Two
+  /// versions with the same digest mean nothing of substance changed.
+  contentHash    String
+  createdBy      String
+  createdAt      DateTime         @default(now())
+
+  organization Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  assessment   AIAssessment  @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+
+  @@unique([assessmentId, version])
+  @@index([organizationId])
+  @@index([assessmentId, createdAt])
+  @@map("ai_assessment_versions")
 }
 
 // ============================================================

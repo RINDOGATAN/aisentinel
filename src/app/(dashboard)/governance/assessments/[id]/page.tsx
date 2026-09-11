@@ -26,6 +26,7 @@ import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
 import { useSession } from "next-auth/react";
 import { AiDraftPanel } from "@/components/ai/AiDraftPanel";
+import { AssessmentVersionHistory } from "@/components/governance/assessment-version-history";
 
 const statusColors: Record<string, string> = {
   DRAFT: "bg-gray-500/20 text-gray-400",
@@ -66,6 +67,24 @@ export default function AssessmentDetailPage() {
   const approveMutation = trpc.assessment.processApproval.useMutation({ onSuccess: () => refetch(), onError });
   const generateDraft = trpc.assessment.generateAiDraft.useMutation();
 
+  // What answering this would do to the compliance register.
+  const { data: registerPlan } = trpc.unified.previewRegisterUpdate.useQuery(
+    { organizationId: orgId, assessmentId: id },
+    { enabled: !!orgId && !!id },
+  );
+  const applyToRegister = trpc.unified.applyToRegister.useMutation({
+    onSuccess: (res) => {
+      toast.success(t("registerApplied", { count: res.applied }));
+      void utils.unified.previewRegisterUpdate.invalidate();
+      void utils.compliance.getMatrix.invalidate();
+      void utils.compliance.getSystemScorecard.invalidate();
+    },
+    onError: (err) => setActionError(err.message),
+  });
+
+  // Every hook above the early returns, so the number of hooks cannot change
+  // between the loading render and the loaded one (React throws "rendered more
+  // hooks than during the previous render" when it does).
   if (isLoading || !orgId) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -105,21 +124,6 @@ export default function AssessmentDetailPage() {
   // one else — but it is called out and recorded rather than passing silently.
   const submitter = assessment.submittedBy ?? assessment.createdBy;
   const isSelfReview = !!session?.user?.id && submitter === session.user.id;
-
-  // What answering this would do to the compliance register.
-  const { data: registerPlan } = trpc.unified.previewRegisterUpdate.useQuery(
-    { organizationId: orgId, assessmentId: id },
-    { enabled: !!orgId && !!id },
-  );
-  const applyToRegister = trpc.unified.applyToRegister.useMutation({
-    onSuccess: (res) => {
-      toast.success(t("registerApplied", { count: res.applied }));
-      void utils.unified.previewRegisterUpdate.invalidate();
-      void utils.compliance.getMatrix.invalidate();
-      void utils.compliance.getSystemScorecard.invalidate();
-    },
-    onError: (err) => setActionError(err.message),
-  });
 
   const handleSave = () => {
     setActionError(null);
@@ -489,6 +493,9 @@ export default function AssessmentDetailPage() {
           </CardContent>
         </Card>
       ))}
+
+      {/* The dated record of what this assessment said, and when. */}
+      <AssessmentVersionHistory organizationId={orgId} assessmentId={id} />
     </div>
   );
 }

@@ -103,9 +103,28 @@ const H = vi.hoisted(() => {
     },
   };
 
+  // Versions are appended by the same mutations, so the fake needs the table
+  // and an ordered findFirst (the service reads the newest version to decide
+  // whether anything of substance changed).
+  const versionRows: Row[] = [];
+  const aIAssessmentVersion = {
+    __rows: () => versionRows,
+    findFirst: async ({ where }: { where: Record<string, unknown> }) => {
+      const hits = versionRows.filter((r) => matches(r, where));
+      if (hits.length === 0) return null;
+      return hits.reduce((a, b) => ((a.version as number) > (b.version as number) ? a : b));
+    },
+    create: async ({ data }: { data: Row }) => {
+      const row = { id: `ver-${versionRows.length + 1}`, ...data };
+      versionRows.push(row);
+      return row;
+    },
+  };
+
   const db = {
     organizationMember,
     aIAssessment,
+    aIAssessmentVersion,
     aIAssessmentTemplate: templates,
     auditLog,
   };
@@ -124,6 +143,7 @@ const H = vi.hoisted(() => {
   ];
 
   function reset() {
+    versionRows.length = 0;
     memberRows.length = 0;
     memberRows.push({ organizationId: "org-a", userId: "author", role: "OWNER" });
     memberRows.push({ organizationId: "org-a", userId: "reviewer", role: "AI_OFFICER" });
@@ -169,7 +189,7 @@ const H = vi.hoisted(() => {
     ]);
   }
 
-  return { db, reset, assessments, auditLog };
+  return { db, reset, assessments, auditLog, versions: aIAssessmentVersion };
 });
 
 vi.mock("@/lib/prisma", () => ({ default: H.db, prisma: H.db }));
@@ -284,6 +304,54 @@ describe("update — status is not client-writable", () => {
     ).rejects.toMatchObject({ code: "FORBIDDEN" });
 
     expect((row("asmt-approved").responses as Record<string, string>).q1).toBe("A description");
+  });
+});
+
+describe("versions — the dated record", () => {
+  it("keeps a version when answers are saved, and none when nothing changed", async () => {
+    await callerFor("author").update({
+      organizationId: ORG,
+      id: "asmt-empty",
+      responses: { q1: "A description", q2: "The processes" },
+    });
+    expect(H.versions.__rows()).toHaveLength(1);
+    expect(H.versions.__rows()[0]).toMatchObject({ version: 1, reason: "EDIT" });
+
+    await callerFor("author").update({
+      organizationId: ORG,
+      id: "asmt-empty",
+      responses: { q1: "A description", q2: "The processes" },
+    });
+    expect(H.versions.__rows()).toHaveLength(1);
+  });
+
+  it("records the submission as its own version even when the answers are unchanged", async () => {
+    await callerFor("author").update({
+      organizationId: ORG,
+      id: "asmt-full",
+      responses: { q1: "A description", q2: "The processes" },
+    });
+    const afterEdit = H.versions.__rows().length;
+    await callerFor("author").submit({ organizationId: ORG, id: "asmt-full" });
+    const rows = H.versions.__rows();
+    expect(rows.length).toBe(afterEdit + 1);
+    expect(rows[rows.length - 1]).toMatchObject({ reason: "SUBMIT" });
+  });
+
+  it("records the approval decision as a version", async () => {
+    await callerFor("author").update({
+      organizationId: ORG,
+      id: "asmt-full",
+      responses: { q1: "A description", q2: "The processes" },
+    });
+    await callerFor("author").submit({ organizationId: ORG, id: "asmt-full" });
+    await callerFor("reviewer").processApproval({
+      organizationId: ORG,
+      id: "asmt-full",
+      decision: "APPROVED",
+    });
+    const rows = H.versions.__rows();
+    expect(rows[rows.length - 1]).toMatchObject({ reason: "APPROVE", status: "APPROVED" });
   });
 });
 

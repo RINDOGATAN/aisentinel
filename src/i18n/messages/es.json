@@ -4480,5 +4480,18 @@
     "since": "El registro empieza el {date}",
     "actorRemoved": "Cuenta eliminada",
     "noDetail": "Sin detalle registrado"
+  },
+  "assessmentVersions": {
+    "title": "Historial de versiones",
+    "intro": "Cada cambio guardado, cada envío y cada decisión se conservan como una versión con fecha y una huella de su contenido. Las versiones se añaden y no pueden modificarse ni eliminarse.",
+    "empty": "Todavía no hay versiones. Se guarda una la primera vez que se guardan las respuestas.",
+    "reasonEdit": "Respuestas guardadas",
+    "reasonSubmit": "Enviada a revisión",
+    "reasonApprove": "Aprobada",
+    "reasonReject": "Rechazada",
+    "answered": "{count} respondidas",
+    "hashLabel": "Huella del contenido (SHA-256)",
+    "noAnswers": "En esta versión no se registró ninguna respuesta.",
+    "collapse": "Cerrar"
   }
 }

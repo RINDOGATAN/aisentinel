@@ -4,6 +4,10 @@
 import { z } from "zod";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { TRPCError } from "@trpc/server";
+import {
+  answeredCount,
+  recordAssessmentVersion,
+} from "../../services/assessment/versions";
 import { checkAssessmentEntitlement, getEntitledAssessmentTypes } from "@/server/services/licensing/entitlement";
 import { chatComplete } from "../../services/ai/llm-door";
 import {
@@ -218,6 +222,33 @@ export const assessmentRouter = createTRPCRouter({
         data: patch as never,
       });
 
+      // The edit becomes part of the record: a dated version of the answers,
+      // and an audit entry. Without both, an approved assessment could be
+      // rewritten afterwards and nothing would show it.
+      const recorded = await recordAssessmentVersion(ctx.prisma, {
+        organizationId: ctx.organization.id,
+        assessmentId: id,
+        reason: "EDIT",
+        userId: ctx.session.user.id,
+      });
+
+      if (recorded.version !== null) {
+        await ctx.prisma.auditLog.create({
+          data: {
+            organizationId: ctx.organization.id,
+            userId: ctx.session.user.id,
+            entityType: "AIAssessment",
+            entityId: id,
+            action: "UPDATE",
+            changes: {
+              fields: Object.keys(data),
+              version: recorded.version,
+              contentHash: recorded.contentHash,
+            },
+          },
+        });
+      }
+
       return ctx.prisma.aIAssessment.findFirst({
         where: { id, organizationId: ctx.organization.id },
         include: {
@@ -269,6 +300,16 @@ export const assessmentRouter = createTRPCRouter({
         },
       });
 
+      // What was submitted is the version a reviewer acted on; keep it even if
+      // the answers are identical to the last saved version.
+      const submitted = await recordAssessmentVersion(ctx.prisma, {
+        organizationId: ctx.organization.id,
+        assessmentId: assessment.id,
+        reason: "SUBMIT",
+        userId: ctx.session.user.id,
+        force: true,
+      });
+
       await ctx.prisma.auditLog.create({
         data: {
           organizationId: ctx.organization.id,
@@ -276,7 +317,12 @@ export const assessmentRouter = createTRPCRouter({
           entityType: "AIAssessment",
           entityId: assessment.id,
           action: "SUBMIT",
-          changes: { from: assessment.status, to: "UNDER_REVIEW" },
+          changes: {
+            from: assessment.status,
+            to: "UNDER_REVIEW",
+            version: submitted.version,
+            contentHash: submitted.contentHash,
+          },
         },
       });
 
@@ -348,6 +394,14 @@ export const assessmentRouter = createTRPCRouter({
         },
       });
 
+      const decided = await recordAssessmentVersion(ctx.prisma, {
+        organizationId: ctx.organization.id,
+        assessmentId: assessment.id,
+        reason: input.decision === "APPROVED" ? "APPROVE" : "REJECT",
+        userId: ctx.session.user.id,
+        force: true,
+      });
+
       await ctx.prisma.auditLog.create({
         data: {
           organizationId: ctx.organization.id,
@@ -355,7 +409,13 @@ export const assessmentRouter = createTRPCRouter({
           entityType: "AIAssessment",
           entityId: assessment.id,
           action: input.decision === "APPROVED" ? "APPROVE" : "REJECT",
-          changes: { from: "UNDER_REVIEW", to: input.decision, selfReview: isSelfReview },
+          changes: {
+            from: "UNDER_REVIEW",
+            to: input.decision,
+            selfReview: isSelfReview,
+            version: decided.version,
+            contentHash: decided.contentHash,
+          },
         },
       });
 
@@ -605,5 +665,64 @@ export const assessmentRouter = createTRPCRouter({
       });
 
       return template;
+    }),
+  /**
+   * The version history of one assessment: what it said, when, and why a
+   * version exists. Read-only for every member, including VIEWER, for the same
+   * reason the review queue is: a record nobody can inspect is not a record.
+   */
+  listVersions: organizationProcedure
+    .input(z.object({ organizationId: z.string(), assessmentId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const assessment = await ctx.prisma.aIAssessment.findFirst({
+        where: { id: input.assessmentId, organizationId: ctx.organization.id },
+        select: { id: true },
+      });
+      if (!assessment) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Assessment not found" });
+      }
+
+      const versions = await ctx.prisma.aIAssessmentVersion.findMany({
+        where: { assessmentId: input.assessmentId, organizationId: ctx.organization.id },
+        orderBy: { version: "desc" },
+      });
+
+      const authorIds = [...new Set(versions.map((v) => v.createdBy))];
+      const authors = await ctx.prisma.user.findMany({
+        where: { id: { in: authorIds } },
+        select: { id: true, name: true, email: true },
+      });
+      const byId = new Map(authors.map((a) => [a.id, a]));
+
+      return versions.map((v) => ({
+        id: v.id,
+        version: v.version,
+        reason: v.reason,
+        status: v.status,
+        title: v.title,
+        riskScore: v.riskScore,
+        contentHash: v.contentHash,
+        answered: answeredCount(v.responses),
+        createdAt: v.createdAt,
+        authorName: byId.get(v.createdBy)?.name ?? byId.get(v.createdBy)?.email ?? null,
+      }));
+    }),
+
+  /** One version in full, for reading what the assessment said on that date. */
+  getVersion: organizationProcedure
+    .input(z.object({ organizationId: z.string(), versionId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const version = await ctx.prisma.aIAssessmentVersion.findFirst({
+        where: { id: input.versionId, organizationId: ctx.organization.id },
+        include: {
+          assessment: {
+            select: { id: true, title: true, template: { select: { sections: true } } },
+          },
+        },
+      });
+      if (!version) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Version not found" });
+      }
+      return version;
     }),
 });

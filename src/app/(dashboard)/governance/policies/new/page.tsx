@@ -23,6 +23,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { CORE_POLICY_PACK, localizeCorePolicy } from "@/config/core-policy-pack";
 import { LAWFIRM_POLICY_PACK } from "@/config/lawfirm-ai-toolkit";
 import { AI_GOVERNANCE_TEMPLATES } from "@/config/ai-governance-templates";
+import { localizeTemplate } from "@/config/ai-governance-templates.es";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 
@@ -50,9 +51,9 @@ interface PolicyTemplateOption {
 }
 
 /**
- * Every policy text the product ships, as starting points: the sector-neutral
- * core pack and the law-firm pack in the reader's language, and the industry
- * templates' policies (English only for now).
+ * Every policy text the product ships, as starting points, in the reader's
+ * language: the sector-neutral core pack, the law-firm pack and the industry
+ * templates' policies.
  */
 function policyTemplateOptions(locale: "en" | "es"): PolicyTemplateOption[] {
   return [
@@ -65,7 +66,7 @@ function policyTemplateOptions(locale: "en" | "es"): PolicyTemplateOption[] {
       description: p.description[locale],
       content: p.content[locale],
     })),
-    ...AI_GOVERNANCE_TEMPLATES.flatMap((tpl) =>
+    ...AI_GOVERNANCE_TEMPLATES.map((source) => localizeTemplate(source, locale)).flatMap((tpl) =>
       tpl.policies.map((p, i) => ({
         id: `${tpl.id}-${i}`,
         group: "industry" as const,

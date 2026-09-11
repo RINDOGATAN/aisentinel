@@ -117,10 +117,10 @@ export const TEXAS_REQUIREMENTS: RegimeRequirementSeed[] = [
   {
     slug: "552-057-explicit-content",
     code: "§ 552.057",
-    title: { en: "Prohibition: unlawful sexually explicit content and deepfakes", es: "Prohibición: contenido sexual explícito ilícito y ultrafalsificaciones" },
+    title: { en: "Prohibition: unlawful sexually explicit content and deepfakes", es: "Prohibición: contenido sexual explícito ilícito y ultrasuplantaciones" },
     description: {
       en: "No person may develop or distribute an AI system with the sole intent of producing or distributing sexually explicit content depicting minors, or intimate deepfake content, in violation of Texas criminal law. Generative systems need output filters and abuse monitoring that document compliance.",
-      es: "Nadie puede desarrollar ni distribuir un sistema de IA con la única intención de producir o distribuir contenido sexual explícito con menores, o ultrafalsificaciones de carácter íntimo, en contra del Derecho penal de Texas. Los sistemas generativos necesitan filtros de salida y supervisión de abusos que documenten el cumplimiento.",
+      es: "Nadie puede desarrollar ni distribuir un sistema de IA con la única intención de producir o distribuir contenido sexual explícito con menores, o ultrasuplantaciones de carácter íntimo, en contra del Derecho penal de Texas. Los sistemas generativos necesitan filtros de salida y supervisión de abusos que documenten el cumplimiento.",
     },
     applicabilityTags: CORE,
     sortOrder: 570,

@@ -102,19 +102,19 @@ export default function VendorCatalogDetailPage() {
     (entry.euAiActAnnexIIIDomains && entry.euAiActAnnexIIIDomains.length > 0);
 
   const governanceChecks = [
-    { label: "Explainability", value: entry.supportsExplainability },
-    { label: "Bias Monitoring", value: entry.hasBiasMonitoring },
-    { label: "Model Cards", value: entry.hasModelCard },
-    { label: "Audit Logs", value: entry.supportsAuditLogs },
+    { label: t("governanceExplainability"), value: entry.supportsExplainability },
+    { label: t("governanceBiasMonitoring"), value: entry.hasBiasMonitoring },
+    { label: t("governanceModelCards"), value: entry.hasModelCard },
+    { label: t("governanceAuditLogs"), value: entry.supportsAuditLogs },
     { label: "ISO 42001", value: entry.iso42001Certified },
   ];
 
   const externalLinks = [
-    { label: "Website", url: entry.website, icon: Globe },
-    { label: "Privacy Policy", url: entry.privacyPolicyUrl, icon: Shield },
-    { label: "DPA", url: entry.dpaUrl, icon: Shield },
-    { label: "Trust Center", url: entry.trustCenterUrl, icon: Shield },
-    { label: "Security Page", url: entry.securityPageUrl, icon: Shield },
+    { label: t("linkWebsite"), url: entry.website, icon: Globe },
+    { label: t("linkPrivacyPolicy"), url: entry.privacyPolicyUrl, icon: Shield },
+    { label: t("linkDpa"), url: entry.dpaUrl, icon: Shield },
+    { label: t("linkTrustCenter"), url: entry.trustCenterUrl, icon: Shield },
+    { label: t("linkSecurityPage"), url: entry.securityPageUrl, icon: Shield },
   ].filter((link) => link.url);
 
   return (
@@ -178,52 +178,52 @@ export default function VendorCatalogDetailPage() {
                 {entry.gdprCompliant && (
                   <Badge className="bg-success/20 text-success">
                     <Shield className="w-3.5 h-3.5 mr-1" />
-                    GDPR Compliant
+                    {t("badgeGdprCompliant")}
                   </Badge>
                 )}
                 {entry.euAiActCompliant && (
                   <Badge className="bg-info/20 text-info">
                     <Shield className="w-3.5 h-3.5 mr-1" />
-                    EU AI Act Compliant
+                    {t("badgeEuAiActCompliant")}
                   </Badge>
                 )}
                 {entry.ccpaCompliant && (
                   <Badge className="bg-purple-500/20 text-purple-400">
                     <Shield className="w-3.5 h-3.5 mr-1" />
-                    CCPA Compliant
+                    {t("badgeCcpaCompliant")}
                   </Badge>
                 )}
                 {entry.hipaaCompliant && (
                   <Badge className="bg-warning/20 text-warning">
                     <Shield className="w-3.5 h-3.5 mr-1" />
-                    HIPAA Compliant
+                    {t("badgeHipaaCompliant")}
                   </Badge>
                 )}
                 {entry.supportsDsars && (
                   <Badge className="bg-success/20 text-success">
                     <ShieldCheck className="w-3.5 h-3.5 mr-1" />
-                    DSAR Support
+                    {t("badgeDsarSupport")}
                   </Badge>
                 )}
                 {entry.hasDesignatedDpo && (
                   <Badge className="bg-success/20 text-success">
                     <ShieldCheck className="w-3.5 h-3.5 mr-1" />
-                    Designated DPO
+                    {t("badgeDesignatedDpo")}
                   </Badge>
                 )}
                 {entry.hasRecentBreach && (
                   <Badge className="bg-destructive/20 text-destructive">
                     <AlertTriangle className="w-3.5 h-3.5 mr-1" />
-                    Recent Breach
+                    {t("badgeRecentBreach")}
                   </Badge>
                 )}
                 {entry.transferSafeguards && (
                   <Badge variant="outline">
-                    Transfer: {entry.transferSafeguards}
+                    {t("transferSafeguards", { safeguards: entry.transferSafeguards })}
                   </Badge>
                 )}
                 {!entry.gdprCompliant && !entry.euAiActCompliant && !entry.ccpaCompliant && !entry.hipaaCompliant && !entry.supportsDsars && !entry.hasDesignatedDpo && !entry.hasRecentBreach && !entry.transferSafeguards && (
-                  <p className="text-sm text-muted-foreground">No compliance data available</p>
+                  <p className="text-sm text-muted-foreground">{t("noComplianceData")}</p>
                 )}
               </div>
 
@@ -244,7 +244,7 @@ export default function VendorCatalogDetailPage() {
               {/* Frameworks */}
               {entry.frameworks.length > 0 && (
                 <div>
-                  <p className="text-sm font-medium mb-2">Frameworks</p>
+                  <p className="text-sm font-medium mb-2">{t("frameworksTitle")}</p>
                   <div className="flex flex-wrap gap-1.5">
                     {entry.frameworks.map((fw) => (
                       <Badge key={fw} variant="secondary" className="text-xs">
@@ -277,7 +277,7 @@ export default function VendorCatalogDetailPage() {
                 {entry.modelHosting && (
                   <div className="flex items-center gap-2 text-sm">
                     <Server className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">Model Hosting:</span>
+                    <span className="text-muted-foreground">{t("labelModelHosting")}</span>
                     <span className="font-medium">{entry.modelHosting}</span>
                   </div>
                 )}
@@ -385,7 +385,7 @@ export default function VendorCatalogDetailPage() {
                 {entry.aiIncidentNotificationSLA && (
                   <div className="flex items-center gap-2 text-sm">
                     <FileText className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">Incident SLA:</span>
+                    <span className="text-muted-foreground">{t("labelIncidentSla")}</span>
                     <span className="font-medium">{entry.aiIncidentNotificationSLA}</span>
                   </div>
                 )}
@@ -393,7 +393,7 @@ export default function VendorCatalogDetailPage() {
                 {entry.dataProcessingTransparency && (
                   <div className="flex items-center gap-2 text-sm">
                     <FileText className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">Data Transparency:</span>
+                    <span className="text-muted-foreground">{t("labelDataTransparency")}</span>
                     <span className="font-medium">{entry.dataProcessingTransparency}</span>
                   </div>
                 )}
@@ -401,14 +401,14 @@ export default function VendorCatalogDetailPage() {
                 {entry.euAiActRole && (
                   <div className="flex items-center gap-2 text-sm">
                     <Shield className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">AI Act Role:</span>
+                    <span className="text-muted-foreground">{t("labelAiActRole")}</span>
                     <Badge variant="outline">{entry.euAiActRole}</Badge>
                   </div>
                 )}
 
                 {entry.euAiActAnnexIIIDomains && entry.euAiActAnnexIIIDomains.length > 0 && (
                   <div>
-                    <p className="text-sm text-muted-foreground mb-2">Annex III Domains</p>
+                    <p className="text-sm text-muted-foreground mb-2">{t("annexIiiDomainsTitle")}</p>
                     <div className="flex flex-wrap gap-1.5">
                       {entry.euAiActAnnexIIIDomains.map((domain) => (
                         <Badge key={domain} variant="secondary" className="text-xs">
@@ -432,7 +432,7 @@ export default function VendorCatalogDetailPage() {
                 {entry.dataLocations.length > 0 && (
                   <div className="flex items-center gap-2">
                     <MapPin className="w-4 h-4 text-muted-foreground shrink-0" />
-                    <span className="text-sm text-muted-foreground">Data Locations:</span>
+                    <span className="text-sm text-muted-foreground">{t("labelDataLocations")}</span>
                     <div className="flex flex-wrap gap-1.5">
                       {entry.dataLocations.map((loc) => (
                         <Badge key={loc} variant="outline" className="text-xs">
@@ -445,7 +445,7 @@ export default function VendorCatalogDetailPage() {
                 {entry.hasEuDataCenter && (
                   <div className="flex items-center gap-2 text-sm">
                     <CheckCircle className="w-4 h-4 text-success" />
-                    <span>EU Data Center Available</span>
+                    <span>{t("euDataCenterAvailable")}</span>
                   </div>
                 )}
               </CardContent>
@@ -547,7 +547,7 @@ export default function VendorCatalogDetailPage() {
                 <div>
                   <p className="text-2xl font-bold text-primary">{linkedVendorCount}</p>
                   <p className="text-xs text-muted-foreground">
-                    {linkedVendorCount === 1 ? "Linked vendor record" : "Linked vendor records"}
+                    {t("linkedVendorRecords", { count: linkedVendorCount })}
                   </p>
                 </div>
               </div>

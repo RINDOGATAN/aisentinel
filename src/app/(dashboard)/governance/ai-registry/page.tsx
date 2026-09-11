@@ -147,11 +147,11 @@ export default function AIRegistryPage() {
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => window.open(`/api/export/ai-system-register?organizationId=${organization?.id}`, "_blank")}>
                 <FileText className="w-4 h-4 mr-2" />
-                AI System Register (PDF)
+                {t("exportRegisterPdf")}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => window.open(`/api/export/model-inventory?organizationId=${organization?.id}`, "_blank")}>
                 <FileText className="w-4 h-4 mr-2" />
-                Model Inventory (PDF)
+                {t("exportModelInventoryPdf")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -159,7 +159,7 @@ export default function AIRegistryPage() {
             <Button className="w-full sm:w-auto" disabled>
               <Loader2 className="w-4 h-4 animate-spin sm:mr-2" />
               <span className="hidden sm:inline">{t("registerAiSystem")}</span>
-              <span className="sm:hidden">Register</span>
+              <span className="sm:hidden">{t("registerShort")}</span>
             </Button>
           ) : (
             canWrite && (
@@ -169,7 +169,7 @@ export default function AIRegistryPage() {
                 <Button className="w-full sm:w-auto">
                   <Plus className="w-4 h-4 sm:mr-2" />
                   <span className="hidden sm:inline">{t("registerAiSystem")}</span>
-                  <span className="sm:hidden">Register</span>
+                  <span className="sm:hidden">{t("registerShort")}</span>
                 </Button>
               </Link>
               </>

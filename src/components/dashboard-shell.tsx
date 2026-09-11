@@ -135,7 +135,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
   if (orgLoading || userTypeLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-muted-foreground text-sm">Loading…</div>
+        <div className="text-muted-foreground text-sm">{t("loading")}</div>
       </div>
     );
   }
@@ -159,7 +159,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="md:hidden shrink-0">
                   <Menu className="w-5 h-5" />
-                  <span className="sr-only">Open menu</span>
+                  <span className="sr-only">{t("openMenu")}</span>
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="w-[300px] sm:w-[320px]">
@@ -427,7 +427,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
           <p className="text-[11px] text-muted-foreground/80">
             AI Sentinel &middot; AGPL-3.0 &middot; &copy; Rindogatan LLC &middot;{" "}
             <Link href="/licenses" className="underline underline-offset-2 hover:text-foreground transition-colors">
-              Source &amp; licence
+              {t("sourceAndLicence")}
             </Link>
           </p>
         </div>

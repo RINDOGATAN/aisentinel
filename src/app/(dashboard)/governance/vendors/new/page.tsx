@@ -30,42 +30,44 @@ import { suggestTechniqueFromCapabilities } from "@/lib/ai-technique-mapping";
 type VendorRiskLevel = "CRITICAL" | "HIGH" | "MEDIUM" | "LOW";
 type VendorStatus = "ACTIVE" | "UNDER_REVIEW" | "APPROVED" | "SUSPENDED" | "TERMINATED";
 
+// Technique, role and risk labels come from the `common` namespace;
+// vendor status labels from `vendorsNew`.
 const aiTechniques = [
-  { value: "MACHINE_LEARNING", label: "Machine Learning" },
-  { value: "DEEP_LEARNING", label: "Deep Learning" },
-  { value: "GENERATIVE_AI", label: "Generative AI" },
-  { value: "AGENTIC_AI", label: "Agentic AI" },
-  { value: "NLP", label: "Natural Language Processing" },
-  { value: "COMPUTER_VISION", label: "Computer Vision" },
-  { value: "SPEECH_RECOGNITION", label: "Speech Recognition" },
-  { value: "ROBOTICS", label: "Robotics" },
-  { value: "RULE_BASED", label: "Rule-Based" },
-  { value: "EXPERT_SYSTEM", label: "Expert System" },
-  { value: "STATISTICAL", label: "Statistical" },
-  { value: "OTHER", label: "Other" },
+  { value: "MACHINE_LEARNING", labelKey: "techniqueMachineLearning" },
+  { value: "DEEP_LEARNING", labelKey: "techniqueDeepLearning" },
+  { value: "GENERATIVE_AI", labelKey: "techniqueGenerativeAi" },
+  { value: "AGENTIC_AI", labelKey: "techniqueAgenticAi" },
+  { value: "NLP", labelKey: "techniqueNlp" },
+  { value: "COMPUTER_VISION", labelKey: "techniqueComputerVision" },
+  { value: "SPEECH_RECOGNITION", labelKey: "techniqueSpeechRecognition" },
+  { value: "ROBOTICS", labelKey: "techniqueRobotics" },
+  { value: "RULE_BASED", labelKey: "techniqueRuleBased" },
+  { value: "EXPERT_SYSTEM", labelKey: "techniqueExpertSystem" },
+  { value: "STATISTICAL", labelKey: "techniqueStatistical" },
+  { value: "OTHER", labelKey: "techniqueOther" },
 ];
 
 const aiRoles = [
-  { value: "PROVIDER", label: "Provider" },
-  { value: "DEPLOYER", label: "Deployer" },
-  { value: "IMPORTER", label: "Importer" },
-  { value: "DISTRIBUTOR", label: "Distributor" },
-  { value: "USER", label: "User" },
+  { value: "PROVIDER", labelKey: "roleProvider" },
+  { value: "DEPLOYER", labelKey: "roleDeployer" },
+  { value: "IMPORTER", labelKey: "roleImporter" },
+  { value: "DISTRIBUTOR", labelKey: "roleDistributor" },
+  { value: "USER", labelKey: "roleUser" },
 ];
 
 const riskLevels = [
-  { value: "CRITICAL", label: "Critical" },
-  { value: "HIGH", label: "High" },
-  { value: "MEDIUM", label: "Medium" },
-  { value: "LOW", label: "Low" },
+  { value: "CRITICAL", labelKey: "riskCritical" },
+  { value: "HIGH", labelKey: "riskHigh" },
+  { value: "MEDIUM", labelKey: "riskMedium" },
+  { value: "LOW", labelKey: "riskLow" },
 ];
 
 const statuses = [
-  { value: "ACTIVE", label: "Active" },
-  { value: "UNDER_REVIEW", label: "Under Review" },
-  { value: "APPROVED", label: "Approved" },
-  { value: "SUSPENDED", label: "Suspended" },
-  { value: "TERMINATED", label: "Terminated" },
+  { value: "ACTIVE", labelKey: "statusActive" },
+  { value: "UNDER_REVIEW", labelKey: "statusUnderReview" },
+  { value: "APPROVED", labelKey: "statusApproved" },
+  { value: "SUSPENDED", labelKey: "statusSuspended" },
+  { value: "TERMINATED", labelKey: "statusTerminated" },
 ];
 
 type CatalogVendor = {
@@ -348,13 +350,13 @@ function NewVendorForm() {
                   {selectedCatalogVendor.gdprCompliant && (
                     <Badge className="bg-success/20 text-success text-xs">
                       <Shield className="w-3 h-3 mr-1" />
-                      GDPR
+                      {t("badgeGdpr")}
                     </Badge>
                   )}
                   {selectedCatalogVendor.euAiActCompliant && (
                     <Badge className="bg-info/20 text-info text-xs">
                       <Shield className="w-3 h-3 mr-1" />
-                      EU AI Act
+                      {t("badgeEuAiAct")}
                     </Badge>
                   )}
                   {selectedCatalogVendor.certifications.map((cert) => (
@@ -372,7 +374,7 @@ function NewVendorForm() {
                       className="flex items-center gap-1 hover:text-primary"
                     >
                       <Globe className="w-3 h-3" />
-                      Website
+                      {t("labelWebsite")}
                     </a>
                   )}
                   {selectedCatalogVendor.privacyPolicyUrl && (
@@ -383,7 +385,7 @@ function NewVendorForm() {
                       className="flex items-center gap-1 hover:text-primary"
                     >
                       <Shield className="w-3 h-3" />
-                      Privacy Policy
+                      {t("linkPrivacyPolicy")}
                     </a>
                   )}
                   {selectedCatalogVendor.trustCenterUrl && (
@@ -394,7 +396,7 @@ function NewVendorForm() {
                       className="flex items-center gap-1 hover:text-primary"
                     >
                       <Shield className="w-3 h-3" />
-                      Trust Center
+                      {t("linkTrustCenter")}
                     </a>
                   )}
                   {selectedCatalogVendor.dpaUrl && (
@@ -405,12 +407,12 @@ function NewVendorForm() {
                       className="flex items-center gap-1 hover:text-primary"
                     >
                       <Shield className="w-3 h-3" />
-                      DPA
+                      {t("linkDpa")}
                     </a>
                   )}
                 </div>
                 <p className="text-xs text-muted-foreground italic">
-                  Vendor details have been auto-filled in the form below. Review and adjust before saving.
+                  {t("catalogAutofillNotice")}
                 </p>
               </div>
             ) : (
@@ -456,12 +458,12 @@ function NewVendorForm() {
                         <div className="flex gap-1.5 mt-1">
                           {vendor.gdprCompliant && (
                             <Badge className="bg-success/20 text-success text-[10px] px-1.5 py-0">
-                              GDPR
+                              {t("badgeGdpr")}
                             </Badge>
                           )}
                           {vendor.euAiActCompliant && (
                             <Badge className="bg-info/20 text-info text-[10px] px-1.5 py-0">
-                              EU AI Act
+                              {t("badgeEuAiAct")}
                             </Badge>
                           )}
                         </div>
@@ -480,11 +482,13 @@ function NewVendorForm() {
 
             {!selectedCatalogVendor && (
               <p className="text-xs text-muted-foreground">
-                Or{" "}
-                <Link href="/governance/vendors/new" className="text-primary hover:underline">
-                  skip catalog search
-                </Link>{" "}
-                and fill in vendor details manually.
+                {t.rich("skipCatalogSearch", {
+                  link: (chunks) => (
+                    <Link href="/governance/vendors/new" className="text-primary hover:underline">
+                      {chunks}
+                    </Link>
+                  ),
+                })}
               </p>
             )}
           </CardContent>
@@ -518,7 +522,7 @@ function NewVendorForm() {
               <Label htmlFor="website">{t("labelWebsite")}</Label>
               <Input
                 id="website"
-                placeholder="e.g., https://example.com"
+                placeholder={t("placeholderWebsite")}
                 value={formData.website}
                 onChange={(e) => setFormData({ ...formData, website: e.target.value })}
               />
@@ -529,7 +533,7 @@ function NewVendorForm() {
               <Label htmlFor="description">{t("labelDescription")}</Label>
               <Textarea
                 id="description"
-                placeholder="Describe the vendor, their AI services, and the nature of the relationship..."
+                placeholder={t("placeholderDescription")}
                 rows={3}
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -542,7 +546,7 @@ function NewVendorForm() {
                 <Label htmlFor="contactName">{t("labelContactName")}</Label>
                 <Input
                   id="contactName"
-                  placeholder="e.g., John Smith"
+                  placeholder={t("placeholderContactName")}
                   value={formData.contactName}
                   onChange={(e) => setFormData({ ...formData, contactName: e.target.value })}
                 />
@@ -552,7 +556,7 @@ function NewVendorForm() {
                 <Input
                   id="contactEmail"
                   type="email"
-                  placeholder="e.g., contact@vendor.com"
+                  placeholder={t("placeholderContactEmail")}
                   value={formData.contactEmail}
                   onChange={(e) => setFormData({ ...formData, contactEmail: e.target.value })}
                 />
@@ -568,12 +572,12 @@ function NewVendorForm() {
                   onValueChange={(value) => setFormData({ ...formData, riskLevel: value as VendorRiskLevel })}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select risk level" />
+                    <SelectValue placeholder={t("placeholderSelectRiskLevel")} />
                   </SelectTrigger>
                   <SelectContent>
                     {riskLevels.map((r) => (
                       <SelectItem key={r.value} value={r.value}>
-                        {r.label}
+                        {tc(r.labelKey)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -586,12 +590,12 @@ function NewVendorForm() {
                   onValueChange={(value) => setFormData({ ...formData, status: value as VendorStatus })}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select status" />
+                    <SelectValue placeholder={t("placeholderSelectStatus")} />
                   </SelectTrigger>
                   <SelectContent>
                     {statuses.map((s) => (
                       <SelectItem key={s.value} value={s.value}>
-                        {s.label}
+                        {t(s.labelKey)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -626,12 +630,12 @@ function NewVendorForm() {
               <Label htmlFor="dpoCentralVendorId">{t("labelDpoCentralVendorId")}</Label>
               <Input
                 id="dpoCentralVendorId"
-                placeholder="e.g., clx1234567890"
+                placeholder={t("placeholderDpoCentralVendorId")}
                 value={formData.dpoCentralVendorId}
                 onChange={(e) => setFormData({ ...formData, dpoCentralVendorId: e.target.value })}
               />
               <p className="text-xs text-muted-foreground">
-                Optional. Link this vendor to a record in DPO Central for privacy management integration.
+                {t("dpoCentralVendorIdHelp")}
               </p>
             </div>
 
@@ -665,7 +669,7 @@ function NewVendorForm() {
                     <Label htmlFor="systemName">{t("labelSystemName")} *</Label>
                     <Input
                       id="systemName"
-                      placeholder="e.g., OpenAI GPT-4 Integration"
+                      placeholder={t("placeholderSystemName")}
                       value={systemData.systemName}
                       onChange={(e) => setSystemData({ ...systemData, systemName: e.target.value })}
                       required
@@ -679,18 +683,18 @@ function NewVendorForm() {
                         onValueChange={(value) => setSystemData({ ...systemData, systemRole: value })}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Select role" />
+                          <SelectValue placeholder={t("placeholderSelectRole")} />
                         </SelectTrigger>
                         <SelectContent>
                           {aiRoles.map((r) => (
                             <SelectItem key={r.value} value={r.value}>
-                              {r.label}
+                              {tc(r.labelKey)}
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
                       <p className="text-xs text-muted-foreground">
-                        Your org&apos;s role under the EU AI Act
+                        {t("organizationRoleHelp")}
                       </p>
                     </div>
                     <div className="space-y-2">
@@ -700,12 +704,12 @@ function NewVendorForm() {
                         onValueChange={(value) => setSystemData({ ...systemData, systemTechnique: value })}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Select technique" />
+                          <SelectValue placeholder={t("placeholderSelectTechnique")} />
                         </SelectTrigger>
                         <SelectContent>
-                          {aiTechniques.map((t) => (
-                            <SelectItem key={t.value} value={t.value}>
-                              {t.label}
+                          {aiTechniques.map((tech) => (
+                            <SelectItem key={tech.value} value={tech.value}>
+                              {tc(tech.labelKey)}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -716,7 +720,7 @@ function NewVendorForm() {
                     <Label htmlFor="systemPurpose">{t("labelIntendedPurpose")}</Label>
                     <Textarea
                       id="systemPurpose"
-                      placeholder="Describe the intended purpose of the AI system..."
+                      placeholder={t("placeholderIntendedPurpose")}
                       rows={2}
                       value={systemData.systemPurpose}
                       onChange={(e) => setSystemData({ ...systemData, systemPurpose: e.target.value })}
@@ -731,7 +735,7 @@ function NewVendorForm() {
               <Label htmlFor="notes">{t("labelNotes")}</Label>
               <Textarea
                 id="notes"
-                placeholder="Additional notes about this vendor relationship..."
+                placeholder={t("placeholderNotes")}
                 rows={3}
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
@@ -741,7 +745,7 @@ function NewVendorForm() {
             {/* Error */}
             {(createVendor.error || createVendorWithSystem.error) && (
               <div className="text-sm text-destructive">
-                Error: {(createVendor.error || createVendorWithSystem.error)?.message}
+                {tc("error", { message: (createVendor.error || createVendorWithSystem.error)?.message ?? "" })}
               </div>
             )}
 

@@ -101,12 +101,8 @@ export default function VendorCatalogPage() {
             <div className="w-16 h-16 bg-primary/20 flex items-center justify-center mx-auto rounded-lg">
               <Lock className="w-8 h-8 text-primary" />
             </div>
-            <h2 className="text-xl font-semibold">Premium Feature</h2>
-            <p className="text-muted-foreground max-w-md mx-auto">
-              The AI Vendor Catalog gives you access to a curated database of
-              pre-audited AI vendors with compliance data, certifications, and
-              risk assessments — making vendor due diligence faster and more reliable.
-            </p>
+            <h2 className="text-xl font-semibold">{t("gateTitle")}</h2>
+            <p className="text-muted-foreground max-w-md mx-auto">{t("gateBody")}</p>
             <Button onClick={() => setShowModal(true)} className="mt-4">
               <Lock className="w-4 h-4 mr-2" />
               {t("enableCatalog")}
@@ -121,7 +117,7 @@ export default function VendorCatalogPage() {
             organizationId={organization.id}
             skillPackageId="com.todolaw.aisentinel.vendor-catalog"
             skillName="AI Vendor Catalog"
-            skillDescription="Browse pre-audited AI vendors with compliance data, certifications, and risk assessments from the Vendor.Watch database."
+            skillDescription={t("gateSkillDescription")}
           />
         )}
       </div>
@@ -214,7 +210,7 @@ export default function VendorCatalogPage() {
       <Tabs value={activeCategory} onValueChange={setActiveCategory}>
         <TabsList className="w-full justify-start overflow-x-auto">
           <TabsTrigger value="all" className="text-xs sm:text-sm">
-            All
+            {tc("all")}
           </TabsTrigger>
           {categories?.map((cat) => (
             <TabsTrigger key={cat} value={cat} className="text-xs sm:text-sm">

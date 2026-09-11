@@ -183,6 +183,40 @@ export const organizationRouter = createTRPCRouter({
       return organization;
     }),
 
+  /**
+   * Permanently delete the organization and everything it owns (every
+   * organization-scoped table cascades). Owner only, and the caller must type
+   * the organization's exact name: a consultant offboarding a client, or a
+   * test organization being removed, is a deliberate act. The audit entry is
+   * written first and survives (audit_logs.organizationId is SET NULL), with
+   * the organization's id and name kept in its changes.
+   */
+  delete: orgWriteProcedure
+    .input(z.object({ organizationId: z.string(), confirmName: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.membership.role !== "OWNER") {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Only owners can delete an organization" });
+      }
+      if (input.confirmName.trim() !== ctx.organization.name.trim()) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "The name typed does not match the organization's name",
+        });
+      }
+      await ctx.prisma.auditLog.create({
+        data: {
+          organizationId: ctx.organization.id,
+          userId: ctx.session.user.id,
+          entityType: "Organization",
+          entityId: ctx.organization.id,
+          action: "DELETE",
+          changes: { name: ctx.organization.name, slug: ctx.organization.slug },
+        },
+      });
+      await ctx.prisma.organization.delete({ where: { id: ctx.organization.id } });
+      return { deleted: true };
+    }),
+
   addMember: organizationProcedure
     .input(
       z.object({

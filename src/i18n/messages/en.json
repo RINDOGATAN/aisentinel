@@ -156,7 +156,10 @@
     "roleViewer": "Viewer",
     "program": "Program",
     "obligations": "Obligations",
-    "review": "Review queue"
+    "review": "Review queue",
+    "loading": "Loading…",
+    "openMenu": "Open menu",
+    "sourceAndLicence": "Source & licence"
   },
   "dashboard": {
     "title": "AI Governance",
@@ -229,7 +232,10 @@
     "entityAIPolicy": "Policy",
     "programCtaTitle": "Your AI Governance Program is live",
     "programCtaDescription": "See the governance map, maturity scorecard, and 90-day plan, and export the program as a PDF to share.",
-    "programCtaButton": "View program"
+    "programCtaButton": "View program",
+    "switchOrganization": "Switch",
+    "noComplianceMappings": "No compliance mappings yet",
+    "systemActor": "System"
   },
   "aiRegistry": {
     "title": "AI Registry",
@@ -241,7 +247,10 @@
     "emptyDefaultHint": "Start by registering your first AI system",
     "statsTotalSystems": "Total Systems",
     "countModels": "{count} models",
-    "countDataSources": "{count} data sources"
+    "countDataSources": "{count} data sources",
+    "exportRegisterPdf": "AI system register (PDF)",
+    "exportModelInventoryPdf": "Model inventory (PDF)",
+    "registerShort": "Register"
   },
   "aiRegistryNew": {
     "title": "Register AI System",
@@ -449,7 +458,8 @@
     "emptyTitle": "No AI systems found",
     "emptySearchHint": "Try adjusting your search terms",
     "emptyDefaultHint": "Register AI systems first to classify their risk levels",
-    "registerAiSystem": "Register AI System"
+    "registerAiSystem": "Register AI System",
+    "toastClassified": "{name} classified as {level}{count, plural, =0 {} one {: # compliance requirement initialised} other {: # compliance requirements initialised}}"
   },
   "quickstart": {
     "backToDashboard": "Dashboard",
@@ -548,7 +558,20 @@
     "corePoliciesTitle": "Core policies added to complete your set",
     "corePoliciesDescription": "Your program needs six core AI policies. These drafts cover the ones your choices above do not, in your language. Review and approve them in Policies.",
     "handoffConfirmLink": "Open the review queue",
-    "downloadProgramPack": "Download the full program pack (ZIP)"
+    "downloadProgramPack": "Download the full program pack (ZIP)",
+    "label": {
+      "aiSystems": "AI systems",
+      "riskClassifications": "Risk classifications",
+      "oversightGates": "Oversight gates",
+      "policies": "Policies",
+      "gate": "Gate",
+      "exists": "Exists",
+      "euAiActBadge": "EU AI Act",
+      "vendors": "Vendors",
+      "importPreview": "Import preview",
+      "vendorImports": "Vendor imports",
+      "industryTemplate": "Industry template: {name}"
+    }
   },
   "assessments": {
     "title": "Assessments",
@@ -637,7 +660,14 @@
     "gateTypePostDeployment": "Post-Deployment",
     "gateTypePeriodicReview": "Periodic Review",
     "gateTypeIncidentTriggered": "Incident Triggered",
-    "gateTypeMaterialChange": "Material Change"
+    "gateTypeMaterialChange": "Material Change",
+    "tabAll": "All ({count})",
+    "tabPreDeployment": "Pre-Deploy",
+    "tabPostDeployment": "Post-Deploy",
+    "tabPeriodicReview": "Periodic",
+    "tabIncidentTriggered": "Incident",
+    "unknownSystem": "Unknown System",
+    "decisionsCount": "{count, plural, one {# decision} other {# decisions}}"
   },
   "oversightNew": {
     "title": "Create Oversight Gate",
@@ -658,7 +688,10 @@
     "creating": "Creating...",
     "createButton": "Create Gate",
     "toastSuccess": "Oversight gate created successfully",
-    "toastError": "Failed to create oversight gate"
+    "toastError": "Failed to create oversight gate",
+    "noSystemsRegistered": "No AI systems registered. <link>Register one first</link>.",
+    "reviewCadenceHint": "How frequently should this gate be reviewed",
+    "assignedToHint": "Person or role responsible for this oversight gate"
   },
   "oversightDetail": {
     "notFound": "Oversight gate not found",
@@ -695,7 +728,16 @@
     "emptyDecisionsHint": "Add a decision to log oversight activity for this gate",
     "toastSuccess": "Decision recorded successfully",
     "toastError": "Failed to record decision",
-    "toastReopenSuccess": "Gate reopened for review"
+    "toastReopenSuccess": "Gate reopened for review",
+    "decisionOutcomeApprove": "Approved",
+    "decisionOutcomeReject": "Rejected",
+    "decisionOutcomeDefer": "Deferred",
+    "unknownSystem": "Unknown System",
+    "unknown": "Unknown",
+    "evidenceReviewedHint": "Separate multiple items with commas",
+    "labelLastUpdated": "Last Updated",
+    "evidenceReviewedHeading": "Evidence Reviewed:",
+    "decidedBy": "Decided by: {name}"
   },
   "compliance": {
     "title": "Compliance",
@@ -728,7 +770,8 @@
     "evidenceRemoved": "Evidence removed",
     "evidenceCount": "Evidence ({count})",
     "linkedAcrossFrameworks": "Linked across frameworks ({count})",
-    "alsoApplyToEquivalent": "Also apply to {count} equivalent requirements across frameworks"
+    "alsoApplyToEquivalent": "Also apply to {count} equivalent requirements across frameworks",
+    "downloadPdf": "Download as PDF"
   },
   "incidents": {
     "title": "AI Incidents",
@@ -776,7 +819,9 @@
     "reporting": "Reporting...",
     "reportButton": "Report Incident",
     "toastSuccess": "Incident reported successfully",
-    "toastError": "Failed to report incident"
+    "toastError": "Failed to report incident",
+    "aiSystemHint": "Link this incident to a registered AI system",
+    "dpoCentralIdHint": "Link to a related incident in DPO Central for cross-platform traceability"
   },
   "incidentDetail": {
     "notFound": "Incident not found",
@@ -840,7 +885,28 @@
     "notifAuthorityPlaceholder": "e.g., National AI Office, Data Protection Authority",
     "notifTypeLabel": "Notification Type",
     "notifTypePlaceholder": "e.g., Art. 73 Serious Incident Report",
-    "notifDueByLabel": "Due By"
+    "notifDueByLabel": "Due By",
+    "taskStatusCompleted": "Completed",
+    "notificationStatusSent": "Sent",
+    "notificationStatusAcknowledged": "Acknowledged",
+    "toastIncidentUpdated": "Incident updated",
+    "toastIncidentUpdateError": "Failed to update incident",
+    "toastTimelineEntryAdded": "Timeline entry added",
+    "toastTimelineEntryAddError": "Failed to add timeline entry",
+    "toastTaskAdded": "Task added",
+    "toastTaskAddError": "Failed to add task",
+    "toastTaskUpdateError": "Failed to update task",
+    "toastNotificationAdded": "Notification added",
+    "toastNotificationAddError": "Failed to add notification",
+    "toastNotificationUpdated": "Notification updated",
+    "toastNotificationUpdateError": "Failed to update notification",
+    "moveToStatus": "Move to {status}",
+    "unknown": "Unknown",
+    "notificationRequiredYes": "Yes (Art. 73)",
+    "statTimelineEntries": "Timeline Entries",
+    "statTasks": "Tasks",
+    "statNotifications": "Notifications",
+    "labelLastUpdated": "Last Updated"
   },
   "vendors": {
     "title": "Vendor Risk",
@@ -863,7 +929,25 @@
     "sharedDependents": "{count} of your vendors",
     "sharedNone": "No subprocessor is shared by two or more of your vendors yet.",
     "sharedNoData": "Link your vendors to catalog entries to see their supply chain.",
-    "sharedFootnote": "{withChain} of {linked} catalog-linked vendors publish a subprocessor list."
+    "sharedFootnote": "{withChain} of {linked} catalog-linked vendors publish a subprocessor list.",
+    "statusActive": "Active",
+    "statusUnderReview": "Under Review",
+    "statusApproved": "Approved",
+    "statusSuspended": "Suspended",
+    "statusTerminated": "Terminated",
+    "catalogActiveBadge": "Active",
+    "catalogShort": "Catalog",
+    "pricePerMonth": "{price}/mo",
+    "tabAll": "All ({count})",
+    "tabActive": "Active",
+    "tabUnderReview": "Under Review",
+    "tabApproved": "Approved",
+    "tabSuspended": "Suspended",
+    "tabTerminated": "Terminated",
+    "systemsCount": "{count, plural, one {# system} other {# systems}}",
+    "assessmentsCount": "{count, plural, one {# assessment} other {# assessments}}",
+    "contractExpiresInDays": "Contract expires in {count, plural, one {# day} other {# days}}",
+    "catalogSkillDescription": "Search pre-audited AI vendors from the Vendor.Watch database and auto-fill your local vendor records with compliance data."
   },
   "vendorsNew": {
     "title": "Add Vendor",
@@ -896,7 +980,33 @@
     "submitAddVendor": "Add Vendor",
     "toastSuccess": "Vendor added successfully",
     "toastSuccessWithSystem": "Vendor and AI system created successfully",
-    "toastError": "Failed to add vendor"
+    "toastError": "Failed to add vendor",
+    "statusActive": "Active",
+    "statusUnderReview": "Under Review",
+    "statusApproved": "Approved",
+    "statusSuspended": "Suspended",
+    "statusTerminated": "Terminated",
+    "badgeGdpr": "GDPR",
+    "badgeEuAiAct": "EU AI Act",
+    "linkPrivacyPolicy": "Privacy Policy",
+    "linkTrustCenter": "Trust Center",
+    "linkDpa": "DPA",
+    "catalogAutofillNotice": "Vendor details have been auto-filled in the form below. Review and adjust before saving.",
+    "skipCatalogSearch": "Or <link>skip catalog search</link> and fill in vendor details manually.",
+    "placeholderWebsite": "e.g., https://example.com",
+    "placeholderDescription": "Describe the vendor, their AI services, and the nature of the relationship...",
+    "placeholderContactName": "e.g., John Smith",
+    "placeholderContactEmail": "e.g., contact@vendor.com",
+    "placeholderSelectRiskLevel": "Select risk level",
+    "placeholderSelectStatus": "Select status",
+    "placeholderDpoCentralVendorId": "e.g., clx1234567890",
+    "dpoCentralVendorIdHelp": "Optional. Link this vendor to a record in DPO Central for privacy management integration.",
+    "placeholderSystemName": "e.g., OpenAI GPT-4 Integration",
+    "placeholderSelectRole": "Select role",
+    "organizationRoleHelp": "Your org's role under the EU AI Act",
+    "placeholderSelectTechnique": "Select technique",
+    "placeholderIntendedPurpose": "Describe the intended purpose of the AI system...",
+    "placeholderNotes": "Additional notes about this vendor relationship..."
   },
   "vendorDetail": {
     "notFound": "Vendor not found",
@@ -951,7 +1061,32 @@
     "supplyChainOpenCatalog": "Open catalog entry",
     "supplyChainViewSource": "View source",
     "supplyChainShowAll": "Show all {count}",
-    "supplyChainShowLess": "Show fewer"
+    "supplyChainShowLess": "Show fewer",
+    "statusActive": "Active",
+    "statusUnderReview": "Under Review",
+    "statusApproved": "Approved",
+    "statusSuspended": "Suspended",
+    "statusTerminated": "Terminated",
+    "assessmentStatusCompleted": "Completed",
+    "assessmentStatusExpired": "Expired",
+    "toastAssessmentCreated": "Assessment created successfully",
+    "toastAssessmentCreateError": "Failed to create assessment",
+    "toastAssessmentCompleted": "Assessment completed",
+    "toastAssessmentUpdateError": "Failed to update assessment",
+    "badgeCatalog": "Catalog",
+    "dpoCentralVendorRecord": "DPO Central Vendor Record",
+    "recordId": "ID: {id}",
+    "fromAiVendorCatalog": "From AI Vendor Catalog",
+    "labelNotes": "Notes",
+    "contractExpiredDaysAgo": "Expired {count, plural, one {# day} other {# days}} ago",
+    "contractExpiresInDays": "Expires in {count, plural, one {# day} other {# days}}",
+    "contractDaysRemaining": "{count, plural, one {# day remaining} other {# days remaining}}",
+    "contractNoExpiryDate": "No expiry date set",
+    "labelLastUpdated": "Last Updated",
+    "assessmentRiskScore": "Risk Score: {score}",
+    "assessmentCompletedOn": "Completed: {date}",
+    "assessmentNextReview": "Next Review: {date}",
+    "placeholderFindings": "Document initial findings, observations, or scope..."
   },
   "policies": {
     "title": "Policies",
@@ -973,7 +1108,16 @@
     "policyTypeProcurement": "Procurement",
     "policyTypeIncidentResponse": "Incident Response",
     "policyTypeTransparency": "Transparency",
-    "policyTypeCustom": "Custom"
+    "policyTypeCustom": "Custom",
+    "tabAll": "All ({count})",
+    "tabUsage": "Usage",
+    "tabGovernance": "Governance",
+    "tabEthics": "Ethics",
+    "tabRiskManagement": "Risk Mgmt",
+    "tabOther": "Other",
+    "systemsCount": "{count, plural, one {# system} other {# systems}}",
+    "effectiveOn": "Effective {date}",
+    "reviewOn": "Review {date}"
   },
   "policiesNew": {
     "title": "Create Policy",
@@ -997,7 +1141,7 @@
     "templateGroup": {
       "core": "core set",
       "lawfirm": "law firm",
-      "industry": "industry, English"
+      "industry": "industry"
     },
     "placeholderType": "Select policy type",
     "placeholderDescription": "Briefly describe the purpose and scope of this policy",
@@ -1036,7 +1180,37 @@
     "editContentDialogTitle": "Edit Policy Content",
     "linkSystemDialogTitle": "Link AI System",
     "archiveDialogTitle": "Archive Policy",
-    "archiveAnyway": "Archive Anyway"
+    "archiveAnyway": "Archive Anyway",
+    "toastPolicyUpdated": "Policy updated",
+    "toastPolicyUpdateError": "Failed to update policy",
+    "toastPolicyApproved": "Policy approved",
+    "toastPolicyApproveError": "Failed to approve policy",
+    "toastPolicyPublished": "Policy published",
+    "toastPolicyPublishError": "Failed to publish policy",
+    "toastSystemLinked": "System linked",
+    "toastSystemLinkError": "Failed to link system",
+    "toastSystemUnlinked": "System unlinked",
+    "toastSystemUnlinkError": "Failed to unlink system",
+    "notYetApproved": "Not yet approved",
+    "labelApprovedAt": "Approved At",
+    "unknown": "Unknown",
+    "labelCreatedAt": "Created At",
+    "labelLastUpdated": "Last Updated",
+    "emptyContentHint": "Add content to define this policy",
+    "versionHistoryDescription": "Published versions of this policy",
+    "emptyVersionsTitle": "No versions published yet",
+    "emptyVersionsHint": "Versions are created when a policy is published",
+    "linkedSystemsDescription": "AI systems governed by this policy",
+    "emptyLinkedSystemsTitle": "No linked systems",
+    "emptyLinkedSystemsHint": "Link AI systems that are governed by this policy",
+    "publishDialogDescription": "Publishing will create version v{version} of this policy.",
+    "placeholderChangeNotes": "Describe what changed in this version...",
+    "placeholderPolicyContent": "Write your policy content here...",
+    "linkSystemDialogDescription": "Select an AI system to link to this policy.",
+    "labelAiSystem": "AI System",
+    "placeholderSelectAiSystem": "Select an AI system",
+    "archiveDialogDescription": "This policy has {count, plural, one {# linked AI system} other {# linked AI systems}}. Archiving it may affect their governance coverage.",
+    "archiving": "Archiving..."
   },
   "shadowAi": {
     "title": "Shadow AI Discovery",
@@ -1056,7 +1230,12 @@
     "statusUnderReview": "Under Review",
     "statusApproved": "Approved",
     "statusProhibited": "Prohibited",
-    "statusRegistered": "Registered"
+    "statusRegistered": "Registered",
+    "gateSubtitle": "Find and triage the AI tools people use without approval.",
+    "gateTitle": "Shadow AI discovery",
+    "gateBody": "Record the AI tools people use without approval, whether reported by staff or found in a review. Each one is matched against a catalogue of common AI tools, triaged (under review, approved or prohibited), and approved tools can be registered in the AI inventory in one step.",
+    "gateSkillDescription": "Record unapproved AI tools, match them against a catalogue of common AI tools, triage them and register the approved ones in the inventory.",
+    "tabAll": "All ({count})"
   },
   "shadowAiNew": {
     "title": "Report AI Tool",
@@ -1071,7 +1250,30 @@
     "submitReportTool": "Report Tool",
     "toastSuccess": "AI tool reported successfully",
     "toastError": "Failed to report AI tool",
-    "allCategories": "All categories"
+    "allCategories": "All categories",
+    "toolSelectionTitle": "Tool Selection",
+    "toolSelectionDescription": "Search from the AI tool catalog or enter a custom tool name",
+    "catalogNoResults": "No tools found — try a different search or enter a custom tool",
+    "catalogTypeToSearch": "Type to search the AI tool catalog",
+    "selectedTool": "Selected: {name}",
+    "placeholderToolName": "e.g., Internal LLM, Custom AI Agent",
+    "placeholderDepartment": "e.g., Marketing, Engineering, Legal",
+    "placeholderUsageDescription": "Describe how this tool is being used, by whom, and what data it processes...",
+    "toolCategory": {
+      "BUSINESS_TOOLS": "Business tools",
+      "CODE_ASSISTANT": "Code assistant",
+      "CONTRACT_CLM": "Contract management (CLM)",
+      "DATA_ANALYTICS": "Data analytics",
+      "EDISCOVERY": "eDiscovery",
+      "IMAGE_GENERATION": "Image generation",
+      "LEGAL_RESEARCH": "Legal research",
+      "LLM_CHAT": "LLM chat",
+      "PRACTICE_MANAGEMENT": "Practice management",
+      "SEARCH": "Search",
+      "TRANSCRIPTION_DICTATION": "Transcription and dictation",
+      "VIDEO_AUDIO": "Video and audio",
+      "WRITING_PRODUCTIVITY": "Writing and productivity"
+    }
   },
   "shadowAiDetail": {
     "notFound": "Report not found",
@@ -1090,7 +1292,68 @@
     "toolInfoTitle": "Tool Info",
     "registerDialogTitle": "Register as AI System",
     "registerTabCreateNew": "Create New",
-    "registerTabLinkExisting": "Link Existing"
+    "registerTabLinkExisting": "Link Existing",
+    "toastReportUpdated": "Report updated",
+    "toastReportUpdateError": "Failed to update report",
+    "toastSystemCreatedAndRegistered": "System created and report registered",
+    "toastRegisterError": "Failed to register",
+    "statusDiscovered": "Discovered",
+    "statusUnderReview": "Under Review",
+    "statusApproved": "Approved",
+    "statusProhibited": "Prohibited",
+    "statusRegistered": "Registered",
+    "riskIndicatorProcessesPersonalData": "Processes Personal Data",
+    "riskIndicatorTrainsOnInput": "Trains on Input",
+    "riskIndicatorCloudHosted": "Cloud Hosted",
+    "riskIndicatorOnPremiseAvailable": "On-Premise Available",
+    "riskIndicatorSoc2Certified": "SOC 2 Certified",
+    "riskIndicatorGdprCompliant": "GDPR Compliant",
+    "riskIndicatorRequiresApiKey": "Requires API Key",
+    "unknown": "Unknown",
+    "labelReported": "Reported",
+    "labelLastUpdated": "Last Updated",
+    "systemId": "ID: {id}",
+    "labelVendor": "Vendor",
+    "labelCategory": "Category",
+    "labelWebsite": "Website",
+    "labelDescription": "Description",
+    "labelRiskIndicators": "Risk Indicators",
+    "customTool": "Custom tool",
+    "notInCatalog": "Not in catalog",
+    "registerCreateHint": "Create a new AI system (and optionally a vendor) and link it to this report.",
+    "labelSystemName": "System Name",
+    "placeholderSystemName": "e.g., ChatGPT Integration",
+    "labelOrganizationRole": "Organization Role",
+    "placeholderSelectRole": "Select role",
+    "labelAiTechnique": "AI Technique",
+    "placeholderSelectTechnique": "Select technique",
+    "labelIntendedPurpose": "Intended Purpose",
+    "placeholderIntendedPurpose": "Describe the intended purpose...",
+    "toggleCreateVendor": "Also create vendor record",
+    "labelVendorName": "Vendor Name",
+    "placeholderVendorName": "e.g., OpenAI",
+    "labelVendorWebsite": "Vendor Website",
+    "placeholderVendorWebsite": "e.g., https://openai.com",
+    "registerLinkHint": "Link this shadow AI tool to an existing AI system in your registry.",
+    "labelAiSystem": "AI System",
+    "placeholderSelectAiSystem": "Select an AI system",
+    "registering": "Registering...",
+    "register": "Register",
+    "toolCategory": {
+      "BUSINESS_TOOLS": "Business tools",
+      "CODE_ASSISTANT": "Code assistant",
+      "CONTRACT_CLM": "Contract management (CLM)",
+      "DATA_ANALYTICS": "Data analytics",
+      "EDISCOVERY": "eDiscovery",
+      "IMAGE_GENERATION": "Image generation",
+      "LEGAL_RESEARCH": "Legal research",
+      "LLM_CHAT": "LLM chat",
+      "PRACTICE_MANAGEMENT": "Practice management",
+      "SEARCH": "Search",
+      "TRANSCRIPTION_DICTATION": "Transcription and dictation",
+      "VIDEO_AUDIO": "Video and audio",
+      "WRITING_PRODUCTIVITY": "Writing and productivity"
+    }
   },
   "vendorCatalog": {
     "title": "AI Vendor Catalog",
@@ -1103,7 +1366,10 @@
     "statsEuAiActCompliant": "EU AI Act Compliant",
     "searchPlaceholder": "Search vendors...",
     "emptyTitle": "No vendors found",
-    "emptySearchHint": "Try adjusting your search terms"
+    "emptySearchHint": "Try adjusting your search terms",
+    "gateTitle": "AI vendor catalogue",
+    "gateBody": "A catalogue of about 880 AI vendors with the compliance information they publish: certifications, data locations, data processing agreements and AI capabilities. Entries come from public sources: confirm each one with the vendor as part of your due diligence.",
+    "gateSkillDescription": "Browse about 880 AI vendors with their published certifications, data locations, data processing agreements and AI capabilities."
   },
   "vendorCatalogDetail": {
     "notFound": "Vendor not found in catalog",
@@ -1130,7 +1396,35 @@
     "dependentsSubtitle": "Catalog vendors that list {name} in their own supply chain.",
     "dependentsYours": "In your vendors",
     "dependentsNone": "No catalog vendor lists {name} as a subprocessor.",
-    "dependentsYourVendorsTitle": "Your vendors that depend on {name}"
+    "dependentsYourVendorsTitle": "Your vendors that depend on {name}",
+    "governanceExplainability": "Explainability",
+    "governanceBiasMonitoring": "Bias Monitoring",
+    "governanceModelCards": "Model Cards",
+    "governanceAuditLogs": "Audit Logs",
+    "linkWebsite": "Website",
+    "linkPrivacyPolicy": "Privacy Policy",
+    "linkDpa": "DPA",
+    "linkTrustCenter": "Trust Center",
+    "linkSecurityPage": "Security Page",
+    "badgeGdprCompliant": "GDPR Compliant",
+    "badgeEuAiActCompliant": "EU AI Act Compliant",
+    "badgeCcpaCompliant": "CCPA Compliant",
+    "badgeHipaaCompliant": "HIPAA Compliant",
+    "badgeDsarSupport": "DSAR Support",
+    "badgeDesignatedDpo": "Designated DPO",
+    "badgeRecentBreach": "Recent Breach",
+    "transferSafeguards": "Transfer: {safeguards}",
+    "noComplianceData": "No compliance data available",
+    "frameworksTitle": "Frameworks",
+    "labelModelHosting": "Model Hosting:",
+    "labelIncidentSla": "Incident SLA:",
+    "labelDataTransparency": "Data Transparency:",
+    "labelAiActRole": "AI Act Role:",
+    "annexIiiDomainsTitle": "Annex III Domains",
+    "labelDataLocations": "Data Locations:",
+    "euDataCenterAvailable": "EU Data Center Available",
+    "linkedVendorRecords": "{count, plural, one {Linked vendor record} other {Linked vendor records}}",
+    "supplyChainViewSource": "View source"
   },
   "billing": {
     "title": "Billing",
@@ -1187,7 +1481,8 @@
   "experts": {
     "deploymentCtaTitle": "Run AI Sentinel on your own hardware",
     "deploymentCtaDescription": "TODO.LAW engineers deploy and maintain it on your infrastructure: including fully offline.",
-    "deploymentCtaButton": "Talk to us"
+    "deploymentCtaButton": "Talk to us",
+    "dismiss": "Dismiss"
   },
   "premium": {
     "enableTitle": "Enable {name}",
@@ -4142,5 +4437,12 @@
     "removed": "Member removed.",
     "remove": "Remove member",
     "notFound": "No account uses that email yet. Ask your colleague to sign in once, then add them here."
+  },
+  "deleteOrganization": {
+    "title": "Delete this organization",
+    "description": "Permanently deletes {name} and everything in it: systems, assessments, policies, evidence, vendors and history. This cannot be undone. Export the program pack first if you need a record. Type the organization's name to confirm.",
+    "confirmLabel": "Organization name, to confirm",
+    "button": "Delete permanently",
+    "deleted": "Organization deleted."
   }
 }

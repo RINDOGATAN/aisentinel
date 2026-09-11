@@ -302,7 +302,7 @@ export default function CompliancePage() {
                 }}
               >
                 <FileText className="w-4 h-4 mr-2" />
-                Download as PDF
+                {t("downloadPdf")}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => exportComplianceCSV(matrix as Parameters<typeof exportComplianceCSV>[0])}>
                 <FileSpreadsheet className="w-4 h-4 mr-2" />

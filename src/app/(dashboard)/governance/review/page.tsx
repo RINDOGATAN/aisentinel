@@ -40,12 +40,51 @@ const ENTITIES = [
 type Entity = (typeof ENTITIES)[number];
 
 const APPROVER_ROLES = ["OWNER", "ADMIN", "AI_OFFICER"];
+
+// The queue's summary line carries enum codes (status, tier, policy type);
+// these map them onto the shared labels in the "common" namespace.
+const CODE_LABEL: Record<string, string> = {
+  NOT_ASSESSED: "complianceNotAssessed",
+  COMPLIANT: "complianceCompliant",
+  PARTIALLY_COMPLIANT: "compliancePartial",
+  NON_COMPLIANT: "complianceNonCompliant",
+  UNACCEPTABLE: "riskUnacceptable",
+  HIGH: "riskHigh",
+  LIMITED: "riskLimited",
+  MINIMAL: "riskMinimal",
+  DRAFT: "statusDraft",
+  PENDING: "statusPending",
+  IN_REVIEW: "statusInReview",
+  UNDER_REVIEW: "statusUnderReview",
+  PASSED: "statusPassed",
+  FAILED: "statusFailed",
+  APPROVED: "statusApproved",
+  PUBLISHED: "statusPublished",
+  ARCHIVED: "statusArchived",
+  PRE_DEPLOYMENT: "gateTypePreDeployment",
+  POST_DEPLOYMENT: "gateTypePostDeployment",
+  PERIODIC_REVIEW: "gateTypePeriodicReview",
+  AI_USAGE: "policyTypeAiUsage",
+  AI_GOVERNANCE: "policyTypeAiGovernance",
+  AI_ETHICS: "policyTypeAiEthics",
+  AI_RISK_MANAGEMENT: "policyTypeRiskManagement",
+  AI_DATA_GOVERNANCE: "policyTypeDataGovernance",
+  AI_PROCUREMENT: "policyTypeProcurement",
+  AI_INCIDENT_RESPONSE: "policyTypeIncidentResponse",
+  AI_TRANSPARENCY: "policyTypeTransparency",
+};
 // The server's page cap. Confirmed items leave the queue, so confirming a
 // page brings the next one into view.
 const PAGE = 100;
 
 export default function ReviewQueuePage() {
   const t = useTranslations("provenance");
+  const tc = useTranslations("common");
+  const humanize = (summary: string) =>
+    summary
+      .split(" · ")
+      .map((part) => (CODE_LABEL[part] ? tc(CODE_LABEL[part]) : part))
+      .join(" · ");
   const { organization, userRole } = useOrganization();
   const orgId = organization?.id ?? "";
   const canApprove = userRole !== null && APPROVER_ROLES.includes(userRole);
@@ -204,7 +243,7 @@ export default function ReviewQueuePage() {
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium truncate">{item.label}</p>
                     <p className="text-xs text-muted-foreground truncate">
-                      {t(`entity.${item.entityType}`)} · {item.summary} ·{" "}
+                      {t(`entity.${item.entityType}`)} · {humanize(item.summary)} ·{" "}
                       {t(`origin.${item.provenance}`)}
                     </p>
                   </div>

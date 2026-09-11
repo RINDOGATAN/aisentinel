@@ -49,12 +49,13 @@ const statusColors: Record<string, string> = {
   TERMINATED: "border-muted-foreground text-muted-foreground",
 };
 
-const statusLabels: Record<string, string> = {
-  ACTIVE: "Active",
-  UNDER_REVIEW: "Under Review",
-  APPROVED: "Approved",
-  SUSPENDED: "Suspended",
-  TERMINATED: "Terminated",
+// Translation keys in the `vendors` namespace.
+const statusLabelKeys: Record<string, string> = {
+  ACTIVE: "statusActive",
+  UNDER_REVIEW: "statusUnderReview",
+  APPROVED: "statusApproved",
+  SUSPENDED: "statusSuspended",
+  TERMINATED: "statusTerminated",
 };
 
 type VendorStatusFilter = "ACTIVE" | "UNDER_REVIEW" | "APPROVED" | "SUSPENDED" | "TERMINATED";
@@ -192,7 +193,7 @@ export default function VendorRiskPage() {
               <div>
                 <div className="flex items-center gap-2">
                   <h3 className="font-semibold text-sm sm:text-base">{t("catalogCardTitle")}</h3>
-                  <Badge className="bg-success/20 text-success text-xs">Active</Badge>
+                  <Badge className="bg-success/20 text-success text-xs">{t("catalogActiveBadge")}</Badge>
                 </div>
                 <p className="text-xs sm:text-sm text-muted-foreground">
                   {t("catalogCardDescription")}
@@ -203,7 +204,7 @@ export default function VendorRiskPage() {
               <Button size="sm" className="w-full sm:w-auto">
                 <Database className="w-4 h-4 sm:mr-2" />
                 <span className="hidden sm:inline">{t("addFromCatalog")}</span>
-                <span className="sm:hidden">Catalog</span>
+                <span className="sm:hidden">{t("catalogShort")}</span>
               </Button>
             </Link>
           </CardContent>
@@ -218,7 +219,7 @@ export default function VendorRiskPage() {
               <div>
                 <div className="flex items-center gap-2">
                   <h3 className="font-semibold text-sm sm:text-base">{t("catalogCardTitle")}</h3>
-                  <Badge className="bg-amber-500/20 text-amber-500 text-xs">{formatPrice(9)}/mo</Badge>
+                  <Badge className="bg-amber-500/20 text-amber-500 text-xs">{t("pricePerMonth", { price: formatPrice(9) })}</Badge>
                 </div>
                 <p className="text-xs sm:text-sm text-muted-foreground">
                   {t("catalogCardDescription")}
@@ -297,22 +298,22 @@ export default function VendorRiskPage() {
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="w-full justify-start overflow-x-auto">
           <TabsTrigger value="all" className="text-xs sm:text-sm">
-            All ({stats.total})
+            {t("tabAll", { count: stats.total })}
           </TabsTrigger>
           <TabsTrigger value="active" className="text-xs sm:text-sm">
-            Active
+            {t("tabActive")}
           </TabsTrigger>
           <TabsTrigger value="under_review" className="text-xs sm:text-sm">
-            Under Review
+            {t("tabUnderReview")}
           </TabsTrigger>
           <TabsTrigger value="approved" className="text-xs sm:text-sm">
-            Approved
+            {t("tabApproved")}
           </TabsTrigger>
           <TabsTrigger value="suspended" className="text-xs sm:text-sm">
-            Suspended
+            {t("tabSuspended")}
           </TabsTrigger>
           <TabsTrigger value="terminated" className="text-xs sm:text-sm">
-            Terminated
+            {t("tabTerminated")}
           </TabsTrigger>
         </TabsList>
 
@@ -339,7 +340,7 @@ export default function VendorRiskPage() {
                                 variant="outline"
                                 className={`text-xs ${statusColors[vendor.status] || ""}`}
                               >
-                                {statusLabels[vendor.status] || vendor.status}
+                                {statusLabelKeys[vendor.status] ? t(statusLabelKeys[vendor.status]) : vendor.status}
                               </Badge>
                               {vendor.riskLevel && (
                                 <Badge
@@ -377,17 +378,17 @@ export default function VendorRiskPage() {
                           <div className="flex justify-between text-xs text-muted-foreground">
                             <span className="flex items-center gap-1">
                               <Cpu className="w-3 h-3" />
-                              {vendor._count?.systems ?? 0} systems
+                              {t("systemsCount", { count: vendor._count?.systems ?? 0 })}
                             </span>
                             <span className="flex items-center gap-1">
                               <FileSearch className="w-3 h-3" />
-                              {vendor._count?.assessments ?? 0} assessments
+                              {t("assessmentsCount", { count: vendor._count?.assessments ?? 0 })}
                             </span>
                           </div>
                           {isExpiringSoon && (
                             <div className="flex items-center gap-1 mt-2 text-xs text-warning">
                               <AlertTriangle className="w-3 h-3" />
-                              Contract expires in {daysUntilExpiry} days
+                              {t("contractExpiresInDays", { count: daysUntilExpiry })}
                             </div>
                           )}
                           <p className="text-xs text-muted-foreground mt-2">
@@ -444,8 +445,8 @@ export default function VendorRiskPage() {
           onClose={() => setUpgradeModalOpen(false)}
           organizationId={organization.id}
           skillPackageId="com.todolaw.aisentinel.vendor-catalog"
-          skillName="AI Vendor Catalog"
-          skillDescription="Search pre-audited AI vendors from the Vendor.Watch database and auto-fill your local vendor records with compliance data."
+          skillName={t("catalogCardTitle")}
+          skillDescription={t("catalogSkillDescription")}
         />
       )}
     </div>

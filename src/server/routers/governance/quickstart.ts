@@ -28,6 +28,7 @@ import {
   TRANSPARENCY_PROFILE_NOTES,
 } from "../../../config/quickstart-compliance-baseline";
 import { attachRegimeMappings } from "../../services/scope/attach-regimes";
+import { localizeTemplate } from "../../../config/ai-governance-templates.es";
 import { createStarterArtifacts } from "@/server/services/program/starter-artifacts";
 import {
   CORE_POLICY_PACK_VERSION,
@@ -182,8 +183,9 @@ export const quickstartRouter = createTRPCRouter({
   // ──────────────────────────────────────────────────
   listTemplates: organizationProcedure
     .input(z.object({ organizationId: z.string() }))
-    .query(() => {
-      return AI_GOVERNANCE_TEMPLATES.map((t) => ({
+    .query(({ ctx }) => {
+      const locale = resolveContentLocale(ctx.getCookie);
+      return AI_GOVERNANCE_TEMPLATES.map((source) => localizeTemplate(source, locale)).map((t) => ({
         id: t.id,
         name: t.name,
         description: t.description,
@@ -204,7 +206,10 @@ export const quickstartRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
-      const template = getTemplateById(input.industryId);
+      // Localized exactly as execute localizes it, so the preview's names
+      // are the names the build creates and dedupes against.
+      const source = getTemplateById(input.industryId);
+      const template = source ? localizeTemplate(source, resolveContentLocale(ctx.getCookie)) : undefined;
       if (!template) {
         throw new TRPCError({
           code: "NOT_FOUND",
@@ -436,7 +441,8 @@ export const quickstartRouter = createTRPCRouter({
       // Validate industry template if selected
       let template: AIGovernanceTemplate | undefined;
       if (input.industryId) {
-        template = getTemplateById(input.industryId);
+        const source = getTemplateById(input.industryId);
+        template = source ? localizeTemplate(source, contentLocale) : undefined;
         if (!template) {
           throw new TRPCError({
             code: "NOT_FOUND",

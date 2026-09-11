@@ -37,12 +37,12 @@ const statusColors: Record<string, string> = {
   REGISTERED: "border-primary text-primary",
 };
 
-const statusLabels: Record<string, string> = {
-  DISCOVERED: "Discovered",
-  UNDER_REVIEW: "Under Review",
-  APPROVED: "Approved",
-  PROHIBITED: "Prohibited",
-  REGISTERED: "Registered",
+const statusKey: Record<string, string> = {
+  DISCOVERED: "statusDiscovered",
+  UNDER_REVIEW: "statusUnderReview",
+  APPROVED: "statusApproved",
+  PROHIBITED: "statusProhibited",
+  REGISTERED: "statusRegistered",
 };
 
 type ShadowAIStatus = "DISCOVERED" | "UNDER_REVIEW" | "APPROVED" | "PROHIBITED" | "REGISTERED";
@@ -129,10 +129,7 @@ export default function ShadowAIPage() {
               {t("title")}
               <Badge className="bg-primary/20 text-primary">{t("premiumBadge")}</Badge>
             </h1>
-            <p className="text-muted-foreground">
-              Discover unauthorized AI tools, self-reporting portal & policy
-              engine
-            </p>
+            <p className="text-muted-foreground">{t("gateSubtitle")}</p>
           </div>
         </div>
 
@@ -141,12 +138,8 @@ export default function ShadowAIPage() {
             <div className="w-16 h-16 bg-primary/20 flex items-center justify-center mx-auto rounded-lg">
               <Lock className="w-8 h-8 text-primary" />
             </div>
-            <h2 className="text-xl font-semibold">Premium Feature</h2>
-            <p className="text-muted-foreground max-w-md mx-auto">
-              Shadow AI Discovery helps you identify unauthorized AI tools
-              across your organization with automated scanning, a self-reporting
-              portal, and policy enforcement.
-            </p>
+            <h2 className="text-xl font-semibold">{t("gateTitle")}</h2>
+            <p className="text-muted-foreground max-w-md mx-auto">{t("gateBody")}</p>
             <Button onClick={() => setShowModal(true)} className="mt-4">
               <Lock className="w-4 h-4 mr-2" />
               {t("enableShadowAi")}
@@ -161,7 +154,7 @@ export default function ShadowAIPage() {
             organizationId={organization.id}
             skillPackageId="com.todolaw.aisentinel.shadow-ai"
             skillName="Shadow AI Discovery"
-            skillDescription="Discover unauthorized AI tools, manage an AI tool catalog, and enforce AI usage policies across your organization."
+            skillDescription={t("gateSkillDescription")}
           />
         )}
       </div>
@@ -253,28 +246,28 @@ export default function ShadowAIPage() {
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="w-full justify-start overflow-x-auto">
           <TabsTrigger value="all" className="text-xs sm:text-sm">
-            All ({stats.total})
+            {t("tabAll", { count: stats.total })}
           </TabsTrigger>
           <TabsTrigger value="discovered" className="text-xs sm:text-sm">
-            Discovered
+            {t("statusDiscovered")}
           </TabsTrigger>
           <TabsTrigger value="under_review" className="text-xs sm:text-sm">
-            Under Review
+            {t("statusUnderReview")}
           </TabsTrigger>
           <TabsTrigger
             value="approved"
             className="text-xs sm:text-sm"
           >
-            Approved
+            {t("statusApproved")}
           </TabsTrigger>
           <TabsTrigger
             value="prohibited"
             className="text-xs sm:text-sm"
           >
-            Prohibited
+            {t("statusProhibited")}
           </TabsTrigger>
           <TabsTrigger value="registered" className="text-xs sm:text-sm">
-            Registered
+            {t("statusRegistered")}
           </TabsTrigger>
         </TabsList>
 
@@ -312,7 +305,7 @@ export default function ShadowAIPage() {
                                 variant="outline"
                                 className={`text-xs ${statusColors[report.status] || ""}`}
                               >
-                                {statusLabels[report.status] || report.status}
+                                {statusKey[report.status] ? t(statusKey[report.status]) : report.status}
                               </Badge>
                               {report.tool?.category && (
                                 <Badge variant="secondary" className="text-xs">

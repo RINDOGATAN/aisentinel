@@ -28,6 +28,10 @@ import { useDebounce } from "@/hooks/use-debounce";
 export default function NewShadowAIReportPage() {
   const t = useTranslations("shadowAiNew");
   const tc = useTranslations("common");
+  const toolCategoryLabel = (category: string) =>
+    t.has(`toolCategory.${category}`)
+      ? t(`toolCategory.${category}`)
+      : category.replace(/_/g, " ");
   const router = useRouter();
   const { organization } = useOrganization();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -116,9 +120,9 @@ export default function NewShadowAIReportPage() {
       {/* Form */}
       <Card>
         <CardHeader>
-          <CardTitle>Tool Selection</CardTitle>
+          <CardTitle>{t("toolSelectionTitle")}</CardTitle>
           <CardDescription>
-            Search from the AI tool catalog or enter a custom tool name
+            {t("toolSelectionDescription")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -173,7 +177,7 @@ export default function NewShadowAIReportPage() {
                       <SelectItem value="all">{t("allCategories")}</SelectItem>
                       {(toolCategories ?? []).map((entry) => (
                         <SelectItem key={entry.category} value={entry.category}>
-                          {entry.category.replace(/_/g, " ")} ({entry.count})
+                          {toolCategoryLabel(entry.category)} ({entry.count})
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -211,7 +215,7 @@ export default function NewShadowAIReportPage() {
                             </p>
                             <p className="text-xs text-muted-foreground">
                               {tool.vendor && `${tool.vendor} · `}
-                              {tool.category.replace(/_/g, " ")}
+                              {toolCategoryLabel(tool.category)}
                             </p>
                           </div>
                           {selectedTool?.id === tool.id && (
@@ -223,8 +227,8 @@ export default function NewShadowAIReportPage() {
                   ) : (
                     <div className="py-8 text-center text-sm text-muted-foreground">
                       {catalogSearch
-                        ? "No tools found — try a different search or enter a custom tool"
-                        : "Type to search the AI tool catalog"}
+                        ? t("catalogNoResults")
+                        : t("catalogTypeToSearch")}
                     </div>
                   )}
                 </div>
@@ -233,10 +237,10 @@ export default function NewShadowAIReportPage() {
                   <div className="flex items-center gap-2 p-3 bg-primary/5 rounded-md">
                     <CheckCircle className="w-4 h-4 text-primary shrink-0" />
                     <span className="text-sm font-medium">
-                      Selected: {selectedTool.name}
+                      {t("selectedTool", { name: selectedTool.name })}
                     </span>
                     <Badge variant="secondary" className="text-xs ml-auto">
-                      {selectedTool.category.replace(/_/g, " ")}
+                      {toolCategoryLabel(selectedTool.category)}
                     </Badge>
                   </div>
                 )}
@@ -249,7 +253,7 @@ export default function NewShadowAIReportPage() {
                 <Label htmlFor="customToolName">{t("labelToolName")} *</Label>
                 <Input
                   id="customToolName"
-                  placeholder="e.g., Internal LLM, Custom AI Agent"
+                  placeholder={t("placeholderToolName")}
                   value={customToolName}
                   onChange={(e) => setCustomToolName(e.target.value)}
                   required={mode === "custom"}
@@ -262,7 +266,7 @@ export default function NewShadowAIReportPage() {
               <Label htmlFor="department">{t("labelDepartment")}</Label>
               <Input
                 id="department"
-                placeholder="e.g., Marketing, Engineering, Legal"
+                placeholder={t("placeholderDepartment")}
                 value={department}
                 onChange={(e) => setDepartment(e.target.value)}
               />
@@ -273,7 +277,7 @@ export default function NewShadowAIReportPage() {
               <Label htmlFor="usageDescription">{t("labelUsageDescription")}</Label>
               <Textarea
                 id="usageDescription"
-                placeholder="Describe how this tool is being used, by whom, and what data it processes..."
+                placeholder={t("placeholderUsageDescription")}
                 rows={4}
                 value={usageDescription}
                 onChange={(e) => setUsageDescription(e.target.value)}
@@ -283,7 +287,7 @@ export default function NewShadowAIReportPage() {
             {/* Error */}
             {createReport.error && (
               <div className="text-sm text-destructive">
-                Error: {createReport.error.message}
+                {tc("error", { message: createReport.error.message })}
               </div>
             )}
 

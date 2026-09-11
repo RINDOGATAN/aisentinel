@@ -109,7 +109,7 @@ export default function GovernanceDashboardPage() {
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="gap-2 shrink-0">
                 <Building2 className="w-4 h-4" />
-                <span className="hidden sm:inline">Switch</span>
+                <span className="hidden sm:inline">{t("switchOrganization")}</span>
                 <ChevronDown className="w-3 h-3" />
               </Button>
             </DropdownMenuTrigger>
@@ -515,7 +515,7 @@ export default function GovernanceDashboardPage() {
                 </p>
               </>
             ) : (
-              <p className="text-sm text-muted-foreground text-center py-4">No compliance mappings yet</p>
+              <p className="text-sm text-muted-foreground text-center py-4">{t("noComplianceMappings")}</p>
             )}
           </CardContent>
         </Card>
@@ -607,7 +607,7 @@ export default function GovernanceDashboardPage() {
                     </p>
                     <div className="flex items-center gap-2 mt-0.5">
                       <span className="text-xs text-muted-foreground">
-                        {activity.user?.name || activity.user?.email || "System"}
+                        {activity.user?.name || activity.user?.email || t("systemActor")}
                       </span>
                       <span className="text-xs text-muted-foreground">
                         {formatRelativeTime(activity.createdAt, locale)}

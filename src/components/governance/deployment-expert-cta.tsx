@@ -54,7 +54,7 @@ export function DeploymentExpertCta() {
           size="icon"
           className="h-7 w-7"
           onClick={dismiss}
-          aria-label="Dismiss"
+          aria-label={t("dismiss")}
         >
           <X className="w-3.5 h-3.5" />
         </Button>

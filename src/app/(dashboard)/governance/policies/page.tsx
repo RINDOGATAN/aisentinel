@@ -19,22 +19,24 @@ import {
 } from "lucide-react";
 import { keepPreviousData } from "@tanstack/react-query";
 import { useTranslations, useLocale } from "next-intl";
+import { useEnumLabels } from "@/lib/enum-labels";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
 import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
 import { formatRelativeTime, formatDate } from "@/lib/utils";
 
-const policyTypeLabels: Record<string, string> = {
-  AI_USAGE: "AI Usage",
-  AI_GOVERNANCE: "AI Governance",
-  AI_ETHICS: "AI Ethics",
-  AI_RISK_MANAGEMENT: "Risk Management",
-  AI_DATA_GOVERNANCE: "Data Governance",
-  AI_PROCUREMENT: "Procurement",
-  AI_INCIDENT_RESPONSE: "Incident Response",
-  AI_TRANSPARENCY: "Transparency",
-  CUSTOM: "Custom",
+// Translation keys in the `policies` namespace.
+const policyTypeLabelKeys: Record<string, string> = {
+  AI_USAGE: "policyTypeAiUsage",
+  AI_GOVERNANCE: "policyTypeAiGovernance",
+  AI_ETHICS: "policyTypeAiEthics",
+  AI_RISK_MANAGEMENT: "policyTypeRiskManagement",
+  AI_DATA_GOVERNANCE: "policyTypeDataGovernance",
+  AI_PROCUREMENT: "policyTypeProcurement",
+  AI_INCIDENT_RESPONSE: "policyTypeIncidentResponse",
+  AI_TRANSPARENCY: "policyTypeTransparency",
+  CUSTOM: "policyTypeCustom",
 };
 
 const statusColors: Record<string, string> = {
@@ -59,6 +61,7 @@ export default function PoliciesPage() {
   const t = useTranslations("policies");
   const locale = useLocale();
   const tc = useTranslations("common");
+  const { statusLabel } = useEnumLabels();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const debouncedSearch = useDebounce(searchQuery);
@@ -162,22 +165,22 @@ export default function PoliciesPage() {
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="w-full justify-start overflow-x-auto">
           <TabsTrigger value="all" className="text-xs sm:text-sm">
-            All ({stats.total})
+            {t("tabAll", { count: stats.total })}
           </TabsTrigger>
           <TabsTrigger value="usage" className="text-xs sm:text-sm">
-            Usage
+            {t("tabUsage")}
           </TabsTrigger>
           <TabsTrigger value="governance" className="text-xs sm:text-sm">
-            Governance
+            {t("tabGovernance")}
           </TabsTrigger>
           <TabsTrigger value="ethics" className="text-xs sm:text-sm">
-            Ethics
+            {t("tabEthics")}
           </TabsTrigger>
           <TabsTrigger value="risk" className="text-xs sm:text-sm">
-            Risk Mgmt
+            {t("tabRiskManagement")}
           </TabsTrigger>
           <TabsTrigger value="other" className="text-xs sm:text-sm">
-            Other
+            {t("tabOther")}
           </TabsTrigger>
         </TabsList>
 
@@ -200,13 +203,13 @@ export default function PoliciesPage() {
                               variant="outline"
                               className="text-xs"
                             >
-                              {policyTypeLabels[policy.type] || policy.type}
+                              {policyTypeLabelKeys[policy.type] ? t(policyTypeLabelKeys[policy.type]) : policy.type}
                             </Badge>
                             <Badge
                               variant="outline"
                               className={`text-xs ${statusColors[policy.status] || ""}`}
                             >
-                              {policy.status.replace("_", " ")}
+                              {statusLabel(policy.status)}
                             </Badge>
                           </div>
                         </div>
@@ -227,7 +230,7 @@ export default function PoliciesPage() {
                           {(policy._count?.systemLinks ?? 0) > 0 && (
                             <Badge variant="outline" className="text-xs">
                               <Link2 className="w-3 h-3 mr-1" />
-                              {policy._count.systemLinks} system{policy._count.systemLinks !== 1 ? "s" : ""}
+                              {t("systemsCount", { count: policy._count.systemLinks })}
                             </Badge>
                           )}
                         </div>
@@ -235,13 +238,13 @@ export default function PoliciesPage() {
                           {policy.effectiveDate && (
                             <span className="flex items-center gap-1">
                               <Calendar className="w-3 h-3" />
-                              Effective {formatDate(policy.effectiveDate)}
+                              {t("effectiveOn", { date: formatDate(policy.effectiveDate) })}
                             </span>
                           )}
                           {policy.reviewDate && (
                             <span className="flex items-center gap-1">
                               <Calendar className="w-3 h-3" />
-                              Review {formatDate(policy.reviewDate)}
+                              {t("reviewOn", { date: formatDate(policy.reviewDate) })}
                             </span>
                           )}
                         </div>

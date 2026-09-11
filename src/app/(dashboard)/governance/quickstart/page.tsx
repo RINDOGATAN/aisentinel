@@ -768,7 +768,7 @@ export default function QuickstartPage() {
                                 variant="outline"
                                 className="text-xs border-blue-500/50 text-blue-500"
                               >
-                                EU AI Act
+                                {t("label.euAiActBadge")}
                               </Badge>
                             )}
                           </div>
@@ -831,20 +831,20 @@ export default function QuickstartPage() {
           {vendorPreview && selectedSlugs.length > 0 && (
             <Card className="bg-muted/30">
               <CardContent className="p-4">
-                <p className="text-sm font-medium mb-2">Import Preview</p>
+                <p className="text-sm font-medium mb-2">{t("label.importPreview")}</p>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
                   <div>
                     <div className="text-lg font-bold">
                       {vendorPreview.totals.vendors}
                     </div>
-                    <p className="text-[10px] text-muted-foreground">Vendors</p>
+                    <p className="text-[10px] text-muted-foreground">{t("label.vendors")}</p>
                   </div>
                   <div>
                     <div className="text-lg font-bold">
                       {vendorPreview.totals.systems}
                     </div>
                     <p className="text-[10px] text-muted-foreground">
-                      AI Systems
+                      {t("label.aiSystems")}
                     </p>
                   </div>
                   <div>
@@ -852,7 +852,7 @@ export default function QuickstartPage() {
                       {vendorPreview.totals.riskClassifications}
                     </div>
                     <p className="text-[10px] text-muted-foreground">
-                      Risk Classifications
+                      {t("label.riskClassifications")}
                     </p>
                   </div>
                   <div>
@@ -860,7 +860,7 @@ export default function QuickstartPage() {
                       {vendorPreview.totals.oversightGates}
                     </div>
                     <p className="text-[10px] text-muted-foreground">
-                      Oversight Gates
+                      {t("label.oversightGates")}
                     </p>
                   </div>
                 </div>
@@ -966,7 +966,7 @@ export default function QuickstartPage() {
                       {industryPreview.totals.systems}
                     </div>
                     <p className="text-[10px] text-muted-foreground">
-                      AI Systems
+                      {t("label.aiSystems")}
                     </p>
                   </div>
                   <div>
@@ -974,7 +974,7 @@ export default function QuickstartPage() {
                       {industryPreview.totals.riskClassifications}
                     </div>
                     <p className="text-[10px] text-muted-foreground">
-                      Risk Classifications
+                      {t("label.riskClassifications")}
                     </p>
                   </div>
                   <div>
@@ -982,7 +982,7 @@ export default function QuickstartPage() {
                       {industryPreview.totals.oversightGates}
                     </div>
                     <p className="text-[10px] text-muted-foreground">
-                      Oversight Gates
+                      {t("label.oversightGates")}
                     </p>
                   </div>
                   <div>
@@ -990,7 +990,7 @@ export default function QuickstartPage() {
                       {industryPreview.totals.policies}
                     </div>
                     <p className="text-[10px] text-muted-foreground">
-                      Policies
+                      {t("label.policies")}
                     </p>
                   </div>
                 </div>
@@ -998,7 +998,7 @@ export default function QuickstartPage() {
                 {expandedSystems && (
                   <div className="space-y-2 pt-2 border-t border-border">
                     <p className="text-xs font-medium text-muted-foreground">
-                      AI Systems
+                      {t("label.aiSystems")}
                     </p>
                     {industryPreview.systems.map((s) => (
                       <div
@@ -1015,7 +1015,7 @@ export default function QuickstartPage() {
                           <RiskBadge level={s.riskLevel} />
                           {s.gateType && (
                             <Badge variant="outline" className="text-[10px]">
-                              Gate
+                              {t("label.gate")}
                             </Badge>
                           )}
                           {s.alreadyExists && (
@@ -1027,7 +1027,7 @@ export default function QuickstartPage() {
                       </div>
                     ))}
                     <p className="text-xs font-medium text-muted-foreground pt-2">
-                      Policies
+                      {t("label.policies")}
                     </p>
                     {industryPreview.policies.map((p) => (
                       <div
@@ -1042,7 +1042,7 @@ export default function QuickstartPage() {
                         </div>
                         {p.alreadyExists && (
                           <Badge variant="secondary" className="text-[10px]">
-                            Exists
+                            {t("label.exists")}
                           </Badge>
                         )}
                       </div>
@@ -1270,13 +1270,13 @@ export default function QuickstartPage() {
             <Card>
               <CardContent className="p-4 text-center">
                 <div className="text-2xl font-bold">{reviewTotals.vendors}</div>
-                <p className="text-[10px] text-muted-foreground">Vendors</p>
+                <p className="text-[10px] text-muted-foreground">{t("label.vendors")}</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4 text-center">
                 <div className="text-2xl font-bold">{reviewTotals.systems}</div>
-                <p className="text-[10px] text-muted-foreground">AI Systems</p>
+                <p className="text-[10px] text-muted-foreground">{t("label.aiSystems")}</p>
               </CardContent>
             </Card>
             <Card>
@@ -1285,7 +1285,7 @@ export default function QuickstartPage() {
                   {reviewTotals.riskClassifications}
                 </div>
                 <p className="text-[10px] text-muted-foreground">
-                  Risk Classifications
+                  {t("label.riskClassifications")}
                 </p>
               </CardContent>
             </Card>
@@ -1295,7 +1295,7 @@ export default function QuickstartPage() {
                   {reviewTotals.oversightGates}
                 </div>
                 <p className="text-[10px] text-muted-foreground">
-                  Oversight Gates
+                  {t("label.oversightGates")}
                 </p>
               </CardContent>
             </Card>
@@ -1304,7 +1304,7 @@ export default function QuickstartPage() {
                 <div className="text-2xl font-bold">
                   {reviewTotals.policies}
                 </div>
-                <p className="text-[10px] text-muted-foreground">Policies</p>
+                <p className="text-[10px] text-muted-foreground">{t("label.policies")}</p>
               </CardContent>
             </Card>
           </div>
@@ -1313,7 +1313,7 @@ export default function QuickstartPage() {
           {useVendors && vendorPreview && vendorPreview.previews.length > 0 && (
             <Card>
               <CardHeader className="p-4 pb-2">
-                <CardTitle className="text-sm">Vendor Imports</CardTitle>
+                <CardTitle className="text-sm">{t("label.vendorImports")}</CardTitle>
               </CardHeader>
               <CardContent className="p-4 pt-0 space-y-2">
                 {vendorPreview.previews.map((p) => {
@@ -1361,12 +1361,12 @@ export default function QuickstartPage() {
                         <RiskBadge level={p.riskLevel} />
                         {p.requiresOversightGate && (
                           <Badge variant="outline" className="text-[10px]">
-                            Gate
+                            {t("label.gate")}
                           </Badge>
                         )}
                         {isExisting && (
                           <Badge variant="secondary" className="text-[10px]">
-                            Exists
+                            {t("label.exists")}
                           </Badge>
                         )}
                       </div>
@@ -1382,14 +1382,14 @@ export default function QuickstartPage() {
             <Card>
               <CardHeader className="p-4 pb-2">
                 <CardTitle className="text-sm">
-                  Industry Template: {industryPreview.template.name}
+                  {t("label.industryTemplate", { name: industryPreview.template.name })}
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-4 pt-0 space-y-3">
                 {/* Systems */}
                 <div className="space-y-2">
                   <p className="text-xs font-medium text-muted-foreground">
-                    AI Systems
+                    {t("label.aiSystems")}
                   </p>
                   {industryPreview.systems.map((s) => {
                     const isSkipped = skipSystemNames.includes(s.name);
@@ -1427,7 +1427,7 @@ export default function QuickstartPage() {
                           <RiskBadge level={s.riskLevel} />
                           {s.gateType && (
                             <Badge variant="outline" className="text-[10px]">
-                              Gate
+                              {t("label.gate")}
                             </Badge>
                           )}
                           {s.alreadyExists && (
@@ -1444,7 +1444,7 @@ export default function QuickstartPage() {
                 {/* Policies */}
                 <div className="space-y-2">
                   <p className="text-xs font-medium text-muted-foreground">
-                    Policies
+                    {t("label.policies")}
                   </p>
                   {industryPreview.policies.map((p) => {
                     const isSkipped = skipPolicyTitles.includes(p.title);
@@ -1487,7 +1487,7 @@ export default function QuickstartPage() {
                         </div>
                         {p.alreadyExists && (
                           <Badge variant="secondary" className="text-[10px]">
-                            Exists
+                            {t("label.exists")}
                           </Badge>
                         )}
                       </div>
@@ -1553,7 +1553,7 @@ export default function QuickstartPage() {
                           <RiskBadge level={toolPreview.riskLevel} />
                           {toolPreview.gateType && (
                             <Badge variant="outline" className="text-[10px]">
-                              Gate
+                              {t("label.gate")}
                             </Badge>
                           )}
                           {toolPreview.alreadyExists && (

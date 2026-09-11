@@ -101,10 +101,13 @@ export default function RiskClassificationPage() {
 
   const classifyMutation = trpc.riskClassification.classify.useMutation({
     onSuccess: (data) => {
-      const mappingsMsg = data.complianceMappingsCreated
-        ? ` — ${data.complianceMappingsCreated} compliance requirements initialized`
-        : "";
-      toast.success(`${data.aiSystem.name} classified as ${data.riskLevel}${mappingsMsg}`, {
+      toast.success(
+        t("toastClassified", {
+          name: data.aiSystem.name,
+          level: data.riskLevel,
+          count: data.complianceMappingsCreated ?? 0,
+        }),
+        {
         action: {
           label: t("viewCompliance"),
           onClick: () => router.push(`/governance/compliance?systemId=${data.aiSystemId}`),

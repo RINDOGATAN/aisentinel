@@ -60,12 +60,13 @@ const statusColors: Record<string, string> = {
   TERMINATED: "border-muted-foreground text-muted-foreground",
 };
 
-const statusLabels: Record<string, string> = {
-  ACTIVE: "Active",
-  UNDER_REVIEW: "Under Review",
-  APPROVED: "Approved",
-  SUSPENDED: "Suspended",
-  TERMINATED: "Terminated",
+// Translation keys in the vendorDetail namespace.
+const statusLabelKeys: Record<string, string> = {
+  ACTIVE: "statusActive",
+  UNDER_REVIEW: "statusUnderReview",
+  APPROVED: "statusApproved",
+  SUSPENDED: "statusSuspended",
+  TERMINATED: "statusTerminated",
 };
 
 const systemStatusColors: Record<string, string> = {
@@ -83,11 +84,20 @@ const assessmentStatusColors: Record<string, string> = {
   EXPIRED: "border-destructive text-destructive",
 };
 
-const assessmentStatusLabels: Record<string, string> = {
-  DRAFT: "Draft",
-  IN_PROGRESS: "In Progress",
-  COMPLETED: "Completed",
-  EXPIRED: "Expired",
+// Translation keys in the `common` namespace.
+const techniqueLabelKeys: Record<string, string> = {
+  MACHINE_LEARNING: "techniqueMachineLearning",
+  DEEP_LEARNING: "techniqueDeepLearning",
+  GENERATIVE_AI: "techniqueGenerativeAi",
+  AGENTIC_AI: "techniqueAgenticAi",
+  NLP: "techniqueNlp",
+  COMPUTER_VISION: "techniqueComputerVision",
+  SPEECH_RECOGNITION: "techniqueSpeechRecognition",
+  ROBOTICS: "techniqueRobotics",
+  RULE_BASED: "techniqueRuleBased",
+  EXPERT_SYSTEM: "techniqueExpertSystem",
+  STATISTICAL: "techniqueStatistical",
+  OTHER: "techniqueOther",
 };
 
 export default function VendorDetailPage() {
@@ -95,6 +105,14 @@ export default function VendorDetailPage() {
   const { riskLabel, statusLabel } = useEnumLabels();
   const locale = useLocale();
   const tc = useTranslations("common");
+  const techniqueLabel = (technique: string) =>
+    techniqueLabelKeys[technique] ? tc(techniqueLabelKeys[technique]) : technique.replace(/_/g, " ");
+  const assessmentStatusLabel = (status: string) =>
+    status === "COMPLETED"
+      ? t("assessmentStatusCompleted")
+      : status === "EXPIRED"
+        ? t("assessmentStatusExpired")
+        : statusLabel(status);
   const params = useParams();
   const id = params.id as string;
   const { organization, canWrite } = useOrganization();
@@ -133,25 +151,25 @@ export default function VendorDetailPage() {
 
   const createAssessment = trpc.vendor.createAssessment.useMutation({
     onSuccess: () => {
-      toast.success("Assessment created successfully");
+      toast.success(t("toastAssessmentCreated"));
       utils.vendor.getById.invalidate({ organizationId: organization?.id ?? "", id });
       setAssessmentDialogOpen(false);
       setAssessmentForm({ title: "", findings: "" });
       setIsCreatingAssessment(false);
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to create assessment");
+      toast.error(error.message || t("toastAssessmentCreateError"));
       setIsCreatingAssessment(false);
     },
   });
 
   const updateAssessment = trpc.vendor.updateAssessment.useMutation({
     onSuccess: () => {
-      toast.success("Assessment completed");
+      toast.success(t("toastAssessmentCompleted"));
       utils.vendor.getById.invalidate({ organizationId: organization?.id ?? "", id });
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to update assessment");
+      toast.error(error.message || t("toastAssessmentUpdateError"));
     },
   });
 
@@ -224,7 +242,7 @@ export default function VendorDetailPage() {
                 {vendor.catalogSlug && (
                   <Badge variant="secondary" className="text-xs">
                     <Database className="w-3 h-3 mr-1" />
-                    Catalog
+                    {t("badgeCatalog")}
                   </Badge>
                 )}
               </div>
@@ -233,7 +251,7 @@ export default function VendorDetailPage() {
                   variant="outline"
                   className={statusColors[vendor.status] || ""}
                 >
-                  {statusLabels[vendor.status] || vendor.status}
+                  {statusLabelKeys[vendor.status] ? t(statusLabelKeys[vendor.status]) : vendor.status}
                 </Badge>
                 {vendor.riskLevel && (
                   <Badge className={riskLevelColors[vendor.riskLevel] || ""}>
@@ -307,9 +325,9 @@ export default function VendorDetailPage() {
                 <div className="flex items-center gap-3 p-3 bg-muted/50">
                   <ExternalLink className="w-4 h-4 text-muted-foreground" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium">DPO Central Vendor Record</p>
+                    <p className="text-sm font-medium">{t("dpoCentralVendorRecord")}</p>
                     <p className="text-xs text-muted-foreground truncate">
-                      ID: {vendor.dpoCentralVendorId}
+                      {t("recordId", { id: vendor.dpoCentralVendorId })}
                     </p>
                   </div>
                   <a
@@ -332,7 +350,7 @@ export default function VendorDetailPage() {
                   <div className="flex items-center gap-3 p-3 bg-primary/5 hover:bg-primary/10 transition-colors rounded-md cursor-pointer">
                     <Database className="w-4 h-4 text-primary" />
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium">From AI Vendor Catalog</p>
+                      <p className="text-sm font-medium">{t("fromAiVendorCatalog")}</p>
                       <div className="flex items-center gap-2 mt-0.5">
                         <span className="text-xs text-muted-foreground">{vendor.catalogEntry.name}</span>
                         <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
@@ -352,7 +370,7 @@ export default function VendorDetailPage() {
             {/* Notes */}
             {vendor.notes && (
               <div className="pt-2 border-t">
-                <p className="text-sm font-medium mb-1">Notes</p>
+                <p className="text-sm font-medium mb-1">{t("labelNotes")}</p>
                 <p className="text-sm text-muted-foreground">{vendor.notes}</p>
               </div>
             )}
@@ -376,24 +394,24 @@ export default function VendorDetailPage() {
               <p className="text-sm text-muted-foreground">{t("contractStatus")}</p>
               {isExpired ? (
                 <p className="font-medium text-sm text-destructive">
-                  Expired {Math.abs(daysUntilExpiry!)} days ago
+                  {t("contractExpiredDaysAgo", { count: Math.abs(daysUntilExpiry!) })}
                 </p>
               ) : isExpiringSoon ? (
                 <p className="font-medium text-sm text-warning">
-                  Expires in {daysUntilExpiry} days
+                  {t("contractExpiresInDays", { count: daysUntilExpiry })}
                 </p>
               ) : daysUntilExpiry !== null ? (
                 <p className="font-medium text-sm text-success">
-                  {daysUntilExpiry} days remaining
+                  {t("contractDaysRemaining", { count: daysUntilExpiry })}
                 </p>
               ) : (
                 <p className="font-medium text-sm text-muted-foreground">
-                  No expiry date set
+                  {t("contractNoExpiryDate")}
                 </p>
               )}
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Last Updated</p>
+              <p className="text-sm text-muted-foreground">{t("labelLastUpdated")}</p>
               <p className="font-medium text-sm">{formatRelativeTime(vendor.updatedAt, locale)}</p>
             </div>
           </CardContent>
@@ -531,7 +549,7 @@ export default function VendorDetailPage() {
                             <p className="font-medium text-sm truncate">{system.name}</p>
                             {system.technique && (
                               <p className="text-xs text-muted-foreground">
-                                {system.technique.replace(/_/g, " ")}
+                                {techniqueLabel(system.technique)}
                               </p>
                             )}
                           </div>
@@ -606,7 +624,7 @@ export default function VendorDetailPage() {
                         <div className="min-w-0">
                           <p className="font-medium text-sm truncate">{system.name}</p>
                           <p className="text-xs text-muted-foreground">
-                            {statusLabel(system.status)} · {system.technique.replace(/_/g, " ")}
+                            {statusLabel(system.status)} · {techniqueLabel(system.technique)}
                           </p>
                         </div>
                         {linkSystem.isPending && (
@@ -654,13 +672,13 @@ export default function VendorDetailPage() {
                           <p className="font-medium text-sm truncate">{assessment.title}</p>
                           <div className="flex items-center gap-3 text-xs text-muted-foreground">
                             {assessment.riskScore !== null && assessment.riskScore !== undefined && (
-                              <span>Risk Score: {assessment.riskScore}</span>
+                              <span>{t("assessmentRiskScore", { score: assessment.riskScore })}</span>
                             )}
                             {assessment.completedAt && (
-                              <span>Completed: {formatDate(assessment.completedAt)}</span>
+                              <span>{t("assessmentCompletedOn", { date: formatDate(assessment.completedAt) })}</span>
                             )}
                             {assessment.nextReviewDate && (
-                              <span>Next Review: {formatDate(assessment.nextReviewDate)}</span>
+                              <span>{t("assessmentNextReview", { date: formatDate(assessment.nextReviewDate) })}</span>
                             )}
                           </div>
                         </div>
@@ -670,7 +688,7 @@ export default function VendorDetailPage() {
                           variant="outline"
                           className={`text-xs ${assessmentStatusColors[assessment.status] || ""}`}
                         >
-                          {assessmentStatusLabels[assessment.status] || assessment.status}
+                          {assessmentStatusLabel(assessment.status)}
                         </Badge>
                         {assessment.status !== "COMPLETED" && (
                           <Button
@@ -728,7 +746,7 @@ export default function VendorDetailPage() {
               <Label htmlFor="assessmentFindings">{t("labelFindings")}</Label>
               <Textarea
                 id="assessmentFindings"
-                placeholder="Document initial findings, observations, or scope..."
+                placeholder={t("placeholderFindings")}
                 rows={4}
                 value={assessmentForm.findings}
                 onChange={(e) => setAssessmentForm({ ...assessmentForm, findings: e.target.value })}

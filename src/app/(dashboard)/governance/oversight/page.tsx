@@ -25,6 +25,7 @@ import { useDebounce } from "@/hooks/use-debounce";
 import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
 import { formatRelativeTime, formatDate } from "@/lib/utils";
 import { useTranslations, useLocale } from "next-intl";
+import { useEnumLabels } from "@/lib/enum-labels";
 
 const gateTypeKeys: Record<string, string> = {
   PRE_DEPLOYMENT: "gateTypePreDeployment",
@@ -46,6 +47,7 @@ export default function OversightPage() {
   const t = useTranslations("oversight");
   const locale = useLocale();
   const tc = useTranslations("common");
+  const { statusLabel } = useEnumLabels();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const debouncedSearch = useDebounce(searchQuery);
@@ -145,19 +147,19 @@ export default function OversightPage() {
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="w-full justify-start overflow-x-auto">
           <TabsTrigger value="all" className="text-xs sm:text-sm">
-            All ({stats.total})
+            {t("tabAll", { count: stats.total })}
           </TabsTrigger>
           <TabsTrigger value="PRE_DEPLOYMENT" className="text-xs sm:text-sm">
-            Pre-Deploy
+            {t("tabPreDeployment")}
           </TabsTrigger>
           <TabsTrigger value="POST_DEPLOYMENT" className="text-xs sm:text-sm">
-            Post-Deploy
+            {t("tabPostDeployment")}
           </TabsTrigger>
           <TabsTrigger value="PERIODIC_REVIEW" className="text-xs sm:text-sm">
-            Periodic
+            {t("tabPeriodicReview")}
           </TabsTrigger>
           <TabsTrigger value="INCIDENT_TRIGGERED" className="text-xs sm:text-sm">
-            Incident
+            {t("tabIncidentTriggered")}
           </TabsTrigger>
         </TabsList>
 
@@ -180,7 +182,7 @@ export default function OversightPage() {
                               variant="outline"
                               className={`text-xs ${gateStatusColors[gate.status] || ""}`}
                             >
-                              {gate.status.replace("_", " ")}
+                              {statusLabel(gate.status)}
                             </Badge>
                             <Badge variant="outline" className="text-xs">
                               {gateTypeKeys[gate.gateType] ? t(gateTypeKeys[gate.gateType]) : gate.gateType}
@@ -188,7 +190,7 @@ export default function OversightPage() {
                           </div>
                         </div>
                         <CardTitle className="mt-3 text-base sm:text-lg line-clamp-1">
-                          {gate.aiSystem?.name ?? "Unknown System"}
+                          {gate.aiSystem?.name ?? t("unknownSystem")}
                         </CardTitle>
                         {gate.description && (
                           <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">
@@ -210,14 +212,14 @@ export default function OversightPage() {
                             <div className="flex items-center gap-1.5">
                               <Calendar className="w-3 h-3 text-muted-foreground" />
                               <span className="text-xs text-muted-foreground">
-                                Next review: {formatDate(gate.nextReviewDate)}
+                                {tc("nextReview", { date: formatDate(gate.nextReviewDate) })}
                               </span>
                             </div>
                           )}
                           <div className="flex items-center gap-1.5">
                             <MessageSquare className="w-3 h-3 text-muted-foreground" />
                             <span className="text-xs text-muted-foreground">
-                              {gate._count?.decisions ?? 0} decisions
+                              {t("decisionsCount", { count: gate._count?.decisions ?? 0 })}
                             </span>
                           </div>
                         </div>

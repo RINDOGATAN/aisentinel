@@ -39,6 +39,7 @@ import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useTranslations, useLocale } from "next-intl";
+import { useEnumLabels } from "@/lib/enum-labels";
 
 type AIIncidentStatus = "REPORTED" | "INVESTIGATING" | "MITIGATING" | "RESOLVED" | "CLOSED";
 type AINotificationStatus = "PENDING" | "SENT" | "ACKNOWLEDGED";
@@ -91,6 +92,15 @@ export default function IncidentDetailPage() {
   const locale = useLocale();
   const ti = useTranslations("incidents");
   const tc = useTranslations("common");
+  const { statusLabel, severityLabel } = useEnumLabels();
+  const taskStatusLabel = (status: string) =>
+    status === "COMPLETED" ? t("taskStatusCompleted") : statusLabel(status);
+  const notificationStatusLabel = (status: string) =>
+    status === "SENT"
+      ? t("notificationStatusSent")
+      : status === "ACKNOWLEDGED"
+        ? t("notificationStatusAcknowledged")
+        : statusLabel(status);
   const params = useParams();
   const id = params.id as string;
   const { organization } = useOrganization();
@@ -141,32 +151,32 @@ export default function IncidentDetailPage() {
 
   const updateIncident = trpc.incident.update.useMutation({
     onSuccess: () => {
-      toast.success("Incident updated");
+      toast.success(t("toastIncidentUpdated"));
       utils.incident.getById.invalidate({ organizationId: organization?.id ?? "", id });
       utils.incident.list.invalidate();
       utils.incident.getStats.invalidate();
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to update incident");
+      toast.error(error.message || t("toastIncidentUpdateError"));
     },
   });
 
   const addTimelineEntry = trpc.incident.addTimelineEntry.useMutation({
     onSuccess: () => {
-      toast.success("Timeline entry added");
+      toast.success(t("toastTimelineEntryAdded"));
       utils.incident.getById.invalidate({ organizationId: organization?.id ?? "", id });
       setShowTimelineDialog(false);
       setTimelineAction("");
       setTimelineDescription("");
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to add timeline entry");
+      toast.error(error.message || t("toastTimelineEntryAddError"));
     },
   });
 
   const addTask = trpc.incident.addTask.useMutation({
     onSuccess: () => {
-      toast.success("Task added");
+      toast.success(t("toastTaskAdded"));
       utils.incident.getById.invalidate({ organizationId: organization?.id ?? "", id });
       setShowTaskDialog(false);
       setTaskTitle("");
@@ -174,7 +184,7 @@ export default function IncidentDetailPage() {
       setTaskDueDate("");
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to add task");
+      toast.error(error.message || t("toastTaskAddError"));
     },
   });
 
@@ -183,13 +193,13 @@ export default function IncidentDetailPage() {
       utils.incident.getById.invalidate({ organizationId: organization?.id ?? "", id });
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to update task");
+      toast.error(error.message || t("toastTaskUpdateError"));
     },
   });
 
   const addNotification = trpc.incident.addNotification.useMutation({
     onSuccess: () => {
-      toast.success("Notification added");
+      toast.success(t("toastNotificationAdded"));
       utils.incident.getById.invalidate({ organizationId: organization?.id ?? "", id });
       setShowNotificationDialog(false);
       setNotifAuthority("");
@@ -197,17 +207,17 @@ export default function IncidentDetailPage() {
       setNotifDueBy("");
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to add notification");
+      toast.error(error.message || t("toastNotificationAddError"));
     },
   });
 
   const updateNotification = trpc.incident.updateNotification.useMutation({
     onSuccess: () => {
-      toast.success("Notification updated");
+      toast.success(t("toastNotificationUpdated"));
       utils.incident.getById.invalidate({ organizationId: organization?.id ?? "", id });
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to update notification");
+      toast.error(error.message || t("toastNotificationUpdateError"));
     },
   });
 
@@ -255,13 +265,13 @@ export default function IncidentDetailPage() {
                 <Badge
                   className={severityColors[incident.severity] || ""}
                 >
-                  {incident.severity}
+                  {severityLabel(incident.severity)}
                 </Badge>
                 <Badge
                   variant="outline"
                   className={statusColors[incident.status] || ""}
                 >
-                  {incident.status}
+                  {statusLabel(incident.status)}
                 </Badge>
               </div>
             </div>
@@ -289,7 +299,7 @@ export default function IncidentDetailPage() {
               {updateIncident.isPending ? (
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
               ) : null}
-              Move to {nextStatus}
+              {t("moveToStatus", { status: statusLabel(nextStatus) })}
             </Button>
           ))}
         </div>
@@ -329,7 +339,7 @@ export default function IncidentDetailPage() {
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">{t("reportedByLabel")}</p>
-                <p className="font-medium text-sm">{incident.reportedBy || "Unknown"}</p>
+                <p className="font-medium text-sm">{incident.reportedBy || t("unknown")}</p>
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">{t("reportedAtLabel")}</p>
@@ -338,7 +348,7 @@ export default function IncidentDetailPage() {
               <div>
                 <p className="text-sm text-muted-foreground">{t("notificationRequiredLabel")}</p>
                 <p className="font-medium text-sm">
-                  {incident.notificationRequired ? `${tc("yes")} (Art. 73)` : tc("no")}
+                  {incident.notificationRequired ? t("notificationRequiredYes") : tc("no")}
                 </p>
               </div>
               {incident.resolvedAt && (
@@ -358,18 +368,18 @@ export default function IncidentDetailPage() {
           <CardContent className="space-y-4">
             <div>
               <p className="text-3xl font-bold text-primary">{incident.timeline?.length ?? 0}</p>
-              <p className="text-sm text-muted-foreground">Timeline Entries</p>
+              <p className="text-sm text-muted-foreground">{t("statTimelineEntries")}</p>
             </div>
             <div>
               <p className="text-3xl font-bold text-primary">{incident.tasks?.length ?? 0}</p>
-              <p className="text-sm text-muted-foreground">Tasks</p>
+              <p className="text-sm text-muted-foreground">{t("statTasks")}</p>
             </div>
             <div>
               <p className="text-3xl font-bold text-primary">{incident.notifications?.length ?? 0}</p>
-              <p className="text-sm text-muted-foreground">Notifications</p>
+              <p className="text-sm text-muted-foreground">{t("statNotifications")}</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Last Updated</p>
+              <p className="text-sm text-muted-foreground">{t("labelLastUpdated")}</p>
               <p className="font-medium text-sm">{formatRelativeTime(incident.updatedAt, locale)}</p>
             </div>
           </CardContent>
@@ -530,7 +540,7 @@ export default function IncidentDetailPage() {
                             : "border-warning text-warning"
                         }`}
                       >
-                        {task.status}
+                        {taskStatusLabel(task.status)}
                       </Badge>
                     </div>
                   ))}
@@ -591,7 +601,7 @@ export default function IncidentDetailPage() {
                                 notificationStatusColors[notif.status] || ""
                               }`}
                             >
-                              {notif.status}
+                              {notificationStatusLabel(notif.status)}
                             </Badge>
                           </td>
                           <td className="py-3 pr-4">{formatDate(notif.dueBy)}</td>

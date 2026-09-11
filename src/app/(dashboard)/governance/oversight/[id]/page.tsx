@@ -47,6 +47,7 @@ import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useTranslations, useLocale } from "next-intl";
+import { useEnumLabels } from "@/lib/enum-labels";
 
 const gateTypeKeys: Record<string, string> = {
   PRE_DEPLOYMENT: "gateTypePreDeployment",
@@ -70,6 +71,13 @@ const decisionColors: Record<string, string> = {
   DEFER: "bg-warning/20 text-warning",
 };
 
+// Translation keys in the oversightDetail namespace.
+const decisionOutcomeKeys: Record<string, string> = {
+  APPROVE: "decisionOutcomeApprove",
+  REJECT: "decisionOutcomeReject",
+  DEFER: "decisionOutcomeDefer",
+};
+
 const decisionIcons: Record<string, React.ElementType> = {
   APPROVE: CheckCircle,
   REJECT: XCircle,
@@ -81,6 +89,7 @@ export default function OversightGateDetailPage() {
   const locale = useLocale();
   const to = useTranslations("oversight");
   const tc = useTranslations("common");
+  const { statusLabel } = useEnumLabels();
   const params = useParams();
   const id = params.id as string;
   const { organization, canWrite } = useOrganization();
@@ -179,7 +188,7 @@ export default function OversightGateDetailPage() {
             </div>
             <div>
               <h1 className="text-xl sm:text-2xl font-semibold">
-                {gate.aiSystem?.name ?? "Unknown System"} &mdash;{" "}
+                {gate.aiSystem?.name ?? t("unknownSystem")} ·{" "}
                 {gateTypeKeys[gate.gateType] ? to(gateTypeKeys[gate.gateType]) : gate.gateType}
               </h1>
               <div className="flex items-center gap-2 mt-1 flex-wrap">
@@ -187,7 +196,7 @@ export default function OversightGateDetailPage() {
                   variant="outline"
                   className={gateStatusColors[gate.status] || ""}
                 >
-                  {gate.status.replace("_", " ")}
+                  {statusLabel(gate.status)}
                 </Badge>
                 <Badge variant="outline" className="text-xs">
                   {gateTypeKeys[gate.gateType] ? to(gateTypeKeys[gate.gateType]) : gate.gateType}
@@ -266,7 +275,7 @@ export default function OversightGateDetailPage() {
                   }
                 />
                 <p className="text-xs text-muted-foreground">
-                  Separate multiple items with commas
+                  {t("evidenceReviewedHint")}
                 </p>
               </div>
             </div>
@@ -340,7 +349,7 @@ export default function OversightGateDetailPage() {
                     href={`/governance/ai-registry/${gate.aiSystem?.id}`}
                     className="text-primary hover:underline"
                   >
-                    {gate.aiSystem?.name ?? "Unknown"}
+                    {gate.aiSystem?.name ?? t("unknown")}
                   </Link>
                 </p>
               </div>
@@ -368,7 +377,7 @@ export default function OversightGateDetailPage() {
               </p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Last Updated</p>
+              <p className="text-sm text-muted-foreground">{t("labelLastUpdated")}</p>
               <p className="font-medium text-sm">{formatRelativeTime(gate.updatedAt, locale)}</p>
             </div>
           </CardContent>
@@ -407,7 +416,7 @@ export default function OversightGateDetailPage() {
                     <div className="flex-1 min-w-0 space-y-2">
                       <div className="flex items-center gap-2 flex-wrap">
                         <Badge className={`text-xs ${decisionColors[decision.decision] || ""}`}>
-                          {decision.decision}
+                          {decisionOutcomeKeys[decision.decision] ? t(decisionOutcomeKeys[decision.decision]) : decision.decision}
                         </Badge>
                         <span className="text-xs text-muted-foreground">
                           {formatDate(decision.decidedAt)}
@@ -420,7 +429,7 @@ export default function OversightGateDetailPage() {
                         <div className="space-y-1">
                           <p className="text-xs font-medium text-muted-foreground flex items-center gap-1">
                             <FileText className="w-3 h-3" />
-                            Evidence Reviewed:
+                            {t("evidenceReviewedHeading")}
                           </p>
                           <div className="flex flex-wrap gap-1.5">
                             {decision.evidenceReviewed.map((evidence, idx) => (
@@ -433,7 +442,7 @@ export default function OversightGateDetailPage() {
                       )}
                       <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                         <User className="w-3 h-3" />
-                        <span>Decided by: {decision.decidedBy}</span>
+                        <span>{t("decidedBy", { name: decision.decidedBy })}</span>
                       </div>
                     </div>
                   </div>

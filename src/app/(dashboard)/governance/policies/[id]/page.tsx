@@ -51,16 +51,17 @@ import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 
-const policyTypeLabels: Record<string, string> = {
-  AI_USAGE: "AI Usage",
-  AI_GOVERNANCE: "AI Governance",
-  AI_ETHICS: "AI Ethics",
-  AI_RISK_MANAGEMENT: "Risk Management",
-  AI_DATA_GOVERNANCE: "Data Governance",
-  AI_PROCUREMENT: "Procurement",
-  AI_INCIDENT_RESPONSE: "Incident Response",
-  AI_TRANSPARENCY: "Transparency",
-  CUSTOM: "Custom",
+// Translation keys in the `common` namespace.
+const policyTypeLabelKeys: Record<string, string> = {
+  AI_USAGE: "policyTypeAiUsage",
+  AI_GOVERNANCE: "policyTypeAiGovernance",
+  AI_ETHICS: "policyTypeAiEthics",
+  AI_RISK_MANAGEMENT: "policyTypeRiskManagement",
+  AI_DATA_GOVERNANCE: "policyTypeDataGovernance",
+  AI_PROCUREMENT: "policyTypeProcurement",
+  AI_INCIDENT_RESPONSE: "policyTypeIncidentResponse",
+  AI_TRANSPARENCY: "policyTypeTransparency",
+  CUSTOM: "policyTypeCustom",
 };
 
 const statusColors: Record<string, string> = {
@@ -111,31 +112,31 @@ export default function PolicyDetailPage() {
 
   const updateMutation = trpc.policy.update.useMutation({
     onSuccess: () => {
-      toast.success("Policy updated");
+      toast.success(t("toastPolicyUpdated"));
       refetch();
       utils.policy.list.invalidate();
       utils.policy.getStats.invalidate();
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to update policy");
+      toast.error(error.message || t("toastPolicyUpdateError"));
     },
   });
 
   const approveMutation = trpc.policy.approve.useMutation({
     onSuccess: () => {
-      toast.success("Policy approved");
+      toast.success(t("toastPolicyApproved"));
       refetch();
       utils.policy.list.invalidate();
       utils.policy.getStats.invalidate();
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to approve policy");
+      toast.error(error.message || t("toastPolicyApproveError"));
     },
   });
 
   const publishMutation = trpc.policy.publishVersion.useMutation({
     onSuccess: () => {
-      toast.success("Policy published");
+      toast.success(t("toastPolicyPublished"));
       setPublishDialogOpen(false);
       setChangeNotes("");
       refetch();
@@ -143,29 +144,29 @@ export default function PolicyDetailPage() {
       utils.policy.getStats.invalidate();
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to publish policy");
+      toast.error(error.message || t("toastPolicyPublishError"));
     },
   });
 
   const linkSystemMutation = trpc.policy.linkSystem.useMutation({
     onSuccess: () => {
-      toast.success("System linked");
+      toast.success(t("toastSystemLinked"));
       setLinkSystemDialogOpen(false);
       setSelectedSystemId("");
       refetch();
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to link system");
+      toast.error(error.message || t("toastSystemLinkError"));
     },
   });
 
   const unlinkSystemMutation = trpc.policy.unlinkSystem.useMutation({
     onSuccess: () => {
-      toast.success("System unlinked");
+      toast.success(t("toastSystemUnlinked"));
       refetch();
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to unlink system");
+      toast.error(error.message || t("toastSystemUnlinkError"));
     },
   });
 
@@ -294,13 +295,13 @@ export default function PolicyDetailPage() {
               <h1 className="text-xl sm:text-2xl font-semibold">{policy.title}</h1>
               <div className="flex items-center gap-2 mt-1 flex-wrap">
                 <Badge variant="outline" className="text-xs">
-                  {policyTypeLabels[policy.type] || policy.type}
+                  {policyTypeLabelKeys[policy.type] ? tc(policyTypeLabelKeys[policy.type]) : policy.type}
                 </Badge>
                 <Badge
                   variant="outline"
                   className={`text-xs ${statusColors[policy.status] || ""}`}
                 >
-                  {policy.status.replace("_", " ")}
+                  {statusLabel(policy.status)}
                 </Badge>
                 <Badge variant="outline" className="text-xs">
                   v{policy.currentVersion}
@@ -420,18 +421,18 @@ export default function PolicyDetailPage() {
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">{t("labelApprovedBy")}</p>
-                <p className="font-medium text-sm">{policy.approvedBy || "Not yet approved"}</p>
+                <p className="font-medium text-sm">{policy.approvedBy || t("notYetApproved")}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Approved At</p>
+                <p className="text-sm text-muted-foreground">{t("labelApprovedAt")}</p>
                 <p className="font-medium text-sm">{formatDate(policy.approvedAt)}</p>
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">{t("labelCreatedBy")}</p>
-                <p className="font-medium text-sm">{policy.createdBy || "Unknown"}</p>
+                <p className="font-medium text-sm">{policy.createdBy || t("unknown")}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Created At</p>
+                <p className="text-sm text-muted-foreground">{t("labelCreatedAt")}</p>
                 <p className="font-medium text-sm">{formatDate(policy.createdAt)}</p>
               </div>
             </div>
@@ -452,7 +453,7 @@ export default function PolicyDetailPage() {
               <p className="text-sm text-muted-foreground">{t("linkedSystemsCount")}</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Last Updated</p>
+              <p className="text-sm text-muted-foreground">{t("labelLastUpdated")}</p>
               <p className="font-medium text-sm">{formatRelativeTime(policy.updatedAt, locale)}</p>
             </div>
           </CardContent>
@@ -497,7 +498,7 @@ export default function PolicyDetailPage() {
                 <div className="text-center py-8 text-muted-foreground">
                   <FileText className="w-12 h-12 mx-auto mb-4 opacity-50" />
                   <p>{t("emptyContentTitle")}</p>
-                  <p className="text-sm mb-4">Add content to define this policy</p>
+                  <p className="text-sm mb-4">{t("emptyContentHint")}</p>
                   <Button variant="outline" onClick={handleEditContent}>
                     <Edit className="w-4 h-4 mr-2" />
                     {t("addContent")}
@@ -516,7 +517,7 @@ export default function PolicyDetailPage() {
                 <History className="w-5 h-5" />
                 {t("versionHistoryTitle")}
               </CardTitle>
-              <CardDescription>Published versions of this policy</CardDescription>
+              <CardDescription>{t("versionHistoryDescription")}</CardDescription>
             </CardHeader>
             <CardContent>
               {policy.versions && policy.versions.length > 0 ? (
@@ -564,9 +565,9 @@ export default function PolicyDetailPage() {
               ) : (
                 <div className="text-center py-8 text-muted-foreground">
                   <History className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p>No versions published yet</p>
+                  <p>{t("emptyVersionsTitle")}</p>
                   <p className="text-sm">
-                    Versions are created when a policy is published
+                    {t("emptyVersionsHint")}
                   </p>
                 </div>
               )}
@@ -581,7 +582,7 @@ export default function PolicyDetailPage() {
               <div>
                 <CardTitle>{t("linkedSystemsTitle")}</CardTitle>
                 <CardDescription>
-                  AI systems governed by this policy
+                  {t("linkedSystemsDescription")}
                 </CardDescription>
               </div>
               <Button
@@ -633,9 +634,9 @@ export default function PolicyDetailPage() {
               ) : (
                 <div className="text-center py-8 text-muted-foreground">
                   <Link2 className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p>No linked systems</p>
+                  <p>{t("emptyLinkedSystemsTitle")}</p>
                   <p className="text-sm mb-4">
-                    Link AI systems that are governed by this policy
+                    {t("emptyLinkedSystemsHint")}
                   </p>
                   <Button
                     variant="outline"
@@ -659,13 +660,13 @@ export default function PolicyDetailPage() {
           </DialogHeader>
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">
-              Publishing will create version v{policy.currentVersion + 1} of this policy.
+              {t("publishDialogDescription", { version: policy.currentVersion + 1 })}
             </p>
             <div className="space-y-2">
               <Label htmlFor="changeNotes">{t("labelChangeNotes")}</Label>
               <Textarea
                 id="changeNotes"
-                placeholder="Describe what changed in this version..."
+                placeholder={t("placeholderChangeNotes")}
                 rows={3}
                 value={changeNotes}
                 onChange={(e) => setChangeNotes(e.target.value)}
@@ -704,7 +705,7 @@ export default function PolicyDetailPage() {
           </DialogHeader>
           <div className="space-y-4">
             <Textarea
-              placeholder="Write your policy content here..."
+              placeholder={t("placeholderPolicyContent")}
               rows={12}
               value={editedContent}
               onChange={(e) => setEditedContent(e.target.value)}
@@ -739,16 +740,16 @@ export default function PolicyDetailPage() {
           </DialogHeader>
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">
-              Select an AI system to link to this policy.
+              {t("linkSystemDialogDescription")}
             </p>
             <div className="space-y-2">
-              <Label>AI System</Label>
+              <Label>{t("labelAiSystem")}</Label>
               <Select
                 value={selectedSystemId}
                 onValueChange={setSelectedSystemId}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select an AI system" />
+                  <SelectValue placeholder={t("placeholderSelectAiSystem")} />
                 </SelectTrigger>
                 <SelectContent>
                   {systems.map((system) => (
@@ -792,7 +793,7 @@ export default function PolicyDetailPage() {
           </DialogHeader>
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">
-              This policy has {policy.systemLinks?.length ?? 0} linked AI system{(policy.systemLinks?.length ?? 0) !== 1 ? "s" : ""}. Archiving it may affect their governance coverage.
+              {t("archiveDialogDescription", { count: policy.systemLinks?.length ?? 0 })}
             </p>
             <div className="space-y-1.5">
               {policy.systemLinks?.map((link) => (
@@ -815,7 +816,7 @@ export default function PolicyDetailPage() {
               {updateMutation.isPending ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Archiving...
+                  {t("archiving")}
                 </>
               ) : (
                 <>

@@ -152,10 +152,13 @@ export default function NewOversightGatePage() {
                 </Select>
                 {systems.length === 0 && (
                   <p className="text-xs text-muted-foreground">
-                    No AI systems registered.{" "}
-                    <Link href="/governance/ai-registry/new" className="text-primary hover:underline">
-                      Register one first
-                    </Link>.
+                    {t.rich("noSystemsRegistered", {
+                      link: (chunks) => (
+                        <Link href="/governance/ai-registry/new" className="text-primary hover:underline">
+                          {chunks}
+                        </Link>
+                      ),
+                    })}
                   </p>
                 )}
               </div>
@@ -202,7 +205,7 @@ export default function NewOversightGatePage() {
                   onChange={(e) => setFormData({ ...formData, reviewCadence: e.target.value })}
                 />
                 <p className="text-xs text-muted-foreground">
-                  How frequently should this gate be reviewed
+                  {t("reviewCadenceHint")}
                 </p>
               </div>
               <div className="space-y-2">
@@ -226,14 +229,14 @@ export default function NewOversightGatePage() {
                 onChange={(e) => setFormData({ ...formData, assignedTo: e.target.value })}
               />
               <p className="text-xs text-muted-foreground">
-                Person or role responsible for this oversight gate
+                {t("assignedToHint")}
               </p>
             </div>
 
             {/* Error */}
             {createGate.error && (
               <div className="text-sm text-destructive">
-                Error: {createGate.error.message}
+                {tc("error", { message: createGate.error.message })}
               </div>
             )}
 

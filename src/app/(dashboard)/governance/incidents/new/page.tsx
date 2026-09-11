@@ -247,7 +247,7 @@ export default function NewIncidentPage() {
                 </SelectContent>
               </Select>
               <p className="text-xs text-muted-foreground">
-                Link this incident to a registered AI system
+                {t("aiSystemHint")}
               </p>
             </div>
 
@@ -282,14 +282,14 @@ export default function NewIncidentPage() {
                 }
               />
               <p className="text-xs text-muted-foreground">
-                Link to a related incident in DPO Central for cross-platform traceability
+                {t("dpoCentralIdHint")}
               </p>
             </div>
 
             {/* Error */}
             {createIncident.error && (
               <div className="text-sm text-destructive">
-                Error: {createIncident.error.message}
+                {tc("error", { message: createIncident.error.message })}
               </div>
             )}
 

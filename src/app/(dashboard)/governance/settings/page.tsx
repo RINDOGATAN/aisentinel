@@ -17,6 +17,7 @@ import { JurisdictionPicker } from "@/components/governance/jurisdiction-picker"
 import { CaliforniaScreeningCard } from "@/components/governance/california-screening-card";
 import { RegimeScreeningCard } from "@/components/governance/regime-screening-card";
 import { TeamCard } from "@/components/governance/team-card";
+import { DeleteOrganizationCard } from "@/components/governance/delete-organization-card";
 import type { JurisdictionId } from "@/config/jurisdictions";
 
 const personaIcons = {
@@ -146,6 +147,10 @@ export default function SettingsPage() {
       )}
 
       <DeploymentExpertCta />
+      {/* Owners only: permanent deletion */}
+      {organization && userRole === "OWNER" && (
+        <DeleteOrganizationCard organizationId={organization.id} organizationName={organization.name} />
+      )}
     </div>
   );
 }

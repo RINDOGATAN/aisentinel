@@ -51,28 +51,23 @@ import { useOrganization } from "@/lib/organization-context";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { suggestTechnique } from "@/lib/ai-technique-mapping";
 
+// Labels come from the `common` namespace (technique* / role* keys).
 const aiTechniques = [
-  { value: "MACHINE_LEARNING", label: "Machine Learning" },
-  { value: "DEEP_LEARNING", label: "Deep Learning" },
-  { value: "GENERATIVE_AI", label: "Generative AI" },
-  { value: "AGENTIC_AI", label: "Agentic AI" },
-  { value: "NLP", label: "Natural Language Processing" },
-  { value: "COMPUTER_VISION", label: "Computer Vision" },
-  { value: "SPEECH_RECOGNITION", label: "Speech Recognition" },
-  { value: "ROBOTICS", label: "Robotics" },
-  { value: "RULE_BASED", label: "Rule-Based" },
-  { value: "EXPERT_SYSTEM", label: "Expert System" },
-  { value: "STATISTICAL", label: "Statistical" },
-  { value: "OTHER", label: "Other" },
+  { value: "MACHINE_LEARNING", labelKey: "techniqueMachineLearning" },
+  { value: "DEEP_LEARNING", labelKey: "techniqueDeepLearning" },
+  { value: "GENERATIVE_AI", labelKey: "techniqueGenerativeAi" },
+  { value: "AGENTIC_AI", labelKey: "techniqueAgenticAi" },
+  { value: "NLP", labelKey: "techniqueNlp" },
+  { value: "COMPUTER_VISION", labelKey: "techniqueComputerVision" },
+  { value: "SPEECH_RECOGNITION", labelKey: "techniqueSpeechRecognition" },
+  { value: "ROBOTICS", labelKey: "techniqueRobotics" },
+  { value: "RULE_BASED", labelKey: "techniqueRuleBased" },
+  { value: "EXPERT_SYSTEM", labelKey: "techniqueExpertSystem" },
+  { value: "STATISTICAL", labelKey: "techniqueStatistical" },
+  { value: "OTHER", labelKey: "techniqueOther" },
 ];
 
-const aiRoles = [
-  { value: "PROVIDER", label: "Provider" },
-  { value: "DEPLOYER", label: "Deployer" },
-  { value: "IMPORTER", label: "Importer" },
-  { value: "DISTRIBUTOR", label: "Distributor" },
-  { value: "USER", label: "User" },
-];
+const aiRoles = ["PROVIDER", "DEPLOYER", "IMPORTER", "DISTRIBUTOR", "USER"];
 
 const statusColors: Record<string, string> = {
   DISCOVERED: "border-warning text-warning",
@@ -82,22 +77,23 @@ const statusColors: Record<string, string> = {
   REGISTERED: "border-primary text-primary",
 };
 
-const statusLabels: Record<string, string> = {
-  DISCOVERED: "Discovered",
-  UNDER_REVIEW: "Under Review",
-  APPROVED: "Approved",
-  PROHIBITED: "Prohibited",
-  REGISTERED: "Registered",
+// Translation keys in the shadowAiDetail namespace.
+const statusLabelKeys: Record<string, string> = {
+  DISCOVERED: "statusDiscovered",
+  UNDER_REVIEW: "statusUnderReview",
+  APPROVED: "statusApproved",
+  PROHIBITED: "statusProhibited",
+  REGISTERED: "statusRegistered",
 };
 
-const riskIndicatorLabels: Record<string, string> = {
-  PROCESSES_PERSONAL_DATA: "Processes Personal Data",
-  TRAINS_ON_INPUT: "Trains on Input",
-  CLOUD_HOSTED: "Cloud Hosted",
-  ON_PREMISE_AVAILABLE: "On-Premise Available",
-  SOC2_CERTIFIED: "SOC 2 Certified",
-  GDPR_COMPLIANT: "GDPR Compliant",
-  REQUIRES_API_KEY: "Requires API Key",
+const riskIndicatorLabelKeys: Record<string, string> = {
+  PROCESSES_PERSONAL_DATA: "riskIndicatorProcessesPersonalData",
+  TRAINS_ON_INPUT: "riskIndicatorTrainsOnInput",
+  CLOUD_HOSTED: "riskIndicatorCloudHosted",
+  ON_PREMISE_AVAILABLE: "riskIndicatorOnPremiseAvailable",
+  SOC2_CERTIFIED: "riskIndicatorSoc2Certified",
+  GDPR_COMPLIANT: "riskIndicatorGdprCompliant",
+  REQUIRES_API_KEY: "riskIndicatorRequiresApiKey",
 };
 
 const riskIndicatorColors: Record<string, string> = {
@@ -112,9 +108,13 @@ const riskIndicatorColors: Record<string, string> = {
 
 export default function ShadowAIDetailPage() {
   const t = useTranslations("shadowAiDetail");
-  const { statusLabel } = useEnumLabels();
+  const { statusLabel, roleLabel } = useEnumLabels();
   const locale = useLocale();
   const tc = useTranslations("common");
+  const toolCategoryLabel = (category: string) =>
+    t.has(`toolCategory.${category}`)
+      ? t(`toolCategory.${category}`)
+      : category.replace(/_/g, " ");
   const params = useParams();
   const id = params.id as string;
   const { organization, canWrite } = useOrganization();
@@ -148,7 +148,7 @@ export default function ShadowAIDetailPage() {
 
   const updateReport = trpc.shadowAi.updateReport.useMutation({
     onSuccess: () => {
-      toast.success("Report updated");
+      toast.success(t("toastReportUpdated"));
       utils.shadowAi.getReportById.invalidate({
         organizationId: organization?.id ?? "",
         id,
@@ -159,13 +159,13 @@ export default function ShadowAIDetailPage() {
       setSelectedSystemId("");
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to update report");
+      toast.error(error.message || t("toastReportUpdateError"));
     },
   });
 
   const registerWithAutoCreate = trpc.shadowAi.registerWithAutoCreate.useMutation({
     onSuccess: () => {
-      toast.success("System created and report registered");
+      toast.success(t("toastSystemCreatedAndRegistered"));
       utils.shadowAi.getReportById.invalidate({
         organizationId: organization?.id ?? "",
         id,
@@ -187,7 +187,7 @@ export default function ShadowAIDetailPage() {
       });
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to register");
+      toast.error(error.message || t("toastRegisterError"));
     },
   });
 
@@ -306,11 +306,11 @@ export default function ShadowAIDetailPage() {
                   variant="outline"
                   className={statusColors[report.status] || ""}
                 >
-                  {statusLabels[report.status] || report.status}
+                  {statusLabelKeys[report.status] ? t(statusLabelKeys[report.status]) : report.status}
                 </Badge>
                 {report.tool?.category && (
                   <Badge variant="secondary">
-                    {report.tool.category.replace(/_/g, " ")}
+                    {toolCategoryLabel(report.tool.category)}
                   </Badge>
                 )}
               </div>
@@ -321,22 +321,22 @@ export default function ShadowAIDetailPage() {
         {/* Status Transition Buttons */}
         {transitions.length > 0 && (
           <div className="flex gap-2 flex-wrap">
-            {transitions.map((t) => (
+            {transitions.map((tr) => (
               <Button
-                key={t.status}
-                variant={t.variant}
+                key={tr.status}
+                variant={tr.variant}
                 size="sm"
-                onClick={() => handleStatusChange(t.status)}
+                onClick={() => handleStatusChange(tr.status)}
                 disabled={updateReport.isPending}
               >
                 {updateReport.isPending && (
                   <Loader2 className="w-4 h-4 animate-spin mr-2" />
                 )}
-                {t.status === "UNDER_REVIEW" && <Eye className="w-4 h-4 mr-2" />}
-                {t.status === "APPROVED" && <CheckCircle className="w-4 h-4 mr-2" />}
-                {t.status === "PROHIBITED" && <XCircle className="w-4 h-4 mr-2" />}
-                {t.status === "REGISTERED" && <Cpu className="w-4 h-4 mr-2" />}
-                {t.label}
+                {tr.status === "UNDER_REVIEW" && <Eye className="w-4 h-4 mr-2" />}
+                {tr.status === "APPROVED" && <CheckCircle className="w-4 h-4 mr-2" />}
+                {tr.status === "PROHIBITED" && <XCircle className="w-4 h-4 mr-2" />}
+                {tr.status === "REGISTERED" && <Cpu className="w-4 h-4 mr-2" />}
+                {tr.label}
               </Button>
             ))}
           </div>
@@ -387,18 +387,18 @@ export default function ShadowAIDetailPage() {
                 <p className="text-sm text-muted-foreground">{t("labelReportedBy")}</p>
                 <p className="font-medium text-sm flex items-center gap-1">
                   <User className="w-3 h-3 text-muted-foreground" />
-                  {report.reportedBy || "Unknown"}
+                  {report.reportedBy || t("unknown")}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Reported</p>
+                <p className="text-sm text-muted-foreground">{t("labelReported")}</p>
                 <p className="font-medium text-sm flex items-center gap-1">
                   <Calendar className="w-3 h-3 text-muted-foreground" />
                   {formatDate(report.createdAt)}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Last Updated</p>
+                <p className="text-sm text-muted-foreground">{t("labelLastUpdated")}</p>
                 <p className="font-medium text-sm">
                   {formatRelativeTime(report.updatedAt, locale)}
                 </p>
@@ -413,7 +413,7 @@ export default function ShadowAIDetailPage() {
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium">{t("registeredSystemTitle")}</p>
                     <p className="text-xs text-muted-foreground truncate">
-                      ID: {report.registeredSystemId}
+                      {t("systemId", { id: report.registeredSystemId })}
                     </p>
                   </div>
                   <Link
@@ -439,19 +439,19 @@ export default function ShadowAIDetailPage() {
               <>
                 {report.tool.vendor && (
                   <div>
-                    <p className="text-sm text-muted-foreground">Vendor</p>
+                    <p className="text-sm text-muted-foreground">{t("labelVendor")}</p>
                     <p className="font-medium text-sm">{report.tool.vendor}</p>
                   </div>
                 )}
                 <div>
-                  <p className="text-sm text-muted-foreground">Category</p>
+                  <p className="text-sm text-muted-foreground">{t("labelCategory")}</p>
                   <p className="font-medium text-sm">
-                    {report.tool.category.replace(/_/g, " ")}
+                    {toolCategoryLabel(report.tool.category)}
                   </p>
                 </div>
                 {report.tool.website && (
                   <div>
-                    <p className="text-sm text-muted-foreground">Website</p>
+                    <p className="text-sm text-muted-foreground">{t("labelWebsite")}</p>
                     <a
                       href={
                         report.tool.website.startsWith("http")
@@ -469,7 +469,7 @@ export default function ShadowAIDetailPage() {
                 )}
                 {report.tool.description && (
                   <div>
-                    <p className="text-sm text-muted-foreground">Description</p>
+                    <p className="text-sm text-muted-foreground">{t("labelDescription")}</p>
                     <p className="text-sm">{report.tool.description}</p>
                   </div>
                 )}
@@ -477,7 +477,7 @@ export default function ShadowAIDetailPage() {
                   report.tool.riskIndicators.length > 0 && (
                     <div>
                       <p className="text-sm text-muted-foreground mb-2">
-                        Risk Indicators
+                        {t("labelRiskIndicators")}
                       </p>
                       <div className="flex flex-wrap gap-1.5">
                         {report.tool.riskIndicators.map((indicator) => (
@@ -486,7 +486,7 @@ export default function ShadowAIDetailPage() {
                             className={`text-xs ${riskIndicatorColors[indicator] || "bg-muted text-muted-foreground"}`}
                           >
                             <Shield className="w-3 h-3 mr-1" />
-                            {riskIndicatorLabels[indicator] || indicator}
+                            {riskIndicatorLabelKeys[indicator] ? t(riskIndicatorLabelKeys[indicator]) : indicator}
                           </Badge>
                         ))}
                       </div>
@@ -496,8 +496,8 @@ export default function ShadowAIDetailPage() {
             ) : (
               <div className="text-center py-4 text-muted-foreground">
                 <FileText className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                <p className="text-sm font-medium">Custom tool</p>
-                <p className="text-xs">Not in catalog</p>
+                <p className="text-sm font-medium">{t("customTool")}</p>
+                <p className="text-xs">{t("notInCatalog")}</p>
               </div>
             )}
           </CardContent>
@@ -519,54 +519,54 @@ export default function ShadowAIDetailPage() {
             {/* Create New Tab */}
             <TabsContent value="create" className="space-y-4 mt-4">
               <p className="text-sm text-muted-foreground">
-                Create a new AI system (and optionally a vendor) and link it to this report.
+                {t("registerCreateHint")}
               </p>
               <div className="space-y-2">
-                <Label>System Name *</Label>
+                <Label>{t("labelSystemName")} *</Label>
                 <Input
-                  placeholder="e.g., ChatGPT Integration"
+                  placeholder={t("placeholderSystemName")}
                   value={newSystemData.systemName}
                   onChange={(e) => setNewSystemData({ ...newSystemData, systemName: e.target.value })}
                 />
               </div>
               <div className="grid gap-3 grid-cols-2">
                 <div className="space-y-2">
-                  <Label>Organization Role</Label>
+                  <Label>{t("labelOrganizationRole")}</Label>
                   <Select
                     value={newSystemData.systemRole}
                     onValueChange={(value) => setNewSystemData({ ...newSystemData, systemRole: value })}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select role" />
+                      <SelectValue placeholder={t("placeholderSelectRole")} />
                     </SelectTrigger>
                     <SelectContent>
                       {aiRoles.map((r) => (
-                        <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>
+                        <SelectItem key={r} value={r}>{roleLabel(r)}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label>AI Technique</Label>
+                  <Label>{t("labelAiTechnique")}</Label>
                   <Select
                     value={newSystemData.systemTechnique}
                     onValueChange={(value) => setNewSystemData({ ...newSystemData, systemTechnique: value })}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select technique" />
+                      <SelectValue placeholder={t("placeholderSelectTechnique")} />
                     </SelectTrigger>
                     <SelectContent>
-                      {aiTechniques.map((t) => (
-                        <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
+                      {aiTechniques.map((tech) => (
+                        <SelectItem key={tech.value} value={tech.value}>{tc(tech.labelKey)}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
               </div>
               <div className="space-y-2">
-                <Label>Intended Purpose</Label>
+                <Label>{t("labelIntendedPurpose")}</Label>
                 <Textarea
-                  placeholder="Describe the intended purpose..."
+                  placeholder={t("placeholderIntendedPurpose")}
                   rows={2}
                   value={newSystemData.systemPurpose}
                   onChange={(e) => setNewSystemData({ ...newSystemData, systemPurpose: e.target.value })}
@@ -585,23 +585,23 @@ export default function ShadowAIDetailPage() {
                   />
                   <Label htmlFor="createVendor" className="flex items-center gap-2 cursor-pointer text-sm">
                     <Building2 className="w-4 h-4 text-primary" />
-                    Also create vendor record
+                    {t("toggleCreateVendor")}
                   </Label>
                 </div>
                 {newSystemData.createVendor && (
                   <div className="space-y-3 pl-0 sm:pl-10">
                     <div className="space-y-1">
-                      <Label className="text-xs">Vendor Name</Label>
+                      <Label className="text-xs">{t("labelVendorName")}</Label>
                       <Input
-                        placeholder="e.g., OpenAI"
+                        placeholder={t("placeholderVendorName")}
                         value={newSystemData.vendorName}
                         onChange={(e) => setNewSystemData({ ...newSystemData, vendorName: e.target.value })}
                       />
                     </div>
                     <div className="space-y-1">
-                      <Label className="text-xs">Vendor Website</Label>
+                      <Label className="text-xs">{t("labelVendorWebsite")}</Label>
                       <Input
-                        placeholder="e.g., https://openai.com"
+                        placeholder={t("placeholderVendorWebsite")}
                         value={newSystemData.vendorWebsite}
                         onChange={(e) => setNewSystemData({ ...newSystemData, vendorWebsite: e.target.value })}
                       />
@@ -614,16 +614,16 @@ export default function ShadowAIDetailPage() {
             {/* Link Existing Tab */}
             <TabsContent value="existing" className="space-y-4 mt-4">
               <p className="text-sm text-muted-foreground">
-                Link this shadow AI tool to an existing AI system in your registry.
+                {t("registerLinkHint")}
               </p>
               <div className="space-y-2">
-                <Label>AI System *</Label>
+                <Label>{t("labelAiSystem")} *</Label>
                 <Select
                   value={selectedSystemId}
                   onValueChange={setSelectedSystemId}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select an AI system" />
+                    <SelectValue placeholder={t("placeholderSelectAiSystem")} />
                   </SelectTrigger>
                   <SelectContent>
                     {systems.map((system) => (
@@ -658,10 +658,10 @@ export default function ShadowAIDetailPage() {
               {(updateReport.isPending || registerWithAutoCreate.isPending) ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Registering...
+                  {t("registering")}
                 </>
               ) : (
-                "Register"
+                t("register")
               )}
             </Button>
           </DialogFooter>

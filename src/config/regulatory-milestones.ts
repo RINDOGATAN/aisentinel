@@ -381,7 +381,7 @@ export const REGULATORY_MILESTONES: RegulatoryMilestone[] = [
     },
     whatItMeans: {
       en: "Art. 50 has applied since 2 August 2026: people must be told when they are interacting with an AI system, synthetic content must be marked in a machine-readable format, and deepfakes and AI-generated text published to inform the public must be disclosed. Not deferred by the Digital Omnibus.",
-      es: "El art. 50 se aplica desde el 2 de agosto de 2026: debe informarse a las personas cuando interactúan con un sistema de IA, el contenido sintético debe marcarse en un formato legible por máquina y deben revelarse las ultrafalsificaciones y el texto generado por IA publicado para informar al público. No fue aplazado por el Ómnibus Digital.",
+      es: "El art. 50 se aplica desde el 2 de agosto de 2026: debe informarse a las personas cuando interactúan con un sistema de IA, el contenido sintético debe marcarse en un formato legible por máquina y deben revelarse las ultrasuplantaciones y el texto generado por IA publicado para informar al público. No fue aplazado por el Ómnibus Digital.",
     },
     applies: (sys, org) => {
       const gate = euGate(org);

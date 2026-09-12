@@ -10,7 +10,8 @@ import {
 } from "./premium-showcase";
 
 /** The three deployments this product actually has. */
-const HOSTED = { NEXT_PUBLIC_STRIPE_ENABLED: "false" };
+const HOSTED = { VERCEL: "1" };
+const HOSTED_LEGACY = { NEXT_PUBLIC_STRIPE_ENABLED: "false" };
 const SELF_HOST = {
   NEXT_PUBLIC_STRIPE_ENABLED: "false",
   NEXT_PUBLIC_ALL_SKILLS_FREE: "true",
@@ -18,8 +19,17 @@ const SELF_HOST = {
 const CLOUD_WITH_STRIPE = { NEXT_PUBLIC_STRIPE_ENABLED: "true" };
 
 describe("which deployments keep deliverables paid", () => {
-  it("is on for the hosted instance: Stripe off, the flag unset", () => {
+  it("is on for the hosted instance, recognised by the platform variable", () => {
     expect(premiumShowcaseActive(HOSTED)).toBe(true);
+  });
+
+  it("is on for any deployment with Stripe switched off", () => {
+    expect(premiumShowcaseActive(HOSTED_LEGACY)).toBe(true);
+  });
+
+  it("stays on for hosted even where the all-skills-free flag is also set", () => {
+    // The hosted instance may carry both; the platform signal decides.
+    expect(premiumShowcaseActive({ VERCEL: "1", NEXT_PUBLIC_ALL_SKILLS_FREE: "true" })).toBe(true);
   });
 
   it("is off for a self-hosted deployment, where every module is included", () => {

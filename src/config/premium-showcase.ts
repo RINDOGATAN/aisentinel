@@ -17,8 +17,9 @@
  * `allSkillsFree` from the Stripe-off rule instead, which is how the two are
  * told apart without a second environment variable.
  *
- * `NEXT_PUBLIC_PREMIUM_SHOWCASE=false` turns it off anywhere; `=true` turns it
- * on anywhere, for a deployment that wants the shop-window posture deliberately.
+ * Hosted is recognised by `VERCEL=1`, which the platform sets itself, so no
+ * hosting configuration changes for this. `NEXT_PUBLIC_PREMIUM_SHOWCASE=false`
+ * turns it off anywhere; `=true` turns it on anywhere.
  *
  * Pure leaf module: no Prisma, no Next, no React.
  */
@@ -46,14 +47,21 @@ export type ShowcaseFeature = (typeof SHOWCASE_FEATURES)[number];
 export type ShowcaseEnv = Partial<Record<string, string | undefined>>;
 
 export function premiumShowcaseActive(env: ShowcaseEnv = process.env): boolean {
+  // An explicit answer always wins, in either direction.
   if (env.NEXT_PUBLIC_PREMIUM_SHOWCASE === "false") return false;
   if (env.NEXT_PUBLIC_PREMIUM_SHOWCASE === "true") return true;
 
-  // Self-host: the flag is baked explicitly, and everything is included.
+  // The hosted instance runs on Vercel, which sets this itself. It is the one
+  // signal that separates hosted from self-hosted without asking anyone to
+  // configure a second variable, and every caller of this function runs on the
+  // server, where it is visible.
+  if (env.VERCEL === "1") return true;
+
+  // Self-host: the all-skills-free flag is baked into the image, and every
+  // module is included.
   if (env.NEXT_PUBLIC_ALL_SKILLS_FREE === "true") return false;
 
-  // Hosted: Stripe off, the flag unset. Everything that teaches is free; the
-  // finished deliverables are the shop window.
+  // Any other deployment with Stripe switched off: same shop-window posture.
   return env.NEXT_PUBLIC_STRIPE_ENABLED === "false";
 }
 

@@ -18,6 +18,7 @@ import { CaliforniaScreeningCard } from "@/components/governance/california-scre
 import { RegimeScreeningCard } from "@/components/governance/regime-screening-card";
 import { TeamCard } from "@/components/governance/team-card";
 import { DeleteOrganizationCard } from "@/components/governance/delete-organization-card";
+import { LegalHoldCard } from "@/components/governance/legal-hold-card";
 import type { JurisdictionId } from "@/config/jurisdictions";
 
 const personaIcons = {
@@ -145,6 +146,9 @@ export default function SettingsPage() {
           isAdmin={userRole !== null && ["OWNER", "ADMIN"].includes(userRole)}
         />
       )}
+
+      {/* Preservation before deletion: a hold refuses every delete in scope. */}
+      {organization && <LegalHoldCard organizationId={organization.id} userRole={userRole} />}
 
       <DeploymentExpertCta />
       {/* Owners only: permanent deletion */}

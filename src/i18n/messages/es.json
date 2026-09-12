@@ -4611,5 +4611,28 @@
       "PUBLIC_AUTHORITY": "Autoridad pública",
       "OTHER": "Otro"
     }
+  },
+  "legalHold": {
+    "title": "Suspensión por litigio",
+    "description": "Cuando cabe prever razonablemente un litigio o una investigación, no puede eliminarse nada que esté dentro de su alcance. Una suspensión lo impone aquí y detiene la depuración automática de las instantáneas del programa.",
+    "noneActive": "No hay ninguna suspensión en vigor. La eliminación sigue las reglas ordinarias.",
+    "inForce": "En vigor",
+    "scopeOrg": "Toda la organización",
+    "scopeSystem": "Solo {name}",
+    "placedBy": "Establecida por {who} el {when}",
+    "releasedBy": "levantada por {who} el {when}",
+    "matter": "Asunto",
+    "matterPlaceholder": "El nombre o la referencia que usa la asesoría jurídica",
+    "reason": "Por qué se establece",
+    "reasonPlaceholder": "Qué se prevé y qué debe conservarse",
+    "place": "Establecer suspensión",
+    "placed": "Suspensión establecida.",
+    "release": "Levantar",
+    "confirmRelease": "Confirmar el levantamiento",
+    "releaseReasonPlaceholder": "Por qué ha terminado el deber de conservación",
+    "released": "Suspensión levantada.",
+    "cancel": "Cancelar",
+    "pastTitle": "Suspensiones levantadas",
+    "effect": "Mientras hay una suspensión en vigor, se rechaza eliminar sistemas, proveedores, evidencias, destinatarios, análisis, instantáneas y la propia organización."
   }
 }

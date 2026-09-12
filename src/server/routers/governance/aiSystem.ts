@@ -21,6 +21,7 @@ import {
   postureLane,
 } from "../../services/ai/posture";
 import { buildSystemContext, promptLocale } from "../../services/ai/context";
+import { assertNotOnHold } from "../../services/legal-hold";
 import {
   buildAnnexIvSystemPrompt,
   buildAnnexIvUserPrompt,
@@ -265,6 +266,9 @@ export const aiSystemRouter = createTRPCRouter({
   delete: orgWriteProcedure
     .input(z.object({ organizationId: z.string(), id: z.string() }))
     .mutation(async ({ ctx, input }) => {
+      // A hold on this system, or on the whole organisation, refuses this.
+      await assertNotOnHold(ctx.prisma, ctx.organization.id, { aiSystemId: input.id });
+
       await ctx.prisma.aISystem.deleteMany({
         where: { id: input.id, organizationId: ctx.organization.id },
       });

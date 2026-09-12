@@ -5,6 +5,7 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure, publicProcedure } from "../../trpc";
 import { buildScopeFilter } from "@/lib/applicability-scope";
+import { assertNotOnHold } from "../../services/legal-hold";
 
 const FRAMEWORK_ORDER = [
   "EU_AI_ACT",
@@ -460,6 +461,8 @@ export const complianceRouter = createTRPCRouter({
       if (!evidence) {
         throw new TRPCError({ code: "NOT_FOUND", message: "Evidence item not found" });
       }
+
+      await assertNotOnHold(ctx.prisma, ctx.organization.id);
 
       await ctx.prisma.complianceEvidence.delete({
         where: { id: input.evidenceId },

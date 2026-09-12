@@ -20,6 +20,7 @@ import { createHash } from "node:crypto";
 import type { ProgramGraph } from "@/lib/program-map/types";
 import type { ContentLocale } from "@/config/lawfirm-ai-toolkit";
 import { rulePackVersions, type RulePackId } from "@/config/rule-pack-versions";
+import { anyHoldInForce } from "@/server/services/legal-hold";
 import {
   getProgramGraphData,
   getProgramScorecardData,
@@ -284,6 +285,11 @@ export async function pruneSnapshots(
   prisma: PrismaClient,
   organizationId: string,
 ): Promise<number> {
+  // A legal hold stops the automatic pruning outright. Deleting the snapshot
+  // behind an exported report while a matter is live is the deletion that is
+  // hardest to explain afterwards, and it would otherwise happen silently.
+  if (await anyHoldInForce(prisma, organizationId)) return 0;
+
   const exports_ = await prisma.programSnapshotRecord.findMany({
     where: { organizationId, reason: "EXPORT" },
     orderBy: { createdAt: "desc" },

@@ -14,6 +14,7 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
+import { assertNotOnHold } from "../../services/legal-hold";
 import {
   BANDS,
   FACTOR_IDS,
@@ -277,7 +278,7 @@ export const sensitiveDataRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const row = await ctx.prisma.sensitiveDataAssessment.findFirst({
         where: { id: input.id, organizationId: ctx.organization.id },
-        select: { id: true, subject: true, completedAt: true },
+        select: { id: true, subject: true, completedAt: true, aiSystemId: true },
       });
       if (!row) {
         throw new TRPCError({ code: "NOT_FOUND", message: "Analysis not found" });
@@ -289,6 +290,8 @@ export const sensitiveDataRouter = createTRPCRouter({
             "A completed analysis is a record of a decision and cannot be deleted. Supersede it with a new one instead.",
         });
       }
+
+      await assertNotOnHold(ctx.prisma, ctx.organization.id, { aiSystemId: row.aiSystemId ?? null });
 
       await ctx.prisma.sensitiveDataAssessment.deleteMany({
         where: { id: input.id, organizationId: ctx.organization.id },

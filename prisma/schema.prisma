@@ -152,6 +152,7 @@ model Organization {
   assessmentVersions    AIAssessmentVersion[]
   sensitiveDataAssessments SensitiveDataAssessment[]
   dataRecipients        DataRecipient[]
+  legalHolds            LegalHold[]
   oversightGates        OversightGate[]
   oversightDecisions    OversightDecision[]
   incidents             AIIncident[]
@@ -303,6 +304,7 @@ model AISystem {
   assessments         AIAssessment[]
   sensitiveDataAssessments SensitiveDataAssessment[]
   dataRecipients      DataRecipient[]
+  legalHolds          LegalHold[]
   oversightGates      OversightGate[]
   incidents           AIIncident[]
   complianceMappings  ComplianceMapping[]
@@ -679,6 +681,41 @@ model AIAssessment {
   @@index([organizationId])
   @@index([aiSystemId])
   @@map("ai_assessments")
+}
+
+/// A legal hold: the instruction that nothing within its scope may be deleted.
+///
+/// When litigation or an investigation is reasonably anticipated, the duty to
+/// preserve attaches, and the worst answer a company can give is that a record
+/// was deleted on a schedule after that point. Until now nothing in the product
+/// prevented deletion, and the export snapshots were pruned automatically.
+///
+/// A hold blocks every deletion path for the organisation (or for one system,
+/// where the scope is narrower) and stops automatic pruning, until a named
+/// person releases it. Placing and releasing are both audited.
+model LegalHold {
+  id             String    @id @default(cuid())
+  organizationId String
+  /// What the hold is for: a matter name or reference, in the words counsel
+  /// uses for it.
+  matter         String
+  /// Why it was placed. A hold with no stated reason cannot be reviewed later.
+  reason         String    @db.Text
+  /// Narrow the hold to one system, or leave null for the whole organisation.
+  aiSystemId     String?
+  issuedBy       String
+  issuedAt       DateTime  @default(now())
+  releasedBy     String?
+  releasedAt     DateTime?
+  /// Why it was released, recorded at the moment of release.
+  releaseReason  String?   @db.Text
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  aiSystem     AISystem?    @relation(fields: [aiSystemId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId, releasedAt])
+  @@index([aiSystemId])
+  @@map("legal_holds")
 }
 
 /// Who receives data from an AI system, and on what terms.

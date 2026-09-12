@@ -4,6 +4,7 @@
 import { z } from "zod";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { TRPCError } from "@trpc/server";
+import { assertNotOnHold } from "../../services/legal-hold";
 import {
   parseSubprocessors,
   summarizeSupplyChain,
@@ -273,6 +274,8 @@ export const vendorRouter = createTRPCRouter({
   delete: orgWriteProcedure
     .input(z.object({ organizationId: z.string(), id: z.string() }))
     .mutation(async ({ ctx, input }) => {
+      await assertNotOnHold(ctx.prisma, ctx.organization.id);
+
       await ctx.prisma.aIVendor.deleteMany({
         where: { id: input.id, organizationId: ctx.organization.id },
       });

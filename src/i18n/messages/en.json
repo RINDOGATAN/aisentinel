@@ -4611,5 +4611,28 @@
       "PUBLIC_AUTHORITY": "Public authority",
       "OTHER": "Other"
     }
+  },
+  "legalHold": {
+    "title": "Legal hold",
+    "description": "When litigation or an investigation is reasonably anticipated, nothing in scope may be deleted. A hold enforces that here, and stops the automatic pruning of program snapshots.",
+    "noneActive": "No hold is in force. Deletion follows the ordinary rules.",
+    "inForce": "In force",
+    "scopeOrg": "Whole organization",
+    "scopeSystem": "Only {name}",
+    "placedBy": "Placed by {who} on {when}",
+    "releasedBy": "released by {who} on {when}",
+    "matter": "Matter",
+    "matterPlaceholder": "The name or reference counsel uses",
+    "reason": "Why the hold is placed",
+    "reasonPlaceholder": "What is anticipated, and what must be preserved",
+    "place": "Place hold",
+    "placed": "Legal hold placed.",
+    "release": "Release",
+    "confirmRelease": "Confirm release",
+    "releaseReasonPlaceholder": "Why the duty to preserve has ended",
+    "released": "Legal hold released.",
+    "cancel": "Cancel",
+    "pastTitle": "Released holds",
+    "effect": "While a hold is in force, deleting systems, vendors, evidence, recipients, analyses, snapshots and the organization itself is refused."
   }
 }

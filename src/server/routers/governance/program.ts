@@ -26,6 +26,7 @@ import {
   listSnapshots,
 } from "../../services/program/snapshot";
 import { diffSnapshots } from "@/lib/program-diff";
+import { assertNotOnHold } from "../../services/legal-hold";
 
 const localeInput = z.enum(["en", "es"]).default("en");
 
@@ -160,6 +161,9 @@ export const programRouter = createTRPCRouter({
           message: "Only owners and admins can delete snapshots",
         });
       }
+
+      // A snapshot is the reproducible record behind an exported report.
+      await assertNotOnHold(ctx.prisma, ctx.organization.id);
 
       const { count } = await ctx.prisma.programSnapshotRecord.deleteMany({
         where: { id: input.id, organizationId: ctx.organization.id },

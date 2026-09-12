@@ -13,6 +13,7 @@ import { OrganizationRole } from "@prisma/client";
 import { computeMarkingDeadline } from "@/config/transparency-rules";
 import { JURISDICTION_IDS } from "@/config/jurisdictions";
 import { firstFreeSlug } from "@/lib/unique-slug";
+import { assertNotOnHold } from "../../services/legal-hold";
 
 export const organizationRouter = createTRPCRouter({
   list: protectedProcedure.query(async ({ ctx }) => {
@@ -203,6 +204,8 @@ export const organizationRouter = createTRPCRouter({
           message: "The name typed does not match the organization's name",
         });
       }
+      await assertNotOnHold(ctx.prisma, ctx.organization.id);
+
       await ctx.prisma.auditLog.create({
         data: {
           organizationId: ctx.organization.id,

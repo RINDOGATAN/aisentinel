@@ -15,6 +15,7 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import type { PrismaClient } from "@prisma/client";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
+import { assertNotOnHold } from "../../services/legal-hold";
 import {
   DATA_ROLES,
   RECIPIENT_TYPES,
@@ -295,6 +296,10 @@ export const dataFlowRouter = createTRPCRouter({
       if (!existing) {
         throw new TRPCError({ code: "NOT_FOUND", message: "Recipient not found" });
       }
+
+      await assertNotOnHold(ctx.prisma, ctx.organization.id, {
+        aiSystemId: existing.aiSystemId,
+      });
 
       await ctx.prisma.dataRecipient.deleteMany({
         where: { id: input.id, organizationId: ctx.organization.id },

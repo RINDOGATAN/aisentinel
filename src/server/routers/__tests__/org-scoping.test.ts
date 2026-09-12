@@ -139,6 +139,9 @@ const H = vi.hoisted(() => {
     aIIncidentTimeline: makeTable(),
     aIIncidentTask: makeTable(),
     auditLog: makeTable(),
+    // Deletion now checks for a legal hold first. No holds in these fixtures:
+    // the scoping tests are about org isolation, not preservation.
+    legalHold: { findMany: async () => [], count: async () => 0 },
   };
 
   function reset() {

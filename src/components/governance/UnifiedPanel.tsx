@@ -19,6 +19,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
+  Lock,
   AlertTriangle,
   Bot,
   Download,
@@ -103,6 +104,7 @@ export function UnifiedPanel({
   const t = useTranslations("unified");
   const tr = useTranslations("regimes");
   const tc = useTranslations("common");
+  const tp = useTranslations("premiumShowcase");
   const utils = trpc.useUtils();
   const [edits, setEdits] = useState<Partial<Record<SystemFactKey, Answer>>>({});
 
@@ -159,6 +161,11 @@ export function UnifiedPanel({
     const needed = RELEVANT_TO[key];
     return needed === null || needed.some((j) => jurisdictions.includes(j as never));
   });
+
+  const { data: showcase } = trpc.skills.showcaseStatus.useQuery(
+    { organizationId },
+    { enabled: !!organizationId, staleTime: 5 * 60 * 1000 },
+  );
 
   const downloadUrl = (kind: string) =>
     `/api/export/unified-artifact?organizationId=${encodeURIComponent(organizationId)}&aiSystemId=${encodeURIComponent(aiSystemId)}&kind=${kind}`;
@@ -366,19 +373,48 @@ export function UnifiedPanel({
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="grid gap-2 sm:grid-cols-2">
-            {ARTIFACTS.map(({ kind, labelKey, icon: Icon }) => (
-              <a
-                key={kind}
-                href={downloadUrl(kind)}
-                className="flex items-center justify-between gap-2 rounded-md border border-border/50 bg-muted/20 px-3 py-2.5 hover:border-primary/40 transition-colors"
-              >
-                <span className="flex items-center gap-2 min-w-0">
-                  <Icon className="w-4 h-4 text-muted-foreground shrink-0" />
-                  <span className="text-sm truncate">{t(labelKey)}</span>
-                </span>
-                <span className="text-xs text-primary shrink-0">{t("download")}</span>
-              </a>
-            ))}
+            {ARTIFACTS.map(({ kind, labelKey, icon: Icon }) => {
+              // The impact assessment is the paid deliverable on the hosted
+              // instance; the notice and the protocol stay free, so the
+              // generation itself can still be seen and judged.
+              const locked =
+                kind === "assessment" &&
+                !!showcase?.locked.includes("impact-assessment-document");
+              if (locked) {
+                return (
+                  <div
+                    key={kind}
+                    className="flex items-center justify-between gap-2 rounded-md border border-border/50 bg-muted/10 px-3 py-2.5"
+                  >
+                    <span className="flex items-center gap-2 min-w-0">
+                      <Lock className="w-4 h-4 text-muted-foreground shrink-0" />
+                      <span className="text-sm truncate text-muted-foreground">
+                        {t(labelKey)}
+                      </span>
+                    </span>
+                    <Link
+                      href="/governance/skills"
+                      className="text-xs text-primary shrink-0 hover:underline"
+                    >
+                      {tp("activate")}
+                    </Link>
+                  </div>
+                );
+              }
+              return (
+                <a
+                  key={kind}
+                  href={downloadUrl(kind)}
+                  className="flex items-center justify-between gap-2 rounded-md border border-border/50 bg-muted/20 px-3 py-2.5 hover:border-primary/40 transition-colors"
+                >
+                  <span className="flex items-center gap-2 min-w-0">
+                    <Icon className="w-4 h-4 text-muted-foreground shrink-0" />
+                    <span className="text-sm truncate">{t(labelKey)}</span>
+                  </span>
+                  <span className="text-xs text-primary shrink-0">{t("download")}</span>
+                </a>
+              );
+            })}
           </div>
         </CardContent>
       </Card>

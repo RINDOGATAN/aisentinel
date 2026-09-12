@@ -28,6 +28,8 @@ import {
   suggestScenarios,
 } from "@/config/threat-model";
 import { assertNotOnHold } from "../../services/legal-hold";
+import { planRegisterLink } from "../../services/threat-model/register-link";
+import { addLibraryScenarios } from "../../services/threat-model/create";
 
 const capabilityEnum = z.enum(CAPABILITY_IDS as [string, ...string[]]);
 const levelEnum = z.enum(["LOW", "MEDIUM", "HIGH"]);
@@ -43,10 +45,6 @@ const categoryEnum = z.enum([
 ]);
 const layerEnum = z.enum(["PREVENT", "CONSTRAIN", "DETECT", "RESPOND", "ASSURE"]);
 const statusEnum = z.enum(["OPEN", "MITIGATED", "ACCEPTED", "OUT_OF_SCOPE"]);
-
-/** The config uses lower case; the database uses the Prisma enum. */
-const toDbCategory = (c: string) => c.toUpperCase() as z.infer<typeof categoryEnum>;
-const toDbLayer = (l: string) => l.toUpperCase() as z.infer<typeof layerEnum>;
 
 export const threatModelRouter = createTRPCRouter({
   list: organizationProcedure
@@ -581,67 +579,133 @@ export const threatModelRouter = createTRPCRouter({
 
       return { deleted: true };
     }),
+  /**
+   * What applying to the compliance register would write, and what it would
+   * not. The untested list is the useful half: it is the work still to do.
+   */
+  previewRegisterLink: organizationProcedure
+    .input(z.object({ organizationId: z.string(), id: z.string() }))
+    .query(async ({ ctx, input }) => buildLinkPlan(ctx.prisma, ctx.organization.id, input.id)),
+
+  /** Write the evidence. Only controls with a current passing test count. */
+  applyToRegister: orgWriteProcedure
+    .input(z.object({ organizationId: z.string(), id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { plan, model } = await buildLinkPlan(ctx.prisma, ctx.organization.id, input.id);
+      if (plan.evidence.length === 0) {
+        return { ...plan.counts, applied: 0 };
+      }
+
+      const addedBy = ctx.session.user.name ?? ctx.session.user.email ?? ctx.session.user.id;
+      let applied = 0;
+
+      for (const item of plan.evidence) {
+        await ctx.prisma.complianceEvidence.create({
+          data: {
+            complianceMappingId: item.mappingId,
+            organizationId: ctx.organization.id,
+            // A recorded attempt to break the control is a test result, not a
+            // document: the register should say what kind of evidence it holds.
+            type: "TEST_RESULT",
+            title: item.title,
+            description: item.description,
+            addedBy,
+          },
+        });
+        if (item.liftStatus) {
+          await ctx.prisma.complianceMapping.update({
+            where: { id: item.mappingId },
+            data: {
+              status: "PARTIALLY_COMPLIANT",
+              provenance: "AUTO_RULE",
+              sourceRef: `threat-model:${input.id}`,
+            },
+          });
+        }
+        applied += 1;
+      }
+
+      await ctx.prisma.auditLog.create({
+        data: {
+          organizationId: ctx.organization.id,
+          userId: ctx.session.user.id,
+          entityType: "ComplianceEvidence",
+          entityId: input.id,
+          action: "CREATE",
+          changes: {
+            source: "threat-model",
+            threatModel: model.name,
+            evidenceAdded: applied,
+            statusesLifted: plan.counts.lifted,
+            untestedScenarios: plan.untested.length,
+          },
+        },
+      });
+
+      return { ...plan.counts, applied };
+    }),
 });
 
 /**
- * Materialise library scenarios, with a control per suggestion and the test
- * carried onto the control. This is the automation: one click turns "it can
- * issue refunds" into a scenario, three controls and a test to run.
+ * Shared by the preview and the apply, so the number shown is the number that
+ * happens.
  */
-async function addLibraryScenarios(
+async function buildLinkPlan(
   prisma: PrismaClient,
   organizationId: string,
   threatModelId: string,
-  userId: string,
-  libraryIds: string[],
-): Promise<number> {
-  const existing = await prisma.threatScenario.findMany({
-    where: { threatModelId, organizationId },
-    select: { libraryId: true },
-  });
-  const taken = new Set(existing.map((e) => e.libraryId).filter(Boolean));
-
-  let added = 0;
-  for (const libraryId of libraryIds) {
-    if (taken.has(libraryId)) continue;
-    const entry = SCENARIO_LIBRARY.find((s) => s.id === libraryId);
-    if (!entry) continue;
-
-    const priority = priorityFor(
-      entry.defaults.impact,
-      entry.defaults.likelihood,
-      entry.defaults.blastRadius,
-    ).priority;
-
-    const scenario = await prisma.threatScenario.create({
-      data: {
-        organizationId,
-        threatModelId,
-        libraryId: entry.id,
-        category: toDbCategory(entry.category),
-        title: entry.title.en,
-        description: entry.story.en,
-        impact: entry.defaults.impact,
-        likelihood: entry.defaults.likelihood,
-        blastRadius: entry.defaults.blastRadius,
-        priority,
-        createdBy: userId,
-      },
-    });
-
-    for (const control of entry.controls) {
-      await prisma.threatControl.create({
-        data: {
-          organizationId,
-          scenarioId: scenario.id,
-          layer: toDbLayer(control.layer),
-          description: control.text.en,
-          howToTest: entry.test.en,
-          createdBy: userId,
+) {
+  const model = await prisma.threatModel.findFirst({
+    where: { id: threatModelId, organizationId },
+    include: {
+      scenarios: {
+        include: {
+          controls: {
+            orderBy: { createdAt: "asc" },
+            include: { tests: { orderBy: { testedAt: "desc" } } },
+          },
         },
-      });
-    }
-    added += 1;
+      },
+    },
+  });
+  if (!model) {
+    throw new TRPCError({ code: "NOT_FOUND", message: "Threat model not found" });
   }
-  return added;
+  if (!model.aiSystemId) {
+    throw new TRPCError({
+      code: "PRECONDITION_FAILED",
+      message:
+        "Link this threat model to a registered AI system first: the register holds evidence per system.",
+    });
+  }
+
+  const [requirementRows, mappingRows] = await Promise.all([
+    prisma.complianceRequirement.findMany({
+      select: { id: true, code: true, framework: { select: { code: true } } },
+    }),
+    prisma.complianceMapping.findMany({
+      where: { organizationId, aiSystemId: model.aiSystemId },
+      select: {
+        id: true,
+        requirementId: true,
+        status: true,
+        evidenceItems: { select: { title: true } },
+      },
+    }),
+  ]);
+
+  const plan = planRegisterLink(
+    model.name,
+    model.scenarios,
+    requirementRows.map((r) => ({ id: r.id, code: r.code, frameworkCode: r.framework.code })),
+    mappingRows.map((m) => ({
+      id: m.id,
+      requirementId: m.requirementId,
+      status: m.status,
+      evidenceTitles: m.evidenceItems.map((e) => e.title),
+    })),
+    new Date(),
+  );
+
+  return { plan, model };
 }

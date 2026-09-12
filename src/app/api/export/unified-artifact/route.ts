@@ -24,6 +24,10 @@ import {
 } from "@/server/services/artifacts/build-artifacts";
 import { renderArtifactMarkdown } from "@/server/services/artifacts/render-markdown";
 import { exportStamp, sha256, stampLines } from "@/server/services/export/integrity";
+import {
+  checkShowcaseAccess,
+  lockedResponse,
+} from "@/server/services/licensing/showcase-gate";
 
 const KINDS = ["assessment", "notice", "protocol", "agentic-addendum"] as const;
 type Kind = (typeof KINDS)[number];
@@ -71,6 +75,16 @@ export async function GET(request: NextRequest) {
   });
   if (!membership) {
     return Response.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  // The impact assessment document is the deliverable kept behind the licence
+  // on the hosted instance. The notice and the human-review protocol stay
+  // free, so the generation itself can still be seen and judged.
+  if (kind === "assessment") {
+    const access = await checkShowcaseAccess(organizationId, "impact-assessment-document");
+    if (!access.allowed) {
+      return lockedResponse(access);
+    }
   }
 
   const localeParam = request.nextUrl.searchParams.get("locale");

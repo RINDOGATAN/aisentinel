@@ -22,6 +22,12 @@ import {
 } from "@/server/services/licensing/activation";
 import { getMachineInfo } from "@/server/services/licensing/fingerprint";
 import type { LicenseFile } from "@/lib/license-crypto";
+import {
+  SHOWCASE_FEATURES,
+  SHOWCASE_PURCHASE_URL,
+  premiumShowcaseActive,
+} from "@/config/premium-showcase";
+import { checkShowcaseAccess } from "@/server/services/licensing/showcase-gate";
 
 // Mirrors the LicenseFile interface (and Dealroom's schema) exactly.
 const LicenseFileSchema = z.object({
@@ -206,5 +212,26 @@ export const skillsRouter = createTRPCRouter({
       });
 
       return { success: true };
+    }),
+  /**
+   * Which finished deliverables are behind the licence on this deployment,
+   * and whether this organisation holds them. The screens use it to show a
+   * lock and a way to unlock, instead of a download that fails.
+   */
+  showcaseStatus: organizationProcedure
+    .input(z.object({ organizationId: z.string() }))
+    .query(async ({ ctx }) => {
+      const active = premiumShowcaseActive();
+      const entries = await Promise.all(
+        SHOWCASE_FEATURES.map(async (feature) => {
+          const access = await checkShowcaseAccess(ctx.organization.id, feature);
+          return { feature, locked: !access.allowed };
+        }),
+      );
+      return {
+        active,
+        purchaseUrl: SHOWCASE_PURCHASE_URL,
+        locked: entries.filter((e) => e.locked).map((e) => e.feature),
+      };
     }),
 });

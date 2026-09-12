@@ -4,6 +4,7 @@
 import { AIAssessmentType, EntitlementStatus, LicenseType } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { features } from "@/config/features";
+import { isShowcasePremium } from "@/config/premium-showcase";
 
 // On the hosted unpaywalled cloud instance (Stripe off, NEXT_PUBLIC_ALL_SKILLS_FREE
 // unset) the previously-premium features are free for everyone. Deployments
@@ -41,7 +42,17 @@ export async function checkAssessmentEntitlement(
     return { entitled: true, reason: "Free assessment type" };
   }
 
-  if (features.allSkillsFree) {
+  // On the hosted instance the two specialist assessments stay behind the
+  // licence even though everything else is free; self-hosted deployments
+  // include them. See src/config/premium-showcase.ts.
+  const showcase =
+    assessmentType === "CONFORMITY"
+      ? isShowcasePremium("conformity-assessment")
+      : assessmentType === "BIAS_FAIRNESS"
+        ? isShowcasePremium("bias-fairness-assessment")
+        : false;
+
+  if (features.allSkillsFree && !showcase) {
     return { entitled: true, reason: ALL_SKILLS_FREE_REASON };
   }
 
@@ -110,9 +121,15 @@ export async function getEntitledAssessmentTypes(
 
 export async function checkSkillEntitlement(
   organizationId: string,
-  skillId: string
+  skillId: string,
+  /**
+   * Skip the all-skills-free bypass and require a real entitlement. Used by
+   * the hosted shop-window gate (src/config/premium-showcase.ts), where a few
+   * finished deliverables stay paid even though everything else is free.
+   */
+  options: { requireRealEntitlement?: boolean } = {}
 ): Promise<EntitlementCheckResult> {
-  if (features.allSkillsFree) {
+  if (features.allSkillsFree && !options.requireRealEntitlement) {
     return { entitled: true, reason: ALL_SKILLS_FREE_REASON };
   }
 

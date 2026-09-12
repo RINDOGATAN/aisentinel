@@ -26,6 +26,7 @@ import {
   Landmark,
   Briefcase,
   Building2,
+  Crosshair,
   Factory,
   Megaphone,
   CheckCircle2,
@@ -52,6 +53,12 @@ import {
   LAWFIRM_TOOLS,
   type ContentLocale,
 } from "@/config/lawfirm-ai-toolkit";
+import {
+  CAPABILITIES,
+  CAPABILITY_GROUPS,
+  CAPABILITY_GROUP_LABELS,
+  suggestScenarios,
+} from "@/config/threat-model";
 import { ProgramMap } from "@/components/governance/program/ProgramMap";
 import { JurisdictionPicker } from "@/components/governance/jurisdiction-picker";
 import { RegimeScreeningCard } from "@/components/governance/regime-screening-card";
@@ -111,7 +118,14 @@ const POPULAR_VENDORS = [
 // TYPES
 // ============================================================
 
-type WizardStep = "choose" | "vendors" | "industry" | "lawfirm" | "review" | "success";
+type WizardStep =
+  | "choose"
+  | "vendors"
+  | "industry"
+  | "lawfirm"
+  | "builder"
+  | "review"
+  | "success";
 
 // ============================================================
 // RISK LEVEL BADGES
@@ -164,6 +178,10 @@ export default function QuickstartPage() {
   const [step, setStep] = useState<WizardStep>("choose");
   const [useVendors, setUseVendors] = useState(false);
   const [useIndustry, setUseIndustry] = useState(false);
+  // The builder path: for a team building an AI product rather than adopting
+  // tools. It produces a threat model, not an inventory.
+  const [useBuilder, setUseBuilder] = useState(false);
+  const [builderCapabilities, setBuilderCapabilities] = useState<string[]>([]);
 
   // Display locale for law-firm config labels (server resolves its own copy
   // of the same cookie when writing records)
@@ -214,6 +232,8 @@ export default function QuickstartPage() {
     starterAssessments?: number;
     starterVendorReviews?: number;
     regimeMappings?: number;
+    threatModelScenarios?: number;
+    threatModelId?: string | null;
   } | null>(null);
 
   // Debounce search
@@ -324,6 +344,7 @@ export default function QuickstartPage() {
     ...(useVendors ? (["vendors"] as const) : []),
     ...(useIndustry ? (["industry"] as const) : []),
     ...(useLawFirm ? (["lawfirm"] as const) : []),
+    ...(useBuilder ? (["builder"] as const) : []),
     "review",
   ];
   const goNext = (from: WizardStep) =>
@@ -334,11 +355,12 @@ export default function QuickstartPage() {
     const next = stepOrder[stepOrder.indexOf(from) + 1];
     if (next === "industry") return t("stepIndustryTemplate");
     if (next === "lawfirm") return t("stepLawFirmTools");
+    if (next === "builder") return t("stepBuilder");
     return t("stepReviewBuild");
   };
 
   const handleProceedFromChoose = () => {
-    if (!useVendors && !useIndustry) {
+    if (!useVendors && !useIndustry && !useBuilder) {
       toast.error(t("selectAtLeastOneOption"));
       return;
     }
@@ -402,6 +424,7 @@ export default function QuickstartPage() {
       vendorSlugs: useVendors ? selectedSlugs : [],
       industryId: useIndustry && !useLawFirm ? selectedIndustryId ?? undefined : undefined,
       lawFirmToolIds: useLawFirm ? selectedLawFirmToolIds : [],
+      builderCapabilities: useBuilder ? builderCapabilities : [],
       skipSystemNames,
       skipPolicyTitles,
     });
@@ -661,13 +684,117 @@ export default function QuickstartPage() {
               </CardContent>
             </Card>
 
+            {/* Builder Card: for a team building the AI, not adopting it */}
+            <Card
+              className={`cursor-pointer transition-all ${
+                useBuilder ? "border-primary ring-2 ring-primary/20" : "hover:border-primary/50"
+              }`}
+              onClick={() => setUseBuilder(!useBuilder)}
+            >
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <Crosshair className="w-8 h-8 text-primary" />
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className="text-green-600 border-green-600/50">
+                      {tc("free")}
+                    </Badge>
+                    {useBuilder && <CheckCircle2 className="w-5 h-5 text-primary" />}
+                  </div>
+                </div>
+                <CardTitle className="text-lg">{t("builderTitle")}</CardTitle>
+                <CardDescription>{t("builderDescription")}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  <Badge variant="secondary">{t("chipScenarios")}</Badge>
+                  <Badge variant="secondary">{t("chipControls")}</Badge>
+                  <Badge variant="secondary">{t("chipTests")}</Badge>
+                </div>
+              </CardContent>
+            </Card>
+
           </div>
 
           <div className="flex justify-end">
             <Button
               onClick={handleProceedFromChoose}
-              disabled={!useVendors && !useIndustry}
+              disabled={!useVendors && !useIndustry && !useBuilder}
             >
+              {tc("continue")}
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* ════════════════════════════════════════════════
+          STEP 2D: The builder path — what the product can do
+          ════════════════════════════════════════════════ */}
+      {step === "builder" && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-semibold">{t("builderStepTitle")}</h2>
+              <p className="text-sm text-muted-foreground">{t("builderStepDescription")}</p>
+            </div>
+            <Button variant="ghost" size="sm" onClick={() => goBack("builder")}>
+              <ArrowLeft className="w-4 h-4 mr-1" />
+              {tc("back")}
+            </Button>
+          </div>
+
+          <Card>
+            <CardContent className="p-4 space-y-4">
+              {CAPABILITY_GROUPS.map((group) => (
+                <div key={group} className="space-y-2">
+                  <p className="text-xs text-muted-foreground uppercase tracking-wide">
+                    {CAPABILITY_GROUP_LABELS[group][contentLocale]}
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {CAPABILITIES.filter((c) => c.group === group).map((c) => {
+                      const on = builderCapabilities.includes(c.id);
+                      return (
+                        <button
+                          key={c.id}
+                          type="button"
+                          title={c.note[contentLocale]}
+                          onClick={() =>
+                            setBuilderCapabilities((prev) =>
+                              prev.includes(c.id)
+                                ? prev.filter((x) => x !== c.id)
+                                : [...prev, c.id],
+                            )
+                          }
+                          className={`text-xs rounded-full border px-3 py-1.5 transition-colors ${
+                            on
+                              ? "border-primary bg-primary/15 text-primary"
+                              : "border-border text-muted-foreground hover:border-primary/40"
+                          }`}
+                        >
+                          {c.label[contentLocale]}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+
+          {builderCapabilities.length > 0 && (
+            <Card className="border-primary/30 bg-primary/5">
+              <CardContent className="p-4">
+                <p className="text-sm">
+                  {t("builderWillPropose", {
+                    count: suggestScenarios(builderCapabilities).length,
+                  })}
+                </p>
+              </CardContent>
+            </Card>
+          )}
+
+          <div className="flex justify-end">
+            <Button onClick={() => goNext("builder")} disabled={builderCapabilities.length === 0}>
               {tc("continue")}
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
@@ -1780,6 +1907,8 @@ export default function QuickstartPage() {
                     t("statStarterAssessments", { count: executionResult.starterAssessments ?? 0 }),
                   (executionResult.starterVendorReviews ?? 0) > 0 &&
                     t("statStarterVendorReviews", { count: executionResult.starterVendorReviews ?? 0 }),
+                  (executionResult.threatModelScenarios ?? 0) > 0 &&
+                    t("statThreatScenarios", { count: executionResult.threatModelScenarios ?? 0 }),
                 ]
                   .filter(Boolean)
                   .join(" · ")}

@@ -75,6 +75,38 @@ export async function seedDatabase(prisma: PrismaClient) {
       priceAmount: 900,
       priceCurrency: "eur",
     },
+    // The two finished deliverables kept behind the licence on the hosted
+    // instance (src/config/premium-showcase.ts). Everything that teaches the
+    // product stays free there; these are what a visitor would be buying.
+    // Self-hosted deployments include them, as they include everything else.
+    {
+      id: "skill-impact-assessment",
+      skillId: "com.todolaw.aisentinel.impact-assessment",
+      name: "IMPACT_ASSESSMENT",
+      displayName: "Impact assessment documents",
+      assessmentType: null,
+      description:
+        "Generate the impact assessment document from the answers you have given: one document per system, scoped to the regimes that apply, with the open items named rather than hidden.",
+      isPremium: true,
+      isActive: true,
+      stripePriceId: process.env.STRIPE_PRICE_IMPACT_ASSESSMENT || STRIPE_PRICE_DEFAULT,
+      priceAmount: 900,
+      priceCurrency: "eur",
+    },
+    {
+      id: "skill-program-report",
+      skillId: "com.todolaw.aisentinel.program-report",
+      name: "PROGRAM_REPORT",
+      displayName: "Program report and pack",
+      assessmentType: null,
+      description:
+        "The board-ready program report, and the full program pack: policies, register, obligations calendar, per-system documents and the integrity manifest, in one download.",
+      isPremium: true,
+      isActive: true,
+      stripePriceId: process.env.STRIPE_PRICE_PROGRAM_REPORT || STRIPE_PRICE_DEFAULT,
+      priceAmount: 1900,
+      priceCurrency: "eur",
+    },
   ];
 
   for (const pkg of skillPackages) {

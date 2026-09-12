@@ -579,7 +579,17 @@
     },
     "legalIndustryName": "Legal",
     "legalIndustryDescription": "Despachos de abogados y asesorías jurídicas: elige las herramientas de IA que usas (investigación jurídica, redacción, revisión contractual, e-discovery, traducción) y obtén el paquete de políticas para despachos.",
-    "legalIndustryTools": "{count} herramientas para elegir"
+    "legalIndustryTools": "{count} herramientas para elegir",
+    "builderTitle": "Estoy construyendo un producto de IA",
+    "builderDescription": "Para el equipo que escribe el código. Di qué puede ver y hacer tu producto y obtén lo que podría salir mal, con controles y una prueba para cada cosa.",
+    "chipScenarios": "Escenarios de amenaza",
+    "chipControls": "Controles",
+    "chipTests": "Pruebas por hacer",
+    "stepBuilder": "Lo que estás construyendo",
+    "builderStepTitle": "¿Qué puede ver y hacer tu producto?",
+    "builderStepDescription": "Marca lo que sea cierto hoy. Lleva unos cuatro minutos y produce el primer borrador de tu modelo de amenazas.",
+    "builderWillPropose": "De esto se derivan {count} escenarios, cada uno con controles y una prueba.",
+    "statThreatScenarios": "{count} escenarios de amenaza"
   },
   "assessments": {
     "title": "Evaluaciones",
@@ -4872,6 +4882,22 @@
     },
     "delete": "Eliminar",
     "deleteConfirm": "Confirmar eliminación",
-    "deleted": "Modelo de amenazas eliminado."
+    "deleted": "Modelo de amenazas eliminado.",
+    "registerTitle": "Qué acredita esto en el registro de cumplimiento",
+    "registerHint": "Un control con una prueba superada y vigente es evidencia frente a las obligaciones que cumple. Un control sin probar no acredita nada, así que no se escribe.",
+    "registerReady": "{count} evidencias listas para escribir",
+    "registerAlready": "{count} ya registradas",
+    "registerUntested": "{count} escenarios no acreditan nada todavía",
+    "registerApply": "Escribir {count} evidencias",
+    "registerApplied": "{count} evidencias escritas en el registro.",
+    "untestedReason": {
+      "no-test": "sin pruebas registradas",
+      "not-passing": "la última prueba falló, fue parcial o ha caducado"
+    }
+  },
+  "premiumShowcase": {
+    "lockedHint": "Forma parte de un módulo de pago en esta instancia alojada. Al autoalojarlo, todos los módulos están incluidos.",
+    "activate": "Activar una licencia",
+    "buy": "Ver los módulos"
   }
 }

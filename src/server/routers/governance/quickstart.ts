@@ -30,6 +30,7 @@ import {
 import { attachRegimeMappings } from "../../services/scope/attach-regimes";
 import { localizeTemplate } from "../../../config/ai-governance-templates.es";
 import { createStarterArtifacts } from "@/server/services/program/starter-artifacts";
+import { createBuilderThreatModel } from "@/server/services/threat-model/create";
 import {
   CORE_POLICY_PACK_VERSION,
   corePoliciesMissingFrom,
@@ -387,6 +388,12 @@ export const quickstartRouter = createTRPCRouter({
         lawFirmToolIds: z.array(z.string()).max(40).default([]),
         skipSystemNames: z.array(z.string()).default([]),
         skipPolicyTitles: z.array(z.string()).default([]),
+        /**
+         * The builder path: what the product being built can see, retrieve,
+         * remember, call and do. Empty means the path was not chosen.
+         */
+        builderCapabilities: z.array(z.string().max(40)).max(40).default([]),
+        builderName: z.string().max(200).optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -399,12 +406,13 @@ export const quickstartRouter = createTRPCRouter({
       if (
         input.vendorSlugs.length === 0 &&
         !input.industryId &&
-        input.lawFirmToolIds.length === 0
+        input.lawFirmToolIds.length === 0 &&
+        input.builderCapabilities.length === 0
       ) {
         throw new TRPCError({
           code: "BAD_REQUEST",
           message:
-            "Select at least one vendor to import, an industry template, or a law-firm toolkit",
+            "Select at least one vendor to import, an industry template, a law-firm toolkit, or what the product you are building can do",
         });
       }
 
@@ -1280,6 +1288,44 @@ export const quickstartRouter = createTRPCRouter({
         // Deliberately silent to the user: the build itself succeeded.
       }
 
+      // The builder path: one threat model for the product being built, with
+      // the scenarios its capabilities imply. Deduped by name, so running the
+      // wizard again tops it up rather than creating a second one.
+      let threatModel = { scenarios: 0, created: false, id: null as string | null };
+      if (input.builderCapabilities.length > 0) {
+        try {
+          const built = await createBuilderThreatModel(ctx.prisma, {
+            organizationId: orgId,
+            userId,
+            name: input.builderName?.trim() || `${ctx.organization.name}: AI product`,
+            capabilities: input.builderCapabilities,
+            aiSystemId: result.createdSystemIds[0] ?? null,
+          });
+          threatModel = {
+            scenarios: built.scenariosAdded,
+            created: built.created,
+            id: built.threatModelId,
+          };
+          await ctx.prisma.auditLog.create({
+            data: {
+              organizationId: orgId,
+              userId,
+              entityType: "ThreatModel",
+              entityId: built.threatModelId,
+              action: built.created ? "CREATE" : "UPDATE",
+              changes: {
+                source: "quickstart",
+                capabilities: input.builderCapabilities,
+                scenariosAdded: built.scenariosAdded,
+              },
+            },
+          });
+        } catch {
+          // The build itself succeeded; the threat model can still be started
+          // from its own screen.
+        }
+      }
+
       return {
         ...result.counts,
         regimeMappings,
@@ -1287,6 +1333,9 @@ export const quickstartRouter = createTRPCRouter({
         starterAssessments: starter.assessments,
         starterVendorReviews: starter.vendorReviews,
         starterAssessmentsSkippedUndeclared: starter.assessmentsSkippedUndeclared,
+        threatModelScenarios: threatModel.scenarios,
+        threatModelId: threatModel.id,
+        threatModelCreated: threatModel.created,
       };
     }),
 });

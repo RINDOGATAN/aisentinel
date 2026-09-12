@@ -18,6 +18,7 @@ import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { ProgramMap } from "@/components/governance/program/ProgramMap";
 import { NistRadar } from "@/components/governance/program/NistRadar";
+import { PremiumDeliverable } from "@/components/governance/premium-deliverable";
 import {
   ScorecardTiles,
   DimensionGrid,
@@ -78,29 +79,22 @@ export default function ProgramPage() {
                 {t("historyLink")}
               </Button>
             </Link>
-            <Button
-              variant="outline"
-              onClick={() =>
-                window.open(
-                  `/api/export/governance-program?organizationId=${orgId}&locale=${locale}`,
-                  "_blank",
-                )
-              }
-            >
-              <Download className="w-4 h-4 mr-2" />
-              {t("exportPdf")}
-            </Button>
-            <Button
-              onClick={() =>
-                window.open(
-                  `/api/export/program-pack?organizationId=${orgId}&locale=${locale}`,
-                  "_blank",
-                )
-              }
-            >
-              <Package className="w-4 h-4 mr-2" />
-              {t("exportPack")}
-            </Button>
+            {/* Both are paid modules on the hosted instance and included when
+                self-hosted; the component shows which, rather than offering a
+                download that would fail. */}
+            <PremiumDeliverable
+              organizationId={orgId}
+              feature="program-report"
+              href={`/api/export/governance-program?organizationId=${orgId}&locale=${locale}`}
+              label={t("exportPdf")}
+            />
+            <PremiumDeliverable
+              organizationId={orgId}
+              feature="program-pack"
+              href={`/api/export/program-pack?organizationId=${orgId}&locale=${locale}`}
+              label={t("exportPack")}
+              variant="default"
+            />
           </div>
         )}
       </div>

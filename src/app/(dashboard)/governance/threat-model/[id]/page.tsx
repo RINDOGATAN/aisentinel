@@ -85,6 +85,13 @@ export default function ThreatModelDetailPage() {
     { enabled: !!orgId && !!id },
   );
 
+  // What a tested control would evidence in the register. Errors are expected
+  // here (no linked system), so they are shown rather than thrown.
+  const registerLink = trpc.threatModel.previewRegisterLink.useQuery(
+    { organizationId: orgId, id },
+    { enabled: !!orgId && !!id, retry: false },
+  );
+
   const invalidate = () => {
     void utils.threatModel.getById.invalidate({ organizationId: orgId, id });
     void utils.threatModel.list.invalidate();
@@ -124,6 +131,15 @@ export default function ThreatModelDetailPage() {
     onSuccess: () => {
       toast.success(t("deleted"));
       router.push("/governance/threat-model");
+    },
+    onError: (e) => toast.error(e.message),
+  });
+
+  const applyToRegister = trpc.threatModel.applyToRegister.useMutation({
+    onSuccess: (r) => {
+      toast.success(t("registerApplied", { count: r.applied }));
+      void utils.threatModel.previewRegisterLink.invalidate({ organizationId: orgId, id });
+      void utils.compliance.invalidate();
     },
     onError: (e) => toast.error(e.message),
   });
@@ -253,6 +269,77 @@ export default function ThreatModelDetailPage() {
           </CardContent>
         </Card>
       )}
+
+      {/* ── The join with the compliance register */}
+      <Card className="border-primary/30">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base">{t("registerTitle")}</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <p className="text-xs text-muted-foreground">{t("registerHint")}</p>
+
+          {registerLink.error ? (
+            <p className="text-sm text-warning">{registerLink.error.message}</p>
+          ) : !registerLink.data ? (
+            <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
+          ) : (
+            <>
+              <div className="flex flex-wrap gap-4 text-sm">
+                <span>
+                  {t("registerReady", { count: registerLink.data.plan.counts.evidence })}
+                </span>
+                {registerLink.data.plan.counts.alreadyThere > 0 && (
+                  <span className="text-muted-foreground">
+                    {t("registerAlready", { count: registerLink.data.plan.counts.alreadyThere })}
+                  </span>
+                )}
+              </div>
+
+              {registerLink.data.plan.untested.length > 0 && (
+                <div className="space-y-1">
+                  <p className="text-xs font-medium text-warning">
+                    {t("registerUntested", { count: registerLink.data.plan.untested.length })}
+                  </p>
+                  {registerLink.data.plan.untested.slice(0, 5).map((u) => (
+                    <p key={u.scenarioId} className="text-[11px] text-muted-foreground">
+                      · {u.title} — {t(`untestedReason.${u.reason}`)}
+                    </p>
+                  ))}
+                </div>
+              )}
+
+              {registerLink.data.plan.evidence.length > 0 && (
+                <div className="flex flex-wrap gap-1.5">
+                  {[
+                    ...new Set(
+                      registerLink.data.plan.evidence.map(
+                        (e) => `${e.frameworkCode} ${e.requirementCode}`,
+                      ),
+                    ),
+                  ].map((label) => (
+                    <Badge key={label} variant="outline" className="text-[10px] border-success/40 text-success">
+                      {label}
+                    </Badge>
+                  ))}
+                </div>
+              )}
+
+              {canWrite && registerLink.data.plan.counts.evidence > 0 && (
+                <Button
+                  size="sm"
+                  disabled={applyToRegister.isPending}
+                  onClick={() => applyToRegister.mutate({ organizationId: orgId, id })}
+                >
+                  {applyToRegister.isPending && (
+                    <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />
+                  )}
+                  {t("registerApply", { count: registerLink.data.plan.counts.evidence })}
+                </Button>
+              )}
+            </>
+          )}
+        </CardContent>
+      </Card>
 
       {/* ── Scenarios */}
       <div className="space-y-3">

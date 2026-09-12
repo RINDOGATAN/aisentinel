@@ -14,6 +14,10 @@ import { SESSION_COOKIE_NAME, useSecureCookies } from "@/lib/session-cookie";
 import prisma from "@/lib/prisma";
 import { resolveContentLocale } from "@/config/lawfirm-ai-toolkit";
 import { buildProgramPack } from "@/server/services/export/program-pack";
+import {
+  checkShowcaseAccess,
+  lockedResponse,
+} from "@/server/services/licensing/showcase-gate";
 
 export async function GET(request: NextRequest) {
   const organizationId = request.nextUrl.searchParams.get("organizationId");
@@ -37,6 +41,13 @@ export async function GET(request: NextRequest) {
   });
   if (!membership) {
     return Response.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  // Hosted keeps the finished deliverables behind the licence; self-hosted
+  // deployments include them. src/config/premium-showcase.ts explains which.
+  const access = await checkShowcaseAccess(organizationId, "program-pack");
+  if (!access.allowed) {
+    return lockedResponse(access);
   }
 
   const localeParam = request.nextUrl.searchParams.get("locale");

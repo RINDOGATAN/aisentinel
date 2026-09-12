@@ -579,7 +579,17 @@
     },
     "legalIndustryName": "Legal",
     "legalIndustryDescription": "Law firms and in-house legal teams: pick the AI tools you use (legal research, drafting, contract review, e-discovery, translation) and get the law-firm policy pack.",
-    "legalIndustryTools": "{count} tools to choose from"
+    "legalIndustryTools": "{count} tools to choose from",
+    "builderTitle": "I am building an AI product",
+    "builderDescription": "For the team writing the code. Say what your product can see and do, and get the things that could go wrong, with controls and a test for each.",
+    "chipScenarios": "Threat scenarios",
+    "chipControls": "Controls",
+    "chipTests": "Tests to run",
+    "stepBuilder": "What you are building",
+    "builderStepTitle": "What can your product see and do?",
+    "builderStepDescription": "Tick what is true today. This takes about four minutes and produces the first draft of your threat model.",
+    "builderWillPropose": "{count} scenarios follow from this, each with controls and a test.",
+    "statThreatScenarios": "{count} threat scenarios"
   },
   "assessments": {
     "title": "Assessments",
@@ -4872,6 +4882,22 @@
     },
     "delete": "Delete",
     "deleteConfirm": "Confirm delete",
-    "deleted": "Threat model deleted."
+    "deleted": "Threat model deleted.",
+    "registerTitle": "What this proves in the compliance register",
+    "registerHint": "A control with a current passing test is evidence against the obligations it meets. An untested control proves nothing, so it is not written.",
+    "registerReady": "{count} evidence items ready to write",
+    "registerAlready": "{count} already recorded",
+    "registerUntested": "{count} scenarios evidence nothing yet",
+    "registerApply": "Write {count} evidence items",
+    "registerApplied": "{count} evidence items written to the register.",
+    "untestedReason": {
+      "no-test": "no test recorded",
+      "not-passing": "last test failed, was partial, or has gone stale"
+    }
+  },
+  "premiumShowcase": {
+    "lockedHint": "Part of a paid module on this hosted instance. Every module is included when you self-host.",
+    "activate": "Activate a licence",
+    "buy": "See the modules"
   }
 }

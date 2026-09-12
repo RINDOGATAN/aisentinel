@@ -511,6 +511,154 @@ export const AI_GOVERNANCE_TEMPLATES: AIGovernanceTemplate[] = [
       },
     ],
   },
+
+  // ──────────────────────────────────────────────────
+  // MEDIA & ADVERTISING
+  // ──────────────────────────────────────────────────
+  {
+    id: "media",
+    name: "Media and Advertising",
+    description: "AI systems in publishing, advertising and marketing: audience modelling, generative creative, content recommendation and brand safety.",
+    icon: "Megaphone",
+    systems: [
+      {
+        name: "Audience Segmentation and Lookalike Modelling",
+        description: "Model that groups people into audience segments and finds similar people from behavioural, purchase and contextual signals.",
+        technique: "MACHINE_LEARNING",
+        role: "DEPLOYER",
+        purpose: "Build and extend advertising audiences so that campaigns reach people likely to find them relevant",
+        processesPersonalData: true,
+        riskLevel: "MINIMAL",
+        riskRationale: "Advertising audiences are not listed in Annex III, and the California rules expressly exclude advertising from the automated decisions they regulate. The exposure sits in data protection law instead: a segment that reveals or infers a sensitive characteristic, health above all, triggers opt-in consent in several US states and Art. 9 of the GDPR. Classify each segment before it is built.",
+      },
+      {
+        name: "Generative Ad Creative",
+        description: "Generative system that produces advertising copy, images and video variants from a brief and a brand style guide.",
+        technique: "GENERATIVE_AI",
+        role: "DEPLOYER",
+        purpose: "Produce and vary advertising creative at the volume campaigns require, within brand and legal constraints",
+        processesPersonalData: false,
+        riskLevel: "LIMITED",
+        riskRationale: "Synthetic audio, image, video or text must be marked in a machine-readable format so it can be detected as artificially generated (Art. 50(2)). Where creative depicts a real person or an existing work, likeness, endorsement and copyright clearance are separate questions the marking does not answer.",
+      },
+      {
+        name: "Content Recommendation",
+        description: "Ranking system that orders articles, videos or products in a feed for each reader.",
+        technique: "MACHINE_LEARNING",
+        role: "DEPLOYER",
+        purpose: "Order content so that readers find what is relevant to them and stay engaged with the publication",
+        processesPersonalData: true,
+        riskLevel: "MINIMAL",
+        riskRationale: "Recommendation is not an Annex III use. Obligations come from elsewhere: profiling under the GDPR, the right to object, and for a very large platform the separate transparency and non-profiling options of the Digital Services Act. Record which of those apply rather than assuming none do.",
+      },
+      {
+        name: "Brand Safety and Content Classification",
+        description: "Classifier that labels pages and videos for advertiser suitability, and screens user-generated content before publication.",
+        technique: "NLP",
+        role: "DEPLOYER",
+        purpose: "Keep advertising away from unsuitable content and screen submissions before they are published",
+        processesPersonalData: false,
+        riskLevel: "LIMITED",
+        riskRationale: "A classifier that suppresses lawful content affects expression, so the human review route matters more than the model's accuracy. Where it screens user submissions, the platform's own notice and appeal duties apply to the outcome.",
+      },
+    ],
+    policies: [
+      {
+        title: "AI Usage Policy - Media and Advertising",
+        type: "AI_USAGE",
+        description: "How AI may be used in editorial, creative and campaign work",
+        content: "This policy governs AI use across editorial, creative, campaign and audience work. Every AI tool used on client or reader data must be registered before use, with the contract that governs it recorded alongside it.\n\nEditorial judgement stays with people. AI may draft, summarise and vary, and a named person approves anything published. Where AI has materially produced a published piece, the publication says so in the way its style guide requires.\n\nCampaign teams may not promise an advertiser a targeting capability that legal and product have not approved. Segment names are evidence: a segment must be named for what it actually is, because its name will be read back in an investigation.",
+      },
+      {
+        title: "Sensitive Data in Advertising Policy",
+        type: "AI_DATA_GOVERNANCE",
+        description: "How the organisation decides whether advertising data is sensitive, and what follows",
+        content: "This policy governs data used to build, extend and target advertising audiences. Before a segment or feed is used, it is classified through the five-factor analysis (source, content, use, consumer expectations, harm) and the result is recorded with its reasoning, an owner and a review date.\n\nA segment classified as high is treated as sensitive everywhere: opt-in consent where it can be obtained, suppression where it cannot, no sale or share, and a contract that binds every recipient. Health data receives particular care, because several US state laws reach health status inferred from ordinary purchase or browsing data, and one of them requires a signed authorisation to sell that is not achievable in programmatic advertising.\n\nContractual assurances from partners are not a substitute for diligence. Where the organisation has reason to believe a partner is not complying, it stops sending data to that partner until the position is resolved. Classifications are reviewed on a set cadence, because statutory definitions, industry practice and consumer expectations all move.",
+      },
+      {
+        title: "Synthetic Media and Disclosure Policy",
+        type: "AI_TRANSPARENCY",
+        description: "Marking generated content, and the limits of what marking solves",
+        content: "This policy governs synthetic content produced or published by the organisation. Generated audio, image, video and text is marked in a machine-readable format so that it can be detected as artificially generated or manipulated, and deep fake content is disclosed as such where it is published.\n\nMarking is not permission. A real person's voice or likeness may not be generated without a documented right to use it, an existing work may not be imitated without clearance, and a generated endorsement may not imply that a person or organisation has endorsed anything they have not.\n\nWhere a system interacts directly with a person, the person is told they are dealing with an AI system unless that is obvious from the context. Records of what was generated, from which prompt and by whom, are retained for the period set in the records schedule.",
+      },
+    ],
+  },
+
+  // ──────────────────────────────────────────────────
+  // PUBLIC SECTOR
+  // ──────────────────────────────────────────────────
+  {
+    id: "public",
+    name: "Public Sector",
+    description: "AI systems in government and public bodies: citizen services, benefits triage, case handling and emergency dispatch.",
+    icon: "Building2",
+    systems: [
+      {
+        name: "Citizen Service Assistant",
+        description: "Conversational assistant that answers questions about public services, forms and entitlements.",
+        technique: "GENERATIVE_AI",
+        role: "DEPLOYER",
+        purpose: "Answer routine questions about public services so that staff time goes to the cases that need a person",
+        processesPersonalData: true,
+        riskLevel: "LIMITED",
+        riskRationale: "A system that interacts directly with people must tell them they are dealing with an AI system (Art. 50(1)). It must not give an answer that determines an entitlement; where a question turns on eligibility it hands over to a caseworker, and the handover point is recorded.",
+      },
+      {
+        name: "Benefits Eligibility Triage",
+        description: "Model that scores and orders applications for public assistance so that cases are routed and prioritised.",
+        technique: "MACHINE_LEARNING",
+        role: "DEPLOYER",
+        purpose: "Route and prioritise applications for public assistance benefits and services",
+        processesPersonalData: true,
+        riskLevel: "HIGH",
+        riskRationale: "Annex III point 5(a): AI intended to evaluate eligibility for essential public assistance benefits and services, or to grant, reduce, revoke or reclaim them. A public body deploying it must also complete a fundamental rights impact assessment under Art. 27 and register the use.",
+        annexIIICategory: "5a_public_assistance",
+        gateType: "PRE_DEPLOYMENT",
+      },
+      {
+        name: "Case Document Processing",
+        description: "System that classifies incoming correspondence, extracts fields and files documents against the right case.",
+        technique: "NLP",
+        role: "DEPLOYER",
+        purpose: "Classify and file incoming correspondence so that cases are complete and findable",
+        processesPersonalData: true,
+        riskLevel: "MINIMAL",
+        riskRationale: "Administrative processing that does not decide anything about a person. The risks are ordinary ones: misfiling, retention beyond the schedule, and access by staff who should not see the file. Records duties and freedom of information obligations continue to apply to whatever it produces.",
+      },
+      {
+        name: "Emergency Call Triage",
+        description: "System that classifies emergency calls by urgency and type to support dispatch decisions.",
+        technique: "MACHINE_LEARNING",
+        role: "DEPLOYER",
+        purpose: "Establish priority and dispatch category for emergency calls",
+        processesPersonalData: true,
+        riskLevel: "HIGH",
+        riskRationale: "Annex III point 5(d): AI intended to evaluate and classify emergency calls or to establish priority in the dispatching of emergency first response services. Human oversight must be capable of overriding the classification in the moment, not after review.",
+        annexIIICategory: "5d_emergency_triage",
+        gateType: "PRE_DEPLOYMENT",
+      },
+    ],
+    policies: [
+      {
+        title: "AI Usage Policy - Public Sector",
+        type: "AI_USAGE",
+        description: "How public servants may use AI in administrative work",
+        content: "This policy governs AI use in administrative work. Every system is registered before use, with its purpose, its legal basis and the official responsible for it recorded. A system that contributes to a decision about a person is registered as such even where a person signs the decision.\n\nAI output is never the decision. The official taking the decision is accountable for it, must be able to explain it without referring to the system's internal workings, and must be able to depart from the system's output without seeking permission.\n\nPublic bodies hold records for longer and disclose them more often than private organisations. Anything a system generates is a record: it is retained on the applicable schedule and is disclosable on request unless an exemption applies.",
+      },
+      {
+        title: "Automated Decisions and Explanation Policy",
+        type: "AI_GOVERNANCE",
+        description: "Human oversight, explanation and appeal for decisions supported by AI",
+        content: "This policy governs decisions about individuals that are taken with the support of an AI system. Before deployment, the body completes a fundamental rights impact assessment and records the categories of people affected, the risks identified and the measures taken.\n\nEvery person subject to such a decision is told that a system was involved, in plain language, and is given the main elements of the decision. An appeal goes to a person who was not involved in the original decision and who has the authority and the information to change it.\n\nThe officials who oversee the system receive training for that role, including its known limitations and error patterns. Where the system's output is overridden repeatedly in the same direction, the pattern is investigated rather than accepted as normal.",
+      },
+      {
+        title: "AI Procurement Policy - Public Sector",
+        type: "AI_PROCUREMENT",
+        description: "Buying AI systems with the duties that follow them",
+        content: "This policy governs the procurement of AI systems and of services that embed them. Tender documents state the intended purpose, the risk classification the body has reached, and the obligations that follow from it, so suppliers price the duties rather than discovering them later.\n\nContracts require the supplier to provide the instructions for use, the technical documentation the body needs to meet its own duties, notice of substantial modifications, and cooperation with any authority that asks. The body obtains the right to test the system, including for discriminatory outcomes, before and during deployment.\n\nA supplier's certification is evidence, not a conclusion. The body records its own assessment of the system against its intended use, and retains the evidence for the period the records schedule requires.",
+      },
+    ],
+  },
 ];
 
 // ============================================================

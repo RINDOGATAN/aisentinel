@@ -637,6 +637,222 @@ const PAIRS: readonly Pair[] = [
     "This policy establishes ethical principles for AI in professional services. Professionals must maintain competence in understanding AI capabilities and limitations relevant to their practice areas.\n\nAI must not be used to generate work that could mislead clients about the level of professional review applied. Clients must be informed when AI has been materially involved in producing deliverables. Billing transparency requires that AI-assisted efficiency gains are reflected appropriately.\n\nThe firm commits to using AI in ways that enhance rather than diminish the quality of professional judgment, uphold fiduciary duties, and maintain the trust that clients place in our expertise.",
     "Esta política establece principios éticos para la IA en los servicios profesionales. Los profesionales deben mantener la competencia necesaria para comprender las capacidades y limitaciones de la IA pertinentes para sus áreas de práctica.\n\nLa IA no debe utilizarse para generar trabajos que puedan inducir a error a los clientes sobre el nivel de revisión profesional aplicado. Debe informarse a los clientes cuando la IA haya intervenido de forma significativa en la elaboración de los entregables. La transparencia en la facturación exige que las mejoras de eficiencia obtenidas con ayuda de la IA se reflejen de forma adecuada.\n\nLa firma se compromete a utilizar la IA de manera que refuerce, en lugar de mermar, la calidad del criterio profesional, respete los deberes fiduciarios y mantenga la confianza que los clientes depositan en nuestra experiencia.",
   ],
+  [
+    "Media and Advertising",
+    "Medios y publicidad",
+  ],
+  [
+    "AI systems in publishing, advertising and marketing: audience modelling, generative creative, content recommendation and brand safety.",
+    "Sistemas de IA en la edición, la publicidad y el marketing: modelización de audiencias, creatividades generativas, recomendación de contenidos y seguridad de marca.",
+  ],
+  [
+    "Audience Segmentation and Lookalike Modelling",
+    "Segmentación de audiencias y modelos de públicos similares",
+  ],
+  [
+    "Model that groups people into audience segments and finds similar people from behavioural, purchase and contextual signals.",
+    "Modelo que agrupa a las personas en segmentos de audiencia y encuentra personas similares a partir de señales de comportamiento, de compra y contextuales.",
+  ],
+  [
+    "Build and extend advertising audiences so that campaigns reach people likely to find them relevant",
+    "Construir y ampliar audiencias publicitarias para que las campañas lleguen a personas que probablemente las encuentren relevantes",
+  ],
+  [
+    "Advertising audiences are not listed in Annex III, and the California rules expressly exclude advertising from the automated decisions they regulate. The exposure sits in data protection law instead: a segment that reveals or infers a sensitive characteristic, health above all, triggers opt-in consent in several US states and Art. 9 of the GDPR. Classify each segment before it is built.",
+    "Las audiencias publicitarias no figuran en el anexo III, y la normativa de California excluye expresamente la publicidad de las decisiones automatizadas que regula. La exposición está en el derecho de protección de datos: un segmento que revele o infiera una característica sensible, sobre todo la salud, activa el consentimiento expreso en varios estados de EE. UU. y el art. 9 del RGPD. Clasifica cada segmento antes de construirlo.",
+  ],
+  [
+    "Generative Ad Creative",
+    "Creatividades publicitarias generativas",
+  ],
+  [
+    "Generative system that produces advertising copy, images and video variants from a brief and a brand style guide.",
+    "Sistema generativo que produce textos, imágenes y vídeos publicitarios a partir de un briefing y de un manual de marca.",
+  ],
+  [
+    "Produce and vary advertising creative at the volume campaigns require, within brand and legal constraints",
+    "Producir y variar creatividades publicitarias al volumen que exigen las campañas, dentro de los límites de marca y jurídicos",
+  ],
+  [
+    "Synthetic audio, image, video or text must be marked in a machine-readable format so it can be detected as artificially generated (Art. 50(2)). Where creative depicts a real person or an existing work, likeness, endorsement and copyright clearance are separate questions the marking does not answer.",
+    "El audio, las imágenes, el vídeo y el texto sintéticos deben marcarse en un formato legible por máquina para que pueda detectarse que se han generado artificialmente (art. 50, apartado 2). Cuando la creatividad muestre a una persona real o una obra existente, la imagen, el aval y los derechos de autor son cuestiones aparte que el marcado no resuelve.",
+  ],
+  [
+    "Content Recommendation",
+    "Recomendación de contenidos",
+  ],
+  [
+    "Ranking system that orders articles, videos or products in a feed for each reader.",
+    "Sistema de ordenación que coloca artículos, vídeos o productos en un muro personalizado para cada lector.",
+  ],
+  [
+    "Order content so that readers find what is relevant to them and stay engaged with the publication",
+    "Ordenar los contenidos para que cada lector encuentre lo que le resulta relevante y siga vinculado a la publicación",
+  ],
+  [
+    "Recommendation is not an Annex III use. Obligations come from elsewhere: profiling under the GDPR, the right to object, and for a very large platform the separate transparency and non-profiling options of the Digital Services Act. Record which of those apply rather than assuming none do.",
+    "La recomendación no es un uso del anexo III. Las obligaciones vienen de otro sitio: la elaboración de perfiles conforme al RGPD, el derecho de oposición y, para una plataforma de muy gran tamaño, los deberes de transparencia y la opción sin perfilado del Reglamento de Servicios Digitales. Deja constancia de cuáles se aplican en lugar de dar por hecho que ninguno.",
+  ],
+  [
+    "Brand Safety and Content Classification",
+    "Seguridad de marca y clasificación de contenidos",
+  ],
+  [
+    "Classifier that labels pages and videos for advertiser suitability, and screens user-generated content before publication.",
+    "Clasificador que etiqueta páginas y vídeos según su idoneidad para los anunciantes y revisa los contenidos de usuarios antes de su publicación.",
+  ],
+  [
+    "Keep advertising away from unsuitable content and screen submissions before they are published",
+    "Mantener la publicidad alejada de contenidos inadecuados y revisar los envíos antes de publicarlos",
+  ],
+  [
+    "A classifier that suppresses lawful content affects expression, so the human review route matters more than the model's accuracy. Where it screens user submissions, the platform's own notice and appeal duties apply to the outcome.",
+    "Un clasificador que suprime contenido lícito afecta a la libertad de expresión, así que la vía de revisión humana importa más que la precisión del modelo. Cuando revise envíos de usuarios, los deberes de notificación y recurso de la plataforma se aplican al resultado.",
+  ],
+  [
+    "AI Usage Policy - Media and Advertising",
+    "Política de uso de la IA: medios y publicidad",
+  ],
+  [
+    "How AI may be used in editorial, creative and campaign work",
+    "Cómo puede usarse la IA en el trabajo editorial, creativo y de campañas",
+  ],
+  [
+    "This policy governs AI use across editorial, creative, campaign and audience work. Every AI tool used on client or reader data must be registered before use, with the contract that governs it recorded alongside it.\n\nEditorial judgement stays with people. AI may draft, summarise and vary, and a named person approves anything published. Where AI has materially produced a published piece, the publication says so in the way its style guide requires.\n\nCampaign teams may not promise an advertiser a targeting capability that legal and product have not approved. Segment names are evidence: a segment must be named for what it actually is, because its name will be read back in an investigation.",
+    "Esta política regula el uso de la IA en el trabajo editorial, creativo, de campañas y de audiencias. Toda herramienta de IA que se utilice sobre datos de clientes o de lectores se registra antes de su uso, junto con el contrato que la rige.\n\nEl criterio editorial sigue siendo de las personas. La IA puede redactar, resumir y generar variantes, y una persona identificada aprueba todo lo que se publica. Cuando la IA haya producido de forma sustancial una pieza publicada, la publicación lo indica del modo que exija su libro de estilo.\n\nLos equipos de campañas no pueden prometer a un anunciante una capacidad de segmentación que el departamento jurídico y el de producto no hayan aprobado. Los nombres de los segmentos son prueba: un segmento debe llamarse por lo que realmente es, porque su nombre se leerá en voz alta en una investigación.",
+  ],
+  [
+    "Sensitive Data in Advertising Policy",
+    "Política de datos sensibles en publicidad",
+  ],
+  [
+    "How the organisation decides whether advertising data is sensitive, and what follows",
+    "Cómo decide la organización si un dato publicitario es sensible y qué se deriva de ello",
+  ],
+  [
+    "This policy governs data used to build, extend and target advertising audiences. Before a segment or feed is used, it is classified through the five-factor analysis (source, content, use, consumer expectations, harm) and the result is recorded with its reasoning, an owner and a review date.\n\nA segment classified as high is treated as sensitive everywhere: opt-in consent where it can be obtained, suppression where it cannot, no sale or share, and a contract that binds every recipient. Health data receives particular care, because several US state laws reach health status inferred from ordinary purchase or browsing data, and one of them requires a signed authorisation to sell that is not achievable in programmatic advertising.\n\nContractual assurances from partners are not a substitute for diligence. Where the organisation has reason to believe a partner is not complying, it stops sending data to that partner until the position is resolved. Classifications are reviewed on a set cadence, because statutory definitions, industry practice and consumer expectations all move.",
+    "Esta política regula los datos utilizados para construir, ampliar y segmentar audiencias publicitarias. Antes de usar un segmento o un flujo, se clasifica mediante el análisis de cinco factores (origen, contenido, uso, expectativas de la persona y perjuicio) y el resultado se registra con su razonamiento, un responsable y una fecha de revisión.\n\nUn segmento clasificado como alto se trata como sensible en todas partes: consentimiento expreso donde pueda obtenerse, supresión donde no, sin venta ni comunicación, y un contrato que vincule a cada destinatario. Los datos de salud reciben un cuidado particular, porque varias leyes estatales de EE. UU. alcanzan al estado de salud inferido a partir de datos corrientes de compra o de navegación, y una de ellas exige para la venta una autorización firmada que no es viable en la publicidad programática.\n\nLas garantías contractuales de los socios no sustituyen a la diligencia debida. Cuando la organización tenga motivos para creer que un socio no cumple, deja de enviarle datos hasta que se aclare la situación. Las clasificaciones se revisan con una periodicidad fijada, porque las definiciones legales, la práctica del sector y las expectativas de las personas cambian.",
+  ],
+  [
+    "Synthetic Media and Disclosure Policy",
+    "Política de medios sintéticos y divulgación",
+  ],
+  [
+    "Marking generated content, and the limits of what marking solves",
+    "Marcar el contenido generado, y los límites de lo que el marcado resuelve",
+  ],
+  [
+    "This policy governs synthetic content produced or published by the organisation. Generated audio, image, video and text is marked in a machine-readable format so that it can be detected as artificially generated or manipulated, and deep fake content is disclosed as such where it is published.\n\nMarking is not permission. A real person's voice or likeness may not be generated without a documented right to use it, an existing work may not be imitated without clearance, and a generated endorsement may not imply that a person or organisation has endorsed anything they have not.\n\nWhere a system interacts directly with a person, the person is told they are dealing with an AI system unless that is obvious from the context. Records of what was generated, from which prompt and by whom, are retained for the period set in the records schedule.",
+    "Esta política regula el contenido sintético que la organización produce o publica. El audio, las imágenes, el vídeo y el texto generados se marcan en un formato legible por máquina para que pueda detectarse que se han generado o manipulado artificialmente, y el contenido ultrasuplantado se indica como tal cuando se publica.\n\nEl marcado no es una autorización. No puede generarse la voz o la imagen de una persona real sin un derecho documentado a utilizarlas, no puede imitarse una obra existente sin la autorización correspondiente, y un aval generado no puede dar a entender que una persona u organización ha respaldado algo que no ha respaldado.\n\nCuando un sistema interactúe directamente con una persona, se le informa de que está tratando con un sistema de IA, salvo que resulte evidente por el contexto. Los registros de lo generado, a partir de qué instrucción y por quién, se conservan durante el plazo fijado en el calendario de conservación.",
+  ],
+  [
+    "Public Sector",
+    "Sector público",
+  ],
+  [
+    "AI systems in government and public bodies: citizen services, benefits triage, case handling and emergency dispatch.",
+    "Sistemas de IA en la Administración y en organismos públicos: atención a la ciudadanía, triaje de prestaciones, tramitación de expedientes y despacho de emergencias.",
+  ],
+  [
+    "Citizen Service Assistant",
+    "Asistente de atención a la ciudadanía",
+  ],
+  [
+    "Conversational assistant that answers questions about public services, forms and entitlements.",
+    "Asistente conversacional que responde a preguntas sobre servicios públicos, formularios y prestaciones.",
+  ],
+  [
+    "Answer routine questions about public services so that staff time goes to the cases that need a person",
+    "Responder a las preguntas habituales sobre servicios públicos para que el tiempo del personal se dedique a los casos que necesitan a una persona",
+  ],
+  [
+    "A system that interacts directly with people must tell them they are dealing with an AI system (Art. 50(1)). It must not give an answer that determines an entitlement; where a question turns on eligibility it hands over to a caseworker, and the handover point is recorded.",
+    "Un sistema que interactúa directamente con personas debe informarles de que están tratando con un sistema de IA (art. 50, apartado 1). No debe dar una respuesta que determine una prestación; cuando una pregunta dependa de la elegibilidad, deriva a una persona instructora y se registra el punto de derivación.",
+  ],
+  [
+    "Benefits Eligibility Triage",
+    "Triaje de elegibilidad de prestaciones",
+  ],
+  [
+    "Model that scores and orders applications for public assistance so that cases are routed and prioritised.",
+    "Modelo que puntúa y ordena las solicitudes de prestaciones públicas para encaminar y priorizar los expedientes.",
+  ],
+  [
+    "Route and prioritise applications for public assistance benefits and services",
+    "Encaminar y priorizar las solicitudes de prestaciones y servicios de asistencia pública",
+  ],
+  [
+    "Annex III point 5(a): AI intended to evaluate eligibility for essential public assistance benefits and services, or to grant, reduce, revoke or reclaim them. A public body deploying it must also complete a fundamental rights impact assessment under Art. 27 and register the use.",
+    "Anexo III, punto 5, letra a): IA destinada a evaluar la admisibilidad a prestaciones y servicios esenciales de asistencia pública, o a concederlos, reducirlos, revocarlos o recuperarlos. Un organismo público que la despliegue debe además realizar una evaluación de impacto sobre los derechos fundamentales conforme al art. 27 y registrar el uso.",
+  ],
+  [
+    "Case Document Processing",
+    "Tramitación documental de expedientes",
+  ],
+  [
+    "System that classifies incoming correspondence, extracts fields and files documents against the right case.",
+    "Sistema que clasifica la correspondencia entrante, extrae campos y archiva los documentos en el expediente que corresponde.",
+  ],
+  [
+    "Classify and file incoming correspondence so that cases are complete and findable",
+    "Clasificar y archivar la correspondencia entrante para que los expedientes estén completos y sean localizables",
+  ],
+  [
+    "Administrative processing that does not decide anything about a person. The risks are ordinary ones: misfiling, retention beyond the schedule, and access by staff who should not see the file. Records duties and freedom of information obligations continue to apply to whatever it produces.",
+    "Tramitación administrativa que no decide nada sobre una persona. Los riesgos son los ordinarios: archivar mal, conservar más allá del calendario y que acceda personal que no debería ver el expediente. Los deberes de archivo y las obligaciones de acceso a la información pública siguen aplicándose a lo que produzca.",
+  ],
+  [
+    "Emergency Call Triage",
+    "Triaje de llamadas de emergencia",
+  ],
+  [
+    "System that classifies emergency calls by urgency and type to support dispatch decisions.",
+    "Sistema que clasifica las llamadas de emergencia por urgencia y tipo para apoyar las decisiones de despacho.",
+  ],
+  [
+    "Establish priority and dispatch category for emergency calls",
+    "Establecer la prioridad y la categoría de despacho de las llamadas de emergencia",
+  ],
+  [
+    "Annex III point 5(d): AI intended to evaluate and classify emergency calls or to establish priority in the dispatching of emergency first response services. Human oversight must be capable of overriding the classification in the moment, not after review.",
+    "Anexo III, punto 5, letra d): IA destinada a evaluar y clasificar llamadas de emergencia o a establecer prioridades en el envío de servicios de primera intervención. La supervisión humana debe poder anular la clasificación en el momento, no en una revisión posterior.",
+  ],
+  [
+    "AI Usage Policy - Public Sector",
+    "Política de uso de la IA: sector público",
+  ],
+  [
+    "How public servants may use AI in administrative work",
+    "Cómo puede el personal público utilizar la IA en la tramitación administrativa",
+  ],
+  [
+    "This policy governs AI use in administrative work. Every system is registered before use, with its purpose, its legal basis and the official responsible for it recorded. A system that contributes to a decision about a person is registered as such even where a person signs the decision.\n\nAI output is never the decision. The official taking the decision is accountable for it, must be able to explain it without referring to the system's internal workings, and must be able to depart from the system's output without seeking permission.\n\nPublic bodies hold records for longer and disclose them more often than private organisations. Anything a system generates is a record: it is retained on the applicable schedule and is disclosable on request unless an exemption applies.",
+    "Esta política regula el uso de la IA en la tramitación administrativa. Cada sistema se registra antes de su uso, dejando constancia de su finalidad, su base jurídica y el cargo responsable. Un sistema que contribuya a una decisión sobre una persona se registra como tal aunque sea una persona quien firme la decisión.\n\nEl resultado de la IA nunca es la decisión. Quien decide responde de ella, debe poder explicarla sin referirse al funcionamiento interno del sistema y debe poder apartarse del resultado del sistema sin pedir autorización.\n\nLos organismos públicos conservan documentación durante más tiempo y la divulgan con más frecuencia que las organizaciones privadas. Todo lo que genere un sistema es documentación: se conserva según el calendario aplicable y es divulgable a petición, salvo que se aplique una excepción.",
+  ],
+  [
+    "Automated Decisions and Explanation Policy",
+    "Política de decisiones automatizadas y explicación",
+  ],
+  [
+    "Human oversight, explanation and appeal for decisions supported by AI",
+    "Supervisión humana, explicación y recurso en las decisiones apoyadas en IA",
+  ],
+  [
+    "This policy governs decisions about individuals that are taken with the support of an AI system. Before deployment, the body completes a fundamental rights impact assessment and records the categories of people affected, the risks identified and the measures taken.\n\nEvery person subject to such a decision is told that a system was involved, in plain language, and is given the main elements of the decision. An appeal goes to a person who was not involved in the original decision and who has the authority and the information to change it.\n\nThe officials who oversee the system receive training for that role, including its known limitations and error patterns. Where the system's output is overridden repeatedly in the same direction, the pattern is investigated rather than accepted as normal.",
+    "Esta política regula las decisiones sobre personas que se adoptan con el apoyo de un sistema de IA. Antes del despliegue, el organismo realiza una evaluación de impacto sobre los derechos fundamentales y deja constancia de las categorías de personas afectadas, de los riesgos detectados y de las medidas adoptadas.\n\nA toda persona sujeta a una decisión de este tipo se le informa, en lenguaje claro, de que ha intervenido un sistema, y se le facilitan los principales elementos de la decisión. El recurso se resuelve por una persona que no participó en la decisión inicial y que tiene la autoridad y la información necesarias para modificarla.\n\nEl personal que supervisa el sistema recibe formación para esa función, incluidas sus limitaciones conocidas y sus patrones de error. Cuando el resultado del sistema se anule repetidamente en el mismo sentido, el patrón se investiga en lugar de aceptarse como normal.",
+  ],
+  [
+    "AI Procurement Policy - Public Sector",
+    "Política de contratación de IA: sector público",
+  ],
+  [
+    "Buying AI systems with the duties that follow them",
+    "Comprar sistemas de IA con los deberes que llevan aparejados",
+  ],
+  [
+    "This policy governs the procurement of AI systems and of services that embed them. Tender documents state the intended purpose, the risk classification the body has reached, and the obligations that follow from it, so suppliers price the duties rather than discovering them later.\n\nContracts require the supplier to provide the instructions for use, the technical documentation the body needs to meet its own duties, notice of substantial modifications, and cooperation with any authority that asks. The body obtains the right to test the system, including for discriminatory outcomes, before and during deployment.\n\nA supplier's certification is evidence, not a conclusion. The body records its own assessment of the system against its intended use, and retains the evidence for the period the records schedule requires.",
+    "Esta política regula la contratación de sistemas de IA y de servicios que los incorporan. Los pliegos indican la finalidad prevista, la clasificación de riesgo a la que ha llegado el organismo y las obligaciones que de ella se derivan, de modo que los licitadores valoren esos deberes en lugar de descubrirlos después.\n\nLos contratos exigen al proveedor facilitar las instrucciones de uso, la documentación técnica que el organismo necesita para cumplir sus propios deberes, el aviso de las modificaciones sustanciales y la cooperación con cualquier autoridad que lo solicite. El organismo obtiene el derecho a probar el sistema, también en cuanto a resultados discriminatorios, antes del despliegue y durante este.\n\nLa certificación de un proveedor es una prueba, no una conclusión. El organismo deja constancia de su propia evaluación del sistema frente al uso previsto y conserva la evidencia durante el plazo que exija el calendario de conservación.",
+  ],
 ];
 
 // ============================================================

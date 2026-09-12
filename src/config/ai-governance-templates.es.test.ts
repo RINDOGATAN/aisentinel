@@ -39,9 +39,9 @@ const ALLOWED_IDENTICAL = new Set<string>([]);
 describe("AI_GOVERNANCE_TEMPLATES_ES", () => {
   const source = collectSourceStrings();
 
-  it("covers all six templates", () => {
+  it("covers all eight templates", () => {
     expect(AI_GOVERNANCE_TEMPLATES.map((t) => t.id).sort()).toEqual(
-      ["ecommerce", "financial", "healthcare", "manufacturing", "professional", "saas"],
+      ["ecommerce", "financial", "healthcare", "manufacturing", "media", "professional", "public", "saas"],
     );
   });
 

@@ -27,6 +27,7 @@ import {
   Briefcase,
   Building2,
   Factory,
+  Megaphone,
   CheckCircle2,
   Sparkles,
   ChevronDown,
@@ -69,7 +70,9 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   Heart,
   Landmark,
   Briefcase,
+  Building2,
   Factory,
+  Megaphone,
 };
 
 // The Legal entry in the industry list. Not a server template: choosing it

@@ -42,6 +42,7 @@ import {
   SENSITIVE_FACTORS,
   SENSITIVE_FACTORS_REVIEW_MARKER,
 } from "@/config/sensitive-data-factors";
+import { sensitiveCategoryLabel } from "@/config/data-categories";
 import {
   exportStamp,
   renderManifest,
@@ -100,6 +101,19 @@ const L = {
     applies: { applies: "Yes", unknown: "Not yet determined", "does-not-apply": "No" } as Record<string, string>,
     calendarName: "AI obligations: {org}",
     vendorsTitle: "Vendor due diligence",
+    flowTitle: "Data flow",
+    flowRole: "Data protection role",
+    flowTransactionRole: "Role in the transaction",
+    flowRetention: "Retention",
+    flowIn: "What comes in",
+    flowOut: "Where it goes",
+    flowNoSources: "No data sources recorded.",
+    flowNoRecipients: "No recipients recorded.",
+    flowCategories: "Categories",
+    flowSensitive: "Sensitive categories",
+    flowPersonal: "Personal data",
+    flowContract: "Contract",
+    flowMissing: "not recorded",
     sensitiveTitle: "Sensitive data analyses",
     noSensitive: "No sensitive data analyses yet.",
     sensitiveBand: "Band",
@@ -163,6 +177,19 @@ const L = {
     applies: { applies: "Sí", unknown: "Por determinar", "does-not-apply": "No" } as Record<string, string>,
     calendarName: "Obligaciones de IA: {org}",
     vendorsTitle: "Diligencia debida de proveedores",
+    flowTitle: "Flujo de datos",
+    flowRole: "Rol en protección de datos",
+    flowTransactionRole: "Rol en la transacción",
+    flowRetention: "Conservación",
+    flowIn: "Qué entra",
+    flowOut: "A dónde va",
+    flowNoSources: "No hay fuentes de datos registradas.",
+    flowNoRecipients: "No hay destinatarios registrados.",
+    flowCategories: "Categorías",
+    flowSensitive: "Categorías sensibles",
+    flowPersonal: "Datos personales",
+    flowContract: "Contrato",
+    flowMissing: "sin registrar",
     sensitiveTitle: "Análisis de datos sensibles",
     noSensitive: "Todavía no hay análisis de datos sensibles.",
     sensitiveBand: "Banda",
@@ -387,6 +414,92 @@ export async function buildProgramPack(
     }
     for (const [file, artifact] of docs) {
       entries.push({ name: `${dir}/${file}`, data: renderArtifactMarkdown(artifact) });
+    }
+
+    // The data flow, as facts rather than prose: who sends what in, who
+    // receives what, under which contract, for how long.
+    const flow = await prisma.aISystem.findFirst({
+      where: { id: system.id, organizationId },
+      select: {
+        dataRole: true,
+        transactionRole: true,
+        retentionPeriod: true,
+        dataSources: {
+          orderBy: { createdAt: "asc" },
+          select: {
+            name: true,
+            sourceType: true,
+            origin: true,
+            retentionPeriod: true,
+            containsPersonalData: true,
+            dataCategories: true,
+            sensitiveCategories: true,
+          },
+        },
+        dataRecipients: {
+          orderBy: { createdAt: "asc" },
+          select: {
+            name: true,
+            type: true,
+            purpose: true,
+            dataCategories: true,
+            sensitiveCategories: true,
+            contractRef: true,
+            transferMechanism: true,
+            retentionPeriod: true,
+          },
+        },
+      },
+    });
+    if (flow) {
+      const md = [`# ${l.flowTitle}: ${system.name}`, ""];
+      md.push(`${l.flowRole}: ${flow.dataRole}`, "");
+      if (flow.transactionRole) md.push(`${l.flowTransactionRole}: ${flow.transactionRole}`, "");
+      if (flow.retentionPeriod) md.push(`${l.flowRetention}: ${flow.retentionPeriod}`, "");
+      md.push(`## ${l.flowIn}`, "");
+      if (flow.dataSources.length === 0) md.push(l.flowNoSources, "");
+      for (const src of flow.dataSources) {
+        md.push(`### ${src.name}`, "");
+        md.push(
+          [
+            src.sourceType,
+            src.origin ?? null,
+            src.containsPersonalData ? l.flowPersonal : null,
+            src.retentionPeriod ? `${l.flowRetention}: ${src.retentionPeriod}` : null,
+          ]
+            .filter(Boolean)
+            .join(" · "),
+          "",
+        );
+        if (src.dataCategories.length > 0) md.push(`${l.flowCategories}: ${src.dataCategories.join(", ")}`, "");
+        if (src.sensitiveCategories.length > 0) {
+          md.push(
+            `${l.flowSensitive}: ${src.sensitiveCategories.map((c) => sensitiveCategoryLabel(c, locale)).join(", ")}`,
+            "",
+          );
+        }
+      }
+      md.push(`## ${l.flowOut}`, "");
+      if (flow.dataRecipients.length === 0) md.push(l.flowNoRecipients, "");
+      for (const rec of flow.dataRecipients) {
+        md.push(`### ${rec.name}`, "");
+        md.push(rec.type, "");
+        if (rec.purpose) md.push(rec.purpose, "");
+        if (rec.sensitiveCategories.length > 0) {
+          md.push(
+            `${l.flowSensitive}: ${rec.sensitiveCategories.map((c) => sensitiveCategoryLabel(c, locale)).join(", ")}`,
+            "",
+          );
+        }
+        md.push(
+          `${l.flowContract}: ${rec.contractRef ?? l.flowMissing} · ${l.flowRetention}: ${rec.retentionPeriod ?? l.flowMissing}${rec.transferMechanism ? ` · ${rec.transferMechanism}` : ""}`,
+          "",
+        );
+      }
+      entries.push({
+        name: `${dir}/${locale === "es" ? "flujo-de-datos.md" : "data-flow.md"}`,
+        data: md.join("\n"),
+      });
     }
   }
 

@@ -151,6 +151,7 @@ model Organization {
   assessments           AIAssessment[]
   assessmentVersions    AIAssessmentVersion[]
   sensitiveDataAssessments SensitiveDataAssessment[]
+  dataRecipients        DataRecipient[]
   oversightGates        OversightGate[]
   oversightDecisions    OversightDecision[]
   incidents             AIIncident[]
@@ -264,6 +265,18 @@ model AISystem {
   deploymentDate        DateTime?
   retirementDate        DateTime?
   processesPersonalData Boolean        @default(false)
+  /// The data-protection role for this system's processing. Distinct from
+  /// `role`, which is the EU AI Act supply-chain role (provider, deployer).
+  /// UNDETERMINED is the honest default: nobody has decided yet.
+  dataRole              DataProtectionRole @default(UNDETERMINED)
+  /// The party's role in the transaction, in the industry's own words, where
+  /// that decides the analysis: publisher, advertiser, platform, data provider.
+  /// Free text because the vocabulary differs by sector.
+  transactionRole       String?
+  /// How long the organisation keeps the data this system holds, in its own
+  /// words ("13 months from collection"). Free text: retention is stated in
+  /// contracts and notices as prose, and a number without its trigger misleads.
+  retentionPeriod       String?
   dpoCentralVendorId    String?
   dpoCentralAssetIds    String[]
   metadata              Json?
@@ -289,6 +302,7 @@ model AISystem {
   admtProfile         AdmtProfile?
   assessments         AIAssessment[]
   sensitiveDataAssessments SensitiveDataAssessment[]
+  dataRecipients      DataRecipient[]
   oversightGates      OversightGate[]
   incidents           AIIncident[]
   complianceMappings  ComplianceMapping[]
@@ -330,6 +344,14 @@ model AISystemDataSource {
   description          String?        @db.Text
   containsPersonalData Boolean        @default(false)
   dataCategories       String[]
+  /// Which sensitive categories this source carries, from the controlled
+  /// vocabulary in src/config/data-categories.ts. Empty means none recorded,
+  /// which is not the same as "none present".
+  sensitiveCategories  String[]
+  /// Where the data actually comes from, in one line: a form, a pixel, an SDK,
+  /// a partner feed, a purchase.
+  origin               String?
+  retentionPeriod      String?
   createdAt            DateTime       @default(now())
 
   aiSystem     AISystem     @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
@@ -657,6 +679,73 @@ model AIAssessment {
   @@index([organizationId])
   @@index([aiSystemId])
   @@map("ai_assessments")
+}
+
+/// Who receives data from an AI system, and on what terms.
+///
+/// The register records what goes in and, until now, nothing about what goes
+/// out. For an advertising assessment the disclosure is the whole question:
+/// which partner receives which fields, for what purpose, under which contract,
+/// and for how long they keep it. A data protection authority asks the same
+/// thing in different words (Art. 30 recipients), and so does a California risk
+/// assessment (the names or categories of third parties and the purpose of the
+/// disclosure).
+model DataRecipient {
+  id                  String        @id @default(cuid())
+  organizationId      String
+  aiSystemId          String
+  name                String
+  type                RecipientType @default(OTHER)
+  /// Why they receive it, in the organisation's own words.
+  purpose             String?       @db.Text
+  /// Which categories they receive. Free text, mirroring dataCategories.
+  dataCategories      String[]
+  /// Sensitive categories among them, from the controlled vocabulary.
+  sensitiveCategories String[]
+  /// The contract that governs it: a data processing agreement, service
+  /// provider terms, standard contractual clauses, a platform's own terms.
+  contractRef         String?
+  /// Safeguard for an onward transfer out of the EEA or the UK, where relevant.
+  transferMechanism   String?
+  retentionPeriod     String?
+  /// The vendor record for this recipient, where one exists.
+  vendorId            String?
+  notes               String?       @db.Text
+  createdBy           String
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  aiSystem     AISystem     @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  vendor       AIVendor?    @relation(fields: [vendorId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId])
+  @@index([aiSystemId])
+  @@map("data_recipients")
+}
+
+/// Who a recipient is, which changes the obligations that follow.
+enum RecipientType {
+  PROCESSOR
+  SERVICE_PROVIDER
+  CONTROLLER
+  JOINT_CONTROLLER
+  THIRD_PARTY
+  ADVERTISING_PLATFORM
+  DATA_BROKER
+  AFFILIATE
+  PUBLIC_AUTHORITY
+  OTHER
+}
+
+/// The data-protection role a party holds for a given processing operation.
+enum DataProtectionRole {
+  UNDETERMINED
+  CONTROLLER
+  JOINT_CONTROLLER
+  PROCESSOR
+  SUB_PROCESSOR
+  THIRD_PARTY
 }
 
 /// A documented decision about whether a set of data is sensitive.
@@ -1329,6 +1418,7 @@ model AIVendor {
   organization Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   catalogEntry VendorCatalog?       @relation(fields: [catalogSlug], references: [slug])
   assessments  AIVendorAssessment[]
+  recipientOf  DataRecipient[]
   systems      AISystem[]
 
   @@index([organizationId])

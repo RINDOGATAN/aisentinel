@@ -67,6 +67,7 @@ import { AdmtPanel } from "@/components/governance/AdmtPanel";
 import { UnifiedPanel } from "@/components/governance/UnifiedPanel";
 import { AgentPanel } from "@/components/governance/AgentPanel";
 import { TransparencyStatementCard } from "@/components/ai/TransparencyStatementCard";
+import { DataFlowPanel } from "@/components/governance/data-flow-panel";
 
 const statusColors: Record<string, string> = {
   DRAFT: "border-muted-foreground text-muted-foreground",
@@ -201,6 +202,7 @@ export default function AISystemDetailPage() {
   const t = useTranslations("aiRegistryDetail");
   const locale = useLocale();
   const tc = useTranslations("common");
+  const tFlow = useTranslations("dataFlow");
   const tRegimes = useTranslations("regimes");
   const tAgent = useTranslations("agent");
   const utils = trpc.useUtils();
@@ -989,6 +991,9 @@ export default function AISystemDetailPage() {
           <TabsTrigger value="data-sources" className="text-xs sm:text-sm">
             {t("tabDataSources", { count: system.dataSources?.length ?? 0 })}
           </TabsTrigger>
+          <TabsTrigger value="data-flow" className="text-xs sm:text-sm">
+            {tFlow("tabLabel")}
+          </TabsTrigger>
           <TabsTrigger value="risk" className="text-xs sm:text-sm">
             {t("tabRiskClassification")}
           </TabsTrigger>
@@ -1176,6 +1181,14 @@ export default function AISystemDetailPage() {
         </TabsContent>
 
         {/* Risk Classification Tab */}
+        <TabsContent value="data-flow" className="mt-4">
+          <DataFlowPanel
+            organizationId={organizationId}
+            aiSystemId={id}
+            canWrite={canWrite}
+          />
+        </TabsContent>
+
         <TabsContent value="risk" className="mt-4">
           <Card>
             <CardHeader>

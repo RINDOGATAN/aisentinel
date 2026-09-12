@@ -154,6 +154,7 @@ model Organization {
   dataRecipients        DataRecipient[]
   legalHolds            LegalHold[]
   proceedings           RegulatoryProceeding[]
+  boardReports          BoardReport[]
   proceedingEvents      ProceedingEvent[]
   oversightGates        OversightGate[]
   oversightDecisions    OversightDecision[]
@@ -684,6 +685,53 @@ model AIAssessment {
   @@index([organizationId])
   @@index([aiSystemId])
   @@map("ai_assessments")
+}
+
+/// What was reported to the board, when, by whom, and what they decided.
+///
+/// A derivative claim asks one question: did the board have a reporting system
+/// for this risk, and did it act on what it saw. The answer is minutes and a
+/// cadence, or it is nothing. This record holds each report with the program
+/// snapshot it was drawn from, so the numbers put in front of the board can be
+/// reproduced exactly, months later.
+model BoardReport {
+  id             String          @id @default(cuid())
+  organizationId String
+  title          String
+  /// The period covered, in the organisation's own words ("Q3 2026").
+  period         String?
+  audience       ReportAudience  @default(BOARD)
+  /// When it was actually presented, which is not when it was drafted.
+  reportedAt     DateTime
+  presenter      String?
+  attendees      String[]
+  summary        String?         @db.Text
+  /// What the board was asked to decide, and what it decided. Kept apart: a
+  /// request with no recorded answer is itself a finding.
+  decisionsRequested String?     @db.Text
+  decisionsTaken String?         @db.Text
+  actionsAgreed  String?         @db.Text
+  nextReportDue  DateTime?
+  /// The program snapshot the reported figures came from.
+  snapshotId     String?
+  createdBy      String
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  organization Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  snapshot     ProgramSnapshotRecord? @relation(fields: [snapshotId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId, reportedAt])
+  @@map("board_reports")
+}
+
+enum ReportAudience {
+  BOARD
+  AUDIT_COMMITTEE
+  RISK_COMMITTEE
+  EXECUTIVE
+  REGULATOR
+  OTHER
 }
 
 /// A proceeding: a regulator's inquiry, an enforcement action, or litigation.
@@ -1907,6 +1955,7 @@ model ProgramSnapshotRecord {
   createdAt      DateTime       @default(now())
 
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  boardReports BoardReport[]
 
   @@index([organizationId, createdAt])
   @@map("program_snapshots")

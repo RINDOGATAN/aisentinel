@@ -35,6 +35,7 @@ import {
   Sparkles,
   Code,
   Gavel,
+  Landmark,
   HeartPulse,
   History,
  ShieldCheck } from "lucide-react";
@@ -101,6 +102,7 @@ function buildNavGroups(isConsultant: boolean, t: (key: string) => string) {
         { href: "/governance/compliance", label: t("compliance"), icon: Scale },
         { href: "/governance/policies", label: t("policies"), icon: ScrollText },
         { href: "/governance/sensitive-data", label: t("sensitiveData"), icon: HeartPulse },
+        { href: "/governance/board", label: t("boardReports"), icon: Landmark },
         { href: "/governance/audit", label: t("auditTrail"), icon: History },
       ],
     },

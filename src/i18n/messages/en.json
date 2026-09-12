@@ -162,7 +162,8 @@
     "sourceAndLicence": "Source & licence",
     "auditTrail": "Audit trail",
     "sensitiveData": "Sensitive data",
-    "proceedings": "Proceedings"
+    "proceedings": "Proceedings",
+    "boardReports": "Board reporting"
   },
   "dashboard": {
     "title": "AI Governance",
@@ -4720,5 +4721,40 @@
     "immediate": "Immediately",
     "overdue": "Past the limit",
     "marker": "Verified against the consolidated texts on 2026-09-11. Advisory: the clocks compute from what has been recorded, and the person reporting may not yet know everything."
+  },
+  "boardReports": {
+    "title": "Board reporting",
+    "subtitle": "What was reported, when, to whom, and what came back. Each record freezes the program figures as they stood on the day, so what the board saw can be reproduced later.",
+    "record": "Record a report",
+    "noneYet": "Nothing recorded yet. A claim that the board was never told starts here.",
+    "cadence": "{count} report(s) recorded. The last was on {last}.",
+    "nextDue": "Next report due {date}.",
+    "titleLabel": "Title",
+    "periodLabel": "Period",
+    "periodPlaceholder": "Q3 2026",
+    "audienceLabel": "Audience",
+    "reportedAtLabel": "Reported on",
+    "presenterLabel": "Presented by",
+    "nextDueLabel": "Next report due",
+    "summaryLabel": "What was reported",
+    "requestedLabel": "Asked to decide",
+    "requestedPlaceholder": "What the board was asked to approve, fund or accept",
+    "takenLabel": "Decided",
+    "actionsLabel": "Actions agreed",
+    "noDecisionRecorded": "A decision was requested and none is recorded.",
+    "snapshotNote": "Saving also captures a program snapshot, so the figures reported can be reproduced with their hash and the rule-pack versions in force.",
+    "snapshotLine": "Snapshot: overall {score} · {hash}",
+    "noSnapshot": "No snapshot was captured with this report.",
+    "save": "Save",
+    "cancel": "Cancel",
+    "recorded": "Report recorded.",
+    "audience": {
+      "BOARD": "Board",
+      "AUDIT_COMMITTEE": "Audit committee",
+      "RISK_COMMITTEE": "Risk committee",
+      "EXECUTIVE": "Executive team",
+      "REGULATOR": "Regulator",
+      "OTHER": "Other"
+    }
   }
 }

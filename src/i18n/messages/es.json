@@ -162,7 +162,8 @@
     "sourceAndLicence": "Código fuente y licencia",
     "auditTrail": "Registro de auditoría",
     "sensitiveData": "Datos sensibles",
-    "proceedings": "Procedimientos"
+    "proceedings": "Procedimientos",
+    "boardReports": "Informes al consejo"
   },
   "dashboard": {
     "title": "Gobernanza de IA",
@@ -4720,5 +4721,40 @@
     "immediate": "De inmediato",
     "overdue": "Fuera de plazo",
     "marker": "Verificado contra los textos consolidados el 11-09-2026. Orientativo: los plazos se calculan con lo registrado y quien notifica puede no saberlo todo aún."
+  },
+  "boardReports": {
+    "title": "Informes al consejo",
+    "subtitle": "Qué se informó, cuándo, a quién y qué se decidió. Cada registro congela las cifras del programa tal y como estaban ese día, de modo que puede reproducirse después lo que vio el consejo.",
+    "record": "Registrar un informe",
+    "noneYet": "Todavía no hay nada registrado. Una reclamación que sostenga que al consejo nunca se le informó empieza aquí.",
+    "cadence": "{count} informe(s) registrados. El último fue el {last}.",
+    "nextDue": "Próximo informe previsto para el {date}.",
+    "titleLabel": "Título",
+    "periodLabel": "Periodo",
+    "periodPlaceholder": "T3 2026",
+    "audienceLabel": "Destinatario",
+    "reportedAtLabel": "Presentado el",
+    "presenterLabel": "Presentado por",
+    "nextDueLabel": "Próximo informe",
+    "summaryLabel": "Qué se informó",
+    "requestedLabel": "Se pidió decidir",
+    "requestedPlaceholder": "Qué se pidió aprobar, financiar o aceptar al consejo",
+    "takenLabel": "Se decidió",
+    "actionsLabel": "Acciones acordadas",
+    "noDecisionRecorded": "Se pidió una decisión y no consta ninguna.",
+    "snapshotNote": "Al guardar se captura también una instantánea del programa, de modo que las cifras informadas pueden reproducirse con su huella y las versiones de los paquetes de reglas vigentes.",
+    "snapshotLine": "Instantánea: global {score} · {hash}",
+    "noSnapshot": "No se capturó ninguna instantánea con este informe.",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "recorded": "Informe registrado.",
+    "audience": {
+      "BOARD": "Consejo",
+      "AUDIT_COMMITTEE": "Comisión de auditoría",
+      "RISK_COMMITTEE": "Comisión de riesgos",
+      "EXECUTIVE": "Comité de dirección",
+      "REGULATOR": "Autoridad",
+      "OTHER": "Otro"
+    }
   }
 }

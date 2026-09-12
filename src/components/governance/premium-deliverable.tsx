@@ -52,9 +52,11 @@ export function PremiumDeliverable({
     );
   }
 
+  // A locked action never wears the primary colour: it would read as a live
+  // button that then refuses, which is the pattern this product should not use.
   return (
     <div className="inline-flex flex-col gap-1.5">
-      <Button variant={variant} disabled className="opacity-80">
+      <Button variant="outline" disabled className="opacity-70">
         <Lock className="w-4 h-4 mr-1.5" />
         {label}
       </Button>

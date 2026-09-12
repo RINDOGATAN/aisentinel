@@ -68,6 +68,7 @@ import { UnifiedPanel } from "@/components/governance/UnifiedPanel";
 import { AgentPanel } from "@/components/governance/AgentPanel";
 import { TransparencyStatementCard } from "@/components/ai/TransparencyStatementCard";
 import { DataFlowPanel } from "@/components/governance/data-flow-panel";
+import { SystemThreatModelCard } from "@/components/governance/system-threat-model-card";
 
 const statusColors: Record<string, string> = {
   DRAFT: "border-muted-foreground text-muted-foreground",
@@ -1181,7 +1182,13 @@ export default function AISystemDetailPage() {
         </TabsContent>
 
         {/* Risk Classification Tab */}
-        <TabsContent value="data-flow" className="mt-4">
+        <TabsContent value="data-flow" className="mt-4 space-y-4">
+          {/* The other half of the same system: what could go wrong with it. */}
+          <SystemThreatModelCard
+            organizationId={organizationId}
+            aiSystemId={id}
+            canWrite={canWrite}
+          />
           <DataFlowPanel
             organizationId={organizationId}
             aiSystemId={id}

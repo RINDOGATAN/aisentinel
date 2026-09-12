@@ -194,7 +194,16 @@ export default function ThreatModelDetailPage() {
         <div className="min-w-0">
           <h1 className="text-xl sm:text-2xl font-semibold">{data.name}</h1>
           <p className="text-xs text-muted-foreground mt-1">
-            {data.aiSystem ? data.aiSystem.name : t("noSystemLinked")}
+            {data.aiSystem ? (
+              <Link
+                href={`/governance/ai-registry/${data.aiSystem.id}`}
+                className="text-primary hover:underline"
+              >
+                {data.aiSystem.name}
+              </Link>
+            ) : (
+              t("noSystemLinked")
+            )}
             {data.reviewedAt
               ? ` · ${t("reviewedOn", { date: new Date(data.reviewedAt).toLocaleDateString() })}`
               : ""}

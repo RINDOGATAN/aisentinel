@@ -5128,7 +5128,10 @@
     "untestedReason": {
       "no-test": "sin pruebas registradas",
       "not-passing": "la última prueba falló, fue parcial o ha caducado"
-    }
+    },
+    "systemCardHint": "Qué puede salir mal con este sistema y si los controles aguantan.",
+    "systemCardNone": "Todavía no hay un modelo de amenazas para este sistema. Media hora con quienes lo han construido basta para el primer borrador.",
+    "systemCardOpen": "Abrir el modelo de amenazas"
   },
   "premiumShowcase": {
     "lockedHint": "Forma parte de un módulo de pago en esta instancia alojada. Al autoalojarlo, todos los módulos están incluidos.",

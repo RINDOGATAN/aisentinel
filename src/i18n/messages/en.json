@@ -5128,7 +5128,10 @@
     "untestedReason": {
       "no-test": "no test recorded",
       "not-passing": "last test failed, was partial, or has gone stale"
-    }
+    },
+    "systemCardHint": "What could go wrong with this system, and whether the controls hold.",
+    "systemCardNone": "No threat model for this system yet. Thirty minutes with the people who built it is enough for the first draft.",
+    "systemCardOpen": "Open the threat model"
   },
   "premiumShowcase": {
     "lockedHint": "Part of a paid module on this hosted instance. Every module is included when you self-host.",

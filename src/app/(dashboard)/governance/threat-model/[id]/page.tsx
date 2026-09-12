@@ -95,6 +95,9 @@ export default function ThreatModelDetailPage() {
   const invalidate = () => {
     void utils.threatModel.getById.invalidate({ organizationId: orgId, id });
     void utils.threatModel.list.invalidate();
+    // Recording a test changes what the register would accept, so the panel
+    // that says so has to be refreshed with everything else.
+    void utils.threatModel.previewRegisterLink.invalidate({ organizationId: orgId, id });
   };
 
   const recordTest = trpc.threatModel.recordTest.useMutation({

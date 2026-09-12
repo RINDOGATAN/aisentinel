@@ -4869,6 +4869,9 @@
       "HARM": "Harm",
       "DETECTION": "Detection",
       "CHAINS": "Agent chains"
-    }
+    },
+    "delete": "Delete",
+    "deleteConfirm": "Confirm delete",
+    "deleted": "Threat model deleted."
   }
 }

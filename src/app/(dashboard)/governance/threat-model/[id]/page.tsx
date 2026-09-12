@@ -16,10 +16,10 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { ArrowLeft, Check, Loader2, Plus, ShieldCheck } from "lucide-react";
+import { ArrowLeft, Check, Loader2, Plus, ShieldCheck, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -66,6 +66,7 @@ export default function ThreatModelDetailPage() {
   const locale = useLocale();
   const lang = locale === "es" ? "es" : "en";
   const params = useParams();
+  const router = useRouter();
   const id = params.id as string;
   const { organization, canWrite } = useOrganization();
   const orgId = organization?.id ?? "";
@@ -77,6 +78,7 @@ export default function ThreatModelDetailPage() {
   const [result, setResult] = useState<"PASS" | "PARTIAL" | "FAIL">("PASS");
   const [notes, setNotes] = useState("");
   const [evidenceRef, setEvidenceRef] = useState("");
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   const { data, isLoading } = trpc.threatModel.getById.useQuery(
     { organizationId: orgId, id },
@@ -114,6 +116,14 @@ export default function ThreatModelDetailPage() {
     onSuccess: () => {
       toast.success(t("reviewedSaved"));
       invalidate();
+    },
+    onError: (e) => toast.error(e.message),
+  });
+
+  const remove = trpc.threatModel.delete.useMutation({
+    onSuccess: () => {
+      toast.success(t("deleted"));
+      router.push("/governance/threat-model");
     },
     onError: (e) => toast.error(e.message),
   });
@@ -511,6 +521,26 @@ export default function ThreatModelDetailPage() {
           >
             {markReviewed.isPending && <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />}
             {t("markReviewed")}
+          </Button>
+        )}
+        {canWrite && (
+          <Button
+            variant={confirmDelete ? "destructive" : "ghost"}
+            disabled={remove.isPending}
+            onClick={() => {
+              if (!confirmDelete) {
+                setConfirmDelete(true);
+                return;
+              }
+              remove.mutate({ organizationId: orgId, id });
+            }}
+          >
+            {remove.isPending ? (
+              <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />
+            ) : (
+              <Trash2 className="w-4 h-4 mr-1.5" />
+            )}
+            {confirmDelete ? t("deleteConfirm") : t("delete")}
           </Button>
         )}
       </div>

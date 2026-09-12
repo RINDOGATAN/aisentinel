@@ -43,6 +43,7 @@ import {
   SENSITIVE_FACTORS_REVIEW_MARKER,
 } from "@/config/sensitive-data-factors";
 import { sensitiveCategoryLabel } from "@/config/data-categories";
+import { renderThreatModelDoc } from "@/server/services/export/threat-model-doc";
 import {
   exportStamp,
   renderManifest,
@@ -64,7 +65,8 @@ const L = {
     vendors: "06-vendor-due-diligence.md",
     inventory: "07-ai-inventory.csv",
     sensitive: "08-sensitive-data-analyses.md",
-    manifest: "09-MANIFEST.txt",
+    threats: "09-threat-models.md",
+    manifest: "10-MANIFEST.txt",
     title: "AI governance program pack",
     generated: "Generated",
     contents: "Contents",
@@ -77,6 +79,7 @@ const L = {
       vendors: "The due-diligence reviews of each AI vendor: what is known, and what is still open.",
       inventory: "The AI inventory as a spreadsheet, in the format the import accepts.",
       sensitive: "The five-factor analyses: how the organization decided whether a set of data is health data or another sensitive category, with the reasoning per factor, the band, the decision and the owner.",
+      threats: "The threat models: what each system can see and do, what could go wrong, the controls against each scenario, and whether those controls were tested.",
       manifest: "The integrity manifest: a SHA-256 digest for every file above, the application version that produced them, and the version and legal review date of every rule pack in force at that moment.",
     },
     status: "Status of this pack",
@@ -140,7 +143,8 @@ const L = {
     vendors: "06-diligencia-debida-de-proveedores.md",
     inventory: "07-inventario-de-ia.csv",
     sensitive: "08-analisis-de-datos-sensibles.md",
-    manifest: "09-MANIFIESTO.txt",
+    threats: "09-modelos-de-amenazas.md",
+    manifest: "10-MANIFIESTO.txt",
     title: "Paquete del programa de gobernanza de la IA",
     generated: "Generado",
     contents: "Contenido",
@@ -153,6 +157,7 @@ const L = {
       vendors: "Las revisiones de diligencia debida de cada proveedor de IA: lo que se sabe y lo que sigue abierto.",
       inventory: "El inventario de IA como hoja de cálculo, en el formato que admite la importación.",
       sensitive: "Los análisis por factores: cómo decidió la organización si un conjunto de datos es dato de salud u otra categoría sensible, con el razonamiento de cada factor, la banda, la decisión y el responsable.",
+      threats: "Los modelos de amenazas: qué puede ver y hacer cada sistema, qué podría salir mal, los controles de cada escenario y si esos controles se han probado.",
       manifest: "El manifiesto de integridad: una huella SHA-256 de cada fichero anterior, la versión de la aplicación que los generó y la versión y la fecha de revisión jurídica de cada paquete de reglas vigente en ese momento.",
     },
     status: "Estado de este paquete",
@@ -604,6 +609,7 @@ export async function buildProgramPack(
     `- \`${l.vendors}\`: ${l.items.vendors}`,
     `- \`${l.inventory}\`: ${l.items.inventory}`,
     `- \`${l.sensitive}\`: ${l.items.sensitive}`,
+    `- \`${l.threats}\`: ${l.items.threats}`,
     `- \`${l.manifest}\`: ${l.items.manifest}`,
     "",
     `## ${l.status}`,
@@ -626,6 +632,42 @@ export async function buildProgramPack(
     for (let i = entries.length - 1; i >= 0; i--) {
       if (entries[i].name.startsWith(`${l.systemsDir}/`)) entries.splice(i, 1);
     }
+  }
+
+  // Threat models: the builder-facing half of the record.
+  const threatModels = await prisma.threatModel.findMany({
+    where: { organizationId, status: { not: "ARCHIVED" } },
+    orderBy: { updatedAt: "desc" },
+    include: {
+      aiSystem: { select: { name: true } },
+      scenarios: {
+        orderBy: [{ priority: "desc" }, { createdAt: "asc" }],
+        include: {
+          controls: {
+            orderBy: { createdAt: "asc" },
+            include: { tests: { orderBy: { testedAt: "desc" } } },
+          },
+        },
+      },
+    },
+  });
+  if (threatModels.length > 0) {
+    const docs = threatModels.map((m) =>
+      renderThreatModelDoc(
+        {
+          name: m.name,
+          systemSummary: m.systemSummary,
+          systemName: m.aiSystem?.name ?? null,
+          capabilities: m.capabilities,
+          reviewedAt: m.reviewedAt,
+          organizationName: orgName,
+          scenarios: m.scenarios,
+        },
+        locale,
+        new Date(),
+      ),
+    );
+    entries.push({ name: l.threats, data: docs.join("\n\n---\n\n") });
   }
 
   // The manifest goes in last and covers every other file: a reader can check

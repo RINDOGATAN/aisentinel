@@ -4869,6 +4869,9 @@
       "HARM": "Perjuicio",
       "DETECTION": "Detección",
       "CHAINS": "Cadenas de agentes"
-    }
+    },
+    "delete": "Eliminar",
+    "deleteConfirm": "Confirmar eliminación",
+    "deleted": "Modelo de amenazas eliminado."
   }
 }

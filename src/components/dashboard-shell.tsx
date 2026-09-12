@@ -34,6 +34,7 @@ import {
   Shield,
   Sparkles,
   Code,
+  Crosshair,
   Gavel,
   Landmark,
   HeartPulse,
@@ -88,6 +89,7 @@ function buildNavGroups(isConsultant: boolean, t: (key: string) => string) {
       items: [
         { href: "/governance/ai-registry", label: t("aiRegistry"), icon: Brain },
         { href: "/governance/risk-classification", label: t("riskClassification"), icon: ShieldAlert },
+        { href: "/governance/threat-model", label: t("threatModel"), icon: Crosshair },
       ],
     },
     {

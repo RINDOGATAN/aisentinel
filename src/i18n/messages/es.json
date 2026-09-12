@@ -163,7 +163,8 @@
     "auditTrail": "Registro de auditoría",
     "sensitiveData": "Datos sensibles",
     "proceedings": "Procedimientos",
-    "boardReports": "Informes al consejo"
+    "boardReports": "Informes al consejo",
+    "threatModel": "Modelo de amenazas"
   },
   "dashboard": {
     "title": "Gobernanza de IA",
@@ -4755,6 +4756,119 @@
       "EXECUTIVE": "Comité de dirección",
       "REGULATOR": "Autoridad",
       "OTHER": "Otro"
+    }
+  },
+  "threatModel": {
+    "title": "Modelo de amenazas",
+    "subtitle": "Empieza por el sistema que estás construyendo, no por un marco. Di lo que puede ver y hacer, y lo que podría salir mal llega con sus controles y una prueba para cada uno.",
+    "start": "Empezar un modelo de amenazas",
+    "loopHint": "Media hora con quienes lo han construido dice más que una evaluación de setenta preguntas.",
+    "loop": {
+      "map": "Mapear",
+      "imagine": "Imaginar",
+      "prioritise": "Priorizar",
+      "control": "Controlar",
+      "test": "Probar"
+    },
+    "emptyTitle": "Todavía no hay ningún modelo de amenazas.",
+    "emptyBody": "Elige un sistema, marca lo que puede alcanzar y el primer borrador se escribe solo. Después puedes discutirlo.",
+    "actNowCount": "{count} para actuar ya",
+    "scenarioCount": "{count} escenarios",
+    "noControls": "Sin controles todavía",
+    "provenOf": "{proven}/{total} controles probados y superados",
+    "newTitle": "Un modelo de amenazas en media hora",
+    "newSubtitle": "Tres pantallas. Nada que escribir desde cero.",
+    "nameLabel": "¿Qué estás construyendo?",
+    "namePlaceholder": "Agente de atención al cliente, asistente de documentos internos, agente de programación",
+    "summaryLabel": "En dos líneas, ¿qué hace?",
+    "summaryPlaceholder": "Lee datos de clientes y el historial de pedidos, responde preguntas y puede emitir reembolsos.",
+    "systemLabel": "Vincúlalo a un sistema de IA registrado",
+    "systemPlaceholder": "Opcional",
+    "systemNone": "Sin vincular",
+    "sessionTitle": "Preguntas para quienes lo han construido",
+    "next": "Siguiente",
+    "back": "Atrás",
+    "mapTitle": "¿Qué puede ver, recuperar, recordar, invocar y hacer?",
+    "mapHint": "Marca todo lo que sea cierto hoy, no lo que esté previsto. Este es el único paso que exige pensar.",
+    "willPropose": "De esto se derivan {count} escenarios.",
+    "seeScenarios": "Ver los escenarios",
+    "proposedTitle": "{count} cosas que podrían salir mal",
+    "proposedHint": "Cada una viene con controles y una prueba. Quita lo que no se aplique a tu caso una vez guardadas.",
+    "bringsControls": "Aporta {count} controles y una prueba.",
+    "createWith": "Crear con {count} escenarios",
+    "created": "Modelo de amenazas creado con {count} escenarios.",
+    "added": "{count} añadidos.",
+    "add": "Añadir",
+    "addAll": "Añadir los {count}",
+    "matrixTitle": "Qué importa más",
+    "impact": "Impacto",
+    "likelihood": "Probabilidad",
+    "evidenceTitle": "Controles con prueba superada",
+    "evidenceCaption": "Una barrera que nadie ha intentado romper es una afirmación, no un control.",
+    "coverageTitle": "Dónde están los controles",
+    "coverageHint": "Una capa vacía es el hallazgo. Un sistema con cuatro controles preventivos y nada que detecte se enterará de su primer incidente por un cliente.",
+    "none": "ninguno",
+    "actNowHeadline": "{count} escenarios requieren actuar ya",
+    "actNowHint": "Máximo impacto, máxima probabilidad o un radio que va más allá de este sistema.",
+    "noSystemLinked": "Sin vincular a un sistema registrado",
+    "reviewedOn": "revisado el {date}",
+    "notConsideredTitle": "Todavía sin considerar",
+    "notConsideredHint": "De la biblioteca, según lo que este sistema puede hacer. Úsalo para comprobar que no te has dejado una categoría.",
+    "howToTest": "Cómo probarlo",
+    "recordTest": "Registrar una prueba",
+    "saveTest": "Guardar la prueba",
+    "testRecorded": "Prueba registrada.",
+    "methodPlaceholder": "¿Qué hiciste exactamente? Con detalle suficiente para que otra persona pueda repetirlo.",
+    "resultLabel": "Resultado",
+    "evidenceLabel": "Evidencia",
+    "evidencePlaceholder": "Un identificador de ejecución, un ticket, una transcripción",
+    "notesPlaceholder": "¿Qué observaste? Incluido lo que aun así se coló.",
+    "implemented": "Implantado",
+    "markImplemented": "Marcar como implantado",
+    "cancel": "Cancelar",
+    "download": "Descargar el documento",
+    "markReviewed": "Marcar como revisado",
+    "reviewedSaved": "Marcado como revisado.",
+    "priority": {
+      "ACT_NOW": "Actuar ya",
+      "PLAN": "Planificar",
+      "WATCH": "Vigilar"
+    },
+    "level": {
+      "LOW": "Baja",
+      "MEDIUM": "Media",
+      "HIGH": "Alta"
+    },
+    "blast": {
+      "LIMITED": "Limitado",
+      "SIGNIFICANT": "Significativo",
+      "SEVERE": "Severo"
+    },
+    "status": {
+      "OPEN": "Abierto",
+      "MITIGATED": "Mitigado",
+      "ACCEPTED": "Aceptado",
+      "OUT_OF_SCOPE": "Fuera de alcance"
+    },
+    "result": {
+      "PASS": "Superada",
+      "PARTIAL": "Parcial",
+      "FAIL": "Fallida"
+    },
+    "controlState": {
+      "proven": "Probado",
+      "failing": "No aguanta",
+      "stale": "Prueba caducada",
+      "untested": "Sin probar"
+    },
+    "category": {
+      "DISCLOSURE": "Divulgación",
+      "ACCURACY": "Exactitud",
+      "MANIPULATION": "Manipulación",
+      "AUTHORITY": "Autoridad",
+      "HARM": "Perjuicio",
+      "DETECTION": "Detección",
+      "CHAINS": "Cadenas de agentes"
     }
   }
 }

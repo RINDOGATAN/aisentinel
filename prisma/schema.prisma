@@ -155,6 +155,10 @@ model Organization {
   legalHolds            LegalHold[]
   proceedings           RegulatoryProceeding[]
   boardReports          BoardReport[]
+  threatModels          ThreatModel[]
+  threatScenarios       ThreatScenario[]
+  threatControls        ThreatControl[]
+  controlTests          ControlTest[]
   proceedingEvents      ProceedingEvent[]
   oversightGates        OversightGate[]
   oversightDecisions    OversightDecision[]
@@ -309,6 +313,7 @@ model AISystem {
   dataRecipients      DataRecipient[]
   legalHolds          LegalHold[]
   proceedings         RegulatoryProceeding[]
+  threatModels        ThreatModel[]
   oversightGates      OversightGate[]
   incidents           AIIncident[]
   complianceMappings  ComplianceMapping[]
@@ -685,6 +690,179 @@ model AIAssessment {
   @@index([organizationId])
   @@index([aiSystemId])
   @@map("ai_assessments")
+}
+
+/// A threat model for one system: what it can do, what could go wrong, what
+/// stops it, and whether that was tested.
+///
+/// Telling a five-person team to implement a framework is not useful. Asking
+/// what could go wrong with the thing they are building is. The model holds
+/// the capability map and the scenarios that follow from it; each scenario
+/// holds its controls; each control holds its tests. "We have a guardrail" is
+/// not evidence, so the test is part of the record rather than an afterthought.
+model ThreatModel {
+  id             String            @id @default(cuid())
+  organizationId String
+  /// The system this is about, where it is in the register.
+  aiSystemId     String?
+  name           String
+  /// What the system is, in two lines, in the builder's own words.
+  systemSummary  String?           @db.Text
+  /// Capability ids from src/config/threat-model.ts. This is the MAP step.
+  capabilities   String[]
+  status         ThreatModelStatus @default(DRAFT)
+  /// Threat models go stale the moment capabilities change.
+  reviewedAt     DateTime?
+  nextReviewDue  DateTime?
+  createdBy      String
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  organization Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  aiSystem     AISystem?        @relation(fields: [aiSystemId], references: [id], onDelete: SetNull)
+  scenarios    ThreatScenario[]
+
+  @@index([organizationId])
+  @@index([aiSystemId])
+  @@map("threat_models")
+}
+
+/// One thing that could go wrong, with its priority and what was decided.
+model ThreatScenario {
+  id            String            @id @default(cuid())
+  organizationId String
+  threatModelId String
+  /// The library entry this came from, where it was proposed rather than typed.
+  libraryId     String?
+  category      ScenarioCategory
+  title         String
+  description   String?           @db.Text
+  impact        ThreatLevel       @default(MEDIUM)
+  likelihood    ThreatLevel       @default(MEDIUM)
+  blastRadius   BlastRadius       @default(LIMITED)
+  /// Derived from the three above and stored so lists can sort without
+  /// recomputing; the rule lives in src/config/threat-model.ts.
+  priority      ThreatPriority    @default(PLAN)
+  status        ScenarioStatus    @default(OPEN)
+  /// Why it was accepted, or why it is out of scope. An accepted risk with no
+  /// reason is the sentence that reads worst later.
+  decisionNote  String?           @db.Text
+  owner         String?
+  createdBy     String
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  organization Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  threatModel  ThreatModel     @relation(fields: [threatModelId], references: [id], onDelete: Cascade)
+  controls     ThreatControl[]
+
+  @@index([organizationId])
+  @@index([threatModelId, priority])
+  @@map("threat_scenarios")
+}
+
+/// What is done about a scenario, at one of the five layers.
+model ThreatControl {
+  id             String       @id @default(cuid())
+  organizationId String
+  scenarioId     String
+  layer          ControlLayer
+  description    String       @db.Text
+  owner          String?
+  implemented    Boolean      @default(false)
+  implementedAt  DateTime?
+  /// How this control should be tested, carried from the library or written
+  /// by the team. Kept next to the control so the test is not forgotten.
+  howToTest      String?      @db.Text
+  createdBy      String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  organization Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  scenario     ThreatScenario @relation(fields: [scenarioId], references: [id], onDelete: Cascade)
+  tests        ControlTest[]
+
+  @@index([organizationId])
+  @@index([scenarioId])
+  @@map("threat_controls")
+}
+
+/// An attempt to break the control, and what happened. Appended, never edited.
+model ControlTest {
+  id             String     @id @default(cuid())
+  organizationId String
+  controlId      String
+  /// What was actually done, concretely enough to repeat.
+  method         String     @db.Text
+  result         TestResult
+  /// What was observed, including what still got through.
+  notes          String?    @db.Text
+  /// Where the evidence lives: a run id, a transcript, a ticket, a file.
+  evidenceRef    String?
+  testedBy       String
+  testedAt       DateTime   @default(now())
+
+  organization Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  control      ThreatControl @relation(fields: [controlId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([controlId, testedAt])
+  @@map("control_tests")
+}
+
+enum ThreatModelStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+enum ScenarioCategory {
+  DISCLOSURE
+  ACCURACY
+  MANIPULATION
+  AUTHORITY
+  HARM
+  DETECTION
+  CHAINS
+}
+
+enum ThreatLevel {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum BlastRadius {
+  LIMITED
+  SIGNIFICANT
+  SEVERE
+}
+
+enum ThreatPriority {
+  WATCH
+  PLAN
+  ACT_NOW
+}
+
+enum ScenarioStatus {
+  OPEN
+  MITIGATED
+  ACCEPTED
+  OUT_OF_SCOPE
+}
+
+enum ControlLayer {
+  PREVENT
+  CONSTRAIN
+  DETECT
+  RESPOND
+  ASSURE
+}
+
+enum TestResult {
+  PASS
+  PARTIAL
+  FAIL
 }
 
 /// What was reported to the board, when, by whom, and what they decided.

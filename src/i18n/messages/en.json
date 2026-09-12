@@ -163,7 +163,8 @@
     "auditTrail": "Audit trail",
     "sensitiveData": "Sensitive data",
     "proceedings": "Proceedings",
-    "boardReports": "Board reporting"
+    "boardReports": "Board reporting",
+    "threatModel": "Threat model"
   },
   "dashboard": {
     "title": "AI Governance",
@@ -4755,6 +4756,119 @@
       "EXECUTIVE": "Executive team",
       "REGULATOR": "Regulator",
       "OTHER": "Other"
+    }
+  },
+  "threatModel": {
+    "title": "Threat model",
+    "subtitle": "Start from the system you are building, not from a framework. Say what it can see and do, and the things that could go wrong come with their controls and a test for each.",
+    "start": "Start a threat model",
+    "loopHint": "Thirty minutes with the people who built it will tell you more than a seventy-question assessment.",
+    "loop": {
+      "map": "Map",
+      "imagine": "Imagine",
+      "prioritise": "Prioritise",
+      "control": "Control",
+      "test": "Test"
+    },
+    "emptyTitle": "No threat model yet.",
+    "emptyBody": "Pick one system, tick what it can reach, and the first draft writes itself. You can argue with it afterwards.",
+    "actNowCount": "{count} to act on now",
+    "scenarioCount": "{count} scenarios",
+    "noControls": "No controls yet",
+    "provenOf": "{proven}/{total} controls tested and passing",
+    "newTitle": "A thirty-minute threat model",
+    "newSubtitle": "Three screens. Nothing to write from scratch.",
+    "nameLabel": "What are you building?",
+    "namePlaceholder": "Customer support agent, internal document assistant, coding agent",
+    "summaryLabel": "In two lines, what does it do?",
+    "summaryPlaceholder": "Reads customer records and order history, answers questions, and can issue refunds.",
+    "systemLabel": "Link it to a registered AI system",
+    "systemPlaceholder": "Optional",
+    "systemNone": "Not linked",
+    "sessionTitle": "Questions to ask the people who built it",
+    "next": "Next",
+    "back": "Back",
+    "mapTitle": "What can it see, retrieve, remember, call and do?",
+    "mapHint": "Tick everything that is true today, not what is planned. This is the only step that needs thinking.",
+    "willPropose": "{count} scenarios follow from this.",
+    "seeScenarios": "See the scenarios",
+    "proposedTitle": "{count} things that could go wrong",
+    "proposedHint": "Each comes with controls and a test. Remove what does not apply to you once they are saved.",
+    "bringsControls": "Brings {count} controls and a test.",
+    "createWith": "Create with {count} scenarios",
+    "created": "Threat model created with {count} scenarios.",
+    "added": "{count} added.",
+    "add": "Add",
+    "addAll": "Add all {count}",
+    "matrixTitle": "What matters most",
+    "impact": "Impact",
+    "likelihood": "Likelihood",
+    "evidenceTitle": "Controls with a passing test",
+    "evidenceCaption": "A guardrail nobody has tried to break is a claim, not a control.",
+    "coverageTitle": "Where the controls sit",
+    "coverageHint": "An empty layer is the finding. A system with four preventive controls and nothing that detects will learn of its first incident from a customer.",
+    "none": "none",
+    "actNowHeadline": "{count} scenarios need action now",
+    "actNowHint": "Highest impact, highest likelihood, or a blast radius that reaches beyond this system.",
+    "noSystemLinked": "Not linked to a registered system",
+    "reviewedOn": "reviewed {date}",
+    "notConsideredTitle": "Not considered yet",
+    "notConsideredHint": "From the library, based on what this system can do. Use it to check you have not missed a category.",
+    "howToTest": "How to test it",
+    "recordTest": "Record a test",
+    "saveTest": "Save the test",
+    "testRecorded": "Test recorded.",
+    "methodPlaceholder": "What did you actually do? Concretely enough that someone else could repeat it.",
+    "resultLabel": "Result",
+    "evidenceLabel": "Evidence",
+    "evidencePlaceholder": "A run id, a ticket, a transcript",
+    "notesPlaceholder": "What did you observe? Including anything that still got through.",
+    "implemented": "In place",
+    "markImplemented": "Mark as in place",
+    "cancel": "Cancel",
+    "download": "Download the document",
+    "markReviewed": "Mark as reviewed",
+    "reviewedSaved": "Marked as reviewed.",
+    "priority": {
+      "ACT_NOW": "Act now",
+      "PLAN": "Plan",
+      "WATCH": "Watch"
+    },
+    "level": {
+      "LOW": "Low",
+      "MEDIUM": "Medium",
+      "HIGH": "High"
+    },
+    "blast": {
+      "LIMITED": "Limited",
+      "SIGNIFICANT": "Significant",
+      "SEVERE": "Severe"
+    },
+    "status": {
+      "OPEN": "Open",
+      "MITIGATED": "Mitigated",
+      "ACCEPTED": "Accepted",
+      "OUT_OF_SCOPE": "Out of scope"
+    },
+    "result": {
+      "PASS": "Passed",
+      "PARTIAL": "Partly",
+      "FAIL": "Failed"
+    },
+    "controlState": {
+      "proven": "Tested",
+      "failing": "Not holding",
+      "stale": "Test out of date",
+      "untested": "Untested"
+    },
+    "category": {
+      "DISCLOSURE": "Disclosure",
+      "ACCURACY": "Accuracy",
+      "MANIPULATION": "Manipulation",
+      "AUTHORITY": "Authority",
+      "HARM": "Harm",
+      "DETECTION": "Detection",
+      "CHAINS": "Agent chains"
     }
   }
 }

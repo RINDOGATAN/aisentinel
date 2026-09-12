@@ -153,6 +153,8 @@ model Organization {
   sensitiveDataAssessments SensitiveDataAssessment[]
   dataRecipients        DataRecipient[]
   legalHolds            LegalHold[]
+  proceedings           RegulatoryProceeding[]
+  proceedingEvents      ProceedingEvent[]
   oversightGates        OversightGate[]
   oversightDecisions    OversightDecision[]
   incidents             AIIncident[]
@@ -305,6 +307,7 @@ model AISystem {
   sensitiveDataAssessments SensitiveDataAssessment[]
   dataRecipients      DataRecipient[]
   legalHolds          LegalHold[]
+  proceedings         RegulatoryProceeding[]
   oversightGates      OversightGate[]
   incidents           AIIncident[]
   complianceMappings  ComplianceMapping[]
@@ -683,6 +686,112 @@ model AIAssessment {
   @@map("ai_assessments")
 }
 
+/// A proceeding: a regulator's inquiry, an enforcement action, or litigation.
+///
+/// One incident becomes several proceedings in several jurisdictions, and the
+/// hardest part of defending them is not any single case but keeping one
+/// factual position across all of them. The register holds each proceeding, the
+/// authority and jurisdiction, the reference, the deadlines and correspondence,
+/// and the factual position taken, so an inconsistency is visible here before
+/// it is found by someone on the other side.
+model RegulatoryProceeding {
+  id             String            @id @default(cuid())
+  organizationId String
+  title          String
+  /// The authority or court, written as it names itself.
+  authority      String
+  jurisdiction   Jurisdiction?
+  type           ProceedingType    @default(INQUIRY)
+  status         ProceedingStatus  @default(MONITORING)
+  /// Their case or file number.
+  reference      String?
+  openedAt       DateTime?
+  closedAt       DateTime?
+  summary        String?           @db.Text
+  /// The factual position taken in this proceeding. Facts do not change
+  /// between forums; legal characterisation may. Recording it here is what
+  /// makes a divergence visible.
+  positionSummary String?          @db.Text
+  /// Where this proceeding came from: a foreign finding, an incident, a
+  /// complaint. The cascade is the thing worth tracking.
+  originNote     String?           @db.Text
+  externalCounsel String?
+  /// The incident this proceeding arises from, where there is one.
+  incidentId     String?
+  aiSystemId     String?
+  createdBy      String
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  organization Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  incident     AIIncident?         @relation(fields: [incidentId], references: [id], onDelete: SetNull)
+  aiSystem     AISystem?           @relation(fields: [aiSystemId], references: [id], onDelete: SetNull)
+  events       ProceedingEvent[]
+
+  @@index([organizationId, status])
+  @@index([incidentId])
+  @@map("regulatory_proceedings")
+}
+
+/// Anything that happened in a proceeding, or is due to: a letter received, a
+/// filing made, a deadline, a decision. Appended, never edited away.
+model ProceedingEvent {
+  id             String        @id @default(cuid())
+  organizationId String
+  proceedingId   String
+  kind           ProceedingEventKind @default(NOTE)
+  title          String
+  detail         String?       @db.Text
+  /// When it happened. Null for a deadline that has not been met yet.
+  occurredAt     DateTime?
+  /// When it is due, for a deadline.
+  dueAt          DateTime?
+  completedAt    DateTime?
+  reference      String?
+  recordedBy     String
+  createdAt      DateTime      @default(now())
+
+  organization Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  proceeding   RegulatoryProceeding @relation(fields: [proceedingId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([proceedingId, dueAt])
+  @@map("proceeding_events")
+}
+
+enum ProceedingType {
+  INQUIRY
+  INVESTIGATION
+  ENFORCEMENT
+  CONSENT_ORDER
+  MARKET_SURVEILLANCE
+  CIVIL_LITIGATION
+  CLASS_ACTION
+  REPRESENTATIVE_ACTION
+  SECURITIES_CLAIM
+  DERIVATIVE_CLAIM
+  OTHER
+}
+
+enum ProceedingStatus {
+  MONITORING
+  OPEN
+  RESPONDING
+  DECIDED
+  APPEALED
+  CLOSED
+}
+
+enum ProceedingEventKind {
+  RECEIVED
+  SENT
+  FILING
+  DEADLINE
+  DECISION
+  MEETING
+  NOTE
+}
+
 /// A legal hold: the instruction that nothing within its scope may be deleted.
 ///
 /// When litigation or an investigation is reasonably anticipated, the duty to
@@ -1019,6 +1128,18 @@ model AIIncident {
   impactDescription    String?          @db.Text
   notificationRequired Boolean          @default(false)
   notifiedAuthorities  String[]
+  /// When the organisation became aware, which is when every statutory clock
+  /// starts. Distinct from reportedAt, which is when it was entered here.
+  awareAt              DateTime?
+  /// The facts that decide which clock applies. False is the honest default:
+  /// nobody has said yes, and the deadline card says what it assumed.
+  deathOccurred        Boolean          @default(false)
+  widespreadOrCriticalInfrastructure Boolean @default(false)
+  personalDataBreach   Boolean          @default(false)
+  highRiskToIndividuals Boolean         @default(false)
+  /// True where the AI Office is exclusively competent (amended Art. 75(1)),
+  /// which changes who the report goes to.
+  aiOfficeCompetent    Boolean          @default(false)
   dpoCentralIncidentId String?
   reportedBy           String
   reportedAt           DateTime         @default(now())
@@ -1031,6 +1152,7 @@ model AIIncident {
   timeline      AIIncidentTimeline[]
   tasks         AIIncidentTask[]
   notifications AIIncidentNotification[]
+  proceedings   RegulatoryProceeding[]
 
   @@index([organizationId])
   @@index([aiSystemId])

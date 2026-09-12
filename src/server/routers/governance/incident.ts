@@ -4,6 +4,10 @@
 import { z } from "zod";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { TRPCError } from "@trpc/server";
+import {
+  computeIncidentDeadlines,
+  suggestsPersonalDataBreach,
+} from "@/config/incident-deadlines";
 
 export const incidentRouter = createTRPCRouter({
   list: organizationProcedure
@@ -382,5 +386,122 @@ export const incidentRouter = createTRPCRouter({
       ]);
 
       return { total, critical, open, resolved };
+    }),
+  /**
+   * The facts that decide which statutory clock applies. Kept as fields rather
+   * than inferred: whether a person died, or whether critical infrastructure
+   * was disrupted, is a judgement a person makes and must own.
+   */
+  setStatutoryFacts: orgWriteProcedure
+    .input(
+      z.object({
+        organizationId: z.string(),
+        id: z.string(),
+        awareAt: z.date().nullable().optional(),
+        deathOccurred: z.boolean().optional(),
+        widespreadOrCriticalInfrastructure: z.boolean().optional(),
+        personalDataBreach: z.boolean().optional(),
+        highRiskToIndividuals: z.boolean().optional(),
+        aiOfficeCompetent: z.boolean().optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const existing = await ctx.prisma.aIIncident.findFirst({
+        where: { id: input.id, organizationId: ctx.organization.id },
+        select: { id: true },
+      });
+      if (!existing) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Incident not found" });
+      }
+
+      const { organizationId: _org, id, ...data } = input;
+
+      await ctx.prisma.aIIncident.updateMany({
+        where: { id, organizationId: ctx.organization.id },
+        data: data as never,
+      });
+
+      await ctx.prisma.auditLog.create({
+        data: {
+          organizationId: ctx.organization.id,
+          userId: ctx.session.user.id,
+          entityType: "AIIncident",
+          entityId: id,
+          action: "UPDATE",
+          changes: { ...data, scope: "statutory-facts" },
+        },
+      });
+
+      return { ok: true };
+    }),
+
+  /**
+   * The deadlines that follow from the recorded facts, computed rather than
+   * typed in. Returns an empty list where the facts do not support a clock:
+   * an invented deadline is worse than none, because it gets relied on.
+   */
+  getStatutoryDeadlines: organizationProcedure
+    .input(z.object({ organizationId: z.string(), id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const incident = await ctx.prisma.aIIncident.findFirst({
+        where: { id: input.id, organizationId: ctx.organization.id },
+        select: {
+          id: true,
+          type: true,
+          reportedAt: true,
+          awareAt: true,
+          deathOccurred: true,
+          widespreadOrCriticalInfrastructure: true,
+          personalDataBreach: true,
+          highRiskToIndividuals: true,
+          aiOfficeCompetent: true,
+          aiSystem: {
+            select: {
+              role: true,
+              riskClassification: { select: { riskLevel: true } },
+            },
+          },
+        },
+      });
+      if (!incident) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Incident not found" });
+      }
+
+      const jurisdictions = ctx.organization.operatingJurisdictions as string[];
+      const role =
+        incident.aiSystem?.role === "PROVIDER"
+          ? "PROVIDER"
+          : incident.aiSystem?.role === "DEPLOYER"
+            ? "DEPLOYER"
+            : "OTHER";
+
+      const deadlines = computeIncidentDeadlines({
+        awareAt: incident.awareAt ?? incident.reportedAt,
+        role,
+        euHighRisk: incident.aiSystem?.riskClassification?.riskLevel === "HIGH",
+        death: incident.deathOccurred,
+        widespreadOrCriticalInfrastructure: incident.widespreadOrCriticalInfrastructure,
+        personalDataBreach: incident.personalDataBreach,
+        highRiskToIndividuals: incident.highRiskToIndividuals,
+        aiOfficeCompetent: incident.aiOfficeCompetent,
+        jurisdictions,
+      });
+
+      return {
+        deadlines,
+        facts: {
+          awareAt: incident.awareAt ?? incident.reportedAt,
+          usedReportedAt: !incident.awareAt,
+          deathOccurred: incident.deathOccurred,
+          widespreadOrCriticalInfrastructure: incident.widespreadOrCriticalInfrastructure,
+          personalDataBreach: incident.personalDataBreach,
+          highRiskToIndividuals: incident.highRiskToIndividuals,
+          aiOfficeCompetent: incident.aiOfficeCompetent,
+          role,
+          euHighRisk: incident.aiSystem?.riskClassification?.riskLevel === "HIGH",
+          jurisdictionsDeclared: jurisdictions.length > 0,
+          breachLikely: suggestsPersonalDataBreach(incident.type),
+        },
+      };
     }),
 });

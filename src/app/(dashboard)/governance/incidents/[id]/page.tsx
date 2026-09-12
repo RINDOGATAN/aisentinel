@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { IncidentDeadlinesCard } from "@/components/governance/incident-deadlines-card";
 import {
   Dialog,
   DialogContent,
@@ -103,7 +104,7 @@ export default function IncidentDetailPage() {
         : statusLabel(status);
   const params = useParams();
   const id = params.id as string;
-  const { organization } = useOrganization();
+  const { organization, canWrite } = useOrganization();
 
   // Dialog states
   const [showTimelineDialog, setShowTimelineDialog] = useState(false);
@@ -304,6 +305,13 @@ export default function IncidentDetailPage() {
           ))}
         </div>
       )}
+
+      {/* What the law requires, and by when. Computed, not typed in. */}
+      <IncidentDeadlinesCard
+        organizationId={organization?.id ?? ""}
+        incidentId={id}
+        canWrite={canWrite}
+      />
 
       {/* Overview Grid */}
       <div className="grid gap-6 md:grid-cols-3">

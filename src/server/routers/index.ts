@@ -32,6 +32,7 @@ import { auditRouter } from "./governance/audit";
 import { sensitiveDataRouter } from "./governance/sensitiveData";
 import { dataFlowRouter } from "./governance/dataFlow";
 import { legalHoldRouter } from "./governance/legalHold";
+import { proceedingsRouter } from "./governance/proceedings";
 
 export const appRouter = createTRPCRouter({
   organization: organizationRouter,
@@ -64,6 +65,7 @@ export const appRouter = createTRPCRouter({
   sensitiveData: sensitiveDataRouter,
   dataFlow: dataFlowRouter,
   legalHold: legalHoldRouter,
+  proceedings: proceedingsRouter,
 });
 
 export type AppRouter = typeof appRouter;

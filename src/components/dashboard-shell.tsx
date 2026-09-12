@@ -34,6 +34,7 @@ import {
   Shield,
   Sparkles,
   Code,
+  Gavel,
   HeartPulse,
   History,
  ShieldCheck } from "lucide-react";
@@ -108,6 +109,7 @@ function buildNavGroups(isConsultant: boolean, t: (key: string) => string) {
       icon: AlertTriangle,
       items: [
         { href: "/governance/incidents", label: t("incidents"), icon: AlertTriangle },
+        { href: "/governance/proceedings", label: t("proceedings"), icon: Gavel },
         { href: "/governance/vendors", label: t("vendors"), icon: Building2 },
         { href: "/governance/vendor-catalog", label: t("vendorCatalog"), icon: Database, premium: true },
         { href: "/governance/shadow-ai", label: t("shadowAi"), icon: Search, premium: true },

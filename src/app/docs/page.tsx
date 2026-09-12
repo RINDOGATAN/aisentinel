@@ -4,6 +4,7 @@
 import Link from "next/link";
 import {
   Brain,
+  Crosshair,
   ShieldAlert,
   ClipboardCheck,
   Eye,
@@ -59,6 +60,7 @@ function approx(n: number | null) {
 const moduleItems = [
   { href: "/docs/ai-registry", icon: Brain, tKey: "aiRegistry" },
   { href: "/docs/risk-classification", icon: ShieldAlert, tKey: "riskClassification" },
+  { href: "/docs/threat-model", icon: Crosshair, tKey: "threatModel" },
   { href: "/docs/assessments", icon: ClipboardCheck, tKey: "assessments" },
   { href: "/docs/oversight", icon: Eye, tKey: "oversight" },
   { href: "/docs/incidents", icon: AlertTriangle, tKey: "incidents" },
@@ -77,6 +79,7 @@ const premiumItems = [
 ] as const;
 
 const alsoItems = [
+  { href: "/docs/how-it-fits", tKey: "howItFits" },
   { href: "/governance/quickstart", tKey: "quickstart" },
   { href: "/governance/settings", tKey: "aiPosture" },
   { href: "/governance/skills", tKey: "skills" },

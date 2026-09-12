@@ -10,12 +10,12 @@ import {
 } from "./premium-showcase";
 
 /** The three deployments this product actually has. */
-const HOSTED = { NEXT_PUBLIC_STRIPE_ENABLED: "false" } as NodeJS.ProcessEnv;
+const HOSTED = { NEXT_PUBLIC_STRIPE_ENABLED: "false" };
 const SELF_HOST = {
   NEXT_PUBLIC_STRIPE_ENABLED: "false",
   NEXT_PUBLIC_ALL_SKILLS_FREE: "true",
-} as NodeJS.ProcessEnv;
-const CLOUD_WITH_STRIPE = { NEXT_PUBLIC_STRIPE_ENABLED: "true" } as NodeJS.ProcessEnv;
+};
+const CLOUD_WITH_STRIPE = { NEXT_PUBLIC_STRIPE_ENABLED: "true" };
 
 describe("which deployments keep deliverables paid", () => {
   it("is on for the hosted instance: Stripe off, the flag unset", () => {

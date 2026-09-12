@@ -1796,6 +1796,10 @@
         "crossBorder": {
           "title": "Regímenes transfronterizos",
           "description": "Una evaluación de impacto que responde al Reglamento de IA de la UE, al RGPD, a la ADMT de California, a Colorado, a Texas y a Washington, y los tres documentos que genera."
+        },
+        "threatModel": {
+          "title": "Modelo de amenazas",
+          "description": "Para el equipo que construye la IA: qué puede salir mal, qué lo impide y si eso se ha probado."
         }
       },
       "premiumTitleFree": "Módulos adicionales",
@@ -1840,6 +1844,10 @@
         "clients": {
           "title": "Organizaciones gestionadas",
           "description": "Para profesionales de la gobernanza que llevan programas de varios clientes: cambia entre las organizaciones que gestionas."
+        },
+        "howItFits": {
+          "title": "Cómo encaja todo",
+          "description": "Qué introduces, qué deriva el producto y qué entregas."
         }
       },
       "licensingTitle": "Licencias Open Core",
@@ -3543,6 +3551,233 @@
       "ctaTitle": "Véalo en el producto",
       "ctaBody": "Abre cualquier sistema de IA y elige la pestaña Regímenes transfronterizos.",
       "ctaLink": "Leer la documentación transfronteriza"
+    },
+    "threatModel": {
+      "metaTitle": "Modelado de amenazas para quien construye",
+      "metaDescription": "Empieza por el sistema que estás construyendo: qué puede salir mal, qué lo impide y si eso se ha probado.",
+      "title": "Modelado de amenazas",
+      "intro": "Decirle a un equipo de cinco personas que implante un marco de gobernanza no ayuda. Preguntar qué puede salir mal en lo que realmente están construyendo, sí. Este módulo sistematiza esa pregunta y escribe casi todo por ti.",
+      "intro2": "Lleva unos treinta minutos con quienes han construido el sistema y produce un registro que pueden leer la revisión de seguridad de un cliente, una auditoría o una autoridad.",
+      "loopTitle": "El ciclo",
+      "loop": [
+        {
+          "step": "Mapear",
+          "body": "Qué puede ver, recuperar, recordar, invocar y hacer el sistema. Es el único paso que exige pensar."
+        },
+        {
+          "step": "Imaginar",
+          "body": "Qué puede salir mal: por accidente, por ataque o en un uso normal. El producto propone la lista."
+        },
+        {
+          "step": "Priorizar",
+          "body": "Por impacto, probabilidad y radio de impacto. Se calcula, así que dos personas con los mismos hechos obtienen la misma respuesta."
+        },
+        {
+          "step": "Controlar",
+          "body": "Prevenir, limitar, detectar, responder, asegurar. Cada escenario llega con sus controles ya redactados."
+        },
+        {
+          "step": "Probar",
+          "body": "Intenta romper el control y deja constancia de lo ocurrido. Repítelo cuando el sistema cambie."
+        }
+      ],
+      "mapTitle": "Las cinco preguntas",
+      "mapIntro": "Marca lo que sea cierto hoy, no lo que esté previsto. Todo lo demás se deriva de estas respuestas.",
+      "questions": [
+        {
+          "name": "¿Qué puede ver?",
+          "body": "Texto de las personas usuarias, datos de clientes, datos de personal, datos de salud u otros sensibles, datos de pago, credenciales."
+        },
+        {
+          "name": "¿Qué puede recuperar?",
+          "body": "Documentos internos, páginas web, correo, código fuente. Todo lo recuperado es dato no confiable."
+        },
+        {
+          "name": "¿Qué recuerda?",
+          "body": "La conversación, o un perfil que persiste. Una memoria persistente puede envenenarse una vez y usarse muchas."
+        },
+        {
+          "name": "¿Qué puede invocar?",
+          "body": "Herramientas, una base de datos, código u órdenes de consola, servicios de terceros. Cada uno es una vía para que un modelo manipulado actúe."
+        },
+        {
+          "name": "¿Qué puede hacer?",
+          "body": "Enviar mensajes al exterior, mover dinero, modificar registros, desplegar código, influir en una decisión sobre una persona, traspasar a otro agente."
+        }
+      ],
+      "backTitle": "Qué obtienes",
+      "backIntro": "Escenarios concretos, cada uno con controles en las capas adecuadas y una prueba redactada para poder ejecutarla esta misma tarde. Cinco capacidades suelen producir ocho escenarios y unos veinte controles.",
+      "examples": [
+        {
+          "name": "Responde con un documento que esa persona no podía ver",
+          "body": "Autorización en la recuperación, con los permisos de quien pregunta. Prueba: haz la misma pregunta como tres personas con permisos distintos."
+        },
+        {
+          "name": "Un documento recuperado le dice qué hacer, y obedece",
+          "body": "Trata lo recuperado como dato y acorta la lista de herramientas tras usar contenido externo. Prueba: planta una instrucción y comprueba que no la sigue."
+        },
+        {
+          "name": "Paga mucho más de lo que nadie pretendía",
+          "body": "Un límite para lo que ocurre sin una persona y aprobación por encima. Prueba: intenta saltarte el límite de tres formas, una de ellas mediante un documento."
+        },
+        {
+          "name": "Funciona como se diseñó y aun así trata peor a un grupo",
+          "body": "Factores de decisión declarados, revisión de variables sustitutivas y seguimiento de resultados tras el despliegue. Prueba: ejecuta los mismos casos variando una característica."
+        }
+      ],
+      "layersTitle": "Las cinco capas de control",
+      "layersIntro": "Una capa vacía es el hallazgo. Un sistema con cuatro controles preventivos y nada que detecte se enterará de su primer incidente por un cliente.",
+      "layers": [
+        {
+          "name": "Prevenir",
+          "body": "Control de acceso, validación de entradas, mínimo privilegio, aislamiento."
+        },
+        {
+          "name": "Limitar",
+          "body": "Límites de operación, credenciales acotadas, API restringidas, autonomía limitada."
+        },
+        {
+          "name": "Detectar",
+          "body": "Registro, detección de anomalías, supervisión, alertas."
+        },
+        {
+          "name": "Responder",
+          "body": "Interruptor de parada, reversión, revocación de credenciales, cierre de sesiones."
+        },
+        {
+          "name": "Asegurar",
+          "body": "Equipo rojo, pruebas adversarias, evaluaciones, pruebas de regresión."
+        }
+      ],
+      "testedTitle": "Qué cuenta como probado",
+      "testedIntro": "«Tenemos una barrera» no es evidencia. Un control tiene cuatro estados y solo uno cuenta.",
+      "states": [
+        {
+          "name": "Sin probar",
+          "body": "Nadie ha intentado romperlo. Es una afirmación."
+        },
+        {
+          "name": "No aguanta",
+          "body": "La última prueba falló o solo se superó en parte. Un control a medias no es un control."
+        },
+        {
+          "name": "Prueba caducada",
+          "body": "Se superó hace más de seis meses. Los sistemas cambian; hay que repetirla."
+        },
+        {
+          "name": "Probado",
+          "body": "Prueba superada en los últimos seis meses. Es el único estado que acredita algo."
+        }
+      ],
+      "registerTitle": "Qué acredita esto en el registro de cumplimiento",
+      "registerBody1": "Un control con una prueba superada y vigente puede escribirse en el registro de cumplimiento como evidencia frente a las obligaciones que cumple: exactitud y robustez, supervisión humana, conservación de registros, seguridad del tratamiento y las entradas correspondientes de NIST e ISO.",
+      "registerBody2": "Un control sin probar no escribe nada, a propósito. La pantalla muestra qué escenarios todavía no acreditan nada, que es el trabajo pendiente. Aplicarlo dos veces no escribe nada la segunda.",
+      "startTitle": "Empezar",
+      "startCta": "Haz una sesión de treinta minutos",
+      "startWizard": "Empezar desde el asistente",
+      "startFits": "Ver cómo encaja con lo demás"
+    },
+    "howItFits": {
+      "metaTitle": "Cómo encaja todo",
+      "metaDescription": "Qué introduces, qué deriva el producto y qué puedes entregar.",
+      "title": "Cómo encaja todo",
+      "intro": "Tres columnas, en orden: lo que le dices al producto, lo que él deduce por ti y lo que puedes entregar a otra persona. Nada de la columna central lo escribe una persona.",
+      "diagram": {
+        "columns": [
+          "Tú indicas",
+          "Se deriva",
+          "Tú entregas"
+        ],
+        "inputs": [
+          "Dónde operas",
+          "Tus sistemas de IA",
+          "Qué puede hacer cada uno",
+          "Quién recibe los datos",
+          "Respuestas a las preguntas"
+        ],
+        "derived": [
+          "Qué regímenes aplican",
+          "Nivel de riesgo y deberes",
+          "Escenarios de amenaza",
+          "Controles y pruebas",
+          "Obligaciones con fecha"
+        ],
+        "outputs": [
+          "Evaluaciones de impacto",
+          "Avisos y protocolos",
+          "Modelo de amenazas",
+          "Registro de cumplimiento",
+          "Paquete del programa"
+        ]
+      },
+      "diagramNote": "Todo lo que deriva el producto figura como derivado hasta que una persona lo confirma, y la proporción confirmada se imprime en cada exportación.",
+      "questionsTitle": "Qué registro responde a qué pregunta",
+      "questions": [
+        {
+          "question": "¿Qué IA tenemos y quién responde de ella?",
+          "where": "Registro de IA",
+          "href": "/docs/ai-registry"
+        },
+        {
+          "question": "¿Cuál es de alto riesgo y bajo qué normas?",
+          "where": "Clasificación de riesgo",
+          "href": "/docs/risk-classification"
+        },
+        {
+          "question": "¿Qué regímenes se aplican a este sistema y qué exigen?",
+          "where": "Regímenes transfronterizos",
+          "href": "/docs/cross-border"
+        },
+        {
+          "question": "¿Qué puede salir mal en lo que estamos construyendo?",
+          "where": "Modelo de amenazas",
+          "href": "/docs/threat-model"
+        },
+        {
+          "question": "¿El control funciona de verdad?",
+          "where": "Pruebas del modelo de amenazas",
+          "href": "/docs/threat-model"
+        },
+        {
+          "question": "¿Podemos acreditar que se cumple una obligación?",
+          "where": "Registro de cumplimiento",
+          "href": "/docs/compliance"
+        },
+        {
+          "question": "¿Quién decidió esto y cuándo?",
+          "where": "Supervisión y registro de auditoría",
+          "href": "/docs/oversight"
+        },
+        {
+          "question": "¿Qué entregamos a un cliente, una auditoría o una autoridad?",
+          "where": "El paquete del programa",
+          "href": "/docs/assessments"
+        }
+      ],
+      "pathsTitle": "Tres formas de empezar",
+      "paths": [
+        {
+          "name": "Usamos herramientas de IA",
+          "body": "Empieza por el catálogo de proveedores o una plantilla sectorial. El asistente registra los sistemas, los clasifica y redacta las políticas."
+        },
+        {
+          "name": "Construimos IA",
+          "body": "Empieza por la vía de quien construye. Marca qué puede ver y hacer tu producto y obtén el modelo de amenazas con sus controles y pruebas."
+        },
+        {
+          "name": "Asesoramos a terceros",
+          "body": "Configúrate como consultoría: cada cliente es una organización, con su propio registro, documentos y evidencias."
+        }
+      ],
+      "rulesTitle": "Las reglas que lo sostienen",
+      "rules": [
+        "Una pregunta sin responder no genera nada. El producto nunca deduce el alcance del silencio, y una laguna se muestra como laguna.",
+        "Todo lo derivado automáticamente figura como tal hasta que una persona lo confirma, y la proporción confirmada aparece en cada exportación.",
+        "Solo un control con una prueba superada y vigente se convierte en evidencia. Una barrera sin probar no acredita nada.",
+        "Volver a ejecutar el asistente completa lo que falta en lugar de crear una segunda copia: sistemas, políticas, proveedores y modelos de amenazas se deduplican por nombre.",
+        "Cada exportación indica cuándo se generó, con qué versión y con qué paquetes de reglas; el paquete incluye una huella por fichero.",
+        "La validación jurídica del contenido normativo sigue pendiente, y cada documento lo dice en lugar de dar a entender lo contrario."
+      ]
     }
   },
   "program": {

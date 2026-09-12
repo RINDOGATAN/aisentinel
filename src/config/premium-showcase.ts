@@ -43,7 +43,9 @@ export type ShowcaseFeature = (typeof SHOWCASE_FEATURES)[number];
  * Deliberately a function rather than a constant so tests can vary the
  * environment; the client wrapper below reads it once, as the other flags do.
  */
-export function premiumShowcaseActive(env: NodeJS.ProcessEnv = process.env): boolean {
+export type ShowcaseEnv = Partial<Record<string, string | undefined>>;
+
+export function premiumShowcaseActive(env: ShowcaseEnv = process.env): boolean {
   if (env.NEXT_PUBLIC_PREMIUM_SHOWCASE === "false") return false;
   if (env.NEXT_PUBLIC_PREMIUM_SHOWCASE === "true") return true;
 
@@ -57,7 +59,7 @@ export function premiumShowcaseActive(env: NodeJS.ProcessEnv = process.env): boo
 
 export function isShowcasePremium(
   feature: ShowcaseFeature,
-  env: NodeJS.ProcessEnv = process.env,
+  env: ShowcaseEnv = process.env,
 ): boolean {
   return premiumShowcaseActive(env) && SHOWCASE_FEATURES.includes(feature);
 }

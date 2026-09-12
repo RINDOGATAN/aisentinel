@@ -1796,6 +1796,10 @@
         "crossBorder": {
           "title": "Cross-border regimes",
           "description": "One impact assessment answering the EU AI Act, the GDPR, California ADMT, Colorado, Texas and Washington, and the three documents it generates."
+        },
+        "threatModel": {
+          "title": "Threat model",
+          "description": "For the team building the AI: what could go wrong, what stops it, and whether that was tested."
         }
       },
       "premiumTitleFree": "Add-on Modules",
@@ -1840,6 +1844,10 @@
         "clients": {
           "title": "Managed organizations",
           "description": "For governance professionals running programmes for several clients: switch between organizations you manage."
+        },
+        "howItFits": {
+          "title": "How it fits together",
+          "description": "What you put in, what the product derives, and what you hand over."
         }
       },
       "licensingTitle": "Open Core Licensing",
@@ -3543,6 +3551,233 @@
       "ctaTitle": "See it in the product",
       "ctaBody": "Open any AI system and choose the Cross-border regimes tab.",
       "ctaLink": "Read the cross-border documentation"
+    },
+    "threatModel": {
+      "metaTitle": "Threat modelling for builders",
+      "metaDescription": "Start from the system you are building: what could go wrong, what stops it, and whether that was tested.",
+      "title": "Threat modelling",
+      "intro": "Telling a five-person team to implement a governance framework is not helpful. Asking what could go wrong with the thing they are actually building is. This module makes that question systematic, and does most of the writing for you.",
+      "intro2": "It takes about thirty minutes with the people who built the system, and it produces a record a customer's security review, an auditor or a regulator can read.",
+      "loopTitle": "The loop",
+      "loop": [
+        {
+          "step": "Map",
+          "body": "What the system can see, retrieve, remember, call and do. This is the only step that needs thinking."
+        },
+        {
+          "step": "Imagine",
+          "body": "What could go wrong: by accident, by attack, or in ordinary use. The product proposes the list."
+        },
+        {
+          "step": "Prioritise",
+          "body": "By impact, likelihood and blast radius. Computed, so two people rating the same facts get the same answer."
+        },
+        {
+          "step": "Control",
+          "body": "Prevent, constrain, detect, respond, assure. Each scenario arrives with controls already drafted."
+        },
+        {
+          "step": "Test",
+          "body": "Try to break the control and record what happened. Repeat when the system changes."
+        }
+      ],
+      "mapTitle": "The five questions",
+      "mapIntro": "Tick what is true today, not what is planned. Everything else follows from these answers.",
+      "questions": [
+        {
+          "name": "What can it see?",
+          "body": "User input, customer records, employee records, health or other sensitive data, payment data, credentials."
+        },
+        {
+          "name": "What can it retrieve?",
+          "body": "Internal documents, web pages, email, source code. Anything retrieved is untrusted data."
+        },
+        {
+          "name": "What does it remember?",
+          "body": "The conversation, or a profile that persists. Memory that persists can be poisoned once and used many times."
+        },
+        {
+          "name": "What can it call?",
+          "body": "Tools, a database, code or shell commands, third-party services. Each one is a way for a manipulated model to act."
+        },
+        {
+          "name": "What can it do?",
+          "body": "Send messages outside, move money, change records, deploy code, influence a decision about a person, hand off to another agent."
+        }
+      ],
+      "backTitle": "What comes back",
+      "backIntro": "Concrete scenarios, each with controls at the right layers and a test written so you can run it this afternoon. Five capabilities typically produce eight scenarios and around twenty controls.",
+      "examples": [
+        {
+          "name": "It answers with a document the person was not allowed to see",
+          "body": "Authorisation at retrieval, with the asker's own permissions. Test: ask the same question as three people with different permissions."
+        },
+        {
+          "name": "A retrieved document tells it what to do, and it obeys",
+          "body": "Treat retrieved bytes as data, keep the tool allowlist narrow after external content. Test: plant an instruction and check it is not followed."
+        },
+        {
+          "name": "It pays out far more than anyone intended",
+          "body": "A cap on what happens without a person, and approval above it. Test: try to beat the cap three ways, including through a document."
+        },
+        {
+          "name": "It works exactly as designed and still treats a group worse",
+          "body": "Named decision factors, proxy checks, outcome monitoring after deployment. Test: run the same cases with one characteristic varied."
+        }
+      ],
+      "layersTitle": "The five control layers",
+      "layersIntro": "An empty layer is the finding. A system with four preventive controls and nothing that detects will learn of its first incident from a customer.",
+      "layers": [
+        {
+          "name": "Prevent",
+          "body": "Access control, input validation, least privilege, sandboxing."
+        },
+        {
+          "name": "Constrain",
+          "body": "Transaction limits, scoped credentials, restricted APIs, bounded autonomy."
+        },
+        {
+          "name": "Detect",
+          "body": "Logging, anomaly detection, monitoring, alerts."
+        },
+        {
+          "name": "Respond",
+          "body": "A stop switch, rollback, revoked credentials, terminated sessions."
+        },
+        {
+          "name": "Assure",
+          "body": "Red teaming, adversarial tests, evaluations, regression tests."
+        }
+      ],
+      "testedTitle": "What counts as tested",
+      "testedIntro": "\"We have a guardrail\" is not evidence. A control has one of four states, and only one of them counts.",
+      "states": [
+        {
+          "name": "Untested",
+          "body": "Nobody has tried to break it. It is a claim."
+        },
+        {
+          "name": "Not holding",
+          "body": "The last test failed, or passed only in part. A half-working control is not a control."
+        },
+        {
+          "name": "Test out of date",
+          "body": "It passed, more than six months ago. Systems change; the test has to be repeated."
+        },
+        {
+          "name": "Tested",
+          "body": "A passing test within the last six months. This is the only state that evidences anything."
+        }
+      ],
+      "registerTitle": "What this proves in the compliance register",
+      "registerBody1": "A control with a current passing test can be written into the compliance register as evidence, against the obligations it meets: accuracy and robustness, human oversight, record-keeping, security of processing, and the matching NIST and ISO entries.",
+      "registerBody2": "An untested control writes nothing, on purpose. The screen shows which scenarios evidence nothing yet, which is the work still to do. Applying twice writes nothing the second time.",
+      "startTitle": "Start",
+      "startCta": "Run a thirty-minute session",
+      "startWizard": "Start from the wizard",
+      "startFits": "See how it fits with the rest"
+    },
+    "howItFits": {
+      "metaTitle": "How it fits together",
+      "metaDescription": "What you put in, what the product derives, and what you hand over.",
+      "title": "How it fits together",
+      "intro": "Three columns, in order: what you tell the product, what it works out for you, and what you can hand to someone else. Nothing in the middle column is typed by a person.",
+      "diagram": {
+        "columns": [
+          "You say",
+          "It derives",
+          "You hand over"
+        ],
+        "inputs": [
+          "Where you operate",
+          "Your AI systems",
+          "What each can do",
+          "Who receives data",
+          "Answers to questions"
+        ],
+        "derived": [
+          "Which regimes apply",
+          "Risk tier and duties",
+          "Threat scenarios",
+          "Controls and tests",
+          "Obligations with dates"
+        ],
+        "outputs": [
+          "Impact assessments",
+          "Notices and protocols",
+          "Threat model document",
+          "Compliance register",
+          "Program pack"
+        ]
+      },
+      "diagramNote": "Anything the product derives is marked as derived until a person confirms it, and the proportion confirmed is printed on every export.",
+      "questionsTitle": "Which record answers which question",
+      "questions": [
+        {
+          "question": "What AI do we have, and who owns it?",
+          "where": "AI registry",
+          "href": "/docs/ai-registry"
+        },
+        {
+          "question": "Which of it is high-risk, and under which rules?",
+          "where": "Risk classification",
+          "href": "/docs/risk-classification"
+        },
+        {
+          "question": "Which regimes apply to this system, and what do they demand?",
+          "where": "Cross-border regimes",
+          "href": "/docs/cross-border"
+        },
+        {
+          "question": "What could go wrong in the thing we are building?",
+          "where": "Threat model",
+          "href": "/docs/threat-model"
+        },
+        {
+          "question": "Does the control actually work?",
+          "where": "Threat model tests",
+          "href": "/docs/threat-model"
+        },
+        {
+          "question": "Can we show an obligation is met?",
+          "where": "Compliance register",
+          "href": "/docs/compliance"
+        },
+        {
+          "question": "Who decided this, and when?",
+          "where": "Oversight and the audit trail",
+          "href": "/docs/oversight"
+        },
+        {
+          "question": "What do we hand a customer, an auditor or a regulator?",
+          "where": "The program pack",
+          "href": "/docs/assessments"
+        }
+      ],
+      "pathsTitle": "Three ways in",
+      "paths": [
+        {
+          "name": "We use AI tools",
+          "body": "Start from the vendor catalogue or an industry template. The wizard registers the systems, classifies them and drafts the policies."
+        },
+        {
+          "name": "We are building AI",
+          "body": "Start from the builder path. Tick what your product can see and do, and get the threat model with its controls and tests."
+        },
+        {
+          "name": "We advise others",
+          "body": "Set up as a consultant: each client is an organisation, with its own register, documents and evidence."
+        }
+      ],
+      "rulesTitle": "The rules that hold it together",
+      "rules": [
+        "An unanswered question emits nothing. The product never infers scope from silence, and a gap is shown as a gap.",
+        "Anything derived automatically is marked as such until a person confirms it, and the confirmed proportion appears on every export.",
+        "Only a control with a current passing test becomes evidence. An untested guardrail evidences nothing.",
+        "Running the wizard again tops up what is missing rather than creating a second copy: systems, policies, vendors and threat models are all deduplicated by name.",
+        "Every export states when it was generated, from which version, and under which rule packs; the pack carries a digest for each file.",
+        "Legal sign-off is pending on the regulatory content, and every document says so rather than implying otherwise."
+      ]
     }
   },
   "program": {

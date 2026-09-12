@@ -150,6 +150,7 @@ model Organization {
   assessmentTemplates   AIAssessmentTemplate[]
   assessments           AIAssessment[]
   assessmentVersions    AIAssessmentVersion[]
+  sensitiveDataAssessments SensitiveDataAssessment[]
   oversightGates        OversightGate[]
   oversightDecisions    OversightDecision[]
   incidents             AIIncident[]
@@ -287,6 +288,7 @@ model AISystem {
   agentProfile        AgentProfile?
   admtProfile         AdmtProfile?
   assessments         AIAssessment[]
+  sensitiveDataAssessments SensitiveDataAssessment[]
   oversightGates      OversightGate[]
   incidents           AIIncident[]
   complianceMappings  ComplianceMapping[]
@@ -655,6 +657,70 @@ model AIAssessment {
   @@index([organizationId])
   @@index([aiSystemId])
   @@map("ai_assessments")
+}
+
+/// A documented decision about whether a set of data is sensitive.
+///
+/// US state law gives no single definition of health data, so the defensible
+/// answer is a recorded reasoning process rather than a lookup: source,
+/// content, use, consumer expectations and harm, each rated with its reasoning,
+/// producing a band and a decision with an owner and a review date. What a
+/// regulator asks for is exactly this: how did you decide, who decided, when,
+/// and when will you look again.
+///
+/// `factors` holds { [factorId]: { rating, reasoning } }. The banding rule
+/// lives in src/config/sensitive-data-factors.ts and is versioned, so a past
+/// analysis can be re-derived as it was made.
+model SensitiveDataAssessment {
+  id             String                @id @default(cuid())
+  organizationId String
+  /// Optional: the AI system the data feeds, when there is one.
+  aiSystemId     String?
+  /// What is being classified, in the organisation's own words: a segment, a
+  /// feed, a field, a page group.
+  subject        String
+  description    String?               @db.Text
+  category       SensitiveDataCategory @default(HEALTH)
+  /// The party's role for this data, which changes the analysis.
+  dataRole       String?
+  /// Per-factor rating and reasoning.
+  factors        Json
+  /// The band the rule derived when the analysis was last saved.
+  suggestedBand  String?
+  /// The band the organisation stands behind. Usually the suggestion, but a
+  /// considered departure is allowed and is exactly what should be recorded.
+  band           String?
+  /// Why the band differs from the suggestion, where it does.
+  bandRationale  String?               @db.Text
+  /// What will actually be done: suppress, seek consent, restrict the use.
+  decision       String?               @db.Text
+  owner          String?
+  frameworkRef   String                @default("five-factor")
+  /// Version of the factor pack used, so the reasoning stays reproducible.
+  rulesVersion   String
+  completedBy    String?
+  completedAt    DateTime?
+  nextReviewDate DateTime?
+  createdBy      String
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  aiSystem     AISystem?    @relation(fields: [aiSystemId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId])
+  @@index([aiSystemId])
+  @@map("sensitive_data_assessments")
+}
+
+/// Categories a five-factor analysis can be run for. Health is the one the US
+/// state laws diverge most sharply on; the others use the same reasoning.
+enum SensitiveDataCategory {
+  HEALTH
+  BIOMETRIC
+  PRECISE_LOCATION
+  FINANCIAL
+  OTHER
 }
 
 /// A dated copy of an assessment's answers, appended and never edited.

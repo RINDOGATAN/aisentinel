@@ -160,7 +160,8 @@
     "loading": "Loading…",
     "openMenu": "Open menu",
     "sourceAndLicence": "Source & licence",
-    "auditTrail": "Audit trail"
+    "auditTrail": "Audit trail",
+    "sensitiveData": "Sensitive data"
   },
   "dashboard": {
     "title": "AI Governance",
@@ -4493,5 +4494,60 @@
     "hashLabel": "Content digest (SHA-256)",
     "noAnswers": "No answers were recorded in this version.",
     "collapse": "Close"
+  },
+  "sensitiveData": {
+    "title": "Sensitive data analysis",
+    "subtitle": "Decide, and record, whether a set of data should be treated as health data or another sensitive category.",
+    "whyTitle": "Why a factor analysis",
+    "whyBody": "US state laws define health data differently, and several of them turn on what the data is used for rather than what field it sits in. Five factors (source, content, use, consumer expectations, harm) give a repeatable way to reason, and the record of that reasoning is what a regulator asks to see.",
+    "subjectLabel": "What are you classifying?",
+    "subjectPlaceholder": "Audience segment, data feed, page group, field",
+    "categoryLabel": "Category",
+    "newAnalysis": "Start analysis",
+    "empty": "No analyses yet. Start one for the first segment or feed you are unsure about.",
+    "noBand": "No band yet",
+    "differsFromRule": "Rule suggests {band}",
+    "statusComplete": "Complete",
+    "statusOpen": "Open",
+    "completedOn": "Completed {date}",
+    "ruleSays": "On these ratings the rule gives:",
+    "incomplete": "Some factors are still unrated.",
+    "ratingPlaceholder": "Choose",
+    "reasoningPlaceholder": "Why this rating? Name the facts, not the conclusion.",
+    "primaryFactor": "Primary factor",
+    "modifierFactor": "Modifier",
+    "outcomeTitle": "Outcome and decision",
+    "bandLabel": "The band we stand behind",
+    "bandPlaceholder": "Choose a band",
+    "departureLabel": "Why this differs from the rule",
+    "departurePlaceholder": "A considered departure is fine; an unexplained one is not.",
+    "decisionLabel": "What we will do about it",
+    "decisionPlaceholder": "Suppress in opt-in states, seek consent, restrict the use, treat as sensitive everywhere.",
+    "ownerLabel": "Owner",
+    "ownerPlaceholder": "Who is answerable for this analysis",
+    "nextReviewLabel": "Next review",
+    "nextReviewHint": "Definitions, industry practice and expectations all move. Set a date rather than trusting memory.",
+    "save": "Save",
+    "saved": "Analysis saved.",
+    "markComplete": "Record as complete",
+    "completed": "Analysis recorded as complete.",
+    "category": {
+      "HEALTH": "Health",
+      "BIOMETRIC": "Biometric",
+      "PRECISE_LOCATION": "Precise location",
+      "FINANCIAL": "Financial",
+      "OTHER": "Other"
+    },
+    "band": {
+      "LOW": "Low",
+      "MEDIUM": "Medium",
+      "HIGH": "High"
+    },
+    "ratingLabel": "Rating",
+    "ratingValue": {
+      "LOW": "Low",
+      "MEDIUM": "Medium",
+      "HIGH": "High"
+    }
   }
 }

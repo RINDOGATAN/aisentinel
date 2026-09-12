@@ -39,6 +39,10 @@ import {
 import { renderArtifactMarkdown } from "@/server/services/artifacts/render-markdown";
 import { pendingPacks } from "@/config/legal-signoff";
 import {
+  SENSITIVE_FACTORS,
+  SENSITIVE_FACTORS_REVIEW_MARKER,
+} from "@/config/sensitive-data-factors";
+import {
   exportStamp,
   renderManifest,
   sha256,
@@ -58,7 +62,8 @@ const L = {
     systemsDir: "05-systems",
     vendors: "06-vendor-due-diligence.md",
     inventory: "07-ai-inventory.csv",
-    manifest: "08-MANIFEST.txt",
+    sensitive: "08-sensitive-data-analyses.md",
+    manifest: "09-MANIFEST.txt",
     title: "AI governance program pack",
     generated: "Generated",
     contents: "Contents",
@@ -70,6 +75,7 @@ const L = {
       systems: "Per system: the unified impact assessment, the multi-jurisdiction notice and the human-review protocol (and the agentic addendum where it applies). Unanswered questions appear as open items, never as silence.",
       vendors: "The due-diligence reviews of each AI vendor: what is known, and what is still open.",
       inventory: "The AI inventory as a spreadsheet, in the format the import accepts.",
+      sensitive: "The five-factor analyses: how the organization decided whether a set of data is health data or another sensitive category, with the reasoning per factor, the band, the decision and the owner.",
       manifest: "The integrity manifest: a SHA-256 digest for every file above, the application version that produced them, and the version and legal review date of every rule pack in force at that moment.",
     },
     status: "Status of this pack",
@@ -94,6 +100,15 @@ const L = {
     applies: { applies: "Yes", unknown: "Not yet determined", "does-not-apply": "No" } as Record<string, string>,
     calendarName: "AI obligations: {org}",
     vendorsTitle: "Vendor due diligence",
+    sensitiveTitle: "Sensitive data analyses",
+    noSensitive: "No sensitive data analyses yet.",
+    sensitiveBand: "Band",
+    sensitiveSuggested: "Band derived by the rule",
+    sensitiveOwner: "Owner",
+    sensitiveDecision: "Decision",
+    sensitiveOpen: "Not yet completed",
+    sensitiveCompleted: "Completed",
+    sensitiveFactors: "Factors",
     noVendors: "No vendors yet.",
     noReview: "No review yet.",
     nextReview: "Next review",
@@ -110,7 +125,8 @@ const L = {
     systemsDir: "05-sistemas",
     vendors: "06-diligencia-debida-de-proveedores.md",
     inventory: "07-inventario-de-ia.csv",
-    manifest: "08-MANIFIESTO.txt",
+    sensitive: "08-analisis-de-datos-sensibles.md",
+    manifest: "09-MANIFIESTO.txt",
     title: "Paquete del programa de gobernanza de la IA",
     generated: "Generado",
     contents: "Contenido",
@@ -122,6 +138,7 @@ const L = {
       systems: "Por sistema: la evaluación de impacto unificada, el aviso multijurisdiccional y el protocolo de revisión humana (y el anexo agéntico cuando procede). Las preguntas sin responder figuran como puntos abiertos, nunca como silencio.",
       vendors: "Las revisiones de diligencia debida de cada proveedor de IA: lo que se sabe y lo que sigue abierto.",
       inventory: "El inventario de IA como hoja de cálculo, en el formato que admite la importación.",
+      sensitive: "Los análisis por factores: cómo decidió la organización si un conjunto de datos es dato de salud u otra categoría sensible, con el razonamiento de cada factor, la banda, la decisión y el responsable.",
       manifest: "El manifiesto de integridad: una huella SHA-256 de cada fichero anterior, la versión de la aplicación que los generó y la versión y la fecha de revisión jurídica de cada paquete de reglas vigente en ese momento.",
     },
     status: "Estado de este paquete",
@@ -146,6 +163,15 @@ const L = {
     applies: { applies: "Sí", unknown: "Por determinar", "does-not-apply": "No" } as Record<string, string>,
     calendarName: "Obligaciones de IA: {org}",
     vendorsTitle: "Diligencia debida de proveedores",
+    sensitiveTitle: "Análisis de datos sensibles",
+    noSensitive: "Todavía no hay análisis de datos sensibles.",
+    sensitiveBand: "Banda",
+    sensitiveSuggested: "Banda derivada por la regla",
+    sensitiveOwner: "Responsable",
+    sensitiveDecision: "Decisión",
+    sensitiveOpen: "Sin completar",
+    sensitiveCompleted: "Completado",
+    sensitiveFactors: "Factores",
     noVendors: "Todavía no hay proveedores.",
     noReview: "Sin revisión todavía.",
     nextReview: "Próxima revisión",
@@ -387,6 +413,42 @@ export async function buildProgramPack(
   entries.push({ name: l.vendors, data: vendorMd.join("\n") });
 
   // Inventory CSV, in the import format
+  // Sensitive data analyses: the reasoning, not only the answer.
+  const sensitiveRows = await prisma.sensitiveDataAssessment.findMany({
+    where: { organizationId },
+    orderBy: { updatedAt: "desc" },
+    include: { aiSystem: { select: { name: true } } },
+  });
+  const sensitiveMd = [`# ${l.sensitiveTitle}: ${orgName}`, "", SENSITIVE_FACTORS_REVIEW_MARKER[locale], ""];
+  if (sensitiveRows.length === 0) sensitiveMd.push(l.noSensitive, "");
+  for (const row of sensitiveRows) {
+    const factors = (row.factors ?? {}) as Record<string, { rating?: string; reasoning?: string }>;
+    sensitiveMd.push(`## ${row.subject}`, "");
+    sensitiveMd.push(
+      `${row.completedAt ? l.sensitiveCompleted : l.sensitiveOpen}${row.aiSystem ? ` · ${row.aiSystem.name}` : ""}${row.owner ? ` · ${l.sensitiveOwner}: ${row.owner}` : ""}`,
+      "",
+    );
+    if (row.description) sensitiveMd.push(row.description, "");
+    sensitiveMd.push(
+      `${l.sensitiveBand}: ${row.band ?? "—"}${row.suggestedBand && row.suggestedBand !== row.band ? ` (${l.sensitiveSuggested}: ${row.suggestedBand})` : ""}`,
+      "",
+    );
+    if (row.bandRationale) sensitiveMd.push(row.bandRationale, "");
+    sensitiveMd.push(`### ${l.sensitiveFactors}`, "");
+    for (const factor of SENSITIVE_FACTORS) {
+      const entry = factors[factor.id];
+      sensitiveMd.push(
+        `- **${factor.label[locale]}** (${entry?.rating ?? "—"}): ${entry?.reasoning?.trim() || "—"}`,
+      );
+    }
+    sensitiveMd.push("");
+    if (row.decision) sensitiveMd.push(`### ${l.sensitiveDecision}`, "", row.decision, "");
+    if (row.nextReviewDate) {
+      sensitiveMd.push(`${l.nextReview}: ${row.nextReviewDate.toISOString().slice(0, 10)}`, "");
+    }
+  }
+  entries.push({ name: l.sensitive, data: sensitiveMd.join("\n") });
+
   const header =
     locale === "es"
       ? ["Nombre", "Descripción", "Finalidad", "Proveedor", "Técnica", "Rol", "Estado", "Responsable", "Responsable técnico", "Datos personales", "Nivel de riesgo"]
@@ -428,6 +490,7 @@ export async function buildProgramPack(
     `- \`${l.systemsDir}/\`: ${jurisdictionsDeclared ? l.items.systems : l.noJurisdictions}`,
     `- \`${l.vendors}\`: ${l.items.vendors}`,
     `- \`${l.inventory}\`: ${l.items.inventory}`,
+    `- \`${l.sensitive}\`: ${l.items.sensitive}`,
     `- \`${l.manifest}\`: ${l.items.manifest}`,
     "",
     `## ${l.status}`,

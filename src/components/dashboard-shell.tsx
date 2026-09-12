@@ -34,6 +34,7 @@ import {
   Shield,
   Sparkles,
   Code,
+  HeartPulse,
   History,
  ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -98,6 +99,7 @@ function buildNavGroups(isConsultant: boolean, t: (key: string) => string) {
         { href: "/governance/oversight", label: t("oversight"), icon: Eye },
         { href: "/governance/compliance", label: t("compliance"), icon: Scale },
         { href: "/governance/policies", label: t("policies"), icon: ScrollText },
+        { href: "/governance/sensitive-data", label: t("sensitiveData"), icon: HeartPulse },
         { href: "/governance/audit", label: t("auditTrail"), icon: History },
       ],
     },

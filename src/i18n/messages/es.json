@@ -160,7 +160,8 @@
     "loading": "Cargando…",
     "openMenu": "Abrir menú",
     "sourceAndLicence": "Código fuente y licencia",
-    "auditTrail": "Registro de auditoría"
+    "auditTrail": "Registro de auditoría",
+    "sensitiveData": "Datos sensibles"
   },
   "dashboard": {
     "title": "Gobernanza de IA",
@@ -4493,5 +4494,60 @@
     "hashLabel": "Huella del contenido (SHA-256)",
     "noAnswers": "En esta versión no se registró ninguna respuesta.",
     "collapse": "Cerrar"
+  },
+  "sensitiveData": {
+    "title": "Análisis de datos sensibles",
+    "subtitle": "Decide, y deja constancia, de si un conjunto de datos debe tratarse como dato de salud u otra categoría sensible.",
+    "whyTitle": "Por qué un análisis por factores",
+    "whyBody": "Las leyes estatales de EE. UU. definen el dato de salud de forma distinta y varias de ellas atienden al uso que se le da, no al campo en el que figura. Cinco factores (origen, contenido, uso, expectativas de la persona y perjuicio) ofrecen una forma repetible de razonar, y es ese razonamiento lo que un regulador pide ver.",
+    "subjectLabel": "¿Qué estás clasificando?",
+    "subjectPlaceholder": "Segmento de público, flujo de datos, grupo de páginas, campo",
+    "categoryLabel": "Categoría",
+    "newAnalysis": "Iniciar análisis",
+    "empty": "Todavía no hay análisis. Empieza por el primer segmento o flujo que te genere dudas.",
+    "noBand": "Sin banda todavía",
+    "differsFromRule": "La regla sugiere {band}",
+    "statusComplete": "Completo",
+    "statusOpen": "Abierto",
+    "completedOn": "Completado el {date}",
+    "ruleSays": "Con estas valoraciones, la regla da:",
+    "incomplete": "Faltan factores por valorar.",
+    "ratingPlaceholder": "Elige",
+    "reasoningPlaceholder": "¿Por qué esta valoración? Menciona los hechos, no la conclusión.",
+    "primaryFactor": "Factor principal",
+    "modifierFactor": "Modificador",
+    "outcomeTitle": "Resultado y decisión",
+    "bandLabel": "La banda que sostenemos",
+    "bandPlaceholder": "Elige una banda",
+    "departureLabel": "Por qué se aparta de la regla",
+    "departurePlaceholder": "Apartarse de forma razonada está bien; hacerlo sin explicación, no.",
+    "decisionLabel": "Qué vamos a hacer",
+    "decisionPlaceholder": "Suprimir en los estados de consentimiento expreso, pedir consentimiento, limitar el uso, tratarlo como sensible en todas partes.",
+    "ownerLabel": "Responsable",
+    "ownerPlaceholder": "Quién responde de este análisis",
+    "nextReviewLabel": "Próxima revisión",
+    "nextReviewHint": "Las definiciones, la práctica del sector y las expectativas cambian. Fija una fecha en lugar de confiar en la memoria.",
+    "save": "Guardar",
+    "saved": "Análisis guardado.",
+    "markComplete": "Registrar como completo",
+    "completed": "Análisis registrado como completo.",
+    "category": {
+      "HEALTH": "Salud",
+      "BIOMETRIC": "Biométrico",
+      "PRECISE_LOCATION": "Ubicación precisa",
+      "FINANCIAL": "Financiero",
+      "OTHER": "Otro"
+    },
+    "band": {
+      "LOW": "Baja",
+      "MEDIUM": "Media",
+      "HIGH": "Alta"
+    },
+    "ratingLabel": "Valoración",
+    "ratingValue": {
+      "LOW": "Baja",
+      "MEDIUM": "Media",
+      "HIGH": "Alta"
+    }
   }
 }

@@ -4548,6 +4548,9 @@
       "LOW": "Low",
       "MEDIUM": "Medium",
       "HIGH": "High"
-    }
+    },
+    "delete": "Delete",
+    "deleteConfirm": "Confirm delete",
+    "deleted": "Analysis deleted."
   }
 }

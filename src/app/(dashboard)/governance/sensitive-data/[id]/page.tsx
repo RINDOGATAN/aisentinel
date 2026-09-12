@@ -13,10 +13,10 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { ArrowLeft, CheckCircle2, Loader2, Save } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Loader2, Save, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -56,6 +56,7 @@ export default function SensitiveDataAnalysisPage() {
   const locale = useLocale();
   const lang = locale === "es" ? "es" : "en";
   const params = useParams();
+  const router = useRouter();
   const id = params.id as string;
   const { organization, canWrite } = useOrganization();
   const orgId = organization?.id ?? "";
@@ -72,6 +73,7 @@ export default function SensitiveDataAnalysisPage() {
   const [owner, setOwner] = useState("");
   const [nextReview, setNextReview] = useState("");
   const [loaded, setLoaded] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   // Seed the form from the saved analysis the first time it arrives. Done
   // during render rather than in an effect (the same pattern as the assessment
@@ -99,6 +101,14 @@ export default function SensitiveDataAnalysisPage() {
     onSuccess: () => {
       toast.success(t("saved"));
       void refetch();
+    },
+    onError: (e) => toast.error(e.message),
+  });
+
+  const remove = trpc.sensitiveData.delete.useMutation({
+    onSuccess: () => {
+      toast.success(t("deleted"));
+      router.push("/governance/sensitive-data");
     },
     onError: (e) => toast.error(e.message),
   });
@@ -326,6 +336,29 @@ export default function SensitiveDataAnalysisPage() {
             )}
             {data.completedAt ? t("statusComplete") : t("markComplete")}
           </Button>
+
+          {/* A completed analysis is a record of a decision: the server
+              refuses to delete it, and it is superseded by a new one. */}
+          {!data.completedAt && (
+            <Button
+              variant={confirmDelete ? "destructive" : "ghost"}
+              disabled={remove.isPending}
+              onClick={() => {
+                if (!confirmDelete) {
+                  setConfirmDelete(true);
+                  return;
+                }
+                remove.mutate({ organizationId: orgId, id });
+              }}
+            >
+              {remove.isPending ? (
+                <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />
+              ) : (
+                <Trash2 className="w-4 h-4 mr-1.5" />
+              )}
+              {confirmDelete ? t("deleteConfirm") : t("delete")}
+            </Button>
+          )}
         </div>
       )}
     </div>

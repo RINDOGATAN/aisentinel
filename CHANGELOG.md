@@ -6,6 +6,108 @@ All notable changes to AI SENTINEL are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-09-13
+
+### Added
+
+- **Threat modelling.** Tick what a system can see, retrieve, remember, call and
+  do, and the scenarios that follow are proposed with controls at the prevent,
+  constrain, detect, respond and assure layers, each with a concrete test. A
+  fifteen-entry library covers the cases that recur, from instructions hidden in
+  retrieved content to autonomous payouts past a cap. Priority is derived from
+  impact, likelihood and blast radius rather than typed in, and a control whose
+  test is missing, failed or older than six months is shown as unproven. Four
+  visuals carry it, and the export leads with what has not been tested.
+- **Tested controls become compliance evidence.** Library scenarios carry the
+  requirements their controls evidence, and a control can be written into the
+  register as evidence, but only where a passing test is less than six months
+  old. The Quick Start wizard gains a third path for teams building AI rather
+  than adopting it. Running it again tops up instead of duplicating.
+- **The one-click program pack.** A single archive in the reader's language:
+  the program and register reports, every policy, the obligations calendar as
+  Markdown and as a calendar file, per-system impact assessments, notices and
+  human-review protocols, vendor reviews, the threat models, the data-flow
+  documents and the inventory as a spreadsheet, with an integrity manifest.
+- **Legal hold.** A hold placed against a matter, with a written reason, refuses
+  every deletion path it covers and stops automatic pruning while it is in
+  force. Releasing needs its own reason. Both are audited.
+- **A proceedings register.** Each inquiry or claim with its authority,
+  jurisdiction, reference, correspondence history and deadlines, plus the
+  factual position taken in that forum, so a divergence between forums is
+  visible to the defence team first. Incidents gain statutory clocks computed
+  from the provisions themselves (Art. 73 at fifteen days, ten, or two;
+  Art. 26(5); and the GDPR's 72 hours with Art. 34 where the risk is high).
+- **Board reporting.** What was reported, to whom, on what date, what was asked
+  and what the board decided, with the actions agreed and the next date due. A
+  program snapshot is captured at the same moment, so the figures the board saw
+  can be reproduced later.
+- **Recipients and data flow.** Per system: the data protection role, a
+  controlled sensitive-category vocabulary on each source, and each recipient
+  with its purpose, categories, contract, transfer safeguard and retention. The
+  panel names what is missing rather than hiding it.
+- **A five-factor sensitive-data analysis** (source, content, use, expectations
+  and harm), each factor reasoned and rated, with a versioned banding rule, the
+  band the organisation stands behind, the decision taken, an owner and a review
+  date. A completed analysis is superseded, never deleted.
+- **Dated assessment versions.** A version is appended when the answers change,
+  when an assessment is submitted and when it is approved or rejected, each with
+  its author, date and digest. There is no update or delete path.
+- **A readable audit trail** at /governance/audit, with filters, paging and a
+  full export, restricted to owners, admins and AI officers. Every export now
+  carries a stamp with the generation time, the application version and the
+  rule packs in force.
+- **The review queue, program history and a team card**: everything drafted but
+  not yet confirmed by a person, the immutable snapshots with what changed
+  between them, and member management with hardened role rules.
+- **The core policy pack**: six sector-neutral policies in English and Castilian
+  Spanish, added by the wizard so a new program starts complete, plus starter
+  draft assessments for high-risk systems and draft reviews for catalogue
+  vendors.
+- **Two more industries**, media and advertising, and the public sector, both
+  translated in full.
+
+### Changed
+
+- Legal is now an industry in the wizard rather than a separate path, and the
+  homepage names all eight frameworks instead of three.
+- Maturity model 1.1.0: never having looked at Shadow AI no longer scores as a
+  strength, and new gaps cover high-risk systems without an approved assessment
+  and drafts nobody has confirmed.
+- Spanish reads as Spanish: the industry templates translated, about 300
+  hard-coded English strings moved into translations, about 450 labels moved to
+  sentence case, and the official Spanish AI Act terms adopted.
+- Copy that promised what the product does not do was rewritten (Shadow AI
+  claims no automated scanning or enforcement; catalogue entries are no longer
+  called pre-audited). Owners can now delete an organisation.
+- Hosted keeps a few finished deliverables behind the licence as a shop window.
+  Self-hosted deployments are untouched: every module is included, as before.
+
+### Fixed
+
+- A vendor picked on two wizard steps was counted twice on the review step.
+- Raw codes shown instead of labels on the wizard review step and elsewhere,
+  capitalisation in the success summary, and the sign-in footer ignoring its
+  own translations.
+- Opening an assessment without cached data threw a React hooks error.
+
+### Content
+
+- **Article 4 corrected against the Digital Omnibus.** Providers and deployers
+  take measures to support the development of AI literacy; no specific level
+  has to be guaranteed for any individual. The previous "ensure a sufficient
+  level" wording is corrected in the policy pack, the milestone and the seed.
+- Articles 26, 73 and 86 made precise (they were not amended), including which
+  providers report to the AI Office and when the deployer duty applies. The
+  GDPR 72-hour deadline stays; the 96-hour change is still a proposal. Verified
+  against the consolidated texts on 2026-09-11. Core policy pack 2026.09.2.
+
+### Upgrading
+
+Seven schema changes ship with this release; the migrator applies them on the
+next boot, and the content seeds run as usual. Hosted needs its content seeds
+run after deploying (docs/RELEASING.md, section 4). The two new sellable skill
+packages need matching storefront entries before their licences can activate.
+
 ## [0.4.2] - 2026-09-11
 
 ### Fixed

@@ -3,7 +3,7 @@
 
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { validateImportApiKey } from "@/lib/import-auth";
+import { guardImportRequest } from "@/lib/import-auth";
 
 const CRITICALITY_TO_RISK: Record<string, string> = {
   low: "LOW",
@@ -31,9 +31,8 @@ interface VendorPayload {
 }
 
 export async function POST(request: Request) {
-  if (!validateImportApiKey(request)) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const blocked = guardImportRequest(request);
+  if (blocked) return blocked;
 
   const body = await request.json();
   const { userEmail, vendors } = body as {

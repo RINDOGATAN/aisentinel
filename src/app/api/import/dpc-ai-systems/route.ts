@@ -17,7 +17,7 @@
 import { NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { validateImportApiKey } from "@/lib/import-auth";
+import { guardImportRequest } from "@/lib/import-auth";
 import { mapRole, mapTechnique } from "@/lib/dpc-import-mapping";
 
 interface DPCSystemPayload {
@@ -44,9 +44,8 @@ interface DPCSystemPayload {
 }
 
 export async function POST(request: Request) {
-  if (!validateImportApiKey(request)) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const blocked = guardImportRequest(request);
+  if (blocked) return blocked;
 
   const body = await request.json();
   const { userEmail, systems } = body as {

@@ -273,7 +273,7 @@ Premium features (Shadow AI, Vendor Catalog, Conformity Assessment, Bias & Fairn
 
 | Item | Priority | Description |
 |------|----------|-------------|
-| Rate limiting | HIGH | Add rate limiting on public endpoints, auth flows, and mutation endpoints |
+| Shared rate-limit store | MEDIUM | Counters are per process. A shared store would make the limit exact across a serverless fleet |
 | OAuth token encryption | MEDIUM | Encrypt `Account.refresh_token`/`access_token` at rest |
 | Soft delete | MEDIUM | Add `deletedAt` timestamp to critical models (AI systems, assessments) instead of hard delete |
 | Column-level encryption | MEDIUM | Encrypt sensitive `@db.Text` fields (incident descriptions, assessment responses) |
@@ -292,7 +292,7 @@ Premium features (Shadow AI, Vendor Catalog, Conformity Assessment, Bias & Fairn
 | A01 | Broken Access Control | **Mitigated** | Org isolation, RBAC, member scoping |
 | A02 | Cryptographic Failures | Partial | OAuth tokens in plaintext (NextAuth default) |
 | A03 | Injection | **Mitigated** | Prisma parameterized queries, no raw SQL |
-| A04 | Insecure Design | Partial | No rate limiting yet |
+| A04 | Insecure Design | Partial | Rate limiting is per process, not fleet-wide |
 | A05 | Security Misconfiguration | **Mitigated** | Security headers, env-guarded dev auth |
 | A06 | Vulnerable Components | Monitor | Run `npm audit` regularly |
 | A07 | Auth Failures | **Mitigated** | Multi-provider auth, session cookies, CSRF |

@@ -15,14 +15,13 @@
  */
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { validateImportApiKey } from "@/lib/import-auth";
+import { guardImportRequest } from "@/lib/import-auth";
 
 const OPEN_GATE_STATUSES = ["PENDING", "IN_REVIEW"];
 
 export async function POST(request: Request) {
-  if (!validateImportApiKey(request)) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const blocked = guardImportRequest(request);
+  if (blocked) return blocked;
 
   const body = await request.json();
   const { userEmail, aisSystemId } = body as {

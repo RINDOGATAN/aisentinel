@@ -38,7 +38,7 @@ To self-host the full stack (Postgres included) with one command, use the sovere
 
 Security posture, threat model and known gaps are documented in [docs/security.md](docs/security.md). Multi-tenant isolation conventions are enforced by `npm run lint:security`.
 
-Honest limitations, disclosed there in full: no rate limiting and no Content-Security-Policy header yet. If you expose an instance beyond localhost, read the hardening section of the sovereign README first.
+Honest limitations, disclosed there in full: no Content-Security-Policy header yet, and rate limiting that is per process rather than across a fleet (exact on a self-hosted install, best-effort on serverless). If you expose an instance beyond localhost, read the hardening section of the sovereign README first.
 
 ## Quality gates
 

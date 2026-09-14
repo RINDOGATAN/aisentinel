@@ -38,6 +38,10 @@ Two consequences matter for security:
 
 ## Known gaps in this build
 
-Disclosed honestly in `docs/security.md`: no application-level rate limiting
-and no Content-Security-Policy yet. Treat both as open items, not settled
+Disclosed honestly in `docs/security.md`: no Content-Security-Policy yet, and
+rate limiting that counts per process rather than across a fleet. On a
+self-hosted install that is exact, because there is one process. On a
+serverless deployment each warm instance keeps its own counter, so the
+effective ceiling is a multiple of the configured limit. It bounds the trivial
+loop; it is not a distributed quota. Treat both as open items, not settled
 protections.

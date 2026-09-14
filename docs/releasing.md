@@ -238,6 +238,53 @@ checks green after the `migrate.sh` baseline fix). Check 5 was first run on
 
 ---
 
+## Version pinning: what floats today, and what a pinned deploy would need
+
+Neither lane is pinned to a reviewed version today. This section records the
+current behaviour and what pinning would take; it changes nothing by itself.
+
+**What floats.**
+
+- **Self-hosted.** The suite kit (`todolaw-suite`, not this repository) pulls
+  `:latest` by default: `suite.sh` sets its default version to `latest`, and the
+  kit's `docker-compose.yml` references the app and migrator images by that
+  tag. `./suite.sh update` therefore moves an install to whatever the most
+  recent `vX.Y.Z` tag published, including its migrations, without the operator
+  choosing that version. The kit's own `KIT_VERSION` governs only the self-update
+  of `suite.sh`, not the images.
+- **Hosted.** Every push to `main` builds and deploys, and the build runs
+  `prisma migrate deploy` first. There is no gate between a merge and production.
+- **The publish step.** `publish-image.yml` writes `:vX.Y.Z` and `:latest` from
+  the same manifest (section 3), so `:latest` is always the newest tag, never an
+  older reviewed one.
+
+**What a pinned self-hosted deploy would need** (a kit change, to be made in
+`todolaw-suite`, not from here):
+
+1. The kit resolves an explicit version, for example `AISENTINEL_VERSION=v0.5.0`
+   in the install's `.env`, and the compose file uses it for both
+   `ghcr.io/rindogatan/aisentinel` and `ghcr.io/rindogatan/aisentinel-migrator`.
+   The two images must always carry the same tag: the migrator's migrations and
+   seeds belong to the app version beside it.
+2. Better still, pin by digest (`image@sha256:...`), taken from the
+   `imagetools inspect` output in section 3, so a re-pushed tag cannot change
+   what runs.
+3. `./suite.sh update` changes the pinned value only when the operator names a
+   version, and prints the current and target versions before pulling.
+4. A kit release records which app versions it was tested with (the
+   `suite-integration.yml` run), so the kit tag and the three image tags move
+   together.
+5. Rollback stays a restore, not a downgrade: migrations are append-only and an
+   older app image is not guaranteed to run against a newer schema. Take a
+   backup (`deploy/sovereign/backup.sh`) before any pinned upgrade.
+
+**What a pinned hosted deploy would need** (a platform setting, owner's
+decision): production deploys from a tag or a release branch rather than every
+push to `main`, with previews kept for `main`; and the migration moved out of
+`npm run build` into a step that runs against a copy of the database first.
+
+---
+
 ## Hard rules
 
 - **Prisma migrations are append-only, forever.** Self-hosters jump from any

@@ -158,17 +158,38 @@ export function __resetRateLimitStore(): void {
 /**
  * The caller's address, as far as it can be trusted.
  *
- * Behind a proxy the leftmost `x-forwarded-for` hop is the client. It is
- * attacker-controlled and can be spoofed, which is why the store is bounded:
- * a spoofed address costs the attacker a limiter entry, not the site.
+ * The order here is the whole security of the limiter, because whatever value
+ * is chosen becomes the bucket key. If the caller can choose it, the caller can
+ * have a fresh allowance on every request and the limit means nothing.
+ *
+ *   1. `x-vercel-forwarded-for` — set by the platform on every hosted request
+ *      and overwritten if a client sends it, so it cannot be forged.
+ *   2. `x-real-ip` — set by the reverse proxy in the self-hosted posture.
+ *   3. The RIGHTMOST `x-forwarded-for` entry. A client that sends its own
+ *      header has its value appended to the left by the nearest proxy, so the
+ *      rightmost entry is the one that proxy observed. Taking the leftmost,
+ *      which reads naturally as "the original client", is exactly the mistake
+ *      that lets an attacker rotate a header and evade the limit entirely.
+ *
+ * With no proxy at all, none of these is trustworthy. That is why the sovereign
+ * README tells operators to put one in front, and why the store is bounded: a
+ * forged address costs the attacker a limiter entry, not the site.
  */
 export function clientIp(request: Request): string {
+  const platform = request.headers.get("x-vercel-forwarded-for")?.trim();
+  if (platform) return platform;
+
+  const realIp = request.headers.get("x-real-ip")?.trim();
+  if (realIp) return realIp;
+
   const forwarded = request.headers.get("x-forwarded-for");
   if (forwarded) {
-    const first = forwarded.split(",")[0]?.trim();
-    if (first) return first;
+    const hops = forwarded.split(",").map((h) => h.trim()).filter(Boolean);
+    const nearest = hops[hops.length - 1];
+    if (nearest) return nearest;
   }
-  return request.headers.get("x-real-ip")?.trim() || "unknown";
+
+  return "unknown";
 }
 
 /** A 429 carrying the headers a well-behaved client needs to back off. */

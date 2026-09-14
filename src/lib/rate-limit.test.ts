@@ -99,16 +99,51 @@ describe("consume", () => {
 });
 
 describe("clientIp", () => {
-  it("takes the leftmost forwarded hop", () => {
+  it("prefers the platform header, which a client cannot forge", () => {
     const request = new Request("https://example.test/", {
-      headers: { "x-forwarded-for": "203.0.113.7, 70.41.3.18, 150.172.238.178" },
+      headers: {
+        "x-vercel-forwarded-for": "203.0.113.7",
+        "x-real-ip": "198.51.100.4",
+        "x-forwarded-for": "1.2.3.4",
+      },
     });
     expect(clientIp(request)).toBe("203.0.113.7");
   });
 
-  it("falls back to x-real-ip, then to a constant", () => {
-    expect(clientIp(new Request("https://e.test/", { headers: { "x-real-ip": "198.51.100.4" } })))
-      .toBe("198.51.100.4");
+  it("then the proxy-set real ip", () => {
+    const request = new Request("https://example.test/", {
+      headers: { "x-real-ip": "198.51.100.4", "x-forwarded-for": "1.2.3.4" },
+    });
+    expect(clientIp(request)).toBe("198.51.100.4");
+  });
+
+  it("takes the RIGHTMOST forwarded hop, not the leftmost", () => {
+    // The leftmost entry reads as "the original client" and is the natural
+    // choice, but a caller can put anything there. The nearest proxy appends
+    // what it actually saw on the right.
+    const request = new Request("https://example.test/", {
+      headers: { "x-forwarded-for": "203.0.113.7, 70.41.3.18, 150.172.238.178" },
+    });
+    expect(clientIp(request)).toBe("150.172.238.178");
+  });
+
+  it("cannot be evaded by rotating a forged forwarded header", () => {
+    // The attack this ordering exists to stop: without it, every forged value
+    // is a fresh bucket and the limit is worth nothing.
+    process.env.RATE_LIMIT_HEALTH = "2/60";
+    const forge = (spoof: string) =>
+      new Request("https://example.test/api/health", {
+        headers: { "x-forwarded-for": `${spoof}, 150.172.238.178` },
+      });
+
+    expect(enforce(forge("10.0.0.1"), "health")).toBeNull();
+    expect(enforce(forge("10.0.0.2"), "health")).toBeNull();
+    // A third forged address must NOT buy a third request: the real hop is
+    // unchanged, so the bucket is the same.
+    expect(enforce(forge("10.0.0.3"), "health")).not.toBeNull();
+  });
+
+  it("falls back to a constant when nothing is trustworthy", () => {
     expect(clientIp(new Request("https://e.test/"))).toBe("unknown");
   });
 });

@@ -225,6 +225,12 @@ describe("skills.activateOffline flow", () => {
       maxActivations: 3,
       status: "ACTIVE",
     });
+    // Taking over a Stripe row clears its subscription id, so the billing page
+    // stops offering to cancel a module now held by licence (S-01 D2).
+    expect(upsertArgs.update).toMatchObject({
+      licenseType: "PERPETUAL",
+      stripeSubscriptionId: null,
+    });
 
     // Activation bound to this installation
     expect(mocks.prisma.skillActivation.create).toHaveBeenCalledWith(

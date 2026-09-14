@@ -14,7 +14,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { features } from "@/config/features";
-import { formatPrice } from "@/lib/currency";
+import { useTranslations } from "next-intl";
+import { formatTotals, yearlyTotals } from "@/lib/package-price";
+import { trpc } from "@/lib/trpc";
 
 interface EnableMultipleFeaturesModalProps {
   open: boolean;
@@ -32,9 +34,17 @@ export function EnableMultipleFeaturesModal({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const tb = useTranslations("billing");
+  const { data: plans } = trpc.billing.getAvailablePlans.useQuery(
+    { organizationId },
+    { enabled: open && features.selfServiceUpgrade && !!organizationId }
+  );
+
   if (!open || !skills.length) return null;
 
-  const total = skills.length * 9;
+  // Summed from the package rows, per year, so mixed intervals still add up.
+  const selected = (plans ?? []).filter((p) => skills.some((s) => s.id === p.id));
+  const total = selected.length ? formatTotals(yearlyTotals(selected)) : null;
 
   // Self-hosted builds have no in-app checkout. Free posture: already included.
   // Sovereign licence posture: enabled by activating a licence on the Skills page.
@@ -156,11 +166,13 @@ export function EnableMultipleFeaturesModal({
             ))}
           </ul>
 
-          <div className="rounded-lg bg-muted p-4">
-            <p className="text-sm font-medium">
-              {formatPrice(total)}/month, cancel anytime
-            </p>
-          </div>
+          {total && (
+            <div className="rounded-lg bg-muted p-4">
+              <p className="text-sm font-medium">
+                {tb("priceLineYear", { price: total })}
+              </p>
+            </div>
+          )}
 
           {error && (
             <div className="p-3 text-sm text-destructive bg-destructive/10 rounded-lg">

@@ -6,6 +6,11 @@
  *
  * Processes Stripe webhook events to create/update entitlements.
  *
+ * Each handler does its Stripe reads first and its database writes inside
+ * runStripeEventOnce, so a retried or duplicated event writes nothing twice.
+ * The writes themselves live in src/server/services/billing/stripe-entitlements.ts
+ * and never touch a perpetual (offline licence) row.
+ *
  * AGPL-3.0 License - Part of the open-source core
  */
 
@@ -14,9 +19,21 @@ import { headers } from "next/headers";
 import Stripe from "stripe";
 import { Resend } from "resend";
 import prisma from "@/lib/prisma";
-import { verifyWebhookSignature, getSubscription } from "@/lib/stripe";
+import { verifyWebhookSignature, getSubscription, getCustomer } from "@/lib/stripe";
 import { features } from "@/config/features";
 import { brand } from "@/config/brand";
+import {
+  entitlementStatusFor,
+  invoiceSubscriptionId,
+  subscriptionPeriodEnd,
+} from "@/server/services/billing/entitlement-rules";
+import {
+  applyStripeEntitlements,
+  expireSubscriptionEntitlements,
+  ownPackageIds,
+  runStripeEventOnce,
+  suspendForFailedPayment,
+} from "@/server/services/billing/stripe-entitlements";
 
 const resend = process.env.RESEND_API_KEY
   ? new Resend(process.env.RESEND_API_KEY)
@@ -34,6 +51,25 @@ function parseSkillPackageIds(metadata: Record<string, string> | null): string[]
     return [metadata.skillPackageId];
   }
   return [];
+}
+
+function stripeIdOf(ref: string | { id: string } | null | undefined): string | null {
+  if (!ref) return null;
+  return typeof ref === "string" ? ref : ref.id;
+}
+
+/**
+ * The local customer for a Stripe customer: by the stored Stripe id, else by
+ * the Stripe customer's e-mail (the customer is shared across the suite's apps
+ * and may have been created by another one).
+ */
+async function resolveCustomer(stripeCustomerId: string) {
+  const byStripeId = await prisma.customer.findFirst({ where: { stripeCustomerId } });
+  if (byStripeId) return byStripeId;
+
+  const stripeCustomer = await getCustomer(stripeCustomerId);
+  if (stripeCustomer.deleted || !stripeCustomer.email) return null;
+  return prisma.customer.findUnique({ where: { email: stripeCustomer.email } });
 }
 
 export async function POST(request: NextRequest) {
@@ -67,22 +103,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    let outcome: "applied" | "duplicate" | "ignored" = "ignored";
+
     switch (event.type) {
       case "checkout.session.completed":
-        await handleCheckoutCompleted(event.data.object as Stripe.Checkout.Session);
+        outcome = await handleCheckoutCompleted(event, event.data.object as Stripe.Checkout.Session);
         break;
 
       case "customer.subscription.created":
       case "customer.subscription.updated":
-        await handleSubscriptionChange(event.data.object as Stripe.Subscription);
+        outcome = await handleSubscriptionChange(event, event.data.object as Stripe.Subscription);
         break;
 
       case "customer.subscription.deleted":
-        await handleSubscriptionDeleted(event.data.object as Stripe.Subscription);
+        outcome = await handleSubscriptionDeleted(event, event.data.object as Stripe.Subscription);
         break;
 
       case "invoice.payment_failed":
-        await handlePaymentFailed(event.data.object as Stripe.Invoice);
+        outcome = await handlePaymentFailed(event, event.data.object as Stripe.Invoice);
         break;
 
       default:
@@ -90,7 +128,7 @@ export async function POST(request: NextRequest) {
         break;
     }
 
-    return NextResponse.json({ received: true });
+    return NextResponse.json({ received: true, outcome });
   } catch (error) {
     console.error("Webhook error:", error);
     return NextResponse.json(
@@ -100,24 +138,23 @@ export async function POST(request: NextRequest) {
   }
 }
 
-async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
+async function handleCheckoutCompleted(event: Stripe.Event, session: Stripe.Checkout.Session) {
   const { organizationId, customerId } = session.metadata || {};
-  const skillPackageIds = parseSkillPackageIds(session.metadata as Record<string, string> | null);
+  const skillPackageIds = await ownPackageIds(
+    prisma,
+    parseSkillPackageIds(session.metadata as Record<string, string> | null),
+  );
 
   if (!organizationId || !skillPackageIds.length) {
-    console.error("Missing metadata in checkout session:", session.id);
-    return;
+    // Missing metadata, or a checkout for another app on the shared account.
+    return "ignored" as const;
   }
 
-  if (!session.subscription) {
+  const subscriptionId = stripeIdOf(session.subscription);
+  if (!subscriptionId) {
     console.error("No subscription in checkout session:", session.id);
-    return;
+    return "ignored" as const;
   }
-
-  const subscriptionId =
-    typeof session.subscription === "string"
-      ? session.subscription
-      : session.subscription.id;
 
   const subscription = await getSubscription(subscriptionId);
 
@@ -125,198 +162,134 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     ? await prisma.customer.findUnique({ where: { id: customerId } })
     : null;
 
-  if (!customer && session.customer_email) {
-    customer = await prisma.customer.findUnique({
-      where: { email: session.customer_email },
-    });
+  const email = session.customer_email ?? session.customer_details?.email ?? null;
+  if (!customer && email) {
+    customer = await prisma.customer.findUnique({ where: { email } });
   }
 
   if (!customer) {
     console.error("Customer not found for checkout session:", session.id);
-    return;
+    return "ignored" as const;
   }
 
-  const stripeCustomerId =
-    typeof session.customer === "string"
-      ? session.customer
-      : session.customer?.id;
+  const found = customer;
+  const stripeCustomerId = stripeIdOf(session.customer);
 
-  if (stripeCustomerId && customer.stripeCustomerId !== stripeCustomerId) {
-    await prisma.customer.update({
-      where: { id: customer.id },
-      data: { stripeCustomerId },
-    });
-  }
+  return runStripeEventOnce(prisma, event, async (tx) => {
+    if (stripeCustomerId && found.stripeCustomerId !== stripeCustomerId) {
+      await tx.customer.update({
+        where: { id: found.id },
+        data: { stripeCustomerId },
+      });
+    }
 
-  await prisma.customerOrganization.upsert({
-    where: {
-      customerId_organizationId: {
-        customerId: customer.id,
-        organizationId,
-      },
-    },
-    update: {},
-    create: {
-      customerId: customer.id,
-      organizationId,
-    },
-  });
-
-  const periodEnd = (subscription as unknown as { current_period_end?: number }).current_period_end;
-
-  for (const skillPackageId of skillPackageIds) {
-    await prisma.skillEntitlement.upsert({
+    await tx.customerOrganization.upsert({
       where: {
-        customerId_skillPackageId: {
-          customerId: customer.id,
-          skillPackageId,
+        customerId_organizationId: {
+          customerId: found.id,
+          organizationId,
         },
       },
-      update: {
-        status: "ACTIVE",
-        licenseType: "SUBSCRIPTION",
-        stripeSubscriptionId: subscriptionId,
-        expiresAt: periodEnd ? new Date(periodEnd * 1000) : null,
-      },
+      update: {},
       create: {
-        customerId: customer.id,
-        skillPackageId,
-        licenseType: "SUBSCRIPTION",
-        status: "ACTIVE",
-        stripeSubscriptionId: subscriptionId,
-        expiresAt: periodEnd ? new Date(periodEnd * 1000) : null,
+        customerId: found.id,
+        organizationId,
       },
     });
-  }
 
+    await applyStripeEntitlements(tx, {
+      customerId: found.id,
+      skillPackageIds,
+      subscriptionId,
+      status: "ACTIVE",
+      expiresAt: subscriptionPeriodEnd(subscription),
+    });
+  });
 }
 
-async function handleSubscriptionChange(subscription: Stripe.Subscription) {
+async function handleSubscriptionChange(event: Stripe.Event, subscription: Stripe.Subscription) {
   const { organizationId } = subscription.metadata || {};
-  const skillPackageIds = parseSkillPackageIds(subscription.metadata as Record<string, string> | null);
+  const skillPackageIds = await ownPackageIds(
+    prisma,
+    parseSkillPackageIds(subscription.metadata as Record<string, string> | null),
+  );
 
   if (!organizationId || !skillPackageIds.length) {
-    return;
+    return "ignored" as const;
   }
 
-  const stripeCustomerId =
-    typeof subscription.customer === "string"
-      ? subscription.customer
-      : subscription.customer.id;
-
-  const customer = await prisma.customer.findFirst({
-    where: { stripeCustomerId },
-  });
+  const stripeCustomerId = stripeIdOf(subscription.customer);
+  const customer = stripeCustomerId ? await resolveCustomer(stripeCustomerId) : null;
 
   if (!customer) {
     console.error("Customer not found for Stripe customer:", stripeCustomerId);
-    return;
+    return "ignored" as const;
   }
 
-  let entitlementStatus: "ACTIVE" | "SUSPENDED" | "EXPIRED" = "ACTIVE";
-
-  if (subscription.status === "past_due" || subscription.status === "unpaid") {
-    entitlementStatus = "SUSPENDED";
-  } else if (
-    subscription.status === "canceled" ||
-    subscription.status === "incomplete_expired"
-  ) {
-    entitlementStatus = "EXPIRED";
-  }
-
-  const periodEnd = (subscription as unknown as { current_period_end?: number }).current_period_end;
-
-  for (const skillPackageId of skillPackageIds) {
-    await prisma.skillEntitlement.upsert({
-      where: {
-        customerId_skillPackageId: {
-          customerId: customer.id,
-          skillPackageId,
-        },
-      },
-      update: {
-        status: entitlementStatus,
-        stripeSubscriptionId: subscription.id,
-        expiresAt: periodEnd ? new Date(periodEnd * 1000) : null,
-      },
-      create: {
-        customerId: customer.id,
-        skillPackageId,
-        licenseType: "SUBSCRIPTION",
-        status: entitlementStatus,
-        stripeSubscriptionId: subscription.id,
-        expiresAt: periodEnd ? new Date(periodEnd * 1000) : null,
-      },
+  return runStripeEventOnce(prisma, event, async (tx) => {
+    await applyStripeEntitlements(tx, {
+      customerId: customer.id,
+      skillPackageIds,
+      subscriptionId: subscription.id,
+      status: entitlementStatusFor(subscription.status),
+      expiresAt: subscriptionPeriodEnd(subscription),
     });
-  }
+  });
 }
 
-async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
-  const skillPackageIds = parseSkillPackageIds(subscription.metadata as Record<string, string> | null);
+async function handleSubscriptionDeleted(event: Stripe.Event, subscription: Stripe.Subscription) {
+  const skillPackageIds = await ownPackageIds(
+    prisma,
+    parseSkillPackageIds(subscription.metadata as Record<string, string> | null),
+  );
 
   if (!skillPackageIds.length) {
-    return;
+    return "ignored" as const;
   }
 
-  const stripeCustomerId =
-    typeof subscription.customer === "string"
-      ? subscription.customer
-      : subscription.customer.id;
-
-  const customer = await prisma.customer.findFirst({
-    where: { stripeCustomerId },
-  });
+  const stripeCustomerId = stripeIdOf(subscription.customer);
+  const customer = stripeCustomerId ? await resolveCustomer(stripeCustomerId) : null;
 
   if (!customer) {
-    return;
+    return "ignored" as const;
   }
 
-  await prisma.skillEntitlement.updateMany({
-    where: {
+  return runStripeEventOnce(prisma, event, async (tx) => {
+    await expireSubscriptionEntitlements(tx, {
       customerId: customer.id,
-      skillPackageId: { in: skillPackageIds },
-    },
-    data: {
-      status: "EXPIRED",
-    },
+      skillPackageIds,
+      subscriptionId: subscription.id,
+    });
   });
-
 }
 
-async function handlePaymentFailed(invoice: Stripe.Invoice) {
-  const stripeCustomerId =
-    typeof invoice.customer === "string"
-      ? invoice.customer
-      : invoice.customer?.id;
-
+async function handlePaymentFailed(event: Stripe.Event, invoice: Stripe.Invoice) {
+  const stripeCustomerId = stripeIdOf(invoice.customer);
   if (!stripeCustomerId) {
-    return;
+    return "ignored" as const;
   }
 
-  const customer = await prisma.customer.findFirst({
-    where: { stripeCustomerId },
-  });
-
+  const customer = await resolveCustomer(stripeCustomerId);
   if (!customer) {
-    return;
+    return "ignored" as const;
   }
 
-  await prisma.skillEntitlement.updateMany({
-    where: {
+  let suspended = 0;
+  const outcome = await runStripeEventOnce(prisma, event, async (tx) => {
+    suspended = await suspendForFailedPayment(tx, {
       customerId: customer.id,
-      status: "ACTIVE",
-    },
-    data: {
-      status: "SUSPENDED",
-    },
+      subscriptionId: invoiceSubscriptionId(invoice),
+    });
   });
 
-  if (resend && customer.email) {
+  // Tell the buyer only when something of theirs here was actually suspended,
+  // and only once: a retried event, or another app's invoice, sends nothing.
+  if (outcome === "applied" && suspended > 0 && resend && customer.email) {
     try {
       await resend.emails.send({
         from: `${brand.name} by ${brand.companyName} <${brand.emailFrom}>`,
         to: customer.email,
-        subject: `${brand.name} \u2014 Payment Failed`,
+        subject: `${brand.name} — Payment Failed`,
         html: `
           <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 500px; margin: 0 auto; background: ${brand.colors.background}; border-radius: 12px; overflow: hidden;">
             <div style="padding: 24px 24px 16px; border-bottom: 1px solid #2a2a2a;">
@@ -328,7 +301,7 @@ async function handlePaymentFailed(invoice: Stripe.Invoice) {
               <a href="${process.env.NEXTAUTH_URL}/governance/billing" style="display: inline-block; background: ${brand.colors.primary}; color: ${brand.colors.primaryForeground}; padding: 12px 28px; text-decoration: none; font-weight: 600; font-size: 14px; border-radius: 24px;">Update Payment Method</a>
             </div>
             <div style="padding: 16px 24px; border-top: 1px solid #2a2a2a;">
-              <p style="color: #666666; font-size: 11px; margin: 0;">${brand.companyName}\u2122 \u00b7 ${brand.name} \u00b7 <a href="${brand.siteUrl}" style="color: ${brand.colors.primary}; text-decoration: none;">${brand.siteUrl.replace(/^https?:\/\//, "")}</a></p>
+              <p style="color: #666666; font-size: 11px; margin: 0;">${brand.companyName}™ · ${brand.name} · <a href="${brand.siteUrl}" style="color: ${brand.colors.primary}; text-decoration: none;">${brand.siteUrl.replace(/^https?:\/\//, "")}</a></p>
             </div>
           </div>
         `,
@@ -337,4 +310,6 @@ async function handlePaymentFailed(invoice: Stripe.Invoice) {
       console.error("Failed to send payment failure email:", emailErr);
     }
   }
+
+  return outcome;
 }

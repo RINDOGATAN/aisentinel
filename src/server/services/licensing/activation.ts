@@ -130,7 +130,9 @@ export async function activateOffline(
   }
 
   // Upsert (not create): an admin- or Stripe-created entitlement for the same
-  // skill may already exist — the licence file refreshes its terms.
+  // skill may already exist — the licence file refreshes its terms. Taking a
+  // Stripe row over clears its subscription id, so the billing page no longer
+  // offers to cancel a module the buyer now holds by licence.
   const entitlement = await prisma.skillEntitlement.upsert({
     where: {
       customerId_skillPackageId: {
@@ -144,6 +146,7 @@ export async function activateOffline(
       maxActivations: licenseFile.maxActivations,
       expiresAt: licenseFile.expiresAt ? new Date(licenseFile.expiresAt) : null,
       status: EntitlementStatus.ACTIVE,
+      stripeSubscriptionId: null,
     },
     create: {
       customerId: customer.id,

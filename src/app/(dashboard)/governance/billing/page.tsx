@@ -16,7 +16,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useTranslations } from "next-intl";
 import { features } from "@/config/features";
 import { brand } from "@/config/brand";
-import { formatPrice } from "@/lib/currency";
+import { formatMinorUnits, formatTotals, yearlyTotals } from "@/lib/package-price";
 
 export default function BillingPage() {
   const t = useTranslations("billing");
@@ -118,15 +118,21 @@ export default function BillingPage() {
 
   const addOnRows = (plans ?? []).map((pkg) => {
     const entitlement = entitlementsBySkill.get(pkg.skillId);
-    const isActive = !!entitlement || pkg.isEntitled;
+    // A grace (TRIAL) row gives access but is not a purchase: the module
+    // stays on sale, with the date the grace ends.
+    const inGrace = !!entitlement?.inGrace && !pkg.isEntitled;
+    const isActive = pkg.isEntitled || (!!entitlement && !entitlement.inGrace);
     return {
       id: pkg.id,
       skillId: pkg.skillId,
       name: pkg.name,
       description: pkg.description,
       priceAmount: pkg.priceAmount,
+      priceCurrency: pkg.priceCurrency,
+      billingInterval: pkg.billingInterval,
       purchasable: !!pkg.stripePriceId,
       isActive,
+      inGrace,
       entitlementId: entitlement?.id ?? null,
       stripeSubscriptionId: entitlement?.stripeSubscriptionId ?? null,
       licenseType: entitlement?.licenseType ?? null,
@@ -136,9 +142,22 @@ export default function BillingPage() {
     };
   });
 
+  const priceLabel = (row: (typeof addOnRows)[number]) =>
+    row.priceAmount == null
+      ? null
+      : t(row.billingInterval === "MONTH" ? "pricePerMonth" : "pricePerYear", {
+          price: formatMinorUnits(row.priceAmount, row.priceCurrency),
+        });
+
   const inactiveRows = addOnRows.filter((r) => !r.isActive);
   const activeCount = addOnRows.filter((r) => r.isActive).length;
-  const monthlyTotal = activeCount * 9;
+  // What is billed: subscriptions only. A perpetual licence was paid once.
+  const yearlyTotal = formatTotals(
+    yearlyTotals(addOnRows.filter((r) => r.isActive && r.licenseType === "SUBSCRIPTION"))
+  );
+  const selectedTotal = formatTotals(
+    yearlyTotals(inactiveRows.filter((r) => selectedIds.has(r.id)))
+  );
 
   const toggleSelect = (id: string) => {
     setSelectedIds((prev) => {
@@ -223,8 +242,8 @@ export default function BillingPage() {
           </Card>
           <Card>
             <CardContent className="pt-6">
-              <p className="text-sm text-muted-foreground">{t("summaryMonthlyTotal")}</p>
-              <p className="text-2xl font-bold">{formatPrice(monthlyTotal)}</p>
+              <p className="text-sm text-muted-foreground">{t("summaryYearlyTotal")}</p>
+              <p className="text-2xl font-bold">{yearlyTotal}</p>
             </CardContent>
           </Card>
           <Card>
@@ -270,6 +289,11 @@ export default function BillingPage() {
                       {t("badgeActive")}
                     </Badge>
                   )}
+                  {row.inGrace && row.renewsAt && (
+                    <Badge variant="secondary" className="text-xs">
+                      {t("graceUntil", { date: row.renewsAt })}
+                    </Badge>
+                  )}
                 </div>
                 {row.description && (
                   <p className="text-sm text-muted-foreground mt-0.5 line-clamp-1">
@@ -311,9 +335,11 @@ export default function BillingPage() {
                 ) : (
                   <>
                     {features.stripeEnabled ? (
-                      <span className="text-sm text-muted-foreground">
-                        {formatPrice((row.priceAmount ?? 900) / 100)}/mo
-                      </span>
+                      priceLabel(row) && (
+                        <span className="text-sm text-muted-foreground">
+                          {priceLabel(row)}
+                        </span>
+                      )
                     ) : (
                       <Badge variant="secondary" className="text-xs">
                         Included
@@ -344,8 +370,7 @@ export default function BillingPage() {
           {features.selfServiceUpgrade && selectedIds.size > 0 && (
             <div className="flex items-center justify-between rounded-lg border border-primary/30 bg-primary/5 p-3 mt-4">
               <p className="text-sm text-muted-foreground">
-                {selectedIds.size} feature{selectedIds.size !== 1 ? "s" : ""} selected
-                &mdash; {formatPrice(selectedIds.size * 9)}/month
+                {t("selectedSummary", { count: selectedIds.size, price: selectedTotal })}
               </p>
               <Button size="sm" onClick={handleEnableSelected}>
                 Enable Selected ({selectedIds.size})

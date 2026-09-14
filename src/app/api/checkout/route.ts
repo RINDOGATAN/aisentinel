@@ -13,8 +13,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { createCheckoutSession, createCustomer } from "@/lib/stripe";
+import { createCheckoutSession, findOrCreateCustomerByEmail, getPrice } from "@/lib/stripe";
 import { features } from "@/config/features";
+import { isBought, priceMismatch } from "@/server/services/billing/entitlement-rules";
 
 export async function POST(request: NextRequest) {
   if (!features.stripeEnabled || !features.selfServiceUpgrade) {
@@ -86,7 +87,37 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check for existing entitlements
+    // Determine currency from geo-IP (US → USD, else EUR)
+    const country = request.headers.get("x-vercel-ip-country") || "";
+    const isUSD = country === "US";
+    const usdPriceId = process.env.STRIPE_PRICE_ID_USD;
+
+    // Build line items (use USD price for US visitors if available)
+    const lineItems = skillPackages.map((pkg) => ({
+      priceId: isUSD && usdPriceId ? usdPriceId : (pkg.stripePriceId || defaultPriceId!),
+      skillPackageId: pkg.id,
+    }));
+
+    // Never charge a different amount, or on a different cycle, from the one
+    // on screen (a monthly price id left configured on a yearly package).
+    // Checked before any customer is created, so a refusal leaves nothing behind.
+    for (const [index, item] of lineItems.entries()) {
+      const pkg = skillPackages[index];
+      const mismatch = priceMismatch(pkg, await getPrice(item.priceId), {
+        amountMayDiffer: item.priceId === usdPriceId && item.priceId !== pkg.stripePriceId,
+      });
+      if (mismatch) {
+        console.error("Checkout price mismatch:", pkg.skillId, mismatch);
+        return NextResponse.json(
+          { error: `Skill package "${pkg.name}" is not configured for purchase` },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Check for existing entitlements. Only a live purchase blocks buying: a
+    // grace (TRIAL) row exists precisely so its holder can buy, and an expired
+    // row is not access.
     const customerOrg = await prisma.customerOrganization.findFirst({
       where: { organizationId },
       include: {
@@ -103,8 +134,10 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    if (customerOrg?.customer.entitlements.length) {
-      const alreadyEntitled = customerOrg.customer.entitlements
+    const now = new Date();
+    const bought = customerOrg?.customer.entitlements.filter((e) => isBought(e, now)) ?? [];
+    if (bought.length) {
+      const alreadyEntitled = bought
         .map((e) => skillPackages.find((p) => p.id === e.skillPackageId)?.name)
         .filter(Boolean);
       return NextResponse.json(
@@ -133,8 +166,21 @@ export async function POST(request: NextRequest) {
         });
         customerId = existingByEmail.id;
         stripeCustomerId = existingByEmail.stripeCustomerId;
+
+        if (!stripeCustomerId) {
+          const stripeCustomer = await findOrCreateCustomerByEmail({
+            email: existingByEmail.email,
+            name: existingByEmail.name,
+            metadata: { customerId: existingByEmail.id, organizationId },
+          });
+          await prisma.customer.update({
+            where: { id: existingByEmail.id },
+            data: { stripeCustomerId: stripeCustomer.id },
+          });
+          stripeCustomerId = stripeCustomer.id;
+        }
       } else {
-        const stripeCustomer = await createCustomer({
+        const stripeCustomer = await findOrCreateCustomerByEmail({
           email: session.user.email,
           name: session.user.name || undefined,
           metadata: { organizationId },
@@ -157,7 +203,7 @@ export async function POST(request: NextRequest) {
       }
     } else if (!stripeCustomerId && customerOrg?.customer) {
       const existingCustomer = customerOrg.customer;
-      const stripeCustomer = await createCustomer({
+      const stripeCustomer = await findOrCreateCustomerByEmail({
         email: existingCustomer.email,
         name: existingCustomer.name,
         metadata: {
@@ -173,17 +219,6 @@ export async function POST(request: NextRequest) {
 
       stripeCustomerId = stripeCustomer.id;
     }
-
-    // Determine currency from geo-IP (US → USD, else EUR)
-    const country = request.headers.get("x-vercel-ip-country") || "";
-    const isUSD = country === "US";
-    const usdPriceId = process.env.STRIPE_PRICE_ID_USD;
-
-    // Build line items (use USD price for US visitors if available)
-    const lineItems = skillPackages.map((pkg) => ({
-      priceId: isUSD && usdPriceId ? usdPriceId : (pkg.stripePriceId || defaultPriceId!),
-      skillPackageId: pkg.id,
-    }));
 
     // Create checkout session
     const origin = request.headers.get("origin") || process.env.NEXTAUTH_URL;

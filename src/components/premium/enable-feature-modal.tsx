@@ -15,7 +15,8 @@ import {
 } from "@/components/ui/card";
 import { useTranslations } from "next-intl";
 import { features } from "@/config/features";
-import { formatPrice } from "@/lib/currency";
+import { formatMinorUnits } from "@/lib/package-price";
+import { trpc } from "@/lib/trpc";
 
 interface EnableFeatureModalProps {
   open: boolean;
@@ -38,6 +39,14 @@ export function EnableFeatureModal({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [fallbackContact, setFallbackContact] = useState(false);
+  const tb = useTranslations("billing");
+  // The price comes from the package row (callers pass either its id or its
+  // skillId), so the modal can never quote a figure checkout will not charge.
+  const { data: plans } = trpc.billing.getAvailablePlans.useQuery(
+    { organizationId },
+    { enabled: open && features.selfServiceUpgrade && !!organizationId }
+  );
+  const pkg = plans?.find((p) => p.id === skillPackageId || p.skillId === skillPackageId);
 
   if (!open) return null;
 
@@ -160,11 +169,15 @@ export function EnableFeatureModal({
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="rounded-lg bg-muted p-4">
-            <p className="text-sm font-medium">
-              {formatPrice(9)}/month, cancel anytime
-            </p>
-          </div>
+          {pkg?.priceAmount != null && (
+            <div className="rounded-lg bg-muted p-4">
+              <p className="text-sm font-medium">
+                {tb(pkg.billingInterval === "MONTH" ? "priceLineMonth" : "priceLineYear", {
+                  price: formatMinorUnits(pkg.priceAmount, pkg.priceCurrency),
+                })}
+              </p>
+            </div>
+          )}
 
           {error && (
             <div className="p-3 text-sm text-destructive bg-destructive/10 rounded-lg">

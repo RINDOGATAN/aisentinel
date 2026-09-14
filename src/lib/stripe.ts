@@ -126,6 +126,31 @@ export async function createCustomer(params: {
 }
 
 /**
+ * The Stripe customer for an e-mail address, created only when none exists.
+ *
+ * One Stripe account serves every app in the suite, so a buyer who already
+ * paid in another app keeps one customer, one card and one portal here.
+ */
+export async function findOrCreateCustomerByEmail(params: {
+  email: string;
+  name?: string;
+  metadata?: Record<string, string>;
+}): Promise<Stripe.Customer> {
+  const stripe = getStripe();
+  const existing = await stripe.customers.list({ email: params.email, limit: 1 });
+  if (existing.data[0]) return existing.data[0];
+  return createCustomer(params);
+}
+
+/**
+ * Retrieve a price, to compare it with what the app displays before selling
+ */
+export async function getPrice(priceId: string): Promise<Stripe.Price> {
+  const stripe = getStripe();
+  return stripe.prices.retrieve(priceId);
+}
+
+/**
  * Get subscription details
  */
 export async function getSubscription(

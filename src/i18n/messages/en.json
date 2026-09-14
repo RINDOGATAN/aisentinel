@@ -1448,13 +1448,18 @@
     "title": "Billing",
     "subtitle": "Manage your premium add-on features",
     "summaryActiveFeatures": "Active Features",
-    "summaryMonthlyTotal": "Monthly Total",
+    "summaryYearlyTotal": "Yearly Total",
     "summaryPlan": "Plan",
     "addOnFeaturesTitle": "Add-on Features",
     "badgeActive": "Active",
     "badgeComingSoon": "Coming Soon",
     "enable": "Enable",
-    "pricePerMonth": "{price}/mo"
+    "pricePerMonth": "{price}/mo",
+    "pricePerYear": "{price}/year",
+    "graceUntil": "Grace period until {date}",
+    "selectedSummary": "{count, plural, one {# feature} other {# features}} selected: {price} a year",
+    "priceLineYear": "{price} a year, cancel anytime",
+    "priceLineMonth": "{price} a month, cancel anytime"
   },
   "settings": {
     "title": "Settings",

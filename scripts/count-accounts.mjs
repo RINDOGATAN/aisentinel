@@ -14,7 +14,8 @@
  *                  organization by e-mail domain and never returned.
  *   organizations  every row in Organization.
  *   paying         distinct Customers holding at least one entitlement that is
- *                  ACTIVE and not past its expiry. Stripe is switched off on
+ *                  ACTIVE, not past its expiry and not a TRIAL (grace) grant.
+ *                  Stripe is switched off on
  *                  the hosted instance, so in practice this counts offline
  *                  licence holders. It is the honest answer to "who has bought
  *                  something", not a recurring-revenue figure.
@@ -52,6 +53,10 @@ async function main() {
         // it every package. It is a seed artefact, never a buyer, so counting
         // it would overstate the figure on any instance that has been seeded.
         customerId: { not: "demo-customer" },
+        // A TRIAL row is the grace period scripts/grant-paywall-grace.ts gives
+        // every existing organisation when billing is switched on. It is ACTIVE
+        // and unexpired, and it is not a purchase.
+        licenseType: { not: "TRIAL" },
       },
       select: { customerId: true },
       distinct: ["customerId"],

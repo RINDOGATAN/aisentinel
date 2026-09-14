@@ -1,7 +1,21 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025-2026 Rindogatan LLC
 
-import { PrismaClient, AIAssessmentType } from "@prisma/client";
+import { PrismaClient, AIAssessmentType, BillingInterval } from "@prisma/client";
+
+/**
+ * The update half of a skill package upsert. With no STRIPE_PRICE_* in the
+ * environment it leaves the stored price id alone: writing null would silently
+ * turn every package on a configured instance into "Coming soon" the next time
+ * anyone seeds.
+ */
+export function skillPackageUpdate<T extends { stripePriceId: string | null }>(
+  pkg: T,
+): T | Omit<T, "stripePriceId"> {
+  if (pkg.stripePriceId) return pkg;
+  const { stripePriceId, ...rest } = pkg;
+  return rest;
+}
 
 export async function seedDatabase(prisma: PrismaClient) {
   console.log("Seeding AI SENTINEL database...");
@@ -12,7 +26,9 @@ export async function seedDatabase(prisma: PrismaClient) {
 
   console.log("Creating skill packages...");
 
-  // Per-package Stripe price IDs, falling back to shared STRIPE_PRICE_ID (all are €9/mo)
+  // Per-package Stripe price IDs, falling back to shared STRIPE_PRICE_ID.
+  // Every package is 60 a year: these must be YEARLY price ids. Checkout
+  // refuses a price whose interval or amount differs from the package.
   const STRIPE_PRICE_DEFAULT = process.env.STRIPE_PRICE_ID || null;
   const STRIPE_PRICE_CONFORMITY = process.env.STRIPE_PRICE_CONFORMITY || STRIPE_PRICE_DEFAULT;
   const STRIPE_PRICE_BIAS = process.env.STRIPE_PRICE_BIAS || STRIPE_PRICE_DEFAULT;
@@ -33,8 +49,9 @@ export async function seedDatabase(prisma: PrismaClient) {
       isPremium: true,
       isActive: true,
       stripePriceId: STRIPE_PRICE_CONFORMITY,
-      priceAmount: 900,
+      priceAmount: 6000,
       priceCurrency: "eur",
+      billingInterval: BillingInterval.YEAR,
     },
     {
       id: "skill-bias-fairness",
@@ -46,8 +63,9 @@ export async function seedDatabase(prisma: PrismaClient) {
       isPremium: true,
       isActive: true,
       stripePriceId: STRIPE_PRICE_BIAS,
-      priceAmount: 900,
+      priceAmount: 6000,
       priceCurrency: "eur",
+      billingInterval: BillingInterval.YEAR,
     },
     {
       id: "skill-shadow-ai",
@@ -59,8 +77,9 @@ export async function seedDatabase(prisma: PrismaClient) {
       isPremium: true,
       isActive: true,
       stripePriceId: STRIPE_PRICE_SHADOW,
-      priceAmount: 900,
+      priceAmount: 6000,
       priceCurrency: "eur",
+      billingInterval: BillingInterval.YEAR,
     },
     {
       id: "skill-vendor-catalog",
@@ -72,8 +91,9 @@ export async function seedDatabase(prisma: PrismaClient) {
       isPremium: true,
       isActive: true,
       stripePriceId: STRIPE_PRICE_VENDOR_CATALOG,
-      priceAmount: 900,
+      priceAmount: 6000,
       priceCurrency: "eur",
+      billingInterval: BillingInterval.YEAR,
     },
     // The two finished deliverables kept behind the licence on the hosted
     // instance (src/config/premium-showcase.ts). Everything that teaches the
@@ -90,8 +110,9 @@ export async function seedDatabase(prisma: PrismaClient) {
       isPremium: true,
       isActive: true,
       stripePriceId: process.env.STRIPE_PRICE_IMPACT_ASSESSMENT || STRIPE_PRICE_DEFAULT,
-      priceAmount: 900,
+      priceAmount: 6000,
       priceCurrency: "eur",
+      billingInterval: BillingInterval.YEAR,
     },
     {
       id: "skill-program-report",
@@ -104,15 +125,16 @@ export async function seedDatabase(prisma: PrismaClient) {
       isPremium: true,
       isActive: true,
       stripePriceId: process.env.STRIPE_PRICE_PROGRAM_REPORT || STRIPE_PRICE_DEFAULT,
-      priceAmount: 1900,
+      priceAmount: 6000,
       priceCurrency: "eur",
+      billingInterval: BillingInterval.YEAR,
     },
   ];
 
   for (const pkg of skillPackages) {
     await prisma.skillPackage.upsert({
       where: { id: pkg.id },
-      update: pkg,
+      update: skillPackageUpdate(pkg),
       create: pkg,
     });
   }

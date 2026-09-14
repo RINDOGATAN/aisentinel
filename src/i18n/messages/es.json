@@ -1448,13 +1448,18 @@
     "title": "Facturación",
     "subtitle": "Gestiona tus funcionalidades premium adicionales",
     "summaryActiveFeatures": "Funcionalidades activas",
-    "summaryMonthlyTotal": "Total mensual",
+    "summaryYearlyTotal": "Total anual",
     "summaryPlan": "Plan",
     "addOnFeaturesTitle": "Funcionalidades adicionales",
     "badgeActive": "Activa",
     "badgeComingSoon": "Próximamente",
     "enable": "Activar",
-    "pricePerMonth": "{price}/mes"
+    "pricePerMonth": "{price}/mes",
+    "pricePerYear": "{price}/año",
+    "graceUntil": "Periodo de gracia hasta el {date}",
+    "selectedSummary": "{count, plural, one {# funcionalidad seleccionada} other {# funcionalidades seleccionadas}}: {price} al año",
+    "priceLineYear": "{price} al año, cancela cuando quieras",
+    "priceLineMonth": "{price} al mes, cancela cuando quieras"
   },
   "settings": {
     "title": "Configuración",

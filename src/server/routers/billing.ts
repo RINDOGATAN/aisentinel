@@ -13,6 +13,16 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, organizationProcedure } from "../trpc";
 import { getStripe, getSubscription, removeSubscriptionItem } from "@/lib/stripe";
+import {
+  isBought,
+  isInGrace,
+  isLive,
+  subscriptionPeriodEnd,
+} from "@/server/services/billing/entitlement-rules";
+import {
+  applyStripeEntitlements,
+  ownPackageIds,
+} from "@/server/services/billing/stripe-entitlements";
 
 function parseSkillPackageIds(metadata: Record<string, string> | null): string[] {
   if (!metadata) return [];
@@ -55,16 +65,24 @@ export const billingRouter = createTRPCRouter({
       }
 
       const customer = customerOrg.customer;
-      const entitlements = customer.entitlements.map((e) => ({
-        id: e.id,
-        skillId: e.skillPackage.skillId,
-        skillName: e.skillPackage.displayName,
-        licenseType: e.licenseType,
-        expiresAt: e.expiresAt,
-        stripeSubscriptionId: e.stripeSubscriptionId,
-      }));
+      const now = new Date();
+      const entitlements = customer.entitlements
+        .filter((e) => isLive(e, now))
+        .map((e) => ({
+          id: e.id,
+          skillId: e.skillPackage.skillId,
+          skillName: e.skillPackage.displayName,
+          licenseType: e.licenseType,
+          expiresAt: e.expiresAt,
+          stripeSubscriptionId: e.stripeSubscriptionId,
+          inGrace: isInGrace(e, now),
+          priceAmount: e.skillPackage.priceAmount,
+          priceCurrency: e.skillPackage.priceCurrency,
+          billingInterval: e.skillPackage.billingInterval,
+        }));
 
-      const plan = entitlements.length > 0
+      // A grace period is not a plan: premium means something was acquired.
+      const plan = customer.entitlements.some((e) => isBought(e, now))
         ? ("premium" as const)
         : ("free" as const);
 
@@ -93,15 +111,20 @@ export const billingRouter = createTRPCRouter({
             include: {
               entitlements: {
                 where: { status: "ACTIVE" },
-                select: { skillPackageId: true },
+                select: { skillPackageId: true, licenseType: true, status: true, expiresAt: true },
               },
             },
           },
         },
       });
 
+      // Bought only: a TRIAL (grace) row leaves the package on sale, and an
+      // expired row is not an entitlement.
+      const now = new Date();
       const entitledPackageIds = new Set(
-        customerOrg?.customer.entitlements.map((e) => e.skillPackageId) ?? []
+        customerOrg?.customer.entitlements
+          .filter((e) => isBought(e, now))
+          .map((e) => e.skillPackageId) ?? []
       );
 
       const defaultPriceId = process.env.STRIPE_PRICE_ID;
@@ -112,6 +135,7 @@ export const billingRouter = createTRPCRouter({
         description: pkg.description,
         priceAmount: pkg.priceAmount,
         priceCurrency: pkg.priceCurrency,
+        billingInterval: pkg.billingInterval,
         stripePriceId: pkg.stripePriceId || defaultPriceId || null,
         isEntitled: entitledPackageIds.has(pkg.id),
       }));
@@ -155,7 +179,9 @@ export const billingRouter = createTRPCRouter({
         });
       }
 
-      if (!entitlement.stripeSubscriptionId) {
+      // A row can still carry a subscription id from before an offline licence
+      // took it over; only a subscription is self-cancelled here.
+      if (!entitlement.stripeSubscriptionId || entitlement.licenseType !== "SUBSCRIPTION") {
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "This entitlement was not purchased via Stripe and cannot be self-cancelled",
@@ -184,6 +210,7 @@ export const billingRouter = createTRPCRouter({
           where: {
             stripeSubscriptionId: entitlement.stripeSubscriptionId,
             status: "ACTIVE",
+            licenseType: { not: "PERPETUAL" },
             id: { not: entitlement.id },
           },
           data: { status: "EXPIRED" },
@@ -210,8 +237,9 @@ export const billingRouter = createTRPCRouter({
 
       const { organizationId, customerId } =
         (session.metadata as Record<string, string>) || {};
-      const skillPackageIds = parseSkillPackageIds(
-        session.metadata as Record<string, string> | null
+      const skillPackageIds = await ownPackageIds(
+        ctx.prisma,
+        parseSkillPackageIds(session.metadata as Record<string, string> | null)
       );
 
       if (!organizationId || !skillPackageIds.length) {
@@ -279,35 +307,16 @@ export const billingRouter = createTRPCRouter({
 
       // Retrieve subscription for period end
       const subscription = await getSubscription(subscriptionId);
-      const periodEnd = (
-        subscription as unknown as { current_period_end?: number }
-      ).current_period_end;
 
-      // Create or update entitlements
-      for (const skillPackageId of skillPackageIds) {
-        await ctx.prisma.skillEntitlement.upsert({
-          where: {
-            customerId_skillPackageId: {
-              customerId: customer.id,
-              skillPackageId,
-            },
-          },
-          update: {
-            status: "ACTIVE",
-            licenseType: "SUBSCRIPTION",
-            stripeSubscriptionId: subscriptionId,
-            expiresAt: periodEnd ? new Date(periodEnd * 1000) : null,
-          },
-          create: {
-            customerId: customer.id,
-            skillPackageId,
-            licenseType: "SUBSCRIPTION",
-            status: "ACTIVE",
-            stripeSubscriptionId: subscriptionId,
-            expiresAt: periodEnd ? new Date(periodEnd * 1000) : null,
-          },
-        });
-      }
+      // The same write the webhook makes, so the two cannot disagree; a
+      // perpetual licence for one of these modules is left as it is.
+      await applyStripeEntitlements(ctx.prisma, {
+        customerId: customer.id,
+        skillPackageIds,
+        subscriptionId,
+        status: "ACTIVE",
+        expiresAt: subscriptionPeriodEnd(subscription),
+      });
 
       return { activated: true, skillCount: skillPackageIds.length };
     }),

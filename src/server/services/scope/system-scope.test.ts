@@ -143,7 +143,7 @@ describe("buildSystemScope", () => {
     expect(scope.overlayTags).not.toContain("gdpr:core");
   });
 
-  it("assembles the full multi-state picture the workshop describes", () => {
+  it("assembles the full multi-state picture for an advertising system", () => {
     const scope = buildSystemScope(
       system({
         technique: "GENERATIVE_AI",

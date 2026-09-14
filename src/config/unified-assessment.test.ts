@@ -78,7 +78,7 @@ describe("unified assessment: content", () => {
     }
   });
 
-  it("covers all six regimes of the workshop across the template", () => {
+  it("covers all six regimes across the template", () => {
     const frameworks = new Set(all.flatMap(({ question }) => question.satisfies.map((c) => c.framework)));
     for (const fw of ["EU_AI_ACT", "EU_GDPR", "CA_CCPA_ADMT", "CO_SB_26_189", "TX_TRAIGA", "WA_AI_RULES"]) {
       expect(frameworks, `no question cites ${fw}`).toContain(fw);

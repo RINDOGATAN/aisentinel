@@ -19,14 +19,16 @@ sovereign/self-hosted).
 
 ## Supported versions
 
-Only the latest release on `main` (currently `1.0.x`) is supported. There are
-no maintained release branches; self-hosters should track `main` or a tagged
-state they have reviewed themselves.
+Only the latest tagged release is supported (currently `0.5.x`, published as
+`ghcr.io/rindogatan/aisentinel:vX.Y.Z` and `:latest`). The hosted instance
+runs `main`, which is always ahead of or equal to the latest tag. There are no
+maintained release branches: a fix ships in the next tag, not as a backport.
 
 ## Two postures, one codebase
 
-The same code runs the hosted instance and the sovereign self-host bundle.
-Two consequences matter for security:
+The same code runs the hosted instance and the sovereign self-host bundle; the
+differences live in environment flags only and are set out in section 11 of
+[`docs/security.md`](docs/security.md). Two consequences matter most:
 
 - The local credentials provider is passwordless and works in sovereign
   production builds when `NEXT_PUBLIC_LOCAL_AUTH_ENABLED=true`. Never expose
@@ -38,10 +40,24 @@ Two consequences matter for security:
 
 ## Known gaps in this build
 
-Disclosed honestly in `docs/security.md`: no Content-Security-Policy yet, and
-rate limiting that counts per process rather than across a fleet. On a
-self-hosted install that is exact, because there is one process. On a
-serverless deployment each warm instance keeps its own counter, so the
-effective ceiling is a multiple of the configured limit. It bounds the trivial
-loop; it is not a distributed quota. Treat both as open items, not settled
-protections.
+Disclosed in `docs/security.md`, and open items rather than settled
+protections:
+
+- No Content-Security-Policy yet.
+- Rate limiting counts per process rather than across a fleet. On a
+  self-hosted install that is exact, because there is one process. On a
+  serverless deployment each warm instance keeps its own counter, so the
+  effective ceiling is a multiple of the configured limit. It bounds the
+  trivial loop; it is not a distributed quota. On a self-hosted install the
+  limiter's address can be forged through a platform header the kit's proxy
+  does not strip; see section 6 of `docs/security.md`.
+- OAuth tokens are stored unencrypted in the database (the NextAuth adapter
+  default).
+- Passwordless local sign-in is disabled on hosted by environment checks read
+  at run time, not removed from the build.
+- The dependency audit runs in CI but does not yet fail the build (see
+  `.github/workflows/ci.yml`).
+- Self-hosted installs follow `:latest` by default, so an update is not pinned
+  to a reviewed version unless the operator pins it (`docs/releasing.md`).
+- Hosted has no documented backup restore rehearsal; self-host has one
+  (`docs/releasing.md`).

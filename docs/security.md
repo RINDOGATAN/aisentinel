@@ -126,7 +126,10 @@ All tRPC inputs are validated using Zod schemas before reaching business logic. 
 ### SQL Injection Prevention
 
 - Prisma ORM provides parameterized queries for all database operations
-- No user-controlled raw SQL anywhere. The only `$queryRaw` in the app is the constant `SELECT 1` liveness probe in `/api/health`
+- No raw SQL is built from user input by string concatenation. The app has two `$queryRaw` calls, both tagged templates, which Prisma sends with bound parameters:
+  - the constant `SELECT 1` liveness probe in `/api/health` (`src/app/api/health/route.ts:67`), which takes no input;
+  - the reverse supply-chain lookup in `vendorCatalog.getBySlug` (`src/server/routers/governance/vendorCatalog.ts:112`), which reads the shared `vendor_catalog` table with the caller's slug passed as two bound parameters (a jsonb containment value and an equality), never interpolated. It returns catalogue rows only; the organisation-scoped lookup that follows goes through the Prisma query builder with `organizationId: ctx.organization.id`.
+- Outside the app, the self-hosted migrator (`deploy/sovereign/migrate.sh:29`) uses one `$queryRawUnsafe` with a constant query and no user input.
 - Search inputs use Prisma's `contains` operator with `mode: "insensitive"`, which is safe
 
 ### String Length Limits
@@ -163,10 +166,15 @@ Configured in `next.config.ts`:
 | `/api/billing/portal` | NextAuth session | Stripe billing portal redirect |
 | `/api/checkout/*` | NextAuth session + Stripe gating | Checkout session creation |
 | `/api/cron/sync-catalog` | Bearer token (`CRON_SECRET`) | Vendor catalog cron sync |
-| `/api/import/portfolio-vendors` | API key (`VW_IMPORT_API_KEYS`, comma-separated `x-api-key` values) | Vendor portfolio import |
+| `/api/auth/cross-logout` | Public (clears this app's session cookies only) | Suite-wide sign-out |
+| `/api/import/portfolio-vendors`, `/api/import/check-account`, `/api/import/dpc-ai-systems`, `/api/import/ai-system-status` | API key (`VW_IMPORT_API_KEYS`, comma-separated `x-api-key` values), rate limited before a constant-time compare (`src/lib/import-auth.ts`) | Inbound pushes from the sibling apps |
 | `/api/webhooks/stripe` | Stripe webhook signature verification | Payment webhooks |
-| `/api/export/*` | JWT-authenticated GET + org-membership check + audit log | PDF report exports |
-| `/api/health` | Public (operational metadata only, no tenant data) | Liveness/DB probe for monitors and the sovereign Docker healthcheck |
+| `/api/export/*` | JWT-authenticated GET + org-membership check + audit log | PDF, Markdown, CSV and ZIP exports |
+| `/api/health` | Public (operational metadata only, no tenant data), rate limited, database probe cached | Liveness/DB probe for monitors and the sovereign Docker healthcheck |
+
+### Rate limiting
+
+`src/lib/rate-limit.ts` applies a fixed-window limit, configured as `count/seconds` in `RATE_LIMIT_SIGNIN`, `RATE_LIMIT_MAGIC_LINK`, `RATE_LIMIT_HEALTH` and `RATE_LIMIT_IMPORT` (`RATE_LIMIT_DISABLED=true` turns it off where a proxy limits instead). It covers sign-in and magic links (`src/lib/auth-rate-limit.ts`, counted separately), `/api/health` and the import routes. The client address is read, in order, from `x-vercel-forwarded-for`, `x-real-ip`, then the rightmost `x-forwarded-for` entry (`clientIp`). On hosted the first header is set and overwritten by the platform, so the caller cannot choose it. On a self-hosted install nothing overwrites `x-vercel-forwarded-for`: the kit's Caddy proxy passes a client-supplied value through, so a caller can choose their own bucket and evade the limit. Until the code reads that header only on the platform, self-hosted operators exposing the app beyond a trusted network should strip it at their proxy. The counter lives in process memory: exact on a single self-hosted process, a multiple of the limit across serverless instances. Authenticated tRPC mutations are not limited.
 
 ### Webhook Verification
 
@@ -268,11 +276,15 @@ Premium features (Shadow AI, Vendor Catalog, Conformity Assessment, Bias & Fairn
 - [x] Consistent `updateMany` pattern for mutations (incident tasks/notifications)
 - [x] `/api/health` endpoint (no secrets, no tenant data) + sovereign Docker healthcheck
 - [x] CI gates on every push: ESLint, security convention linter (`npm run lint:security`), `tsc --noEmit`, vitest regression tests (org isolation, auth callback, seed gate), production build
+- [x] Rate limiting on sign-in, magic links, `/api/health` and the import routes (section 6)
+- [x] Dependency audit step in CI (`npm audit --audit-level=high`), visible but not yet blocking
 
 ### Future Improvements
 
 | Item | Priority | Description |
 |------|----------|-------------|
+| Self-hosted limiter key | HIGH | Read `x-vercel-forwarded-for` only when running on the platform, so a self-hosted caller cannot forge their bucket (section 6) |
+| Blocking dependency audit | HIGH | Remove `continue-on-error` from the CI audit step once current high and critical advisories are cleared |
 | Shared rate-limit store | MEDIUM | Counters are per process. A shared store would make the limit exact across a serverless fleet |
 | OAuth token encryption | MEDIUM | Encrypt `Account.refresh_token`/`access_token` at rest |
 | Soft delete | MEDIUM | Add `deletedAt` timestamp to critical models (AI systems, assessments) instead of hard delete |
@@ -285,16 +297,39 @@ Premium features (Shadow AI, Vendor Catalog, Conformity Assessment, Bias & Fairn
 
 ---
 
+## 11. Hosted and Self-Hosted Postures
+
+One codebase serves both. The differences are environment flags, never branches (`src/config/features.ts`, `src/config/premium-showcase.ts`, `deploy/sovereign/Dockerfile`). `NEXT_PUBLIC_*` values are fixed at build time, so for the self-hosted images they are set by build arguments, not by a runtime `.env`.
+
+| Control | Hosted (`aisentinel.todo.law`) | Self-hosted (suite kit, `ghcr.io/rindogatan/aisentinel`) |
+|---------|-------------------------------|-----------------------------------------------------------|
+| Who operates it | TODO.LAW, on Vercel with a managed PostgreSQL database | The customer, on their own host, with PostgreSQL 16 in the same Compose stack |
+| Sign-in providers | Google OAuth, email magic link, cross-login SSO (registered by default when `VERCEL` is set) | Local passwordless credentials (`NEXT_PUBLIC_LOCAL_AUTH_ENABLED=true` baked in); Google and email off by default |
+| Passwordless local sign-in | Off: `NEXT_PUBLIC_LOCAL_AUTH_ENABLED` unset and a runtime refusal when `VERCEL_ENV=production` (`src/lib/auth.ts:67-74`). The code is still present in the build; the guard is an environment check, not a build-time removal | On. Creates an account for any email typed in, so the instance must sit on 127.0.0.1 or a firewalled network (`deploy/sovereign/README.md`, hardening section) |
+| Session cookie | `__Secure-` prefixed, `secure`, scoped to `.todo.law` for suite SSO | Host-only unless `AUTH_COOKIE_DOMAIN` is set |
+| Premium features | Five deliverables need a real entitlement (`src/server/services/licensing/showcase-gate.ts`); the rest are free | All in-app features free (`NEXT_PUBLIC_ALL_SKILLS_FREE=true` baked in); marketplace skills still need a signed licence file |
+| Billing | Stripe off; webhook route verifies signatures if enabled | Stripe off by default |
+| Rate limiting | Per serverless instance; effective limit is a multiple of the configured one | Per process, but the key can be forged through `x-vercel-forwarded-for` unless the proxy strips it (section 6) |
+| TLS | Platform-terminated | The kit's Caddy proxy when `TLS_DOMAIN` is set; otherwise the operator's own proxy |
+| Secrets | Vercel project environment variables | The install's `deploy/sovereign/.env`, which the operator should `chmod 600` |
+| Backups | Managed database provider; no documented restore rehearsal in this repository | `deploy/sovereign/backup.sh` (AES-256, mandatory passphrase, 14-day retention) and `restore.sh`, rehearsed (`docs/releasing.md`) |
+| Updates | Every push to `main` deploys, and `npm run build` runs `prisma migrate deploy` first | On `./suite.sh update`, which follows `:latest` unless pinned (`docs/releasing.md`) |
+| Reporting a vulnerability | `SECURITY.md` | Same address; state the deployment mode |
+
+Full secret names and where each lives: `docs/secrets-inventory.md`. Capacity and what fails first: `docs/capacity.md`.
+
+---
+
 ## OWASP Top 10 Coverage
 
 | # | Category | Status | Notes |
 |---|----------|--------|-------|
 | A01 | Broken Access Control | **Mitigated** | Org isolation, RBAC, member scoping |
 | A02 | Cryptographic Failures | Partial | OAuth tokens in plaintext (NextAuth default) |
-| A03 | Injection | **Mitigated** | Prisma parameterized queries, no raw SQL |
-| A04 | Insecure Design | Partial | Rate limiting is per process, not fleet-wide |
+| A03 | Injection | **Mitigated** | Prisma parameterized queries; the two `$queryRaw` calls are tagged templates with bound parameters (section 4) |
+| A04 | Insecure Design | Partial | Rate limiting is per process, not fleet-wide, and its key can be forged on self-host (section 6) |
 | A05 | Security Misconfiguration | **Mitigated** | Security headers, env-guarded dev auth |
-| A06 | Vulnerable Components | Monitor | Run `npm audit` regularly |
+| A06 | Vulnerable Components | Partial | `npm audit --audit-level=high` runs in CI but does not yet fail the build |
 | A07 | Auth Failures | **Mitigated** | Multi-provider auth, session cookies, CSRF |
 | A08 | Data Integrity | **Mitigated** | Stripe webhook verification, Zod validation |
 | A09 | Logging & Monitoring | Partial | Audit log exists, no real-time alerting |

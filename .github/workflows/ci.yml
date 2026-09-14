@@ -21,6 +21,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Dependency audit (high and critical)
+        # Added 2026-09-14 as a visible, non-blocking gate: the result could not
+        # be run locally when it was added, and open dependency-update branches
+        # suggest existing advisories. Remove continue-on-error once a run shows
+        # no high or critical advisory, so the gate turns hard.
+        continue-on-error: true
+        run: npm audit --audit-level=high
+
       - name: Lint
         run: npm run lint
 

@@ -41,7 +41,7 @@ export function DeploymentExpertCta() {
       </div>
       <div className="flex items-center gap-2 shrink-0 ml-7 sm:ml-0">
         <a
-          href={`${brand.companyWebsite}/deploy`}
+          href={`${brand.companyWebsite}/run`}
           target="_blank"
           rel="noopener noreferrer"
         >

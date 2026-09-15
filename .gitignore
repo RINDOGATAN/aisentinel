@@ -48,3 +48,4 @@ next-env.d.ts
 
 # Local safeguard status and self-assessment: never published
 /STATUS.md
+/FINDINGS.md

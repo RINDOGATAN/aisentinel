@@ -6,7 +6,7 @@ Cross-border AI governance registry for organizations that deploy or provide AI 
 
 One codebase, two postures:
 
-- **Hosted**: the cloud instance at [aisentinel.todo.law](https://aisentinel.todo.law). Every feature is included; build your AI governance programme there and move it to your own deployment when the data becomes too sensitive for the cloud.
+- **Hosted**: the cloud instance at [aisentinel.todo.law](https://aisentinel.todo.law). Every module is open to use; five finished deliverables (the impact assessment document, the program report, the program pack, and the conformity and bias and fairness assessments) need a licence from the TODO.LAW marketplace. Build your AI governance programme there and move it to your own deployment when the data becomes too sensitive for the cloud.
 - **Sovereign**: the same app self-hosted on your own hardware via Docker Compose. See [deploy/sovereign/README.md](deploy/sovereign/README.md).
 
 ## Stack

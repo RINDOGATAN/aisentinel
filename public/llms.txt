@@ -13,16 +13,18 @@ License: AGPL-3.0 (core) + proprietary premium add-ons
 - [AI Registry](https://aisentinel.todo.law/docs/ai-registry): Inventory all AI systems, models, and agents with full lifecycle tracking (Draft → Development → Testing → Deployed → Retired)
 - [Risk Classification](https://aisentinel.todo.law/docs/risk-classification): EU AI Act four-tier risk framework (Unacceptable, High, Limited, Minimal) with Annex III wizard
 - [Assessments](https://aisentinel.todo.law/docs/assessments): FRIA, AI Risk, and Custom assessment templates with approval workflows and risk scoring
-- [Compliance Mapping](https://aisentinel.todo.law/docs/compliance): EU AI Act, NIST AI RMF, and ISO 42001 framework mapping with 41 cross-framework mappings, evidence management, and compliance snapshots
+- [Compliance Mapping](https://aisentinel.todo.law/docs/compliance): EU AI Act, NIST AI RMF, and ISO 42001 framework mapping with more than 100 cross-framework mappings, evidence management, and compliance snapshots
 - [Human Oversight](https://aisentinel.todo.law/docs/oversight): Approval gates (pre-deploy, post-deploy, periodic review, incident-triggered, material change) with decision logging per Art. 14
-- [AI Incidents](https://aisentinel.todo.law/docs/incidents): Track hallucination, bias, drift, adversarial attacks, prompt injection, and more; severity levels, timelines, tasks, Art. 62 authority notifications
+- [AI Incidents](https://aisentinel.todo.law/docs/incidents): Track hallucination, bias, drift, adversarial attacks, prompt injection, and more; severity levels, timelines, tasks, Art. 73 authority notifications
 - [Vendor Risk](https://aisentinel.todo.law/docs/vendors): Third-party AI vendor management with risk levels (Critical, High, Medium, Low), vendor assessments, and contract tracking
 - [Policy Management](https://aisentinel.todo.law/docs/policies): AI policies (Usage, Governance, Ethics, Risk, Data, Procurement, Incident Response, Transparency, Custom) with versioning and approval workflow
 
-## Premium Modules (€9/mo each)
+## Premium Modules (licensed separately)
 
-- [Shadow AI Discovery](https://aisentinel.todo.law/docs/shadow-ai): 36-tool catalog across 8 categories, employee self-reporting portal, status workflow (Discovered → Under Review → Approved/Prohibited → Registered)
-- [AI Vendor Catalog](https://aisentinel.todo.law/docs/vendor-catalog): 665+ pre-audited AI vendors powered by Vendor.Watch with AI model information, data privacy details, and compliance certifications
+Licences are sold on the TODO.LAW marketplace (https://todo.law/marketplace) and activated offline. Self-hosted images include every module.
+
+- [Shadow AI Discovery](https://aisentinel.todo.law/docs/shadow-ai): 89-tool catalog across 13 categories, employee self-reporting portal, status workflow (Discovered → Under Review → Approved/Prohibited → Registered)
+- [AI Vendor Catalog](https://aisentinel.todo.law/docs/vendor-catalog): 884 reviewed AI vendors powered by Vendor.Watch with AI model information, data privacy details, and compliance certifications
 - [Conformity Assessment](https://aisentinel.todo.law/docs/conformity-assessment): Art. 43 EU AI Act conformity assessment template covering 9 evaluation areas including risk management, data governance, and transparency
 - [Bias & Fairness Assessment](https://aisentinel.todo.law/docs/bias-fairness): Structured assessment for AI bias across 6 evaluation areas including protected attributes, fairness metrics, and mitigation measures
 

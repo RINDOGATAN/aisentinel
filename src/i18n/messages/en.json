@@ -3229,7 +3229,7 @@
           "Viewer"
         ],
         "readOnlyTitle": "Read-Only Enforcement",
-        "readOnlyBody": "Viewers have guaranteed read-only access. All write operations are blocked at the server level, not just the UI: preventing unauthorized modifications even through API calls.",
+        "readOnlyBody": "Viewers have read-only access. All write operations are blocked at the server level, not just the UI: preventing unauthorized modifications even through API calls.",
         "elevatedTitle": "Elevated Permissions",
         "elevatedBody": "Sensitive operations like approving assessments, publishing policies, and making oversight decisions require AI Officer, Admin, or Owner roles."
       },

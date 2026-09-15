@@ -2187,7 +2187,7 @@
       "gateTypes": [
         {
           "type": "Pre-Despliegue",
-          "description": "Obligatorio antes de que un sistema de IA pase del estado de Pruebas a Desplegado. Garantiza que se cumplen todos los requisitos de cumplimiento."
+          "description": "Obligatorio antes de que un sistema de IA pase del estado de Pruebas a Desplegado. Asegura que se cumplen todos los requisitos de cumplimiento."
         },
         {
           "type": "Post-Despliegue",
@@ -2609,7 +2609,7 @@
       "catalogSearchTitle": "Buscar y explorar",
       "catalogSearchBody": "Busca por nombre de proveedor o explora por categoría. Cada entrada del catálogo incluye una descripción, el sitio web e indicadores de cumplimiento.",
       "catalogAutofillTitle": "Autocompletado",
-      "catalogAutofillBody": "Al añadir un proveedor desde el catálogo, el formulario se autocompleta con los datos del proveedor, lo que ahorra tiempo y garantiza la precisión.",
+      "catalogAutofillBody": "Al añadir un proveedor desde el catálogo, el formulario se autocompleta con los datos del proveedor, lo que ahorra tiempo y asegura la precisión.",
       "catalogRegisterTitle": "Registrar como sistema de IA",
       "catalogRegisterBody": "Opcionalmente, registra el producto del proveedor como sistema de IA en tu registro al mismo tiempo, vinculando las fichas del proveedor y del sistema.",
       "howTitle": "Añadir un proveedor",
@@ -2854,7 +2854,7 @@
         },
         {
           "title": "Actualizaciones continuas",
-          "description": "Los perfiles de riesgo de los proveedores cambian cuando las empresas actualizan sus condiciones, caducan certificaciones o evolucionan las prácticas de datos. La sincronización automática garantiza que tu catálogo refleje la realidad actual."
+          "description": "Los perfiles de riesgo de los proveedores cambian cuando las empresas actualizan sus condiciones, caducan certificaciones o evolucionan las prácticas de datos. La sincronización automática asegura que tu catálogo refleje la realidad actual."
         }
       ],
       "vsTitle": "Catálogo de proveedores frente a riesgo de proveedores",
@@ -3228,8 +3228,8 @@
           "Miembro",
           "Lector"
         ],
-        "readOnlyTitle": "Solo lectura garantizada",
-        "readOnlyBody": "Los Lectores tienen acceso de solo lectura garantizado. Todas las operaciones de escritura se bloquean en el servidor, no solo en la interfaz, lo que impide modificaciones no autorizadas incluso mediante llamadas a la API.",
+        "readOnlyTitle": "Solo lectura aplicada en el servidor",
+        "readOnlyBody": "Los Lectores tienen acceso de solo lectura. Todas las operaciones de escritura se bloquean en el servidor, no solo en la interfaz, lo que impide modificaciones no autorizadas incluso mediante llamadas a la API.",
         "elevatedTitle": "Permisos elevados",
         "elevatedBody": "Las operaciones sensibles, como aprobar evaluaciones, publicar políticas y tomar decisiones de supervisión, requieren los roles de Responsable de IA, Administrador o Propietario."
       },
@@ -3260,7 +3260,7 @@
       },
       "validation": {
         "title": "Validación de entradas",
-        "intro": "Todas las entradas de usuario se validan en el servidor antes de llegar a la lógica de negocio. Esto protege frente a ataques de inyección y garantiza la integridad de los datos.",
+        "intro": "Todas las entradas de usuario se validan en el servidor antes de llegar a la lógica de negocio. Esto protege frente a ataques de inyección y asegura la integridad de los datos.",
         "items": [
           {
             "title": "Validación de esquemas",
@@ -3290,7 +3290,7 @@
           "Cambios de miembros de la organización"
         ],
         "retentionTitle": "Conservación",
-        "retentionBody": "Los registros de auditoría se conservan aunque se elimine el usuario o la organización asociados. Esto garantiza que tu historial de cumplimiento permanezca intacto independientemente de los cambios de personal."
+        "retentionBody": "Los registros de auditoría se conservan aunque se elimine el usuario o la organización asociados. Esto asegura que tu historial de cumplimiento permanezca intacto independientemente de los cambios de personal."
       },
       "transport": {
         "title": "Transporte e infraestructura",
@@ -3298,7 +3298,7 @@
         "items": [
           {
             "title": "HTTPS en todas partes",
-            "description": "Todas las conexiones se cifran con TLS. Las cabeceras HSTS garantizan que los navegadores usen siempre conexiones seguras."
+            "description": "Todas las conexiones se cifran con TLS. Las cabeceras HSTS aseguran que los navegadores usen siempre conexiones seguras."
           },
           {
             "title": "Protección contra clickjacking",

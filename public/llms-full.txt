@@ -68,7 +68,7 @@ Map AI systems to regulatory requirements across three major frameworks. Track c
 - **NIST AI RMF** — U.S. National Institute of Standards and Technology AI Risk Management Framework with Govern, Map, Measure, and Manage functions
 - **ISO 42001** — International standard for AI Management Systems covering leadership, planning, support, operation, and performance evaluation
 
-**Cross-framework mappings:** 41 pre-seeded mappings linking equivalent and related requirements across all three frameworks (28 equivalent, 12 partial, 1 related). When you update compliance status for one framework requirement, related requirements in other frameworks are automatically flagged for review.
+**Cross-framework mappings:** more than 100 pre-seeded mappings linking equivalent, partial and related requirements across the frameworks. When you update compliance status for one framework requirement, related requirements in other frameworks are automatically flagged for review.
 
 **Compliance statuses:** Compliant, Partially Compliant, Non-Compliant, Not Applicable, Not Assessed
 
@@ -102,7 +102,7 @@ Report, track, and manage AI-specific incidents with structured workflows, sever
 **Features:**
 - Timeline tracking with timestamped events
 - Task assignment and tracking
-- Art. 62 authority notification support (EU AI Act serious incident reporting)
+- Art. 73 authority notification support (EU AI Act serious incident reporting)
 - Link to related AI systems and oversight gates
 - Optional link to DPO Central incidents for privacy-related AI failures
 
@@ -130,22 +130,16 @@ Create, version, and manage AI governance policies with approval workflows and s
 
 ---
 
-## Premium Modules (€9/mo each)
+## Premium Modules (licensed separately)
+
+Licences are sold on the TODO.LAW marketplace (https://todo.law/marketplace) and activated offline in the app. Self-hosted images include every module; on the hosted instance the finished deliverables (impact assessment document, program report, program pack, conformity and bias and fairness assessments) need a licence.
 
 ### Shadow AI Discovery
 URL: https://aisentinel.todo.law/docs/shadow-ai
 
-Identify and govern unauthorized AI tool usage across your organization. Shadow AI — AI tools adopted by employees without IT or compliance approval — affects an estimated 60% of organizations. This module provides visibility and a governance path.
+Identify and govern unauthorized AI tool usage across your organization. Shadow AI (AI tools adopted by employees without IT or compliance approval) is common; this module provides visibility and a governance path.
 
-**Built-in catalog:** 36 AI tools across 8 categories:
-- LLM Chat (ChatGPT, Claude, Gemini, etc.)
-- Code Assistants (GitHub Copilot, Cursor, etc.)
-- Image Generation (Midjourney, DALL-E, Stable Diffusion, etc.)
-- Video & Audio (Synthesia, ElevenLabs, etc.)
-- Writing & Content (Jasper, Copy.ai, etc.)
-- Business Tools (Notion AI, Otter.ai, etc.)
-- Data & Analytics (obviously.ai, etc.)
-- Search (Perplexity, You.com, etc.)
+**Built-in catalog:** 89 AI tools across 13 categories: LLM chat, code assistants, image generation, video and audio, writing and productivity, business tools, data and analytics, search, transcription and dictation, legal research, contract lifecycle management, e-discovery, and practice management.
 
 **Workflow:** Employee self-report → Triage (Under Review) → Approve or Prohibit → Register in AI Registry
 
@@ -156,7 +150,7 @@ Identify and govern unauthorized AI tool usage across your organization. Shadow 
 ### AI Vendor Catalog
 URL: https://aisentinel.todo.law/docs/vendor-catalog
 
-Access a pre-audited catalog of 665+ AI vendors powered by Vendor.Watch. Each vendor profile includes AI model information, data and privacy practices, compliance certifications, and governance metadata.
+Access a catalog of 884 reviewed AI vendors powered by Vendor.Watch. Each vendor profile includes AI model information, data and privacy practices, compliance certifications, and governance metadata.
 
 **Vendor profile includes:**
 - Identity (name, description, website, category)
@@ -167,7 +161,7 @@ Access a pre-audited catalog of 665+ AI vendors powered by Vendor.Watch. Each ve
 
 **Workflow:** Browse/Search catalog → Review vendor profile → Inform procurement decision → Automatic sync to Vendor Risk module
 
-**Difference from Vendor Risk:** The Vendor Catalog is a reference database of pre-audited vendors. Vendor Risk tracks your organization's actual vendor relationships, contracts, and assessments.
+**Difference from Vendor Risk:** The Vendor Catalog is a reference database of reviewed vendors. Vendor Risk tracks your organization's actual vendor relationships, contracts, and assessments.
 
 ### Conformity Assessment
 URL: https://aisentinel.todo.law/docs/conformity-assessment
@@ -216,7 +210,7 @@ Evaluate AI systems for bias and fairness across protected characteristics. Prov
 
 AI SENTINEL helps organizations comply with:
 
-- **EU AI Act (Regulation 2024/1689)** — The European Union's comprehensive AI regulation. AI SENTINEL covers risk classification (Art. 6-7), conformity assessment (Art. 43), fundamental rights impact assessment (Art. 27), human oversight (Art. 14), incident reporting (Art. 62), transparency obligations, and technical documentation requirements.
+- **EU AI Act (Regulation 2024/1689)** — The European Union's comprehensive AI regulation. AI SENTINEL covers risk classification (Art. 6-7), conformity assessment (Art. 43), fundamental rights impact assessment (Art. 27), human oversight (Art. 14), incident reporting (Art. 73), transparency obligations, and technical documentation requirements.
 - **NIST AI RMF 1.0** — The U.S. framework for managing AI risks across four functions: Govern, Map, Measure, and Manage. AI SENTINEL maps NIST controls to platform features and cross-references them with EU AI Act and ISO 42001 requirements.
 - **ISO 42001:2023** — The international standard for AI Management Systems. AI SENTINEL maps ISO 42001 clauses to platform capabilities including leadership commitment, risk assessment, operational controls, and performance evaluation.
 

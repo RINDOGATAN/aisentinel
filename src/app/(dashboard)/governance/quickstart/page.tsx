@@ -498,22 +498,16 @@ export default function QuickstartPage() {
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
-      {/* Header */}
-      <div className="flex items-center gap-4">
-        <Link href="/governance">
-          <Button variant="ghost" size="sm">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            {t("backToDashboard")}
-          </Button>
-        </Link>
-        <div>
-          <h1 className="text-xl sm:text-2xl font-semibold">
-            {t("title")}
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            {t("subtitle")}
-          </p>
-        </div>
+      {/* Header: the title and subtitle take the full width on every
+          viewport. The wordmark in the navbar already returns to the
+          dashboard, so no return link sits beside the title. */}
+      <div>
+        <h1 className="text-xl sm:text-2xl font-semibold">
+          {t("title")}
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          {t("subtitle")}
+        </p>
       </div>
 
       {/* Step indicator */}
@@ -732,12 +726,12 @@ export default function QuickstartPage() {
           ════════════════════════════════════════════════ */}
       {step === "builder" && (
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-2">
             <div>
               <h2 className="text-lg font-semibold">{t("builderStepTitle")}</h2>
               <p className="text-sm text-muted-foreground">{t("builderStepDescription")}</p>
             </div>
-            <Button variant="ghost" size="sm" onClick={() => goBack("builder")}>
+            <Button variant="ghost" size="sm" className="self-start sm:self-auto" onClick={() => goBack("builder")}>
               <ArrowLeft className="w-4 h-4 mr-1" />
               {tc("back")}
             </Button>
@@ -807,7 +801,7 @@ export default function QuickstartPage() {
           ════════════════════════════════════════════════ */}
       {step === "vendors" && (
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-2">
             <div>
               <h2 className="text-lg font-semibold">{t("selectVendorsTitle")}</h2>
               <p className="text-sm text-muted-foreground">
@@ -817,6 +811,7 @@ export default function QuickstartPage() {
             <Button
               variant="ghost"
               size="sm"
+              className="self-start sm:self-auto"
               onClick={() => goBack("vendors")}
             >
               <ArrowLeft className="w-4 h-4 mr-1" />
@@ -1016,7 +1011,7 @@ export default function QuickstartPage() {
           ════════════════════════════════════════════════ */}
       {step === "industry" && (
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-2">
             <div>
               <h2 className="text-lg font-semibold">
                 {t("selectIndustryTemplateTitle")}
@@ -1028,6 +1023,7 @@ export default function QuickstartPage() {
             <Button
               variant="ghost"
               size="sm"
+              className="self-start sm:self-auto"
               onClick={() => goBack("industry")}
             >
               <ArrowLeft className="w-4 h-4 mr-1" />
@@ -1228,7 +1224,7 @@ export default function QuickstartPage() {
           ════════════════════════════════════════════════ */}
       {step === "lawfirm" && (
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-2">
             <div>
               <h2 className="text-lg font-semibold">
                 {t("selectLawFirmToolsTitle")}
@@ -1237,7 +1233,7 @@ export default function QuickstartPage() {
                 {t("selectLawFirmToolsDescription")}
               </p>
             </div>
-            <Button variant="ghost" size="sm" onClick={() => goBack("lawfirm")}>
+            <Button variant="ghost" size="sm" className="self-start sm:self-auto" onClick={() => goBack("lawfirm")}>
               <ArrowLeft className="w-4 h-4 mr-1" />
               {tc("back")}
             </Button>
@@ -1398,7 +1394,7 @@ export default function QuickstartPage() {
           ════════════════════════════════════════════════ */}
       {step === "review" && (
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-2">
             <div>
               <h2 className="text-lg font-semibold">{t("reviewTitle")}</h2>
               <p className="text-sm text-muted-foreground">
@@ -1408,6 +1404,7 @@ export default function QuickstartPage() {
             <Button
               variant="ghost"
               size="sm"
+              className="self-start sm:self-auto"
               onClick={() => goBack("review")}
             >
               <ArrowLeft className="w-4 h-4 mr-1" />

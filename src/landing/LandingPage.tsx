@@ -11,6 +11,7 @@ import en from "./i18n/en/ai-sentinel-startups.json";
 import es from "./i18n/es/ai-sentinel-startups.json";
 import authEn from "./i18n/en/startups-auth.json";
 import authEs from "./i18n/es/startups-auth.json";
+import { PILOT_RUN_URL, PILOT_SENTENCE } from "@/config/pilot";
 
 function detectLocale(): "en" | "es" {
   if (typeof window === "undefined") return "en";
@@ -28,7 +29,7 @@ function setLocaleCookie(locale: string) {
   document.cookie = `locale=${locale};path=/;max-age=${maxAge};SameSite=Lax${domain}`;
 }
 
-export default function LandingPage() {
+export default function LandingPage({ hostedPilot = false }: { hostedPilot?: boolean }) {
   const [locale, setLocale] = useState<"en" | "es">("en");
 
   useEffect(() => {
@@ -114,6 +115,7 @@ export default function LandingPage() {
         socialProofs={socialProofs}
         heroVideo="/hero-sentinel-bg.mp4"
         callbackUrl="/governance"
+        pilotNotice={hostedPilot ? { ...PILOT_SENTENCE[locale], url: PILOT_RUN_URL } : null}
       />
       <StartupsFooter t={t} />
     </>

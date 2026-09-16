@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import LandingPage from "@/landing/LandingPage";
+import { hostedPilotActive } from "@/config/pilot";
 
 export default async function HomePage() {
   const session = await getServerSession(authOptions);
@@ -19,5 +20,5 @@ export default async function HomePage() {
     redirect("/sign-in");
   }
 
-  return <LandingPage />;
+  return <LandingPage hostedPilot={hostedPilotActive()} />;
 }

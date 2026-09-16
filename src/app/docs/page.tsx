@@ -22,6 +22,7 @@ import {
 import { getTranslations } from "next-intl/server";
 import prisma from "@/lib/prisma";
 import { features } from "@/config/features";
+import { hostedPilotActive } from "@/config/pilot";
 
 export async function generateMetadata() {
   const t = await getTranslations("docs.home");
@@ -89,7 +90,9 @@ const alsoItems = [
 export default async function DocsPage() {
   const t = await getTranslations("docs.home");
   const counts = await getCatalogCounts();
-  const allFree = features.allSkillsFree;
+  // Everything is included on the kit (flag baked in) and open on the hosted
+  // pilot (nothing gated by an entitlement there).
+  const allFree = features.allSkillsFree || hostedPilotActive();
 
   const quickStartSteps = t.raw("quickStartSteps") as {
     title: string;

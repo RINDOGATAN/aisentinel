@@ -129,7 +129,15 @@ function buildNavGroups(isConsultant: boolean, t: (key: string) => string) {
   ];
 }
 
-export function DashboardShell({ children }: { children: React.ReactNode }) {
+export function DashboardShell({
+  children,
+  hostedPilot = false,
+}: {
+  children: React.ReactNode;
+  /** On the hosted pilot every module is open, so no lock is ever shown. */
+  hostedPilot?: boolean;
+}) {
+  const showLocks = !features.allSkillsFree && !hostedPilot;
   const { data: session } = useSession();
   const pathname = usePathname();
   const { organization, organizations, isLoading: orgLoading, userRole } = useOrganization();
@@ -224,7 +232,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                             >
                               <Icon className="w-5 h-5 shrink-0" />
                               {item.label}
-                              {item.premium && !features.allSkillsFree && (
+                              {item.premium && showLocks && (
                                 <Lock className="w-3.5 h-3.5 ml-auto text-muted-foreground" />
                               )}
                             </Button>
@@ -307,7 +315,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                           >
                             <Icon className="w-4 h-4" />
                             {item.label}
-                            {item.premium && !features.allSkillsFree && <Lock className="w-3 h-3 ml-auto text-muted-foreground" />}
+                            {item.premium && showLocks && <Lock className="w-3 h-3 ml-auto text-muted-foreground" />}
                           </Link>
                         </DropdownMenuItem>
                       );

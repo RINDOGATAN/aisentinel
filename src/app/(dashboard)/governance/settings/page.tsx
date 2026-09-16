@@ -19,6 +19,7 @@ import { RegimeScreeningCard } from "@/components/governance/regime-screening-ca
 import { TeamCard } from "@/components/governance/team-card";
 import { DeleteOrganizationCard } from "@/components/governance/delete-organization-card";
 import { LegalHoldCard } from "@/components/governance/legal-hold-card";
+import { PilotStatusCard } from "@/components/governance/pilot-status-card";
 import type { JurisdictionId } from "@/config/jurisdictions";
 
 const personaIcons = {
@@ -101,6 +102,9 @@ export default function SettingsPage() {
           </CardContent>
         </Card>
       )}
+
+      {/* Hosted pilot only: day counter, ceilings, the two ways out. Renders nothing on the kit. */}
+      {organization && <PilotStatusCard organizationId={organization.id} />}
 
       {/* Team: members and roles */}
       {organization && (

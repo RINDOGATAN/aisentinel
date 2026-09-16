@@ -5137,5 +5137,17 @@
     "lockedHint": "Part of a paid module on this hosted instance. Every module is included when you self-host.",
     "activate": "Activate a licence",
     "buy": "See the modules"
+  },
+  "pilot": {
+    "dismiss": "Dismiss",
+    "title": "Hosted pilot",
+    "summary": "Pilot: {days} days left, {used} of {max} systems",
+    "editsUntil": "Edits are allowed until {date}. After that the organisation is read-only, and everything it created can still be exported.",
+    "ceilingsTitle": "Ceilings on this pilot",
+    "counter": "{used} of {max}",
+    "readOnlyBody": "The 90 editing days are over. This organisation is read-only: everything can still be opened and exported, nothing can be changed.",
+    "ceilingReachedBody": "A ceiling has been reached. Two ways out:",
+    "runOwn": "Run your own instance",
+    "exportAll": "Export everything (program pack)"
   }
 }

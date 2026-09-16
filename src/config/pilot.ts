@@ -172,6 +172,19 @@ export const PILOT_SENTENCE: Record<PilotLocale, { before: string; link: string;
   },
 };
 
+/**
+ * The banner is dismissible per session: a session cookie (no max-age) with
+ * this name and value hides it until the browser is closed. The server reads
+ * it so a dismissed banner never renders and then vanishes.
+ */
+export const PILOT_BANNER_COOKIE = "ais.pilot-banner";
+export const PILOT_BANNER_DISMISSED = "dismissed";
+
+/** Show the banner on this page load? Hosted pilot, and not dismissed this session. */
+export function pilotBannerVisible(env: PilotEnv, dismissCookie: string | undefined): boolean {
+  return hostedPilotActive(env) && dismissCookie !== PILOT_BANNER_DISMISSED;
+}
+
 /** The two ways out, spelled out wherever a cap stops someone. */
 function waysOut(locale: PilotLocale, exportUrl: string): string {
   return locale === "es"

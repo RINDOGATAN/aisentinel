@@ -35,6 +35,8 @@ interface StartupProductPageProps {
   heroVideo: string;
   accentGradient?: string;
   callbackUrl: string;
+  /** The hosted pilot's one sentence, shown in the sign-up card; null off the pilot. */
+  pilotNotice?: { before: string; link: string; after: string; url: string } | null;
 }
 
 const GoogleIcon = () => (
@@ -56,6 +58,7 @@ const StartupProductPage = ({
   heroVideo,
   accentGradient = "from-accent/20 to-accent/5",
   callbackUrl,
+  pilotNotice = null,
 }: StartupProductPageProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [cardMode, setCardMode] = useState<"signup" | "login" | "sent">("signup");
@@ -149,6 +152,16 @@ const StartupProductPage = ({
   const handleGoogleSignIn = () => {
     signIn("google", { callbackUrl });
   };
+
+  const pilotLine = pilotNotice ? (
+    <p data-testid="pilot-signup-notice" className="text-xs text-muted-foreground font-body mt-4 leading-relaxed">
+      {pilotNotice.before}
+      <a href={pilotNotice.url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 text-foreground hover:text-accent">
+        {pilotNotice.link}
+      </a>
+      {pilotNotice.after}
+    </p>
+  ) : null;
 
   const googleDivider = (
     <>
@@ -289,6 +302,7 @@ const StartupProductPage = ({
                       </form>
                       {googleDivider}
                       {error && <p className="text-sm text-red-400 mt-3">{error}</p>}
+                      {pilotLine}
                       <button
                         onClick={() => { setCardMode("login"); setError(""); }}
                         className="block w-full text-center text-sm text-muted-foreground hover:text-accent transition-colors mt-4 font-body"

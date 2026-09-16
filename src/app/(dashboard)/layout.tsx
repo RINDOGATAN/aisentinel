@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { DashboardShell } from "@/components/dashboard-shell";
+import { hostedPilotActive } from "@/config/pilot";
 
 export default async function DashboardLayout({
   children,
@@ -17,5 +18,7 @@ export default async function DashboardLayout({
     redirect("/sign-in");
   }
 
-  return <DashboardShell>{children}</DashboardShell>;
+  // Decided on the server: the platform signals that mark the hosted pilot
+  // are not visible to the client bundle.
+  return <DashboardShell hostedPilot={hostedPilotActive()}>{children}</DashboardShell>;
 }

@@ -16,6 +16,7 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { loadSystemScope } from "@/server/services/scope/system-scope";
+import { assertPilotRoom, pilotLocale } from "@/server/services/pilot/caps";
 import { runAgenticStressTest } from "@/config/agentic-stress-test";
 import {
   buildAgenticAddendumArtifact,
@@ -97,6 +98,7 @@ export const unifiedRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      await assertPilotRoom(ctx.prisma, ctx.organization.id, "assessments", pilotLocale(ctx.getCookie));
       const draft = await createUnifiedAssessmentDraft(ctx.prisma, {
         organizationId: ctx.organization.id,
         aiSystemId: input.aiSystemId,

@@ -8,6 +8,17 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { assertPilotWritable, pilotLocale } from "@/server/services/pilot/caps";
+
+/**
+ * Procedure metadata. `pilotReadOnlyExempt` marks a write procedure a
+ * read-only pilot organisation may still call: deleting the organisation is
+ * the owner's way out of "one organisation per account" once the editing
+ * days are over. Nothing else should carry it.
+ */
+export interface ProcedureMeta {
+  pilotReadOnlyExempt?: boolean;
+}
 
 interface CreateContextOptions {
   session: Session | null;
@@ -32,7 +43,7 @@ export const createTRPCContext = async (_opts: { req: Request }) => {
   });
 };
 
-const t = initTRPC.context<typeof createTRPCContext>().create({
+const t = initTRPC.context<typeof createTRPCContext>().meta<ProcedureMeta>().create({
   transformer: superjson,
   errorFormatter({ shape, error }) {
     return {
@@ -112,8 +123,10 @@ export const organizationProcedure = t.procedure
   .use(enforceUserIsAuthed)
   .use(withOrganization);
 
-// Write-protected organization procedure: blocks VIEWER from mutations
-const enforceWriteAccess = t.middleware(async ({ ctx, next, getRawInput }) => {
+// Write-protected organization procedure: blocks VIEWER from mutations, and
+// on the hosted pilot blocks every edit once the organisation's editing days
+// are over (reads and exports stay open; see src/config/pilot.ts).
+const enforceWriteAccess = t.middleware(async ({ ctx, next, meta, getRawInput }) => {
   const rawInput = await getRawInput();
   const input = rawInput as { organizationId?: string } | undefined;
   const organizationId = input?.organizationId;
@@ -145,6 +158,10 @@ const enforceWriteAccess = t.middleware(async ({ ctx, next, getRawInput }) => {
       code: "FORBIDDEN",
       message: "Viewers have read-only access. Contact your organization admin for write permissions.",
     });
+  }
+
+  if (!meta?.pilotReadOnlyExempt) {
+    assertPilotWritable(membership.organization, pilotLocale(ctx.getCookie));
   }
 
   return next({

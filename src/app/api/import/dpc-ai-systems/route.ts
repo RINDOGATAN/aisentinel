@@ -18,6 +18,7 @@ import { NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { guardImportRequest } from "@/lib/import-auth";
+import { pilotRemaining } from "@/server/services/pilot/caps";
 import { mapRole, mapTechnique } from "@/lib/dpc-import-mapping";
 
 interface DPCSystemPayload {
@@ -81,9 +82,18 @@ export async function POST(request: Request) {
   let alreadyExisted = 0;
   let skipped = 0;
   const mapped: { dpcId: string; aisId: string }[] = [];
+  // Hosted pilot: the records ceiling applies to pushes from sibling apps
+  // too. Rows past it are skipped and reported, never half-written.
+  let room = await pilotRemaining(prisma, orgId, "systems");
+  let ceilingReached = false;
 
   for (const s of systems) {
     if (!s.name || !s.dpoCentralSystemId) {
+      skipped++;
+      continue;
+    }
+    if (room <= 0) {
+      ceilingReached = true;
       skipped++;
       continue;
     }
@@ -148,6 +158,7 @@ export async function POST(request: Request) {
       });
 
       exported++;
+      room -= 1;
       mapped.push({ dpcId: s.dpoCentralSystemId, aisId: created.id });
     } catch (err) {
       // Skip the row but keep the reason observable — a silent counter makes
@@ -157,5 +168,5 @@ export async function POST(request: Request) {
     }
   }
 
-  return NextResponse.json({ exported, alreadyExisted, skipped, mapped, orgName });
+  return NextResponse.json({ exported, alreadyExisted, skipped, mapped, orgName, ceilingReached });
 }

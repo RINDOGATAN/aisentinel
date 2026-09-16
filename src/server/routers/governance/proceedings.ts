@@ -19,6 +19,7 @@ import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { JURISDICTION_IDS } from "@/config/jurisdictions";
 import { assertNotOnHold } from "../../services/legal-hold";
+import { assertPilotRoom, pilotLocale } from "../../services/pilot/caps";
 
 const TYPES = [
   "INQUIRY",
@@ -147,6 +148,7 @@ export const proceedingsRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      await assertPilotRoom(ctx.prisma, ctx.organization.id, "proceedings", pilotLocale(ctx.getCookie));
       if (input.incidentId) {
         const incident = await ctx.prisma.aIIncident.findFirst({
           where: { id: input.incidentId, organizationId: ctx.organization.id },

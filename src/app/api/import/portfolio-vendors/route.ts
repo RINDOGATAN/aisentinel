@@ -4,6 +4,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { guardImportRequest } from "@/lib/import-auth";
+import { pilotRemaining } from "@/server/services/pilot/caps";
 
 const CRITICALITY_TO_RISK: Record<string, string> = {
   low: "LOW",
@@ -86,9 +87,18 @@ export async function POST(request: Request) {
   let exported = 0;
   let alreadyExisted = 0;
   let skipped = 0;
+  // Hosted pilot: the records ceiling applies to pushes from sibling apps
+  // too. Rows past it are skipped and reported, never half-written.
+  let room = await pilotRemaining(prisma, orgId, "vendors");
+  let ceilingReached = false;
 
   for (const vendor of vendors) {
     if (!vendor.name) {
+      skipped++;
+      continue;
+    }
+    if (room <= 0) {
+      ceilingReached = true;
       skipped++;
       continue;
     }
@@ -139,6 +149,7 @@ export async function POST(request: Request) {
         },
       });
       exported++;
+      room -= 1;
     } catch (err) {
       // Skip the row but keep the reason observable — a silent counter made
       // partial imports impossible to debug.
@@ -152,5 +163,6 @@ export async function POST(request: Request) {
     alreadyExisted,
     skipped,
     orgName,
+    ceilingReached,
   });
 }

@@ -9,6 +9,7 @@ import {
   recordAssessmentVersion,
 } from "../../services/assessment/versions";
 import { checkAssessmentEntitlement, getEntitledAssessmentTypes } from "@/server/services/licensing/entitlement";
+import { assertPilotRoom, pilotLocale } from "@/server/services/pilot/caps";
 import { chatComplete } from "../../services/ai/llm-door";
 import {
   requireAi,
@@ -131,6 +132,7 @@ export const assessmentRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      await assertPilotRoom(ctx.prisma, ctx.organization.id, "assessments", pilotLocale(ctx.getCookie));
       // Check entitlement for premium types
       const entitlementResult = await checkAssessmentEntitlement(
         ctx.organization.id,

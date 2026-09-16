@@ -14,6 +14,12 @@ import { computeMarkingDeadline } from "@/config/transparency-rules";
 import { JURISDICTION_IDS } from "@/config/jurisdictions";
 import { firstFreeSlug } from "@/lib/unique-slug";
 import { assertNotOnHold } from "../../services/legal-hold";
+import {
+  assertPilotOrganizationLimit,
+  assertPilotRoom,
+  assertPilotWritable,
+  pilotLocale,
+} from "../../services/pilot/caps";
 
 export const organizationRouter = createTRPCRouter({
   list: protectedProcedure.query(async ({ ctx }) => {
@@ -82,6 +88,9 @@ export const organizationRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      // Hosted pilot: one organisation per account. Off the pilot this allows.
+      await assertPilotOrganizationLimit(ctx.prisma, ctx.session.user.id, pilotLocale(ctx.getCookie));
+
       // Two organizations can share a name ("Acme" the client, "Acme" the
       // firm's own). The slug is only an internal handle, so a taken one gets
       // the next free numeric suffix rather than refusing the user.
@@ -193,6 +202,9 @@ export const organizationRouter = createTRPCRouter({
    * the organization's id and name kept in its changes.
    */
   delete: orgWriteProcedure
+    // The hosted pilot's read-only switch never closes this door: it is the
+    // owner's way out of "one organisation per account".
+    .meta({ pilotReadOnlyExempt: true })
     .input(z.object({ organizationId: z.string(), confirmName: z.string() }))
     .mutation(async ({ ctx, input }) => {
       if (ctx.membership.role !== "OWNER") {
@@ -244,6 +256,12 @@ export const organizationRouter = createTRPCRouter({
         });
       }
 
+      // This mutation predates orgWriteProcedure, so the pilot's read-only
+      // switch and the members ceiling are applied here by hand.
+      const locale = pilotLocale(ctx.getCookie);
+      assertPilotWritable(ctx.organization, locale);
+      await assertPilotRoom(ctx.prisma, ctx.organization.id, "members", locale);
+
       const user = await ctx.prisma.user.findFirst({
         where: { email: { equals: input.email.trim(), mode: "insensitive" } },
       });
@@ -270,6 +288,9 @@ export const organizationRouter = createTRPCRouter({
           message: "This user is already a member of the organization",
         });
       }
+
+      // Hosted pilot: one organisation per account applies to the invitee too.
+      await assertPilotOrganizationLimit(ctx.prisma, user.id, locale);
 
       const membership = await ctx.prisma.organizationMember.create({
         data: {
@@ -313,6 +334,7 @@ export const organizationRouter = createTRPCRouter({
           message: "Only owners can change member roles",
         });
       }
+      assertPilotWritable(ctx.organization, pilotLocale(ctx.getCookie));
 
       // Verify member belongs to this organization
       const member = await ctx.prisma.organizationMember.findFirst({

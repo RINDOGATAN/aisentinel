@@ -5,6 +5,7 @@ import { AIAssessmentType, EntitlementStatus, LicenseType } from "@prisma/client
 import prisma from "@/lib/prisma";
 import { features } from "@/config/features";
 import { isShowcasePremium } from "@/config/premium-showcase";
+import { hostedPilotActive } from "@/config/pilot";
 
 // On the hosted unpaywalled cloud instance (Stripe off, NEXT_PUBLIC_ALL_SKILLS_FREE
 // unset) the previously-premium features are free for everyone. Deployments
@@ -12,6 +13,11 @@ import { isShowcasePremium } from "@/config/premium-showcase";
 // by Stripe checkout or by activating an offline licence file bought on
 // TODO.LAW (see ../licensing/activation.ts), the sovereign purchase path.
 const ALL_SKILLS_FREE_REASON = "All skills free on this deployment";
+
+// The hosted pilot (src/config/pilot.ts) gates nothing by an entitlement:
+// every module is open to every organisation and the pilot's caps apply
+// instead. Premium modules are sold only for the kit.
+const HOSTED_PILOT_REASON = "Hosted pilot: every module is open";
 
 export const PREMIUM_ASSESSMENT_TYPES: AIAssessmentType[] = [
   "CONFORMITY",
@@ -40,6 +46,10 @@ export async function checkAssessmentEntitlement(
 ): Promise<EntitlementCheckResult> {
   if (FREE_ASSESSMENT_TYPES.includes(assessmentType)) {
     return { entitled: true, reason: "Free assessment type" };
+  }
+
+  if (hostedPilotActive()) {
+    return { entitled: true, reason: HOSTED_PILOT_REASON };
   }
 
   // On the hosted instance the two specialist assessments stay behind the
@@ -129,6 +139,10 @@ export async function checkSkillEntitlement(
    */
   options: { requireRealEntitlement?: boolean } = {}
 ): Promise<EntitlementCheckResult> {
+  if (hostedPilotActive()) {
+    return { entitled: true, reason: HOSTED_PILOT_REASON };
+  }
+
   if (features.allSkillsFree && !options.requireRealEntitlement) {
     return { entitled: true, reason: ALL_SKILLS_FREE_REASON };
   }

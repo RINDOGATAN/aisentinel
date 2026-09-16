@@ -31,6 +31,7 @@ import { attachRegimeMappings } from "../../services/scope/attach-regimes";
 import { localizeTemplate } from "../../../config/ai-governance-templates.es";
 import { createStarterArtifacts } from "@/server/services/program/starter-artifacts";
 import { createBuilderThreatModel } from "@/server/services/threat-model/create";
+import { assertPilotWithinCeilings, pilotLocale } from "@/server/services/pilot/caps";
 import {
   CORE_POLICY_PACK_VERSION,
   corePoliciesMissingFrom,
@@ -1216,6 +1217,16 @@ export const quickstartRouter = createTRPCRouter({
               })),
             });
           }
+
+          // Hosted pilot: the wizard creates in bulk, so the ceiling is
+          // checked on the rows actually written and a breach rolls the
+          // whole run back. Off the pilot this is a no-op.
+          await assertPilotWithinCeilings(tx, orgId, pilotLocale(ctx.getCookie), [
+            "systems",
+            "vendors",
+            "policies",
+            "oversightGates",
+          ]);
 
           return { counts, createdSystemIds };
         },

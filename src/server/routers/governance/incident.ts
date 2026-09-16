@@ -3,6 +3,7 @@
 
 import { z } from "zod";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
+import { assertPilotRoom, pilotLocale } from "../../services/pilot/caps";
 import { TRPCError } from "@trpc/server";
 import {
   computeIncidentDeadlines,
@@ -90,6 +91,7 @@ export const incidentRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      await assertPilotRoom(ctx.prisma, ctx.organization.id, "incidents", pilotLocale(ctx.getCookie));
       const incident = await ctx.prisma.aIIncident.create({
         data: {
           organizationId: ctx.organization.id,

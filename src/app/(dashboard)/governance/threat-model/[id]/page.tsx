@@ -188,8 +188,8 @@ export default function ThreatModelDetailPage() {
 
   return (
     <div className="space-y-6 max-w-4xl">
-      <div className="flex items-start gap-3">
-        <Button asChild variant="ghost" size="icon">
+      <div className="space-y-2">
+        <Button asChild variant="ghost" size="icon" className="-ml-2">
           <Link href="/governance/threat-model">
             <ArrowLeft className="w-4 h-4" />
           </Link>

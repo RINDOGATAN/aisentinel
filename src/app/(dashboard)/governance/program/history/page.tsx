@@ -61,9 +61,9 @@ export default function ProgramHistoryPage() {
 
   return (
     <div className="space-y-6 max-w-4xl">
-      <div className="flex items-start gap-3">
+      <div className="space-y-2">
         <Link href="/governance/program">
-          <Button variant="ghost" size="icon">
+          <Button variant="ghost" size="icon" className="-ml-2">
             <ArrowLeft className="w-4 h-4" />
           </Button>
         </Link>

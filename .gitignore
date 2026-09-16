@@ -49,3 +49,6 @@ next-env.d.ts
 # Local safeguard status and self-assessment: never published
 /STATUS.md
 /FINDINGS.md
+
+# Owner phone screenshots for review (local only, never staged)
+/feedback/

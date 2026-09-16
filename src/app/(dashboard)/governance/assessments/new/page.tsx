@@ -67,9 +67,9 @@ export default function NewAssessmentPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-4">
+      <div className="space-y-2">
         <Link href="/governance/assessments">
-          <Button variant="ghost" size="icon"><ArrowLeft className="w-4 h-4" /></Button>
+          <Button variant="ghost" size="icon" className="-ml-2"><ArrowLeft className="w-4 h-4" /></Button>
         </Link>
         <div>
           <h1 className="text-2xl font-bold">{t("title")}</h1>

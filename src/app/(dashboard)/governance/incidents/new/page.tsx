@@ -139,9 +139,9 @@ export default function NewIncidentPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center gap-4">
+      <div className="space-y-2">
         <Link href="/governance/incidents">
-          <Button variant="ghost" size="icon">
+          <Button variant="ghost" size="icon" className="-ml-2">
             <ArrowLeft className="w-4 h-4" />
           </Button>
         </Link>

@@ -591,9 +591,9 @@ export default function AISystemDetailPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
+        <div className="space-y-2">
           <Link href="/governance/ai-registry">
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" className="-ml-2">
               <ArrowLeft className="w-4 h-4" />
             </Button>
           </Link>

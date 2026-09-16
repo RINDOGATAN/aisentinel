@@ -17,7 +17,7 @@ const StartupsFooter = ({ t }: StartupsFooterProps) => {
             </span>
           </a>
 
-          <nav className="flex items-center gap-6">
+          <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
             <a
               href="https://todo.law/privacy"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -44,7 +44,7 @@ const StartupsFooter = ({ t }: StartupsFooterProps) => {
             </a>
           </nav>
 
-          <p className="text-xs text-muted-foreground flex items-center gap-2">
+          <p className="text-xs text-muted-foreground flex flex-wrap items-center justify-center gap-2">
             <a
               href="https://creativecommons.org/licenses/by-nd/4.0/"
               target="_blank"

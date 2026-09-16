@@ -155,14 +155,14 @@ export default function AssessmentDetailPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="space-y-2">
           <Link href="/governance/assessments">
-            <Button variant="ghost" size="icon"><ArrowLeft className="w-4 h-4" /></Button>
+            <Button variant="ghost" size="icon" className="-ml-2"><ArrowLeft className="w-4 h-4" /></Button>
           </Link>
           <div>
             <h1 className="text-2xl font-bold">{assessment.title}</h1>
-            <div className="flex items-center gap-2 mt-1">
+            <div className="flex items-center gap-2 mt-1 flex-wrap">
               <Badge variant="outline">{assessment.type}</Badge>
               <Badge className={statusColors[assessment.status]}>{assessment.status.replace("_", " ")}</Badge>
               {assessment.aiSystem && (
@@ -173,7 +173,7 @@ export default function AssessmentDetailPage() {
             </div>
           </div>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2 self-start sm:self-auto">
           {canEdit && (
             <Button onClick={handleSave} disabled={updateMutation.isPending}>
               {updateMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}

@@ -207,10 +207,10 @@ export default function AssessmentTemplatesPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="space-y-2">
           <Link href="/governance/assessments">
-            <Button variant="ghost" size="icon" aria-label={tc("back")}>
+            <Button variant="ghost" size="icon" className="-ml-2" aria-label={tc("back")}>
               <ArrowLeft className="w-4 h-4" />
             </Button>
           </Link>
@@ -220,7 +220,7 @@ export default function AssessmentTemplatesPage() {
           </div>
         </div>
         {canWrite && (
-          <Button onClick={() => setCreateOpen(true)}>
+          <Button className="self-start sm:self-auto" onClick={() => setCreateOpen(true)}>
             <Plus className="w-4 h-4 mr-2" />
             {t("createButton")}
           </Button>

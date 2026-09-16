@@ -6,6 +6,20 @@ All notable changes to AI SENTINEL are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- **The hosted service is a free, capped pilot; premium modules are sold only for the
+  kit.** On the hosted build (recognised by the platform's production environment or the
+  hosted cookie domain, the same signals the auth guards use; `NEXT_PUBLIC_HOSTED_PILOT`
+  overrides either way) every module is open to every organisation and nothing is gated by
+  an entitlement. Three caps apply instead: one organisation per account; edits for 90 days
+  from the organisation's first sign-in, then read-only with every export still available;
+  and a records ceiling per organisation (`src/config/pilot.ts`). A one-line banner on every
+  hosted page says so (dismissible per session, EN/ES), as does the sign-up screen; Settings
+  shows the day counter and each ceiling; a reached cap names the two ways out (own instance,
+  program-pack export). The kit is unchanged: no caps, offline licences as before. The
+  premium showcase is closed while the pilot is active.
+
 ## [0.5.0] - 2026-09-13
 
 ### Added

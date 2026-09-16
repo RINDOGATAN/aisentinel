@@ -2,7 +2,8 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 /**
- * The gate in front of the hosted instance's paid deliverables.
+ * The gate in front of the premium showcase's deliverables (never open on the
+ * hosted pilot; see src/config/premium-showcase.ts).
  *
  * One function, used by every export route that produces a finished document,
  * so the answer cannot differ between them. It asks two questions in order:
@@ -70,7 +71,7 @@ export function lockedResponse(access: ShowcaseAccess): Response {
       skillId: access.locked?.skillId,
       purchaseUrl: access.locked?.purchaseUrl,
       message:
-        "This document is part of a paid module on the hosted instance. Activate your licence in Settings, or self-host, where every module is included.",
+        "This document is part of a premium module, sold for the kit at 60 a year. Activate your licence in Settings, or run your own instance.",
     },
     { status: 402 },
   );

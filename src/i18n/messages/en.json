@@ -1528,6 +1528,7 @@
     "statusLocked": "Locked",
     "statusIncluded": "Included",
     "includedHint": "Included in your self-hosted deployment",
+    "includedHintPilot": "Open on the hosted pilot. In the kit, 60 a year.",
     "expires": "Expires {date}",
     "perpetual": "Perpetual licence",
     "activations": "{used} of {max} activations used",
@@ -1802,9 +1803,9 @@
           "description": "For the team building the AI: what could go wrong, what stops it, and whether that was tested."
         }
       },
-      "premiumTitleFree": "Add-on Modules",
+      "premiumTitleFree": "Premium Modules",
       "premiumTitleLocked": "Premium Skills",
-      "premiumIntroFree": "Included on this instance: no licence or subscription required. These modules were previously sold as add-ons; they are now enabled for everyone here.",
+      "premiumIntroFree": "Open on this instance: no licence needed here. Premium modules are sold only for the kit (self-hosted), at 60 a year each, and activated offline with a licence file.",
       "premiumIntroLocked": "Add-on modules, unlocked per organization with a TODO.LAW licence file on the <link>skills page</link>.",
       "badgeIncluded": "Included",
       "badgeLicensed": "Licensed",
@@ -1870,7 +1871,7 @@
         "commercialBiasFairness": "Bias & Fairness Assessment",
         "commercialShadowAi": "Shadow AI Discovery ({count}-tool catalog)",
         "commercialVendorCatalog": "AI Vendor Catalog (vendor.watch integration)",
-        "allFreeNote": "Enabled for everyone on this instance. The commercial path is an offline licence file, not a subscription."
+        "allFreeNote": "Open for everyone on this instance. Sold only for the kit (self-hosted), at 60 a year each, as an offline licence file."
       }
     },
     "aiRegistry": {
@@ -5134,7 +5135,7 @@
     "systemCardOpen": "Open the threat model"
   },
   "premiumShowcase": {
-    "lockedHint": "Part of a paid module on this hosted instance. Every module is included when you self-host.",
+    "lockedHint": "Part of a premium module, sold for the kit at 60 a year. Activate a licence, or run your own instance.",
     "activate": "Activate a licence",
     "buy": "See the modules"
   },

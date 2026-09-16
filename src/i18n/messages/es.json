@@ -1528,6 +1528,7 @@
     "statusLocked": "Bloqueada",
     "statusIncluded": "Incluida",
     "includedHint": "Incluida en tu instalación autoalojada",
+    "includedHintPilot": "Abierta en el piloto alojado. En el kit, 60 al año.",
     "expires": "Caduca el {date}",
     "perpetual": "Licencia perpetua",
     "activations": "{used} de {max} activaciones usadas",
@@ -1802,9 +1803,9 @@
           "description": "Para el equipo que construye la IA: qué puede salir mal, qué lo impide y si eso se ha probado."
         }
       },
-      "premiumTitleFree": "Módulos adicionales",
+      "premiumTitleFree": "Módulos premium",
       "premiumTitleLocked": "Skills premium",
-      "premiumIntroFree": "Incluidos en esta instancia: no se requiere licencia ni suscripción. Estos módulos se vendían antes como complementos; ahora están habilitados aquí para todo el mundo.",
+      "premiumIntroFree": "Abiertos en esta instancia: aquí no hace falta licencia. Los módulos premium se venden solo para el kit (autoalojado), a 60 al año cada uno, y se activan sin conexión con un archivo de licencia.",
       "premiumIntroLocked": "Módulos adicionales que se desbloquean por organización con un archivo de licencia de TODO.LAW en la <link>página de skills</link>.",
       "badgeIncluded": "Incluido",
       "badgeLicensed": "Con licencia",
@@ -1870,7 +1871,7 @@
         "commercialBiasFairness": "Evaluación de sesgo y equidad",
         "commercialShadowAi": "Detección de IA en la sombra (catálogo de {count} herramientas)",
         "commercialVendorCatalog": "Catálogo de proveedores de IA (integración con vendor.watch)",
-        "allFreeNote": "Habilitado para todo el mundo en esta instancia. La vía comercial es un archivo de licencia sin conexión, no una suscripción."
+        "allFreeNote": "Abierto para todo el mundo en esta instancia. Se vende solo para el kit (autoalojado), a 60 al año cada uno, como archivo de licencia sin conexión."
       }
     },
     "aiRegistry": {
@@ -5134,7 +5135,7 @@
     "systemCardOpen": "Abrir el modelo de amenazas"
   },
   "premiumShowcase": {
-    "lockedHint": "Forma parte de un módulo de pago en esta instancia alojada. Al autoalojarlo, todos los módulos están incluidos.",
+    "lockedHint": "Forma parte de un módulo premium, que se vende para el kit a 60 al año. Activa una licencia o ejecuta tu propia instancia.",
     "activate": "Activar una licencia",
     "buy": "Ver los módulos"
   },

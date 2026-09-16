@@ -72,7 +72,8 @@ reads "unknown" until the operator starts a rotation log; that gap is itself an 
 | `NEXT_PUBLIC_BRAND_*`, `NEXT_PUBLIC_COLOR_*`, `NEXT_PUBLIC_COMPANY_NAME`, `NEXT_PUBLIC_COMPANY_WEBSITE`, `NEXT_PUBLIC_TERMS_URL`, `NEXT_PUBLIC_PRIVACY_URL`, `NEXT_PUBLIC_SUPPORT_EMAIL`, `NEXT_PUBLIC_SECURITY_EMAIL`, `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_LOGO_PATH`, `NEXT_PUBLIC_FAVICON_PATH` | C | Hosted; Build arg; Kit | Branding (`src/config/brand.ts`) | n/a | n/a |
 | `NEXT_PUBLIC_SOURCE_URL`, `NEXT_PUBLIC_SOURCE_PUBLIC`, `NEXT_PUBLIC_LICENSE_URL`, `NEXT_PUBLIC_COMMIT_SHA` | C | Hosted; Build arg | AGPL source offer on `/licenses` | n/a | n/a |
 | `NEXT_PUBLIC_EXPERT_DIRECTORY_ENABLED` | C | Build arg only (no longer read by the app) | Nothing; a leftover of the removed directory | n/a | n/a |
-| `VERCEL`, `VERCEL_ENV`, `VERCEL_GIT_COMMIT_SHA` | C | Hosted (set by the platform) | Detects the hosted instance: premium showcase, cross-login default, the runtime refusal of local sign-in, the export integrity stamp | Platform | n/a |
+| `VERCEL`, `VERCEL_ENV`, `VERCEL_GIT_COMMIT_SHA` | C | Hosted (set by the platform) | Detects the hosted instance: the hosted pilot and its caps (`src/config/pilot.ts`), premium showcase, cross-login default, the runtime refusal of local sign-in, the export integrity stamp | Platform | n/a |
+| `NEXT_PUBLIC_HOSTED_PILOT` | C | Hosted or Kit (optional override) | Forces the hosted pilot on (`true`) or off (`false`); unset, the pilot follows the platform signals above and the cookie domain | n/a | n/a |
 | `NODE_ENV` | C | Set by the runtime and the Dockerfile | Development providers and logging | n/a | n/a |
 | `ENABLE_PREVIEW_ROUTES` | C | Local | Exposes the `/preview/*` pages | n/a | n/a |
 | `NEXT_OUTPUT_STANDALONE` | C | Build arg | Standalone output for the image | n/a | n/a |

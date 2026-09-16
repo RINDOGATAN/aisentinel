@@ -79,9 +79,9 @@ export default function ProgramPage() {
                 {t("historyLink")}
               </Button>
             </Link>
-            {/* Both are paid modules on the hosted instance and included when
-                self-hosted; the component shows which, rather than offering a
-                download that would fail. */}
+            {/* Both are premium deliverables where the showcase is open, and
+                included on the kit and on the hosted pilot; the component
+                shows which, rather than offering a download that would fail. */}
             <PremiumDeliverable
               organizationId={orgId}
               feature="program-report"

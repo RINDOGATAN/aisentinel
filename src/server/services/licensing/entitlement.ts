@@ -52,9 +52,9 @@ export async function checkAssessmentEntitlement(
     return { entitled: true, reason: HOSTED_PILOT_REASON };
   }
 
-  // On the hosted instance the two specialist assessments stay behind the
-  // licence even though everything else is free; self-hosted deployments
-  // include them. See src/config/premium-showcase.ts.
+  // Where the premium showcase is open (a Stripe-off deployment that is not
+  // the hosted pilot) the two specialist assessments stay behind the licence
+  // even though everything else is free. See src/config/premium-showcase.ts.
   const showcase =
     assessmentType === "CONFORMITY"
       ? isShowcasePremium("conformity-assessment")

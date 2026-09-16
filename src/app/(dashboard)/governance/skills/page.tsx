@@ -41,6 +41,8 @@ export default function SkillsPage() {
     { organizationId: organization?.id ?? "" },
     { enabled: !!organization?.id }
   );
+  // On the hosted pilot every package is open; the price belongs to the kit.
+  const hostedPilot = !!trpc.pilot.mode.useQuery(undefined, { staleTime: Infinity }).data?.active;
 
   const activate = trpc.skills.activateOffline.useMutation({
     onSuccess: (r) => {
@@ -176,10 +178,11 @@ export default function SkillsPage() {
           <ul className="grid gap-3">
             {packages.map((pkg) => {
               const active = !!pkg.entitlement?.isActive;
-              // Self-hosted builds bypass every entitlement gate (allSkillsFree),
-              // so an unentitled package is simply included, not "locked". Only the
-              // hosted tier (selfServiceUpgrade) ever shows a per-month price.
-              const included = !active && features.allSkillsFree;
+              // Self-hosted builds bypass every entitlement gate (allSkillsFree)
+              // and the hosted pilot gates nothing, so an unentitled package is
+              // simply included, not "locked". Only a Stripe deployment
+              // (selfServiceUpgrade) ever shows a per-month price.
+              const included = !active && (features.allSkillsFree || hostedPilot);
               return (
                 <li key={pkg.id}>
                   <Card className="flex items-center justify-between gap-3 p-4">
@@ -203,7 +206,7 @@ export default function SkillsPage() {
                             </span>
                           </>
                         ) : included ? (
-                          <span>{t("includedHint")}</span>
+                          <span>{hostedPilot ? t("includedHintPilot") : t("includedHint")}</span>
                         ) : (
                           features.selfServiceUpgrade &&
                           pkg.priceAmount != null && (

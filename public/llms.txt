@@ -4,9 +4,10 @@
 
 AI SENTINEL by TODO.LAW is an open-core AI governance platform for organizations managing AI systems under the EU AI Act, NIST AI RMF, and ISO 42001. It provides a complete toolkit for AI system inventory, risk classification, compliance mapping, human oversight, incident management, and policy governance.
 
-Production: https://aisentinel.todo.law
+Hosted pilot: https://aisentinel.todo.law (free, capped, no security certification; every module open)
+Run your own instance: https://www.todo.law/run
 Documentation: https://aisentinel.todo.law/docs
-License: AGPL-3.0 (core) + proprietary premium add-ons
+License: AGPL-3.0 (core) + proprietary premium modules, sold only for the self-hosted kit
 
 ## Core Modules (Open Source — AGPL-3.0)
 
@@ -19,9 +20,9 @@ License: AGPL-3.0 (core) + proprietary premium add-ons
 - [Vendor Risk](https://aisentinel.todo.law/docs/vendors): Third-party AI vendor management with risk levels (Critical, High, Medium, Low), vendor assessments, and contract tracking
 - [Policy Management](https://aisentinel.todo.law/docs/policies): AI policies (Usage, Governance, Ethics, Risk, Data, Procurement, Incident Response, Transparency, Custom) with versioning and approval workflow
 
-## Premium Modules (licensed separately)
+## Premium Modules (60 a year each in the kit)
 
-Licences are sold on the TODO.LAW marketplace (https://todo.law/marketplace) and activated offline. Self-hosted images include every module.
+On the hosted pilot every module, these included, is open to every organisation at no charge; the pilot's caps apply instead (one organisation per account, 90 editing days then read-only with exports, a records ceiling). Premium modules are sold only for the kit (self-hosted), at 60 a year each, on the TODO.LAW marketplace (https://todo.law/marketplace), and activated offline with a licence file.
 
 - [Shadow AI Discovery](https://aisentinel.todo.law/docs/shadow-ai): 89-tool catalog across 13 categories, employee self-reporting portal, status workflow (Discovered → Under Review → Approved/Prohibited → Registered)
 - [AI Vendor Catalog](https://aisentinel.todo.law/docs/vendor-catalog): 884 reviewed AI vendors powered by Vendor.Watch with AI model information, data privacy details, and compliance certifications

@@ -33,7 +33,6 @@ import {
   Settings,
   Shield,
   Sparkles,
-  Code,
   Crosshair,
   Gavel,
   Landmark,
@@ -393,47 +392,35 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
               ),
             })}
           </p>
-          <div className="flex items-center justify-center gap-1">
+          {/* One row that wraps evenly on narrow viewports: equal gaps, no
+              separators that could strand at a line edge, nothing pushed right. */}
+          <div className="flex flex-wrap items-center justify-center gap-x-1 gap-y-0">
             <a href={brand.termsOfUseUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors">
               <Scale className="w-3.5 h-3.5" />
               {t("terms")}
             </a>
-            <span className="text-border">&middot;</span>
             <a href={brand.privacyPolicyUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors">
               <BookOpen className="w-3.5 h-3.5" />
               {t("privacy")}
             </a>
             {features.stripeEnabled && (
-              <>
-                <span className="text-border">&middot;</span>
-                <Link href="/governance/billing" className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors">
-                  <CreditCard className="w-3.5 h-3.5" />
-                  {t("billing")}
-                </Link>
-              </>
+              <Link href="/governance/billing" className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors">
+                <CreditCard className="w-3.5 h-3.5" />
+                {t("billing")}
+              </Link>
             )}
-            <span className="text-border">&middot;</span>
             <Link href="/docs" className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors">
               <BookOpen className="w-3.5 h-3.5" />
               {t("docs")}
             </Link>
-            <span className="text-border">&middot;</span>
             <Link href="/docs/security" className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors">
               <Shield className="w-3.5 h-3.5" />
               {t("security")}
             </Link>
-            {/* AGPL section 13: offer the Corresponding Source to network users. */}
-            {brand.sourceUrl && (
-              <>
-                <span className="text-border">&middot;</span>
-                <a href={brand.sourceUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors">
-                  <Code className="w-3.5 h-3.5" />
-                  {t("sourceCode")}
-                </a>
-              </>
-            )}
           </div>
-          {/* AGPL Appropriate Legal Notices (section 5d) + section 13 source offer. */}
+          {/* AGPL Appropriate Legal Notices (section 5d) + section 13 source offer:
+              the "Source & licence" link below leads to /licenses, which carries
+              the Corresponding Source offer to network users. */}
           <p className="text-[11px] text-muted-foreground/80">
             AI Sentinel &middot; AGPL-3.0 &middot; &copy; Rindogatan LLC &middot;{" "}
             <Link href="/licenses" className="underline underline-offset-2 hover:text-foreground transition-colors">

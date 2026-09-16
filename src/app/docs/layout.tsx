@@ -166,7 +166,9 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
               ),
             })}
           </p>
-          <div className="flex items-center justify-center gap-1">
+          {/* One row that wraps evenly on narrow viewports: equal gaps, no
+              separators that could strand at a line edge, nothing pushed right. */}
+          <div className="flex flex-wrap items-center justify-center gap-x-1 gap-y-0">
             <a
               href={brand.privacyPolicyUrl}
               target="_blank"
@@ -175,7 +177,6 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
             >
               {t("footer.privacyPolicy")}
             </a>
-            <span className="text-border">&middot;</span>
             <a
               href={brand.termsOfUseUrl}
               target="_blank"
@@ -184,33 +185,29 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
             >
               {t("footer.termsOfService")}
             </a>
-            <span className="text-border">&middot;</span>
             <Link
               href="/docs"
               className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors"
             >
               {t("footer.howItWorks")}
             </Link>
-            <span className="text-border">&middot;</span>
             <Link
               href="/docs/security"
               className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors"
             >
               {t("footer.security")}
             </Link>
-            {/* AGPL section 13: offer the Corresponding Source to network users. */}
+            {/* AGPL section 13: offer the Corresponding Source to network users.
+                Kept here because this shell has no "Source & licence" line. */}
             {brand.sourceUrl && (
-              <>
-                <span className="text-border">&middot;</span>
-                <a
-                  href={brand.sourceUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors"
-                >
-                  {t("footer.sourceCode")}
-                </a>
-              </>
+              <a
+                href={brand.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:text-foreground hover:bg-secondary transition-colors"
+              >
+                {t("footer.sourceCode")}
+              </a>
             )}
           </div>
         </div>

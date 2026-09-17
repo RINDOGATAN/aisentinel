@@ -6,6 +6,19 @@ All notable changes to AI SENTINEL are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- **EU AI Act dates re-checked against Regulation (EU) 2026/1744.** Every date
+  of application is now pinned, with the article that sets it, in one module
+  (`src/config/eu-ai-act-dates.ts`), and a test checks that the seeded Art. 113
+  rows, the obligations calendar and the Frameworks data state the same dates.
+  The rows and the calendar now cite the amended provisions: Art. 113, third
+  paragraph, points (a), (c) and (d); Art. 111(2) and (4); Art. 57(1). The
+  calendar gains the 2 August 2030 date for high-risk systems intended for use
+  by public authorities (undetermined until that is recorded). No February 2027
+  watermark-detection deadline is stated: it is not in the text. The seeded
+  requirement codes are unchanged, so an upgrade only rewrites their wording.
+
 ## [0.5.0] - 2026-09-13
 
 ### Added

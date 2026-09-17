@@ -426,7 +426,7 @@
     "suggestedByRules": "Sugerida por el cribado: \"{matched}\"",
     "prohibitedWarning": "Atención: se ha detectado un indicio de práctica prohibida (p. ej., reconocimiento de emociones en el trabajo o la educación, Art. 5(1)(f)). Un uso prohibido nunca se subsana con la mera información.",
     "placedBeforeLabel": "Introducido en el mercado antes del 2 de agosto de 2026",
-    "placedBeforeHelp": "Los sistemas generativos preexistentes disponen de un período de gracia para el marcado legible por máquina hasta el 2 de diciembre de 2026 (Reglamento (UE) 2026/1744).",
+    "placedBeforeHelp": "Los sistemas generativos preexistentes disponen de un período de gracia para el marcado legible por máquina hasta el 2 de diciembre de 2026 (art. 111.4, introducido por el Reglamento (UE) 2026/1744).",
     "deadlineDue": "Marcado exigible antes del {date}",
     "deadlineOverdue": "Marcado vencido desde el {date}",
     "markingMethodsTitle": "Métodos de marcado en uso",
@@ -2380,7 +2380,7 @@
       "title": "Transparencia (Art. 50)",
       "intro": "El artículo 50 del Reglamento de IA de la UE impone deberes de transparencia que atraviesan los niveles de riesgo: incluso un chatbot de riesgo mínimo debe informar. AI SENTINEL registra las cuatro obligaciones del Art. 50 por sistema de IA, las separa según quién las debe realmente y cuenta atrás el único plazo que tiene período transitorio.",
       "applicabilityTitle": "Cuándo se aplica",
-      "applicabilityBody1": "El Art. 50 se aplica desde el <strong>2 de agosto de 2026</strong> (Art. 113). El Reglamento (UE) 2026/1744 (el Ómnibus Digital sobre IA, DO L de 24 de julio de 2026) concede a los sistemas introducidos en el mercado <em>antes</em> de esa fecha un período transitorio para la obligación de marcado legible por máquina del Art. 50(2), que se extiende hasta el <strong>2 de diciembre de 2026</strong>.",
+      "applicabilityBody1": "El Art. 50 se aplica desde el <strong>2 de agosto de 2026</strong> (Art. 113, párrafo segundo). El Art. 111(4), introducido por el Reglamento (UE) 2026/1744 (el Ómnibus Digital sobre IA, DO L de 24 de julio de 2026), da a los proveedores de sistemas generativos introducidos en el mercado <em>antes</em> de esa fecha hasta el <strong>2 de diciembre de 2026</strong> para cumplir la obligación de marcado legible por máquina del Art. 50(2).",
       "applicabilityBody2": "Ese período de gracia es el motivo por el que el Registro de IA pregunta si un sistema se introdujo en el mercado antes del 2 de agosto de 2026. Respóndelo con precisión: es el único dato que modifica el plazo de marcado, y el contador de «marcado vencido» del panel se deriva de él.",
       "obligationsTitle": "Las cuatro obligaciones",
       "obligationsIntro": "Dos corresponden al proveedor y dos al responsable del despliegue. Una misma organización suele desempeñar ambos papeles, pero registrarlas por separado es lo que te permite responder a un regulador que pregunte en calidad de qué actuabas.",
@@ -4477,7 +4477,8 @@
       "no-revenue-tier": "No consta el tramo de ingresos",
       "no-annex-i-determination": "No consta si se trata de un sistema integrado en un producto",
       "no-market-placement-date": "No consta cuándo se introdujo el sistema en el mercado",
-      "no-sell-share-determination": "No consta si vendes o compartes información personal"
+      "no-sell-share-determination": "No consta si vendes o compartes información personal",
+      "no-public-authority-determination": "No consta si el sistema está destinado a ser utilizado por autoridades públicas"
     },
     "card": {
       "whatItMeans": "Qué significa",

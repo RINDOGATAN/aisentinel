@@ -51,6 +51,10 @@ nobody. That combination defines the product strategy at the end of this report.
   Machine-readable-marking grace for generative systems on the market before 2 Aug 2026 →
   **2 Dec 2026**; interoperable watermark-detection solution required by **2 Feb 2027**
   (Reed Smith reading of the final Omnibus; not independently verified on EUR-Lex).
+  **Checked 2026-09-16 against the official text:** the 2 Dec 2026 date is right
+  (Art. 111(4), inserted by 2026/1744). The 2 Feb 2027 watermark-detection
+  deadline is NOT in the text: **unsupported, do not seed or cite it**
+  (`src/config/eu-ai-act-dates.ts`, `UNSUPPORTED_EU_AI_ACT_DATES`).
 - **1.5 GPAI enforcement powers live 2 Aug 2026 [S, convergent].** Commission/AI Office may
   investigate, request documentation, run model evaluations, order corrective measures,
   fine up to 3 %/€15M (Art. 101). **No first enforcement action found as of 2026-08-05**
@@ -169,7 +173,7 @@ nobody. That combination defines the product strategy at the end of this report.
 | Item | Action |
 |---|---|
 | "OJ publication pending" caveats | Replace with **Regulation (EU) 2026/1744**, OJ 24 Jul 2026, in force 27 Jul 2026; bump `lawReviewedAsOf` |
-| Art. 50 rows | Cite final guidelines (20 Jul 2026) + Commission FAQ; add CoP-adequacy note; add marking-grace (2 Dec 2026) and interop (2 Feb 2027) dates **after verifying vs 2026/1744 text** |
+| Art. 50 rows | Cite final guidelines (20 Jul 2026) + Commission FAQ; add CoP-adequacy note; add marking-grace (2 Dec 2026) and interop (2 Feb 2027) dates **after verifying vs 2026/1744 text** (checked 2026-09-16: 2 Dec 2026 confirmed, 2 Feb 2027 unsupported, see 1.4) |
 | Standards tracker | EN 18286:2026 published, NOT OJ-cited → keep "no presumption of conformity yet" |
 | EU database rows | Not operational; ~Q3 2027 [S]; registration-duty timing disputed — stay neutral |
 | Spain / ES locale | PLOIA = bill in committee (121/000096); keep €35M/7 % deepfake-fine copy conditional |
@@ -189,7 +193,7 @@ EN/ES) is offered by almost no one. Double down on artifact depth + deadline int
 | # | Priority driver | Item |
 |---|---|---|
 | 1 | Now — credibility floor | Finalize seeds per §4 (2026/1744 citation, final Art. 50 guidance, EN 18286, Spain status); re-seed hosted |
-| 2 | Live obligation, ~2 competitors | **Art. 50 transparency module**: per-system profile (chatbot / deepfake / marking / emotion-recognition), deadline ladder (2 Dec 2026 grace, 2 Feb 2027 interop), AI-drafted marking-methods statement; Transparency-CoP signatory field via vendor.watch |
+| 2 | Live obligation, ~2 competitors | **Art. 50 transparency module**: per-system profile (chatbot / deepfake / marking / emotion-recognition), deadline ladder (2 Dec 2026 grace; the 2 Feb 2027 interop date is unsupported, see 1.4), AI-drafted marking-methods statement; Transparency-CoP signatory field via vendor.watch |
 | 3 | Post-Omnibus confusion = demand | **Obligation timeline engine**: deterministic dated obligation schedule per system from classification/role/GPAI flags; org compliance calendar on the executive dashboard |
 | 4 | 2026's universal theme | **Agent governance in the registry**: agents first-class (autonomy level, tools/MCP servers, human sponsor, kill-switch documentation, oversight-gate links); agentic vendor-catalog fields |
 | 5 | Unique data asset, already shipped | **Subprocessor supply-chain view**: vendor supply-chain tab + org-level dependency rollup from the enriched catalog (`catalogVendorSlug` links); MCC-AI / AI-CAIQ-aligned vendor-assessment template |

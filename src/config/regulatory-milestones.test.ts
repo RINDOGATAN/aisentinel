@@ -70,6 +70,7 @@ function system(
     status: "DEPLOYED",
     processesPersonalData: true,
     placedOnMarketBefore2Aug2026: false,
+    intendedForPublicAuthorities: false,
     art50: {
       interaction: "REQUIRED",
       marking: "REQUIRED",
@@ -246,6 +247,30 @@ describe("regulatory milestones — date ownership", () => {
   it("keeps the deferred EU dates post-Omnibus", () => {
     expect(byId("eu-ai-act-annex-iii-high-risk").date).toBe("2027-12-02");
     expect(byId("eu-ai-act-annex-i-high-risk").date).toBe("2028-08-02");
+    expect(byId("eu-ai-act-art5-new-prohibitions").date).toBe("2026-12-02");
+    expect(byId("eu-ai-act-art50-marking-grace").date).toBe("2026-12-02");
+    expect(byId("eu-ai-act-public-authority-high-risk").date).toBe("2030-08-02");
+  });
+
+  it("keeps the public-authority date undetermined until someone answers", () => {
+    const m = byId("eu-ai-act-public-authority-high-risk");
+    const eu = org({ jurisdictions: ["EU"] });
+    const high = (intendedForPublicAuthorities: boolean | null) =>
+      system({ riskLevel: "HIGH", intendedForPublicAuthorities });
+    expect(m.applies!(high(null), eu)).toBe("undetermined");
+    expect(m.undeterminedReason!(high(null), eu)).toBe(
+      "no-public-authority-determination",
+    );
+    expect(m.applies!(high(true), eu)).toBe("in-scope");
+    expect(m.applies!(high(false), eu)).toBe("out-of-scope");
+    expect(m.applies!(system({ riskLevel: null }), eu)).toBe("undetermined");
+    expect(m.undeterminedReason!(system({ riskLevel: null }), eu)).toBe(
+      "unclassified-system",
+    );
+    expect(m.applies!(system({ riskLevel: "LIMITED" }), eu)).toBe("out-of-scope");
+    expect(m.applies!(high(true), org({ jurisdictions: ["US_CA"] }))).toBe(
+      "out-of-scope",
+    );
   });
 
   it("has the California duty live in 2026, not 2027", () => {

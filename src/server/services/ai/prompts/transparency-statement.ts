@@ -148,7 +148,7 @@ export function buildTransparencyStatementUserPrompt(
       "",
       `Marking deadline (Art. 50(2)): ${markingDeadline.deadline}${
         markingDeadline.graceApplies
-          ? " (grace period for systems on the market before 2 Aug 2026, Reg. (EU) 2026/1744)"
+          ? " (grace period for systems on the market before 2 Aug 2026, Art. 111(4) as inserted by Reg. (EU) 2026/1744)"
           : " (Art. 50 applicable date)"
       }${markingDeadline.overdue ? " — OVERDUE" : ""}`,
     );

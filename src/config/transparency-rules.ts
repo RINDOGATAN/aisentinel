@@ -12,9 +12,10 @@
  * determination — the user always sets the obligation status.
  *
  * Legal basis: Art. 50, Regulation (EU) 2024/1689, applicable since
- * 2 August 2026. Reg. (EU) 2026/1744 (Digital Omnibus on AI, OJ L 24.7.2026)
- * Art. 1(38) grants generative systems placed on the market before
- * 2 August 2026 a marking grace period until 2 December 2026. Final Commission
+ * 2 August 2026. Art. 111(4) of Reg. (EU) 2024/1689, inserted by Reg. (EU)
+ * 2026/1744 (Digital Omnibus on AI, OJ L 24.7.2026), gives providers of
+ * generative systems placed on the market before 2 August 2026 until
+ * 2 December 2026 to comply with Art. 50(2) (marking). Final Commission
  * guidelines on Art. 50 were adopted 20 July 2026; the Code of Practice on
  * Transparency of AI-Generated Content was assessed adequate in July 2026.
  *
@@ -35,12 +36,13 @@ export const TRANSPARENCY_RULES_LAW_REVIEWED_AS_OF = "2026-08-05";
 // Dates and vocabularies
 // ---------------------------------------------------------------------------
 
-/** Art. 50 applies from 2 August 2026 (Art. 113, unchanged by the omnibus). */
+/** Art. 50 applies from 2 August 2026 (Art. 113, second paragraph; unchanged by the omnibus). */
 export const ART50_APPLICABLE_FROM = new Date(Date.UTC(2026, 7, 2));
 
 /**
  * Marking grace deadline for systems placed on the market before 2 Aug 2026
- * (Reg. (EU) 2026/1744 Art. 1(38): four-month transitional period).
+ * (Art. 111(4), inserted by Reg. (EU) 2026/1744). Pinned, with the other EU
+ * AI Act dates, in src/config/eu-ai-act-dates.ts.
  */
 export const ART50_MARKING_GRACE_DEADLINE = new Date(Date.UTC(2026, 11, 2));
 

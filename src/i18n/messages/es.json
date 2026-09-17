@@ -3860,7 +3860,7 @@
       },
       "title": "Marcos de gobernanza de la IA",
       "intro": "Doce marcos de gobernanza de la IA muy utilizados, comparados en catorce dimensiones. Cada celda indica una profundidad de 0 a 3, una frase, la fuente oficial y el módulo de AI SENTINEL que le da soporte.",
-      "asOf": "Datos a {date}",
+      "asOf": "Actualizado a {date}",
       "disclaimer": "Material de aprendizaje, no asesoramiento jurídico.",
       "contentInEnglish": "El contenido de los marcos en estas páginas está en inglés.",
       "stats": "{frameworks} marcos, {rings} dimensiones, {cells} celdas, {review} en revisión.",

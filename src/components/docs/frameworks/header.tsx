@@ -21,7 +21,7 @@ export function FrameworksHeader({ active, showMethod = false }: { active: Frame
   const format = useFormatter();
   const locale = useLocale();
   const data = frameworksData;
-  const asOf = format.dateTime(new Date(`${data.asOf}T12:00:00Z`), { dateStyle: "long", timeZone: "UTC" });
+  const asOf = format.dateTime(new Date(`${data.asOf}T12:00:00Z`), { month: "long", year: "numeric", timeZone: "UTC" });
 
   return (
     <section className="space-y-4">

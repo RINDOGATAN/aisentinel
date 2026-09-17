@@ -59,7 +59,7 @@ describe("frameworks docs pages", () => {
         const html = await render(locale, page);
         expect(html).toContain(t.disclaimer);
         expect(html).toContain(`dateTime="${frameworksData.asOf}"`);
-        expect(html).toContain(locale === "es" ? "septiembre de 2026" : "September 16, 2026");
+        expect(html).toContain(locale === "es" ? "septiembre de 2026" : "September 2026");
         // The Spanish pages say once that the framework content is in English.
         expect(html.split(MESSAGES.es.docs.frameworks.contentInEnglish).length - 1).toBe(locale === "es" ? 1 : 0);
         for (const view of Object.values(t.views).slice(0, 4)) expect(html).toContain(view);

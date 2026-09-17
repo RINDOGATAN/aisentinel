@@ -9,6 +9,7 @@ import {
   UNGROUPED_LANE_ID,
 } from "./layout";
 import { MOCK_PROGRAM_GRAPH } from "./__fixtures__/mock-graph";
+import { UNCLASSIFIED_COLOR } from "./palette";
 import type { LayoutBox, ProgramGraph } from "./types";
 
 const overlaps = (a: LayoutBox, b: LayoutBox) =>
@@ -84,7 +85,7 @@ describe("computeProgramMapLayout", () => {
   it("unclassified systems get the gap treatment (dashed, gray)", () => {
     const westlaw = layout.nodes.find((n) => n.id === "sys-westlaw")!;
     expect(westlaw.dashed).toBe(true);
-    expect(westlaw.riskColor).toBe("#94a3b8");
+    expect(westlaw.riskColor).toBe(UNCLASSIFIED_COLOR);
     const harvey = layout.nodes.find((n) => n.id === "sys-harvey")!;
     expect(harvey.dashed).toBe(false);
   });

@@ -2058,6 +2058,8 @@
           "author": "Maria G.",
           "from": "Ninguna",
           "to": "Limitado",
+          "fromLevel": "UNCLASSIFIED",
+          "toLevel": "LIMITED",
           "note": "Clasificación inicial basada en el caso de uso de chatbot."
         },
         {
@@ -2065,6 +2067,8 @@
           "author": "Jan K.",
           "from": "Limitado",
           "to": "Alto",
+          "fromLevel": "LIMITED",
+          "toLevel": "HIGH",
           "note": "Reclasificado tras la ampliación del alcance para incluir la selección de personal."
         }
       ],

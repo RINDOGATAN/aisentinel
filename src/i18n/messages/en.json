@@ -2058,6 +2058,8 @@
           "author": "Maria G.",
           "from": "None",
           "to": "Limited",
+          "fromLevel": "UNCLASSIFIED",
+          "toLevel": "LIMITED",
           "note": "Initial classification based on chatbot use case."
         },
         {
@@ -2065,6 +2067,8 @@
           "author": "Jan K.",
           "from": "Limited",
           "to": "High",
+          "fromLevel": "LIMITED",
+          "toLevel": "HIGH",
           "note": "Re-classified after scope change to include employment screening."
         }
       ],

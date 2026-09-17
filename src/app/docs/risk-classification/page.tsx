@@ -25,6 +25,8 @@ export default async function RiskClassificationDocsPage() {
   const t = await getTranslations("docs.riskClassification");
   const annexCategories = t.raw("annexCategories") as string[];
   const historyEntries = t.raw("historyEntries") as {
+    fromLevel?: string;
+    toLevel?: string;
     date: string;
     author: string;
     from: string;
@@ -107,7 +109,10 @@ export default async function RiskClassificationDocsPage() {
                     <span className="text-muted-foreground">·</span>
                     <span className="text-muted-foreground">{entry.from}</span>
                     <span className="text-muted-foreground">→</span>
-                    <span className="font-medium text-primary">{entry.to}</span>
+                    <span className="inline-flex items-center gap-1.5 font-medium text-foreground">
+                      <TierMarker level={entry.toLevel} />
+                      {entry.to}
+                    </span>
                   </div>
                   <p className="text-muted-foreground">{entry.note}</p>
                 </div>

@@ -1698,7 +1698,11 @@
         "roles": "Roles y permisos",
         "security": "Seguridad y confianza",
         "crossBorder": "Regímenes transfronterizos",
-        "whatsNew": "Novedades"
+        "whatsNew": "Novedades",
+        "frameworksOverview": "Resumen y rueda",
+        "frameworksTable": "Tabla",
+        "frameworksCompare": "Comparar",
+        "frameworksSelector": "¿Qué marcos?"
       },
       "footer": {
         "service": "{app} es un servicio de <link>{company}</link>.",
@@ -1707,7 +1711,8 @@
         "howItWorks": "Cómo funciona",
         "security": "Seguridad",
         "sourceCode": "Código fuente (AGPL-3.0)"
-      }
+      },
+      "frameworksLabel": "Marcos"
     },
     "home": {
       "metaTitle": "Documentación: AI SENTINEL",
@@ -1736,7 +1741,7 @@
       "roles": [
         {
           "name": "Propietario",
-          "description": "Facturación, gestión de equipo y configuración de la organización"
+          "description": "Gestión de equipo, configuración de la organización, activación de licencias y eliminación de la organización"
         },
         {
           "name": "Administrador",
@@ -1802,12 +1807,6 @@
           "description": "Para el equipo que construye la IA: qué puede salir mal, qué lo impide y si eso se ha probado."
         }
       },
-      "premiumTitleFree": "Módulos adicionales",
-      "premiumTitleLocked": "Skills premium",
-      "premiumIntroFree": "Incluidos en esta instancia: no se requiere licencia ni suscripción. Estos módulos se vendían antes como complementos; ahora están habilitados aquí para todo el mundo.",
-      "premiumIntroLocked": "Módulos adicionales que se desbloquean por organización con un archivo de licencia de TODO.LAW en la <link>página de skills</link>.",
-      "badgeIncluded": "Incluido",
-      "badgeLicensed": "Con licencia",
       "premiumModules": {
         "shadowAi": {
           "title": "Detección de IA en la sombra",
@@ -1848,6 +1847,10 @@
         "howItFits": {
           "title": "Cómo encaja todo",
           "description": "Qué introduces, qué deriva el producto y qué entregas."
+        },
+        "frameworks": {
+          "title": "Marcos comparados",
+          "description": "Doce marcos de gobernanza de la IA en catorce dimensiones: una rueda, una tabla, una comparación y un selector. Material de aprendizaje, no asesoramiento jurídico."
         }
       },
       "licensingTitle": "Licencias Open Core",
@@ -1859,7 +1862,7 @@
           "Evaluaciones FRIA y de riesgo de IA",
           "Supervisión humana y puntos de control de aprobación",
           "Gestión de incidentes de IA",
-          "Mapeo de cumplimiento (Reglamento de IA de la UE, NIST, ISO 42001)",
+          "Mapeo de cumplimiento en ocho marcos (Reglamento de IA de la UE, RGPD, NIST AI RMF, ISO/IEC 42001, California, Colorado, Texas y Washington)",
           "Gestión de riesgo de proveedores",
           "Gestión de políticas",
           "Panel ejecutivo"
@@ -1870,8 +1873,11 @@
         "commercialBiasFairness": "Evaluación de sesgo y equidad",
         "commercialShadowAi": "Detección de IA en la sombra (catálogo de {count} herramientas)",
         "commercialVendorCatalog": "Catálogo de proveedores de IA (integración con vendor.watch)",
-        "allFreeNote": "Habilitado para todo el mundo en esta instancia. La vía comercial es un archivo de licencia sin conexión, no una suscripción."
-      }
+        "commercialDeliverables": "Entregables finales: el documento de evaluación de impacto, el informe del programa y el paquete del programa"
+      },
+      "premiumTitle": "Módulos premium",
+      "premiumIntro": "Cuatro módulos y tres entregables finales son premium. Su código fuente se publica con el resto del producto bajo la AGPL.",
+      "badgePremium": "Premium"
     },
     "aiRegistry": {
       "metaTitle": "Registro de IA: documentación de AI SENTINEL",
@@ -2441,7 +2447,7 @@
     },
     "compliance": {
       "metaTitle": "Cumplimiento: documentación de AI SENTINEL",
-      "metaDescription": "Mapeo de marcos normativos para el Reglamento de IA de la UE, NIST AI RMF e ISO 42001 con gestión de evidencias y exportación.",
+      "metaDescription": "Mapeo en ocho marcos (Reglamento de IA de la UE, RGPD, NIST AI RMF, ISO/IEC 42001, California, Colorado, Texas y Washington) con gestión de evidencias y exportación.",
       "title": "Cumplimiento",
       "intro": "Mapea tus sistemas de IA frente a los principales marcos normativos. Sigue el estado de cumplimiento a nivel de requisito, adjunta evidencias y exporta paquetes de cumplimiento para reguladores y auditores.",
       "frameworksTitle": "Marcos normativos compatibles",
@@ -2450,17 +2456,42 @@
         "euAiAct": {
           "name": "Reglamento de IA de la UE",
           "description": "Mapeo de obligaciones clave desde el Art. 4 (alfabetización en IA) y el Art. 5 (prácticas prohibidas) hasta el Art. 73 (incidentes graves) y el calendario de aplicación del Art. 113, además de los anexos relevantes. El principal marco normativo para los sistemas de IA en la Unión Europea.",
-          "items": "Artículos, anexos, considerandos"
+          "items": "{count} requisitos: artículos y anexos"
         },
         "nist": {
           "name": "NIST AI RMF",
           "description": "El Marco de Gestión de Riesgos de IA del Instituto Nacional de Estándares y Tecnología de EE. UU. Cuatro funciones principales con subcategorías.",
-          "items": "GOVERN, MAP, MEASURE, MANAGE"
+          "items": "{count} requisitos: GOVERN, MAP, MEASURE, MANAGE"
         },
         "iso": {
           "name": "ISO 42001",
           "description": "Norma internacional para Sistemas de Gestión de IA. Abarca el contexto de la organización, el liderazgo, la planificación, el soporte y las operaciones.",
-          "items": "Cláusulas 4-10, controles del anexo A"
+          "items": "{count} requisitos: cláusulas 4 a 10 y controles del anexo A"
+        },
+        "gdpr": {
+          "name": "RGPD",
+          "description": "Los artículos del Reglamento (UE) 2016/679 relevantes para la IA, con el artículo 22 sobre decisiones exclusivamente automatizadas y el artículo 35 sobre evaluaciones de impacto completos. Se incorpora según la jurisdicción.",
+          "items": "{count} requisitos"
+        },
+        "caAdmt": {
+          "name": "California CCPA ADMT",
+          "description": "El reglamento de California sobre tecnología de decisiones automatizadas, evaluaciones de riesgos y auditorías de ciberseguridad. Se incorpora según la jurisdicción.",
+          "items": "{count} requisitos"
+        },
+        "colorado": {
+          "name": "Colorado SB 26-189",
+          "description": "La ley que sustituyó a la ley de IA original de Colorado: aviso previo, información tras la decisión, corrección y revisión, y documentación del desarrollador. Se incorpora según la jurisdicción.",
+          "items": "{count} requisitos"
+        },
+        "texas": {
+          "name": "Texas TRAIGA",
+          "description": "House Bill 149: prohibiciones basadas en la intención, deberes de información para la Administración y la asistencia sanitaria, y el puerto seguro del NIST. Se incorpora según la jurisdicción.",
+          "items": "{count} requisitos"
+        },
+        "washington": {
+          "name": "Washington",
+          "description": "Cinco instrumentos: datos de salud de los consumidores, procedencia del contenido, chatbots de compañía, autorización previa y organismos públicos. Se incorpora según la jurisdicción.",
+          "items": "{count} requisitos"
         }
       },
       "statusesTitle": "Estados de cumplimiento",
@@ -2489,17 +2520,17 @@
         "Informes de cumplimiento listos para auditoría"
       ],
       "crossTitle": "Mapeo entre marcos",
-      "crossIntro": "Muchos requisitos del Reglamento de IA de la UE, NIST AI RMF e ISO 42001 se solapan conceptualmente. AI SENTINEL incluye 41 mapeos entre marcos predefinidos para que un mismo esfuerzo de cumplimiento pueda satisfacer requisitos de varios marcos simultáneamente.",
+      "crossIntro": "Muchos requisitos de los ocho marcos se solapan. AI SENTINEL incluye {count} mapeos entre marcos predefinidos, para que un mismo trabajo pueda servir de evidencia en varios marcos a la vez.",
       "crossBody1": "Cuando marcas un requisito como <s>Conforme</s> o <s>Parcialmente Conforme</s>, AI SENTINEL muestra los requisitos vinculados de otros marcos y ofrece propagar el estado automáticamente.",
       "crossBody2": "Por ejemplo, marcar como conforme el Art. 9 del Reglamento de IA de la UE (Gestión de Riesgos) puede actualizar automáticamente NIST GOVERN 1 (Políticas de Gestión de Riesgos) y la Cláusula 6.1 de ISO 42001 (Acciones para Abordar Riesgos), porque cubren la misma obligación.",
       "crossStats": {
         "equivalent": "Mapeos equivalentes",
         "partial": "Mapeos parciales",
-        "related": "Mapeo relacionado"
+        "related": "Mapeos relacionados"
       },
       "snapshotTitle": "Instantánea de cumplimiento autogenerada",
       "snapshotBody1": "Cuando clasificas el nivel de riesgo de un sistema de IA (p. ej., alto riesgo según el Reglamento de IA de la UE), AI SENTINEL crea automáticamente registros de mapeo de cumplimiento para cada requisito aplicable del Reglamento de IA, el NIST AI RMF y la ISO/IEC 42001. El RGPD y las normas estatales de EE. UU. se incorporan en cuanto se responden las jurisdicciones y las preguntas de cribado de la organización. Llegas a la matriz de cumplimiento con los controles pertinentes ya rellenados, sin configuración manual.",
-      "snapshotBody2": "Para un sistema de Alto Riesgo, esto supone inicializar al instante más de 80 requisitos del Reglamento de IA de la UE (requisitos clave del Art. 6 al Art. 73), NIST AI RMF (las 23 prácticas) y las cláusulas de ISO 42001, cada uno en estado «Sin Evaluar» y listo para su evaluación.",
+      "snapshotBody2": "Para un sistema de Alto Riesgo, esto supone inicializar al instante {count} requisitos del Reglamento de IA de la UE, el NIST AI RMF y la ISO/IEC 42001, cada uno en estado «Sin Evaluar» y listo para su evaluación.",
       "howTitle": "Mapear el cumplimiento",
       "steps": [
         {
@@ -2510,7 +2541,7 @@
         {
           "role": "Responsable de IA",
           "title": "Selecciona el marco y el sistema de IA",
-          "description": "Elige el marco (Reglamento de IA de la UE, NIST AI RMF o ISO 42001) y el sistema de IA a evaluar."
+          "description": "Elige uno de los ocho marcos y el sistema de IA que vas a evaluar."
         },
         {
           "role": "Responsable de IA",
@@ -2527,7 +2558,8 @@
           "title": "Exporta la documentación",
           "description": "Genera informes CSV o PDF para presentaciones regulatorias, auditorías o partes interesadas internas."
         }
-      ]
+      ],
+      "frameworksCompareLink": "Compara marcos de gobernanza de la IA en catorce dimensiones"
     },
     "vendors": {
       "metaTitle": "Riesgo de proveedores: documentación de AI SENTINEL",
@@ -2790,7 +2822,7 @@
       "howSteps": [
         {
           "title": "Los empleados autonotifican",
-          "description": "El personal busca en un catálogo precargado de 36 herramientas de IA conocidas en 8 categorías (chat LLM, asistentes de código, generación de imágenes, vídeo/audio, redacción, herramientas de negocio, analítica de datos, búsqueda) o introduce una herramienta personalizada. Indican su departamento, una descripción del uso y cómo utilizan la herramienta."
+          "description": "El personal busca en un catálogo precargado de más de 80 herramientas de IA conocidas en 13 categorías (desde chat LLM, asistentes de código y generación de imágenes hasta investigación jurídica, gestión de contratos y transcripción) o introduce una herramienta personalizada. Indica su departamento, una descripción del uso y cómo utiliza la herramienta."
         },
         {
           "title": "Triaje y revisión",
@@ -3109,9 +3141,9 @@
       "roles": {
         "owner": {
           "name": "Propietario",
-          "summary": "Control total de la plataforma. Facturación, gestión de equipo y todas las operaciones de gobernanza.",
+          "summary": "Control total de la plataforma. Gestión de equipo, activación de licencias, eliminación de la organización y todas las operaciones de gobernanza.",
           "capabilities": [
-            "Gestionar facturación y suscripción",
+            "Eliminar la organización",
             "Invitar y eliminar miembros",
             "Cambiar roles de miembros",
             "Todas las capacidades de Administrador"
@@ -3119,10 +3151,11 @@
         },
         "admin": {
           "name": "Administrador",
-          "summary": "Gestión de la organización y acceso completo a la gobernanza, sin control de facturación.",
+          "summary": "Gestión de la organización y acceso completo a la gobernanza, sin cambiar roles ni eliminar la organización.",
           "capabilities": [
             "Invitar y eliminar miembros",
             "Configurar ajustes de la organización",
+            "Activar archivos de licencia",
             "Todas las capacidades de Responsable de IA"
           ]
         },
@@ -3175,7 +3208,8 @@
         "oversightDecisions": "Decidir en puntos de control",
         "inviteMembers": "Invitar y eliminar miembros",
         "changeRoles": "Cambiar roles de miembros",
-        "manageBilling": "Gestionar facturación"
+        "activateLicences": "Activar archivos de licencia",
+        "deleteOrganization": "Eliminar la organización"
       },
       "assignTitle": "Asignación de roles",
       "assign": {
@@ -3320,7 +3354,7 @@
         "endpointTitle": "Protección de endpoints",
         "endpointBody": "Cada endpoint de la API de gobernanza requiere una sesión autenticada con pertenencia verificada a la organización. Las solicitudes no autenticadas se rechazan.",
         "webhookTitle": "Verificación de webhooks",
-        "webhookBody": "Los webhooks de pagos e integraciones utilizan verificación de firmas criptográficas. Los webhooks no verificados se descartan antes de procesarse."
+        "webhookBody": "Las solicitudes de integración entrantes se autentican con una clave de API, y los webhooks utilizan verificación de firmas criptográficas. Las solicitudes no verificadas se descartan antes de procesarse."
       },
       "standards": {
         "title": "Estándares de seguridad",
@@ -3485,10 +3519,38 @@
     },
     "whatsNew": {
       "metaTitle": "Novedades de AI SENTINEL",
-      "metaDescription": "Una evaluación que responde a seis regímenes normativos, tres documentos generados, una prueba de esfuerzo agéntica y la cadena de suministro de proveedores.",
+      "metaDescription": "Notas de versión: modelado de amenazas para quien construye IA, el paquete del programa, la retención legal y una evaluación que responde a seis regímenes normativos.",
       "title": "Novedades",
       "intro": "Las versiones se enumeran de la más reciente a la más antigua. Toda incorporación normativa lleva una fecha de revisión jurídica y una marca de validación pendiente.",
       "releases": [
+        {
+          "version": "0.4.0 a 0.5.0",
+          "date": "11 a 13 de septiembre de 2026",
+          "headline": "Un programa en minutos, y la visión de quien construye",
+          "summary": "Estas versiones acortan el camino de una cuenta vacía a un programa en marcha, y añaden los registros que necesitan un equipo que construye IA, un consejo de administración y un equipo de defensa.",
+          "items": [
+            {
+              "title": "Un programa en minutos",
+              "body": "La incorporación pregunta para quién es el programa y lleva directamente al asistente de inicio rápido, que ahora cubre nueve sectores, añade un paquete básico de políticas para cada tipo que falte y redacta una evaluación de impacto por cada sistema de alto riesgo y una revisión de diligencia debida por cada proveedor del catálogo. Puedes importar un inventario existente desde una hoja de cálculo; el nivel de riesgo solo se importa cuando la hoja lo indica, y queda sin confirmar hasta que una persona lo confirma."
+            },
+            {
+              "title": "Modelado de amenazas para quien construye",
+              "body": "Marca lo que un sistema puede ver, recuperar, recordar, invocar y hacer, y se proponen los escenarios que se derivan, con controles en cinco capas y una prueba concreta para cada uno. Solo un control con una prueba superada y vigente puede incorporarse como evidencia al registro de cumplimiento."
+            },
+            {
+              "title": "El paquete del programa",
+              "body": "Un único archivo en tu idioma: los informes del programa y del registro, todas las políticas, el calendario de obligaciones, las evaluaciones de impacto, avisos y protocolos de revisión de cada sistema, las revisiones de proveedores, los modelos de amenazas y el inventario, con un manifiesto de integridad. Cada exportación indica cuándo se generó, con qué versión y con qué paquetes de reglas."
+            },
+            {
+              "title": "Retención legal, procedimientos e informes al consejo",
+              "body": "Una retención legal bloquea todas las vías de eliminación que cubre mientras está en vigor. Un registro de procedimientos guarda cada investigación o reclamación con sus plazos y la posición adoptada, los incidentes incorporan plazos legales, y los informes al consejo capturan una instantánea del programa para poder reproducir las cifras mostradas."
+            },
+            {
+              "title": "Registro de auditoría y versiones fechadas",
+              "body": "Un registro de auditoría legible, con filtros y exportación completa, para propietarios, administradores y responsables de IA, y versiones fechadas de las respuestas de cada evaluación, que se añaden con cada cambio, envío y decisión."
+            }
+          ]
+        },
         {
           "version": "0.3.0",
           "date": "8 de septiembre de 2026",
@@ -3550,7 +3612,9 @@
       "pendingBody": "Los paquetes del RGPD, Colorado, Texas y Washington, la evaluación unificada y la prueba de esfuerzo agéntica se validaron el 8 de septiembre de 2026. Antes se verificaron con las leyes de sesión los dos aspectos de Washington señalados como no confirmados: la HB 1170 es el capítulo 167 de las Leyes de 2026, en vigor el 1 de febrero de 2027, y la HB 2225 es el capítulo 168, en vigor el 1 de enero de 2027. Los límites a la autorización previa están en vigor desde el 11 de junio de 2026, no desde 2027, porque la fecha de enero de 2027 que figura junto al RCW 48.43.830 corresponde a una sección posterior que concilia dos modificaciones de 2025 y no a los deberes sobre inteligencia artificial. Los paquetes del Reglamento de IA de la UE y de la ADMT de California llevan sus propias fechas de revisión y siguen pendientes de validación; todo documento que los cite lo indica.",
       "ctaTitle": "Véalo en el producto",
       "ctaBody": "Abre cualquier sistema de IA y elige la pestaña Regímenes transfronterizos.",
-      "ctaLink": "Leer la documentación transfronteriza"
+      "ctaLink": "Leer la documentación transfronteriza",
+      "offerTitle": "Módulos premium",
+      "offerBody": "El servicio alojado es un piloto gratuito: todos los módulos, también los premium, están abiertos a todas las organizaciones. Los módulos premium tienen licencia para instalaciones autoalojadas y se activan con un archivo de licencia sin conexión."
     },
     "threatModel": {
       "metaTitle": "Modelado de amenazas para quien construye",
@@ -3778,6 +3842,13 @@
         "Cada exportación indica cuándo se generó, con qué versión y con qué paquetes de reglas; el paquete incluye una huella por fichero.",
         "La validación jurídica del contenido normativo sigue pendiente, y cada documento lo dice en lugar de dar a entender lo contrario."
       ]
+    },
+    "premiumNotice": {
+      "title": "Cómo se ofrecen los módulos premium",
+      "hosted": "Abiertos a todo el mundo en el piloto alojado.",
+      "selfHosted": "Con licencia para instalaciones autoalojadas.",
+      "seePricing": "Ver precios",
+      "newTab": "(se abre en una pestaña nueva)"
     }
   },
   "program": {

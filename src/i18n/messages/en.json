@@ -1698,7 +1698,11 @@
         "roles": "Roles & Permissions",
         "security": "Security & Trust",
         "crossBorder": "Cross-border regimes",
-        "whatsNew": "What's new"
+        "whatsNew": "What's new",
+        "frameworksOverview": "Overview and wheel",
+        "frameworksTable": "Table",
+        "frameworksCompare": "Compare",
+        "frameworksSelector": "Which frameworks?"
       },
       "footer": {
         "service": "{app} is a <link>{company}</link> service.",
@@ -1707,7 +1711,8 @@
         "howItWorks": "How It Works",
         "security": "Security",
         "sourceCode": "Source code (AGPL-3.0)"
-      }
+      },
+      "frameworksLabel": "Frameworks"
     },
     "home": {
       "metaTitle": "Documentation: AI SENTINEL",
@@ -1736,7 +1741,7 @@
       "roles": [
         {
           "name": "Owner",
-          "description": "Billing, team management, organization settings"
+          "description": "Team management, organization settings, licence activation, deleting the organization"
         },
         {
           "name": "Admin",
@@ -1802,12 +1807,6 @@
           "description": "For the team building the AI: what could go wrong, what stops it, and whether that was tested."
         }
       },
-      "premiumTitleFree": "Add-on Modules",
-      "premiumTitleLocked": "Premium Skills",
-      "premiumIntroFree": "Included on this instance: no licence or subscription required. These modules were previously sold as add-ons; they are now enabled for everyone here.",
-      "premiumIntroLocked": "Add-on modules, unlocked per organization with a TODO.LAW licence file on the <link>skills page</link>.",
-      "badgeIncluded": "Included",
-      "badgeLicensed": "Licensed",
       "premiumModules": {
         "shadowAi": {
           "title": "Shadow AI Discovery",
@@ -1848,6 +1847,10 @@
         "howItFits": {
           "title": "How it fits together",
           "description": "What you put in, what the product derives, and what you hand over."
+        },
+        "frameworks": {
+          "title": "Frameworks compared",
+          "description": "Twelve AI governance frameworks on fourteen dimensions: a wheel, a table, a side-by-side comparison and a selector. A learning aid, not legal advice."
         }
       },
       "licensingTitle": "Open Core Licensing",
@@ -1859,7 +1862,7 @@
           "FRIA & AI Risk assessments",
           "Human oversight & approval gates",
           "AI incident management",
-          "Compliance mapping (EU AI Act, NIST, ISO 42001)",
+          "Compliance mapping across eight frameworks (EU AI Act, GDPR, NIST AI RMF, ISO/IEC 42001, California, Colorado, Texas, Washington)",
           "Vendor risk management",
           "Policy management",
           "Executive dashboard"
@@ -1870,8 +1873,11 @@
         "commercialBiasFairness": "Bias & Fairness Assessment",
         "commercialShadowAi": "Shadow AI Discovery ({count}-tool catalog)",
         "commercialVendorCatalog": "AI Vendor Catalog (vendor.watch integration)",
-        "allFreeNote": "Enabled for everyone on this instance. The commercial path is an offline licence file, not a subscription."
-      }
+        "commercialDeliverables": "Finished deliverables: the impact assessment document, the program report and the program pack"
+      },
+      "premiumTitle": "Premium modules",
+      "premiumIntro": "Four modules and three finished deliverables are premium. Their source code is published with the rest of the product under the AGPL.",
+      "badgePremium": "Premium"
     },
     "aiRegistry": {
       "metaTitle": "AI Registry: AI SENTINEL Docs",
@@ -2441,7 +2447,7 @@
     },
     "compliance": {
       "metaTitle": "Compliance: AI SENTINEL Docs",
-      "metaDescription": "Framework mapping for EU AI Act, NIST AI RMF, and ISO 42001 with evidence management and export.",
+      "metaDescription": "Framework mapping across eight frameworks (EU AI Act, GDPR, NIST AI RMF, ISO/IEC 42001, California, Colorado, Texas and Washington) with evidence management and export.",
       "title": "Compliance",
       "intro": "Map your AI systems against leading regulatory frameworks. Track compliance status at the requirement level, attach evidence, and export compliance packages for regulators and auditors.",
       "frameworksTitle": "Supported Frameworks",
@@ -2450,17 +2456,42 @@
         "euAiAct": {
           "name": "EU AI Act",
           "description": "Key-obligation mapping from Art. 4 (AI literacy) and Art. 5 (prohibited practices) through Art. 73 (serious incidents) and the Art. 113 applicability timeline, plus relevant annexes. The primary regulatory framework for AI systems in the European Union.",
-          "items": "Articles, Annexes, Recitals"
+          "items": "{count} requirements: articles and annexes"
         },
         "nist": {
           "name": "NIST AI RMF",
           "description": "The US National Institute of Standards and Technology AI Risk Management Framework. Four core functions with sub-categories.",
-          "items": "GOVERN, MAP, MEASURE, MANAGE"
+          "items": "{count} requirements: GOVERN, MAP, MEASURE, MANAGE"
         },
         "iso": {
           "name": "ISO 42001",
           "description": "International standard for AI Management Systems. Covers organizational context, leadership, planning, support, and operations.",
-          "items": "Clauses 4-10, Annex A Controls"
+          "items": "{count} requirements: clauses 4 to 10 and Annex A controls"
+        },
+        "gdpr": {
+          "name": "GDPR",
+          "description": "The AI-relevant articles of Regulation (EU) 2016/679, with Article 22 on solely automated decisions and Article 35 on impact assessments in full. Attaches by jurisdiction.",
+          "items": "{count} requirements"
+        },
+        "caAdmt": {
+          "name": "California CCPA ADMT",
+          "description": "The California regulations on automated decision-making technology, risk assessments and cybersecurity audits. Attaches by jurisdiction.",
+          "items": "{count} requirements"
+        },
+        "colorado": {
+          "name": "Colorado SB 26-189",
+          "description": "The statute that replaced the original Colorado AI Act: advance notice, post-decision disclosure, correction and review, and developer documentation. Attaches by jurisdiction.",
+          "items": "{count} requirements"
+        },
+        "texas": {
+          "name": "Texas TRAIGA",
+          "description": "House Bill 149: intent-based prohibitions, government and health care disclosure duties, and the NIST safe harbour. Attaches by jurisdiction.",
+          "items": "{count} requirements"
+        },
+        "washington": {
+          "name": "Washington",
+          "description": "Five instruments: consumer health data, content provenance, companion chatbots, prior authorisation and public agencies. Attaches by jurisdiction.",
+          "items": "{count} requirements"
         }
       },
       "statusesTitle": "Compliance Statuses",
@@ -2489,17 +2520,17 @@
         "Audit-ready compliance reports"
       ],
       "crossTitle": "Cross-Framework Mapping",
-      "crossIntro": "Many requirements across the EU AI Act, NIST AI RMF, and ISO 42001 overlap conceptually. AI SENTINEL includes 41 pre-built cross-framework mappings so that one compliance effort can satisfy requirements across multiple frameworks simultaneously.",
+      "crossIntro": "Many requirements across the eight frameworks overlap. AI SENTINEL includes {count} pre-built cross-framework mappings, so that one piece of work can stand as evidence against several frameworks at once.",
       "crossBody1": "When you mark a requirement as <s>Compliant</s> or <s>Partially Compliant</s>, AI SENTINEL shows linked requirements from other frameworks and offers to propagate the status automatically.",
       "crossBody2": "For example, marking EU AI Act Art. 9 (Risk Management) as compliant can automatically update NIST GOVERN 1 (Risk Management Policies) and ISO 42001 Clause 6.1 (Actions to Address Risks): because they cover the same obligation.",
       "crossStats": {
         "equivalent": "Equivalent mappings",
         "partial": "Partial mappings",
-        "related": "Related mapping"
+        "related": "Related mappings"
       },
       "snapshotTitle": "Auto-Generated Compliance Snapshot",
       "snapshotBody1": "When you classify an AI system's risk level (e.g., high risk under the EU AI Act), AI SENTINEL automatically creates compliance mapping records for every applicable requirement of the EU AI Act, NIST AI RMF and ISO/IEC 42001. The GDPR and the US state rules attach once the organization's jurisdictions and screening questions are answered. You arrive at the compliance matrix with the relevant controls pre-populated: no manual setup needed.",
-      "snapshotBody2": "For a High Risk system, this means 80+ requirements are instantly initialized across EU AI Act (Art. 6 through Art. 73 key requirements), NIST AI RMF (all 23 practices), and ISO 42001 clauses, each set to “Not Assessed” and ready for evaluation.",
+      "snapshotBody2": "For a High Risk system, this means {count} requirements are initialised at once across the EU AI Act, the NIST AI RMF and ISO/IEC 42001, each set to “Not Assessed” and ready for evaluation.",
       "howTitle": "Mapping Compliance",
       "steps": [
         {
@@ -2510,7 +2541,7 @@
         {
           "role": "AI Officer",
           "title": "Select framework and AI system",
-          "description": "Choose the framework (EU AI Act, NIST AI RMF, or ISO 42001) and the AI system to assess."
+          "description": "Choose one of the eight frameworks and the AI system to assess."
         },
         {
           "role": "AI Officer",
@@ -2527,7 +2558,8 @@
           "title": "Export documentation",
           "description": "Generate CSV or PDF reports for regulatory submissions, audits, or internal stakeholders."
         }
-      ]
+      ],
+      "frameworksCompareLink": "Compare AI governance frameworks on fourteen dimensions"
     },
     "vendors": {
       "metaTitle": "Vendor Risk: AI SENTINEL Docs",
@@ -2790,7 +2822,7 @@
       "howSteps": [
         {
           "title": "Employees self-report",
-          "description": "Staff search a pre-loaded catalog of 36 known AI tools across 8 categories (LLM Chat, Code Assistants, Image Generation, Video/Audio, Writing, Business Tools, Data Analytics, Search) or enter a custom tool. They specify their department, usage description, and how they use the tool."
+          "description": "Staff search a pre-loaded catalog of more than 80 known AI tools across 13 categories (from LLM chat, code assistants and image generation to legal research, contract management and transcription) or enter a custom tool. They specify their department, usage description, and how they use the tool."
         },
         {
           "title": "Triage and review",
@@ -3109,9 +3141,9 @@
       "roles": {
         "owner": {
           "name": "Owner",
-          "summary": "Full platform control. Billing, team management, and all governance operations.",
+          "summary": "Full platform control. Team management, licence activation, deleting the organization and all governance operations.",
           "capabilities": [
-            "Manage billing & subscription",
+            "Delete the organization",
             "Invite and remove members",
             "Change member roles",
             "All Admin capabilities"
@@ -3119,10 +3151,11 @@
         },
         "admin": {
           "name": "Admin",
-          "summary": "Organization management and full governance access without billing control.",
+          "summary": "Organization management and full governance access, without changing roles or deleting the organization.",
           "capabilities": [
             "Invite and remove members",
             "Configure organization settings",
+            "Activate licence files",
             "All AI Officer capabilities"
           ]
         },
@@ -3175,7 +3208,8 @@
         "oversightDecisions": "Make oversight decisions",
         "inviteMembers": "Invite & remove members",
         "changeRoles": "Change member roles",
-        "manageBilling": "Manage billing"
+        "activateLicences": "Activate licence files",
+        "deleteOrganization": "Delete the organization"
       },
       "assignTitle": "How Roles Are Assigned",
       "assign": {
@@ -3320,7 +3354,7 @@
         "endpointTitle": "Endpoint Protection",
         "endpointBody": "Every governance API endpoint requires an authenticated session with verified organization membership. Unauthenticated requests are rejected.",
         "webhookTitle": "Webhook Verification",
-        "webhookBody": "Payment and integration webhooks use cryptographic signature verification. Unverified webhooks are discarded before processing."
+        "webhookBody": "Inbound integration requests are authenticated with an API key, and webhooks use cryptographic signature verification. Unverified requests are discarded before processing."
       },
       "standards": {
         "title": "Security Standards",
@@ -3485,10 +3519,38 @@
     },
     "whatsNew": {
       "metaTitle": "What's new in AI SENTINEL",
-      "metaDescription": "One assessment answering six regulatory regimes, three generated documents, an agentic stress test and the vendor supply chain.",
+      "metaDescription": "Release notes: threat modelling for builders, the program pack, legal hold, and one assessment answering six regulatory regimes.",
       "title": "What's new",
       "intro": "The releases below are listed newest first. Every regulatory addition carries a law-review date and a pending legal sign-off marker.",
       "releases": [
+        {
+          "version": "0.4.0 to 0.5.0",
+          "date": "11 to 13 September 2026",
+          "headline": "A programme in minutes, and the builder's view",
+          "summary": "These releases shorten the path from an empty account to a working programme, and add the records a team building AI, a board and a defence team each need.",
+          "items": [
+            {
+              "title": "A programme in minutes",
+              "body": "Onboarding asks who the programme is for and goes straight into the Quick Start wizard, which now covers nine industries, adds a core policy pack for any policy type that is missing, and drafts an impact assessment for each high-risk system and a due-diligence review for each catalogue vendor. An existing inventory can be imported from a spreadsheet; a risk tier is imported only when the sheet states it, and stays unconfirmed until a person confirms it."
+            },
+            {
+              "title": "Threat modelling for builders",
+              "body": "Tick what a system can see, retrieve, remember, call and do, and the scenarios that follow are proposed with controls at five layers, each with a concrete test. Only a control with a current passing test can be written into the compliance register as evidence."
+            },
+            {
+              "title": "The program pack",
+              "body": "One archive in the reader's language: the program and register reports, every policy, the obligations calendar, per-system impact assessments, notices and review protocols, vendor reviews, threat models and the inventory, with an integrity manifest. Every export states when it was generated, from which version, and under which rule packs."
+            },
+            {
+              "title": "Legal hold, proceedings and board reporting",
+              "body": "A legal hold refuses every deletion path it covers while it is in force. A proceedings register keeps each inquiry or claim with its deadlines and the position taken, incidents gain statutory clocks, and board reports capture a program snapshot so the figures shown can be reproduced."
+            },
+            {
+              "title": "Audit trail and dated versions",
+              "body": "A readable audit trail with filters and a full export, for owners, admins and AI officers, and dated versions of every assessment's answers, appended on each change, submission and decision."
+            }
+          ]
+        },
         {
           "version": "0.3.0",
           "date": "8 September 2026",
@@ -3550,7 +3612,9 @@
       "pendingBody": "The GDPR, Colorado, Texas and Washington packs, the unified assessment and the agentic stress test were signed off on 8 September 2026. The two Washington items previously flagged as unconfirmed were verified against the session laws first: HB 1170 is chapter 167, Laws of 2026, effective 1 February 2027, and HB 2225 is chapter 168, effective 1 January 2027. The prior-authorisation limits are in force from 11 June 2026, not 2027, because the January 2027 date shown against RCW 48.43.830 belongs to a later section that reconciles two 2025 amendments rather than to the artificial-intelligence duties. The EU AI Act and California ADMT packs carry their own review dates and are still pending sign-off; any document citing them says so.",
       "ctaTitle": "See it in the product",
       "ctaBody": "Open any AI system and choose the Cross-border regimes tab.",
-      "ctaLink": "Read the cross-border documentation"
+      "ctaLink": "Read the cross-border documentation",
+      "offerTitle": "Premium modules",
+      "offerBody": "The hosted service is a free pilot: every module, premium included, is open to every organization. The premium modules are licensed for self-hosted installations, activated with an offline licence file."
     },
     "threatModel": {
       "metaTitle": "Threat modelling for builders",
@@ -3778,6 +3842,13 @@
         "Every export states when it was generated, from which version, and under which rule packs; the pack carries a digest for each file.",
         "Legal sign-off is pending on the regulatory content, and every document says so rather than implying otherwise."
       ]
+    },
+    "premiumNotice": {
+      "title": "How the premium modules are offered",
+      "hosted": "Open to everyone on the hosted pilot.",
+      "selfHosted": "Licensed for self-hosted installations.",
+      "seePricing": "See pricing",
+      "newTab": "(opens in a new tab)"
     }
   },
   "program": {

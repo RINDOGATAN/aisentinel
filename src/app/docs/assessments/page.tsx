@@ -2,6 +2,7 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { getTranslations } from "next-intl/server";
+import { PremiumNotice } from "@/components/docs/premium-notice";
 
 export async function generateMetadata() {
   const t = await getTranslations("docs.assessments");
@@ -67,6 +68,9 @@ export default async function AssessmentsDocsPage() {
               </p>
             </div>
           ))}
+        </div>
+        <div className="mt-4 max-w-3xl">
+          <PremiumNotice />
         </div>
       </section>
 

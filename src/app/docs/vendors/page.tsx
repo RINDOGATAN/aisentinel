@@ -2,6 +2,7 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { getTranslations } from "next-intl/server";
+import { PremiumNotice } from "@/components/docs/premium-notice";
 
 export async function generateMetadata() {
   const t = await getTranslations("docs.vendors");
@@ -104,6 +105,9 @@ export default async function VendorsDocsPage() {
         <p className="text-muted-foreground mb-6">
           {t("catalogIntro")}
         </p>
+        <div className="mb-6 max-w-3xl">
+          <PremiumNotice />
+        </div>
         <div className="rounded-xl border border-border bg-card p-6">
           <div className="grid sm:grid-cols-3 gap-6 text-sm">
             <div>

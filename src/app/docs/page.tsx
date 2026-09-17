@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import prisma from "@/lib/prisma";
-import { features } from "@/config/features";
+import { PremiumNotice } from "@/components/docs/premium-notice";
 
 export async function generateMetadata() {
   const t = await getTranslations("docs.home");
@@ -80,6 +80,7 @@ const premiumItems = [
 
 const alsoItems = [
   { href: "/docs/how-it-fits", tKey: "howItFits" },
+  { href: "/docs/frameworks", tKey: "frameworks" },
   { href: "/governance/quickstart", tKey: "quickstart" },
   { href: "/governance/settings", tKey: "aiPosture" },
   { href: "/governance/skills", tKey: "skills" },
@@ -89,7 +90,6 @@ const alsoItems = [
 export default async function DocsPage() {
   const t = await getTranslations("docs.home");
   const counts = await getCatalogCounts();
-  const allFree = features.allSkillsFree;
 
   const quickStartSteps = t.raw("quickStartSteps") as {
     title: string;
@@ -188,19 +188,12 @@ export default async function DocsPage() {
       {/* Premium Modules */}
       <section>
         <h2 className="text-2xl font-display tracking-tight mb-2">
-          {allFree ? t("premiumTitleFree") : t("premiumTitleLocked")}
+          {t("premiumTitle")}
         </h2>
-        <p className="text-sm text-muted-foreground mb-6">
-          {allFree
-            ? t("premiumIntroFree")
-            : t.rich("premiumIntroLocked", {
-                link: (chunks) => (
-                  <Link href="/governance/skills" className="text-primary hover:underline">
-                    {chunks}
-                  </Link>
-                ),
-              })}
-        </p>
+        <p className="text-sm text-muted-foreground mb-4">{t("premiumIntro")}</p>
+        <div className="mb-6">
+          <PremiumNotice />
+        </div>
         <div className="grid sm:grid-cols-2 gap-4">
           {premiumItems.map((mod) => {
             const Icon = mod.icon;
@@ -219,7 +212,7 @@ export default async function DocsPage() {
                       {t(`premiumModules.${mod.tKey}.title`)}
                     </h3>
                     <span className="px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground text-[10px] font-medium">
-                      {allFree ? t("badgeIncluded") : t("badgeLicensed")}
+                      {t("badgePremium")}
                     </span>
                   </div>
                   <p className="text-sm text-muted-foreground leading-relaxed">
@@ -285,12 +278,8 @@ export default async function DocsPage() {
               <li>{t("licensing.commercialBiasFairness")}</li>
               <li>{t("licensing.commercialShadowAi", { count: counts.tools ?? "60+" })}</li>
               <li>{t("licensing.commercialVendorCatalog")}</li>
+              <li>{t("licensing.commercialDeliverables")}</li>
             </ul>
-            {allFree && (
-              <p className="mt-4 text-xs text-muted-foreground">
-                {t("licensing.allFreeNote")}
-              </p>
-            )}
           </div>
         </div>
       </section>

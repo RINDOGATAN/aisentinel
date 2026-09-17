@@ -2,6 +2,8 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { getTranslations } from "next-intl/server";
+import { TierMarker } from "@/components/governance/risk-tier-badge";
+import { TIER_BORDER_L_CLASS, toRiskTier } from "@/config/risk-tier-palette";
 
 export async function generateMetadata() {
   const t = await getTranslations("docs.incidents");
@@ -11,11 +13,12 @@ export async function generateMetadata() {
   };
 }
 
+// Severity borrows the risk-tier palette (coloured left bar and dot, body-colour text).
 const severityStyles = [
-  { key: "low", color: "bg-green-500/10 text-green-400 border-green-500/20" },
-  { key: "medium", color: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20" },
-  { key: "high", color: "bg-orange-500/10 text-orange-400 border-orange-500/20" },
-  { key: "critical", color: "bg-red-500/10 text-red-400 border-red-500/20" },
+  { key: "low", tier: "LOW" },
+  { key: "medium", tier: "MEDIUM" },
+  { key: "high", tier: "HIGH" },
+  { key: "critical", tier: "CRITICAL" },
 ] as const;
 
 const timelineTimes = [
@@ -91,9 +94,12 @@ export default async function IncidentsDocsPage() {
           {severityStyles.map((sev) => (
             <div
               key={sev.key}
-              className={`rounded-xl border p-5 ${sev.color}`}
+              className={`rounded-xl border border-border border-l-4 bg-card text-foreground p-5 ${TIER_BORDER_L_CLASS[toRiskTier(sev.tier)]}`}
             >
-              <h3 className="text-lg font-semibold mb-2">{t(`severities.${sev.key}.level`)}</h3>
+              <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
+                <TierMarker level={sev.tier} />
+                {t(`severities.${sev.key}.level`)}
+              </h3>
               <p className="text-sm opacity-90 leading-relaxed">{t(`severities.${sev.key}.description`)}</p>
             </div>
           ))}

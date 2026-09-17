@@ -2,6 +2,7 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { getTranslations } from "next-intl/server";
+import { TierMarker } from "@/components/governance/risk-tier-badge";
 
 export async function generateMetadata() {
   const t = await getTranslations("docs.oversight");
@@ -11,10 +12,12 @@ export async function generateMetadata() {
   };
 }
 
+// Decision chips borrow the risk-tier palette as a dot marker
+// (blue = approve, red = reject, orange = defer); text stays the body colour.
 const decisionStyles = [
-  { key: "approve", badge: "bg-green-500/10 text-green-400" },
-  { key: "reject", badge: "bg-red-500/10 text-red-400" },
-  { key: "defer", badge: "bg-yellow-500/10 text-yellow-400" },
+  { key: "approve", tier: "LIMITED" },
+  { key: "reject", tier: "UNACCEPTABLE" },
+  { key: "defer", tier: "HIGH" },
 ] as const;
 
 export default async function OversightDocsPage() {
@@ -62,7 +65,8 @@ export default async function OversightDocsPage() {
           <div className="grid sm:grid-cols-3 gap-6 text-sm">
             {decisionStyles.map((d) => (
               <div key={d.key}>
-                <span className={`inline-block px-2.5 py-1 rounded-full ${d.badge} text-xs font-medium mb-2`}>
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-tier-chip text-foreground text-xs font-medium mb-2">
+                  <TierMarker level={d.tier} />
                   {t(`decisions.${d.key}.label`)}
                 </span>
                 <p className="text-muted-foreground">

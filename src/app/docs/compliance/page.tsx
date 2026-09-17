@@ -4,6 +4,8 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { docsCounts } from "@/config/docs-counts";
+import { TierMarker } from "@/components/governance/risk-tier-badge";
+import { TIER_PILL_CLASS } from "@/config/risk-tier-palette";
 
 export async function generateMetadata() {
   const t = await getTranslations("docs.compliance");
@@ -25,12 +27,14 @@ const frameworks = [
   { key: "washington", code: "WA_AI_RULES" },
 ] as const;
 
+// Status chips borrow the risk-tier palette as a dot marker (blue = compliant,
+// orange = partial, red = non-compliant, hollow ring = no finding).
 const statusStyles = [
-  { key: "compliant", color: "bg-green-500/10 text-green-400 border-green-500/20" },
-  { key: "partiallyCompliant", color: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20" },
-  { key: "nonCompliant", color: "bg-red-500/10 text-red-400 border-red-500/20" },
-  { key: "notApplicable", color: "bg-muted text-muted-foreground border-border" },
-  { key: "notAssessed", color: "bg-muted text-muted-foreground border-border" },
+  { key: "compliant", tier: "LIMITED" },
+  { key: "partiallyCompliant", tier: "HIGH" },
+  { key: "nonCompliant", tier: "UNACCEPTABLE" },
+  { key: "notApplicable", tier: null },
+  { key: "notAssessed", tier: null },
 ] as const;
 
 export default async function ComplianceDocsPage() {
@@ -88,8 +92,9 @@ export default async function ComplianceDocsPage() {
           {statusStyles.map((item) => (
             <span
               key={item.key}
-              className={`px-4 py-2 rounded-full text-sm font-medium border ${item.color}`}
+              className={`px-4 py-2 rounded-full text-sm font-medium ${TIER_PILL_CLASS}`}
             >
+              <TierMarker level={item.tier} />
               {t(`statuses.${item.key}`)}
             </span>
           ))}

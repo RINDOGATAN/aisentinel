@@ -146,3 +146,19 @@ export const TIER_BG_CLASS: Record<RiskTier, string> = {
   MINIMAL: "bg-tier-minimal",
   UNCLASSIFIED: "bg-tier-unclassified",
 };
+
+/** Tailwind left-border colour class for a tier (cards marked by a left bar). */
+export const TIER_BORDER_L_CLASS: Record<RiskTier, string> = {
+  UNACCEPTABLE: "border-l-tier-unacceptable",
+  HIGH: "border-l-tier-high",
+  LIMITED: "border-l-tier-limited",
+  MINIMAL: "border-l-tier-minimal",
+  UNCLASSIFIED: "border-l-tier-unclassified",
+};
+
+/**
+ * Neutral pill classes for a tier chip rendered without the Badge component
+ * (docs pages). Pair with <TierMarker>. Text stays the body colour.
+ */
+export const TIER_PILL_CLASS =
+  "inline-flex items-center gap-2 border border-border bg-tier-chip text-foreground";

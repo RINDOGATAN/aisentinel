@@ -157,3 +157,14 @@ describe("refreshed docs pages", () => {
     });
   }
 });
+
+describe("wide tables scroll inside their own box", () => {
+  for (const name of ["table", "compare"] as const) {
+    it(`the ${name} page keeps min-w-0 from the page wrapper to the scroll box`, async () => {
+      const html = await render("en", pages[name]);
+      expect(html.startsWith('<div class="space-y-8 min-w-0">')).toBe(true);
+      const box = html.match(/<div class="([^"]*)"><table[^>]*data-testid="frameworks-/)?.[1] ?? "";
+      for (const c of ["overflow-auto", "min-w-0", "max-w-full"]) expect(box.split(" ")).toContain(c);
+    });
+  }
+});

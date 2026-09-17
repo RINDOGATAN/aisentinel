@@ -110,10 +110,11 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
       </header>
 
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-8 py-8">
+        {/* min-w-0 down the chain: a wide table scrolls in its own box, never the page. */}
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-8 py-8 min-w-0">
           {/* Sidebar */}
           <aside
-            className={`md:col-span-1 ${
+            className={`md:col-span-1 min-w-0 ${
               sidebarOpen ? "block" : "hidden"
             } md:block`}
           >

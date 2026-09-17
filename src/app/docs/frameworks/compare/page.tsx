@@ -19,7 +19,7 @@ export default async function FrameworksComparePage({
   const { f } = await searchParams;
   const initial = (Array.isArray(f) ? f : f ? [f] : []).flatMap((v) => v.split(","));
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 min-w-0">
       <FrameworksHeader active="compare" />
       <FrameworksCompare key={initial.join(",")} initial={initial} />
       <FrameworksFooter />

@@ -12,7 +12,7 @@ export async function generateMetadata() {
 
 export default function FrameworksTablePage() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 min-w-0">
       <FrameworksHeader active="table" />
       <FrameworksTable />
       <FrameworksFooter />

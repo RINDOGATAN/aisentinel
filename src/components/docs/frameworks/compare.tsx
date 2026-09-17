@@ -24,7 +24,7 @@ export function FrameworksCompare({ initial = [] }: { initial?: string[] }) {
   const chosen = F.filter((f) => picked.includes(f.id));
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 min-w-0">
       <fieldset className="rounded-xl border border-border bg-card p-4">
         <legend className="px-1 text-sm font-semibold">{t("compare.pick")}</legend>
         <div className="flex flex-wrap gap-x-5 gap-y-2">
@@ -51,7 +51,7 @@ export function FrameworksCompare({ initial = [] }: { initial?: string[] }) {
       </fieldset>
 
       {chosen.length > 0 && (
-        <div className="overflow-auto rounded-xl border border-border bg-card">
+        <div className="w-full max-w-full min-w-0 overflow-auto rounded-xl border border-border bg-card">
           <table className="w-full border-separate border-spacing-0 text-sm" data-testid="frameworks-compare">
             <thead>
               <tr>

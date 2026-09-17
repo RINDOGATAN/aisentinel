@@ -22,6 +22,7 @@ export { StatTile, StatTileRow } from "./primitives/StatTile";
 export { KeyFinding } from "./primitives/KeyFinding";
 export { MiniCoverageBar } from "./primitives/MiniCoverageBar";
 export { PillBadge } from "./primitives/PillBadge";
+export { TierPill } from "./primitives/TierPill";
 export { CategoryChip, CategoryChipRow } from "./primitives/CategoryChip";
 export { ConfidentialPill } from "./primitives/ConfidentialPill";
 

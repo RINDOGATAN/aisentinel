@@ -17,6 +17,7 @@ import type {
   GlyphState,
   RolloutStage,
 } from "./types";
+import { TIER_MARKER } from "@/config/risk-tier-palette";
 
 // ── Canvas ──────────────────────────────────────────────────────────
 
@@ -35,26 +36,31 @@ export const CANVAS = {
 } as const;
 
 // ── EU AI Act risk tiers ────────────────────────────────────────────
+// Sourced from the shared tier tokens (src/config/risk-tier-palette.ts),
+// light set, because the canvas is light. Tiers are shown as a stripe or
+// border (a marker), never as coloured text.
+
+const TIER = TIER_MARKER.light;
 
 export const RISK_COLORS: Record<ProgramRiskLevel, string> = {
-  UNACCEPTABLE: "#dc2626",
-  HIGH: "#ea580c",
-  LIMITED: "#d97706",
-  MINIMAL: "#059669",
+  UNACCEPTABLE: TIER.UNACCEPTABLE,
+  HIGH: TIER.HIGH,
+  LIMITED: TIER.LIMITED,
+  MINIMAL: TIER.MINIMAL,
 };
 
-/** Unclassified = a visible gap, never a blend-in neutral */
-export const UNCLASSIFIED_COLOR = "#94a3b8";
+/** Unclassified = a visible gap (dashed border), never a blend-in neutral */
+export const UNCLASSIFIED_COLOR = TIER.UNCLASSIFIED;
 
 export function riskColor(level: ProgramRiskLevel | null): string {
   return level ? RISK_COLORS[level] : UNCLASSIFIED_COLOR;
 }
 
 export const VENDOR_RISK_COLORS: Record<ProgramVendorRisk, string> = {
-  CRITICAL: "#dc2626",
-  HIGH: "#ea580c",
-  MEDIUM: "#d97706",
-  LOW: "#059669",
+  CRITICAL: TIER.UNACCEPTABLE,
+  HIGH: TIER.HIGH,
+  MEDIUM: TIER.LIMITED,
+  LOW: TIER.MINIMAL,
 };
 
 // ── Glyph states ────────────────────────────────────────────────────

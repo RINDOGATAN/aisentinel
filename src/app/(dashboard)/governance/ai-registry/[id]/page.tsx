@@ -64,6 +64,7 @@ import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { AnnexIvCard } from "@/components/ai/AnnexIvCard";
 import { TransparencyPanel } from "@/components/governance/TransparencyPanel";
 import { AdmtPanel } from "@/components/governance/AdmtPanel";
+import { TierChip } from "@/components/governance/risk-tier-badge";
 import { UnifiedPanel } from "@/components/governance/UnifiedPanel";
 import { AgentPanel } from "@/components/governance/AgentPanel";
 import { TransparencyStatementCard } from "@/components/ai/TransparencyStatementCard";
@@ -76,13 +77,6 @@ const statusColors: Record<string, string> = {
   TESTING: "border-warning text-warning",
   DEPLOYED: "border-success text-success",
   RETIRED: "border-muted-foreground/50 text-muted-foreground/50",
-};
-
-const riskLevelColors: Record<string, string> = {
-  UNACCEPTABLE: "bg-destructive text-destructive-foreground",
-  HIGH: "bg-destructive/80 text-destructive-foreground",
-  LIMITED: "bg-warning/20 text-warning",
-  MINIMAL: "bg-success/20 text-success",
 };
 
 const dataSourceTypeColors: Record<string, string> = {
@@ -630,9 +624,9 @@ export default function AISystemDetailPage() {
                   </Select>
                 )}
                 {riskLevel && (
-                  <Badge className={riskLevelColors[riskLevel] || ""}>
+                  <TierChip level={riskLevel}>
                     {tc("riskWithLevel", { level: riskLabel(riskLevel) })}
-                  </Badge>
+                  </TierChip>
                 )}
               </div>
             </div>
@@ -834,15 +828,12 @@ export default function AISystemDetailPage() {
                             {gap.frameworkCode}
                           </Badge>
                           <span className="font-medium shrink-0">{gap.code}</span>
-                          <Badge
-                            className={`text-xs shrink-0 ml-auto ${
-                              gap.status === "NON_COMPLIANT"
-                                ? "bg-red-500/10 text-red-400 border-red-500/20"
-                                : "bg-muted text-muted-foreground border-border"
-                            }`}
+                          <TierChip
+                            level={gap.status === "NON_COMPLIANT" ? "CRITICAL" : null}
+                            className="text-xs shrink-0 ml-auto"
                           >
                             {gap.status === "NON_COMPLIANT" ? tc("complianceNonCompliant") : tc("complianceNotAssessed")}
-                          </Badge>
+                          </TierChip>
                         </div>
                         <p className="text-muted-foreground text-xs mt-1 ml-6 line-clamp-1">
                           {gap.title}
@@ -954,15 +945,9 @@ export default function AISystemDetailPage() {
                     <p className="font-medium">{system.vendor.name}</p>
                     <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                       {system.vendor.riskLevel && (
-                        <Badge className={`text-xs ${
-                          system.vendor.riskLevel === "CRITICAL" || system.vendor.riskLevel === "HIGH"
-                            ? "bg-destructive/20 text-destructive"
-                            : system.vendor.riskLevel === "MEDIUM"
-                              ? "bg-warning/20 text-warning"
-                              : "bg-success/20 text-success"
-                        }`}>
+                        <TierChip level={system.vendor.riskLevel} className="text-xs">
                           {tc("riskWithLevel", { level: riskLabel(system.vendor.riskLevel) })}
-                        </Badge>
+                        </TierChip>
                       )}
                       <Badge variant="outline" className="text-xs">
                         {statusLabel(system.vendor.status)}
@@ -1209,13 +1194,12 @@ export default function AISystemDetailPage() {
               {system.riskClassification ? (
                 <div className="space-y-4">
                   <div className="flex items-center gap-4">
-                    <Badge
-                      className={`text-sm px-3 py-1 ${
-                        riskLevelColors[system.riskClassification.riskLevel] || ""
-                      }`}
+                    <TierChip
+                      level={system.riskClassification.riskLevel}
+                      className="text-sm px-3 py-1"
                     >
                       {tc("riskWithLevel", { level: riskLabel(system.riskClassification.riskLevel) })}
-                    </Badge>
+                    </TierChip>
                     {system.riskClassification.annexIIICategory && (
                       <Badge variant="outline" className="text-xs">
                         {t("annexIIIPrefix", { category: system.riskClassification.annexIIICategory })}

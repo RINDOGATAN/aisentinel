@@ -2,6 +2,8 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { getTranslations } from "next-intl/server";
+import { TierMarker } from "@/components/governance/risk-tier-badge";
+import { TIER_BORDER_L_CLASS } from "@/config/risk-tier-palette";
 
 export async function generateMetadata() {
   const t = await getTranslations("docs.riskClassification");
@@ -11,11 +13,12 @@ export async function generateMetadata() {
   };
 }
 
+// Tier shown by a coloured left bar and dot; text stays the body colour.
 const tierStyles = [
-  { key: "unacceptable", color: "bg-red-500/10 text-red-400 border-red-500/20" },
-  { key: "high", color: "bg-orange-500/10 text-orange-400 border-orange-500/20" },
-  { key: "limited", color: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20" },
-  { key: "minimal", color: "bg-green-500/10 text-green-400 border-green-500/20" },
+  { key: "unacceptable", tier: "UNACCEPTABLE" },
+  { key: "high", tier: "HIGH" },
+  { key: "limited", tier: "LIMITED" },
+  { key: "minimal", tier: "MINIMAL" },
 ] as const;
 
 export default async function RiskClassificationDocsPage() {
@@ -52,9 +55,12 @@ export default async function RiskClassificationDocsPage() {
           {tierStyles.map((tier) => (
             <div
               key={tier.key}
-              className={`rounded-xl border p-5 ${tier.color}`}
+              className={`rounded-xl border border-border border-l-4 bg-card text-foreground p-5 ${TIER_BORDER_L_CLASS[tier.tier]}`}
             >
-              <h3 className="text-lg font-semibold mb-2">{t(`tiers.${tier.key}.level`)}</h3>
+              <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
+                <TierMarker level={tier.tier} />
+                {t(`tiers.${tier.key}.level`)}
+              </h3>
               <p className="text-sm opacity-90 leading-relaxed mb-3">{t(`tiers.${tier.key}.description`)}</p>
               <p className="text-xs opacity-70">
                 <span className="font-medium">{t("examplesLabel")}</span> {t(`tiers.${tier.key}.examples`)}

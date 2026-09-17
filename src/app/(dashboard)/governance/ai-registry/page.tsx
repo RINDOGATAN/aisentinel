@@ -33,6 +33,7 @@ import { keepPreviousData } from "@tanstack/react-query";
 import { trpc } from "@/lib/trpc";
 import { useTranslations, useLocale } from "next-intl";
 import { InventoryImportDialog } from "@/components/governance/InventoryImportDialog";
+import { RiskTierBadge } from "@/components/governance/risk-tier-badge";
 import { useEnumLabels } from "@/lib/enum-labels";
 import { useOrganization } from "@/lib/organization-context";
 import { useExportDownload } from "@/components/governance/use-export-download";
@@ -46,13 +47,6 @@ const statusColors: Record<string, string> = {
   TESTING: "border-warning text-warning",
   DEPLOYED: "border-success text-success",
   RETIRED: "border-muted-foreground/50 text-muted-foreground/50",
-};
-
-const riskLevelColors: Record<string, string> = {
-  UNACCEPTABLE: "bg-destructive text-destructive-foreground",
-  HIGH: "bg-destructive/80 text-destructive-foreground",
-  LIMITED: "bg-warning/20 text-warning",
-  MINIMAL: "bg-success/20 text-success",
 };
 
 const techniqueLabels: Record<string, string> = {
@@ -88,7 +82,7 @@ export default function AIRegistryPage() {
   const t = useTranslations("aiRegistry");
   const locale = useLocale();
   const tc = useTranslations("common");
-  const { statusLabel, riskLabel, roleLabel } = useEnumLabels();
+  const { statusLabel, roleLabel } = useEnumLabels();
 
   // While the organization context is still resolving, `canWrite` is false
   // even for owners — don't hide the Register button on that transient state,
@@ -270,11 +264,7 @@ export default function AIRegistryPage() {
                                 {statusLabel(system.status)}
                               </Badge>
                               {riskLevel && (
-                                <Badge
-                                  className={`text-xs ${riskLevelColors[riskLevel] || ""}`}
-                                >
-                                  {riskLabel(riskLevel)}
-                                </Badge>
+                                <RiskTierBadge level={riskLevel} className="text-xs" />
                               )}
                             </div>
                           </div>

@@ -46,6 +46,12 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  --color-tier-unacceptable: var(--tier-unacceptable);
+  --color-tier-high: var(--tier-high);
+  --color-tier-limited: var(--tier-limited);
+  --color-tier-minimal: var(--tier-minimal);
+  --color-tier-unclassified: var(--tier-unclassified);
+  --color-tier-chip: var(--tier-chip);
   --radius-sm: 0.5rem;
   --radius-md: 0.75rem;
   --radius-lg: 1rem;
@@ -100,6 +106,15 @@
   --sidebar-accent-foreground: #fefeff;
   --sidebar-border: #333333;
   --sidebar-ring: #f5a623;
+  /* Risk-tier markers + neutral chip fill. Mirrors TIER_MARKER.dark and
+     TIER_SURFACES.dark.chip in src/config/risk-tier-palette.ts (a test
+     fails if they drift). Tier text always uses --foreground. */
+  --tier-unacceptable: #f2665c;
+  --tier-high: #f08a4b;
+  --tier-limited: #5aa9e6;
+  --tier-minimal: #9aa5b1;
+  --tier-unclassified: #a0a0a0;
+  --tier-chip: #2e2e2e;
 }
 
 .dark {
@@ -141,6 +156,12 @@
   --sidebar-accent-foreground: #fefeff;
   --sidebar-border: #333333;
   --sidebar-ring: #f5a623;
+  --tier-unacceptable: #f2665c;
+  --tier-high: #f08a4b;
+  --tier-limited: #5aa9e6;
+  --tier-minimal: #9aa5b1;
+  --tier-unclassified: #a0a0a0;
+  --tier-chip: #2e2e2e;
 }
 
 @layer base {

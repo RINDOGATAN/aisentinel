@@ -239,6 +239,8 @@
     "programCtaDescription": "Consulta el mapa de gobernanza, el cuadro de madurez y el plan de 90 días, y exporta el programa en PDF para compartirlo.",
     "programCtaButton": "Ver programa",
     "switchOrganization": "Cambiar",
+    "switcherMyClients": "Mis clientes",
+    "switcherAddOrganization": "+ Añadir organización",
     "noComplianceMappings": "Todavía no hay correspondencias de cumplimiento",
     "systemActor": "Sistema"
   },
@@ -5136,6 +5138,12 @@
   "premiumShowcase": {
     "lockedHint": "Forma parte de un módulo de pago en esta instancia alojada. Al autoalojarlo, todos los módulos están incluidos.",
     "activate": "Activar una licencia",
-    "buy": "Ver los módulos"
+    "buy": "Ver los módulos",
+    "exportLockedTitle": "Este módulo se licencia para instalaciones autoalojadas",
+    "exportLockedBody": "El documento forma parte de un módulo de pago en esta instancia alojada. Al autoalojarlo, todos los módulos están incluidos.",
+    "seePricing": "Ver precios",
+    "exportFailedTitle": "No se ha podido generar el documento",
+    "exportFailedBody": "No se ha descargado nada. Vuelve a intentarlo en un momento.",
+    "retry": "Reintentar"
   }
 }

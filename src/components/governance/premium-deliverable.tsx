@@ -14,10 +14,11 @@
 
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { Download, Lock } from "lucide-react";
+import { Download, Loader2, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { trpc } from "@/lib/trpc";
 import type { ShowcaseFeature } from "@/config/premium-showcase";
+import { useExportDownload } from "@/components/governance/use-export-download";
 
 export function PremiumDeliverable({
   organizationId,
@@ -33,6 +34,7 @@ export function PremiumDeliverable({
   variant?: "default" | "outline";
 }) {
   const t = useTranslations("premiumShowcase");
+  const { download, isPending } = useExportDownload();
 
   const { data } = trpc.skills.showcaseStatus.useQuery(
     { organizationId },
@@ -43,11 +45,13 @@ export function PremiumDeliverable({
 
   if (!locked) {
     return (
-      <Button asChild variant={variant}>
-        <a href={href}>
+      <Button variant={variant} disabled={isPending(href)} onClick={() => void download(href)}>
+        {isPending(href) ? (
+          <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />
+        ) : (
           <Download className="w-4 h-4 mr-1.5" />
-          {label}
-        </a>
+        )}
+        {label}
       </Button>
     );
   }

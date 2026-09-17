@@ -11,6 +11,7 @@ import { trpc } from "@/lib/trpc";
 import { useUserType } from "@/lib/use-user-type";
 import { toast } from "sonner";
 import type { UserType } from "@prisma/client";
+import { DEFAULT_USER_TYPE } from "@/lib/account-mode";
 
 // In-house counsel, compliance leads and DPOs are governance professionals
 // too, so the choice is framed by whose AI is governed, not by job title.
@@ -31,7 +32,9 @@ const personas = [
 ] as const;
 
 export function PersonaSelector() {
-  const [selected, setSelected] = useState<UserType | null>(null);
+  // A new account starts in own-organization mode; the other choice is one
+  // click away here and in Settings.
+  const [selected, setSelected] = useState<UserType | null>(DEFAULT_USER_TYPE);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { refreshSession } = useUserType();
   const t = useTranslations("onboarding");

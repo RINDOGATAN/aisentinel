@@ -158,6 +158,25 @@ describe("refreshed docs pages", () => {
   }
 });
 
+describe("docs header on a phone", () => {
+  for (const locale of ["en", "es"] as const) {
+    it(`keeps the wordmark and the links on one line in ${locale}`, async () => {
+      const html = await render(locale, async () => {
+        const Layout = (await import("../layout")).default;
+        return <Layout>{null}</Layout>;
+      });
+      const header = html.slice(html.indexOf("<header"), html.indexOf("</header>"));
+      expect(header).toMatch(/<span class="[^"]*whitespace-nowrap[^"]*"[^>]*>AI SENTINEL<\/span>/);
+      // Full logo from sm up; the mark alone below.
+      expect(header).toMatch(/<img src="\/logo-negative.svg" alt="TODO.LAW" class="hidden sm:block"/);
+      expect(header).toMatch(/<img src="\/simbol-negative.svg" alt="TODO.LAW" class="sm:hidden"/);
+      const l = MESSAGES[locale].docs.layout;
+      expect(header).toMatch(new RegExp(`class="hidden sm:inline whitespace-nowrap[^"]*"[^>]*>${l.headerDocs}<`));
+      expect(header).toMatch(new RegExp(`class="whitespace-nowrap[^"]*"[^>]*>${l.headerSignIn}<`));
+    });
+  }
+});
+
 describe("wide tables scroll inside their own box", () => {
   for (const name of ["table", "compare"] as const) {
     it(`the ${name} page keeps min-w-0 from the page wrapper to the scroll box`, async () => {

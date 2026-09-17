@@ -78,29 +78,33 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b border-border sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        {/* Below sm the header must hold on one line at 390 px, in both languages:
+            tighter gaps, the logo mark without its TODO.LAW wordmark, and no "Docs"
+            link (the reader is already in the docs; the menu leads to the start). */}
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 sm:gap-4 min-w-0">
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
               className="md:hidden p-2 rounded-md hover:bg-secondary transition-colors"
             >
               {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
-            <Link href="/" className="flex items-center gap-2">
-              <img src="/logo-negative.svg" alt="TODO.LAW" style={{ height: "28px", width: "auto" }} />
-              <span className="text-lg tracking-tight" style={{ fontFamily: "var(--font-jost), 'Jost', sans-serif", fontWeight: 600 }}>AI SENTINEL</span>
+            <Link href="/" className="flex items-center gap-2 shrink-0">
+              <img src="/logo-negative.svg" alt="TODO.LAW" className="hidden sm:block" style={{ height: "28px", width: "auto" }} />
+              <img src="/simbol-negative.svg" alt="TODO.LAW" className="sm:hidden" style={{ height: "28px", width: "auto" }} />
+              <span className="text-lg tracking-tight whitespace-nowrap" style={{ fontFamily: "var(--font-jost), 'Jost', sans-serif", fontWeight: 600 }}>AI SENTINEL</span>
             </Link>
           </div>
-          <nav className="flex items-center gap-4">
+          <nav className="flex items-center gap-2 sm:gap-4 shrink-0">
             <Link
               href="/docs"
-              className="text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+              className="hidden sm:inline whitespace-nowrap text-sm font-medium text-primary hover:text-primary/80 transition-colors"
             >
               {t("headerDocs")}
             </Link>
             <Link
               href="/sign-in"
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              className="whitespace-nowrap text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               {t("headerSignIn")}
             </Link>

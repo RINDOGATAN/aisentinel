@@ -3849,6 +3849,162 @@
       "selfHosted": "Con licencia para instalaciones autoalojadas.",
       "seePricing": "Ver precios",
       "newTab": "(se abre en una pestaña nueva)"
+    },
+    "frameworks": {
+      "meta": {
+        "overviewTitle": "Marcos de gobernanza de la IA comparados: documentación de AI SENTINEL",
+        "tableTitle": "Tabla de marcos: documentación de AI SENTINEL",
+        "compareTitle": "Comparar marcos: documentación de AI SENTINEL",
+        "selectorTitle": "¿Qué marcos? Documentación de AI SENTINEL",
+        "description": "Doce marcos de gobernanza de la IA comparados en catorce dimensiones, con un selector que sugiere por dónde empezar. Material de aprendizaje, no asesoramiento jurídico."
+      },
+      "title": "Marcos de gobernanza de la IA",
+      "intro": "Doce marcos de gobernanza de la IA muy utilizados, comparados en catorce dimensiones. Cada celda indica una profundidad de 0 a 3, una frase, la fuente oficial y el módulo de AI SENTINEL que le da soporte.",
+      "asOf": "Datos a {date}",
+      "disclaimer": "Material de aprendizaje, no asesoramiento jurídico.",
+      "contentInEnglish": "El contenido de los marcos en estas páginas está en inglés.",
+      "stats": "{frameworks} marcos, {rings} dimensiones, {cells} celdas, {review} en revisión.",
+      "method": "Cada celda se contrastó con el texto oficial cuando ese texto pudo consultarse en la fecha indicada. Las celdas que no pudieron contrastarse se marcan «En revisión», se dibujan rayadas y no afirman nada. La profundidad es una lectura editorial de hasta dónde llega un marco en una dimensión, no una nota de calidad.",
+      "footerNote": "Cuando se menciona AI SENTINEL, da soporte a la dimensión o la mapea; no certifica nada. Las fechas son las que indican los textos oficiales en la fecha mostrada.",
+      "views": {
+        "overview": "Rueda",
+        "table": "Tabla",
+        "compare": "Comparar",
+        "selector": "¿Qué marcos?",
+        "label": "Vistas de los marcos"
+      },
+      "depth": {
+        "title": "Profundidad",
+        "legend": "Profundidad, de 0 (mínima) a 3 (máxima)",
+        "value": "{depth} de 3"
+      },
+      "underReview": "En revisión",
+      "underReviewNote": "La fuente de esta celda aún se está comprobando, por lo que no se muestra ningún resumen.",
+      "wheel": {
+        "label": "Rueda: una porción por marco y un anillo por dimensión. Usa las flechas para moverte entre celdas e Intro para abrir una.",
+        "cell": "{framework}, {dimension}: profundidad {depth} de 3",
+        "cellReview": "{framework}, {dimension}: profundidad {depth} de 3, en revisión",
+        "rim": "borde: {ring}",
+        "core": "centro: {ring}",
+        "sliceKey": "Números de porción, en el sentido de las agujas del reloj desde arriba",
+        "help": "Selecciona una celda para ver su detalle. Selecciona el nombre de un marco para compararlo. La tabla contiene los mismos datos en texto.",
+        "tableLink": "Abrir la tabla"
+      },
+      "rings": {
+        "title": "Dimensiones, del borde al centro",
+        "help": "Selecciona una dimensión para resaltarla en todos los marcos; vuelve a seleccionarla para quitar el resaltado.",
+        "depthMeaning": "Cómo se lee aquí la profundidad: {meaning}"
+      },
+      "detail": {
+        "empty": "Selecciona una celda de la rueda para ver aquí su detalle.",
+        "summary": "En una frase",
+        "source": "Fuente",
+        "foundIn": "Presente en el código en {file}",
+        "note": "Nota",
+        "modules": "Módulo de AI SENTINEL que le da soporte",
+        "relatedDocs": "Guía relacionada",
+        "framework": "Marco",
+        "officialText": "Texto oficial",
+        "close": "Cerrar",
+        "compare": "Comparar este marco",
+        "dialogLabel": "Detalle de la celda"
+      },
+      "table": {
+        "help": "Selecciona el encabezado de una columna para ordenar por profundidad; selecciona una celda para ver su detalle. La tabla se desplaza dentro de su recuadro.",
+        "framework": "Marco",
+        "caption": "Todos los marcos en todas las dimensiones, con profundidad y resumen"
+      },
+      "compare": {
+        "pick": "Marcos que comparar",
+        "help": "Elige dos o tres marcos.",
+        "max": "Tres como máximo: quita uno para elegir otro.",
+        "dimension": "Dimensión"
+      },
+      "selector": {
+        "intro": "Responde a seis preguntas. La página muestra los marcos que se aplican o encajan, ordenados y cada uno con su razonamiento, y sugiere una combinación: las leyes vinculantes, un sistema de gestión y un método de riesgos.",
+        "caveat": "Material de aprendizaje, no asesoramiento jurídico. El selector indica qué revisar primero; no decide si una ley se aplica. También pueden aplicarse leyes que no recoge esta guía (por ejemplo, de protección de datos, sectoriales o contra la discriminación).",
+        "needJurisdiction": "Marca al menos una jurisdicción.",
+        "noMatch": "Ninguna regla coincide. Añade una jurisdicción o un sector.",
+        "resultsTitle": "Marcos que se aplican o encajan, por orden",
+        "bindingTag": "se aplica (ley vinculante)",
+        "also": "Además: {reasons}",
+        "points": "{score} puntos",
+        "stackTitle": "Combinación sugerida",
+        "bindingLaws": "Leyes vinculantes",
+        "noBinding": "ninguna de las leyes de esta guía, con estas respuestas (puede aplicarse otra normativa)",
+        "managementSystem": "Un sistema de gestión",
+        "riskMethod": "Un método de riesgos",
+        "noSuggestion": "sin sugerencia",
+        "whyTitle": "Por qué este resultado",
+        "whyIntro": "Cada regla suma su puntuación a un marco cuando se cumplen todas las condiciones indicadas (cualquiera de los valores enumerados). Las leyes vinculantes van primero y después se ordena por puntuación. La combinación toma la primera regla que coincide en cada lista. Las reglas que coinciden con tus respuestas aparecen marcadas.",
+        "always": "siempre",
+        "when": "cuando {conditions}",
+        "condition": "{input} es {values}",
+        "or": " o ",
+        "and": ", y ",
+        "binding": "vinculante",
+        "matched": "coincide",
+        "stackRule": "{slot}, regla {n}"
+      },
+      "inputs": {
+        "jurisdictions": {
+          "label": "Jurisdicciones",
+          "options": {
+            "eu": "UE",
+            "uk": "Reino Unido",
+            "us_fed": "EE. UU. (federal)",
+            "co": "Colorado",
+            "tx": "Texas",
+            "ca": "California",
+            "nyc": "Ciudad de Nueva York",
+            "sg": "Singapur",
+            "other": "Otra"
+          }
+        },
+        "role": {
+          "label": "Rol",
+          "options": {
+            "provider": "Proveedor o desarrollador",
+            "deployer": "Responsable del despliegue",
+            "both": "Ambos"
+          }
+        },
+        "sector": {
+          "label": "Sector",
+          "options": {
+            "general": "General",
+            "employment": "Empleo",
+            "health": "Salud",
+            "finance": "Finanzas",
+            "education": "Educación",
+            "public": "Sector público"
+          }
+        },
+        "risk": {
+          "label": "Nivel de riesgo",
+          "options": {
+            "unknown": "Aún no se sabe",
+            "high": "Alto",
+            "limited": "Limitado",
+            "minimal": "Mínimo"
+          }
+        },
+        "assurance": {
+          "label": "Se necesita un certificado o una verificación externa",
+          "options": {
+            "no": "No",
+            "yes": "Sí"
+          }
+        },
+        "size": {
+          "label": "Tamaño de la organización",
+          "options": {
+            "small": "Pequeña",
+            "medium": "Mediana",
+            "large": "Grande"
+          }
+        }
+      }
     }
   },
   "program": {

@@ -28,15 +28,20 @@ import {
   Users,
   Globe2,
   Sparkles,
+  CircleDot,
+  Table2,
+  Columns3,
+  ListChecks,
 } from "lucide-react";
 import { useState } from "react";
+import { PremiumNotice } from "@/components/docs/premium-notice";
 
 type SidebarItem = {
   href: string;
   labelKey: string;
   icon: React.ComponentType<{ className?: string }>;
   exact?: boolean;
-  premium?: boolean;
+  group?: "frameworks" | "premium";
 };
 
 const sidebarItems: SidebarItem[] = [
@@ -51,10 +56,14 @@ const sidebarItems: SidebarItem[] = [
   { href: "/docs/compliance", labelKey: "compliance", icon: Scale },
   { href: "/docs/vendors", labelKey: "vendors", icon: Building2 },
   { href: "/docs/policies", labelKey: "policies", icon: ScrollText },
-  { href: "/docs/shadow-ai", labelKey: "shadowAi", icon: Search, premium: true },
-  { href: "/docs/vendor-catalog", labelKey: "vendorCatalog", icon: BookMarked, premium: true },
-  { href: "/docs/conformity-assessment", labelKey: "conformity", icon: FileCheck, premium: true },
-  { href: "/docs/bias-fairness", labelKey: "biasFairness", icon: Activity, premium: true },
+  { href: "/docs/frameworks", labelKey: "frameworksOverview", icon: CircleDot, exact: true, group: "frameworks" },
+  { href: "/docs/frameworks/table", labelKey: "frameworksTable", icon: Table2, group: "frameworks" },
+  { href: "/docs/frameworks/compare", labelKey: "frameworksCompare", icon: Columns3, group: "frameworks" },
+  { href: "/docs/frameworks/selector", labelKey: "frameworksSelector", icon: ListChecks, group: "frameworks" },
+  { href: "/docs/shadow-ai", labelKey: "shadowAi", icon: Search, group: "premium" },
+  { href: "/docs/vendor-catalog", labelKey: "vendorCatalog", icon: BookMarked, group: "premium" },
+  { href: "/docs/conformity-assessment", labelKey: "conformity", icon: FileCheck, group: "premium" },
+  { href: "/docs/bias-fairness", labelKey: "biasFairness", icon: Activity, group: "premium" },
   { href: "/docs/roles", labelKey: "roles", icon: Users },
   { href: "/docs/security", labelKey: "security", icon: Shield },
   { href: "/docs/whats-new", labelKey: "whatsNew", icon: Sparkles },
@@ -114,16 +123,17 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
                 const isActive = item.exact
                   ? pathname === item.href
                   : pathname === item.href || pathname.startsWith(item.href + "/");
-                const showPremiumLabel =
-                  item.premium && (i === 0 || !sidebarItems[i - 1].premium);
+                const startsGroup =
+                  item.group && (i === 0 || sidebarItems[i - 1].group !== item.group);
 
                 return (
                   <div key={item.href}>
-                    {showPremiumLabel && (
+                    {startsGroup && (
                       <div className="px-3 pt-4 pb-1 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
-                        {t("premiumLabel")}
+                        {t(item.group === "premium" ? "premiumLabel" : "frameworksLabel")}
                       </div>
                     )}
+                    {startsGroup && item.group === "premium" && <PremiumNotice variant="compact" />}
                     <Link
                       href={item.href}
                       onClick={() => setSidebarOpen(false)}

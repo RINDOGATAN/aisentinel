@@ -3849,6 +3849,162 @@
       "selfHosted": "Licensed for self-hosted installations.",
       "seePricing": "See pricing",
       "newTab": "(opens in a new tab)"
+    },
+    "frameworks": {
+      "meta": {
+        "overviewTitle": "AI governance frameworks compared: AI SENTINEL Docs",
+        "tableTitle": "Frameworks table: AI SENTINEL Docs",
+        "compareTitle": "Compare frameworks: AI SENTINEL Docs",
+        "selectorTitle": "Which frameworks? AI SENTINEL Docs",
+        "description": "Twelve AI governance frameworks compared on fourteen dimensions, with a selector that suggests where to start. A learning aid, not legal advice."
+      },
+      "title": "AI governance frameworks",
+      "intro": "Twelve widely used AI governance frameworks compared on fourteen dimensions. Each cell gives a depth from 0 to 3, one sentence, the official source, and the AI SENTINEL module that supports it.",
+      "asOf": "As of {date}",
+      "disclaimer": "A learning aid, not legal advice.",
+      "contentInEnglish": "The framework content on these pages is in English.",
+      "stats": "{frameworks} frameworks, {rings} dimensions, {cells} cells, {review} under review.",
+      "method": "Each cell was checked against the official text where that text could be read on the date shown. Cells that could not be checked are marked “Under review”, drawn hatched, and make no claim. Depth is an editorial reading of how far a framework goes on a dimension, not a score of quality.",
+      "footerNote": "Where AI SENTINEL is mentioned, it supports or maps to the dimension; it does not certify anything. Dates are those the official texts state on the date shown.",
+      "views": {
+        "overview": "Wheel",
+        "table": "Table",
+        "compare": "Compare",
+        "selector": "Which frameworks?",
+        "label": "Frameworks views"
+      },
+      "depth": {
+        "title": "Depth",
+        "legend": "Depth, from 0 (least) to 3 (most)",
+        "value": "{depth} of 3"
+      },
+      "underReview": "Under review",
+      "underReviewNote": "The source for this cell is still being checked, so no summary is shown.",
+      "wheel": {
+        "label": "Wheel: one slice per framework, one ring per dimension. Use the arrow keys to move between cells and Enter to open one.",
+        "cell": "{framework}, {dimension}: depth {depth} of 3",
+        "cellReview": "{framework}, {dimension}: depth {depth} of 3, under review",
+        "rim": "rim: {ring}",
+        "core": "centre: {ring}",
+        "sliceKey": "Slice numbers, clockwise from the top",
+        "help": "Select a cell to see its detail. Select a framework name to compare it. The table carries the same data as text.",
+        "tableLink": "Open the table"
+      },
+      "rings": {
+        "title": "Dimensions, rim to centre",
+        "help": "Select a dimension to highlight it across every framework; select it again to clear.",
+        "depthMeaning": "How depth is read here: {meaning}"
+      },
+      "detail": {
+        "empty": "Select a cell in the wheel to see its detail here.",
+        "summary": "In one sentence",
+        "source": "Source",
+        "foundIn": "Found in the code at {file}",
+        "note": "Note",
+        "modules": "AI SENTINEL module that supports it",
+        "relatedDocs": "Related guide",
+        "framework": "Framework",
+        "officialText": "Official text",
+        "close": "Close",
+        "compare": "Compare this framework",
+        "dialogLabel": "Cell detail"
+      },
+      "table": {
+        "help": "Select a column heading to sort by depth; select a cell to see its detail. The table scrolls inside its box.",
+        "framework": "Framework",
+        "caption": "Every framework on every dimension, with depth and summary"
+      },
+      "compare": {
+        "pick": "Frameworks to compare",
+        "help": "Pick two or three frameworks.",
+        "max": "Three at most: clear one to pick another.",
+        "dimension": "Dimension"
+      },
+      "selector": {
+        "intro": "Answer six questions. The page lists the frameworks that apply or fit, ranked, each with its reasoning, and suggests a stack: the binding laws, one management system and one risk method.",
+        "caveat": "A learning aid, not legal advice. The selector points at what to check first; it does not decide whether a law applies. Laws outside this aid (for example data protection, sector and anti-discrimination law) may also apply.",
+        "needJurisdiction": "Tick at least one jurisdiction.",
+        "noMatch": "No rule matched. Add a jurisdiction or a sector.",
+        "resultsTitle": "Frameworks that apply or fit, ranked",
+        "bindingTag": "applies (binding law)",
+        "also": "Also: {reasons}",
+        "points": "{score} points",
+        "stackTitle": "Suggested stack",
+        "bindingLaws": "Binding laws",
+        "noBinding": "none of the laws in this aid, on these answers (other law may still apply)",
+        "managementSystem": "One management system",
+        "riskMethod": "One risk method",
+        "noSuggestion": "no suggestion",
+        "whyTitle": "Why this result",
+        "whyIntro": "Each rule adds its score to a framework when every listed condition matches (any of the listed values). Binding laws rank first, then by score. The stack takes the first matching rule in each list. Rules that matched your answers are marked.",
+        "always": "always",
+        "when": "when {conditions}",
+        "condition": "{input} is {values}",
+        "or": " or ",
+        "and": ", and ",
+        "binding": "binding",
+        "matched": "matched",
+        "stackRule": "{slot}, rule {n}"
+      },
+      "inputs": {
+        "jurisdictions": {
+          "label": "Jurisdictions",
+          "options": {
+            "eu": "EU",
+            "uk": "UK",
+            "us_fed": "US federal",
+            "co": "Colorado",
+            "tx": "Texas",
+            "ca": "California",
+            "nyc": "New York City",
+            "sg": "Singapore",
+            "other": "Other"
+          }
+        },
+        "role": {
+          "label": "Role",
+          "options": {
+            "provider": "Provider or developer",
+            "deployer": "Deployer",
+            "both": "Both"
+          }
+        },
+        "sector": {
+          "label": "Sector",
+          "options": {
+            "general": "General",
+            "employment": "Employment",
+            "health": "Health",
+            "finance": "Finance",
+            "education": "Education",
+            "public": "Public sector"
+          }
+        },
+        "risk": {
+          "label": "Risk level",
+          "options": {
+            "unknown": "Not yet known",
+            "high": "High",
+            "limited": "Limited",
+            "minimal": "Minimal"
+          }
+        },
+        "assurance": {
+          "label": "Certificate or external assurance needed",
+          "options": {
+            "no": "No",
+            "yes": "Yes"
+          }
+        },
+        "size": {
+          "label": "Organization size",
+          "options": {
+            "small": "Small",
+            "medium": "Medium",
+            "large": "Large"
+          }
+        }
+      }
     }
   },
   "program": {

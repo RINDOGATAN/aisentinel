@@ -35,6 +35,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
+import { useExportDownload } from "@/components/governance/use-export-download";
 import { useNow } from "@/lib/use-now";
 import {
   CONTROL_LAYER_LABELS,
@@ -69,6 +70,7 @@ export default function ThreatModelDetailPage() {
   const router = useRouter();
   const id = params.id as string;
   const { organization, canWrite } = useOrganization();
+  const { download, isPending: downloadPending } = useExportDownload();
   const orgId = organization?.id ?? "";
   const utils = trpc.useUtils();
   const now = useNow();
@@ -607,10 +609,14 @@ export default function ThreatModelDetailPage() {
       )}
 
       <div className="flex flex-wrap gap-2">
-        <Button asChild variant="outline">
-          <a href={`/api/export/threat-model?organizationId=${orgId}&id=${id}&locale=${lang}`}>
-            {t("download")}
-          </a>
+        <Button
+          variant="outline"
+          disabled={downloadPending()}
+          onClick={() =>
+            void download(`/api/export/threat-model?organizationId=${orgId}&id=${id}&locale=${lang}`)
+          }
+        >
+          {t("download")}
         </Button>
         {canWrite && (
           <Button

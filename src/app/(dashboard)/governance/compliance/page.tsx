@@ -8,6 +8,7 @@ import Link from "next/link";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { useOrganization } from "@/lib/organization-context";
+import { useExportDownload } from "@/components/governance/use-export-download";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -153,6 +154,7 @@ export default function CompliancePage() {
   const t = useTranslations("compliance");
   const tc = useTranslations("common");
   const { organization } = useOrganization();
+  const { download } = useExportDownload();
   const orgId = organization?.id ?? "";
   const searchParams = useSearchParams();
 
@@ -294,9 +296,8 @@ export default function CompliancePage() {
                 onClick={() => {
                   const fw = frameworks?.find((f) => f.id === (selectedFrameworkId || frameworks[0]?.id));
                   if (fw && selectedSystemId && organization?.id) {
-                    window.open(
+                    void download(
                       `/api/export/compliance-summary?organizationId=${organization.id}&aiSystemId=${selectedSystemId}&frameworkId=${fw.id}`,
-                      "_blank"
                     );
                   }
                 }}

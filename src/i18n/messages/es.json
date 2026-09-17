@@ -5136,6 +5136,12 @@
   "premiumShowcase": {
     "lockedHint": "Forma parte de un módulo de pago en esta instancia alojada. Al autoalojarlo, todos los módulos están incluidos.",
     "activate": "Activar una licencia",
-    "buy": "Ver los módulos"
+    "buy": "Ver los módulos",
+    "exportLockedTitle": "Este módulo se licencia para instalaciones autoalojadas",
+    "exportLockedBody": "El documento forma parte de un módulo de pago en esta instancia alojada. Al autoalojarlo, todos los módulos están incluidos.",
+    "seePricing": "Ver precios",
+    "exportFailedTitle": "No se ha podido generar el documento",
+    "exportFailedBody": "No se ha descargado nada. Vuelve a intentarlo en un momento.",
+    "retry": "Reintentar"
   }
 }

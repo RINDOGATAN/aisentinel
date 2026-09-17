@@ -35,6 +35,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { InventoryImportDialog } from "@/components/governance/InventoryImportDialog";
 import { useEnumLabels } from "@/lib/enum-labels";
 import { useOrganization } from "@/lib/organization-context";
+import { useExportDownload } from "@/components/governance/use-export-download";
 import { useDebounce } from "@/hooks/use-debounce";
 import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
 import { formatRelativeTime } from "@/lib/utils";
@@ -83,6 +84,7 @@ export default function AIRegistryPage() {
   const [activeTab, setActiveTab] = useState("all");
   const debouncedSearch = useDebounce(searchQuery);
   const { organization, organizations, canWrite, isLoading: orgLoading } = useOrganization();
+  const { download } = useExportDownload();
   const t = useTranslations("aiRegistry");
   const locale = useLocale();
   const tc = useTranslations("common");
@@ -145,11 +147,11 @@ export default function AIRegistryPage() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => window.open(`/api/export/ai-system-register?organizationId=${organization?.id}`, "_blank")}>
+              <DropdownMenuItem onClick={() => organization?.id && void download(`/api/export/ai-system-register?organizationId=${organization.id}`)}>
                 <FileText className="w-4 h-4 mr-2" />
                 {t("exportRegisterPdf")}
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => window.open(`/api/export/model-inventory?organizationId=${organization?.id}`, "_blank")}>
+              <DropdownMenuItem onClick={() => organization?.id && void download(`/api/export/model-inventory?organizationId=${organization.id}`)}>
                 <FileText className="w-4 h-4 mr-2" />
                 {t("exportModelInventoryPdf")}
               </DropdownMenuItem>

@@ -60,6 +60,7 @@ import {
   suggestScenarios,
 } from "@/config/threat-model";
 import { ProgramMap } from "@/components/governance/program/ProgramMap";
+import { useExportDownload } from "@/components/governance/use-export-download";
 import { JurisdictionPicker } from "@/components/governance/jurisdiction-picker";
 import { RegimeScreeningCard } from "@/components/governance/regime-screening-card";
 import type { JurisdictionId } from "@/config/jurisdictions";
@@ -173,6 +174,7 @@ export default function QuickstartPage() {
   const tq = useTranslations("quickstart");
   const tjur = useTranslations("jurisdictions");
   const orgId = organization?.id ?? "";
+  const { download, isPending: downloadPending } = useExportDownload();
 
   // Wizard state
   const [step, setStep] = useState<WizardStep>("choose");
@@ -1851,10 +1853,10 @@ export default function QuickstartPage() {
               <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
                 <Button
                   size="lg"
+                  disabled={downloadPending()}
                   onClick={() =>
-                    window.open(
+                    void download(
                       `/api/export/governance-program?organizationId=${orgId}&locale=${contentLocale}`,
-                      "_blank",
                     )
                   }
                 >
@@ -1870,10 +1872,10 @@ export default function QuickstartPage() {
                 <Button
                   size="lg"
                   variant="outline"
+                  disabled={downloadPending()}
                   onClick={() =>
-                    window.open(
+                    void download(
                       `/api/export/program-pack?organizationId=${orgId}&locale=${contentLocale}`,
-                      "_blank",
                     )
                   }
                 >

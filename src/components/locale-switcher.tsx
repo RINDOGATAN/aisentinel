@@ -5,6 +5,7 @@
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
+import { writeLocaleCookie } from "@/lib/locale-cookie";
 
 export function LocaleSwitcher() {
   const locale = useLocale();
@@ -12,7 +13,7 @@ export function LocaleSwitcher() {
 
   const toggleLocale = () => {
     const next = locale === "es" ? "en" : "es";
-    document.cookie = `locale=${next};path=/;max-age=${365 * 24 * 60 * 60};SameSite=Lax`;
+    writeLocaleCookie(next);
     router.refresh();
   };
 

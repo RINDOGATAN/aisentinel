@@ -42,7 +42,7 @@ export function FrameworksTable() {
   return (
     <div className="space-y-3 min-w-0">
       <p className="text-sm text-muted-foreground">{t("table.help")}</p>
-      <div className="max-h-[75vh] w-full max-w-full min-w-0 overflow-auto rounded-xl border border-border bg-card">
+      <div className="relative max-h-[75vh] w-full max-w-full min-w-0 overflow-auto rounded-xl border border-border bg-card">
         <table className="border-separate border-spacing-0 text-xs" data-testid="frameworks-table">
           <caption className="sr-only">{t("table.caption")}</caption>
           <thead>

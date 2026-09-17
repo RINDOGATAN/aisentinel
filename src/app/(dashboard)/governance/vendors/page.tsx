@@ -25,20 +25,13 @@ import {
 } from "lucide-react";
 import { keepPreviousData } from "@tanstack/react-query";
 import { useTranslations, useLocale } from "next-intl";
-import { useEnumLabels } from "@/lib/enum-labels";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
 import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
 import { EnableFeatureModal } from "@/components/premium/enable-feature-modal";
+import { RiskTierBadge } from "@/components/governance/risk-tier-badge";
 import { formatRelativeTime, getDaysUntil } from "@/lib/utils";
-
-const riskLevelColors: Record<string, string> = {
-  CRITICAL: "bg-destructive text-destructive-foreground",
-  HIGH: "bg-destructive/80 text-destructive-foreground",
-  MEDIUM: "bg-warning/20 text-warning",
-  LOW: "bg-success/20 text-success",
-};
 
 const statusColors: Record<string, string> = {
   ACTIVE: "border-success text-success",
@@ -70,7 +63,6 @@ const tabToStatus: Record<string, VendorStatusFilter | undefined> = {
 
 export default function VendorRiskPage() {
   const t = useTranslations("vendors");
-  const { riskLabel } = useEnumLabels();
   const locale = useLocale();
   const tc = useTranslations("common");
   const [searchQuery, setSearchQuery] = useState("");
@@ -341,11 +333,7 @@ export default function VendorRiskPage() {
                                 {statusLabelKeys[vendor.status] ? t(statusLabelKeys[vendor.status]) : vendor.status}
                               </Badge>
                               {vendor.riskLevel && (
-                                <Badge
-                                  className={`text-xs ${riskLevelColors[vendor.riskLevel] || ""}`}
-                                >
-                                  {riskLabel(vendor.riskLevel)}
-                                </Badge>
+                                <RiskTierBadge level={vendor.riskLevel} className="text-xs" />
                               )}
                             </div>
                           </div>

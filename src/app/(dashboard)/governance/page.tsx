@@ -17,6 +17,7 @@ import {
   FileSearch,
   Clock,
   Loader2,
+  Briefcase,
   Building2,
   ChevronDown,
   Eye,
@@ -29,8 +30,15 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useUserType } from "@/lib/use-user-type";
+import {
+  ADD_ORGANIZATION_HREF,
+  CLIENTS_DASHBOARD_HREF,
+  organizationSwitcherView,
+} from "@/lib/account-mode";
 import { useTranslations, useLocale } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { NextObligationStrip } from "@/components/governance/obligations/NextObligationStrip";
@@ -40,6 +48,8 @@ import { DeploymentExpertCta } from "@/components/governance/deployment-expert-c
 
 export default function GovernanceDashboardPage() {
   const { organization, organizations, setOrganization, canWrite } = useOrganization();
+  const { userType } = useUserType();
+  const switcher = organizationSwitcherView(userType);
   const t = useTranslations("dashboard");
   const locale = useLocale();
   const tc = useTranslations("common");
@@ -104,7 +114,9 @@ export default function GovernanceDashboardPage() {
             {t("subtitle")}
           </p>
         </div>
-        {organizations.length > 1 && (
+        {/* Own-organization mode shows no switcher; client mode always does,
+            with the client dashboard and the add flow. src/lib/account-mode.ts */}
+        {switcher.show && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="gap-2 shrink-0">
@@ -113,16 +125,33 @@ export default function GovernanceDashboardPage() {
                 <ChevronDown className="w-3 h-3" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {organizations.map((org) => (
-                <DropdownMenuItem
-                  key={org.id}
-                  onClick={() => setOrganization(org)}
-                  className={org.id === organization?.id ? "bg-primary/10" : ""}
-                >
-                  {org.name}
-                </DropdownMenuItem>
-              ))}
+            <DropdownMenuContent align="end" className="min-w-[200px]">
+              {switcher.listOrganizations &&
+                organizations.map((org) => (
+                  <DropdownMenuItem
+                    key={org.id}
+                    onClick={() => setOrganization(org)}
+                    className={org.id === organization?.id ? "bg-primary/10" : ""}
+                  >
+                    {org.name}
+                  </DropdownMenuItem>
+                ))}
+              {switcher.clientEntries && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href={CLIENTS_DASHBOARD_HREF} className="flex items-center gap-2">
+                      <Briefcase className="w-4 h-4" />
+                      {t("switcherMyClients")}
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href={ADD_ORGANIZATION_HREF} className="flex items-center gap-2">
+                      {t("switcherAddOrganization")}
+                    </Link>
+                  </DropdownMenuItem>
+                </>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         )}

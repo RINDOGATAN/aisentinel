@@ -7,38 +7,19 @@ import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import {
-  Brain,
-  Briefcase,
-  Network,
-  CalendarClock,
-  ShieldAlert,
-  ClipboardCheck,
   Scale,
-  Eye,
-  AlertTriangle,
-  Search,
   LogOut,
   User,
   Menu,
   BookOpen,
   Lock,
-  KeyRound,
   LayoutDashboard,
-  Building2,
-  ScrollText,
   ChevronDown,
   CreditCard,
-  Database,
   MessageSquareWarning,
   Settings,
   Shield,
-  Sparkles,
-  Crosshair,
-  Gavel,
-  Landmark,
-  HeartPulse,
-  History,
- ShieldCheck } from "lucide-react";
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -63,82 +44,18 @@ import { OrganizationSetup } from "@/components/governance/organization-setup";
 import { PersonaSelector } from "@/components/governance/persona-selector";
 import { FeedbackDialog } from "@/components/FeedbackDialog";
 import { LocaleSwitcher } from "@/components/locale-switcher";
-
-function buildNavGroups(isConsultant: boolean, t: (key: string) => string) {
-  return [
-    {
-      label: t("getStarted"),
-      icon: Sparkles,
-      items: [
-        { href: "/governance/quickstart", label: t("quickStart"), icon: Sparkles },
-      ],
-    },
-    ...(isConsultant
-      ? [{
-          label: t("consulting"),
-          icon: Briefcase,
-          items: [
-            { href: "/governance/clients", label: t("myClients"), icon: Briefcase },
-          ],
-        }]
-      : []),
-    {
-      label: t("aiSystemsGroup"),
-      icon: Brain,
-      items: [
-        { href: "/governance/ai-registry", label: t("aiRegistry"), icon: Brain },
-        { href: "/governance/risk-classification", label: t("riskClassification"), icon: ShieldAlert },
-        { href: "/governance/threat-model", label: t("threatModel"), icon: Crosshair },
-      ],
-    },
-    {
-      label: t("governanceGroup"),
-      icon: Scale,
-      items: [
-        { href: "/governance/program", label: t("program"), icon: Network },
-        { href: "/governance/review", label: t("review"), icon: ShieldCheck },
-        { href: "/governance/obligations", label: t("obligations"), icon: CalendarClock },
-        { href: "/governance/assessments", label: t("assessments"), icon: ClipboardCheck },
-        { href: "/governance/oversight", label: t("oversight"), icon: Eye },
-        { href: "/governance/compliance", label: t("compliance"), icon: Scale },
-        { href: "/governance/policies", label: t("policies"), icon: ScrollText },
-        { href: "/governance/sensitive-data", label: t("sensitiveData"), icon: HeartPulse },
-        { href: "/governance/board", label: t("boardReports"), icon: Landmark },
-        { href: "/governance/audit", label: t("auditTrail"), icon: History },
-      ],
-    },
-    {
-      label: t("operationsGroup"),
-      icon: AlertTriangle,
-      items: [
-        { href: "/governance/incidents", label: t("incidents"), icon: AlertTriangle },
-        { href: "/governance/proceedings", label: t("proceedings"), icon: Gavel },
-        { href: "/governance/vendors", label: t("vendors"), icon: Building2 },
-        { href: "/governance/vendor-catalog", label: t("vendorCatalog"), icon: Database, premium: true },
-        { href: "/governance/shadow-ai", label: t("shadowAi"), icon: Search, premium: true },
-        // Offline licence activation for skills bought on TODO.LAW — always
-        // visible: it is the purchase path when the Stripe store is off.
-        { href: "/governance/skills", label: t("skills"), icon: KeyRound },
-        // Billing is the hosted (Stripe) tier: hide the menu entry when the
-        // store is off (sovereign posture).
-        ...(features.stripeEnabled
-          ? [{ href: "/governance/billing", label: t("billing"), icon: CreditCard }]
-          : []),
-      ],
-    },
-  ];
-}
+import { buildNavGroups } from "@/components/nav-groups";
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {
   const { data: session } = useSession();
   const pathname = usePathname();
   const { organization, organizations, isLoading: orgLoading, userRole } = useOrganization();
-  const { needsOnboarding, isConsultant, isLoading: userTypeLoading } = useUserType();
+  const { needsOnboarding, isLoading: userTypeLoading } = useUserType();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const t = useTranslations("nav");
 
-  const navGroups = buildNavGroups(isConsultant, t);
+  const navGroups = buildNavGroups(t, { stripeEnabled: features.stripeEnabled });
 
   // Full-screen loading gate: prevent chrome from rendering before org is ready
   if (orgLoading || userTypeLoading) {
@@ -163,7 +80,11 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen bg-background">
       <header className="border-b border-border sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2 sm:gap-4 min-w-0">
+          {/* The logo block never shrinks and the menus between it and the
+              right-hand controls may only clip, so nothing can slide over the
+              logo at any width. Labels appear from xl (1280 px), the address
+              from 2xl, which keeps both languages inside the bar. */}
+          <div className="flex items-center gap-2 sm:gap-4 shrink-0">
             <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="md:hidden shrink-0">
@@ -200,7 +121,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
 
                   {/* Grouped nav items */}
                   {navGroups.map((group) => (
-                    <div key={group.label} className="mb-2">
+                    <div key={group.key} className="mb-2">
                       <p className="px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                         {group.label}
                       </p>
@@ -267,7 +188,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
             </Link>
           </div>
 
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-1 min-w-0 overflow-hidden">
             {navGroups.map((group) => {
               const GroupIcon = group.icon;
               const isGroupActive = group.items.some(
@@ -275,7 +196,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
               );
 
               return (
-                <DropdownMenu key={group.label}>
+                <DropdownMenu key={group.key}>
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="ghost"
@@ -287,7 +208,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                       }`}
                     >
                       <GroupIcon className="w-4 h-4" />
-                      <span className="hidden lg:inline">{group.label}</span>
+                      <span className="hidden xl:inline whitespace-nowrap">{group.label}</span>
                       <ChevronDown className="w-3 h-3 opacity-50" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -319,15 +240,17 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
           </nav>
 
           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+            {/* On phones, feedback and settings are in the side menu. */}
             <Button
               variant="ghost"
               size="icon"
+              className="hidden sm:inline-flex"
               onClick={() => setFeedbackOpen(true)}
               title={t("feedback")}
             >
               <MessageSquareWarning className="w-4 h-4" />
             </Button>
-            <Link href="/governance/settings">
+            <Link href="/governance/settings" className="hidden sm:inline-flex">
               <Button
                 variant="ghost"
                 size="icon"
@@ -336,11 +259,11 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                 <Settings className="w-4 h-4" />
               </Button>
             </Link>
-            <div className="hidden sm:flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="hidden lg:flex items-center gap-2 text-sm text-muted-foreground">
               <User className="w-4 h-4" />
-              <span className="hidden lg:inline max-w-[150px] truncate">{session?.user?.email}</span>
+              <span className="hidden 2xl:inline max-w-[150px] truncate">{session?.user?.email}</span>
               {userRole && (
-                <span className={`text-[10px] font-medium uppercase tracking-wider px-1.5 py-0.5 rounded ${
+                <span className={`text-[10px] font-medium uppercase tracking-wider whitespace-nowrap px-1.5 py-0.5 rounded ${
                   userRole === "VIEWER"
                     ? "bg-muted text-muted-foreground"
                     : "bg-primary/10 text-primary"

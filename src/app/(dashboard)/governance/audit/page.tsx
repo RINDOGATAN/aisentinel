@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/select";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
+import { useExportDownload } from "@/components/governance/use-export-download";
 
 const READER_ROLES = ["OWNER", "ADMIN", "AI_OFFICER"];
 const ALL = "ALL";
@@ -52,6 +53,7 @@ function detailOf(changes: unknown, metadata: unknown): string {
 export default function AuditTrailPage() {
   const t = useTranslations("audit");
   const { organization, userRole } = useOrganization();
+  const { download, isPending: downloadPending } = useExportDownload();
   const orgId = organization?.id ?? "";
   const canRead = userRole !== null && READER_ROLES.includes(userRole);
 
@@ -127,11 +129,17 @@ export default function AuditTrailPage() {
           </h1>
           <p className="text-sm text-muted-foreground mt-1 max-w-2xl">{t("subtitle")}</p>
         </div>
-        <Button asChild variant="outline">
-          <a href={exportHref()}>
+        <Button
+          variant="outline"
+          disabled={downloadPending()}
+          onClick={() => void download(exportHref())}
+        >
+          {downloadPending() ? (
+            <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />
+          ) : (
             <Download className="w-4 h-4 mr-1.5" />
-            {t("export")}
-          </a>
+          )}
+          {t("export")}
         </Button>
       </div>
 

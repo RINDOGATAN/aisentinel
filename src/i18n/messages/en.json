@@ -239,6 +239,8 @@
     "programCtaDescription": "See the governance map, maturity scorecard, and 90-day plan, and export the program as a PDF to share.",
     "programCtaButton": "View program",
     "switchOrganization": "Switch",
+    "switcherMyClients": "My clients",
+    "switcherAddOrganization": "+ Add organization",
     "noComplianceMappings": "No compliance mappings yet",
     "systemActor": "System"
   },
@@ -5363,6 +5365,12 @@
   "premiumShowcase": {
     "lockedHint": "Part of a paid module on this hosted instance. Every module is included when you self-host.",
     "activate": "Activate a licence",
-    "buy": "See the modules"
+    "buy": "See the modules",
+    "exportLockedTitle": "This module is licensed for self-hosted installations",
+    "exportLockedBody": "The document is part of a paid module on this hosted instance. Every module is included when you self-host.",
+    "seePricing": "See pricing",
+    "exportFailedTitle": "The document could not be generated",
+    "exportFailedBody": "Nothing was downloaded. Please try again in a moment.",
+    "retry": "Retry"
   }
 }

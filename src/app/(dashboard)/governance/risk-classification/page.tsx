@@ -39,13 +39,7 @@ import { useDebounce } from "@/hooks/use-debounce";
 import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
 import { formatDate } from "@/lib/utils";
 import { RiskScreeningPanel } from "@/components/ai/RiskScreeningPanel";
-
-const riskLevelColors: Record<string, string> = {
-  UNACCEPTABLE: "bg-destructive text-destructive-foreground",
-  HIGH: "bg-destructive/80 text-destructive-foreground",
-  LIMITED: "bg-warning/20 text-warning",
-  MINIMAL: "bg-success/20 text-success",
-};
+import { RiskTierBadge, TierMarker } from "@/components/governance/risk-tier-badge";
 
 const riskLevelDescriptions: Record<string, string> = {
   UNACCEPTABLE:
@@ -81,7 +75,7 @@ export default function RiskClassificationPage() {
   const router = useRouter();
   const { organization } = useOrganization();
   const t = useTranslations("riskClassification");
-  const { statusLabel, riskLabel } = useEnumLabels();
+  const { statusLabel } = useEnumLabels();
   const tc = useTranslations("common");
 
   const { data: stats, isLoading: statsLoading } = trpc.riskClassification.getStats.useQuery(
@@ -168,46 +162,25 @@ export default function RiskClassificationPage() {
 
       {/* Stats Bar */}
       <div className="grid gap-3 grid-cols-2 sm:grid-cols-5">
-        <Card className="border-destructive/30">
-          <CardContent className="p-3 sm:p-4 text-center">
-            <div className="text-lg sm:text-xl font-bold text-destructive">
-              {riskStats.unacceptable}
-            </div>
-            <p className="text-xs text-muted-foreground">{tc("riskUnacceptable")}</p>
-          </CardContent>
-        </Card>
-        <Card className="border-destructive/20">
-          <CardContent className="p-3 sm:p-4 text-center">
-            <div className="text-lg sm:text-xl font-bold text-destructive/80">
-              {riskStats.high}
-            </div>
-            <p className="text-xs text-muted-foreground">{tc("riskHigh")}</p>
-          </CardContent>
-        </Card>
-        <Card className="border-warning/30">
-          <CardContent className="p-3 sm:p-4 text-center">
-            <div className="text-lg sm:text-xl font-bold text-warning">
-              {riskStats.limited}
-            </div>
-            <p className="text-xs text-muted-foreground">{tc("riskLimited")}</p>
-          </CardContent>
-        </Card>
-        <Card className="border-success/30">
-          <CardContent className="p-3 sm:p-4 text-center">
-            <div className="text-lg sm:text-xl font-bold text-success">
-              {riskStats.minimal}
-            </div>
-            <p className="text-xs text-muted-foreground">{tc("riskMinimal")}</p>
-          </CardContent>
-        </Card>
-        <Card className="col-span-2 sm:col-span-1">
-          <CardContent className="p-3 sm:p-4 text-center">
-            <div className="text-lg sm:text-xl font-bold text-muted-foreground">
-              {riskStats.unclassified}
-            </div>
-            <p className="text-xs text-muted-foreground">{t("unclassified")}</p>
-          </CardContent>
-        </Card>
+        {(
+          [
+            ["UNACCEPTABLE", riskStats.unacceptable, tc("riskUnacceptable"), ""],
+            ["HIGH", riskStats.high, tc("riskHigh"), ""],
+            ["LIMITED", riskStats.limited, tc("riskLimited"), ""],
+            ["MINIMAL", riskStats.minimal, tc("riskMinimal"), ""],
+            [null, riskStats.unclassified, t("unclassified"), "col-span-2 sm:col-span-1"],
+          ] as const
+        ).map(([level, count, label, span]) => (
+          <Card key={level ?? "UNCLASSIFIED"} className={span || undefined}>
+            <CardContent className="p-3 sm:p-4 text-center">
+              <div className="text-lg sm:text-xl font-bold text-foreground">{count}</div>
+              <p className="text-xs text-muted-foreground inline-flex items-center gap-1.5">
+                <TierMarker level={level} />
+                {label}
+              </p>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
       {/* Search */}
@@ -253,15 +226,7 @@ export default function RiskClassificationPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
-                      {currentLevel ? (
-                        <Badge className={`text-xs ${riskLevelColors[currentLevel] || ""}`}>
-                          {currentLevel}
-                        </Badge>
-                      ) : (
-                        <Badge variant="outline" className="text-xs">
-                          {t("unclassified")}
-                        </Badge>
-                      )}
+                      <RiskTierBadge level={currentLevel} className="text-xs" />
                       <Button
                         variant="ghost"
                         size="sm"
@@ -286,13 +251,10 @@ export default function RiskClassificationPage() {
                         <div className="p-3 bg-muted/50 space-y-2">
                           <p className="text-xs font-medium">{t("currentClassification")}</p>
                           <div className="flex items-center gap-2">
-                            <Badge
-                              className={`text-xs ${
-                                riskLevelColors[system.riskClassification.riskLevel] || ""
-                              }`}
-                            >
-                              {riskLabel(system.riskClassification.riskLevel)}
-                            </Badge>
+                            <RiskTierBadge
+                              level={system.riskClassification.riskLevel}
+                              className="text-xs"
+                            />
                             {system.riskClassification.annexIIICategory && (
                               <Badge variant="outline" className="text-xs">
                                 Annex III: {system.riskClassification.annexIIICategory}
@@ -324,25 +286,29 @@ export default function RiskClassificationPage() {
                             <SelectContent>
                               <SelectItem value="UNACCEPTABLE">
                                 <div className="flex items-center gap-2">
-                                  <ShieldAlert className="w-4 h-4 text-destructive" />
+                                  <TierMarker level="UNACCEPTABLE" />
+                                  <ShieldAlert className="w-4 h-4 text-muted-foreground" />
                                   {tc("riskUnacceptable")}
                                 </div>
                               </SelectItem>
                               <SelectItem value="HIGH">
                                 <div className="flex items-center gap-2">
-                                  <ShieldAlert className="w-4 h-4 text-destructive/80" />
+                                  <TierMarker level="HIGH" />
+                                  <ShieldAlert className="w-4 h-4 text-muted-foreground" />
                                   {tc("riskHigh")}
                                 </div>
                               </SelectItem>
                               <SelectItem value="LIMITED">
                                 <div className="flex items-center gap-2">
-                                  <ShieldQuestion className="w-4 h-4 text-warning" />
+                                  <TierMarker level="LIMITED" />
+                                  <ShieldQuestion className="w-4 h-4 text-muted-foreground" />
                                   {tc("riskLimited")}
                                 </div>
                               </SelectItem>
                               <SelectItem value="MINIMAL">
                                 <div className="flex items-center gap-2">
-                                  <ShieldCheck className="w-4 h-4 text-success" />
+                                  <TierMarker level="MINIMAL" />
+                                  <ShieldCheck className="w-4 h-4 text-muted-foreground" />
                                   {tc("riskMinimal")}
                                 </div>
                               </SelectItem>

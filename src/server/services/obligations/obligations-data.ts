@@ -199,6 +199,9 @@ export async function getObligationsData(
     processesPersonalData: s.processesPersonalData,
     placedOnMarketBefore2Aug2026:
       s.transparencyProfile?.placedOnMarketBefore2Aug2026 ?? null,
+    // Nobody has been asked whether a system is intended for use by public
+    // authorities (Art. 111(2)); null keeps the 2030 date undetermined.
+    intendedForPublicAuthorities: null,
     art50: s.transparencyProfile
       ? {
           interaction: s.transparencyProfile.art50InteractionStatus,

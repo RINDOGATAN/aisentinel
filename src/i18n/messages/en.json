@@ -426,7 +426,7 @@
     "suggestedByRules": "Suggested by screening: \"{matched}\"",
     "prohibitedWarning": "Warning: a prohibited-practice trigger overlaps (e.g. emotion recognition in the workplace or education, Art. 5(1)(f)). A prohibited use is never satisfied by disclosure.",
     "placedBeforeLabel": "Placed on the market before 2 August 2026",
-    "placedBeforeHelp": "Pre-existing generative systems have a machine-readable-marking grace period until 2 December 2026 (Reg. (EU) 2026/1744).",
+    "placedBeforeHelp": "Pre-existing generative systems have a machine-readable-marking grace period until 2 December 2026 (Art. 111(4), inserted by Reg. (EU) 2026/1744).",
     "deadlineDue": "Marking due by {date}",
     "deadlineOverdue": "Marking overdue since {date}",
     "markingMethodsTitle": "Marking methods in use",
@@ -2058,6 +2058,8 @@
           "author": "Maria G.",
           "from": "None",
           "to": "Limited",
+          "fromLevel": "UNCLASSIFIED",
+          "toLevel": "LIMITED",
           "note": "Initial classification based on chatbot use case."
         },
         {
@@ -2065,6 +2067,8 @@
           "author": "Jan K.",
           "from": "Limited",
           "to": "High",
+          "fromLevel": "LIMITED",
+          "toLevel": "HIGH",
           "note": "Re-classified after scope change to include employment screening."
         }
       ],
@@ -2380,7 +2384,7 @@
       "title": "Transparency (Art. 50)",
       "intro": "Article 50 of the EU AI Act imposes transparency duties that cut across risk tiers: even a minimal-risk chatbot owes a disclosure. AI SENTINEL tracks the four Art. 50 obligations per AI system, splits them by who actually owes them, and counts down the one deadline that has a transitional period.",
       "applicabilityTitle": "When it applies",
-      "applicabilityBody1": "Art. 50 has applied since <strong>2 August 2026</strong> (Art. 113). Regulation (EU) 2026/1744 (the Digital Omnibus on AI, OJ L of 24 July 2026) grants systems placed on the market <em>before</em> that date a transitional period for the machine-readable marking duty in Art. 50(2), running to <strong>2 December 2026</strong>.",
+      "applicabilityBody1": "Art. 50 has applied since <strong>2 August 2026</strong> (Art. 113, second paragraph). Art. 111(4), inserted by Regulation (EU) 2026/1744 (the Digital Omnibus on AI, OJ L of 24 July 2026), gives providers of generative systems placed on the market <em>before</em> that date until <strong>2 December 2026</strong> to comply with the machine-readable marking duty in Art. 50(2).",
       "applicabilityBody2": "That grace period is the reason the AI Registry asks whether a system was placed on the market before 2 August 2026. Answer it accurately: it is the only input that moves the marking deadline, and the dashboard's “marking overdue” counter is derived from it.",
       "obligationsTitle": "The four obligations",
       "obligationsIntro": "Two are owed by the provider and two by the deployer. A single organization often holds both roles, but recording them separately is what lets you answer a regulator asking which hat you were wearing.",
@@ -4477,7 +4481,8 @@
       "no-revenue-tier": "No revenue tier recorded",
       "no-annex-i-determination": "Not recorded whether this is a product-embedded system",
       "no-market-placement-date": "Not recorded when this system was placed on the market",
-      "no-sell-share-determination": "Not recorded whether you sell or share personal information"
+      "no-sell-share-determination": "Not recorded whether you sell or share personal information",
+      "no-public-authority-determination": "Not recorded whether this system is intended for use by public authorities"
     },
     "card": {
       "whatItMeans": "What this means",

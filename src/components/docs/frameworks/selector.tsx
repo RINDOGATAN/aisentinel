@@ -5,6 +5,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { TierMarker } from "@/components/governance/risk-tier-badge";
 import {
   defaultAnswers,
   frameworksData,
@@ -95,13 +96,16 @@ export function FrameworksSelector({ initial }: { initial?: Answers }) {
                       <li key={r.id} className="text-sm" data-framework={r.id}>
                         <div className="flex flex-wrap items-center gap-2">
                           <strong>{f.name}</strong>
+                          {/* Binding law: neutral chip, body-colour text, and the
+                              red tier marker as the signal (never coloured text). */}
                           <span
-                            className={`rounded-full border px-2 py-0.5 text-[11px] ${
+                            className={`inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[11px] ${
                               r.binding
-                                ? "border-destructive/40 bg-destructive/10 text-destructive"
+                                ? "border-border bg-tier-chip text-foreground"
                                 : "border-border text-muted-foreground"
                             }`}
                           >
+                            {r.binding && <TierMarker level="UNACCEPTABLE" />}
                             {r.binding ? t("selector.bindingTag") : f.nature}
                           </span>
                           <span className="text-[11px] text-muted-foreground">{t("selector.points", { score: r.score })}</span>

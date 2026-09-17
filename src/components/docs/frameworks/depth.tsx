@@ -44,7 +44,14 @@ export function DepthChip({ depth, underReview = false }: { depth: Depth; underR
 export function UnderReviewTag() {
   const t = useTranslations("docs.frameworks");
   return (
-    <span className="inline-block rounded border border-warning/40 bg-warning/10 px-1.5 text-[11px] font-medium text-warning">
+    // Body-colour text on a neutral fill; the hatch swatch (the same one the
+    // legend and the wheel use) carries the signal, not coloured text.
+    <span className="inline-flex items-center gap-1.5 rounded border border-border bg-tier-chip px-1.5 text-[11px] font-medium text-foreground">
+      <span
+        aria-hidden="true"
+        className="inline-block h-3 w-3 rounded-sm border border-border"
+        style={{ background: HATCH_BACKGROUND }}
+      />
       {t("underReview")}
     </span>
   );

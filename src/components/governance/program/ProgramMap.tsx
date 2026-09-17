@@ -24,9 +24,8 @@ import {
   CANVAS,
   GLYPH_COLORS,
   STAGE_COLORS,
-  RISK_COLORS,
-  UNCLASSIFIED_COLOR,
 } from "@/lib/program-map/palette";
+import { TierMarker } from "@/components/governance/risk-tier-badge";
 import type {
   ProgramGraph,
   SystemNodeBox,
@@ -43,9 +42,6 @@ const ALL_TIERS: TierId[] = [
   "MINIMAL",
   "UNCLASSIFIED",
 ];
-
-const tierColor = (tier: TierId) =>
-  tier === "UNCLASSIFIED" ? UNCLASSIFIED_COLOR : RISK_COLORS[tier];
 
 const nodeHasGap = (node: SystemNodeBox) =>
   node.dashed ||
@@ -232,12 +228,9 @@ export function ProgramMap({
               className="h-7 px-2 text-xs gap-1.5"
               onClick={() => toggleTier(tier)}
             >
-              <span
-                className="inline-block w-2 h-2 rounded-full"
-                style={{
-                  backgroundColor: tierColor(tier),
-                  opacity: active ? 1 : 0.35,
-                }}
+              <TierMarker
+                level={tier}
+                className={active ? undefined : "opacity-35"}
               />
               {t(`tier.${tier}`)}
             </Button>

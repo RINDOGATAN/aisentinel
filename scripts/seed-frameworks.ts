@@ -17,7 +17,9 @@ import {
 // incidents), Art. 113 (applicability timeline as amended by the Digital
 // Omnibus on AI — Regulation (EU) 2026/1744 of 8 July 2026, OJ L, 2026/1744,
 // 24.7.2026, in force 27 July 2026; timeline verified against the OJ text).
-// lawReviewedAsOf: 2026-09-11 (Art. 4 re-verified against Reg. (EU) 2026/1744)
+// lawReviewedAsOf: 2026-09-16 (Art. 4 re-verified 2026-09-11; every date of
+// application re-verified against Reg. (EU) 2026/1744 on 2026-09-16, pinned in
+// src/config/eu-ai-act-dates.ts)
 
 const prisma = new PrismaClient();
 

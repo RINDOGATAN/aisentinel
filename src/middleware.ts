@@ -4,8 +4,8 @@
 /**
  * Middleware for geo-IP currency detection and locale defaults
  *
- * Sets a currency cookie based on the visitor's country.
- * US visitors get USD, everyone else gets EUR.
+ * Sets a currency cookie based on the visitor's country: EUR only for a
+ * visitor known to be outside the US, USD otherwise (including unknown).
  * Never writes a default locale cookie (no cookie renders English). When a
  * hosted request carries more than one `locale` value, expires the host-only
  * duplicate and re-writes the domain-wide cookie (see @/lib/locale-cookie).
@@ -15,6 +15,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { localeCleanupSetCookies } from "@/lib/locale-cookie";
+import { currencyForCountry } from "@/lib/currency";
 
 export default function middleware(request: NextRequest) {
   // Skip for API routes, static files, and Next.js internals
@@ -29,10 +30,9 @@ export default function middleware(request: NextRequest) {
 
   const response = NextResponse.next();
 
-  // Set currency cookie based on geo-IP (US → USD, else EUR)
+  // Set currency cookie based on geo-IP: EUR only for a known non-US country
   if (!request.cookies.has("currency")) {
-    const country = request.headers.get("x-vercel-ip-country") || "";
-    const currency = country === "US" ? "USD" : "EUR";
+    const currency = currencyForCountry(request.headers.get("x-vercel-ip-country"));
     response.cookies.set("currency", currency, {
       path: "/",
       maxAge: 60 * 60 * 24 * 30, // 30 days

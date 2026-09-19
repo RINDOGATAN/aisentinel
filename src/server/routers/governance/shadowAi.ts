@@ -5,6 +5,7 @@ import { z } from "zod";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { TRPCError } from "@trpc/server";
 import { hasShadowAiAccess } from "@/server/services/licensing/entitlement";
+import { assertPilotRoom, pilotLocale } from "@/server/services/pilot/caps";
 import type { ShadowAIStatus } from "@prisma/client";
 
 async function assertShadowAiAccess(organizationId: string) {
@@ -151,6 +152,7 @@ export const shadowAiRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       await assertShadowAiAccess(ctx.organization.id);
+      await assertPilotRoom(ctx.prisma, ctx.organization.id, "shadowAiReports", pilotLocale(ctx.getCookie));
 
       const report = await ctx.prisma.shadowAIReport.create({
         data: {
@@ -263,6 +265,11 @@ export const shadowAiRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       await assertShadowAiAccess(ctx.organization.id);
+      const locale = pilotLocale(ctx.getCookie);
+      await assertPilotRoom(ctx.prisma, ctx.organization.id, "systems", locale);
+      if (input.createVendor && input.vendorName) {
+        await assertPilotRoom(ctx.prisma, ctx.organization.id, "vendors", locale);
+      }
 
       const existing = await ctx.prisma.shadowAIReport.findFirst({
         where: { id: input.reportId, organizationId: ctx.organization.id },

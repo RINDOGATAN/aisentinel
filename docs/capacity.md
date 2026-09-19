@@ -26,6 +26,19 @@ code, or marked "unknown, to measure". Nothing here is a promise to a customer.
 | Requests per minute, self-hosted | Unknown, to measure; ordinary page and API traffic for a single firm (tens of concurrent users) is well within one process | One Node.js event loop. Database queries are asynchronous and cheap; PDF rendering is synchronous CPU work that blocks the loop while it runs. |
 | Unauthenticated routes | Fixed by configuration | `RATE_LIMIT_SIGNIN` 10/900 s, `RATE_LIMIT_MAGIC_LINK` 5/3600 s, `RATE_LIMIT_HEALTH` 60/60 s, `RATE_LIMIT_IMPORT` 120/60 s, per process. On hosted the effective limit is a multiple of these, one counter per warm instance. The limiter tracks at most 10,000 keys. |
 
+## The hosted pilot's caps
+
+From its deployment (never before 19 September 2026) the hosted service is a free, capped
+pilot (`src/config/pilot.ts`).
+The caps are the service's first line of protection and were chosen from the ceilings above:
+one organisation per account; edits for 90 days from the organisation's first sign-in after
+the pilot went live (not its creation date), then read-only with every export still available; and per organisation at most 25 AI systems, 50
+vendors, 50 assessments, 25 incidents, 25 policies, 50 oversight gates, 10 threat models, 50
+shadow AI reports, 10 proceedings, 10 board reports and 5 members. Twenty-five systems keeps
+the largest unpaginated read (the compliance screens, 294 requirements per system) under
+about 7,500 rows and the program pack well inside the serverless response limit; ten board
+reports bounds the stored snapshots at about 20 MB per organisation. The kit has no caps.
+
 ## What breaks first
 
 1. **Concurrent exports on a self-hosted install.** A program pack or a PDF report renders on

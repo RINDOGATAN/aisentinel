@@ -5,6 +5,7 @@ import { z } from "zod";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { TRPCError } from "@trpc/server";
 import { assertNotOnHold } from "../../services/legal-hold";
+import { assertPilotRoom, pilotLocale } from "../../services/pilot/caps";
 import {
   parseSubprocessors,
   summarizeSupplyChain,
@@ -97,6 +98,7 @@ export const vendorRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      await assertPilotRoom(ctx.prisma, ctx.organization.id, "vendors", pilotLocale(ctx.getCookie));
       const vendor = await ctx.prisma.aIVendor.create({
         data: {
           organizationId: ctx.organization.id,
@@ -155,6 +157,11 @@ export const vendorRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const locale = pilotLocale(ctx.getCookie);
+      await assertPilotRoom(ctx.prisma, ctx.organization.id, "vendors", locale);
+      if (input.createSystem && input.systemName) {
+        await assertPilotRoom(ctx.prisma, ctx.organization.id, "systems", locale);
+      }
       const result = await ctx.prisma.$transaction(async (tx) => {
         const vendor = await tx.aIVendor.create({
           data: {

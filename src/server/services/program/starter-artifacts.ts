@@ -19,6 +19,7 @@
 
 import type { PrismaClient } from "@prisma/client";
 import { loadSystemScope } from "@/server/services/scope/system-scope";
+import { pilotRemaining } from "@/server/services/pilot/caps";
 import {
   UNIFIED_ASSESSMENT_LAW_REVIEWED_AS_OF,
   UNIFIED_ASSESSMENT_VERSION,
@@ -145,7 +146,13 @@ export async function createStarterArtifacts(
     },
     select: { id: true, name: true },
   });
+  // Hosted pilot: drafts are auto-derived, so at the ceiling they are simply
+  // not created (each can still be started by hand from its system). Off the
+  // pilot the room is unbounded.
+  let assessmentRoom = await pilotRemaining(prisma, args.organizationId, "assessments");
   for (const system of highRisk) {
+    if (assessmentRoom <= 0) break;
+    assessmentRoom -= 1;
     const draft = await createUnifiedAssessmentDraft(prisma, {
       organizationId: args.organizationId,
       aiSystemId: system.id,

@@ -13,10 +13,12 @@
  */
 
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Download, Loader2, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { trpc } from "@/lib/trpc";
+import { PREMIUM_KIT_PRICE_PER_YEAR, formatPrice } from "@/lib/currency";
+import { useCurrency } from "@/lib/use-currency";
 import type { ShowcaseFeature } from "@/config/premium-showcase";
 import { useExportDownload } from "@/components/governance/use-export-download";
 
@@ -34,6 +36,8 @@ export function PremiumDeliverable({
   variant?: "default" | "outline";
 }) {
   const t = useTranslations("premiumShowcase");
+  const locale = useLocale();
+  const currency = useCurrency();
   const { download, isPending } = useExportDownload();
 
   const { data } = trpc.skills.showcaseStatus.useQuery(
@@ -65,7 +69,7 @@ export function PremiumDeliverable({
         {label}
       </Button>
       <span className="text-[11px] text-muted-foreground max-w-xs">
-        {t("lockedHint")}{" "}
+        {t("lockedHint", { price: formatPrice(PREMIUM_KIT_PRICE_PER_YEAR, currency, locale) })}{" "}
         <Link href="/governance/skills" className="text-primary hover:underline">
           {t("activate")}
         </Link>

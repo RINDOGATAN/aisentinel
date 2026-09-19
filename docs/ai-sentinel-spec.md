@@ -781,18 +781,24 @@ All core modules are freely available:
 - **Policy Management** — Policy authoring, versioning, approval workflow, system linking
 - **Executive Dashboard** — Org-wide stats, module summaries, quick actions, activity feed
 
-### 6.2 Premium (Proprietary — Requires License)
+### 6.2 Premium (Proprietary — sold only for the kit)
 
-Premium features follow the same add-on billing model as DPO Central (Stripe, per-feature, no tiers):
+Decision of 2026-09-16: the hosted service is a free, capped pilot and nothing is sold there
+(every module open to every organisation; caps in `src/config/pilot.ts`: one organisation
+per account, 90 days of editing from the first sign-in after the pilot went live, then
+read-only with exports, a records ceiling). Premium modules are sold only for the kit
+(self-hosted), at 60 a year each in the kit (in your currency: dollars unless the visitor
+is known to be outside the US, euros only then), on the TODO.LAW marketplace, and
+activated offline with an Ed25519-signed licence file:
 
-| Feature | Skill ID | Price |
-|---------|----------|-------|
-| Conformity Assessment template | `com.todolaw.aisentinel.conformity` | EUR 9/mo · USD 9/mo |
-| Bias & Fairness Assessment template | `com.todolaw.aisentinel.bias-fairness` | EUR 9/mo · USD 9/mo |
-| Shadow AI Discovery module | `com.todolaw.aisentinel.shadow-ai` | EUR 9/mo · USD 9/mo |
-| AI Vendor Catalog | `com.todolaw.aisentinel.vendor-catalog` | EUR 9/mo · USD 9/mo |
+| Feature | Skill ID | Price (kit only, in your currency) |
+|---------|----------|------------------|
+| Conformity Assessment template | `com.todolaw.aisentinel.conformity` | 60 a year |
+| Bias & Fairness Assessment template | `com.todolaw.aisentinel.bias-fairness` | 60 a year |
+| Shadow AI Discovery module | `com.todolaw.aisentinel.shadow-ai` | 60 a year |
+| AI Vendor Catalog | `com.todolaw.aisentinel.vendor-catalog` | 60 a year |
 
-Premium features are gated via the same entitlement service pattern used in DPO Central (`src/server/services/licensing/`).
+Premium features are gated via the same entitlement service pattern used in DPO Central (`src/server/services/licensing/`); on the hosted pilot every gate answers "entitled".
 
 ---
 
@@ -871,7 +877,7 @@ AI SENTINEL mirrors DPO Central's stack for developer efficiency and shared know
 | Database | PostgreSQL (Neon) | Separate database from DPO Central |
 | Auth | NextAuth (JWT) | Google OAuth + Email magic links (Resend) |
 | Styling | Tailwind CSS 4 + Shadcn UI | Dark theme, violet primary |
-| Billing | Stripe | Add-on model (per-feature, EUR 9/mo each) |
+| Billing | None on the hosted pilot; offline licence files for the kit | Premium modules 60 a year each in the kit (in your currency), kit only (Stripe code dormant) |
 | Deployment | Vercel | Automatic from `main` branch |
 | Multi-tenancy | `organizationId` on all models | Enforced via `organizationProcedure` |
 

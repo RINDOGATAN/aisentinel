@@ -35,8 +35,10 @@ import { legalHoldRouter } from "./governance/legalHold";
 import { proceedingsRouter } from "./governance/proceedings";
 import { boardReportsRouter } from "./governance/boardReports";
 import { threatModelRouter } from "./governance/threatModel";
+import { pilotRouter } from "./pilot";
 
 export const appRouter = createTRPCRouter({
+  pilot: pilotRouter,
   organization: organizationRouter,
   aiSystem: aiSystemRouter,
   riskClassification: riskClassificationRouter,

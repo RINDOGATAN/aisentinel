@@ -1530,6 +1530,7 @@
     "statusLocked": "Locked",
     "statusIncluded": "Included",
     "includedHint": "Included in your self-hosted deployment",
+    "includedHintPilot": "Open on the hosted pilot. In the kit, {price} a year.",
     "expires": "Expires {date}",
     "perpetual": "Perpetual licence",
     "activations": "{used} of {max} activations used",
@@ -5368,7 +5369,7 @@
     "systemCardOpen": "Open the threat model"
   },
   "premiumShowcase": {
-    "lockedHint": "Part of a paid module on this hosted instance. Every module is included when you self-host.",
+    "lockedHint": "Part of a premium module, sold for the kit at {price} a year. Activate a licence, or run your own instance.",
     "activate": "Activate a licence",
     "buy": "See the modules",
     "exportLockedTitle": "This module is licensed for self-hosted installations",
@@ -5377,5 +5378,17 @@
     "exportFailedTitle": "The document could not be generated",
     "exportFailedBody": "Nothing was downloaded. Please try again in a moment.",
     "retry": "Retry"
+  },
+  "pilot": {
+    "dismiss": "Dismiss",
+    "title": "Hosted pilot",
+    "summary": "Pilot: {days} days left, {used} of {max} systems",
+    "editsUntil": "Edits are allowed until {date}. After that the organisation is read-only, and everything it created can still be exported.",
+    "ceilingsTitle": "Ceilings on this pilot",
+    "counter": "{used} of {max}",
+    "readOnlyBody": "The 90 editing days are over. This organisation is read-only: everything can still be opened and exported, nothing can be changed.",
+    "ceilingReachedBody": "A ceiling has been reached. Two ways out:",
+    "runOwn": "Run your own instance",
+    "exportAll": "Export everything (program pack)"
   }
 }

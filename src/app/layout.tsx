@@ -11,6 +11,8 @@ import { Toaster } from "@/components/ui/sonner";
 import { brand } from "@/config/brand";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
+import { HostedPilotBanner, pilotBannerForRequest } from "@/components/pilot/hosted-pilot-banner";
+import { PILOT_BANNER_BODY_CLASS } from "@/components/pilot/pilot-banner";
 
 const jost = Jost({
   subsets: ["latin"],
@@ -101,6 +103,9 @@ export default async function RootLayout({
   const session = await getServerSession(authOptions);
   const locale = await getLocale();
   const messages = await getMessages();
+  // The hosted pilot's banner sits above every page; the body class lets a
+  // fixed header (the landing page's) make room for it.
+  const pilotBanner = await pilotBannerForRequest();
 
   return (
     <html lang={locale} suppressHydrationWarning>
@@ -143,9 +148,12 @@ export default async function RootLayout({
           }}
         />
       </head>
-      <body className={`${jost.variable} ${archivoBlack.variable} font-sans antialiased`}>
+      <body
+        className={`${jost.variable} ${archivoBlack.variable} font-sans antialiased${pilotBanner ? ` ${PILOT_BANNER_BODY_CLASS}` : ""}`}
+      >
         <Providers session={session}>
           <NextIntlClientProvider messages={messages}>
+            <HostedPilotBanner />
             {children}
             <Toaster />
           </NextIntlClientProvider>

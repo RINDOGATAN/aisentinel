@@ -3,6 +3,7 @@
 
 import { z } from "zod";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
+import { assertPilotRoom, pilotLocale } from "../../services/pilot/caps";
 import { TRPCError } from "@trpc/server";
 
 export const policyRouter = createTRPCRouter({
@@ -84,6 +85,7 @@ export const policyRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      await assertPilotRoom(ctx.prisma, ctx.organization.id, "policies", pilotLocale(ctx.getCookie));
       const policy = await ctx.prisma.aIPolicy.create({
         data: {
           organizationId: ctx.organization.id,

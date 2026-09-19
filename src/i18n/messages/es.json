@@ -1530,6 +1530,7 @@
     "statusLocked": "Bloqueada",
     "statusIncluded": "Incluida",
     "includedHint": "Incluida en tu instalación autoalojada",
+    "includedHintPilot": "Abierta en el piloto alojado. En el kit, {price} al año.",
     "expires": "Caduca el {date}",
     "perpetual": "Licencia perpetua",
     "activations": "{used} de {max} activaciones usadas",
@@ -5368,7 +5369,7 @@
     "systemCardOpen": "Abrir el modelo de amenazas"
   },
   "premiumShowcase": {
-    "lockedHint": "Forma parte de un módulo de pago en esta instancia alojada. Al autoalojarlo, todos los módulos están incluidos.",
+    "lockedHint": "Forma parte de un módulo premium, que se vende para el kit a {price} al año. Activa una licencia o ejecuta tu propia instancia.",
     "activate": "Activar una licencia",
     "buy": "Ver los módulos",
     "exportLockedTitle": "Este módulo se licencia para instalaciones autoalojadas",
@@ -5377,5 +5378,17 @@
     "exportFailedTitle": "No se ha podido generar el documento",
     "exportFailedBody": "No se ha descargado nada. Vuelve a intentarlo en un momento.",
     "retry": "Reintentar"
+  },
+  "pilot": {
+    "dismiss": "Cerrar",
+    "title": "Piloto alojado",
+    "summary": "Piloto: quedan {days} días, {used} de {max} sistemas",
+    "editsUntil": "Puedes editar hasta el {date}. Después, la organización pasa a solo lectura y todo lo que ha creado se puede seguir exportando.",
+    "ceilingsTitle": "Límites de este piloto",
+    "counter": "{used} de {max}",
+    "readOnlyBody": "Los 90 días de edición han terminado. Esta organización es de solo lectura: todo se puede abrir y exportar, nada se puede modificar.",
+    "ceilingReachedBody": "Se ha alcanzado un límite. Dos salidas:",
+    "runOwn": "Ejecuta tu propia instancia",
+    "exportAll": "Exportar todo (paquete del programa)"
   }
 }

@@ -3,6 +3,7 @@
 
 import { z } from "zod";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
+import { assertPilotRoom, pilotLocale } from "../../services/pilot/caps";
 import { TRPCError } from "@trpc/server";
 
 export const oversightRouter = createTRPCRouter({
@@ -84,6 +85,7 @@ export const oversightRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      await assertPilotRoom(ctx.prisma, ctx.organization.id, "oversightGates", pilotLocale(ctx.getCookie));
       const gate = await ctx.prisma.oversightGate.create({
         data: {
           organizationId: ctx.organization.id,

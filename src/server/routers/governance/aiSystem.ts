@@ -11,6 +11,7 @@ import {
 } from "@/lib/inventory-import";
 import { importInventoryRows } from "@/server/services/inventory/import-systems";
 import { createStarterArtifacts } from "@/server/services/program/starter-artifacts";
+import { assertPilotRoom, pilotLocale } from "@/server/services/pilot/caps";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { TRPCError } from "@trpc/server";
 import { chatComplete } from "../../services/ai/llm-door";
@@ -138,6 +139,9 @@ export const aiSystemRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      // Hosted pilot: every row counts against the ceiling, including rows
+      // that turn out to exist already, so a refused import writes nothing.
+      await assertPilotRoom(ctx.prisma, ctx.organization.id, "systems", pilotLocale(ctx.getCookie), input.rows.length);
       const result = await importInventoryRows(ctx.prisma, {
         organizationId: ctx.organization.id,
         userId: ctx.session.user.id,
@@ -186,6 +190,7 @@ export const aiSystemRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      await assertPilotRoom(ctx.prisma, ctx.organization.id, "systems", pilotLocale(ctx.getCookie));
       const system = await ctx.prisma.aISystem.create({
         data: {
           organizationId: ctx.organization.id,

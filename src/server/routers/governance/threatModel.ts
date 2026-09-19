@@ -28,6 +28,7 @@ import {
   suggestScenarios,
 } from "@/config/threat-model";
 import { assertNotOnHold } from "../../services/legal-hold";
+import { assertPilotRoom, pilotLocale } from "../../services/pilot/caps";
 import { planRegisterLink } from "../../services/threat-model/register-link";
 import { addLibraryScenarios } from "../../services/threat-model/create";
 
@@ -152,6 +153,7 @@ export const threatModelRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      await assertPilotRoom(ctx.prisma, ctx.organization.id, "threatModels", pilotLocale(ctx.getCookie));
       if (input.aiSystemId) {
         const system = await ctx.prisma.aISystem.findFirst({
           where: { id: input.aiSystemId, organizationId: ctx.organization.id },

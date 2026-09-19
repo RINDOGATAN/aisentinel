@@ -18,6 +18,7 @@ import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { captureProgramSnapshot } from "../../services/program/snapshot";
 import { assertNotOnHold } from "../../services/legal-hold";
+import { assertPilotRoom, pilotLocale } from "../../services/pilot/caps";
 
 const AUDIENCES = [
   "BOARD",
@@ -76,6 +77,7 @@ export const boardReportsRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      await assertPilotRoom(ctx.prisma, ctx.organization.id, "boardReports", pilotLocale(ctx.getCookie));
       let snapshotId: string | undefined;
       if (input.captureSnapshot) {
         try {

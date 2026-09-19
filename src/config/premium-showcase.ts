@@ -17,12 +17,19 @@
  * `allSkillsFree` from the Stripe-off rule instead, which is how the two are
  * told apart without a second environment variable.
  *
- * Hosted is recognised by `VERCEL=1`, which the platform sets itself, so no
- * hosting configuration changes for this. `NEXT_PUBLIC_PREMIUM_SHOWCASE=false`
- * turns it off anywhere; `=true` turns it on anywhere.
+ * **The hosted pilot switches this off.** Since 2026-09-16 the hosted service
+ * is a free, capped pilot where nothing is gated by an entitlement (see
+ * src/config/pilot.ts); premium modules are sold only for the kit. So while
+ * pilot mode is active this shop window is closed, whatever else the
+ * environment says. The showcase remains for a deployment that has Stripe
+ * off, is not the hosted pilot, and does not bake the all-skills-free flag.
+ * `NEXT_PUBLIC_PREMIUM_SHOWCASE=false` turns it off anywhere; `=true` turns it
+ * on anywhere the pilot is not active.
  *
  * Pure leaf module: no Prisma, no Next, no React.
  */
+
+import { hostedPilotActive } from "@/config/pilot";
 
 export const SHOWCASE_FEATURES = [
   /** The unified impact assessment document: the DPIA deliverable. */
@@ -47,14 +54,16 @@ export type ShowcaseFeature = (typeof SHOWCASE_FEATURES)[number];
 export type ShowcaseEnv = Partial<Record<string, string | undefined>>;
 
 export function premiumShowcaseActive(env: ShowcaseEnv = process.env): boolean {
+  // The hosted pilot gates nothing: every module is open to every
+  // organisation, and the caps in src/config/pilot.ts apply instead.
+  if (hostedPilotActive(env)) return false;
+
   // An explicit answer always wins, in either direction.
   if (env.NEXT_PUBLIC_PREMIUM_SHOWCASE === "false") return false;
   if (env.NEXT_PUBLIC_PREMIUM_SHOWCASE === "true") return true;
 
-  // The hosted instance runs on Vercel, which sets this itself. It is the one
-  // signal that separates hosted from self-hosted without asking anyone to
-  // configure a second variable, and every caller of this function runs on the
-  // server, where it is visible.
+  // A deployment on the platform that has been taken out of pilot mode
+  // (NEXT_PUBLIC_HOSTED_PILOT=false) keeps the shop window.
   if (env.VERCEL === "1") return true;
 
   // Self-host: the all-skills-free flag is baked into the image, and every

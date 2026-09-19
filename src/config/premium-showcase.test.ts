@@ -9,9 +9,11 @@ import {
   premiumShowcaseActive,
 } from "./premium-showcase";
 
-/** The three deployments this product actually has. */
-const HOSTED = { VERCEL: "1" };
-const HOSTED_LEGACY = { NEXT_PUBLIC_STRIPE_ENABLED: "false" };
+/** The deployments this product actually has. */
+const HOSTED_PILOT = { VERCEL: "1", VERCEL_ENV: "production" };
+/** The platform with pilot mode switched off: the old shop window. */
+const PLATFORM_NO_PILOT = { VERCEL: "1", NEXT_PUBLIC_HOSTED_PILOT: "false" };
+const STRIPE_OFF_ELSEWHERE = { NEXT_PUBLIC_STRIPE_ENABLED: "false" };
 const SELF_HOST = {
   NEXT_PUBLIC_STRIPE_ENABLED: "false",
   NEXT_PUBLIC_ALL_SKILLS_FREE: "true",
@@ -19,20 +21,24 @@ const SELF_HOST = {
 const CLOUD_WITH_STRIPE = { NEXT_PUBLIC_STRIPE_ENABLED: "true" };
 
 describe("which deployments keep deliverables paid", () => {
-  it("is on for the hosted instance, recognised by the platform variable", () => {
-    expect(premiumShowcaseActive(HOSTED)).toBe(true);
+  it("is off for the hosted pilot: nothing is gated by an entitlement there", () => {
+    expect(premiumShowcaseActive(HOSTED_PILOT)).toBe(false);
+    // Not even an explicit switch reopens it while the pilot is active.
+    expect(premiumShowcaseActive({ ...HOSTED_PILOT, NEXT_PUBLIC_PREMIUM_SHOWCASE: "true" })).toBe(false);
   });
 
-  it("is on for any deployment with Stripe switched off", () => {
-    expect(premiumShowcaseActive(HOSTED_LEGACY)).toBe(true);
+  it("returns on the platform only once pilot mode is switched off", () => {
+    expect(premiumShowcaseActive(PLATFORM_NO_PILOT)).toBe(true);
+    expect(
+      premiumShowcaseActive({ ...PLATFORM_NO_PILOT, NEXT_PUBLIC_ALL_SKILLS_FREE: "true" }),
+    ).toBe(true);
   });
 
-  it("stays on for hosted even where the all-skills-free flag is also set", () => {
-    // The hosted instance may carry both; the platform signal decides.
-    expect(premiumShowcaseActive({ VERCEL: "1", NEXT_PUBLIC_ALL_SKILLS_FREE: "true" })).toBe(true);
+  it("is on for any other deployment with Stripe switched off", () => {
+    expect(premiumShowcaseActive(STRIPE_OFF_ELSEWHERE)).toBe(true);
   });
 
-  it("is off for a self-hosted deployment, where every module is included", () => {
+  it("is off for the kit, where every module is included", () => {
     expect(premiumShowcaseActive(SELF_HOST)).toBe(false);
   });
 
@@ -40,26 +46,32 @@ describe("which deployments keep deliverables paid", () => {
     expect(premiumShowcaseActive(CLOUD_WITH_STRIPE)).toBe(false);
   });
 
-  it("can be forced either way", () => {
+  it("can be forced either way outside the pilot", () => {
     expect(premiumShowcaseActive({ ...SELF_HOST, NEXT_PUBLIC_PREMIUM_SHOWCASE: "true" })).toBe(
       true,
     );
-    expect(premiumShowcaseActive({ ...HOSTED, NEXT_PUBLIC_PREMIUM_SHOWCASE: "false" })).toBe(
-      false,
-    );
+    expect(
+      premiumShowcaseActive({ ...PLATFORM_NO_PILOT, NEXT_PUBLIC_PREMIUM_SHOWCASE: "false" }),
+    ).toBe(false);
   });
 });
 
 describe("what stays paid", () => {
-  it("locks the impact assessment document, the report and the pack on hosted", () => {
-    expect(isShowcasePremium("impact-assessment-document", HOSTED)).toBe(true);
-    expect(isShowcasePremium("program-report", HOSTED)).toBe(true);
-    expect(isShowcasePremium("program-pack", HOSTED)).toBe(true);
+  it("locks nothing on the hosted pilot", () => {
+    for (const feature of SHOWCASE_FEATURES) {
+      expect(isShowcasePremium(feature, HOSTED_PILOT)).toBe(false);
+    }
   });
 
-  it("locks the two specialist assessments on hosted", () => {
-    expect(isShowcasePremium("conformity-assessment", HOSTED)).toBe(true);
-    expect(isShowcasePremium("bias-fairness-assessment", HOSTED)).toBe(true);
+  it("locks the impact assessment document, the report and the pack where the shop window is open", () => {
+    expect(isShowcasePremium("impact-assessment-document", PLATFORM_NO_PILOT)).toBe(true);
+    expect(isShowcasePremium("program-report", PLATFORM_NO_PILOT)).toBe(true);
+    expect(isShowcasePremium("program-pack", PLATFORM_NO_PILOT)).toBe(true);
+  });
+
+  it("locks the two specialist assessments where the shop window is open", () => {
+    expect(isShowcasePremium("conformity-assessment", PLATFORM_NO_PILOT)).toBe(true);
+    expect(isShowcasePremium("bias-fairness-assessment", PLATFORM_NO_PILOT)).toBe(true);
   });
 
   it("locks nothing at all when self-hosted", () => {

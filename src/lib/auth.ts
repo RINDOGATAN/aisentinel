@@ -16,6 +16,8 @@ import {
   CALLBACK_URL_COOKIE_NAME,
 } from "@/lib/session-cookie";
 import { brand } from "@/config/brand";
+import { resolveCookieDomain } from "@/config/pilot";
+import { recordPilotSignIn } from "@/server/services/pilot/first-sign-in";
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
@@ -31,12 +33,9 @@ const devAuthEnabled = features.devAuthEnabled && process.env.DISABLE_DEV_AUTH !
 // That is a CLOUD concern — default the .todo.law domain only on Vercel
 // (same rule as crossLoginEnabled). Self-hosted boxes get a host-only cookie;
 // AUTH_COOKIE_DOMAIN still overrides in either direction ("" = host-only).
-const cookieDomain =
-  process.env.AUTH_COOKIE_DOMAIN !== undefined
-    ? process.env.AUTH_COOKIE_DOMAIN || undefined
-    : process.env.VERCEL
-      ? ".todo.law"
-      : undefined;
+// The rule lives in src/config/pilot.ts because the hosted pilot is
+// recognised by the same signal; one function, so the two cannot drift.
+const cookieDomain = resolveCookieDomain();
 // Cross-app SSO provider (accepts signed JWTs from sibling *.todo.law apps
 // and Google access tokens). This is a CLOUD concern: on a sovereign box it
 // would mint local accounts for any valid Google token, so it defaults ON
@@ -276,6 +275,13 @@ export const authOptions: NextAuthOptions = {
         }
       } catch (error) {
         console.error("Auto-join organization failed during sign-in:", error);
+      }
+      // Hosted pilot: this sign-in starts the editing clock of every
+      // organisation of the account that has not started one yet.
+      try {
+        if (user.id) await recordPilotSignIn(prisma, user.id);
+      } catch (error) {
+        console.error("Recording the pilot first sign-in failed:", error);
       }
       return true;
     },

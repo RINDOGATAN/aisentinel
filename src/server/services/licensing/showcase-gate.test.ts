@@ -14,9 +14,14 @@ import { checkSkillEntitlement } from "@/server/services/licensing/entitlement";
 import { SHOWCASE_FEATURES } from "@/config/premium-showcase";
 import { checkShowcaseAccess, lockedResponse } from "./showcase-gate";
 
-/** The hosted instance as configured for the workshop: Vercel, Stripe off, showcase off. */
+/**
+ * The hosted instance as configured for the workshop: Vercel, Stripe off,
+ * showcase off. The pilot is switched off here because a hosted pilot closes
+ * the showcase altogether (every deliverable open); these cases test the gate.
+ */
 function stubHostedShowcaseOff() {
   vi.stubEnv("VERCEL", "1");
+  vi.stubEnv("NEXT_PUBLIC_HOSTED_PILOT", "false");
   vi.stubEnv("NEXT_PUBLIC_STRIPE_ENABLED", "false");
   vi.stubEnv("NEXT_PUBLIC_ALL_SKILLS_FREE", "");
   vi.stubEnv("NEXT_PUBLIC_PREMIUM_SHOWCASE", "false");

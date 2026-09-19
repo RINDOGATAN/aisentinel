@@ -8,6 +8,18 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { assertPilotWritable, pilotLocale } from "@/server/services/pilot/caps";
+import { ensurePilotFirstSignIn } from "@/server/services/pilot/first-sign-in";
+
+/**
+ * Procedure metadata. `pilotReadOnlyExempt` marks a write procedure a
+ * read-only pilot organisation may still call: deleting the organisation is
+ * the owner's way out of "one organisation per account" once the editing
+ * days are over. Nothing else should carry it.
+ */
+export interface ProcedureMeta {
+  pilotReadOnlyExempt?: boolean;
+}
 
 interface CreateContextOptions {
   session: Session | null;
@@ -32,7 +44,7 @@ export const createTRPCContext = async (_opts: { req: Request }) => {
   });
 };
 
-const t = initTRPC.context<typeof createTRPCContext>().create({
+const t = initTRPC.context<typeof createTRPCContext>().meta<ProcedureMeta>().create({
   transformer: superjson,
   errorFormatter({ shape, error }) {
     return {
@@ -99,21 +111,40 @@ export const withOrganization = t.middleware(async ({ ctx, next, getRawInput }) 
     });
   }
 
+  const organization = await withPilotFirstSignIn(ctx.prisma, membership.organization);
+
   return next({
     ctx: {
       session: { ...ctx.session, user: ctx.session.user },
-      organization: membership.organization,
+      organization,
       membership,
     },
   });
 });
 
+/**
+ * On the hosted pilot, the organisation as the procedure should see it: with
+ * its first sign-in recorded if this is the first time it is opened since the
+ * pilot went live (see src/server/services/pilot/first-sign-in.ts).
+ */
+async function withPilotFirstSignIn<O extends { id: string; pilotFirstSignInAt: Date | null }>(
+  db: typeof prisma,
+  organization: O,
+): Promise<O> {
+  const pilotFirstSignInAt = await ensurePilotFirstSignIn(db, organization);
+  return pilotFirstSignInAt === organization.pilotFirstSignInAt
+    ? organization
+    : { ...organization, pilotFirstSignInAt };
+}
+
 export const organizationProcedure = t.procedure
   .use(enforceUserIsAuthed)
   .use(withOrganization);
 
-// Write-protected organization procedure: blocks VIEWER from mutations
-const enforceWriteAccess = t.middleware(async ({ ctx, next, getRawInput }) => {
+// Write-protected organization procedure: blocks VIEWER from mutations, and
+// on the hosted pilot blocks every edit once the organisation's editing days
+// are over (reads and exports stay open; see src/config/pilot.ts).
+const enforceWriteAccess = t.middleware(async ({ ctx, next, meta, getRawInput }) => {
   const rawInput = await getRawInput();
   const input = rawInput as { organizationId?: string } | undefined;
   const organizationId = input?.organizationId;
@@ -147,10 +178,16 @@ const enforceWriteAccess = t.middleware(async ({ ctx, next, getRawInput }) => {
     });
   }
 
+  const organization = await withPilotFirstSignIn(ctx.prisma, membership.organization);
+
+  if (!meta?.pilotReadOnlyExempt) {
+    assertPilotWritable(organization, pilotLocale(ctx.getCookie));
+  }
+
   return next({
     ctx: {
       session: { ...ctx.session, user: ctx.session.user },
-      organization: membership.organization,
+      organization,
       membership,
     },
   });

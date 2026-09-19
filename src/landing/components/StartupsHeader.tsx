@@ -16,7 +16,9 @@ const StartupsHeader = ({ t, locale, onLocaleToggle, onSignup }: StartupsHeaderP
   const closeMenu = () => setIsMenuOpen(false);
 
   return (
-    <header className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-5xl">
+    // On the hosted pilot the root layout puts a 40 px banner above the page
+    // and marks the body; this fixed header then starts below it.
+    <header className="fixed top-4 [.has-pilot-banner_&]:top-14 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-5xl">
       <div className="nav-header px-6">
         <div className="flex items-center justify-between h-14">
           <a href="https://todo.law" className="flex items-center gap-3">

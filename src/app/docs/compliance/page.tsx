@@ -1,7 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025-2026 Rindogatan LLC
 
+import Link from "next/link";
 import { getTranslations } from "next-intl/server";
+import { docsCounts } from "@/config/docs-counts";
+import { TierMarker } from "@/components/governance/risk-tier-badge";
+import { TIER_PILL_CLASS } from "@/config/risk-tier-palette";
 
 export async function generateMetadata() {
   const t = await getTranslations("docs.compliance");
@@ -11,14 +15,26 @@ export async function generateMetadata() {
   };
 }
 
-const frameworkKeys = ["euAiAct", "nist", "iso"] as const;
+// Message key -> framework code, in the order the frameworks page lists them.
+const frameworks = [
+  { key: "euAiAct", code: "EU_AI_ACT" },
+  { key: "nist", code: "NIST_AI_RMF" },
+  { key: "iso", code: "ISO_42001" },
+  { key: "gdpr", code: "EU_GDPR" },
+  { key: "caAdmt", code: "CA_CCPA_ADMT" },
+  { key: "colorado", code: "CO_SB_26_189" },
+  { key: "texas", code: "TX_TRAIGA" },
+  { key: "washington", code: "WA_AI_RULES" },
+] as const;
 
+// Status chips borrow the risk-tier palette as a dot marker (blue = compliant,
+// orange = partial, red = non-compliant, hollow ring = no finding).
 const statusStyles = [
-  { key: "compliant", color: "bg-green-500/10 text-green-400 border-green-500/20" },
-  { key: "partiallyCompliant", color: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20" },
-  { key: "nonCompliant", color: "bg-red-500/10 text-red-400 border-red-500/20" },
-  { key: "notApplicable", color: "bg-muted text-muted-foreground border-border" },
-  { key: "notAssessed", color: "bg-muted text-muted-foreground border-border" },
+  { key: "compliant", tier: "LIMITED" },
+  { key: "partiallyCompliant", tier: "HIGH" },
+  { key: "nonCompliant", tier: "UNACCEPTABLE" },
+  { key: "notApplicable", tier: null },
+  { key: "notAssessed", tier: null },
 ] as const;
 
 export default async function ComplianceDocsPage() {
@@ -26,6 +42,7 @@ export default async function ComplianceDocsPage() {
   const trackingItems = t.raw("matrixTracking") as string[];
   const exportItems = t.raw("matrixExport") as string[];
   const steps = t.raw("steps") as { role: string; title: string; description: string }[];
+  const counts = docsCounts();
 
   return (
     <div className="space-y-16">
@@ -45,17 +62,24 @@ export default async function ComplianceDocsPage() {
         <p className="text-muted-foreground mb-6">
           {t("frameworksIntro")}
         </p>
-        <div className="grid sm:grid-cols-3 gap-4">
-          {frameworkKeys.map((key) => (
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {frameworks.map(({ key, code }) => (
             <div key={key} className="rounded-xl border border-border bg-card p-5">
               <h3 className="text-lg font-semibold mb-2 text-primary">{t(`frameworks.${key}.name`)}</h3>
               <p className="text-sm text-muted-foreground leading-relaxed mb-3">
                 {t(`frameworks.${key}.description`)}
               </p>
-              <span className="text-xs text-muted-foreground">{t(`frameworks.${key}.items`)}</span>
+              <span className="text-xs text-muted-foreground">
+                {t(`frameworks.${key}.items`, { count: counts.perFramework[code] })}
+              </span>
             </div>
           ))}
         </div>
+        <p className="text-sm text-muted-foreground mt-4">
+          <Link href="/docs/frameworks" className="text-primary hover:underline">
+            {t("frameworksCompareLink")}
+          </Link>
+        </p>
       </section>
 
       {/* Compliance Statuses */}
@@ -68,8 +92,9 @@ export default async function ComplianceDocsPage() {
           {statusStyles.map((item) => (
             <span
               key={item.key}
-              className={`px-4 py-2 rounded-full text-sm font-medium border ${item.color}`}
+              className={`px-4 py-2 rounded-full text-sm font-medium ${TIER_PILL_CLASS}`}
             >
+              <TierMarker level={item.tier} />
               {t(`statuses.${item.key}`)}
             </span>
           ))}
@@ -110,7 +135,7 @@ export default async function ComplianceDocsPage() {
           {t("crossTitle")}
         </h2>
         <p className="text-muted-foreground mb-6">
-          {t("crossIntro")}
+          {t("crossIntro", { count: counts.crossMappings })}
         </p>
         <div className="rounded-xl border border-border bg-card p-6 space-y-4">
           <div className="space-y-3 text-sm text-muted-foreground">
@@ -125,15 +150,15 @@ export default async function ComplianceDocsPage() {
           </div>
           <div className="grid sm:grid-cols-3 gap-3 pt-2">
             <div className="rounded-lg bg-primary/5 border border-primary/20 p-3 text-center">
-              <p className="text-2xl font-display text-primary">28</p>
+              <p className="text-2xl font-display text-primary">{counts.crossMappingBreakdown.equivalent}</p>
               <p className="text-xs text-muted-foreground">{t("crossStats.equivalent")}</p>
             </div>
             <div className="rounded-lg bg-muted p-3 text-center">
-              <p className="text-2xl font-display">12</p>
+              <p className="text-2xl font-display">{counts.crossMappingBreakdown.partial}</p>
               <p className="text-xs text-muted-foreground">{t("crossStats.partial")}</p>
             </div>
             <div className="rounded-lg bg-muted p-3 text-center">
-              <p className="text-2xl font-display">1</p>
+              <p className="text-2xl font-display">{counts.crossMappingBreakdown.related}</p>
               <p className="text-xs text-muted-foreground">{t("crossStats.related")}</p>
             </div>
           </div>
@@ -150,7 +175,7 @@ export default async function ComplianceDocsPage() {
             {t("snapshotBody1")}
           </p>
           <p className="text-sm text-muted-foreground">
-            {t("snapshotBody2")}
+            {t("snapshotBody2", { count: counts.highRiskAutoMapped })}
           </p>
         </div>
       </section>

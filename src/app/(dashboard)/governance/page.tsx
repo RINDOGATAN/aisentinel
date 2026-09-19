@@ -17,6 +17,7 @@ import {
   FileSearch,
   Clock,
   Loader2,
+  Briefcase,
   Building2,
   ChevronDown,
   Eye,
@@ -29,17 +30,28 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useUserType } from "@/lib/use-user-type";
+import {
+  ADD_ORGANIZATION_HREF,
+  CLIENTS_DASHBOARD_HREF,
+  organizationSwitcherView,
+} from "@/lib/account-mode";
 import { useTranslations, useLocale } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { NextObligationStrip } from "@/components/governance/obligations/NextObligationStrip";
 import { useOrganization } from "@/lib/organization-context";
 import { formatRelativeTime } from "@/lib/utils";
 import { DeploymentExpertCta } from "@/components/governance/deployment-expert-cta";
+import { TierMarker } from "@/components/governance/risk-tier-badge";
+import { TIER_BG_CLASS, type RiskTier } from "@/config/risk-tier-palette";
 
 export default function GovernanceDashboardPage() {
   const { organization, organizations, setOrganization, canWrite } = useOrganization();
+  const { userType } = useUserType();
+  const switcher = organizationSwitcherView(userType);
   const t = useTranslations("dashboard");
   const locale = useLocale();
   const tc = useTranslations("common");
@@ -66,6 +78,12 @@ export default function GovernanceDashboardPage() {
   const compliance = stats?.complianceSummary ?? { compliant: 0, partial: 0, nonCompliant: 0, notAssessed: 0 };
 
   const riskTotal = riskPosture.unacceptable + riskPosture.high + riskPosture.limited + riskPosture.minimal;
+  const postureRows: { level: Exclude<RiskTier, "UNCLASSIFIED">; count: number; label: string }[] = [
+    { level: "UNACCEPTABLE", count: riskPosture.unacceptable, label: tc("riskUnacceptable") },
+    { level: "HIGH", count: riskPosture.high, label: tc("riskHigh") },
+    { level: "LIMITED", count: riskPosture.limited, label: tc("riskLimited") },
+    { level: "MINIMAL", count: riskPosture.minimal, label: tc("riskMinimal") },
+  ];
   const complianceTotal = compliance.compliant + compliance.partial + compliance.nonCompliant + compliance.notAssessed;
 
   const actionLabels: Record<string, string> = {
@@ -104,7 +122,9 @@ export default function GovernanceDashboardPage() {
             {t("subtitle")}
           </p>
         </div>
-        {organizations.length > 1 && (
+        {/* Own-organization mode shows no switcher; client mode always does,
+            with the client dashboard and the add flow. src/lib/account-mode.ts */}
+        {switcher.show && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="gap-2 shrink-0">
@@ -113,16 +133,33 @@ export default function GovernanceDashboardPage() {
                 <ChevronDown className="w-3 h-3" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {organizations.map((org) => (
-                <DropdownMenuItem
-                  key={org.id}
-                  onClick={() => setOrganization(org)}
-                  className={org.id === organization?.id ? "bg-primary/10" : ""}
-                >
-                  {org.name}
-                </DropdownMenuItem>
-              ))}
+            <DropdownMenuContent align="end" className="min-w-[200px]">
+              {switcher.listOrganizations &&
+                organizations.map((org) => (
+                  <DropdownMenuItem
+                    key={org.id}
+                    onClick={() => setOrganization(org)}
+                    className={org.id === organization?.id ? "bg-primary/10" : ""}
+                  >
+                    {org.name}
+                  </DropdownMenuItem>
+                ))}
+              {switcher.clientEntries && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href={CLIENTS_DASHBOARD_HREF} className="flex items-center gap-2">
+                      <Briefcase className="w-4 h-4" />
+                      {t("switcherMyClients")}
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href={ADD_ORGANIZATION_HREF} className="flex items-center gap-2">
+                      {t("switcherAddOrganization")}
+                    </Link>
+                  </DropdownMenuItem>
+                </>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         )}
@@ -249,58 +286,28 @@ export default function GovernanceDashboardPage() {
             {riskTotal > 0 ? (
               <>
                 {/* Stacked bar */}
-                <div className="h-6 flex overflow-hidden rounded-sm">
-                  {riskPosture.unacceptable > 0 && (
-                    <div
-                      className="bg-destructive flex items-center justify-center text-[10px] text-destructive-foreground font-medium"
-                      style={{ width: `${(riskPosture.unacceptable / riskTotal) * 100}%` }}
-                    >
-                      {riskPosture.unacceptable}
-                    </div>
-                  )}
-                  {riskPosture.high > 0 && (
-                    <div
-                      className="bg-destructive/70 flex items-center justify-center text-[10px] text-destructive-foreground font-medium"
-                      style={{ width: `${(riskPosture.high / riskTotal) * 100}%` }}
-                    >
-                      {riskPosture.high}
-                    </div>
-                  )}
-                  {riskPosture.limited > 0 && (
-                    <div
-                      className="bg-warning/40 flex items-center justify-center text-[10px] text-warning font-medium"
-                      style={{ width: `${(riskPosture.limited / riskTotal) * 100}%` }}
-                    >
-                      {riskPosture.limited}
-                    </div>
-                  )}
-                  {riskPosture.minimal > 0 && (
-                    <div
-                      className="bg-success/30 flex items-center justify-center text-[10px] text-success font-medium"
-                      style={{ width: `${(riskPosture.minimal / riskTotal) * 100}%` }}
-                    >
-                      {riskPosture.minimal}
-                    </div>
+                {/* The segments carry no text (a count on a coloured fill cannot
+                    keep text contrast); the legend below states every count. */}
+                <div className="h-6 flex gap-px overflow-hidden rounded-sm">
+                  {postureRows.map(({ level, count, label }) =>
+                    count > 0 ? (
+                      <div
+                        key={level}
+                        className={TIER_BG_CLASS[level]}
+                        title={`${label} (${count})`}
+                        style={{ width: `${(count / riskTotal) * 100}%` }}
+                      />
+                    ) : null
                   )}
                 </div>
                 {/* Legend */}
-                <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
-                  <span className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-sm bg-destructive" />
-                    {tc("riskUnacceptable")} ({riskPosture.unacceptable})
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-sm bg-destructive/70" />
-                    {tc("riskHigh")} ({riskPosture.high})
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-sm bg-warning/40" />
-                    {tc("riskLimited")} ({riskPosture.limited})
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-sm bg-success/30" />
-                    {tc("riskMinimal")} ({riskPosture.minimal})
-                  </span>
+                <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-foreground">
+                  {postureRows.map(({ level, count, label }) => (
+                    <span key={level} className="flex items-center gap-1.5">
+                      <TierMarker level={level} shape="square" />
+                      {label} ({count})
+                    </span>
+                  ))}
                 </div>
               </>
             ) : (

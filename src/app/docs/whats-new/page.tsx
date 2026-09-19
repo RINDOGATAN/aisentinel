@@ -4,6 +4,7 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { Sparkles, ArrowRight } from "lucide-react";
+import { PremiumNotice } from "@/components/docs/premium-notice";
 
 export async function generateMetadata() {
   const t = await getTranslations("docs.whatsNew");
@@ -36,6 +37,15 @@ export default async function WhatsNewPage() {
           {t("title")}
         </h1>
         <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl">{t("intro")}</p>
+      </section>
+
+      {/* How the premium modules are offered today */}
+      <section>
+        <h2 className="text-2xl font-display tracking-tight mb-2">{t("offerTitle")}</h2>
+        <p className="text-sm text-muted-foreground leading-relaxed max-w-3xl mb-4">{t("offerBody")}</p>
+        <div className="max-w-3xl">
+          <PremiumNotice />
+        </div>
       </section>
 
       {/* Releases, newest first */}

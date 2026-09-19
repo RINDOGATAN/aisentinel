@@ -145,6 +145,14 @@ requirement codes: nothing to do.` Any line ending `left in place for review`
 names a link it could not safely move; it is also recorded in that
 organisation's audit log.
 
+Changed wording on an existing code (for example the Art. 113 rows re-cited
+against Regulation (EU) 2026/1744 on 2026-09-16) needs nothing more: the seed
+upserts by code and rewrites the title and description on every run, so the
+next `db:seed-frameworks` (and every migrator boot) carries it. Only a code
+that is retired or changes meaning needs a supersession entry. EU AI Act dates
+live in `src/config/eu-ai-act-dates.ts`; change them there and the test tells
+you which rows and data cells must follow.
+
 Notes that have cost time before:
 
 - **Use the non-pooling URL.** The pooled endpoint goes through pgbouncer, which

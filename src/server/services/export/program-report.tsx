@@ -33,6 +33,7 @@ import {
   StatTile,
   StatTileRow,
   PillBadge,
+  TierPill,
   MiniCoverageBar,
   ConfidentialPill,
   DonutChart,
@@ -42,6 +43,7 @@ import {
 } from "./design-system";
 import { ProgramMapSvg } from "./design-system/charts/ProgramMapSvg";
 import { rulePackList } from "@/config/rule-pack-versions";
+import { tierMarker } from "@/config/risk-tier-palette";
 
 // ── Map page geometry ───────────────────────────────────────────────
 // A4 landscape ≈ 842×595pt; PageFrame margins 48/48/56 + header/footer rows.
@@ -261,28 +263,14 @@ const s = StyleSheet.create({
 const DERIVATION_COLS = [2.4, 1, 1.2, 1.4, 0.9];
 const RULE_PACK_COLS = [2.4, 1.2, 1.4, 1.2];
 
-const RISK_TONE: Record<string, SemanticTone> = {
-  UNACCEPTABLE: "danger",
-  HIGH: "danger",
-  LIMITED: "warning",
-  MINIMAL: "success",
-};
 const STAGE_TONE: Record<string, SemanticTone> = {
   ADOPT: "success",
   PILOT: "info",
   RESTRICT: "warning",
   HOLD: "danger",
 };
-const SEVERITY_TONE: Record<string, SemanticTone> = {
-  critical: "danger",
-  high: "warning",
-  medium: "info",
-};
-const SEVERITY_COLOR: Record<string, string> = {
-  critical: tokens.color.semantic.danger.solid,
-  high: tokens.color.semantic.warning.solid,
-  medium: tokens.color.semantic.info.solid,
-};
+/** Plan-bucket left bar: severity borrows the risk-tier markers (light set). */
+const severityColor = (severity: string) => tierMarker(severity, "light");
 const DUTY_STATUS_TONE: Record<string, SemanticTone> = {
   inPlace: "success",
   partial: "warning",
@@ -420,9 +408,9 @@ export async function renderProgramReport({
     <View key={sys.id} style={s.row} wrap={false}>
       <Text style={s.cellName}>{sys.name}</Text>
       <View style={s.cellBadge}>
-        <PillBadge tone={sys.riskLevel ? RISK_TONE[sys.riskLevel] : "neutral"}>
+        <TierPill level={sys.riskLevel}>
           {sys.riskLevel ? t(`risk.${sys.riskLevel}`) : t("risk.unclassified")}
-        </PillBadge>
+        </TierPill>
       </View>
       <Text style={s.cellPlain}>{t(`status.${sys.status}`)}</Text>
       <Text style={s.cellPlain}>
@@ -640,8 +628,9 @@ export async function renderProgramReport({
               style={[
                 s.planBlock,
                 {
-                  borderLeftColor:
-                    SEVERITY_COLOR[bucket.items[0]?.severity ?? "medium"],
+                  borderLeftColor: severityColor(
+                    bucket.items[0]?.severity ?? "medium",
+                  ),
                 },
               ]}
               wrap={false}
@@ -651,9 +640,9 @@ export async function renderProgramReport({
                 <View key={item.gapId}>
                   <View style={s.planItemRow}>
                     <Text style={s.planTitle}>{item.title}</Text>
-                    <PillBadge tone={SEVERITY_TONE[item.severity]}>
+                    <TierPill level={item.severity}>
                       {`${item.count} · ${item.effort}`}
-                    </PillBadge>
+                    </TierPill>
                   </View>
                   <Text style={s.planDetail}>{item.detail}</Text>
                 </View>

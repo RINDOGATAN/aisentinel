@@ -2,6 +2,9 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { getTranslations } from "next-intl/server";
+import { PremiumNotice } from "@/components/docs/premium-notice";
+import { TierMarker } from "@/components/governance/risk-tier-badge";
+import { TIER_PILL_CLASS } from "@/config/risk-tier-palette";
 
 export async function generateMetadata() {
   const t = await getTranslations("docs.assessments");
@@ -19,12 +22,8 @@ const templateDefs = [
   { type: "BIAS_FAIRNESS", tKey: "biasFairness", premium: true },
 ] as const;
 
-const scoringColors = [
-  "bg-green-500/10 text-green-400 border-green-500/20",
-  "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
-  "bg-orange-500/10 text-orange-400 border-orange-500/20",
-  "bg-red-500/10 text-red-400 border-red-500/20",
-];
+// Scoring levels (low → critical) borrow the risk-tier palette as a dot marker.
+const scoringTiers = ["LOW", "MEDIUM", "HIGH", "CRITICAL"];
 
 export default async function AssessmentsDocsPage() {
   const t = await getTranslations("docs.assessments");
@@ -68,6 +67,9 @@ export default async function AssessmentsDocsPage() {
             </div>
           ))}
         </div>
+        <div className="mt-4 max-w-3xl">
+          <PremiumNotice />
+        </div>
       </section>
 
       {/* Approval Workflow */}
@@ -104,8 +106,9 @@ export default async function AssessmentsDocsPage() {
           {scoringLevels.map((level, i) => (
             <span
               key={level}
-              className={`px-4 py-2 rounded-full text-sm font-medium border ${scoringColors[i]}`}
+              className={`px-4 py-2 rounded-full text-sm font-medium ${TIER_PILL_CLASS}`}
             >
+              <TierMarker level={scoringTiers[i]} />
               {level}
             </span>
           ))}

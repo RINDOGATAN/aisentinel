@@ -17,6 +17,8 @@
  *     src/config/eu-timeline-requirements.ts; milestones cite them by code via
  *     `requirementCodes` so a server can resolve ComplianceRequirement ids for
  *     click-through. Dates are never re-derived from that prose.
+ *   - The other EU AI Act dates are owned by src/config/eu-ai-act-dates.ts,
+ *     each pinned to the provision (as amended) that sets it.
  *   - Every other instrument's dates are owned here.
  *   - Import direction is one-way: transparency-rules must never import this.
  *
@@ -38,13 +40,18 @@ import {
   computeMarkingDeadline,
   type TransparencyObligationStatusValue,
 } from "./transparency-rules";
+import {
+  DIGITAL_OMNIBUS_CITATION,
+  EU_AI_ACT_DATES,
+  EU_AI_ACT_DATES_LAW_REVIEWED_AS_OF,
+} from "./eu-ai-act-dates";
 
 /**
  * Rule-pack version. Bump on any content change (milestones, dates,
  * predicates) so exported artifacts can state which revision produced them.
  * See src/config/rule-pack-versions.ts.
  */
-export const REGULATORY_MILESTONES_VERSION = "2026.08.2";
+export const REGULATORY_MILESTONES_VERSION = "2026.09.1";
 export const REGULATORY_MILESTONES_LAW_REVIEWED_AS_OF = "2026-08-21";
 
 export const REGULATORY_MILESTONES_REVIEW_MARKER: Localized = {
@@ -104,7 +111,8 @@ export type UndeterminedReason =
   | "no-revenue-tier"
   | "no-annex-i-determination"
   | "no-market-placement-date"
-  | "no-sell-share-determination";
+  | "no-sell-share-determination"
+  | "no-public-authority-determination";
 
 export type MilestonePhase = "past" | "imminent" | "upcoming" | "future";
 
@@ -168,6 +176,11 @@ export interface MilestoneSystemContext {
   status: string;
   processesPersonalData: boolean;
   placedOnMarketBefore2Aug2026: boolean | null;
+  /**
+   * Intended for use by public authorities (EU AI Act Art. 111(2)).
+   * null = nobody has been asked, so the 2030 date stays undetermined.
+   */
+  intendedForPublicAuthorities: boolean | null;
   art50: {
     interaction: TransparencyObligationStatusValue | null;
     marking: TransparencyObligationStatusValue | null;
@@ -306,16 +319,18 @@ function admtArticle11Scope(
 // ---------------------------------------------------------------------------
 
 const REVIEWED = REGULATORY_MILESTONES_LAW_REVIEWED_AS_OF;
+/** The EU AI Act dates were re-checked on their own, later day. */
+const EU_REVIEWED = EU_AI_ACT_DATES_LAW_REVIEWED_AS_OF;
+const EU = EU_AI_ACT_DATES;
 
 export const REGULATORY_MILESTONES: RegulatoryMilestone[] = [
   // ══ EU AI Act ═════════════════════════════════════════════════════
   {
     id: "eu-ai-act-prohibitions-literacy",
     instrument: "eu-ai-act",
-    citation:
-      "Reg. (EU) 2024/1689, Art. 113; Chapters I–II applicable from 2 February 2025",
+    citation: `Reg. (EU) 2024/1689, ${EU["chapters-i-ii"].provision}: Chapters I–II applicable from 2 February 2025, except the Art. 5 prohibitions added by ${DIGITAL_OMNIBUS_CITATION}`,
     provision: "Arts. 4–5",
-    date: "2025-02-02",
+    date: EU["chapters-i-ii"].date,
     dateBasis: "fixed",
     scope: { kind: "eu" },
     kind: "duty-live",
@@ -333,14 +348,14 @@ export const REGULATORY_MILESTONES: RegulatoryMilestone[] = [
     },
     orgApplies: (org) => euGate(org) ?? "in-scope",
     undeterminedReason: () => "no-jurisdictions",
-    lawReviewedAsOf: REVIEWED,
+    lawReviewedAsOf: EU_REVIEWED,
   },
   {
     id: "eu-ai-act-gpai-governance",
     instrument: "eu-ai-act",
-    citation: "Reg. (EU) 2024/1689, Art. 113(b)",
+    citation: `Reg. (EU) 2024/1689, ${EU["gpai-governance-penalties"].provision}`,
     provision: "Chapters V, VII, XII",
-    date: "2025-08-02",
+    date: EU["gpai-governance-penalties"].date,
     dateBasis: "fixed",
     scope: { kind: "eu" },
     kind: "duty-live",
@@ -358,14 +373,13 @@ export const REGULATORY_MILESTONES: RegulatoryMilestone[] = [
     },
     orgApplies: (org) => euGate(org) ?? "in-scope",
     undeterminedReason: () => "no-jurisdictions",
-    lawReviewedAsOf: REVIEWED,
+    lawReviewedAsOf: EU_REVIEWED,
   },
   {
     id: "eu-ai-act-art50-transparency",
     instrument: "eu-ai-act",
     // Date imported from transparency-rules.ts, which owns it.
-    citation:
-      "Reg. (EU) 2024/1689, Art. 50; applicable from 2 August 2026 (Art. 113)",
+    citation: `Reg. (EU) 2024/1689, Art. 50; applicable from 2 August 2026 (${EU["general-application"].provision})`,
     provision: "Art. 50",
     date: isoDate(ART50_APPLICABLE_FROM),
     dateBasis: "fixed",
@@ -407,13 +421,12 @@ export const REGULATORY_MILESTONES: RegulatoryMilestone[] = [
     },
     undeterminedReason: (_sys, org) =>
       org.jurisdictionsDeclared ? "no-market-placement-date" : "no-jurisdictions",
-    lawReviewedAsOf: REVIEWED,
+    lawReviewedAsOf: EU_REVIEWED,
   },
   {
     id: "eu-ai-act-art50-marking-grace",
     instrument: "eu-ai-act",
-    citation:
-      "Reg. (EU) 2026/1744 (Digital Omnibus on AI) Art. 1(38), OJ L, 2026/1744, 24.7.2026 — four-month transitional period",
+    citation: `Reg. (EU) 2024/1689, ${EU["art50-2-legacy-generative"].provision} (${DIGITAL_OMNIBUS_CITATION}): generative systems placed on the market before 2 August 2026 comply with Art. 50(2) by 2 December 2026`,
     provision: "Art. 50(2)",
     // Derived per system: grace deadline or the base date, decided in ONE
     // place — computeMarkingDeadline in transparency-rules.ts.
@@ -450,15 +463,14 @@ export const REGULATORY_MILESTONES: RegulatoryMilestone[] = [
     satisfiedBy: (sys) => sys.art50?.marking === "IMPLEMENTED",
     undeterminedReason: (_sys, org) =>
       org.jurisdictionsDeclared ? "no-market-placement-date" : "no-jurisdictions",
-    lawReviewedAsOf: REVIEWED,
+    lawReviewedAsOf: EU_REVIEWED,
   },
   {
     id: "eu-ai-act-art5-new-prohibitions",
     instrument: "eu-ai-act",
-    citation:
-      "Reg. (EU) 2026/1744 (Digital Omnibus on AI) — Art. 5(1)(ba) and 5(1)(bb), applicable from 2 December 2026",
-    provision: "Art. 5(1)(ba)–(bb)",
-    date: "2026-12-02",
+    citation: `Reg. (EU) 2024/1689, ${EU["new-art5-prohibitions"].provision}, applicable from 2 December 2026 (${DIGITAL_OMNIBUS_CITATION})`,
+    provision: "Art. 5(1)(ba)–(bb), 5(1a)–(1b)",
+    date: EU["new-art5-prohibitions"].date,
     dateBasis: "fixed",
     scope: { kind: "eu" },
     kind: "applies",
@@ -483,15 +495,14 @@ export const REGULATORY_MILESTONES: RegulatoryMilestone[] = [
     },
     undeterminedReason: (_sys, org) =>
       org.jurisdictionsDeclared ? "unclassified-system" : "no-jurisdictions",
-    lawReviewedAsOf: REVIEWED,
+    lawReviewedAsOf: EU_REVIEWED,
   },
   {
     id: "eu-ai-act-annex-iii-high-risk",
     instrument: "eu-ai-act",
-    citation:
-      "Reg. (EU) 2024/1689 Art. 113, as amended by Reg. (EU) 2026/1744 (Digital Omnibus on AI), OJ L, 2026/1744, 24.7.2026",
-    provision: "Art. 113 / Annex III",
-    date: "2027-12-02",
+    citation: `Reg. (EU) 2024/1689, ${EU["annex-iii-high-risk"].provision}; ${DIGITAL_OMNIBUS_CITATION}`,
+    provision: "Art. 6(2) / Annex III",
+    date: EU["annex-iii-high-risk"].date,
     dateBasis: "fixed",
     scope: { kind: "eu" },
     kind: "applies",
@@ -504,8 +515,8 @@ export const REGULATORY_MILESTONES: RegulatoryMilestone[] = [
       es: "Se aplican las obligaciones de alto riesgo de la UE (anexo III)",
     },
     whatItMeans: {
-      en: "Standalone Annex III high-risk systems must meet the full Chapter III duties — risk management, data governance, technical documentation, logging, human oversight, conformity assessment and registration — plus an Art. 27 fundamental-rights impact assessment where you deploy in scope. Deferred from 2 August 2026 by the Digital Omnibus.",
-      es: "Los sistemas autónomos de alto riesgo del anexo III deben cumplir todos los deberes del capítulo III —gestión de riesgos, gobernanza de datos, documentación técnica, registro de eventos, supervisión humana, evaluación de la conformidad y registro— además de una evaluación de impacto sobre los derechos fundamentales (art. 27) cuando el despliegue esté incluido. Aplazado desde el 2 de agosto de 2026 por el Ómnibus Digital.",
+      en: "Standalone Annex III high-risk systems must meet the full Chapter III duties — risk management, data governance, technical documentation, logging, human oversight, conformity assessment and registration — plus an Art. 27 fundamental-rights impact assessment where you deploy in scope. Deferred from 2 August 2026 by the Digital Omnibus. Systems intended for use by public authorities have until 2 August 2030 (Art. 111(2)).",
+      es: "Los sistemas autónomos de alto riesgo del anexo III deben cumplir todos los deberes del capítulo III —gestión de riesgos, gobernanza de datos, documentación técnica, registro de eventos, supervisión humana, evaluación de la conformidad y registro— además de una evaluación de impacto sobre los derechos fundamentales (art. 27) cuando el despliegue esté incluido. Aplazado desde el 2 de agosto de 2026 por el Ómnibus Digital. Los sistemas destinados a ser utilizados por autoridades públicas tienen de plazo hasta el 2 de agosto de 2030 (art. 111.2).",
     },
     applies: (sys, org) => {
       const gate = euGate(org);
@@ -521,15 +532,14 @@ export const REGULATORY_MILESTONES: RegulatoryMilestone[] = [
         ? "unclassified-system"
         : "no-annex-i-determination";
     },
-    lawReviewedAsOf: REVIEWED,
+    lawReviewedAsOf: EU_REVIEWED,
   },
   {
     id: "eu-ai-act-annex-i-high-risk",
     instrument: "eu-ai-act",
-    citation:
-      "Reg. (EU) 2024/1689 Art. 113(c), as amended by Reg. (EU) 2026/1744",
+    citation: `Reg. (EU) 2024/1689, ${EU["annex-i-high-risk"].provision}; ${DIGITAL_OMNIBUS_CITATION}`,
     provision: "Art. 6(1) / Annex I",
-    date: "2028-08-02",
+    date: EU["annex-i-high-risk"].date,
     dateBasis: "fixed",
     scope: { kind: "eu" },
     kind: "applies",
@@ -555,7 +565,45 @@ export const REGULATORY_MILESTONES: RegulatoryMilestone[] = [
       org.jurisdictionsDeclared
         ? "no-annex-i-determination"
         : "no-jurisdictions",
-    lawReviewedAsOf: REVIEWED,
+    lawReviewedAsOf: EU_REVIEWED,
+  },
+  {
+    id: "eu-ai-act-public-authority-high-risk",
+    instrument: "eu-ai-act",
+    citation: `Reg. (EU) 2024/1689, ${EU["public-authority-high-risk"].provision}; ${DIGITAL_OMNIBUS_CITATION}`,
+    provision: "Art. 111(2)",
+    date: EU["public-authority-high-risk"].date,
+    dateBasis: "fixed",
+    scope: { kind: "eu" },
+    kind: "deadline",
+    severity: "obligation",
+    countUnit: "systems",
+    // The Art. 113 parent row states this date; there is no dated child row.
+    requirementCodes: ["Art. 113"],
+    href: "/governance/risk-classification",
+    title: {
+      en: "EU high-risk systems used by public authorities must comply",
+      es: "Los sistemas de alto riesgo de la UE usados por autoridades públicas deben cumplir",
+    },
+    whatItMeans: {
+      en: "Providers and deployers of high-risk systems intended for use by public authorities must comply with the Regulation by 2 August 2030. Other high-risk systems already on the market before the Chapter III date are caught only if they are significantly changed after that date.",
+      es: "Los proveedores y responsables del despliegue de sistemas de alto riesgo destinados a ser utilizados por autoridades públicas deben cumplir el Reglamento a más tardar el 2 de agosto de 2030. Los demás sistemas de alto riesgo ya introducidos en el mercado antes de la fecha del capítulo III solo quedan afectados si se modifican de forma significativa después de esa fecha.",
+    },
+    applies: (sys, org) => {
+      const gate = euGate(org);
+      if (gate) return gate;
+      if (sys.riskLevel === null) return "undetermined";
+      if (sys.riskLevel !== "HIGH") return "out-of-scope";
+      if (sys.intendedForPublicAuthorities === null) return "undetermined";
+      return sys.intendedForPublicAuthorities ? "in-scope" : "out-of-scope";
+    },
+    undeterminedReason: (sys, org) => {
+      if (!org.jurisdictionsDeclared) return "no-jurisdictions";
+      return sys && sys.riskLevel === null
+        ? "unclassified-system"
+        : "no-public-authority-determination";
+    },
+    lawReviewedAsOf: EU_REVIEWED,
   },
 
   // ══ California — CCPA / ADMT ══════════════════════════════════════

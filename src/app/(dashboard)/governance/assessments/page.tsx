@@ -22,6 +22,7 @@ import {
 import { keepPreviousData } from "@tanstack/react-query";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
+import { useExportDownload } from "@/components/governance/use-export-download";
 import { useDebounce } from "@/hooks/use-debounce";
 import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
 import { formatRelativeTime } from "@/lib/utils";
@@ -70,6 +71,7 @@ export default function AssessmentsPage() {
   const [activeTab, setActiveTab] = useState("all");
   const debouncedSearch = useDebounce(searchQuery);
   const { organization, canWrite } = useOrganization();
+  const { download } = useExportDownload();
 
   const typeFilter = activeTab === "all" ? undefined : activeTab.toUpperCase() as "FRIA" | "CONFORMITY" | "AI_RISK" | "BIAS_FAIRNESS" | "CUSTOM";
 
@@ -128,10 +130,7 @@ export default function AssessmentsPage() {
             className="shrink-0 sm:size-auto sm:px-4 sm:py-2"
             onClick={() =>
               organization?.id &&
-              window.open(
-                `/api/export/assessment-portfolio?organizationId=${organization.id}`,
-                "_blank"
-              )
+              void download(`/api/export/assessment-portfolio?organizationId=${organization.id}`)
             }
           >
             <Download className="w-4 h-4 sm:mr-2" />

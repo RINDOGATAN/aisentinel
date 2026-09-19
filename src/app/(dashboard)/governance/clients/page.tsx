@@ -30,7 +30,7 @@ import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 function timeAgo(date: Date | string | null, noActivity: string): string {
   if (!date) return noActivity;
@@ -64,14 +64,20 @@ export default function ClientsPage() {
   const tc = useTranslations("common");
   const utils = trpc.useUtils();
 
-  const [addOpen, setAddOpen] = useState(false);
+  // "+ Add organization" in the organization switcher arrives with ?add=1.
+  const searchParams = useSearchParams();
+  const [addOpen, setAddOpenState] = useState(searchParams.get("add") === "1");
+  const setAddOpen = (open: boolean) => {
+    setAddOpenState(open);
+    if (!open && searchParams.get("add")) router.replace("/governance/clients");
+  };
   const [orgForm, setOrgForm] = useState({ name: "", slug: "", domain: "", slugTouched: false });
 
   const createOrg = trpc.organization.create.useMutation({
     onSuccess: (org) => {
       toast.success(t("orgCreated"));
       utils.clients.listClients.invalidate();
-      setAddOpen(false);
+      setAddOpenState(false);
       setOrgForm({ name: "", slug: "", domain: "", slugTouched: false });
       // Switch into the new organization and start its onboarding.
       setOrganization({ id: org.id, name: org.name, slug: org.slug });

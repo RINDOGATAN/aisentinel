@@ -28,15 +28,20 @@ import {
   Users,
   Globe2,
   Sparkles,
+  CircleDot,
+  Table2,
+  Columns3,
+  ListChecks,
 } from "lucide-react";
 import { useState } from "react";
+import { PremiumNotice } from "@/components/docs/premium-notice";
 
 type SidebarItem = {
   href: string;
   labelKey: string;
   icon: React.ComponentType<{ className?: string }>;
   exact?: boolean;
-  premium?: boolean;
+  group?: "frameworks" | "premium";
 };
 
 const sidebarItems: SidebarItem[] = [
@@ -51,10 +56,14 @@ const sidebarItems: SidebarItem[] = [
   { href: "/docs/compliance", labelKey: "compliance", icon: Scale },
   { href: "/docs/vendors", labelKey: "vendors", icon: Building2 },
   { href: "/docs/policies", labelKey: "policies", icon: ScrollText },
-  { href: "/docs/shadow-ai", labelKey: "shadowAi", icon: Search, premium: true },
-  { href: "/docs/vendor-catalog", labelKey: "vendorCatalog", icon: BookMarked, premium: true },
-  { href: "/docs/conformity-assessment", labelKey: "conformity", icon: FileCheck, premium: true },
-  { href: "/docs/bias-fairness", labelKey: "biasFairness", icon: Activity, premium: true },
+  { href: "/docs/frameworks", labelKey: "frameworksOverview", icon: CircleDot, exact: true, group: "frameworks" },
+  { href: "/docs/frameworks/table", labelKey: "frameworksTable", icon: Table2, group: "frameworks" },
+  { href: "/docs/frameworks/compare", labelKey: "frameworksCompare", icon: Columns3, group: "frameworks" },
+  { href: "/docs/frameworks/selector", labelKey: "frameworksSelector", icon: ListChecks, group: "frameworks" },
+  { href: "/docs/shadow-ai", labelKey: "shadowAi", icon: Search, group: "premium" },
+  { href: "/docs/vendor-catalog", labelKey: "vendorCatalog", icon: BookMarked, group: "premium" },
+  { href: "/docs/conformity-assessment", labelKey: "conformity", icon: FileCheck, group: "premium" },
+  { href: "/docs/bias-fairness", labelKey: "biasFairness", icon: Activity, group: "premium" },
   { href: "/docs/roles", labelKey: "roles", icon: Users },
   { href: "/docs/security", labelKey: "security", icon: Shield },
   { href: "/docs/whats-new", labelKey: "whatsNew", icon: Sparkles },
@@ -69,29 +78,33 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b border-border sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        {/* Below sm the header must hold on one line at 390 px, in both languages:
+            tighter gaps, the logo mark without its TODO.LAW wordmark, and no "Docs"
+            link (the reader is already in the docs; the menu leads to the start). */}
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 sm:gap-4 min-w-0">
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
               className="md:hidden p-2 rounded-md hover:bg-secondary transition-colors"
             >
               {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
-            <Link href="/" className="flex items-center gap-2">
-              <img src="/logo-negative.svg" alt="TODO.LAW" style={{ height: "28px", width: "auto" }} />
-              <span className="text-lg tracking-tight" style={{ fontFamily: "var(--font-jost), 'Jost', sans-serif", fontWeight: 600 }}>AI SENTINEL</span>
+            <Link href="/" className="flex items-center gap-2 shrink-0">
+              <img src="/logo-negative.svg" alt="TODO.LAW" className="hidden sm:block" style={{ height: "28px", width: "auto" }} />
+              <img src="/simbol-negative.svg" alt="TODO.LAW" className="sm:hidden" style={{ height: "28px", width: "auto" }} />
+              <span className="text-lg tracking-tight whitespace-nowrap" style={{ fontFamily: "var(--font-jost), 'Jost', sans-serif", fontWeight: 600 }}>AI SENTINEL</span>
             </Link>
           </div>
-          <nav className="flex items-center gap-4">
+          <nav className="flex items-center gap-2 sm:gap-4 shrink-0">
             <Link
               href="/docs"
-              className="text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+              className="hidden sm:inline whitespace-nowrap text-sm font-medium text-primary hover:text-primary/80 transition-colors"
             >
               {t("headerDocs")}
             </Link>
             <Link
               href="/sign-in"
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              className="whitespace-nowrap text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               {t("headerSignIn")}
             </Link>
@@ -101,10 +114,11 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
       </header>
 
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-8 py-8">
+        {/* min-w-0 down the chain: a wide table scrolls in its own box, never the page. */}
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-8 py-8 min-w-0">
           {/* Sidebar */}
           <aside
-            className={`md:col-span-1 ${
+            className={`md:col-span-1 min-w-0 ${
               sidebarOpen ? "block" : "hidden"
             } md:block`}
           >
@@ -114,16 +128,17 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
                 const isActive = item.exact
                   ? pathname === item.href
                   : pathname === item.href || pathname.startsWith(item.href + "/");
-                const showPremiumLabel =
-                  item.premium && (i === 0 || !sidebarItems[i - 1].premium);
+                const startsGroup =
+                  item.group && (i === 0 || sidebarItems[i - 1].group !== item.group);
 
                 return (
                   <div key={item.href}>
-                    {showPremiumLabel && (
+                    {startsGroup && (
                       <div className="px-3 pt-4 pb-1 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
-                        {t("premiumLabel")}
+                        {t(item.group === "premium" ? "premiumLabel" : "frameworksLabel")}
                       </div>
                     )}
+                    {startsGroup && item.group === "premium" && <PremiumNotice variant="compact" />}
                     <Link
                       href={item.href}
                       onClick={() => setSidebarOpen(false)}

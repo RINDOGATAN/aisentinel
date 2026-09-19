@@ -2,6 +2,7 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { getTranslations } from "next-intl/server";
+import { PremiumNotice } from "@/components/docs/premium-notice";
 
 export async function generateMetadata() {
   const t = await getTranslations("docs.shadowAi");
@@ -32,6 +33,9 @@ export default async function ShadowAIDocsPage() {
         <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl">
           {t("intro")}
         </p>
+        <div className="mt-6 max-w-3xl">
+          <PremiumNotice />
+        </div>
       </section>
 
       {/* What is Shadow AI */}

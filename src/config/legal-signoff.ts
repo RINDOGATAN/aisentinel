@@ -82,7 +82,9 @@ export const LEGAL_SIGNOFF: Record<string, SignoffRecord> = {
   },
   // Not part of the sign-off console, so still pending on their own terms.
   CA_CCPA_ADMT: { status: "pending", lawReviewedAsOf: "2026-08-21" },
-  EU_AI_ACT: { status: "pending", lawReviewedAsOf: "2026-08-05" },
+  // Dates of application re-checked against Reg. (EU) 2026/1744 on 2026-09-16
+  // (src/config/eu-ai-act-dates.ts); sign-off still pending.
+  EU_AI_ACT: { status: "pending", lawReviewedAsOf: "2026-09-16" },
 };
 
 /** The marker a pack renders under its content. */

@@ -2,6 +2,9 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { getTranslations } from "next-intl/server";
+import { PremiumNotice } from "@/components/docs/premium-notice";
+import { TierMarker } from "@/components/governance/risk-tier-badge";
+import { TIER_BORDER_L_CLASS, toRiskTier } from "@/config/risk-tier-palette";
 
 export async function generateMetadata() {
   const t = await getTranslations("docs.vendors");
@@ -11,11 +14,12 @@ export async function generateMetadata() {
   };
 }
 
+// Vendor risk borrows the risk-tier palette (coloured left bar and dot, body-colour text).
 const riskStyles = [
-  { key: "critical", color: "bg-red-500/10 text-red-400 border-red-500/20" },
-  { key: "high", color: "bg-orange-500/10 text-orange-400 border-orange-500/20" },
-  { key: "medium", color: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20" },
-  { key: "low", color: "bg-green-500/10 text-green-400 border-green-500/20" },
+  { key: "critical", tier: "CRITICAL" },
+  { key: "high", tier: "HIGH" },
+  { key: "medium", tier: "MEDIUM" },
+  { key: "low", tier: "LOW" },
 ] as const;
 
 export default async function VendorsDocsPage() {
@@ -44,8 +48,14 @@ export default async function VendorsDocsPage() {
         </p>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {riskStyles.map((risk) => (
-            <div key={risk.key} className={`rounded-xl border p-4 ${risk.color}`}>
-              <h3 className="font-semibold mb-1">{t(`riskLevels.${risk.key}.level`)}</h3>
+            <div
+              key={risk.key}
+              className={`rounded-xl border border-border border-l-4 bg-card text-foreground p-4 ${TIER_BORDER_L_CLASS[toRiskTier(risk.tier)]}`}
+            >
+              <h3 className="font-semibold mb-1 flex items-center gap-2">
+                <TierMarker level={risk.tier} />
+                {t(`riskLevels.${risk.key}.level`)}
+              </h3>
               <p className="text-xs opacity-80">{t(`riskLevels.${risk.key}.description`)}</p>
             </div>
           ))}
@@ -104,6 +114,9 @@ export default async function VendorsDocsPage() {
         <p className="text-muted-foreground mb-6">
           {t("catalogIntro")}
         </p>
+        <div className="mb-6 max-w-3xl">
+          <PremiumNotice />
+        </div>
         <div className="rounded-xl border border-border bg-card p-6">
           <div className="grid sm:grid-cols-3 gap-6 text-sm">
             <div>

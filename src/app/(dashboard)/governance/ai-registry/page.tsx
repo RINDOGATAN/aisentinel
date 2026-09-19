@@ -33,8 +33,10 @@ import { keepPreviousData } from "@tanstack/react-query";
 import { trpc } from "@/lib/trpc";
 import { useTranslations, useLocale } from "next-intl";
 import { InventoryImportDialog } from "@/components/governance/InventoryImportDialog";
+import { RiskTierBadge } from "@/components/governance/risk-tier-badge";
 import { useEnumLabels } from "@/lib/enum-labels";
 import { useOrganization } from "@/lib/organization-context";
+import { useExportDownload } from "@/components/governance/use-export-download";
 import { useDebounce } from "@/hooks/use-debounce";
 import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
 import { formatRelativeTime } from "@/lib/utils";
@@ -45,13 +47,6 @@ const statusColors: Record<string, string> = {
   TESTING: "border-warning text-warning",
   DEPLOYED: "border-success text-success",
   RETIRED: "border-muted-foreground/50 text-muted-foreground/50",
-};
-
-const riskLevelColors: Record<string, string> = {
-  UNACCEPTABLE: "bg-destructive text-destructive-foreground",
-  HIGH: "bg-destructive/80 text-destructive-foreground",
-  LIMITED: "bg-warning/20 text-warning",
-  MINIMAL: "bg-success/20 text-success",
 };
 
 const techniqueLabels: Record<string, string> = {
@@ -83,10 +78,11 @@ export default function AIRegistryPage() {
   const [activeTab, setActiveTab] = useState("all");
   const debouncedSearch = useDebounce(searchQuery);
   const { organization, organizations, canWrite, isLoading: orgLoading } = useOrganization();
+  const { download } = useExportDownload();
   const t = useTranslations("aiRegistry");
   const locale = useLocale();
   const tc = useTranslations("common");
-  const { statusLabel, riskLabel, roleLabel } = useEnumLabels();
+  const { statusLabel, roleLabel } = useEnumLabels();
 
   // While the organization context is still resolving, `canWrite` is false
   // even for owners — don't hide the Register button on that transient state,
@@ -145,11 +141,11 @@ export default function AIRegistryPage() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => window.open(`/api/export/ai-system-register?organizationId=${organization?.id}`, "_blank")}>
+              <DropdownMenuItem onClick={() => organization?.id && void download(`/api/export/ai-system-register?organizationId=${organization.id}`)}>
                 <FileText className="w-4 h-4 mr-2" />
                 {t("exportRegisterPdf")}
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => window.open(`/api/export/model-inventory?organizationId=${organization?.id}`, "_blank")}>
+              <DropdownMenuItem onClick={() => organization?.id && void download(`/api/export/model-inventory?organizationId=${organization.id}`)}>
                 <FileText className="w-4 h-4 mr-2" />
                 {t("exportModelInventoryPdf")}
               </DropdownMenuItem>
@@ -268,11 +264,7 @@ export default function AIRegistryPage() {
                                 {statusLabel(system.status)}
                               </Badge>
                               {riskLevel && (
-                                <Badge
-                                  className={`text-xs ${riskLevelColors[riskLevel] || ""}`}
-                                >
-                                  {riskLabel(riskLevel)}
-                                </Badge>
+                                <RiskTierBadge level={riskLevel} className="text-xs" />
                               )}
                             </div>
                           </div>

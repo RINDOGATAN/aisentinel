@@ -6,12 +6,15 @@
  *
  * Sets a currency cookie based on the visitor's country.
  * US visitors get USD, everyone else gets EUR.
- * Sets a default locale cookie if missing.
+ * Never writes a default locale cookie (no cookie renders English). When a
+ * hosted request carries more than one `locale` value, expires the host-only
+ * duplicate and re-writes the domain-wide cookie (see @/lib/locale-cookie).
  *
  * AGPL-3.0 License - Part of the open-source core
  */
 
 import { NextRequest, NextResponse } from "next/server";
+import { localeCleanupSetCookies } from "@/lib/locale-cookie";
 
 export default function middleware(request: NextRequest) {
   // Skip for API routes, static files, and Next.js internals
@@ -37,13 +40,14 @@ export default function middleware(request: NextRequest) {
     });
   }
 
-  // Set default locale cookie if missing
-  if (!request.cookies.has("locale")) {
-    response.cookies.set("locale", "en", {
-      path: "/",
-      maxAge: 60 * 60 * 24 * 365, // 1 year
-      sameSite: "lax",
-    });
+  // Collapse duplicate locale cookies. Appended raw and last: both Set-Cookie
+  // headers carry the name `locale`, which response.cookies would merge, and
+  // any later response.cookies.set rewrites the whole header list.
+  for (const setCookie of localeCleanupSetCookies(
+    request.headers.get("cookie"),
+    request.nextUrl.hostname,
+  )) {
+    response.headers.append("Set-Cookie", setCookie);
   }
 
   return response;

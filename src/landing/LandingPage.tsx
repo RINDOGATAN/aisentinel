@@ -12,21 +12,17 @@ import es from "./i18n/es/ai-sentinel-startups.json";
 import authEn from "./i18n/en/startups-auth.json";
 import authEs from "./i18n/es/startups-auth.json";
 import { PILOT_RUN_URL, PILOT_SENTENCE } from "@/config/pilot";
+import { normalizeLocaleCookie, writeLocaleCookie } from "@/lib/locale-cookie";
 
 function detectLocale(): "en" | "es" {
   if (typeof window === "undefined") return "en";
   const params = new URLSearchParams(window.location.search);
   const lang = params.get("lang");
+  // Collapse duplicate cookies first; a ?lang= link shows that language
+  // without recording it, since only the toggle is a visitor's choice.
+  const fromCookie = normalizeLocaleCookie();
   if (lang === "es" || lang === "en") return lang;
-  const match = document.cookie.match(/(?:^|; )locale=([^;]*)/);
-  if (match?.[1] === "es") return "es";
-  return "en";
-}
-
-function setLocaleCookie(locale: string) {
-  const maxAge = 365 * 24 * 60 * 60;
-  const domain = window.location.hostname.endsWith(".todo.law") ? ";domain=.todo.law" : "";
-  document.cookie = `locale=${locale};path=/;max-age=${maxAge};SameSite=Lax${domain}`;
+  return fromCookie;
 }
 
 export default function LandingPage({ hostedPilot = false }: { hostedPilot?: boolean }) {
@@ -41,7 +37,7 @@ export default function LandingPage({ hostedPilot = false }: { hostedPilot?: boo
   const toggleLocale = useCallback(() => {
     setLocale((prev) => {
       const next = prev === "en" ? "es" : "en";
-      setLocaleCookie(next);
+      writeLocaleCookie(next);
       return next;
     });
   }, []);

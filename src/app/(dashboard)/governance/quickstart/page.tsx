@@ -60,11 +60,12 @@ import {
   suggestScenarios,
 } from "@/config/threat-model";
 import { ProgramMap } from "@/components/governance/program/ProgramMap";
+import { useExportDownload } from "@/components/governance/use-export-download";
 import { JurisdictionPicker } from "@/components/governance/jurisdiction-picker";
 import { RegimeScreeningCard } from "@/components/governance/regime-screening-card";
 import type { JurisdictionId } from "@/config/jurisdictions";
 import { features } from "@/config/features";
-import { useEnumLabels } from "@/lib/enum-labels";
+import { RiskTierBadge } from "@/components/governance/risk-tier-badge";
 import { corePoliciesMissingFrom, localizeCorePolicy } from "@/config/core-policy-pack";
 
 // ============================================================
@@ -132,18 +133,7 @@ type WizardStep =
 // ============================================================
 
 function RiskBadge({ level }: { level: string }) {
-  const { riskLabel } = useEnumLabels();
-  const styles: Record<string, string> = {
-    UNACCEPTABLE: "bg-destructive/20 text-destructive border-destructive/30",
-    HIGH: "bg-destructive/15 text-destructive border-destructive/20",
-    LIMITED: "bg-warning/15 text-warning border-warning/20",
-    MINIMAL: "bg-success/15 text-success border-success/20",
-  };
-  return (
-    <Badge variant="outline" className={`text-[10px] ${styles[level] ?? ""}`}>
-      {riskLabel(level)}
-    </Badge>
-  );
+  return <RiskTierBadge level={level} className="text-[10px]" />;
 }
 
 // Policy type codes onto the shared labels in the "common" namespace.
@@ -173,6 +163,7 @@ export default function QuickstartPage() {
   const tq = useTranslations("quickstart");
   const tjur = useTranslations("jurisdictions");
   const orgId = organization?.id ?? "";
+  const { download, isPending: downloadPending } = useExportDownload();
 
   // Wizard state
   const [step, setStep] = useState<WizardStep>("choose");
@@ -1851,10 +1842,10 @@ export default function QuickstartPage() {
               <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
                 <Button
                   size="lg"
+                  disabled={downloadPending()}
                   onClick={() =>
-                    window.open(
+                    void download(
                       `/api/export/governance-program?organizationId=${orgId}&locale=${contentLocale}`,
-                      "_blank",
                     )
                   }
                 >
@@ -1870,10 +1861,10 @@ export default function QuickstartPage() {
                 <Button
                   size="lg"
                   variant="outline"
+                  disabled={downloadPending()}
                   onClick={() =>
-                    window.open(
+                    void download(
                       `/api/export/program-pack?organizationId=${orgId}&locale=${contentLocale}`,
-                      "_blank",
                     )
                   }
                 >

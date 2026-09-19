@@ -72,7 +72,8 @@ const permissionMatrix = [
   { key: "oversightDecisions", OWNER: true, ADMIN: true, AI_OFFICER: true, MEMBER: false, VIEWER: false },
   { key: "inviteMembers", OWNER: true, ADMIN: true, AI_OFFICER: false, MEMBER: false, VIEWER: false },
   { key: "changeRoles", OWNER: true, ADMIN: false, AI_OFFICER: false, MEMBER: false, VIEWER: false },
-  { key: "manageBilling", OWNER: true, ADMIN: false, AI_OFFICER: false, MEMBER: false, VIEWER: false },
+  { key: "activateLicences", OWNER: true, ADMIN: true, AI_OFFICER: false, MEMBER: false, VIEWER: false },
+  { key: "deleteOrganization", OWNER: true, ADMIN: false, AI_OFFICER: false, MEMBER: false, VIEWER: false },
 ] as const;
 
 const assignCards = [

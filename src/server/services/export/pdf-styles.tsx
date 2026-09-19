@@ -3,6 +3,7 @@
 
 import React from "react";
 import { Page, View, Text, StyleSheet } from "@react-pdf/renderer";
+import { TIER_MARKER, TIER_SURFACES, toRiskTier } from "@/config/risk-tier-palette";
 
 const PRIMARY = "#f5a623";
 const DARK = "#1a1a1a";
@@ -126,6 +127,8 @@ export const s = StyleSheet.create({
   metaLabel: { fontSize: 9, fontFamily: "Helvetica-Bold", color: MUTED, width: 140 },
   metaValue: { fontSize: 9, color: DARK, flex: 1 },
   badge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 3, fontSize: 7, fontFamily: "Helvetica-Bold" },
+  tierBadge: { flexDirection: "row", alignItems: "center" },
+  tierDot: { width: 5, height: 5, borderRadius: 2.5, marginRight: 4 },
   card: { borderWidth: 1, borderColor: BORDER, borderRadius: 4, padding: 12, marginBottom: 12 },
   paragraph: { fontSize: 9, lineHeight: 1.5, color: DARK, marginBottom: 8 },
   divider: { borderBottomWidth: 1, borderBottomColor: BORDER, marginVertical: 12 },
@@ -149,16 +152,6 @@ export const s = StyleSheet.create({
   progressBarOuter: { height: 8, backgroundColor: "#e5e7eb", borderRadius: 4, marginBottom: 16 },
   progressBarInner: { height: 8, backgroundColor: PRIMARY, borderRadius: 4 },
 });
-
-const RISK_COLORS: Record<string, { bg: string; color: string }> = {
-  UNACCEPTABLE: { bg: "#fecaca", color: "#991b1b" },
-  HIGH: { bg: "#fed7aa", color: "#9a3412" },
-  LIMITED: { bg: "#fef9c3", color: "#854d0e" },
-  MINIMAL: { bg: "#dcfce7", color: "#166534" },
-  LOW: { bg: "#dcfce7", color: "#166534" },
-  MEDIUM: { bg: "#fef9c3", color: "#854d0e" },
-  CRITICAL: { bg: "#fecaca", color: "#991b1b" },
-};
 
 const STATUS_COLORS: Record<string, { bg: string; color: string }> = {
   APPROVED: { bg: "#dcfce7", color: "#166534" },
@@ -274,10 +267,27 @@ export function DataTable({ headers, rows, colWidths }: { headers: string[]; row
   );
 }
 
+/**
+ * Risk-tier badge: neutral fill, a coloured dot, the label in the body ink.
+ * Colours come from the shared tier tokens (light set, for white paper).
+ */
 export function RiskBadge({ level }: { level: string | null | undefined }) {
   if (!level) return <Text style={s.badge}>—</Text>;
-  const colors = RISK_COLORS[level] || { bg: "#e5e7eb", color: "#374151" };
-  return <Text style={[s.badge, { backgroundColor: colors.bg, color: colors.color }]}>{level}</Text>;
+  const tier = toRiskTier(level);
+  const marker = TIER_MARKER.light[tier];
+  return (
+    <View style={[s.badge, s.tierBadge, { backgroundColor: TIER_SURFACES.light.chip }]}>
+      <View
+        style={[
+          s.tierDot,
+          tier === "UNCLASSIFIED"
+            ? { borderWidth: 1, borderColor: marker }
+            : { backgroundColor: marker },
+        ]}
+      />
+      <Text style={{ color: TIER_SURFACES.light.text }}>{level}</Text>
+    </View>
+  );
 }
 
 export function StatusBadge({ status }: { status: string }) {

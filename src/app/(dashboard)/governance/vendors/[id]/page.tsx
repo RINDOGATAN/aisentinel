@@ -41,16 +41,10 @@ import { toast } from "sonner";
 import { brand } from "@/config/brand";
 import { useTranslations, useLocale } from "next-intl";
 import { useEnumLabels } from "@/lib/enum-labels";
+import { TierChip } from "@/components/governance/risk-tier-badge";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { formatDate, formatRelativeTime, getDaysUntil } from "@/lib/utils";
-
-const riskLevelColors: Record<string, string> = {
-  CRITICAL: "bg-destructive text-destructive-foreground",
-  HIGH: "bg-destructive/80 text-destructive-foreground",
-  MEDIUM: "bg-warning/20 text-warning",
-  LOW: "bg-success/20 text-success",
-};
 
 const statusColors: Record<string, string> = {
   ACTIVE: "border-success text-success",
@@ -254,9 +248,9 @@ export default function VendorDetailPage() {
                   {statusLabelKeys[vendor.status] ? t(statusLabelKeys[vendor.status]) : vendor.status}
                 </Badge>
                 {vendor.riskLevel && (
-                  <Badge className={riskLevelColors[vendor.riskLevel] || ""}>
+                  <TierChip level={vendor.riskLevel}>
                     {tc("riskWithLevel", { level: riskLabel(vendor.riskLevel) })}
-                  </Badge>
+                  </TierChip>
                 )}
               </div>
             </div>

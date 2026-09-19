@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { features } from "@/config/features";
 import { brand } from "@/config/brand";
-import { PILOT_RUN_URL, PILOT_SENTENCE } from "@/config/pilot";
+import { PILOT_RUN_URL, PILOT_SENTENCE, PILOT_TERMS } from "@/config/pilot";
 
 // Local (passwordless credentials) login: dev mode, or sovereign/self-hosted
 // builds with NEXT_PUBLIC_LOCAL_AUTH_ENABLED=true. The NextAuth provider id
@@ -20,7 +20,9 @@ const isDev = features.devAuthEnabled;
 
 export function SignInForm({ hostedPilot }: { hostedPilot: boolean }) {
   const t = useTranslations("signIn");
-  const pilotSentence = PILOT_SENTENCE[useLocale() === "es" ? "es" : "en"];
+  const pilotLocale = useLocale() === "es" ? "es" : "en";
+  const pilotSentence = PILOT_SENTENCE[pilotLocale];
+  const pilotTerms = PILOT_TERMS[pilotLocale];
   const [email, setEmail] = useState("");
   const [devEmail, setDevEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -130,6 +132,7 @@ export function SignInForm({ hostedPilot }: { hostedPilot: boolean }) {
               {pilotSentence.link}
             </a>
             {pilotSentence.after}
+            <span className="block mt-1">{pilotTerms}</span>
           </p>
         )}
 

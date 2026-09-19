@@ -36,7 +36,7 @@ interface StartupProductPageProps {
   accentGradient?: string;
   callbackUrl: string;
   /** The hosted pilot's one sentence, shown in the sign-up card; null off the pilot. */
-  pilotNotice?: { before: string; link: string; after: string; url: string } | null;
+  pilotNotice?: { before: string; link: string; after: string; url: string; terms: string } | null;
 }
 
 const GoogleIcon = () => (
@@ -160,6 +160,7 @@ const StartupProductPage = ({
         {pilotNotice.link}
       </a>
       {pilotNotice.after}
+      <span className="block mt-1">{pilotNotice.terms}</span>
     </p>
   ) : null;
 

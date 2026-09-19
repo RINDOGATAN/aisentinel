@@ -13,7 +13,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Download, ExternalLink, FlaskConical, Lock } from "lucide-react";
 import { trpc } from "@/lib/trpc";
-import { PILOT_CEILING_LABELS, PILOT_RUN_URL, PILOT_SENTENCE } from "@/config/pilot";
+import { PILOT_CEILING_LABELS, PILOT_RUN_URL, PILOT_SENTENCE, PILOT_TERMS } from "@/config/pilot";
 
 export function PilotStatusCard({ organizationId }: { organizationId: string }) {
   const t = useTranslations("pilot");
@@ -24,7 +24,13 @@ export function PilotStatusCard({ organizationId }: { organizationId: string }) 
 
   const systems = data.ceilings.find((c) => c.key === "systems");
   const sentence = PILOT_SENTENCE[locale];
-  const endsOn = new Date(data.endsAt).toISOString().slice(0, 10);
+  // "18 December 2026" / "18 de diciembre de 2026", read the same everywhere.
+  const endsOn = new Date(data.endsAt).toLocaleDateString(locale === "es" ? "es-ES" : "en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  });
 
   return (
     <Card data-testid="pilot-status-card">
@@ -39,6 +45,7 @@ export function PilotStatusCard({ organizationId }: { organizationId: string }) 
             {sentence.link}
           </a>
           {sentence.after}
+          <span className="block mt-1">{PILOT_TERMS[locale]}</span>
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4 text-sm">

@@ -166,11 +166,13 @@ export function pilotExportUrl(organizationId: string): string {
 
 /**
  * The editing terms, word for word as the other two suite apps state them, so
- * a visitor reads the same rule wherever the pilot runs.
+ * a visitor reads the same rule wherever the pilot runs. Shown as their own
+ * line under the pilot sentence on the sign-up screens and in Settings; the
+ * banner keeps to the sentence so it stays one line on a desktop.
  */
 export const PILOT_TERMS: Record<PilotLocale, string> = {
-  en: `${PILOT_EDIT_DAYS} days of editing from your first sign-in, then read-only with export`,
-  es: `${PILOT_EDIT_DAYS} días de edición desde tu primer inicio de sesión y después solo lectura con exportación`,
+  en: `${PILOT_EDIT_DAYS} days of editing from your first sign-in, then read-only with export.`,
+  es: `${PILOT_EDIT_DAYS} días de edición desde tu primer inicio de sesión y después solo lectura con exportación.`,
 };
 
 /**
@@ -179,12 +181,12 @@ export const PILOT_TERMS: Record<PilotLocale, string> = {
  */
 export const PILOT_SENTENCE: Record<PilotLocale, { before: string; link: string; after: string }> = {
   en: {
-    before: `Hosted pilot: free, capped, no security certification; ${PILOT_TERMS.en}. For real client data, `,
+    before: "Hosted pilot: free, capped, no security certification. For real client data, ",
     link: "run your own instance",
     after: ".",
   },
   es: {
-    before: `Piloto alojado: gratuito, con límites y sin certificación de seguridad; ${PILOT_TERMS.es}. Para datos reales de clientes, `,
+    before: "Piloto alojado: gratuito, con límites y sin certificación de seguridad. Para datos reales de clientes, ",
     link: "ejecuta tu propia instancia",
     after: ".",
   },

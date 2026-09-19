@@ -112,12 +112,10 @@ describe("the editing clock: 90 days from the first sign-in after the pilot went
   });
 
   it("states the rule in the words the other suite apps use, in both languages", () => {
-    expect(PILOT_TERMS.en).toBe("90 days of editing from your first sign-in, then read-only with export");
+    expect(PILOT_TERMS.en).toBe("90 days of editing from your first sign-in, then read-only with export.");
     expect(PILOT_TERMS.es).toBe(
-      "90 días de edición desde tu primer inicio de sesión y después solo lectura con exportación",
+      "90 días de edición desde tu primer inicio de sesión y después solo lectura con exportación.",
     );
-    expect(PILOT_SENTENCE.en.before).toContain(PILOT_TERMS.en);
-    expect(PILOT_SENTENCE.es.before).toContain(PILOT_TERMS.es);
   });
 });
 

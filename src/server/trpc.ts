@@ -9,6 +9,7 @@ import { ZodError } from "zod";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { assertPilotWritable, pilotLocale } from "@/server/services/pilot/caps";
+import { ensurePilotFirstSignIn } from "@/server/services/pilot/first-sign-in";
 
 /**
  * Procedure metadata. `pilotReadOnlyExempt` marks a write procedure a
@@ -110,14 +111,31 @@ export const withOrganization = t.middleware(async ({ ctx, next, getRawInput }) 
     });
   }
 
+  const organization = await withPilotFirstSignIn(ctx.prisma, membership.organization);
+
   return next({
     ctx: {
       session: { ...ctx.session, user: ctx.session.user },
-      organization: membership.organization,
+      organization,
       membership,
     },
   });
 });
+
+/**
+ * On the hosted pilot, the organisation as the procedure should see it: with
+ * its first sign-in recorded if this is the first time it is opened since the
+ * pilot went live (see src/server/services/pilot/first-sign-in.ts).
+ */
+async function withPilotFirstSignIn<O extends { id: string; pilotFirstSignInAt: Date | null }>(
+  db: typeof prisma,
+  organization: O,
+): Promise<O> {
+  const pilotFirstSignInAt = await ensurePilotFirstSignIn(db, organization);
+  return pilotFirstSignInAt === organization.pilotFirstSignInAt
+    ? organization
+    : { ...organization, pilotFirstSignInAt };
+}
 
 export const organizationProcedure = t.procedure
   .use(enforceUserIsAuthed)
@@ -160,14 +178,16 @@ const enforceWriteAccess = t.middleware(async ({ ctx, next, meta, getRawInput })
     });
   }
 
+  const organization = await withPilotFirstSignIn(ctx.prisma, membership.organization);
+
   if (!meta?.pilotReadOnlyExempt) {
-    assertPilotWritable(membership.organization, pilotLocale(ctx.getCookie));
+    assertPilotWritable(organization, pilotLocale(ctx.getCookie));
   }
 
   return next({
     ctx: {
       session: { ...ctx.session, user: ctx.session.user },
-      organization: membership.organization,
+      organization,
       membership,
     },
   });

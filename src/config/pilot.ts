@@ -9,8 +9,9 @@
  * organisation, and instead the pilot has three caps, each defined here:
  *
  *   1. one organisation per account;
- *   2. edits for PILOT_EDIT_DAYS from the organisation's first sign-in, after
- *      which the organisation is read-only but can still export everything;
+ *   2. edits for PILOT_EDIT_DAYS from the organisation's first sign-in after
+ *      the pilot went live, after which the organisation is read-only but can
+ *      still export everything (PILOT_TERMS says so in one line);
  *   3. a records ceiling per organisation (PILOT_CEILINGS).
  *
  * Premium modules are sold only for the kit (self-hosted, offline licence
@@ -57,14 +58,24 @@ export const PILOT_RUN_URL = "https://www.todo.law/run";
 export const PILOT_EDIT_DAYS = 90;
 
 /**
- * The clock never starts before this date. Organisations that existed on the
- * hosted service before the pilot terms were published were never told of a
- * clock, so their ninety days count from the day the terms took effect, not
- * from a creation date months earlier. New organisations start on creation.
+ * The day the pilot terms go live. The clock never starts before it.
+ *
+ * The rule is the same across the suite: ninety days of editing counted from
+ * the organisation's FIRST SIGN-IN after the pilot is live. The creation date
+ * plays no part: an organisation made months before the terms were published
+ * was never told of a clock. The first sign-in is recorded on the
+ * organisation (`pilotFirstSignInAt`) the first time a member signs in, or
+ * opens it with a session that predates the pilot; see
+ * src/server/services/pilot/first-sign-in.ts.
  */
-export const PILOT_CLOCK_EPOCH = new Date("2026-09-16T00:00:00.000Z");
+export const PILOT_LIVE_FROM = new Date("2026-09-19T00:00:00.000Z");
 
 const DAY_MS = 24 * 60 * 60 * 1000;
+
+/** The instant to record as a first sign-in happening at `now`: never before the pilot went live. */
+export function pilotFirstSignInStamp(now: Date = new Date()): Date {
+  return now.getTime() > PILOT_LIVE_FROM.getTime() ? now : PILOT_LIVE_FROM;
+}
 
 export interface PilotClock {
   startedAt: Date;
@@ -75,15 +86,13 @@ export interface PilotClock {
 }
 
 /**
- * Where an organisation stands on the editing clock. The organisation's
- * first sign-in is its creation (the onboarding creates it on the first
- * visit), floored at PILOT_CLOCK_EPOCH.
+ * Where an organisation stands on the editing clock. `firstSignInAt` is the
+ * recorded first sign-in; when none is recorded yet, the window has not
+ * started and runs from now (the sign-in being made), in full. Either way it
+ * is floored at PILOT_LIVE_FROM.
  */
-export function pilotClock(organizationCreatedAt: Date, now: Date = new Date()): PilotClock {
-  const startedAt =
-    organizationCreatedAt.getTime() > PILOT_CLOCK_EPOCH.getTime()
-      ? organizationCreatedAt
-      : PILOT_CLOCK_EPOCH;
+export function pilotClock(firstSignInAt: Date | null | undefined, now: Date = new Date()): PilotClock {
+  const startedAt = pilotFirstSignInStamp(firstSignInAt ?? now);
   const endsAt = new Date(startedAt.getTime() + PILOT_EDIT_DAYS * DAY_MS);
   const remainingMs = endsAt.getTime() - now.getTime();
   return {
@@ -156,17 +165,26 @@ export function pilotExportUrl(organizationId: string): string {
 }
 
 /**
+ * The editing terms, word for word as the other two suite apps state them, so
+ * a visitor reads the same rule wherever the pilot runs.
+ */
+export const PILOT_TERMS: Record<PilotLocale, string> = {
+  en: `${PILOT_EDIT_DAYS} days of editing from your first sign-in, then read-only with export`,
+  es: `${PILOT_EDIT_DAYS} días de edición desde tu primer inicio de sesión y después solo lectura con exportación`,
+};
+
+/**
  * The one sentence the pilot shows everywhere: the banner, the sign-up screen
- * and the documents. The link text is the part that leads to PILOT_RUN_URL.
+ * and the Settings card. The link text is the part that leads to PILOT_RUN_URL.
  */
 export const PILOT_SENTENCE: Record<PilotLocale, { before: string; link: string; after: string }> = {
   en: {
-    before: "Hosted pilot: free, capped, no security certification. For real client data, ",
+    before: `Hosted pilot: free, capped, no security certification; ${PILOT_TERMS.en}. For real client data, `,
     link: "run your own instance",
     after: ".",
   },
   es: {
-    before: "Piloto alojado: gratuito, con límites y sin certificación de seguridad. Para datos reales de clientes, ",
+    before: `Piloto alojado: gratuito, con límites y sin certificación de seguridad; ${PILOT_TERMS.es}. Para datos reales de clientes, `,
     link: "ejecuta tu propia instancia",
     after: ".",
   },

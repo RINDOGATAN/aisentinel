@@ -45,6 +45,13 @@ const H = vi.hoisted(() => {
         if (i >= 0) organizations.splice(i, 1);
         return {};
       },
+      // Enough of the conditional stamp: `pilotFirstSignInAt: null` must still hold.
+      updateMany: async ({ where, data }: { where: Row; data: Row }) => {
+        const hit = organizations.filter((o) => matches(o, where) && (o.pilotFirstSignInAt ?? null) === null);
+        for (const o of hit) Object.assign(o, data);
+        return { count: hit.length };
+      },
+      findFirst: async ({ where }: { where: Row }) => organizations.find((o) => matches(o, where)) ?? null,
     },
     organizationMember: {
       findUnique: async ({ where }: { where: { organizationId_userId: { organizationId: string; userId: string } } }) => {
@@ -72,7 +79,11 @@ const H = vi.hoisted(() => {
     legalHold: { findMany: async () => [], count: async () => 0 },
   };
 
-  function reset(opts: { orgAgeDays: number; systemCount: number }) {
+  /**
+   * `signedInDaysAgo` is the recorded first sign-in (null: none yet). The
+   * organisation itself is always 400 days old: its age must play no part.
+   */
+  function reset(opts: { signedInDaysAgo: number | null; systemCount: number }) {
     organizations.length = 0;
     members.length = 0;
     systems.length = 0;
@@ -81,7 +92,9 @@ const H = vi.hoisted(() => {
       id: "org-a",
       name: "Org A",
       slug: "org-a",
-      createdAt: new Date(Date.now() - opts.orgAgeDays * DAY),
+      createdAt: new Date(Date.now() - 400 * DAY),
+      pilotFirstSignInAt:
+        opts.signedInDaysAgo === null ? null : new Date(Date.now() - opts.signedInDaysAgo * DAY),
     });
     members.push({ organizationId: "org-a", userId: "user-a", role: "OWNER" });
     for (let i = 0; i < opts.systemCount; i += 1) {
@@ -121,8 +134,8 @@ describe("hosted pilot caps through the routers", () => {
   beforeEach(() => {
     vi.stubEnv("VERCEL_ENV", "production");
     vi.stubEnv("NEXT_PUBLIC_HOSTED_PILOT", "");
-    // The clock never starts before the pilot terms took effect (2026-09-16),
-    // so "an organisation that is 91 days old" needs a present well past it.
+    // The clock never starts before the pilot went live (PILOT_LIVE_FROM), so
+    // "a first sign-in 91 days ago" needs a present well past it.
     vi.useFakeTimers({ now: new Date("2027-03-01T12:00:00.000Z"), toFake: ["Date"] });
   });
   afterEach(() => {
@@ -131,7 +144,7 @@ describe("hosted pilot caps through the routers", () => {
   });
 
   it("one organisation per account: a second create is refused, the first stands", async () => {
-    H.reset({ orgAgeDays: 1, systemCount: 0 });
+    H.reset({ signedInDaysAgo: 1, systemCount: 0 });
     const caller = organizationRouter.createCaller(ctx());
     await expect(caller.create({ name: "Second", slug: "second" })).rejects.toMatchObject({
       code: "FORBIDDEN",
@@ -141,7 +154,7 @@ describe("hosted pilot caps through the routers", () => {
   });
 
   it("an account with no organisation may create its one", async () => {
-    H.reset({ orgAgeDays: 1, systemCount: 0 });
+    H.reset({ signedInDaysAgo: 1, systemCount: 0 });
     H.members.length = 0;
     const caller = organizationRouter.createCaller(ctx());
     const org = await caller.create({ name: "First", slug: "first" });
@@ -150,7 +163,7 @@ describe("hosted pilot caps through the routers", () => {
   });
 
   it("the ninety-day switch: writes are refused with the two ways out, reads still work", async () => {
-    H.reset({ orgAgeDays: 91, systemCount: 0 });
+    H.reset({ signedInDaysAgo: 91, systemCount: 0 });
     const caller = aiSystemRouter.createCaller(ctx("es"));
     await expect(caller.create(newSystem)).rejects.toMatchObject({
       code: "FORBIDDEN",
@@ -165,8 +178,15 @@ describe("hosted pilot caps through the routers", () => {
     expect(H.systems).toHaveLength(0);
   });
 
+  it("an old organisation with no recorded first sign-in gets its window from now, not from its creation", async () => {
+    H.reset({ signedInDaysAgo: null, systemCount: 0 });
+    const caller = aiSystemRouter.createCaller(ctx());
+    await expect(caller.create(newSystem)).resolves.toBeTruthy();
+    expect(H.organizations[0].pilotFirstSignInAt).toEqual(new Date());
+  });
+
   it("the ninety-day switch does not close the way out: the owner can still delete the organisation", async () => {
-    H.reset({ orgAgeDays: 400, systemCount: 0 });
+    H.reset({ signedInDaysAgo: 400, systemCount: 0 });
     const caller = organizationRouter.createCaller(ctx());
     await expect(caller.delete({ organizationId: "org-a", confirmName: "Org A" })).resolves.toEqual({
       deleted: true,
@@ -175,7 +195,7 @@ describe("hosted pilot caps through the routers", () => {
   });
 
   it("the records ceiling: the twenty-sixth system is refused and nothing is written", async () => {
-    H.reset({ orgAgeDays: 1, systemCount: PILOT_CEILINGS.systems });
+    H.reset({ signedInDaysAgo: 1, systemCount: PILOT_CEILINGS.systems });
     const caller = aiSystemRouter.createCaller(ctx());
     await expect(caller.create(newSystem)).rejects.toMatchObject({
       code: "FORBIDDEN",
@@ -185,7 +205,7 @@ describe("hosted pilot caps through the routers", () => {
   });
 
   it("below the ceiling and inside the window, a create goes through", async () => {
-    H.reset({ orgAgeDays: 89, systemCount: PILOT_CEILINGS.systems - 1 });
+    H.reset({ signedInDaysAgo: 89, systemCount: PILOT_CEILINGS.systems - 1 });
     const caller = aiSystemRouter.createCaller(ctx());
     const created = await caller.create(newSystem);
     expect(created.id).toBeTruthy();
@@ -203,7 +223,7 @@ describe("on the kit the routers apply no pilot cap", () => {
   afterEach(() => vi.unstubAllEnvs());
 
   it("creates a second organisation, writes to an old one, and passes the ceiling", async () => {
-    H.reset({ orgAgeDays: 400, systemCount: PILOT_CEILINGS.systems + 10 });
+    H.reset({ signedInDaysAgo: 400, systemCount: PILOT_CEILINGS.systems + 10 });
     const orgs = organizationRouter.createCaller(ctx());
     await expect(orgs.create({ name: "Second", slug: "second" })).resolves.toBeTruthy();
     const sys = aiSystemRouter.createCaller(ctx());

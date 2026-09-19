@@ -22,7 +22,8 @@ import {
 } from "./caps";
 
 const DAY = 24 * 60 * 60 * 1000;
-const ORG = { id: "org-1", createdAt: new Date("2026-10-01T00:00:00.000Z") };
+const START = new Date("2026-10-01T00:00:00.000Z");
+const ORG = { id: "org-1", pilotFirstSignInAt: START };
 
 function fakeDb(counts: Partial<Record<keyof PilotDb, number>> = {}): PilotDb {
   const delegate = (n: number) => ({ count: async () => n });
@@ -71,27 +72,35 @@ describe("on the hosted pilot", () => {
   });
 
   it("allows edits for ninety days and then makes the organisation read-only", async () => {
-    expect(() => assertPilotWritable(ORG, "en", new Date(ORG.createdAt.getTime() + 89 * DAY))).not.toThrow();
+    expect(() => assertPilotWritable(ORG, "en", new Date(START.getTime() + 89 * DAY))).not.toThrow();
     const message = await forbidden(() =>
-      assertPilotWritable(ORG, "en", new Date(ORG.createdAt.getTime() + 90 * DAY)),
+      assertPilotWritable(ORG, "en", new Date(START.getTime() + 90 * DAY)),
     );
     expect(message).toContain("read-only");
     expect(message).toContain(PILOT_RUN_URL);
     expect(message).toContain("/api/export/program-pack?organizationId=org-1");
   });
 
+  it("never makes an organisation read-only before its first sign-in is recorded", async () => {
+    const neverSignedIn = { id: "org-2", pilotFirstSignInAt: null };
+    const later = new Date(START.getTime() + 400 * DAY);
+    expect(() => assertPilotWritable(neverSignedIn, "en", later)).not.toThrow();
+    const status = await getPilotStatus(fakeDb(), neverSignedIn, later);
+    expect(status.active && status.daysLeft).toBe(90);
+  });
+
   it("speaks Spanish when the locale cookie says so", async () => {
     expect(pilotLocale(() => "es")).toBe("es");
     expect(pilotLocale(() => undefined)).toBe("en");
     const message = await forbidden(() =>
-      assertPilotWritable(ORG, "es", new Date(ORG.createdAt.getTime() + 91 * DAY)),
+      assertPilotWritable(ORG, "es", new Date(START.getTime() + 91 * DAY)),
     );
     expect(message).toContain("solo lectura");
     expect(message).toContain("ejecuta tu propia instancia");
   });
 
   it("still allows every export once read-only", async () => {
-    const status = await getPilotStatus(fakeDb(), ORG, new Date(ORG.createdAt.getTime() + 100 * DAY));
+    const status = await getPilotStatus(fakeDb(), ORG, new Date(START.getTime() + 100 * DAY));
     expect(status.active).toBe(true);
     if (!status.active) return;
     expect(status.readOnly).toBe(true);
@@ -136,7 +145,7 @@ describe("on the hosted pilot", () => {
 
   it("counts every ceiling for the settings card", async () => {
     const db = fakeDb({ aISystem: 3, aIVendor: 7, organizationMember: 2 });
-    const status = await getPilotStatus(db, ORG, ORG.createdAt);
+    const status = await getPilotStatus(db, ORG, START);
     expect(status.active).toBe(true);
     if (!status.active) return;
     expect(status.daysLeft).toBe(90);
@@ -161,7 +170,7 @@ describe("on the kit", () => {
     const full = fakeDb({ aISystem: 10_000, organizationMember: 500 });
     await expect(assertPilotRoom(full, "org-1", "systems", "en")).resolves.toBeUndefined();
     expect(await pilotRemaining(full, "org-1", "systems")).toBe(Infinity);
-    expect(() => assertPilotWritable(ORG, "en", new Date(ORG.createdAt.getTime() + 1000 * DAY))).not.toThrow();
+    expect(() => assertPilotWritable(ORG, "en", new Date(START.getTime() + 1000 * DAY))).not.toThrow();
     await expect(
       assertPilotOrganizationLimit({ organizationMember: { count: async () => 40 } }, "u1", "en"),
     ).resolves.toBeUndefined();

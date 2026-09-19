@@ -62,7 +62,8 @@ const DELEGATE: Record<PilotCeilingKey, keyof PilotDb> = {
 
 export interface PilotOrganization {
   id: string;
-  createdAt: Date;
+  /** Start of the editing clock; null until the first sign-in is recorded. */
+  pilotFirstSignInAt: Date | null;
 }
 
 export interface PilotCeilingStatus {
@@ -102,7 +103,7 @@ export async function getPilotStatus(
   now: Date = new Date(),
 ): Promise<PilotStatus> {
   if (!hostedPilotActive()) return { active: false };
-  const clock = pilotClock(organization.createdAt, now);
+  const clock = pilotClock(organization.pilotFirstSignInAt, now);
   const ceilings = await Promise.all(
     PILOT_CEILING_KEYS.map(async (key) => ({
       key,
@@ -131,7 +132,7 @@ export function assertPilotWritable(
   now: Date = new Date(),
 ): void {
   if (!hostedPilotActive()) return;
-  const clock = pilotClock(organization.createdAt, now);
+  const clock = pilotClock(organization.pilotFirstSignInAt, now);
   if (!clock.readOnly) return;
   throw new TRPCError({
     code: "FORBIDDEN",

@@ -17,6 +17,7 @@ import {
 } from "@/lib/session-cookie";
 import { brand } from "@/config/brand";
 import { resolveCookieDomain } from "@/config/pilot";
+import { recordPilotSignIn } from "@/server/services/pilot/first-sign-in";
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
@@ -274,6 +275,13 @@ export const authOptions: NextAuthOptions = {
         }
       } catch (error) {
         console.error("Auto-join organization failed during sign-in:", error);
+      }
+      // Hosted pilot: this sign-in starts the editing clock of every
+      // organisation of the account that has not started one yet.
+      try {
+        if (user.id) await recordPilotSignIn(prisma, user.id);
+      } catch (error) {
+        console.error("Recording the pilot first sign-in failed:", error);
       }
       return true;
     },

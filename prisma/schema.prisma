@@ -130,6 +130,11 @@ model Organization {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  /// Hosted pilot only: the organization's first sign-in after the pilot went
+  /// live, the start of its 90 editing days (src/config/pilot.ts). Null until
+  /// then, and always null on the kit.
+  pilotFirstSignInAt DateTime?
+
   /// Where this organization operates, driving regulatory scoping.
   /// An EMPTY array means UNDECLARED — "we have not been told yet" — and must
   /// never be read as "operates nowhere" or "no regime applies". Every

@@ -7,10 +7,12 @@ import {
   PILOT_CEILINGS,
   PILOT_CEILING_KEYS,
   PILOT_CEILING_LABELS,
-  PILOT_CLOCK_EPOCH,
   PILOT_EDIT_DAYS,
+  PILOT_LIVE_FROM,
   PILOT_RUN_URL,
   PILOT_SENTENCE,
+  PILOT_TERMS,
+  pilotFirstSignInStamp,
   hostedPilotActive,
   pilotCeilingMessage,
   pilotClock,
@@ -65,35 +67,57 @@ describe("recognising the hosted pilot", () => {
   });
 });
 
-describe("the editing clock", () => {
+describe("the editing clock: 90 days from the first sign-in after the pilot went live", () => {
   const day = 24 * 60 * 60 * 1000;
-  const created = new Date("2026-10-01T10:00:00.000Z");
+  const firstSignIn = new Date("2026-10-01T10:00:00.000Z");
 
-  it("runs ninety days from the organisation's creation", () => {
+  it("runs ninety days from the organisation's first sign-in", () => {
     expect(PILOT_EDIT_DAYS).toBe(90);
-    const clock = pilotClock(created, created);
-    expect(clock.startedAt).toEqual(created);
+    const clock = pilotClock(firstSignIn, firstSignIn);
+    expect(clock.startedAt).toEqual(firstSignIn);
     expect(clock.daysLeft).toBe(90);
     expect(clock.readOnly).toBe(false);
   });
 
   it("counts down and switches to read-only on day ninety-one", () => {
-    expect(pilotClock(created, new Date(created.getTime() + 30 * day)).daysLeft).toBe(60);
-    const lastDay = pilotClock(created, new Date(created.getTime() + 90 * day - 1));
+    expect(pilotClock(firstSignIn, new Date(firstSignIn.getTime() + 30 * day)).daysLeft).toBe(60);
+    const lastDay = pilotClock(firstSignIn, new Date(firstSignIn.getTime() + 90 * day - 1));
     expect(lastDay.daysLeft).toBe(1);
     expect(lastDay.readOnly).toBe(false);
-    const over = pilotClock(created, new Date(created.getTime() + 90 * day));
+    const over = pilotClock(firstSignIn, new Date(firstSignIn.getTime() + 90 * day));
     expect(over.daysLeft).toBe(0);
     expect(over.readOnly).toBe(true);
-    expect(pilotClock(created, new Date(created.getTime() + 400 * day)).daysLeft).toBe(0);
+    expect(pilotClock(firstSignIn, new Date(firstSignIn.getTime() + 400 * day)).daysLeft).toBe(0);
   });
 
-  it("never starts before the pilot terms took effect", () => {
-    const old = new Date("2026-03-01T00:00:00.000Z");
-    const clock = pilotClock(old, PILOT_CLOCK_EPOCH);
-    expect(clock.startedAt).toEqual(PILOT_CLOCK_EPOCH);
+  it("with no recorded first sign-in, gives the full window from now, whatever the organisation's age", () => {
+    // An organisation created long ago and never signed into since the pilot
+    // went live: its window starts at the sign-in being made, not at creation.
+    const muchLater = new Date("2027-06-01T00:00:00.000Z");
+    const clock = pilotClock(null, muchLater);
+    expect(clock.startedAt).toEqual(muchLater);
     expect(clock.daysLeft).toBe(90);
     expect(clock.readOnly).toBe(false);
+    expect(pilotClock(undefined, muchLater).readOnly).toBe(false);
+  });
+
+  it("never starts before the deployment date", () => {
+    const beforeLive = new Date("2026-03-01T00:00:00.000Z");
+    expect(pilotFirstSignInStamp(beforeLive)).toEqual(PILOT_LIVE_FROM);
+    const clock = pilotClock(beforeLive, PILOT_LIVE_FROM);
+    expect(clock.startedAt).toEqual(PILOT_LIVE_FROM);
+    expect(clock.daysLeft).toBe(90);
+    expect(clock.readOnly).toBe(false);
+    expect(pilotFirstSignInStamp(firstSignIn)).toEqual(firstSignIn);
+  });
+
+  it("states the rule in the words the other suite apps use, in both languages", () => {
+    expect(PILOT_TERMS.en).toBe("90 days of editing from your first sign-in, then read-only with export");
+    expect(PILOT_TERMS.es).toBe(
+      "90 días de edición desde tu primer inicio de sesión y después solo lectura con exportación",
+    );
+    expect(PILOT_SENTENCE.en.before).toContain(PILOT_TERMS.en);
+    expect(PILOT_SENTENCE.es.before).toContain(PILOT_TERMS.es);
   });
 });
 

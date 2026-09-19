@@ -28,10 +28,11 @@ code, or marked "unknown, to measure". Nothing here is a promise to a customer.
 
 ## The hosted pilot's caps
 
-Since 16 September 2026 the hosted service is a free, capped pilot (`src/config/pilot.ts`).
+From its deployment (never before 19 September 2026) the hosted service is a free, capped
+pilot (`src/config/pilot.ts`).
 The caps are the service's first line of protection and were chosen from the ceilings above:
-one organisation per account; edits for 90 days from the organisation's first sign-in, then
-read-only with every export still available; and per organisation at most 25 AI systems, 50
+one organisation per account; edits for 90 days from the organisation's first sign-in after
+the pilot went live (not its creation date), then read-only with every export still available; and per organisation at most 25 AI systems, 50
 vendors, 50 assessments, 25 incidents, 25 policies, 50 oversight gates, 10 threat models, 50
 shadow AI reports, 10 proceedings, 10 board reports and 5 members. Twenty-five systems keeps
 the largest unpaginated read (the compliance screens, 294 requirements per system) under

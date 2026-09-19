@@ -20,9 +20,9 @@ License: AGPL-3.0 (core) + proprietary premium modules, sold only for the self-h
 - [Vendor Risk](https://aisentinel.todo.law/docs/vendors): Third-party AI vendor management with risk levels (Critical, High, Medium, Low), vendor assessments, and contract tracking
 - [Policy Management](https://aisentinel.todo.law/docs/policies): AI policies (Usage, Governance, Ethics, Risk, Data, Procurement, Incident Response, Transparency, Custom) with versioning and approval workflow
 
-## Premium Modules (60 a year each in the kit)
+## Premium Modules (60 a year each in the kit, in your currency)
 
-On the hosted pilot every module, these included, is open to every organisation at no charge; the pilot's caps apply instead (one organisation per account, 90 editing days then read-only with exports, a records ceiling). Premium modules are sold only for the kit (self-hosted), at 60 a year each, on the TODO.LAW marketplace (https://todo.law/marketplace), and activated offline with a licence file.
+On the hosted pilot every module, these included, is open to every organisation at no charge; the pilot's caps apply instead (one organisation per account, 90 editing days then read-only with exports, a records ceiling). Premium modules are sold only for the self-hosted kit: 60 a year each in the kit (in your currency), on the TODO.LAW marketplace (https://todo.law/marketplace), and activated offline with a licence file.
 
 - [Shadow AI Discovery](https://aisentinel.todo.law/docs/shadow-ai): 89-tool catalog across 13 categories, employee self-reporting portal, status workflow (Discovered → Under Review → Approved/Prohibited → Registered)
 - [AI Vendor Catalog](https://aisentinel.todo.law/docs/vendor-catalog): 884 reviewed AI vendors powered by Vendor.Watch with AI model information, data privacy details, and compliance certifications

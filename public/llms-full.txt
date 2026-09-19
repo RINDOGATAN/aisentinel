@@ -131,11 +131,11 @@ Create, version, and manage AI governance policies with approval workflows and s
 
 ---
 
-## Premium Modules (60 a year each in the kit)
+## Premium Modules (60 a year each in the kit, in your currency)
 
 On the hosted pilot every module, these included, is open to every organisation at no charge. The hosted service is a free, capped pilot with no security certification: one organisation per account, edits for 90 days from the organisation's first sign-in (then read-only, with every export still available), and a records ceiling per organisation (25 AI systems, 50 vendors, 50 assessments, 25 incidents, 25 policies, 50 oversight gates, 10 threat models, 50 shadow AI reports, 10 proceedings, 10 board reports, 5 members). For real client data, run your own instance (https://www.todo.law/run).
 
-Premium modules are sold only for the kit (self-hosted), at 60 a year each, on the TODO.LAW marketplace (https://todo.law/marketplace), and activated offline in the app with a licence file.
+Premium modules are sold only for the self-hosted kit: 60 a year each in the kit (in your currency), on the TODO.LAW marketplace (https://todo.law/marketplace), and activated offline in the app with a licence file.
 
 ### Shadow AI Discovery
 URL: https://aisentinel.todo.law/docs/shadow-ai
@@ -207,7 +207,7 @@ Evaluate AI systems for bias and fairness across protected characteristics. Prov
 - **Role-based access control** — Owner > Admin > AI Officer > Member > Viewer
 - **Authentication** — Google OAuth and email magic links
 - **Tech stack** — Next.js, tRPC, Prisma, PostgreSQL
-- **Licensing** — Open-core model: AGPL-3.0 core + proprietary premium modules, sold only for the self-hosted kit (60 a year each); the hosted pilot is free, capped, and gates nothing
+- **Licensing** — Open-core model: AGPL-3.0 core + proprietary premium modules, sold only for the self-hosted kit (60 a year each in the kit, in your currency); the hosted pilot is free, capped, and gates nothing
 
 ## Regulatory Coverage
 

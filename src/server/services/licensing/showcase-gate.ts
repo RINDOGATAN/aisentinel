@@ -71,7 +71,7 @@ export function lockedResponse(access: ShowcaseAccess): Response {
       skillId: access.locked?.skillId,
       purchaseUrl: access.locked?.purchaseUrl,
       message:
-        "This document is part of a premium module, sold for the kit at 60 a year. Activate your licence in Settings, or run your own instance.",
+        "This document is part of a premium module, 60 a year each in the kit (in your currency). Activate your licence in Settings, or run your own instance.",
     },
     { status: 402 },
   );

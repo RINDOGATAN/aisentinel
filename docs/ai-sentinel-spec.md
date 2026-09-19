@@ -785,11 +785,13 @@ All core modules are freely available:
 
 Decision of 2026-09-16: the hosted service is a free, capped pilot and nothing is sold there
 (every module open to every organisation; caps in `src/config/pilot.ts`: one organisation
-per account, 90 editing days then read-only with exports, a records ceiling). Premium
-modules are sold only for the kit (self-hosted), at 60 a year each, on the TODO.LAW
-marketplace, and activated offline with an Ed25519-signed licence file:
+per account, 90 days of editing from the first sign-in after the pilot went live, then
+read-only with exports, a records ceiling). Premium modules are sold only for the kit
+(self-hosted), at 60 a year each in the kit (in your currency: dollars unless the visitor
+is known to be outside the US, euros only then), on the TODO.LAW marketplace, and
+activated offline with an Ed25519-signed licence file:
 
-| Feature | Skill ID | Price (kit only) |
+| Feature | Skill ID | Price (kit only, in your currency) |
 |---------|----------|------------------|
 | Conformity Assessment template | `com.todolaw.aisentinel.conformity` | 60 a year |
 | Bias & Fairness Assessment template | `com.todolaw.aisentinel.bias-fairness` | 60 a year |
@@ -875,7 +877,7 @@ AI SENTINEL mirrors DPO Central's stack for developer efficiency and shared know
 | Database | PostgreSQL (Neon) | Separate database from DPO Central |
 | Auth | NextAuth (JWT) | Google OAuth + Email magic links (Resend) |
 | Styling | Tailwind CSS 4 + Shadcn UI | Dark theme, violet primary |
-| Billing | None on the hosted pilot; offline licence files for the kit | Premium modules 60 a year each, kit only (Stripe code dormant) |
+| Billing | None on the hosted pilot; offline licence files for the kit | Premium modules 60 a year each in the kit (in your currency), kit only (Stripe code dormant) |
 | Deployment | Vercel | Automatic from `main` branch |
 | Multi-tenancy | `organizationId` on all models | Enforced via `organizationProcedure` |
 

@@ -29,6 +29,9 @@ describe("what the public copy says about the hosted pilot", () => {
     const text = PUBLIC_TEXT[file];
     expect(text).toMatch(/free, capped/i);
     expect(text).toMatch(/60 a year/);
+    // One string serves every visitor, so it names no currency of its own.
+    expect(text).toMatch(/60 a year each in the kit[ ,(]+in your currency/);
+    expect(text).not.toMatch(/[€$]\s?60\b|\b60\s?[€$]/);
     expect(text).toMatch(/https:\/\/www\.todo\.law\/run/);
     // Nothing per month, and no licence attached to the hosted service.
     expect(text).not.toMatch(/\/mo\b/);
@@ -52,8 +55,21 @@ describe("what the public copy says about the hosted pilot", () => {
     expect(esNotice.selfHosted).toMatch(/autoalojadas/);
     expect((en as { premiumShowcase: { lockedHint: string } }).premiumShowcase.lockedHint).toMatch(/kit/);
     expect((es as { premiumShowcase: { lockedHint: string } }).premiumShowcase.lockedHint).toMatch(/kit/);
-    expect((en as { skills: { includedHintPilot: string } }).skills.includedHintPilot).toMatch(/60 a year/);
-    expect((es as { skills: { includedHintPilot: string } }).skills.includedHintPilot).toMatch(/60 al año/);
+    // The in-app strings take the price with its currency, never a bare figure.
+    for (const s of [
+      (en as { skills: { includedHintPilot: string } }).skills.includedHintPilot,
+      (en as { premiumShowcase: { lockedHint: string } }).premiumShowcase.lockedHint,
+    ]) {
+      expect(s).toMatch(/\{price\} a year/);
+      expect(s).not.toMatch(/\b60\b/);
+    }
+    for (const s of [
+      (es as { skills: { includedHintPilot: string } }).skills.includedHintPilot,
+      (es as { premiumShowcase: { lockedHint: string } }).premiumShowcase.lockedHint,
+    ]) {
+      expect(s).toMatch(/\{price\} al año/);
+      expect(s).not.toMatch(/\b60\b/);
+    }
   });
 
   it("the Spanish copy addresses the reader as tú", () => {

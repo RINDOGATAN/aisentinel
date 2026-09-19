@@ -1530,7 +1530,7 @@
     "statusLocked": "Locked",
     "statusIncluded": "Included",
     "includedHint": "Included in your self-hosted deployment",
-    "includedHintPilot": "Open on the hosted pilot. In the kit, 60 a year.",
+    "includedHintPilot": "Open on the hosted pilot. In the kit, {price} a year.",
     "expires": "Expires {date}",
     "perpetual": "Perpetual licence",
     "activations": "{used} of {max} activations used",
@@ -5369,7 +5369,7 @@
     "systemCardOpen": "Open the threat model"
   },
   "premiumShowcase": {
-    "lockedHint": "Part of a premium module, sold for the kit at 60 a year. Activate a licence, or run your own instance.",
+    "lockedHint": "Part of a premium module, sold for the kit at {price} a year. Activate a licence, or run your own instance.",
     "activate": "Activate a licence",
     "buy": "See the modules",
     "exportLockedTitle": "This module is licensed for self-hosted installations",

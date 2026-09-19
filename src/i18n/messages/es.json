@@ -1530,7 +1530,7 @@
     "statusLocked": "Bloqueada",
     "statusIncluded": "Incluida",
     "includedHint": "Incluida en tu instalación autoalojada",
-    "includedHintPilot": "Abierta en el piloto alojado. En el kit, 60 al año.",
+    "includedHintPilot": "Abierta en el piloto alojado. En el kit, {price} al año.",
     "expires": "Caduca el {date}",
     "perpetual": "Licencia perpetua",
     "activations": "{used} de {max} activaciones usadas",
@@ -5369,7 +5369,7 @@
     "systemCardOpen": "Abrir el modelo de amenazas"
   },
   "premiumShowcase": {
-    "lockedHint": "Forma parte de un módulo premium, que se vende para el kit a 60 al año. Activa una licencia o ejecuta tu propia instancia.",
+    "lockedHint": "Forma parte de un módulo premium, que se vende para el kit a {price} al año. Activa una licencia o ejecuta tu propia instancia.",
     "activate": "Activar una licencia",
     "buy": "Ver los módulos",
     "exportLockedTitle": "Este módulo se licencia para instalaciones autoalojadas",

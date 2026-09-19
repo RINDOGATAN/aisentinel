@@ -18,7 +18,8 @@ import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { formatPrice } from "@/lib/currency";
+import { PREMIUM_KIT_PRICE_PER_YEAR, formatPrice } from "@/lib/currency";
+import { useCurrency } from "@/lib/use-currency";
 import { features } from "@/config/features";
 import { MARKETPLACE_APP_URL, STOREFRONT_BUY } from "@/lib/marketplace";
 
@@ -30,6 +31,7 @@ function looksLikeLicense(x: unknown): x is Record<string, unknown> {
 export default function SkillsPage() {
   const t = useTranslations("skills");
   const locale = useLocale();
+  const currency = useCurrency();
   const { organization, userRole } = useOrganization();
   const fileRef = useRef<HTMLInputElement>(null);
   const [license, setLicense] = useState<Record<string, unknown> | null>(null);
@@ -206,7 +208,13 @@ export default function SkillsPage() {
                             </span>
                           </>
                         ) : included ? (
-                          <span>{hostedPilot ? t("includedHintPilot") : t("includedHint")}</span>
+                          <span>
+                            {hostedPilot
+                              ? t("includedHintPilot", {
+                                  price: formatPrice(PREMIUM_KIT_PRICE_PER_YEAR, currency, locale),
+                                })
+                              : t("includedHint")}
+                          </span>
                         ) : (
                           features.selfServiceUpgrade &&
                           pkg.priceAmount != null && (

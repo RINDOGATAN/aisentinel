@@ -277,14 +277,13 @@ Premium features (Shadow AI, Vendor Catalog, Conformity Assessment, Bias & Fairn
 - [x] `/api/health` endpoint (no secrets, no tenant data) + sovereign Docker healthcheck
 - [x] CI gates on every push: ESLint, security convention linter (`npm run lint:security`), `tsc --noEmit`, vitest regression tests (org isolation, auth callback, seed gate), production build
 - [x] Rate limiting on sign-in, magic links, `/api/health` and the import routes (section 6)
-- [x] Dependency audit step in CI (`npm audit --audit-level=high`), visible but not yet blocking
+- [x] Dependency audit step in CI (`npm audit --audit-level=high`), blocking since 2026-09-19: a high or critical advisory fails the build
 
 ### Future Improvements
 
 | Item | Priority | Description |
 |------|----------|-------------|
 | Self-hosted limiter key | HIGH | Read `x-vercel-forwarded-for` only when running on the platform, so a self-hosted caller cannot forge their bucket (section 6) |
-| Blocking dependency audit | HIGH | Remove `continue-on-error` from the CI audit step once current high and critical advisories are cleared |
 | Shared rate-limit store | MEDIUM | Counters are per process. A shared store would make the limit exact across a serverless fleet |
 | OAuth token encryption | MEDIUM | Encrypt `Account.refresh_token`/`access_token` at rest |
 | Soft delete | MEDIUM | Add `deletedAt` timestamp to critical models (AI systems, assessments) instead of hard delete |
@@ -329,7 +328,7 @@ Full secret names and where each lives: `docs/secrets-inventory.md`. Capacity an
 | A03 | Injection | **Mitigated** | Prisma parameterized queries; the two `$queryRaw` calls are tagged templates with bound parameters (section 4) |
 | A04 | Insecure Design | Partial | Rate limiting is per process, not fleet-wide, and its key can be forged on self-host (section 6) |
 | A05 | Security Misconfiguration | **Mitigated** | Security headers, env-guarded dev auth |
-| A06 | Vulnerable Components | Partial | `npm audit --audit-level=high` runs in CI but does not yet fail the build |
+| A06 | Vulnerable Components | **Mitigated** | `npm audit --audit-level=high` fails the CI build on any high or critical advisory |
 | A07 | Auth Failures | **Mitigated** | Multi-provider auth, session cookies, CSRF |
 | A08 | Data Integrity | **Mitigated** | Stripe webhook verification, Zod validation |
 | A09 | Logging & Monitoring | Partial | Audit log exists, no real-time alerting |

@@ -18,11 +18,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, Check, Loader2, Plus, Wand2 } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
+import type { PrefillField, Suggestion } from "@/lib/system-prefill";
 
 type AITechnique = "MACHINE_LEARNING" | "DEEP_LEARNING" | "GENERATIVE_AI" | "AGENTIC_AI" | "NLP" | "COMPUTER_VISION" | "SPEECH_RECOGNITION" | "ROBOTICS" | "RULE_BASED" | "EXPERT_SYSTEM" | "STATISTICAL" | "OTHER";
 type AISystemRole = "PROVIDER" | "DEPLOYER" | "IMPORTER" | "DISTRIBUTOR" | "USER";
@@ -58,6 +59,54 @@ const statuses = [
   { value: "DEPLOYED", label: "Deployed" },
   { value: "RETIRED", label: "Retired" },
 ];
+
+/**
+ * One suggestion, beside the field it is for: the value, where it came from, and
+ * one action to take it. Once taken it says so, and the marking goes as soon as
+ * the field is edited by hand. Nothing here writes to the form itself.
+ */
+function SuggestionLine({
+  field,
+  suggestion,
+  applied,
+  onApply,
+  valueLabel,
+}: {
+  field: PrefillField;
+  suggestion: Suggestion | undefined;
+  applied: boolean;
+  onApply: (field: PrefillField) => void;
+  valueLabel?: (value: string) => string;
+}) {
+  const t = useTranslations("aiRegistryNew");
+  if (!suggestion) return null;
+  const shown = valueLabel ? valueLabel(suggestion.value) : suggestion.value;
+  const basis = t(`suggestionBasis.${suggestion.basis}`, {
+    subject: suggestion.subject ?? "",
+  });
+
+  if (applied) {
+    return (
+      <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+        <Check className="w-3 h-3 text-primary shrink-0" aria-hidden />
+        {t("suggestionApplied", { basis })}
+      </p>
+    );
+  }
+
+  return (
+    <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
+      <span>{t("suggestionOffer", { value: shown, basis })}</span>
+      <button
+        type="button"
+        onClick={() => onApply(field)}
+        className="text-primary underline hover:no-underline"
+      >
+        {t("suggestionUse")}
+      </button>
+    </p>
+  );
+}
 
 export default function NewAISystemPage() {
   const router = useRouter();
@@ -97,6 +146,67 @@ export default function NewAISystemPage() {
   const vendors = vendorsData?.items ?? [];
 
   const utils = trpc.useUtils();
+
+  // ── Suggestions, and the record of which fields a person accepted ────────
+  // A suggestion never enters the payload on its own: it is shown beside its
+  // field with the basis it was derived from, and applied only on a click. A
+  // pre-filled box that is submitted without being read is worse than an empty
+  // one. `applied` drives the "suggested" marker, and the marker goes as soon as
+  // the person edits the field.
+  const { data: prefill } = trpc.aiSystem.prefillSuggestions.useQuery(
+    { organizationId: organization?.id ?? "", vendorId: formData.vendorId || undefined },
+    { enabled: !!organization?.id }
+  );
+  const suggestions = prefill?.suggestions ?? [];
+  const [applied, setApplied] = useState<Partial<Record<PrefillField, boolean>>>({});
+
+  const suggestionFor = (field: PrefillField) => suggestions.find((s) => s.field === field);
+
+  const apply = (field: PrefillField) => {
+    const suggestion = suggestionFor(field);
+    if (!suggestion) return;
+    setFormData((prev) => ({
+      ...prev,
+      [field]:
+        field === "processesPersonalData" ? suggestion.value === "true" : suggestion.value,
+    }));
+    setApplied((prev) => ({ ...prev, [field]: true }));
+  };
+
+  const applyAll = () => {
+    setFormData((prev) => {
+      const next = { ...prev };
+      for (const s of suggestions) {
+        if (s.field === "processesPersonalData") next.processesPersonalData = s.value === "true";
+        else if (s.field === "role") next.role = s.value as AISystemRole;
+        else if (s.field === "businessOwner") next.businessOwner = s.value;
+        else if (s.field === "technicalOwner") next.technicalOwner = s.value;
+      }
+      return next;
+    });
+    setApplied(Object.fromEntries(suggestions.map((s) => [s.field, true])));
+  };
+
+  /** Editing a field by hand ends its "suggested" marking. */
+  const edit = <K extends keyof typeof formData>(field: K, value: (typeof formData)[K]) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    if (field in applied) setApplied((prev) => ({ ...prev, [field as PrefillField]: false }));
+  };
+
+  // ── No step is a dead end ───────────────────────────────────────────────
+  // The vendor list is the one place this form can strand someone: an account
+  // with no vendors yet gets an empty menu and no way on. So the vendor can be
+  // created here, from the name typed in, and is selected straight away.
+  const [newVendorName, setNewVendorName] = useState("");
+  const createVendor = trpc.vendor.create.useMutation({
+    onSuccess: async (vendor) => {
+      await utils.vendor.list.invalidate();
+      setFormData((prev) => ({ ...prev, vendorId: vendor.id }));
+      setNewVendorName("");
+      toast.success(t("vendorCreated", { name: vendor.name }));
+    },
+    onError: (error) => toast.error(error.message),
+  });
 
   const createSystem = trpc.aiSystem.create.useMutation({
     onSuccess: (data) => {
@@ -158,6 +268,19 @@ export default function NewAISystemPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {/* Everything this account can honestly fill in for you, with where
+              each value came from. Nothing is entered until it is accepted. */}
+          {suggestions.length > 0 && (
+            <div className="mb-6 rounded-md border border-primary/30 bg-primary/5 p-3 space-y-2">
+              <p className="text-xs text-muted-foreground">
+                {t("suggestionsLead", { count: suggestions.length })}
+              </p>
+              <Button type="button" variant="outline" size="sm" onClick={applyAll}>
+                <Wand2 className="w-3.5 h-3.5 mr-1.5" />
+                {t("suggestionsApplyAll")}
+              </Button>
+            </div>
+          )}
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Name & Technique */}
             <div className="grid gap-4 md:grid-cols-2">
@@ -225,6 +348,13 @@ export default function NewAISystemPage() {
                 <p className="text-xs text-muted-foreground">
                   {t("roleHelp")}
                 </p>
+                <SuggestionLine
+                  field="role"
+                  suggestion={suggestionFor("role")}
+                  applied={!!applied.role}
+                  onApply={apply}
+                  valueLabel={(v) => roles.find((r) => r.value === v)?.label ?? v}
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="status">{t("statusLabel")}</Label>
@@ -267,6 +397,38 @@ export default function NewAISystemPage() {
               <p className="text-xs text-muted-foreground">
                 {t("vendorHelp")}
               </p>
+              {/* The way out of an empty list, or of a list without the vendor
+                  you need: create it here and it is selected. */}
+              <div className="flex flex-col sm:flex-row gap-2 pt-1">
+                <Input
+                  value={newVendorName}
+                  placeholder={
+                    vendors.length === 0 ? t("vendorEmptyPlaceholder") : t("vendorAddPlaceholder")
+                  }
+                  aria-label={t("vendorAddLabel")}
+                  onChange={(e) => setNewVendorName(e.target.value)}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={!newVendorName.trim() || createVendor.isPending || !organization?.id}
+                  onClick={() =>
+                    organization?.id &&
+                    createVendor.mutate({
+                      organizationId: organization.id,
+                      name: newVendorName.trim(),
+                      status: "UNDER_REVIEW",
+                    })
+                  }
+                >
+                  {createVendor.isPending ? (
+                    <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />
+                  ) : (
+                    <Plus className="w-4 h-4 mr-1.5" />
+                  )}
+                  {t("vendorAddAction")}
+                </Button>
+              </div>
             </div>
 
             {/* Purpose */}
@@ -292,7 +454,13 @@ export default function NewAISystemPage() {
                   id="businessOwner"
                   placeholder={t("businessOwnerPlaceholder")}
                   value={formData.businessOwner}
-                  onChange={(e) => setFormData({ ...formData, businessOwner: e.target.value })}
+                  onChange={(e) => edit("businessOwner", e.target.value)}
+                />
+                <SuggestionLine
+                  field="businessOwner"
+                  suggestion={suggestionFor("businessOwner")}
+                  applied={!!applied.businessOwner}
+                  onApply={apply}
                 />
               </div>
               <div className="space-y-2">
@@ -301,7 +469,13 @@ export default function NewAISystemPage() {
                   id="technicalOwner"
                   placeholder={t("technicalOwnerPlaceholder")}
                   value={formData.technicalOwner}
-                  onChange={(e) => setFormData({ ...formData, technicalOwner: e.target.value })}
+                  onChange={(e) => edit("technicalOwner", e.target.value)}
+                />
+                <SuggestionLine
+                  field="technicalOwner"
+                  suggestion={suggestionFor("technicalOwner")}
+                  applied={!!applied.technicalOwner}
+                  onApply={apply}
                 />
               </div>
             </div>
@@ -319,6 +493,13 @@ export default function NewAISystemPage() {
                 {t("processesPersonalDataLabel")}
               </Label>
             </div>
+            <SuggestionLine
+              field="processesPersonalData"
+              suggestion={suggestionFor("processesPersonalData")}
+              applied={!!applied.processesPersonalData}
+              onApply={apply}
+              valueLabel={() => t("processesPersonalDataLabel")}
+            />
             {formData.processesPersonalData && (
               <p className="text-xs text-muted-foreground ml-10">
                 {t("personalDataWarning")}

@@ -212,6 +212,7 @@ model Organization {
   aiSettings            OrganizationAiSettings?
   aiGenerations         AiGeneration[]
   programSnapshots      ProgramSnapshotRecord[]
+  sampleRecords         SampleRecord[]
 
   /// GIN so `operatingJurisdictions has 'US_CA'` scoping queries stay indexed.
   @@index([operatingJurisdictions], type: Gin)
@@ -1086,6 +1087,41 @@ model LegalHold {
   @@index([organizationId, releasedAt])
   @@index([aiSystemId])
   @@map("legal_holds")
+}
+
+/// One row the worked example created, so removing the example removes exactly
+/// what it made and nothing the person has since created themselves.
+///
+/// A first-time account should not face empty forms, so it can start from a
+/// worked example: systems, classifications, a vendor, a policy, an oversight
+/// gate, an incident and an answered assessment, already filled in. Everything
+/// it creates is registered here, and the single "remove the example" action
+/// walks these rows. Marking the rows themselves (a flag on fifteen tables, or a
+/// reused provenance value) would either need a migration per table or would
+/// collide with the confirmation queue, which means something different by
+/// "derived".
+///
+/// `restore` is what to put back rather than delete: the worked example also
+/// records where the example organisation operates, because scope resolution can
+/// say nothing at all until a jurisdiction is declared, and removing the example
+/// must leave the organisation exactly as it was found.
+model SampleRecord {
+  id             String   @id @default(cuid())
+  organizationId String
+  /// The Prisma model name, e.g. "AISystem". Not a Prisma relation: this table
+  /// points at fifteen others, and a row whose target is already gone is simply
+  /// skipped on removal.
+  entityType     String
+  entityId       String
+  /// Non-null means "put this back", as a field-name to value map.
+  restore        Json?
+  createdAt      DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, entityType, entityId])
+  @@index([organizationId])
+  @@map("sample_records")
 }
 
 /// Who receives data from an AI system, and on what terms.

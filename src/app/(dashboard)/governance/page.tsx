@@ -46,6 +46,7 @@ import { useOrganization } from "@/lib/organization-context";
 import { formatRelativeTime } from "@/lib/utils";
 import { DeploymentExpertCta } from "@/components/governance/deployment-expert-cta";
 import { TierMarker } from "@/components/governance/risk-tier-badge";
+import { WorkedExampleOffer } from "@/components/governance/worked-example-card";
 import { TIER_BG_CLASS, type RiskTier } from "@/config/risk-tier-palette";
 
 export default function GovernanceDashboardPage() {
@@ -164,6 +165,11 @@ export default function GovernanceDashboardPage() {
           </DropdownMenu>
         )}
       </div>
+
+      {/* The first-run choice, so an empty dashboard offers a way to fill
+          itself in rather than only empty tiles. Renders nothing once either
+          answer has been given. */}
+      {organization && <WorkedExampleOffer organizationId={organization.id} />}
 
       {/* Program CTA — once a quickstart profile is completed, the flagship
           deliverable is the Governance Program page */}

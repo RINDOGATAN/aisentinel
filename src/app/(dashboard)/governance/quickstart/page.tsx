@@ -63,6 +63,10 @@ import { ProgramMap } from "@/components/governance/program/ProgramMap";
 import { useExportDownload } from "@/components/governance/use-export-download";
 import { JurisdictionPicker } from "@/components/governance/jurisdiction-picker";
 import { RegimeScreeningCard } from "@/components/governance/regime-screening-card";
+import {
+  SampleDataCard,
+  WorkedExampleOffer,
+} from "@/components/governance/worked-example-card";
 import type { JurisdictionId } from "@/config/jurisdictions";
 import { features } from "@/config/features";
 import { RiskTierBadge } from "@/components/governance/risk-tier-badge";
@@ -500,6 +504,11 @@ export default function QuickstartPage() {
           {t("subtitle")}
         </p>
       </div>
+
+      {/* The first-run choice, ahead of every form: take the worked example, or
+          start empty. Renders nothing once either has been answered. */}
+      <WorkedExampleOffer organizationId={orgId} />
+      <SampleDataCard organizationId={orgId} />
 
       {/* Step indicator */}
       {step !== "success" && (

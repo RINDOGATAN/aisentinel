@@ -45,12 +45,13 @@ import { TierChip } from "@/components/governance/risk-tier-badge";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { formatDate, formatRelativeTime, getDaysUntil } from "@/lib/utils";
+import { STATUS_OUTLINE } from "@/components/ui/status-note";
 
 const statusColors: Record<string, string> = {
-  ACTIVE: "border-success text-success",
-  UNDER_REVIEW: "border-warning text-warning",
-  APPROVED: "border-info text-info",
-  SUSPENDED: "border-warning text-warning",
+  ACTIVE: STATUS_OUTLINE.good,
+  UNDER_REVIEW: STATUS_OUTLINE.warning,
+  APPROVED: STATUS_OUTLINE.note,
+  SUSPENDED: STATUS_OUTLINE.warning,
   TERMINATED: "border-muted-foreground text-muted-foreground",
 };
 
@@ -65,17 +66,17 @@ const statusLabelKeys: Record<string, string> = {
 
 const systemStatusColors: Record<string, string> = {
   DRAFT: "border-muted-foreground text-muted-foreground",
-  DEVELOPMENT: "border-info text-info",
-  TESTING: "border-warning text-warning",
-  DEPLOYED: "border-success text-success",
+  DEVELOPMENT: STATUS_OUTLINE.note,
+  TESTING: STATUS_OUTLINE.warning,
+  DEPLOYED: STATUS_OUTLINE.good,
   RETIRED: "border-muted-foreground/50 text-muted-foreground/50",
 };
 
 const assessmentStatusColors: Record<string, string> = {
   DRAFT: "border-muted-foreground text-muted-foreground",
-  IN_PROGRESS: "border-info text-info",
-  COMPLETED: "border-success text-success",
-  EXPIRED: "border-destructive text-destructive",
+  IN_PROGRESS: STATUS_OUTLINE.note,
+  COMPLETED: STATUS_OUTLINE.good,
+  EXPIRED: STATUS_OUTLINE.danger,
 };
 
 // Translation keys in the `common` namespace.
@@ -390,15 +391,15 @@ export default function VendorDetailPage() {
             <div className="pt-2 border-t">
               <p className="text-sm text-muted-foreground">{t("contractStatus")}</p>
               {isExpired ? (
-                <p className="font-medium text-sm text-destructive">
+                <p className="font-medium text-sm text-foreground">
                   {t("contractExpiredDaysAgo", { count: Math.abs(daysUntilExpiry!) })}
                 </p>
               ) : isExpiringSoon ? (
-                <p className="font-medium text-sm text-warning">
+                <p className="font-medium text-sm text-foreground">
                   {t("contractExpiresInDays", { count: daysUntilExpiry })}
                 </p>
               ) : daysUntilExpiry !== null ? (
-                <p className="font-medium text-sm text-success">
+                <p className="font-medium text-sm text-foreground">
                   {t("contractDaysRemaining", { count: daysUntilExpiry })}
                 </p>
               ) : (

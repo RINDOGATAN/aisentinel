@@ -103,7 +103,7 @@ export default function ObligationsPage() {
       {/* Scope banner: declared jurisdictions, or an honest admission that we
           cannot scope US obligations until someone answers. */}
       {data && !data.jurisdictionsDeclared ? (
-        <Card className="border-warning/40 bg-warning/5">
+        <Card className="border-warning bg-warning/10 text-foreground">
           <CardContent className="p-4 flex flex-col sm:flex-row sm:items-center gap-3">
             <MapPin className="w-5 h-5 text-warning shrink-0" />
             <p className="text-sm text-muted-foreground flex-1">

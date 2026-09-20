@@ -26,19 +26,20 @@ import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
 import { formatRelativeTime } from "@/lib/utils";
 import { useTranslations, useLocale } from "next-intl";
 import { useEnumLabels } from "@/lib/enum-labels";
+import { STATUS_CHIP, STATUS_OUTLINE } from "@/components/ui/status-note";
 
 const severityColors: Record<string, string> = {
   CRITICAL: "bg-destructive text-destructive-foreground",
-  HIGH: "bg-destructive/80 text-destructive-foreground",
-  MEDIUM: "bg-warning/20 text-warning",
+  HIGH: "bg-destructive text-destructive-foreground",
+  MEDIUM: STATUS_CHIP.warning,
   LOW: "bg-muted text-muted-foreground",
 };
 
 const statusColors: Record<string, string> = {
-  REPORTED: "border-warning text-warning",
-  INVESTIGATING: "border-info text-info",
-  MITIGATING: "border-warning text-warning",
-  RESOLVED: "border-success text-success",
+  REPORTED: STATUS_OUTLINE.warning,
+  INVESTIGATING: STATUS_OUTLINE.note,
+  MITIGATING: STATUS_OUTLINE.warning,
+  RESOLVED: STATUS_OUTLINE.good,
   CLOSED: "border-muted-foreground text-muted-foreground",
 };
 
@@ -137,19 +138,19 @@ export default function IncidentsPage() {
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-destructive">{stats.critical}</div>
+            <div className="text-xl sm:text-2xl font-bold text-foreground">{stats.critical}</div>
             <p className="text-xs sm:text-sm text-muted-foreground">{t("statsCritical")}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-warning">{stats.open}</div>
+            <div className="text-xl sm:text-2xl font-bold text-foreground">{stats.open}</div>
             <p className="text-xs sm:text-sm text-muted-foreground">{t("statsOpen")}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-success">{stats.resolved}</div>
+            <div className="text-xl sm:text-2xl font-bold text-foreground">{stats.resolved}</div>
             <p className="text-xs sm:text-sm text-muted-foreground">{t("statsResolved")}</p>
           </CardContent>
         </Card>

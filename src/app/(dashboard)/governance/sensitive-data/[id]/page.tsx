@@ -32,6 +32,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
+import { STATUS_OUTLINE } from "@/components/ui/status-note";
 import {
   BAND_GUIDANCE,
   RATINGS,
@@ -46,9 +47,9 @@ import {
 type FactorState = Record<string, { rating?: Rating; reasoning?: string }>;
 
 const BAND_STYLE: Record<string, string> = {
-  LOW: "border-success/50 text-success",
-  MEDIUM: "border-warning/50 text-warning",
-  HIGH: "border-destructive/50 text-destructive",
+  LOW: STATUS_OUTLINE.good,
+  MEDIUM: STATUS_OUTLINE.warning,
+  HIGH: STATUS_OUTLINE.danger,
 };
 
 export default function SensitiveDataAnalysisPage() {
@@ -168,7 +169,7 @@ export default function SensitiveDataAnalysisPage() {
           </Badge>
           <span className="text-xs text-muted-foreground">{derived.because[lang]}</span>
           {derived.incomplete && (
-            <span className="text-xs text-warning">{t("incomplete")}</span>
+            <span className="text-xs text-foreground">{t("incomplete")}</span>
           )}
         </CardContent>
       </Card>

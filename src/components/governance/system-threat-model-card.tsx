@@ -64,7 +64,7 @@ export function SystemThreatModelCard({
               {model.counts.actNow > 0 && (
                 <Badge
                   variant="outline"
-                  className="text-[10px] border-destructive/50 text-destructive"
+                  className="text-[10px] border-destructive"
                 >
                   {t("actNowCount", { count: model.counts.actNow })}
                 </Badge>

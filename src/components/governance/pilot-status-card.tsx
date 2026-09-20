@@ -62,7 +62,7 @@ export function PilotStatusCard({ organizationId }: { organizationId: string }) 
         </p>
 
         {data.readOnly ? (
-          <div className="flex items-start gap-2 rounded-md border border-warning/30 bg-warning/10 p-3">
+          <div className="flex items-start gap-2 rounded-md border border-warning bg-warning/10 p-3 text-foreground">
             <Lock className="w-4 h-4 text-warning shrink-0 mt-0.5" />
             <div className="space-y-2">
               <p className="text-xs">{t("readOnlyBody")}</p>
@@ -91,7 +91,7 @@ export function PilotStatusCard({ organizationId }: { organizationId: string }) 
         </div>
 
         {data.ceilings.some((c) => c.used >= c.max) && !data.readOnly && (
-          <div className="rounded-md border border-warning/30 bg-warning/10 p-3 space-y-2">
+          <div className="rounded-md border border-warning bg-warning/10 p-3 space-y-2 text-foreground">
             <p className="text-xs">{t("ceilingReachedBody")}</p>
             <WaysOut exportUrl={data.exportUrl} />
           </div>

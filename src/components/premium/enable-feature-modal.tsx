@@ -167,7 +167,7 @@ export function EnableFeatureModal({
           </div>
 
           {error && (
-            <div className="p-3 text-sm text-destructive bg-destructive/10 rounded-lg">
+            <div className="p-3 text-sm bg-destructive/10 rounded-lg text-foreground">
               {error}
             </div>
           )}

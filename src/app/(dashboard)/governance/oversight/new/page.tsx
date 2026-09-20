@@ -21,6 +21,7 @@ import { ArrowLeft, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
+import { StatusNote } from "@/components/ui/status-note";
 import { useTranslations } from "next-intl";
 
 type OversightGateType = "PRE_DEPLOYMENT" | "POST_DEPLOYMENT" | "PERIODIC_REVIEW" | "INCIDENT_TRIGGERED" | "MATERIAL_CHANGE";
@@ -235,9 +236,9 @@ export default function NewOversightGatePage() {
 
             {/* Error */}
             {createGate.error && (
-              <div className="text-sm text-destructive">
+              <StatusNote status="danger">
                 {tc("error", { message: createGate.error.message })}
-              </div>
+              </StatusNote>
             )}
 
             {/* Actions */}

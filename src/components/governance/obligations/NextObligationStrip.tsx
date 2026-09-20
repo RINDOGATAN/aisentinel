@@ -59,7 +59,7 @@ export function NextObligationStrip() {
             : t("counts.notApplicable");
 
   return (
-    <Card className={next.overdue ? "border-destructive/40" : "border-primary/25"}>
+    <Card className={next.overdue ? "border-destructive" : "border-primary/25"}>
       <CardContent className="p-4 flex flex-col sm:flex-row sm:items-center gap-3">
         <div
           className={`p-2 rounded-lg shrink-0 ${
@@ -84,7 +84,7 @@ export function NextObligationStrip() {
           <p className="text-xs text-muted-foreground mt-0.5">{scopeLine}</p>
 
           {!data.jurisdictionsDeclared && (
-            <p className="text-xs text-warning mt-1">
+            <p className="text-xs text-foreground mt-1">
               {t("jurisdictionsUndeclared")}{" "}
               <Link
                 href="/governance/settings"

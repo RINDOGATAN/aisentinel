@@ -69,7 +69,7 @@ export function LegalHoldCard({
   const past = (holds ?? []).filter((h) => h.releasedAt);
 
   return (
-    <Card className={active.length > 0 ? "border-warning/50" : undefined}>
+    <Card className={active.length > 0 ? "border-warning" : undefined}>
       <CardHeader>
         <CardTitle className="text-base flex items-center gap-2">
           <Gavel className="w-4 h-4 text-primary" />
@@ -89,7 +89,7 @@ export function LegalHoldCard({
                 {active.map((h) => (
                   <div key={h.id} className="border rounded-md p-3 space-y-1.5">
                     <div className="flex flex-wrap items-center gap-2">
-                      <Badge variant="outline" className="border-warning text-warning text-[10px]">
+                      <Badge variant="outline" className="border-warning text-[10px]">
                         {t("inForce")}
                       </Badge>
                       <span className="text-sm font-medium">{h.matter}</span>

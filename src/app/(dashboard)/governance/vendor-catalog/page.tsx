@@ -29,6 +29,7 @@ import { useDebounce } from "@/hooks/use-debounce";
 import { EnableFeatureModal } from "@/components/premium/enable-feature-modal";
 import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
 import type { CatalogAIModel } from "@/lib/vendor-watch-types";
+import { STATUS_CHIP } from "@/components/ui/status-note";
 
 export default function VendorCatalogPage() {
   const t = useTranslations("vendorCatalog");
@@ -163,7 +164,7 @@ export default function VendorCatalogPage() {
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-info">
+            <div className="text-xl sm:text-2xl font-bold text-foreground">
               {stats?.withAiModels ?? 0}
             </div>
             <p className="text-xs sm:text-sm text-muted-foreground">
@@ -173,7 +174,7 @@ export default function VendorCatalogPage() {
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-success">
+            <div className="text-xl sm:text-2xl font-bold text-foreground">
               {stats?.verified ?? 0}
             </div>
             <p className="text-xs sm:text-sm text-muted-foreground">
@@ -183,7 +184,7 @@ export default function VendorCatalogPage() {
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-warning">
+            <div className="text-xl sm:text-2xl font-bold text-foreground">
               {stats?.euAiActCompliant ?? 0}
             </div>
             <p className="text-xs sm:text-sm text-muted-foreground">
@@ -260,13 +261,13 @@ export default function VendorCatalogPage() {
                         )}
                         <div className="flex flex-wrap gap-1.5 mb-3">
                           {vendor.gdprCompliant && (
-                            <Badge className="bg-success/20 text-success text-xs">
+                            <Badge className="bg-success/20 text-xs text-foreground">
                               <Shield className="w-3 h-3 mr-1" />
                               GDPR
                             </Badge>
                           )}
                           {vendor.euAiActCompliant && (
-                            <Badge className="bg-info/20 text-info text-xs">
+                            <Badge className="bg-info/20 text-xs text-foreground">
                               <Shield className="w-3 h-3 mr-1" />
                               EU AI Act
                             </Badge>
@@ -275,10 +276,10 @@ export default function VendorCatalogPage() {
                             <Badge
                               className={`text-xs ${
                                 vendor.dpaComplianceScore >= 70
-                                  ? "bg-success/20 text-success"
+                                  ? STATUS_CHIP.good
                                   : vendor.dpaComplianceScore >= 40
-                                    ? "bg-warning/20 text-warning"
-                                    : "bg-destructive/20 text-destructive"
+                                    ? STATUS_CHIP.warning
+                                    : STATUS_CHIP.danger
                               }`}
                             >
                               <FileCheck className="w-3 h-3 mr-1" />
@@ -296,7 +297,7 @@ export default function VendorCatalogPage() {
                             </Badge>
                           )}
                           {vendor.iso42001Certified && (
-                            <Badge className="bg-info/20 text-info text-xs">
+                            <Badge className="bg-info/20 text-xs text-foreground">
                               <ShieldCheck className="w-3 h-3 mr-1" />
                               ISO 42001
                             </Badge>

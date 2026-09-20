@@ -41,6 +41,7 @@ import { useOrganization } from "@/lib/organization-context";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useTranslations, useLocale } from "next-intl";
 import { useEnumLabels } from "@/lib/enum-labels";
+import { STATUS_CHIP, STATUS_OUTLINE } from "@/components/ui/status-note";
 
 type AIIncidentStatus = "REPORTED" | "INVESTIGATING" | "MITIGATING" | "RESOLVED" | "CLOSED";
 type AINotificationStatus = "PENDING" | "SENT" | "ACKNOWLEDGED";
@@ -48,16 +49,16 @@ type AITaskStatus = "PENDING" | "IN_PROGRESS" | "COMPLETED";
 
 const severityColors: Record<string, string> = {
   CRITICAL: "bg-destructive text-destructive-foreground",
-  HIGH: "bg-destructive/80 text-destructive-foreground",
-  MEDIUM: "bg-warning/20 text-warning",
+  HIGH: "bg-destructive text-destructive-foreground",
+  MEDIUM: STATUS_CHIP.warning,
   LOW: "bg-muted text-muted-foreground",
 };
 
 const statusColors: Record<string, string> = {
-  REPORTED: "border-warning text-warning",
-  INVESTIGATING: "border-info text-info",
-  MITIGATING: "border-warning text-warning",
-  RESOLVED: "border-success text-success",
+  REPORTED: STATUS_OUTLINE.warning,
+  INVESTIGATING: STATUS_OUTLINE.note,
+  MITIGATING: STATUS_OUTLINE.warning,
+  RESOLVED: STATUS_OUTLINE.good,
   CLOSED: "border-muted-foreground text-muted-foreground",
 };
 
@@ -76,9 +77,9 @@ const typeKeys: Record<string, string> = {
 };
 
 const notificationStatusColors: Record<string, string> = {
-  PENDING: "border-warning text-warning",
-  SENT: "border-success text-success",
-  ACKNOWLEDGED: "border-info text-info",
+  PENDING: STATUS_OUTLINE.warning,
+  SENT: STATUS_OUTLINE.good,
+  ACKNOWLEDGED: STATUS_OUTLINE.note,
 };
 
 const statusTransitions: Record<string, string[]> = {
@@ -544,8 +545,8 @@ export default function IncidentDetailPage() {
                         variant="outline"
                         className={`text-xs ${
                           task.status === "COMPLETED"
-                            ? "border-success text-success"
-                            : "border-warning text-warning"
+                            ? STATUS_OUTLINE.good
+                            : STATUS_OUTLINE.warning
                         }`}
                       >
                         {taskStatusLabel(task.status)}

@@ -191,7 +191,7 @@ export function AgentPanel({
           className={[
             "rounded-md border p-3 text-xs",
             assessment.undetermined
-              ? "border-warning/40 bg-warning/5 text-warning"
+              ? "border-warning bg-warning/10 text-warning"
               : assessment.isAgentic
                 ? "border-primary/40 bg-primary/5 text-muted-foreground"
                 : "border-border bg-muted/20 text-muted-foreground",
@@ -225,7 +225,7 @@ export function AgentPanel({
           <div className="border-t border-border pt-4 space-y-3">
             {assessment.missing.length > 0 ? (
               <div className="space-y-1.5">
-                <p className="text-xs font-medium text-warning flex items-center gap-1.5">
+                <p className="text-xs font-medium text-foreground [&>svg]:text-warning flex items-center gap-1.5">
                   <AlertTriangle className="w-3.5 h-3.5" />
                   {t("controlsTitle")}
                 </p>
@@ -238,7 +238,7 @@ export function AgentPanel({
                 </ul>
               </div>
             ) : (
-              <p className="text-xs text-success flex items-center gap-1.5">
+              <p className="text-xs text-foreground [&>svg]:text-success flex items-center gap-1.5">
                 <CheckCircle2 className="w-3.5 h-3.5" />
                 {t("controlsNone")}
               </p>
@@ -246,7 +246,7 @@ export function AgentPanel({
             {assessment.recorded.length > 0 && (
               <div className="flex flex-wrap gap-1.5">
                 {assessment.recorded.map((id) => (
-                  <Badge key={id} variant="outline" className="text-[10px] border-success/50 text-success">
+                  <Badge key={id} variant="outline" className="text-[10px] border-success">
                     {controlLabel(id)}
                   </Badge>
                 ))}

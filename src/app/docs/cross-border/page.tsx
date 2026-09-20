@@ -109,7 +109,7 @@ export default async function CrossBorderDocsPage() {
           <AlertTriangle className="w-5 h-5 text-warning" />
           {t("gapsTitle")}
         </h2>
-        <div className="rounded-xl border border-warning/40 bg-warning/5 p-6">
+        <div className="rounded-xl border border-warning bg-warning/10 p-6 text-foreground">
           <p className="text-sm text-muted-foreground leading-relaxed">{t("gapsBody")}</p>
         </div>
       </section>

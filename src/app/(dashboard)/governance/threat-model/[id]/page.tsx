@@ -37,6 +37,7 @@ import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useExportDownload } from "@/components/governance/use-export-download";
 import { useNow } from "@/lib/use-now";
+import { STATUS_OUTLINE, StatusNote } from "@/components/ui/status-note";
 import {
   CONTROL_LAYER_LABELS,
   controlState,
@@ -50,15 +51,15 @@ import {
 } from "@/components/governance/threat-model-visuals";
 
 const PRIORITY_STYLE: Record<string, string> = {
-  ACT_NOW: "border-destructive/50 text-destructive",
-  PLAN: "border-warning/50 text-warning",
+  ACT_NOW: STATUS_OUTLINE.danger,
+  PLAN: STATUS_OUTLINE.warning,
   WATCH: "text-muted-foreground",
 };
 
 const STATE_STYLE: Record<string, string> = {
-  proven: "border-success/50 text-success",
-  failing: "border-destructive/50 text-destructive",
-  stale: "border-warning/50 text-warning",
+  proven: STATUS_OUTLINE.good,
+  failing: STATUS_OUTLINE.danger,
+  stale: STATUS_OUTLINE.warning,
   untested: "text-muted-foreground",
 };
 
@@ -274,9 +275,9 @@ export default function ThreatModelDetailPage() {
       </div>
 
       {actNow.length > 0 && (
-        <Card className="border-destructive/40">
+        <Card className="border-destructive">
           <CardContent className="p-4">
-            <p className="text-sm font-medium text-destructive">
+            <p className="text-sm font-medium text-foreground">
               {t("actNowHeadline", { count: actNow.length })}
             </p>
             <p className="text-xs text-muted-foreground mt-1">{t("actNowHint")}</p>
@@ -293,7 +294,7 @@ export default function ThreatModelDetailPage() {
           <p className="text-xs text-muted-foreground">{t("registerHint")}</p>
 
           {registerLink.error ? (
-            <p className="text-sm text-warning">{registerLink.error.message}</p>
+            <StatusNote status="warning">{registerLink.error.message}</StatusNote>
           ) : !registerLink.data ? (
             <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
           ) : (
@@ -311,7 +312,7 @@ export default function ThreatModelDetailPage() {
 
               {registerLink.data.plan.untested.length > 0 && (
                 <div className="space-y-1">
-                  <p className="text-xs font-medium text-warning">
+                  <p className="text-xs font-medium text-foreground">
                     {t("registerUntested", { count: registerLink.data.plan.untested.length })}
                   </p>
                   {registerLink.data.plan.untested.slice(0, 5).map((u) => (
@@ -331,7 +332,7 @@ export default function ThreatModelDetailPage() {
                       ),
                     ),
                   ].map((label) => (
-                    <Badge key={label} variant="outline" className="text-[10px] border-success/40 text-success">
+                    <Badge key={label} variant="outline" className="text-[10px] border-success">
                       {label}
                     </Badge>
                   ))}
@@ -423,7 +424,7 @@ export default function ThreatModelDetailPage() {
                             }
                           >
                             {c.implemented ? (
-                              <span className="flex items-center gap-1 text-success">
+                              <span className="flex items-center gap-1 text-foreground [&>svg]:text-success">
                                 <Check className="w-3 h-3" />
                                 {t("implemented")}
                               </span>

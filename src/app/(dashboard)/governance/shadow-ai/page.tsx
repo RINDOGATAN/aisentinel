@@ -28,12 +28,13 @@ import { useDebounce } from "@/hooks/use-debounce";
 import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
 import { EnableFeatureModal } from "@/components/premium/enable-feature-modal";
 import { formatRelativeTime } from "@/lib/utils";
+import { STATUS_OUTLINE } from "@/components/ui/status-note";
 
 const statusColors: Record<string, string> = {
-  DISCOVERED: "border-warning text-warning",
-  UNDER_REVIEW: "border-info text-info",
-  APPROVED: "border-success text-success",
-  PROHIBITED: "border-destructive text-destructive",
+  DISCOVERED: STATUS_OUTLINE.warning,
+  UNDER_REVIEW: STATUS_OUTLINE.note,
+  APPROVED: STATUS_OUTLINE.good,
+  PROHIBITED: STATUS_OUTLINE.danger,
   REGISTERED: "border-primary text-primary",
 };
 
@@ -199,7 +200,7 @@ export default function ShadowAIPage() {
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-warning">
+            <div className="text-xl sm:text-2xl font-bold text-foreground">
               {stats.discovered}
             </div>
             <p className="text-xs sm:text-sm text-muted-foreground">
@@ -209,7 +210,7 @@ export default function ShadowAIPage() {
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-info">
+            <div className="text-xl sm:text-2xl font-bold text-foreground">
               {stats.underReview}
             </div>
             <p className="text-xs sm:text-sm text-muted-foreground">
@@ -219,7 +220,7 @@ export default function ShadowAIPage() {
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-destructive">
+            <div className="text-xl sm:text-2xl font-bold text-foreground">
               {stats.prohibited}
             </div>
             <p className="text-xs sm:text-sm text-muted-foreground">

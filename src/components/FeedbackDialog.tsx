@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { StatusNote } from "@/components/ui/status-note";
 
 interface FeedbackDialogProps {
   open: boolean;
@@ -58,7 +59,7 @@ export function FeedbackDialog({ open, onOpenChange }: FeedbackDialogProps) {
               <DialogTitle>What&apos;s wrong?</DialogTitle>
             </DialogHeader>
             {submit.isError && (
-              <p className="text-sm text-destructive">Failed to send. Please try again.</p>
+              <StatusNote status="danger">Failed to send. Please try again.</StatusNote>
             )}
             <form
               onSubmit={(e) => {

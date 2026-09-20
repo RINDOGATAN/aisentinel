@@ -29,6 +29,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
+import { StatusNote } from "@/components/ui/status-note";
 
 const AUDIENCES = [
   "BOARD",
@@ -260,7 +261,7 @@ export default function BoardReportingPage() {
                   </p>
                 ) : (
                   r.decisionsRequested && (
-                    <p className="text-xs text-warning">{t("noDecisionRecorded")}</p>
+                    <StatusNote status="warning">{t("noDecisionRecorded")}</StatusNote>
                   )
                 )}
                 {r.snapshot ? (

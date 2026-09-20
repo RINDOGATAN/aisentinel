@@ -25,6 +25,7 @@ import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
 import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
 import { formatRelativeTime, formatDate } from "@/lib/utils";
+import { STATUS_OUTLINE } from "@/components/ui/status-note";
 
 // Translation keys in the `policies` namespace.
 const policyTypeLabelKeys: Record<string, string> = {
@@ -41,9 +42,9 @@ const policyTypeLabelKeys: Record<string, string> = {
 
 const statusColors: Record<string, string> = {
   DRAFT: "border-muted-foreground text-muted-foreground",
-  UNDER_REVIEW: "border-warning text-warning",
-  APPROVED: "border-info text-info",
-  PUBLISHED: "border-success text-success",
+  UNDER_REVIEW: STATUS_OUTLINE.warning,
+  APPROVED: STATUS_OUTLINE.note,
+  PUBLISHED: STATUS_OUTLINE.good,
   ARCHIVED: "border-muted-foreground/50 text-muted-foreground/50",
 };
 
@@ -134,7 +135,7 @@ export default function PoliciesPage() {
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-success">{stats.published}</div>
+            <div className="text-xl sm:text-2xl font-bold text-foreground">{stats.published}</div>
             <p className="text-xs sm:text-sm text-muted-foreground">{t("statsPublished")}</p>
           </CardContent>
         </Card>

@@ -10,7 +10,7 @@ export default async function AuthErrorPage() {
   return (
     <div className="w-full max-w-md">
       <div className="card-brutal text-center">
-        <div className="w-16 h-16 bg-destructive/20 flex items-center justify-center mx-auto mb-6">
+        <div className="w-16 h-16 bg-destructive/20 flex items-center justify-center mx-auto mb-6 text-foreground">
           <AlertTriangle className="w-8 h-8 text-destructive" />
         </div>
         <h1 className="text-2xl font-bold mb-2">{t("errorTitle")}</h1>

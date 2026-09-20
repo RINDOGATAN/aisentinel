@@ -26,6 +26,7 @@ import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
 import { suggestTechniqueFromCapabilities } from "@/lib/ai-technique-mapping";
+import { StatusNote } from "@/components/ui/status-note";
 
 type VendorRiskLevel = "CRITICAL" | "HIGH" | "MEDIUM" | "LOW";
 type VendorStatus = "ACTIVE" | "UNDER_REVIEW" | "APPROVED" | "SUSPENDED" | "TERMINATED";
@@ -348,13 +349,13 @@ function NewVendorForm() {
                 )}
                 <div className="flex flex-wrap gap-1.5">
                   {selectedCatalogVendor.gdprCompliant && (
-                    <Badge className="bg-success/20 text-success text-xs">
+                    <Badge className="bg-success/20 text-xs text-foreground">
                       <Shield className="w-3 h-3 mr-1" />
                       {t("badgeGdpr")}
                     </Badge>
                   )}
                   {selectedCatalogVendor.euAiActCompliant && (
-                    <Badge className="bg-info/20 text-info text-xs">
+                    <Badge className="bg-info/20 text-xs text-foreground">
                       <Shield className="w-3 h-3 mr-1" />
                       {t("badgeEuAiAct")}
                     </Badge>
@@ -457,12 +458,12 @@ function NewVendorForm() {
                         </div>
                         <div className="flex gap-1.5 mt-1">
                           {vendor.gdprCompliant && (
-                            <Badge className="bg-success/20 text-success text-[10px] px-1.5 py-0">
+                            <Badge className="bg-success/20 text-[10px] px-1.5 py-0 text-foreground">
                               {t("badgeGdpr")}
                             </Badge>
                           )}
                           {vendor.euAiActCompliant && (
-                            <Badge className="bg-info/20 text-info text-[10px] px-1.5 py-0">
+                            <Badge className="bg-info/20 text-[10px] px-1.5 py-0 text-foreground">
                               {t("badgeEuAiAct")}
                             </Badge>
                           )}
@@ -744,9 +745,9 @@ function NewVendorForm() {
 
             {/* Error */}
             {(createVendor.error || createVendorWithSystem.error) && (
-              <div className="text-sm text-destructive">
+              <StatusNote status="danger">
                 {tc("error", { message: (createVendor.error || createVendorWithSystem.error)?.message ?? "" })}
-              </div>
+              </StatusNote>
             )}
 
             {/* Actions */}

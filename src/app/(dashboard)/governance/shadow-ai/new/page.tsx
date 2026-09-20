@@ -24,6 +24,7 @@ import { useTranslations } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
+import { StatusNote } from "@/components/ui/status-note";
 
 export default function NewShadowAIReportPage() {
   const t = useTranslations("shadowAiNew");
@@ -286,9 +287,9 @@ export default function NewShadowAIReportPage() {
 
             {/* Error */}
             {createReport.error && (
-              <div className="text-sm text-destructive">
+              <StatusNote status="danger">
                 {tc("error", { message: createReport.error.message })}
-              </div>
+              </StatusNote>
             )}
 
             {/* Actions */}

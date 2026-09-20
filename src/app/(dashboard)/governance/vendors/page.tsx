@@ -32,12 +32,13 @@ import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
 import { EnableFeatureModal } from "@/components/premium/enable-feature-modal";
 import { RiskTierBadge } from "@/components/governance/risk-tier-badge";
 import { formatRelativeTime, getDaysUntil } from "@/lib/utils";
+import { STATUS_OUTLINE } from "@/components/ui/status-note";
 
 const statusColors: Record<string, string> = {
-  ACTIVE: "border-success text-success",
-  UNDER_REVIEW: "border-warning text-warning",
-  APPROVED: "border-info text-info",
-  SUSPENDED: "border-warning text-warning",
+  ACTIVE: STATUS_OUTLINE.good,
+  UNDER_REVIEW: STATUS_OUTLINE.warning,
+  APPROVED: STATUS_OUTLINE.note,
+  SUSPENDED: STATUS_OUTLINE.warning,
   TERMINATED: "border-muted-foreground text-muted-foreground",
 };
 
@@ -142,19 +143,19 @@ export default function VendorRiskPage() {
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-destructive">{stats.critical}</div>
+            <div className="text-xl sm:text-2xl font-bold text-foreground">{stats.critical}</div>
             <p className="text-xs sm:text-sm text-muted-foreground">{t("statsCriticalRisk")}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-destructive/80">{stats.highRisk}</div>
+            <div className="text-xl sm:text-2xl font-bold text-foreground/80">{stats.highRisk}</div>
             <p className="text-xs sm:text-sm text-muted-foreground">{t("statsHighRisk")}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-warning">{stats.expiringSoon}</div>
+            <div className="text-xl sm:text-2xl font-bold text-foreground">{stats.expiringSoon}</div>
             <p className="text-xs sm:text-sm text-muted-foreground">{t("statsExpiringSoon")}</p>
           </CardContent>
         </Card>
@@ -184,7 +185,7 @@ export default function VendorRiskPage() {
               <div>
                 <div className="flex items-center gap-2">
                   <h3 className="font-semibold text-sm sm:text-base">{t("catalogCardTitle")}</h3>
-                  <Badge className="bg-success/20 text-success text-xs">{t("catalogActiveBadge")}</Badge>
+                  <Badge className="bg-success/20 text-xs text-foreground">{t("catalogActiveBadge")}</Badge>
                 </div>
                 <p className="text-xs sm:text-sm text-muted-foreground">
                   {t("catalogCardDescription")}
@@ -372,7 +373,7 @@ export default function VendorRiskPage() {
                             </span>
                           </div>
                           {isExpiringSoon && (
-                            <div className="flex items-center gap-1 mt-2 text-xs text-warning">
+                            <div className="flex items-center gap-1 mt-2 text-xs text-foreground [&>svg]:text-warning">
                               <AlertTriangle className="w-3 h-3" />
                               {t("contractExpiresInDays", { count: daysUntilExpiry })}
                             </div>

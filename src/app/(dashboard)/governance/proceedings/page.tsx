@@ -32,6 +32,7 @@ import {
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useNow } from "@/lib/use-now";
+import { STATUS_OUTLINE } from "@/components/ui/status-note";
 
 const TYPES = [
   "INQUIRY",
@@ -49,10 +50,10 @@ const TYPES = [
 
 const STATUS_STYLE: Record<string, string> = {
   MONITORING: "text-muted-foreground",
-  OPEN: "border-warning/50 text-warning",
-  RESPONDING: "border-warning/50 text-warning",
-  DECIDED: "border-destructive/50 text-destructive",
-  APPEALED: "border-destructive/50 text-destructive",
+  OPEN: STATUS_OUTLINE.warning,
+  RESPONDING: STATUS_OUTLINE.warning,
+  DECIDED: STATUS_OUTLINE.danger,
+  APPEALED: STATUS_OUTLINE.danger,
   CLOSED: "text-muted-foreground",
 };
 
@@ -101,7 +102,7 @@ export default function ProceedingsPage() {
       </div>
 
       {deadlines && deadlines.length > 0 && (
-        <Card className="border-warning/40">
+        <Card className="border-warning">
           <CardContent className="p-4 space-y-2">
             <p className="text-sm font-medium">{t("deadlinesTitle")}</p>
             {deadlines.map((d) => {
@@ -225,7 +226,7 @@ export default function ProceedingsPage() {
                       </span>
                     )}
                     {!r.hasPosition && (
-                      <span className="text-warning flex items-center gap-1">
+                      <span className="text-foreground [&>svg]:text-warning flex items-center gap-1">
                         <AlertTriangle className="w-3 h-3" />
                         {t("noPosition")}
                       </span>

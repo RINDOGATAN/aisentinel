@@ -26,6 +26,7 @@ import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
 import { formatRelativeTime, formatDate } from "@/lib/utils";
 import { useTranslations, useLocale } from "next-intl";
 import { useEnumLabels } from "@/lib/enum-labels";
+import { STATUS_OUTLINE } from "@/components/ui/status-note";
 
 const gateTypeKeys: Record<string, string> = {
   PRE_DEPLOYMENT: "gateTypePreDeployment",
@@ -36,10 +37,10 @@ const gateTypeKeys: Record<string, string> = {
 };
 
 const gateStatusColors: Record<string, string> = {
-  PENDING: "border-warning text-warning",
-  IN_REVIEW: "border-info text-info",
-  PASSED: "border-success text-success",
-  FAILED: "border-destructive text-destructive",
+  PENDING: STATUS_OUTLINE.warning,
+  IN_REVIEW: STATUS_OUTLINE.note,
+  PASSED: STATUS_OUTLINE.good,
+  FAILED: STATUS_OUTLINE.danger,
   DEFERRED: "border-muted-foreground text-muted-foreground",
 };
 
@@ -108,26 +109,26 @@ export default function OversightPage() {
       <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-warning">{stats.pending}</div>
+            <div className="text-xl sm:text-2xl font-bold text-foreground">{stats.pending}</div>
             <p className="text-xs sm:text-sm text-muted-foreground">{t("statsPending")}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-info">{stats.inReview}</div>
+            <div className="text-xl sm:text-2xl font-bold text-foreground">{stats.inReview}</div>
             <p className="text-xs sm:text-sm text-muted-foreground">{t("statsInReview")}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-success">{stats.passed}</div>
+            <div className="text-xl sm:text-2xl font-bold text-foreground">{stats.passed}</div>
             <p className="text-xs sm:text-sm text-muted-foreground">{t("statsPassed")}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-destructive">{stats.overdue}</div>
-            <p className="text-xs sm:text-sm text-destructive">{t("statsOverdue")}</p>
+            <div className="text-xl sm:text-2xl font-bold text-foreground">{stats.overdue}</div>
+            <p className="text-xs sm:text-sm text-foreground">{t("statsOverdue")}</p>
           </CardContent>
         </Card>
       </div>

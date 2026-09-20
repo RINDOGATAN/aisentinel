@@ -23,6 +23,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { trpc } from "@/lib/trpc";
+import { StatusNote } from "@/components/ui/status-note";
 import {
   inventoryTemplateCsv,
   parseInventory,
@@ -120,9 +121,9 @@ export function InventoryImportDialog({
           <p className="text-xs text-muted-foreground">{t("formatHint")}</p>
 
           {parsed?.error && (
-            <p className="text-sm text-destructive">
+            <StatusNote status="danger">
               {parsed.error === "no-name-column" ? t("errorNoName") : t("errorNoRows")}
-            </p>
+            </StatusNote>
           )}
 
           {parsed && !parsed.error && (

@@ -31,14 +31,15 @@ import {
 } from "@/components/ui/select";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
+import { STATUS_OUTLINE } from "@/components/ui/status-note";
 
 const CATEGORIES = ["HEALTH", "BIOMETRIC", "PRECISE_LOCATION", "FINANCIAL", "OTHER"] as const;
 type Category = (typeof CATEGORIES)[number];
 
 const BAND_STYLE: Record<string, string> = {
-  LOW: "border-success/50 text-success",
-  MEDIUM: "border-warning/50 text-warning",
-  HIGH: "border-destructive/50 text-destructive",
+  LOW: STATUS_OUTLINE.good,
+  MEDIUM: STATUS_OUTLINE.warning,
+  HIGH: STATUS_OUTLINE.danger,
 };
 
 export default function SensitiveDataPage() {

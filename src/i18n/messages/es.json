@@ -1,5 +1,6 @@
 {
   "common": {
+    "needsAttention": "Requiere atención",
     "loading": "Cargando…",
     "save": "Guardar",
     "saving": "Guardando…",
@@ -5221,6 +5222,7 @@
     "none": "De estos hechos no se deriva ningún plazo legal. Eso es una respuesta, no una laguna: si se ha valorado, déjalo dicho en la cronología.",
     "immediate": "De inmediato",
     "overdue": "Fuera de plazo",
+    "dueSoon": "Vence pronto",
     "marker": "Verificado contra los textos consolidados el 11-09-2026. Orientativo: los plazos se calculan con lo registrado y quien notifica puede no saberlo todo aún."
   },
   "boardReports": {

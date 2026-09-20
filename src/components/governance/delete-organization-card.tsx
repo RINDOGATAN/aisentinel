@@ -54,7 +54,7 @@ export function DeleteOrganizationCard({
   const matches = typed.trim() === organizationName.trim();
 
   return (
-    <Card id={WIPE_ANCHOR} className="scroll-mt-24 border-destructive/40">
+    <Card id={WIPE_ANCHOR} className="scroll-mt-24 border-destructive">
       <CardHeader>
         <CardTitle className="text-base text-destructive">{t("title")}</CardTitle>
         <CardDescription>{t("description", { name: organizationName })}</CardDescription>

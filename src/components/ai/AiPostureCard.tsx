@@ -147,7 +147,7 @@ export function AiPostureCard({ organizationId, isAdmin }: AiPostureCardProps) {
         </div>
 
         {showNotConfiguredWarning && (
-          <div className="flex items-start gap-2 p-3 rounded-md bg-warning/10 text-sm">
+          <div className="flex items-start gap-2 p-3 rounded-md bg-warning/10 text-sm text-foreground">
             <AlertTriangle className="w-4 h-4 text-warning mt-0.5 shrink-0" />
             <span>{t("postureCard.notConfiguredWarning")}</span>
           </div>

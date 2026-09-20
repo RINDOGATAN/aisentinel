@@ -28,6 +28,7 @@ import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
 import { formatRelativeTime } from "@/lib/utils";
 import { useTranslations, useLocale } from "next-intl";
 import { features } from "@/config/features";
+import { STATUS_OUTLINE } from "@/components/ui/status-note";
 
 const assessmentTypeKeys: Record<string, string> = {
   FRIA: "typeFria",
@@ -38,10 +39,10 @@ const assessmentTypeKeys: Record<string, string> = {
 };
 
 const assessmentTypeColors: Record<string, string> = {
-  FRIA: "border-info text-info",
-  CONFORMITY: "border-purple-500 text-purple-500",
-  AI_RISK: "border-warning text-warning",
-  BIAS_FAIRNESS: "border-pink-500 text-pink-500",
+  FRIA: STATUS_OUTLINE.note,
+  CONFORMITY: "border-purple-400 text-purple-400",
+  AI_RISK: STATUS_OUTLINE.warning,
+  BIAS_FAIRNESS: "border-pink-400 text-pink-400",
   CUSTOM: "border-muted-foreground text-muted-foreground",
 };
 
@@ -55,10 +56,10 @@ const statusKeys: Record<string, string> = {
 
 const statusColors: Record<string, string> = {
   DRAFT: "border-muted-foreground text-muted-foreground",
-  IN_PROGRESS: "border-info text-info",
-  UNDER_REVIEW: "border-warning text-warning",
-  APPROVED: "border-success text-success",
-  REJECTED: "border-destructive text-destructive",
+  IN_PROGRESS: STATUS_OUTLINE.note,
+  UNDER_REVIEW: STATUS_OUTLINE.warning,
+  APPROVED: STATUS_OUTLINE.good,
+  REJECTED: STATUS_OUTLINE.danger,
 };
 
 const premiumTypes = ["CONFORMITY", "BIAS_FAIRNESS"];
@@ -170,19 +171,19 @@ export default function AssessmentsPage() {
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-info">{stats.inProgress}</div>
+            <div className="text-xl sm:text-2xl font-bold text-foreground">{stats.inProgress}</div>
             <p className="text-xs sm:text-sm text-muted-foreground">{t("statsInProgress")}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-warning">{stats.underReview}</div>
+            <div className="text-xl sm:text-2xl font-bold text-foreground">{stats.underReview}</div>
             <p className="text-xs sm:text-sm text-muted-foreground">{t("statsUnderReview")}</p>
           </CardContent>
         </Card>
         <Card className="col-span-2 lg:col-span-1">
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-success">{stats.approved}</div>
+            <div className="text-xl sm:text-2xl font-bold text-foreground">{stats.approved}</div>
             <p className="text-xs sm:text-sm text-muted-foreground">{t("statsApproved")}</p>
           </CardContent>
         </Card>

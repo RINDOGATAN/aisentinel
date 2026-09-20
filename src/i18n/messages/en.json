@@ -1,5 +1,6 @@
 {
   "common": {
+    "needsAttention": "Needs attention",
     "loading": "Loading…",
     "save": "Save",
     "saving": "Saving…",
@@ -5221,6 +5222,7 @@
     "none": "No statutory clock follows from these facts. That is an answer, not a gap: record why in the timeline if it was considered.",
     "immediate": "Immediately",
     "overdue": "Past the limit",
+    "dueSoon": "Due shortly",
     "marker": "Verified against the consolidated texts on 2026-09-11. Advisory: the clocks compute from what has been recorded, and the person reporting may not yet know everything."
   },
   "boardReports": {

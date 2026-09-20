@@ -34,6 +34,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
+import { StatusNote } from "@/components/ui/status-note";
 import {
   DATA_ROLES,
   RECIPIENT_TYPES,
@@ -209,7 +210,7 @@ export function DataFlowPanel({
                     {s.sourceType}
                   </Badge>
                   {s.containsPersonalData && (
-                    <Badge variant="outline" className="text-[10px] border-warning text-warning">
+                    <Badge variant="outline" className="text-[10px] border-warning">
                       {t("personalData")}
                     </Badge>
                   )}
@@ -301,22 +302,22 @@ export function DataFlowPanel({
         </CardHeader>
         <CardContent className="space-y-3">
           {gapCount > 0 && (
-            <p className="text-xs text-warning">
+            <StatusNote status="warning">
               {t("gaps", {
                 contracts: data.summary.recipientsWithoutContract,
                 retention: data.summary.recipientsWithoutRetention,
               })}
-            </p>
+            </StatusNote>
           )}
 
           {data.summary.sensitiveDisclosedBeyondControl.length > 0 && (
-            <p className="text-xs text-destructive">
+            <StatusNote status="danger">
               {t("sensitiveLeaves", {
                 categories: data.summary.sensitiveDisclosedBeyondControl
                   .map((c) => sensitiveCategoryLabel(c, lang))
                   .join(", "),
               })}
-            </p>
+            </StatusNote>
           )}
 
           {data.dataRecipients.length === 0 && !adding ? (
@@ -332,7 +333,7 @@ export function DataFlowPanel({
                   {isBeyondOurControl(r.type) && (
                     <Badge
                       variant="outline"
-                      className="text-[10px] border-warning text-warning"
+                      className="text-[10px] border-warning"
                     >
                       {t("beyondControl")}
                     </Badge>

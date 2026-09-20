@@ -72,9 +72,13 @@ const H = vi.hoisted(() => {
     },
     auditLog: {
       create: async ({ data }: { data: Row }) => {
-        audit.push(data);
-        return data;
+        // An id, because deleting an organisation writes its tombstone and then
+        // prunes the rest of the trail by "everything but this row".
+        const row = { id: `audit-${audit.length + 1}`, ...data };
+        audit.push(row);
+        return row;
       },
+      deleteMany: async () => ({ count: 0 }),
     },
     legalHold: { findMany: async () => [], count: async () => 0 },
   };

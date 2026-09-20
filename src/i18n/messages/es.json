@@ -4823,6 +4823,8 @@
     "downloadProtocol": "Protocolo de revisión y recurso",
     "downloadAddendum": "Anexo agéntico",
     "download": "Descargar en Markdown",
+    "downloadPdf": "PDF",
+    "downloadMarkdown": "Markdown",
     "noAssessmentYet": "Todavía no consta ninguna respuesta de evaluación. Los documentos se generarán como un conjunto completo de lagunas.",
     "stressTitle": "Prueba de esfuerzo agéntica",
     "stressDescription": "Dónde se rompe cada documento cuando este sistema entrega su resultado a un agente autónomo posterior.",

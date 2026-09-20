@@ -3,14 +3,19 @@
 
 /**
  * Risk-tier pill for the PDF reports: same geometry as PillBadge (solid),
- * but a neutral fill, a coloured dot (hollow ring when not classified) and
- * the label in the body ink. Colours come from the shared tier tokens.
+ * but a neutral fill, coloured pips and the label in the body ink. Colours and
+ * pip counts come from the shared tier tokens.
+ *
+ * The pips are the shape signal: four for unacceptable down to one for minimal,
+ * and a single hollow pip for not classified. A PDF is read alone and often on
+ * paper, so the tier has to survive a monochrome print; counting does, hue does
+ * not. The label always names the tier as well.
  */
 
 import React from "react";
 import { View, Text, StyleSheet } from "@react-pdf/renderer";
 import { tokens } from "../tokens";
-import { TIER_MARKER, TIER_SURFACES, toRiskTier } from "@/config/risk-tier-palette";
+import { TIER_MARKER, TIER_SURFACES, tierPips, toRiskTier } from "@/config/risk-tier-palette";
 
 const s = StyleSheet.create({
   pill: {
@@ -22,7 +27,8 @@ const s = StyleSheet.create({
     alignSelf: "flex-start",
     backgroundColor: TIER_SURFACES.light.chip,
   },
-  dot: { width: 5, height: 5, borderRadius: 2.5, marginRight: 3 },
+  pips: { flexDirection: "row", alignItems: "center", marginRight: 3 },
+  dot: { width: 5, height: 5, borderRadius: 2.5, marginRight: 1.5 },
   text: {
     fontSize: tokens.typography.size.micro,
     fontFamily: tokens.typography.family.sans,
@@ -41,16 +47,20 @@ export function TierPill({
 }) {
   const tier = toRiskTier(level);
   const marker = TIER_MARKER.light[tier];
+  const { count, filled } = tierPips(tier);
   return (
     <View style={s.pill}>
-      <View
-        style={[
-          s.dot,
-          tier === "UNCLASSIFIED"
-            ? { borderWidth: 1, borderColor: marker }
-            : { backgroundColor: marker },
-        ]}
-      />
+      <View style={s.pips}>
+        {Array.from({ length: count }, (_, i) => (
+          <View
+            key={i}
+            style={[
+              s.dot,
+              filled ? { backgroundColor: marker } : { borderWidth: 1, borderColor: marker },
+            ]}
+          />
+        ))}
+      </View>
       <Text style={s.text}>{children}</Text>
     </View>
   );

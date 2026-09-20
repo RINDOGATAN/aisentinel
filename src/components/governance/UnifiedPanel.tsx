@@ -171,8 +171,8 @@ export function UnifiedPanel({
     return needed === null || needed.some((j) => jurisdictions.includes(j as never));
   });
 
-  const downloadUrl = (kind: string) =>
-    `/api/export/unified-artifact?organizationId=${encodeURIComponent(organizationId)}&aiSystemId=${encodeURIComponent(aiSystemId)}&kind=${kind}`;
+  const downloadUrl = (kind: string, format: "markdown" | "pdf" = "markdown") =>
+    `/api/export/unified-artifact?organizationId=${encodeURIComponent(organizationId)}&aiSystemId=${encodeURIComponent(aiSystemId)}&kind=${kind}&format=${format}`;
 
   return (
     <div className="space-y-6">
@@ -406,24 +406,46 @@ export function UnifiedPanel({
                   </div>
                 );
               }
-              const url = downloadUrl(kind);
-              const pending = downloadPending(url);
+              // Two formats of one document: Markdown to take into the
+              // organisation's own records, PDF for the reader who receives it.
+              const mdUrl = downloadUrl(kind, "markdown");
+              const pdfUrl = downloadUrl(kind, "pdf");
               return (
-                <button
+                <div
                   key={kind}
-                  type="button"
-                  disabled={pending}
-                  onClick={() => void download(url)}
-                  className="flex items-center justify-between gap-2 rounded-md border border-border/50 bg-muted/20 px-3 py-2.5 text-left hover:border-primary/40 transition-colors disabled:opacity-70"
+                  className="flex items-center justify-between gap-2 rounded-md border border-border/50 bg-muted/20 px-3 py-2.5"
                 >
                   <span className="flex items-center gap-2 min-w-0">
                     <Icon className="w-4 h-4 text-muted-foreground shrink-0" />
                     <span className="text-sm truncate">{t(labelKey)}</span>
                   </span>
-                  <span className="text-xs text-primary shrink-0">
-                    {pending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : t("download")}
+                  <span className="flex items-center gap-3 shrink-0">
+                    <button
+                      type="button"
+                      disabled={downloadPending(pdfUrl)}
+                      onClick={() => void download(pdfUrl)}
+                      className="text-xs text-primary hover:underline disabled:opacity-70"
+                    >
+                      {downloadPending(pdfUrl) ? (
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      ) : (
+                        t("downloadPdf")
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      disabled={downloadPending(mdUrl)}
+                      onClick={() => void download(mdUrl)}
+                      className="text-xs text-muted-foreground hover:text-foreground hover:underline disabled:opacity-70"
+                    >
+                      {downloadPending(mdUrl) ? (
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      ) : (
+                        t("downloadMarkdown")
+                      )}
+                    </button>
                   </span>
-                </button>
+                </div>
               );
             })}
           </div>

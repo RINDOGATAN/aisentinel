@@ -4823,6 +4823,8 @@
     "downloadProtocol": "Review and appeal protocol",
     "downloadAddendum": "Agentic addendum",
     "download": "Download Markdown",
+    "downloadPdf": "PDF",
+    "downloadMarkdown": "Markdown",
     "noAssessmentYet": "No assessment answers recorded yet. The documents will generate as a complete set of gaps.",
     "stressTitle": "Agentic stress test",
     "stressDescription": "Where each document breaks when this system hands its output to an autonomous downstream agent.",

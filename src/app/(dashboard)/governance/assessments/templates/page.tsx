@@ -240,7 +240,7 @@ export default function AssessmentTemplatesPage() {
 
       {/* Tabs */}
       <Tabs defaultValue="system">
-        <TabsList>
+        <TabsList className="max-w-full overflow-x-auto">
           <TabsTrigger value="system">{t("systemTab", { count: systemTemplates.length })}</TabsTrigger>
           <TabsTrigger value="custom">{t("customTab", { count: customTemplates.length })}</TabsTrigger>
         </TabsList>

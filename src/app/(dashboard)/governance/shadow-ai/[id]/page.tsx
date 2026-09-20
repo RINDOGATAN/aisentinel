@@ -511,7 +511,7 @@ export default function ShadowAIDetailPage() {
             <DialogTitle>{t("registerDialogTitle")}</DialogTitle>
           </DialogHeader>
           <Tabs value={registerTab} onValueChange={setRegisterTab}>
-            <TabsList className="w-full">
+            <TabsList className="w-full overflow-x-auto">
               <TabsTrigger value="create" className="flex-1">{t("registerTabCreateNew")}</TabsTrigger>
               <TabsTrigger value="existing" className="flex-1">{t("registerTabLinkExisting")}</TabsTrigger>
             </TabsList>

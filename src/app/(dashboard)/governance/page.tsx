@@ -115,8 +115,10 @@ export default function GovernanceDashboardPage() {
     <div className="space-y-4 sm:space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-semibold">
+        {/* An organization name is entered by the customer and can be a single
+            long word; min-w-0 with break-words keeps it off the switcher. */}
+        <div className="min-w-0">
+          <h1 className="text-xl sm:text-2xl font-semibold break-words">
             {organization?.name || "AI Governance"}
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground">
@@ -331,7 +333,9 @@ export default function GovernanceDashboardPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
-            <div className="grid grid-cols-3 gap-4">
+            {/* Two columns on a phone, three from sm: three columns of
+                counters cannot hold the Spanish labels at 390 px. */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
               <div className="text-center">
                 <div className={`text-2xl font-bold ${incidents.critical > 0 ? "text-destructive" : "text-muted-foreground"}`}>
                   {incidents.critical}
@@ -442,7 +446,8 @@ export default function GovernanceDashboardPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
-            <div className="grid grid-cols-4 gap-2 text-center">
+            {/* Two columns on a phone, four from sm. */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
               <div>
                 <div className="text-lg font-bold text-muted-foreground">{pipeline.draft}</div>
                 <p className="text-[10px] text-muted-foreground">{tc("statusDraft")}</p>
@@ -618,11 +623,13 @@ export default function GovernanceDashboardPage() {
                       {" "}
                       {entityLabels[activity.entityType] || activity.entityType}
                     </p>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <span className="text-xs text-muted-foreground">
+                    <div className="flex items-center gap-2 mt-0.5 min-w-0">
+                      {/* An address has no spaces to break on, so it truncates
+                          rather than deciding how wide the page is. */}
+                      <span className="text-xs text-muted-foreground truncate">
                         {activity.user?.name || activity.user?.email || t("systemActor")}
                       </span>
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-xs text-muted-foreground shrink-0">
                         {formatRelativeTime(activity.createdAt, locale)}
                       </span>
                     </div>

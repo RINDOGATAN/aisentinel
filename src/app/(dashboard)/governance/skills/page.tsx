@@ -121,9 +121,11 @@ export default function SkillsPage() {
               <Upload className="mr-2 h-4 w-4" />
               {t("chooseFile")}
             </Button>
+            {/* A licence file name is one long token; it breaks anywhere so
+                it cannot decide how wide the page is on a phone. */}
             {fileName && (
-              <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
-                <FileCheck2 className="h-4 w-4 text-primary" />
+              <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground min-w-0 break-all">
+                <FileCheck2 className="h-4 w-4 text-primary shrink-0" />
                 {fileName}
               </span>
             )}

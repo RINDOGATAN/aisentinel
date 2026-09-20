@@ -269,16 +269,19 @@ export default function VendorDetailPage() {
               <p className="text-muted-foreground">{vendor.description}</p>
             )}
             <div className="grid gap-4 grid-cols-2 md:grid-cols-3">
+              {/* An address and a web address have no spaces to break on. Each
+                  cell takes min-w-0 and breaks anywhere, so a long one wraps
+                  inside its column instead of widening the page. */}
               {vendor.website && (
-                <div>
+                <div className="min-w-0">
                   <p className="text-sm text-muted-foreground">{t("labelWebsite")}</p>
                   <a
                     href={vendor.website.startsWith("http") ? vendor.website : `https://${vendor.website}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-medium text-sm text-primary hover:underline flex items-center gap-1"
+                    className="font-medium text-sm text-primary hover:underline flex items-center gap-1 min-w-0 break-all"
                   >
-                    <Globe className="w-3 h-3" />
+                    <Globe className="w-3 h-3 shrink-0" />
                     {vendor.website}
                   </a>
                 </div>
@@ -290,10 +293,10 @@ export default function VendorDetailPage() {
                   {vendor.contactName || tc("notSpecified")}
                 </p>
               </div>
-              <div>
+              <div className="min-w-0">
                 <p className="text-sm text-muted-foreground">{t("labelContactEmail")}</p>
-                <p className="font-medium text-sm flex items-center gap-1">
-                  <Mail className="w-3 h-3 text-muted-foreground" />
+                <p className="font-medium text-sm flex items-center gap-1 min-w-0 break-all">
+                  <Mail className="w-3 h-3 text-muted-foreground shrink-0" />
                   {vendor.contactEmail || tc("notSpecified")}
                 </p>
               </div>

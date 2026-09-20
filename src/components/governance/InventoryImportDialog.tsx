@@ -102,8 +102,8 @@ export function InventoryImportDialog({
 
         <div className="space-y-4">
           <div className="flex flex-wrap items-center gap-3">
-            <label className="inline-flex items-center gap-2 cursor-pointer rounded-md border border-border px-3 py-2 text-sm hover:border-primary/50">
-              <Upload className="w-4 h-4" />
+            <label className="inline-flex max-w-full items-center gap-2 cursor-pointer rounded-md border border-border px-3 py-2 text-sm hover:border-primary/50 min-w-0 break-all">
+              <Upload className="w-4 h-4 shrink-0" />
               {fileName ?? t("chooseFile")}
               <input
                 type="file"

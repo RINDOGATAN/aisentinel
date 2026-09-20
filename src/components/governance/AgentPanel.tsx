@@ -191,7 +191,7 @@ export function AgentPanel({
           className={[
             "rounded-md border p-3 text-xs",
             assessment.undetermined
-              ? "border-warning bg-warning/10 text-warning"
+              ? "border-warning bg-warning/10 text-foreground"
               : assessment.isAgentic
                 ? "border-primary/40 bg-primary/5 text-muted-foreground"
                 : "border-border bg-muted/20 text-muted-foreground",

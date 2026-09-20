@@ -148,9 +148,9 @@ export default function ClientsPage() {
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className={`text-xl sm:text-2xl font-bold ${attentionCount > 0 ? "text-amber-400" : "text-foreground"}`}>
-              {attentionCount}
-            </div>
+            {/* The label below already says what this count is, so the figure
+                keeps the body text colour. */}
+            <div className="text-xl sm:text-2xl font-bold text-foreground">{attentionCount}</div>
             <p className="text-xs sm:text-sm text-muted-foreground">{t("statsNeedAttention")}</p>
           </CardContent>
         </Card>

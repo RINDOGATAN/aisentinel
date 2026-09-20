@@ -318,7 +318,10 @@ export function DashboardShell({
         </div>
       </header>
 
-      <main className="max-w-[1600px] mx-auto px-4 sm:px-6 py-4 sm:py-6">
+      {/* min-w-0 so a wide child inside a future flex or grid ancestor cannot
+          stretch the page; the page itself never scrolls sideways, only the
+          boxes that hold a table or a diagram do. */}
+      <main className="max-w-[1600px] mx-auto px-4 sm:px-6 py-4 sm:py-6 min-w-0">
         {children}
       </main>
 

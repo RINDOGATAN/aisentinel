@@ -415,7 +415,7 @@ export function AdmtPanel({
                     set(field, v as AdmtProngStatusValue)
                   }
                 >
-                  <SelectTrigger className="w-64">
+                  <SelectTrigger className="w-full sm:w-64">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -459,7 +459,7 @@ export function AdmtPanel({
                 set("determination", v as AdmtDeterminationValue)
               }
             >
-              <SelectTrigger className="w-72">
+              <SelectTrigger className="w-full sm:w-72">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -682,7 +682,7 @@ export function AdmtPanel({
           <Input
             id="admt-initiated"
             type="date"
-            className="w-52"
+            className="w-full sm:w-52"
             value={form.processingInitiatedAt}
             disabled={!canWrite}
             onChange={(e) => set("processingInitiatedAt", e.target.value)}

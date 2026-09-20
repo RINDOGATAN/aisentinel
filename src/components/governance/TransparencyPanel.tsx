@@ -219,7 +219,7 @@ export function TransparencyPanel({
                   value={form[field]}
                   onValueChange={(v) => setStatus(field, v as ObligationStatus)}
                 >
-                  <SelectTrigger className="w-56">
+                  <SelectTrigger className="w-full sm:w-56">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>

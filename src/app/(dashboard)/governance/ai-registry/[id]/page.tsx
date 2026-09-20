@@ -611,7 +611,7 @@ export default function AISystemDetailPage() {
                       updateSystem.mutate({ organizationId, id, status: val as "DRAFT" | "DEVELOPMENT" | "TESTING" | "DEPLOYED" | "RETIRED" })
                     }
                   >
-                    <SelectTrigger className="w-[160px] h-7 text-xs">
+                    <SelectTrigger className="w-full sm:w-[160px] h-7 text-xs">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>

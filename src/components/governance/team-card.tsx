@@ -114,7 +114,7 @@ export function TeamCard({
                       update.mutate({ organizationId, memberId: m.id, role: v as Role })
                     }
                   >
-                    <SelectTrigger className="w-40 h-8 text-xs">
+                    <SelectTrigger className="w-full sm:w-40 h-8 text-xs">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>

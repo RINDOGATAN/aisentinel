@@ -198,7 +198,7 @@ export default function BoardReportingPage() {
 
             <p className="text-[11px] text-muted-foreground">{t("snapshotNote")}</p>
 
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <Button
                 disabled={!title.trim() || !reportedAt || create.isPending}
                 onClick={() =>

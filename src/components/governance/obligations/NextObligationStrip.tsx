@@ -15,6 +15,7 @@
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { Card, CardContent } from "@/components/ui/card";
+import { StatusMark } from "@/components/ui/status-note";
 import { CalendarClock, ArrowRight, AlertTriangle } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
@@ -59,7 +60,7 @@ export function NextObligationStrip() {
             : t("counts.notApplicable");
 
   return (
-    <Card className={next.overdue ? "border-destructive/40" : "border-primary/25"}>
+    <Card className={next.overdue ? "border-destructive" : "border-primary/25"}>
       <CardContent className="p-4 flex flex-col sm:flex-row sm:items-center gap-3">
         <div
           className={`p-2 rounded-lg shrink-0 ${
@@ -74,17 +75,13 @@ export function NextObligationStrip() {
         </div>
 
         <div className="flex-1 min-w-0">
-          <p
-            className={`text-sm font-medium ${
-              next.overdue ? "text-destructive" : ""
-            }`}
-          >
-            {headline}
-          </p>
+          {/* The card's icon and border say it is overdue; the headline is
+              the obligation, so it keeps the body text colour. */}
+          <p className="text-sm font-medium">{headline}</p>
           <p className="text-xs text-muted-foreground mt-0.5">{scopeLine}</p>
 
           {!data.jurisdictionsDeclared && (
-            <p className="text-xs text-warning mt-1">
+            <StatusMark status="warning" className="text-xs mt-1 items-baseline">
               {t("jurisdictionsUndeclared")}{" "}
               <Link
                 href="/governance/settings"
@@ -92,7 +89,7 @@ export function NextObligationStrip() {
               >
                 {t("declareJurisdictions")}
               </Link>
-            </p>
+            </StatusMark>
           )}
         </div>
 

@@ -33,6 +33,7 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import { useExportDownload } from "@/components/governance/use-export-download";
+import { STATUS_CHIP, StatusNote } from "@/components/ui/status-note";
 
 type Answer = "NOT_ASSESSED" | "YES" | "NO";
 
@@ -88,8 +89,8 @@ const ARTIFACTS = [
 ] as const;
 
 const SEVERITY_STYLE: Record<string, string> = {
-  breaks: "bg-destructive/20 text-destructive",
-  weakens: "bg-warning/20 text-warning",
+  breaks: STATUS_CHIP.danger,
+  weakens: STATUS_CHIP.warning,
   watch: "bg-muted text-muted-foreground",
 };
 
@@ -187,7 +188,7 @@ export function UnifiedPanel({
         </CardHeader>
         <CardContent className="space-y-4">
           {!scope.jurisdictionsDeclared ? (
-            <p className="text-sm text-warning">{tr("declareJurisdictionsFirst")}</p>
+            <StatusNote status="warning">{tr("declareJurisdictionsFirst")}</StatusNote>
           ) : (
             <>
               <div className="flex flex-wrap gap-1.5">
@@ -202,8 +203,8 @@ export function UnifiedPanel({
                 )}
               </div>
               {scope.scopes.filter((s) => s.state === "UNDETERMINED").length > 0 && (
-                <div className="rounded-md border border-warning/40 bg-warning/5 p-3 space-y-1.5">
-                  <p className="text-xs font-medium text-warning">{tr("stateUndetermined")}</p>
+                <div className="rounded-md border border-warning bg-warning/10 p-3 space-y-1.5 text-foreground">
+                  <p className="text-xs font-medium text-foreground">{tr("stateUndetermined")}</p>
                   <ul className="space-y-1">
                     {scope.scopes
                       .filter((s) => s.state === "UNDETERMINED")
@@ -305,7 +306,7 @@ export function UnifiedPanel({
         </CardHeader>
         <CardContent className="space-y-4">
           {!scope.jurisdictionsDeclared ? (
-            <p className="text-sm text-warning">{t("declareFirst")}</p>
+            <StatusNote status="warning">{t("declareFirst")}</StatusNote>
           ) : (
             <>
               {template && (

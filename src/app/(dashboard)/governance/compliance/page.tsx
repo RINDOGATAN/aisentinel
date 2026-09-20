@@ -60,6 +60,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { useTranslations } from "next-intl";
 import type { AdmtScopeState } from "@/config/admt-rules";
+import { STATUS_CHIP } from "@/components/ui/status-note";
 
 /**
  * Short chip labels for cross-framework links. Falls back to the raw framework
@@ -78,9 +79,9 @@ const FRAMEWORK_ABBREVIATIONS: Record<string, string> = {
 
 const statusOptionKeys: Record<string, { labelKey: string; color: string }> = {
   NOT_ASSESSED: { labelKey: "statusNotAssessed", color: "bg-gray-500/20 text-gray-400" },
-  COMPLIANT: { labelKey: "statusCompliant", color: "bg-success/20 text-success" },
-  PARTIALLY_COMPLIANT: { labelKey: "statusPartial", color: "bg-warning/20 text-warning" },
-  NON_COMPLIANT: { labelKey: "statusNonCompliant", color: "bg-destructive/20 text-destructive" },
+  COMPLIANT: { labelKey: "statusCompliant", color: STATUS_CHIP.good },
+  PARTIALLY_COMPLIANT: { labelKey: "statusPartial", color: STATUS_CHIP.warning },
+  NON_COMPLIANT: { labelKey: "statusNonCompliant", color: STATUS_CHIP.danger },
   NOT_APPLICABLE: { labelKey: "statusNotApplicable", color: "bg-gray-500/20 text-gray-500" },
 };
 
@@ -762,11 +763,11 @@ function AdmtScopeBanner({ state }: { state: AdmtScopeState }) {
 
   const tone =
     state === "ARTICLE_10_AND_11"
-      ? "border-warning/40 bg-warning/10"
+      ? "border-warning bg-warning/10"
       : state === "ARTICLE_10_ONLY"
-        ? "border-success/40 bg-success/10"
+        ? "border-success bg-success/10"
         : state === "JURISDICTION_CONFLICT"
-          ? "border-destructive/40 bg-destructive/10"
+          ? "border-destructive bg-destructive/10"
           : state === "OUT_OF_SCOPE_NO_CA_NEXUS"
             ? "border-border bg-background"
             : "border-border bg-muted/40";

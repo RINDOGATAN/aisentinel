@@ -176,13 +176,13 @@ export default function VendorCatalogDetailPage() {
             <CardContent className="space-y-4">
               <div className="flex flex-wrap gap-2">
                 {entry.gdprCompliant && (
-                  <Badge className="bg-success/20 text-success">
+                  <Badge className="bg-success/20 text-foreground">
                     <Shield className="w-3.5 h-3.5 mr-1" />
                     {t("badgeGdprCompliant")}
                   </Badge>
                 )}
                 {entry.euAiActCompliant && (
-                  <Badge className="bg-info/20 text-info">
+                  <Badge className="bg-info/20 text-foreground">
                     <Shield className="w-3.5 h-3.5 mr-1" />
                     {t("badgeEuAiActCompliant")}
                   </Badge>
@@ -194,25 +194,25 @@ export default function VendorCatalogDetailPage() {
                   </Badge>
                 )}
                 {entry.hipaaCompliant && (
-                  <Badge className="bg-warning/20 text-warning">
+                  <Badge className="bg-warning/20 text-foreground">
                     <Shield className="w-3.5 h-3.5 mr-1" />
                     {t("badgeHipaaCompliant")}
                   </Badge>
                 )}
                 {entry.supportsDsars && (
-                  <Badge className="bg-success/20 text-success">
+                  <Badge className="bg-success/20 text-foreground">
                     <ShieldCheck className="w-3.5 h-3.5 mr-1" />
                     {t("badgeDsarSupport")}
                   </Badge>
                 )}
                 {entry.hasDesignatedDpo && (
-                  <Badge className="bg-success/20 text-success">
+                  <Badge className="bg-success/20 text-foreground">
                     <ShieldCheck className="w-3.5 h-3.5 mr-1" />
                     {t("badgeDesignatedDpo")}
                   </Badge>
                 )}
                 {entry.hasRecentBreach && (
-                  <Badge className="bg-destructive/20 text-destructive">
+                  <Badge className="bg-destructive/20 text-foreground">
                     <AlertTriangle className="w-3.5 h-3.5 mr-1" />
                     {t("badgeRecentBreach")}
                   </Badge>
@@ -525,7 +525,7 @@ export default function VendorCatalogDetailPage() {
                       </Link>
                       <span className="flex items-center gap-1 shrink-0">
                         {yourDependentSlugs.has(d.slug) && (
-                          <Badge className="bg-success/20 text-success text-[10px]">{t("dependentsYours")}</Badge>
+                          <Badge className="bg-success/20 text-[10px] text-foreground">{t("dependentsYours")}</Badge>
                         )}
                         <Badge variant="outline" className="text-[10px]">{d.category}</Badge>
                       </span>

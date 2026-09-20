@@ -70,67 +70,68 @@ import { AgentPanel } from "@/components/governance/AgentPanel";
 import { TransparencyStatementCard } from "@/components/ai/TransparencyStatementCard";
 import { DataFlowPanel } from "@/components/governance/data-flow-panel";
 import { SystemThreatModelCard } from "@/components/governance/system-threat-model-card";
+import { STATUS_CHIP, STATUS_OUTLINE } from "@/components/ui/status-note";
 
 const statusColors: Record<string, string> = {
   DRAFT: "border-muted-foreground text-muted-foreground",
-  DEVELOPMENT: "border-info text-info",
-  TESTING: "border-warning text-warning",
-  DEPLOYED: "border-success text-success",
+  DEVELOPMENT: STATUS_OUTLINE.note,
+  TESTING: STATUS_OUTLINE.warning,
+  DEPLOYED: STATUS_OUTLINE.good,
   RETIRED: "border-muted-foreground/50 text-muted-foreground/50",
 };
 
 const dataSourceTypeColors: Record<string, string> = {
-  TRAINING: "border-info text-info",
+  TRAINING: STATUS_OUTLINE.note,
   FINE_TUNING: "border-purple-500 text-purple-500",
-  VALIDATION: "border-warning text-warning",
-  INPUT: "border-success text-success",
-  OUTPUT: "border-warning text-warning",
+  VALIDATION: STATUS_OUTLINE.warning,
+  INPUT: STATUS_OUTLINE.good,
+  OUTPUT: STATUS_OUTLINE.warning,
 };
 
 const assessmentStatusColors: Record<string, string> = {
   DRAFT: "border-muted-foreground text-muted-foreground",
-  IN_PROGRESS: "border-info text-info",
-  UNDER_REVIEW: "border-warning text-warning",
-  APPROVED: "border-success text-success",
-  REJECTED: "border-destructive text-destructive",
+  IN_PROGRESS: STATUS_OUTLINE.note,
+  UNDER_REVIEW: STATUS_OUTLINE.warning,
+  APPROVED: STATUS_OUTLINE.good,
+  REJECTED: STATUS_OUTLINE.danger,
 };
 
 const gateTypeColors: Record<string, string> = {
-  PRE_DEPLOYMENT: "border-info text-info",
-  POST_DEPLOYMENT: "border-success text-success",
-  PERIODIC_REVIEW: "border-warning text-warning",
-  INCIDENT_TRIGGERED: "border-destructive text-destructive",
+  PRE_DEPLOYMENT: STATUS_OUTLINE.note,
+  POST_DEPLOYMENT: STATUS_OUTLINE.good,
+  PERIODIC_REVIEW: STATUS_OUTLINE.warning,
+  INCIDENT_TRIGGERED: STATUS_OUTLINE.danger,
   MATERIAL_CHANGE: "border-purple-500 text-purple-500",
 };
 
 const gateStatusColors: Record<string, string> = {
   PENDING: "border-muted-foreground text-muted-foreground",
-  IN_REVIEW: "border-info text-info",
-  PASSED: "border-success text-success",
-  FAILED: "border-destructive text-destructive",
-  DEFERRED: "border-warning text-warning",
+  IN_REVIEW: STATUS_OUTLINE.note,
+  PASSED: STATUS_OUTLINE.good,
+  FAILED: STATUS_OUTLINE.danger,
+  DEFERRED: STATUS_OUTLINE.warning,
 };
 
 const severityColors: Record<string, string> = {
-  CRITICAL: "bg-destructive/20 text-destructive",
-  HIGH: "bg-destructive/15 text-destructive",
-  MEDIUM: "bg-warning/20 text-warning",
+  CRITICAL: STATUS_CHIP.danger,
+  HIGH: STATUS_CHIP.danger,
+  MEDIUM: STATUS_CHIP.warning,
   LOW: "bg-muted text-muted-foreground",
 };
 
 const incidentStatusColors: Record<string, string> = {
   REPORTED: "border-muted-foreground text-muted-foreground",
-  INVESTIGATING: "border-info text-info",
-  MITIGATING: "border-warning text-warning",
-  RESOLVED: "border-success text-success",
+  INVESTIGATING: STATUS_OUTLINE.note,
+  MITIGATING: STATUS_OUTLINE.warning,
+  RESOLVED: STATUS_OUTLINE.good,
   CLOSED: "border-muted-foreground/50 text-muted-foreground/50",
 };
 
 const policyStatusColors: Record<string, string> = {
   DRAFT: "border-muted-foreground text-muted-foreground",
-  UNDER_REVIEW: "border-warning text-warning",
-  APPROVED: "border-success text-success",
-  PUBLISHED: "border-info text-info",
+  UNDER_REVIEW: STATUS_OUTLINE.warning,
+  APPROVED: STATUS_OUTLINE.good,
+  PUBLISHED: STATUS_OUTLINE.note,
   ARCHIVED: "border-muted-foreground/50 text-muted-foreground/50",
 };
 
@@ -611,7 +612,7 @@ export default function AISystemDetailPage() {
                       updateSystem.mutate({ organizationId, id, status: val as "DRAFT" | "DEVELOPMENT" | "TESTING" | "DEPLOYED" | "RETIRED" })
                     }
                   >
-                    <SelectTrigger className="w-[160px] h-7 text-xs">
+                    <SelectTrigger className="w-full sm:w-[160px] h-7 text-xs">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -1125,7 +1126,7 @@ export default function AISystemDetailPage() {
                           {dataSourceTypeLabel(ds.sourceType)}
                         </Badge>
                         {ds.containsPersonalData && (
-                          <Badge variant="outline" className="text-xs border-warning text-warning">
+                          <Badge variant="outline" className="text-xs border-warning">
                             {tc("personalData")}
                           </Badge>
                         )}

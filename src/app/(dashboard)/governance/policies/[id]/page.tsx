@@ -50,6 +50,7 @@ import { useEnumLabels } from "@/lib/enum-labels";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
+import { STATUS_OUTLINE } from "@/components/ui/status-note";
 
 // Translation keys in the `common` namespace.
 const policyTypeLabelKeys: Record<string, string> = {
@@ -66,17 +67,17 @@ const policyTypeLabelKeys: Record<string, string> = {
 
 const statusColors: Record<string, string> = {
   DRAFT: "border-muted-foreground text-muted-foreground",
-  UNDER_REVIEW: "border-warning text-warning",
-  APPROVED: "border-info text-info",
-  PUBLISHED: "border-success text-success",
+  UNDER_REVIEW: STATUS_OUTLINE.warning,
+  APPROVED: STATUS_OUTLINE.note,
+  PUBLISHED: STATUS_OUTLINE.good,
   ARCHIVED: "border-muted-foreground/50 text-muted-foreground/50",
 };
 
 const systemStatusColors: Record<string, string> = {
   DRAFT: "border-muted-foreground text-muted-foreground",
-  DEVELOPMENT: "border-info text-info",
-  TESTING: "border-warning text-warning",
-  DEPLOYED: "border-success text-success",
+  DEVELOPMENT: STATUS_OUTLINE.note,
+  TESTING: STATUS_OUTLINE.warning,
+  DEPLOYED: STATUS_OUTLINE.good,
   RETIRED: "border-muted-foreground/50 text-muted-foreground/50",
 };
 

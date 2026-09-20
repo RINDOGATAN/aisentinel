@@ -94,7 +94,7 @@ export default function ThreatModelListPage() {
                       {m.counts.actNow > 0 && (
                         <Badge
                           variant="outline"
-                          className="text-[10px] border-destructive/50 text-destructive"
+                          className="text-[10px] border-destructive"
                         >
                           {t("actNowCount", { count: m.counts.actNow })}
                         </Badge>

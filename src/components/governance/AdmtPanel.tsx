@@ -86,11 +86,11 @@ const STATE_TONE: Record<
   { className: string; variant: "positive" | "attention" | "neutral" | "error" | "muted" }
 > = {
   ARTICLE_10_ONLY: {
-    className: "border-success/40 bg-success/10",
+    className: "border-success bg-success/10",
     variant: "positive",
   },
   ARTICLE_10_AND_11: {
-    className: "border-warning/40 bg-warning/10",
+    className: "border-warning bg-warning/10",
     variant: "attention",
   },
   PROFILE_NOT_ASSESSED: {
@@ -106,7 +106,7 @@ const STATE_TONE: Record<
     variant: "neutral",
   },
   JURISDICTION_CONFLICT: {
-    className: "border-destructive/40 bg-destructive/10",
+    className: "border-destructive bg-destructive/10",
     variant: "error",
   },
   OUT_OF_SCOPE_NO_CA_NEXUS: {
@@ -415,7 +415,7 @@ export function AdmtPanel({
                     set(field, v as AdmtProngStatusValue)
                   }
                 >
-                  <SelectTrigger className="w-64">
+                  <SelectTrigger className="w-full sm:w-64">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -459,7 +459,7 @@ export function AdmtPanel({
                 set("determination", v as AdmtDeterminationValue)
               }
             >
-              <SelectTrigger className="w-72">
+              <SelectTrigger className="w-full sm:w-72">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -513,7 +513,7 @@ export function AdmtPanel({
       <section className="space-y-2">
         <p className="text-sm font-medium">{t("ui.sectionTriggers")}</p>
         <p className="text-xs text-muted-foreground">{t("trigger.legend")}</p>
-        <div className="rounded-md border border-warning/40 bg-warning/10 p-2">
+        <div className="rounded-md border border-warning bg-warning/10 p-2 text-foreground">
           <p className="text-[11px]">{t("ui.article10LiveSince")}</p>
         </div>
         <div className="space-y-1.5">
@@ -544,7 +544,7 @@ export function AdmtPanel({
         <p className="text-xs text-muted-foreground">{t("optOutBasis.legend")}</p>
 
         {/* The error this closed list exists to prevent. */}
-        <div className="rounded-md border border-destructive/40 bg-destructive/10 p-2 flex items-start gap-2">
+        <div className="rounded-md border border-destructive bg-destructive/10 p-2 flex items-start gap-2 text-foreground">
           <AlertTriangle className="w-3.5 h-3.5 text-destructive shrink-0 mt-0.5" />
           <p className="text-[11px]">{t("ui.securityFraudNotAnException")}</p>
         </div>
@@ -682,7 +682,7 @@ export function AdmtPanel({
           <Input
             id="admt-initiated"
             type="date"
-            className="w-52"
+            className="w-full sm:w-52"
             value={form.processingInitiatedAt}
             disabled={!canWrite}
             onChange={(e) => set("processingInitiatedAt", e.target.value)}

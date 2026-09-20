@@ -182,7 +182,7 @@ export function TransparencyPanel({
       </div>
 
       {prohibitedOverlap && (
-        <div className="rounded-md border border-destructive/40 bg-destructive/10 p-3 flex items-start gap-2">
+        <div className="rounded-md border border-destructive bg-destructive/10 p-3 flex items-start gap-2 text-foreground">
           <AlertTriangle className="w-4 h-4 text-destructive shrink-0 mt-0.5" />
           <p className="text-xs">{t("prohibitedWarning")}</p>
         </div>
@@ -219,7 +219,7 @@ export function TransparencyPanel({
                   value={form[field]}
                   onValueChange={(v) => setStatus(field, v as ObligationStatus)}
                 >
-                  <SelectTrigger className="w-56">
+                  <SelectTrigger className="w-full sm:w-56">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>

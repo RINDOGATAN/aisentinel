@@ -22,6 +22,7 @@ import { ArrowLeft, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
+import { StatusNote } from "@/components/ui/status-note";
 import { useTranslations } from "next-intl";
 
 type AIIncidentType = "HALLUCINATION" | "BIAS_DISCRIMINATION" | "MODEL_DRIFT" | "ADVERSARIAL_ATTACK" | "PROMPT_INJECTION" | "UNAUTHORIZED_ACCESS" | "SAFETY_FAILURE" | "PERFORMANCE_DEGRADATION" | "DATA_POISONING" | "PRIVACY_VIOLATION" | "OTHER";
@@ -288,9 +289,9 @@ export default function NewIncidentPage() {
 
             {/* Error */}
             {createIncident.error && (
-              <div className="text-sm text-destructive">
+              <StatusNote status="danger">
                 {tc("error", { message: createIncident.error.message })}
-              </div>
+              </StatusNote>
             )}
 
             {/* Actions */}

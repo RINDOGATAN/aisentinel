@@ -24,6 +24,7 @@ import { useTranslations } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import type { PrefillField, Suggestion } from "@/lib/system-prefill";
+import { StatusNote } from "@/components/ui/status-note";
 
 type AITechnique = "MACHINE_LEARNING" | "DEEP_LEARNING" | "GENERATIVE_AI" | "AGENTIC_AI" | "NLP" | "COMPUTER_VISION" | "SPEECH_RECOGNITION" | "ROBOTICS" | "RULE_BASED" | "EXPERT_SYSTEM" | "STATISTICAL" | "OTHER";
 type AISystemRole = "PROVIDER" | "DEPLOYER" | "IMPORTER" | "DISTRIBUTOR" | "USER";
@@ -508,9 +509,9 @@ export default function NewAISystemPage() {
 
             {/* Error */}
             {createSystem.error && (
-              <div className="text-sm text-destructive">
+              <StatusNote status="danger">
                 {tc("error", { message: createSystem.error.message })}
-              </div>
+              </StatusNote>
             )}
 
             {/* Actions */}

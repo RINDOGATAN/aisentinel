@@ -32,6 +32,7 @@ import {
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useNow } from "@/lib/use-now";
+import { STATUS_OUTLINE, StatusMark } from "@/components/ui/status-note";
 
 const TYPES = [
   "INQUIRY",
@@ -49,10 +50,10 @@ const TYPES = [
 
 const STATUS_STYLE: Record<string, string> = {
   MONITORING: "text-muted-foreground",
-  OPEN: "border-warning/50 text-warning",
-  RESPONDING: "border-warning/50 text-warning",
-  DECIDED: "border-destructive/50 text-destructive",
-  APPEALED: "border-destructive/50 text-destructive",
+  OPEN: STATUS_OUTLINE.warning,
+  RESPONDING: STATUS_OUTLINE.warning,
+  DECIDED: STATUS_OUTLINE.danger,
+  APPEALED: STATUS_OUTLINE.danger,
   CLOSED: "text-muted-foreground",
 };
 
@@ -101,7 +102,7 @@ export default function ProceedingsPage() {
       </div>
 
       {deadlines && deadlines.length > 0 && (
-        <Card className="border-warning/40">
+        <Card className="border-warning">
           <CardContent className="p-4 space-y-2">
             <p className="text-sm font-medium">{t("deadlinesTitle")}</p>
             {deadlines.map((d) => {
@@ -109,9 +110,15 @@ export default function ProceedingsPage() {
                 now !== null && d.dueAt ? new Date(d.dueAt).getTime() < now : false;
               return (
                 <p key={d.id} className="text-xs">
-                  <span className={overdue ? "text-destructive" : "text-muted-foreground"}>
+                  {/* A date is a fact; being past the limit is said in a word. */}
+                  <span className="text-muted-foreground">
                     {d.dueAt ? new Date(d.dueAt).toLocaleDateString() : "—"}
                   </span>{" "}
+                  {overdue && (
+                    <StatusMark status="danger" className="items-baseline">
+                      {t("overdueMark")}
+                    </StatusMark>
+                  )}{" "}
                   · {d.title} · {d.proceeding.authority}
                 </p>
               );
@@ -211,21 +218,20 @@ export default function ProceedingsPage() {
                   </p>
                   <div className="flex flex-wrap items-center gap-3 text-[11px]">
                     {r.nextDeadline?.dueAt && (
-                      <span
-                        className={
-                          now !== null && new Date(r.nextDeadline.dueAt).getTime() < now
-                            ? "text-destructive"
-                            : "text-muted-foreground"
-                        }
-                      >
+                      <span className="text-muted-foreground">
                         {t("nextDeadline", {
                           date: new Date(r.nextDeadline.dueAt).toLocaleDateString(),
                           what: r.nextDeadline.title,
                         })}
                       </span>
                     )}
+                    {r.nextDeadline?.dueAt &&
+                      now !== null &&
+                      new Date(r.nextDeadline.dueAt).getTime() < now && (
+                        <StatusMark status="danger">{t("overdueMark")}</StatusMark>
+                      )}
                     {!r.hasPosition && (
-                      <span className="text-warning flex items-center gap-1">
+                      <span className="text-foreground [&>svg]:text-warning flex items-center gap-1">
                         <AlertTriangle className="w-3 h-3" />
                         {t("noPosition")}
                       </span>

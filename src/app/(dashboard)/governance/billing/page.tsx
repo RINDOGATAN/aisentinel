@@ -195,7 +195,7 @@ export default function BillingPage() {
         </Card>
       )}
       {checkoutStatus === "error" && (
-        <Card className="border-destructive/30 bg-destructive/5">
+        <Card className="border-destructive bg-destructive/10 text-foreground">
           <CardContent className="pt-6">
             <p className="text-sm">
               We received your payment but couldn&apos;t activate the features

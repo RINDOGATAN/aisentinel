@@ -26,6 +26,7 @@ import { AI_GOVERNANCE_TEMPLATES } from "@/config/ai-governance-templates";
 import { localizeTemplate } from "@/config/ai-governance-templates.es";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
+import { StatusNote } from "@/components/ui/status-note";
 
 type PolicyType = "AI_USAGE" | "AI_GOVERNANCE" | "AI_ETHICS" | "AI_RISK_MANAGEMENT" | "AI_DATA_GOVERNANCE" | "AI_PROCUREMENT" | "AI_INCIDENT_RESPONSE" | "AI_TRANSPARENCY" | "CUSTOM";
 
@@ -275,9 +276,9 @@ export default function NewPolicyPage() {
 
             {/* Error */}
             {createPolicy.error && (
-              <div className="text-sm text-destructive">
+              <StatusNote status="danger">
                 Error: {createPolicy.error.message}
-              </div>
+              </StatusNote>
             )}
 
             {/* Actions */}

@@ -58,7 +58,7 @@ export default function CrossLoginPage() {
         </div>
 
         {error ? (
-          <div className="p-4 bg-destructive/10 border border-destructive text-destructive text-sm">
+          <div className="p-4 bg-destructive/10 border border-destructive text-sm text-foreground">
             {error}
           </div>
         ) : (

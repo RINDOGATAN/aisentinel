@@ -48,6 +48,7 @@ import { useOrganization } from "@/lib/organization-context";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useTranslations, useLocale } from "next-intl";
 import { useEnumLabels } from "@/lib/enum-labels";
+import { STATUS_CHIP, STATUS_OUTLINE } from "@/components/ui/status-note";
 
 const gateTypeKeys: Record<string, string> = {
   PRE_DEPLOYMENT: "gateTypePreDeployment",
@@ -58,17 +59,17 @@ const gateTypeKeys: Record<string, string> = {
 };
 
 const gateStatusColors: Record<string, string> = {
-  PENDING: "border-warning text-warning",
-  IN_REVIEW: "border-info text-info",
-  PASSED: "border-success text-success",
-  FAILED: "border-destructive text-destructive",
+  PENDING: STATUS_OUTLINE.warning,
+  IN_REVIEW: STATUS_OUTLINE.note,
+  PASSED: STATUS_OUTLINE.good,
+  FAILED: STATUS_OUTLINE.danger,
   DEFERRED: "border-muted-foreground text-muted-foreground",
 };
 
 const decisionColors: Record<string, string> = {
-  APPROVE: "bg-success/20 text-success",
-  REJECT: "bg-destructive/20 text-destructive",
-  DEFER: "bg-warning/20 text-warning",
+  APPROVE: STATUS_CHIP.good,
+  REJECT: STATUS_CHIP.danger,
+  DEFER: STATUS_CHIP.warning,
 };
 
 // Translation keys in the oversightDetail namespace.

@@ -11,6 +11,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { StatusMark } from "@/components/ui/status-note";
 import { Download, ExternalLink, FlaskConical, Lock } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { PILOT_CEILING_LABELS, PILOT_RUN_URL, PILOT_SENTENCE, PILOT_TERMS } from "@/config/pilot";
@@ -62,7 +63,7 @@ export function PilotStatusCard({ organizationId }: { organizationId: string }) 
         </p>
 
         {data.readOnly ? (
-          <div className="flex items-start gap-2 rounded-md border border-warning/30 bg-warning/10 p-3">
+          <div className="flex items-start gap-2 rounded-md border border-warning bg-warning/10 p-3 text-foreground">
             <Lock className="w-4 h-4 text-warning shrink-0 mt-0.5" />
             <div className="space-y-2">
               <p className="text-xs">{t("readOnlyBody")}</p>
@@ -81,9 +82,14 @@ export function PilotStatusCard({ organizationId }: { organizationId: string }) 
               return (
                 <li key={c.key} className="flex justify-between gap-3">
                   <span className="text-muted-foreground">{PILOT_CEILING_LABELS[c.key][locale]}</span>
-                  <span className={reached ? "text-warning font-medium" : ""}>
-                    {t("counter", { used: c.used, max: c.max })}
-                  </span>
+                  {/* A count is a fact; the ceiling being reached is said in a word. */}
+                  {reached ? (
+                    <StatusMark status="warning" className="font-medium">
+                      {t("counter", { used: c.used, max: c.max })} · {t("ceilingReachedMark")}
+                    </StatusMark>
+                  ) : (
+                    <span>{t("counter", { used: c.used, max: c.max })}</span>
+                  )}
                 </li>
               );
             })}
@@ -91,7 +97,7 @@ export function PilotStatusCard({ organizationId }: { organizationId: string }) 
         </div>
 
         {data.ceilings.some((c) => c.used >= c.max) && !data.readOnly && (
-          <div className="rounded-md border border-warning/30 bg-warning/10 p-3 space-y-2">
+          <div className="rounded-md border border-warning bg-warning/10 p-3 space-y-2 text-foreground">
             <p className="text-xs">{t("ceilingReachedBody")}</p>
             <WaysOut exportUrl={data.exportUrl} />
           </div>

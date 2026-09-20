@@ -43,6 +43,7 @@ import {
   suggestScenarios,
 } from "@/config/threat-model";
 import { CapabilityMap, LoopStrip } from "@/components/governance/threat-model-visuals";
+import { STATUS_OUTLINE } from "@/components/ui/status-note";
 
 const NONE = "__none__";
 
@@ -240,9 +241,9 @@ export default function NewThreatModelPage() {
                         variant="outline"
                         className={`text-[10px] ${
                           p.priority === "ACT_NOW"
-                            ? "border-destructive/50 text-destructive"
+                            ? STATUS_OUTLINE.danger
                             : p.priority === "PLAN"
-                              ? "border-warning/50 text-warning"
+                              ? STATUS_OUTLINE.warning
                               : "text-muted-foreground"
                         }`}
                       >

@@ -50,6 +50,7 @@ import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { suggestTechnique } from "@/lib/ai-technique-mapping";
+import { STATUS_CHIP, STATUS_OUTLINE } from "@/components/ui/status-note";
 
 // Labels come from the `common` namespace (technique* / role* keys).
 const aiTechniques = [
@@ -70,10 +71,10 @@ const aiTechniques = [
 const aiRoles = ["PROVIDER", "DEPLOYER", "IMPORTER", "DISTRIBUTOR", "USER"];
 
 const statusColors: Record<string, string> = {
-  DISCOVERED: "border-warning text-warning",
-  UNDER_REVIEW: "border-info text-info",
-  APPROVED: "border-success text-success",
-  PROHIBITED: "border-destructive text-destructive",
+  DISCOVERED: STATUS_OUTLINE.warning,
+  UNDER_REVIEW: STATUS_OUTLINE.note,
+  APPROVED: STATUS_OUTLINE.good,
+  PROHIBITED: STATUS_OUTLINE.danger,
   REGISTERED: "border-primary text-primary",
 };
 
@@ -97,13 +98,13 @@ const riskIndicatorLabelKeys: Record<string, string> = {
 };
 
 const riskIndicatorColors: Record<string, string> = {
-  PROCESSES_PERSONAL_DATA: "bg-destructive/20 text-destructive",
-  TRAINS_ON_INPUT: "bg-destructive/20 text-destructive",
-  CLOUD_HOSTED: "bg-warning/20 text-warning",
-  ON_PREMISE_AVAILABLE: "bg-success/20 text-success",
-  SOC2_CERTIFIED: "bg-success/20 text-success",
-  GDPR_COMPLIANT: "bg-success/20 text-success",
-  REQUIRES_API_KEY: "bg-info/20 text-info",
+  PROCESSES_PERSONAL_DATA: STATUS_CHIP.danger,
+  TRAINS_ON_INPUT: STATUS_CHIP.danger,
+  CLOUD_HOSTED: STATUS_CHIP.warning,
+  ON_PREMISE_AVAILABLE: STATUS_CHIP.good,
+  SOC2_CERTIFIED: STATUS_CHIP.good,
+  GDPR_COMPLIANT: STATUS_CHIP.good,
+  REQUIRES_API_KEY: STATUS_CHIP.note,
 };
 
 export default function ShadowAIDetailPage() {
@@ -511,7 +512,7 @@ export default function ShadowAIDetailPage() {
             <DialogTitle>{t("registerDialogTitle")}</DialogTitle>
           </DialogHeader>
           <Tabs value={registerTab} onValueChange={setRegisterTab}>
-            <TabsList className="w-full">
+            <TabsList className="w-full overflow-x-auto">
               <TabsTrigger value="create" className="flex-1">{t("registerTabCreateNew")}</TabsTrigger>
               <TabsTrigger value="existing" className="flex-1">{t("registerTabLinkExisting")}</TabsTrigger>
             </TabsList>

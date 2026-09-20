@@ -41,12 +41,13 @@ import { useExportDownload } from "@/components/governance/use-export-download";
 import { useDebounce } from "@/hooks/use-debounce";
 import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
 import { formatRelativeTime } from "@/lib/utils";
+import { STATUS_OUTLINE } from "@/components/ui/status-note";
 
 const statusColors: Record<string, string> = {
   DRAFT: "border-muted-foreground text-muted-foreground",
-  DEVELOPMENT: "border-info text-info",
-  TESTING: "border-warning text-warning",
-  DEPLOYED: "border-success text-success",
+  DEVELOPMENT: STATUS_OUTLINE.note,
+  TESTING: STATUS_OUTLINE.warning,
+  DEPLOYED: STATUS_OUTLINE.good,
   RETIRED: "border-muted-foreground/50 text-muted-foreground/50",
 };
 
@@ -192,7 +193,7 @@ export default function AIRegistryPage() {
         </Card>
         <Card>
           <CardContent className="p-4 sm:pt-6">
-            <div className="text-xl sm:text-2xl font-bold text-success">{stats.deployed}</div>
+            <div className="text-xl sm:text-2xl font-bold text-foreground">{stats.deployed}</div>
             <p className="text-xs sm:text-sm text-muted-foreground">{tc("statusDeployed")}</p>
           </CardContent>
         </Card>

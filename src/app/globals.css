@@ -82,14 +82,18 @@
   --muted-foreground: #a0a0a0;
   --accent: #f5a623;
   --accent-foreground: #fefeff;
-  --destructive: #d4645c;
-  --destructive-foreground: #ffffff;
-  --warning: #d4844a;
-  --warning-foreground: #ffffff;
-  --success: #66b280;
-  --success-foreground: #ffffff;
-  --info: #6b9ec4;
-  --info-foreground: #ffffff;
+  /* Status colours. Mirrors STATUS_COLOR.dark in src/config/status-palette.ts
+     (a test fails if they drift). Each one reaches 4.5:1 as text on the page,
+     the card, the secondary and the muted surface, and the *-foreground ink
+     reaches 4.5:1 printed on a solid fill of it. */
+  --destructive: #f2948b;
+  --destructive-foreground: #1a1a1a;
+  --warning: #e8a05e;
+  --warning-foreground: #1a1a1a;
+  --success: #7cc294;
+  --success-foreground: #1a1a1a;
+  --info: #8ab6d6;
+  --info-foreground: #1a1a1a;
   --border: #383838;
   --input: #2e2e2e;
   --ring: #f5a623;
@@ -132,14 +136,14 @@
   --muted-foreground: #a0a0a0;
   --accent: #f5a623;
   --accent-foreground: #fefeff;
-  --destructive: #d4645c;
-  --destructive-foreground: #ffffff;
-  --warning: #d4844a;
-  --warning-foreground: #ffffff;
-  --success: #66b280;
-  --success-foreground: #ffffff;
-  --info: #6b9ec4;
-  --info-foreground: #ffffff;
+  --destructive: #f2948b;
+  --destructive-foreground: #1a1a1a;
+  --warning: #e8a05e;
+  --warning-foreground: #1a1a1a;
+  --success: #7cc294;
+  --success-foreground: #1a1a1a;
+  --info: #8ab6d6;
+  --info-foreground: #1a1a1a;
   --border: #383838;
   --input: #2e2e2e;
   --ring: #f5a623;

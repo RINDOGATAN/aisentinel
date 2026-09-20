@@ -1,5 +1,6 @@
 {
   "common": {
+    "needsAttention": "Requiere atención",
     "loading": "Cargando…",
     "save": "Guardar",
     "saving": "Guardando…",
@@ -5142,6 +5143,7 @@
     "title": "Procedimientos",
     "subtitle": "Cada investigación, actuación sancionadora y reclamación, con sus plazos, su correspondencia y la posición fáctica adoptada. Un incidente se convierte en varios procedimientos; el riesgo es que lo afirmado en uno se lea en otro.",
     "deadlinesTitle": "Próximos plazos",
+    "overdueMark": "Fuera de plazo",
     "titleLabel": "Procedimiento",
     "titlePlaceholder": "Cómo se llama internamente",
     "authorityLabel": "Autoridad o tribunal",
@@ -5221,6 +5223,7 @@
     "none": "De estos hechos no se deriva ningún plazo legal. Eso es una respuesta, no una laguna: si se ha valorado, déjalo dicho en la cronología.",
     "immediate": "De inmediato",
     "overdue": "Fuera de plazo",
+    "dueSoon": "Vence pronto",
     "marker": "Verificado contra los textos consolidados el 11-09-2026. Orientativo: los plazos se calculan con lo registrado y quien notifica puede no saberlo todo aún."
   },
   "boardReports": {
@@ -5406,6 +5409,7 @@
     "editsUntil": "Puedes editar hasta el {date}. Después, la organización pasa a solo lectura y todo lo que ha creado se puede seguir exportando.",
     "ceilingsTitle": "Límites de este piloto",
     "counter": "{used} de {max}",
+    "ceilingReachedMark": "Límite alcanzado",
     "readOnlyBody": "Los 90 días de edición han terminado. Esta organización es de solo lectura: todo se puede abrir y exportar, nada se puede modificar.",
     "ceilingReachedBody": "Se ha alcanzado un límite. Dos salidas:",
     "runOwn": "Ejecuta tu propia instancia",

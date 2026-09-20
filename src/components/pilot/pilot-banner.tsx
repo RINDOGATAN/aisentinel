@@ -42,7 +42,10 @@ export function PilotBanner({ sentence, runUrl, dismissLabel }: PilotBannerProps
       className="relative z-[60] w-full min-h-10 bg-primary/10 border-b border-primary/30 text-[13px] leading-snug text-foreground"
     >
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-2 pr-12 sm:pr-14 flex items-center justify-center text-center">
-        <p>
+        {/* min-w-0 and the wrapping rule keep the sentence inside the viewport
+            on a phone: without them the longest word sets a minimum width and
+            the banner, not the words, decides how wide the page is. */}
+        <p className="min-w-0 break-words">
           {sentence.before}
           <a
             href={runUrl}

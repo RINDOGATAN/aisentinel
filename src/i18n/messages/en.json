@@ -1,5 +1,6 @@
 {
   "common": {
+    "needsAttention": "Needs attention",
     "loading": "Loading…",
     "save": "Save",
     "saving": "Saving…",
@@ -5142,6 +5143,7 @@
     "title": "Proceedings",
     "subtitle": "Every inquiry, enforcement action and claim, with its deadlines, its correspondence and the factual position taken. One incident becomes several proceedings; the risk is that a position taken in one is read in another.",
     "deadlinesTitle": "Next deadlines",
+    "overdueMark": "Past the limit",
     "titleLabel": "Proceeding",
     "titlePlaceholder": "What it is called internally",
     "authorityLabel": "Authority or court",
@@ -5221,6 +5223,7 @@
     "none": "No statutory clock follows from these facts. That is an answer, not a gap: record why in the timeline if it was considered.",
     "immediate": "Immediately",
     "overdue": "Past the limit",
+    "dueSoon": "Due shortly",
     "marker": "Verified against the consolidated texts on 2026-09-11. Advisory: the clocks compute from what has been recorded, and the person reporting may not yet know everything."
   },
   "boardReports": {
@@ -5406,6 +5409,7 @@
     "editsUntil": "Edits are allowed until {date}. After that the organisation is read-only, and everything it created can still be exported.",
     "ceilingsTitle": "Ceilings on this pilot",
     "counter": "{used} of {max}",
+    "ceilingReachedMark": "Ceiling reached",
     "readOnlyBody": "The 90 editing days are over. This organisation is read-only: everything can still be opened and exported, nothing can be changed.",
     "ceilingReachedBody": "A ceiling has been reached. Two ways out:",
     "runOwn": "Run your own instance",

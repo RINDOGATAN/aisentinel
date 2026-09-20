@@ -27,12 +27,13 @@ import { useTranslations, useLocale } from "next-intl";
 import { useSession } from "next-auth/react";
 import { AiDraftPanel } from "@/components/ai/AiDraftPanel";
 import { AssessmentVersionHistory } from "@/components/governance/assessment-version-history";
+import { STATUS_CHIP, STATUS_OUTLINE } from "@/components/ui/status-note";
 
 const statusColors: Record<string, string> = {
   DRAFT: "bg-gray-500/20 text-gray-400",
-  IN_PROGRESS: "bg-info/20 text-info",
-  UNDER_REVIEW: "bg-warning/20 text-warning",
-  APPROVED: "bg-success/20 text-success",
+  IN_PROGRESS: STATUS_CHIP.note,
+  UNDER_REVIEW: STATUS_CHIP.warning,
+  APPROVED: STATUS_CHIP.good,
   REJECTED: "bg-red-500/20 text-red-400",
 };
 
@@ -194,7 +195,7 @@ export default function AssessmentDetailPage() {
       </div>
 
       {actionError && (
-        <Card className="border-destructive/50">
+        <Card className="border-destructive">
           <CardContent className="p-4 flex items-start gap-2 text-destructive">
             <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" />
             <span className="text-sm">{actionError}</span>
@@ -227,7 +228,7 @@ export default function AssessmentDetailPage() {
                 <Button
                   onClick={() => handleDecision("APPROVED")}
                   disabled={approveMutation.isPending || (isSelfReview && !selfReviewAcknowledged)}
-                  className="bg-green-600 hover:bg-green-700"
+                  className="bg-success text-success-foreground hover:bg-success/85"
                 >
                   <CheckCircle className="w-4 h-4 mr-2" />{t("approve")}
                 </Button>
@@ -257,9 +258,9 @@ export default function AssessmentDetailPage() {
       )}
 
       {assessment.approvedBy && (
-        <Card className="border-success/30">
+        <Card className="border-success">
           <CardContent className="p-4">
-            <div className="flex items-center gap-2 text-success">
+            <div className="flex items-center gap-2 text-foreground [&>svg]:text-success">
               <CheckCircle className="w-5 h-5" />
               <span>{t("approvedOn", { date: formatDate(assessment.approvedAt) })}</span>
             </div>
@@ -293,7 +294,7 @@ export default function AssessmentDetailPage() {
                   variant="outline"
                   className={
                     f.evidenced === f.total
-                      ? "text-xs border-success/50 text-success"
+                      ? `text-xs ${STATUS_OUTLINE.good}`
                       : "text-xs"
                   }
                 >
@@ -392,7 +393,7 @@ export default function AssessmentDetailPage() {
                 })()}
                 <label className="text-sm font-medium">
                   {question.text}
-                  {question.required && <span className="text-destructive ml-1">*</span>}
+                  {question.required && <span className="text-foreground ml-1">*</span>}
                 </label>
                 {question.helpText && (
                   <p className="text-xs text-muted-foreground">{question.helpText}</p>
@@ -467,7 +468,7 @@ export default function AssessmentDetailPage() {
                               variant="outline"
                               className={
                                 answered
-                                  ? "text-[10px] border-success/50 text-success"
+                                  ? `text-[10px] ${STATUS_OUTLINE.good}`
                                   : "text-[10px] text-muted-foreground"
                               }
                             >
@@ -475,7 +476,7 @@ export default function AssessmentDetailPage() {
                             </Badge>
                           ))}
                           {answered && (
-                            <span className="text-[10px] text-success">{t("answeredMark")}</span>
+                            <span className="text-[10px] text-foreground">{t("answeredMark")}</span>
                           )}
                         </div>
                       )}

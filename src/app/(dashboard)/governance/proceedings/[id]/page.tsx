@@ -178,7 +178,7 @@ export default function ProceedingDetailPage() {
         </CardContent>
       </Card>
 
-      <Card className={data.positionSummary ? undefined : "border-warning/50"}>
+      <Card className={data.positionSummary ? undefined : "border-warning"}>
         <CardHeader className="pb-2">
           <CardTitle className="text-base">{t("positionTitle")}</CardTitle>
         </CardHeader>
@@ -283,7 +283,7 @@ export default function ProceedingDetailPage() {
                     </span>
                   )}
                   {e.completedAt ? (
-                    <Badge variant="outline" className="text-[10px] border-success/50 text-success">
+                    <Badge variant="outline" className="text-[10px] border-success">
                       {t("done")}
                     </Badge>
                   ) : (

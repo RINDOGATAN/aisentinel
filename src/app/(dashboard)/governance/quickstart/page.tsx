@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { STATUS_OUTLINE } from "@/components/ui/status-note";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   ArrowLeft,
@@ -612,7 +613,7 @@ export default function QuickstartPage() {
                   <div className="flex items-center gap-2">
                     <Badge
                       variant="outline"
-                      className="text-green-600 border-green-600/50"
+                      className={STATUS_OUTLINE.good}
                     >
                       {features.allSkillsFree ? tc("free") : `5 ${tc("free")}`}
                     </Badge>
@@ -652,7 +653,7 @@ export default function QuickstartPage() {
                   <div className="flex items-center gap-2">
                     <Badge
                       variant="outline"
-                      className="text-green-600 border-green-600/50"
+                      className={STATUS_OUTLINE.good}
                     >
                       {tc("free")}
                     </Badge>
@@ -689,7 +690,7 @@ export default function QuickstartPage() {
                 <div className="flex items-center justify-between">
                   <Crosshair className="w-8 h-8 text-primary" />
                   <div className="flex items-center gap-2">
-                    <Badge variant="outline" className="text-green-600 border-green-600/50">
+                    <Badge variant="outline" className={STATUS_OUTLINE.good}>
                       {tc("free")}
                     </Badge>
                     {useBuilder && <CheckCircle2 className="w-5 h-5 text-primary" />}

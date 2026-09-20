@@ -165,7 +165,7 @@ export default function ReviewQueuePage() {
             setSelected(new Set());
           }}
         >
-          <SelectTrigger className="w-56">
+          <SelectTrigger className="w-full sm:w-56">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

@@ -87,7 +87,7 @@ export function SubprocessorTable({
                 {showGovernance &&
                   (row.ownVendor ? (
                     <Link href={`/governance/vendors/${row.ownVendor.id}`}>
-                      <Badge className="bg-success/20 text-success text-[10px] inline-flex items-center gap-1">
+                      <Badge className="bg-success/20 text-[10px] inline-flex items-center gap-1 text-foreground">
                         <ShieldCheck className="w-3 h-3" />
                         {labels.governed}
                       </Badge>

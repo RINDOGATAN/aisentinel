@@ -15,6 +15,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight } from "lucide-react";
 import { STAGE_COLORS } from "@/lib/program-map/palette";
+import { STATUS_CHIP, StatusMark } from "@/components/ui/status-note";
 import type {
   DimensionScore,
   ProgramGap,
@@ -29,6 +30,7 @@ export function ScorecardTiles({
   tiles: ProgramScorecardData["tiles"];
 }) {
   const t = useTranslations("program.tiles");
+  const tc = useTranslations("common");
   const items = [
     { label: t("overall"), value: `${tiles.overall}`, accent: true },
     {
@@ -54,20 +56,19 @@ export function ScorecardTiles({
       {items.map((item) => (
         <Card key={item.label}>
           <CardContent className="p-4 text-center">
-            <div
-              className={`text-2xl font-bold ${
-                item.accent
-                  ? "text-primary"
-                  : item.warn
-                    ? "text-warning"
-                    : ""
-              }`}
-            >
+            {/* A figure is a fact, so it keeps the body text colour. What it
+                asks of the reader is said in a word and an icon below it. */}
+            <div className={`text-2xl font-bold ${item.accent ? "text-primary" : ""}`}>
               {item.value}
             </div>
             <p className="text-[10px] text-muted-foreground mt-1">
               {item.label}
             </p>
+            {item.warn && (
+              <StatusMark status="warning" className="text-[10px] mt-1 justify-center">
+                {tc("needsAttention")}
+              </StatusMark>
+            )}
           </CardContent>
         </Card>
       ))}
@@ -108,8 +109,8 @@ export function DimensionGrid({ dimensions }: { dimensions: DimensionScore[] }) 
 // ── 90-day plan ─────────────────────────────────────────────────────
 
 const SEVERITY_STYLES: Record<ProgramGap["severity"], string> = {
-  critical: "bg-destructive/15 text-destructive border-destructive/30",
-  high: "bg-warning/15 text-warning border-warning/30",
+  critical: STATUS_CHIP.danger,
+  high: STATUS_CHIP.warning,
   medium: "bg-secondary text-muted-foreground border-border",
 };
 
@@ -205,9 +206,9 @@ export function RolloutGuidance({
 // ── Professional-duties grid (lawfirm) ──────────────────────────────
 
 const DUTY_STATUS_STYLES: Record<string, string> = {
-  inPlace: "bg-success/15 text-success border-success/30",
-  partial: "bg-warning/15 text-warning border-warning/30",
-  missing: "bg-destructive/15 text-destructive border-destructive/30",
+  inPlace: STATUS_CHIP.good,
+  partial: STATUS_CHIP.warning,
+  missing: STATUS_CHIP.danger,
   recommended: "bg-secondary text-muted-foreground border-border",
 };
 

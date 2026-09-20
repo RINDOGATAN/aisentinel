@@ -219,7 +219,7 @@ function JurisdictionCard({
       </CardHeader>
       <CardContent className="space-y-4">
         {!declared && (
-          <div className="flex items-start gap-2 rounded-md border border-warning/30 bg-warning/10 p-3">
+          <div className="flex items-start gap-2 rounded-md border border-warning bg-warning/10 p-3 text-foreground">
             <AlertTriangle className="w-4 h-4 text-warning shrink-0 mt-0.5" />
             <p className="text-xs text-muted-foreground">{tj("undeclaredHint")}</p>
           </div>

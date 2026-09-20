@@ -168,7 +168,7 @@ export function SignInForm({ hostedPilot }: { hostedPilot: boolean }) {
         )}
 
         {error && (
-          <div className="p-4 bg-destructive/10 border border-destructive text-destructive text-sm mb-6">
+          <div className="p-4 bg-destructive/10 border border-destructive text-sm mb-6 text-foreground">
             {error}
           </div>
         )}
@@ -248,7 +248,7 @@ export function SignInForm({ hostedPilot }: { hostedPilot: boolean }) {
         {/* Only claim "no providers" when the local login is ALSO absent —
             on self-host the local form above is a fully working provider. */}
         {!hasEmail && !hasGoogle && !isDev && providers !== null && (
-          <div className="p-4 bg-destructive/10 border border-destructive text-destructive text-sm">
+          <div className="p-4 bg-destructive/10 border border-destructive text-sm text-foreground">
             No sign-in providers configured. Please contact the administrator.
           </div>
         )}

@@ -32,6 +32,7 @@ import {
   Table2,
   Columns3,
   ListChecks,
+  FlaskConical,
 } from "lucide-react";
 import { useState } from "react";
 import { PremiumNotice } from "@/components/docs/premium-notice";
@@ -66,6 +67,7 @@ const sidebarItems: SidebarItem[] = [
   { href: "/docs/bias-fairness", labelKey: "biasFairness", icon: Activity, group: "premium" },
   { href: "/docs/roles", labelKey: "roles", icon: Users },
   { href: "/docs/security", labelKey: "security", icon: Shield },
+  { href: "/docs/pilot", labelKey: "pilot", icon: FlaskConical },
   { href: "/docs/whats-new", labelKey: "whatsNew", icon: Sparkles },
 ];
 

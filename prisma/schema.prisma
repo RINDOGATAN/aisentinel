@@ -35,8 +35,38 @@ model User {
   auditLogs               AuditLog[]
   aiSettingsAcknowledged  OrganizationAiSettings[]
   aiGenerations           AiGeneration[]
+  pilotDisclosures        PilotDisclosureAcknowledgement[]
 
   @@map("users")
+}
+
+/// A person's acknowledgement of the hosted pilot disclosure, with its date.
+///
+/// The disclosure says what the hosted service is: a free pilot on our servers,
+/// no security certifications, no real client matter, export whenever you like,
+/// deletion that is real (src/config/pilot-disclosure.ts). It is shown once and
+/// acknowledged once, and this row is the record of that: who, which version of
+/// the wording, in which language, and when.
+///
+/// Kept per USER, not per organisation: the statement is about the service, and
+/// a person who is told it once has been told it. A version bump means the
+/// wording changed materially, so the old row still says exactly what that
+/// person read, and the new version is asked for again.
+model PilotDisclosureAcknowledgement {
+  id     String @id @default(cuid())
+  userId String
+  /// DISCLOSURE_VERSION of the wording read.
+  version String
+  /// The language it was read in. Both say the same thing; which one was shown
+  /// is part of the record.
+  locale String
+  acknowledgedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, version])
+  @@index([userId])
+  @@map("pilot_disclosure_acknowledgements")
 }
 
 model Account {

@@ -4931,9 +4931,10 @@
   },
   "deleteOrganization": {
     "title": "Eliminar esta organización",
-    "description": "Elimina de forma permanente {name} y todo su contenido: sistemas, evaluaciones, políticas, evidencias, proveedores e historial. No se puede deshacer. Si necesitas conservar un registro, exporta antes el paquete del programa. Escribe el nombre de la organización para confirmar.",
+    "description": "Elimina de forma permanente {name} y todo su contenido: sistemas, evaluaciones, políticas, evidencias, proveedores e historial. Los registros se borran de la base de datos, no se ocultan. No se puede deshacer, y exportar antes el paquete del programa es la única forma de conservar algo. Escribe el nombre de la organización para confirmar.",
     "confirmLabel": "Nombre de la organización, para confirmar",
     "button": "Eliminar de forma permanente",
+    "exportFirst": "Exportar el paquete del programa",
     "deleted": "Organización eliminada."
   },
   "audit": {
@@ -5390,6 +5391,8 @@
     "readOnlyBody": "Los 90 días de edición han terminado. Esta organización es de solo lectura: todo se puede abrir y exportar, nada se puede modificar.",
     "ceilingReachedBody": "Se ha alcanzado un límite. Dos salidas:",
     "runOwn": "Ejecuta tu propia instancia",
-    "exportAll": "Exportar todo (paquete del programa)"
+    "exportAll": "Exportar todo (paquete del programa)",
+    "afterExportBody": "Tu archivo se ha descargado. Ya puedes vaciar esta cuenta.",
+    "afterExportAction": "Vaciar la cuenta"
   }
 }

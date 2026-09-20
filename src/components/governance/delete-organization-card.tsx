@@ -6,18 +6,23 @@
  * Permanently delete the organization (owners only). The user types the
  * organization's name to confirm; the server checks the role and the name
  * again. No browser confirm() dialog: the typed name is the confirmation.
+ *
+ * Carries the WIPE_ANCHOR id, so the offer made after a successful export lands
+ * directly on this card instead of at the top of a long settings page.
  */
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { Loader2, Trash2 } from "lucide-react";
+import { Download, Loader2, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
+import { WIPE_ANCHOR } from "@/lib/post-export-wipe";
+import { pilotExportUrl } from "@/config/pilot";
 
 export function DeleteOrganizationCard({
   organizationId,
@@ -49,30 +54,40 @@ export function DeleteOrganizationCard({
   const matches = typed.trim() === organizationName.trim();
 
   return (
-    <Card className="border-destructive/40">
+    <Card id={WIPE_ANCHOR} className="scroll-mt-24 border-destructive/40">
       <CardHeader>
         <CardTitle className="text-base text-destructive">{t("title")}</CardTitle>
         <CardDescription>{t("description", { name: organizationName })}</CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-col sm:flex-row gap-2">
-        <Input
-          value={typed}
-          placeholder={organizationName}
-          aria-label={t("confirmLabel")}
-          onChange={(e) => setTyped(e.target.value)}
-        />
-        <Button
-          variant="destructive"
-          disabled={!matches || remove.isPending}
-          onClick={() => remove.mutate({ organizationId, confirmName: typed })}
-        >
-          {remove.isPending ? (
-            <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />
-          ) : (
-            <Trash2 className="w-4 h-4 mr-1.5" />
-          )}
-          {t("button")}
+      <CardContent className="space-y-3">
+        {/* The only way to keep anything, one click from the action that ends
+            it. Placed above the confirmation so it is read first. */}
+        <Button asChild variant="outline" size="sm">
+          <a href={pilotExportUrl(organizationId)}>
+            <Download className="w-3.5 h-3.5 mr-1.5" />
+            {t("exportFirst")}
+          </a>
         </Button>
+        <div className="flex flex-col sm:flex-row gap-2">
+          <Input
+            value={typed}
+            placeholder={organizationName}
+            aria-label={t("confirmLabel")}
+            onChange={(e) => setTyped(e.target.value)}
+          />
+          <Button
+            variant="destructive"
+            disabled={!matches || remove.isPending}
+            onClick={() => remove.mutate({ organizationId, confirmName: typed })}
+          >
+            {remove.isPending ? (
+              <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />
+            ) : (
+              <Trash2 className="w-4 h-4 mr-1.5" />
+            )}
+            {t("button")}
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );

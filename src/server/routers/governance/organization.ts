@@ -194,12 +194,25 @@ export const organizationRouter = createTRPCRouter({
     }),
 
   /**
-   * Permanently delete the organization and everything it owns (every
-   * organization-scoped table cascades). Owner only, and the caller must type
-   * the organization's exact name: a consultant offboarding a client, or a
-   * test organization being removed, is a deliberate act. The audit entry is
-   * written first and survives (audit_logs.organizationId is SET NULL), with
-   * the organization's id and name kept in its changes.
+   * Permanently delete the organization and everything it owns. Owner only, and
+   * the caller must type the organization's exact name: a consultant
+   * offboarding a client, or a test organization being removed, is a deliberate
+   * act.
+   *
+   * The deletion is real. Every organization-scoped table declares
+   * `onDelete: Cascade` on its Organization relation, so one DELETE removes the
+   * rows in the database; nothing is flagged as deleted and left behind, and
+   * this app stores no files outside Postgres, so there is no blob or disk copy
+   * to chase. `organization-deletion.test.ts` reads the schema and fails on any
+   * model that carries an organizationId without the cascade.
+   *
+   * What survives is one row: the tombstone audit entry, written BEFORE the
+   * rows go and detached by the SET NULL on audit_logs, carrying the
+   * organization's id, name and slug so the deletion itself can be evidenced.
+   * The organization's own audit history goes with it. An audit trail still
+   * holding the field-level content of a deleted organization would make "it is
+   * really deleted" untrue, which matters most on the hosted pilot, where the
+   * promise is the reason someone tries the product at all.
    */
   delete: orgWriteProcedure
     // The hosted pilot's read-only switch never closes this door: it is the
@@ -218,7 +231,7 @@ export const organizationRouter = createTRPCRouter({
       }
       await assertNotOnHold(ctx.prisma, ctx.organization.id);
 
-      await ctx.prisma.auditLog.create({
+      const tombstone = await ctx.prisma.auditLog.create({
         data: {
           organizationId: ctx.organization.id,
           userId: ctx.session.user.id,
@@ -227,6 +240,11 @@ export const organizationRouter = createTRPCRouter({
           action: "DELETE",
           changes: { name: ctx.organization.name, slug: ctx.organization.slug },
         },
+      });
+      // Everything else this organization wrote to the trail goes too: those
+      // rows hold its content, and SET NULL would otherwise leave them behind.
+      await ctx.prisma.auditLog.deleteMany({
+        where: { organizationId: ctx.organization.id, id: { not: tombstone.id } },
       });
       await ctx.prisma.organization.delete({ where: { id: ctx.organization.id } });
       return { deleted: true };

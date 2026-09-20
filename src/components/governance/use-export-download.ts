@@ -9,16 +9,30 @@
  * stays on the page and says so in a toast: a licensed module offers the
  * pricing page, anything else offers a retry. A person never lands on a
  * JSON error body.
+ *
+ * On success on the hosted pilot, an owner is offered the way out in that
+ * moment: the file is downloaded, so the account can now be emptied. One line,
+ * and it leads to the Settings card rather than deleting anything itself
+ * (src/lib/post-export-wipe.ts).
  */
 
 import { useCallback, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { downloadExport, pricingUrl } from "@/lib/export-download";
+import { shouldOfferWipe, WIPE_TARGET } from "@/lib/post-export-wipe";
+import { useOrganization } from "@/lib/organization-context";
+import { trpc } from "@/lib/trpc";
 
 export function useExportDownload() {
   const t = useTranslations("premiumShowcase");
+  const tp = useTranslations("pilot");
   const locale = useLocale();
+  const router = useRouter();
+  const { userRole } = useOrganization();
+  const { data: pilotMode } = trpc.pilot.mode.useQuery(undefined, { staleTime: 5 * 60 * 1000 });
+  const offerWipe = shouldOfferWipe({ hostedPilot: pilotMode?.active ?? false, role: userRole });
   const [pendingUrl, setPendingUrl] = useState<string | null>(null);
 
   const download = useCallback(
@@ -26,7 +40,18 @@ export function useExportDownload() {
       setPendingUrl(url);
       try {
         const result = await downloadExport(url);
-        if (result.ok) return;
+        if (result.ok) {
+          if (offerWipe) {
+            toast(tp("afterExportBody"), {
+              duration: 15_000,
+              action: {
+                label: tp("afterExportAction"),
+                onClick: () => router.push(WIPE_TARGET),
+              },
+            });
+          }
+          return;
+        }
         if (result.kind === "locked") {
           toast.info(t("exportLockedTitle"), {
             description: t("exportLockedBody"),
@@ -47,7 +72,7 @@ export function useExportDownload() {
         setPendingUrl(null);
       }
     },
-    [t, locale],
+    [t, tp, locale, offerWipe, router],
   );
 
   return {

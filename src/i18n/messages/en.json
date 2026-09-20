@@ -4931,9 +4931,10 @@
   },
   "deleteOrganization": {
     "title": "Delete this organization",
-    "description": "Permanently deletes {name} and everything in it: systems, assessments, policies, evidence, vendors and history. This cannot be undone. Export the program pack first if you need a record. Type the organization's name to confirm.",
+    "description": "Permanently deletes {name} and everything in it: systems, assessments, policies, evidence, vendors and history. The rows are removed from the database, not hidden. This cannot be undone, and exporting the program pack first is the only way to keep anything. Type the organization's name to confirm.",
     "confirmLabel": "Organization name, to confirm",
     "button": "Delete permanently",
+    "exportFirst": "Export the program pack",
     "deleted": "Organization deleted."
   },
   "audit": {
@@ -5390,6 +5391,8 @@
     "readOnlyBody": "The 90 editing days are over. This organisation is read-only: everything can still be opened and exported, nothing can be changed.",
     "ceilingReachedBody": "A ceiling has been reached. Two ways out:",
     "runOwn": "Run your own instance",
-    "exportAll": "Export everything (program pack)"
+    "exportAll": "Export everything (program pack)",
+    "afterExportBody": "Your file is downloaded. You can now empty this account.",
+    "afterExportAction": "Empty the account"
   }
 }

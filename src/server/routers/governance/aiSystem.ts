@@ -10,6 +10,7 @@ import {
   TECHNIQUES,
 } from "@/lib/inventory-import";
 import { importInventoryRows } from "@/server/services/inventory/import-systems";
+import { suggestSystemFields } from "@/lib/system-prefill";
 import { createStarterArtifacts } from "@/server/services/program/starter-artifacts";
 import { assertPilotRoom, pilotLocale } from "@/server/services/pilot/caps";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
@@ -302,6 +303,50 @@ export const aiSystemRouter = createTRPCRouter({
       ]);
 
       return { total, draft, deployed, retired };
+    }),
+
+  /**
+   * What the new-system form can honestly suggest from what this account already
+   * holds: the owners the rest of the registry names, or the person filling the
+   * form in; the supply-chain role when a vendor supplies the system; and
+   * personal-data processing only where every system recorded so far does.
+   *
+   * Read-only, and it applies nothing. Each suggestion carries the basis it was
+   * derived from, and the form enters it only when a person accepts it. The rule
+   * itself is pure and tested in src/lib/system-prefill.test.ts.
+   */
+  prefillSuggestions: organizationProcedure
+    .input(z.object({ organizationId: z.string(), vendorId: z.string().optional() }))
+    .query(async ({ ctx, input }) => {
+      const [systems, user, vendor] = await Promise.all([
+        ctx.prisma.aISystem.findMany({
+          where: { organizationId: ctx.organization.id },
+          select: { businessOwner: true, technicalOwner: true, processesPersonalData: true },
+        }),
+        ctx.prisma.user.findFirst({
+          where: { id: ctx.session.user.id },
+          select: { name: true, email: true },
+        }),
+        input.vendorId
+          ? ctx.prisma.aIVendor.findFirst({
+              // Org-scoped: a vendor id from another organisation resolves to
+              // nothing rather than naming a stranger's supplier in a form.
+              where: { id: input.vendorId, organizationId: ctx.organization.id },
+              select: { name: true },
+            })
+          : Promise.resolve(null),
+      ]);
+
+      return {
+        suggestions: suggestSystemFields({
+          currentUser: user,
+          existingBusinessOwners: systems.map((s) => s.businessOwner ?? ""),
+          existingTechnicalOwners: systems.map((s) => s.technicalOwner ?? ""),
+          systemsTotal: systems.length,
+          systemsProcessingPersonalData: systems.filter((s) => s.processesPersonalData).length,
+          selectedVendor: vendor,
+        }),
+      };
     }),
 
   addModel: orgWriteProcedure

@@ -63,6 +63,16 @@ export interface Artifact {
   organizationName: string;
   systemName: string;
   generatedAt: string;
+  /**
+   * Who generated this copy, in words. Null when the caller could not say; the
+   * document then states that rather than leaving the reader to wonder.
+   */
+  preparedBy?: string | null;
+  /** The resolved risk tier, and how it is shown: never by colour alone. */
+  riskTier?: string;
+  riskTierLabel?: string;
+  /** The tier as a shape, so it survives a monochrome print. */
+  riskTierShape?: string;
   /** Content version of the rules and template that produced it. */
   contentVersion: string;
   lawReviewedAsOf: string;

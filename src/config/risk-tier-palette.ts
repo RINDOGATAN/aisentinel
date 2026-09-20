@@ -98,6 +98,40 @@ export const TIER_MARKER: Record<TierTheme, Record<RiskTier, string>> = {
   },
 };
 
+/**
+ * The SHAPE of a tier marker, so the tier survives a monochrome print, a
+ * photocopy and a reader who sees no colour at all.
+ *
+ * Rule 1 above says the label always names the tier and colour is never the
+ * only signal. On screen the hollow ring for "not classified" carries that on
+ * its own, because the other four tiers are read next to each other in a list.
+ * A generated document is read alone, often on paper, so the marker also counts:
+ * four pips for unacceptable down to one for minimal, and a single hollow pip
+ * for not classified. Counting works without colour, without hue discrimination
+ * and at any print quality, and it reads as severity in the right direction.
+ */
+export const TIER_PIPS: Record<RiskTier, { count: number; filled: boolean }> = {
+  UNACCEPTABLE: { count: 4, filled: true },
+  HIGH: { count: 3, filled: true },
+  LIMITED: { count: 2, filled: true },
+  MINIMAL: { count: 1, filled: true },
+  UNCLASSIFIED: { count: 1, filled: false },
+};
+
+export function tierPips(level: string | null | undefined): { count: number; filled: boolean } {
+  return TIER_PIPS[toRiskTier(level)];
+}
+
+/**
+ * The same shape as text, for Markdown and any other plain-text surface. Filled
+ * and hollow circles are ordinary characters, so they survive a paste into a
+ * word processor, an issue tracker or an email.
+ */
+export function tierShapeText(level: string | null | undefined): string {
+  const { count, filled } = tierPips(level);
+  return (filled ? "●" : "○").repeat(count);
+}
+
 /** CSS variable name for each tier marker (declared in globals.css). */
 export const TIER_CSS_VAR: Record<RiskTier, string> = {
   UNACCEPTABLE: "--tier-unacceptable",

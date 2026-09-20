@@ -27,8 +27,9 @@ import {
   type UnifiedQuestion,
 } from "@/config/unified-assessment";
 import { runAgenticStressTest } from "@/config/agentic-stress-test";
-import { pendingPacks } from "@/config/legal-signoff";
+import { LEGAL_SIGNOFF, pendingPacks, type SignoffRecord } from "@/config/legal-signoff";
 import { overlayLabels } from "@/config/overlay-labels";
+import { tierShapeText, toRiskTier } from "@/config/risk-tier-palette";
 import type { SystemScope } from "@/server/services/scope/system-scope";
 import {
   collectGaps,
@@ -155,7 +156,12 @@ export function filterCitationStrings(
   applicable: ReadonlySet<string>,
 ): string[] {
   return citations.filter((citation) => {
-    const match = CITATION_PREFIXES.find(([prefix]) => citation.startsWith(prefix));
+    // Case-insensitive: the structured citations render a framework code as
+    // "EU AI ACT" while hand-written strings say "EU AI Act", and a prefix
+    // table that matched only one of the two let out-of-scope citations
+    // through. The fourth bug of this class found here.
+    const lower = citation.toLowerCase();
+    const match = CITATION_PREFIXES.find(([prefix]) => lower.startsWith(prefix.toLowerCase()));
     // An unrecognised prefix is kept: silently dropping a citation we failed to
     // classify would be a worse failure than showing one too many.
     return !match || applicable.has(match[1]);
@@ -174,6 +180,81 @@ export interface ArtifactInput {
   answers: Record<string, unknown>;
   locale: ContentLocale;
   generatedAt: string;
+  /**
+   * Who produced this copy of the document. A stranger reading the file has to
+   * be able to see who to ask about it; without this the document answers
+   * "when" and never "by whom". Absent when the caller cannot say.
+   */
+  preparedBy?: { name?: string | null; email?: string | null; role?: string | null } | null;
+}
+
+/** "Ada Lovelace (AI officer)", or the email, or null. Never an internal id. */
+function preparedByLabel(input: ArtifactInput, locale: ContentLocale): string | null {
+  const who = input.preparedBy;
+  if (!who) return null;
+  const name = who.name?.trim() || who.email?.trim() || null;
+  if (!name) return null;
+  const role = who.role?.trim();
+  if (!role) return name;
+  return locale === "es" ? `${name} (${roleLabel(role, locale)})` : `${name} (${roleLabel(role, locale)})`;
+}
+
+/** Organisation roles in words. A raw enum in a legal document is a defect. */
+const ROLE_LABELS: Record<string, Record<ContentLocale, string>> = {
+  OWNER: { en: "owner", es: "propietaria o propietario" },
+  ADMIN: { en: "administrator", es: "administradora o administrador" },
+  AI_OFFICER: { en: "AI officer", es: "responsable de IA" },
+  MEMBER: { en: "member", es: "miembro" },
+  VIEWER: { en: "viewer", es: "lectora o lector" },
+};
+
+function roleLabel(role: string, locale: ContentLocale): string {
+  return ROLE_LABELS[role]?.[locale] ?? role.toLowerCase().replace(/_/g, " ");
+}
+
+/** Registry enums in words, for the identification table. */
+const ENUM_LABELS: Record<string, Record<ContentLocale, string>> = {
+  // System role
+  PROVIDER: { en: "provider", es: "proveedor" },
+  DEPLOYER: { en: "deployer", es: "responsable del despliegue" },
+  IMPORTER: { en: "importer", es: "importador" },
+  DISTRIBUTOR: { en: "distributor", es: "distribuidor" },
+  MANUFACTURER: { en: "manufacturer", es: "fabricante" },
+  // Lifecycle status
+  DRAFT: { en: "draft", es: "borrador" },
+  UNDER_REVIEW: { en: "under review", es: "en revisión" },
+  APPROVED: { en: "approved", es: "aprobado" },
+  DEPLOYED: { en: "in production", es: "en producción" },
+  SUSPENDED: { en: "suspended", es: "suspendido" },
+  RETIRED: { en: "retired", es: "retirado" },
+  // Technique
+  MACHINE_LEARNING: { en: "machine learning", es: "aprendizaje automático" },
+  DEEP_LEARNING: { en: "deep learning", es: "aprendizaje profundo" },
+  GENERATIVE_AI: { en: "generative AI", es: "IA generativa" },
+  NLP: { en: "natural language processing", es: "procesamiento del lenguaje natural" },
+  COMPUTER_VISION: { en: "computer vision", es: "visión artificial" },
+  RULE_BASED: { en: "rule based", es: "basado en reglas" },
+  REINFORCEMENT_LEARNING: { en: "reinforcement learning", es: "aprendizaje por refuerzo" },
+  OTHER: { en: "other", es: "otro" },
+};
+
+/** An enum value in the reader's language, never the raw token. */
+function enumLabel(value: string | null | undefined, locale: ContentLocale): string | null {
+  if (!value) return null;
+  return ENUM_LABELS[value]?.[locale] ?? value.toLowerCase().replace(/_/g, " ");
+}
+
+/** Risk tiers in words. The label always names the tier; the shape repeats it. */
+const TIER_LABELS: Record<string, Record<ContentLocale, string>> = {
+  UNACCEPTABLE: { en: "Unacceptable risk", es: "Riesgo inaceptable" },
+  HIGH: { en: "High risk", es: "Riesgo alto" },
+  LIMITED: { en: "Limited risk", es: "Riesgo limitado" },
+  MINIMAL: { en: "Minimal risk", es: "Riesgo mínimo" },
+  UNCLASSIFIED: { en: "Not classified yet", es: "Sin clasificar todavía" },
+};
+
+export function tierLabel(level: string | null | undefined, locale: ContentLocale): string {
+  return TIER_LABELS[toRiskTier(level)][locale];
 }
 
 /** An answer, trimmed, or null when nothing usable was recorded. */
@@ -221,12 +302,369 @@ function header(input: ArtifactInput, kind: Artifact["kind"], title: string, sub
     organizationName: input.scope.organizationName,
     systemName: input.scope.system.name,
     generatedAt: input.generatedAt,
+    preparedBy: preparedByLabel(input, input.locale),
+    riskTier: toRiskTier(input.scope.riskLevel),
+    riskTierLabel: tierLabel(input.scope.riskLevel, input.locale),
+    riskTierShape: tierShapeText(input.scope.riskLevel),
     contentVersion: UNIFIED_ASSESSMENT_VERSION,
     lawReviewedAsOf: UNIFIED_ASSESSMENT_LAW_REVIEWED_AS_OF,
     disclaimer: disclaimerFor(input.scope, input.locale),
     regimes: regimeLabels(input.scope.overlayTags, input.locale),
     sections,
     gaps: collectGaps(sections),
+  };
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// The sections a stranger needs: identification, method, inputs, findings,
+// what is open, and what the document is not. Read the export as someone with
+// no access to the screen it came from: it has to answer what was assessed and
+// for whom, when and by whom, and on what method, before anything else.
+// ═══════════════════════════════════════════════════════════════════════════
+
+/** A row only when there is something to put in it: no empty table lines. */
+function rows(pairs: [string, string | null | undefined][]): string[][] {
+  return pairs
+    .filter(([, value]) => typeof value === "string" && value.trim().length > 0)
+    .map(([label, value]) => [label, (value as string).trim()]);
+}
+
+/** 1. What was assessed, and for whom. */
+function identificationSection(input: ArtifactInput): ArtifactSection {
+  const { scope, locale } = input;
+  const sys = scope.system;
+  const es = locale === "es";
+  const notRecorded = es ? "No consta en el registro." : "Not recorded in the registry.";
+
+  const blocks: Block[] = [
+    paragraph(
+      es
+        ? `Este documento evalúa el sistema de IA «${sys.name}», utilizado por ${scope.organizationName}.`
+        : `This document assesses the AI system "${sys.name}", used by ${scope.organizationName}.`,
+    ),
+    table(
+      es ? ["Dato", "Valor"] : ["Item", "Value"],
+      rows([
+        [es ? "Sistema" : "System", sys.name],
+        [es ? "Organización" : "Organisation", scope.organizationName],
+        [es ? "Finalidad" : "Purpose", sys.purpose],
+        [es ? "Descripción" : "Description", sys.description],
+        [es ? "Técnica" : "Technique", enumLabel(sys.technique, locale)],
+        [es ? "Papel de la organización" : "The organisation's role", enumLabel(sys.role, locale)],
+        [es ? "Situación" : "Lifecycle status", enumLabel(sys.status, locale)],
+        [es ? "Responsable de negocio" : "Business owner", sys.businessOwner],
+        [es ? "Responsable técnico" : "Technical owner", sys.technicalOwner],
+        [
+          es ? "Trata datos personales" : "Processes personal data",
+          sys.processesPersonalData ? (es ? "Sí" : "Yes") : es ? "No" : "No",
+        ],
+        [
+          es ? "Jurisdicciones declaradas" : "Declared jurisdictions",
+          scope.jurisdictions.length > 0
+            ? scope.jurisdictions.join(", ")
+            : es
+              ? "Ninguna declarada"
+              : "None declared",
+        ],
+      ]),
+    ),
+  ];
+
+  if (!sys.purpose && !sys.description) {
+    blocks.push(
+      gap(
+        es
+          ? "El registro no recoge ni la finalidad ni la descripción del sistema. Un lector externo no puede juzgar el resto del documento sin saber para qué se usa el sistema."
+          : "The registry records neither the purpose nor a description of the system. A reader outside the organisation cannot judge the rest of this document without knowing what the system is for.",
+        // Scoped: a document must never cite an instrument the organisation is
+        // not under. Three separate bugs of this class have been caught here.
+        filterCitationStrings(
+          ["EU AI ACT Art. 11", "EU GDPR Art. 30"],
+          applicableFrameworks(scope),
+        ),
+      ),
+    );
+  }
+  if (!sys.businessOwner && !sys.technicalOwner) {
+    blocks.push(
+      paragraph(
+        es
+          ? `Responsables: ${notRecorded}`
+          : `Owners: ${notRecorded}`,
+      ),
+    );
+  }
+
+  return {
+    heading: es ? "Qué se evalúa y para quién" : "What was assessed, and for whom",
+    blocks,
+  };
+}
+
+/** 2. When, by whom, and on what method. */
+function methodSection(input: ArtifactInput): ArtifactSection {
+  const { locale } = input;
+  const es = locale === "es";
+  const who = preparedByLabel(input, locale);
+  // The content packs this document actually cites, with the sign-off record of
+  // each. Only the packs it cites: a table of everything the product ships
+  // tells the reader nothing about the document in their hands.
+  const packs = citedPacks(input.scope).map((id) => ({
+    id,
+    signoff: LEGAL_SIGNOFF[id] as SignoffRecord | undefined,
+  }));
+
+  const blocks: Block[] = [
+    paragraph(
+      es
+        ? `Método: evaluación de impacto unificada, versión ${UNIFIED_ASSESSMENT_VERSION} del contenido, derecho revisado a fecha de ${UNIFIED_ASSESSMENT_LAW_REVIEWED_AS_OF}. Las preguntas se seleccionan a partir de los regímenes que resultan aplicables al sistema, y cada respuesta se asigna a las obligaciones que acredita.`
+        : `Method: the unified impact assessment, content version ${UNIFIED_ASSESSMENT_VERSION}, law reviewed as of ${UNIFIED_ASSESSMENT_LAW_REVIEWED_AS_OF}. The questions are selected from the regimes that resolve as applicable to the system, and each answer is mapped to the obligations it evidences.`,
+    ),
+    paragraph(
+      es
+        ? "El documento se compone de forma determinista a partir del registro y de las respuestas guardadas. No lo ha redactado un modelo de lenguaje: las mismas entradas producen siempre el mismo texto, y cada frase se puede rastrear hasta la respuesta de la que procede."
+        : "The document is assembled deterministically from the registry and the recorded answers. No language model wrote it: the same inputs always produce the same text, and every sentence traces to the answer it came from.",
+    ),
+    table(
+      es ? ["Dato", "Valor"] : ["Item", "Value"],
+      rows([
+        [es ? "Fecha de generación" : "Generated on", input.generatedAt],
+        [es ? "Preparado por" : "Prepared by", who],
+        [es ? "Versión del método" : "Method version", UNIFIED_ASSESSMENT_VERSION],
+        [es ? "Derecho revisado a fecha de" : "Law reviewed as of", UNIFIED_ASSESSMENT_LAW_REVIEWED_AS_OF],
+      ]),
+    ),
+  ];
+
+  if (!who) {
+    blocks.push(
+      paragraph(
+        es
+          ? "No consta quién ha generado esta copia. Vuelve a exportar el documento desde una sesión identificada si necesitas que lo indique."
+          : "This copy does not record who generated it. Export it again from a signed-in session if the document needs to say.",
+      ),
+    );
+  }
+
+  if (packs.length > 0) {
+    blocks.push(
+      paragraph(
+        es
+          ? "Contenido normativo que este documento cita, con la fecha de revisión y la situación de validación jurídica de cada parte:"
+          : "The regulatory content this document cites, with the review date and legal sign-off status of each part:",
+      ),
+      table(
+        es ? ["Contenido", "Derecho revisado", "Validación"] : ["Content", "Law reviewed", "Sign-off"],
+        packs.map((p) => [
+          p.id.replace(/_/g, " "),
+          p.signoff?.lawReviewedAsOf ?? (es ? "No consta" : "Not recorded"),
+          p.signoff === undefined
+            ? es
+              ? "No consta"
+              : "Not recorded"
+            : p.signoff.status === "pending"
+              ? es
+                ? "Pendiente"
+                : "Pending"
+              : es
+                ? "Validado"
+                : "Signed off",
+        ]),
+      ),
+    );
+  }
+
+  return {
+    heading: es ? "Cuándo, por quién y con qué método" : "When, by whom, and on what method",
+    blocks,
+  };
+}
+
+/** 4. Every question asked and the answer given, or the absence of one. */
+function inputsSection(input: ArtifactInput, sections: readonly SelectedSection[]): ArtifactSection {
+  const es = input.locale === "es";
+  const answered: string[][] = [];
+  let missing = 0;
+
+  for (const section of sections) {
+    for (const question of section.questions) {
+      const answer = answerOf(input.answers, question.id);
+      if (answer) {
+        answered.push([section.title[input.locale], question.text[input.locale], answer]);
+      } else {
+        missing += 1;
+      }
+    }
+  }
+
+  const total = answered.length + missing;
+  const blocks: Block[] = [
+    paragraph(
+      es
+        ? `De las ${total} preguntas que este sistema activa, ${answered.length} tienen respuesta registrada y ${missing} no. Abajo están las respuestas tal como se guardaron; las que faltan aparecen como apartados abiertos en el cuerpo del documento y en «Qué queda abierto».`
+        : `Of the ${total} questions this system triggers, ${answered.length} have a recorded answer and ${missing} do not. Below are the answers as they were recorded; the missing ones appear as open items in the body of the document and in "What remains open".`,
+    ),
+  ];
+
+  if (answered.length > 0) {
+    blocks.push(
+      table(es ? ["Apartado", "Pregunta", "Respuesta registrada"] : ["Section", "Question", "Recorded answer"], answered),
+    );
+  } else {
+    blocks.push(
+      paragraph(
+        es
+          ? "No hay ninguna respuesta registrada todavía, por lo que este apartado está vacío. Todo el contenido sustantivo del documento está abierto."
+          : "No answer has been recorded yet, which is why this section is empty. Every substantive part of the document is open.",
+      ),
+    );
+  }
+
+  return {
+    heading: es ? "Las respuestas registradas" : "The inputs recorded",
+    blocks,
+  };
+}
+
+/** 5. The conclusions, with the tier by shape and label. */
+function findingsSection(input: ArtifactInput): ArtifactSection {
+  const { scope, locale } = input;
+  const es = locale === "es";
+  const applicable = applicableFrameworks(scope);
+
+  const blocks: Block[] = [
+    paragraph(
+      es
+        ? `Clasificación de riesgo del sistema: ${tierShapeText(scope.riskLevel)} ${tierLabel(scope.riskLevel, locale)}. La forma repite la etiqueta, de modo que el nivel se lee también en una impresión en blanco y negro.`
+        : `The system's risk classification: ${tierShapeText(scope.riskLevel)} ${tierLabel(scope.riskLevel, locale)}. The shape repeats the label, so the level reads on a monochrome print as well.`,
+    ),
+    // Each row is emitted only when the instrument that decides it is in scope,
+    // and the basis column names only that instrument. A document that reports
+    // an Annex III finding to an organisation outside the European Union is the
+    // boilerplate that makes a lawyer stop trusting every other line of it.
+    table(
+      es ? ["Conclusión", "Resultado", "Fundamento"] : ["Finding", "Outcome", "Basis"],
+      [
+        [
+          es ? "Clasificación de riesgo registrada" : "Recorded risk classification",
+          `${tierShapeText(scope.riskLevel)} ${tierLabel(scope.riskLevel, locale)}`,
+          applicable.has("EU_AI_ACT") ? "EU AI ACT Art. 6" : es ? "Registro de IA" : "AI registry",
+        ],
+        ...(applicable.has("EU_AI_ACT")
+          ? [
+              [
+                es ? "Categoría del anexo III" : "Annex III category",
+                scope.annexIiiCategory ?? (es ? "Ninguna determinada" : "None determined"),
+                "EU AI ACT Annex III",
+              ],
+              [
+                es ? "Obligación de transparencia del art. 50" : "Article 50 transparency duty",
+                scope.hasArt50Obligation ? (es ? "Aplica" : "Applies") : es ? "No aplica" : "Does not apply",
+                "EU AI ACT Art. 50",
+              ],
+            ]
+          : []),
+        ...(applicable.has("CA_CCPA_ADMT")
+          ? [
+              [
+                es ? "Tecnología de decisión automatizada" : "Automated decision-making technology",
+                !scope.admtResolved || scope.admt.determination.isAdmt === null
+                  ? es
+                    ? "Sin resolver"
+                    : "Unresolved"
+                  : scope.admt.determination.isAdmt
+                    ? es
+                      ? "Lo es"
+                      : "It is one"
+                    : es
+                      ? "No lo es"
+                      : "It is not one",
+                "CA CCPA ADMT § 7001(e)",
+              ],
+            ]
+          : []),
+        [
+          es ? "Capa agéntica" : "Agentic layer",
+          scope.overlayTags.includes("agentic")
+            ? es
+              ? "Presente"
+              : "Present"
+            : es
+              ? "Ninguna declarada"
+              : "None declared",
+          es ? "Registro de IA" : "AI registry",
+        ],
+      ],
+    ),
+    paragraph(
+      es
+        ? `Regímenes a los que se ha calibrado el documento: ${regimeLabels(scope.overlayTags, locale).join("; ")}.`
+        : `Regimes the document was calibrated to: ${regimeLabels(scope.overlayTags, locale).join("; ")}.`,
+    ),
+  ];
+
+  if (toRiskTier(scope.riskLevel) === "UNCLASSIFIED") {
+    blocks.push(
+      gap(
+        es
+          ? "El sistema no tiene clasificación de riesgo registrada, por lo que el nivel que figura arriba no es una conclusión sino la ausencia de una. Completa la clasificación de riesgo antes de dar por cerrado este documento."
+          : "The system has no recorded risk classification, so the level shown above is not a finding but the absence of one. Complete the risk classification before treating this document as closed.",
+        filterCitationStrings(["EU AI ACT Art. 6", "EU AI ACT Annex III"], applicable),
+      ),
+    );
+  }
+
+  return {
+    heading: es ? "Las conclusiones" : "The findings",
+    citations: filterCitationStrings(["EU AI ACT Art. 6", "EU AI ACT Art. 50"], applicable),
+    blocks,
+  };
+}
+
+/** n+1. What is still missing, gathered in one place. */
+function openItemsSection(input: ArtifactInput, gaps: Artifact["gaps"]): ArtifactSection {
+  const es = input.locale === "es";
+  if (gaps.length === 0) {
+    return {
+      heading: es ? "Qué queda abierto" : "What remains open",
+      blocks: [
+        paragraph(
+          es
+            ? "Nada. Todas las preguntas que este sistema activa tienen respuesta registrada y todos los regímenes aplicables están determinados."
+            : "Nothing. Every question this system triggers has a recorded answer, and every applicable regime is determined.",
+        ),
+      ],
+    };
+  }
+  return {
+    heading: es ? "Qué queda abierto" : "What remains open",
+    blocks: [
+      paragraph(
+        es
+          ? `Quedan ${gaps.length} apartados abiertos. Este borrador no está completo: cada línea es una obligación que el documento no puede acreditar hasta que alguien la responda.`
+          : `${gaps.length} items are open. This draft is not complete: each line is an obligation the document cannot evidence until someone answers it.`,
+      ),
+      table(
+        es ? ["Apartado", "Qué falta", "Obligación"] : ["Section", "What is missing", "Obligation"],
+        gaps.map((g) => [g.section, g.text, g.citations.join("; ") || (es ? "No consta" : "Not recorded")]),
+      ),
+    ],
+  };
+}
+
+/** n+2. What the document is not. Always last, always in full. */
+function notAdviceSection(input: ArtifactInput): ArtifactSection {
+  const es = input.locale === "es";
+  return {
+    heading: es ? "Qué no es este documento" : "What this document is not",
+    blocks: [
+      paragraph(disclaimerFor(input.scope, input.locale)),
+      paragraph(
+        es
+          ? "No es asesoramiento jurídico y no crea una relación profesional con nadie. No es una declaración de conformidad ni la certificación de un tercero. Es la evaluación de la propia organización, compuesta a partir de lo que su registro contiene, y necesita el criterio de una persona cualificada antes de que se actúe conforme a él."
+          : "It is not legal advice and it creates no professional relationship with anyone. It is not a declaration of conformity and it is not a third party's certification. It is the organisation's own assessment, assembled from what its registry holds, and it needs the judgment of a qualified person before anyone acts on it.",
+      ),
+    ],
   };
 }
 
@@ -280,11 +718,25 @@ function scopeSection(input: ArtifactInput): ArtifactSection {
 // 1. The unified impact assessment
 // ═══════════════════════════════════════════════════════════════════════════
 
+/**
+ * The order is the reading order of a stranger with no access to the screen the
+ * document came from: what was assessed and for whom, when and by whom and on
+ * what method, the scope, the inputs given, the findings, the substance, what
+ * remains open, and finally what the document is not. Changing the order means
+ * changing what a reader can rely on having been told first;
+ * artifacts.test.ts asserts it.
+ */
 export function buildAssessmentArtifact(input: ArtifactInput): Artifact {
   const { locale } = input;
   const applicable = applicableFrameworks(input.scope);
   const sections = selectUnifiedQuestions(input.scope.overlayTags);
-  const docSections: ArtifactSection[] = [scopeSection(input)];
+  const docSections: ArtifactSection[] = [
+    identificationSection(input),
+    methodSection(input),
+    scopeSection(input),
+    inputsSection(input, sections),
+    findingsSection(input),
+  ];
 
   for (const section of sections) {
     const blocks: Block[] = [];
@@ -301,6 +753,10 @@ export function buildAssessmentArtifact(input: ArtifactInput): Artifact {
       blocks,
     });
   }
+
+  // Collected from everything above it, then the closing statement.
+  docSections.push(openItemsSection(input, collectGaps(docSections)));
+  docSections.push(notAdviceSection(input));
 
   return header(
     input,

@@ -20,6 +20,7 @@ import { TeamCard } from "@/components/governance/team-card";
 import { DeleteOrganizationCard } from "@/components/governance/delete-organization-card";
 import { LegalHoldCard } from "@/components/governance/legal-hold-card";
 import { PilotStatusCard } from "@/components/governance/pilot-status-card";
+import { SampleDataCard } from "@/components/governance/worked-example-card";
 import type { JurisdictionId } from "@/config/jurisdictions";
 
 const personaIcons = {
@@ -105,6 +106,9 @@ export default function SettingsPage() {
 
       {/* Hosted pilot only: day counter, ceilings, the two ways out. Renders nothing on the kit. */}
       {organization && <PilotStatusCard organizationId={organization.id} />}
+
+      {/* The worked example's own removal. Renders nothing when there is none. */}
+      {organization && <SampleDataCard organizationId={organization.id} />}
 
       {/* Team: members and roles */}
       {organization && (

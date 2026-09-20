@@ -287,6 +287,22 @@
     "technicalOwnerPlaceholder": "e.g., ML Engineering Lead",
     "processesPersonalDataLabel": "This system processes personal data",
     "personalDataWarning": "A DPIA or FRIA may be required. You can link this system to DPO Central data assets after creation.",
+    "suggestionsLead": "This account can fill in {count, plural, one {one field} other {# fields}} for you. Each one says where the value comes from, and nothing is entered until you take it.",
+    "suggestionsApplyAll": "Use every suggestion",
+    "suggestionOffer": "Suggested: {value}, {basis}.",
+    "suggestionApplied": "Taken from a suggestion, {basis}. Edit it freely.",
+    "suggestionUse": "Use this",
+    "suggestionBasis": {
+      "you-are-registering-it": "because you are registering this system",
+      "most-of-your-systems": "because most of your systems name it",
+      "this-vendor-supplies-it": "because {subject} supplies this system",
+      "every-system-so-far": "because every system in your registry so far does"
+    },
+    "vendorEmptyPlaceholder": "No vendors yet. Type a name to add one",
+    "vendorAddPlaceholder": "Not in the list? Type a name to add it",
+    "vendorAddLabel": "Name of a vendor to add",
+    "vendorAddAction": "Add vendor",
+    "vendorCreated": "{name} added and selected.",
     "registering": "Registering...",
     "registerSystem": "Register System",
     "toastSuccess": "AI system registered successfully",
@@ -1702,6 +1718,7 @@
         "security": "Security & Trust",
         "crossBorder": "Cross-border regimes",
         "whatsNew": "What's new",
+        "pilot": "The hosted pilot",
         "frameworksOverview": "Overview and wheel",
         "frameworksTable": "Table",
         "frameworksCompare": "Compare",
@@ -4822,6 +4839,8 @@
     "downloadProtocol": "Review and appeal protocol",
     "downloadAddendum": "Agentic addendum",
     "download": "Download Markdown",
+    "downloadPdf": "PDF",
+    "downloadMarkdown": "Markdown",
     "noAssessmentYet": "No assessment answers recorded yet. The documents will generate as a complete set of gaps.",
     "stressTitle": "Agentic stress test",
     "stressDescription": "Where each document breaks when this system hands its output to an autonomous downstream agent.",
@@ -4930,9 +4949,10 @@
   },
   "deleteOrganization": {
     "title": "Delete this organization",
-    "description": "Permanently deletes {name} and everything in it: systems, assessments, policies, evidence, vendors and history. This cannot be undone. Export the program pack first if you need a record. Type the organization's name to confirm.",
+    "description": "Permanently deletes {name} and everything in it: systems, assessments, policies, evidence, vendors and history. The rows are removed from the database, not hidden. This cannot be undone, and exporting the program pack first is the only way to keep anything. Type the organization's name to confirm.",
     "confirmLabel": "Organization name, to confirm",
     "button": "Delete permanently",
+    "exportFirst": "Export the program pack",
     "deleted": "Organization deleted."
   },
   "audit": {
@@ -5389,6 +5409,8 @@
     "readOnlyBody": "The 90 editing days are over. This organisation is read-only: everything can still be opened and exported, nothing can be changed.",
     "ceilingReachedBody": "A ceiling has been reached. Two ways out:",
     "runOwn": "Run your own instance",
-    "exportAll": "Export everything (program pack)"
+    "exportAll": "Export everything (program pack)",
+    "afterExportBody": "Your file is downloaded. You can now empty this account.",
+    "afterExportAction": "Empty the account"
   }
 }

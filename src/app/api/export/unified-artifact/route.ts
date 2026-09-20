@@ -2,16 +2,19 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 /**
- * Download one of the four unified artifacts as Markdown.
+ * Download one of the four unified artifacts, as Markdown or as PDF.
  *
- * Markdown rather than PDF on purpose: the artifacts are meant to be taken
- * into the organisation's own systems of record, and Markdown pastes into
- * every one of them with the citations intact. The PDF pipeline stays for the
- * register-style reports, which are read rather than re-used.
+ * Markdown is the default on purpose: the artifacts are meant to be taken into
+ * the organisation's own systems of record, and Markdown pastes into every one
+ * of them with the citations intact. `format=pdf` is for the reader who
+ * receives the document rather than re-uses it, and who has no access to the
+ * screen it came from: a regulator, a client, a board. Both come from the same
+ * artifact, so they cannot say different things.
  */
 
 import { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
+import { renderToBuffer } from "@react-pdf/renderer";
 import { SESSION_COOKIE_NAME, useSecureCookies } from "@/lib/session-cookie";
 import prisma from "@/lib/prisma";
 import { resolveContentLocale } from "@/config/lawfirm-ai-toolkit";
@@ -23,6 +26,10 @@ import {
   buildProtocolArtifact,
 } from "@/server/services/artifacts/build-artifacts";
 import { renderArtifactMarkdown } from "@/server/services/artifacts/render-markdown";
+import {
+  ARTIFACT_CHROME,
+  renderArtifactDocument,
+} from "@/server/services/export/artifact-doc";
 import { exportStamp, sha256, stampLines } from "@/server/services/export/integrity";
 import {
   checkShowcaseAccess,
@@ -31,6 +38,9 @@ import {
 
 const KINDS = ["assessment", "notice", "protocol", "agentic-addendum"] as const;
 type Kind = (typeof KINDS)[number];
+
+const FORMATS = ["markdown", "pdf"] as const;
+type Format = (typeof FORMATS)[number];
 
 const FILENAME: Record<Kind, string> = {
   assessment: "unified-impact-assessment",
@@ -56,6 +66,12 @@ export async function GET(request: NextRequest) {
   }
   const kind = kindParam as Kind;
 
+  const formatParam = request.nextUrl.searchParams.get("format") ?? "markdown";
+  if (!FORMATS.includes(formatParam as Format)) {
+    return Response.json({ error: `format must be one of ${FORMATS.join(", ")}` }, { status: 400 });
+  }
+  const format = formatParam as Format;
+
   const token = await getToken({
     req: request,
     // This app overrides NextAuth's default cookie names; without these,
@@ -71,7 +87,7 @@ export async function GET(request: NextRequest) {
 
   const membership = await prisma.organizationMember.findFirst({
     where: { organizationId, user: { email: userEmail } },
-    include: { organization: true },
+    include: { organization: true, user: { select: { name: true, email: true } } },
   });
   if (!membership) {
     return Response.json({ error: "Forbidden" }, { status: 403 });
@@ -118,6 +134,13 @@ export async function GET(request: NextRequest) {
     answers: (assessment?.responses ?? {}) as Record<string, unknown>,
     locale,
     generatedAt: new Date().toISOString().slice(0, 10),
+    // Who generated this copy. A document that answers "when" and never "by
+    // whom" leaves its reader with nobody to ask about it.
+    preparedBy: {
+      name: membership.user.name,
+      email: membership.user.email,
+      role: membership.role,
+    },
   };
 
   const artifact =
@@ -134,14 +157,19 @@ export async function GET(request: NextRequest) {
   // later, which version of the rules the citations came from — the first
   // question asked of any generated legal document.
   const stamp = await exportStamp();
+  const contentHash = sha256(body);
+  const provenanceHeading =
+    locale === "es" ? "Procedencia de este documento" : "How this document was produced";
+  const hashLabel =
+    locale === "es" ? "Huella SHA-256 del texto anterior" : "SHA-256 of the text above";
   const provenance = [
     "",
     "---",
     "",
-    locale === "es" ? "## Procedencia de este documento" : "## How this document was produced",
+    `## ${provenanceHeading}`,
     "",
     ...stampLines(stamp, locale).map((l) => `- ${l}`),
-    `- ${locale === "es" ? "Huella SHA-256 del texto anterior" : "SHA-256 of the text above"}: \`${sha256(body)}\``,
+    `- ${hashLabel}: \`${contentHash}\``,
     "",
   ].join("\n");
   const markdown = `${body}${provenance}`;
@@ -155,7 +183,7 @@ export async function GET(request: NextRequest) {
       action: "EXPORT_UNIFIED_ARTIFACT",
       changes: {
         kind,
-        format: "markdown",
+        format,
         locale,
         sourceAssessmentId: assessment?.id ?? null,
         gaps: artifact.gaps.length,
@@ -163,16 +191,44 @@ export async function GET(request: NextRequest) {
         appVersion: stamp.appVersion,
         commit: stamp.commit,
         generatedAt: stamp.generatedAt,
-        sha256: sha256(body),
+        sha256: contentHash,
       },
     },
   });
 
-  const filename = `${FILENAME[kind]}-${slug(scope.system.name)}-${input.generatedAt}.md`;
+  const base = `${FILENAME[kind]}-${slug(scope.system.name)}-${input.generatedAt}`;
+
+  if (format === "pdf") {
+    // The same stamp the Markdown carries, as the document's closing section,
+    // so the two formats of one artifact never disagree about their provenance.
+    const stamped = {
+      ...artifact,
+      sections: [
+        ...artifact.sections,
+        {
+          heading: provenanceHeading,
+          blocks: [
+            { kind: "list" as const, items: [...stampLines(stamp, locale), `${hashLabel}: ${contentHash}`] },
+          ],
+        },
+      ],
+    };
+    const buffer = await renderToBuffer(
+      renderArtifactDocument({ artifact: stamped, chrome: ARTIFACT_CHROME[locale], locale }),
+    );
+    return new Response(new Uint8Array(buffer), {
+      headers: {
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `attachment; filename="${base}.pdf"`,
+        "Cache-Control": "no-store",
+      },
+    });
+  }
+
   return new Response(markdown, {
     headers: {
       "Content-Type": "text/markdown; charset=utf-8",
-      "Content-Disposition": `attachment; filename="${filename}"`,
+      "Content-Disposition": `attachment; filename="${base}.md"`,
       "Cache-Control": "no-store",
     },
   });

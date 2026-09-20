@@ -34,6 +34,7 @@ import { trpc } from "@/lib/trpc";
 import { useTranslations, useLocale } from "next-intl";
 import { InventoryImportDialog } from "@/components/governance/InventoryImportDialog";
 import { RiskTierBadge } from "@/components/governance/risk-tier-badge";
+import { SampleBadge, useSampleIds } from "@/components/governance/worked-example-card";
 import { useEnumLabels } from "@/lib/enum-labels";
 import { useOrganization } from "@/lib/organization-context";
 import { useExportDownload } from "@/components/governance/use-export-download";
@@ -83,6 +84,7 @@ export default function AIRegistryPage() {
   const locale = useLocale();
   const tc = useTranslations("common");
   const { statusLabel, roleLabel } = useEnumLabels();
+  const sampleSystemIds = useSampleIds(organization?.id, "AISystem");
 
   // While the organization context is still resolving, `canWrite` is false
   // even for owners — don't hide the Register button on that transient state,
@@ -257,6 +259,10 @@ export default function AIRegistryPage() {
                               <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                             </div>
                             <div className="flex gap-1.5 flex-wrap justify-end">
+                              {/* A record the worked example created says so
+                                  wherever it appears, so nobody mistakes an
+                                  invented system for one of their own. */}
+                              {sampleSystemIds.has(system.id) && <SampleBadge />}
                               <Badge
                                 variant="outline"
                                 className={`text-xs ${statusColors[system.status] || ""}`}

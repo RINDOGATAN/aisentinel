@@ -287,6 +287,22 @@
     "technicalOwnerPlaceholder": "p. ej., Responsable de Ingeniería ML",
     "processesPersonalDataLabel": "Este sistema trata datos personales",
     "personalDataWarning": "Puede ser necesaria una EIPD o FRIA. Puedes vincular este sistema a los activos de datos de DPO Central tras su creación.",
+    "suggestionsLead": "Esta cuenta puede rellenar {count, plural, one {un campo} other {# campos}} por ti. Cada uno indica de dónde sale el valor y nada se introduce hasta que lo aceptas.",
+    "suggestionsApplyAll": "Usar todas las sugerencias",
+    "suggestionOffer": "Sugerencia: {value}, {basis}.",
+    "suggestionApplied": "Tomado de una sugerencia, {basis}. Puedes editarlo sin problema.",
+    "suggestionUse": "Usar esto",
+    "suggestionBasis": {
+      "you-are-registering-it": "porque eres quien registra este sistema",
+      "most-of-your-systems": "porque la mayoría de tus sistemas lo indican así",
+      "this-vendor-supplies-it": "porque {subject} suministra este sistema",
+      "every-system-so-far": "porque hasta ahora todos los sistemas de tu registro lo hacen"
+    },
+    "vendorEmptyPlaceholder": "Todavía no hay proveedores. Escribe un nombre para añadir uno",
+    "vendorAddPlaceholder": "¿No está en la lista? Escribe un nombre para añadirlo",
+    "vendorAddLabel": "Nombre del proveedor que quieres añadir",
+    "vendorAddAction": "Añadir proveedor",
+    "vendorCreated": "{name} añadido y seleccionado.",
     "registering": "Registrando...",
     "registerSystem": "Registrar sistema",
     "toastSuccess": "Sistema de IA registrado correctamente",
@@ -1702,6 +1718,7 @@
         "security": "Seguridad y confianza",
         "crossBorder": "Regímenes transfronterizos",
         "whatsNew": "Novedades",
+        "pilot": "El piloto alojado",
         "frameworksOverview": "Resumen y rueda",
         "frameworksTable": "Tabla",
         "frameworksCompare": "Comparar",
@@ -4822,6 +4839,8 @@
     "downloadProtocol": "Protocolo de revisión y recurso",
     "downloadAddendum": "Anexo agéntico",
     "download": "Descargar en Markdown",
+    "downloadPdf": "PDF",
+    "downloadMarkdown": "Markdown",
     "noAssessmentYet": "Todavía no consta ninguna respuesta de evaluación. Los documentos se generarán como un conjunto completo de lagunas.",
     "stressTitle": "Prueba de esfuerzo agéntica",
     "stressDescription": "Dónde se rompe cada documento cuando este sistema entrega su resultado a un agente autónomo posterior.",
@@ -4930,9 +4949,10 @@
   },
   "deleteOrganization": {
     "title": "Eliminar esta organización",
-    "description": "Elimina de forma permanente {name} y todo su contenido: sistemas, evaluaciones, políticas, evidencias, proveedores e historial. No se puede deshacer. Si necesitas conservar un registro, exporta antes el paquete del programa. Escribe el nombre de la organización para confirmar.",
+    "description": "Elimina de forma permanente {name} y todo su contenido: sistemas, evaluaciones, políticas, evidencias, proveedores e historial. Los registros se borran de la base de datos, no se ocultan. No se puede deshacer, y exportar antes el paquete del programa es la única forma de conservar algo. Escribe el nombre de la organización para confirmar.",
     "confirmLabel": "Nombre de la organización, para confirmar",
     "button": "Eliminar de forma permanente",
+    "exportFirst": "Exportar el paquete del programa",
     "deleted": "Organización eliminada."
   },
   "audit": {
@@ -5389,6 +5409,8 @@
     "readOnlyBody": "Los 90 días de edición han terminado. Esta organización es de solo lectura: todo se puede abrir y exportar, nada se puede modificar.",
     "ceilingReachedBody": "Se ha alcanzado un límite. Dos salidas:",
     "runOwn": "Ejecuta tu propia instancia",
-    "exportAll": "Exportar todo (paquete del programa)"
+    "exportAll": "Exportar todo (paquete del programa)",
+    "afterExportBody": "Tu archivo se ha descargado. Ya puedes vaciar esta cuenta.",
+    "afterExportAction": "Vaciar la cuenta"
   }
 }

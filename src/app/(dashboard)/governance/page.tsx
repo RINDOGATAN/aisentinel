@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatusMark } from "@/components/ui/status-note";
 import {
   Cpu,
   Rocket,
@@ -244,32 +245,47 @@ export default function GovernanceDashboardPage() {
         </Card>
         <Card>
           <CardContent className="p-4">
-            <div className="text-xl sm:text-2xl font-bold text-success">{stats?.deployedSystems ?? 0}</div>
+            <div className="text-xl sm:text-2xl font-bold text-foreground">{stats?.deployedSystems ?? 0}</div>
             <p className="text-xs text-muted-foreground">{t("deployed")}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
-            <div className={`text-xl sm:text-2xl font-bold ${(stats?.highRiskSystems ?? 0) > 0 ? "text-destructive" : "text-muted-foreground"}`}>
+            <div className="text-xl sm:text-2xl font-bold text-foreground">
               {stats?.highRiskSystems ?? 0}
             </div>
             <p className="text-xs text-muted-foreground">{t("highRisk")}</p>
+            {(stats?.highRiskSystems ?? 0) > 0 && (
+              <StatusMark status="danger" className="text-[11px] mt-1">
+                {tc("needsAttention")}
+              </StatusMark>
+            )}
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
-            <div className={`text-xl sm:text-2xl font-bold ${incidents.open > 0 ? "text-warning" : "text-muted-foreground"}`}>
+            <div className="text-xl sm:text-2xl font-bold text-foreground">
               {incidents.open}
             </div>
             <p className="text-xs text-muted-foreground">{t("openIncidents")}</p>
+            {incidents.open > 0 && (
+              <StatusMark status="warning" className="text-[11px] mt-1">
+                {tc("needsAttention")}
+              </StatusMark>
+            )}
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
-            <div className={`text-xl sm:text-2xl font-bold ${oversight.pending > 0 ? "text-warning" : "text-muted-foreground"}`}>
+            <div className="text-xl sm:text-2xl font-bold text-foreground">
               {oversight.pending}
             </div>
             <p className="text-xs text-muted-foreground">{t("pendingGates")}</p>
+            {oversight.pending > 0 && (
+              <StatusMark status="warning" className="text-[11px] mt-1">
+                {tc("needsAttention")}
+              </StatusMark>
+            )}
           </CardContent>
         </Card>
         <Card>
@@ -337,16 +353,26 @@ export default function GovernanceDashboardPage() {
                 counters cannot hold the Spanish labels at 390 px. */}
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
               <div className="text-center">
-                <div className={`text-2xl font-bold ${incidents.critical > 0 ? "text-destructive" : "text-muted-foreground"}`}>
+                <div className="text-2xl font-bold text-foreground">
                   {incidents.critical}
                 </div>
                 <p className="text-xs text-muted-foreground">{t("critical")}</p>
+                {incidents.critical > 0 && (
+                  <StatusMark status="danger" className="text-[11px] mt-1">
+                    {tc("needsAttention")}
+                  </StatusMark>
+                )}
               </div>
               <div className="text-center">
-                <div className={`text-2xl font-bold ${incidents.open > 0 ? "text-warning" : "text-muted-foreground"}`}>
+                <div className="text-2xl font-bold text-foreground">
                   {incidents.open}
                 </div>
                 <p className="text-xs text-muted-foreground">{t("open")}</p>
+                {incidents.open > 0 && (
+                  <StatusMark status="warning" className="text-[11px] mt-1">
+                    {tc("needsAttention")}
+                  </StatusMark>
+                )}
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-muted-foreground">{incidents.total}</div>
@@ -374,22 +400,26 @@ export default function GovernanceDashboardPage() {
           <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0 space-y-3">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <div className={`text-2xl font-bold ${oversight.pending > 0 ? "text-warning" : "text-muted-foreground"}`}>
+                <div className="text-2xl font-bold text-foreground">
                   {oversight.pending}
                 </div>
                 <p className="text-xs text-muted-foreground">{t("pending")}</p>
+                {oversight.pending > 0 && (
+                  <StatusMark status="warning" className="text-[11px] mt-1">
+                    {tc("needsAttention")}
+                  </StatusMark>
+                )}
               </div>
               <div>
-                <div className={`text-2xl font-bold ${oversight.overdue > 0 ? "text-destructive" : "text-muted-foreground"}`}>
+                <div className="text-2xl font-bold text-foreground">
                   {oversight.overdue}
                 </div>
-                <p className="text-xs text-muted-foreground">
-                  {oversight.overdue > 0 ? (
-                    <span className="bg-destructive/20 text-foreground px-1.5 py-0.5">{t("overdue")}</span>
-                  ) : (
-                    t("overdue")
-                  )}
-                </p>
+                <p className="text-xs text-muted-foreground">{t("overdue")}</p>
+                {oversight.overdue > 0 && (
+                  <StatusMark status="danger" className="text-[11px] mt-1">
+                    {tc("needsAttention")}
+                  </StatusMark>
+                )}
               </div>
             </div>
             <Link href="/governance/oversight">
@@ -411,22 +441,26 @@ export default function GovernanceDashboardPage() {
           <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0 space-y-3">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <div className={`text-2xl font-bold ${transparency.markingRequired > 0 ? "text-warning" : "text-muted-foreground"}`}>
+                <div className="text-2xl font-bold text-foreground">
                   {transparency.markingRequired}
                 </div>
                 <p className="text-xs text-muted-foreground">{t("markingRequired")}</p>
+                {transparency.markingRequired > 0 && (
+                  <StatusMark status="warning" className="text-[11px] mt-1">
+                    {tc("needsAttention")}
+                  </StatusMark>
+                )}
               </div>
               <div>
-                <div className={`text-2xl font-bold ${transparency.markingOverdue > 0 ? "text-destructive" : "text-muted-foreground"}`}>
+                <div className="text-2xl font-bold text-foreground">
                   {transparency.markingOverdue}
                 </div>
-                <p className="text-xs text-muted-foreground">
-                  {transparency.markingOverdue > 0 ? (
-                    <span className="bg-destructive/20 text-foreground px-1.5 py-0.5">{t("markingOverdue")}</span>
-                  ) : (
-                    t("markingOverdue")
-                  )}
-                </p>
+                <p className="text-xs text-muted-foreground">{t("markingOverdue")}</p>
+                {transparency.markingOverdue > 0 && (
+                  <StatusMark status="danger" className="text-[11px] mt-1">
+                    {tc("needsAttention")}
+                  </StatusMark>
+                )}
               </div>
             </div>
             <Link href="/governance/ai-registry">
@@ -453,32 +487,34 @@ export default function GovernanceDashboardPage() {
                 <p className="text-[10px] text-muted-foreground">{tc("statusDraft")}</p>
               </div>
               <div>
-                <div className="text-lg font-bold text-info">{pipeline.inProgress}</div>
+                <div className="text-lg font-bold text-foreground">{pipeline.inProgress}</div>
                 <p className="text-[10px] text-muted-foreground">{tc("statusInProgress")}</p>
               </div>
               <div>
-                <div className="text-lg font-bold text-warning">{pipeline.underReview}</div>
+                <div className="text-lg font-bold text-foreground">{pipeline.underReview}</div>
                 <p className="text-[10px] text-muted-foreground">{tc("statusUnderReview")}</p>
               </div>
               <div>
-                <div className="text-lg font-bold text-success">{pipeline.approved}</div>
+                <div className="text-lg font-bold text-foreground">{pipeline.approved}</div>
                 <p className="text-[10px] text-muted-foreground">{tc("statusApproved")}</p>
               </div>
             </div>
             {/* Progress bar */}
             {(pipeline.draft + pipeline.inProgress + pipeline.underReview + pipeline.approved) > 0 && (
-              <div className="h-2 flex overflow-hidden rounded-sm mt-3">
+              // Full-opacity bands, each at least 3:1 against the card, and a
+              // rule between adjacent bands so they separate without hue.
+              <div className="h-2 flex overflow-hidden rounded-sm mt-3 [&>*+*]:border-l-2 [&>*+*]:border-card">
                 {pipeline.draft > 0 && (
-                  <div className="bg-muted-foreground/30" style={{ flex: pipeline.draft }} />
+                  <div className="bg-muted-foreground" style={{ flex: pipeline.draft }} />
                 )}
                 {pipeline.inProgress > 0 && (
-                  <div className="bg-info/50" style={{ flex: pipeline.inProgress }} />
+                  <div className="bg-info" style={{ flex: pipeline.inProgress }} />
                 )}
                 {pipeline.underReview > 0 && (
-                  <div className="bg-warning/50" style={{ flex: pipeline.underReview }} />
+                  <div className="bg-warning" style={{ flex: pipeline.underReview }} />
                 )}
                 {pipeline.approved > 0 && (
-                  <div className="bg-success/50" style={{ flex: pipeline.approved }} />
+                  <div className="bg-success" style={{ flex: pipeline.approved }} />
                 )}
               </div>
             )}
@@ -496,35 +532,37 @@ export default function GovernanceDashboardPage() {
           <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0 space-y-3">
             {complianceTotal > 0 ? (
               <>
-                <div className="h-4 flex overflow-hidden rounded-sm">
+                <div className="h-4 flex overflow-hidden rounded-sm [&>*+*]:border-l-2 [&>*+*]:border-card">
                   {compliance.compliant > 0 && (
-                    <div className="bg-success/60" style={{ width: `${(compliance.compliant / complianceTotal) * 100}%` }} />
+                    <div className="bg-success" style={{ width: `${(compliance.compliant / complianceTotal) * 100}%` }} />
                   )}
                   {compliance.partial > 0 && (
-                    <div className="bg-warning/50" style={{ width: `${(compliance.partial / complianceTotal) * 100}%` }} />
+                    <div className="bg-warning" style={{ width: `${(compliance.partial / complianceTotal) * 100}%` }} />
                   )}
                   {compliance.nonCompliant > 0 && (
-                    <div className="bg-destructive/50" style={{ width: `${(compliance.nonCompliant / complianceTotal) * 100}%` }} />
+                    <div className="bg-destructive" style={{ width: `${(compliance.nonCompliant / complianceTotal) * 100}%` }} />
                   )}
                   {compliance.notAssessed > 0 && (
-                    <div className="bg-muted" style={{ width: `${(compliance.notAssessed / complianceTotal) * 100}%` }} />
+                    <div className="bg-muted-foreground" style={{ width: `${(compliance.notAssessed / complianceTotal) * 100}%` }} />
                   )}
                 </div>
+                {/* The legend names each band and gives its count, so the bar
+                    can be read without telling the hues apart. */}
                 <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
                   <span className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-sm bg-success/60" />
+                    <span className="w-2.5 h-2.5 rounded-sm bg-success" />
                     {tc("complianceCompliant")} ({compliance.compliant})
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-sm bg-warning/50" />
+                    <span className="w-2.5 h-2.5 rounded-sm bg-warning" />
                     {tc("compliancePartial")} ({compliance.partial})
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-sm bg-destructive/50" />
+                    <span className="w-2.5 h-2.5 rounded-sm bg-destructive" />
                     {tc("complianceNonCompliant")} ({compliance.nonCompliant})
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-sm bg-muted" />
+                    <span className="w-2.5 h-2.5 rounded-sm bg-muted-foreground" />
                     {tc("complianceNotAssessed")} ({compliance.notAssessed})
                   </span>
                 </div>

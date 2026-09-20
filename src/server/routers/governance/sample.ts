@@ -19,7 +19,8 @@ import {
   removeWorkedExample,
 } from "@/server/services/sample/worked-example";
 import { assertNotOnHold } from "@/server/services/legal-hold";
-import { pilotLocale } from "@/server/services/pilot/caps";
+import { assertPilotRoom, pilotLocale } from "@/server/services/pilot/caps";
+import { EXAMPLE_SYSTEMS, EXAMPLE_VENDORS } from "@/config/worked-example";
 
 export const sampleRouter = createTRPCRouter({
   /** Does this organisation hold the worked example, and how much of it? */
@@ -32,23 +33,44 @@ export const sampleRouter = createTRPCRouter({
     .input(z.object({ organizationId: z.string() }))
     .query(({ ctx }) => getSampleIds(ctx.prisma, ctx.organization.id)),
 
-  /** Add the example. Idempotent: an organisation never holds two copies. */
+  /**
+   * Add the example. Idempotent: an organisation never holds two copies. The
+   * pilot ceilings apply, because the example creates real records: an
+   * organisation close to its limit is told so rather than pushed over it.
+   */
   create: orgWriteProcedure
     .input(z.object({ organizationId: z.string() }))
-    .mutation(({ ctx }) =>
-      createWorkedExample(ctx.prisma, {
+    .mutation(async ({ ctx }) => {
+      const locale = pilotLocale(ctx.getCookie);
+      const room: [Parameters<typeof assertPilotRoom>[2], number][] = [
+        ["systems", EXAMPLE_SYSTEMS.length],
+        ["vendors", EXAMPLE_VENDORS.length],
+        ["policies", 1],
+        ["oversightGates", 1],
+        ["incidents", 1],
+        ["assessments", 1],
+      ];
+      for (const [key, adding] of room) {
+        await assertPilotRoom(ctx.prisma, ctx.organization.id, key, locale, adding);
+      }
+      return createWorkedExample(ctx.prisma, {
         organizationId: ctx.organization.id,
         userId: ctx.session.user.id,
-        locale: pilotLocale(ctx.getCookie),
-      }),
-    ),
+        locale,
+      });
+    }),
 
   /**
    * Remove every record the example created, and nothing else. Guarded by the
    * legal hold like every other delete path: a hold in force means nothing in
    * scope is removed, sample or not.
+   *
+   * The pilot's read-only switch does not close this door, for the same reason
+   * it does not close organization.delete: getting rid of data is never the
+   * thing a cap on editing should prevent.
    */
   remove: orgWriteProcedure
+    .meta({ pilotReadOnlyExempt: true })
     .input(z.object({ organizationId: z.string() }))
     .mutation(async ({ ctx }) => {
       await assertNotOnHold(ctx.prisma, ctx.organization.id);

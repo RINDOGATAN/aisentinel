@@ -15,7 +15,9 @@ import {
   PILOT_RUN_URL,
   PILOT_SENTENCE,
   pilotBannerVisible,
+  pilotSentenceText,
 } from "@/config/pilot";
+import { DISCLOSURE_DOCS_PATH } from "@/config/pilot-disclosure";
 import { PilotBanner } from "./pilot-banner";
 
 const HOSTED = { VERCEL: "1", VERCEL_ENV: "production" };
@@ -35,20 +37,23 @@ describe("where the banner shows", () => {
 });
 
 describe("what the banner says", () => {
-  it.each(["en", "es"] as const)("renders the one sentence with the link to /run (%s)", (locale) => {
+  it.each(["en", "es"] as const)("renders the one sentence with its two links: the docs and /run (%s)", (locale) => {
     const html = renderToStaticMarkup(
       <PilotBanner
         locale={locale}
         sentence={PILOT_SENTENCE[locale]}
-        runUrl={PILOT_RUN_URL}
         dismissLabel={locale === "es" ? "Cerrar" : "Dismiss"}
       />,
     );
     expect(html).toContain('data-testid="pilot-banner"');
     expect(html).toContain(PILOT_SENTENCE[locale].before);
+    expect(html).toContain(`href="${DISCLOSURE_DOCS_PATH}"`);
+    expect(html).toContain(`>${PILOT_SENTENCE[locale].docs}</a>`);
     expect(html).toContain(`href="${PILOT_RUN_URL}"`);
     expect(html).toContain(`>${PILOT_SENTENCE[locale].link}</a>`);
     expect(html).toContain(`aria-label="${locale === "es" ? "Cerrar" : "Dismiss"}"`);
+    // Read as text, the markup is the agreed sentence and nothing else.
+    expect(html.replace(/<[^>]+>/g, "")).toBe(pilotSentenceText(locale));
   });
 
   it("the sign-up screens and the Settings card add the editing terms, word for word", () => {
@@ -62,9 +67,20 @@ describe("what the banner says", () => {
     }
   });
 
+  it("every copy of the sentence goes through the one renderer, so they change together", () => {
+    for (const file of [
+      "src/components/pilot/pilot-banner.tsx",
+      "src/app/(auth)/sign-in/sign-in-form.tsx",
+      "src/landing/components/StartupProductPage.tsx",
+      "src/components/governance/pilot-status-card.tsx",
+    ]) {
+      expect(readFileSync(join(process.cwd(), file), "utf8"), file).toMatch(/<PilotSentenceText\b/);
+    }
+  });
+
   it("keeps to one sentence in each language: no price, no module for sale", () => {
     for (const locale of ["en", "es"] as const) {
-      const text = PILOT_SENTENCE[locale].before + PILOT_SENTENCE[locale].link + PILOT_SENTENCE[locale].after;
+      const text = pilotSentenceText(locale);
       expect(text.split(". ").length).toBeLessThanOrEqual(2);
       expect(text).not.toMatch(/€|\$|\b60\b/);
     }

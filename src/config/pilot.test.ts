@@ -19,6 +19,7 @@ import {
   pilotExportUrl,
   pilotOneOrganizationMessage,
   pilotReadOnlyMessage,
+  pilotSentenceText,
   resolveCookieDomain,
 } from "./pilot";
 
@@ -152,10 +153,24 @@ describe("what the pilot says", () => {
   });
 
   it("carries the one sentence in both languages, with the link on the way out", () => {
-    expect(PILOT_SENTENCE.en.before).toContain("no security certification");
+    // The wording agreed across the suite on 20 September 2026, word for word.
+    expect(pilotSentenceText("en")).toBe(
+      "Hosted pilot: free, capped (see docs), and with no contractual safeguards. To deploy real customer details, run your own instance.",
+    );
+    expect(pilotSentenceText("es")).toBe(
+      "Piloto alojado: gratuito, limitado (ver documentación) y sin garantías contractuales. Para manejar datos reales de clientes, usa tu propia instancia.",
+    );
+    expect(PILOT_SENTENCE.en.docs).toBe("see docs");
     expect(PILOT_SENTENCE.en.link).toBe("run your own instance");
-    expect(PILOT_SENTENCE.es.before).toContain("sin certificación de seguridad");
-    expect(PILOT_SENTENCE.es.link).toBe("ejecuta tu propia instancia");
+    expect(PILOT_SENTENCE.es.docs).toBe("ver documentación");
+    expect(PILOT_SENTENCE.es.link).toBe("usa tu propia instancia");
     expect(PILOT_RUN_URL).toBe("https://www.todo.law/run");
+  });
+
+  it("leaves certification to the disclosure: the sentence does not mention it, and has no long dash", () => {
+    for (const locale of ["en", "es"] as const) {
+      expect(pilotSentenceText(locale)).not.toMatch(/certific/i);
+      expect(pilotSentenceText(locale)).not.toMatch(/[—–]/);
+    }
   });
 });

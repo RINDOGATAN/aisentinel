@@ -26,6 +26,7 @@ import {
   PILOT_RUN_URL,
   PILOT_SENTENCE,
   PILOT_TERMS,
+  pilotSentenceText,
   type PilotLocale,
 } from "@/config/pilot";
 
@@ -33,7 +34,7 @@ export async function generateMetadata() {
   const locale: PilotLocale = (await getLocale()) === "es" ? "es" : "en";
   return {
     title: DISCLOSURE_CHROME[locale].title,
-    description: PILOT_SENTENCE[locale].before + PILOT_SENTENCE[locale].link + PILOT_SENTENCE[locale].after,
+    description: pilotSentenceText(locale),
   };
 }
 

@@ -12,7 +12,6 @@ import { cookies } from "next/headers";
 import { getLocale, getTranslations } from "next-intl/server";
 import {
   PILOT_BANNER_COOKIE,
-  PILOT_RUN_URL,
   PILOT_SENTENCE,
   pilotBannerVisible,
   type PilotLocale,
@@ -33,7 +32,6 @@ export async function HostedPilotBanner() {
     <PilotBanner
       locale={locale}
       sentence={PILOT_SENTENCE[locale]}
-      runUrl={PILOT_RUN_URL}
       dismissLabel={t("dismiss")}
     />
   );

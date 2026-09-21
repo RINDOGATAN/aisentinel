@@ -5,6 +5,8 @@ import { useState, useRef, useEffect } from "react";
 import { signIn } from "next-auth/react";
 import { ArrowRight, Check, Loader2 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import type { PilotSentence } from "@/config/pilot";
+import { PilotSentenceText } from "@/components/pilot/pilot-sentence";
 
 export interface Feature {
   id: string;
@@ -36,7 +38,7 @@ interface StartupProductPageProps {
   accentGradient?: string;
   callbackUrl: string;
   /** The hosted pilot's one sentence, shown in the sign-up card; null off the pilot. */
-  pilotNotice?: { before: string; link: string; after: string; url: string; terms: string } | null;
+  pilotNotice?: { sentence: PilotSentence; terms: string } | null;
 }
 
 const GoogleIcon = () => (
@@ -155,11 +157,7 @@ const StartupProductPage = ({
 
   const pilotLine = pilotNotice ? (
     <p data-testid="pilot-signup-notice" className="text-xs text-muted-foreground font-body mt-4 leading-relaxed">
-      {pilotNotice.before}
-      <a href={pilotNotice.url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 text-foreground hover:text-accent">
-        {pilotNotice.link}
-      </a>
-      {pilotNotice.after}
+      <PilotSentenceText sentence={pilotNotice.sentence} linkClassName="underline underline-offset-2 text-foreground hover:text-accent" />
       <span className="block mt-1">{pilotNotice.terms}</span>
     </p>
   ) : null;

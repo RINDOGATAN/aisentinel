@@ -10,7 +10,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { features } from "@/config/features";
 import { brand } from "@/config/brand";
-import { PILOT_RUN_URL, PILOT_SENTENCE, PILOT_TERMS } from "@/config/pilot";
+import { PILOT_SENTENCE, PILOT_TERMS } from "@/config/pilot";
+import { PilotSentenceText } from "@/components/pilot/pilot-sentence";
 
 // Local (passwordless credentials) login: dev mode, or sovereign/self-hosted
 // builds with NEXT_PUBLIC_LOCAL_AUTH_ENABLED=true. The NextAuth provider id
@@ -127,11 +128,7 @@ export function SignInForm({ hostedPilot }: { hostedPilot: boolean }) {
         {/* The hosted pilot says what it is before anyone signs up. */}
         {hostedPilot && (
           <p data-testid="pilot-signup-notice" className="mb-6 p-3 border border-primary/30 bg-primary/10 text-xs text-foreground text-center">
-            {pilotSentence.before}
-            <a href={PILOT_RUN_URL} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 font-medium hover:text-primary">
-              {pilotSentence.link}
-            </a>
-            {pilotSentence.after}
+            <PilotSentenceText sentence={pilotSentence} linkClassName="underline underline-offset-2 font-medium hover:text-primary" />
             <span className="block mt-1">{pilotTerms}</span>
           </p>
         )}

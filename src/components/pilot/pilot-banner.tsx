@@ -13,18 +13,18 @@
 
 import { useState } from "react";
 import { X } from "lucide-react";
-import { PILOT_BANNER_COOKIE, PILOT_BANNER_DISMISSED, type PilotLocale } from "@/config/pilot";
+import { PILOT_BANNER_COOKIE, PILOT_BANNER_DISMISSED, type PilotLocale, type PilotSentence } from "@/config/pilot";
+import { PilotSentenceText } from "./pilot-sentence";
 
 export const PILOT_BANNER_BODY_CLASS = "has-pilot-banner";
 
 export interface PilotBannerProps {
   locale: PilotLocale;
-  sentence: { before: string; link: string; after: string };
-  runUrl: string;
+  sentence: PilotSentence;
   dismissLabel: string;
 }
 
-export function PilotBanner({ sentence, runUrl, dismissLabel }: PilotBannerProps) {
+export function PilotBanner({ sentence, dismissLabel }: PilotBannerProps) {
   const [visible, setVisible] = useState(true);
   if (!visible) return null;
 
@@ -46,16 +46,7 @@ export function PilotBanner({ sentence, runUrl, dismissLabel }: PilotBannerProps
             on a phone: without them the longest word sets a minimum width and
             the banner, not the words, decides how wide the page is. */}
         <p className="min-w-0 break-words">
-          {sentence.before}
-          <a
-            href={runUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline underline-offset-2 font-medium hover:text-primary"
-          >
-            {sentence.link}
-          </a>
-          {sentence.after}
+          <PilotSentenceText sentence={sentence} linkClassName="underline underline-offset-2 font-medium hover:text-primary" />
         </p>
         <button
           type="button"

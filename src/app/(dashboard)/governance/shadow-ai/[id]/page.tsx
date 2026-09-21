@@ -362,7 +362,7 @@ export default function ShadowAIDetailPage() {
       )}
 
       {/* Content Grid */}
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         {/* Overview */}
         <Card className="md:col-span-2">
           <CardHeader>

@@ -225,7 +225,7 @@ export default function ThreatModelDetailPage() {
         </CardContent>
       </Card>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-base">{t("matrixTitle")}</CardTitle>
@@ -476,7 +476,7 @@ export default function ThreatModelDetailPage() {
                               value={method}
                               onChange={(e) => setMethod(e.target.value)}
                             />
-                            <div className="grid gap-2 sm:grid-cols-2">
+                            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                               <div className="space-y-1.5">
                                 <Label className="text-xs">{t("resultLabel")}</Label>
                                 <Select

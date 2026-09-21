@@ -156,7 +156,7 @@ export function LegalHoldCard({
 
             {mayHold && (
               <div className="space-y-2 border-t pt-4">
-                <div className="grid gap-2 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                   <div className="space-y-1.5">
                     <Label className="text-xs" htmlFor="hold-matter">
                       {t("matter")}

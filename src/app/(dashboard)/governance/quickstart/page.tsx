@@ -597,7 +597,7 @@ export default function QuickstartPage() {
             {t("choosePathDescription")}
           </p>
 
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {/* Vendor Import Card */}
             <Card
               className={`cursor-pointer transition-all ${
@@ -1033,7 +1033,7 @@ export default function QuickstartPage() {
           </div>
 
           {/* Template grid */}
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {templates?.map((t) => {
               const Icon = ICON_MAP[t.icon] ?? Sparkles;
               const isSelected = selectedIndustryId === t.id;
@@ -1282,7 +1282,7 @@ export default function QuickstartPage() {
                         : t("clearCategory")}
                     </Button>
                   </div>
-                  <div className="grid gap-2 sm:grid-cols-2">
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                     {categoryTools.map((tool) => {
                       const isSelected = selectedLawFirmToolIds.includes(
                         tool.id,
@@ -1927,7 +1927,7 @@ export default function QuickstartPage() {
           </Card>
 
           {/* Quick nav cards */}
-          <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
             {SUCCESS_NAV.map(({ href, icon: Icon, key }) => (
               <Link key={href} href={href}>
                 <Card className="hover:border-primary/50 transition-all cursor-pointer h-full">

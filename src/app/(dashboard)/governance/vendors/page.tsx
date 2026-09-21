@@ -247,7 +247,7 @@ export default function VendorRiskPage() {
             ) : portfolioChain.shared.length === 0 ? (
               <p className="text-sm text-muted-foreground">{t("sharedNone")}</p>
             ) : (
-              <ul className="grid gap-2 sm:grid-cols-2">
+              <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                 {portfolioChain.shared.map((s) => (
                   <li
                     key={s.key}

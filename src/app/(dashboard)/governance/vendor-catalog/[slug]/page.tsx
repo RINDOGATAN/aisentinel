@@ -153,7 +153,7 @@ export default function VendorCatalogDetailPage() {
       </div>
 
       {/* Two-column layout */}
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Left column */}
         <div className="lg:col-span-2 space-y-6">
           {/* Description */}
@@ -298,7 +298,7 @@ export default function VendorCatalogDetailPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid gap-2 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                   {aiModels.map((model, i) => (
                     <div
                       key={`${model.name}-${i}`}
@@ -366,7 +366,7 @@ export default function VendorCatalogDetailPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid gap-2 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                   {governanceChecks.map((check) => {
                     if (check.value == null) return null;
                     return (

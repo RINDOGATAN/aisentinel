@@ -297,7 +297,7 @@ export default function GovernanceDashboardPage() {
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-2">
         {/* Risk Posture */}
         <Card>
           <CardHeader className="p-4 sm:p-6 pb-3">

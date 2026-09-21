@@ -70,7 +70,7 @@ export function PersonaSelector() {
           <p className="text-sm text-muted-foreground">{t("personaSubtitle")}</p>
         </div>
 
-        <div className="grid gap-3">
+        <div className="grid grid-cols-1 gap-3">
           {personas.map((persona) => {
             const Icon = persona.icon;
             const isSelected = selected === persona.type;

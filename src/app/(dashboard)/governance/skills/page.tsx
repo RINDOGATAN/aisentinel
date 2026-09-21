@@ -179,7 +179,7 @@ export default function SkillsPage() {
             )}
           </div>
         ) : (
-          <ul className="grid gap-3">
+          <ul className="grid grid-cols-1 gap-3">
             {packages.map((pkg) => {
               const active = !!pkg.entitlement?.isActive;
               // Self-hosted builds bypass every entitlement gate (allSkillsFree)

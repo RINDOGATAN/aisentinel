@@ -133,7 +133,7 @@ export default function NewOversightGatePage() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* AI System & Gate Type */}
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="aiSystemId">{t("aiSystemLabel")} *</Label>
                 <Select
@@ -196,7 +196,7 @@ export default function NewOversightGatePage() {
             </div>
 
             {/* Review Cadence & Next Review Date */}
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="reviewCadence">{t("reviewCadenceLabel")}</Label>
                 <Input

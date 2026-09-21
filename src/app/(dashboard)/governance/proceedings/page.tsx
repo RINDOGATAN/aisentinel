@@ -129,7 +129,7 @@ export default function ProceedingsPage() {
 
       {canWrite && (
         <Card>
-          <CardContent className="p-4 grid gap-3 sm:grid-cols-[2fr_2fr_1fr_auto] sm:items-end">
+          <CardContent className="p-4 grid grid-cols-1 gap-3 sm:grid-cols-[2fr_2fr_1fr_auto] sm:items-end">
             <div className="space-y-1.5">
               <Label className="text-xs" htmlFor="p-title">
                 {t("titleLabel")}

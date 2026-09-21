@@ -18,6 +18,7 @@ import {
 import { brand } from "@/config/brand";
 import { resolveCookieDomain } from "@/config/pilot";
 import { recordPilotSignIn } from "@/server/services/pilot/first-sign-in";
+import { claimableDomain, emailDomain as domainOfEmail } from "@/lib/org-domain";
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
@@ -278,11 +279,34 @@ export const authOptions: NextAuthOptions = {
       // Auto-join organization by email domain
       try {
         if (user.email) {
-          const emailDomain = user.email.split("@")[1];
+          const emailDomain = domainOfEmail(user.email);
 
-          const matchingOrg = await prisma.organization.findFirst({
-            where: { domain: emailDomain },
-          });
+          // A stored domain is only a claim. It joins a person when it still
+          // passes the create rule against the organization's owner today
+          // (owner's own address at that domain, not a public mail provider),
+          // and only when one organization claims it: where two do, nobody
+          // can say which is meant, so nobody is joined. Oldest first keeps
+          // the read deterministic.
+          const claimants = emailDomain
+            ? await prisma.organization.findMany({
+                where: { domain: { equals: emailDomain, mode: "insensitive" } },
+                orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+                take: 2,
+                select: {
+                  id: true,
+                  domain: true,
+                  members: {
+                    where: { role: "OWNER" },
+                    orderBy: [{ joinedAt: "asc" }, { id: "asc" }],
+                    take: 1,
+                    select: { user: { select: { email: true } } },
+                  },
+                },
+              })
+            : [];
+          const only = claimants.length === 1 ? claimants[0] : null;
+          const matchingOrg =
+            only && claimableDomain(only.domain, only.members[0]?.user.email) ? only : null;
 
           if (matchingOrg) {
             const existingMembership = await prisma.organizationMember.findFirst({

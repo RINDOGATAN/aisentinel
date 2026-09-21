@@ -13,6 +13,7 @@ import { OrganizationRole } from "@prisma/client";
 import { computeMarkingDeadline } from "@/config/transparency-rules";
 import { JURISDICTION_IDS } from "@/config/jurisdictions";
 import { firstFreeSlug } from "@/lib/unique-slug";
+import { claimableDomain } from "@/lib/org-domain";
 import { assertNotOnHold } from "../../services/legal-hold";
 import {
   assertPilotOrganizationLimit,
@@ -110,11 +111,23 @@ export const organizationRouter = createTRPCRouter({
         });
       }
 
+      // The domain decides who is auto-joined at sign-in, so it is kept only
+      // when it is the domain of the creator's own address (read from the
+      // account record, never from input) and not a public mail provider.
+      // Anything else: the organization is created without a domain.
+      const creator = input.domain
+        ? await ctx.prisma.user.findUnique({
+            where: { id: ctx.session.user.id },
+            select: { email: true },
+          })
+        : null;
+      const domain = claimableDomain(input.domain, creator?.email);
+
       const organization = await ctx.prisma.organization.create({
         data: {
           name: input.name,
           slug,
-          domain: input.domain,
+          domain,
           members: {
             create: {
               userId: ctx.session.user.id,

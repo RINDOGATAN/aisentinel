@@ -104,6 +104,8 @@ Certain sensitive operations require `OWNER`, `ADMIN`, or `AI_OFFICER` roles:
 
 When a user signs in, their email domain is matched against `Organization.domain`. If matched, they are automatically added as `MEMBER` role. This is logged in the audit trail. No email domain receives premium entitlements or elevated roles automatically: sign-in never provisions entitlements.
 
+A stored domain is a claim, and the claim is checked twice (`src/lib/org-domain.ts`). On create, an organization keeps a domain only when it equals the domain of the creator's own account address and is not a public mail provider; otherwise it is created without a domain. At sign-in, a person is joined only when exactly one organization stores their domain and that organization's owner has an address at that domain today; where two organizations claim one domain, or the owner is elsewhere, nobody is joined.
+
 ---
 
 ## 4. Input Validation

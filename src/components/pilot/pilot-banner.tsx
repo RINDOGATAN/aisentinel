@@ -16,8 +16,6 @@ import { X } from "lucide-react";
 import { PILOT_BANNER_COOKIE, PILOT_BANNER_DISMISSED, type PilotLocale, type PilotSentence } from "@/config/pilot";
 import { PilotSentenceText } from "./pilot-sentence";
 
-export const PILOT_BANNER_BODY_CLASS = "has-pilot-banner";
-
 export interface PilotBannerProps {
   locale: PilotLocale;
   sentence: PilotSentence;
@@ -31,7 +29,6 @@ export function PilotBanner({ sentence, dismissLabel }: PilotBannerProps) {
   function dismiss() {
     // A session cookie: no max-age, so the browser drops it when it closes.
     document.cookie = `${PILOT_BANNER_COOKIE}=${PILOT_BANNER_DISMISSED}; path=/; SameSite=Lax`;
-    document.body.classList.remove(PILOT_BANNER_BODY_CLASS);
     setVisible(false);
   }
 

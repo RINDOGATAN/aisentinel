@@ -175,22 +175,44 @@ export const PILOT_TERMS: Record<PilotLocale, string> = {
   es: `${PILOT_EDIT_DAYS} días de edición desde tu primer inicio de sesión y después solo lectura con exportación.`,
 };
 
+export interface PilotSentence {
+  before: string;
+  /** Link text leading to DISCLOSURE_DOCS_PATH, the hosted-pilot documentation page. */
+  docs: string;
+  middle: string;
+  /** Link text leading to PILOT_RUN_URL. */
+  link: string;
+  after: string;
+}
+
 /**
  * The one sentence the pilot shows everywhere: the banner, the sign-up screen
- * and the Settings card. The link text is the part that leads to PILOT_RUN_URL.
+ * and the Settings card. It carries two links: the docs part leads to
+ * DISCLOSURE_DOCS_PATH, the link part to PILOT_RUN_URL. What the service holds by
+ * way of certification is stated in the disclosure, not here.
  */
-export const PILOT_SENTENCE: Record<PilotLocale, { before: string; link: string; after: string }> = {
+export const PILOT_SENTENCE: Record<PilotLocale, PilotSentence> = {
   en: {
-    before: "Hosted pilot: free, capped, no security certification. For real client data, ",
+    before: "Hosted pilot: free, capped (",
+    docs: "see docs",
+    middle: "), and with no contractual safeguards. To deploy real customer details, ",
     link: "run your own instance",
     after: ".",
   },
   es: {
-    before: "Piloto alojado: gratuito, con límites y sin certificación de seguridad. Para datos reales de clientes, ",
-    link: "ejecuta tu propia instancia",
+    before: "Piloto alojado: gratuito, limitado (",
+    docs: "ver documentación",
+    middle: ") y sin garantías contractuales. Para manejar datos reales de clientes, ",
+    link: "usa tu propia instancia",
     after: ".",
   },
 };
+
+/** The sentence as plain text, for metadata and anywhere a link cannot go. */
+export function pilotSentenceText(locale: PilotLocale): string {
+  const s = PILOT_SENTENCE[locale];
+  return s.before + s.docs + s.middle + s.link + s.after;
+}
 
 /**
  * The banner is dismissible per session: a session cookie (no max-age) with

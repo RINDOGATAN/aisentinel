@@ -16,6 +16,7 @@ import { Download, ExternalLink, FlaskConical, Lock } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { PILOT_CEILING_LABELS, PILOT_RUN_URL, PILOT_SENTENCE, PILOT_TERMS } from "@/config/pilot";
 import { DISCLOSURE_CHROME, DISCLOSURE_DOCS_PATH } from "@/config/pilot-disclosure";
+import { PilotSentenceText } from "@/components/pilot/pilot-sentence";
 
 export function PilotStatusCard({ organizationId }: { organizationId: string }) {
   const t = useTranslations("pilot");
@@ -44,11 +45,7 @@ export function PilotStatusCard({ organizationId }: { organizationId: string }) 
           {t("title")}
         </CardTitle>
         <CardDescription>
-          {sentence.before}
-          <a href={PILOT_RUN_URL} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-foreground">
-            {sentence.link}
-          </a>
-          {sentence.after}
+          <PilotSentenceText sentence={sentence} linkClassName="underline underline-offset-2 hover:text-foreground" />
           <span className="block mt-1">{PILOT_TERMS[locale]}</span>
         </CardDescription>
       </CardHeader>

@@ -8,7 +8,7 @@
  * text prices a module per month or ties a licence to the hosted service.
  */
 import { describe, it, expect } from "vitest";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import en from "@/i18n/messages/en.json";
 import es from "@/i18n/messages/es.json";
@@ -23,6 +23,57 @@ const PUBLIC_TEXT: Record<string, string> = {
   "public/llms.txt": read("public/llms.txt"),
   "public/llms-full.txt": read("public/llms-full.txt"),
 };
+
+/**
+ * The banner once said the pilot had "no security certification". The agreed
+ * sentence says "no contractual safeguards" instead, and every repeat of it
+ * (README, llms files, docs pages, strings) follows. The versioned disclosure
+ * is the one place that speaks of certifications: it is a fact a person
+ * acknowledges, not the banner, and it changes only with a new version.
+ */
+const OLD_PHRASE = new RegExp(
+  ["no security", "certification"].join(" ") + "|" + ["sin certificaci[oó]n(es)?", "de seguridad"].join(" "),
+  "i",
+);
+const SCANNED_ROOTS = ["README.md", "public", "docs", "src", "prisma", "deploy", "scripts"];
+const SCANNED_EXTENSIONS = /\.(md|mdx|txt|ts|tsx|json|prisma|html|ya?ml|example)$/;
+const DISCLOSURE_FILES = new Set([
+  "src/config/pilot-disclosure.ts",
+  "src/config/pilot-disclosure.test.ts",
+  // The comment on the acknowledgement model describes what the disclosure says.
+  "prisma/schema.prisma",
+  // This file quotes the phrase to prove the scan catches it.
+  "src/config/pilot-copy.test.ts",
+]);
+
+function textFiles(rel: string): string[] {
+  const full = join(root, rel);
+  if (!existsSync(full)) return [];
+  if (statSync(full).isFile()) return SCANNED_EXTENSIONS.test(rel) ? [rel] : [];
+  return readdirSync(full)
+    .filter((name) => name !== "node_modules" && !name.startsWith("."))
+    .flatMap((name) => textFiles(`${rel}/${name}`));
+}
+
+describe("the old banner phrase", () => {
+  it("appears nowhere outside the versioned disclosure", () => {
+    const files = SCANNED_ROOTS.flatMap(textFiles).filter((rel) => !DISCLOSURE_FILES.has(rel));
+    expect(files.length).toBeGreaterThan(100);
+    const offenders = files.filter((rel) => OLD_PHRASE.test(read(rel)));
+    expect(offenders).toEqual([]);
+  });
+
+  it("is still what the scan would catch", () => {
+    expect("a free, capped pilot with no security certification").toMatch(OLD_PHRASE);
+    expect("(free, capped, No Security Certifications; every module open)").toMatch(OLD_PHRASE);
+    expect("un piloto sin certificación de seguridad").toMatch(OLD_PHRASE);
+    expect("with no contractual safeguards").not.toMatch(OLD_PHRASE);
+  });
+
+  it.each(Object.keys(PUBLIC_TEXT))("%s says what the banner says instead", (file) => {
+    expect(PUBLIC_TEXT[file]).toMatch(/no contractual safeguards/);
+  });
+});
 
 describe("what the public copy says about the hosted pilot", () => {
   it.each(Object.keys(PUBLIC_TEXT))("%s calls the hosted service a free, capped pilot and prices modules for the kit only", (file) => {

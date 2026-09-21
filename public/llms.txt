@@ -4,7 +4,7 @@
 
 AI SENTINEL by TODO.LAW is an open-core AI governance platform for organizations managing AI systems under the EU AI Act, NIST AI RMF, and ISO 42001. It provides a complete toolkit for AI system inventory, risk classification, compliance mapping, human oversight, incident management, and policy governance.
 
-Hosted pilot: https://aisentinel.todo.law (free, capped, no security certification; every module open)
+Hosted pilot: https://aisentinel.todo.law (free, capped, no contractual safeguards; every module open)
 Run your own instance: https://www.todo.law/run
 Documentation: https://aisentinel.todo.law/docs
 License: AGPL-3.0 (core) + proprietary premium modules, sold only for the self-hosted kit

@@ -144,7 +144,7 @@ export default function AuditTrailPage() {
       </div>
 
       <Card>
-        <CardContent className="p-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+        <CardContent className="p-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
           <div className="space-y-1.5">
             <Label className="text-xs">{t("filters.action")}</Label>
             <Select value={action} onValueChange={setAction}>

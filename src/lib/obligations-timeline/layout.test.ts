@@ -184,6 +184,7 @@ describe("computeTimelineLayout", () => {
     expect(layout.legend.map((l) => l.id).sort()).toEqual(
       [
         "imminent",
+        "in-force",
         "not-applicable",
         "overdue",
         "past-satisfied",

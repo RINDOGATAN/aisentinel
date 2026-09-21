@@ -512,6 +512,29 @@ describe("evaluateMilestones", () => {
     expect(result.overdue).toBe(true);
   });
 
+  it("never marks a duty overdue when nothing measures it", () => {
+    // A duty that is in force is not a duty that was missed. Without a
+    // `satisfiedBy` test there is nothing to have failed, however long ago the
+    // date passed; this is the row that held the dashboard headline in red.
+    const results = evaluateMilestones(
+      evalInput({
+        org: org({ jurisdictions: ["EU", "US_CA", "US_TX", "US_IL", "US_UT", "US_NY"] }),
+        systems: [system()],
+      }),
+    );
+    const unmeasured = results.filter((r) => !r.milestone.satisfiedBy);
+    expect(unmeasured.length).toBeGreaterThan(0);
+    for (const r of unmeasured) {
+      expect(r.overdue, r.milestone.id).toBe(false);
+    }
+    const literacy = results.find(
+      (r) => r.milestone.id === "eu-ai-act-prohibitions-literacy",
+    )!;
+    expect(literacy.phase).toBe("past");
+    expect(literacy.applicability).toBe("applies");
+    expect(literacy.overdue).toBe(false);
+  });
+
   it("does not mark a past obligation overdue once it is satisfied", () => {
     const satisfied = system({
       art50: {

@@ -122,7 +122,7 @@ export function DataFlowPanel({
           <CardTitle className="text-base">{t("rolesTitle")}</CardTitle>
           <CardDescription>{t("rolesDescription")}</CardDescription>
         </CardHeader>
-        <CardContent className="grid gap-3 sm:grid-cols-3">
+        <CardContent className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <div className="space-y-1.5">
             <Label className="text-xs">{t("dataRole")}</Label>
             <Select
@@ -216,7 +216,7 @@ export function DataFlowPanel({
                   )}
                 </div>
 
-                <div className="grid gap-2 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                   <Input
                     className="h-8 text-xs"
                     defaultValue={s.origin ?? ""}
@@ -371,7 +371,7 @@ export function DataFlowPanel({
 
           {adding && (
             <div className="border rounded-md p-3 space-y-3">
-              <div className="grid gap-3 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div className="space-y-1.5">
                   <Label className="text-xs">{t("recipientName")}</Label>
                   <Input value={name} onChange={(e) => setName(e.target.value)} />
@@ -406,7 +406,7 @@ export function DataFlowPanel({
                 />
               </div>
 
-              <div className="grid gap-3 sm:grid-cols-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                 <div className="space-y-1.5">
                   <Label className="text-xs">{t("contract")}</Label>
                   <Input

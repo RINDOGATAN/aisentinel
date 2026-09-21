@@ -140,7 +140,7 @@ export default function ProgramPage() {
                   </p>
                 </div>
                 <ScorecardTiles tiles={scorecard.tiles} />
-                <div className="grid gap-6 lg:grid-cols-2 items-center">
+                <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 items-center">
                   <Card>
                     <CardContent className="p-6">
                       <p className="text-sm font-medium mb-2">{t("nistTitle")}</p>

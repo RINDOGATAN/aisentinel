@@ -251,7 +251,7 @@ export default function AssessmentTemplatesPage() {
               <Loader2 className="w-8 h-8 animate-spin text-primary" />
             </div>
           ) : systemTemplates.length > 0 ? (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               {systemTemplates.map(renderCard)}
             </div>
           ) : (
@@ -271,7 +271,7 @@ export default function AssessmentTemplatesPage() {
               <Loader2 className="w-8 h-8 animate-spin text-primary" />
             </div>
           ) : customTemplates.length > 0 ? (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               {customTemplates.map(renderCard)}
             </div>
           ) : (

@@ -87,7 +87,7 @@ export default function SensitiveDataPage() {
       {canWrite && (
         <Card>
           <CardContent className="p-4 space-y-3">
-            <div className="grid gap-3 sm:grid-cols-[2fr_1fr_auto] sm:items-end">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-[2fr_1fr_auto] sm:items-end">
               <div className="space-y-1.5">
                 <Label htmlFor="subject" className="text-xs">
                   {t("subjectLabel")}

@@ -542,7 +542,7 @@ function NewVendorForm() {
             </div>
 
             {/* Contact Name & Email */}
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="contactName">{t("labelContactName")}</Label>
                 <Input
@@ -565,7 +565,7 @@ function NewVendorForm() {
             </div>
 
             {/* Risk Level & Status */}
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="riskLevel">{t("labelRiskLevel")}</Label>
                 <Select
@@ -605,7 +605,7 @@ function NewVendorForm() {
             </div>
 
             {/* Contract Dates */}
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="contractStartDate">{t("labelContractStartDate")}</Label>
                 <Input
@@ -676,7 +676,7 @@ function NewVendorForm() {
                       required
                     />
                   </div>
-                  <div className="grid gap-4 md:grid-cols-2">
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div className="space-y-2">
                       <Label htmlFor="systemRole">{t("labelOrganizationRole")}</Label>
                       <Select

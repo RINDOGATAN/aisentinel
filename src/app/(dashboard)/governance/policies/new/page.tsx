@@ -253,7 +253,7 @@ export default function NewPolicyPage() {
             </div>
 
             {/* Dates */}
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="effectiveDate">{t("labelEffectiveDate")}</Label>
                 <Input

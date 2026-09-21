@@ -132,7 +132,7 @@ export default function ProceedingDetailPage() {
       </div>
 
       <Card>
-        <CardContent className="p-4 grid gap-3 sm:grid-cols-2">
+        <CardContent className="p-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div className="space-y-1.5">
             <Label className="text-xs">{t("statusLabel")}</Label>
             <Select
@@ -311,7 +311,7 @@ export default function ProceedingDetailPage() {
 
           {adding && (
             <div className="border rounded-md p-3 space-y-3">
-              <div className="grid gap-3 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div className="space-y-1.5">
                   <Label className="text-xs">{t("eventKindLabel")}</Label>
                   <Select
@@ -335,7 +335,7 @@ export default function ProceedingDetailPage() {
                   <Input value={eventTitle} onChange={(e) => setEventTitle(e.target.value)} />
                 </div>
               </div>
-              <div className="grid gap-3 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div className="space-y-1.5">
                   <Label className="text-xs">{t("occurredLabel")}</Label>
                   <Input

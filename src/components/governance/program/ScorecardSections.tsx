@@ -126,7 +126,7 @@ export function NinetyDayPlan({
     "61-90": t("bucket3"),
   };
   return (
-    <div className="grid gap-4 md:grid-cols-3">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
       {plan.map((bucket) => (
         <div key={bucket.bucket} className="space-y-2">
           <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -174,7 +174,7 @@ export function RolloutGuidance({
   const t = useTranslations("program.stage");
   if (rollout.length === 0) return null;
   return (
-    <div className="grid gap-3 md:grid-cols-2">
+    <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
       {rollout.map((rec) => {
         const stage = STAGE_COLORS[rec.stage];
         return (

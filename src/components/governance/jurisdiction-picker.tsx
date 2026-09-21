@@ -43,7 +43,7 @@ export function JurisdictionPicker({
   };
 
   return (
-    <div className={compact ? "grid gap-3 sm:grid-cols-3" : "space-y-4"}>
+    <div className={compact ? "grid grid-cols-1 gap-3 sm:grid-cols-3" : "space-y-4"}>
       {JURISDICTION_GROUPS.map((group) => (
         <div key={group} className="space-y-1.5">
           <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">

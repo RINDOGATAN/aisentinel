@@ -47,7 +47,13 @@ export default function ObligationsPage() {
   );
 
   const [jurisdictionFilter, setJurisdictionFilter] = useState<string | null>(null);
-  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
+  // The dashboard's "duties already apply to you" line lands on #group-past,
+  // a group that is folded by default, so the link opens it.
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() =>
+    selectedId?.startsWith("group-")
+      ? { [selectedId.slice("group-".length)]: true }
+      : {},
+  );
 
   const { data, isLoading } = trpc.obligations.getObligations.useQuery(
     { organizationId: orgId, locale: contentLocale },
@@ -224,7 +230,11 @@ export default function ObligationsPage() {
                   ? t("groupNotApplicableHint")
                   : null;
             return (
-              <div key={group.id} className="space-y-2">
+              <div
+                key={group.id}
+                id={`group-${group.id}`}
+                className="space-y-2 scroll-mt-24"
+              >
                 <div className="flex items-center justify-between gap-3 flex-wrap">
                   <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
                     {t(

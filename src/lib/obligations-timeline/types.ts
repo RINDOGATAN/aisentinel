@@ -14,6 +14,8 @@ export type TimelineTone =
   | "imminent"
   | "upcoming"
   | "past-satisfied"
+  /** Past its date, applies, and nothing measures it: neither missed nor met. */
+  | "in-force"
   | "not-applicable"
   | "unknown";
 

@@ -377,7 +377,7 @@ export function UnifiedPanel({
           <CardDescription>{t("artifactsDescription")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
-          <div className="grid gap-2 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
             {ARTIFACTS.map(({ kind, labelKey, icon: Icon }) => {
               // Where the premium showcase is open (never on the hosted
               // pilot) the impact assessment is the locked deliverable; the

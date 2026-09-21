@@ -284,7 +284,7 @@ export default function NewAISystemPage() {
           )}
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Name & Technique */}
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="name">{t("systemNameLabel")} *</Label>
                 <Input
@@ -328,7 +328,7 @@ export default function NewAISystemPage() {
             </div>
 
             {/* Role & Status */}
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="role">{t("roleLabel")} *</Label>
                 <Select
@@ -448,7 +448,7 @@ export default function NewAISystemPage() {
             </div>
 
             {/* Owners */}
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="businessOwner">{t("businessOwnerLabel")}</Label>
                 <Input

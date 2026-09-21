@@ -312,7 +312,7 @@ export default function OversightGateDetailPage() {
       </div>
 
       {/* Overview Grid */}
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         <Card className="md:col-span-2">
           <CardHeader>
             <CardTitle>{t("overviewTitle")}</CardTitle>

@@ -10,9 +10,11 @@
  * simply clipped. Everything else stacks.
  *
  * This repository has no browser in its test command, so this check reads the
- * signed-in source instead of measuring a rendered page. It looks for the four
+ * signed-in source instead of measuring a rendered page. It looks for the five
  * layout patterns that are known to widen the body, and it fails on any new
- * one. Every exception is named below with the reason it is safe. A source
+ * one. The fifth, a grid with no column count of its own, was added after the
+ * dashboard still scrolled sideways on the owner's phone with the first four
+ * clean: a source check only knows the patterns it has been taught. Every exception is named below with the reason it is safe. A source
  * check is weaker than a measurement: it is here so that a fix stays fixed,
  * not as evidence that a given screen renders correctly.
  */
@@ -57,7 +59,12 @@ const ALLOWED: { file: string; rule: RuleId; because: string }[] = [
 const OVERLAY_SURFACE =
   /<(DropdownMenu|Select|Popover|Dialog|Sheet|Command|Tooltip|HoverCard)[A-Za-z]*Content\b/;
 
-type RuleId = "bare-multi-column" | "fixed-width" | "tab-strip" | "wide-box";
+type RuleId =
+  | "bare-multi-column"
+  | "fixed-width"
+  | "tab-strip"
+  | "wide-box"
+  | "grid-without-columns";
 
 interface Violation {
   file: string;
@@ -87,6 +94,31 @@ const BARE_MULTI_COLUMN = /(?<![-:\w])grid-cols-([3-9]|1[0-2])(?![\d])/;
 /** A minimum width of 200 px or more, from a class or from an inline style. */
 const WIDE_MINIMUM = /(?<![-:\w])min-w-\[(\d{3,})px\]|minWidth:\s*(\d{3,})/;
 
+/**
+ * A grid with no column count of its own on a phone. `grid` alone lays its
+ * children in one implicit column sized `auto`, and an `auto` column is never
+ * narrower than the widest thing inside it that cannot wrap. One `truncate`
+ * line (it is `white-space: nowrap`) inside a card is enough: the column grows
+ * to the full length of the text, past the screen, and the page scrolls
+ * sideways. This is what the dashboard did after the first phone-width pass:
+ * its main grid was `grid gap-4 lg:grid-cols-2`, and the recent-activity card
+ * inside it truncates every line. `grid-cols-1` is `minmax(0, 1fr)`: the same
+ * single column, with a minimum of zero, so the text truncates as intended.
+ */
+const GRID = /(?<![-:\w])grid(?![-\w])/;
+const BASE_COLUMNS = /(?<![-:\w])grid-cols-/;
+/** A grid used only to centre one glyph in a fixed box (the checkbox tick). */
+const CENTRING_GRID = /place-(content|items)-center/;
+
+function gridWithoutColumns(line: string): boolean {
+  return (
+    /className/.test(line) &&
+    GRID.test(line) &&
+    !BASE_COLUMNS.test(line) &&
+    !CENTRING_GRID.test(line)
+  );
+}
+
 const SCROLLS = /overflow-x-auto|overflow-auto|overflow-x-scroll/;
 
 function widthOf(match: RegExpMatchArray): number {
@@ -107,6 +139,9 @@ function scan(): Violation[] {
       // A counter or statistic grid must start at one or two columns and only
       // widen at a breakpoint.
       if (BARE_MULTI_COLUMN.test(line)) at("bare-multi-column");
+
+      // A grid states its column count for a phone, even when that count is one.
+      if (gridWithoutColumns(line)) at("grid-without-columns");
 
       // A control pinned to a width wider than a phone's content column. The
       // responsive form the tree uses elsewhere is w-full sm:w-[...].
@@ -173,5 +208,21 @@ describe("no sideways scrolling on a phone, signed in", () => {
     expect(WIDE_PIXELS.test('className="w-[160px] h-7"')).toBe(true);
     expect(WIDE_MINIMUM.test('<table className="w-full min-w-[600px]">')).toBe(true);
     expect(SCROLLS.test('className="w-full justify-start overflow-x-auto"')).toBe(true);
+  });
+
+  it("would catch a grid that leaves its phone column to the content", () => {
+    // The dashboard's main grid as it stood when the owner saw it scroll.
+    expect(gridWithoutColumns('<div className="grid gap-4 sm:gap-6 lg:grid-cols-2">')).toBe(true);
+    expect(gridWithoutColumns('<div className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-2">')).toBe(false);
+    expect(gridWithoutColumns('<div className="grid grid-cols-2 md:grid-cols-3 gap-3">')).toBe(false);
+    // Not grids: a breakpoint-only grid token, a word that contains "grid".
+    expect(gridWithoutColumns('<div className="md:grid-cols-2 flex">')).toBe(false);
+    expect(gridWithoutColumns('<div className="kpi-grid-wrapper flex">')).toBe(false);
+    expect(gridWithoutColumns('className="grid place-content-center text-current"')).toBe(false);
+  });
+
+  it("keeps the dashboard's own grids on a stated column count", () => {
+    const page = readFileSync("src/app/(dashboard)/governance/page.tsx", "utf8");
+    expect(page).toContain("grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-2");
   });
 });

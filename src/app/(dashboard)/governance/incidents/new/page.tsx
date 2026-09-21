@@ -190,7 +190,7 @@ export default function NewIncidentPage() {
             </div>
 
             {/* Type & Severity */}
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="type">{t("typeLabel")} *</Label>
                 <Select

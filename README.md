@@ -6,7 +6,7 @@ Cross-border AI governance registry for organizations that deploy or provide AI 
 
 One codebase, two postures:
 
-- **Hosted pilot**: the cloud instance at [aisentinel.todo.law](https://aisentinel.todo.law) is a free, capped pilot with no security certification, and it says so on every page. Every module is open to every organisation; nothing there is sold. The caps: one organisation per account, edits for 90 days from the organisation's first sign-in (then read-only, with every export still available), and a records ceiling per organisation (25 AI systems, 50 vendors, 50 assessments, among others; see `src/config/pilot.ts`). For real client data, [run your own instance](https://www.todo.law/run).
+- **Hosted pilot**: the cloud instance at [aisentinel.todo.law](https://aisentinel.todo.law) is a free, capped pilot with no contractual safeguards, and it says so on every page. Every module is open to every organisation; nothing there is sold. The caps: one organisation per account, edits for 90 days from the organisation's first sign-in (then read-only, with every export still available), and a records ceiling per organisation (25 AI systems, 50 vendors, 50 assessments, among others; see `src/config/pilot.ts`). For real client data, [run your own instance](https://www.todo.law/run).
 - **Kit (self-hosted)**: the same app on your own hardware via Docker Compose, with no caps. Premium modules are sold only for the kit: 60 a year each in the kit (in your currency), activated offline with a licence file. See [deploy/sovereign/README.md](deploy/sovereign/README.md).
 
 ## Stack

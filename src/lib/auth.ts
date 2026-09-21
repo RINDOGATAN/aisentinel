@@ -47,6 +47,12 @@ const crossLoginEnabled =
     ? process.env.CROSS_LOGIN_ENABLED === "true"
     : Boolean(process.env.VERCEL);
 
+// What a sibling must put in the signed cross-login token, besides `email`:
+// `aud` = this value, `iss` = one of CROSS_LOGIN_ISSUERS, `iat` and `exp`,
+// signed HS256. A token older than the age below is refused whatever its `exp`.
+export const CROSS_LOGIN_AUDIENCE = "aisentinel";
+export const CROSS_LOGIN_MAX_TOKEN_AGE = "2m";
+
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma) as NextAuthOptions["adapter"],
   providers: [
@@ -118,10 +124,30 @@ export const authOptions: NextAuthOptions = {
                 console.error("CROSS_LOGIN_SECRET is not configured");
                 return null;
               }
+              // The secret is shared by every sibling, so the signature alone
+              // does not say the token was minted for this application, by a
+              // sender this application expects, or recently. Unset or empty
+              // issuer list refuses everyone.
+              const issuers = (process.env.CROSS_LOGIN_ISSUERS ?? "")
+                .split(",")
+                .map((iss) => iss.trim())
+                .filter(Boolean);
+              if (issuers.length === 0) {
+                console.error("CROSS_LOGIN_ISSUERS is not configured");
+                return null;
+              }
               try {
                 const { payload } = await jwtVerify(
                   credentials.token,
-                  new TextEncoder().encode(secret)
+                  new TextEncoder().encode(secret),
+                  {
+                    algorithms: ["HS256"],
+                    audience: CROSS_LOGIN_AUDIENCE,
+                    issuer: issuers,
+                    // `maxTokenAge` makes `iat` mandatory; `exp` is asked for by name.
+                    maxTokenAge: CROSS_LOGIN_MAX_TOKEN_AGE,
+                    requiredClaims: ["exp"],
+                  }
                 );
                 email = payload.email as string | undefined;
                 name = payload.name as string | undefined;

@@ -4462,9 +4462,26 @@
     "declareJurisdictions": "Declara tus jurisdicciones de operación",
     "empty": "Ningún hito normativo coincide con tu configuración actual.",
     "next": {
-      "countdownDays": "Quedan {days} días para: {title}",
-      "countdownToday": "{title} se aplica hoy",
-      "overdue": "{title} se aplica desde hace {days} días",
+      "timing": {
+        "ahead": {
+          "start": "Dentro de {days, plural, one {# día} other {# días}} · {date}",
+          "deadline": "Plazo: dentro de {days, plural, one {# día} other {# días}} · {date}"
+        },
+        "today": {
+          "start": "Desde hoy · {date}",
+          "deadline": "Plazo: hoy · {date}"
+        },
+        "overdue": {
+          "start": "{days, plural, one {# día} other {# días}} de retraso · desde el {date}",
+          "deadline": "{days, plural, one {# día} other {# días}} fuera de plazo · {date}"
+        },
+        "inForce": {
+          "start": "Desde el {date}",
+          "deadline": "Plazo del {date}"
+        }
+      },
+      "inForceCount": "{count, plural, one {Ya se te aplica # obligación} other {Ya se te aplican # obligaciones}}",
+      "overdueCount": "{count, plural, one {# obligación vencida y aún sin evidenciar} other {# obligaciones vencidas y aún sin evidenciar}}",
       "affectsSystems": "afecta a {count} de tus sistemas",
       "affectsOrganization": "afecta a tu organización",
       "scopeUnknown": "alcance aún sin determinar",
@@ -4481,6 +4498,7 @@
       "imminent": "Inminente",
       "upcoming": "Próxima",
       "past-satisfied": "Cumplida",
+      "in-force": "En vigor",
       "not-applicable": "No aplicable",
       "unknown": "Alcance sin determinar"
     },

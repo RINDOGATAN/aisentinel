@@ -51,7 +51,7 @@ import {
  * predicates) so exported artifacts can state which revision produced them.
  * See src/config/rule-pack-versions.ts.
  */
-export const REGULATORY_MILESTONES_VERSION = "2026.09.1";
+export const REGULATORY_MILESTONES_VERSION = "2026.09.2";
 export const REGULATORY_MILESTONES_LAW_REVIEWED_AS_OF = "2026-08-21";
 
 export const REGULATORY_MILESTONES_REVIEW_MARKER: Localized = {
@@ -339,8 +339,10 @@ export const REGULATORY_MILESTONES: RegulatoryMilestone[] = [
     requirementCodes: ["Art. 113(a) — 2 Feb 2025"],
     href: "/governance/ai-registry",
     title: {
-      en: "EU prohibited practices and AI literacy are live",
-      es: "Prácticas prohibidas y alfabetización en IA de la UE en vigor",
+      // The title says what the note below it says: the Digital Omnibus left
+      // the literacy duty in force and softened it. "Are live" hid the second half.
+      en: "EU prohibitions apply; the AI literacy duty applies in its softened form",
+      es: "Se aplican las prohibiciones de la UE; el deber de alfabetización en IA se aplica en su forma suavizada",
     },
     whatItMeans: {
       en: "The Art. 5 prohibitions have applied since 2 February 2025, as has the Art. 4 duty on AI literacy. The Digital Omnibus did not defer that duty, but it did soften it: you must take measures to support the development of AI literacy among staff and anyone operating AI on your behalf, and you are not required to guarantee any particular level. It applies to every deployer with EU staff — training records are the evidence.",
@@ -1200,7 +1202,13 @@ export function evaluateMilestone(
     satisfied,
     undetermined,
     outOfScope,
-    overdue: daysRemaining < 0 && outstanding > 0,
+    // Overdue means something was missed, so it needs a test that can be
+    // failed. A milestone without `satisfiedBy` has nothing to count as
+    // outstanding: once its date passes it is in force, and no more than that.
+    // Without this, every org-level duty stayed "overdue" for ever from the
+    // day it began to apply.
+    overdue:
+      daysRemaining < 0 && outstanding > 0 && milestone.satisfiedBy !== undefined,
     applicability:
       inScope.length > 0
         ? "applies"

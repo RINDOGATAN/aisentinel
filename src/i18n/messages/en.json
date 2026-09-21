@@ -4462,9 +4462,26 @@
     "declareJurisdictions": "Declare your operating jurisdictions",
     "empty": "No regulatory milestones match your current setup.",
     "next": {
-      "countdownDays": "{days} days until {title}",
-      "countdownToday": "{title} applies today",
-      "overdue": "{title} applied {days} days ago",
+      "timing": {
+        "ahead": {
+          "start": "In {days, plural, one {# day} other {# days}} · {date}",
+          "deadline": "Deadline in {days, plural, one {# day} other {# days}} · {date}"
+        },
+        "today": {
+          "start": "From today · {date}",
+          "deadline": "Deadline today · {date}"
+        },
+        "overdue": {
+          "start": "{days, plural, one {# day} other {# days}} overdue · since {date}",
+          "deadline": "{days, plural, one {# day} other {# days}} past the deadline · {date}"
+        },
+        "inForce": {
+          "start": "Since {date}",
+          "deadline": "Deadline of {date}"
+        }
+      },
+      "inForceCount": "{count, plural, one {# duty already applies to you} other {# duties already apply to you}}",
+      "overdueCount": "{count, plural, one {# obligation is overdue and not yet evidenced} other {# obligations are overdue and not yet evidenced}}",
       "affectsSystems": "affects {count} of your systems",
       "affectsOrganization": "affects your organization",
       "scopeUnknown": "scope not yet determined",
@@ -4481,6 +4498,7 @@
       "imminent": "Imminent",
       "upcoming": "Upcoming",
       "past-satisfied": "Satisfied",
+      "in-force": "In force",
       "not-applicable": "Does not apply",
       "unknown": "Scope unknown"
     },

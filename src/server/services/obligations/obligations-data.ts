@@ -22,6 +22,7 @@ import {
   type MilestoneEvaluation,
   type UndeterminedReason,
   type JurisdictionCode,
+  type MilestoneKind,
 } from "@/config/regulatory-milestones";
 import type { ContentLocale } from "@/config/lawfirm-ai-toolkit";
 
@@ -32,6 +33,7 @@ export interface ObligationRow {
   instrument: string;
   citation: string;
   provision: string;
+  kind: MilestoneKind;
   title: string;
   whatItMeans: string;
   dateIso: string;
@@ -54,6 +56,7 @@ export type TimelineTone =
   | "imminent"
   | "upcoming"
   | "past-satisfied"
+  | "in-force"
   | "not-applicable"
   | "unknown";
 
@@ -68,6 +71,8 @@ export interface ObligationsData {
     overdue: number;
     imminent: number;
     upcoming: number;
+    /** Past their date and applying here, with nothing missed. */
+    inForce: number;
     notApplicable: number;
     undetermined: number;
   };
@@ -80,16 +85,15 @@ function toneFor(evaluation: MilestoneEvaluation): TimelineTone {
   if (evaluation.overdue) return "overdue";
   if (evaluation.applicability === "unknown") return "unknown";
   if (evaluation.applicability === "does-not-apply") return "not-applicable";
-  if (evaluation.phase === "past") return "past-satisfied";
+  // "Satisfied" is a claim, so it needs the same test "overdue" needs. A past
+  // milestone nobody can measure is in force, and says no more than that.
+  if (evaluation.phase === "past") {
+    return evaluation.milestone.satisfiedBy ? "past-satisfied" : "in-force";
+  }
   if (evaluation.phase === "imminent") return "imminent";
   return "upcoming";
 }
 
-/**
- * Which row deserves the countdown. Overdue pre-empts everything; then the
- * nearest milestone that actually applies; then the nearest one whose scope
- * we cannot determine (phrased as such, never as a zero).
- */
 /**
  * The jurisdiction codes a milestone belongs to, for the calendar's filter.
  * A city sits inside its state, because someone filtering to New York expects
@@ -102,14 +106,35 @@ function jurisdictionsForScope(scope: { kind: string; state?: string; city?: str
   return [];
 }
 
-function pickNext(rows: ObligationRow[]): ObligationRow | null {
+/**
+ * Which row deserves the countdown. A countdown counts down to something, so
+ * it is the nearest milestone still AHEAD: first one that actually applies,
+ * then one whose scope we cannot determine (phrased as such, never as a
+ * zero), then any. What is already in force, and what is overdue, are
+ * reported beside the headline as counts; an overdue row takes the headline
+ * only when nothing at all is ahead.
+ *
+ * Overdue used to pre-empt everything here, and every org-level duty counted
+ * as overdue for ever once its date had passed, so the oldest duty in the
+ * catalogue held the headline of a card built to show the next one.
+ */
+export function pickNext<
+  T extends Pick<ObligationRow, "phase" | "overdue" | "inScope" | "undetermined">,
+>(rows: readonly T[]): T | null {
   return (
-    rows.find((r) => r.overdue) ??
     rows.find((r) => r.phase !== "past" && r.inScope.length > 0) ??
     rows.find((r) => r.phase !== "past" && r.undetermined.length > 0) ??
     rows.find((r) => r.phase !== "past") ??
+    rows.find((r) => r.overdue) ??
     null
   );
+}
+
+/** Past its date, reaches this organisation, and nothing was missed. */
+export function isInForce(
+  row: Pick<ObligationRow, "phase" | "overdue" | "applicability">,
+): boolean {
+  return row.phase === "past" && !row.overdue && row.applicability === "applies";
 }
 
 export async function getObligationsData(
@@ -228,6 +253,7 @@ export async function getObligationsData(
     instrument: e.milestone.instrument,
     citation: e.milestone.citation,
     provision: e.milestone.provision,
+    kind: e.milestone.kind,
     title: e.milestone.title[locale],
     whatItMeans: e.milestone.whatItMeans[locale],
     dateIso: e.date.toISOString().slice(0, 10),
@@ -262,6 +288,7 @@ export async function getObligationsData(
       overdue: rows.filter((r) => r.overdue).length,
       imminent: rows.filter((r) => r.phase === "imminent" && !r.overdue).length,
       upcoming: rows.filter((r) => r.phase === "upcoming").length,
+      inForce: rows.filter(isInForce).length,
       notApplicable: rows.filter((r) => r.applicability === "does-not-apply")
         .length,
       undetermined: rows.filter((r) => r.applicability === "unknown").length,

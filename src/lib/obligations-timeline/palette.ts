@@ -24,6 +24,9 @@ export const TONE_COLORS: Record<TimelineTone, string> = {
   imminent: GLYPH_COLORS.warn,
   upcoming: "#2563eb",
   "past-satisfied": GLYPH_COLORS.ok,
+  // Neutral on purpose: a duty in force with no test behind it is neither a
+  // problem (red) nor done (green).
+  "in-force": CANVAS.inkMuted,
   "not-applicable": CANVAS.inkFaint,
   unknown: GLYPH_COLORS.missing,
 };

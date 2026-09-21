@@ -102,6 +102,7 @@ const ALL_TONES: TimelineTone[] = [
   "imminent",
   "upcoming",
   "past-satisfied",
+  "in-force",
   "not-applicable",
   "unknown",
 ];

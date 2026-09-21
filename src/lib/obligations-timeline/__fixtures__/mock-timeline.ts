@@ -21,10 +21,10 @@ export const MOCK_TIMELINE: TimelineMilestoneInput[] = [
   {
     id: "eu-ai-act-prohibitions-literacy",
     dateIso: "2025-02-02",
-    label: "EU prohibited practices and AI literacy are live",
+    label: "EU prohibitions apply; the AI literacy duty applies in its softened form",
     dateLabel: "2 Feb 2025",
     countLabel: "Applies to your organization",
-    tone: "overdue",
+    tone: "in-force",
     emphasis: false,
   },
   {

@@ -8,6 +8,7 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { clientIp } from "@/lib/rate-limit";
 import { assertPilotWritable, pilotLocale } from "@/server/services/pilot/caps";
 import { ensurePilotFirstSignIn } from "@/server/services/pilot/first-sign-in";
 
@@ -24,6 +25,8 @@ export interface ProcedureMeta {
 interface CreateContextOptions {
   session: Session | null;
   getCookie: (name: string) => string | undefined;
+  /** The caller's address as the rate limiter reads it; absent in tests. */
+  clientIp?: string;
 }
 
 export const createInnerTRPCContext = (opts: CreateContextOptions) => {
@@ -31,16 +34,18 @@ export const createInnerTRPCContext = (opts: CreateContextOptions) => {
     session: opts.session,
     prisma,
     getCookie: opts.getCookie,
+    clientIp: opts.clientIp ?? "unknown",
   };
 };
 
-export const createTRPCContext = async (_opts: { req: Request }) => {
+export const createTRPCContext = async (opts: { req: Request }) => {
   const session = await getServerSession(authOptions);
   const cookieStore = await cookies();
 
   return createInnerTRPCContext({
     session,
     getCookie: (name: string) => cookieStore.get(name)?.value,
+    clientIp: clientIp(opts.req),
   });
 };
 

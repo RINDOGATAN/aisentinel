@@ -68,6 +68,7 @@ export const DEFAULT_POLICIES = {
   magicLink: { limit: 5, windowMs: 60 * 60_000 },
   health: { limit: 60, windowMs: 60_000 },
   import: { limit: 120, windowMs: 60_000 },
+  feedback: { limit: 5, windowMs: 60 * 60_000 },
 } as const satisfies Record<string, RateLimitPolicy>;
 
 export type PolicyName = keyof typeof DEFAULT_POLICIES;
@@ -77,6 +78,7 @@ const ENV_VAR: Record<PolicyName, string> = {
   magicLink: "RATE_LIMIT_MAGIC_LINK",
   health: "RATE_LIMIT_HEALTH",
   import: "RATE_LIMIT_IMPORT",
+  feedback: "RATE_LIMIT_FEEDBACK",
 };
 
 /** `"10/900"` → 10 requests per 900 seconds. Returns null if unusable. */

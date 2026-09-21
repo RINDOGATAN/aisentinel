@@ -86,7 +86,7 @@ Certain sensitive operations require `OWNER`, `ADMIN`, or `AI_OFFICER` roles:
 | Provider | Environment | Guard |
 |----------|-------------|-------|
 | Dev Credentials | Development, plus sovereign production builds that set `NEXT_PUBLIC_LOCAL_AUTH_ENABLED=true` | Enabled when `NODE_ENV === "development"` or `NEXT_PUBLIC_LOCAL_AUTH_ENABLED === "true"`, unless `DISABLE_DEV_AUTH === "true"`. A runtime check additionally refuses `VERCEL_ENV === "production"`. Honest caveat: this provider is passwordless and creates an account for any email typed into it, and it DOES work in sovereign production builds with the flag on. That is acceptable only behind 127.0.0.1 or a firewalled LAN; see the hardening section of `deploy/sovereign/README.md` |
-| Cross-Login SSO | Hosted cloud only by default | Provider registered only when `CROSS_LOGIN_ENABLED === "true"`, or by default when running on Vercel (`process.env.VERCEL`). Tokens verified via JWT (`CROSS_LOGIN_SECRET`) or Google userinfo |
+| Cross-Login SSO | Hosted cloud only by default | Provider registered only when `CROSS_LOGIN_ENABLED === "true"`, or by default when running on Vercel (`process.env.VERCEL`). Tokens verified via JWT (`CROSS_LOGIN_SECRET`; HS256 only, `aud` = `aisentinel`, `iss` in `CROSS_LOGIN_ISSUERS` (unset refuses everyone), `exp` required, `iat` no older than two minutes) or Google tokeninfo: the token's `aud`/`azp` must be in `CROSS_LOGIN_GOOGLE_CLIENT_IDS` (unset refuses everyone) and the address must be verified |
 | Google OAuth | All (when configured) | Standard OAuth 2.0 flow with `state` check |
 | Email Magic Link | All (when configured) | Resend email delivery |
 
@@ -103,6 +103,8 @@ Certain sensitive operations require `OWNER`, `ADMIN`, or `AI_OFFICER` roles:
 ### Domain-Based Auto-Join
 
 When a user signs in, their email domain is matched against `Organization.domain`. If matched, they are automatically added as `MEMBER` role. This is logged in the audit trail. No email domain receives premium entitlements or elevated roles automatically: sign-in never provisions entitlements.
+
+A stored domain is a claim, and the claim is checked twice (`src/lib/org-domain.ts`). On create, an organization keeps a domain only when it equals the domain of the creator's own account address and is not a public mail provider; otherwise it is created without a domain. At sign-in, a person is joined only when exactly one organization stores their domain and that organization's owner has an address at that domain today; where two organizations claim one domain, or the owner is elsewhere, nobody is joined.
 
 ---
 
@@ -167,14 +169,14 @@ Configured in `next.config.ts`:
 | `/api/checkout/*` | NextAuth session + Stripe gating | Checkout session creation |
 | `/api/cron/sync-catalog` | Bearer token (`CRON_SECRET`) | Vendor catalog cron sync |
 | `/api/auth/cross-logout` | Public (clears this app's session cookies only) | Suite-wide sign-out |
-| `/api/import/portfolio-vendors`, `/api/import/check-account`, `/api/import/dpc-ai-systems`, `/api/import/ai-system-status` | API key (`VW_IMPORT_API_KEYS`, comma-separated `x-api-key` values), rate limited before a constant-time compare (`src/lib/import-auth.ts`) | Inbound pushes from the sibling apps |
+| `/api/import/portfolio-vendors`, `/api/import/check-account`, `/api/import/dpc-ai-systems`, `/api/import/ai-system-status` | API key (`VW_IMPORT_API_KEYS`, comma-separated `x-api-key` values), rate limited before a constant-time compare (`src/lib/import-auth.ts`). The key identifies a sibling, not an organization: the sender may name one (`organizationId`, which must be the account's), a write without one is refused when the account has several, a write needs a role that may write, and every record created is audited (`src/lib/import-account.ts`) | Inbound pushes from the sibling apps |
 | `/api/webhooks/stripe` | Stripe webhook signature verification | Payment webhooks |
 | `/api/export/*` | JWT-authenticated GET + org-membership check + audit log | PDF, Markdown, CSV and ZIP exports |
 | `/api/health` | Public (operational metadata only, no tenant data), rate limited, database probe cached | Liveness/DB probe for monitors and the sovereign Docker healthcheck |
 
 ### Rate limiting
 
-`src/lib/rate-limit.ts` applies a fixed-window limit, configured as `count/seconds` in `RATE_LIMIT_SIGNIN`, `RATE_LIMIT_MAGIC_LINK`, `RATE_LIMIT_HEALTH` and `RATE_LIMIT_IMPORT` (`RATE_LIMIT_DISABLED=true` turns it off where a proxy limits instead). It covers sign-in and magic links (`src/lib/auth-rate-limit.ts`, counted separately), `/api/health` and the import routes. The client address is read, in order, from `x-vercel-forwarded-for`, `x-real-ip`, then the rightmost `x-forwarded-for` entry (`clientIp`). On hosted the first header is set and overwritten by the platform, so the caller cannot choose it. On a self-hosted install nothing overwrites `x-vercel-forwarded-for`: the kit's Caddy proxy passes a client-supplied value through, so a caller can choose their own bucket and evade the limit. Until the code reads that header only on the platform, self-hosted operators exposing the app beyond a trusted network should strip it at their proxy. The counter lives in process memory: exact on a single self-hosted process, a multiple of the limit across serverless instances. Authenticated tRPC mutations are not limited.
+`src/lib/rate-limit.ts` applies a fixed-window limit, configured as `count/seconds` in `RATE_LIMIT_SIGNIN`, `RATE_LIMIT_MAGIC_LINK`, `RATE_LIMIT_HEALTH`, `RATE_LIMIT_IMPORT` and `RATE_LIMIT_FEEDBACK` (`RATE_LIMIT_DISABLED=true` turns it off where a proxy limits instead). It covers sign-in and magic links (`src/lib/auth-rate-limit.ts`, counted separately), `/api/health`, the import routes and the public feedback form (counted inside the procedure, `src/server/routers/feedback.ts`). The client address is read, in order, from `x-vercel-forwarded-for`, `x-real-ip`, then the rightmost `x-forwarded-for` entry (`clientIp`). On hosted the first header is set and overwritten by the platform, so the caller cannot choose it. On a self-hosted install nothing overwrites `x-vercel-forwarded-for`: the kit's Caddy proxy passes a client-supplied value through, so a caller can choose their own bucket and evade the limit. Until the code reads that header only on the platform, self-hosted operators exposing the app beyond a trusted network should strip it at their proxy. The counter lives in process memory: exact on a single self-hosted process, a multiple of the limit across serverless instances. Authenticated tRPC mutations are not limited.
 
 ### Webhook Verification
 

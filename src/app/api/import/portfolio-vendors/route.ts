@@ -4,6 +4,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { guardImportRequest } from "@/lib/import-auth";
+import { resolveImportAccount } from "@/lib/import-account";
 import { pilotRemaining } from "@/server/services/pilot/caps";
 
 const CRITICALITY_TO_RISK: Record<string, string> = {
@@ -55,34 +56,16 @@ export async function POST(request: Request) {
     );
   }
 
-  // Look up user and their organization
-  const user = await prisma.user.findUnique({
-    where: { email: userEmail },
-    include: {
-      organizationMemberships: {
-        include: { organization: true },
-        take: 1,
-      },
-    },
-  });
-
-  if (!user) {
-    return NextResponse.json(
-      { error: "User not found" },
-      { status: 404 }
-    );
+  // Resolve the organization the push acts on, and refuse an account that may
+  // not write there (src/lib/import-account.ts).
+  const account = await resolveImportAccount(userEmail, body.organizationId, "write");
+  if (!account.ok) {
+    return NextResponse.json({ error: account.error }, { status: account.status });
   }
 
-  const membership = user.organizationMemberships[0];
-  if (!membership) {
-    return NextResponse.json(
-      { error: "User has no organization" },
-      { status: 404 }
-    );
-  }
-
-  const orgId = membership.organizationId;
-  const orgName = membership.organization.name;
+  const orgId = account.organizationId;
+  const orgName = account.organizationName;
+  const imported: { id: string; name: string }[] = [];
 
   let exported = 0;
   let alreadyExisted = 0;
@@ -120,7 +103,7 @@ export async function POST(request: Request) {
         continue;
       }
 
-      await prisma.aIVendor.create({
+      const created = await prisma.aIVendor.create({
         data: {
           organizationId: orgId,
           name: vendor.name,
@@ -150,12 +133,27 @@ export async function POST(request: Request) {
       });
       exported++;
       room -= 1;
+      imported.push({ id: created.id, name: vendor.name });
     } catch (err) {
       // Skip the row but keep the reason observable — a silent counter made
       // partial imports impossible to debug.
       console.error(`[import/portfolio-vendors] skipped "${vendor.name}":`, err);
       skipped++;
     }
+  }
+
+  if (imported.length > 0) {
+    await prisma.auditLog.createMany({
+      data: imported.map((row) => ({
+        organizationId: orgId,
+        userId: account.userId,
+        entityType: "AIVendor",
+        entityId: row.id,
+        action: "CREATE",
+        changes: { name: row.name, status: "UNDER_REVIEW" },
+        metadata: { source: "api-import", route: "portfolio-vendors" },
+      })),
+    });
   }
 
   return NextResponse.json({

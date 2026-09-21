@@ -18,6 +18,7 @@ import {
 import { brand } from "@/config/brand";
 import { resolveCookieDomain } from "@/config/pilot";
 import { recordPilotSignIn } from "@/server/services/pilot/first-sign-in";
+import { claimableDomain, emailDomain as domainOfEmail } from "@/lib/org-domain";
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
@@ -45,6 +46,12 @@ const crossLoginEnabled =
   process.env.CROSS_LOGIN_ENABLED !== undefined
     ? process.env.CROSS_LOGIN_ENABLED === "true"
     : Boolean(process.env.VERCEL);
+
+// What a sibling must put in the signed cross-login token, besides `email`:
+// `aud` = this value, `iss` = one of CROSS_LOGIN_ISSUERS, `iat` and `exp`,
+// signed HS256. A token older than the age below is refused whatever its `exp`.
+export const CROSS_LOGIN_AUDIENCE = "aisentinel";
+export const CROSS_LOGIN_MAX_TOKEN_AGE = "2m";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma) as NextAuthOptions["adapter"],
@@ -117,10 +124,30 @@ export const authOptions: NextAuthOptions = {
                 console.error("CROSS_LOGIN_SECRET is not configured");
                 return null;
               }
+              // The secret is shared by every sibling, so the signature alone
+              // does not say the token was minted for this application, by a
+              // sender this application expects, or recently. Unset or empty
+              // issuer list refuses everyone.
+              const issuers = (process.env.CROSS_LOGIN_ISSUERS ?? "")
+                .split(",")
+                .map((iss) => iss.trim())
+                .filter(Boolean);
+              if (issuers.length === 0) {
+                console.error("CROSS_LOGIN_ISSUERS is not configured");
+                return null;
+              }
               try {
                 const { payload } = await jwtVerify(
                   credentials.token,
-                  new TextEncoder().encode(secret)
+                  new TextEncoder().encode(secret),
+                  {
+                    algorithms: ["HS256"],
+                    audience: CROSS_LOGIN_AUDIENCE,
+                    issuer: issuers,
+                    // `maxTokenAge` makes `iat` mandatory; `exp` is asked for by name.
+                    maxTokenAge: CROSS_LOGIN_MAX_TOKEN_AGE,
+                    requiredClaims: ["exp"],
+                  }
                 );
                 email = payload.email as string | undefined;
                 name = payload.name as string | undefined;
@@ -129,6 +156,44 @@ export const authOptions: NextAuthOptions = {
                 return null;
               }
             } else if (credentials.method === "google") {
+              // A Google access token proves who the person is, not which
+              // application they granted it to. Without the audience check a
+              // token given to any other site would open the account here.
+              // Read at call time; unset or empty refuses everyone.
+              const allowedClientIds = (process.env.CROSS_LOGIN_GOOGLE_CLIENT_IDS ?? "")
+                .split(",")
+                .map((id) => id.trim())
+                .filter(Boolean);
+              if (allowedClientIds.length === 0) {
+                console.error("CROSS_LOGIN_GOOGLE_CLIENT_IDS is not configured");
+                return null;
+              }
+              let verifiedEmail: string;
+              try {
+                const infoRes = await fetch(
+                  `https://oauth2.googleapis.com/tokeninfo?access_token=${encodeURIComponent(credentials.token)}`
+                );
+                if (!infoRes.ok) {
+                  console.error("Google tokeninfo request failed:", infoRes.status);
+                  return null;
+                }
+                const info = await infoRes.json();
+                const audience = info.aud ?? info.azp;
+                if (typeof audience !== "string" || !allowedClientIds.includes(audience)) {
+                  console.error("Cross-login Google token was issued to another application");
+                  return null;
+                }
+                // tokeninfo returns the flag as the string "true".
+                if (info.email_verified !== true && info.email_verified !== "true") {
+                  console.error("Cross-login Google token carries no verified address");
+                  return null;
+                }
+                if (typeof info.email !== "string" || !info.email) return null;
+                verifiedEmail = info.email;
+              } catch (err) {
+                console.error("Cross-login Google tokeninfo check failed:", err);
+                return null;
+              }
               try {
                 const res = await fetch(
                   `https://www.googleapis.com/oauth2/v3/userinfo`,
@@ -139,7 +204,10 @@ export const authOptions: NextAuthOptions = {
                   return null;
                 }
                 const profile = await res.json();
-                email = profile.email;
+                // The address is the one tokeninfo vouched for; the profile
+                // supplies the display name only.
+                if (profile.email !== verifiedEmail) return null;
+                email = verifiedEmail;
                 name = profile.name;
               } catch (err) {
                 console.error("Cross-login Google token verification failed:", err);
@@ -237,11 +305,34 @@ export const authOptions: NextAuthOptions = {
       // Auto-join organization by email domain
       try {
         if (user.email) {
-          const emailDomain = user.email.split("@")[1];
+          const emailDomain = domainOfEmail(user.email);
 
-          const matchingOrg = await prisma.organization.findFirst({
-            where: { domain: emailDomain },
-          });
+          // A stored domain is only a claim. It joins a person when it still
+          // passes the create rule against the organization's owner today
+          // (owner's own address at that domain, not a public mail provider),
+          // and only when one organization claims it: where two do, nobody
+          // can say which is meant, so nobody is joined. Oldest first keeps
+          // the read deterministic.
+          const claimants = emailDomain
+            ? await prisma.organization.findMany({
+                where: { domain: { equals: emailDomain, mode: "insensitive" } },
+                orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+                take: 2,
+                select: {
+                  id: true,
+                  domain: true,
+                  members: {
+                    where: { role: "OWNER" },
+                    orderBy: [{ joinedAt: "asc" }, { id: "asc" }],
+                    take: 1,
+                    select: { user: { select: { email: true } } },
+                  },
+                },
+              })
+            : [];
+          const only = claimants.length === 1 ? claimants[0] : null;
+          const matchingOrg =
+            only && claimableDomain(only.domain, only.members[0]?.user.email) ? only : null;
 
           if (matchingOrg) {
             const existingMembership = await prisma.organizationMember.findFirst({

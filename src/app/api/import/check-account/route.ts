@@ -24,6 +24,8 @@ export async function POST(request: Request) {
     include: {
       organizationMemberships: {
         include: { organization: true },
+        // The oldest membership, so the answer is the same on every call.
+        orderBy: [{ joinedAt: "asc" }, { id: "asc" }],
         take: 1,
       },
     },

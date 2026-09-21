@@ -60,10 +60,18 @@ export function NextObligationStrip() {
             : t("counts.notApplicable");
 
   return (
-    <Card className={next.overdue ? "border-destructive" : "border-primary/25"}>
-      <CardContent className="p-4 flex flex-col sm:flex-row sm:items-center gap-3">
+    // The Card primitive brings its own py-6; with the content's padding on top
+    // of it a one-line strip stood in a tall empty box on a phone.
+    <Card
+      className={`py-0 gap-0 ${
+        next.overdue ? "border-destructive" : "border-primary/25"
+      }`}
+    >
+      {/* A wrapping row at every width. As a column the icon's box stretched
+          to the full width of the card: an empty tinted bar above the text. */}
+      <CardContent className="p-3 sm:p-4 flex flex-wrap items-start sm:items-center gap-x-3 gap-y-2">
         <div
-          className={`p-2 rounded-lg shrink-0 ${
+          className={`p-2 rounded-lg shrink-0 self-start sm:self-center ${
             next.overdue ? "bg-destructive/10" : "bg-primary/10"
           }`}
         >
@@ -74,7 +82,7 @@ export function NextObligationStrip() {
           )}
         </div>
 
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 basis-0 min-w-0">
           {/* The card's icon and border say it is overdue; the headline is
               the obligation, so it keeps the body text colour. */}
           <p className="text-sm font-medium">{headline}</p>
@@ -93,8 +101,10 @@ export function NextObligationStrip() {
           )}
         </div>
 
-        {/* Mini-rail: the next three, colour-coded by tone */}
-        <div className="flex items-center gap-1.5 shrink-0">
+        {/* Mini-rail: the next three, colour-coded by tone. A pointer shows a
+            dot's title on hover; a phone has no hover, and a dot with no word
+            beside it says nothing, so the rail is left out below `sm`. */}
+        <div className="hidden sm:flex items-center gap-1.5 shrink-0">
           {data.upcoming.map((m) => (
             <Link
               key={m.id}
@@ -110,7 +120,11 @@ export function NextObligationStrip() {
           ))}
         </div>
 
-        <Link href={`/governance/obligations#${next.id}`} className="shrink-0">
+        {/* On a phone the link takes its own line, indented under the text. */}
+        <Link
+          href={`/governance/obligations#${next.id}`}
+          className="shrink-0 basis-full sm:basis-auto pl-12 sm:pl-0"
+        >
           <span className="text-xs text-primary hover:underline flex items-center gap-1">
             {t("next.viewAll")}
             <ArrowRight className="w-3 h-3" />

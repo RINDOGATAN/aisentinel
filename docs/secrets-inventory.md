@@ -38,6 +38,7 @@ reads "unknown" until the operator starts a rotation log; that gap is itself an 
 | `PUBLIC_URL` | C | Kit | Sets `NEXTAUTH_URL` for the install | n/a | n/a |
 | `AUTH_COOKIE_DOMAIN` | C | Hosted; Kit (empty by default) | Widens the session cookie to a parent domain for suite sign-on | n/a | n/a |
 | `CROSS_LOGIN_ENABLED` | C | Hosted | Registers the cross-app sign-on provider | n/a | n/a |
+| `CROSS_LOGIN_GOOGLE_CLIENT_IDS` | C | Hosted | Google client ids whose access tokens cross-login accepts; unset or empty refuses every Google token | Hosted operator | n/a |
 | `CROSS_LOGIN_SECRET` | S | Hosted (shared with the sibling apps) | Verifies cross-app sign-on tokens; whoever holds it can sign a user in | Hosted operator, in step with the sibling apps | unknown |
 | `GOOGLE_CLIENT_ID` | C | Hosted; Kit (off by default) | Identifies the OAuth client | n/a | n/a |
 | `GOOGLE_CLIENT_SECRET` | S | Hosted; Kit (off by default) | Google sign-in for the OAuth client | Hosted operator (provider console) | unknown |

@@ -86,7 +86,7 @@ Certain sensitive operations require `OWNER`, `ADMIN`, or `AI_OFFICER` roles:
 | Provider | Environment | Guard |
 |----------|-------------|-------|
 | Dev Credentials | Development, plus sovereign production builds that set `NEXT_PUBLIC_LOCAL_AUTH_ENABLED=true` | Enabled when `NODE_ENV === "development"` or `NEXT_PUBLIC_LOCAL_AUTH_ENABLED === "true"`, unless `DISABLE_DEV_AUTH === "true"`. A runtime check additionally refuses `VERCEL_ENV === "production"`. Honest caveat: this provider is passwordless and creates an account for any email typed into it, and it DOES work in sovereign production builds with the flag on. That is acceptable only behind 127.0.0.1 or a firewalled LAN; see the hardening section of `deploy/sovereign/README.md` |
-| Cross-Login SSO | Hosted cloud only by default | Provider registered only when `CROSS_LOGIN_ENABLED === "true"`, or by default when running on Vercel (`process.env.VERCEL`). Tokens verified via JWT (`CROSS_LOGIN_SECRET`) or Google userinfo |
+| Cross-Login SSO | Hosted cloud only by default | Provider registered only when `CROSS_LOGIN_ENABLED === "true"`, or by default when running on Vercel (`process.env.VERCEL`). Tokens verified via JWT (`CROSS_LOGIN_SECRET`) or Google tokeninfo: the token's `aud`/`azp` must be in `CROSS_LOGIN_GOOGLE_CLIENT_IDS` (unset refuses everyone) and the address must be verified |
 | Google OAuth | All (when configured) | Standard OAuth 2.0 flow with `state` check |
 | Email Magic Link | All (when configured) | Resend email delivery |
 

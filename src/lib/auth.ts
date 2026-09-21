@@ -129,6 +129,44 @@ export const authOptions: NextAuthOptions = {
                 return null;
               }
             } else if (credentials.method === "google") {
+              // A Google access token proves who the person is, not which
+              // application they granted it to. Without the audience check a
+              // token given to any other site would open the account here.
+              // Read at call time; unset or empty refuses everyone.
+              const allowedClientIds = (process.env.CROSS_LOGIN_GOOGLE_CLIENT_IDS ?? "")
+                .split(",")
+                .map((id) => id.trim())
+                .filter(Boolean);
+              if (allowedClientIds.length === 0) {
+                console.error("CROSS_LOGIN_GOOGLE_CLIENT_IDS is not configured");
+                return null;
+              }
+              let verifiedEmail: string;
+              try {
+                const infoRes = await fetch(
+                  `https://oauth2.googleapis.com/tokeninfo?access_token=${encodeURIComponent(credentials.token)}`
+                );
+                if (!infoRes.ok) {
+                  console.error("Google tokeninfo request failed:", infoRes.status);
+                  return null;
+                }
+                const info = await infoRes.json();
+                const audience = info.aud ?? info.azp;
+                if (typeof audience !== "string" || !allowedClientIds.includes(audience)) {
+                  console.error("Cross-login Google token was issued to another application");
+                  return null;
+                }
+                // tokeninfo returns the flag as the string "true".
+                if (info.email_verified !== true && info.email_verified !== "true") {
+                  console.error("Cross-login Google token carries no verified address");
+                  return null;
+                }
+                if (typeof info.email !== "string" || !info.email) return null;
+                verifiedEmail = info.email;
+              } catch (err) {
+                console.error("Cross-login Google tokeninfo check failed:", err);
+                return null;
+              }
               try {
                 const res = await fetch(
                   `https://www.googleapis.com/oauth2/v3/userinfo`,
@@ -139,7 +177,10 @@ export const authOptions: NextAuthOptions = {
                   return null;
                 }
                 const profile = await res.json();
-                email = profile.email;
+                // The address is the one tokeninfo vouched for; the profile
+                // supplies the display name only.
+                if (profile.email !== verifiedEmail) return null;
+                email = verifiedEmail;
                 name = profile.name;
               } catch (err) {
                 console.error("Cross-login Google token verification failed:", err);

@@ -31,6 +31,8 @@
  *                  key ending in `_total` is all time; `_30d` is the last 30
  *                  days by the date named beside it below. null = not
  *                  applicable, 0 = a measured zero.
+ *   at a limit     distinct organizations holding a PILOT_LIMIT_REACHED audit
+ *                  entry (all time, and one written in the last 30 days).
  *
  * What the activity figures leave out:
  *   - everything in the seeded demo organization (fixed slug);
@@ -73,7 +75,13 @@ export const ACTIVITY_LABELS = {
   oversight_decisions_30d: "Oversight decisions, 30 days",
   incidents_reported_total: "Incidents reported",
   active_users_30d: "Active users, 30 days",
+  organisations_at_limit_total: "Organisations at a pilot limit",
+  organisations_at_limit_30d: "At a pilot limit, 30 days",
 };
+
+// The audit action written when a pilot limit refuses an action
+// (src/server/services/pilot/limit-reached.ts). The storefront digest reads it too.
+const PILOT_LIMIT_REACHED_ACTION = "PILOT_LIMIT_REACHED";
 
 const SOURCE =
   "Hosted DB, read-only, COUNT queries only. users and organizations are every row; " +
@@ -129,6 +137,8 @@ export async function collectCounts(prisma, now = new Date()) {
     decisions30d,
     incidentsReported,
     activeUsers30d,
+    atLimitTotal,
+    atLimit30d,
   ] = await Promise.all([
     prisma.user.count(),
     prisma.organization.count(),
@@ -170,6 +180,20 @@ export async function collectCounts(prisma, now = new Date()) {
         },
       },
     }),
+    // Distinct organisations a pilot limit has refused: counting organisations
+    // with such a row is the distinct count, with no row read.
+    prisma.organization.count({
+      where: {
+        slug: { not: DEMO_ORG_SLUG },
+        auditLogs: { some: { action: PILOT_LIMIT_REACHED_ACTION } },
+      },
+    }),
+    prisma.organization.count({
+      where: {
+        slug: { not: DEMO_ORG_SLUG },
+        auditLogs: { some: { action: PILOT_LIMIT_REACHED_ACTION, createdAt: { gte: since } } },
+      },
+    }),
   ]);
 
   return {
@@ -189,6 +213,8 @@ export async function collectCounts(prisma, now = new Date()) {
       oversight_decisions_30d: decisions30d,
       incidents_reported_total: incidentsReported,
       active_users_30d: activeUsers30d,
+      organisations_at_limit_total: atLimitTotal,
+      organisations_at_limit_30d: atLimit30d,
     },
     activity_labels: ACTIVITY_LABELS,
     as_of: now.toISOString(),

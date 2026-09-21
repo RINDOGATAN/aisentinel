@@ -9,6 +9,7 @@ import {
   PILOT_CEILING_LABELS,
   PILOT_EDIT_DAYS,
   PILOT_LIVE_FROM,
+  PILOT_MANAGED_URL,
   PILOT_RUN_URL,
   PILOT_SENTENCE,
   PILOT_TERMS,
@@ -149,6 +150,26 @@ describe("what the pilot says", () => {
       expect(readOnly).toContain(PILOT_RUN_URL);
       expect(readOnly).toContain(exportUrl);
       expect(pilotOneOrganizationMessage(locale)).toContain(PILOT_RUN_URL);
+    }
+  });
+
+  it("closes every limit message with the one keep-going link, to the managed wizard in the reader's language", () => {
+    const exportUrl = pilotExportUrl("org-1");
+    const expected = {
+      en: "Keep going on your own instance (https://www.todo.law/contact/managed).",
+      es: "Sigue en tu propia instancia (https://www.todo.law/es/contact/managed).",
+    };
+    for (const locale of ["en", "es"] as const) {
+      const other = locale === "en" ? "es" : "en";
+      const messages = [
+        ...PILOT_CEILING_KEYS.map((key) => pilotCeilingMessage(locale, key, exportUrl)),
+        pilotReadOnlyMessage(locale, exportUrl),
+      ];
+      for (const message of messages) {
+        expect(message.endsWith(expected[locale]), message).toBe(true);
+        expect(message).not.toContain(PILOT_MANAGED_URL[other]);
+        expect(message).not.toContain("/contact/deploy");
+      }
     }
   });
 

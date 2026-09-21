@@ -16,6 +16,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { guardImportRequest } from "@/lib/import-auth";
+import { resolveImportAccount } from "@/lib/import-account";
 
 const OPEN_GATE_STATUSES = ["PENDING", "IN_REVIEW"];
 
@@ -36,17 +37,13 @@ export async function POST(request: Request) {
     );
   }
 
-  // Resolve the caller's organization (same pattern as the other import routes).
-  const user = await prisma.user.findUnique({
-    where: { email: userEmail },
-    include: {
-      organizationMemberships: { include: { organization: true }, take: 1 },
-    },
-  });
-  const orgId = user?.organizationMemberships[0]?.organizationId;
-  if (!orgId) {
+  // Resolve the caller's organization (src/lib/import-account.ts): the one the
+  // sender names, else the account's oldest membership, never an undefined one.
+  const account = await resolveImportAccount(userEmail, body.organizationId, "read");
+  if (!account.ok) {
     return NextResponse.json({ found: false });
   }
+  const orgId = account.organizationId;
 
   const system = await prisma.aISystem.findFirst({
     where: { id: aisSystemId, organizationId: orgId },

@@ -169,7 +169,7 @@ Configured in `next.config.ts`:
 | `/api/checkout/*` | NextAuth session + Stripe gating | Checkout session creation |
 | `/api/cron/sync-catalog` | Bearer token (`CRON_SECRET`) | Vendor catalog cron sync |
 | `/api/auth/cross-logout` | Public (clears this app's session cookies only) | Suite-wide sign-out |
-| `/api/import/portfolio-vendors`, `/api/import/check-account`, `/api/import/dpc-ai-systems`, `/api/import/ai-system-status` | API key (`VW_IMPORT_API_KEYS`, comma-separated `x-api-key` values), rate limited before a constant-time compare (`src/lib/import-auth.ts`) | Inbound pushes from the sibling apps |
+| `/api/import/portfolio-vendors`, `/api/import/check-account`, `/api/import/dpc-ai-systems`, `/api/import/ai-system-status` | API key (`VW_IMPORT_API_KEYS`, comma-separated `x-api-key` values), rate limited before a constant-time compare (`src/lib/import-auth.ts`). The key identifies a sibling, not an organization: the sender may name one (`organizationId`, which must be the account's), a write without one is refused when the account has several, a write needs a role that may write, and every record created is audited (`src/lib/import-account.ts`) | Inbound pushes from the sibling apps |
 | `/api/webhooks/stripe` | Stripe webhook signature verification | Payment webhooks |
 | `/api/export/*` | JWT-authenticated GET + org-membership check + audit log | PDF, Markdown, CSV and ZIP exports |
 | `/api/health` | Public (operational metadata only, no tenant data), rate limited, database probe cached | Liveness/DB probe for monitors and the sovereign Docker healthcheck |

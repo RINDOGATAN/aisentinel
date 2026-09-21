@@ -18,6 +18,7 @@ import { NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { guardImportRequest } from "@/lib/import-auth";
+import { resolveImportAccount } from "@/lib/import-account";
 import { pilotRemaining } from "@/server/services/pilot/caps";
 import { mapRole, mapTechnique } from "@/lib/dpc-import-mapping";
 
@@ -61,22 +62,15 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "systems array is required" }, { status: 400 });
   }
 
-  // Resolve the importing user's organization (same pattern as check-account).
-  const user = await prisma.user.findUnique({
-    where: { email: userEmail },
-    include: {
-      organizationMemberships: { include: { organization: true }, take: 1 },
-    },
-  });
-  if (!user) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 });
+  // Resolve the organization the push acts on, and refuse an account that may
+  // not write there (src/lib/import-account.ts).
+  const account = await resolveImportAccount(userEmail, body.organizationId, "write");
+  if (!account.ok) {
+    return NextResponse.json({ error: account.error }, { status: account.status });
   }
-  const membership = user.organizationMemberships[0];
-  if (!membership) {
-    return NextResponse.json({ error: "User has no organization" }, { status: 404 });
-  }
-  const orgId = membership.organizationId;
-  const orgName = membership.organization.name;
+  const orgId = account.organizationId;
+  const orgName = account.organizationName;
+  const imported: { id: string; name: string }[] = [];
 
   let exported = 0;
   let alreadyExisted = 0;
@@ -160,12 +154,27 @@ export async function POST(request: Request) {
       exported++;
       room -= 1;
       mapped.push({ dpcId: s.dpoCentralSystemId, aisId: created.id });
+      imported.push({ id: created.id, name: s.name });
     } catch (err) {
       // Skip the row but keep the reason observable — a silent counter makes
       // partial imports impossible to debug.
       console.error(`[import/dpc-ai-systems] skipped "${s.name}":`, err);
       skipped++;
     }
+  }
+
+  if (imported.length > 0) {
+    await prisma.auditLog.createMany({
+      data: imported.map((row) => ({
+        organizationId: orgId,
+        userId: account.userId,
+        entityType: "AISystem",
+        entityId: row.id,
+        action: "CREATE",
+        changes: { name: row.name, status: "DRAFT" },
+        metadata: { source: "api-import", route: "dpc-ai-systems", importedFrom: "dpocentral" },
+      })),
+    });
   }
 
   return NextResponse.json({ exported, alreadyExisted, skipped, mapped, orgName, ceilingReached });

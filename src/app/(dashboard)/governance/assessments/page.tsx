@@ -124,10 +124,13 @@ export default function AssessmentsPage() {
             {t("description")}
           </p>
         </div>
-        <div className="flex gap-2 flex-none">
+        {/* On a phone the two secondary actions are icons and the primary one
+            takes what is left; if the row still ran short it would wrap. */}
+        <div className="flex flex-wrap gap-2 sm:flex-nowrap sm:flex-none">
           <Button
             variant="outline"
             size="icon"
+            aria-label={tc("export")}
             className="shrink-0 sm:size-auto sm:px-4 sm:py-2"
             onClick={() =>
               organization?.id &&
@@ -138,13 +141,18 @@ export default function AssessmentsPage() {
             <span className="hidden sm:inline">{tc("export")}</span>
           </Button>
           <Link href="/governance/assessments/templates">
-            <Button variant="outline" className="w-full sm:w-auto">
+            <Button
+              variant="outline"
+              size="icon"
+              aria-label={t("templatesButton")}
+              className="shrink-0 sm:size-auto sm:px-4 sm:py-2"
+            >
               <ClipboardList className="w-4 h-4 sm:mr-2" />
               <span className="hidden sm:inline">{t("templatesButton")}</span>
             </Button>
           </Link>
           {canWrite && (
-            <Link href="/governance/assessments/new">
+            <Link href="/governance/assessments/new" className="flex-1 min-w-0 sm:flex-none">
               <Button className="w-full sm:w-auto">
                 <Plus className="w-4 h-4 sm:mr-2" />
                 <span className="hidden sm:inline">{t("newAssessment")}</span>

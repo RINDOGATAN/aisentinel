@@ -90,7 +90,14 @@ export function InventoryImportDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant={variant} className="w-full sm:w-auto">
+        {/* An icon on a phone, like the export button beside it: the trigger sits
+            in a header row and must never claim the row's whole width. */}
+        <Button
+          variant={variant}
+          size="icon"
+          aria-label={t("button")}
+          className="shrink-0 sm:size-auto sm:px-4 sm:py-2"
+        >
           <FileSpreadsheet className="w-4 h-4 sm:mr-2" />
           <span className="hidden sm:inline">{t("button")}</span>
         </Button>

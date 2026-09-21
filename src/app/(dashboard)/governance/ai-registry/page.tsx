@@ -135,10 +135,12 @@ export default function AIRegistryPage() {
             {t("subtitle")}
           </p>
         </div>
-        <div className="flex gap-2 flex-none">
+        {/* On a phone the two secondary actions are icons and the primary one
+            takes what is left; if the row still ran short it would wrap. */}
+        <div className="flex flex-wrap gap-2 sm:flex-nowrap sm:flex-none">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="icon" className="shrink-0 sm:size-auto sm:px-4 sm:py-2">
+              <Button variant="outline" size="icon" aria-label={tc("export")} className="shrink-0 sm:size-auto sm:px-4 sm:py-2">
                 <Download className="w-4 h-4 sm:mr-2" />
                 <span className="hidden sm:inline">{tc("export")}</span>
               </Button>
@@ -155,7 +157,7 @@ export default function AIRegistryPage() {
             </DropdownMenuContent>
           </DropdownMenu>
           {orgResolving ? (
-            <Button className="w-full sm:w-auto" disabled>
+            <Button className="flex-1 min-w-0 sm:flex-none" disabled>
               <Loader2 className="w-4 h-4 animate-spin sm:mr-2" />
               <span className="hidden sm:inline">{t("registerAiSystem")}</span>
               <span className="sm:hidden">{t("registerShort")}</span>
@@ -164,7 +166,7 @@ export default function AIRegistryPage() {
             canWrite && (
               <>
               {organization && <InventoryImportDialog organizationId={organization.id} />}
-              <Link href="/governance/ai-registry/new">
+              <Link href="/governance/ai-registry/new" className="flex-1 min-w-0 sm:flex-none">
                 <Button className="w-full sm:w-auto">
                   <Plus className="w-4 h-4 sm:mr-2" />
                   <span className="hidden sm:inline">{t("registerAiSystem")}</span>

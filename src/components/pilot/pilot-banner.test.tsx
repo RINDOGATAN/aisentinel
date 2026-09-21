@@ -2,14 +2,15 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 /**
- * The banner is on every hosted page and on no page of the kit. The decision
- * is a pure function of the environment and the session cookie; the markup
- * is rendered here without the app shell to prove the sentence and the link.
+ * The banner is on every signed-in page of the hosted pilot, on no public
+ * page, and on no page of the kit. The decision is a pure function of the
+ * environment and the session cookie; the markup is rendered here without
+ * the app shell to prove the sentence and the link.
  */
 import { describe, it, expect } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
+import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
+import { dirname, join, relative } from "node:path";
 import {
   PILOT_BANNER_DISMISSED,
   PILOT_RUN_URL,
@@ -33,6 +34,62 @@ describe("where the banner shows", () => {
   it("never shows on the kit, dismissed or not", () => {
     expect(pilotBannerVisible(KIT, undefined)).toBe(false);
     expect(pilotBannerVisible({}, undefined)).toBe(false);
+  });
+});
+
+describe("the banner shows only once a person is signed in", () => {
+  const APP = join(process.cwd(), "src/app");
+  const MOUNT = /<HostedPilotBanner\b|<PilotBanner\b/;
+
+  /** Every layout Next.js wraps a page in: its own folder's, then each parent's up to src/app. */
+  function layoutsOf(pageFile: string): string[] {
+    const layouts: string[] = [];
+    let dir = dirname(join(APP, pageFile));
+    while (dir.startsWith(APP)) {
+      const layout = join(dir, "layout.tsx");
+      if (existsSync(layout)) layouts.push(layout);
+      if (dir === APP) break;
+      dir = dirname(dir);
+    }
+    return layouts;
+  }
+  const mounts = (file: string) => MOUNT.test(readFileSync(file, "utf8"));
+
+  it.each([
+    ["the landing page", "page.tsx"],
+    ["a documentation page", "docs/how-it-fits/page.tsx"],
+    ["the sign-in screen", "(auth)/sign-in/page.tsx"],
+  ])("is absent from %s: neither the page nor any layout above it mounts it", (_, page) => {
+    expect(existsSync(join(APP, page)), page).toBe(true);
+    for (const file of [join(APP, page), ...layoutsOf(page)]) {
+      expect(mounts(file), relative(process.cwd(), file)).toBe(false);
+    }
+  });
+
+  it("is present in the signed-in layout, which wraps every dashboard page", () => {
+    const layouts = layoutsOf("(dashboard)/governance/page.tsx").filter(mounts);
+    expect(layouts.map((f) => relative(APP, f))).toEqual(["(dashboard)/layout.tsx"]);
+  });
+
+  it("is mounted nowhere else in the app, and nothing reserves space for it", () => {
+    const found: string[] = [];
+    const walk = (dir: string) => {
+      for (const name of readdirSync(dir)) {
+        const path = join(dir, name);
+        if (statSync(path).isDirectory()) walk(path);
+        else if (/\.(tsx?|css)$/.test(name) && !/\.test\.tsx?$/.test(name)) {
+          const source = readFileSync(path, "utf8");
+          if (MOUNT.test(source)) found.push(relative(process.cwd(), path));
+          // The old body class made the landing page's fixed header start lower.
+          expect(source, path).not.toContain("has-pilot-banner");
+        }
+      }
+    };
+    walk(join(process.cwd(), "src"));
+    expect(found.sort()).toEqual([
+      "src/app/(dashboard)/layout.tsx",
+      "src/components/pilot/hosted-pilot-banner.tsx",
+    ]);
   });
 });
 

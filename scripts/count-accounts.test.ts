@@ -80,20 +80,21 @@ describe("count-accounts", () => {
     for (const value of Object.values(result.activity)) expect(value).toBe(0);
   });
 
-  it("gives 4 to 10 activity figures, each an integer or null, each key well formed and labelled", async () => {
+  it("gives 4 to 12 activity figures, each an integer or null, each key well formed and labelled", async () => {
     const { client } = mockClient(() => 3);
     const result = await collectCounts(client, NOW);
     const keys = Object.keys(result.activity);
 
     expect(keys.length).toBeGreaterThanOrEqual(4);
-    expect(keys.length).toBeLessThanOrEqual(10);
+    expect(keys.length).toBeLessThanOrEqual(12);
     for (const [key, value] of Object.entries(result.activity)) {
       expect(key).toMatch(/^[a-z0-9]+(_[a-z0-9]+)*_(total|30d)$/);
       expect(value === null || Number.isInteger(value)).toBe(true);
     }
     expect(Object.keys(result.activity_labels)).toEqual(keys);
     for (const label of Object.values(result.activity_labels)) {
-      expect(label.trim().split(/\s+/).length).toBeLessThanOrEqual(5);
+      // Six words at most: "At a pilot limit, 30 days" is the owner's own label.
+      expect(label.trim().split(/\s+/).length).toBeLessThanOrEqual(6);
     }
     expect(result.activity_labels).toBe(ACTIVITY_LABELS);
   });
@@ -146,6 +147,28 @@ describe("count-accounts", () => {
     expect(approved.some((c) => JSON.stringify(c.where?.approvedAt) === JSON.stringify({ gte: SINCE }))).toBe(true);
     expect(calls.some((c) => c.model === "aIPolicy" && c.where?.status === "PUBLISHED")).toBe(true);
     expect(calls.some((c) => c.model === "oversightDecision" && c.where?.decidedAt)).toBe(true);
+  });
+
+  it("counts distinct organisations at a pilot limit, all time and 30 days, as labelled integers", async () => {
+    const { client, calls } = mockClient((model, where) =>
+      model === "organization" && where ? (JSON.stringify(where).includes("createdAt") ? 2 : 5) : 9,
+    );
+    const result = await collectCounts(client, NOW);
+
+    expect(result.activity.organisations_at_limit_total).toBe(5);
+    expect(result.activity.organisations_at_limit_30d).toBe(2);
+    expect(Number.isInteger(result.activity.organisations_at_limit_total)).toBe(true);
+    expect(Number.isInteger(result.activity.organisations_at_limit_30d)).toBe(true);
+    expect(result.activity_labels.organisations_at_limit_total).toBe("Organisations at a pilot limit");
+    expect(result.activity_labels.organisations_at_limit_30d).toBe("At a pilot limit, 30 days");
+
+    const atLimit = calls.filter((c) => c.model === "organization" && c.where);
+    expect(atLimit).toHaveLength(2);
+    for (const call of atLimit) {
+      expect(call.where?.slug).toEqual({ not: "acme-ai" });
+      expect(JSON.stringify(call.where)).toContain('"action":"PILOT_LIMIT_REACHED"');
+    }
+    expect(atLimit.some((c) => JSON.stringify(c.where).includes(JSON.stringify({ gte: SINCE })))).toBe(true);
   });
 
   it("excludes the seed customer from paying and the seed users from active users", async () => {

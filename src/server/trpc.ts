@@ -9,7 +9,8 @@ import { ZodError } from "zod";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { clientIp } from "@/lib/rate-limit";
-import { assertPilotWritable, pilotLocale } from "@/server/services/pilot/caps";
+import { PilotLimitReached, assertPilotWritable, pilotLocale } from "@/server/services/pilot/caps";
+import { recordPilotLimitReached } from "@/server/services/pilot/limit-reached";
 import { ensurePilotFirstSignIn } from "@/server/services/pilot/first-sign-in";
 
 /**
@@ -77,7 +78,22 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
   });
 });
 
-export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
+/**
+ * When a pilot limit refuses the call (anywhere below: the write middleware's
+ * ninety-day switch, or a create path's ceiling), write the day's
+ * PILOT_LIMIT_REACHED row and hand the refusal back unchanged. It runs after
+ * any transaction has rolled back, so the row survives the refused run.
+ */
+const recordPilotLimits = t.middleware(async ({ ctx, next }) => {
+  const result = await next();
+  if (!result.ok && result.error.cause instanceof PilotLimitReached) {
+    const { organizationId, limit } = result.error.cause;
+    await recordPilotLimitReached(ctx.prisma, organizationId, limit);
+  }
+  return result;
+});
+
+export const protectedProcedure = t.procedure.use(recordPilotLimits).use(enforceUserIsAuthed);
 
 // Organization context middleware
 export const withOrganization = t.middleware(async ({ ctx, next, getRawInput }) => {
@@ -143,6 +159,7 @@ async function withPilotFirstSignIn<O extends { id: string; pilotFirstSignInAt: 
 }
 
 export const organizationProcedure = t.procedure
+  .use(recordPilotLimits)
   .use(enforceUserIsAuthed)
   .use(withOrganization);
 
@@ -199,6 +216,7 @@ const enforceWriteAccess = t.middleware(async ({ ctx, next, meta, getRawInput })
 });
 
 export const orgWriteProcedure = t.procedure
+  .use(recordPilotLimits)
   .use(enforceUserIsAuthed)
   .use(enforceWriteAccess);
 

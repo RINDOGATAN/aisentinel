@@ -137,7 +137,29 @@ export function assertPilotWritable(
   throw new TRPCError({
     code: "FORBIDDEN",
     message: pilotReadOnlyMessage(locale, pilotExportUrl(organization.id)),
+    cause: new PilotLimitReached(organization.id, PILOT_EDITING_DAYS_LIMIT),
   });
+}
+
+/** The fixed name the audit row gives the ninety-day limit; the ceilings use their keys. */
+export const PILOT_EDITING_DAYS_LIMIT = "editing_days";
+
+export type PilotLimitName = PilotCeilingKey | typeof PILOT_EDITING_DAYS_LIMIT;
+
+/**
+ * The cause carried by a refusal at a limit an organisation has reached, so
+ * the tRPC layer can record it once the refusal is on its way back (see
+ * recordPilotLimits in src/server/trpc.ts). Carries an id and a fixed name,
+ * nothing a person typed.
+ */
+export class PilotLimitReached extends Error {
+  constructor(
+    readonly organizationId: string,
+    readonly limit: PilotLimitName,
+  ) {
+    super(`pilot limit reached: ${limit}`);
+    this.name = "PilotLimitReached";
+  }
 }
 
 /** The error a create path throws when a ceiling is reached. */
@@ -149,6 +171,7 @@ export function pilotCeilingError(
   return new TRPCError({
     code: "FORBIDDEN",
     message: pilotCeilingMessage(locale, key, pilotExportUrl(organizationId)),
+    cause: new PilotLimitReached(organizationId, key),
   });
 }
 

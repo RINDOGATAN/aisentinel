@@ -54,6 +54,26 @@ export function hostedPilotActive(env: PilotEnv = process.env): boolean {
 /** Where a pilot organisation goes to run its own instance. */
 export const PILOT_RUN_URL = "https://www.todo.law/run";
 
+/**
+ * The one link a limit message carries to keep going: the storefront's wizard
+ * for the managed service (not the deployment engagement), in the reader's
+ * language. A firm at a limit is the one we know is serious.
+ */
+export const PILOT_MANAGED_URL: Record<PilotLocale, string> = {
+  en: "https://www.todo.law/contact/managed",
+  es: "https://www.todo.law/es/contact/managed",
+};
+
+export const PILOT_KEEP_GOING: Record<PilotLocale, string> = {
+  en: "Keep going on your own instance",
+  es: "Sigue en tu propia instancia",
+};
+
+/** The keep-going sentence, closing every message a pilot limit writes. */
+export function pilotKeepGoing(locale: PilotLocale): string {
+  return `${PILOT_KEEP_GOING[locale]} (${PILOT_MANAGED_URL[locale]}).`;
+}
+
 /** Editing window, in days, from the organisation's first sign-in. */
 export const PILOT_EDIT_DAYS = 90;
 
@@ -239,7 +259,7 @@ export function pilotReadOnlyMessage(locale: PilotLocale, exportUrl: string): st
     locale === "es"
       ? `Piloto alojado: los ${PILOT_EDIT_DAYS} días de edición de esta organización han terminado y ahora es de solo lectura.`
       : `Hosted pilot: this organisation's ${PILOT_EDIT_DAYS} editing days are over and it is now read-only.`;
-  return `${lead} ${waysOut(locale, exportUrl)}`;
+  return `${lead} ${waysOut(locale, exportUrl)} ${pilotKeepGoing(locale)}`;
 }
 
 export function pilotCeilingMessage(
@@ -253,7 +273,7 @@ export function pilotCeilingMessage(
     locale === "es"
       ? `Piloto alojado: esta organización ha alcanzado su límite de ${max} ${label}.`
       : `Hosted pilot: this organisation has reached its ceiling of ${max} ${label}.`;
-  return `${lead} ${waysOut(locale, exportUrl)}`;
+  return `${lead} ${waysOut(locale, exportUrl)} ${pilotKeepGoing(locale)}`;
 }
 
 export function pilotOneOrganizationMessage(locale: PilotLocale): string {

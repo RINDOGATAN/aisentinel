@@ -23,6 +23,7 @@ const H = vi.hoisted(() => {
   const members: Row[] = [];
   const systems: Row[] = [];
   const audit: Row[] = [];
+  const auditFails = { on: false };
 
   const matches = (row: Row, where: Row = {}) =>
     Object.entries(where).every(([k, v]) =>
@@ -64,6 +65,7 @@ const H = vi.hoisted(() => {
     },
     aISystem: {
       count: async ({ where }: { where: Row }) => systems.filter((s) => matches(s, where)).length,
+      findMany: async ({ where }: { where: Row }) => systems.filter((s) => matches(s, where)),
       create: async ({ data }: { data: Row }) => {
         const row = { id: `sys-${systems.length + 1}`, ...data };
         systems.push(row);
@@ -72,11 +74,25 @@ const H = vi.hoisted(() => {
     },
     auditLog: {
       create: async ({ data }: { data: Row }) => {
+        if (auditFails.on) throw new Error("audit store down");
         // An id, because deleting an organisation writes its tombstone and then
         // prunes the rest of the trail by "everything but this row".
-        const row = { id: `audit-${audit.length + 1}`, ...data };
+        const row = { id: `audit-${audit.length + 1}`, createdAt: new Date(), ...data };
         audit.push(row);
         return row;
+      },
+      // Enough of the PILOT_LIMIT_REACHED lookup: the day floor and the JSON path.
+      findFirst: async ({ where }: { where: Row & { createdAt?: { gte: Date }; metadata?: { path: string[]; equals: unknown } } }) => {
+        if (auditFails.on) throw new Error("audit store down");
+        const { createdAt, metadata, ...plain } = where;
+        return (
+          audit.find(
+            (r) =>
+              matches(r, plain) &&
+              (!createdAt || (r.createdAt as Date).getTime() >= createdAt.gte.getTime()) &&
+              (!metadata || (r.metadata as Row | undefined)?.[metadata.path[0]] === metadata.equals),
+          ) ?? null
+        );
       },
       deleteMany: async () => ({ count: 0 }),
     },
@@ -92,6 +108,7 @@ const H = vi.hoisted(() => {
     members.length = 0;
     systems.length = 0;
     audit.length = 0;
+    auditFails.on = false;
     organizations.push({
       id: "org-a",
       name: "Org A",
@@ -106,7 +123,7 @@ const H = vi.hoisted(() => {
     }
   }
 
-  return { db, reset, organizations, members, systems };
+  return { db, reset, organizations, members, systems, audit, auditFails };
 });
 
 vi.mock("@/lib/prisma", () => ({ default: H.db, prisma: H.db }));
@@ -214,6 +231,97 @@ describe("hosted pilot caps through the routers", () => {
     const created = await caller.create(newSystem);
     expect(created.id).toBeTruthy();
     expect(H.systems).toHaveLength(PILOT_CEILINGS.systems);
+    expect(limitRows()).toHaveLength(0);
+  });
+});
+
+/** The PILOT_LIMIT_REACHED rows written so far. */
+const limitRows = () => H.audit.filter((r) => r.action === "PILOT_LIMIT_REACHED");
+
+describe("a pilot limit becomes a lead: the refusal carries the link and is counted", () => {
+  beforeEach(() => {
+    vi.stubEnv("VERCEL_ENV", "production");
+    vi.stubEnv("NEXT_PUBLIC_HOSTED_PILOT", "");
+    vi.useFakeTimers({ now: new Date("2027-03-01T12:00:00.000Z"), toFake: ["Date"] });
+  });
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.unstubAllEnvs();
+  });
+
+  it.each([
+    ["en", "Keep going on your own instance (https://www.todo.law/contact/managed)."],
+    ["es", "Sigue en tu propia instancia (https://www.todo.law/es/contact/managed)."],
+  ])("the ceiling's refusal carries the one keep-going link (%s)", async (locale, link) => {
+    H.reset({ signedInDaysAgo: 1, systemCount: PILOT_CEILINGS.systems });
+    const caller = aiSystemRouter.createCaller(ctx(locale));
+    await expect(caller.create(newSystem)).rejects.toMatchObject({
+      code: "FORBIDDEN",
+      message: expect.stringContaining(link),
+    });
+  });
+
+  it("writes exactly the contract row, once per organisation, per limit, per day", async () => {
+    H.reset({ signedInDaysAgo: 1, systemCount: PILOT_CEILINGS.systems });
+    const caller = aiSystemRouter.createCaller(ctx());
+    for (let i = 0; i < 3; i += 1) await expect(caller.create(newSystem)).rejects.toBeTruthy();
+    expect(limitRows()).toHaveLength(1);
+    const { id: _id, createdAt: _at, ...row } = limitRows()[0];
+    expect(row).toEqual({
+      organizationId: "org-a",
+      entityType: "Organization",
+      entityId: "org-a",
+      action: "PILOT_LIMIT_REACHED",
+      metadata: { limit: "systems" },
+    });
+
+    // The next calendar day (UTC), one more row; the same day again, none.
+    vi.setSystemTime(new Date("2027-03-02T00:00:01.000Z"));
+    await expect(caller.create(newSystem)).rejects.toBeTruthy();
+    await expect(caller.create(newSystem)).rejects.toBeTruthy();
+    expect(limitRows()).toHaveLength(2);
+    expect(H.systems).toHaveLength(PILOT_CEILINGS.systems);
+  });
+
+  it("counts each limit on its own: the editing days are a second limit, with their own row", async () => {
+    H.reset({ signedInDaysAgo: 1, systemCount: PILOT_CEILINGS.systems });
+    const caller = aiSystemRouter.createCaller(ctx());
+    await expect(caller.create(newSystem)).rejects.toBeTruthy();
+    H.organizations[0].pilotFirstSignInAt = new Date(Date.now() - 91 * 24 * 60 * 60 * 1000);
+    await expect(caller.create(newSystem)).rejects.toMatchObject({
+      message: expect.stringContaining("Keep going on your own instance (https://www.todo.law/contact/managed)."),
+    });
+    await expect(caller.create(newSystem)).rejects.toBeTruthy();
+    expect(limitRows().map((r) => r.metadata)).toEqual([{ limit: "systems" }, { limit: "editing_days" }]);
+  });
+
+  it("a failure to write the row does not change the refusal", async () => {
+    H.reset({ signedInDaysAgo: 1, systemCount: PILOT_CEILINGS.systems });
+    H.auditFails.on = true;
+    const caller = aiSystemRouter.createCaller(ctx());
+    await expect(caller.create(newSystem)).rejects.toMatchObject({
+      code: "FORBIDDEN",
+      message: expect.stringContaining(`ceiling of ${PILOT_CEILINGS.systems} AI systems`),
+    });
+    expect(limitRows()).toHaveLength(0);
+  });
+
+  it("an organisation at its limit still reads everything, and a read writes no row", async () => {
+    H.reset({ signedInDaysAgo: 1, systemCount: PILOT_CEILINGS.systems });
+    const caller = aiSystemRouter.createCaller(ctx());
+    await expect(caller.create(newSystem)).rejects.toBeTruthy();
+    const { items } = await caller.list({ organizationId: "org-a", limit: 50 });
+    expect(items).toHaveLength(PILOT_CEILINGS.systems);
+    // Export: no export route imports the guard (src/server/services/pilot/caps.test.ts).
+    expect(limitRows()).toHaveLength(1);
+  });
+
+  it("an organisation past its editing days still reads everything", async () => {
+    H.reset({ signedInDaysAgo: 91, systemCount: 3 });
+    const caller = aiSystemRouter.createCaller(ctx());
+    const { items } = await caller.list({ organizationId: "org-a" });
+    expect(items).toHaveLength(3);
+    expect(limitRows()).toHaveLength(0);
   });
 });
 

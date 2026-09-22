@@ -1810,7 +1810,7 @@
         },
         "compliance": {
           "title": "Cumplimiento",
-          "description": "Correspondencia entre marcos: Reglamento de IA de la UE, RGPD, NIST AI RMF, ISO 42001, ADMT de California, Colorado, Texas y Washington, con gestión de pruebas y enlaces entre marcos."
+          "description": "Correspondencia entre marcos: Reglamento de IA de la UE, RGPD, NIST AI RMF, ISO 42001, AIUC-1 (la norma de certificación para agentes de IA), ADMT de California, Colorado, Texas y Washington, con gestión de pruebas y enlaces entre marcos."
         },
         "vendors": {
           "title": "Riesgo de proveedores",
@@ -1884,7 +1884,7 @@
           "Evaluaciones FRIA y de riesgo de IA",
           "Supervisión humana y puntos de control de aprobación",
           "Gestión de incidentes de IA",
-          "Mapeo de cumplimiento en ocho marcos (Reglamento de IA de la UE, RGPD, NIST AI RMF, ISO/IEC 42001, California, Colorado, Texas y Washington)",
+          "Mapeo de cumplimiento en nueve marcos (Reglamento de IA de la UE, RGPD, NIST AI RMF, ISO/IEC 42001, AIUC-1, California, Colorado, Texas y Washington)",
           "Gestión de riesgo de proveedores",
           "Gestión de políticas",
           "Panel ejecutivo"
@@ -2473,11 +2473,11 @@
     },
     "compliance": {
       "metaTitle": "Cumplimiento: documentación de AI SENTINEL",
-      "metaDescription": "Mapeo en ocho marcos (Reglamento de IA de la UE, RGPD, NIST AI RMF, ISO/IEC 42001, California, Colorado, Texas y Washington) con gestión de evidencias y exportación.",
+      "metaDescription": "Mapeo en nueve marcos (Reglamento de IA de la UE, RGPD, NIST AI RMF, ISO/IEC 42001, AIUC-1, California, Colorado, Texas y Washington) con gestión de evidencias y exportación.",
       "title": "Cumplimiento",
       "intro": "Mapea tus sistemas de IA frente a los principales marcos normativos. Sigue el estado de cumplimiento a nivel de requisito, adjunta evidencias y exporta paquetes de cumplimiento para reguladores y auditores.",
       "frameworksTitle": "Marcos normativos compatibles",
-      "frameworksIntro": "AI SENTINEL incluye ocho marcos precargados: tres que se aplican según el nivel de riesgo (el Reglamento de IA de la UE, el NIST AI RMF y la ISO/IEC 42001) y cinco que se aplican según la jurisdicción (el RGPD y las normas de IA de California, Colorado, Texas y Washington). Cada marco se desglosa en artículos, cláusulas o funciones con seguimiento de cumplimiento individual.",
+      "frameworksIntro": "AI SENTINEL incluye nueve marcos precargados: tres que se aplican según el nivel de riesgo (el Reglamento de IA de la UE, el NIST AI RMF y la ISO/IEC 42001), cinco que se aplican según la jurisdicción (el RGPD y las normas de IA de California, Colorado, Texas y Washington) y uno que eliges tú: AIUC-1, la norma de certificación para agentes de IA. Cada marco se desglosa en artículos, cláusulas o funciones con seguimiento de cumplimiento individual.",
       "frameworks": {
         "euAiAct": {
           "name": "Reglamento de IA de la UE",
@@ -2493,6 +2493,11 @@
           "name": "ISO 42001",
           "description": "Norma internacional para Sistemas de Gestión de IA. Abarca el contexto de la organización, el liderazgo, la planificación, el soporte y las operaciones.",
           "items": "{count} requisitos: cláusulas 4 a 10 y controles del anexo A"
+        },
+        "aiuc1": {
+          "name": "AIUC-1",
+          "description": "AIUC-1, la norma de certificación para agentes de IA: seis dominios (datos y privacidad, seguridad, protección frente a daños, fiabilidad, rendición de cuentas y sociedad), con pruebas técnicas obligatorias al menos cada tres meses. No se aplica por nivel de riesgo: la eliges tú para tus agentes.",
+          "items": "{count} requisitos: seis dominios y los 51 requisitos en vigor"
         },
         "gdpr": {
           "name": "RGPD",
@@ -2546,7 +2551,7 @@
         "Informes de cumplimiento listos para auditoría"
       ],
       "crossTitle": "Mapeo entre marcos",
-      "crossIntro": "Muchos requisitos de los ocho marcos se solapan. AI SENTINEL incluye {count} mapeos entre marcos predefinidos, para que un mismo trabajo pueda servir de evidencia en varios marcos a la vez.",
+      "crossIntro": "Muchos requisitos de los nueve marcos se solapan. AI SENTINEL incluye {count} mapeos entre marcos predefinidos, para que un mismo trabajo pueda servir de evidencia en varios marcos a la vez.",
       "crossBody1": "Cuando marcas un requisito como <s>Conforme</s> o <s>Parcialmente Conforme</s>, AI SENTINEL muestra los requisitos vinculados de otros marcos y ofrece propagar el estado automáticamente.",
       "crossBody2": "Por ejemplo, marcar como conforme el Art. 9 del Reglamento de IA de la UE (Gestión de Riesgos) puede actualizar automáticamente NIST GOVERN 1 (Políticas de Gestión de Riesgos) y la Cláusula 6.1 de ISO 42001 (Acciones para Abordar Riesgos), porque cubren la misma obligación.",
       "crossStats": {
@@ -2567,7 +2572,7 @@
         {
           "role": "Responsable de IA",
           "title": "Selecciona el marco y el sistema de IA",
-          "description": "Elige uno de los ocho marcos y el sistema de IA que vas a evaluar."
+          "description": "Elige uno de los nueve marcos y el sistema de IA que vas a evaluar."
         },
         {
           "role": "Responsable de IA",
@@ -3549,6 +3554,22 @@
       "title": "Novedades",
       "intro": "Las versiones se enumeran de la más reciente a la más antigua. Toda incorporación normativa lleva una fecha de revisión jurídica y una marca de validación pendiente.",
       "releases": [
+        {
+          "version": "Sin publicar",
+          "date": "22 de septiembre de 2026",
+          "headline": "AIUC-1, la norma de certificación para agentes de IA",
+          "summary": "AIUC-1 se suma a los marcos con los que una organización puede mapear sus sistemas y a la rueda de marcos.",
+          "items": [
+            {
+              "title": "AIUC-1 como marco de cumplimiento",
+              "body": "Sus seis dominios y los 51 requisitos en vigor en la versión del tercer trimestre de 2026, cada uno con su identificador y un resumen de una línea, y 186 enlaces con la ISO/IEC 42001, el NIST AI RMF y el Reglamento de IA de la UE tomados de las tablas de correspondencia que publica la propia norma. Nunca se aplica por nivel de riesgo: la eliges tú en la página de cumplimiento para los sistemas que son agentes."
+            },
+            {
+              "title": "La rueda de marcos: trece marcos",
+              "body": "AIUC-1 es el primer marco de la rueda pensado para agentes, y el único con pruebas técnicas obligatorias. El selector pregunta si despliegas o construyes agentes de IA y, si es así, sugiere AIUC-1 como certificación para agentes."
+            }
+          ]
+        },
         {
           "version": "0.4.0 a 0.5.0",
           "date": "11 a 13 de septiembre de 2026",

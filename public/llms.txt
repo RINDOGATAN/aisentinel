@@ -2,7 +2,7 @@
 
 > AI Governance Made Accountable
 
-AI SENTINEL by TODO.LAW is an open-core AI governance platform for organizations managing AI systems under the EU AI Act, NIST AI RMF, and ISO 42001. It provides a complete toolkit for AI system inventory, risk classification, compliance mapping, human oversight, incident management, and policy governance.
+AI SENTINEL by TODO.LAW is an open-core AI governance platform for organizations managing AI systems under the EU AI Act, NIST AI RMF, ISO 42001 and AIUC-1, the certification standard for AI agents, among nine frameworks. It provides a complete toolkit for AI system inventory, risk classification, compliance mapping, human oversight, incident management, and policy governance.
 
 Hosted pilot: https://aisentinel.todo.law (free, capped, no contractual safeguards; every module open)
 Run your own instance: https://www.todo.law/run
@@ -14,7 +14,7 @@ License: AGPL-3.0 (core) + proprietary premium modules, sold only for the self-h
 - [AI Registry](https://aisentinel.todo.law/docs/ai-registry): Inventory all AI systems, models, and agents with full lifecycle tracking (Draft → Development → Testing → Deployed → Retired)
 - [Risk Classification](https://aisentinel.todo.law/docs/risk-classification): EU AI Act four-tier risk framework (Unacceptable, High, Limited, Minimal) with Annex III wizard
 - [Assessments](https://aisentinel.todo.law/docs/assessments): FRIA, AI Risk, and Custom assessment templates with approval workflows and risk scoring
-- [Compliance Mapping](https://aisentinel.todo.law/docs/compliance): EU AI Act, NIST AI RMF, and ISO 42001 framework mapping with more than 100 cross-framework mappings, evidence management, and compliance snapshots
+- [Compliance Mapping](https://aisentinel.todo.law/docs/compliance): mapping across nine frameworks (EU AI Act, NIST AI RMF, ISO 42001, AIUC-1, the GDPR and the California, Colorado, Texas and Washington AI rules) with about 300 cross-framework mappings, evidence management, and compliance snapshots
 - [Human Oversight](https://aisentinel.todo.law/docs/oversight): Approval gates (pre-deploy, post-deploy, periodic review, incident-triggered, material change) with decision logging per Art. 14
 - [AI Incidents](https://aisentinel.todo.law/docs/incidents): Track hallucination, bias, drift, adversarial attacks, prompt injection, and more; severity levels, timelines, tasks, Art. 73 authority notifications
 - [Vendor Risk](https://aisentinel.todo.law/docs/vendors): Third-party AI vendor management with risk levels (Critical, High, Medium, Low), vendor assessments, and contract tracking
@@ -33,7 +33,8 @@ On the hosted pilot every module, these included, is open to every organisation 
 
 - Multi-tenant SaaS with role-based access (Owner, Admin, AI Officer, Member, Viewer)
 - Supports EU AI Act roles: Provider, Deployer, Importer, Distributor, User
-- Cross-framework compliance propagation (EU AI Act ↔ NIST AI RMF ↔ ISO 42001)
+- Cross-framework compliance propagation (EU AI Act ↔ NIST AI RMF ↔ ISO 42001 ↔ AIUC-1)
+- [Frameworks wheel](https://aisentinel.todo.law/docs/frameworks): thirteen AI governance frameworks compared on fourteen dimensions, including AIUC-1, the certification standard for AI agents
 - Built with Next.js, tRPC, Prisma, and PostgreSQL
 - Authentication via Google OAuth and email magic links
 - Parent brand: TODO.LAW (https://todo.law)

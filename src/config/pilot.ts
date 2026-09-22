@@ -126,10 +126,11 @@ export function pilotClock(firstSignInAt: Date | null | undefined, now: Date = n
 /**
  * The records ceiling, per organisation. Chosen from the data model to protect
  * the service: the compliance screens and the program report load every
- * mapping of an organisation (294 requirements per system across eight
- * frameworks), board reports each store a program snapshot of up to 2 MB, and
- * the program pack is built in memory in one request. Twenty-five systems
- * keeps the largest unpaginated read under about 7,500 rows and the pack
+ * mapping of an organisation (294 requirements per system, 351 where AIUC-1
+ * is chosen, across nine frameworks), board reports each store a program
+ * snapshot of up to 2 MB, and the program pack is built in memory in one
+ * request. Twenty-five systems keeps the largest unpaginated read under about
+ * 9,000 rows and the pack
  * well inside the serverless response limit. See docs/capacity.md.
  */
 export const PILOT_CEILING_KEYS = [

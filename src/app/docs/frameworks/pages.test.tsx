@@ -155,14 +155,20 @@ describe("refreshed docs pages", () => {
       });
     }
 
-    it(`compliance lists all eight frameworks and the counted figures in ${locale}`, async () => {
+    it(`compliance lists all nine frameworks, AIUC-1 among them, and the counted figures in ${locale}`, async () => {
       const html = await render(locale, async () => (await import("../compliance/page")).default());
       const fw = MESSAGES[locale].docs.compliance.frameworks;
+      expect(Object.keys(fw)).toHaveLength(9);
       for (const k of Object.keys(fw) as (keyof typeof fw)[]) expect(html).toContain(fw[k].name);
-      expect(html).toContain(" 115 ");
+      expect(html).toContain(escape(fw.aiuc1.description));
+      expect(html).toContain(
+        locale === "es" ? "la norma de certificación para agentes de IA" : "the certification standard for AI agents",
+      );
+      expect(html).toContain("57 ");
+      expect(html).toContain(" 301 ");
       expect(html).toContain(" 130 ");
-      expect(html).not.toContain(" 41 ");
-      for (const v of ["34", "64", "17"]) expect(html).toContain(`>${v}</p>`);
+      expect(html).not.toContain(" 115 ");
+      for (const v of ["34", "64", "203"]) expect(html).toContain(`>${v}</p>`);
     });
 
     it(`roles no longer mention billing in ${locale}`, async () => {

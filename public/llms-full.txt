@@ -2,7 +2,7 @@
 
 > AI Governance Made Accountable
 
-AI SENTINEL by TODO.LAW is an open-core AI governance platform for organizations managing AI systems under the EU AI Act, NIST AI RMF, and ISO 42001. It provides a complete toolkit for AI system inventory, risk classification, compliance mapping, human oversight, incident management, and policy governance.
+AI SENTINEL by TODO.LAW is an open-core AI governance platform for organizations managing AI systems under the EU AI Act, NIST AI RMF, ISO 42001 and AIUC-1, the certification standard for AI agents, among nine frameworks. It provides a complete toolkit for AI system inventory, risk classification, compliance mapping, human oversight, incident management, and policy governance.
 
 Hosted pilot: https://aisentinel.todo.law (free, capped, no contractual safeguards; every module open)
 Run your own instance: https://www.todo.law/run
@@ -62,14 +62,16 @@ Conduct structured assessments of AI systems using built-in templates or custom 
 ### Compliance Mapping
 URL: https://aisentinel.todo.law/docs/compliance
 
-Map AI systems to regulatory requirements across three major frameworks. Track compliance status per requirement, attach evidence, and generate compliance snapshots.
+Map AI systems to regulatory requirements across nine frameworks. Track compliance status per requirement, attach evidence, and generate compliance snapshots.
 
 **Supported frameworks:**
 - **EU AI Act** — European Union's comprehensive AI regulation with requirements for risk management, data governance, transparency, human oversight, accuracy, and robustness
 - **NIST AI RMF** — U.S. National Institute of Standards and Technology AI Risk Management Framework with Govern, Map, Measure, and Manage functions
 - **ISO 42001** — International standard for AI Management Systems covering leadership, planning, support, operation, and performance evaluation
+- **AIUC-1**: the certification standard for AI agents (security, safety and reliability), in six domains with 51 requirements in force (Q3 2026 release). It is chosen per system, not attached by risk tier, and linked to ISO 42001, the NIST AI RMF and the EU AI Act through the crosswalks the standard publishes
+- **By jurisdiction**: the GDPR (AI-relevant articles) and the California, Colorado, Texas and Washington AI rules
 
-**Cross-framework mappings:** more than 100 pre-seeded mappings linking equivalent, partial and related requirements across the frameworks. When you update compliance status for one framework requirement, related requirements in other frameworks are automatically flagged for review.
+**Cross-framework mappings:** about 300 pre-seeded mappings linking equivalent, partial and related requirements across the frameworks. When you update compliance status for one framework requirement, related requirements in other frameworks are automatically flagged for review.
 
 **Compliance statuses:** Compliant, Partially Compliant, Non-Compliant, Not Applicable, Not Assessed
 
@@ -216,6 +218,7 @@ AI SENTINEL helps organizations comply with:
 - **EU AI Act (Regulation 2024/1689)** — The European Union's comprehensive AI regulation. AI SENTINEL covers risk classification (Art. 6-7), conformity assessment (Art. 43), fundamental rights impact assessment (Art. 27), human oversight (Art. 14), incident reporting (Art. 73), transparency obligations, and technical documentation requirements.
 - **NIST AI RMF 1.0** — The U.S. framework for managing AI risks across four functions: Govern, Map, Measure, and Manage. AI SENTINEL maps NIST controls to platform features and cross-references them with EU AI Act and ISO 42001 requirements.
 - **ISO 42001:2023** — The international standard for AI Management Systems. AI SENTINEL maps ISO 42001 clauses to platform capabilities including leadership commitment, risk assessment, operational controls, and performance evaluation.
+- **AIUC-1**: the certification standard for AI agents, maintained by the Artificial Intelligence Underwriting Company (https://standard.aiuc-1.com/). AI SENTINEL carries its six domains and 51 requirements as a framework an organisation chooses for its agents, and compares it with twelve other frameworks on the frameworks wheel (https://aisentinel.todo.law/docs/frameworks). AI SENTINEL does not certify anything.
 
 ## Integration with DPO Central
 

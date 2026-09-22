@@ -20,6 +20,7 @@ const frameworks = [
   { key: "euAiAct", code: "EU_AI_ACT" },
   { key: "nist", code: "NIST_AI_RMF" },
   { key: "iso", code: "ISO_42001" },
+  { key: "aiuc1", code: "AIUC_1" },
   { key: "gdpr", code: "EU_GDPR" },
   { key: "caAdmt", code: "CA_CCPA_ADMT" },
   { key: "colorado", code: "CO_SB_26_189" },

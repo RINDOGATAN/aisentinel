@@ -33,6 +33,7 @@ import {
   Columns3,
   ListChecks,
   FlaskConical,
+  LifeBuoy,
 } from "lucide-react";
 import { useState } from "react";
 import { PremiumNotice } from "@/components/docs/premium-notice";
@@ -68,6 +69,7 @@ const sidebarItems: SidebarItem[] = [
   { href: "/docs/roles", labelKey: "roles", icon: Users },
   { href: "/docs/security", labelKey: "security", icon: Shield },
   { href: "/docs/pilot", labelKey: "pilot", icon: FlaskConical },
+  { href: "/docs/support", labelKey: "support", icon: LifeBuoy },
   { href: "/docs/whats-new", labelKey: "whatsNew", icon: Sparkles },
 ];
 

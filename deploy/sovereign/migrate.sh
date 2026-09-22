@@ -18,7 +18,9 @@
 # never re-seeded (the seeds' upserts could otherwise clobber live edits to
 # seeded rows).
 set -eu
-cd /app
+# APP_DIR lets CI run this same script from a checkout (the fresh-install job).
+APP_DIR="${APP_DIR:-/app}"
+cd "$APP_DIR"
 
 # Pre-baseline install detection: tables exist (db push era) but the migrations
 # ledger does not. Baseline once, then migrate deploy takes over forever.
@@ -36,7 +38,7 @@ const p = new PrismaClient();
 EOF
 # NODE_PATH: the script lives outside /app, so bare `require` would not find
 # the generated client. The users table is @@map("users") in schema.prisma.
-if NODE_PATH=/app/node_modules node /tmp/baseline-check.js; then
+if NODE_PATH="$APP_DIR/node_modules" node /tmp/baseline-check.js; then
   echo "[migrate] pre-migrations install detected; baselining 0_init (metadata only)..."
   npx prisma migrate resolve --applied 0_init
 fi

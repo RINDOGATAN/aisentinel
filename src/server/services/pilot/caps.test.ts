@@ -7,8 +7,6 @@
  * No database: a counting fake stands in for the eleven delegates.
  */
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { readFileSync, readdirSync, statSync } from "node:fs";
-import { join } from "node:path";
 import { TRPCError } from "@trpc/server";
 import { PILOT_CEILINGS, PILOT_RUN_URL, PILOT_CEILING_KEYS } from "@/config/pilot";
 import {
@@ -109,26 +107,9 @@ describe("on the hosted pilot", () => {
     expect(status.exportUrl).toBe("/api/export/program-pack?organizationId=org-1");
   });
 
-  it("keeps the pilot guard out of every export route", () => {
-    // The structural half of "export still allowed": no file under the export
-    // API imports the guard, so a read-only organisation cannot be refused there.
-    const root = join(__dirname, "../../../app/api/export");
-    const files: string[] = [];
-    const walk = (dir: string) => {
-      for (const entry of readdirSync(dir)) {
-        const full = join(dir, entry);
-        if (statSync(full).isDirectory()) walk(full);
-        else if (entry.endsWith(".ts")) files.push(full);
-      }
-    };
-    walk(root);
-    expect(files.length).toBeGreaterThan(0);
-    for (const file of files) {
-      const source = readFileSync(file, "utf8");
-      expect(source, file).not.toContain("services/pilot/caps");
-      expect(source, file).not.toContain("assertPilotWritable");
-    }
-  });
+  // That no export route consults the guard, and that every query stays
+  // reachable, is proven in one suite:
+  // src/server/routers/__tests__/pilot-read-and-export.test.ts
 
   it("enforces the records ceiling at the boundary", async () => {
     const atCap = fakeDb({ aISystem: PILOT_CEILINGS.systems });

@@ -52,3 +52,8 @@ next-env.d.ts
 
 # Owner phone screenshots for review (local only, never staged)
 /feedback/
+
+# Local end-to-end run state (embedded database, reports)
+/.e2e/
+/test-results/
+/playwright-report/

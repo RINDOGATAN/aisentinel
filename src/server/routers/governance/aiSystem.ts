@@ -37,7 +37,8 @@ export const aiSystemRouter = createTRPCRouter({
         search: z.string().optional(),
         status: z.enum(["DRAFT", "DEVELOPMENT", "TESTING", "DEPLOYED", "RETIRED"]).optional(),
         cursor: z.string().optional(),
-        limit: z.number().min(1).max(50).default(20),
+        // 100: the policy and shadow-AI pages load every system into a picker.
+        limit: z.number().min(1).max(100).default(20),
       })
     )
     .query(async ({ ctx, input }) => {

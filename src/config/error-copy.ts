@@ -43,7 +43,7 @@ export const ERROR_PAGE_COPY = {
 /** The message a procedure returns when it fails for a reason on our side. */
 export function internalErrorMessage(locale: ErrorLocale, reference: string): string {
   return locale === "es"
-    ? `No se ha podido completar por un problema nuestro. Vuelve a intentarlo en un momento; si vuelve a pasar, envíanos la referencia ${reference} desde el formulario de comentarios.`
+    ? `No se ha podido completar por un problema nuestro. Vuelve a intentarlo en un momento; si vuelve a pasar, envíanos la referencia ${reference} desde el formulario de sugerencias.`
     : `This could not be completed because of a problem on our side. Try again in a moment; if it happens again, send us the reference ${reference} through the feedback form.`;
 }
 

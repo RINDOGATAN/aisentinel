@@ -3,6 +3,7 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { createContext, useContext, useState, useEffect, useMemo, ReactNode } from "react";
+import { useSession } from "next-auth/react";
 import { trpc } from "@/lib/trpc";
 
 type OrganizationRole = "OWNER" | "ADMIN" | "AI_OFFICER" | "MEMBER" | "VIEWER";
@@ -31,9 +32,14 @@ const OrganizationContext = createContext<OrganizationContextType | undefined>(u
 export function OrganizationProvider({ children }: { children: ReactNode }) {
   const [organization, setOrganizationState] = useState<Organization | null>(null);
 
-  const { data: orgsData, isLoading, refetch } = trpc.organization.list.useQuery(undefined, {
-    retry: false,
-  });
+  // Signed out (the sign-in page, the docs), there is nothing to ask for: the
+  // call would only answer 401 and put an error in the browser console.
+  const { status: sessionStatus } = useSession();
+  const { data: orgsData, isLoading: listLoading, refetch } = trpc.organization.list.useQuery(
+    undefined,
+    { retry: false, enabled: sessionStatus === "authenticated" },
+  );
+  const isLoading = sessionStatus === "loading" || listLoading;
 
   const organizations = useMemo(() => orgsData ?? [], [orgsData]);
 

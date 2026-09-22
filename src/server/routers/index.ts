@@ -37,6 +37,7 @@ import { boardReportsRouter } from "./governance/boardReports";
 import { threatModelRouter } from "./governance/threatModel";
 import { pilotRouter } from "./pilot";
 import { sampleRouter } from "./governance/sample";
+import { diagnosticsRouter } from "./diagnostics";
 
 export const appRouter = createTRPCRouter({
   pilot: pilotRouter,
@@ -74,6 +75,7 @@ export const appRouter = createTRPCRouter({
   proceedings: proceedingsRouter,
   boardReports: boardReportsRouter,
   threatModel: threatModelRouter,
+  diagnostics: diagnosticsRouter,
 });
 
 export type AppRouter = typeof appRouter;

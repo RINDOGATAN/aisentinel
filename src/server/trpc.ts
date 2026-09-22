@@ -12,6 +12,7 @@ import { clientIp } from "@/lib/rate-limit";
 import { PilotLimitReached, assertPilotWritable, pilotLocale } from "@/server/services/pilot/caps";
 import { recordPilotLimitReached } from "@/server/services/pilot/limit-reached";
 import { ensurePilotFirstSignIn } from "@/server/services/pilot/first-sign-in";
+import { publicError } from "@/server/error-format";
 
 /**
  * Procedure metadata. `pilotReadOnlyExempt` marks a write procedure a
@@ -52,11 +53,19 @@ export const createTRPCContext = async (opts: { req: Request }) => {
 
 const t = initTRPC.context<typeof createTRPCContext>().meta<ProcedureMeta>().create({
   transformer: superjson,
-  errorFormatter({ shape, error }) {
+  errorFormatter({ shape, error, path, ctx }) {
+    // An unexpected failure gets a message the person can act on and a
+    // reference; the raw error goes to the server log (src/server/error-format.ts).
+    const { message, reference } = publicError(error, {
+      path,
+      locale: pilotLocale(ctx?.getCookie),
+    });
     return {
       ...shape,
+      message,
       data: {
         ...shape.data,
+        ...(reference ? { reference, stack: undefined } : {}),
         zodError:
           error.cause instanceof ZodError ? error.cause.flatten() : null,
       },

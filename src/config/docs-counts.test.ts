@@ -2,16 +2,23 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { CROSS_MAPPINGS, HIGH_RISK_AUTO_MAPPED, SEEDED_TIER_FRAMEWORKS, docsCounts } from "./docs-counts";
+import {
+  CROSS_MAPPINGS,
+  HIGH_RISK_AUTO_MAPPED,
+  SEEDED_CHOSEN_FRAMEWORKS,
+  SEEDED_TIER_FRAMEWORKS,
+  docsCounts,
+} from "./docs-counts";
 
 // A client that accepts every call. Upserts of requirements are recorded so the
 // seed scripts can be counted without a database.
-const recorded: { frameworkId?: string; applicableTo?: string[] }[] = [];
+const recorded: { id?: string; applicableTo?: string[] }[] = [];
 const mappings: string[] = [];
 function fakeClient(path: string[] = []): unknown {
-  const fn = (...args: { create?: { applicableTo?: string[]; relationship?: string } }[]) => {
+  const fn = (...args: { create?: { id?: string; applicableTo?: string[]; relationship?: string } }[]) => {
     const key = path.join(".");
-    if (key === "complianceRequirement.upsert") recorded.push({ applicableTo: args[0].create?.applicableTo });
+    if (key === "complianceRequirement.upsert")
+      recorded.push({ id: args[0].create?.id, applicableTo: args[0].create?.applicableTo });
     if (key === "crossFrameworkMapping.upsert") mappings.push(String(args[0].create?.relationship));
     if (key.endsWith("count")) return Promise.resolve(0);
     if (key.endsWith("$transaction")) {
@@ -55,7 +62,12 @@ describe("docs counts", () => {
     expect(lines).toContain(`  Created EU AI Act: ${SEEDED_TIER_FRAMEWORKS.EU_AI_ACT} requirements`);
     expect(lines).toContain(`  Created NIST AI RMF: ${SEEDED_TIER_FRAMEWORKS.NIST_AI_RMF} requirements`);
     expect(lines).toContain(`  Created ISO 42001: ${SEEDED_TIER_FRAMEWORKS.ISO_42001} requirements`);
+    expect(lines).toContain(`  Created AIUC-1: ${SEEDED_CHOSEN_FRAMEWORKS.AIUC_1} requirements`);
     expect(recorded.filter((r) => r.applicableTo?.includes("HIGH"))).toHaveLength(HIGH_RISK_AUTO_MAPPED);
+    // AIUC-1 is chosen, never attached by risk tier: every row carries an empty tier.
+    const aiuc = recorded.filter((r) => r.id?.startsWith("aiuc1-"));
+    expect(aiuc).toHaveLength(SEEDED_CHOSEN_FRAMEWORKS.AIUC_1);
+    expect(aiuc.every((r) => Array.isArray(r.applicableTo) && r.applicableTo.length === 0)).toBe(true);
   });
 
   it("match the cross-framework mapping seed script", async () => {
@@ -67,9 +79,9 @@ describe("docs counts", () => {
 
   it("state the totals the docs quote", () => {
     const c = docsCounts();
-    expect(c.frameworks).toBe(8);
-    expect(c.requirements).toBe(294);
-    expect(c.crossMappings).toBe(115);
+    expect(c.frameworks).toBe(9);
+    expect(c.requirements).toBe(351);
+    expect(c.crossMappings).toBe(301);
     expect(c.unifiedQuestions).toBe(53);
     expect(c.unifiedSections).toBe(10);
     expect(c.agenticFindings).toBe(11);

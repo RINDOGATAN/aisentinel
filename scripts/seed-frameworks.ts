@@ -5,6 +5,13 @@ import { PrismaClient, AIRiskLevel } from "@prisma/client";
 import { EU_ART113_SUBTREE } from "../src/config/eu-timeline-requirements";
 import { euRequirementId } from "../src/config/requirement-supersessions";
 import {
+  AIUC1_DOMAINS,
+  AIUC1_FRAMEWORK,
+  aiuc1DomainId,
+  aiuc1RequirementDescription,
+  aiuc1RequirementId,
+} from "../src/config/aiuc1-requirements";
+import {
   reconcileSupersededRequirements,
   rowsStillCarryingOldTitles,
   snapshotSupersededTitles,
@@ -397,7 +404,65 @@ async function main() {
   const isoTotal = isoClauses.reduce((sum, c) => sum + 1 + c.children.length, 0);
   console.log(`  Created ISO 42001: ${isoTotal} requirements`);
 
-  console.log(`\nDone! Total: ${euTotal + nistTotal + isoTotal} compliance requirements across 3 frameworks.`);
+  // ============================================================
+  // AIUC-1 (certification standard for AI agents)
+  // ============================================================
+  // Content, sources and the reasons for its shape live in
+  // src/config/aiuc1-requirements.ts. Rows carry no risk tier (applicableTo
+  // empty) so the tier auto-mapping never attaches this voluntary standard to
+  // a system; an organisation maps it by choice on the compliance page.
+
+  console.log("  Creating AIUC-1 framework...");
+
+  const aiuc1 = await prisma.complianceFramework.upsert({
+    where: { code: AIUC1_FRAMEWORK.code },
+    update: { name: AIUC1_FRAMEWORK.name, version: AIUC1_FRAMEWORK.version, description: AIUC1_FRAMEWORK.description },
+    create: {
+      code: AIUC1_FRAMEWORK.code,
+      name: AIUC1_FRAMEWORK.name,
+      version: AIUC1_FRAMEWORK.version,
+      description: AIUC1_FRAMEWORK.description,
+    },
+  });
+
+  let aiucTotal = 0;
+  for (const [i, domain] of AIUC1_DOMAINS.entries()) {
+    const parent = await prisma.complianceRequirement.upsert({
+      where: { id: aiuc1DomainId(domain.code) },
+      update: { title: domain.title, description: domain.paraphrase, sortOrder: i + 1 },
+      create: {
+        id: aiuc1DomainId(domain.code),
+        frameworkId: aiuc1.id,
+        code: domain.code,
+        title: domain.title,
+        description: domain.paraphrase,
+        applicableTo: [],
+        sortOrder: i + 1,
+      },
+    });
+    aiucTotal++;
+
+    for (const [j, req] of domain.requirements.entries()) {
+      await prisma.complianceRequirement.upsert({
+        where: { id: aiuc1RequirementId(req.code) },
+        update: { title: req.title, description: aiuc1RequirementDescription(req), sortOrder: j + 1 },
+        create: {
+          id: aiuc1RequirementId(req.code),
+          frameworkId: aiuc1.id,
+          code: req.code,
+          title: req.title,
+          description: aiuc1RequirementDescription(req),
+          applicableTo: [],
+          parentId: parent.id,
+          sortOrder: j + 1,
+        },
+      });
+      aiucTotal++;
+    }
+  }
+  console.log(`  Created AIUC-1: ${aiucTotal} requirements`);
+
+  console.log(`\nDone! Total: ${euTotal + nistTotal + isoTotal + aiucTotal} compliance requirements across 4 frameworks.`);
 
   // Upserts never remove or re-link anything. Move organisations' links off
   // codes that were retired or re-used, and delete the retired rows, so an

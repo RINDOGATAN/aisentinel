@@ -75,6 +75,7 @@ const FRAMEWORK_ABBREVIATIONS: Record<string, string> = {
   CO_SB_26_189: "CO",
   TX_TRAIGA: "TX",
   WA_AI_RULES: "WA",
+  AIUC_1: "AIUC-1",
 };
 
 const statusOptionKeys: Record<string, { labelKey: string; color: string }> = {

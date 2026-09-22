@@ -52,6 +52,9 @@ ARG NEXT_PUBLIC_DPO_CENTRAL_URL=""
 # Dealroom API. On a sovereign box there is no such backend, so hide the
 # directory and its CTA entirely (the flag gates both).
 ARG NEXT_PUBLIC_EXPERT_DIRECTORY_ENABLED=false
+# The commit /api/health reports; the image has no .git to read it from.
+ARG SOURCE_COMMIT=""
+ENV SOURCE_COMMIT=$SOURCE_COMMIT
 ENV NEXT_PUBLIC_LOCAL_AUTH_ENABLED=$NEXT_PUBLIC_LOCAL_AUTH_ENABLED \
     NEXT_PUBLIC_EMAIL_AUTH_ENABLED=$NEXT_PUBLIC_EMAIL_AUTH_ENABLED \
     NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=$NEXT_PUBLIC_GOOGLE_AUTH_ENABLED \

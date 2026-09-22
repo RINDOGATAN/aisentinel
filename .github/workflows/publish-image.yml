@@ -71,6 +71,7 @@ jobs:
           build-args: |
             NEXT_PUBLIC_APP_URL=http://localhost:8487
             NEXT_PUBLIC_DPO_CENTRAL_URL=http://localhost:8485
+            SOURCE_COMMIT=${{ github.sha }}
           cache-from: type=gha,scope=app-${{ steps.platform.outputs.pair }}
           cache-to: type=gha,mode=max,scope=app-${{ steps.platform.outputs.pair }}
           outputs: type=image,name=${{ env.IMAGE }},push-by-digest=true,name-canonical=true,push=true
@@ -84,6 +85,7 @@ jobs:
           build-args: |
             NEXT_PUBLIC_APP_URL=http://localhost:8487
             NEXT_PUBLIC_DPO_CENTRAL_URL=http://localhost:8485
+            SOURCE_COMMIT=${{ github.sha }}
           cache-from: type=gha,scope=app-${{ steps.platform.outputs.pair }}
           outputs: type=image,name=${{ env.MIGRATOR_IMAGE }},push-by-digest=true,name-canonical=true,push=true
       - name: Export digests

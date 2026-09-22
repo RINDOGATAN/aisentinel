@@ -21,7 +21,8 @@ export const vendorRouter = createTRPCRouter({
         riskLevel: z.enum(["CRITICAL", "HIGH", "MEDIUM", "LOW"]).optional(),
         status: z.enum(["ACTIVE", "UNDER_REVIEW", "APPROVED", "SUSPENDED", "TERMINATED"]).optional(),
         cursor: z.string().optional(),
-        limit: z.number().min(1).max(50).default(20),
+        // 100: the system forms load every vendor into a picker.
+        limit: z.number().min(1).max(100).default(20),
       })
     )
     .query(async ({ ctx, input }) => {

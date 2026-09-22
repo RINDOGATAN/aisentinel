@@ -111,6 +111,21 @@ describe("frameworks docs pages", () => {
     expect(html).toContain(MESSAGES.es.docs.frameworks.selector.whyTitle);
     expect(html).toContain("Jurisdicciones");
   });
+
+  for (const locale of ["en", "es"] as const) {
+    it(`the wheel and the selector carry AIUC-1 and the agents question in ${locale}`, async () => {
+      const t = MESSAGES[locale].docs.frameworks;
+      const wheel = await render(locale, pages.overview);
+      expect(wheel).toContain(`aria-label="${t.wheel.cell.replace("{framework}", "AIUC-1").replace("{dimension}", "Testing, robustness and security").replace("{depth}", "3")}"`);
+      expect(wheel).toContain(t.intro);
+      expect(t.intro).toContain("AIUC-1");
+      const selector = await render(locale, pages.selector);
+      expect(selector).toContain(t.inputs.agents.label);
+      expect(selector).toContain(t.inputs.agents.options.yes);
+      // The agent slot's rule is listed among the reasons, labelled in the page's language.
+      expect(selector).toContain(t.selector.agentCertification);
+    });
+  }
 });
 
 function escape(s: string) {

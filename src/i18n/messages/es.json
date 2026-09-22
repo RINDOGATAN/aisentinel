@@ -1872,7 +1872,7 @@
         },
         "frameworks": {
           "title": "Marcos comparados",
-          "description": "Doce marcos de gobernanza de la IA en catorce dimensiones: una rueda, una tabla, una comparación y un selector. Material de aprendizaje, no asesoramiento jurídico."
+          "description": "Trece marcos de gobernanza de la IA, entre ellos AIUC-1 para agentes de IA, en catorce dimensiones: una rueda, una tabla, una comparación y un selector. Material de aprendizaje, no asesoramiento jurídico."
         }
       },
       "licensingTitle": "Licencias Open Core",
@@ -3882,10 +3882,10 @@
         "tableTitle": "Tabla de marcos: documentación de AI SENTINEL",
         "compareTitle": "Comparar marcos: documentación de AI SENTINEL",
         "selectorTitle": "¿Qué marcos? Documentación de AI SENTINEL",
-        "description": "Doce marcos de gobernanza de la IA comparados en catorce dimensiones, con un selector que sugiere por dónde empezar. Material de aprendizaje, no asesoramiento jurídico."
+        "description": "Trece marcos de gobernanza de la IA comparados en catorce dimensiones, entre ellos AIUC-1, la norma de certificación para agentes de IA, con un selector que sugiere por dónde empezar. Material de aprendizaje, no asesoramiento jurídico."
       },
       "title": "Marcos de gobernanza de la IA",
-      "intro": "Doce marcos de gobernanza de la IA muy utilizados, comparados en catorce dimensiones. Cada celda indica una profundidad de 0 a 3, una frase, la fuente oficial y el módulo de AI SENTINEL que le da soporte.",
+      "intro": "Trece marcos de gobernanza de la IA muy utilizados, entre ellos AIUC-1, la norma de certificación para agentes de IA, comparados en catorce dimensiones. Cada celda indica una profundidad de 0 a 3, una frase, la fuente oficial y el módulo de AI SENTINEL que le da soporte.",
       "asOf": "Actualizado a {date}",
       "disclaimer": "Material de aprendizaje, no asesoramiento jurídico.",
       "contentInEnglish": "El contenido de los marcos en estas páginas está en inglés.",
@@ -3947,7 +3947,7 @@
         "dimension": "Dimensión"
       },
       "selector": {
-        "intro": "Responde a seis preguntas. La página muestra los marcos que se aplican o encajan, ordenados y cada uno con su razonamiento, y sugiere una combinación: las leyes vinculantes, un sistema de gestión y un método de riesgos.",
+        "intro": "Responde a siete preguntas. La página muestra los marcos que se aplican o encajan, ordenados y cada uno con su razonamiento, y sugiere una combinación: las leyes vinculantes, un sistema de gestión, un método de riesgos y, si tienes agentes de IA, una certificación para agentes.",
         "caveat": "Material de aprendizaje, no asesoramiento jurídico. El selector indica qué revisar primero; no decide si una ley se aplica. También pueden aplicarse leyes que no recoge esta guía (por ejemplo, de protección de datos, sectoriales o contra la discriminación).",
         "needJurisdiction": "Marca al menos una jurisdicción.",
         "noMatch": "Ninguna regla coincide. Añade una jurisdicción o un sector.",
@@ -3960,6 +3960,7 @@
         "noBinding": "ninguna de las leyes de esta guía, con estas respuestas (puede aplicarse otra normativa)",
         "managementSystem": "Un sistema de gestión",
         "riskMethod": "Un método de riesgos",
+        "agentCertification": "Certificación para agentes",
         "noSuggestion": "sin sugerencia",
         "whyTitle": "Por qué este resultado",
         "whyIntro": "Cada regla suma su puntuación a un marco cuando se cumplen todas las condiciones indicadas (cualquiera de los valores enumerados). Las leyes vinculantes van primero y después se ordena por puntuación. La combinación toma la primera regla que coincide en cada lista. Las reglas que coinciden con tus respuestas aparecen marcadas.",
@@ -4028,6 +4029,13 @@
             "small": "Pequeña",
             "medium": "Mediana",
             "large": "Grande"
+          }
+        },
+        "agents": {
+          "label": "Agentes de IA",
+          "options": {
+            "no": "Sin agentes",
+            "yes": "Desplegamos o construimos agentes de IA"
           }
         }
       }

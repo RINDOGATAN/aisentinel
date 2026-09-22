@@ -1872,7 +1872,7 @@
         },
         "frameworks": {
           "title": "Frameworks compared",
-          "description": "Twelve AI governance frameworks on fourteen dimensions: a wheel, a table, a side-by-side comparison and a selector. A learning aid, not legal advice."
+          "description": "Thirteen AI governance frameworks, including AIUC-1 for AI agents, on fourteen dimensions: a wheel, a table, a side-by-side comparison and a selector. A learning aid, not legal advice."
         }
       },
       "licensingTitle": "Open Core Licensing",
@@ -3882,10 +3882,10 @@
         "tableTitle": "Frameworks table: AI SENTINEL Docs",
         "compareTitle": "Compare frameworks: AI SENTINEL Docs",
         "selectorTitle": "Which frameworks? AI SENTINEL Docs",
-        "description": "Twelve AI governance frameworks compared on fourteen dimensions, with a selector that suggests where to start. A learning aid, not legal advice."
+        "description": "Thirteen AI governance frameworks compared on fourteen dimensions, including AIUC-1, the certification standard for AI agents, with a selector that suggests where to start. A learning aid, not legal advice."
       },
       "title": "AI governance frameworks",
-      "intro": "Twelve widely used AI governance frameworks compared on fourteen dimensions. Each cell gives a depth from 0 to 3, one sentence, the official source, and the AI SENTINEL module that supports it.",
+      "intro": "Thirteen widely used AI governance frameworks, including AIUC-1, the certification standard for AI agents, compared on fourteen dimensions. Each cell gives a depth from 0 to 3, one sentence, the official source, and the AI SENTINEL module that supports it.",
       "asOf": "As of {date}",
       "disclaimer": "A learning aid, not legal advice.",
       "contentInEnglish": "The framework content on these pages is in English.",
@@ -3947,7 +3947,7 @@
         "dimension": "Dimension"
       },
       "selector": {
-        "intro": "Answer six questions. The page lists the frameworks that apply or fit, ranked, each with its reasoning, and suggests a stack: the binding laws, one management system and one risk method.",
+        "intro": "Answer seven questions. The page lists the frameworks that apply or fit, ranked, each with its reasoning, and suggests a stack: the binding laws, one management system, one risk method and, if you have AI agents, a certification for agents.",
         "caveat": "A learning aid, not legal advice. The selector points at what to check first; it does not decide whether a law applies. Laws outside this aid (for example data protection, sector and anti-discrimination law) may also apply.",
         "needJurisdiction": "Tick at least one jurisdiction.",
         "noMatch": "No rule matched. Add a jurisdiction or a sector.",
@@ -3960,6 +3960,7 @@
         "noBinding": "none of the laws in this aid, on these answers (other law may still apply)",
         "managementSystem": "One management system",
         "riskMethod": "One risk method",
+        "agentCertification": "Certification for agents",
         "noSuggestion": "no suggestion",
         "whyTitle": "Why this result",
         "whyIntro": "Each rule adds its score to a framework when every listed condition matches (any of the listed values). Binding laws rank first, then by score. The stack takes the first matching rule in each list. Rules that matched your answers are marked.",
@@ -4028,6 +4029,13 @@
             "small": "Small",
             "medium": "Medium",
             "large": "Large"
+          }
+        },
+        "agents": {
+          "label": "AI agents",
+          "options": {
+            "no": "No agents",
+            "yes": "We deploy or build AI agents"
           }
         }
       }

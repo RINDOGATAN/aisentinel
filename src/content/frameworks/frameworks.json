@@ -1,7 +1,7 @@
 {
   "title": "AI governance frameworks wheel",
-  "subtitle": "Twelve widely used AI governance frameworks compared on fourteen dimensions, with a picker that suggests which ones to start from for a given situation.",
-  "asOf": "2026-09-16",
+  "subtitle": "Thirteen widely used AI governance frameworks compared on fourteen dimensions, with a picker that suggests which ones to start from for a given situation.",
+  "asOf": "2026-09-22",
   "disclaimer": "A learning aid, not legal advice.",
   "method": "Each cell was checked against the official text where the official site could be read on the as-of date; cells that could not be checked say \"to verify\" and are drawn hatched. Depth is an editorial reading of how far the framework goes on that dimension, not a score of quality.",
   "footer": "Dates are those the official texts state on the as-of date; announced delays and amendments are noted with their source. Where AI Sentinel is mentioned, it supports or maps to the dimension; it does not certify anything.",
@@ -335,10 +335,34 @@
         "effort": { "depth": 1, "summary": "Low to moderate and self-paced; AI Verify testing is optional.", "source": { "ref": "ISAGO; AI Verify", "url": "https://www.pdpc.gov.sg/organisations/resources/guidance-by-topic/implementation-and-self-assessment-guide-for-organisations-isago" } },
         "dates": { "depth": 1, "summary": "Second edition 2020-01-21; generative AI framework 2024-05-30; agentic AI framework 2026-01-22. No dated obligations.", "source": { "ref": "PDPC; AI Verify Foundation; IMDA press release", "url": "https://www.imda.gov.sg/resources/press-releases-factsheets-and-speeches/press-releases/2026/new-model-ai-governance-framework-for-agentic-ai" }, "note": "An updated agentic AI framework appears on the IMDA site; its date was not confirmed." }
       }
+    },
+    {
+      "id": "aiuc-1",
+      "name": "AIUC-1, the standard for AI agent security, safety and reliability (Q3 2026 release)",
+      "short": "AIUC-1",
+      "nature": "certifiable standard",
+      "summary": "A private certification standard for AI agents, in six domains (data and privacy, security, safety, reliability, accountability, society), updated each quarter. It is the first framework on this wheel written for agents, and the only one with mandatory technical evals.",
+      "url": "https://standard.aiuc-1.com/learn/about",
+      "cells": {
+        "nature": { "depth": 2, "summary": "A private certification standard, not law: voluntary to adopt, and the Artificial Intelligence Underwriting Company, which maintains it with a consortium, is the only body that issues the certificate.", "source": { "ref": "Accredited AIUC-1 auditors, \"What body issues the AIUC-1 certificate?\"; FAQ, \"Who can certify organizations against AIUC-1?\"", "url": "https://standard.aiuc-1.com/accredited-auditors" }, "modules": ["compliance"] },
+        "scope": { "depth": 2, "summary": "Agentic AI systems only, built or deployed by any organisation in any country; the organisation chooses which agents are certified, and may start with one high-risk agent.", "source": { "ref": "Scoping the AIUC-1 audit, Part 1 (Systems in scope)", "url": "https://standard.aiuc-1.com/scoping" }, "modules": ["registry"] },
+        "roles": { "depth": 2, "summary": "Separates the agent developer, which sets and documents secure defaults, from the deployer, which configures the agent securely for its own context; one organisation can be both.", "source": { "ref": "Scoping the AIUC-1 audit, Part 1 (Systems in scope: Guidance)", "url": "https://standard.aiuc-1.com/scoping" } },
+        "risk": { "depth": 2, "summary": "Each agent gets a risk taxonomy built from its capabilities and deployment context (C001); requirements apply by capability tags such as universal, automation or code generation. No legal risk tiers.", "source": { "ref": "C001 (Define AI risk taxonomy); Scoping, Part 2 (Statement of Applicability)", "url": "https://standard.aiuc-1.com/safety/define-ai-risk-taxonomy" }, "modules": ["classification"] },
+        "inventory": { "depth": 2, "summary": "Logs of agent processes, actions and outputs (E015) and a record of data processing locations (E011) are mandatory; a repository of model cards and datasheets is supplemental (E017).", "source": { "ref": "E011; E015; E017 (domain E, Accountability)", "url": "https://standard.aiuc-1.com/accountability" }, "modules": ["registry", "audit"] },
+        "assessment": { "depth": 2, "summary": "A risk taxonomy (C001) and internal pre-deployment testing across risk categories (C002); the standard's own ISO/IEC 42001 crosswalk grades the impact assessment clauses as a partial gap.", "source": { "ref": "C001; C002; AIUC-1 x ISO 42001 crosswalk, clauses 6.1.4 and 8.4", "url": "https://standard.aiuc-1.com/crosswalks/iso-42001" }, "modules": ["assessments", "threat"] },
+        "oversight": { "depth": 1, "summary": "Human review of flagged high-risk outputs (C007) and real-time feedback and intervention (C009) are supplemental, not mandatory; E004 names an accountable lead for each change that needs approval.", "source": { "ref": "C007; C009 (domain C, Safety); E004", "url": "https://standard.aiuc-1.com/safety" }, "modules": ["oversight"] },
+        "transparency": { "depth": 2, "summary": "Users must be told when they deal with an AI system rather than a person (E016, mandatory); a transparency policy with model cards and datasheets is supplemental (E017).", "source": { "ref": "E016 (Implement AI disclosure mechanisms); E017", "url": "https://standard.aiuc-1.com/accountability/implement-ai-disclosure-mechanisms" }, "modules": ["transparency"] },
+        "data": { "depth": 3, "summary": "A whole domain of eight mandatory requirements: input and output data policies (including training on customer data), limits on agent data access, and safeguards against leaks of personal data, IP, customer data and secrets.", "source": { "ref": "Domain A (Data & Privacy), A001 to A008", "url": "https://standard.aiuc-1.com/data-and-privacy" }, "modules": ["dataflow", "sensitive"] },
+        "testing": { "depth": 3, "summary": "Mandatory technical evals, unique on this wheel: third-party adversarial testing (B001) and third-party tests of harmful and out-of-scope outputs, hallucinations and tool calls at least every three months (C010 to C012, D002, D004).", "source": { "ref": "B001; C010; C011; C012; D002; D004", "url": "https://standard.aiuc-1.com/safety" }, "modules": ["threat"] },
+        "monitoring": { "depth": 2, "summary": "Failure plans for security breaches, harmful outputs and hallucinations (E001 to E003) and logging of third-party access (E009); risk monitoring is supplemental (C008). No duty to report to a regulator.", "source": { "ref": "E001; E002; E003; E009; C008", "url": "https://standard.aiuc-1.com/accountability" }, "modules": ["incidents"] },
+        "assurance": { "depth": 3, "summary": "An accredited auditor audits the controls and the publisher runs the technical tests; a certification committee issues a certificate valid for 12 months, kept valid by technical testing at least every three months.", "source": { "ref": "Accredited AIUC-1 auditors; FAQ, \"How long is an AIUC-1 certificate valid?\"", "url": "https://standard.aiuc-1.com/accredited-auditors" }, "note": "Re-certification each year: the organisation shows again that the requirements are met, validated by an accredited auditor (https://standard.aiuc-1.com/re-certification-maintaining-aiuc-1).", "modules": ["audit", "compliance"] },
+        "effort": { "depth": 3, "summary": "Heavy: evidence across legal, operational and technical controls plus evals. The standard's pages give four to eight weeks (certification page) or five to ten weeks (FAQ), then quarterly testing and a yearly re-audit.", "source": { "ref": "AIUC-1 Certification (process table); FAQ, \"How long does it take?\"", "url": "https://standard.aiuc-1.com/aiuc-1-certification" }, "modules": ["program"] },
+        "dates": { "depth": 1, "summary": "Released each quarter on 15 January, April, July and October; the current release is dated 2026-07-15, the site was last updated 2026-09-17, and the next release is due 2026-10-15. No legal dates.", "source": { "ref": "AIUC-1 changelog; Re-certification, \"Which version of the standard to audit against\"", "url": "https://standard.aiuc-1.com/changelog" }, "note": "The scoping page says the standard has 50 requirements; the Q3 2026 requirement list shows 53 identifiers, two of them retired (E007, E014), so 51 are in force (https://standard.aiuc-1.com/llms.txt, read 2026-09-22)." }
+      }
     }
   ],
   "picker": {
-    "intro": "Answer six questions. The page lists the frameworks that apply or fit, ranked, each with one line of reasoning, and suggests a stack: the binding laws, one management system and one risk method.",
+    "intro": "Answer seven questions. The page lists the frameworks that apply or fit, ranked, each with one line of reasoning, and suggests a stack: the binding laws, one management system, one risk method and, for AI agents, a certification for agents.",
     "caveat": "A learning aid, not legal advice. The picker points at what to check first; it does not decide whether a law applies. Laws outside this aid (for example data protection, sector and anti-discrimination law) may also apply.",
     "inputs": [
       { "id": "jurisdictions", "label": "Jurisdictions", "multiple": true, "options": [
@@ -361,7 +385,10 @@
       ] },
       { "id": "size", "label": "Organisation size", "options": [
         { "id": "small", "label": "Small" }, { "id": "medium", "label": "Medium" }, { "id": "large", "label": "Large" }
-      ], "defaultIndex": 1 }
+      ], "defaultIndex": 1 },
+      { "id": "agents", "label": "AI agents", "options": [
+        { "id": "no", "label": "No agents" }, { "id": "yes", "label": "We deploy or build AI agents" }
+      ] }
     ],
     "rules": [
       { "framework": "eu-ai-act", "binding": true, "score": 100, "when": { "jurisdictions": ["eu"] }, "reason": "Applies to providers placing AI on the EU market and to deployers in the EU (Art. 2); which duties apply depends on the risk category." },
@@ -378,7 +405,7 @@
       { "framework": "nist-ai-rmf", "score": 50, "when": { "jurisdictions": ["us_fed", "co", "tx", "ca", "nyc"] }, "reason": "The reference voluntary risk framework in the United States; Texas links a liability bar to substantial compliance with its Generative AI Profile." },
       { "framework": "nist-ai-rmf", "score": 20, "when": { "jurisdictions": ["other", "sg"] }, "reason": "Free, modular and widely mapped to other frameworks." },
       { "framework": "nist-ai-rmf", "score": 10, "when": { "size": ["small", "medium"] }, "reason": "No certification cost; adopt the subcategories that fit." },
-      { "framework": "iso-42001", "score": 60, "when": { "assurance": ["yes"] }, "reason": "The only framework here that an accredited body can certify." },
+      { "framework": "iso-42001", "score": 60, "when": { "assurance": ["yes"] }, "reason": "The international management system standard that an accredited certification body can certify (AIUC-1 certifies agents, not the organisation's management system)." },
       { "framework": "iso-42001", "score": 20, "when": { "size": ["large"] }, "reason": "A management system suits organisations with several AI systems and teams." },
       { "framework": "iso-42001", "score": 15, "when": { "jurisdictions": ["eu"], "role": ["provider", "both"], "risk": ["high", "unknown"] }, "reason": "A management system helps organise the provider's quality management duty (Art. 17), though it gives no presumption of conformity." },
       { "framework": "iso-23894", "score": 25, "when": { "risk": ["high", "unknown"] }, "reason": "Guidance on building AI risk into the organisation's existing risk management process." },
@@ -388,9 +415,11 @@
       { "framework": "singapore", "score": 10, "when": { "risk": ["high", "unknown"], "jurisdictions": ["sg", "other"] }, "reason": "Its human-involvement area helps decide how much review each decision needs." },
       { "framework": "coe-convention", "score": 25, "when": { "jurisdictions": ["eu", "uk"] }, "reason": "The treaty binds the states that ratify it and reaches organisations through national law (in the EU, largely the AI Act)." },
       { "framework": "coe-convention", "score": 20, "when": { "sector": ["public"] }, "reason": "Public authorities are the treaty's first concern." },
-      { "framework": "oecd", "score": 10, "when": {}, "reason": "The shared baseline vocabulary adopted by 47 adherents; most other frameworks build on it." }
+      { "framework": "oecd", "score": 10, "when": {}, "reason": "The shared baseline vocabulary adopted by 47 adherents; most other frameworks build on it." },
+      { "framework": "aiuc-1", "score": 40, "when": { "agents": ["yes"] }, "reason": "The certification standard written for AI agents: an accredited audit of the controls plus technical evals repeated at least every three months." },
+      { "framework": "aiuc-1", "score": 20, "when": { "agents": ["yes"], "assurance": ["yes"] }, "reason": "Where a certificate is needed for an agent, AIUC-1 tests the agent itself; ISO/IEC 42001 certifies the management system around it." }
     ],
-    "stackLabels": { "managementSystem": "One management system", "riskMethod": "One risk method" },
+    "stackLabels": { "managementSystem": "One management system", "riskMethod": "One risk method", "agentCertification": "Certification for agents" },
     "stack": {
       "managementSystem": [
         { "when": { "assurance": ["yes"] }, "pick": "iso-42001", "reason": "Certification needs a certifiable standard." },
@@ -402,6 +431,9 @@
         { "when": { "jurisdictions": ["us_fed", "co", "tx", "ca", "nyc"] }, "pick": "nist-ai-rmf", "reason": "Map, Measure and Manage are the method US regulators and Texas law refer to." },
         { "when": { "jurisdictions": ["sg"], "assurance": ["no"] }, "pick": "singapore", "reason": "Its human-involvement model and AI Verify testing give a practical, local method." },
         { "when": {}, "pick": "iso-23894", "reason": "International risk guidance that fits inside an ISO/IEC 42001 management system." }
+      ],
+      "agentCertification": [
+        { "when": { "agents": ["yes"] }, "pick": "aiuc-1", "reason": "It certifies the agent itself, with testing; it sits alongside the management system above, not in place of it." }
       ]
     }
   }

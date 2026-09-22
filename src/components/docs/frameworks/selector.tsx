@@ -9,7 +9,9 @@ import { TierMarker } from "@/components/governance/risk-tier-badge";
 import {
   defaultAnswers,
   frameworksData,
+  REQUIRED_STACK_SLOTS,
   runSelector,
+  STACK_SLOTS,
   whenMatches,
   type Answers,
   type When,
@@ -50,7 +52,6 @@ export function FrameworksSelector({ initial }: { initial?: Answers }) {
       return { ...a, [input]: cur.includes(option) ? cur.filter((x) => x !== option) : [...cur, option] };
     });
 
-  const stackSlots = ["managementSystem", "riskMethod"] as const;
 
   return (
     <div className="space-y-6">
@@ -131,8 +132,10 @@ export function FrameworksSelector({ initial }: { initial?: Answers }) {
                   ? result.binding.map((id) => byId.get(id)!.short).join(", ")
                   : t("selector.noBinding")}
               </p>
-              {stackSlots.map((slot) => {
+              {STACK_SLOTS.map((slot) => {
                 const rule = result.stack[slot];
+                // The agent slot speaks only when it applies; the other two always answer.
+                if (!rule && !(REQUIRED_STACK_SLOTS as readonly string[]).includes(slot)) return null;
                 return (
                   <p key={slot}>
                     <strong>{t(`selector.${slot}`)}: </strong>
@@ -164,8 +167,8 @@ export function FrameworksSelector({ initial }: { initial?: Answers }) {
               </li>
             );
           })}
-          {stackSlots.flatMap((slot) =>
-            P.stack[slot].map((rule, i) => {
+          {STACK_SLOTS.flatMap((slot) =>
+            (P.stack[slot] ?? []).map((rule, i) => {
               const hit = result.ready && result.stack[slot] === rule;
               return (
                 <li key={`${slot}-${i}`} className={hit ? "text-foreground" : "text-muted-foreground"}>

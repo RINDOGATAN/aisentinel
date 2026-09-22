@@ -22,9 +22,36 @@ const rawText = readFileSync(join(process.cwd(), "src/content/frameworks/framewo
 describe("frameworks data", () => {
   it("loads and passes the alpha's checks", () => {
     expect(validateFrameworks(frameworksData, rawText)).toEqual([]);
-    expect(frameworksData.frameworks).toHaveLength(12);
+    expect(frameworksData.frameworks).toHaveLength(13);
     expect(frameworksData.rings).toHaveLength(14);
     expect(underReviewCount()).toBe(23);
+  });
+
+  it("gives every framework all fourteen cells, each with a depth, a summary and a source", () => {
+    const ringIds = frameworksData.rings.map((r) => r.id);
+    for (const f of frameworksData.frameworks) {
+      expect(Object.keys(f.cells).sort(), f.id).toEqual([...ringIds].sort());
+      for (const id of ringIds) {
+        const c = f.cells[id];
+        expect([0, 1, 2, 3], `${f.id}/${id}`).toContain(c.depth);
+        expect(c.summary.length, `${f.id}/${id}`).toBeGreaterThan(0);
+        expect(c.source, `${f.id}/${id}`).toBeDefined();
+      }
+    }
+  });
+
+  it("carries AIUC-1 as the certification standard for AI agents, every cell sourced to the standard", () => {
+    const aiuc = frameworksData.frameworks.find((f) => f.id === "aiuc-1")!;
+    expect(aiuc.short).toBe("AIUC-1");
+    expect(aiuc.nature).toBe(frameworksData.frameworks.find((f) => f.id === "iso-42001")!.nature);
+    expect(aiuc.summary).toMatch(/certification standard/);
+    expect(aiuc.summary).toMatch(/first framework on this wheel written for agents/);
+    expect(aiuc.summary).toMatch(/only one with mandatory technical evals/);
+    for (const c of Object.values(aiuc.cells)) {
+      expect(c.source?.url).toMatch(/^https:\/\/standard\.aiuc-1\.com\//);
+      expect(isUnderReview(c)).toBe(false);
+    }
+    expect(frameworksData.asOf).toBe("2026-09-22");
   });
 
   it("rejects what the alpha rejects", () => {
@@ -129,7 +156,31 @@ describe("frameworks selector", () => {
       risk: ["unknown"],
       assurance: ["no"],
       size: ["medium"],
+      agents: ["no"],
     });
+  });
+
+  it("puts AIUC-1 in the stack as the certification for agents only when the organisation has agents", () => {
+    const base = ALPHA_SCENARIOS.euTexasHiring.answers;
+    const without = runSelector(base);
+    expect(without.stack.agentCertification).toBeNull();
+    expect(without.ranked.map((x) => x.id)).not.toContain("aiuc-1");
+
+    const withAgents = runSelector({ ...base, agents: ["yes"] });
+    expect(withAgents.stack.agentCertification?.pick).toBe("aiuc-1");
+    const aiuc = withAgents.ranked.find((x) => x.id === "aiuc-1")!;
+    expect(aiuc.binding).toBe(false);
+    expect(aiuc.score).toBe(60); // agents (40) + certificate needed (20)
+    // The other two slots do not move.
+    expect(withAgents.stack.managementSystem?.pick).toBe("iso-42001");
+    expect(withAgents.stack.riskMethod?.pick).toBe("nist-ai-rmf");
+  });
+
+  it("does not require the agent slot to end with an unconditional rule", () => {
+    const data = structuredClone(frameworksData) as FrameworksData;
+    expect(validateFrameworks(data, rawText)).toEqual([]);
+    data.picker.stack.agentCertification = [{ when: { agents: ["yes"] }, pick: "missing", reason: "x" }];
+    expect(validateFrameworks(data, rawText).join("\n")).toContain("stack agentCertification 0: unknown framework missing");
   });
 
   it("shows the reasoning behind each result", () => {

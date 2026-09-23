@@ -21,11 +21,23 @@ export const SEEDED_TIER_FRAMEWORKS = {
   ISO_42001: 33,
 } as const;
 
+/**
+ * From scripts/seed-frameworks.ts: frameworks seeded there that carry no risk
+ * tier, so an organisation maps them by choice. AIUC-1: six domains and the 51
+ * requirements in force (src/config/aiuc1-requirements.ts).
+ */
+export const SEEDED_CHOSEN_FRAMEWORKS = {
+  AIUC_1: 57,
+} as const;
+
 /** Rows of the three tier frameworks that attach to a high-risk system. */
 export const HIGH_RISK_AUTO_MAPPED = 130;
 
-/** From scripts/seed-cross-framework-mappings.ts. */
-export const CROSS_MAPPINGS = { equivalent: 34, partial: 64, related: 17 } as const;
+/**
+ * From scripts/seed-cross-framework-mappings.ts. "related" includes the 186
+ * rows built from the AIUC-1 crosswalks (aiuc1CrossMappings()).
+ */
+export const CROSS_MAPPINGS = { equivalent: 34, partial: 64, related: 203 } as const;
 
 export function docsCounts() {
   const regimes = Object.fromEntries(
@@ -33,12 +45,19 @@ export function docsCounts() {
   ) as Record<string, number>;
   const admt = flattenAdmtRequirements(ADMT_REQUIREMENTS).length;
   const tier = Object.values(SEEDED_TIER_FRAMEWORKS).reduce((n, v) => n + v, 0);
+  const chosen = Object.values(SEEDED_CHOSEN_FRAMEWORKS).reduce((n, v) => n + v, 0);
   const regimeTotal = Object.values(regimes).reduce((n, v) => n + v, 0);
   const questions = allUnifiedQuestions();
   return {
-    frameworks: Object.keys(SEEDED_TIER_FRAMEWORKS).length + 1 + REGIME_PACKS.length,
-    requirements: tier + admt + regimeTotal,
-    perFramework: { ...SEEDED_TIER_FRAMEWORKS, [ADMT_FRAMEWORK.code]: admt, ...regimes } as Record<string, number>,
+    frameworks:
+      Object.keys(SEEDED_TIER_FRAMEWORKS).length + Object.keys(SEEDED_CHOSEN_FRAMEWORKS).length + 1 + REGIME_PACKS.length,
+    requirements: tier + chosen + admt + regimeTotal,
+    perFramework: {
+      ...SEEDED_TIER_FRAMEWORKS,
+      ...SEEDED_CHOSEN_FRAMEWORKS,
+      [ADMT_FRAMEWORK.code]: admt,
+      ...regimes,
+    } as Record<string, number>,
     highRiskAutoMapped: HIGH_RISK_AUTO_MAPPED,
     crossMappings: CROSS_MAPPINGS.equivalent + CROSS_MAPPINGS.partial + CROSS_MAPPINGS.related,
     crossMappingBreakdown: CROSS_MAPPINGS,

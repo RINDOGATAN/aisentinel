@@ -2,6 +2,7 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { PrismaClient } from "@prisma/client";
+import { aiuc1CrossMappings } from "../src/config/aiuc1-requirements";
 
 const prisma = new PrismaClient();
 
@@ -606,6 +607,12 @@ const crossMappings: CrossMapping[] = [
   { a: "wa-mhmda", b: "gdpr-art-9", relationship: "related", notes: "Both treat health data, including inferred health data, as specially protected and require an affirmative basis before processing." },
   { a: "wa-prior-auth", b: "gdpr-art-22", relationship: "related", notes: "Both bar decisions with serious effects being taken by automated means alone; Washington names the licensed professional who must decide." },
   { a: "wa-public-agency-risk-assessment", b: "eu-art--27", relationship: "related", notes: "A Washington agency's AI risk assessment before high-risk use parallels the AI Act fundamental rights impact assessment for public-body deployers." },
+  // ── AIUC-1 ↔ ISO/IEC 42001, NIST AI RMF and the EU AI Act, from the crosswalks
+  // the standard publishes at https://standard.aiuc-1.com/crosswalks (read
+  // 2026-09-22). Built in src/config/aiuc1-requirements.ts, which resolves each
+  // cited clause, subcategory or article to the row this product seeds; all
+  // "related", because the crosswalk names relevance, not equivalence.
+  ...aiuc1CrossMappings(),
 ];
 
 async function main() {

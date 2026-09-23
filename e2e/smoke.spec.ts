@@ -213,6 +213,15 @@ test("a new user's first session, end to end", async ({ page }, testInfo) => {
     expect((await download).suggestedFilename()).toMatch(/\.pdf$/);
   });
 
+  await step(page, watch, "the compliance page offers AIUC-1 beside the other frameworks", async () => {
+    await page.goto("/governance/compliance");
+    await choose(page, "Select AI System...", systemName);
+    await page.getByRole("tab", { name: /^AIUC-1 \(57\)$/ }).click();
+    const panel = page.getByRole("tabpanel");
+    await expect(panel.getByText("Data & Privacy", { exact: true })).toBeVisible();
+    await expect(panel.getByText("Society", { exact: true })).toBeVisible();
+  });
+
   await step(page, watch, "the health route answers 200 with the version", async () => {
     const response = await page.request.get("/api/health");
     expect(response.status()).toBe(200);

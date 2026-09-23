@@ -93,6 +93,9 @@ jobs:
       - name: Fresh install (every migration from zero, seed, content)
         run: npx tsx e2e/with-env.ts sh deploy/sovereign/migrate.sh
 
+      - name: Seeded content matches the counts (frameworks, AIUC-1, cross-mappings)
+        run: npx tsx e2e/with-env.ts npx vitest run src/config/aiuc1-seed.db.test.ts
+
       - name: Build (self-host posture)
         run: npx tsx e2e/with-env.ts npx next build
 

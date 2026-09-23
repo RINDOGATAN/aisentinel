@@ -40,6 +40,9 @@ export const smokeEnv: Record<string, string> = {
   // Lets the smoke walk reach the deliberately failing procedure.
   AISENTINEL_TEST_FAILURES: "true",
 };
+// The seed tests that read a real database run only when this is set, and only
+// against localhost (src/config/aiuc1-seed.db.test.ts).
+smokeEnv.SEED_TEST_DATABASE_URL = smokeEnv.ais_DATABASE_URL;
 
 /**
  * Hosted-only settings a developer's shell or env file may carry. They are set

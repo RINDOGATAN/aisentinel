@@ -1523,6 +1523,7 @@ enum FrameworkCode {
   CO_SB_26_189
   TX_TRAIGA
   WA_AI_RULES
+  AIUC_1
 }
 
 enum ComplianceStatus {

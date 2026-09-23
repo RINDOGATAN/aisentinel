@@ -19,7 +19,7 @@ code, or marked "unknown, to measure". Nothing here is a promise to a customer.
 | Dimension | Ceiling we can defend | Reasoning |
 |---|---|---|
 | Organisations | Not the limiting factor; unknown, to measure above 1,000 | Every tenant row carries `organizationId` and is read through indexed, org-scoped queries. Row counts per organisation are small (systems, assessments, policies in the tens to hundreds). Hosted carries 14 organisations today. |
-| AI systems per organisation | About 500 before screens slow noticeably; unknown, to measure | The registry, assessment and vendor lists paginate (at most 50 per page). The compliance screens and the program report do not: they load every mapping of the organisation. At 294 requirements per system across eight frameworks, 100 systems is up to roughly 29,000 mapping rows in one request. Spreadsheet import is capped at 500 rows per file (`MAX_IMPORT_ROWS`). |
+| AI systems per organisation | About 500 before screens slow noticeably; unknown, to measure | The registry, assessment and vendor lists paginate (at most 50 per page). The compliance screens and the program report do not: they load every mapping of the organisation. At 351 requirements per system across nine frameworks (294 unless AIUC-1 is chosen for the system), 100 systems is up to roughly 35,000 mapping rows in one request. Spreadsheet import is capped at 500 rows per file (`MAX_IMPORT_ROWS`). |
 | Users | Not the limiting factor | Sessions are JWT (`src/lib/auth.ts`), so a signed-in request does not read a session table. Each tRPC call still reads the membership row. |
 | Documents (exports) | Hosted: a program pack must stay under the platform's response body limit (4.5 MB on the current serverless functions). Self-hosted: bounded by host memory | The program pack, PDF reports and ZIP are built entirely in memory (`renderToBuffer`, `src/lib/zip.ts`) and returned in one response. The audit CSV is capped at 50,000 rows. Program snapshots are capped at 2 MB each. |
 | Requests per minute, hosted | Unknown, to measure | Bounded by the database connection limit rather than by the app: each warm instance opens its own Prisma pool (default `num_cpus * 2 + 1` connections). Whether the hosted connection string uses the provider's pooled endpoint is not recorded here (see Needs checking). |
@@ -35,8 +35,8 @@ one organisation per account; edits for 90 days from the organisation's first si
 the pilot went live (not its creation date), then read-only with every export still available; and per organisation at most 25 AI systems, 50
 vendors, 50 assessments, 25 incidents, 25 policies, 50 oversight gates, 10 threat models, 50
 shadow AI reports, 10 proceedings, 10 board reports and 5 members. Twenty-five systems keeps
-the largest unpaginated read (the compliance screens, 294 requirements per system) under
-about 7,500 rows and the program pack well inside the serverless response limit; ten board
+the largest unpaginated read (the compliance screens, 294 requirements per system, 351 with
+AIUC-1) under about 9,000 rows and the program pack well inside the serverless response limit; ten board
 reports bounds the stored snapshots at about 20 MB per organisation. The kit has no caps.
 
 ## What breaks first

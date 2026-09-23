@@ -12,6 +12,7 @@ const FRAMEWORK_ORDER = [
   "EU_GDPR",
   "ISO_42001",
   "NIST_AI_RMF",
+  "AIUC_1",
   "CA_CCPA_ADMT",
   "CO_SB_26_189",
   "TX_TRAIGA",

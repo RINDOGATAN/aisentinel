@@ -75,6 +75,7 @@ const FRAMEWORK_ABBREVIATIONS: Record<string, string> = {
   CO_SB_26_189: "CO",
   TX_TRAIGA: "TX",
   WA_AI_RULES: "WA",
+  AIUC_1: "AIUC-1",
 };
 
 const statusOptionKeys: Record<string, { labelKey: string; color: string }> = {
@@ -333,7 +334,10 @@ export default function CompliancePage() {
           value={selectedFrameworkId || frameworks[0]?.id}
           onValueChange={setSelectedFrameworkId}
         >
-          <TabsList className="overflow-x-auto">
+          {/* Nine frameworks with long names do not fit a phone: the bar
+              scrolls inside itself and the tabs keep their width, rather than
+              shrinking until one covers the next and cannot be tapped. */}
+          <TabsList className="w-full max-w-full justify-start overflow-x-auto">
             {frameworks.map((fw) => {
               // Prefer the org-scoped count: a scoped framework must not
               // advertise requirements that do not reach this organization.
@@ -341,7 +345,7 @@ export default function CompliancePage() {
                 (c) => c.frameworkId === fw.id,
               );
               return (
-                <TabsTrigger key={fw.id} value={fw.id}>
+                <TabsTrigger key={fw.id} value={fw.id} className="flex-none">
                   {fw.name} ({scoped?.count ?? fw._count.requirements})
                 </TabsTrigger>
               );

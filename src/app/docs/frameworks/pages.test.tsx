@@ -111,6 +111,21 @@ describe("frameworks docs pages", () => {
     expect(html).toContain(MESSAGES.es.docs.frameworks.selector.whyTitle);
     expect(html).toContain("Jurisdicciones");
   });
+
+  for (const locale of ["en", "es"] as const) {
+    it(`the wheel and the selector carry AIUC-1 and the agents question in ${locale}`, async () => {
+      const t = MESSAGES[locale].docs.frameworks;
+      const wheel = await render(locale, pages.overview);
+      expect(wheel).toContain(`aria-label="${t.wheel.cell.replace("{framework}", "AIUC-1").replace("{dimension}", "Testing, robustness and security").replace("{depth}", "3")}"`);
+      expect(wheel).toContain(t.intro);
+      expect(t.intro).toContain("AIUC-1");
+      const selector = await render(locale, pages.selector);
+      expect(selector).toContain(t.inputs.agents.label);
+      expect(selector).toContain(t.inputs.agents.options.yes);
+      // The agent slot's rule is listed among the reasons, labelled in the page's language.
+      expect(selector).toContain(t.selector.agentCertification);
+    });
+  }
 });
 
 function escape(s: string) {
@@ -140,14 +155,20 @@ describe("refreshed docs pages", () => {
       });
     }
 
-    it(`compliance lists all eight frameworks and the counted figures in ${locale}`, async () => {
+    it(`compliance lists all nine frameworks, AIUC-1 among them, and the counted figures in ${locale}`, async () => {
       const html = await render(locale, async () => (await import("../compliance/page")).default());
       const fw = MESSAGES[locale].docs.compliance.frameworks;
+      expect(Object.keys(fw)).toHaveLength(9);
       for (const k of Object.keys(fw) as (keyof typeof fw)[]) expect(html).toContain(fw[k].name);
-      expect(html).toContain(" 115 ");
+      expect(html).toContain(escape(fw.aiuc1.description));
+      expect(html).toContain(
+        locale === "es" ? "la norma de certificación para agentes de IA" : "the certification standard for AI agents",
+      );
+      expect(html).toContain("57 ");
+      expect(html).toContain(" 301 ");
       expect(html).toContain(" 130 ");
-      expect(html).not.toContain(" 41 ");
-      for (const v of ["34", "64", "17"]) expect(html).toContain(`>${v}</p>`);
+      expect(html).not.toContain(" 115 ");
+      for (const v of ["34", "64", "203"]) expect(html).toContain(`>${v}</p>`);
     });
 
     it(`roles no longer mention billing in ${locale}`, async () => {

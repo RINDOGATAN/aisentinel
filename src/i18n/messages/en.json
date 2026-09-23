@@ -1810,7 +1810,7 @@
         },
         "compliance": {
           "title": "Compliance",
-          "description": "Framework mapping across the EU AI Act, GDPR, NIST AI RMF, ISO 42001, California ADMT, Colorado, Texas and Washington, with evidence management and cross-framework links."
+          "description": "Framework mapping across the EU AI Act, GDPR, NIST AI RMF, ISO 42001, AIUC-1 (the certification standard for AI agents), California ADMT, Colorado, Texas and Washington, with evidence management and cross-framework links."
         },
         "vendors": {
           "title": "Vendor Risk",
@@ -1872,7 +1872,7 @@
         },
         "frameworks": {
           "title": "Frameworks compared",
-          "description": "Twelve AI governance frameworks on fourteen dimensions: a wheel, a table, a side-by-side comparison and a selector. A learning aid, not legal advice."
+          "description": "Thirteen AI governance frameworks, including AIUC-1 for AI agents, on fourteen dimensions: a wheel, a table, a side-by-side comparison and a selector. A learning aid, not legal advice."
         }
       },
       "licensingTitle": "Open Core Licensing",
@@ -1884,7 +1884,7 @@
           "FRIA & AI Risk assessments",
           "Human oversight & approval gates",
           "AI incident management",
-          "Compliance mapping across eight frameworks (EU AI Act, GDPR, NIST AI RMF, ISO/IEC 42001, California, Colorado, Texas, Washington)",
+          "Compliance mapping across nine frameworks (EU AI Act, GDPR, NIST AI RMF, ISO/IEC 42001, AIUC-1, California, Colorado, Texas, Washington)",
           "Vendor risk management",
           "Policy management",
           "Executive dashboard"
@@ -2473,11 +2473,11 @@
     },
     "compliance": {
       "metaTitle": "Compliance: AI SENTINEL Docs",
-      "metaDescription": "Framework mapping across eight frameworks (EU AI Act, GDPR, NIST AI RMF, ISO/IEC 42001, California, Colorado, Texas and Washington) with evidence management and export.",
+      "metaDescription": "Framework mapping across nine frameworks (EU AI Act, GDPR, NIST AI RMF, ISO/IEC 42001, AIUC-1, California, Colorado, Texas and Washington) with evidence management and export.",
       "title": "Compliance",
       "intro": "Map your AI systems against leading regulatory frameworks. Track compliance status at the requirement level, attach evidence, and export compliance packages for regulators and auditors.",
       "frameworksTitle": "Supported Frameworks",
-      "frameworksIntro": "AI SENTINEL ships with eight pre-loaded frameworks: three that apply by risk tier (the EU AI Act, NIST AI RMF and ISO/IEC 42001) and five that apply by jurisdiction (the GDPR and the California, Colorado, Texas and Washington AI rules). Each framework is broken down into articles, clauses or functions with individual compliance tracking.",
+      "frameworksIntro": "AI SENTINEL ships with nine pre-loaded frameworks: three that apply by risk tier (the EU AI Act, NIST AI RMF and ISO/IEC 42001), five that apply by jurisdiction (the GDPR and the California, Colorado, Texas and Washington AI rules) and one you choose: AIUC-1, the certification standard for AI agents. Each framework is broken down into articles, clauses or functions with individual compliance tracking.",
       "frameworks": {
         "euAiAct": {
           "name": "EU AI Act",
@@ -2493,6 +2493,11 @@
           "name": "ISO 42001",
           "description": "International standard for AI Management Systems. Covers organizational context, leadership, planning, support, and operations.",
           "items": "{count} requirements: clauses 4 to 10 and Annex A controls"
+        },
+        "aiuc1": {
+          "name": "AIUC-1",
+          "description": "AIUC-1, the certification standard for AI agents: six domains (data and privacy, security, safety, reliability, accountability, society), with mandatory technical testing at least every three months. It does not attach by risk tier: you choose it for your agents.",
+          "items": "{count} requirements: six domains and the 51 requirements in force"
         },
         "gdpr": {
           "name": "GDPR",
@@ -2546,7 +2551,7 @@
         "Audit-ready compliance reports"
       ],
       "crossTitle": "Cross-Framework Mapping",
-      "crossIntro": "Many requirements across the eight frameworks overlap. AI SENTINEL includes {count} pre-built cross-framework mappings, so that one piece of work can stand as evidence against several frameworks at once.",
+      "crossIntro": "Many requirements across the nine frameworks overlap. AI SENTINEL includes {count} pre-built cross-framework mappings, so that one piece of work can stand as evidence against several frameworks at once.",
       "crossBody1": "When you mark a requirement as <s>Compliant</s> or <s>Partially Compliant</s>, AI SENTINEL shows linked requirements from other frameworks and offers to propagate the status automatically.",
       "crossBody2": "For example, marking EU AI Act Art. 9 (Risk Management) as compliant can automatically update NIST GOVERN 1 (Risk Management Policies) and ISO 42001 Clause 6.1 (Actions to Address Risks): because they cover the same obligation.",
       "crossStats": {
@@ -2567,7 +2572,7 @@
         {
           "role": "AI Officer",
           "title": "Select framework and AI system",
-          "description": "Choose one of the eight frameworks and the AI system to assess."
+          "description": "Choose one of the nine frameworks and the AI system to assess."
         },
         {
           "role": "AI Officer",
@@ -3550,6 +3555,22 @@
       "intro": "The releases below are listed newest first. Every regulatory addition carries a law-review date and a pending legal sign-off marker.",
       "releases": [
         {
+          "version": "Unreleased",
+          "date": "22 September 2026",
+          "headline": "AIUC-1, the certification standard for AI agents",
+          "summary": "AIUC-1 joins the frameworks an organisation can map its systems against, and the frameworks wheel.",
+          "items": [
+            {
+              "title": "AIUC-1 as a compliance framework",
+              "body": "Its six domains and the 51 requirements in force in the Q3 2026 release, each with its identifier and a one-line summary, and 186 links to ISO/IEC 42001, the NIST AI RMF and the EU AI Act taken from the crosswalks the standard publishes. It never attaches by risk tier: you choose it on the compliance page for the systems that are agents."
+            },
+            {
+              "title": "The frameworks wheel: thirteen frameworks",
+              "body": "AIUC-1 is the first framework on the wheel written for agents, and the only one with mandatory technical evals. The selector asks whether you deploy or build AI agents and, if you do, suggests AIUC-1 as the certification for agents."
+            }
+          ]
+        },
+        {
           "version": "0.4.0 to 0.5.0",
           "date": "11 to 13 September 2026",
           "headline": "A programme in minutes, and the builder's view",
@@ -3882,10 +3903,10 @@
         "tableTitle": "Frameworks table: AI SENTINEL Docs",
         "compareTitle": "Compare frameworks: AI SENTINEL Docs",
         "selectorTitle": "Which frameworks? AI SENTINEL Docs",
-        "description": "Twelve AI governance frameworks compared on fourteen dimensions, with a selector that suggests where to start. A learning aid, not legal advice."
+        "description": "Thirteen AI governance frameworks compared on fourteen dimensions, including AIUC-1, the certification standard for AI agents, with a selector that suggests where to start. A learning aid, not legal advice."
       },
       "title": "AI governance frameworks",
-      "intro": "Twelve widely used AI governance frameworks compared on fourteen dimensions. Each cell gives a depth from 0 to 3, one sentence, the official source, and the AI SENTINEL module that supports it.",
+      "intro": "Thirteen widely used AI governance frameworks, including AIUC-1, the certification standard for AI agents, compared on fourteen dimensions. Each cell gives a depth from 0 to 3, one sentence, the official source, and the AI SENTINEL module that supports it.",
       "asOf": "As of {date}",
       "disclaimer": "A learning aid, not legal advice.",
       "contentInEnglish": "The framework content on these pages is in English.",
@@ -3947,7 +3968,7 @@
         "dimension": "Dimension"
       },
       "selector": {
-        "intro": "Answer six questions. The page lists the frameworks that apply or fit, ranked, each with its reasoning, and suggests a stack: the binding laws, one management system and one risk method.",
+        "intro": "Answer seven questions. The page lists the frameworks that apply or fit, ranked, each with its reasoning, and suggests a stack: the binding laws, one management system, one risk method and, if you have AI agents, a certification for agents.",
         "caveat": "A learning aid, not legal advice. The selector points at what to check first; it does not decide whether a law applies. Laws outside this aid (for example data protection, sector and anti-discrimination law) may also apply.",
         "needJurisdiction": "Tick at least one jurisdiction.",
         "noMatch": "No rule matched. Add a jurisdiction or a sector.",
@@ -3960,6 +3981,7 @@
         "noBinding": "none of the laws in this aid, on these answers (other law may still apply)",
         "managementSystem": "One management system",
         "riskMethod": "One risk method",
+        "agentCertification": "Certification for agents",
         "noSuggestion": "no suggestion",
         "whyTitle": "Why this result",
         "whyIntro": "Each rule adds its score to a framework when every listed condition matches (any of the listed values). Binding laws rank first, then by score. The stack takes the first matching rule in each list. Rules that matched your answers are marked.",
@@ -4028,6 +4050,13 @@
             "small": "Small",
             "medium": "Medium",
             "large": "Large"
+          }
+        },
+        "agents": {
+          "label": "AI agents",
+          "options": {
+            "no": "No agents",
+            "yes": "We deploy or build AI agents"
           }
         }
       }

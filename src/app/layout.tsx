@@ -31,9 +31,9 @@ export const viewport: Viewport = {
 
 // Canonical origin comes from the brand system (NEXT_PUBLIC_SITE_URL override).
 const siteUrl = brand.siteUrl;
-const seoTitle = "AI SENTINEL: AI governance software for the EU AI Act, NIST AI RMF, ISO 42001 and five more frameworks";
+const seoTitle = "AI SENTINEL: AI governance software for the EU AI Act, NIST AI RMF, ISO 42001, AIUC-1 and five more frameworks";
 const seoDescription =
-  "Open-source AI governance platform. AI system registry, EU AI Act risk classification, impact assessments, and compliance mapping across eight frameworks: the EU AI Act, NIST AI RMF, ISO/IEC 42001, the GDPR and the California, Colorado, Texas and Washington AI rules. Human oversight, incident management and a complete program in minutes.";
+  "Open-source AI governance platform. AI system registry, EU AI Act risk classification, impact assessments, and compliance mapping across nine frameworks: the EU AI Act, NIST AI RMF, ISO/IEC 42001, AIUC-1 (the certification standard for AI agents), the GDPR and the California, Colorado, Texas and Washington AI rules. Human oversight, incident management and a complete program in minutes.";
 
 export const metadata: Metadata = {
   title: seoTitle,
@@ -46,6 +46,8 @@ export const metadata: Metadata = {
     "AI compliance management",
     "NIST AI RMF",
     "ISO 42001",
+    "AIUC-1",
+    "AI agent certification",
     "GDPR AI",
     "Colorado AI Act",
     "California ADMT",
@@ -126,7 +128,7 @@ export default async function RootLayout({
                 "AI System Registry",
                 "EU AI Act Risk Classification",
                 "FRIA & Conformity Assessments",
-                "Compliance Mapping (EU AI Act, NIST AI RMF, ISO 42001, GDPR, California, Colorado, Texas, Washington)",
+                "Compliance Mapping (EU AI Act, NIST AI RMF, ISO 42001, AIUC-1, GDPR, California, Colorado, Texas, Washington)",
                 "Cross-Framework Compliance Propagation",
                 "Human Oversight Gates",
                 "AI Incident Management",

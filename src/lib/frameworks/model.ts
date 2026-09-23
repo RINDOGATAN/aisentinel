@@ -86,10 +86,20 @@ export interface FrameworksData {
     caveat: string;
     inputs: PickerInput[];
     rules: PickerRule[];
-    stackLabels: { managementSystem: string; riskMethod: string };
-    stack: { managementSystem: StackRule[]; riskMethod: StackRule[] };
+    stackLabels: { managementSystem: string; riskMethod: string; agentCertification?: string };
+    /**
+     * managementSystem and riskMethod always suggest something (their last
+     * rule is unconditional). agentCertification suggests only when a rule
+     * matches: an organisation without agents needs no agent certificate.
+     */
+    stack: { managementSystem: StackRule[]; riskMethod: StackRule[]; agentCertification?: StackRule[] };
   };
 }
+
+/** The stack slots that always answer, then the one that answers only when it applies. */
+export const REQUIRED_STACK_SLOTS = ["managementSystem", "riskMethod"] as const;
+export const STACK_SLOTS = [...REQUIRED_STACK_SLOTS, "agentCertification"] as const;
+export type StackSlot = (typeof STACK_SLOTS)[number];
 
 export const frameworksData = raw as unknown as FrameworksData;
 
@@ -173,11 +183,13 @@ export function validateFrameworks(data: FrameworksData, rawText = JSON.stringif
     if (typeof r.score !== "number") err(`rule ${i}: missing score`);
     checkWhen(r.when, `rule ${i}`);
   });
-  for (const slot of ["managementSystem", "riskMethod"] as const) {
+  for (const slot of STACK_SLOTS) {
     (P.stack[slot] || []).forEach((r, i) => {
       if (!fwIds.has(r.pick)) err(`stack ${slot} ${i}: unknown framework ${r.pick}`);
       checkWhen(r.when, `stack ${slot} ${i}`);
     });
+  }
+  for (const slot of REQUIRED_STACK_SLOTS) {
     const last = P.stack[slot]?.at(-1);
     if (!last || Object.keys(last.when || {}).length) err(`stack ${slot}: last rule must be unconditional`);
   }
@@ -220,15 +232,17 @@ export interface SelectorResult {
   ready: boolean;
   ranked: RankedFramework[];
   binding: string[];
-  stack: {
-    managementSystem: StackRule | null;
-    riskMethod: StackRule | null;
-  };
+  stack: Record<StackSlot, StackRule | null>;
 }
 
 export function runSelector(answers: Answers, data: FrameworksData = frameworksData): SelectorResult {
   const P = data.picker;
-  const empty: SelectorResult = { ready: false, ranked: [], binding: [], stack: { managementSystem: null, riskMethod: null } };
+  const empty: SelectorResult = {
+    ready: false,
+    ranked: [],
+    binding: [],
+    stack: { managementSystem: null, riskMethod: null, agentCertification: null },
+  };
   if (!(answers.jurisdictions || []).length) return empty;
 
   const scores = new Map<string, RankedFramework>();
@@ -257,6 +271,7 @@ export function runSelector(answers: Answers, data: FrameworksData = frameworksD
     stack: {
       managementSystem: firstMatch(P.stack.managementSystem),
       riskMethod: firstMatch(P.stack.riskMethod),
+      agentCertification: firstMatch(P.stack.agentCertification ?? []),
     },
   };
 }

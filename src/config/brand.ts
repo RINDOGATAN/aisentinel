@@ -3,6 +3,10 @@
 
 export interface BrandConfig {
   name: string;
+  /** Product name as it appears in outgoing e-mail (sender, subject, body):
+   *  title case, never the capitals the UI uses. A white-label BRAND_NAME
+   *  carries through unchanged unless EMAIL_BRAND_NAME sets it apart. */
+  emailName: string;
   tagline: string;
   description: string;
   companyName: string;
@@ -38,6 +42,7 @@ export interface BrandConfig {
 
 const defaultBrand: BrandConfig = {
   name: "AI SENTINEL",
+  emailName: "AI Sentinel",
   tagline: "Cross-border AI Governance",
   description: "A purpose-built tool for managing AI systems, EU AI Act compliance, risk classification, and AI governance.",
   companyName: "TODO.LAW",
@@ -71,6 +76,10 @@ export function getBrandConfig(): BrandConfig {
 
   return {
     name: process.env.NEXT_PUBLIC_BRAND_NAME || defaultBrand.name,
+    emailName:
+      process.env.EMAIL_BRAND_NAME ||
+      process.env.NEXT_PUBLIC_BRAND_NAME ||
+      defaultBrand.emailName,
     tagline: process.env.NEXT_PUBLIC_BRAND_TAGLINE || defaultBrand.tagline,
     description: process.env.NEXT_PUBLIC_BRAND_DESCRIPTION || defaultBrand.description,
     companyName: process.env.NEXT_PUBLIC_COMPANY_NAME || defaultBrand.companyName,

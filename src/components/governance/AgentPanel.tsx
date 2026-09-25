@@ -13,6 +13,7 @@
  */
 
 import { useState } from "react";
+import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -63,6 +64,7 @@ export function AgentPanel({
   canWrite: boolean;
 }) {
   const t = useTranslations("agent");
+  const ta = useTranslations("agentTesting");
   const tc = useTranslations("common");
   const utils = trpc.useUtils();
   // Edits overlaid on what is saved, rather than state seeded from an effect:
@@ -202,6 +204,14 @@ export function AgentPanel({
             : assessment.isAgentic
               ? t("isAgentic")
               : t("notAgentic")}
+          {assessment.isAgentic && (
+            <Link
+              href={`/governance/agent-testing/${aiSystemId}`}
+              className="mt-2 flex min-h-6 items-center text-primary hover:underline"
+            >
+              {ta("openForAgent")}
+            </Link>
+          )}
         </div>
 
         {shown.length > 0 && (

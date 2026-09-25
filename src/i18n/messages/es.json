@@ -165,7 +165,8 @@
     "sensitiveData": "Datos sensibles",
     "proceedings": "Procedimientos",
     "boardReports": "Informes al consejo",
-    "threatModel": "Modelo de amenazas"
+    "threatModel": "Modelo de amenazas",
+    "agentTesting": "Pruebas de agentes (AIUC-1)"
   },
   "dashboard": {
     "title": "Gobernanza de IA",
@@ -5555,6 +5556,11 @@
         "why": "Cada proveedor necesita una revisión completada.",
         "do": "Revisa cada proveedor: ábrelo y completa su revisión."
       },
+      "agentTesting": {
+        "label": "Prueba tus agentes de IA (AIUC-1)",
+        "why": "Antes de la auditoría AIUC-1, cada agente de IA necesita que cada requisito que le aplica esté probado y superado, o un resultado parcial aceptado.",
+        "do": "Prueba cada agente de IA frente a AIUC-1: anota qué hiciste y el resultado, hasta superar cada requisito que le aplica."
+      },
       "oversight": {
         "label": "Supervisión humana",
         "why": "Los sistemas de alto riesgo necesitan una persona que pueda revisarlos, aprobarlos o detenerlos.",
@@ -5677,6 +5683,116 @@
       "needsAttention": "Requiere atención",
       "openIncidents": "{count, plural, one {# incidente abierto} other {# incidentes abiertos}}",
       "pendingGates": "{count, plural, one {# decisión pendiente} other {# decisiones pendientes}}"
+    }
+  },
+  "agentTesting": {
+    "title": "Prueba tus agentes de IA (AIUC-1)",
+    "subtitle": "AIUC-1 es la norma de certificación para agentes de IA. Anota cada prueba que hagas a un agente y mira cuánto le falta para la auditoría.",
+    "howItWorks": "En cada requisito, anota qué hiciste (con detalle suficiente para repetirlo), el resultado, qué observaste y dónde están las pruebas. Las pruebas se conservan: una prueba nueva se suma al registro, nunca sustituye a otra.",
+    "readyRule": "Un agente está listo para la auditoría cuando cada requisito que le aplica tiene un resultado superado de los últimos tres meses, o un resultado parcial que una persona ha aceptado.",
+    "readyExplained": "Cada requisito que aplica tiene un resultado superado vigente o un resultado parcial aceptado. La auditoría la hace un tercero acreditado.",
+    "notSeeded": "Los requisitos de AIUC-1 todavía no están cargados en esta instancia, así que no se pueden anotar pruebas. Tu administrador los carga con la carga inicial de marcos.",
+    "loading": "Cargando",
+    "emptyTitle": "Todavía no hay ningún agente de IA en tu inventario.",
+    "emptyBody": "Un sistema cuenta como agente cuando su técnica es «IA agéntica» o cuando su perfil de agente dice que actúa (con aprobación o por sí solo). Indica una de las dos cosas en la página del sistema, en el registro de IA.",
+    "openRegistry": "Abrir el registro de IA",
+    "openForAgent": "Probar este agente frente a AIUC-1",
+    "overallLine": "{ready} de {total} requisitos cuentan para la auditoría",
+    "ready": "Listo para la auditoría",
+    "notReady": "Todavía no está listo",
+    "state": {
+      "not-tested": "Sin probar",
+      "pass": "Superada",
+      "retest": "Toca repetirla",
+      "partial": "Parcial",
+      "acceptedPartial": "Parcial, aceptada",
+      "fail": "No superada",
+      "not-applicable": "No aplica"
+    },
+    "tally": {
+      "tested": "{tested} de {total} probados",
+      "fail": "{count, plural, one {# no superado} other {# no superados}}",
+      "partial": "{count, plural, one {# parcial por aceptar} other {# parciales por aceptar}}",
+      "retest": "{count, plural, one {# por repetir} other {# por repetir}}",
+      "notApplicable": "{count} no aplican"
+    },
+    "domains": {
+      "A": "Datos y privacidad",
+      "B": "Ciberseguridad",
+      "C": "Prevención de daños",
+      "D": "Fiabilidad",
+      "E": "Rendición de cuentas",
+      "F": "Sociedad"
+    },
+    "domainAbout": {
+      "A": "Que los datos de clientes y de la empresa no se filtren, no lleguen a otros clientes y no se usen para entrenar sin una política clara.",
+      "B": "Defender al agente frente a la manipulación: entradas maliciosas, inyección de instrucciones, extracción masiva y acciones que no tenía permitidas.",
+      "C": "Evitar respuestas dañinas, fuera de su finalidad o de alto riesgo, con pruebas antes de ponerlo en marcha y revisión humana cuando haga falta.",
+      "D": "Evitar respuestas inventadas y llamadas peligrosas a herramientas, con pruebas y control de las herramientas que puede usar el agente.",
+      "E": "Quién responde cuando algo sale mal, cómo se aprueban los cambios, qué queda registrado y cómo se revisa a los proveedores.",
+      "F": "Evitar que el agente se use para ciberataques, manipulación o daños catastróficos."
+    },
+    "detailSubtitle": "Los seis ámbitos de AIUC-1, el estado de cada requisito y sus pruebas.",
+    "openSystem": "Abrir el sistema",
+    "download": "Descargar el expediente de pruebas",
+    "notAnAgent": "Este sistema no figura como agente de IA, así que no se pueden anotar pruebas nuevas. Pon su técnica en «IA agéntica» o indica en su perfil de agente que actúa.",
+    "readinessTitle": "Preparación para la auditoría",
+    "supplemental": "Opcional en la norma",
+    "capabilities": "Para: {list}",
+    "readStandard": "Leer el requisito",
+    "newTab": "(se abre en una pestaña nueva)",
+    "reasonMissing": "Marcado como no aplicable sin motivo, así que sigue contando como aplicable. Vuelve a marcarlo con el motivo.",
+    "notApplicableReason": "Por qué no aplica",
+    "latestLine": "Última prueba: {result}, {date}, anotada por {person}",
+    "retestBy": "Repetir antes del {date}",
+    "acceptedLine": "Aceptada por {person} el {date}:",
+    "history": "{count, plural, one {# registro anterior} other {# registros anteriores}}",
+    "recordTest": "Anotar una prueba",
+    "acceptPartial": "Aceptar este resultado parcial",
+    "markNotApplicable": "No aplica",
+    "applicableAgain": "Sí aplica",
+    "notACertificate": "Esta página recoge las pruebas que hizo tu organización y lo que decidió. No es un certificado: la certificación AIUC-1 exige una auditoría externa acreditada.",
+    "formerMember": "un antiguo miembro",
+    "result": {
+      "PASS": "Superada",
+      "PARTIAL": "Parcial",
+      "FAIL": "No superada"
+    },
+    "field": {
+      "method": "Qué se hizo",
+      "result": "Resultado",
+      "testedOn": "Fecha de la prueba",
+      "observed": "Qué se observó",
+      "evidenceRef": "Dónde están las pruebas",
+      "performedBy": "Quién hizo la prueba",
+      "reason": "Motivo"
+    },
+    "placeholder": {
+      "method": "Por ejemplo: enviamos 50 intentos de inyección de instrucciones del conjunto de pruebas público al agente de atención al cliente, por su chat.",
+      "observed": "Por ejemplo: rechazó 48; 2 revelaron las instrucciones del sistema (intentos 17 y 31).",
+      "evidenceRef": "Un enlace, un identificador de ejecución, un archivo o una incidencia",
+      "performedBy": "Déjalo vacío si la hiciste tú"
+    },
+    "help": {
+      "method": "Con detalle suficiente para que otra persona pueda repetirla.",
+      "performedBy": "Indica aquí al evaluador externo cuando la prueba la hizo un tercero."
+    },
+    "dialog": {
+      "testTitle": "Anotar una prueba",
+      "acceptTitle": "Aceptar un resultado parcial",
+      "notApplicableTitle": "Marcar como no aplicable",
+      "appendOnly": "Una vez guardada, la prueba se conserva tal cual. Para corregirla, anota una prueba nueva.",
+      "saveTest": "Guardar la prueba",
+      "accept": "Aceptar",
+      "markNotApplicable": "Marcar como no aplicable",
+      "acceptHelp": "Explica por qué este resultado parcial basta para la auditoría. La aceptación cubre solo esta prueba: una prueba más reciente necesita la suya.",
+      "notApplicableHelp": "Explica por qué este requisito no aplica a este agente, por ejemplo porque no genera código. El motivo figura en el expediente de pruebas."
+    },
+    "toast": {
+      "recorded": "Prueba anotada",
+      "accepted": "Resultado parcial aceptado",
+      "notApplicable": "Marcado como no aplicable",
+      "applicableAgain": "El requisito vuelve a aplicar"
     }
   }
 }

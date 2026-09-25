@@ -165,7 +165,8 @@
     "sensitiveData": "Sensitive data",
     "proceedings": "Proceedings",
     "boardReports": "Board reporting",
-    "threatModel": "Threat model"
+    "threatModel": "Threat model",
+    "agentTesting": "Agent testing (AIUC-1)"
   },
   "dashboard": {
     "title": "AI Governance",
@@ -5555,6 +5556,11 @@
         "why": "Each vendor needs a completed review.",
         "do": "Check each vendor: open it and complete its review."
       },
+      "agentTesting": {
+        "label": "Test your AI agents (AIUC-1)",
+        "why": "Before the AIUC-1 audit, each AI agent needs every requirement that applies to it tested and passed, or a partial result accepted.",
+        "do": "Test each AI agent against AIUC-1: record what you did and the result, until every requirement that applies has passed."
+      },
       "oversight": {
         "label": "Human oversight",
         "why": "High-risk systems need a person who can review, approve or stop them.",
@@ -5677,6 +5683,116 @@
       "needsAttention": "Needs attention",
       "openIncidents": "{count, plural, one {# open incident} other {# open incidents}}",
       "pendingGates": "{count, plural, one {# decision waiting} other {# decisions waiting}}"
+    }
+  },
+  "agentTesting": {
+    "title": "Test your AI agents (AIUC-1)",
+    "subtitle": "AIUC-1 is the certification standard for AI agents. Record each test you run against an agent, and see how close it is to the audit.",
+    "howItWorks": "For each requirement, record what you did (concretely enough to repeat), the result, what you observed and where the evidence lives. Tests are kept: a new test adds to the record, it never replaces one.",
+    "readyRule": "An agent is ready for the audit when every requirement that applies to it has a pass from the last three months, or a partial result a person has accepted.",
+    "readyExplained": "Every requirement that applies has a current pass or an accepted partial result. The audit itself is done by an accredited third party.",
+    "notSeeded": "The AIUC-1 requirements are not loaded on this instance yet, so tests cannot be recorded. Your administrator loads them with the framework seed.",
+    "loading": "Loading",
+    "emptyTitle": "No AI agent in your inventory yet.",
+    "emptyBody": "A system counts as an agent when its technique is \"Agentic AI\", or when its agent profile says it acts (with approval or on its own). Set either on the system's page in the AI registry.",
+    "openRegistry": "Open the AI registry",
+    "openForAgent": "Test this agent against AIUC-1",
+    "overallLine": "{ready} of {total} requirements count towards the audit",
+    "ready": "Ready for audit",
+    "notReady": "Not ready yet",
+    "state": {
+      "not-tested": "Not tested",
+      "pass": "Pass",
+      "retest": "Retest due",
+      "partial": "Partial",
+      "acceptedPartial": "Partial, accepted",
+      "fail": "Fail",
+      "not-applicable": "Not applicable"
+    },
+    "tally": {
+      "tested": "{tested} of {total} tested",
+      "fail": "{count, plural, one {# fail} other {# fail}}",
+      "partial": "{count, plural, one {# partial to accept} other {# partial to accept}}",
+      "retest": "{count, plural, one {# retest due} other {# retests due}}",
+      "notApplicable": "{count} not applicable"
+    },
+    "domains": {
+      "A": "Data and privacy",
+      "B": "Security",
+      "C": "Safety",
+      "D": "Reliability",
+      "E": "Accountability",
+      "F": "Society"
+    },
+    "domainAbout": {
+      "A": "Keeping customer and company data from leaking, from reaching other customers, and from training use without a clear policy.",
+      "B": "Defending the agent against manipulation: adversarial input, prompt injection, scraping and actions it was not allowed to take.",
+      "C": "Preventing harmful, out-of-scope and high-risk outputs, with testing before release and human review where needed.",
+      "D": "Preventing made-up answers and unsafe tool calls, with testing and control of the tools the agent may call.",
+      "E": "Who answers when something goes wrong, how changes are approved, what is logged, and how vendors are checked.",
+      "F": "Preventing the agent from being misused for cyber attacks, manipulation or catastrophic harm."
+    },
+    "detailSubtitle": "The six AIUC-1 domains, each requirement's state and its evidence.",
+    "openSystem": "Open the system",
+    "download": "Download the evidence file",
+    "notAnAgent": "This system is not recorded as an AI agent, so no new test can be recorded. Set its technique to \"Agentic AI\", or say in its agent profile that it acts.",
+    "readinessTitle": "Readiness for the audit",
+    "supplemental": "Optional in the standard",
+    "capabilities": "For: {list}",
+    "readStandard": "Read the requirement",
+    "newTab": "(opens in a new tab)",
+    "reasonMissing": "Marked not applicable without a reason, so it still counts as applicable. Mark it again with the reason.",
+    "notApplicableReason": "Why it does not apply",
+    "latestLine": "Latest test: {result}, {date}, recorded by {person}",
+    "retestBy": "Retest by {date}",
+    "acceptedLine": "Accepted by {person} on {date}:",
+    "history": "{count, plural, one {# earlier record} other {# earlier records}}",
+    "recordTest": "Record a test",
+    "acceptPartial": "Accept this partial result",
+    "markNotApplicable": "Not applicable",
+    "applicableAgain": "It applies after all",
+    "notACertificate": "This page records the tests your organization ran and what it decided. It is not a certificate: AIUC-1 certification needs an accredited third-party audit.",
+    "formerMember": "a former member",
+    "result": {
+      "PASS": "Pass",
+      "PARTIAL": "Partial",
+      "FAIL": "Fail"
+    },
+    "field": {
+      "method": "What was done",
+      "result": "Result",
+      "testedOn": "Date of the test",
+      "observed": "What was observed",
+      "evidenceRef": "Where the evidence lives",
+      "performedBy": "Who ran the test",
+      "reason": "Reason"
+    },
+    "placeholder": {
+      "method": "For example: sent 50 prompt-injection attempts from the public test set to the support agent through its chat endpoint.",
+      "observed": "For example: 48 were refused; 2 revealed the system prompt (runs 17 and 31).",
+      "evidenceRef": "A link, a run id, a file name or a ticket",
+      "performedBy": "Leave empty if you ran it yourself"
+    },
+    "help": {
+      "method": "Concrete enough that someone else could repeat it.",
+      "performedBy": "Name the outside tester here when a third party ran the test."
+    },
+    "dialog": {
+      "testTitle": "Record a test",
+      "acceptTitle": "Accept a partial result",
+      "notApplicableTitle": "Mark as not applicable",
+      "appendOnly": "Once saved, a test is kept as it is. To correct it, record a new test.",
+      "saveTest": "Save the test",
+      "accept": "Accept",
+      "markNotApplicable": "Mark as not applicable",
+      "acceptHelp": "Say why this partial result is good enough for the audit. The acceptance covers this test only: a newer test needs its own.",
+      "notApplicableHelp": "Say why this requirement does not apply to this agent, for example because it does not generate code. The reason goes into the evidence file."
+    },
+    "toast": {
+      "recorded": "Test recorded",
+      "accepted": "Partial result accepted",
+      "notApplicable": "Marked as not applicable",
+      "applicableAgain": "The requirement applies again"
     }
   }
 }

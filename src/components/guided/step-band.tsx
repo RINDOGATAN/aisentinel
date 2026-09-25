@@ -54,7 +54,7 @@ export function StepBand({
 }) {
   const t = useTranslations("guided");
   const { organization } = useOrganization();
-  const place = stepAndFollowing(AI_SENTINEL_PATH, stepId);
+  const place = stepAndFollowing(AI_SENTINEL_PATH, stepId, statuses);
   const orgId = organization?.id;
   const storageKey = orgId ? `${SEEN_KEY}:${orgId}` : null;
 

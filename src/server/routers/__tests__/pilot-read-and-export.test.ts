@@ -146,6 +146,8 @@ const EDITS_THE_PILOT_REFUSES = [
   "threatModel.addScenario", "threatModel.updateScenario", "threatModel.addControl",
   "threatModel.updateControl", "threatModel.recordTest", "threatModel.delete",
   "threatModel.applyToRegister",
+  // Read 2026-09-25: each appends an AIUC-1 evidence row or sets a mapping's status.
+  "aiuc1.recordTest", "aiuc1.acceptPartial", "aiuc1.setApplicability",
 ];
 
 const refusedByPilot = (outcome: unknown) =>

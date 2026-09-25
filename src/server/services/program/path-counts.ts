@@ -14,6 +14,11 @@ import type { PrismaClient } from "@prisma/client";
 import type { PathCounts } from "@/components/guided/path-config";
 import { UNCONFIRMED_WHERE } from "@/server/services/provenance/summary";
 import { loadAgentTestingCounts } from "@/server/services/aiuc1/readiness";
+import {
+  CLIENT_TEMPLATE_REF,
+  TEMPLATE_COPY_PENDING_WHERE,
+  hasTemplateCopyMark,
+} from "@/config/client-template";
 
 const HIGH_RISK = { riskLevel: { in: ["HIGH" as const, "UNACCEPTABLE" as const] } };
 const APPROVED_POLICY = { status: { in: ["APPROVED" as const, "PUBLISHED" as const] } };
@@ -33,6 +38,18 @@ export async function loadPathCounts(
 ): Promise<PathCounts> {
   const org = { organizationId };
   const highRiskSystem = { organizationId, riskClassification: { is: HIGH_RISK } };
+
+  // Copied from another client's template and not reviewed yet. Issued with
+  // the counts below, but kept apart so that list's order stays as it is.
+  const copied = Promise.all([
+    prisma.aISystem.count({ where: { ...org, ...TEMPLATE_COPY_PENDING_WHERE } }),
+    prisma.aIVendor.count({ where: { ...org, ...TEMPLATE_COPY_PENDING_WHERE } }),
+    prisma.oversightGate.count({
+      where: { ...org, sourceRef: CLIENT_TEMPLATE_REF, ...UNCONFIRMED_WHERE },
+    }),
+  ]);
+  // Handled here too, so a failure while the counts below are awaited is not left unobserved.
+  copied.catch(() => undefined);
 
   const [
     organization,
@@ -116,6 +133,7 @@ export async function loadPathCounts(
     // queries, and the second is skipped when there is no agent.
     loadAgentTestingCounts(prisma, organizationId),
   ]);
+  const [copiedSystemsPending, copiedVendorsPending, copiedGatesPending] = await copied;
 
   const settings = settingsObject(organization?.settings);
   const quickstart = settingsObject(settings.quickstart);
@@ -163,6 +181,10 @@ export async function loadPathCounts(
       classified + (mappings - mappingsNotAssessed) + oversightGates + policies + transparencyProfiles,
     boardReports,
     auditEntries,
+    copiedSystemsPending,
+    copiedVendorsPending,
+    copiedGatesPending,
+    copiedObligationsPending: hasTemplateCopyMark(settings),
   };
 }
 

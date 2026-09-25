@@ -6,6 +6,7 @@ import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../.
 import { TRPCError } from "@trpc/server";
 import { assertNotOnHold } from "../../services/legal-hold";
 import { assertPilotRoom, pilotLocale } from "../../services/pilot/caps";
+import { withoutTemplateCopyMark } from "@/config/client-template";
 import {
   parseSubprocessors,
   summarizeSupplyChain,
@@ -259,9 +260,16 @@ export const vendorRouter = createTRPCRouter({
         }
       }
 
+      // Editing a vendor copied from another client's template confirms it.
+      const current = await ctx.prisma.aIVendor.findFirst({
+        where: { id, organizationId: ctx.organization.id },
+        select: { metadata: true },
+      });
+      const confirmedMetadata = withoutTemplateCopyMark(current?.metadata);
+
       const result = await ctx.prisma.aIVendor.updateMany({
         where: { id, organizationId: ctx.organization.id },
-        data: updateData as never,
+        data: (confirmedMetadata ? { ...updateData, metadata: confirmedMetadata } : updateData) as never,
       });
 
       if (result.count === 0) {

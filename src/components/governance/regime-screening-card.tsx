@@ -22,6 +22,7 @@ import { Globe2, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
+import { hasTemplateCopyMark } from "@/config/client-template";
 
 type Answer = "NOT_ASSESSED" | "YES" | "NO";
 
@@ -92,6 +93,8 @@ export function RegimeScreeningCard({
       setEdits({});
       toast.success(t("saved"));
       void utils.regimes.getScope.invalidate();
+      void utils.organization.getById.invalidate();
+      void utils.programPath.status.invalidate();
       void utils.unified.getTemplate.invalidate();
       void utils.compliance.getFrameworkCounts.invalidate();
     },
@@ -106,6 +109,10 @@ export function RegimeScreeningCard({
   const saved = (data?.orgFacts ?? {}) as Record<OrgFactKey, Answer>;
   const value = (key: OrgFactKey): Answer => edits[key] ?? saved[key] ?? "NOT_ASSESSED";
   const dirty = Object.keys(edits).length > 0;
+  // Answers copied from another client's template: saving them, changed or
+  // not, is what confirms them for this client.
+  // Only once the saved answers are loaded, so confirming never sends blanks.
+  const copied = hasTemplateCopyMark(org?.settings) && !!data;
   const options: Answer[] = ["YES", "NO", "NOT_ASSESSED"];
 
   return (
@@ -148,11 +155,16 @@ export function RegimeScreeningCard({
         <p className="text-xs text-muted-foreground border-t border-border pt-3">
           {t("reviewMarkerNote")}
         </p>
+        {copied && (
+          <p className="text-xs text-foreground" role="status">
+            {t("copiedFromTemplate")}
+          </p>
+        )}
         {canWrite && (
           <div className="flex justify-end">
             <Button
               size="sm"
-              disabled={!dirty || save.isPending}
+              disabled={(!dirty && !copied) || save.isPending}
               onClick={() =>
                 save.mutate({
                   organizationId,
@@ -161,7 +173,7 @@ export function RegimeScreeningCard({
               }
             >
               {save.isPending && <Loader2 className="w-3 h-3 mr-2 animate-spin" />}
-              {tc("save")}
+              {copied && !dirty ? t("confirmCopied") : tc("save")}
             </Button>
           </div>
         )}

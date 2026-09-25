@@ -4798,6 +4798,8 @@
     "title": "Regímenes transfronterizos",
     "description": "El RGPD, Colorado, Texas y Washington junto al Reglamento de IA de la UE y California. Cada régimen resuelve su propio ámbito a partir de las jurisdicciones declaradas y de unas pocas respuestas de cribado.",
     "reviewMarkerNote": "El contenido normativo de estos regímenes se validó el 8 de septiembre de 2026. Los paquetes del Reglamento de IA de la UE y de California siguen pendientes.",
+    "copiedFromTemplate": "Estas respuestas se copiaron de una plantilla. Revisa cada una para este cliente y después confírmalas.",
+    "confirmCopied": "Confirmar respuestas",
     "orgTitle": "Cribado de la organización",
     "orgDescription": "Cinco hechos sobre la organización. Cada uno tiene tres estados: sin responder permanece visiblemente sin responder y nunca se lee como un no.",
     "systemTitle": "Cribado del sistema",
@@ -5794,5 +5796,71 @@
       "notApplicable": "Marcado como no aplicable",
       "applicableAgain": "El requisito vuelve a aplicar"
     }
+  },
+  "clientTemplate": {
+    "cardTitle": "Empezar a partir de otro cliente",
+    "cardDescription": "Copia un programa que hayas creado para otro cliente y después ajústalo. Todo llega como borrador.",
+    "chipCopiedDrafts": "Copiado como borrador",
+    "chipNoLinks": "Nunca vinculado",
+    "copyIntoNew": "Copiar a un cliente nuevo",
+    "rowMenu": "Más opciones para {client}",
+    "titleCurrent": "Empezar a partir de otro cliente",
+    "titleNew": "Copiar a un cliente nuevo",
+    "descriptionCurrent": "Copia partes de un programa que hayas creado para otro cliente a este. La copia es independiente: los cambios posteriores en un cliente nunca llegan al otro, y los registros de este cliente nunca muestran de dónde procede la copia.",
+    "descriptionNew": "Crea un cliente nuevo y copia en él partes del programa de {source}. La copia es independiente: los cambios posteriores en un cliente nunca llegan al otro, y los registros del cliente nuevo nunca muestran de dónde procede la copia.",
+    "sourceLabel": "Copiar de",
+    "sourcePlaceholder": "Elige un cliente",
+    "sourceHint": "Solo aparecen los clientes en los que eres propietario o administrador.",
+    "noSources": "No hay otro cliente en el que seas propietario o administrador.",
+    "newNameLabel": "Nombre del cliente nuevo",
+    "newNamePlaceholder": "p. ej., Servicios Ejemplo S. L.",
+    "loading": "Cargando",
+    "partsLegend": "Qué copiar",
+    "parts": {
+      "policies": {
+        "label": "Políticas",
+        "hint": "Como borrador. Las aprobaciones son del cliente y no se copian."
+      },
+      "assessmentTemplates": {
+        "label": "Plantillas de evaluación",
+        "hint": "Tus propios cuestionarios y sus preguntas personalizadas."
+      },
+      "aiSystems": {
+        "label": "Sistemas de IA",
+        "hint": "Solo el nombre, la descripción y la finalidad, como borrador. Sin responsables, fechas, clasificación ni respuestas."
+      },
+      "oversightGates": {
+        "label": "Controles de supervisión",
+        "hint": "La definición de los controles de los sistemas copiados, pendientes de decisión y sin asignar."
+      },
+      "vendors": {
+        "label": "Proveedores",
+        "hint": "Nombre, sitio web, descripción y nivel de riesgo. Sin contactos ni fechas de contrato."
+      },
+      "vendorReviews": {
+        "label": "Conclusiones de las revisiones de proveedores",
+        "hint": "Como borrador, con la nota «Copiado de una plantilla. Revísalo para este cliente.»"
+      },
+      "obligations": {
+        "label": "Jurisdicciones y respuestas de cribado",
+        "hint": "Solo si este cliente aún no tiene ninguna. Quedan pendientes de que las confirmes en Configuración."
+      }
+    },
+    "needsPart": "Necesita también «{part}».",
+    "skipped": "{count, plural, one {# ya existe aquí y se deja como está.} other {# ya existen aquí y se dejan como están.}}",
+    "neverCopied": "Nunca se copian: incidentes, procedimientos, archivos de evidencia, el registro de auditoría, informes al consejo, personas y miembros, licencias y facturación.",
+    "flagsTitle": "{count, plural, one {# elemento sigue mencionando al otro cliente} other {# elementos siguen mencionando al otro cliente}}",
+    "flagsHint": "El nombre completo del otro cliente se sustituye por el de este cliente. Estas otras menciones (una forma abreviada del nombre, o su dominio web o de correo electrónico) se copian tal cual para que las revises.",
+    "moreFlags": "{count, plural, one {y # mención más} other {y # menciones más}}",
+    "flagsAcknowledge": "Las he visto y las revisaré después de la copia.",
+    "summary": "{count, plural, =0 {No hay nada que copiar con esta selección.} one {Se copiará # elemento como borrador.} other {Se copiarán # elementos como borrador.}}",
+    "submitCurrent": "Copiar a este cliente",
+    "submitNew": "Crear y copiar",
+    "done": "Copiado",
+    "failed": "No se ha podido completar la copia.",
+    "resultSummary": "Copiado a {client}:",
+    "resultStarted": "Los elementos copiados cuentan como iniciados, no como terminados, hasta que alguien los revise para este cliente. Las políticas y los controles de supervisión esperan en la cola de revisión.",
+    "resultFlaggedTitle": "Revisa estos elementos por si mencionan al otro cliente",
+    "openClient": "Abrir {client}"
   }
 }

@@ -19,7 +19,9 @@
 
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
+import type { Prisma } from "@prisma/client";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
+import { withoutTemplateCopyMark } from "@/config/client-template";
 import { attachRegimeMappings } from "@/server/services/scope/attach-regimes";
 import type { JurisdictionId } from "@/config/jurisdictions";
 import {
@@ -240,9 +242,12 @@ export const regimesRouter = createTRPCRouter({
           (next as Record<string, ScreeningAnswer>)[key] = value as ScreeningAnswer;
         }
       }
+      // Saving the answers here confirms any that were copied from another
+      // client's template (src/config/client-template.ts).
+      const confirmed = withoutTemplateCopyMark(settings) ?? settings;
       await ctx.prisma.organization.update({
         where: { id: ctx.organization.id },
-        data: { settings: { ...settings, regimes: next } },
+        data: { settings: { ...confirmed, regimes: next } as Prisma.InputJsonValue },
       });
       await ctx.prisma.auditLog.create({
         data: {

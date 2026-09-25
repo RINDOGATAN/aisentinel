@@ -9,12 +9,15 @@
  * Reached from "All clients" in the Guided menu.
  *
  * Progress comes from the same rules as the menu (programPath.portfolio).
+ * Each row also carries the older client cards' "needs attention" figures
+ * (open incidents, gates waiting), so this is the one client view in Guided.
  */
 
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { ChevronRight, Loader2, Plus } from "lucide-react";
+import { AlertCircle, ChevronRight, Loader2, Plus } from "lucide-react";
+import { PageHeader } from "@/components/governance/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { AddOrganizationDialog } from "@/components/governance/add-organization-dialog";
@@ -71,19 +74,21 @@ export default function PortfolioPage() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="min-w-0">
-          <h1 className="text-xl sm:text-2xl font-semibold">{tp("title")}</h1>
-          <p className="text-sm text-muted-foreground mt-1">
+      <PageHeader
+        title={tp("title")}
+        description={
+          <>
             {tp("subtitle")}
             {rows && <> · {tp("count", { count: rows.length })}</>}
-          </p>
-        </div>
-        <Button className="w-full sm:w-auto" onClick={() => setAddOpen(true)}>
-          <Plus className="w-4 h-4 mr-2" />
-          {t("addOrganization")}
-        </Button>
-      </div>
+          </>
+        }
+        actions={
+          <Button onClick={() => setAddOpen(true)}>
+            <Plus className="w-4 h-4 mr-2" />
+            {t("addOrganization")}
+          </Button>
+        }
+      />
 
       <AddOrganizationDialog
         open={addOpen}
@@ -136,13 +141,19 @@ export default function PortfolioPage() {
                         >
                           {row.organizationName}
                         </button>
+                        <Attention row={row} />
                       </th>
                       {STAGES.map((stage, i) => {
                         const { p, text } = stageCell(row.steps, i);
                         return (
                           <td key={stage.id} className="px-2 py-3">
                             <span className="flex flex-col items-center gap-1" title={text}>
-                              <ProgressRing value={p?.done ?? null} total={p?.total ?? 0} size={24} />
+                              <ProgressRing
+                                value={p?.done ?? null}
+                                total={p?.total ?? 0}
+                                size={24}
+                                complete={p?.state === "done"}
+                              />
                               <span className="text-xs text-muted-foreground tabular-nums" aria-hidden="true">
                                 {p ? `${p.done}/${p.total}` : "–"}
                               </span>
@@ -177,12 +188,18 @@ export default function PortfolioPage() {
                     <span className="min-w-0 truncate font-medium">{row.organizationName}</span>
                     <ChevronRight className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
                   </span>
+                  <Attention row={row} />
                   <span className="mt-3 flex items-start justify-between gap-1">
                     {STAGES.map((stage, i) => {
                       const { p, text } = stageCell(row.steps, i);
                       return (
                         <span key={stage.id} className="flex flex-col items-center gap-0.5" title={text}>
-                          <ProgressRing value={p?.done ?? null} total={p?.total ?? 0} size={24}>
+                          <ProgressRing
+                            value={p?.done ?? null}
+                            total={p?.total ?? 0}
+                            size={24}
+                            complete={p?.state === "done"}
+                          >
                             {i + 1}
                           </ProgressRing>
                           <span className="sr-only">{text}</span>
@@ -199,5 +216,30 @@ export default function PortfolioPage() {
         </>
       )}
     </div>
+  );
+}
+
+/**
+ * The two "needs attention" figures the older client cards showed, folded
+ * into the row: open incidents and oversight gates waiting for a decision.
+ * Nothing when both are zero (or could not be read).
+ */
+function Attention({ row }: { row: { openIncidents: number | null; pendingGates: number | null } }) {
+  const tp = useTranslations("guided.portfolio");
+  const incidents = row.openIncidents ?? 0;
+  const gates = row.pendingGates ?? 0;
+  if (incidents === 0 && gates === 0) return null;
+  const parts = [
+    incidents > 0 ? tp("openIncidents", { count: incidents }) : null,
+    gates > 0 ? tp("pendingGates", { count: gates }) : null,
+  ].filter(Boolean);
+  return (
+    <span className="mt-1 flex items-center gap-1.5 text-xs font-normal text-foreground [&>svg]:text-warning">
+      <AlertCircle className="size-3.5 shrink-0" aria-hidden="true" />
+      <span className="min-w-0">
+        <span className="sr-only">{tp("needsAttention")}: </span>
+        {parts.join(" · ")}
+      </span>
+    </span>
   );
 }

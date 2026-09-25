@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AddOrganizationDialog } from "@/components/governance/add-organization-dialog";
+import { PageHeader } from "@/components/governance/page-header";
 import {
   ClipboardCheck,
   AlertTriangle,
@@ -73,19 +74,16 @@ export default function ClientsPage() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-semibold">{t("title")}</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            {t("managedCount", { count: clients?.length ?? 0 })}
-          </p>
-        </div>
-        <Button onClick={() => setAddOpen(true)} className="w-full sm:w-auto">
-          <Plus className="w-4 h-4 mr-2" />
-          {t("addOrganization")}
-        </Button>
-      </div>
+      <PageHeader
+        title={t("title")}
+        description={t("managedCount", { count: clients?.length ?? 0 })}
+        actions={
+          <Button onClick={() => setAddOpen(true)}>
+            <Plus className="w-4 h-4 mr-2" />
+            {t("addOrganization")}
+          </Button>
+        }
+      />
 
       {/* Summary Stats */}
       <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">

@@ -3,7 +3,7 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -191,9 +191,27 @@ const emptyDataSourceForm: DataSourceForm = {
   containsPersonalData: false,
 };
 
+/** Tabs a link may open with `?tab=` (every tab shown for every system). */
+const LINKABLE_TABS = new Set([
+  "models",
+  "data-sources",
+  "data-flow",
+  "risk",
+  "transparency",
+  "assessments",
+  "oversight",
+  "policies",
+  "incidents",
+  "unified",
+  "agent",
+]);
+
 export default function AISystemDetailPage() {
   const params = useParams();
   const id = params.id as string;
+  const requestedTab = useSearchParams().get("tab");
+  const initialTab =
+    requestedTab && LINKABLE_TABS.has(requestedTab) ? requestedTab : "models";
   const { organization, canWrite } = useOrganization();
   const t = useTranslations("aiRegistryDetail");
   const locale = useLocale();
@@ -970,7 +988,8 @@ export default function AISystemDetailPage() {
       )}
 
       {/* Tabs */}
-      <Tabs defaultValue="models">
+      {/* `?tab=transparency` (from the path's transparency view) opens on that tab. */}
+      <Tabs defaultValue={initialTab}>
         <TabsList className="w-full justify-start overflow-x-auto">
           <TabsTrigger value="models" className="text-xs sm:text-sm">
             {t("tabModels", { count: system.models?.length ?? 0 })}

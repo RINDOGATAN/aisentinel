@@ -163,7 +163,6 @@ const POLICY_TYPE_KEY: Record<string, string> = {
 export default function QuickstartPage() {
   const { organization, canWrite } = useOrganization();
   const guided = useSkin().skin === "guided";
-  const tg = useTranslations("guided");
   const utilsForJurisdictions = trpc.useUtils();
   const t = useTranslations("quickstart");
   const tc = useTranslations("common");
@@ -1936,22 +1935,10 @@ export default function QuickstartPage() {
             </CardContent>
           </Card>
 
-          {/* Quick nav: in Guided a small row of plain links under the one
-              next step; in Classic the six cards. */}
-          {guided ? (
-            <nav aria-label={tg("orGoTo")} className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
-              <span className="text-muted-foreground">{tg("orGoTo")}</span>
-              {SUCCESS_NAV.map(({ href, key }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className="inline-flex min-h-11 items-center rounded-sm text-primary underline-offset-2 hover:underline outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                >
-                  {t(`nav.${key}.title`)}
-                </Link>
-              ))}
-            </nav>
-          ) : (
+          {/* Quick nav, Classic only: the six cards. In Guided the one next
+              step above and the menu already lead to each of these pages, so
+              they are not repeated (one place per action). */}
+          {!guided && (
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
               {SUCCESS_NAV.map(({ href, icon: Icon, key }) => (
                 <Link key={href} href={href}>

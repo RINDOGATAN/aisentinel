@@ -4,6 +4,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { PageHeader } from "@/components/governance/page-header";
+import { EmptyStep } from "@/components/guided/empty-step";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,6 +31,7 @@ import {
   Database,
   Download,
   FileText,
+  Megaphone,
 } from "lucide-react";
 import { keepPreviousData } from "@tanstack/react-query";
 import { trpc } from "@/lib/trpc";
@@ -86,6 +90,10 @@ export default function AIRegistryPage() {
   const tc = useTranslations("common");
   const { statusLabel, roleLabel } = useEnumLabels();
   const sampleSystemIds = useSampleIds(organization?.id, "AISystem");
+  const tg = useTranslations("guided");
+  // `?view=transparency` is the path's transparency step: every system with
+  // whether its Art. 50 record exists, each opening that tab.
+  const transparencyView = useSearchParams().get("view") === "transparency";
 
   // While the organization context is still resolving, `canWrite` is false
   // even for owners — don't hide the Register button on that transient state,
@@ -94,7 +102,7 @@ export default function AIRegistryPage() {
   // org is restored from localStorage.
   const orgResolving = orgLoading || (!organization && organizations.length > 0);
 
-  const statusFilter = activeTab === "all" ? undefined : activeTab.toUpperCase() as "DRAFT" | "DEVELOPMENT" | "TESTING" | "DEPLOYED" | "RETIRED";
+  const statusFilter = transparencyView || activeTab === "all" ? undefined : activeTab.toUpperCase() as "DRAFT" | "DEVELOPMENT" | "TESTING" | "DEPLOYED" | "RETIRED";
 
   const { data: statsData, isLoading: statsLoading } = trpc.aiSystem.getStats.useQuery(
     { organizationId: organization?.id ?? "" },
@@ -127,58 +135,65 @@ export default function AIRegistryPage() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-semibold">{t("title")}</h1>
-          <p className="text-sm text-muted-foreground">
-            {t("subtitle")}
-          </p>
-        </div>
-        {/* On a phone the two secondary actions are icons and the primary one
-            takes what is left; if the row still ran short it would wrap. */}
-        <div className="flex flex-wrap gap-2 sm:flex-nowrap sm:flex-none">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="icon" aria-label={tc("export")} className="shrink-0 sm:size-auto sm:px-4 sm:py-2">
-                <Download className="w-4 h-4 sm:mr-2" />
-                <span className="hidden sm:inline">{tc("export")}</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => organization?.id && void download(`/api/export/ai-system-register?organizationId=${organization.id}`)}>
-                <FileText className="w-4 h-4 mr-2" />
-                {t("exportRegisterPdf")}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => organization?.id && void download(`/api/export/model-inventory?organizationId=${organization.id}`)}>
-                <FileText className="w-4 h-4 mr-2" />
-                {t("exportModelInventoryPdf")}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          {orgResolving ? (
-            <Button className="flex-1 min-w-0 sm:flex-none" disabled>
-              <Loader2 className="w-4 h-4 animate-spin sm:mr-2" />
-              <span className="hidden sm:inline">{t("registerAiSystem")}</span>
-              <span className="sm:hidden">{t("registerShort")}</span>
-            </Button>
-          ) : (
-            canWrite && (
-              <>
-              {organization && <InventoryImportDialog organizationId={organization.id} />}
-              <Link href="/governance/ai-registry/new" className="flex-1 min-w-0 sm:flex-none">
-                <Button className="w-full sm:w-auto">
-                  <Plus className="w-4 h-4 sm:mr-2" />
-                  <span className="hidden sm:inline">{t("registerAiSystem")}</span>
-                  <span className="sm:hidden">{t("registerShort")}</span>
+      {/* On a phone the secondary actions are icons; the row shares the width. */}
+      <PageHeader
+        title={transparencyView ? tg("views.transparency") : t("title")}
+        description={transparencyView ? tg("views.transparencyHint") : t("subtitle")}
+        actions={
+          <>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="icon" aria-label={tc("export")} className="sm:size-auto sm:px-4 sm:py-2">
+                  <Download className="w-4 h-4 sm:mr-2" />
+                  <span className="hidden sm:inline">{tc("export")}</span>
                 </Button>
-              </Link>
-              </>
-            )
-          )}
-        </div>
-      </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => organization?.id && void download(`/api/export/ai-system-register?organizationId=${organization.id}`)}>
+                  <FileText className="w-4 h-4 mr-2" />
+                  {t("exportRegisterPdf")}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => organization?.id && void download(`/api/export/model-inventory?organizationId=${organization.id}`)}>
+                  <FileText className="w-4 h-4 mr-2" />
+                  {t("exportModelInventoryPdf")}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            {orgResolving ? (
+              <Button disabled>
+                <Loader2 className="w-4 h-4 animate-spin sm:mr-2" />
+                <span className="hidden sm:inline">{t("registerAiSystem")}</span>
+                <span className="sm:hidden">{t("registerShort")}</span>
+              </Button>
+            ) : (
+              canWrite && (
+                <>
+                  {organization && <InventoryImportDialog organizationId={organization.id} />}
+                  <Link href="/governance/ai-registry/new">
+                    <Button>
+                      <Plus className="w-4 h-4 sm:mr-2" />
+                      <span className="hidden sm:inline">{t("registerAiSystem")}</span>
+                      <span className="sm:hidden">{t("registerShort")}</span>
+                    </Button>
+                  </Link>
+                </>
+              )
+            )}
+          </>
+        }
+      />
 
+      {transparencyView ? (
+        <TransparencyView
+          systems={systems}
+          loading={systemsLoading && !systemsPages}
+          canWrite={canWrite}
+          hasNextPage={!!hasNextPage}
+          fetchNextPage={() => void fetchNextPage()}
+          isFetchingNextPage={isFetchingNextPage}
+        />
+      ) : (
+      <>
       {/* Stats Grid */}
       <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
         <Card>
@@ -357,6 +372,87 @@ export default function AIRegistryPage() {
           )}
         </TabsContent>
       </Tabs>
+      </>
+      )}
     </div>
+  );
+}
+
+/**
+ * The transparency view (`?view=transparency`): each system with whether its
+ * Art. 50 record exists, each card opening the system's Transparency tab.
+ */
+function TransparencyView({
+  systems,
+  loading,
+  canWrite,
+  hasNextPage,
+  fetchNextPage,
+  isFetchingNextPage,
+}: {
+  systems: { id: string; name: string; transparencyProfile?: { id: string } | null }[];
+  loading: boolean;
+  canWrite: boolean;
+  hasNextPage: boolean;
+  fetchNextPage: () => void;
+  isFetchingNextPage: boolean;
+}) {
+  const tg = useTranslations("guided");
+  const tc = useTranslations("common");
+
+  if (loading) return <ListPageSkeleton />;
+  if (systems.length === 0) {
+    return (
+      <EmptyStep
+        action={
+          canWrite && (
+            <Link href="/governance/ai-registry/new">
+              <Button>
+                <Plus className="w-4 h-4 mr-2" />
+                {tg("emptyStep.transparencyAction")}
+              </Button>
+            </Link>
+          )
+        }
+      >
+        {tg("emptyStep.transparency")}
+      </EmptyStep>
+    );
+  }
+  return (
+    <>
+      <ul className="grid gap-3 grid-cols-1 sm:grid-cols-2">
+        {systems.map((system) => {
+          const recorded = !!system.transparencyProfile;
+          return (
+            <li key={system.id}>
+              <Link
+                href={`/governance/ai-registry/${system.id}?tab=transparency`}
+                className="flex min-h-11 items-center justify-between gap-3 rounded-xl border border-border bg-card p-4 hover:border-primary/50 motion-safe:transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <span className="flex min-w-0 items-center gap-3">
+                  <Megaphone className="w-4 h-4 shrink-0 text-primary" aria-hidden="true" />
+                  <span className="min-w-0 truncate font-medium">{system.name}</span>
+                </span>
+                <Badge
+                  variant="outline"
+                  className={`shrink-0 text-xs ${recorded ? STATUS_OUTLINE.good : STATUS_OUTLINE.warning}`}
+                >
+                  {recorded ? tg("views.profileDone") : tg("views.profileMissing")}
+                </Badge>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+      {hasNextPage && (
+        <div className="flex justify-center">
+          <Button variant="outline" onClick={fetchNextPage} disabled={isFetchingNextPage}>
+            {isFetchingNextPage && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
+            {tc("loadMore")}
+          </Button>
+        </div>
+      )}
+    </>
   );
 }

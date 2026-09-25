@@ -141,29 +141,117 @@ function hrefPath(href: string): string {
   return href.split(/[?#]/)[0];
 }
 
-function matches(pathname: string, href: string): boolean {
+/** The query pairs an href carries (`?view=due-diligence`), as [key, value]. */
+function hrefQuery(href: string): [string, string][] {
+  const query = href.split("#")[0].split("?")[1];
+  return query ? [...new URLSearchParams(query).entries()] : [];
+}
+
+function pathMatches(pathname: string, href: string): boolean {
   const path = hrefPath(href);
   return pathname === path || pathname.startsWith(path + "/");
 }
 
 /**
- * The step the current page belongs to. Some pages serve two steps (the
- * vendor list is both where vendors are added and where their due diligence
- * lives); the first step in path order wins, so exactly one entry is ever
- * marked as the current page.
+ * An href matches the current address when its path does and every query
+ * pair it carries is present: `/governance/vendors?view=due-diligence` is a
+ * different place from `/governance/vendors`.
  */
-export function currentStepId<C>(config: PathConfig<C>, pathname: string): string | null {
-  // Longest match first, so /governance/ai-registry/new is not claimed by a
-  // shorter prefix of another step; ties go to path order.
-  let best: { id: string; length: number } | null = null;
+function matches(pathname: string, search: string, href: string): boolean {
+  if (!pathMatches(pathname, href)) return false;
+  const query = hrefQuery(href);
+  if (query.length === 0) return true;
+  const current = new URLSearchParams(search);
+  return query.every(([key, value]) => current.get(key) === value);
+}
+
+/**
+ * The step the current page belongs to, or null. Every step leads to its own
+ * place (a page, or a view of a page named by its query), so exactly one step
+ * is marked as the current page: a match on the query beats a match on the
+ * path alone, and a longer path beats a shorter one (so
+ * /governance/ai-registry/new is not claimed by a shorter prefix).
+ */
+export function currentStepId<C>(
+  config: PathConfig<C>,
+  pathname: string,
+  search = "",
+): string | null {
+  let best: { id: string; score: number } | null = null;
   for (const stage of config.stages) {
     for (const step of stage.steps) {
-      if (!step.href || !matches(pathname, step.href)) continue;
-      const length = hrefPath(step.href).length;
-      if (!best || length > best.length) best = { id: step.id, length };
+      if (!step.href || !matches(pathname, search, step.href)) continue;
+      const score = hrefQuery(step.href).length * 10_000 + hrefPath(step.href).length;
+      if (!best || score > best.score) best = { id: step.id, score };
     }
   }
   return best?.id ?? null;
+}
+
+export interface SequenceEntry<C> {
+  stage: PathStage<C>;
+  stageIndex: number;
+  step: PathStep<C>;
+  /** "3.1": the stage's number, then the step's place within the stage. */
+  number: string;
+}
+
+/**
+ * Every step that has a page, in path order: the walk the "Next step" button
+ * follows. Coming steps have no page and are skipped; optional steps are
+ * places too, so they stay in the walk.
+ */
+export function stepSequence<C>(config: PathConfig<C>): SequenceEntry<C>[] {
+  const out: SequenceEntry<C>[] = [];
+  for (const [stageIndex, stage] of config.stages.entries()) {
+    for (const [stepIndex, step] of stage.steps.entries()) {
+      if (!step.href || step.coming) continue;
+      out.push({ stage, stageIndex, step, number: `${stageIndex + 1}.${stepIndex + 1}` });
+    }
+  }
+  return out;
+}
+
+/** A step's place in the walk, and the step after it (null after the last). */
+export function stepAndFollowing<C>(
+  config: PathConfig<C>,
+  stepId: string | null,
+): { current: SequenceEntry<C>; following: SequenceEntry<C> | null } | null {
+  if (!stepId) return null;
+  const sequence = stepSequence(config);
+  const index = sequence.findIndex((e) => e.step.id === stepId);
+  if (index < 0) return null;
+  return { current: sequence[index], following: sequence[index + 1] ?? null };
+}
+
+/**
+ * Which stage to congratulate, once. `seen` is the list of stage ids already
+ * known to be done (kept per organisation in the browser), or null the first
+ * time: then every stage already done is remembered silently, so a stage
+ * finished long ago is never announced as news. Otherwise the last stage (in
+ * path order) that is done and not yet seen is announced, and all done stages
+ * are remembered.
+ */
+export function stageToCelebrate<C>(
+  config: PathConfig<C>,
+  statuses: PathStatuses,
+  seen: string[] | null,
+): { remember: string[]; celebrate: number | null } {
+  const done = config.stages
+    .filter((stage) => stageProgress(stage, statuses).state === "done")
+    .map((stage) => stage.id);
+  if (seen === null) return { remember: done, celebrate: null };
+  let celebrate: number | null = null;
+  for (const [index, stage] of config.stages.entries()) {
+    if (done.includes(stage.id) && !seen.includes(stage.id)) celebrate = index;
+  }
+  return { remember: [...new Set([...seen, ...done])], celebrate };
+}
+
+/** Progress across the whole path as a whole percentage; 0 when nothing counts. */
+export function overallPercent<C>(config: PathConfig<C>, statuses: PathStatuses): number {
+  const { done, total } = overallProgress(config, statuses);
+  return total === 0 ? 0 : Math.round((done / total) * 100);
 }
 
 /** The stage holding a step, by id. */
@@ -174,6 +262,6 @@ export function stageOfStep<C>(config: PathConfig<C>, stepId: string | null): Pa
 
 /** The library entry the current page belongs to, if it is not a step. */
 export function currentLibraryId(items: LibraryItem[], pathname: string): string | null {
-  const found = items.find((item) => matches(pathname, item.href));
+  const found = items.find((item) => matches(pathname, "", item.href));
   return found?.id ?? null;
 }

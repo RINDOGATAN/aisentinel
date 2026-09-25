@@ -5,6 +5,7 @@
 import { useState, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { PageHeader } from "@/components/governance/page-header";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { useOrganization } from "@/lib/organization-context";
@@ -277,18 +278,15 @@ export default function CompliancePage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Scale className="w-6 h-6 text-primary" />
-            {t("title")}
-          </h1>
-          <p className="text-muted-foreground">{t("description")}</p>
-        </div>
-        {matrix && matrix.length > 0 && (
+      <PageHeader
+        icon={Scale}
+        title={t("title")}
+        description={t("description")}
+        actions={
+        matrix && matrix.length > 0 && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="self-start sm:self-auto">
+              <Button variant="outline">
                 <Download className="w-4 h-4 mr-2" />
                 {tc("export")}
               </Button>
@@ -313,8 +311,9 @@ export default function CompliancePage() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        )}
-      </div>
+        )
+        }
+      />
 
       <div className="flex flex-col sm:flex-row gap-4">
         <Select value={selectedSystemId} onValueChange={setSelectedSystemId}>

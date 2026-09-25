@@ -4,6 +4,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { PageHeader } from "@/components/governance/page-header";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -165,26 +166,20 @@ export default function ShadowAIPage() {
   // Full page
   return (
     <div className="space-y-4 sm:space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-semibold">
-            {t("title")}
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            {t("subtitle")}
-          </p>
-        </div>
-        {canWrite && (
-          <Link href="/governance/shadow-ai/new" className="flex-none">
-            <Button className="w-full sm:w-auto">
-              <Plus className="w-4 h-4 sm:mr-2" />
-              <span className="hidden sm:inline">{t("reportAiTool")}</span>
-              <span className="sm:hidden">Report</span>
-            </Button>
-          </Link>
-        )}
-      </div>
+      <PageHeader
+        title={t("title")}
+        description={t("subtitle")}
+        actions={
+          canWrite && (
+            <Link href="/governance/shadow-ai/new">
+              <Button>
+                <Plus className="w-4 h-4 mr-2" />
+                {t("reportAiTool")}
+              </Button>
+            </Link>
+          )
+        }
+      />
 
       {/* Stats Grid */}
       <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">

@@ -7,18 +7,38 @@
  * the progress it shows is always also written out as text beside it.
  */
 
+import { Check } from "lucide-react";
+
 export function ProgressRing({
   value,
   total,
   size = 28,
+  complete = false,
   children,
 }: {
   /** Null while loading: only the track is drawn. */
   value: number | null;
   total: number;
   size?: number;
+  /**
+   * The stage is done: a solid accent disc with a check replaces the ring and
+   * its number. Same size, so nothing moves.
+   */
+  complete?: boolean;
   children?: React.ReactNode;
 }) {
+  if (complete) {
+    return (
+      <span
+        className="inline-flex items-center justify-center shrink-0 rounded-full bg-primary text-primary-foreground"
+        style={{ width: size, height: size }}
+        aria-hidden="true"
+        data-complete="true"
+      >
+        <Check style={{ width: size * 0.5, height: size * 0.5 }} strokeWidth={3} />
+      </span>
+    );
+  }
   const stroke = 2.5;
   const r = (size - stroke) / 2;
   const circumference = 2 * Math.PI * r;

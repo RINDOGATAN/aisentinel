@@ -4,6 +4,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { PageHeader } from "@/components/governance/page-header";
+import { EmptyStep } from "@/components/guided/empty-step";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -71,8 +74,12 @@ export default function VendorRiskPage() {
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
   const debouncedSearch = useDebounce(searchQuery);
   const { organization, canWrite } = useOrganization();
+  const tg = useTranslations("guided");
+  // `?view=due-diligence` is the path's "Vendor checks" step: every vendor
+  // with its review state, each opening the vendor's assessments tab.
+  const dueDiligence = useSearchParams().get("view") === "due-diligence";
 
-  const statusFilter = tabToStatus[activeTab];
+  const statusFilter = dueDiligence ? undefined : tabToStatus[activeTab];
 
   const { data: catalogAccess } = trpc.vendorCatalog.checkAccess.useQuery(
     { organizationId: organization?.id ?? "" },
@@ -114,25 +121,33 @@ export default function VendorRiskPage() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-semibold">{t("title")}</h1>
-          <p className="text-sm text-muted-foreground">
-            {t("subtitle")}
-          </p>
-        </div>
-        {canWrite && (
-          <Link href="/governance/vendors/new" className="flex-none">
-            <Button className="w-full sm:w-auto">
-              <Plus className="w-4 h-4 sm:mr-2" />
-              <span className="hidden sm:inline">{t("addVendor")}</span>
-              <span className="sm:hidden">{tc("add")}</span>
-            </Button>
-          </Link>
-        )}
-      </div>
+      <PageHeader
+        title={dueDiligence ? tg("views.dueDiligence") : t("title")}
+        description={dueDiligence ? tg("views.dueDiligenceHint") : t("subtitle")}
+        actions={
+          canWrite && (
+            <Link href="/governance/vendors/new">
+              <Button>
+                <Plus className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">{t("addVendor")}</span>
+                <span className="sm:hidden">{tc("add")}</span>
+              </Button>
+            </Link>
+          )
+        }
+      />
 
+      {dueDiligence ? (
+        <DueDiligenceView
+          vendors={vendors}
+          loading={vendorsLoading && !vendorsPages}
+          canWrite={canWrite}
+          hasNextPage={!!hasNextPage}
+          fetchNextPage={() => void fetchNextPage()}
+          isFetchingNextPage={isFetchingNextPage}
+        />
+      ) : (
+      <>
       {/* Stats Grid */}
       <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
         <Card>
@@ -425,6 +440,8 @@ export default function VendorRiskPage() {
           )}
         </TabsContent>
       </Tabs>
+      </>
+      )}
 
       {upgradeModalOpen && organization && (
         <EnableFeatureModal
@@ -437,5 +454,90 @@ export default function VendorRiskPage() {
         />
       )}
     </div>
+  );
+}
+
+/**
+ * The "Vendor checks" view (`?view=due-diligence`): each vendor with whether
+ * a completed review exists, each card opening the vendor's assessments tab.
+ */
+function DueDiligenceView({
+  vendors,
+  loading,
+  canWrite,
+  hasNextPage,
+  fetchNextPage,
+  isFetchingNextPage,
+}: {
+  vendors: { id: string; name: string; assessments?: { id: string }[]; _count?: { assessments: number } }[];
+  loading: boolean;
+  canWrite: boolean;
+  hasNextPage: boolean;
+  fetchNextPage: () => void;
+  isFetchingNextPage: boolean;
+}) {
+  const t = useTranslations("vendors");
+  const tg = useTranslations("guided");
+  const tc = useTranslations("common");
+
+  if (loading) return <ListPageSkeleton />;
+  if (vendors.length === 0) {
+    return (
+      <EmptyStep
+        action={
+          canWrite && (
+            <Link href="/governance/vendors/new">
+              <Button>
+                <Plus className="w-4 h-4 mr-2" />
+                {tg("emptyStep.vendorChecksAction")}
+              </Button>
+            </Link>
+          )
+        }
+      >
+        {tg("emptyStep.vendorChecks")}
+      </EmptyStep>
+    );
+  }
+  return (
+    <>
+      <ul className="grid gap-3 grid-cols-1 sm:grid-cols-2">
+        {vendors.map((vendor) => {
+          const reviewed = (vendor.assessments?.length ?? 0) > 0;
+          return (
+            <li key={vendor.id}>
+              <Link
+                href={`/governance/vendors/${vendor.id}?tab=assessments`}
+                className="flex min-h-11 items-center justify-between gap-3 rounded-xl border border-border bg-card p-4 hover:border-primary/50 motion-safe:transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <span className="flex min-w-0 items-center gap-3">
+                  <Building2 className="w-4 h-4 shrink-0 text-primary" aria-hidden="true" />
+                  <span className="min-w-0">
+                    <span className="block truncate font-medium">{vendor.name}</span>
+                    <span className="block text-xs text-muted-foreground">
+                      {t("assessmentsCount", { count: vendor._count?.assessments ?? 0 })}
+                    </span>
+                  </span>
+                </span>
+                <Badge
+                  variant="outline"
+                  className={`shrink-0 text-xs ${reviewed ? STATUS_OUTLINE.good : STATUS_OUTLINE.warning}`}
+                >
+                  {reviewed ? tg("views.reviewed") : tg("views.notReviewed")}
+                </Badge>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+      {hasNextPage && (
+        <div className="flex justify-center">
+          <Button variant="outline" onClick={fetchNextPage} disabled={isFetchingNextPage}>
+            {isFetchingNextPage && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
+            {tc("loadMore")}
+          </Button>
+        </div>
+      )}
+    </>
   );
 }

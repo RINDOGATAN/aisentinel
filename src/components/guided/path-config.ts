@@ -29,7 +29,6 @@ import {
   HeartPulse,
   History,
   KeyRound,
-  LayoutGrid,
   Landmark,
   Network,
   Scale,
@@ -166,18 +165,9 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
                 ? "started"
                 : "todo",
         },
-        {
-          id: "frameworks",
-          href: "/governance/compliance",
-          icon: Scale,
-          rule: "Done when jurisdictions are declared and the frameworks are mapped to at least one system. Started when one of the two is true.",
-          status: (c) =>
-            c.jurisdictions > 0 && c.mappings > 0
-              ? "done"
-              : c.jurisdictions > 0 || c.mappings > 0
-                ? "started"
-                : "todo",
-        },
+        // Round 3: "Frameworks and scope" was merged into this step. It led to
+        // the compliance matrix, which is also the evidence step (5.3), and
+        // the scope it asked for (jurisdictions) is what this step asks.
         {
           id: "obligations",
           href: "/governance/obligations",
@@ -295,7 +285,9 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
         },
         {
           id: "vendorDueDiligence",
-          href: "/governance/vendors",
+          // The vendor list opened on its due-diligence view: each vendor's
+          // review state, each card opening the vendor's assessments tab.
+          href: "/governance/vendors?view=due-diligence",
           icon: FileCheck2,
           rule: "Done when every vendor has a completed due-diligence assessment. Started when any vendor assessment exists.",
           status: (c) =>
@@ -329,7 +321,9 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
         },
         {
           id: "transparency",
-          href: "/governance/ai-registry",
+          // The registry opened on its transparency view: which systems have
+          // a profile, each card opening the system's Transparency tab.
+          href: "/governance/ai-registry?view=transparency",
           icon: Megaphone,
           rule: "Done when every registered system has a transparency (Art. 50) profile. Started when some have one. The profile is a tab on each system's page.",
           status: (c) =>
@@ -417,13 +411,10 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
       ],
     },
   ],
-  library: ({ stripeEnabled, clientMode }) => [
+  // "All clients" (the portfolio, at the top of the menu) is the one client
+  // view in Guided; the older client cards are reachable only by address.
+  library: ({ stripeEnabled }) => [
     { id: "program", href: "/governance/program", icon: Network },
-    // In Guided, "All clients" is the portfolio; the older client cards stay
-    // reachable here for an account that works for clients.
-    ...(clientMode
-      ? [{ id: "clientCards", href: "/governance/clients", icon: LayoutGrid }]
-      : []),
     { id: "vendorCatalog", href: "/governance/vendor-catalog", icon: Database },
     { id: "skills", href: "/governance/skills", icon: KeyRound },
     ...(stripeEnabled

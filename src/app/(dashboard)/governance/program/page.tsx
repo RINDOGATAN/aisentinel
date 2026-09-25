@@ -13,12 +13,18 @@ import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Download, History, Loader2, Sparkles, Network, Package, ShieldCheck } from "lucide-react";
+import { History, Loader2, Sparkles, Network, ShieldCheck } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { ProgramMap } from "@/components/governance/program/ProgramMap";
 import { NistRadar } from "@/components/governance/program/NistRadar";
-import { PremiumDeliverable } from "@/components/governance/premium-deliverable";
+import {
+  DeliverablesMenu,
+  LicenceNote,
+  type Deliverable,
+} from "@/components/governance/premium-deliverable";
+import { PageHeader } from "@/components/governance/page-header";
+import { useSkin } from "@/components/guided/skin-context";
 import {
   ScorecardTiles,
   DimensionGrid,
@@ -32,6 +38,7 @@ export default function ProgramPage() {
   const t = useTranslations("program.page");
   const orgId = organization?.id ?? "";
   const locale = useLocale() === "es" ? "es" : "en";
+  const guided = useSkin().skin === "guided";
 
   const { data: graph, isLoading: graphLoading } =
     trpc.program.getProgramGraph.useQuery(
@@ -53,51 +60,57 @@ export default function ProgramPage() {
   }
 
   const isEmpty = (scorecard?.snapshot.systems.total ?? 0) === 0;
+  const deliverables: Deliverable[] = [
+    {
+      feature: "program-report",
+      href: `/api/export/governance-program?organizationId=${orgId}&locale=${locale}`,
+      label: t("exportPdf"),
+    },
+    {
+      feature: "program-pack",
+      href: `/api/export/program-pack?organizationId=${orgId}&locale=${locale}`,
+      label: t("exportPack"),
+    },
+  ];
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-semibold flex items-center gap-2">
-            <Network className="w-6 h-6 text-primary" />
-            {t("title")}
-          </h1>
-          <p className="text-sm text-muted-foreground mt-1">{t("subtitle")}</p>
-        </div>
-        {!isEmpty && (
-          <div className="flex flex-wrap gap-2">
-            <Link href="/governance/review">
-              <Button variant="outline">
-                <ShieldCheck className="w-4 h-4 mr-2" />
-                {t("reviewLink")}
-              </Button>
-            </Link>
-            <Link href="/governance/program/history">
-              <Button variant="outline">
-                <History className="w-4 h-4 mr-2" />
-                {t("historyLink")}
-              </Button>
-            </Link>
-            {/* Both are premium deliverables where the showcase is open, and
-                included on the kit and on the hosted pilot; the component
-                shows which, rather than offering a download that would fail. */}
-            <PremiumDeliverable
-              organizationId={orgId}
-              feature="program-report"
-              href={`/api/export/governance-program?organizationId=${orgId}&locale=${locale}`}
-              label={t("exportPdf")}
-            />
-            <PremiumDeliverable
-              organizationId={orgId}
-              feature="program-pack"
-              href={`/api/export/program-pack?organizationId=${orgId}&locale=${locale}`}
-              label={t("exportPack")}
-              variant="default"
-            />
-          </div>
-        )}
-      </div>
+      {/* Header: places to go, then the downloads in one menu. Both downloads
+          are premium deliverables where the showcase is open, and included on
+          the kit and on the hosted pilot; a locked one keeps its place with a
+          lock, and the reason is said once, under the header. In Guided the
+          review queue is a step of the menu, so it is not repeated here. */}
+      <PageHeader
+        icon={Network}
+        title={t("title")}
+        description={t("subtitle")}
+        actions={
+          !isEmpty && (
+            <>
+              {!guided && (
+                <Link href="/governance/review">
+                  <Button variant="outline" size="icon" aria-label={t("reviewLink")} className="sm:size-auto sm:px-4 sm:py-2">
+                    <ShieldCheck className="w-4 h-4 sm:mr-2" />
+                    <span className="hidden sm:inline">{t("reviewLink")}</span>
+                  </Button>
+                </Link>
+              )}
+              <Link href="/governance/program/history">
+                <Button variant="outline" size="icon" aria-label={t("historyLink")} className="sm:size-auto sm:px-4 sm:py-2">
+                  <History className="w-4 h-4 sm:mr-2" />
+                  <span className="hidden sm:inline">{t("historyLink")}</span>
+                </Button>
+              </Link>
+              <DeliverablesMenu organizationId={orgId} items={deliverables} label={t("download")} />
+            </>
+          )
+        }
+        note={
+          !isEmpty && (
+            <LicenceNote organizationId={orgId} features={deliverables.map((d) => d.feature)} />
+          )
+        }
+      />
 
       {/* Empty state */}
       {isEmpty ? (

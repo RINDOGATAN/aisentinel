@@ -30,6 +30,7 @@ import {
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useExportDownload } from "@/components/governance/use-export-download";
+import { PageHeader } from "@/components/governance/page-header";
 
 const READER_ROLES = ["OWNER", "ADMIN", "AI_OFFICER"];
 const ALL = "ALL";
@@ -121,27 +122,25 @@ export default function AuditTrailPage() {
 
   return (
     <div className="space-y-6 max-w-5xl">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-semibold flex items-center gap-2">
-            <ScrollText className="w-6 h-6 text-primary" />
-            {t("title")}
-          </h1>
-          <p className="text-sm text-muted-foreground mt-1 max-w-2xl">{t("subtitle")}</p>
-        </div>
-        <Button
-          variant="outline"
-          disabled={downloadPending()}
-          onClick={() => void download(exportHref())}
-        >
-          {downloadPending() ? (
-            <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />
-          ) : (
-            <Download className="w-4 h-4 mr-1.5" />
-          )}
-          {t("export")}
-        </Button>
-      </div>
+      <PageHeader
+        icon={ScrollText}
+        title={t("title")}
+        description={t("subtitle")}
+        actions={
+          <Button
+            variant="outline"
+            disabled={downloadPending()}
+            onClick={() => void download(exportHref())}
+          >
+            {downloadPending() ? (
+              <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />
+            ) : (
+              <Download className="w-4 h-4 mr-1.5" />
+            )}
+            {t("export")}
+          </Button>
+        }
+      />
 
       <Card>
         <CardContent className="p-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">

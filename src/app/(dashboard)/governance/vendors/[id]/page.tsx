@@ -3,7 +3,7 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -109,6 +109,9 @@ export default function VendorDetailPage() {
         ? t("assessmentStatusExpired")
         : statusLabel(status);
   const params = useParams();
+  const requestedTab = useSearchParams().get("tab");
+  const initialTab =
+    requestedTab === "assessments" || requestedTab === "supply-chain" ? requestedTab : "systems";
   const id = params.id as string;
   const { organization, canWrite } = useOrganization();
   const [assessmentDialogOpen, setAssessmentDialogOpen] = useState(false);
@@ -417,7 +420,8 @@ export default function VendorDetailPage() {
       </div>
 
       {/* Tabs */}
-      <Tabs defaultValue="systems">
+      {/* `?tab=assessments` (from the "Vendor checks" view) opens on the reviews. */}
+      <Tabs defaultValue={initialTab}>
         <TabsList className="w-full justify-start overflow-x-auto">
           <TabsTrigger value="systems" className="text-xs sm:text-sm">
             {t("tabLinkedSystems", { count: vendor.systems?.length ?? 0 })}

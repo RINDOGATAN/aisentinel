@@ -61,6 +61,8 @@ export const aiSystemRouter = createTRPCRouter({
         orderBy: { updatedAt: "desc" },
         include: {
           riskClassification: { select: { riskLevel: true } },
+          // Whether the Art. 50 record exists: the registry's transparency view.
+          transparencyProfile: { select: { id: true } },
           _count: { select: { models: true, dataSources: true, assessments: true } },
         },
       });

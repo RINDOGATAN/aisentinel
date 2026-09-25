@@ -4,6 +4,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { PageHeader } from "@/components/governance/page-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -116,52 +117,49 @@ export default function AssessmentsPage() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-semibold">{t("title")}</h1>
-          <p className="text-sm text-muted-foreground">
-            {t("description")}
-          </p>
-        </div>
-        {/* On a phone the two secondary actions are icons and the primary one
-            takes what is left; if the row still ran short it would wrap. */}
-        <div className="flex flex-wrap gap-2 sm:flex-nowrap sm:flex-none">
-          <Button
-            variant="outline"
-            size="icon"
-            aria-label={tc("export")}
-            className="shrink-0 sm:size-auto sm:px-4 sm:py-2"
-            onClick={() =>
-              organization?.id &&
-              void download(`/api/export/assessment-portfolio?organizationId=${organization.id}`)
-            }
-          >
-            <Download className="w-4 h-4 sm:mr-2" />
-            <span className="hidden sm:inline">{tc("export")}</span>
-          </Button>
-          <Link href="/governance/assessments/templates">
+      {/* A place to go (templates), a download, then the main action. On a
+          phone the first two are icons and the main one takes what is left. */}
+      <PageHeader
+        title={t("title")}
+        description={t("description")}
+        actions={
+          <>
+            <Link href="/governance/assessments/templates">
+              <Button
+                variant="outline"
+                size="icon"
+                aria-label={t("templatesButton")}
+                className="sm:size-auto sm:px-4 sm:py-2"
+              >
+                <ClipboardList className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">{t("templatesButton")}</span>
+              </Button>
+            </Link>
             <Button
               variant="outline"
               size="icon"
-              aria-label={t("templatesButton")}
-              className="shrink-0 sm:size-auto sm:px-4 sm:py-2"
+              aria-label={tc("export")}
+              className="sm:size-auto sm:px-4 sm:py-2"
+              onClick={() =>
+                organization?.id &&
+                void download(`/api/export/assessment-portfolio?organizationId=${organization.id}`)
+              }
             >
-              <ClipboardList className="w-4 h-4 sm:mr-2" />
-              <span className="hidden sm:inline">{t("templatesButton")}</span>
+              <Download className="w-4 h-4 sm:mr-2" />
+              <span className="hidden sm:inline">{tc("export")}</span>
             </Button>
-          </Link>
-          {canWrite && (
-            <Link href="/governance/assessments/new" className="flex-1 min-w-0 sm:flex-none">
-              <Button className="w-full sm:w-auto">
-                <Plus className="w-4 h-4 sm:mr-2" />
-                <span className="hidden sm:inline">{t("newAssessment")}</span>
-                <span className="sm:hidden">{tc("create")}</span>
-              </Button>
-            </Link>
-          )}
-        </div>
-      </div>
+            {canWrite && (
+              <Link href="/governance/assessments/new">
+                <Button>
+                  <Plus className="w-4 h-4 sm:mr-2" />
+                  <span className="hidden sm:inline">{t("newAssessment")}</span>
+                  <span className="sm:hidden">{tc("create")}</span>
+                </Button>
+              </Link>
+            )}
+          </>
+        }
+      />
 
       {/* Stats Grid */}
       <div className="grid gap-3 grid-cols-2 lg:grid-cols-5">

@@ -46,6 +46,9 @@ export const vendorRouter = createTRPCRouter({
         orderBy: { updatedAt: "desc" },
         include: {
           _count: { select: { assessments: true, systems: true } },
+          // One completed review, if any: the vendor-checks view marks each
+          // vendor as reviewed or not (the same test as the program path).
+          assessments: { where: { status: "COMPLETED" }, select: { id: true }, take: 1 },
         },
       });
 

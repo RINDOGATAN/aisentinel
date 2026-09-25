@@ -21,6 +21,7 @@ import {
   currentLibraryId,
   currentStepId,
   isCounted,
+  overallPercent,
   stageOfStep,
   stageProgress,
   type PathConfig,
@@ -29,7 +30,7 @@ import {
   type PathStep,
   type StepStatus,
 } from "./path";
-import { ProgressRing } from "./progress-ring";
+import { ProgressBar, ProgressRing } from "./progress-ring";
 
 export type Translate = (key: string, values?: Record<string, string | number>) => string;
 
@@ -37,6 +38,8 @@ interface PathMenuProps<C> {
   config: PathConfig<C>;
   statuses: PathStatuses | null;
   pathname: string;
+  /** The address's query (`view=due-diligence`): some steps are views of a page. */
+  search?: string;
   stripeEnabled: boolean;
   /** The account works for client organisations (the library shows the client cards). */
   clientMode?: boolean;
@@ -69,6 +72,7 @@ export function PathMenu<C>({
   config,
   statuses,
   pathname,
+  search = "",
   stripeEnabled,
   clientMode = false,
   variant,
@@ -78,7 +82,8 @@ export function PathMenu<C>({
   overview,
 }: PathMenuProps<C>) {
   const library = config.library({ stripeEnabled, clientMode });
-  const currentStep = currentStepId(config, pathname);
+  const currentStep = currentStepId(config, pathname, search);
+  const percent = statuses ? overallPercent(config, statuses) : null;
   const currentStage = stageOfStep(config, currentStep);
   const currentLibrary = currentStep ? null : currentLibraryId(library, pathname);
   const onOverview = pathname === overview.href;
@@ -108,6 +113,12 @@ export function PathMenu<C>({
   if (collapsed && !sheet) {
     return (
       <nav aria-label={t("navLabel")} className="flex flex-col items-center gap-1 py-2">
+        <span
+          className="text-[11px] font-semibold tabular-nums text-primary"
+          title={percent === null ? t("loading") : t("overall", { percent })}
+        >
+          {percent === null ? " " : `${percent}%`}
+        </span>
         <IconLink
           href={overview.href}
           icon={overview.icon}
@@ -124,7 +135,12 @@ export function PathMenu<C>({
           }`;
           const active = stage.id === currentStage?.id;
           const ring = (
-            <ProgressRing value={progress?.done ?? null} total={progress?.total ?? 0} size={32}>
+            <ProgressRing
+              value={progress?.done ?? null}
+              total={progress?.total ?? 0}
+              size={32}
+              complete={progress?.state === "done"}
+            >
               {index + 1}
             </ProgressRing>
           );
@@ -163,6 +179,24 @@ export function PathMenu<C>({
 
   return (
     <nav aria-label={t("navLabel")} className="flex flex-col gap-1">
+      {/* The whole program at a glance: always one line and a bar tall, so
+          nothing moves when the figure arrives. */}
+      <div className="px-3 pb-2 flex flex-col gap-1.5" aria-busy={percent === null}>
+        <span className="flex items-baseline justify-between gap-2 text-sm">
+          <span className="font-medium text-foreground">{t("overallLabel")}</span>
+          <span className="tabular-nums text-primary font-semibold">
+            {percent === null ? (
+              <>
+                <span aria-hidden="true">&nbsp;</span>
+                <span className="sr-only">{t("loading")}</span>
+              </>
+            ) : (
+              `${percent}%`
+            )}
+          </span>
+        </span>
+        <ProgressBar value={percent} total={100} />
+      </div>
       <Link
         href={overview.href}
         onClick={onNavigate}
@@ -195,7 +229,11 @@ export function PathMenu<C>({
                   FOCUS,
                 )}
               >
-                <ProgressRing value={progress?.done ?? null} total={progress?.total ?? 0}>
+                <ProgressRing
+                  value={progress?.done ?? null}
+                  total={progress?.total ?? 0}
+                  complete={progress?.state === "done"}
+                >
                   {index + 1}
                 </ProgressRing>
                 <span className="flex min-w-0 flex-1 flex-col">

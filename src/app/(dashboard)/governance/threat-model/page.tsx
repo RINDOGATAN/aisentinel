@@ -11,6 +11,7 @@
  */
 
 import Link from "next/link";
+import { PageHeader } from "@/components/governance/page-header";
 import { useLocale, useTranslations } from "next-intl";
 import { Loader2, Plus, ShieldAlert } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -37,23 +38,21 @@ export default function ThreatModelListPage() {
 
   return (
     <div className="space-y-6 max-w-4xl">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-semibold flex items-center gap-2">
-            <ShieldAlert className="w-6 h-6 text-primary" />
-            {t("title")}
-          </h1>
-          <p className="text-sm text-muted-foreground mt-1 max-w-2xl">{t("subtitle")}</p>
-        </div>
-        {canWrite && (
-          <Button asChild>
-            <Link href="/governance/threat-model/new">
-              <Plus className="w-4 h-4 mr-1.5" />
-              {t("start")}
-            </Link>
-          </Button>
-        )}
-      </div>
+      <PageHeader
+        icon={ShieldAlert}
+        title={t("title")}
+        description={t("subtitle")}
+        actions={
+          canWrite && (
+            <Button asChild>
+              <Link href="/governance/threat-model/new">
+                <Plus className="w-4 h-4 mr-1.5" />
+                {t("start")}
+              </Link>
+            </Button>
+          )
+        }
+      />
 
       <Card className="border-primary/30 bg-primary/5">
         <CardContent className="p-4 space-y-2">

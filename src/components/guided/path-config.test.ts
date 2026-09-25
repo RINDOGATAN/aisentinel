@@ -19,10 +19,15 @@ import {
   evaluatePath,
   isCounted,
   nextStep,
+  overallPercent,
   overallProgress,
   stageOfStep,
   stageProgress,
+  stageToCelebrate,
+  stepAndFollowing,
+  stepSequence,
   type PathStatuses,
+  type SequenceEntry,
 } from "./path";
 
 const PATH = AI_SENTINEL_PATH;
@@ -134,25 +139,49 @@ describe("the shape of the path", () => {
     expect(PATH.library({ stripeEnabled: true }).some((i) => i.id === "billing")).toBe(true);
   });
 
-  it("offers the older client cards only to an account that works for clients", () => {
-    const cards = (clientMode: boolean) =>
-      PATH.library({ stripeEnabled: false, clientMode }).find((i) => i.id === "clientCards");
-    expect(cards(false)).toBeUndefined();
-    expect(cards(true)?.href).toBe("/governance/clients");
+  it("never offers the older client cards: 'All clients' is the one client view", () => {
+    for (const clientMode of [false, true]) {
+      const hrefs = PATH.library({ stripeEnabled: true, clientMode }).map((i) => i.href);
+      expect(hrefs).not.toContain("/governance/clients");
+    }
+  });
+
+  it("gives every step its own destination, and each destination marks its own step", () => {
+    const withPage = steps.filter((s) => s.href);
+    const hrefs = withPage.map((s) => s.href);
+    expect(new Set(hrefs).size, hrefs.join(", ")).toBe(hrefs.length);
+    // A click on a step lands on a place that the menu marks as that step,
+    // never as another one: two steps can never share a screen.
+    for (const s of withPage) {
+      const [path, query = ""] = s.href!.split("?");
+      expect(currentStepId(PATH, path, query), s.id).toBe(s.id);
+    }
+  });
+
+  it("keeps the library free of any step's destination", () => {
+    const stepPaths = new Set(steps.flatMap((s) => (s.href ? [s.href.split("?")[0]] : [])));
+    for (const item of PATH.library({ stripeEnabled: true, clientMode: true })) {
+      expect(stepPaths.has(item.href), item.id).toBe(false);
+    }
   });
 
   it("has every label in English and Spanish", () => {
     for (const messages of [en, es]) {
       const g = messages.guided as unknown as {
         stages: Record<string, string>;
-        steps: Record<string, { label: string; why: string }>;
+        steps: Record<string, { label: string; why: string; do: string }>;
         library: Record<string, string>;
       };
       for (const stage of PATH.stages) expect(g.stages[stage.id], stage.id).toBeTruthy();
       for (const s of steps) {
         expect(g.steps[s.id]?.label, s.id).toBeTruthy();
         expect(g.steps[s.id]?.why, s.id).toBeTruthy();
+        // The band's "what to do here": one sentence, short enough for a slim band.
+        expect(g.steps[s.id]?.do, s.id).toBeTruthy();
+        expect(g.steps[s.id].do.length, s.id).toBeLessThanOrEqual(140);
       }
+      // Keys for steps that no longer exist are not left behind.
+      expect(Object.keys(g.steps).sort()).toEqual(steps.map((s) => s.id).sort());
       for (const item of PATH.library({ stripeEnabled: true, clientMode: true })) {
         expect(g.library[item.id], item.id).toBeTruthy();
       }
@@ -196,12 +225,6 @@ describe("the done rules", () => {
     expect(statusOf("quickstart", { systems: 1, vendors: 1, policies: 1 })).toBe("done");
     const s = evaluatePath(PATH, { ...EMPTY_PATH_COUNTS, systems: 8, vendors: 5, policies: 4 });
     expect(nextStep(PATH, s)?.step.id).not.toBe("quickstart");
-  });
-
-  it("frameworks: jurisdictions and mappings both needed", () => {
-    expect(statusOf("frameworks", { jurisdictions: 1, mappings: 3 })).toBe("done");
-    expect(statusOf("frameworks", { jurisdictions: 1 })).toBe("started");
-    expect(statusOf("frameworks", { mappings: 3 })).toBe("started");
   });
 
   it("obligations: a declared jurisdiction starts it, a screening answer finishes it", () => {
@@ -322,7 +345,7 @@ describe("the done rules", () => {
 describe("progress and the next step", () => {
   it("counts a stage as done steps over counted steps", () => {
     const s = evaluatePath(PATH, { ...EMPTY_PATH_COUNTS, quickstartCompleted: true, jurisdictions: 1 });
-    expect(stageProgress(PATH.stages[0], s)).toEqual({ done: 1, total: 3, state: "started" });
+    expect(stageProgress(PATH.stages[0], s)).toEqual({ done: 1, total: 2, state: "started" });
     // Two of the three people steps are coming: one counted step.
     expect(stageProgress(PATH.stages[1], s)).toEqual({ done: 0, total: 1, state: "todo" });
     expect(stageProgress(PATH.stages[2], s)).toEqual({ done: 0, total: 3, state: "todo" });
@@ -354,15 +377,113 @@ describe("progress and the next step", () => {
     expect(overallProgress(PATH, evaluatePath(PATH, COMPLETE))).toEqual({ done: counted, total: counted });
     expect(overallProgress(PATH, evaluatePath(PATH, EMPTY_PATH_COUNTS)).done).toBe(0);
   });
+
+  it("gives the overall percentage as done over counted steps, rounded", () => {
+    const counted = steps.filter(isCounted);
+    expect(overallPercent(PATH, evaluatePath(PATH, EMPTY_PATH_COUNTS))).toBe(0);
+    expect(overallPercent(PATH, evaluatePath(PATH, COMPLETE))).toBe(100);
+    // Coming and optional steps never count: marking them does not move it.
+    const onlyUncounted: PathStatuses = { ...evaluatePath(PATH, EMPTY_PATH_COUNTS), audit: "done", proceedings: "done" };
+    expect(overallPercent(PATH, onlyUncounted)).toBe(0);
+    // Each counted step done moves it by the same share, rounded to a whole number.
+    for (let n = 1; n <= counted.length; n++) {
+      const statuses: PathStatuses = evaluatePath(PATH, EMPTY_PATH_COUNTS);
+      for (const s of counted.slice(0, n)) statuses[s.id] = "done";
+      expect(overallPercent(PATH, statuses), `${n} done`).toBe(Math.round((n / counted.length) * 100));
+    }
+    // A step started but not done counts nothing.
+    expect(overallPercent(PATH, { ...evaluatePath(PATH, EMPTY_PATH_COUNTS), systems: "started" })).toBe(0);
+  });
+});
+
+describe("the 'Next step' band", () => {
+  const walk = stepSequence(PATH);
+
+  it("walks every step that has a page, in path order, skipping only the coming ones", () => {
+    const expected = PATH.stages.flatMap((stage) =>
+      stage.steps.filter((s) => s.href && !s.coming).map((s) => s.id),
+    );
+    expect(walk.map((e) => e.step.id)).toEqual(expected);
+    expect(walk.some((e) => e.step.coming)).toBe(false);
+  });
+
+  it("numbers each step by its stage and its place in the stage", () => {
+    const number = (id: string) => walk.find((e) => e.step.id === id)?.number;
+    expect(number("quickstart")).toBe("1.1");
+    expect(number("systems")).toBe("3.1");
+    expect(number("vendorDueDiligence")).toBe("4.4");
+    expect(number("board")).toBe("6.4");
+  });
+
+  it("leads from each step to the next one, so one button walks the whole path", () => {
+    // Follow "Next step" from the first page to the end, as a person would.
+    const visited: string[] = [];
+    let id: string | null = walk[0].step.id;
+    while (id) {
+      visited.push(id);
+      const place: ReturnType<typeof stepAndFollowing<PathCounts>> = stepAndFollowing(PATH, id);
+      expect(place, id).not.toBeNull();
+      const following: SequenceEntry<PathCounts> | null = place!.following;
+      if (following) {
+        // The link lands on a page the menu marks as that very step.
+        const [path, query = ""] = following.step.href!.split("?");
+        expect(currentStepId(PATH, path, query)).toBe(following.step.id);
+      }
+      id = following?.step.id ?? null;
+    }
+    expect(visited).toEqual(walk.map((e) => e.step.id));
+    expect(stepAndFollowing(PATH, walk[walk.length - 1].step.id)?.following).toBeNull();
+  });
+
+  it("shows no band off the path", () => {
+    expect(stepAndFollowing(PATH, null)).toBeNull();
+    expect(stepAndFollowing(PATH, currentStepId(PATH, "/governance/settings"))).toBeNull();
+    expect(stepAndFollowing(PATH, "prohibited")).toBeNull();
+  });
+});
+
+describe("the stage-complete message", () => {
+  const withStages = (ids: string[]): PathStatuses => {
+    const statuses = evaluatePath(PATH, EMPTY_PATH_COUNTS);
+    for (const stage of PATH.stages) {
+      if (!ids.includes(stage.id)) continue;
+      for (const s of stage.steps.filter(isCounted)) statuses[s.id] = "done";
+    }
+    return statuses;
+  };
+
+  it("announces nothing the first time, and remembers what is already done", () => {
+    const r = stageToCelebrate(PATH, withStages(["setup", "people"]), null);
+    expect(r.celebrate).toBeNull();
+    expect(r.remember).toEqual(["setup", "people"]);
+  });
+
+  it("announces a stage once, when it is first seen done", () => {
+    const first = stageToCelebrate(PATH, withStages(["setup", "inventory"]), ["setup"]);
+    expect(first.celebrate).toBe(2);
+    const again = stageToCelebrate(PATH, withStages(["setup", "inventory"]), first.remember);
+    expect(again.celebrate).toBeNull();
+  });
+
+  it("keeps a stage announced even if it later goes back to in progress", () => {
+    const r = stageToCelebrate(PATH, withStages([]), ["setup"]);
+    expect(r.remember).toContain("setup");
+    expect(r.celebrate).toBeNull();
+  });
 });
 
 describe("the current page", () => {
-  it("marks exactly one step, the first in path order where a page serves two", () => {
+  it("marks exactly one step, telling a page's views apart by their query", () => {
     expect(currentStepId(PATH, "/governance/quickstart")).toBe("quickstart");
     expect(currentStepId(PATH, "/governance/vendors")).toBe("vendors");
+    expect(currentStepId(PATH, "/governance/vendors", "view=due-diligence")).toBe("vendorDueDiligence");
+    expect(currentStepId(PATH, "/governance/vendors", "view=due-diligence&x=1")).toBe("vendorDueDiligence");
+    expect(currentStepId(PATH, "/governance/vendors", "view=other")).toBe("vendors");
     expect(currentStepId(PATH, "/governance/vendors/abc")).toBe("vendors");
+    expect(currentStepId(PATH, "/governance/ai-registry")).toBe("systems");
+    expect(currentStepId(PATH, "/governance/ai-registry", "view=transparency")).toBe("transparency");
     expect(currentStepId(PATH, "/governance/ai-registry/new")).toBe("systems");
-    expect(currentStepId(PATH, "/governance/compliance")).toBe("frameworks");
+    expect(currentStepId(PATH, "/governance/compliance")).toBe("evidence");
     expect(currentStepId(PATH, "/governance/audit")).toBe("audit");
   });
 

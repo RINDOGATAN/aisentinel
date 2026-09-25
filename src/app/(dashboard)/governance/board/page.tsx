@@ -30,6 +30,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { StatusNote } from "@/components/ui/status-note";
+import { PageHeader } from "@/components/governance/page-header";
+import { EmptyStep } from "@/components/guided/empty-step";
+import { useSkin } from "@/components/guided/skin-context";
 
 const AUDIENCES = [
   "BOARD",
@@ -42,6 +45,8 @@ const AUDIENCES = [
 
 export default function BoardReportingPage() {
   const t = useTranslations("boardReports");
+  const tg = useTranslations("guided");
+  const guided = useSkin().skin === "guided";
   const { organization, canWrite } = useOrganization();
   const orgId = organization?.id ?? "";
   const utils = trpc.useUtils();
@@ -83,21 +88,19 @@ export default function BoardReportingPage() {
 
   return (
     <div className="space-y-6 max-w-3xl">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-semibold flex items-center gap-2">
-            <Landmark className="w-6 h-6 text-primary" />
-            {t("title")}
-          </h1>
-          <p className="text-sm text-muted-foreground mt-1 max-w-2xl">{t("subtitle")}</p>
-        </div>
-        {canWrite && !open && (
-          <Button onClick={() => setOpen(true)}>
-            <Plus className="w-4 h-4 mr-1.5" />
-            {t("record")}
-          </Button>
-        )}
-      </div>
+      <PageHeader
+        icon={Landmark}
+        title={t("title")}
+        description={t("subtitle")}
+        actions={
+          canWrite && !open && (
+            <Button onClick={() => setOpen(true)}>
+              <Plus className="w-4 h-4 mr-1.5" />
+              {t("record")}
+            </Button>
+          )
+        }
+      />
 
       {data && (
         <Card>
@@ -231,6 +234,19 @@ export default function BoardReportingPage() {
 
       {isLoading ? (
         <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+      ) : guided && !open && (data?.reports ?? []).length === 0 ? (
+        <EmptyStep
+          action={
+            canWrite && (
+              <Button onClick={() => setOpen(true)}>
+                <Plus className="w-4 h-4 mr-1.5" />
+                {tg("emptyStep.boardAction")}
+              </Button>
+            )
+          }
+        >
+          {tg("emptyStep.board")}
+        </EmptyStep>
       ) : (
         <div className="space-y-2">
           {(data?.reports ?? []).map((r) => (

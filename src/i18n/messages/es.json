@@ -4085,7 +4085,8 @@
       "reviewLink": "Cola de revisión",
       "historyLink": "Historial",
       "historyFootnote": "Se captura una instantánea automáticamente cada vez que se exporta el PDF del programa. Las puntuaciones se calculan con la versión del modelo de madurez registrada en cada instantánea.",
-      "exportPack": "Descargar paquete del programa (ZIP)"
+      "exportPack": "Descargar paquete del programa (ZIP)",
+      "download": "Descargar"
     },
     "tiles": {
       "overall": "Madurez global",
@@ -5496,96 +5497,112 @@
     "steps": {
       "quickstart": {
         "label": "Inicio rápido",
-        "why": "Fija tus jurisdicciones, aplica una plantilla sectorial e importa tus proveedores desde el catálogo, para que el resto del programa empiece ya completado."
-      },
-      "frameworks": {
-        "label": "Marcos y alcance",
-        "why": "Los marcos que aplican dependen de dónde operas. Declara tus jurisdicciones y vincula los marcos a tus sistemas."
+        "why": "Fija tus jurisdicciones, aplica una plantilla sectorial e importa tus proveedores desde el catálogo, para que el resto del programa empiece ya completado.",
+        "do": "Responde a unas pocas preguntas y se rellena por ti una primera versión de tu programa."
       },
       "obligations": {
-        "label": "Regímenes y obligaciones",
-        "why": "Responde al cribado de regímenes en Configuración para que las obligaciones y sus fechas sean las que te aplican."
+        "label": "Dónde trabajas y tus normas",
+        "why": "Las normas que te aplican dependen de dónde trabajas. Indica dónde trabajas y responde al breve cribado de Configuración, para que las normas y sus fechas sean las que te aplican.",
+        "do": "Indica dónde trabajas y responde al breve cribado de Configuración. Después esta página muestra las normas que te aplican y sus fechas."
       },
       "policies": {
-        "label": "Política de IA y uso aceptable",
-        "why": "Una política de uso aceptable aprobada dice a todos qué herramientas de IA pueden usar y cómo."
+        "label": "Política de IA",
+        "why": "Una política de uso aceptable aprobada dice a todos qué herramientas de IA pueden usar y cómo.",
+        "do": "Redacta y aprueba la política que dice qué herramientas de IA se pueden usar y cómo."
       },
       "prohibited": {
-        "label": "Cribado de prácticas prohibidas",
-        "why": "Un cribado de cada uso frente a las prácticas que prohíbe el Reglamento de IA de la UE."
+        "label": "Revisión de usos prohibidos",
+        "why": "Una revisión de cada uso frente a las prácticas que prohíbe el Reglamento de IA de la UE.",
+        "do": "Comprueba que ningún uso de la IA sea de los que prohíbe la ley."
       },
       "literacy": {
-        "label": "Alfabetización en IA",
-        "why": "Un registro de la formación en IA que reciben quienes usan o supervisan la IA."
+        "label": "Formación en IA",
+        "why": "Un registro de la formación en IA que reciben quienes usan o supervisan la IA.",
+        "do": "Registra la formación en IA que reciben quienes usan o supervisan la IA."
       },
       "systems": {
-        "label": "Sistemas de IA",
-        "why": "Cada sistema necesita un registro y un responsable de negocio antes de poder clasificarlo."
+        "label": "Tus sistemas de IA",
+        "why": "Cada sistema necesita un registro y un responsable antes de poder fijar su riesgo.",
+        "do": "Registra cada sistema de IA que usa tu organización e indica quién es su responsable."
       },
       "shadowAi": {
-        "label": "IA en la sombra",
-        "why": "Registra las herramientas de IA que ya se usan sin aprobación y decide sobre cada una."
+        "label": "Herramientas de IA sin aprobar",
+        "why": "Registra las herramientas de IA que ya se usan sin aprobación y decide sobre cada una.",
+        "do": "Anota las herramientas de IA que se usan sin aprobación y decide sobre cada una."
       },
       "vendors": {
         "label": "Proveedores",
-        "why": "La mayor parte de la IA te llega a través de proveedores. Añádelos desde el catálogo de proveedores."
+        "why": "La mayor parte de la IA te llega a través de proveedores. Añádelos desde el catálogo de proveedores.",
+        "do": "Añade las empresas cuya IA usas. Con el catálogo de proveedores es rápido."
       },
       "classification": {
-        "label": "Clasificación de riesgos",
-        "why": "El nivel de riesgo de cada sistema decide qué obligaciones le aplican."
+        "label": "Nivel de riesgo",
+        "why": "El nivel de riesgo de cada sistema decide qué normas le aplican.",
+        "do": "Da a cada sistema de IA su nivel de riesgo. El nivel decide qué normas aplican."
       },
       "assessments": {
-        "label": "Evaluaciones de impacto y de riesgos",
-        "why": "Los sistemas de alto riesgo necesitan una evaluación de impacto aprobada."
+        "label": "Evaluaciones de impacto",
+        "why": "Los sistemas de alto riesgo necesitan una evaluación de impacto aprobada.",
+        "do": "Evalúa cada sistema de alto riesgo y haz que se apruebe la evaluación."
       },
       "threatModel": {
         "label": "Modelo de amenazas",
-        "why": "Anota qué puede fallar en los sistemas que construyes y cómo se detiene y se prueba cada riesgo."
+        "why": "Anota qué puede fallar en los sistemas que construyes y cómo se detiene y se prueba cada riesgo.",
+        "do": "Anota qué puede fallar en la IA que construyes y cómo se detiene y se prueba cada riesgo."
       },
       "vendorDueDiligence": {
-        "label": "Diligencia debida de proveedores",
-        "why": "Cada proveedor necesita una revisión de diligencia debida completada."
+        "label": "Revisión de proveedores",
+        "why": "Cada proveedor necesita una revisión completada.",
+        "do": "Revisa cada proveedor: ábrelo y completa su revisión."
       },
       "oversight": {
         "label": "Supervisión humana",
-        "why": "Los sistemas de alto riesgo necesitan una persona que pueda revisarlos, aprobarlos o detenerlos."
+        "why": "Los sistemas de alto riesgo necesitan una persona que pueda revisarlos, aprobarlos o detenerlos.",
+        "do": "Nombra a una persona que pueda revisar, aprobar o detener cada sistema de alto riesgo."
       },
       "transparency": {
-        "label": "Transparencia",
-        "why": "Registra para cada sistema si hay que avisar a las personas de que tratan con IA. Abre un sistema y usa su pestaña Transparencia (Art. 50)."
+        "label": "Avisar de que es IA",
+        "why": "Registra para cada sistema si hay que avisar a las personas de que tratan con IA (Art. 50).",
+        "do": "Registra para cada sistema si hay que avisar a las personas de que tratan con IA. Abre un sistema para hacerlo."
       },
       "evidence": {
-        "label": "Evidencias y correspondencia con marcos",
-        "why": "Da un estado a cada requisito y adjunta las evidencias que lo respaldan."
+        "label": "Evidencias",
+        "why": "Da un estado a cada requisito y adjunta la prueba que lo respalda.",
+        "do": "Elige un sistema, da un estado a cada requisito y adjunta la prueba."
       },
       "sensitiveData": {
         "label": "Datos sensibles",
-        "why": "Clasifica los datos sensibles que usan tus sistemas, empezando por los datos personales."
+        "why": "Clasifica los datos sensibles que usan tus sistemas, empezando por los datos personales.",
+        "do": "Revisa los datos sensibles que usan tus sistemas, empezando por los datos personales."
       },
       "incidents": {
         "label": "Incidentes",
-        "why": "Aprueba una política de respuesta a incidentes para que todos sepan qué hacer y se cumplan los plazos legales."
+        "why": "Aprueba un plan de incidentes para que todos sepan qué hacer y se cumplan los plazos legales.",
+        "do": "Aprueba un plan de incidentes para que todos sepan qué hacer y se cumplan los plazos legales."
       },
       "proceedings": {
-        "label": "Procedimientos",
-        "why": "Sigue una investigación o un asunto de una autoridad o de un tribunal, si lo hay."
+        "label": "Asuntos e investigaciones",
+        "why": "Sigue una investigación o un asunto de una autoridad o de un tribunal, si lo hay.",
+        "do": "Sigue una investigación o un asunto de una autoridad o de un tribunal, si lo hay."
       },
       "review": {
-        "label": "Cola de revisión",
-        "why": "Lo que el producto ha redactado por ti solo cuenta cuando una persona lo confirma."
+        "label": "Revisar lo redactado",
+        "why": "Lo que el producto ha redactado por ti solo cuenta cuando una persona lo confirma.",
+        "do": "Confirma o corrige lo que el producto ha redactado por ti. Cuenta cuando una persona lo confirma."
       },
       "board": {
-        "label": "Informes al consejo",
-        "why": "Informa al consejo del estado del programa, con cifras que se pueden reproducir."
+        "label": "Informe al consejo",
+        "why": "Informa al consejo del estado del programa, con cifras que se pueden reproducir.",
+        "do": "Cuenta al consejo en qué punto está el programa, con cifras que se pueden reproducir."
       },
       "audit": {
         "label": "Registro de auditoría",
-        "why": "Cada cambio queda registrado aquí por sí solo."
+        "why": "Cada cambio queda registrado aquí por sí solo.",
+        "do": "Consulta cada cambio hecho en el programa. Queda registrado por sí solo."
       }
     },
     "library": {
       "program": "Mapa del programa",
-      "clientCards": "Fichas de clientes",
       "vendorCatalog": "Catálogo de proveedores",
       "skills": "Skills",
       "billing": "Facturación",
@@ -5594,14 +5611,41 @@
     "collapse": "Contraer el menú",
     "expand": "Desplegar el menú",
     "allClients": "Todos los clientes",
-    "viewProgramMap": "Ver el mapa de tu programa",
-    "orGoTo": "O ve a",
     "switchClient": "Cambiar de cliente",
     "addOrganization": "Añadir organización",
     "account": "Cuenta",
     "phoneBar": "Etapa {number} de {total} · {stage}",
     "phoneBarDone": "Todas las etapas están hechas",
     "phoneBarOpen": "Abrir la ruta del programa",
+    "overallLabel": "Tu programa",
+    "overall": "Tu programa · {percent} %",
+    "band": {
+      "step": "Paso {number}",
+      "next": "Siguiente paso",
+      "finish": "Volver al panel de control",
+      "stageDone": "Etapa {number} completada. Siguiente: {next}.",
+      "lastStageDone": "Etapa {number} completada. Todas las etapas están hechas."
+    },
+    "emptyStep": {
+      "board": "Todavía no hay ningún informe al consejo.",
+      "boardAction": "Registrar el primer informe",
+      "obligations": "Todavía no hay normas en la lista. Indica dónde trabajas y aquí aparecerán las que te aplican.",
+      "obligationsAction": "Indicar dónde trabajas",
+      "vendorChecks": "Todavía no hay proveedores que revisar.",
+      "vendorChecksAction": "Añadir un proveedor",
+      "transparency": "Todavía no hay sistemas de IA.",
+      "transparencyAction": "Registrar un sistema de IA"
+    },
+    "views": {
+      "dueDiligence": "Revisión de proveedores",
+      "dueDiligenceHint": "Cada proveedor y su revisión. Abre un proveedor para completar su revisión.",
+      "reviewed": "Revisión completada",
+      "notReviewed": "Revisión pendiente",
+      "transparency": "Avisar de que es IA",
+      "transparencyHint": "Cada sistema y si tiene su registro de transparencia. Abre un sistema para rellenarlo.",
+      "profileDone": "Registrado",
+      "profileMissing": "Por registrar"
+    },
     "nextStep": {
       "title": "Siguiente paso",
       "stage": "Etapa {number} · {stage}",
@@ -5628,7 +5672,10 @@
       "unknown": "No se ha podido leer",
       "empty": "Todavía no hay organizaciones.",
       "open": "Abrir {client}",
-      "stageCell": "{stage}: {done} de {total}"
+      "stageCell": "{stage}: {done} de {total}",
+      "needsAttention": "Requiere atención",
+      "openIncidents": "{count, plural, one {# incidente abierto} other {# incidentes abiertos}}",
+      "pendingGates": "{count, plural, one {# decisión pendiente} other {# decisiones pendientes}}"
     }
   }
 }

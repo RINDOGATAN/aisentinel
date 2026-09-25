@@ -4085,7 +4085,8 @@
       "reviewLink": "Review queue",
       "historyLink": "History",
       "historyFootnote": "A snapshot is captured automatically each time the program PDF is exported. Scores are computed by the maturity model version recorded in each snapshot.",
-      "exportPack": "Download program pack (ZIP)"
+      "exportPack": "Download program pack (ZIP)",
+      "download": "Download"
     },
     "tiles": {
       "overall": "Overall maturity",
@@ -5496,96 +5497,112 @@
     "steps": {
       "quickstart": {
         "label": "Quick start",
-        "why": "It sets your jurisdictions, applies an industry template and imports your vendors from the catalog, so the rest of the program starts filled in."
-      },
-      "frameworks": {
-        "label": "Frameworks and scope",
-        "why": "Which frameworks apply depends on where you operate. Declare your jurisdictions and map the frameworks to your systems."
+        "why": "It sets your jurisdictions, applies an industry template and imports your vendors from the catalog, so the rest of the program starts filled in.",
+        "do": "Answer a few questions, and a first version of your program is filled in for you."
       },
       "obligations": {
-        "label": "Regimes and obligations",
-        "why": "Answer the regime screening in Settings so the obligations and their dates are the ones that apply to you."
+        "label": "Where you work and your rules",
+        "why": "The rules that apply depend on where you work. Declare where you work and answer the short screening in Settings, so the rules and their dates are the ones that apply to you.",
+        "do": "Say where you work and answer the short screening in Settings. Then this page lists the rules that apply and their dates."
       },
       "policies": {
-        "label": "AI policy and acceptable use",
-        "why": "An approved acceptable-use policy tells everyone which AI tools they may use, and how."
+        "label": "AI policy",
+        "why": "An approved acceptable-use policy tells everyone which AI tools they may use, and how.",
+        "do": "Write and approve the policy that says which AI tools people may use, and how."
       },
       "prohibited": {
-        "label": "Prohibited-practice screen",
-        "why": "A screen of every use against the practices the EU AI Act prohibits."
+        "label": "Banned uses check",
+        "why": "A check of every use against the practices the EU AI Act bans.",
+        "do": "Check that no use of AI is one the law bans."
       },
       "literacy": {
-        "label": "AI literacy",
-        "why": "A record of the AI training given to the people who use or oversee AI."
+        "label": "AI training",
+        "why": "A record of the AI training given to the people who use or oversee AI.",
+        "do": "Record the AI training given to the people who use or oversee AI."
       },
       "systems": {
-        "label": "AI systems",
-        "why": "Every system needs a record and a business owner before it can be classified."
+        "label": "Your AI systems",
+        "why": "Every system needs a record and an owner before its risk can be set.",
+        "do": "Register each AI system your organization uses and name who owns it."
       },
       "shadowAi": {
-        "label": "Shadow AI",
-        "why": "Record the AI tools people already use without approval, then decide on each one."
+        "label": "Unapproved AI tools",
+        "why": "Record the AI tools people already use without approval, then decide on each one.",
+        "do": "List the AI tools people use without approval, then decide on each one."
       },
       "vendors": {
         "label": "Vendors",
-        "why": "Most AI reaches you through vendors. Add them from the vendor catalog."
+        "why": "Most AI reaches you through vendors. Add them from the vendor catalog.",
+        "do": "Add the companies whose AI you use. The vendor catalog makes it quick."
       },
       "classification": {
-        "label": "Risk classification",
-        "why": "The risk tier of each system decides which obligations apply to it."
+        "label": "Risk level",
+        "why": "The risk level of each system decides which rules apply to it.",
+        "do": "Give each AI system its risk level. The level decides which rules apply."
       },
       "assessments": {
-        "label": "Impact and risk assessments",
-        "why": "High-risk systems need an approved impact assessment."
+        "label": "Impact assessments",
+        "why": "High-risk systems need an approved impact assessment.",
+        "do": "Assess each high-risk system and have the assessment approved."
       },
       "threatModel": {
         "label": "Threat model",
-        "why": "Write down what could go wrong with the systems you build, and how each risk is stopped and tested."
+        "why": "Write down what could go wrong with the systems you build, and how each risk is stopped and tested.",
+        "do": "Write down what could go wrong with the AI you build, and how each risk is stopped and tested."
       },
       "vendorDueDiligence": {
-        "label": "Vendor due diligence",
-        "why": "Each vendor needs a completed due-diligence review."
+        "label": "Vendor checks",
+        "why": "Each vendor needs a completed review.",
+        "do": "Check each vendor: open it and complete its review."
       },
       "oversight": {
         "label": "Human oversight",
-        "why": "High-risk systems need a person who can review, approve or stop them."
+        "why": "High-risk systems need a person who can review, approve or stop them.",
+        "do": "Name a person who can review, approve or stop each high-risk system."
       },
       "transparency": {
-        "label": "Transparency",
-        "why": "Record for each system whether people must be told they are dealing with AI. Open a system and use its Transparency (Art. 50) tab."
+        "label": "Telling people it is AI",
+        "why": "Record for each system whether people must be told they are dealing with AI (Art. 50).",
+        "do": "For each system, record whether people must be told they are dealing with AI. Open a system to do it."
       },
       "evidence": {
-        "label": "Evidence and framework mapping",
-        "why": "Give each requirement a status and attach the evidence that supports it."
+        "label": "Evidence",
+        "why": "Give each requirement a status and attach the proof that supports it.",
+        "do": "Choose a system, give each requirement a status and attach the proof."
       },
       "sensitiveData": {
         "label": "Sensitive data",
-        "why": "Classify the sensitive data your systems use, starting with personal data."
+        "why": "Classify the sensitive data your systems use, starting with personal data.",
+        "do": "Check the sensitive data your systems use, starting with personal data."
       },
       "incidents": {
         "label": "Incidents",
-        "why": "Approve an incident-response policy so everyone knows what to do and the legal deadlines are met."
+        "why": "Approve an incident plan so everyone knows what to do and the legal deadlines are met.",
+        "do": "Approve an incident plan so everyone knows what to do and the legal deadlines are met."
       },
       "proceedings": {
-        "label": "Proceedings",
-        "why": "Track an inquiry or a case from an authority or a court, if there is one."
+        "label": "Cases and inquiries",
+        "why": "Track an inquiry or a case from an authority or a court, if there is one.",
+        "do": "Track an inquiry or a case from an authority or a court, if there is one."
       },
       "review": {
-        "label": "Review queue",
-        "why": "What the product drafted for you counts only once a person confirms it."
+        "label": "Check what was drafted",
+        "why": "What the product drafted for you counts only once a person confirms it.",
+        "do": "Confirm or correct what the product drafted for you. It counts once a person confirms it."
       },
       "board": {
-        "label": "Board reporting",
-        "why": "Report the state of the program to your board, with figures that can be reproduced."
+        "label": "Board report",
+        "why": "Report the state of the program to your board, with figures that can be reproduced.",
+        "do": "Tell your board where the program stands, with figures that can be reproduced."
       },
       "audit": {
         "label": "Audit trail",
-        "why": "Every change is recorded here on its own."
+        "why": "Every change is recorded here on its own.",
+        "do": "See every change made in the program. It is recorded on its own."
       }
     },
     "library": {
       "program": "Program map",
-      "clientCards": "Client cards",
       "vendorCatalog": "Vendor catalog",
       "skills": "Skills",
       "billing": "Billing",
@@ -5594,14 +5611,41 @@
     "collapse": "Collapse the menu",
     "expand": "Expand the menu",
     "allClients": "All clients",
-    "viewProgramMap": "View your program map",
-    "orGoTo": "Or go to",
     "switchClient": "Switch client",
     "addOrganization": "Add organization",
     "account": "Account",
     "phoneBar": "Stage {number} of {total} · {stage}",
     "phoneBarDone": "Every stage is done",
     "phoneBarOpen": "Open the program path",
+    "overallLabel": "Your program",
+    "overall": "Your program · {percent}%",
+    "band": {
+      "step": "Step {number}",
+      "next": "Next step",
+      "finish": "Back to the dashboard",
+      "stageDone": "Stage {number} complete. Next: {next}.",
+      "lastStageDone": "Stage {number} complete. Every stage is done."
+    },
+    "emptyStep": {
+      "board": "No board report yet.",
+      "boardAction": "Record the first report",
+      "obligations": "No rules listed yet. Say where you work, and the rules that apply appear here.",
+      "obligationsAction": "Say where you work",
+      "vendorChecks": "No vendors to check yet.",
+      "vendorChecksAction": "Add a vendor",
+      "transparency": "No AI systems yet.",
+      "transparencyAction": "Register an AI system"
+    },
+    "views": {
+      "dueDiligence": "Vendor checks",
+      "dueDiligenceHint": "Each vendor and its review. Open a vendor to complete its review.",
+      "reviewed": "Review completed",
+      "notReviewed": "Review to do",
+      "transparency": "Telling people it is AI",
+      "transparencyHint": "Each system and whether its transparency record exists. Open a system to fill it in.",
+      "profileDone": "Recorded",
+      "profileMissing": "To record"
+    },
     "nextStep": {
       "title": "Next step",
       "stage": "Stage {number} · {stage}",
@@ -5628,7 +5672,10 @@
       "unknown": "Could not be read",
       "empty": "No organizations yet.",
       "open": "Open {client}",
-      "stageCell": "{stage}: {done} of {total}"
+      "stageCell": "{stage}: {done} of {total}",
+      "needsAttention": "Needs attention",
+      "openIncidents": "{count, plural, one {# open incident} other {# open incidents}}",
+      "pendingGates": "{count, plural, one {# decision waiting} other {# decisions waiting}}"
     }
   }
 }

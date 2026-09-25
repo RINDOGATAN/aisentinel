@@ -51,6 +51,7 @@ import { WorkedExampleOffer } from "@/components/governance/worked-example-card"
 import { TIER_BG_CLASS, type RiskTier } from "@/config/risk-tier-palette";
 import { useSkin } from "@/components/guided/skin-context";
 import { NextStepCard } from "@/components/guided/next-step-card";
+import { PageHeader } from "@/components/governance/page-header";
 
 export default function GovernanceDashboardPage() {
   const { organization, organizations, setOrganization, canWrite } = useOrganization();
@@ -58,7 +59,6 @@ export default function GovernanceDashboardPage() {
   const switcher = organizationSwitcherView(userType);
   const { skin } = useSkin();
   const guided = skin === "guided";
-  const tg = useTranslations("guided");
   const t = useTranslations("dashboard");
   const locale = useLocale();
   const tc = useTranslations("common");
@@ -119,27 +119,22 @@ export default function GovernanceDashboardPage() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between gap-4">
-        {/* An organization name is entered by the customer and can be a single
-            long word; min-w-0 with break-words keeps it off the switcher. */}
-        <div className="min-w-0">
-          <h1 className="text-xl sm:text-2xl font-semibold break-words">
-            {organization?.name || "AI Governance"}
-          </h1>
-          <p className="text-sm sm:text-base text-muted-foreground">
-            {t("subtitle")}
-          </p>
-        </div>
-        {/* Own-organization mode shows no switcher; client mode always does,
-            with the client dashboard and the add flow. src/lib/account-mode.ts
-            In Guided the menu carries the switcher, so the page shows none. */}
-        {switcher.show && !guided && (
+      {/* An organization name is entered by the customer and can be a single
+          long word; the header breaks it (break-words) rather than let it push
+          the switcher off. Own-organization mode shows no switcher; client
+          mode always does, with the client dashboard and the add flow
+          (src/lib/account-mode.ts). In Guided the menu carries the switcher,
+          so the page shows none. */}
+      <PageHeader
+        title={organization?.name || "AI Governance"}
+        description={t("subtitle")}
+        actions={
+        switcher.show && !guided && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="gap-2 shrink-0">
+              <Button variant="outline" className="gap-2">
                 <Building2 className="w-4 h-4" />
-                <span className="hidden sm:inline">{t("switchOrganization")}</span>
+                {t("switchOrganization")}
                 <ChevronDown className="w-3 h-3" />
               </Button>
             </DropdownMenuTrigger>
@@ -172,26 +167,14 @@ export default function GovernanceDashboardPage() {
               )}
             </DropdownMenuContent>
           </DropdownMenu>
-        )}
-      </div>
+        )
+        }
+      />
 
-      {/* Guided layout only: the next step on the program path, and under it
-          the program map as a quiet link rather than a second card. */}
-      {guided && organization && (
-        <div className="space-y-2">
-          <NextStepCard />
-          {stats?.quickstartProfile && (
-            <Link
-              href="/governance/program"
-              className="inline-flex min-h-11 items-center gap-2 rounded-sm px-1 text-sm text-muted-foreground hover:text-primary outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <Network className="size-4 shrink-0" aria-hidden="true" />
-              {tg("viewProgramMap")}
-              <ArrowRight className="size-3.5 shrink-0" aria-hidden="true" />
-            </Link>
-          )}
-        </div>
-      )}
+      {/* Guided layout only: the next step on the program path. The program
+          map is in the menu's "Library and tools", so it is not repeated here
+          (one place per action). */}
+      {guided && organization && <NextStepCard />}
 
       {/* The first-run choice, so an empty dashboard offers a way to fill
           itself in rather than only empty tiles. Renders nothing once either
@@ -407,7 +390,8 @@ export default function GovernanceDashboardPage() {
                 <p className="text-xs text-muted-foreground">{t("total")}</p>
               </div>
             </div>
-            {incidents.total > 0 && (
+            {/* In Guided the menu leads to each of these lists; not repeated here. */}
+            {incidents.total > 0 && !guided && (
               <Link href="/governance/incidents" className="block mt-3">
                 <Button variant="outline" size="sm" className="w-full">
                   {t("viewIncidents")} <ArrowRight className="w-3 h-3 ml-1" />
@@ -450,11 +434,13 @@ export default function GovernanceDashboardPage() {
                 )}
               </div>
             </div>
-            <Link href="/governance/oversight">
-              <Button variant="outline" size="sm" className="w-full">
-                {t("viewOversight")} <ArrowRight className="w-3 h-3 ml-1" />
-              </Button>
-            </Link>
+            {!guided && (
+              <Link href="/governance/oversight">
+                <Button variant="outline" size="sm" className="w-full">
+                  {t("viewOversight")} <ArrowRight className="w-3 h-3 ml-1" />
+                </Button>
+              </Link>
+            )}
           </CardContent>
         </Card>
 
@@ -491,11 +477,13 @@ export default function GovernanceDashboardPage() {
                 )}
               </div>
             </div>
-            <Link href="/governance/ai-registry">
-              <Button variant="outline" size="sm" className="w-full">
-                {t("viewRegistry")} <ArrowRight className="w-3 h-3 ml-1" />
-              </Button>
-            </Link>
+            {!guided && (
+              <Link href="/governance/ai-registry">
+                <Button variant="outline" size="sm" className="w-full">
+                  {t("viewRegistry")} <ArrowRight className="w-3 h-3 ml-1" />
+                </Button>
+              </Link>
+            )}
           </CardContent>
         </Card>
 
@@ -604,8 +592,9 @@ export default function GovernanceDashboardPage() {
           </CardContent>
         </Card>
 
-        {/* Quick Actions */}
-        {canWrite && (
+        {/* Quick Actions. In Guided each of these is the button on its own
+            step's page, reached from the menu: one place per action. */}
+        {canWrite && !guided && (
           <Card>
             <CardHeader className="p-4 sm:p-6">
               <CardTitle className="text-base sm:text-lg">{t("quickActions")}</CardTitle>

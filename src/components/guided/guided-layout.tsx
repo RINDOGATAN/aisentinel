@@ -12,7 +12,7 @@
  */
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
@@ -28,7 +28,6 @@ import {
   Menu,
   MessageSquareWarning,
   Plus,
-  Settings,
   User,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -54,8 +53,9 @@ import { MENU_COOKIE, cookieAssignment } from "@/lib/skin";
 import { features } from "@/config/features";
 import { cn } from "@/lib/utils";
 import { AI_SENTINEL_PATH } from "./path-config";
-import { nextStep, overallProgress } from "./path";
+import { currentStepId, nextStep, overallProgress } from "./path";
 import { PathMenu } from "./path-menu";
+import { StepBand } from "./step-band";
 import { ProgressBar } from "./progress-ring";
 import { useProgramPath, useProgramPathRefresh } from "./use-program-path";
 import { useSkin } from "./skin-context";
@@ -85,9 +85,12 @@ export function GuidedLayout({
   onFeedback: () => void;
 }) {
   const pathname = usePathname();
+  const search = useSearchParams().toString();
+  const stepId = currentStepId(AI_SENTINEL_PATH, pathname, search);
   const t = useTranslations("guided");
   const tn = useTranslations("nav");
   const statuses = useProgramPath();
+  const { organization } = useOrganization();
   useProgramPathRefresh();
   const { userType } = useUserType();
   const [collapsed, setCollapsedState] = useState(initialCollapsed);
@@ -102,6 +105,7 @@ export function GuidedLayout({
     config: AI_SENTINEL_PATH,
     statuses,
     pathname,
+    search,
     stripeEnabled: features.stripeEnabled,
     clientMode: accountMode(userType) === "clients",
     t,
@@ -222,6 +226,13 @@ export function GuidedLayout({
         <div className="flex min-w-0 flex-1 flex-col">
           {/* min-w-0 so a wide child cannot stretch the page (as in Classic). */}
           <main className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 min-w-0 flex-1">
+            {/* Keyed by the organisation and the address: a "stage complete"
+                message lasts for the page it was shown on. */}
+            <StepBand
+              key={`${organization?.id ?? ""}:${pathname}?${search}`}
+              stepId={stepId}
+              statuses={statuses}
+            />
             {children}
           </main>
           {footer}
@@ -297,7 +308,7 @@ function OrganizationBlock({ onNavigate }: { onNavigate?: () => void }) {
   );
 }
 
-/** The account: who is signed in, settings, the way back to Classic, sign out. */
+/** The account: who is signed in, the way back to Classic, sign out. */
 function AccountMenu() {
   const { data: session } = useSession();
   const { userRole } = useOrganization();
@@ -323,12 +334,7 @@ function AccountMenu() {
           )}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link href="/governance/settings" className="flex items-center gap-2">
-            <Settings className="size-4" />
-            {tn("settings")}
-          </Link>
-        </DropdownMenuItem>
+        {/* Settings is in "Library and tools"; one place for it. */}
         <DropdownMenuItem onClick={() => setSkin("classic")} className="flex items-center gap-2">
           <LayoutPanelTop className="size-4" />
           {t("layout.useClassic")}

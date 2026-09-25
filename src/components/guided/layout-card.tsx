@@ -3,7 +3,7 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 /**
- * Settings: "Layout: Classic / Guided (preview)". A choice for this browser,
+ * Settings: "Layout: Guided / Classic (will be retired)". A choice for this browser,
  * kept in a cookie (src/lib/skin.ts); the change applies at once.
  */
 
@@ -16,8 +16,8 @@ import type { Skin } from "@/lib/skin";
 import { useSkin } from "./skin-context";
 
 const OPTIONS: { value: Skin; icon: typeof LayoutPanelTop }[] = [
-  { value: "classic", icon: LayoutPanelTop },
   { value: "guided", icon: LayoutPanelLeft },
+  { value: "classic", icon: LayoutPanelTop },
 ];
 
 export function LayoutCard() {

@@ -14,6 +14,7 @@ import {
   BookOpen,
   Lock,
   LayoutDashboard,
+  LayoutPanelLeft,
   ChevronDown,
   CreditCard,
   MessageSquareWarning,
@@ -48,19 +49,19 @@ import { buildNavGroups } from "@/components/nav-groups";
 import { PilotDisclosureScreen } from "@/components/pilot/pilot-disclosure";
 import { trpc } from "@/lib/trpc";
 import type { Skin } from "@/lib/skin";
-import { SkinProvider } from "@/components/guided/skin-context";
+import { SkinProvider, useSkin } from "@/components/guided/skin-context";
 import { GuidedLayout } from "@/components/guided/guided-layout";
 
 export function DashboardShell({
   children,
   hostedPilot = false,
-  skin = "classic",
+  skin = "guided",
   menuCollapsed = false,
 }: {
   children: React.ReactNode;
   /** On the hosted pilot every module is open, so no lock is ever shown. */
   hostedPilot?: boolean;
-  /** The layout chosen in the `ais_skin` cookie (src/lib/skin.ts). Classic unless chosen. */
+  /** The layout chosen in the `ais_skin` cookie (src/lib/skin.ts). Guided unless Classic is chosen. */
   skin?: Skin;
   /** Guided only: the left menu shows icons only (`ais_menu` cookie). */
   menuCollapsed?: boolean;
@@ -105,7 +106,8 @@ export function DashboardShell({
     return <OrganizationSetup />;
   }
 
-  // Guided (a preview, chosen per browser): the program path as a left menu.
+  // Guided (the default; Classic stays per browser for a while): the program
+  // path as a left menu.
   // The pages, the footer and the feedback dialog are the same as Classic.
   if (skin === "guided") {
     return (
@@ -226,6 +228,7 @@ export function DashboardShell({
                     <MessageSquareWarning className="w-5 h-5 shrink-0" />
                     {t("feedback")}
                   </Button>
+                  <UseGuidedLayout row onChosen={() => setMobileNavOpen(false)} />
                 </nav>
               </SheetContent>
             </Sheet>
@@ -306,6 +309,7 @@ export function DashboardShell({
                 <Settings className="w-4 h-4" />
               </Button>
             </Link>
+            <UseGuidedLayout />
             <div className="hidden lg:flex items-center gap-2 text-sm text-muted-foreground">
               <User className="w-4 h-4" />
               <span className="hidden 2xl:inline max-w-[150px] truncate">{session?.user?.email}</span>
@@ -357,6 +361,44 @@ export function DashboardShell({
       <FeedbackDialog open={feedbackOpen} onOpenChange={setFeedbackOpen} />
     </div>
     </SkinProvider>
+  );
+}
+
+/**
+ * Classic only: the way back to Guided, beside the other account actions
+ * (an icon in the top bar from `sm`, a row in the phone menu). Guided has
+ * the matching "Use the classic layout" in its account menu.
+ */
+function UseGuidedLayout({ row = false, onChosen }: { row?: boolean; onChosen?: () => void }) {
+  const { setSkin } = useSkin();
+  const t = useTranslations("guided.layout");
+  const choose = () => {
+    onChosen?.();
+    setSkin("guided");
+  };
+  if (row) {
+    return (
+      <Button
+        variant="ghost"
+        className="w-full justify-start gap-3 min-h-[48px] text-base rounded-lg"
+        onClick={choose}
+      >
+        <LayoutPanelLeft className="w-5 h-5 shrink-0" />
+        {t("useGuided")}
+      </Button>
+    );
+  }
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      className="hidden sm:inline-flex"
+      onClick={choose}
+      title={t("useGuided")}
+    >
+      <LayoutPanelLeft className="w-4 h-4" />
+      <span className="sr-only">{t("useGuided")}</span>
+    </Button>
   );
 }
 

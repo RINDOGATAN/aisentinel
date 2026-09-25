@@ -17,7 +17,7 @@ interface SkinContextValue {
   setSkin: (skin: Skin) => void;
 }
 
-const SkinContext = createContext<SkinContextValue>({ skin: "classic", setSkin: () => {} });
+const SkinContext = createContext<SkinContextValue>({ skin: "guided", setSkin: () => {} });
 
 export function SkinProvider({ skin, children }: { skin: Skin; children: React.ReactNode }) {
   const router = useRouter();

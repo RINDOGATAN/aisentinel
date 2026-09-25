@@ -260,6 +260,25 @@ export function stageOfStep<C>(config: PathConfig<C>, stepId: string | null): Pa
   return config.stages.find((s) => s.steps.some((step) => step.id === stepId)) ?? null;
 }
 
+/**
+ * The stage the menu opens without being asked. On a step's page, the stage
+ * holding it. On the overview (the dashboard, where sign-in lands), the stage
+ * holding the next step, or the first stage while the progress is still
+ * loading: a new person arrives with stage 1 open. Elsewhere (the library),
+ * none.
+ */
+export function stageOpenByDefault<C>(
+  config: PathConfig<C>,
+  stepId: string | null,
+  statuses: PathStatuses | null,
+  onOverview: boolean,
+): PathStage<C> | null {
+  if (stepId) return stageOfStep(config, stepId);
+  if (!onOverview) return null;
+  if (!statuses) return config.stages[0] ?? null;
+  return nextStep(config, statuses)?.stage ?? null;
+}
+
 /** The library entry the current page belongs to, if it is not a step. */
 export function currentLibraryId(items: LibraryItem[], pathname: string): string | null {
   const found = items.find((item) => matches(pathname, "", item.href));

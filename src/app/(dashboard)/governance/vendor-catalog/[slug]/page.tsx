@@ -33,6 +33,7 @@ import { useOrganization } from "@/lib/organization-context";
 import type { CatalogAIModel } from "@/lib/vendor-watch-types";
 import { parseSubprocessors, summarizeSupplyChain } from "@/lib/supply-chain";
 import { SubprocessorTable } from "@/components/supply-chain/subprocessor-table";
+import { PageHeader } from "@/components/governance/page-header";
 
 const MODEL_TYPE_COLORS: Record<string, string> = {
   "LLM": "bg-primary/20 text-primary",
@@ -51,6 +52,7 @@ function getModelTypeBadgeClass(type: string): string {
 
 export default function VendorCatalogDetailPage() {
   const t = useTranslations("vendorCatalogDetail");
+  const tc = useTranslations("common");
   const params = useParams();
   const slug = params.slug as string;
   const { organization } = useOrganization();
@@ -119,38 +121,35 @@ export default function VendorCatalogDetailPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="space-y-2">
-          <Link href="/governance/vendor-catalog">
-            <Button variant="ghost" size="icon" className="-ml-2">
-              <ArrowLeft className="w-4 h-4" />
-            </Button>
-          </Link>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl sm:text-2xl font-semibold">{entry.name}</h1>
-              {entry.isVerified && (
-                <CheckCircle className="w-5 h-5 text-success" />
-              )}
-            </div>
-            <div className="flex items-center gap-2 mt-1">
-              <Badge variant="secondary">{entry.category}</Badge>
-              {entry.subcategory && (
-                <Badge variant="outline" className="text-xs">
-                  {entry.subcategory}
-                </Badge>
-              )}
-            </div>
-          </div>
-        </div>
-        <Button className="self-start sm:self-auto" asChild>
-          <Link href={`/governance/vendors/new?catalog=true&slug=${entry.slug}`}>
-            <Plus className="w-4 h-4 mr-2" />
-            {t("addToMyVendors")}
-          </Link>
-        </Button>
-      </div>
+      <PageHeader
+        back={{ href: "/governance/vendor-catalog", label: tc("back") }}
+        title={
+          <span className="inline-flex items-center gap-2">
+            {entry.name}
+            {entry.isVerified && (
+              <CheckCircle className="w-5 h-5 shrink-0 text-success" />
+            )}
+          </span>
+        }
+        meta={
+          <>
+            <Badge variant="secondary">{entry.category}</Badge>
+            {entry.subcategory && (
+              <Badge variant="outline" className="text-xs">
+                {entry.subcategory}
+              </Badge>
+            )}
+          </>
+        }
+        actions={
+          <Button asChild>
+            <Link href={`/governance/vendors/new?catalog=true&slug=${entry.slug}`}>
+              <Plus className="w-4 h-4 mr-2" />
+              {t("addToMyVendors")}
+            </Link>
+          </Button>
+        }
+      />
 
       {/* Two-column layout */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">

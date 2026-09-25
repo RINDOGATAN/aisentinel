@@ -71,6 +71,43 @@ describe("the page header", () => {
   });
 });
 
+/** Every detail page (one record), surveyed 25 Sep 2026. */
+const DETAIL_PAGES = [
+  "ai-registry/[id]",
+  "assessments/[id]",
+  "incidents/[id]",
+  "oversight/[id]",
+  "policies/[id]",
+  "proceedings/[id]",
+  "sensitive-data/[id]",
+  "shadow-ai/[id]",
+  "threat-model/[id]",
+  "vendor-catalog/[slug]",
+  "vendors/[id]",
+];
+
+describe("the detail-page header", () => {
+  it("is the same header, with the way back to its list", () => {
+    for (const dir of DETAIL_PAGES) {
+      const src = read(dir);
+      expect(src, dir).toContain("<PageHeader");
+      expect(src, dir).toMatch(/back=\{\{ href: "\/governance\//);
+      expect(src.match(/<h1\b/g) ?? [], dir).toHaveLength(0);
+    }
+  });
+
+  it("keeps every header action the same height, status-dependent ones included", () => {
+    for (const dir of DETAIL_PAGES) {
+      const src = read(dir);
+      const start = src.indexOf("<PageHeader");
+      const end = src.indexOf("\n      />", start);
+      const actions = src.slice(src.indexOf("actions=", start), end);
+      if (!src.slice(start, end).includes("actions=")) continue;
+      expect(actions, dir).not.toMatch(/size="sm"/);
+    }
+  });
+});
+
 describe("locked downloads", () => {
   it("explain themselves in one line per page, never under each button", () => {
     const users = allFiles("src").filter((f) =>

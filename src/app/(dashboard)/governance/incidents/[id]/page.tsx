@@ -42,6 +42,7 @@ import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useTranslations, useLocale } from "next-intl";
 import { useEnumLabels } from "@/lib/enum-labels";
 import { STATUS_CHIP, STATUS_OUTLINE } from "@/components/ui/status-note";
+import { PageHeader } from "@/components/governance/page-header";
 
 type AIIncidentStatus = "REPORTED" | "INVESTIGATING" | "MITIGATING" | "RESOLVED" | "CLOSED";
 type AINotificationStatus = "PENDING" | "SENT" | "ACKNOWLEDGED";
@@ -250,62 +251,52 @@ export default function IncidentDetailPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="space-y-2">
-          <Link href="/governance/incidents">
-            <Button variant="ghost" size="icon" className="-ml-2">
-              <ArrowLeft className="w-4 h-4" />
-            </Button>
-          </Link>
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-primary/10 flex items-center justify-center shrink-0">
-              <AlertTriangle className="w-6 h-6 text-primary" />
-            </div>
-            <div>
-              <h1 className="text-xl sm:text-2xl font-semibold">{incident.title}</h1>
-              <div className="flex items-center gap-2 mt-1 flex-wrap">
-                <Badge
-                  className={severityColors[incident.severity] || ""}
-                >
-                  {severityLabel(incident.severity)}
-                </Badge>
-                <Badge
-                  variant="outline"
-                  className={statusColors[incident.status] || ""}
-                >
-                  {statusLabel(incident.status)}
-                </Badge>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Status Transition Buttons */}
-      {nextStatuses.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {nextStatuses.map((nextStatus) => (
-            <Button
-              key={nextStatus}
-              variant="outline"
-              size="sm"
-              onClick={() =>
-                updateIncident.mutate({
-                  organizationId: organization?.id ?? "",
-                  id: incident.id,
-                  status: nextStatus as AIIncidentStatus,
-                })
-              }
-              disabled={updateIncident.isPending}
+      <PageHeader
+        back={{ href: "/governance/incidents", label: tc("back") }}
+        icon={AlertTriangle}
+        title={incident.title}
+        meta={
+          <>
+            <Badge
+              className={severityColors[incident.severity] || ""}
             >
-              {updateIncident.isPending ? (
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              ) : null}
-              {t("moveToStatus", { status: statusLabel(nextStatus) })}
-            </Button>
-          ))}
-        </div>
-      )}
+              {severityLabel(incident.severity)}
+            </Badge>
+            <Badge
+              variant="outline"
+              className={statusColors[incident.status] || ""}
+            >
+              {statusLabel(incident.status)}
+            </Badge>
+          </>
+        }
+        actions={
+          nextStatuses.length > 0 ? (
+            <>
+              {/* Status transitions: only those the current status allows. */}
+              {nextStatuses.map((nextStatus) => (
+                <Button
+                  key={nextStatus}
+                  variant="outline"
+                  onClick={() =>
+                    updateIncident.mutate({
+                      organizationId: organization?.id ?? "",
+                      id: incident.id,
+                      status: nextStatus as AIIncidentStatus,
+                    })
+                  }
+                  disabled={updateIncident.isPending}
+                >
+                  {updateIncident.isPending ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : null}
+                  {t("moveToStatus", { status: statusLabel(nextStatus) })}
+                </Button>
+              ))}
+            </>
+          ) : undefined
+        }
+      />
 
       {/* What the law requires, and by when. Computed, not typed in. */}
       <IncidentDeadlinesCard

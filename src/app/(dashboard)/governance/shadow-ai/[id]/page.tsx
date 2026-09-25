@@ -51,6 +51,7 @@ import { useOrganization } from "@/lib/organization-context";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { suggestTechnique } from "@/lib/ai-technique-mapping";
 import { STATUS_CHIP, STATUS_OUTLINE } from "@/components/ui/status-note";
+import { PageHeader } from "@/components/governance/page-header";
 
 // Labels come from the `common` namespace (technique* / role* keys).
 const aiTechniques = [
@@ -278,71 +279,58 @@ export default function ShadowAIDetailPage() {
   if (report.status === "DISCOVERED") {
     transitions.push({ label: t("startReview"), status: "UNDER_REVIEW", variant: "default" });
   } else if (report.status === "UNDER_REVIEW") {
-    transitions.push({ label: t("approve"), status: "APPROVED", variant: "default" });
     transitions.push({ label: t("prohibit"), status: "PROHIBITED", variant: "destructive" });
+    transitions.push({ label: t("approve"), status: "APPROVED", variant: "default" });
   } else if (report.status === "APPROVED") {
     transitions.push({ label: t("registerAsAiSystem"), status: "REGISTERED", variant: "default" });
   }
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="space-y-2">
-          <Link href="/governance/shadow-ai">
-            <Button variant="ghost" size="icon" className="-ml-2">
-              <ArrowLeft className="w-4 h-4" />
-            </Button>
-          </Link>
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-primary/10 flex items-center justify-center shrink-0">
-              <Search className="w-6 h-6 text-primary" />
-            </div>
-            <div>
-              <h1 className="text-xl sm:text-2xl font-semibold">
-                {report.toolName}
-              </h1>
-              <div className="flex items-center gap-2 mt-1 flex-wrap">
-                <Badge
-                  variant="outline"
-                  className={statusColors[report.status] || ""}
+      <PageHeader
+        back={{ href: "/governance/shadow-ai", label: tc("back") }}
+        icon={Search}
+        title={report.toolName}
+        meta={
+          <>
+            <Badge
+              variant="outline"
+              className={statusColors[report.status] || ""}
+            >
+              {statusLabelKeys[report.status] ? t(statusLabelKeys[report.status]) : report.status}
+            </Badge>
+            {report.tool?.category && (
+              <Badge variant="secondary">
+                {toolCategoryLabel(report.tool.category)}
+              </Badge>
+            )}
+          </>
+        }
+        actions={
+          transitions.length > 0 ? (
+            <>
+              {/* Status transitions; the main one last. */}
+              {transitions.map((tr) => (
+                <Button
+                  key={tr.status}
+                  variant={tr.variant}
+                  onClick={() => handleStatusChange(tr.status)}
+                  disabled={updateReport.isPending}
                 >
-                  {statusLabelKeys[report.status] ? t(statusLabelKeys[report.status]) : report.status}
-                </Badge>
-                {report.tool?.category && (
-                  <Badge variant="secondary">
-                    {toolCategoryLabel(report.tool.category)}
-                  </Badge>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Status Transition Buttons */}
-        {transitions.length > 0 && (
-          <div className="flex gap-2 flex-wrap">
-            {transitions.map((tr) => (
-              <Button
-                key={tr.status}
-                variant={tr.variant}
-                size="sm"
-                onClick={() => handleStatusChange(tr.status)}
-                disabled={updateReport.isPending}
-              >
-                {updateReport.isPending && (
-                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                )}
-                {tr.status === "UNDER_REVIEW" && <Eye className="w-4 h-4 mr-2" />}
-                {tr.status === "APPROVED" && <CheckCircle className="w-4 h-4 mr-2" />}
-                {tr.status === "PROHIBITED" && <XCircle className="w-4 h-4 mr-2" />}
-                {tr.status === "REGISTERED" && <Cpu className="w-4 h-4 mr-2" />}
-                {tr.label}
-              </Button>
-            ))}
-          </div>
-        )}
-      </div>
+                  {updateReport.isPending && (
+                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                  )}
+                  {tr.status === "UNDER_REVIEW" && <Eye className="w-4 h-4 mr-2" />}
+                  {tr.status === "APPROVED" && <CheckCircle className="w-4 h-4 mr-2" />}
+                  {tr.status === "PROHIBITED" && <XCircle className="w-4 h-4 mr-2" />}
+                  {tr.status === "REGISTERED" && <Cpu className="w-4 h-4 mr-2" />}
+                  {tr.label}
+                </Button>
+              ))}
+            </>
+          ) : undefined
+        }
+      />
 
       {/* Approved CTA */}
       {report.status === "APPROVED" && canWrite && (

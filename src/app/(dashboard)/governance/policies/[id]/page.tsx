@@ -7,6 +7,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/governance/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -280,126 +281,89 @@ export default function PolicyDetailPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="space-y-2">
-          <Link href="/governance/policies">
-            <Button variant="ghost" size="icon" className="-ml-2">
-              <ArrowLeft className="w-4 h-4" />
-            </Button>
-          </Link>
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-primary/10 flex items-center justify-center shrink-0">
-              <ScrollText className="w-6 h-6 text-primary" />
-            </div>
-            <div>
-              <h1 className="text-xl sm:text-2xl font-semibold">{policy.title}</h1>
-              <div className="flex items-center gap-2 mt-1 flex-wrap">
-                <Badge variant="outline" className="text-xs">
-                  {policyTypeLabelKeys[policy.type] ? tc(policyTypeLabelKeys[policy.type]) : policy.type}
-                </Badge>
-                <Badge
-                  variant="outline"
-                  className={`text-xs ${statusColors[policy.status] || ""}`}
-                >
-                  {statusLabel(policy.status)}
-                </Badge>
-                <Badge variant="outline" className="text-xs">
-                  v{policy.currentVersion}
-                </Badge>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex flex-wrap gap-2 self-start sm:self-auto">
-          {policy.status === "DRAFT" && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleSubmitForReview}
-              disabled={updateMutation.isPending}
-            >
-              {updateMutation.isPending ? (
-                <Loader2 className="w-4 h-4 animate-spin mr-2" />
-              ) : (
-                <Send className="w-4 h-4 mr-2" />
-              )}
-              {t("submitForReview")}
-            </Button>
-          )}
-          {policy.status === "UNDER_REVIEW" && (
-            <Button
-              size="sm"
-              onClick={handleApprove}
-              disabled={approveMutation.isPending}
-              className="bg-green-600 hover:bg-green-700"
-            >
-              {approveMutation.isPending ? (
-                <Loader2 className="w-4 h-4 animate-spin mr-2" />
-              ) : (
-                <CheckCircle className="w-4 h-4 mr-2" />
-              )}
-              {t("approve")}
-            </Button>
-          )}
-          {policy.status === "APPROVED" && (
-            <Button
-              size="sm"
-              onClick={() => setPublishDialogOpen(true)}
-            >
-              <Upload className="w-4 h-4 mr-2" />
-              {t("publish")}
-            </Button>
-          )}
-          {policy.status === "PUBLISHED" && canWrite && (
-            <>
+      <PageHeader
+        back={{ href: "/governance/policies", label: tc("back") }}
+        icon={ScrollText}
+        title={policy.title}
+        meta={
+          <>
+            <Badge variant="outline" className="text-xs">
+              {policyTypeLabelKeys[policy.type] ? tc(policyTypeLabelKeys[policy.type]) : policy.type}
+            </Badge>
+            <Badge variant="outline" className={`text-xs ${statusColors[policy.status] || ""}`}>
+              {statusLabel(policy.status)}
+            </Badge>
+            <Badge variant="outline" className="text-xs">
+              v{policy.currentVersion}
+            </Badge>
+          </>
+        }
+        actions={
+          <>
+            {/* Only the actions the status allows; always in this one row. */}
+            {policy.status === "DRAFT" && (
+              <Button variant="outline" onClick={handleSubmitForReview} disabled={updateMutation.isPending}>
+                {updateMutation.isPending ? (
+                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                ) : (
+                  <Send className="w-4 h-4 mr-2" />
+                )}
+                {t("submitForReview")}
+              </Button>
+            )}
+            {policy.status === "UNDER_REVIEW" && (
               <Button
-                variant="outline"
-                size="sm"
-                onClick={handleRevise}
-                disabled={updateMutation.isPending}
+                onClick={handleApprove}
+                disabled={approveMutation.isPending}
+                className="bg-green-600 hover:bg-green-700"
               >
+                {approveMutation.isPending ? (
+                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                ) : (
+                  <CheckCircle className="w-4 h-4 mr-2" />
+                )}
+                {t("approve")}
+              </Button>
+            )}
+            {policy.status === "APPROVED" && (
+              <Button onClick={() => setPublishDialogOpen(true)}>
+                <Upload className="w-4 h-4 mr-2" />
+                {t("publish")}
+              </Button>
+            )}
+            {policy.status === "PUBLISHED" && canWrite && (
+              <>
+                <Button variant="outline" onClick={handleArchive} disabled={updateMutation.isPending}>
+                  {updateMutation.isPending ? (
+                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                  ) : (
+                    <Archive className="w-4 h-4 mr-2" />
+                  )}
+                  {t("archive")}
+                </Button>
+                <Button variant="outline" onClick={handleRevise} disabled={updateMutation.isPending}>
+                  {updateMutation.isPending ? (
+                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                  ) : (
+                    <RotateCcw className="w-4 h-4 mr-2" />
+                  )}
+                  {t("revise")}
+                </Button>
+              </>
+            )}
+            {policy.status === "ARCHIVED" && canWrite && (
+              <Button variant="outline" onClick={handleRevise} disabled={updateMutation.isPending}>
                 {updateMutation.isPending ? (
                   <Loader2 className="w-4 h-4 animate-spin mr-2" />
                 ) : (
                   <RotateCcw className="w-4 h-4 mr-2" />
                 )}
-                {t("revise")}
+                {t("unarchive")}
               </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleArchive}
-                disabled={updateMutation.isPending}
-              >
-                {updateMutation.isPending ? (
-                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                ) : (
-                  <Archive className="w-4 h-4 mr-2" />
-                )}
-                {t("archive")}
-              </Button>
-            </>
-          )}
-          {policy.status === "ARCHIVED" && canWrite && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleRevise}
-              disabled={updateMutation.isPending}
-            >
-              {updateMutation.isPending ? (
-                <Loader2 className="w-4 h-4 animate-spin mr-2" />
-              ) : (
-                <RotateCcw className="w-4 h-4 mr-2" />
-              )}
-              {t("unarchive")}
-            </Button>
-          )}
-        </div>
-      </div>
+            )}
+          </>
+        }
+      />
 
       {/* Overview Grid */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">

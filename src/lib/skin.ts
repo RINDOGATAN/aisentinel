@@ -2,12 +2,12 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 /**
- * The dashboard layout a person has chosen: "classic" (the top-bar menus,
- * unchanged) or "guided" (a left menu that walks the program path, still a
- * preview). A per-browser choice held in a cookie: no schema change, and a
- * person who never touches it sees Classic.
+ * The dashboard layout a person has chosen: "guided" (a left menu that walks
+ * the program path, the layout for everyone) or "classic" (the top-bar menus,
+ * kept for a while and to be retired). A per-browser choice held in a cookie:
+ * no schema change, and a person who never touches it sees Guided.
  *
- * - `ais_skin=guided` turns Guided on; anything else, or no cookie, is Classic.
+ * - `ais_skin=classic` keeps Classic; anything else, or no cookie, is Guided.
  * - `ais_menu=collapsed` shrinks the Guided left menu to icons.
  * - `?skin=guided` or `?skin=classic` on any /governance URL sets the cookie
  *   (for demos); the middleware answers with a redirect to the same address
@@ -24,9 +24,9 @@ export type Skin = "classic" | "guided";
 
 const ONE_YEAR_SECONDS = 365 * 24 * 60 * 60;
 
-/** Anything but the exact value `guided` is Classic. */
+/** Anything but the exact value `classic` is Guided. */
 export function parseSkin(value: string | null | undefined): Skin {
-  return value === "guided" ? "guided" : "classic";
+  return value === "classic" ? "classic" : "guided";
 }
 
 /** The skin asked for in a `?skin=` parameter, or null when there is none or it is unknown. */

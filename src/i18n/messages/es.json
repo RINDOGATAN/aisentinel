@@ -5464,5 +5464,171 @@
     "exportAll": "Exportar todo (paquete del programa)",
     "afterExportBody": "Tu archivo se ha descargado. Ya puedes vaciar esta cuenta.",
     "afterExportAction": "Vaciar la cuenta"
+  },
+  "guided": {
+    "navLabel": "Ruta del programa",
+    "overview": "Panel de control",
+    "pathTitle": "Ruta del programa",
+    "libraryTitle": "Biblioteca y herramientas",
+    "stageProgress": "{done} de {total}",
+    "stageNumber": "Etapa {number}",
+    "loading": "Cargando el progreso",
+    "stageState": {
+      "todo": "Sin empezar",
+      "started": "En curso",
+      "done": "Hecho"
+    },
+    "stepStatus": {
+      "todo": "Sin empezar",
+      "started": "En curso",
+      "done": "Hecho",
+      "coming": "Próximamente",
+      "optional": "Cuando haga falta"
+    },
+    "stages": {
+      "setup": "Puesta en marcha",
+      "people": "Políticas y personas",
+      "inventory": "Inventario",
+      "assess": "Clasificar y evaluar",
+      "controls": "Controles y transparencia",
+      "monitor": "Seguimiento y mejora"
+    },
+    "steps": {
+      "quickstart": {
+        "label": "Inicio rápido",
+        "why": "Fija tus jurisdicciones, aplica una plantilla sectorial e importa tus proveedores desde el catálogo, para que el resto del programa empiece ya completado."
+      },
+      "frameworks": {
+        "label": "Marcos y alcance",
+        "why": "Los marcos que aplican dependen de dónde operas. Declara tus jurisdicciones y vincula los marcos a tus sistemas."
+      },
+      "obligations": {
+        "label": "Regímenes y obligaciones",
+        "why": "Responde al cribado de regímenes en Configuración para que las obligaciones y sus fechas sean las que te aplican."
+      },
+      "policies": {
+        "label": "Política de IA y uso aceptable",
+        "why": "Una política de uso aceptable aprobada dice a todos qué herramientas de IA pueden usar y cómo."
+      },
+      "prohibited": {
+        "label": "Cribado de prácticas prohibidas",
+        "why": "Un cribado de cada uso frente a las prácticas que prohíbe el Reglamento de IA de la UE."
+      },
+      "literacy": {
+        "label": "Alfabetización en IA",
+        "why": "Un registro de la formación en IA que reciben quienes usan o supervisan la IA."
+      },
+      "systems": {
+        "label": "Sistemas de IA",
+        "why": "Cada sistema necesita un registro y un responsable de negocio antes de poder clasificarlo."
+      },
+      "shadowAi": {
+        "label": "IA en la sombra",
+        "why": "Registra las herramientas de IA que ya se usan sin aprobación y decide sobre cada una."
+      },
+      "vendors": {
+        "label": "Proveedores",
+        "why": "La mayor parte de la IA te llega a través de proveedores. Añádelos desde el catálogo de proveedores."
+      },
+      "classification": {
+        "label": "Clasificación de riesgos",
+        "why": "El nivel de riesgo de cada sistema decide qué obligaciones le aplican."
+      },
+      "assessments": {
+        "label": "Evaluaciones de impacto y de riesgos",
+        "why": "Los sistemas de alto riesgo necesitan una evaluación de impacto aprobada."
+      },
+      "threatModel": {
+        "label": "Modelo de amenazas",
+        "why": "Anota qué puede fallar en los sistemas que construyes y cómo se detiene y se prueba cada riesgo."
+      },
+      "vendorDueDiligence": {
+        "label": "Diligencia debida de proveedores",
+        "why": "Cada proveedor necesita una revisión de diligencia debida completada."
+      },
+      "oversight": {
+        "label": "Supervisión humana",
+        "why": "Los sistemas de alto riesgo necesitan una persona que pueda revisarlos, aprobarlos o detenerlos."
+      },
+      "transparency": {
+        "label": "Transparencia",
+        "why": "Registra para cada sistema si hay que avisar a las personas de que tratan con IA. Abre un sistema y usa su pestaña Transparencia (Art. 50)."
+      },
+      "evidence": {
+        "label": "Evidencias y correspondencia con marcos",
+        "why": "Da un estado a cada requisito y adjunta las evidencias que lo respaldan."
+      },
+      "sensitiveData": {
+        "label": "Datos sensibles",
+        "why": "Clasifica los datos sensibles que usan tus sistemas, empezando por los datos personales."
+      },
+      "incidents": {
+        "label": "Incidentes",
+        "why": "Aprueba una política de respuesta a incidentes para que todos sepan qué hacer y se cumplan los plazos legales."
+      },
+      "proceedings": {
+        "label": "Procedimientos",
+        "why": "Sigue una investigación o un asunto de una autoridad o de un tribunal, si lo hay."
+      },
+      "review": {
+        "label": "Cola de revisión",
+        "why": "Lo que el producto ha redactado por ti solo cuenta cuando una persona lo confirma."
+      },
+      "board": {
+        "label": "Informes al consejo",
+        "why": "Informa al consejo del estado del programa, con cifras que se pueden reproducir."
+      },
+      "audit": {
+        "label": "Registro de auditoría",
+        "why": "Cada cambio queda registrado aquí por sí solo."
+      }
+    },
+    "library": {
+      "program": "Mapa del programa",
+      "clientCards": "Fichas de clientes",
+      "vendorCatalog": "Catálogo de proveedores",
+      "skills": "Skills",
+      "billing": "Facturación",
+      "settings": "Configuración"
+    },
+    "collapse": "Contraer el menú",
+    "expand": "Desplegar el menú",
+    "allClients": "Todos los clientes",
+    "viewProgramMap": "Ver el mapa de tu programa",
+    "orGoTo": "O ve a",
+    "switchClient": "Cambiar de cliente",
+    "addOrganization": "Añadir organización",
+    "account": "Cuenta",
+    "phoneBar": "Etapa {number} de {total} · {stage}",
+    "phoneBarDone": "Todas las etapas están hechas",
+    "phoneBarOpen": "Abrir la ruta del programa",
+    "nextStep": {
+      "title": "Siguiente paso",
+      "stage": "Etapa {number} · {stage}",
+      "button": "Ir a {step}",
+      "allDoneTitle": "Todas las etapas están hechas",
+      "allDoneBody": "Mantén el programa al día: confirma lo que cambie e informa al consejo.",
+      "allDoneButton": "Abrir el mapa del programa"
+    },
+    "layout": {
+      "title": "Diseño",
+      "description": "El diseño clásico mantiene los menús en la barra superior. El guiado muestra un menú a la izquierda que te lleva por el programa, etapa a etapa.",
+      "classic": "Clásico",
+      "guided": "Guiado (versión preliminar)",
+      "changed": "Diseño cambiado.",
+      "useClassic": "Usar el diseño clásico"
+    },
+    "portfolio": {
+      "title": "Clientes",
+      "subtitle": "En qué punto de la ruta del programa está cada cliente.",
+      "count": "{count, plural, one {# organización} other {# organizaciones}}",
+      "columnClient": "Cliente",
+      "columnNext": "Siguiente paso",
+      "allDone": "Todas las etapas hechas",
+      "unknown": "No se ha podido leer",
+      "empty": "Todavía no hay organizaciones.",
+      "open": "Abrir {client}",
+      "stageCell": "{stage}: {done} de {total}"
+    }
   }
 }

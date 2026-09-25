@@ -21,6 +21,7 @@ import { DeleteOrganizationCard } from "@/components/governance/delete-organizat
 import { LegalHoldCard } from "@/components/governance/legal-hold-card";
 import { PilotStatusCard } from "@/components/governance/pilot-status-card";
 import { SampleDataCard } from "@/components/governance/worked-example-card";
+import { LayoutCard } from "@/components/guided/layout-card";
 import type { JurisdictionId } from "@/config/jurisdictions";
 
 const personaIcons = {
@@ -103,6 +104,9 @@ export default function SettingsPage() {
           </CardContent>
         </Card>
       )}
+
+      {/* Layout: Classic or Guided (preview), per browser. */}
+      <LayoutCard />
 
       {/* Hosted pilot only: day counter, ceilings, the two ways out. Renders nothing on the kit. */}
       {organization && <PilotStatusCard organizationId={organization.id} />}

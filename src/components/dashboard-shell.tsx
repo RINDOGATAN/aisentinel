@@ -47,14 +47,23 @@ import { LocaleSwitcher } from "@/components/locale-switcher";
 import { buildNavGroups } from "@/components/nav-groups";
 import { PilotDisclosureScreen } from "@/components/pilot/pilot-disclosure";
 import { trpc } from "@/lib/trpc";
+import type { Skin } from "@/lib/skin";
+import { SkinProvider } from "@/components/guided/skin-context";
+import { GuidedLayout } from "@/components/guided/guided-layout";
 
 export function DashboardShell({
   children,
   hostedPilot = false,
+  skin = "classic",
+  menuCollapsed = false,
 }: {
   children: React.ReactNode;
   /** On the hosted pilot every module is open, so no lock is ever shown. */
   hostedPilot?: boolean;
+  /** The layout chosen in the `ais_skin` cookie (src/lib/skin.ts). Classic unless chosen. */
+  skin?: Skin;
+  /** Guided only: the left menu shows icons only (`ais_menu` cookie). */
+  menuCollapsed?: boolean;
 }) {
   const showLocks = !features.allSkillsFree && !hostedPilot;
   const { data: session } = useSession();
@@ -96,7 +105,25 @@ export function DashboardShell({
     return <OrganizationSetup />;
   }
 
+  // Guided (a preview, chosen per browser): the program path as a left menu.
+  // The pages, the footer and the feedback dialog are the same as Classic.
+  if (skin === "guided") {
+    return (
+      <SkinProvider skin="guided">
+        <GuidedLayout
+          footer={<DashboardFooter />}
+          initialCollapsed={menuCollapsed}
+          onFeedback={() => setFeedbackOpen(true)}
+        >
+          {children}
+        </GuidedLayout>
+        <FeedbackDialog open={feedbackOpen} onOpenChange={setFeedbackOpen} />
+      </SkinProvider>
+    );
+  }
+
   return (
+    <SkinProvider skin="classic">
     <div className="min-h-screen bg-background">
       <header className="border-b border-border sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-2">
@@ -325,6 +352,18 @@ export function DashboardShell({
         {children}
       </main>
 
+      <DashboardFooter />
+
+      <FeedbackDialog open={feedbackOpen} onOpenChange={setFeedbackOpen} />
+    </div>
+    </SkinProvider>
+  );
+}
+
+/** The footer both layouts share: service line, legal links, source offer. */
+function DashboardFooter() {
+  const t = useTranslations("nav");
+  return (
       <footer className="border-t border-border mt-auto py-4">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 text-center text-xs text-muted-foreground space-y-2">
           <p>
@@ -375,8 +414,5 @@ export function DashboardShell({
           </p>
         </div>
       </footer>
-
-      <FeedbackDialog open={feedbackOpen} onOpenChange={setFeedbackOpen} />
-    </div>
   );
 }

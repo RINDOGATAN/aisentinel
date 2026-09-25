@@ -7,9 +7,12 @@ import {
   ADD_ORGANIZATION_HREF,
   CLIENTS_DASHBOARD_HREF,
   DEFAULT_USER_TYPE,
+  PORTFOLIO_ADD_HREF,
+  PORTFOLIO_HREF,
   accountMode,
   organizationSwitcherView,
 } from "./account-mode";
+import { readFileSync } from "node:fs";
 import { buildNavGroups } from "@/components/nav-groups";
 import en from "@/i18n/messages/en.json";
 import es from "@/i18n/messages/es.json";
@@ -49,6 +52,19 @@ describe("account mode", () => {
   it("sends the client entries to the existing dashboard and create flow", () => {
     expect(CLIENTS_DASHBOARD_HREF).toBe("/governance/clients");
     expect(ADD_ORGANIZATION_HREF).toBe("/governance/clients?add=1");
+  });
+
+  it("keeps Guided's add flow on the portfolio, with the same dialog as the client cards", () => {
+    expect(PORTFOLIO_HREF).toBe("/governance/portfolio");
+    expect(PORTFOLIO_ADD_HREF).toBe("/governance/portfolio?add=1");
+    const dialog = "<AddOrganizationDialog";
+    for (const page of ["portfolio", "clients"]) {
+      const src = readFileSync(`src/app/(dashboard)/governance/${page}/page.tsx`, "utf8");
+      expect(src, page).toContain(dialog);
+    }
+    const layout = readFileSync("src/components/guided/guided-layout.tsx", "utf8");
+    expect(layout).toContain("href={PORTFOLIO_ADD_HREF}");
+    expect(layout).not.toContain("ADD_ORGANIZATION_HREF");
   });
 
   it("names both entries in English and Spanish", () => {

@@ -49,11 +49,16 @@ import { DeploymentExpertCta } from "@/components/governance/deployment-expert-c
 import { TierMarker } from "@/components/governance/risk-tier-badge";
 import { WorkedExampleOffer } from "@/components/governance/worked-example-card";
 import { TIER_BG_CLASS, type RiskTier } from "@/config/risk-tier-palette";
+import { useSkin } from "@/components/guided/skin-context";
+import { NextStepCard } from "@/components/guided/next-step-card";
 
 export default function GovernanceDashboardPage() {
   const { organization, organizations, setOrganization, canWrite } = useOrganization();
   const { userType } = useUserType();
   const switcher = organizationSwitcherView(userType);
+  const { skin } = useSkin();
+  const guided = skin === "guided";
+  const tg = useTranslations("guided");
   const t = useTranslations("dashboard");
   const locale = useLocale();
   const tc = useTranslations("common");
@@ -127,8 +132,9 @@ export default function GovernanceDashboardPage() {
           </p>
         </div>
         {/* Own-organization mode shows no switcher; client mode always does,
-            with the client dashboard and the add flow. src/lib/account-mode.ts */}
-        {switcher.show && (
+            with the client dashboard and the add flow. src/lib/account-mode.ts
+            In Guided the menu carries the switcher, so the page shows none. */}
+        {switcher.show && !guided && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="gap-2 shrink-0">
@@ -169,14 +175,33 @@ export default function GovernanceDashboardPage() {
         )}
       </div>
 
+      {/* Guided layout only: the next step on the program path, and under it
+          the program map as a quiet link rather than a second card. */}
+      {guided && organization && (
+        <div className="space-y-2">
+          <NextStepCard />
+          {stats?.quickstartProfile && (
+            <Link
+              href="/governance/program"
+              className="inline-flex min-h-11 items-center gap-2 rounded-sm px-1 text-sm text-muted-foreground hover:text-primary outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <Network className="size-4 shrink-0" aria-hidden="true" />
+              {tg("viewProgramMap")}
+              <ArrowRight className="size-3.5 shrink-0" aria-hidden="true" />
+            </Link>
+          )}
+        </div>
+      )}
+
       {/* The first-run choice, so an empty dashboard offers a way to fill
           itself in rather than only empty tiles. Renders nothing once either
           answer has been given. */}
       {organization && <WorkedExampleOffer organizationId={organization.id} />}
 
       {/* Program CTA — once a quickstart profile is completed, the flagship
-          deliverable is the Governance Program page */}
-      {stats?.quickstartProfile && (
+          deliverable is the Governance Program page. Classic only: Guided
+          shows it as a link under the next step. */}
+      {!guided && stats?.quickstartProfile && (
         <Card className="border-primary/30 bg-primary/5">
           <CardContent className="p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <div className="p-3 rounded-lg bg-primary/10 shrink-0">
@@ -199,8 +224,11 @@ export default function GovernanceDashboardPage() {
         </Card>
       )}
 
-      {/* Quickstart prompt — show when org has few systems and no completed program profile */}
-      {(stats?.totalSystems ?? 0) <= 3 &&
+      {/* Quickstart prompt — show when org has few systems and no completed
+          program profile. Classic only: in Guided the next-step card already
+          leads to the quick start while it is not done. */}
+      {!guided &&
+        (stats?.totalSystems ?? 0) <= 3 &&
         (stats?.deployedSystems ?? 0) === 0 &&
         !stats?.quickstartProfile && (
         <Card className="border-primary/30 bg-primary/5">

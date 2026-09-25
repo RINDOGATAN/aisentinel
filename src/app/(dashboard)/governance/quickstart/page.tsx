@@ -61,6 +61,8 @@ import {
   suggestScenarios,
 } from "@/config/threat-model";
 import { ProgramMap } from "@/components/governance/program/ProgramMap";
+import { useSkin } from "@/components/guided/skin-context";
+import { NextStepCard } from "@/components/guided/next-step-card";
 import { useExportDownload } from "@/components/governance/use-export-download";
 import { JurisdictionPicker } from "@/components/governance/jurisdiction-picker";
 import { RegimeScreeningCard } from "@/components/governance/regime-screening-card";
@@ -160,6 +162,8 @@ const POLICY_TYPE_KEY: Record<string, string> = {
 
 export default function QuickstartPage() {
   const { organization, canWrite } = useOrganization();
+  const guided = useSkin().skin === "guided";
+  const tg = useTranslations("guided");
   const utilsForJurisdictions = trpc.useUtils();
   const t = useTranslations("quickstart");
   const tc = useTranslations("common");
@@ -301,6 +305,9 @@ export default function QuickstartPage() {
     onSuccess: (data) => {
       setExecutionResult(data);
       void utils.program.getProgramGraph.invalidate();
+      // Before the result screen shows, so the Guided next step is never the
+      // quick start just finished.
+      void utils.programPath.invalidate();
       const total = data.systems + data.vendors + data.policies;
       if (total === 0) {
         toast.info(t("toastNothingNew"));
@@ -1823,6 +1830,9 @@ export default function QuickstartPage() {
           ════════════════════════════════════════════════ */}
       {step === "success" && executionResult && (
         <div className="space-y-6">
+          {/* Guided: one next step leads, the same card as the dashboard. */}
+          {guided && <NextStepCard waitForFresh />}
+
           <Card className="border-primary/30 bg-primary/5">
             <CardContent className="p-8 text-center space-y-4">
               <div className="inline-flex p-4 rounded-full bg-primary/10">
@@ -1926,22 +1936,38 @@ export default function QuickstartPage() {
             </CardContent>
           </Card>
 
-          {/* Quick nav cards */}
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
-            {SUCCESS_NAV.map(({ href, icon: Icon, key }) => (
-              <Link key={href} href={href}>
-                <Card className="hover:border-primary/50 transition-all cursor-pointer h-full">
-                  <CardContent className="p-4 flex items-center gap-3">
-                    <Icon className="w-5 h-5 text-primary shrink-0" />
-                    <div>
-                      <p className="text-sm font-medium">{t(`nav.${key}.title`)}</p>
-                      <p className="text-xs text-muted-foreground">{t(`nav.${key}.hint`)}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
-          </div>
+          {/* Quick nav: in Guided a small row of plain links under the one
+              next step; in Classic the six cards. */}
+          {guided ? (
+            <nav aria-label={tg("orGoTo")} className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
+              <span className="text-muted-foreground">{tg("orGoTo")}</span>
+              {SUCCESS_NAV.map(({ href, key }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className="inline-flex min-h-11 items-center rounded-sm text-primary underline-offset-2 hover:underline outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  {t(`nav.${key}.title`)}
+                </Link>
+              ))}
+            </nav>
+          ) : (
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
+              {SUCCESS_NAV.map(({ href, icon: Icon, key }) => (
+                <Link key={href} href={href}>
+                  <Card className="hover:border-primary/50 transition-all cursor-pointer h-full">
+                    <CardContent className="p-4 flex items-center gap-3">
+                      <Icon className="w-5 h-5 text-primary shrink-0" />
+                      <div>
+                        <p className="text-sm font-medium">{t(`nav.${key}.title`)}</p>
+                        <p className="text-xs text-muted-foreground">{t(`nav.${key}.hint`)}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>

@@ -4798,6 +4798,8 @@
     "title": "Cross-border regimes",
     "description": "GDPR, Colorado, Texas and Washington alongside the EU AI Act and California. Each regime resolves its own scope from your declared jurisdictions and a few screening answers.",
     "reviewMarkerNote": "Regulatory content for these regimes was signed off on 8 September 2026. The EU AI Act and California packs remain pending.",
+    "copiedFromTemplate": "These answers were copied from a template. Check each one for this client, then confirm them.",
+    "confirmCopied": "Confirm answers",
     "orgTitle": "Organisation screening",
     "orgDescription": "Five facts about the organisation. Each is tri-state: not answered stays visibly unanswered and never reads as no.",
     "systemTitle": "System screening",
@@ -5794,5 +5796,71 @@
       "notApplicable": "Marked as not applicable",
       "applicableAgain": "The requirement applies again"
     }
+  },
+  "clientTemplate": {
+    "cardTitle": "Start from another client",
+    "cardDescription": "Copy a programme you built for another client, then adjust it. Everything arrives as a draft.",
+    "chipCopiedDrafts": "Copied as drafts",
+    "chipNoLinks": "Never linked",
+    "copyIntoNew": "Copy into a new client",
+    "rowMenu": "More for {client}",
+    "titleCurrent": "Start from another client",
+    "titleNew": "Copy into a new client",
+    "descriptionCurrent": "Copy parts of a programme you built for another client into this one. The copy is independent: later changes in either client never reach the other, and this client's records never show where the copy came from.",
+    "descriptionNew": "Create a new client and copy parts of {source}'s programme into it. The copy is independent: later changes in either client never reach the other, and the new client's records never show where the copy came from.",
+    "sourceLabel": "Copy from",
+    "sourcePlaceholder": "Choose a client",
+    "sourceHint": "Only clients where you are an owner or an admin are listed.",
+    "noSources": "There is no other client where you are an owner or an admin.",
+    "newNameLabel": "Name of the new client",
+    "newNamePlaceholder": "e.g. Example Services Ltd",
+    "loading": "Loading",
+    "partsLegend": "What to copy",
+    "parts": {
+      "policies": {
+        "label": "Policies",
+        "hint": "As drafts. Approvals are the client's own and are not copied."
+      },
+      "assessmentTemplates": {
+        "label": "Assessment templates",
+        "hint": "Your own questionnaires and their custom questions."
+      },
+      "aiSystems": {
+        "label": "AI systems",
+        "hint": "Name, description and purpose only, as drafts. No owners, dates, classification or answers."
+      },
+      "oversightGates": {
+        "label": "Oversight gates",
+        "hint": "The gate definitions for the copied systems, waiting for a decision and unassigned."
+      },
+      "vendors": {
+        "label": "Vendors",
+        "hint": "Name, website, description and risk level. No contacts or contract dates."
+      },
+      "vendorReviews": {
+        "label": "Vendor review findings",
+        "hint": "As drafts, marked \"Copied from a template. Review for this client.\""
+      },
+      "obligations": {
+        "label": "Jurisdictions and screening answers",
+        "hint": "Only where this client has none yet. They wait for you to confirm them in Settings."
+      }
+    },
+    "needsPart": "Needs \"{part}\" as well.",
+    "skipped": "{count, plural, one {# already exists here and is left as it is.} other {# already exist here and are left as they are.}}",
+    "neverCopied": "Never copied: incidents, proceedings, evidence files, the audit trail, board reports, people and members, licences and billing.",
+    "flagsTitle": "{count, plural, one {# item still points at the other client} other {# items still point at the other client}}",
+    "flagsHint": "The other client's full name is replaced with this client's. These other mentions (a short form of the name, or its web or e-mail domain) are copied as they are, for you to review.",
+    "moreFlags": "{count, plural, one {and # more mention} other {and # more mentions}}",
+    "flagsAcknowledge": "I have seen these and will review them after the copy.",
+    "summary": "{count, plural, =0 {Nothing to copy with this choice.} one {# item will be copied as a draft.} other {# items will be copied as drafts.}}",
+    "submitCurrent": "Copy into this client",
+    "submitNew": "Create and copy",
+    "done": "Copied",
+    "failed": "The copy could not be completed.",
+    "resultSummary": "Copied into {client}:",
+    "resultStarted": "Copied items count as started, not done, until someone reviews them for this client. Policies and gates wait in the review queue.",
+    "resultFlaggedTitle": "Review these for mentions of the other client",
+    "openClient": "Open {client}"
   }
 }

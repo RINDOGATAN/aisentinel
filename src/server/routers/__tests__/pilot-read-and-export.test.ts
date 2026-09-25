@@ -142,6 +142,7 @@ const EDITS_THE_PILOT_REFUSES = [
   "proceedings.create", "proceedings.update", "proceedings.addEvent", "proceedings.completeEvent",
   "proceedings.delete",
   "boardReports.create", "boardReports.update", "boardReports.delete",
+  "clientTemplate.copy",
   "threatModel.create", "threatModel.update", "threatModel.addFromLibrary",
   "threatModel.addScenario", "threatModel.updateScenario", "threatModel.addControl",
   "threatModel.updateControl", "threatModel.recordTest", "threatModel.delete",

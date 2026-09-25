@@ -83,7 +83,52 @@ const COMPLETE: PathCounts = {
   confirmable: 57,
   boardReports: 1,
   auditEntries: 1,
+  copiedSystemsPending: 0,
+  copiedVendorsPending: 0,
+  copiedGatesPending: 0,
+  copiedObligationsPending: false,
 };
+
+describe("a programme copied from another client's template", () => {
+  // Directive D5: copied drafts count as "started", never "done".
+  it("keeps every step a copy could complete at started while the copies wait for review", () => {
+    const copied = {
+      ...COMPLETE,
+      copiedSystemsPending: 1,
+      copiedVendorsPending: 1,
+      copiedGatesPending: 1,
+      copiedObligationsPending: true,
+      quickstartCompleted: false,
+    };
+    const s = evaluatePath(PATH, copied);
+    for (const id of ["quickstart", "obligations", "systems", "vendors", "oversight"]) {
+      expect(s[id], id).toBe("started");
+    }
+  });
+
+  it("lets each step finish once its own copies are reviewed", () => {
+    expect(statusOf("vendors", { vendors: 3, copiedVendorsPending: 1 })).toBe("started");
+    expect(statusOf("vendors", { vendors: 3, copiedVendorsPending: 0 })).toBe("done");
+    expect(statusOf("oversight", { oversightGates: 2, copiedGatesPending: 2 })).toBe("started");
+    expect(statusOf("oversight", { oversightGates: 2, copiedGatesPending: 0 })).toBe("done");
+    expect(
+      statusOf("obligations", { jurisdictions: 1, regimeScreeningAnswered: true, copiedObligationsPending: true }),
+    ).toBe("started");
+    expect(
+      statusOf("systems", { systems: 2, systemsWithOwner: 2, copiedSystemsPending: 1 }),
+    ).toBe("started");
+    expect(
+      statusOf("quickstart", { systems: 1, vendors: 1, policies: 1, copiedVendorsPending: 1 }),
+    ).toBe("started");
+    expect(statusOf("quickstart", { systems: 1, vendors: 1, policies: 1 })).toBe("done");
+  });
+
+  it("never lets copied draft policies finish the policy steps", () => {
+    // Copies arrive as drafts; only an approval (the client's own act) finishes these.
+    expect(statusOf("policies", { policies: 6 })).toBe("started");
+    expect(statusOf("incidents", { incidentPolicies: 1 })).toBe("started");
+  });
+});
 
 describe("the shape of the path", () => {
   it("has six stages, with the quick start first", () => {

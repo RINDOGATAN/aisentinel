@@ -16,11 +16,19 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { AlertCircle, ChevronRight, Loader2, Plus } from "lucide-react";
+import { AlertCircle, ChevronRight, Copy, Loader2, MoreHorizontal, Plus } from "lucide-react";
 import { PageHeader } from "@/components/governance/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { AddOrganizationDialog } from "@/components/governance/add-organization-dialog";
+import { CopyFromClientDialog } from "@/components/governance/copy-from-client-dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { canUseForTemplate } from "@/config/client-template";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { PORTFOLIO_HREF } from "@/lib/account-mode";
@@ -33,7 +41,10 @@ const STAGES = AI_SENTINEL_PATH.stages;
 export default function PortfolioPage() {
   const t = useTranslations("guided");
   const tp = useTranslations("guided.portfolio");
+  const tt = useTranslations("clientTemplate");
   const router = useRouter();
+  // The client chosen with "Copy into a new client" in a row's menu.
+  const [copySource, setCopySource] = useState<{ id: string; name: string } | null>(null);
   const { setOrganization } = useOrganization();
   const { data: rows, isLoading } = trpc.programPath.portfolio.useQuery(undefined, {
     staleTime: 30_000,
@@ -96,6 +107,14 @@ export default function PortfolioPage() {
         onCreated={() => setAddOpenState(false)}
       />
 
+      {copySource && (
+        <CopyFromClientDialog
+          open
+          onOpenChange={(next) => !next && setCopySource(null)}
+          mode={{ kind: "new", source: copySource }}
+        />
+      )}
+
       {isLoading ? (
         <div className="flex items-center justify-center py-12">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
@@ -141,6 +160,7 @@ export default function PortfolioPage() {
                         >
                           {row.organizationName}
                         </button>
+                        <RowMenu row={row} onCopy={setCopySource} />
                         <Attention row={row} />
                       </th>
                       {STAGES.map((stage, i) => {
@@ -210,12 +230,58 @@ export default function PortfolioPage() {
                   <span className="mt-3 block text-xs text-muted-foreground">{tp("columnNext")}</span>
                   <span className="block text-sm">{nextLabel(row.steps)}</span>
                 </button>
+                {/* Outside the card's button: a button cannot hold another. */}
+                {canUseForTemplate(row.role) && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="mt-1"
+                    onClick={() => setCopySource({ id: row.organizationId, name: row.organizationName })}
+                  >
+                    <Copy className="size-4 mr-2" aria-hidden="true" />
+                    {tt("copyIntoNew")}
+                    <span className="sr-only">: {row.organizationName}</span>
+                  </Button>
+                )}
               </li>
             ))}
           </ul>
         </>
       )}
     </div>
+  );
+}
+
+/**
+ * The row menu: "Copy into a new client" (directive D5). Only where the
+ * person is an owner or an admin of the row's client; the server checks again.
+ * Clicks stay inside, so opening the menu does not open the client.
+ */
+function RowMenu({
+  row,
+  onCopy,
+}: {
+  row: { organizationId: string; organizationName: string; role: string };
+  onCopy: (source: { id: string; name: string }) => void;
+}) {
+  const tt = useTranslations("clientTemplate");
+  if (!canUseForTemplate(row.role)) return null;
+  return (
+    <span className="ml-1 inline-block align-middle" onClick={(e) => e.stopPropagation()}>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="icon" className="size-7" aria-label={tt("rowMenu", { client: row.organizationName })}>
+            <MoreHorizontal className="size-4" aria-hidden="true" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start">
+          <DropdownMenuItem onSelect={() => onCopy({ id: row.organizationId, name: row.organizationName })}>
+            <Copy className="size-4" aria-hidden="true" />
+            {tt("copyIntoNew")}
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </span>
   );
 }
 

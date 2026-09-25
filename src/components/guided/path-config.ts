@@ -112,6 +112,29 @@ export interface PathCounts {
   confirmable: number;
   boardReports: number;
   auditEntries: number;
+
+  /**
+   * Copied from another client's template and not yet reviewed here
+   * (src/config/client-template.ts). A copy is a start, never a finish: while
+   * any of these is above zero, the step it would otherwise complete shows
+   * "started".
+   */
+  copiedSystemsPending: number;
+  copiedVendorsPending: number;
+  /** Copied oversight gates nobody has confirmed. */
+  copiedGatesPending: number;
+  /** Jurisdictions or screening answers copied and not yet saved again here. */
+  copiedObligationsPending: boolean;
+}
+
+/** Everything copied from a template and not yet reviewed, in one number. */
+export function copiedPending(c: PathCounts): number {
+  return (
+    c.copiedSystemsPending +
+    c.copiedVendorsPending +
+    c.copiedGatesPending +
+    (c.copiedObligationsPending ? 1 : 0)
+  );
 }
 
 export const EMPTY_PATH_COUNTS: PathCounts = {
@@ -155,6 +178,10 @@ export const EMPTY_PATH_COUNTS: PathCounts = {
   confirmable: 0,
   boardReports: 0,
   auditEntries: 0,
+  copiedSystemsPending: 0,
+  copiedVendorsPending: 0,
+  copiedGatesPending: 0,
+  copiedObligationsPending: false,
 };
 
 export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
@@ -167,9 +194,10 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
           id: "quickstart",
           href: "/governance/quickstart",
           icon: Sparkles,
-          rule: "Done when the quick start has been completed once, or when the work it would do already exists (at least one system, one vendor and one policy). Started when a system, a vendor or a policy exists without that.",
+          rule: "Done when the quick start has been completed once, or when the work it would do already exists (at least one system, one vendor and one policy) and nothing copied from another client's template is waiting for review. Started when a system, a vendor or a policy exists without that.",
           status: (c) =>
-            c.quickstartCompleted || (c.systems > 0 && c.vendors > 0 && c.policies > 0)
+            c.quickstartCompleted ||
+            (c.systems > 0 && c.vendors > 0 && c.policies > 0 && copiedPending(c) === 0)
               ? "done"
               : c.systems + c.vendors + c.policies > 0
                 ? "started"
@@ -182,9 +210,9 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
           id: "obligations",
           href: "/governance/obligations",
           icon: CalendarClock,
-          rule: "Done when jurisdictions are declared and the regime screening in Settings has at least one answer. Started when jurisdictions are declared.",
+          rule: "Done when jurisdictions are declared and the regime screening in Settings has at least one answer, and neither was copied from another client's template without being saved again here. Started when jurisdictions are declared.",
           status: (c) =>
-            c.jurisdictions > 0 && c.regimeScreeningAnswered
+            c.jurisdictions > 0 && c.regimeScreeningAnswered && !c.copiedObligationsPending
               ? "done"
               : c.jurisdictions > 0
                 ? "started"
@@ -228,9 +256,9 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
           id: "systems",
           href: "/governance/ai-registry",
           icon: Brain,
-          rule: "Done when at least one system is registered and every system has a business owner. Started when a system is registered.",
+          rule: "Done when at least one system is registered, every system has a business owner, and no system copied from another client's template is waiting for review. Started when a system is registered.",
           status: (c) =>
-            c.systems > 0 && c.systemsWithOwner >= c.systems
+            c.systems > 0 && c.systemsWithOwner >= c.systems && c.copiedSystemsPending === 0
               ? "done"
               : c.systems > 0
                 ? "started"
@@ -252,8 +280,13 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
           id: "vendors",
           href: "/governance/vendors",
           icon: Building2,
-          rule: "Done when at least one vendor is recorded (the vendor catalogue is the way to add one).",
-          status: (c) => (c.vendors > 0 ? "done" : "todo"),
+          rule: "Done when at least one vendor is recorded (the vendor catalogue is the way to add one) and no vendor copied from another client's template is waiting for review. Started while copied vendors wait.",
+          status: (c) =>
+            c.vendors > 0 && c.copiedVendorsPending === 0
+              ? "done"
+              : c.vendors > 0
+                ? "started"
+                : "todo",
         },
       ],
     },
@@ -332,8 +365,9 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
           id: "oversight",
           href: "/governance/oversight",
           icon: Eye,
-          rule: "Done when every high-risk system has an oversight gate, or, with no high-risk system, when at least one gate exists. Started when any gate exists.",
+          rule: "Done when every high-risk system has an oversight gate, or, with no high-risk system, when at least one gate exists; in both cases only once no gate copied from another client's template is waiting for confirmation. Started when any gate exists.",
           status: (c) => {
+            if (c.copiedGatesPending > 0) return "started";
             if (c.highRisk > 0) {
               return c.highRiskWithGate >= c.highRisk
                 ? "done"

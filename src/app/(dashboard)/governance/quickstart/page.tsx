@@ -43,6 +43,7 @@ import {
   LayoutDashboard,
   Download,
   Check,
+  Copy,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations, useLocale } from "next-intl";
@@ -74,6 +75,8 @@ import type { JurisdictionId } from "@/config/jurisdictions";
 import { features } from "@/config/features";
 import { RiskTierBadge } from "@/components/governance/risk-tier-badge";
 import { corePoliciesMissingFrom, localizeCorePolicy } from "@/config/core-policy-pack";
+import { canUseForTemplate } from "@/config/client-template";
+import { CopyFromClientDialog } from "@/components/governance/copy-from-client-dialog";
 
 // ============================================================
 // ICON MAP
@@ -161,7 +164,15 @@ const POLICY_TYPE_KEY: Record<string, string> = {
 // ============================================================
 
 export default function QuickstartPage() {
-  const { organization, canWrite } = useOrganization();
+  const { organization, canWrite, userRole } = useOrganization();
+  const tct = useTranslations("clientTemplate");
+  const [copyOpen, setCopyOpen] = useState(false);
+  const templateRole = canUseForTemplate(userRole);
+  const { data: templateSources } = trpc.clientTemplate.sources.useQuery(
+    { excludeOrganizationId: organization?.id },
+    { enabled: !!organization && templateRole },
+  );
+  const canCopyFromClient = templateRole && (templateSources?.length ?? 0) > 0;
   const guided = useSkin().skin === "guided";
   const utilsForJurisdictions = trpc.useUtils();
   const t = useTranslations("quickstart");
@@ -714,7 +725,43 @@ export default function QuickstartPage() {
               </CardContent>
             </Card>
 
+            {/* Start from another client: a copy, not a wizard path, so it
+                opens its own dialog rather than joining the steps above.
+                Offered only to an owner or admin with another such client. */}
+            {canCopyFromClient && (
+              <Card
+                role="button"
+                tabIndex={0}
+                className="cursor-pointer transition-all hover:border-primary/50 focus-visible:ring-2 focus-visible:ring-ring outline-none"
+                onClick={() => setCopyOpen(true)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setCopyOpen(true);
+                  }
+                }}
+              >
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <Copy className="w-8 h-8 text-primary" aria-hidden="true" />
+                    <Badge variant="outline" className={STATUS_OUTLINE.good}>
+                      {tc("free")}
+                    </Badge>
+                  </div>
+                  <CardTitle className="text-lg">{tct("cardTitle")}</CardTitle>
+                  <CardDescription>{tct("cardDescription")}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge variant="secondary">{tct("chipCopiedDrafts")}</Badge>
+                    <Badge variant="secondary">{tct("chipNoLinks")}</Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
+
+          <CopyFromClientDialog open={copyOpen} onOpenChange={setCopyOpen} mode={{ kind: "current" }} />
 
           <div className="flex justify-end">
             <Button

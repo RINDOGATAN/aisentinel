@@ -13,6 +13,7 @@ import { importInventoryRows } from "@/server/services/inventory/import-systems"
 import { suggestSystemFields } from "@/lib/system-prefill";
 import { createStarterArtifacts } from "@/server/services/program/starter-artifacts";
 import { assertPilotRoom, pilotLocale } from "@/server/services/pilot/caps";
+import { withoutTemplateCopyMark } from "@/config/client-template";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { TRPCError } from "@trpc/server";
 import { chatComplete } from "../../services/ai/llm-door";
@@ -249,9 +250,16 @@ export const aiSystemRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { id, organizationId, ...data } = input;
 
+      // Editing a system copied from another client's template confirms it.
+      const current = await ctx.prisma.aISystem.findFirst({
+        where: { id, organizationId: ctx.organization.id },
+        select: { metadata: true },
+      });
+      const confirmedMetadata = withoutTemplateCopyMark(current?.metadata);
+
       const system = await ctx.prisma.aISystem.updateMany({
         where: { id, organizationId: ctx.organization.id },
-        data: data as never,
+        data: (confirmedMetadata ? { ...data, metadata: confirmedMetadata } : data) as never,
       });
 
       if (system.count === 0) {

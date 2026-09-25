@@ -267,7 +267,57 @@ test("a new user's first session, end to end", async ({ page }, testInfo) => {
 
   await step(page, watch, "sign out", async () => {
     await page.goto("/governance");
-    await page.getByTitle("Sign out").click();
+    // Guided is the default layout: sign out is in the account menu, which
+    // sits in the header at every width.
+    await page.getByRole("button", { name: "Account", exact: true }).click();
+    await page.getByRole("menuitem", { name: "Sign out", exact: true }).click();
+    await page.waitForURL(/\/sign-in/);
+  });
+});
+
+/**
+ * Classic stays reachable while it is being retired: the `?skin=classic`
+ * address keeps the choice in its cookie, the top-bar layout shows, and its
+ * own sign-out works.
+ */
+test("the classic layout is still reachable", async ({ page }, testInfo) => {
+  const run = `${testInfo.project.name}-classic-${Date.now()}`;
+  const watch = new Watch(page, new URL(testInfo.project.use.baseURL ?? "http://localhost").origin);
+
+  await step(page, watch, "sign in and pass the first-run screens", async () => {
+    await page.goto("/sign-in");
+    await page.waitForLoadState("networkidle");
+    await page.locator('input[type="email"]').fill(`smoke-${run}@example.test`);
+    await page.getByRole("button", { name: "Sign in", exact: true }).click();
+    await page.waitForURL(/\/governance/);
+    await page.getByRole("button", { name: "Continue" }).click();
+    await page.locator("#org-name").fill(`Smoke firm ${run}`);
+    await page.getByRole("button", { name: "Create organization and continue" }).click();
+    await page.waitForURL(/\/governance\/quickstart/);
+  });
+
+  await step(page, watch, "choose Classic and see its menus", async () => {
+    await page.goto("/governance?skin=classic");
+    // The middleware stores the choice and drops the parameter.
+    await expect(page).not.toHaveURL(/skin=/);
+    // Guided's account menu is gone; Classic offers the way back to Guided.
+    await expect(page.getByRole("button", { name: "Account", exact: true })).toHaveCount(0);
+    if (isPhone(page)) {
+      await page.getByRole("button", { name: "Open menu", exact: true }).click();
+      const sheet = page.getByRole("dialog");
+      await expect(sheet.getByRole("button", { name: "Use the guided layout" })).toBeVisible();
+      await page.keyboard.press("Escape");
+      await expect(sheet).toBeHidden();
+    } else {
+      await expect(page.getByRole("button", { name: "Use the guided layout" })).toBeVisible();
+      // The top-bar menus: the header's navigation holds the group triggers.
+      const topBar = page.locator("header nav");
+      await expect(topBar.getByRole("button").first()).toBeVisible();
+    }
+  });
+
+  await step(page, watch, "sign out from Classic", async () => {
+    await page.getByRole("button", { name: "Sign out", exact: true }).click();
     await page.waitForURL(/\/sign-in/);
   });
 });

@@ -49,11 +49,14 @@ import { DeploymentExpertCta } from "@/components/governance/deployment-expert-c
 import { TierMarker } from "@/components/governance/risk-tier-badge";
 import { WorkedExampleOffer } from "@/components/governance/worked-example-card";
 import { TIER_BG_CLASS, type RiskTier } from "@/config/risk-tier-palette";
+import { useSkin } from "@/components/guided/skin-context";
+import { NextStepCard } from "@/components/guided/next-step-card";
 
 export default function GovernanceDashboardPage() {
   const { organization, organizations, setOrganization, canWrite } = useOrganization();
   const { userType } = useUserType();
   const switcher = organizationSwitcherView(userType);
+  const { skin } = useSkin();
   const t = useTranslations("dashboard");
   const locale = useLocale();
   const tc = useTranslations("common");
@@ -168,6 +171,9 @@ export default function GovernanceDashboardPage() {
           </DropdownMenu>
         )}
       </div>
+
+      {/* Guided layout only: the next step on the program path. */}
+      {skin === "guided" && organization && <NextStepCard />}
 
       {/* The first-run choice, so an empty dashboard offers a way to fill
           itself in rather than only empty tiles. Renders nothing once either

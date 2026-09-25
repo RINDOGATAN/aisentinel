@@ -16,6 +16,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { localeCleanupSetCookies } from "@/lib/locale-cookie";
 import { currencyForCountry } from "@/lib/currency";
+import {
+  SKIN_COOKIE,
+  SKIN_COOKIE_OPTIONS,
+  SKIN_QUERY,
+  isDashboardPath,
+  skinFromQuery,
+} from "@/lib/skin";
 
 export default function middleware(request: NextRequest) {
   // Skip for API routes, static files, and Next.js internals
@@ -26,6 +33,18 @@ export default function middleware(request: NextRequest) {
     pathname.includes(".")
   ) {
     return NextResponse.next();
+  }
+
+  // `?skin=guided` / `?skin=classic` on a dashboard address (for demos): keep
+  // the choice in its cookie and come back to the same address without the
+  // parameter, so the layout reads the cookie on the one render that follows.
+  const askedSkin = skinFromQuery(request.nextUrl.searchParams.get(SKIN_QUERY));
+  if (askedSkin && isDashboardPath(pathname)) {
+    const clean = request.nextUrl.clone();
+    clean.searchParams.delete(SKIN_QUERY);
+    const redirect = NextResponse.redirect(clean);
+    redirect.cookies.set(SKIN_COOKIE, askedSkin, SKIN_COOKIE_OPTIONS);
+    return redirect;
   }
 
   const response = NextResponse.next();

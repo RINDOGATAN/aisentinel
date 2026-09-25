@@ -359,6 +359,20 @@ describe("rows of actions fit a phone", () => {
     for (const jsx of safe) expect(scanSource("s.tsx", `const S = () => ${jsx};`), jsx).toEqual([]);
   });
 
+  it("reads the Guided layout's rows too", () => {
+    for (const file of [
+      "src/components/guided/guided-layout.tsx",
+      "src/components/guided/path-menu.tsx",
+      "src/components/guided/next-step-card.tsx",
+      "src/components/guided/layout-card.tsx",
+      "src/app/(dashboard)/governance/portfolio/page.tsx",
+    ]) {
+      expect(FILES).toContain(file);
+      const found = scanSource(file, readFileSync(file, "utf8"));
+      expect(found, file).toEqual([]);
+    }
+  });
+
   it("catches three text buttons side by side", () => {
     const jsx = `const S = () => <div className="flex items-center gap-2"><Button>{a}</Button><Link href="/x"><Button>{b}</Button></Link>{ok && <Button>Save</Button>}</div>;`;
     expect(scanSource("s.tsx", jsx).map((v) => v.rule)).toEqual(["crowded-row"]);

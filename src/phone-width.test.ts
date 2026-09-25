@@ -221,6 +221,36 @@ describe("no sideways scrolling on a phone, signed in", () => {
     expect(gridWithoutColumns('className="grid place-content-center text-current"')).toBe(false);
   });
 
+  it("reads the Guided layout and keeps its left menu off a phone", () => {
+    for (const file of [
+      "src/components/guided/guided-layout.tsx",
+      "src/components/guided/path-menu.tsx",
+      "src/components/guided/next-step-card.tsx",
+      "src/components/guided/layout-card.tsx",
+      "src/app/(dashboard)/governance/portfolio/page.tsx",
+    ]) {
+      expect(FILES).toContain(file);
+    }
+    // The left menu takes its width only from lg; below that the path lives in
+    // the side sheet and the one-line stage bar, which spans the screen.
+    const layout = readFileSync("src/components/guided/guided-layout.tsx", "utf8");
+    expect(layout).toMatch(/<aside[\s\S]{0,80}"hidden lg:flex/);
+    expect(layout).toContain('collapsed ? "lg:w-[4.5rem]" : "lg:w-72"');
+    expect(layout).toMatch(/lg:hidden sticky top-14 z-40 flex min-h-11 w-full/);
+    // The portfolio is a table from md only; on a phone it is a list of cards.
+    const portfolio = readFileSync("src/app/(dashboard)/governance/portfolio/page.tsx", "utf8");
+    expect(portfolio).toContain('className="hidden md:block overflow-hidden"');
+    expect(portfolio).toContain('<div className="overflow-x-auto">');
+    expect(portfolio).toContain('className="md:hidden flex flex-col gap-3"');
+  });
+
+  it("gives every Guided tap target on a phone at least 44 px", () => {
+    const menu = readFileSync("src/components/guided/path-menu.tsx", "utf8");
+    // Sheet rows are min-h-11 (44 px), stage buttons min-h-12 (48 px).
+    expect(menu).toContain('const rowHeight = sheet ? "min-h-11" : "min-h-9";');
+    expect(menu).toContain('sheet ? "min-h-12" : "min-h-11"');
+  });
+
   it("keeps the dashboard's own grids on a stated column count", () => {
     const page = readFileSync("src/app/(dashboard)/governance/page.tsx", "utf8");
     expect(page).toContain("grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-2");

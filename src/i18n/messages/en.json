@@ -5464,5 +5464,168 @@
     "exportAll": "Export everything (program pack)",
     "afterExportBody": "Your file is downloaded. You can now empty this account.",
     "afterExportAction": "Empty the account"
+  },
+  "guided": {
+    "navLabel": "Program path",
+    "overview": "Dashboard",
+    "pathTitle": "Program path",
+    "libraryTitle": "Library and tools",
+    "stageProgress": "{done} of {total}",
+    "stageNumber": "Stage {number}",
+    "loading": "Loading progress",
+    "stageState": {
+      "todo": "Not started",
+      "started": "In progress",
+      "done": "Done"
+    },
+    "stepStatus": {
+      "todo": "Not started",
+      "started": "In progress",
+      "done": "Done",
+      "coming": "Coming",
+      "optional": "When needed"
+    },
+    "stages": {
+      "setup": "Set up",
+      "people": "Policies and people",
+      "inventory": "Inventory",
+      "assess": "Classify and assess",
+      "controls": "Controls and transparency",
+      "monitor": "Monitor and improve"
+    },
+    "steps": {
+      "quickstart": {
+        "label": "Quick start",
+        "why": "It sets your jurisdictions, applies an industry template and imports your vendors from the catalog, so the rest of the program starts filled in."
+      },
+      "frameworks": {
+        "label": "Frameworks and scope",
+        "why": "Which frameworks apply depends on where you operate. Declare your jurisdictions and map the frameworks to your systems."
+      },
+      "obligations": {
+        "label": "Regimes and obligations",
+        "why": "Answer the regime screening in Settings so the obligations and their dates are the ones that apply to you."
+      },
+      "policies": {
+        "label": "AI policy and acceptable use",
+        "why": "An approved acceptable-use policy tells everyone which AI tools they may use, and how."
+      },
+      "prohibited": {
+        "label": "Prohibited-practice screen",
+        "why": "A screen of every use against the practices the EU AI Act prohibits."
+      },
+      "literacy": {
+        "label": "AI literacy",
+        "why": "A record of the AI training given to the people who use or oversee AI."
+      },
+      "systems": {
+        "label": "AI systems",
+        "why": "Every system needs a record and a business owner before it can be classified."
+      },
+      "shadowAi": {
+        "label": "Shadow AI",
+        "why": "Record the AI tools people already use without approval, then decide on each one."
+      },
+      "vendors": {
+        "label": "Vendors",
+        "why": "Most AI reaches you through vendors. Add them from the vendor catalog."
+      },
+      "classification": {
+        "label": "Risk classification",
+        "why": "The risk tier of each system decides which obligations apply to it."
+      },
+      "assessments": {
+        "label": "Impact and risk assessments",
+        "why": "High-risk systems need an approved impact assessment."
+      },
+      "threatModel": {
+        "label": "Threat model",
+        "why": "Write down what could go wrong with the systems you build, and how each risk is stopped and tested."
+      },
+      "vendorDueDiligence": {
+        "label": "Vendor due diligence",
+        "why": "Each vendor needs a completed due-diligence review."
+      },
+      "oversight": {
+        "label": "Human oversight",
+        "why": "High-risk systems need a person who can review, approve or stop them."
+      },
+      "transparency": {
+        "label": "Transparency",
+        "why": "Record for each system whether people must be told they are dealing with AI. Open a system and use its Transparency (Art. 50) tab."
+      },
+      "evidence": {
+        "label": "Evidence and framework mapping",
+        "why": "Give each requirement a status and attach the evidence that supports it."
+      },
+      "sensitiveData": {
+        "label": "Sensitive data",
+        "why": "Classify the sensitive data your systems use, starting with personal data."
+      },
+      "incidents": {
+        "label": "Incidents",
+        "why": "Approve an incident-response policy so everyone knows what to do and the legal deadlines are met."
+      },
+      "proceedings": {
+        "label": "Proceedings",
+        "why": "Track an inquiry or a case from an authority or a court, if there is one."
+      },
+      "review": {
+        "label": "Review queue",
+        "why": "What the product drafted for you counts only once a person confirms it."
+      },
+      "board": {
+        "label": "Board reporting",
+        "why": "Report the state of the program to your board, with figures that can be reproduced."
+      },
+      "audit": {
+        "label": "Audit trail",
+        "why": "Every change is recorded here on its own."
+      }
+    },
+    "library": {
+      "program": "Program map",
+      "vendorCatalog": "Vendor catalog",
+      "skills": "Skills",
+      "billing": "Billing",
+      "settings": "Settings"
+    },
+    "collapse": "Collapse the menu",
+    "expand": "Expand the menu",
+    "allClients": "All clients",
+    "switchClient": "Switch client",
+    "addOrganization": "Add organization",
+    "account": "Account",
+    "phoneBar": "Stage {number} of {total} · {stage}",
+    "phoneBarDone": "Every stage is done",
+    "phoneBarOpen": "Open the program path",
+    "nextStep": {
+      "title": "Next step",
+      "stage": "Stage {number} · {stage}",
+      "button": "Go to {step}",
+      "allDoneTitle": "Every stage is done",
+      "allDoneBody": "Keep the program current: confirm what changes and report to the board.",
+      "allDoneButton": "Open the program map"
+    },
+    "layout": {
+      "title": "Layout",
+      "description": "Classic keeps the menus in the top bar. Guided shows a menu on the left that takes you through the program, stage by stage.",
+      "classic": "Classic",
+      "guided": "Guided (preview)",
+      "changed": "Layout changed.",
+      "useClassic": "Use the classic layout"
+    },
+    "portfolio": {
+      "title": "Clients",
+      "subtitle": "Where each client stands on the program path.",
+      "count": "{count, plural, one {# organization} other {# organizations}}",
+      "columnClient": "Client",
+      "columnNext": "Next step",
+      "allDone": "All stages done",
+      "unknown": "Could not be read",
+      "empty": "No organizations yet.",
+      "open": "Open {client}",
+      "stageCell": "{stage}: {done} of {total}"
+    }
   }
 }

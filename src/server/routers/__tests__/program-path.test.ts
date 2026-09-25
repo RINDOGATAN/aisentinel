@@ -28,6 +28,11 @@ const H = vi.hoisted(() => {
       calls.push({ model: name, op: "count", where });
       return 0;
     },
+    // The agents for the AIUC-1 step (services/aiuc1/readiness.ts): none here.
+    findMany: async ({ where }: { where: Where }) => {
+      calls.push({ model: name, op: "findMany", where });
+      return [];
+    },
   });
 
   const db: Record<string, unknown> = new Proxy(
@@ -90,6 +95,11 @@ describe("programPath.status", () => {
     const counts = H.calls.filter((c) => c.op === "count");
     expect(counts.length).toBeGreaterThan(30);
     for (const c of counts) expect(c.where.organizationId, c.model).toBe("org-a");
+    const lists = H.calls.filter((c) => c.op === "findMany");
+    expect(lists.map((c) => c.model)).toEqual(["aISystem"]);
+    for (const c of lists) expect(c.where.organizationId, c.model).toBe("org-a");
+    // No agent: the AIUC-1 step does not concern this organisation.
+    expect(result.steps.agentTesting).toBe("hidden");
     const org = H.calls.find((c) => c.model === "organization");
     expect(org?.where).toEqual({ id: "org-a" });
   });

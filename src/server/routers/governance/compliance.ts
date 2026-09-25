@@ -6,6 +6,7 @@ import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure, publicProcedure } from "../../trpc";
 import { buildScopeFilter } from "@/lib/applicability-scope";
 import { assertNotOnHold } from "../../services/legal-hold";
+import { isAiuc1Record } from "@/config/aiuc1-evidence";
 
 const FRAMEWORK_ORDER = [
   "EU_AI_ACT",
@@ -461,6 +462,15 @@ export const complianceRouter = createTRPCRouter({
 
       if (!evidence) {
         throw new TRPCError({ code: "NOT_FOUND", message: "Evidence item not found" });
+      }
+
+      // AIUC-1 tests and acceptances are appended, never deleted: the record
+      // of a failed test is the point. A later test supersedes it instead.
+      if (isAiuc1Record(evidence)) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "AIUC-1 test records are kept: record a new test instead.",
+        });
       }
 
       await assertNotOnHold(ctx.prisma, ctx.organization.id);

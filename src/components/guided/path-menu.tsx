@@ -21,6 +21,7 @@ import {
   currentLibraryId,
   currentStepId,
   isCounted,
+  isShown,
   overallPercent,
   stageOfStep,
   stageOpenByDefault,
@@ -65,7 +66,9 @@ const FOCUS =
 
 /** Where a stage's icon leads when the menu shows icons only: its first step not done. */
 function stageTarget<C>(stage: PathStage<C>, statuses: PathStatuses | null): string | null {
-  const open = stage.steps.find((s) => s.href && isCounted(s) && statuses?.[s.id] !== "done");
+  const open = stage.steps.find(
+    (s) => s.href && isCounted(s) && isShown(s, statuses) && statuses?.[s.id] !== "done",
+  );
   return (open ?? stage.steps.find((s) => s.href))?.href ?? null;
 }
 
@@ -281,7 +284,7 @@ export function PathMenu<C>({
                 )}
               >
                 <ul className="min-h-0 overflow-hidden flex flex-col gap-0.5 pl-5">
-                  {stage.steps.map((step) => (
+                  {stage.steps.filter((step) => isShown(step, statuses)).map((step) => (
                     <li key={step.id} className="border-l border-border pl-2 first:mt-0.5 last:mb-1">
                       <StepRow
                         step={step}

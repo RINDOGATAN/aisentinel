@@ -10,6 +10,7 @@
 
 import {
   AlertTriangle,
+  Bot,
   Brain,
   Building2,
   CalendarClock,
@@ -68,6 +69,7 @@ export function buildNavGroups(
         { href: "/governance/ai-registry", label: t("aiRegistry"), icon: Brain },
         { href: "/governance/risk-classification", label: t("riskClassification"), icon: ShieldAlert },
         { href: "/governance/threat-model", label: t("threatModel"), icon: Crosshair },
+        { href: "/governance/agent-testing", label: t("agentTesting"), icon: Bot },
       ],
     },
     {

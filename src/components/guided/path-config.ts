@@ -16,6 +16,7 @@
 
 import {
   AlertTriangle,
+  Bot,
   Brain,
   Building2,
   CalendarClock,
@@ -84,6 +85,12 @@ export interface PathCounts {
   threatModels: number;
   /** Threat models past DRAFT (active or archived). */
   threatModelsActive: number;
+  /** Systems that are AI agents (src/config/aiuc1-evidence.ts, isAgentSystem). */
+  agents: number;
+  /** Agents ready for the AIUC-1 audit (every applicable requirement passed or accepted). */
+  agentsReadyForAudit: number;
+  /** Agents with at least one AIUC-1 test or not-applicable decision recorded. */
+  agentsStartedTesting: number;
 
   oversightGates: number;
   /** High-risk or prohibited systems with at least one oversight gate. */
@@ -130,6 +137,9 @@ export const EMPTY_PATH_COUNTS: PathCounts = {
   assessmentsApproved: 0,
   threatModels: 0,
   threatModelsActive: 0,
+  agents: 0,
+  agentsReadyForAudit: 0,
+  agentsStartedTesting: 0,
   oversightGates: 0,
   highRiskWithGate: 0,
   transparencyProfiles: 0,
@@ -294,6 +304,21 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
             c.vendors > 0 && c.vendorsAssessed >= c.vendors
               ? "done"
               : c.vendorAssessments > 0
+                ? "started"
+                : "todo",
+        },
+        // Last in the stage on purpose: it is hidden for most organisations,
+        // and the numbers of the steps before it must not move.
+        {
+          id: "agentTesting",
+          href: "/governance/agent-testing",
+          icon: Bot,
+          rule: "Shown only when the inventory holds an AI agent (technique Agentic AI, or an agent profile that acts). Done when every agent is ready for the AIUC-1 audit: each applicable requirement has a current pass or an accepted partial. Started when any agent has a test or a not-applicable decision recorded.",
+          shownWhen: (c) => c.agents > 0,
+          status: (c) =>
+            c.agents > 0 && c.agentsReadyForAudit >= c.agents
+              ? "done"
+              : c.agentsStartedTesting > 0
                 ? "started"
                 : "todo",
         },

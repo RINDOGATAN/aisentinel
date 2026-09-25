@@ -13,6 +13,7 @@
 import type { PrismaClient } from "@prisma/client";
 import type { PathCounts } from "@/components/guided/path-config";
 import { UNCONFIRMED_WHERE } from "@/server/services/provenance/summary";
+import { loadAgentTestingCounts } from "@/server/services/aiuc1/readiness";
 
 const HIGH_RISK = { riskLevel: { in: ["HIGH" as const, "UNACCEPTABLE" as const] } };
 const APPROVED_POLICY = { status: { in: ["APPROVED" as const, "PUBLISHED" as const] } };
@@ -68,6 +69,7 @@ export async function loadPathCounts(
     unconfirmed,
     boardReports,
     auditEntries,
+    agentTesting,
   ] = await Promise.all([
     prisma.organization.findFirst({
       where: { id: organizationId },
@@ -110,6 +112,9 @@ export async function loadPathCounts(
     countUnconfirmed(prisma, organizationId),
     prisma.boardReport.count({ where: org }),
     prisma.auditLog.count({ where: org, take: 1 }),
+    // Not a count: readiness is a rule over each agent's evidence. Two small
+    // queries, and the second is skipped when there is no agent.
+    loadAgentTestingCounts(prisma, organizationId),
   ]);
 
   const settings = settingsObject(organization?.settings);
@@ -140,6 +145,7 @@ export async function loadPathCounts(
     assessmentsApproved,
     threatModels,
     threatModelsActive,
+    ...agentTesting,
     oversightGates,
     highRiskWithGate,
     transparencyProfiles,

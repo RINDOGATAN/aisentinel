@@ -25,8 +25,10 @@ import type { LucideIcon } from "lucide-react";
  * - `started`  there is something, but not yet enough
  * - `todo`     nothing yet
  * - `coming`   the product has no page for it yet
+ * - `hidden`   the step does not concern this organisation (its `shownWhen`
+ *              rule is not met): not shown, not counted, never the next step
  */
-export type StepStatus = "done" | "started" | "todo" | "coming";
+export type StepStatus = "done" | "started" | "todo" | "coming" | "hidden";
 
 /** A stage as a whole: not started, in progress, or done. */
 export type StageState = "todo" | "started" | "done";
@@ -39,8 +41,16 @@ export interface PathStep<C> {
   icon: LucideIcon;
   /** The "done" rule in plain words, for the next person to change it. */
   rule: string;
-  /** The rule itself. Never called for a step that is coming. */
-  status?: (counts: C) => Exclude<StepStatus, "coming">;
+  /** The rule itself. Never called for a step that is coming or hidden. */
+  status?: (counts: C) => Exclude<StepStatus, "coming" | "hidden">;
+  /**
+   * Only for some organisations (testing AI agents, when the inventory holds
+   * an agent): the step exists for this organisation only while this rule
+   * holds; otherwise its status is `hidden`. While the statuses are still
+   * loading, a step with this rule is not shown either: better to add a line
+   * a moment later than to show one that then disappears.
+   */
+  shownWhen?: (counts: C) => boolean;
   /** No page carries it yet: shown, labelled "coming", never counted. */
   coming?: boolean;
   /**
@@ -78,7 +88,12 @@ export function evaluatePath<C>(config: PathConfig<C>, counts: C): PathStatuses 
   const out: PathStatuses = {};
   for (const stage of config.stages) {
     for (const step of stage.steps) {
-      out[step.id] = step.coming || !step.status ? "coming" : step.status(counts);
+      out[step.id] =
+        step.coming || !step.status
+          ? "coming"
+          : step.shownWhen && !step.shownWhen(counts)
+            ? "hidden"
+            : step.status(counts);
     }
   }
   return out;
@@ -87,6 +102,14 @@ export function evaluatePath<C>(config: PathConfig<C>, counts: C): PathStatuses 
 /** A step that counts towards progress: it has a page and is not situational. */
 export function isCounted<C>(step: PathStep<C>): boolean {
   return !step.coming && !step.optional;
+}
+
+/** Whether a step is shown for these statuses (null while they load). */
+export function isShown<C>(step: PathStep<C>, statuses: PathStatuses | null): boolean {
+  if (!step.shownWhen) return true;
+  if (!statuses) return false;
+  const status = statuses[step.id];
+  return status !== undefined && status !== "hidden";
 }
 
 export interface StageProgress {
@@ -100,7 +123,7 @@ export interface StageProgress {
  * every counted step is; in progress when any counted step is done or started.
  */
 export function stageProgress<C>(stage: PathStage<C>, statuses: PathStatuses): StageProgress {
-  const counted = stage.steps.filter(isCounted);
+  const counted = stage.steps.filter((s) => isCounted(s) && isShown(s, statuses));
   const done = counted.filter((s) => statuses[s.id] === "done").length;
   const moving = counted.some((s) => statuses[s.id] === "done" || statuses[s.id] === "started");
   const state: StageState =
@@ -130,7 +153,9 @@ export interface NextStep<C> {
 export function nextStep<C>(config: PathConfig<C>, statuses: PathStatuses): NextStep<C> | null {
   for (const [stageIndex, stage] of config.stages.entries()) {
     for (const step of stage.steps) {
-      if (isCounted(step) && statuses[step.id] !== "done") return { stage, stageIndex, step };
+      if (isCounted(step) && isShown(step, statuses) && statuses[step.id] !== "done") {
+        return { stage, stageIndex, step };
+      }
     }
   }
   return null;
@@ -199,13 +224,21 @@ export interface SequenceEntry<C> {
 /**
  * Every step that has a page, in path order: the walk the "Next step" button
  * follows. Coming steps have no page and are skipped; optional steps are
- * places too, so they stay in the walk.
+ * places too, so they stay in the walk. Given `statuses`, a step hidden for
+ * this organisation is skipped too, except `keep` (the page the person is
+ * on, reached by its address). Numbers stay those of the config, which is
+ * why a step that can be hidden goes last in its stage.
  */
-export function stepSequence<C>(config: PathConfig<C>): SequenceEntry<C>[] {
+export function stepSequence<C>(
+  config: PathConfig<C>,
+  statuses?: PathStatuses | null,
+  keep?: string | null,
+): SequenceEntry<C>[] {
   const out: SequenceEntry<C>[] = [];
   for (const [stageIndex, stage] of config.stages.entries()) {
     for (const [stepIndex, step] of stage.steps.entries()) {
       if (!step.href || step.coming) continue;
+      if (statuses !== undefined && step.id !== keep && !isShown(step, statuses)) continue;
       out.push({ stage, stageIndex, step, number: `${stageIndex + 1}.${stepIndex + 1}` });
     }
   }
@@ -216,9 +249,10 @@ export function stepSequence<C>(config: PathConfig<C>): SequenceEntry<C>[] {
 export function stepAndFollowing<C>(
   config: PathConfig<C>,
   stepId: string | null,
+  statuses?: PathStatuses | null,
 ): { current: SequenceEntry<C>; following: SequenceEntry<C> | null } | null {
   if (!stepId) return null;
-  const sequence = stepSequence(config);
+  const sequence = stepSequence(config, statuses, stepId);
   const index = sequence.findIndex((e) => e.step.id === stepId);
   if (index < 0) return null;
   return { current: sequence[index], following: sequence[index + 1] ?? null };

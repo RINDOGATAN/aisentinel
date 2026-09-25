@@ -65,6 +65,9 @@ const COMPLETE: PathCounts = {
   assessmentsApproved: 1,
   threatModels: 1,
   threatModelsActive: 1,
+  agents: 2,
+  agentsReadyForAudit: 2,
+  agentsStartedTesting: 2,
   oversightGates: 3,
   highRiskWithGate: 1,
   transparencyProfiles: 4,
@@ -199,7 +202,7 @@ describe("the done rules", () => {
   it("marks a new organisation not started everywhere, and the unbuilt steps coming", () => {
     const s = evaluatePath(PATH, EMPTY_PATH_COUNTS);
     for (const st of steps) {
-      expect(s[st.id], st.id).toBe(st.coming ? "coming" : "todo");
+      expect(s[st.id], st.id).toBe(st.coming ? "coming" : st.shownWhen ? "hidden" : "todo");
     }
     expect(s.prohibited).toBe("coming");
     expect(s.literacy).toBe("coming");
@@ -284,6 +287,50 @@ describe("the done rules", () => {
     expect(statusOf("vendorDueDiligence", { vendors: 2, vendorsAssessed: 2, vendorAssessments: 2 })).toBe(
       "done",
     );
+  });
+
+  it("agent testing (AIUC-1): shown only with an agent, done when every agent is ready for audit", () => {
+    // No agent: the step does not concern the organisation.
+    expect(statusOf("agentTesting", {})).toBe("hidden");
+    expect(statusOf("agentTesting", { agentsStartedTesting: 1 })).toBe("hidden");
+    // An agent: shown, and not started until something is recorded.
+    expect(statusOf("agentTesting", { agents: 1 })).toBe("todo");
+    expect(statusOf("agentTesting", { agents: 2, agentsStartedTesting: 1 })).toBe("started");
+    expect(statusOf("agentTesting", { agents: 2, agentsStartedTesting: 2, agentsReadyForAudit: 1 })).toBe(
+      "started",
+    );
+    expect(statusOf("agentTesting", { agents: 2, agentsStartedTesting: 2, agentsReadyForAudit: 2 })).toBe(
+      "done",
+    );
+  });
+
+  it("agent testing sits in stage 4, last, so no other step's number moves when it is hidden", () => {
+    const assess = PATH.stages.find((s) => s.id === "assess")!;
+    expect(assess.steps.at(-1)?.id).toBe("agentTesting");
+    expect(step("agentTesting").shownWhen).toBeTypeOf("function");
+    // Only this step is conditional: every other step shows for everyone.
+    expect(steps.filter((s) => s.shownWhen).map((s) => s.id)).toEqual(["agentTesting"]);
+  });
+
+  it("a hidden step is not counted, not offered next, and not in the 'Next step' walk", () => {
+    const noAgent = evaluatePath(PATH, { ...COMPLETE, agents: 0, agentsReadyForAudit: 0, agentsStartedTesting: 0 });
+    const assess = PATH.stages.find((s) => s.id === "assess")!;
+    expect(noAgent.agentTesting).toBe("hidden");
+    expect(stageProgress(assess, noAgent)).toEqual({ done: 4, total: 4, state: "done" });
+    expect(nextStep(PATH, noAgent)).toBeNull();
+    // With an agent not yet ready, the stage waits for it and it is the next step.
+    const agentWaiting = evaluatePath(PATH, { ...COMPLETE, agentsReadyForAudit: 1 });
+    expect(stageProgress(assess, agentWaiting)).toEqual({ done: 4, total: 5, state: "started" });
+    expect(nextStep(PATH, agentWaiting)?.step.id).toBe("agentTesting");
+    // The walk: from vendor checks straight to oversight when hidden, through it when shown.
+    expect(stepAndFollowing(PATH, "vendorDueDiligence", noAgent)?.following?.step.id).toBe("oversight");
+    expect(stepAndFollowing(PATH, "vendorDueDiligence", agentWaiting)?.following?.step.id).toBe(
+      "agentTesting",
+    );
+    // Reached by its address with no agent, the page still has its band.
+    expect(stepAndFollowing(PATH, "agentTesting", noAgent)?.current.number).toBe("4.5");
+    // While the statuses load, a conditional step is not shown.
+    expect(stepSequence(PATH, null).some((e) => e.step.id === "agentTesting")).toBe(false);
   });
 
   it("oversight: every high-risk system gated", () => {
@@ -387,8 +434,9 @@ describe("progress and the next step", () => {
     const onlyUncounted: PathStatuses = { ...evaluatePath(PATH, EMPTY_PATH_COUNTS), audit: "done", proceedings: "done" };
     expect(overallPercent(PATH, onlyUncounted)).toBe(0);
     // Each counted step done moves it by the same share, rounded to a whole number.
+    // With an agent in the inventory, so that every counted step is shown.
     for (let n = 1; n <= counted.length; n++) {
-      const statuses: PathStatuses = evaluatePath(PATH, EMPTY_PATH_COUNTS);
+      const statuses: PathStatuses = evaluatePath(PATH, { ...EMPTY_PATH_COUNTS, agents: 1 });
       for (const s of counted.slice(0, n)) statuses[s.id] = "done";
       expect(overallPercent(PATH, statuses), `${n} done`).toBe(Math.round((n / counted.length) * 100));
     }

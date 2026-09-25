@@ -57,7 +57,8 @@ import { currentStepId, nextStep, overallProgress } from "./path";
 import { PathMenu } from "./path-menu";
 import { StepBand } from "./step-band";
 import { ProgressBar } from "./progress-ring";
-import { useProgramPath, useProgramPathRefresh } from "./use-program-path";
+import { usePlanState, useProgramPath, useProgramPathRefresh } from "./use-program-path";
+import { planDayText } from "./plan-text";
 import { useSkin } from "./skin-context";
 
 const OVERVIEW = { href: "/governance", icon: LayoutDashboard };
@@ -90,6 +91,7 @@ export function GuidedLayout({
   const t = useTranslations("guided");
   const tn = useTranslations("nav");
   const statuses = useProgramPath();
+  const plan = usePlanState();
   const { organization } = useOrganization();
   useProgramPathRefresh();
   const { userType } = useUserType();
@@ -110,6 +112,7 @@ export function GuidedLayout({
     clientMode: accountMode(userType) === "clients",
     t,
     overview: OVERVIEW,
+    planLine: planDayText(plan, t),
   };
 
   return (

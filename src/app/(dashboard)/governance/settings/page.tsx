@@ -16,6 +16,7 @@ import { AiPostureCard } from "@/components/ai/AiPostureCard";
 import { JurisdictionPicker } from "@/components/governance/jurisdiction-picker";
 import { CaliforniaScreeningCard } from "@/components/governance/california-screening-card";
 import { RegimeScreeningCard } from "@/components/governance/regime-screening-card";
+import { ApplicabilityCard } from "@/components/governance/applicability-check";
 import { TeamCard } from "@/components/governance/team-card";
 import { DeleteOrganizationCard } from "@/components/governance/delete-organization-card";
 import { LegalHoldCard } from "@/components/governance/legal-hold-card";
@@ -131,6 +132,12 @@ export default function SettingsPage() {
           tj={tj}
           tc={tc}
         />
+      )}
+
+      {/* The quick start's applicability check, editable here at any time:
+          which laws and frameworks apply, and why. */}
+      {organization && (
+        <ApplicabilityCard organizationId={organization.id} canWrite={canWrite} />
       )}
 
       {/* California CCPA screening. Self-gating on a declared California nexus;

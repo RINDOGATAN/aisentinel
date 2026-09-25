@@ -490,6 +490,7 @@
     "backToDashboard": "Dashboard",
     "title": "AI Governance Quick Start",
     "subtitle": "Bootstrap your AI governance program in minutes",
+    "stepApplicability": "What applies",
     "stepChoosePath": "Choose Path",
     "stepSelectVendors": "Select Vendors",
     "stepIndustryTemplate": "Industry Template",
@@ -5469,6 +5470,90 @@
     "afterExportBody": "Your file is downloaded. You can now empty this account.",
     "afterExportAction": "Empty the account"
   },
+  "applicability": {
+    "stepTitle": "Before you start: what applies to you",
+    "stepLead": "A few plain questions decide which laws and frameworks apply to you, and switch them on. Answer what you can. \"Not sure yet\" is a fair answer.",
+    "skip": "I'm not sure yet, skip this for now",
+    "roleTitle": "Your role with AI",
+    "questions": {
+      "buildsForOthers": {
+        "label": "Do you build AI systems that others use (as a provider)?",
+        "hint": "For example, a product with AI features that you sell or give to customers."
+      },
+      "usesAi": {
+        "label": "Do you use AI systems in your own work (as a deployer)?",
+        "hint": "For example, chat assistants, writing tools, or AI inside software you buy."
+      },
+      "generalPurposeModel": {
+        "label": "Do you sell or offer a general-purpose AI model?",
+        "hint": "A model that others build on, such as a large language model offered through an API."
+      },
+      "meetsPeople": {
+        "label": "Does any of your AI talk to people or produce content they see?",
+        "hint": "Chatbots, voice assistants, and generated text, images, audio or video."
+      },
+      "decidesAboutPeople": {
+        "label": "Does any of your AI help decide about people?",
+        "hint": "In employment, credit, housing, education, health, insurance or essential services."
+      },
+      "usesAgents": {
+        "label": "Do you use AI agents that act on their own?",
+        "hint": "Systems that take actions, such as sending messages or changing records, without a person approving each one."
+      },
+      "wantsCertification": {
+        "label": "Do you want a management system that can be certified?",
+        "hint": "ISO/IEC 42001 is the certifiable standard for an AI management system."
+      }
+    },
+    "answer": {
+      "YES": "Yes",
+      "NO": "No",
+      "UNSURE": "Not sure yet"
+    },
+    "appliesTitle": "These apply to you",
+    "appliesEmpty": "Nothing yet. Answer a question, or say where you operate, to see what applies.",
+    "checkTitle": "Worth checking",
+    "whyLabel": "Why",
+    "noJurisdictions": "Say where you operate to see the laws that depend on a place.",
+    "editableNote": "You can change these answers at any time in Settings. This list is a starting point, not legal advice.",
+    "cardTitle": "What applies to you",
+    "cardDescription": "The quick start's applicability questions. Change an answer and the list follows.",
+    "saved": "Answers saved",
+    "items": {
+      "euAiAct": "EU AI Act",
+      "euGeneralPurpose": "EU AI Act: duties for general-purpose AI models",
+      "euTransparency": "EU AI Act: transparency duties (Art. 50)",
+      "euHighRisk": "EU AI Act: high-risk rules (Annex III)",
+      "gdpr": "GDPR (and UK GDPR)",
+      "californiaAdmt": "California: automated decision-making rules (CCPA)",
+      "colorado": "Colorado: SB 26-189 on automated decisions",
+      "texas": "Texas: TRAIGA (HB 149)",
+      "washington": "Washington: AI rules by sector",
+      "aiuc1": "AIUC-1 standard for AI agents",
+      "iso42001": "ISO/IEC 42001 AI management system"
+    },
+    "reasons": {
+      "operatesEu": "You operate in the EU.",
+      "operatesEea": "You operate in the EEA; the Act reaches it once the EEA Agreement takes it in.",
+      "operatesEuropeUk": "You operate in the EU, the EEA or the UK.",
+      "operatesCalifornia": "You operate in California.",
+      "operatesColorado": "You operate in Colorado.",
+      "operatesTexas": "You operate in Texas.",
+      "operatesWashington": "You operate in Washington.",
+      "provider": "You build AI for others (provider).",
+      "deployer": "You use AI (deployer).",
+      "generalPurpose": "You offer a general-purpose AI model.",
+      "meetsPeople": "Your AI talks to people or produces content they see.",
+      "decidesAboutPeople": "Your AI helps decide about people in an area the law lists.",
+      "personalData": "It applies wherever your AI uses personal data.",
+      "usesAgents": "You use AI agents that act on their own.",
+      "wantsCertification": "You want a management system that can be certified.",
+      "roleUnsure": "Your role with AI is not settled yet.",
+      "answerUnsure": "You answered \"Not sure yet\".",
+      "thresholds": "The CCPA size thresholds decide first; the California screening in Settings asks them.",
+      "screeningDecides": "Which rules apply depends on the screening questions in Settings."
+    }
+  },
   "guided": {
     "navLabel": "Program path",
     "overview": "Dashboard",
@@ -5661,6 +5746,16 @@
       "allDoneTitle": "Every stage is done",
       "allDoneBody": "Keep the program current: confirm what changes and report to the board.",
       "allDoneButton": "Open the program map"
+    },
+    "plan": {
+      "label": "30/60/90-day plan",
+      "column": "Plan",
+      "day": "Day {day} of {total}",
+      "onPlan": "On plan",
+      "behind": "Behind plan by {days, plural, one {# day} other {# days}}",
+      "complete": "Plan complete",
+      "remaining": "{count, plural, one {Stage left: {stages}} other {Stages left: {stages}}}",
+      "notStarted": "Starts with the quick start"
     },
     "layout": {
       "title": "Layout",

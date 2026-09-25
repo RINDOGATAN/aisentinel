@@ -52,6 +52,11 @@ interface PathMenuProps<C> {
   onNavigate?: () => void;
   t: Translate;
   overview: { href: string; icon: LucideIcon };
+  /**
+   * One quiet line under the overall progress: where the organisation is in
+   * its plan ("Day 12 of 90"). Nothing when null.
+   */
+  planLine?: string | null;
 }
 
 /**
@@ -84,6 +89,7 @@ export function PathMenu<C>({
   onNavigate,
   t,
   overview,
+  planLine = null,
 }: PathMenuProps<C>) {
   const library = config.library({ stripeEnabled, clientMode });
   const currentStep = currentStepId(config, pathname, search);
@@ -202,6 +208,9 @@ export function PathMenu<C>({
           </span>
         </span>
         <ProgressBar value={percent} total={100} />
+        {planLine && (
+          <span className="text-xs text-muted-foreground tabular-nums">{planLine}</span>
+        )}
       </div>
       <Link
         href={overview.href}

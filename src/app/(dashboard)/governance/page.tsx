@@ -178,8 +178,10 @@ export default function GovernanceDashboardPage() {
 
       {/* The first-run choice, so an empty dashboard offers a way to fill
           itself in rather than only empty tiles. Renders nothing once either
-          answer has been given. */}
-      {organization && <WorkedExampleOffer organizationId={organization.id} />}
+          answer has been given. Classic only: in Guided the choice is the
+          quick start's first, optional one, and the dashboard keeps a single
+          call (the next step), which leads there. */}
+      {organization && !guided && <WorkedExampleOffer organizationId={organization.id} />}
 
       {/* Program CTA — once a quickstart profile is completed, the flagship
           deliverable is the Governance Program page. Classic only: Guided

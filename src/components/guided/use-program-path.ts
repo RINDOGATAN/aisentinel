@@ -19,6 +19,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import type { PathStatuses } from "./path";
+import { AI_SENTINEL_PATH, PLAN_WINDOWS } from "./path-config";
+import { planState, type PlanState } from "./plan";
 
 const STALE_MS = 30_000;
 
@@ -30,13 +32,25 @@ export function useProgramPath(): PathStatuses | null {
  * The statuses plus whether a newer answer is on its way, for a caller that
  * must not show the old answer right after a change (the quick start's result).
  */
-export function useProgramPathQuery(): { steps: PathStatuses | null; refreshing: boolean } {
+export function useProgramPathQuery(): {
+  steps: PathStatuses | null;
+  /** Day 1 of the 30/60/90-day plan (ISO), null before it starts. */
+  planStart: string | null;
+  refreshing: boolean;
+} {
   const { organization } = useOrganization();
   const { data, isFetching } = trpc.programPath.status.useQuery(
     { organizationId: organization?.id ?? "" },
     { enabled: !!organization?.id, staleTime: STALE_MS, refetchOnWindowFocus: false },
   );
-  return { steps: data?.steps ?? null, refreshing: isFetching };
+  return { steps: data?.steps ?? null, planStart: data?.planStart ?? null, refreshing: isFetching };
+}
+
+/** The 30/60/90-day plan's state for the current organisation; null while it loads. */
+export function usePlanState(): PlanState | null {
+  const { steps, planStart } = useProgramPathQuery();
+  if (!steps) return null;
+  return planState(AI_SENTINEL_PATH, PLAN_WINDOWS, steps, planStart, new Date());
 }
 
 /**

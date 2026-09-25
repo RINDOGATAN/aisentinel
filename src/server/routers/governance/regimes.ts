@@ -35,6 +35,12 @@ import {
   type RegimeSystemFacts,
   type ScreeningAnswer,
 } from "@/config/regimes";
+import {
+  APPLICABILITY_QUESTIONS,
+  APPLICABILITY_VERSION,
+  readApplicabilityAnswers,
+  type ApplicabilityAnswers,
+} from "@/config/applicability";
 
 /** Setting screening facts is a legal determination, not data entry. */
 const SCREENING_ROLES = ["OWNER", "ADMIN", "AI_OFFICER"];
@@ -59,7 +65,15 @@ const systemFactsInput = z.object({
   handsOffToAutonomousAgent: answer.optional(),
 });
 
-type OrgRegimeSettings = Partial<Omit<RegimeOrgFacts, "operatingJurisdictions">>;
+const applicabilityAnswer = z.enum(["YES", "NO", "UNSURE"]);
+const applicabilityInput = z.object(
+  Object.fromEntries(APPLICABILITY_QUESTIONS.map((q) => [q, applicabilityAnswer])) as Record<
+    keyof ApplicabilityAnswers,
+    typeof applicabilityAnswer
+  >,
+);
+
+type OrgRegimeSettings =Partial<Omit<RegimeOrgFacts, "operatingJurisdictions">>;
 type SystemRegimeFacts = Partial<
   Pick<
     RegimeSystemFacts,
@@ -260,6 +274,64 @@ export const regimesRouter = createTRPCRouter({
         },
       });
       return next;
+    }),
+
+  /**
+   * The applicability check's answers (src/config/applicability.ts), with the
+   * declared jurisdictions they are read with. `answeredAt` is null until the
+   * check has been saved once.
+   */
+  getApplicability: organizationProcedure
+    .input(z.object({ organizationId: z.string() }))
+    .query(async ({ ctx }) => {
+      const org = await ctx.prisma.organization.findFirst({
+        where: { id: ctx.organization.id },
+        select: { operatingJurisdictions: true, settings: true },
+      });
+      const stored = ((org?.settings ?? {}) as { applicability?: Record<string, unknown> })
+        .applicability;
+      return {
+        jurisdictions: (org?.operatingJurisdictions ?? []) as unknown as JurisdictionId[],
+        answers: readApplicabilityAnswers(stored?.answers),
+        answeredAt: typeof stored?.answeredAt === "string" ? stored.answeredAt : null,
+      };
+    }),
+
+  /**
+   * Save the applicability check's answers under
+   * `Organization.settings.applicability`. The same standing as declaring
+   * jurisdictions (any member who can write), because nothing here settles a
+   * screening fact: the regime screening in Settings stays the only place
+   * those are answered.
+   */
+  setApplicability: orgWriteProcedure
+    .input(z.object({ organizationId: z.string(), answers: applicabilityInput }))
+    .mutation(async ({ ctx, input }) => {
+      const org = await ctx.prisma.organization.findFirst({
+        where: { id: ctx.organization.id },
+        select: { settings: true },
+      });
+      const settings = (org?.settings ?? {}) as Record<string, unknown>;
+      const applicability = {
+        version: APPLICABILITY_VERSION,
+        answers: input.answers,
+        answeredAt: new Date().toISOString(),
+      };
+      await ctx.prisma.organization.update({
+        where: { id: ctx.organization.id },
+        data: { settings: { ...settings, applicability } as Prisma.InputJsonValue },
+      });
+      await ctx.prisma.auditLog.create({
+        data: {
+          organizationId: ctx.organization.id,
+          userId: ctx.session.user.id,
+          action: "UPDATE",
+          entityType: "Organization",
+          entityId: ctx.organization.id,
+          changes: { applicability: input.answers, version: APPLICABILITY_VERSION },
+        },
+      });
+      return applicability;
     }),
 
   /** Per-system screening facts. */

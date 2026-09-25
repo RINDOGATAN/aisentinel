@@ -11,6 +11,10 @@
  * client overview, with the two "needs attention" figures the older client
  * cards showed (open incidents, oversight gates waiting for a decision), so
  * the portfolio is the one client view.
+ *
+ * Both carry `planStart`, day 1 of the 30/60/90-day plan
+ * (src/server/services/program/plan-start.ts); the plan's state is worked out
+ * where it is shown, from that date and the statuses (src/components/guided/plan.ts).
  */
 
 import { z } from "zod";
@@ -18,6 +22,7 @@ import { createTRPCRouter, organizationProcedure, protectedProcedure } from "../
 import { AI_SENTINEL_PATH } from "@/components/guided/path-config";
 import { evaluatePath } from "@/components/guided/path";
 import { loadPathCounts } from "@/server/services/program/path-counts";
+import { loadPlanStart } from "@/server/services/program/plan-start";
 
 /** The same ceiling as the client list (clients.ts). */
 const MAX_PORTFOLIO_ORGS = 50;
@@ -31,7 +36,13 @@ export const programPathRouter = createTRPCRouter({
     .input(z.object({ organizationId: z.string() }))
     .query(async ({ ctx }) => {
       const counts = await loadPathCounts(ctx.prisma, ctx.organization.id);
-      return { steps: evaluatePath(AI_SENTINEL_PATH, counts) };
+      const steps = evaluatePath(AI_SENTINEL_PATH, counts);
+      const planStart = await loadPlanStart(
+        ctx.prisma,
+        ctx.organization.id,
+        steps.quickstart === "done",
+      );
+      return { steps, planStart: planStart?.toISOString() ?? null };
     }),
 
   portfolio: protectedProcedure.query(async ({ ctx }) => {
@@ -51,6 +62,8 @@ export const programPathRouter = createTRPCRouter({
       organizationSlug: string;
       role: string;
       steps: ReturnType<typeof evaluatePath> | null;
+      /** Day 1 of the 30/60/90-day plan (ISO), or null before it starts. */
+      planStart: string | null;
       /** The two "needs attention" figures the older client cards showed. */
       openIncidents: number | null;
       pendingGates: number | null;
@@ -77,16 +90,19 @@ export const programPathRouter = createTRPCRouter({
                 where: { organizationId: orgId, status: "PENDING" },
               }),
             ]);
+            const steps = evaluatePath(AI_SENTINEL_PATH, counts);
+            const planStart = await loadPlanStart(ctx.prisma, orgId, steps.quickstart === "done");
             return {
               ...base,
-              steps: evaluatePath(AI_SENTINEL_PATH, counts),
+              steps,
+              planStart: planStart?.toISOString() ?? null,
               openIncidents,
               pendingGates,
             };
           } catch (error) {
             // One organisation that cannot be read shows as unknown; the rest still load.
             console.error(`Program path: could not read organization ${m.organization.id}:`, error);
-            return { ...base, steps: null, openIncidents: null, pendingGates: null };
+            return { ...base, steps: null, planStart: null, openIncidents: null, pendingGates: null };
           }
         }),
       );

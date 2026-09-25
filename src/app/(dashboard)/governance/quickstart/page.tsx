@@ -72,6 +72,14 @@ import {
   WorkedExampleOffer,
 } from "@/components/governance/worked-example-card";
 import type { JurisdictionId } from "@/config/jurisdictions";
+import {
+  ApplicabilityQuestions,
+  ApplicabilityResult,
+} from "@/components/governance/applicability-check";
+import {
+  EMPTY_APPLICABILITY_ANSWERS,
+  type ApplicabilityAnswers,
+} from "@/config/applicability";
 import { features } from "@/config/features";
 import { RiskTierBadge } from "@/components/governance/risk-tier-badge";
 import { corePoliciesMissingFrom, localizeCorePolicy } from "@/config/core-policy-pack";
@@ -130,6 +138,7 @@ const POPULAR_VENDORS = [
 // ============================================================
 
 type WizardStep =
+  | "scope"
   | "choose"
   | "vendors"
   | "industry"
@@ -181,11 +190,13 @@ export default function QuickstartPage() {
   // quickstart messages from inside that loop.
   const tq = useTranslations("quickstart");
   const tjur = useTranslations("jurisdictions");
+  const tap = useTranslations("applicability");
   const orgId = organization?.id ?? "";
   const { download, isPending: downloadPending } = useExportDownload();
 
   // Wizard state
-  const [step, setStep] = useState<WizardStep>("choose");
+  // The applicability check comes first: what applies decides what to build.
+  const [step, setStep] = useState<WizardStep>("scope");
   const [useVendors, setUseVendors] = useState(false);
   const [useIndustry, setUseIndustry] = useState(false);
   // The builder path: for a team building an AI product rather than adopting
@@ -212,7 +223,32 @@ export default function QuickstartPage() {
     onError: (err) => toast.error(err.message),
     // The review step's screening card reads the declared jurisdictions to
     // decide which questions to ask.
-    onSuccess: () => void utilsForJurisdictions.organization.getById.invalidate(),
+    onSuccess: () => {
+      void utilsForJurisdictions.organization.getById.invalidate();
+      void utilsForJurisdictions.regimes.getApplicability.invalidate();
+    },
+  });
+
+  // The applicability check (src/config/applicability.ts): the answers
+  // already saved, if any, are the starting point, and the jurisdictions
+  // already declared too, so running the quick start again never shows a
+  // blank form over answers that exist.
+  const [applicabilityAnswers, setApplicabilityAnswers] =
+    useState<ApplicabilityAnswers>(EMPTY_APPLICABILITY_ANSWERS);
+  const [applicabilityTouched, setApplicabilityTouched] = useState(false);
+  const [scopePrefilled, setScopePrefilled] = useState(false);
+  const { data: savedApplicability } = trpc.regimes.getApplicability.useQuery(
+    { organizationId: organization?.id ?? "" },
+    { enabled: !!organization?.id },
+  );
+  if (savedApplicability && !scopePrefilled) {
+    setScopePrefilled(true);
+    if (!applicabilityTouched) setApplicabilityAnswers(savedApplicability.answers);
+    if (!jurisdictionsTouched) setSelectedJurisdictions(savedApplicability.jurisdictions);
+  }
+  const setApplicability = trpc.regimes.setApplicability.useMutation({
+    onError: (err) => toast.error(err.message),
+    onSuccess: () => void utilsForJurisdictions.regimes.getApplicability.invalidate(),
   });
 
   // Vendor selection
@@ -353,6 +389,7 @@ export default function QuickstartPage() {
 
   // Ordered list of active steps; next/back navigate this array
   const stepOrder: WizardStep[] = [
+    "scope",
     "choose",
     ...(useVendors ? (["vendors"] as const) : []),
     ...(useIndustry ? (["industry"] as const) : []),
@@ -363,7 +400,7 @@ export default function QuickstartPage() {
   const goNext = (from: WizardStep) =>
     setStep(stepOrder[stepOrder.indexOf(from) + 1] ?? "review");
   const goBack = (from: WizardStep) =>
-    setStep(stepOrder[stepOrder.indexOf(from) - 1] ?? "choose");
+    setStep(stepOrder[stepOrder.indexOf(from) - 1] ?? "scope");
   const nextStepLabel = (from: WizardStep) => {
     const next = stepOrder[stepOrder.indexOf(from) + 1];
     if (next === "industry") return t("stepIndustryTemplate");
@@ -372,19 +409,30 @@ export default function QuickstartPage() {
     return t("stepReviewBuild");
   };
 
+  // Leaving the applicability check. Continuing saves what was changed on
+  // the way past: "Not sure yet" for the jurisdictions saves an empty set,
+  // which the model treats as UNDECLARED rather than "nowhere", and "not sure
+  // yet" answers are saved as such. Skipping saves nothing. Neither blocks the
+  // wizard, and both stay editable in Settings.
+  const handleProceedFromScope = (skip: boolean) => {
+    if (!skip && orgId && canWrite) {
+      if (jurisdictionsTouched) {
+        setJurisdictions.mutate({
+          organizationId: orgId,
+          jurisdictions: jurisdictionsUnsure ? [] : selectedJurisdictions,
+        });
+      }
+      if (applicabilityTouched) {
+        setApplicability.mutate({ organizationId: orgId, answers: applicabilityAnswers });
+      }
+    }
+    goNext("scope");
+  };
+
   const handleProceedFromChoose = () => {
     if (!useVendors && !useIndustry && !useBuilder) {
       toast.error(t("selectAtLeastOneOption"));
       return;
-    }
-    // Persist the jurisdiction answer on the way past. "Not sure yet" saves an
-    // empty set, which the model treats as UNDECLARED rather than "nowhere" —
-    // it never blocks the wizard.
-    if (jurisdictionsTouched && orgId) {
-      setJurisdictions.mutate({
-        organizationId: orgId,
-        jurisdictions: jurisdictionsUnsure ? [] : selectedJurisdictions,
-      });
     }
     goNext("choose");
   };
@@ -523,15 +571,13 @@ export default function QuickstartPage() {
         </p>
       </div>
 
-      {/* The first-run choice, ahead of every form: take the worked example, or
-          start empty. Renders nothing once either has been answered. */}
-      <WorkedExampleOffer organizationId={orgId} />
       <SampleDataCard organizationId={orgId} />
 
       {/* Step indicator */}
       {step !== "success" && (
         <div className="flex items-center gap-2 text-sm flex-wrap">
           {[
+            { key: "scope", label: t("stepApplicability") },
             { key: "choose", label: t("stepChoosePath") },
             ...(useVendors
               ? [{ key: "vendors", label: t("stepSelectVendors") }]
@@ -574,8 +620,21 @@ export default function QuickstartPage() {
       {/* ════════════════════════════════════════════════
           STEP 1: Choose Path
           ════════════════════════════════════════════════ */}
-      {step === "choose" && (
+      {/* ════════════════════════════════════════════════
+          STEP 0: What applies to you (skippable)
+          ════════════════════════════════════════════════ */}
+      {step === "scope" && (
         <div className="space-y-4">
+          {/* The first, optional choice: take the worked example, or start
+              empty. Renders nothing once either has been answered, or once
+              the registry holds a system. */}
+          <WorkedExampleOffer organizationId={orgId} />
+
+          <div>
+            <h2 className="text-base font-semibold">{tap("stepTitle")}</h2>
+            <p className="text-sm text-muted-foreground">{tap("stepLead")}</p>
+          </div>
+
           {/* Where do you operate? Decides which regimes are in play at all. */}
           <Card>
             <CardContent className="p-4 space-y-3">
@@ -589,16 +648,17 @@ export default function QuickstartPage() {
               <JurisdictionPicker
                 compact
                 value={selectedJurisdictions}
-                disabled={jurisdictionsUnsure}
+                disabled={jurisdictionsUnsure || !canWrite}
                 onChange={(next) => {
                   setSelectedJurisdictions(next);
                   setJurisdictionsTouched(true);
                 }}
               />
 
-              <label className="flex items-center gap-2 text-xs text-muted-foreground cursor-pointer">
+              <label className="flex items-center gap-2 text-xs text-muted-foreground cursor-pointer min-h-11 sm:min-h-0">
                 <Checkbox
                   checked={jurisdictionsUnsure}
+                  disabled={!canWrite}
                   onCheckedChange={(v) => {
                     setJurisdictionsUnsure(!!v);
                     setJurisdictionsTouched(true);
@@ -610,6 +670,42 @@ export default function QuickstartPage() {
             </CardContent>
           </Card>
 
+          <Card>
+            <CardContent className="p-4">
+              <ApplicabilityQuestions
+                answers={applicabilityAnswers}
+                disabled={!canWrite}
+                onChange={(next) => {
+                  setApplicabilityAnswers(next);
+                  setApplicabilityTouched(true);
+                }}
+              />
+            </CardContent>
+          </Card>
+
+          <Card className="border-primary/30">
+            <CardContent className="p-4">
+              <ApplicabilityResult
+                jurisdictions={jurisdictionsUnsure ? [] : selectedJurisdictions}
+                answers={applicabilityAnswers}
+              />
+            </CardContent>
+          </Card>
+
+          <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-between">
+            <Button variant="outline" onClick={() => handleProceedFromScope(true)}>
+              {tap("skip")}
+            </Button>
+            <Button onClick={() => handleProceedFromScope(false)}>
+              {tc("continue")}
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {step === "choose" && (
+        <div className="space-y-4">
           <p className="text-muted-foreground">
             {t("choosePathDescription")}
           </p>
@@ -763,7 +859,11 @@ export default function QuickstartPage() {
 
           <CopyFromClientDialog open={copyOpen} onOpenChange={setCopyOpen} mode={{ kind: "current" }} />
 
-          <div className="flex justify-end">
+          <div className="flex justify-between gap-2">
+            <Button variant="ghost" onClick={() => goBack("choose")}>
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              {tc("back")}
+            </Button>
             <Button
               onClick={handleProceedFromChoose}
               disabled={!useVendors && !useIndustry && !useBuilder}

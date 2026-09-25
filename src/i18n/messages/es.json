@@ -490,6 +490,7 @@
     "backToDashboard": "Panel de control",
     "title": "Inicio rápido de gobernanza de IA",
     "subtitle": "Configura tu programa de gobernanza de IA en minutos",
+    "stepApplicability": "Qué se te aplica",
     "stepChoosePath": "Elegir ruta",
     "stepSelectVendors": "Seleccionar proveedores",
     "stepIndustryTemplate": "Plantilla sectorial",
@@ -5469,6 +5470,90 @@
     "afterExportBody": "Tu archivo se ha descargado. Ya puedes vaciar esta cuenta.",
     "afterExportAction": "Vaciar la cuenta"
   },
+  "applicability": {
+    "stepTitle": "Antes de empezar: qué se te aplica",
+    "stepLead": "Unas pocas preguntas sencillas deciden qué leyes y marcos se te aplican, y los activan. Responde lo que sepas. «Todavía no lo sé» es una respuesta válida.",
+    "skip": "Todavía no lo sé, omitir por ahora",
+    "roleTitle": "Tu papel con la IA",
+    "questions": {
+      "buildsForOthers": {
+        "label": "¿Desarrollas sistemas de IA que usan otros (como proveedor)?",
+        "hint": "Por ejemplo, un producto con funciones de IA que vendes o facilitas a tus clientes."
+      },
+      "usesAi": {
+        "label": "¿Usas sistemas de IA en tu propio trabajo (como responsable del despliegue)?",
+        "hint": "Por ejemplo, asistentes de chat, herramientas de redacción o IA incluida en software que compras."
+      },
+      "generalPurposeModel": {
+        "label": "¿Vendes u ofreces un modelo de IA de uso general?",
+        "hint": "Un modelo sobre el que otros construyen, como un modelo de lenguaje ofrecido mediante una API."
+      },
+      "meetsPeople": {
+        "label": "¿Alguna de tus IA habla con personas o genera contenido que ven?",
+        "hint": "Chatbots, asistentes de voz y texto, imágenes, audio o vídeo generados."
+      },
+      "decidesAboutPeople": {
+        "label": "¿Alguna de tus IA ayuda a decidir sobre personas?",
+        "hint": "En empleo, crédito, vivienda, educación, salud, seguros o servicios esenciales."
+      },
+      "usesAgents": {
+        "label": "¿Usas agentes de IA que actúan por su cuenta?",
+        "hint": "Sistemas que realizan acciones, como enviar mensajes o cambiar registros, sin que una persona apruebe cada una."
+      },
+      "wantsCertification": {
+        "label": "¿Quieres un sistema de gestión que pueda certificarse?",
+        "hint": "ISO/IEC 42001 es la norma certificable para un sistema de gestión de la IA."
+      }
+    },
+    "answer": {
+      "YES": "Sí",
+      "NO": "No",
+      "UNSURE": "Todavía no lo sé"
+    },
+    "appliesTitle": "Esto se te aplica",
+    "appliesEmpty": "Nada todavía. Responde alguna pregunta o indica dónde operas para ver qué se te aplica.",
+    "checkTitle": "Conviene comprobarlo",
+    "whyLabel": "Por qué",
+    "noJurisdictions": "Indica dónde operas para ver las leyes que dependen del lugar.",
+    "editableNote": "Puedes cambiar estas respuestas cuando quieras en Configuración. Esta lista es un punto de partida, no asesoramiento jurídico.",
+    "cardTitle": "Qué se te aplica",
+    "cardDescription": "Las preguntas de aplicabilidad del inicio rápido. Cambia una respuesta y la lista se actualiza.",
+    "saved": "Respuestas guardadas",
+    "items": {
+      "euAiAct": "Reglamento de IA de la UE",
+      "euGeneralPurpose": "Reglamento de IA: obligaciones de los modelos de uso general",
+      "euTransparency": "Reglamento de IA: obligaciones de transparencia (art. 50)",
+      "euHighRisk": "Reglamento de IA: normas de alto riesgo (anexo III)",
+      "gdpr": "RGPD (y RGPD del Reino Unido)",
+      "californiaAdmt": "California: normas sobre decisiones automatizadas (CCPA)",
+      "colorado": "Colorado: SB 26-189 sobre decisiones automatizadas",
+      "texas": "Texas: TRAIGA (HB 149)",
+      "washington": "Washington: normas de IA por sector",
+      "aiuc1": "Norma AIUC-1 para agentes de IA",
+      "iso42001": "Sistema de gestión de la IA ISO/IEC 42001"
+    },
+    "reasons": {
+      "operatesEu": "Operas en la UE.",
+      "operatesEea": "Operas en el EEE; el Reglamento lo alcanza cuando el Acuerdo EEE lo incorpore.",
+      "operatesEuropeUk": "Operas en la UE, el EEE o el Reino Unido.",
+      "operatesCalifornia": "Operas en California.",
+      "operatesColorado": "Operas en Colorado.",
+      "operatesTexas": "Operas en Texas.",
+      "operatesWashington": "Operas en Washington.",
+      "provider": "Desarrollas IA para otros (proveedor).",
+      "deployer": "Usas IA (responsable del despliegue).",
+      "generalPurpose": "Ofreces un modelo de IA de uso general.",
+      "meetsPeople": "Tu IA habla con personas o genera contenido que ven.",
+      "decidesAboutPeople": "Tu IA ayuda a decidir sobre personas en un ámbito que la ley enumera.",
+      "personalData": "Se aplica siempre que tu IA use datos personales.",
+      "usesAgents": "Usas agentes de IA que actúan por su cuenta.",
+      "wantsCertification": "Quieres un sistema de gestión que pueda certificarse.",
+      "roleUnsure": "Tu papel con la IA aún no está claro.",
+      "answerUnsure": "Respondiste «Todavía no lo sé».",
+      "thresholds": "Primero deciden los umbrales de tamaño de la CCPA; los pregunta la evaluación de California en Configuración.",
+      "screeningDecides": "Qué normas se aplican depende de las preguntas de evaluación en Configuración."
+    }
+  },
   "guided": {
     "navLabel": "Ruta del programa",
     "overview": "Panel de control",
@@ -5661,6 +5746,16 @@
       "allDoneTitle": "Todas las etapas están hechas",
       "allDoneBody": "Mantén el programa al día: confirma lo que cambie e informa al consejo.",
       "allDoneButton": "Abrir el mapa del programa"
+    },
+    "plan": {
+      "label": "Plan de 30, 60 y 90 días",
+      "column": "Plan",
+      "day": "Día {day} de {total}",
+      "onPlan": "Al día con el plan",
+      "behind": "Retraso de {days, plural, one {# día} other {# días}} sobre el plan",
+      "complete": "Plan completado",
+      "remaining": "{count, plural, one {Queda la etapa {stages}} other {Quedan las etapas {stages}}}",
+      "notStarted": "Empieza con el inicio rápido"
     },
     "layout": {
       "title": "Diseño",

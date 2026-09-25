@@ -48,6 +48,7 @@ import {
   FileCheck2,
 } from "lucide-react";
 import type { PathConfig } from "./path";
+import type { PlanWindow } from "./plan";
 
 /** What the rules read. Counts only: nothing here names a record. */
 export interface PathCounts {
@@ -482,3 +483,15 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
     { id: "settings", href: "/governance/settings", icon: Settings },
   ],
 };
+
+/**
+ * The 30/60/90-day plan over the six stages (src/components/guided/plan.ts):
+ * set up and people in the first thirty days, inventory and assessment in the
+ * next thirty, controls and monitoring in the last thirty. Day 1 is the day the
+ * quick start was first completed (src/server/services/program/plan-start.ts).
+ */
+export const PLAN_WINDOWS: readonly PlanWindow[] = [
+  { untilDay: 30, stages: ["setup", "people"] },
+  { untilDay: 60, stages: ["inventory", "assess"] },
+  { untilDay: 90, stages: ["controls", "monitor"] },
+];

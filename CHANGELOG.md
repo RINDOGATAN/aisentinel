@@ -6,6 +6,22 @@ All notable changes to AI SENTINEL are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- **The quick start opens with an applicability check.** Before templates and vendors, a few
+  plain questions (where you operate; whether you build AI for others, use AI, or offer a
+  general-purpose model; whether any AI talks to people, decides about people, or acts as an
+  agent; whether you want a certifiable management system) produce "These apply to you", one
+  line each with its reason, and "Worth checking" for what may apply. Skippable; "Not sure yet"
+  never yields "applies". The rule is `src/config/applicability.ts`; the answers are kept under
+  `Organization.settings.applicability` (no migration) and stay editable in Settings. The
+  worked-example choice is now the quick start's first, optional choice; in Guided the
+  dashboard keeps only the Next step card.
+- **A 30/60/90-day plan over the six stages** (Guided). Day 1 is the day the quick start was
+  first completed, derived from the audit trail. The menu shows "Day 12 of 90", the Next step
+  card "On plan" or "Behind plan by N days", and the client portfolio a "Plan" column; after
+  day 90, "Plan complete" or the stages left, nothing more.
+
 ### Changed
 
 - **The hosted service is a free, capped pilot; premium modules are sold only for the

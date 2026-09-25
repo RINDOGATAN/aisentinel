@@ -131,6 +131,7 @@ const EDITS_THE_PILOT_REFUSES = [
   "provenance.confirm", "provenance.unconfirm",
   "admt.setOrgFacts", "admt.upsertProfile", "admt.syncMappings",
   "regimes.setOrgFacts", "regimes.setSystemFacts", "regimes.syncMappings",
+  "regimes.setApplicability",
   "unified.createAssessment", "unified.applyToRegister",
   "agent.upsertProfile",
   "skills.activateOffline", "skills.deactivate",

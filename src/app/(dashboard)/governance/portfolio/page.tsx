@@ -32,7 +32,9 @@ import { canUseForTemplate } from "@/config/client-template";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { PORTFOLIO_HREF } from "@/lib/account-mode";
-import { AI_SENTINEL_PATH } from "@/components/guided/path-config";
+import { AI_SENTINEL_PATH, PLAN_WINDOWS } from "@/components/guided/path-config";
+import { planState } from "@/components/guided/plan";
+import { planSummaryText } from "@/components/guided/plan-text";
 import { nextStep, stageProgress, type PathStatuses } from "@/components/guided/path";
 import { ProgressRing } from "@/components/guided/progress-ring";
 
@@ -73,6 +75,13 @@ export default function PortfolioPage() {
     const next = nextStep(AI_SENTINEL_PATH, steps);
     return next ? t(`steps.${next.step.id}.label`) : tp("allDone");
   };
+
+  // The 30/60/90-day plan, in the same words as the menu and the next-step card.
+  const today = new Date();
+  const planLabel = (row: { steps: PathStatuses | null; planStart: string | null }) =>
+    row.steps
+      ? planSummaryText(planState(AI_SENTINEL_PATH, PLAN_WINDOWS, row.steps, row.planStart, today), t)
+      : tp("unknown");
 
   const stageCell = (steps: PathStatuses | null, index: number) => {
     const stage = STAGES[index];
@@ -138,6 +147,7 @@ export default function PortfolioPage() {
                         <span className="block font-normal">{t(`stages.${stage.id}`)}</span>
                       </th>
                     ))}
+                    <th scope="col" className="px-4 py-3 font-medium">{t("plan.column")}</th>
                     <th scope="col" className="px-4 py-3 font-medium">{tp("columnNext")}</th>
                   </tr>
                 </thead>
@@ -182,6 +192,9 @@ export default function PortfolioPage() {
                           </td>
                         );
                       })}
+                      <td className="px-4 py-3 text-xs text-muted-foreground">
+                        {planLabel(row)}
+                      </td>
                       <td className="px-4 py-3">
                         <span className="flex items-center gap-2">
                           <span className="min-w-0">{nextLabel(row.steps)}</span>
@@ -227,7 +240,10 @@ export default function PortfolioPage() {
                       );
                     })}
                   </span>
-                  <span className="mt-3 block text-xs text-muted-foreground">{tp("columnNext")}</span>
+                  <span className="mt-3 block text-xs text-muted-foreground">
+                    {t("plan.column")}: {planLabel(row)}
+                  </span>
+                  <span className="mt-2 block text-xs text-muted-foreground">{tp("columnNext")}</span>
                   <span className="block text-sm">{nextLabel(row.steps)}</span>
                 </button>
                 {/* Outside the card's button: a button cannot hold another. */}

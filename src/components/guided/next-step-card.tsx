@@ -14,8 +14,10 @@ import { ArrowRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AI_SENTINEL_PATH } from "./path-config";
+import { AI_SENTINEL_PATH, PLAN_WINDOWS } from "./path-config";
 import { nextStep } from "./path";
+import { planState } from "./plan";
+import { planPaceText } from "./plan-text";
 import { useProgramPathQuery } from "./use-program-path";
 
 export function NextStepCard({
@@ -29,9 +31,14 @@ export function NextStepCard({
   waitForFresh?: boolean;
 } = {}) {
   const t = useTranslations("guided");
-  const { steps, refreshing } = useProgramPathQuery();
+  const { steps, planStart, refreshing } = useProgramPathQuery();
   const statuses = waitForFresh && refreshing ? null : steps;
   const next = statuses ? nextStep(AI_SENTINEL_PATH, statuses) : null;
+  // The plan, quietly: "On plan" or "Behind plan by N days" (after day 90,
+  // "Plan complete" or the stages left). Nothing before the plan starts.
+  const pace = statuses
+    ? planPaceText(planState(AI_SENTINEL_PATH, PLAN_WINDOWS, statuses, planStart, new Date()), t)
+    : null;
   const StepIcon = next?.step.icon;
 
   return (
@@ -59,6 +66,12 @@ export function NextStepCard({
                 {t(`steps.${next.step.id}.label`)}
               </h2>
               <p className="text-sm text-muted-foreground mt-1">{t(`steps.${next.step.id}.why`)}</p>
+              {pace && (
+                <p className="text-xs text-muted-foreground mt-2">
+                  <span className="sr-only">{t("plan.label")}: </span>
+                  {pace}
+                </p>
+              )}
             </div>
             {next.step.href && (
               <Link href={next.step.href} className="w-full sm:w-auto shrink-0">
@@ -74,6 +87,12 @@ export function NextStepCard({
             <div className="flex-1 min-w-0">
               <h2 className="font-semibold text-base sm:text-lg">{t("nextStep.allDoneTitle")}</h2>
               <p className="text-sm text-muted-foreground mt-1">{t("nextStep.allDoneBody")}</p>
+              {pace && (
+                <p className="text-xs text-muted-foreground mt-2">
+                  <span className="sr-only">{t("plan.label")}: </span>
+                  {pace}
+                </p>
+              )}
             </div>
             <Link href="/governance/program" className="w-full sm:w-auto shrink-0">
               <Button variant="outline" className="w-full sm:w-auto">

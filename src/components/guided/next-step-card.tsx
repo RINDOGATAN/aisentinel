@@ -16,11 +16,21 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AI_SENTINEL_PATH } from "./path-config";
 import { nextStep } from "./path";
-import { useProgramPath } from "./use-program-path";
+import { useProgramPathQuery } from "./use-program-path";
 
-export function NextStepCard() {
+export function NextStepCard({
+  waitForFresh = false,
+}: {
+  /**
+   * Show the placeholder while a newer answer is on its way. For the quick
+   * start's result, where the answer cached before the build would still
+   * name the quick start as the next step.
+   */
+  waitForFresh?: boolean;
+} = {}) {
   const t = useTranslations("guided");
-  const statuses = useProgramPath();
+  const { steps, refreshing } = useProgramPathQuery();
+  const statuses = waitForFresh && refreshing ? null : steps;
   const next = statuses ? nextStep(AI_SENTINEL_PATH, statuses) : null;
   const StepIcon = next?.step.icon;
 

@@ -108,7 +108,7 @@ describe("the shape of the path", () => {
   it("leads only to pages that exist", () => {
     const hrefs = [
       ...steps.flatMap((s) => (s.href ? [s.href] : [])),
-      ...PATH.library({ stripeEnabled: true }).map((i) => i.href),
+      ...PATH.library({ stripeEnabled: true, clientMode: true }).map((i) => i.href),
     ];
     for (const href of hrefs) {
       const dir = join("src/app/(dashboard)", href.split(/[?#]/)[0]);
@@ -134,6 +134,13 @@ describe("the shape of the path", () => {
     expect(PATH.library({ stripeEnabled: true }).some((i) => i.id === "billing")).toBe(true);
   });
 
+  it("offers the older client cards only to an account that works for clients", () => {
+    const cards = (clientMode: boolean) =>
+      PATH.library({ stripeEnabled: false, clientMode }).find((i) => i.id === "clientCards");
+    expect(cards(false)).toBeUndefined();
+    expect(cards(true)?.href).toBe("/governance/clients");
+  });
+
   it("has every label in English and Spanish", () => {
     for (const messages of [en, es]) {
       const g = messages.guided as unknown as {
@@ -146,7 +153,7 @@ describe("the shape of the path", () => {
         expect(g.steps[s.id]?.label, s.id).toBeTruthy();
         expect(g.steps[s.id]?.why, s.id).toBeTruthy();
       }
-      for (const item of PATH.library({ stripeEnabled: true })) {
+      for (const item of PATH.library({ stripeEnabled: true, clientMode: true })) {
         expect(g.library[item.id], item.id).toBeTruthy();
       }
     }
@@ -178,7 +185,17 @@ describe("the done rules", () => {
     expect(statusOf("quickstart", { quickstartCompleted: true })).toBe("done");
     expect(statusOf("quickstart", { systems: 1 })).toBe("started");
     expect(statusOf("quickstart", { vendors: 1 })).toBe("started");
+    expect(statusOf("quickstart", { systems: 1, vendors: 1 })).toBe("started");
+    expect(statusOf("quickstart", { systems: 1, policies: 1 })).toBe("started");
     expect(statusOf("quickstart", {})).toBe("todo");
+  });
+
+  it("quick start: done without the wizard when a system, a vendor and a policy all exist", () => {
+    // The seeded demo organisation: 8 systems, vendors and policies, never ran the wizard.
+    expect(statusOf("quickstart", { systems: 8, vendors: 5, policies: 4 })).toBe("done");
+    expect(statusOf("quickstart", { systems: 1, vendors: 1, policies: 1 })).toBe("done");
+    const s = evaluatePath(PATH, { ...EMPTY_PATH_COUNTS, systems: 8, vendors: 5, policies: 4 });
+    expect(nextStep(PATH, s)?.step.id).not.toBe("quickstart");
   });
 
   it("frameworks: jurisdictions and mappings both needed", () => {

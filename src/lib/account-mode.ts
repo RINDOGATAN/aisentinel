@@ -51,3 +51,10 @@ export function organizationSwitcherView(
 /** Where the switcher's two client entries lead. */
 export const CLIENTS_DASHBOARD_HREF = "/governance/clients";
 export const ADD_ORGANIZATION_HREF = "/governance/clients?add=1";
+
+/**
+ * The Guided layout's equivalents: "All clients" is the portfolio, and adding
+ * an organisation opens the same dialog on it.
+ */
+export const PORTFOLIO_HREF = "/governance/portfolio";
+export const PORTFOLIO_ADD_HREF = "/governance/portfolio?add=1";

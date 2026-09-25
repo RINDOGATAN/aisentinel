@@ -38,6 +38,8 @@ interface PathMenuProps<C> {
   statuses: PathStatuses | null;
   pathname: string;
   stripeEnabled: boolean;
+  /** The account works for client organisations (the library shows the client cards). */
+  clientMode?: boolean;
   variant: "sidebar" | "sheet";
   /** Sidebar only: icons, no words. */
   collapsed?: boolean;
@@ -46,6 +48,13 @@ interface PathMenuProps<C> {
   t: Translate;
   overview: { href: string; icon: LucideIcon };
 }
+
+/**
+ * Stage and step labels wrap to a second line instead of being cut: Spanish
+ * labels are long ("Diligencia debida de proveedores"). Tested in
+ * src/phone-width.test.ts.
+ */
+export const WRAP_LABEL = "min-w-0 flex-1 break-words leading-snug";
 
 const FOCUS =
   "outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
@@ -61,13 +70,14 @@ export function PathMenu<C>({
   statuses,
   pathname,
   stripeEnabled,
+  clientMode = false,
   variant,
   collapsed = false,
   onNavigate,
   t,
   overview,
 }: PathMenuProps<C>) {
-  const library = config.library({ stripeEnabled });
+  const library = config.library({ stripeEnabled, clientMode });
   const currentStep = currentStepId(config, pathname);
   const currentStage = stageOfStep(config, currentStep);
   const currentLibrary = currentStep ? null : currentLibraryId(library, pathname);
@@ -87,7 +97,7 @@ export function PathMenu<C>({
   const sheet = variant === "sheet";
   const rowHeight = sheet ? "min-h-11" : "min-h-9";
   const itemBase = cn(
-    "flex w-full items-center gap-3 rounded-lg px-3 text-left motion-safe:transition-colors",
+    "flex w-full items-center gap-3 rounded-lg px-3 py-1.5 text-left motion-safe:transition-colors",
     rowHeight,
     sheet ? "text-base" : "text-sm",
     FOCUS,
@@ -191,7 +201,8 @@ export function PathMenu<C>({
                 <span className="flex min-w-0 flex-1 flex-col">
                   <span
                     className={cn(
-                      "truncate font-medium",
+                      WRAP_LABEL,
+                      "font-medium",
                       sheet ? "text-base" : "text-sm",
                       holdsCurrent ? "text-primary" : "text-foreground",
                     )}
@@ -299,7 +310,7 @@ function StepRow<C>({
     return (
       <span className={cn(className, "cursor-default text-muted-foreground")} aria-disabled="true">
         <Circle className="size-3.5 shrink-0 opacity-40" aria-hidden="true" />
-        <span className="min-w-0 flex-1 truncate">{label}</span>
+        <span className={WRAP_LABEL}>{label}</span>
         <span className="shrink-0 rounded-full border border-border px-1.5 py-0.5 text-[10px] uppercase tracking-wider">
           {t("stepStatus.coming")}
         </span>
@@ -314,7 +325,7 @@ function StepRow<C>({
       className={cn(className, current ? active : idle)}
     >
       <StepMark status={status} optional={!!step.optional} t={t} />
-      <span className="min-w-0 flex-1 truncate">{label}</span>
+      <span className={WRAP_LABEL}>{label}</span>
     </Link>
   );
 }

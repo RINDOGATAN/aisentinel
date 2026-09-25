@@ -5585,6 +5585,7 @@
     },
     "library": {
       "program": "Mapa del programa",
+      "clientCards": "Fichas de clientes",
       "vendorCatalog": "Catálogo de proveedores",
       "skills": "Skills",
       "billing": "Facturación",
@@ -5593,6 +5594,8 @@
     "collapse": "Contraer el menú",
     "expand": "Desplegar el menú",
     "allClients": "Todos los clientes",
+    "viewProgramMap": "Ver el mapa de tu programa",
+    "orGoTo": "O ve a",
     "switchClient": "Cambiar de cliente",
     "addOrganization": "Añadir organización",
     "account": "Cuenta",

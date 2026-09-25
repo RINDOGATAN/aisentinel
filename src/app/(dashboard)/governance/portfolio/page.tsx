@@ -11,15 +11,16 @@
  * Progress comes from the same rules as the menu (programPath.portfolio).
  */
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { ChevronRight, Loader2, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { AddOrganizationDialog } from "@/components/governance/add-organization-dialog";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
-import { ADD_ORGANIZATION_HREF } from "@/lib/account-mode";
+import { PORTFOLIO_HREF } from "@/lib/account-mode";
 import { AI_SENTINEL_PATH } from "@/components/guided/path-config";
 import { nextStep, stageProgress, type PathStatuses } from "@/components/guided/path";
 import { ProgressRing } from "@/components/guided/progress-ring";
@@ -34,6 +35,18 @@ export default function PortfolioPage() {
   const { data: rows, isLoading } = trpc.programPath.portfolio.useQuery(undefined, {
     staleTime: 30_000,
   });
+
+  // "Add organization" opens the dialog here; the Guided menu's entry arrives
+  // with ?add=1. After creation the dialog moves to the new client's quick start.
+  // Derived from the address as well as the state, so the menu entry also
+  // works while the portfolio is already open.
+  const searchParams = useSearchParams();
+  const [addOpenState, setAddOpenState] = useState(false);
+  const addOpen = addOpenState || searchParams.get("add") === "1";
+  const setAddOpen = (next: boolean) => {
+    setAddOpenState(next);
+    if (!next && searchParams.get("add")) router.replace(PORTFOLIO_HREF);
+  };
 
   const open = (row: NonNullable<typeof rows>[number]) => {
     setOrganization({ id: row.organizationId, name: row.organizationName, slug: row.organizationSlug });
@@ -66,13 +79,17 @@ export default function PortfolioPage() {
             {rows && <> · {tp("count", { count: rows.length })}</>}
           </p>
         </div>
-        <Link href={ADD_ORGANIZATION_HREF} className="w-full sm:w-auto">
-          <Button className="w-full sm:w-auto">
-            <Plus className="w-4 h-4 mr-2" />
-            {t("addOrganization")}
-          </Button>
-        </Link>
+        <Button className="w-full sm:w-auto" onClick={() => setAddOpen(true)}>
+          <Plus className="w-4 h-4 mr-2" />
+          {t("addOrganization")}
+        </Button>
       </div>
+
+      <AddOrganizationDialog
+        open={addOpen}
+        onOpenChange={setAddOpen}
+        onCreated={() => setAddOpenState(false)}
+      />
 
       {isLoading ? (
         <div className="flex items-center justify-center py-12">

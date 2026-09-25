@@ -44,7 +44,12 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { useOrganization } from "@/lib/organization-context";
 import { useUserType } from "@/lib/use-user-type";
-import { ADD_ORGANIZATION_HREF, organizationSwitcherView } from "@/lib/account-mode";
+import {
+  PORTFOLIO_ADD_HREF,
+  PORTFOLIO_HREF,
+  accountMode,
+  organizationSwitcherView,
+} from "@/lib/account-mode";
 import { MENU_COOKIE, cookieAssignment } from "@/lib/skin";
 import { features } from "@/config/features";
 import { cn } from "@/lib/utils";
@@ -52,11 +57,8 @@ import { AI_SENTINEL_PATH } from "./path-config";
 import { nextStep, overallProgress } from "./path";
 import { PathMenu } from "./path-menu";
 import { ProgressBar } from "./progress-ring";
-import { useProgramPath } from "./use-program-path";
+import { useProgramPath, useProgramPathRefresh } from "./use-program-path";
 import { useSkin } from "./skin-context";
-
-/** The consultant's overview of every client on the path. */
-export const PORTFOLIO_HREF = "/governance/portfolio";
 
 const OVERVIEW = { href: "/governance", icon: LayoutDashboard };
 
@@ -86,6 +88,8 @@ export function GuidedLayout({
   const t = useTranslations("guided");
   const tn = useTranslations("nav");
   const statuses = useProgramPath();
+  useProgramPathRefresh();
+  const { userType } = useUserType();
   const [collapsed, setCollapsedState] = useState(initialCollapsed);
   const [sheetOpen, setSheetOpen] = useState(false);
 
@@ -99,6 +103,7 @@ export function GuidedLayout({
     statuses,
     pathname,
     stripeEnabled: features.stripeEnabled,
+    clientMode: accountMode(userType) === "clients",
     t,
     overview: OVERVIEW,
   };
@@ -166,35 +171,51 @@ export function GuidedLayout({
       </Sheet>
 
       <div className="flex flex-1 min-w-0">
+        {/* The column runs the full height of the page (its border reaches the
+            footer); inside it, the panel is exactly one window tall, sticks
+            under the header, scrolls on its own, and keeps "Collapse the
+            menu" pinned at its foot however far the page is scrolled. */}
         <aside
           className={cn(
-            "hidden lg:flex lg:flex-col shrink-0 sticky top-14 h-[calc(100dvh-3.5rem)] border-r border-border motion-safe:transition-[width] motion-safe:duration-200",
+            "hidden lg:block shrink-0 self-stretch border-r border-border motion-safe:transition-[width] motion-safe:duration-200",
             collapsed ? "lg:w-[4.5rem]" : "lg:w-72",
           )}
         >
-          <div className={cn("flex-1 overflow-y-auto", collapsed ? "px-2 py-3" : "px-3 py-4")}>
-            {!collapsed && <OrganizationBlock />}
-            <div className={collapsed ? "" : "mt-4"}>
-              <PathMenu {...menuProps} variant="sidebar" collapsed={collapsed} />
-            </div>
-          </div>
-          <div className={cn("border-t border-border py-2", collapsed ? "px-2 flex justify-center" : "px-3")}>
-            <button
-              type="button"
-              onClick={() => setCollapsed(!collapsed)}
-              title={collapsed ? t("expand") : t("collapse")}
+          <div className="sticky top-14 flex h-[calc(100dvh-3.5rem)] flex-col">
+            <div
               className={cn(
-                "flex min-h-9 items-center gap-3 rounded-lg px-3 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground motion-safe:transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                collapsed ? "size-11 justify-center px-0" : "w-full",
+                "min-h-0 flex-1 overflow-y-auto overscroll-contain",
+                collapsed ? "px-2 py-3" : "px-3 py-4",
               )}
             >
-              {collapsed ? (
-                <ChevronsRight className="size-4" aria-hidden="true" />
-              ) : (
-                <ChevronsLeft className="size-4" aria-hidden="true" />
+              {!collapsed && <OrganizationBlock />}
+              <div className={collapsed ? "" : "mt-4"}>
+                <PathMenu {...menuProps} variant="sidebar" collapsed={collapsed} />
+              </div>
+            </div>
+            <div
+              className={cn(
+                "shrink-0 border-t border-border bg-background py-2",
+                collapsed ? "px-2 flex justify-center" : "px-3",
               )}
-              <span className={collapsed ? "sr-only" : ""}>{collapsed ? t("expand") : t("collapse")}</span>
-            </button>
+            >
+              <button
+                type="button"
+                onClick={() => setCollapsed(!collapsed)}
+                title={collapsed ? t("expand") : t("collapse")}
+                className={cn(
+                  "flex min-h-9 items-center gap-3 rounded-lg px-3 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground motion-safe:transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                  collapsed ? "size-11 justify-center px-0" : "w-full",
+                )}
+              >
+                {collapsed ? (
+                  <ChevronsRight className="size-4" aria-hidden="true" />
+                ) : (
+                  <ChevronsLeft className="size-4" aria-hidden="true" />
+                )}
+                <span className={collapsed ? "sr-only" : ""}>{collapsed ? t("expand") : t("collapse")}</span>
+              </button>
+            </div>
           </div>
         </aside>
 
@@ -257,7 +278,7 @@ function OrganizationBlock({ onNavigate }: { onNavigate?: () => void }) {
           ))}
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
-            <Link href={ADD_ORGANIZATION_HREF} onClick={onNavigate} className="flex items-center gap-2">
+            <Link href={PORTFOLIO_ADD_HREF} onClick={onNavigate} className="flex items-center gap-2">
               <Plus className="size-4" />
               {t("addOrganization")}
             </Link>

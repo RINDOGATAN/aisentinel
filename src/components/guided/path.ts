@@ -68,7 +68,7 @@ export interface LibraryItem {
 export interface PathConfig<C> {
   stages: PathStage<C>[];
   /** "Library and tools": everything that is not a step but must stay reachable. */
-  library: (options: { stripeEnabled: boolean }) => LibraryItem[];
+  library: (options: { stripeEnabled: boolean; clientMode?: boolean }) => LibraryItem[];
 }
 
 export type PathStatuses = Record<string, StepStatus>;

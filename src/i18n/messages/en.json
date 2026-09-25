@@ -5585,6 +5585,7 @@
     },
     "library": {
       "program": "Program map",
+      "clientCards": "Client cards",
       "vendorCatalog": "Vendor catalog",
       "skills": "Skills",
       "billing": "Billing",
@@ -5593,6 +5594,8 @@
     "collapse": "Collapse the menu",
     "expand": "Expand the menu",
     "allClients": "All clients",
+    "viewProgramMap": "View your program map",
+    "orGoTo": "Or go to",
     "switchClient": "Switch client",
     "addOrganization": "Add organization",
     "account": "Account",

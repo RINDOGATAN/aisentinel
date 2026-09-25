@@ -29,6 +29,7 @@ import {
   HeartPulse,
   History,
   KeyRound,
+  LayoutGrid,
   Landmark,
   Network,
   Scale,
@@ -157,9 +158,9 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
           id: "quickstart",
           href: "/governance/quickstart",
           icon: Sparkles,
-          rule: "Done when the quick start has been completed once. Started when a system, a vendor or a policy exists without it.",
+          rule: "Done when the quick start has been completed once, or when the work it would do already exists (at least one system, one vendor and one policy). Started when a system, a vendor or a policy exists without that.",
           status: (c) =>
-            c.quickstartCompleted
+            c.quickstartCompleted || (c.systems > 0 && c.vendors > 0 && c.policies > 0)
               ? "done"
               : c.systems + c.vendors + c.policies > 0
                 ? "started"
@@ -416,8 +417,13 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
       ],
     },
   ],
-  library: ({ stripeEnabled }) => [
+  library: ({ stripeEnabled, clientMode }) => [
     { id: "program", href: "/governance/program", icon: Network },
+    // In Guided, "All clients" is the portfolio; the older client cards stay
+    // reachable here for an account that works for clients.
+    ...(clientMode
+      ? [{ id: "clientCards", href: "/governance/clients", icon: LayoutGrid }]
+      : []),
     { id: "vendorCatalog", href: "/governance/vendor-catalog", icon: Database },
     { id: "skills", href: "/governance/skills", icon: KeyRound },
     ...(stripeEnabled

@@ -6,16 +6,7 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { AddOrganizationDialog } from "@/components/governance/add-organization-dialog";
 import {
   ClipboardCheck,
   AlertTriangle,
@@ -26,7 +17,6 @@ import {
   ShieldAlert,
   Plus,
 } from "lucide-react";
-import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
@@ -45,24 +35,11 @@ function timeAgo(date: Date | string | null, noActivity: string): string {
   return `${days}d`;
 }
 
-/** URL identifier from a display name (lowercase, hyphens, max 50). */
-function slugify(name: string): string {
-  return name
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 50);
-}
-
 export default function ClientsPage() {
   const { data: clients, isLoading } = trpc.clients.listClients.useQuery();
   const { setOrganization } = useOrganization();
   const router = useRouter();
   const t = useTranslations("clients");
-  const tc = useTranslations("common");
-  const utils = trpc.useUtils();
 
   // "+ Add organization" in the organization switcher arrives with ?add=1.
   const searchParams = useSearchParams();
@@ -71,20 +48,6 @@ export default function ClientsPage() {
     setAddOpenState(open);
     if (!open && searchParams.get("add")) router.replace("/governance/clients");
   };
-  const [orgForm, setOrgForm] = useState({ name: "", slug: "", domain: "", slugTouched: false });
-
-  const createOrg = trpc.organization.create.useMutation({
-    onSuccess: (org) => {
-      toast.success(t("orgCreated"));
-      utils.clients.listClients.invalidate();
-      setAddOpenState(false);
-      setOrgForm({ name: "", slug: "", domain: "", slugTouched: false });
-      // Switch into the new organization and start its onboarding.
-      setOrganization({ id: org.id, name: org.name, slug: org.slug });
-      router.push("/governance/quickstart");
-    },
-    onError: (e) => toast.error(e.message),
-  });
 
   const totalAssessments = clients?.reduce((s, c) => s + c.activeAssessments, 0) ?? 0;
   const totalIncidents = clients?.reduce((s, c) => s + c.openIncidents, 0) ?? 0;
@@ -99,8 +62,6 @@ export default function ClientsPage() {
     });
     router.push("/governance");
   };
-
-  const slugValid = /^[a-z0-9-]{2,50}$/.test(orgForm.slug);
 
   if (isLoading) {
     return (
@@ -226,70 +187,11 @@ export default function ClientsPage() {
         </Card>
       )}
 
-      {/* Add-organization dialog (organization.create — creator becomes OWNER) */}
-      <Dialog open={addOpen} onOpenChange={setAddOpen}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>{t("addOrgTitle")}</DialogTitle>
-            <DialogDescription>{t("addOrgDescription")}</DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="org-name">{t("orgNameLabel")} *</Label>
-              <Input
-                id="org-name"
-                value={orgForm.name}
-                placeholder={t("orgNamePlaceholder")}
-                onChange={(e) =>
-                  setOrgForm((prev) => ({
-                    ...prev,
-                    name: e.target.value,
-                    slug: prev.slugTouched ? prev.slug : slugify(e.target.value),
-                  }))
-                }
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="org-slug">{t("orgSlugLabel")} *</Label>
-              <Input
-                id="org-slug"
-                value={orgForm.slug}
-                onChange={(e) =>
-                  setOrgForm((prev) => ({ ...prev, slug: e.target.value, slugTouched: true }))
-                }
-              />
-              <p className="text-xs text-muted-foreground">{t("orgSlugHint")}</p>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="org-domain">{t("orgDomainLabel")}</Label>
-              <Input
-                id="org-domain"
-                value={orgForm.domain}
-                placeholder={t("orgDomainPlaceholder")}
-                onChange={(e) => setOrgForm((prev) => ({ ...prev, domain: e.target.value }))}
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setAddOpen(false)}>
-              {tc("cancel")}
-            </Button>
-            <Button
-              disabled={!orgForm.name.trim() || !slugValid || createOrg.isPending}
-              onClick={() =>
-                createOrg.mutate({
-                  name: orgForm.name.trim(),
-                  slug: orgForm.slug,
-                  domain: orgForm.domain.trim() || undefined,
-                })
-              }
-            >
-              {createOrg.isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-              {t("addOrganization")}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <AddOrganizationDialog
+        open={addOpen}
+        onOpenChange={setAddOpen}
+        onCreated={() => setAddOpenState(false)}
+      />
     </div>
   );
 }

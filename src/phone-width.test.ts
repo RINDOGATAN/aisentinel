@@ -234,7 +234,11 @@ describe("no sideways scrolling on a phone, signed in", () => {
     // The left menu takes its width only from lg; below that the path lives in
     // the side sheet and the one-line stage bar, which spans the screen.
     const layout = readFileSync("src/components/guided/guided-layout.tsx", "utf8");
-    expect(layout).toMatch(/<aside[\s\S]{0,80}"hidden lg:flex/);
+    expect(layout).toMatch(/<aside[\s\S]{0,80}"hidden lg:block/);
+    // The panel inside the column is one window tall under the header and
+    // scrolls on its own; the collapse control sits below the scrolling part.
+    expect(layout).toContain('"sticky top-14 flex h-[calc(100dvh-3.5rem)] flex-col"');
+    expect(layout).toMatch(/"min-h-0 flex-1 overflow-y-auto[\s\S]*"shrink-0 border-t border-border/);
     expect(layout).toContain('collapsed ? "lg:w-[4.5rem]" : "lg:w-72"');
     expect(layout).toMatch(/lg:hidden sticky top-14 z-40 flex min-h-11 w-full/);
     // The portfolio is a table from md only; on a phone it is a list of cards.
@@ -249,6 +253,27 @@ describe("no sideways scrolling on a phone, signed in", () => {
     // Sheet rows are min-h-11 (44 px), stage buttons min-h-12 (48 px).
     expect(menu).toContain('const rowHeight = sheet ? "min-h-11" : "min-h-9";');
     expect(menu).toContain('sheet ? "min-h-12" : "min-h-11"');
+  });
+
+  it("lets long Guided stage and step labels wrap instead of cutting them", () => {
+    const menu = readFileSync("src/components/guided/path-menu.tsx", "utf8");
+    const wrap = menu.match(/export const WRAP_LABEL = "([^"]+)"/)?.[1];
+    expect(wrap).toBeDefined();
+    const classes = wrap!.split(/\s+/);
+    expect(classes).toContain("break-words");
+    expect(classes).toContain("min-w-0");
+    for (const cut of ["truncate", "whitespace-nowrap", "text-ellipsis"]) {
+      expect(classes, cut).not.toContain(cut);
+    }
+    expect(classes.some((c) => c.startsWith("line-clamp"))).toBe(false);
+    // Both step rows (linked and coming) and the stage title use it; the
+    // labels themselves carry no truncate.
+    expect(menu.match(/<span className=\{WRAP_LABEL\}>\{label\}<\/span>/g)).toHaveLength(2);
+    expect(menu).toMatch(/WRAP_LABEL,\s*"font-medium"/);
+    expect(menu).not.toMatch(/truncate[^"]*">\{label\}/);
+    expect(menu).not.toMatch(/"truncate font-medium"/);
+    // Rows keep their minimum height when a label wraps (min-h, not h).
+    expect(menu).not.toMatch(/(?<![\w-])h-(9|11|12)\b/);
   });
 
   it("keeps the dashboard's own grids on a stated column count", () => {

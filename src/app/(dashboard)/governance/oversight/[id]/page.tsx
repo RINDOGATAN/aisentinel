@@ -49,6 +49,7 @@ import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useTranslations, useLocale } from "next-intl";
 import { useEnumLabels } from "@/lib/enum-labels";
 import { STATUS_CHIP, STATUS_OUTLINE } from "@/components/ui/status-note";
+import { PageHeader } from "@/components/governance/page-header";
 
 const gateTypeKeys: Record<string, string> = {
   PRE_DEPLOYMENT: "gateTypePreDeployment",
@@ -175,42 +176,33 @@ export default function OversightGateDetailPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="space-y-2">
-          <Link href="/governance/oversight">
-            <Button variant="ghost" size="icon" className="-ml-2">
-              <ArrowLeft className="w-4 h-4" />
-            </Button>
-          </Link>
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-primary/10 flex items-center justify-center shrink-0">
-              <Eye className="w-6 h-6 text-primary" />
-            </div>
-            <div>
-              <h1 className="text-xl sm:text-2xl font-semibold">
-                {gate.aiSystem?.name ?? t("unknownSystem")} ·{" "}
-                {gateTypeKeys[gate.gateType] ? to(gateTypeKeys[gate.gateType]) : gate.gateType}
-              </h1>
-              <div className="flex items-center gap-2 mt-1 flex-wrap">
-                <Badge
-                  variant="outline"
-                  className={gateStatusColors[gate.status] || ""}
-                >
-                  {statusLabel(gate.status)}
-                </Badge>
-                <Badge variant="outline" className="text-xs">
-                  {gateTypeKeys[gate.gateType] ? to(gateTypeKeys[gate.gateType]) : gate.gateType}
-                </Badge>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="flex gap-2 self-start sm:self-auto">
+      <PageHeader
+        back={{ href: "/governance/oversight", label: tc("back") }}
+        icon={Eye}
+        title={
+          <>
+            {gate.aiSystem?.name ?? t("unknownSystem")} ·{" "}
+            {gateTypeKeys[gate.gateType] ? to(gateTypeKeys[gate.gateType]) : gate.gateType}
+          </>
+        }
+        meta={
+          <>
+            <Badge
+              variant="outline"
+              className={gateStatusColors[gate.status] || ""}
+            >
+              {statusLabel(gate.status)}
+            </Badge>
+            <Badge variant="outline" className="text-xs">
+              {gateTypeKeys[gate.gateType] ? to(gateTypeKeys[gate.gateType]) : gate.gateType}
+            </Badge>
+          </>
+        }
+        actions={
+          <>
           {(gate.status === "PASSED" || gate.status === "FAILED") && canWrite && (
             <Button
               variant="outline"
-              size="sm"
               onClick={() => reopenMutation.mutate({ organizationId: organization!.id, id, status: "PENDING" })}
               disabled={reopenMutation.isPending}
             >
@@ -308,8 +300,9 @@ export default function OversightGateDetailPage() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-        </div>
-      </div>
+          </>
+        }
+      />
 
       {/* Overview Grid */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">

@@ -25,7 +25,8 @@ export default async function DashboardLayout({
   // are not visible to the client bundle. The pilot banner is mounted here
   // and only here, so a visitor who has not signed in never sees it.
   // The layout choice is a cookie, read here so the first paint is already in
-  // the chosen layout (src/lib/skin.ts). No cookie is Classic.
+  // the chosen layout (src/lib/skin.ts). No cookie is Guided, so a new
+  // visitor's very first render is already Guided.
   const cookieStore = await cookies();
   const skin = parseSkin(cookieStore.get(SKIN_COOKIE)?.value);
   const menuCollapsed = parseMenuCollapsed(cookieStore.get(MENU_COOKIE)?.value);

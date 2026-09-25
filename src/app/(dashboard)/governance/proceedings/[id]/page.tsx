@@ -12,11 +12,10 @@
  */
 
 import { useState } from "react";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { ArrowLeft, CheckCircle2, Loader2, Plus, Save } from "lucide-react";
+import { CheckCircle2, Loader2, Plus, Save } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -33,6 +32,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useNow } from "@/lib/use-now";
+import { PageHeader } from "@/components/governance/page-header";
 
 const STATUSES = ["MONITORING", "OPEN", "RESPONDING", "DECIDED", "APPEALED", "CLOSED"] as const;
 const EVENT_KINDS = [
@@ -47,6 +47,7 @@ const EVENT_KINDS = [
 
 export default function ProceedingDetailPage() {
   const t = useTranslations("proceedings");
+  const tc = useTranslations("common");
   const params = useParams();
   const id = params.id as string;
   const { organization, canWrite } = useOrganization();
@@ -114,22 +115,18 @@ export default function ProceedingDetailPage() {
 
   return (
     <div className="space-y-6 max-w-3xl">
-      <div className="space-y-2">
-        <Button asChild variant="ghost" size="icon" className="-ml-2">
-          <Link href="/governance/proceedings">
-            <ArrowLeft className="w-4 h-4" />
-          </Link>
-        </Button>
-        <div className="min-w-0">
-          <h1 className="text-xl sm:text-2xl font-semibold">{data.title}</h1>
-          <p className="text-xs text-muted-foreground mt-1">
+      <PageHeader
+        back={{ href: "/governance/proceedings", label: tc("back") }}
+        title={data.title}
+        description={
+          <>
             {data.authority}
             {data.jurisdiction ? ` · ${data.jurisdiction}` : ""}
             {data.reference ? ` · ${data.reference}` : ""}
             {data.externalCounsel ? ` · ${data.externalCounsel}` : ""}
-          </p>
-        </div>
-      </div>
+          </>
+        }
+      />
 
       <Card>
         <CardContent className="p-4 grid grid-cols-1 gap-3 sm:grid-cols-2">

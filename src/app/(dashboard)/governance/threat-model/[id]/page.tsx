@@ -19,7 +19,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { ArrowLeft, Check, Loader2, Plus, ShieldCheck, Trash2 } from "lucide-react";
+import { Check, Loader2, Plus, ShieldCheck, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -37,6 +37,7 @@ import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useExportDownload } from "@/components/governance/use-export-download";
 import { useNow } from "@/lib/use-now";
+import { PageHeader } from "@/components/governance/page-header";
 import { STATUS_OUTLINE, StatusNote } from "@/components/ui/status-note";
 import {
   CONTROL_LAYER_LABELS,
@@ -65,6 +66,7 @@ const STATE_STYLE: Record<string, string> = {
 
 export default function ThreatModelDetailPage() {
   const t = useTranslations("threatModel");
+  const tc = useTranslations("common");
   const locale = useLocale();
   const lang = locale === "es" ? "es" : "en";
   const params = useParams();
@@ -191,15 +193,11 @@ export default function ThreatModelDetailPage() {
 
   return (
     <div className="space-y-6 max-w-4xl">
-      <div className="space-y-2">
-        <Button asChild variant="ghost" size="icon" className="-ml-2">
-          <Link href="/governance/threat-model">
-            <ArrowLeft className="w-4 h-4" />
-          </Link>
-        </Button>
-        <div className="min-w-0">
-          <h1 className="text-xl sm:text-2xl font-semibold">{data.name}</h1>
-          <p className="text-xs text-muted-foreground mt-1">
+      <PageHeader
+        back={{ href: "/governance/threat-model", label: tc("back") }}
+        title={data.name}
+        description={
+          <>
             {data.aiSystem ? (
               <Link
                 href={`/governance/ai-registry/${data.aiSystem.id}`}
@@ -213,10 +211,10 @@ export default function ThreatModelDetailPage() {
             {data.reviewedAt
               ? ` · ${t("reviewedOn", { date: new Date(data.reviewedAt).toLocaleDateString() })}`
               : ""}
-          </p>
-          {data.systemSummary && <p className="text-sm mt-2">{data.systemSummary}</p>}
-        </div>
-      </div>
+          </>
+        }
+        meta={data.systemSummary ? <p className="text-sm">{data.systemSummary}</p> : undefined}
+      />
 
       {/* ── The four pictures */}
       <Card>

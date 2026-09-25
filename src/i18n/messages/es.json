@@ -5656,11 +5656,12 @@
     },
     "layout": {
       "title": "Diseño",
-      "description": "El diseño clásico mantiene los menús en la barra superior. El guiado muestra un menú a la izquierda que te lleva por el programa, etapa a etapa.",
-      "classic": "Clásico",
-      "guided": "Guiado (versión preliminar)",
+      "description": "El diseño guiado muestra un menú a la izquierda que te lleva por el programa, etapa a etapa. El clásico mantiene los menús en la barra superior; seguirá disponible un tiempo y después se retirará.",
+      "classic": "Clásico (se retirará)",
+      "guided": "Guiado",
       "changed": "Diseño cambiado.",
-      "useClassic": "Usar el diseño clásico"
+      "useClassic": "Usar el diseño clásico",
+      "useGuided": "Usar el diseño guiado"
     },
     "portfolio": {
       "title": "Clientes",

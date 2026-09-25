@@ -105,7 +105,7 @@ export default function SettingsPage() {
         </Card>
       )}
 
-      {/* Layout: Classic or Guided (preview), per browser. */}
+      {/* Layout: Guided (the default) or Classic (to be retired), per browser. */}
       <LayoutCard />
 
       {/* Hosted pilot only: day counter, ceilings, the two ways out. Renders nothing on the kit. */}

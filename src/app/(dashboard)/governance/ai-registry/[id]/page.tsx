@@ -65,6 +65,7 @@ import { AnnexIvCard } from "@/components/ai/AnnexIvCard";
 import { TransparencyPanel } from "@/components/governance/TransparencyPanel";
 import { AdmtPanel } from "@/components/governance/AdmtPanel";
 import { TierChip } from "@/components/governance/risk-tier-badge";
+import { PageHeader } from "@/components/governance/page-header";
 import { UnifiedPanel } from "@/components/governance/UnifiedPanel";
 import { AgentPanel } from "@/components/governance/AgentPanel";
 import { TransparencyStatementCard } from "@/components/ai/TransparencyStatementCard";
@@ -603,66 +604,53 @@ export default function AISystemDetailPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="space-y-2">
-          <Link href="/governance/ai-registry">
-            <Button variant="ghost" size="icon" className="-ml-2">
-              <ArrowLeft className="w-4 h-4" />
+      <PageHeader
+        back={{ href: "/governance/ai-registry", label: tc("back") }}
+        icon={Cpu}
+        title={system.name}
+        meta={
+          <>
+            <Badge
+              variant="outline"
+              className={statusColors[system.status] || ""}
+            >
+              {statusLabel(system.status)}
+            </Badge>
+            {canWrite && (
+              <Select
+                value={system.status}
+                onValueChange={(val) =>
+                  updateSystem.mutate({ organizationId, id, status: val as "DRAFT" | "DEVELOPMENT" | "TESTING" | "DEPLOYED" | "RETIRED" })
+                }
+              >
+                <SelectTrigger className="w-full sm:w-[160px] h-7 text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {["DRAFT", "DEVELOPMENT", "TESTING", "DEPLOYED", "RETIRED"].map((s) => (
+                    <SelectItem key={s} value={s}>
+                      {statusLabel(s)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+            {riskLevel && (
+              <TierChip level={riskLevel}>
+                {tc("riskWithLevel", { level: riskLabel(riskLevel) })}
+              </TierChip>
+            )}
+          </>
+        }
+        actions={
+          canWrite ? (
+            <Button variant="outline" onClick={openEditDialog}>
+              <Edit className="w-4 h-4 mr-2" />
+              {tc("edit")}
             </Button>
-          </Link>
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-primary/10 flex items-center justify-center shrink-0">
-              <Cpu className="w-6 h-6 text-primary" />
-            </div>
-            <div>
-              <h1 className="text-xl sm:text-2xl font-semibold">{system.name}</h1>
-              <div className="flex items-center gap-2 mt-1 flex-wrap">
-                <Badge
-                  variant="outline"
-                  className={statusColors[system.status] || ""}
-                >
-                  {statusLabel(system.status)}
-                </Badge>
-                {canWrite && (
-                  <Select
-                    value={system.status}
-                    onValueChange={(val) =>
-                      updateSystem.mutate({ organizationId, id, status: val as "DRAFT" | "DEVELOPMENT" | "TESTING" | "DEPLOYED" | "RETIRED" })
-                    }
-                  >
-                    <SelectTrigger className="w-full sm:w-[160px] h-7 text-xs">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {["DRAFT", "DEVELOPMENT", "TESTING", "DEPLOYED", "RETIRED"].map((s) => (
-                        <SelectItem key={s} value={s}>
-                          {statusLabel(s)}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
-                {riskLevel && (
-                  <TierChip level={riskLevel}>
-                    {tc("riskWithLevel", { level: riskLabel(riskLevel) })}
-                  </TierChip>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-        {canWrite && (
-          <Button
-            variant="outline"
-            size="sm"
-            className="self-start sm:self-auto"
-            onClick={openEditDialog}
-          >
-            <Edit className="w-4 h-4 mr-2" />
-            {tc("edit")}
-          </Button>
-        )}
-      </div>
+          ) : undefined
+        }
+      />
 
       {/* Overview Grid */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">

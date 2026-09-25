@@ -46,6 +46,7 @@ import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { formatDate, formatRelativeTime, getDaysUntil } from "@/lib/utils";
 import { STATUS_OUTLINE } from "@/components/ui/status-note";
+import { PageHeader } from "@/components/governance/page-header";
 
 const statusColors: Record<string, string> = {
   ACTIVE: STATUS_OUTLINE.good,
@@ -222,45 +223,32 @@ export default function VendorDetailPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="space-y-2">
-          <Link href="/governance/vendors">
-            <Button variant="ghost" size="icon" className="-ml-2">
-              <ArrowLeft className="w-4 h-4" />
-            </Button>
-          </Link>
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-primary/10 flex items-center justify-center shrink-0">
-              <Building2 className="w-6 h-6 text-primary" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-xl sm:text-2xl font-semibold">{vendor.name}</h1>
-                {vendor.catalogSlug && (
-                  <Badge variant="secondary" className="text-xs">
-                    <Database className="w-3 h-3 mr-1" />
-                    {t("badgeCatalog")}
-                  </Badge>
-                )}
-              </div>
-              <div className="flex items-center gap-2 mt-1 flex-wrap">
-                <Badge
-                  variant="outline"
-                  className={statusColors[vendor.status] || ""}
-                >
-                  {statusLabelKeys[vendor.status] ? t(statusLabelKeys[vendor.status]) : vendor.status}
-                </Badge>
-                {vendor.riskLevel && (
-                  <TierChip level={vendor.riskLevel}>
-                    {tc("riskWithLevel", { level: riskLabel(vendor.riskLevel) })}
-                  </TierChip>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <PageHeader
+        back={{ href: "/governance/vendors", label: tc("back") }}
+        icon={Building2}
+        title={vendor.name}
+        meta={
+          <>
+            {vendor.catalogSlug && (
+              <Badge variant="secondary" className="text-xs">
+                <Database className="w-3 h-3 mr-1" />
+                {t("badgeCatalog")}
+              </Badge>
+            )}
+            <Badge
+              variant="outline"
+              className={statusColors[vendor.status] || ""}
+            >
+              {statusLabelKeys[vendor.status] ? t(statusLabelKeys[vendor.status]) : vendor.status}
+            </Badge>
+            {vendor.riskLevel && (
+              <TierChip level={vendor.riskLevel}>
+                {tc("riskWithLevel", { level: riskLabel(vendor.riskLevel) })}
+              </TierChip>
+            )}
+          </>
+        }
+      />
 
       {/* Overview Grid */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">

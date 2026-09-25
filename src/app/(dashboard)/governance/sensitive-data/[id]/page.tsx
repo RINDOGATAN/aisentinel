@@ -12,11 +12,10 @@
  */
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { ArrowLeft, CheckCircle2, Loader2, Save, Trash2 } from "lucide-react";
+import { CheckCircle2, Loader2, Save, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -33,6 +32,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { STATUS_OUTLINE } from "@/components/ui/status-note";
+import { PageHeader } from "@/components/governance/page-header";
 import {
   BAND_GUIDANCE,
   RATINGS,
@@ -54,6 +54,7 @@ const BAND_STYLE: Record<string, string> = {
 
 export default function SensitiveDataAnalysisPage() {
   const t = useTranslations("sensitiveData");
+  const tc = useTranslations("common");
   const locale = useLocale();
   const lang = locale === "es" ? "es" : "en";
   const params = useParams();
@@ -143,23 +144,19 @@ export default function SensitiveDataAnalysisPage() {
 
   return (
     <div className="space-y-6 max-w-3xl">
-      <div className="space-y-2">
-        <Button asChild variant="ghost" size="icon" className="-ml-2">
-          <Link href="/governance/sensitive-data">
-            <ArrowLeft className="w-4 h-4" />
-          </Link>
-        </Button>
-        <div className="min-w-0">
-          <h1 className="text-xl sm:text-2xl font-semibold truncate">{data.subject}</h1>
-          <p className="text-xs text-muted-foreground mt-1">
+      <PageHeader
+        back={{ href: "/governance/sensitive-data", label: tc("back") }}
+        title={data.subject}
+        description={
+          <>
             {t(`category.${data.category}`)}
             {data.aiSystem ? ` · ${data.aiSystem.name}` : ""}
             {data.completedAt
               ? ` · ${t("completedOn", { date: new Date(data.completedAt).toLocaleDateString() })}`
               : ""}
-          </p>
-        </div>
-      </div>
+          </>
+        }
+      />
 
       <Card className="border-primary/30 bg-primary/5">
         <CardContent className="p-4 flex flex-wrap items-center gap-3">

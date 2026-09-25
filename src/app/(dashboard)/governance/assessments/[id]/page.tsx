@@ -19,7 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ArrowLeft, Save, Send, CheckCircle, XCircle, Loader2, AlertTriangle } from "lucide-react";
+import { Save, Send, CheckCircle, XCircle, Loader2, AlertTriangle } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { formatDate } from "@/lib/utils";
 import Link from "next/link";
@@ -28,6 +28,7 @@ import { useSession } from "next-auth/react";
 import { AiDraftPanel } from "@/components/ai/AiDraftPanel";
 import { AssessmentVersionHistory } from "@/components/governance/assessment-version-history";
 import { STATUS_CHIP, STATUS_OUTLINE } from "@/components/ui/status-note";
+import { PageHeader } from "@/components/governance/page-header";
 
 const statusColors: Record<string, string> = {
   DRAFT: "bg-gray-500/20 text-gray-400",
@@ -39,6 +40,7 @@ const statusColors: Record<string, string> = {
 
 export default function AssessmentDetailPage() {
   const t = useTranslations("assessmentDetail");
+  const tc = useTranslations("common");
   const locale = useLocale();
   const utils = trpc.useUtils();
   const params = useParams();
@@ -156,43 +158,43 @@ export default function AssessmentDetailPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="space-y-2">
-          <Link href="/governance/assessments">
-            <Button variant="ghost" size="icon" className="-ml-2"><ArrowLeft className="w-4 h-4" /></Button>
-          </Link>
-          <div>
-            <h1 className="text-2xl font-bold">{assessment.title}</h1>
-            <div className="flex items-center gap-2 mt-1 flex-wrap">
-              <Badge variant="outline">{assessment.type}</Badge>
-              <Badge className={statusColors[assessment.status]}>{assessment.status.replace("_", " ")}</Badge>
-              {assessment.aiSystem && (
-                <span className="text-sm text-muted-foreground">
-                  for <Link href={`/governance/ai-registry/${assessment.aiSystem.id}`} className="text-primary hover:underline">{assessment.aiSystem.name}</Link>
-                </span>
+      <PageHeader
+        back={{ href: "/governance/assessments", label: tc("back") }}
+        title={assessment.title}
+        meta={
+          <>
+            <Badge variant="outline">{assessment.type}</Badge>
+            <Badge className={statusColors[assessment.status]}>{assessment.status.replace("_", " ")}</Badge>
+            {assessment.aiSystem && (
+              <span className="text-sm text-muted-foreground">
+                for <Link href={`/governance/ai-registry/${assessment.aiSystem.id}`} className="text-primary hover:underline">{assessment.aiSystem.name}</Link>
+              </span>
+            )}
+          </>
+        }
+        actions={
+          canEdit || canSubmit ? (
+            <>
+              {canSubmit && (
+                <Button
+                  variant="outline"
+                  onClick={handleSubmit}
+                  disabled={submitMutation.isPending || updateMutation.isPending || !isComplete}
+                  title={isComplete ? undefined : t("completeBeforeSubmit", { count: missingRequired.length })}
+                >
+                  <Send className="w-4 h-4 mr-2" />{t("submitForReview")}
+                </Button>
               )}
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-wrap gap-2 self-start sm:self-auto">
-          {canEdit && (
-            <Button onClick={handleSave} disabled={updateMutation.isPending}>
-              {updateMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
-              {t("saveButton")}
-            </Button>
-          )}
-          {canSubmit && (
-            <Button
-              variant="outline"
-              onClick={handleSubmit}
-              disabled={submitMutation.isPending || updateMutation.isPending || !isComplete}
-              title={isComplete ? undefined : t("completeBeforeSubmit", { count: missingRequired.length })}
-            >
-              <Send className="w-4 h-4 mr-2" />{t("submitForReview")}
-            </Button>
-          )}
-        </div>
-      </div>
+              {canEdit && (
+                <Button onClick={handleSave} disabled={updateMutation.isPending}>
+                  {updateMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
+                  {t("saveButton")}
+                </Button>
+              )}
+            </>
+          ) : undefined
+        }
+      />
 
       {actionError && (
         <Card className="border-destructive">

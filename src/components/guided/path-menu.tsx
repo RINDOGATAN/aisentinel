@@ -23,6 +23,7 @@ import {
   isCounted,
   overallPercent,
   stageOfStep,
+  stageOpenByDefault,
   stageProgress,
   type PathConfig,
   type PathStage,
@@ -84,18 +85,20 @@ export function PathMenu<C>({
   const library = config.library({ stripeEnabled, clientMode });
   const currentStep = currentStepId(config, pathname, search);
   const percent = statuses ? overallPercent(config, statuses) : null;
-  const currentStage = stageOfStep(config, currentStep);
-  const currentLibrary = currentStep ? null : currentLibraryId(library, pathname);
   const onOverview = pathname === overview.href;
+  const currentStage = stageOfStep(config, currentStep);
+  const openStage = stageOpenByDefault(config, currentStep, statuses, onOverview);
+  const currentLibrary = currentStep ? null : currentLibraryId(library, pathname);
 
-  // The stage holding the current page is open unless it was closed on this
-  // very page; any other stage is open only when opened by hand.
+  // The stage holding the current page (on the overview, the stage holding
+  // the next step) is open unless it was closed on this very page; any other
+  // stage is open only when opened by hand.
   const [opened, setOpened] = useState<Record<string, boolean>>({});
   const [closedCurrentOn, setClosedCurrentOn] = useState<string | null>(null);
   const isOpen = (stage: PathStage<C>) =>
-    stage.id === currentStage?.id ? closedCurrentOn !== pathname : !!opened[stage.id];
+    stage.id === openStage?.id ? closedCurrentOn !== pathname : !!opened[stage.id];
   const toggle = (stage: PathStage<C>) => {
-    if (stage.id === currentStage?.id) setClosedCurrentOn(isOpen(stage) ? pathname : null);
+    if (stage.id === openStage?.id) setClosedCurrentOn(isOpen(stage) ? pathname : null);
     else setOpened((o) => ({ ...o, [stage.id]: !o[stage.id] }));
   };
 

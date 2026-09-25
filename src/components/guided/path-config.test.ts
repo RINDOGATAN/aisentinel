@@ -22,6 +22,7 @@ import {
   overallPercent,
   overallProgress,
   stageOfStep,
+  stageOpenByDefault,
   stageProgress,
   stageToCelebrate,
   stepAndFollowing,
@@ -503,5 +504,23 @@ describe("the current page", () => {
   it("opens the stage that holds the current page", () => {
     expect(stageOfStep(PATH, currentStepId(PATH, "/governance/threat-model/x"))?.id).toBe("assess");
     expect(stageOfStep(PATH, null)).toBeNull();
+  });
+
+  it("lands a new person on the dashboard with stage 1 open", () => {
+    const fresh = evaluatePath(PATH, EMPTY_PATH_COUNTS);
+    // While the progress is loading, and once it has loaded, stage 1.
+    expect(stageOpenByDefault(PATH, null, null, true)?.id).toBe("setup");
+    expect(stageOpenByDefault(PATH, null, fresh, true)?.id).toBe("setup");
+    // Sign-up ends on the quick start, the first step of stage 1.
+    expect(stageOpenByDefault(PATH, currentStepId(PATH, "/governance/quickstart"), fresh, false)?.id).toBe(
+      "setup",
+    );
+  });
+
+  it("opens the stage of the next step on the dashboard, and none on a library page", () => {
+    const setUp = evaluatePath(PATH, { ...EMPTY_PATH_COUNTS, quickstartCompleted: true, jurisdictions: 1, regimeScreeningAnswered: true });
+    expect(stageOpenByDefault(PATH, null, setUp, true)?.id).toBe(nextStep(PATH, setUp)?.stage.id);
+    expect(stageOpenByDefault(PATH, null, evaluatePath(PATH, COMPLETE), true)).toBeNull();
+    expect(stageOpenByDefault(PATH, null, null, false)).toBeNull();
   });
 });

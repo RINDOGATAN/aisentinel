@@ -5656,11 +5656,12 @@
     },
     "layout": {
       "title": "Layout",
-      "description": "Classic keeps the menus in the top bar. Guided shows a menu on the left that takes you through the program, stage by stage.",
-      "classic": "Classic",
-      "guided": "Guided (preview)",
+      "description": "Guided shows a menu on the left that takes you through the program, stage by stage. Classic keeps the menus in the top bar; it stays available for a while and will then be retired.",
+      "classic": "Classic (will be retired)",
+      "guided": "Guided",
       "changed": "Layout changed.",
-      "useClassic": "Use the classic layout"
+      "useClassic": "Use the classic layout",
+      "useGuided": "Use the guided layout"
     },
     "portfolio": {
       "title": "Clients",

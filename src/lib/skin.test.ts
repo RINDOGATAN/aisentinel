@@ -11,13 +11,14 @@ import {
 } from "./skin";
 
 describe("the layout choice", () => {
-  it("is Classic unless the cookie says exactly guided", () => {
-    expect(parseSkin(undefined)).toBe("classic");
-    expect(parseSkin(null)).toBe("classic");
-    expect(parseSkin("")).toBe("classic");
-    expect(parseSkin("Guided")).toBe("classic");
-    expect(parseSkin("classic")).toBe("classic");
+  it("is Guided unless the cookie says exactly classic", () => {
+    expect(parseSkin(undefined)).toBe("guided");
+    expect(parseSkin(null)).toBe("guided");
+    expect(parseSkin("")).toBe("guided");
+    expect(parseSkin("Classic")).toBe("guided");
+    expect(parseSkin("anything")).toBe("guided");
     expect(parseSkin("guided")).toBe("guided");
+    expect(parseSkin("classic")).toBe("classic");
   });
 
   it("reads ?skin= only for the two known values", () => {

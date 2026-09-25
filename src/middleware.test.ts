@@ -30,6 +30,12 @@ describe("middleware layout switch (?skin=)", () => {
     expect(response.headers.getSetCookie().some((c) => c.startsWith("ais_skin=classic;"))).toBe(true);
   });
 
+  it("writes no layout cookie for a new visitor: the layout reads no cookie as Guided", () => {
+    const response = go("http://localhost:3003/governance");
+    expect(response.headers.get("location")).toBeNull();
+    expect(response.headers.getSetCookie().some((c) => c.startsWith("ais_skin="))).toBe(false);
+  });
+
   it("ignores an unknown value and any page outside the dashboard", () => {
     for (const url of [
       "http://localhost:3003/governance?skin=dark",

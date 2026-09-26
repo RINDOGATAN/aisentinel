@@ -3,7 +3,7 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,18 +16,47 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useEnumLabels } from "@/lib/enum-labels";
 
+const ASSESSMENT_TYPES = ["FRIA", "CONFORMITY", "AI_RISK", "BIAS_FAIRNESS", "CUSTOM"] as const;
+type AssessmentType = (typeof ASSESSMENT_TYPES)[number];
+
+const typeNameKeys: Record<AssessmentType, string> = {
+  FRIA: "typeFria",
+  CONFORMITY: "typeConformity",
+  AI_RISK: "typeAiRisk",
+  BIAS_FAIRNESS: "typeBiasFairness",
+  CUSTOM: "typeCustom",
+};
+
+const typeDescKeys: Record<AssessmentType, string> = {
+  FRIA: "typeDescFria",
+  CONFORMITY: "typeDescConformity",
+  AI_RISK: "typeDescAiRisk",
+  BIAS_FAIRNESS: "typeDescBiasFairness",
+  CUSTOM: "typeDescCustom",
+};
+
 export default function NewAssessmentPage() {
   const t = useTranslations("assessmentsNew");
+  const tt = useTranslations("assessments");
   const { statusLabel } = useEnumLabels();
   const tc = useTranslations("common");
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { organization } = useOrganization();
   const orgId = organization?.id ?? "";
+
+  // A type chosen on the list ("Bias and Fairness" then "New assessment") is
+  // carried here so the wizard never asks for it again. Templates are then
+  // shown for that type only.
+  const rawType = (searchParams.get("type") ?? "").toUpperCase();
+  const presetType = (ASSESSMENT_TYPES as readonly string[]).includes(rawType)
+    ? (rawType as AssessmentType)
+    : null;
 
   const [step, setStep] = useState(1);
   const [selectedSystemId, setSelectedSystemId] = useState("");
   const [selectedTemplateId, setSelectedTemplateId] = useState("");
-  const [selectedType, setSelectedType] = useState("");
+  const [selectedType, setSelectedType] = useState<string>(presetType ?? "");
   const [title, setTitle] = useState("");
 
   const { data: systemsData } = trpc.aiSystem.list.useQuery(
@@ -36,7 +65,7 @@ export default function NewAssessmentPage() {
   );
 
   const { data: templates } = trpc.assessment.listTemplates.useQuery(
-    { organizationId: orgId },
+    { organizationId: orgId, type: presetType ?? undefined },
     { enabled: !!orgId }
   );
 
@@ -72,8 +101,16 @@ export default function NewAssessmentPage() {
           <Button variant="ghost" size="icon" className="-ml-2"><ArrowLeft className="w-4 h-4" /></Button>
         </Link>
         <div>
-          <h1 className="text-2xl font-bold">{t("title")}</h1>
+          <h1 className="text-2xl font-bold">
+            {presetType ? t("titleForType", { type: tt(typeNameKeys[presetType]) }) : t("title")}
+          </h1>
           <p className="text-muted-foreground">{t("stepIndicator", { step })}</p>
+          {presetType && (
+            <>
+              <p className="text-sm text-foreground">{tt(typeDescKeys[presetType])}</p>
+              <p className="text-sm text-muted-foreground">{t("typeChosen", { type: tt(typeNameKeys[presetType]) })}</p>
+            </>
+          )}
         </div>
       </div>
 
@@ -109,6 +146,9 @@ export default function NewAssessmentPage() {
             <CardTitle>{t("step2Title")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
+            {presetType && (
+              <p className="text-sm text-muted-foreground">{t("step2ForType", { type: tt(typeNameKeys[presetType]) })}</p>
+            )}
             {templates && templates.length === 0 && (
               <p className="text-muted-foreground">
                 {t("step2Empty")}{" "}
@@ -139,6 +179,9 @@ export default function NewAssessmentPage() {
                     <div>
                       <div className="font-medium">{template.name}</div>
                       <div className="text-sm text-muted-foreground">{template.description}</div>
+                      {typeDescKeys[template.type as AssessmentType] && (
+                        <div className="text-xs text-muted-foreground mt-1">{tt(typeDescKeys[template.type as AssessmentType])}</div>
+                      )}
                     </div>
                     <div className="flex items-center gap-2">
                       <Badge variant="outline">{template.type}</Badge>

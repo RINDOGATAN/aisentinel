@@ -10,6 +10,22 @@
 import { hostedPilotActive } from "@/config/pilot";
 import { SignInForm } from "./sign-in-form";
 
-export default function SignInPage() {
-  return <SignInForm hostedPilot={hostedPilotActive()} />;
+export default async function SignInPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ callbackUrl?: string; reason?: string }>;
+}) {
+  const { callbackUrl, reason } = await searchParams;
+  // Only accept a same-app return path, never an absolute URL to elsewhere.
+  const safeCallback =
+    callbackUrl && callbackUrl.startsWith("/") && !callbackUrl.startsWith("//")
+      ? callbackUrl
+      : "/governance";
+  return (
+    <SignInForm
+      hostedPilot={hostedPilotActive()}
+      callbackUrl={safeCallback}
+      showSignInRequired={reason === "signin-required"}
+    />
+  );
 }

@@ -76,6 +76,10 @@ export default function AssessmentsPage() {
   const { download } = useExportDownload();
 
   const typeFilter = activeTab === "all" ? undefined : activeTab.toUpperCase() as "FRIA" | "CONFORMITY" | "AI_RISK" | "BIAS_FAIRNESS" | "CUSTOM";
+  // Carry the chosen type into the wizard so it never asks for the type again.
+  const newAssessmentHref = typeFilter
+    ? `/governance/assessments/new?type=${typeFilter}`
+    : "/governance/assessments/new";
 
   const { data: statsData, isLoading: statsLoading } = trpc.assessment.getStats.useQuery(
     { organizationId: organization?.id ?? "" },
@@ -149,7 +153,7 @@ export default function AssessmentsPage() {
               <span className="hidden sm:inline">{tc("export")}</span>
             </Button>
             {canWrite && (
-              <Link href="/governance/assessments/new">
+              <Link href={newAssessmentHref}>
                 <Button>
                   <Plus className="w-4 h-4 sm:mr-2" />
                   <span className="hidden sm:inline">{t("newAssessment")}</span>
@@ -322,7 +326,7 @@ export default function AssessmentsPage() {
                     : t("emptyHint")}
                 </p>
                 {!searchQuery && canWrite && (
-                  <Link href="/governance/assessments/new">
+                  <Link href={newAssessmentHref}>
                     <Button>
                       <Plus className="w-4 h-4 mr-2" />
                       {t("newAssessment")}

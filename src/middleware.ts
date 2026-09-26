@@ -47,7 +47,11 @@ export default function middleware(request: NextRequest) {
     return redirect;
   }
 
-  const response = NextResponse.next();
+  // Carry the path being requested so a server component (the dashboard
+  // layout) can send a signed-out visitor back to it after sign-in.
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-pathname", pathname);
+  const response = NextResponse.next({ request: { headers: requestHeaders } });
 
   // Set currency cookie based on geo-IP: EUR only for a known non-US country
   if (!request.cookies.has("currency")) {

@@ -630,15 +630,23 @@
     "typeAiRisk": "Riesgo de IA",
     "typeBiasFairness": "Sesgo y equidad",
     "typeCustom": "Personalizada",
+    "typeDescFria": "Evaluación de impacto en los derechos fundamentales: lo que quien despliega un sistema de IA de alto riesgo debe documentar sobre su efecto en los derechos de las personas.",
+    "typeDescConformity": "La comprobación que un proveedor de un sistema de IA de alto riesgo debe superar antes de introducirlo en el mercado de la UE.",
+    "typeDescAiRisk": "Una evaluación general del riesgo de un sistema de IA: qué puede salir mal, con qué probabilidad y qué lo reduce.",
+    "typeDescBiasFairness": "Un examen de si el sistema trata de forma desigual a grupos de personas, y qué se hace al respecto.",
+    "typeDescCustom": "Una evaluación en blanco que das forma con tus propias preguntas.",
     "templatesButton": "Plantillas"
   },
   "assessmentsNew": {
     "title": "Nueva evaluación",
+    "titleForType": "Nueva evaluación de {type}",
+    "typeChosen": "Ya has elegido el tipo: {type}. No se te volverá a preguntar.",
     "stepIndicator": "Paso {step} de 3",
-    "step1Title": "Seleccionar sistema de IA",
+    "step1Title": "Elige el sistema",
     "step1Empty": "Aún no hay sistemas de IA registrados.",
     "step1EmptyLink": "Registra uno primero",
     "step2Title": "Seleccionar plantilla",
+    "step2ForType": "Estas son las plantillas de {type}.",
     "step3Title": "Título de la evaluación",
     "titleLabel": "Título",
     "titlePlaceholder": "Título de la evaluación",
@@ -650,7 +658,9 @@
   "assessmentDetail": {
     "notFound": "Evaluación no encontrada.",
     "saveButton": "Guardar",
-    "submitForReview": "Enviar a revisión",
+    "submitForReview": "Enviar a revisión interna",
+    "submitRecipients": "Cuando la envíes, las personas revisoras de tu organización (propietarios, administradores y responsables de IA) podrán aprobarla o rechazarla.",
+    "andMoreMissing": "y {count} más",
     "awaitingReview": "Esta evaluación está pendiente de tu revisión.",
     "approve": "Aprobar",
     "reject": "Rechazar",
@@ -1200,7 +1210,7 @@
     "tabContent": "Contenido",
     "tabVersionHistory": "Historial de versiones ({count})",
     "tabLinkedSystems": "Sistemas vinculados ({count})",
-    "submitForReview": "Enviar a revisión",
+    "submitForReview": "Enviar a revisión interna",
     "approve": "Aprobar",
     "publish": "Publicar",
     "revise": "Revisar",
@@ -1557,6 +1567,7 @@
     "nothingToLicense": "Ahora mismo nada necesita licencia."
   },
   "signIn": {
+    "signInRequired": "Inicia sesión para continuar. Tu sesión dura 12 horas; cuando termina, vuelves aquí. Después de iniciar sesión regresas a la página en la que estabas.",
     "localTitle": "Acceso local",
     "localBody": "Tu cuenta reside en este ordenador. Introduce tu correo electrónico para abrirla. No se envía nada a ningún sitio.",
     "emailPlaceholder": "tu@tudespacho.com",
@@ -3924,6 +3935,7 @@
       },
       "depth": {
         "title": "Profundidad",
+        "explain": "La profundidad indica hasta qué punto un marco cubre una dimensión: 0 significa que no la cubre y 3 que la cubre por completo.",
         "legend": "Profundidad, de 0 (mínima) a 3 (máxima)",
         "value": "{depth} de 3"
       },
@@ -4797,7 +4809,7 @@
   },
   "regimes": {
     "title": "Regímenes transfronterizos",
-    "description": "El RGPD, Colorado, Texas y Washington junto al Reglamento de IA de la UE y California. Cada régimen resuelve su propio ámbito a partir de las jurisdicciones declaradas y de unas pocas respuestas de cribado.",
+    "description": "Los regímenes regulatorios son las leyes, y los reguladores que las hacen cumplir. Aquí eso significa el RGPD, Colorado, Texas y Washington junto al Reglamento de IA de la UE y California. Cada régimen resuelve su propio ámbito a partir de las jurisdicciones declaradas y de unas pocas respuestas de cribado.",
     "reviewMarkerNote": "El contenido normativo de estos regímenes se validó el 8 de septiembre de 2026. Los paquetes del Reglamento de IA de la UE y de California siguen pendientes.",
     "copiedFromTemplate": "Estas respuestas se copiaron de una plantilla. Revisa cada una para este cliente y después confírmalas.",
     "confirmCopied": "Confirmar respuestas",
@@ -4945,7 +4957,7 @@
     "personaOwnTitle": "Para mi organización",
     "personaOwnDescription": "Llevo la gobernanza de la IA dentro de una organización: asesoría jurídica interna, cumplimiento normativo, delegado de protección de datos o responsable de IA.",
     "personaClientsTitle": "Para organizaciones cliente",
-    "personaClientsDescription": "Configuro y llevo la gobernanza de la IA de varios clientes: una consultora o un despacho que asesora a clientes.",
+    "personaClientsDescription": "Configuro y llevo la gobernanza de la IA de clientes: un despacho de abogados, una consultora u otro asesor.",
     "continue": "Continuar",
     "settingUp": "Preparando…",
     "genericError": "Algo ha fallado. Inténtalo de nuevo.",

@@ -19,7 +19,15 @@ import { PilotSentenceText } from "@/components/pilot/pilot-sentence";
 // presents it as the plain local sign-in.
 const isDev = features.devAuthEnabled;
 
-export function SignInForm({ hostedPilot }: { hostedPilot: boolean }) {
+export function SignInForm({
+  hostedPilot,
+  callbackUrl = "/governance",
+  showSignInRequired = false,
+}: {
+  hostedPilot: boolean;
+  callbackUrl?: string;
+  showSignInRequired?: boolean;
+}) {
   const t = useTranslations("signIn");
   const pilotLocale = useLocale() === "es" ? "es" : "en";
   const pilotSentence = PILOT_SENTENCE[pilotLocale];
@@ -51,7 +59,7 @@ export function SignInForm({ hostedPilot }: { hostedPilot: boolean }) {
       const result = await signIn("email", {
         email,
         redirect: false,
-        callbackUrl: "/governance",
+        callbackUrl,
       });
 
       if (result?.error) {
@@ -80,13 +88,13 @@ export function SignInForm({ hostedPilot }: { hostedPilot: boolean }) {
       const result = await signIn("dev-credentials", {
         email: devEmail,
         redirect: false,
-        callbackUrl: "/governance",
+        callbackUrl,
       });
       if (result?.error) {
         setError(t("localSignInFailed"));
         setIsDevLoading(false);
       } else {
-        window.location.href = result?.url ?? "/governance";
+        window.location.href = result?.url ?? callbackUrl;
       }
     } catch {
       setError(t("localSignInFailed"));
@@ -124,6 +132,14 @@ export function SignInForm({ hostedPilot }: { hostedPilot: boolean }) {
           <h1 className="text-3xl mb-4 text-white uppercase tracking-wide" style={{ fontFamily: "var(--font-jost), 'Jost', sans-serif", fontWeight: 600 }}>AI SENTINEL</h1>
           <p className="text-muted-foreground text-sm">Cross-border AI Governance</p>
         </div>
+
+        {/* Sent here because a session ended or was never started. Plain, and
+            it says the visitor returns to where they were. */}
+        {showSignInRequired && (
+          <p data-testid="signin-required-notice" className="mb-6 p-3 border border-border bg-secondary/40 text-xs text-foreground text-center">
+            {t("signInRequired")}
+          </p>
+        )}
 
         {/* The hosted pilot says what it is before anyone signs up. */}
         {hostedPilot && (
@@ -218,7 +234,7 @@ export function SignInForm({ hostedPilot }: { hostedPilot: boolean }) {
             {/* Native form POST avoids Safari ITP blocking fetch-based OAuth redirects */}
             <form method="post" action="/api/auth/signin/google" onSubmit={handleGoogleFormSubmit}>
               <input type="hidden" name="csrfToken" value={csrfToken ?? ""} />
-              <input type="hidden" name="callbackUrl" value="/governance" />
+              <input type="hidden" name="callbackUrl" value={callbackUrl} />
               <button
                 type="submit"
                 disabled={isGoogleLoading || !csrfToken}

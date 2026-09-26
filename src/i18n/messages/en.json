@@ -630,15 +630,23 @@
     "typeAiRisk": "AI Risk",
     "typeBiasFairness": "Bias & Fairness",
     "typeCustom": "Custom",
+    "typeDescFria": "Fundamental rights impact assessment: what a deployer of a high-risk AI system must document about its effect on people's rights.",
+    "typeDescConformity": "The check a provider of a high-risk AI system must pass before placing it on the EU market.",
+    "typeDescAiRisk": "A general risk assessment of an AI system: what could go wrong, how likely it is, and what reduces it.",
+    "typeDescBiasFairness": "An examination of whether the system treats groups of people unequally, and what is done about it.",
+    "typeDescCustom": "A blank assessment you shape with your own questions.",
     "templatesButton": "Templates"
   },
   "assessmentsNew": {
     "title": "New Assessment",
+    "titleForType": "New {type} assessment",
+    "typeChosen": "You already chose the type: {type}. You will not be asked for it again.",
     "stepIndicator": "Step {step} of 3",
-    "step1Title": "Select AI System",
+    "step1Title": "Choose the system",
     "step1Empty": "No AI systems registered yet.",
     "step1EmptyLink": "Register one first",
     "step2Title": "Select Template",
+    "step2ForType": "These are the {type} templates.",
     "step3Title": "Assessment Title",
     "titleLabel": "Title",
     "titlePlaceholder": "Assessment title",
@@ -650,7 +658,9 @@
   "assessmentDetail": {
     "notFound": "Assessment not found.",
     "saveButton": "Save",
-    "submitForReview": "Submit for Review",
+    "submitForReview": "Send for internal review",
+    "submitRecipients": "When you send this, your organisation's reviewers (owners, admins and AI officers) can approve or reject it.",
+    "andMoreMissing": "and {count} more",
     "awaitingReview": "This assessment is awaiting your review.",
     "approve": "Approve",
     "reject": "Reject",
@@ -1200,7 +1210,7 @@
     "tabContent": "Content",
     "tabVersionHistory": "Version History ({count})",
     "tabLinkedSystems": "Linked Systems ({count})",
-    "submitForReview": "Submit for Review",
+    "submitForReview": "Send for internal review",
     "approve": "Approve",
     "publish": "Publish",
     "revise": "Revise",
@@ -1557,6 +1567,7 @@
     "nothingToLicense": "Nothing needs a licence right now."
   },
   "signIn": {
+    "signInRequired": "Please sign in to continue. Your session lasts 12 hours; once it ends you are brought back here. After signing in you return to the page you were on.",
     "localTitle": "Local sign-in",
     "localBody": "Your account lives on this computer. Enter your email to open it. Nothing is sent anywhere.",
     "emailPlaceholder": "you@yourfirm.com",
@@ -3924,6 +3935,7 @@
       },
       "depth": {
         "title": "Depth",
+        "explain": "Depth is how fully a framework covers a dimension: 0 means it does not cover it, 3 means it covers it in full.",
         "legend": "Depth, from 0 (least) to 3 (most)",
         "value": "{depth} of 3"
       },
@@ -4797,7 +4809,7 @@
   },
   "regimes": {
     "title": "Cross-border regimes",
-    "description": "GDPR, Colorado, Texas and Washington alongside the EU AI Act and California. Each regime resolves its own scope from your declared jurisdictions and a few screening answers.",
+    "description": "Regulatory regimes are the laws, and the regulators that enforce them. Here that means GDPR, Colorado, Texas and Washington alongside the EU AI Act and California. Each regime resolves its own scope from your declared jurisdictions and a few screening answers.",
     "reviewMarkerNote": "Regulatory content for these regimes was signed off on 8 September 2026. The EU AI Act and California packs remain pending.",
     "copiedFromTemplate": "These answers were copied from a template. Check each one for this client, then confirm them.",
     "confirmCopied": "Confirm answers",
@@ -4945,7 +4957,7 @@
     "personaOwnTitle": "For my organization",
     "personaOwnDescription": "I run AI governance inside one organization: in-house counsel, compliance, a data protection officer or an AI lead.",
     "personaClientsTitle": "For client organizations",
-    "personaClientsDescription": "I set up and run AI governance for several clients: a consultancy, or a firm advising clients.",
+    "personaClientsDescription": "I set up and run AI governance for clients: a law firm, a consultancy, or another adviser.",
     "continue": "Continue",
     "settingUp": "Setting up…",
     "genericError": "Something went wrong. Please try again.",

@@ -1599,6 +1599,30 @@ export default function QuickstartPage() {
             </Button>
           </div>
 
+          {/* Say plainly what the build will create before it runs, so nothing
+              (least of all the template's systems) appears without warning. The
+              names follow in the lists below. */}
+          {(() => {
+            const parts = [
+              reviewTotals.systems > 0 && t("countSystems", { count: reviewTotals.systems }),
+              reviewTotals.policies > 0 && t("countPolicies", { count: reviewTotals.policies }),
+              reviewTotals.oversightGates > 0 &&
+                `${reviewTotals.oversightGates} ${t("statOversightGates")}`,
+              reviewTotals.riskClassifications > 0 &&
+                `${reviewTotals.riskClassifications} ${t("statRiskClassifications")}`,
+              reviewTotals.vendors > 0 && t("countVendors", { count: reviewTotals.vendors }),
+            ].filter(Boolean) as string[];
+            if (parts.length === 0) return null;
+            return (
+              <Card className="border-primary/30 bg-primary/5">
+                <CardContent className="p-4 text-sm">
+                  <span className="font-medium">{t("willCreateLead")}</span>{" "}
+                  {parts.join(", ")}. {t("willCreateNamesNote")}
+                </CardContent>
+              </Card>
+            );
+          })()}
+
           {/* Texas and Washington turn on a few organisation facts. Asked
               here, before the build, so their obligations attach with the
               rest instead of waiting in Settings. Renders nothing when no

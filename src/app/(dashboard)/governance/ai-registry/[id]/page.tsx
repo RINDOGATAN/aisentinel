@@ -60,6 +60,7 @@ import {
 import { useTranslations, useLocale } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
+import { SampleBadge, TemplateBadge, useSampleIds } from "@/components/governance/worked-example-card";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { AnnexIvCard } from "@/components/ai/AnnexIvCard";
 import { TransparencyPanel } from "@/components/governance/TransparencyPanel";
@@ -222,6 +223,7 @@ export default function AISystemDetailPage() {
   const tAgent = useTranslations("agent");
   const utils = trpc.useUtils();
   const organizationId = organization?.id ?? "";
+  const sampleSystemIds = useSampleIds(organizationId, "AISystem");
 
   // The ADMT tab is shown only where California could reach this system: a
   // declared US_CA nexus, or nobody having declared yet. An organization that
@@ -610,6 +612,11 @@ export default function AISystemDetailPage() {
         title={system.name}
         meta={
           <>
+            {sampleSystemIds.has(system.id) ? (
+              <SampleBadge />
+            ) : (
+              <TemplateBadge metadata={system.metadata} />
+            )}
             <Badge
               variant="outline"
               className={statusColors[system.status] || ""}

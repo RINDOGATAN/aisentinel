@@ -38,7 +38,7 @@ import { trpc } from "@/lib/trpc";
 import { useTranslations, useLocale } from "next-intl";
 import { InventoryImportDialog } from "@/components/governance/InventoryImportDialog";
 import { RiskTierBadge } from "@/components/governance/risk-tier-badge";
-import { SampleBadge, useSampleIds } from "@/components/governance/worked-example-card";
+import { SampleBadge, TemplateBadge, useSampleIds } from "@/components/governance/worked-example-card";
 import { SortControl } from "@/components/governance/sort-control";
 import { DEFAULT_LIST_SORT, type ListSort } from "@/lib/list-sort";
 import { useEnumLabels } from "@/lib/enum-labels";
@@ -286,6 +286,7 @@ export default function AIRegistryPage() {
                                   wherever it appears, so nobody mistakes an
                                   invented system for one of their own. */}
                               {sampleSystemIds.has(system.id) && <SampleBadge />}
+                              {!sampleSystemIds.has(system.id) && <TemplateBadge metadata={system.metadata} />}
                               <Badge
                                 variant="outline"
                                 className={`text-xs ${statusColors[system.status] || ""}`}

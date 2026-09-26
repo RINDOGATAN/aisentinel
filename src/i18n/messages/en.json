@@ -1,6 +1,8 @@
 {
   "common": {
     "needsAttention": "Needs attention",
+    "fromTemplate": "From the {name} template",
+    "fromQuickstart": "Added by Quick Start",
     "sortLabel": "Sort",
     "sortNewest": "Newest first",
     "sortOldest": "Oldest first",
@@ -516,6 +518,8 @@
     "templatePreview": "Template Preview",
     "reviewTitle": "Review & Build",
     "reviewDescription": "Review what will be created and build your AI governance program.",
+    "willCreateLead": "This will create:",
+    "willCreateNamesNote": "The names are listed below. Uncheck anything you do not want.",
     "building": "Building...",
     "buildAiGovernanceProgram": "Build AI Governance Program",
     "successTitle": "AI Governance Program Created!",

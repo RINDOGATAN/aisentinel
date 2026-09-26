@@ -20,7 +20,7 @@
  */
 
 import { useState } from "react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { FlaskConical, Loader2, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -30,6 +30,7 @@ import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { WORKED_EXAMPLE_CHROME } from "@/config/worked-example";
 import type { PilotLocale } from "@/config/pilot";
+import { templateOrigin } from "@/lib/template-provenance";
 
 /** Per organisation, so declining for one client never hides it for the next. */
 const dismissKey = (organizationId: string) => `ais.worked-example-declined.${organizationId}`;
@@ -54,6 +55,30 @@ export function SampleBadge() {
     >
       <FlaskConical className="mr-1 h-3 w-3" aria-hidden />
       {WORKED_EXAMPLE_CHROME[locale].badge}
+    </Badge>
+  );
+}
+
+/**
+ * The badge a screen puts on a record a template (or the quick start) created,
+ * so template content is never silent. Renders nothing for a record a person
+ * entered. Give it the record's `metadata`.
+ */
+export function TemplateBadge({ metadata }: { metadata: unknown }) {
+  const tc = useTranslations("common");
+  const origin = templateOrigin(metadata);
+  if (!origin) return null;
+  const label =
+    origin.kind === "template"
+      ? tc("fromTemplate", { name: origin.templateName })
+      : tc("fromQuickstart");
+  return (
+    <Badge
+      variant="outline"
+      className="shrink-0 border-border text-muted-foreground text-[10px] font-medium uppercase tracking-wide"
+    >
+      <FlaskConical className="mr-1 h-3 w-3" aria-hidden />
+      {label}
     </Badge>
   );
 }

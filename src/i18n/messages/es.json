@@ -1,6 +1,8 @@
 {
   "common": {
     "needsAttention": "Requiere atención",
+    "fromTemplate": "De la plantilla {name}",
+    "fromQuickstart": "Añadido por el inicio rápido",
     "sortLabel": "Ordenar",
     "sortNewest": "Más recientes primero",
     "sortOldest": "Más antiguos primero",
@@ -516,6 +518,8 @@
     "templatePreview": "Vista previa de la plantilla",
     "reviewTitle": "Revisar y crear",
     "reviewDescription": "Revisa lo que se va a crear y genera tu programa de gobernanza de IA.",
+    "willCreateLead": "Esto creará:",
+    "willCreateNamesNote": "Los nombres aparecen abajo. Desmarca lo que no quieras.",
     "building": "Creando...",
     "buildAiGovernanceProgram": "Crear programa de gobernanza de IA",
     "successTitle": "¡Programa de gobernanza de IA creado!",

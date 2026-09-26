@@ -1,6 +1,11 @@
 {
   "common": {
     "needsAttention": "Requiere atención",
+    "sortLabel": "Ordenar",
+    "sortNewest": "Más recientes primero",
+    "sortOldest": "Más antiguos primero",
+    "sortName": "Nombre (A a Z)",
+    "sortRisk": "Riesgo (mayor primero)",
     "loading": "Cargando…",
     "save": "Guardar",
     "saving": "Guardando…",

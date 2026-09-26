@@ -38,6 +38,8 @@ import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
 import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
 import { formatDate } from "@/lib/utils";
+import { SortControl } from "@/components/governance/sort-control";
+import { DEFAULT_LIST_SORT, type ListSort } from "@/lib/list-sort";
 import { RiskScreeningPanel } from "@/components/ai/RiskScreeningPanel";
 import { RiskTierBadge, TierMarker } from "@/components/governance/risk-tier-badge";
 
@@ -65,6 +67,7 @@ const annexIIICategories = [
 
 export default function RiskClassificationPage() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [sort, setSort] = useState<ListSort>(DEFAULT_LIST_SORT);
   const [expandedSystem, setExpandedSystem] = useState<string | null>(null);
   const [classifyForm, setClassifyForm] = useState<Record<string, {
     riskLevel: string;
@@ -87,6 +90,7 @@ export default function RiskClassificationPage() {
     {
       organizationId: organization?.id ?? "",
       search: debouncedSearch || undefined,
+      sort,
     },
     { enabled: !!organization?.id, placeholderData: keepPreviousData }
   );
@@ -183,15 +187,18 @@ export default function RiskClassificationPage() {
         ))}
       </div>
 
-      {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input
-          placeholder={t("searchPlaceholder")}
-          className="pl-9"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
+      {/* Search + sort */}
+      <div className="flex gap-2 sm:gap-4">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder={t("searchPlaceholder")}
+            className="pl-9"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+        <SortControl value={sort} onChange={setSort} />
       </div>
 
       {/* Systems List */}

@@ -5,6 +5,7 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { screenAnnexIii } from "@/config/annex-iii-rules";
+import { LIST_SORTS, DEFAULT_LIST_SORT, aiSystemOrderBy } from "@/lib/list-sort";
 import { chatComplete } from "../../services/ai/llm-door";
 import {
   requireAi,
@@ -25,6 +26,7 @@ export const riskClassificationRouter = createTRPCRouter({
         organizationId: z.string(),
         search: z.string().optional(),
         riskLevel: z.enum(["UNACCEPTABLE", "HIGH", "LIMITED", "MINIMAL"]).optional(),
+        sort: z.enum(LIST_SORTS).default(DEFAULT_LIST_SORT),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -38,7 +40,7 @@ export const riskClassificationRouter = createTRPCRouter({
         include: {
           riskClassification: true,
         },
-        orderBy: { updatedAt: "desc" },
+        orderBy: aiSystemOrderBy(input.sort),
       });
 
       if (input.riskLevel) {

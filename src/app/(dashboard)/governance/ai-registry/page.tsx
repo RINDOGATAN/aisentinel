@@ -39,6 +39,8 @@ import { useTranslations, useLocale } from "next-intl";
 import { InventoryImportDialog } from "@/components/governance/InventoryImportDialog";
 import { RiskTierBadge } from "@/components/governance/risk-tier-badge";
 import { SampleBadge, useSampleIds } from "@/components/governance/worked-example-card";
+import { SortControl } from "@/components/governance/sort-control";
+import { DEFAULT_LIST_SORT, type ListSort } from "@/lib/list-sort";
 import { useEnumLabels } from "@/lib/enum-labels";
 import { useOrganization } from "@/lib/organization-context";
 import { useExportDownload } from "@/components/governance/use-export-download";
@@ -82,6 +84,7 @@ const techniqueIcons: Record<string, React.ElementType> = {
 export default function AIRegistryPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
+  const [sort, setSort] = useState<ListSort>(DEFAULT_LIST_SORT);
   const debouncedSearch = useDebounce(searchQuery);
   const { organization, organizations, canWrite, isLoading: orgLoading } = useOrganization();
   const { download } = useExportDownload();
@@ -120,6 +123,7 @@ export default function AIRegistryPage() {
       organizationId: organization?.id ?? "",
       search: debouncedSearch || undefined,
       status: statusFilter,
+      sort,
       limit: 20,
     },
     {
@@ -222,7 +226,7 @@ export default function AIRegistryPage() {
         </Card>
       </div>
 
-      {/* Search */}
+      {/* Search + sort */}
       <div className="flex gap-2 sm:gap-4">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -233,6 +237,7 @@ export default function AIRegistryPage() {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
+        <SortControl value={sort} onChange={setSort} />
       </div>
 
       {/* Tabs */}

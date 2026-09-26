@@ -11,6 +11,7 @@ import {
 } from "@/lib/inventory-import";
 import { importInventoryRows } from "@/server/services/inventory/import-systems";
 import { suggestSystemFields } from "@/lib/system-prefill";
+import { LIST_SORTS, DEFAULT_LIST_SORT, aiSystemOrderBy } from "@/lib/list-sort";
 import { createStarterArtifacts } from "@/server/services/program/starter-artifacts";
 import { assertPilotRoom, pilotLocale } from "@/server/services/pilot/caps";
 import { withoutTemplateCopyMark } from "@/config/client-template";
@@ -38,6 +39,7 @@ export const aiSystemRouter = createTRPCRouter({
         search: z.string().optional(),
         status: z.enum(["DRAFT", "DEVELOPMENT", "TESTING", "DEPLOYED", "RETIRED"]).optional(),
         cursor: z.string().optional(),
+        sort: z.enum(LIST_SORTS).default(DEFAULT_LIST_SORT),
         // 100: the policy and shadow-AI pages load every system into a picker.
         limit: z.number().min(1).max(100).default(20),
       })
@@ -59,7 +61,7 @@ export const aiSystemRouter = createTRPCRouter({
         where,
         take: input.limit + 1,
         ...(input.cursor && { cursor: { id: input.cursor }, skip: 1 }),
-        orderBy: { updatedAt: "desc" },
+        orderBy: aiSystemOrderBy(input.sort),
         include: {
           riskClassification: { select: { riskLevel: true } },
           // Whether the Art. 50 record exists: the registry's transparency view.

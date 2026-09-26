@@ -68,13 +68,23 @@ export function FeedbackDialog({ open, onOpenChange }: FeedbackDialogProps) {
               }}
               className="space-y-4"
             >
-              <Textarea
-                placeholder="How can we improve this tool?"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                rows={4}
-                maxLength={2000}
-              />
+              <div className="space-y-1.5">
+                <label htmlFor="feedback-message" className="text-sm font-medium">
+                  Your feedback
+                </label>
+                <Textarea
+                  id="feedback-message"
+                  placeholder="How can we improve this tool?"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  rows={4}
+                  maxLength={2000}
+                  aria-describedby="feedback-message-help"
+                />
+                <p id="feedback-message-help" className="text-xs text-muted-foreground">
+                  Tell us what went wrong or what would help. This goes to the team.
+                </p>
+              </div>
               <div className="flex justify-end">
                 <Button
                   type="submit"

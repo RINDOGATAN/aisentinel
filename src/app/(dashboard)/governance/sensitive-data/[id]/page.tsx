@@ -208,7 +208,9 @@ export default function SensitiveDataAnalysisPage() {
               </span>
             </div>
 
+            <Label htmlFor={`reasoning-${f.id}`} className="text-xs">{t("reasoningLabel")}</Label>
             <Textarea
+              id={`reasoning-${f.id}`}
               placeholder={t("reasoningPlaceholder")}
               value={factors[f.id]?.reasoning ?? ""}
               disabled={!canWrite}

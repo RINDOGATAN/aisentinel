@@ -668,13 +668,19 @@ export default function PolicyDetailPage() {
           <DialogHeader>
             <DialogTitle>{t("editContentDialogTitle")}</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
+          <div className="space-y-1.5">
+            <Label htmlFor="policy-content">{t("contentLabel")}</Label>
             <Textarea
+              id="policy-content"
               placeholder={t("placeholderPolicyContent")}
               rows={12}
               value={editedContent}
               onChange={(e) => setEditedContent(e.target.value)}
+              aria-describedby="policy-content-help"
             />
+            <p id="policy-content-help" className="text-xs text-muted-foreground">
+              {t("contentHelp")}
+            </p>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditContentDialogOpen(false)}>

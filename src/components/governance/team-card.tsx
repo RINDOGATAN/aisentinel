@@ -146,12 +146,17 @@ export function TeamCard({
 
         {canManage && (
           <div className="space-y-2">
+            <label htmlFor="team-invite-email" className="text-sm font-medium">
+              {t("inviteLabel")}
+            </label>
             <div className="flex flex-col sm:flex-row gap-2">
               <Input
+                id="team-invite-email"
                 type="email"
                 value={email}
                 placeholder={t("emailPlaceholder")}
                 onChange={(e) => setEmail(e.target.value)}
+                aria-describedby="team-invite-help"
               />
               <Select value={role} onValueChange={(v) => setRole(v as Role)}>
                 <SelectTrigger className="sm:w-44">
@@ -177,7 +182,7 @@ export function TeamCard({
                 {t("add")}
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground">{t("addHint")}</p>
+            <p id="team-invite-help" className="text-xs text-muted-foreground">{t("addHint")}</p>
           </div>
         )}
       </CardContent>

@@ -468,12 +468,16 @@ export default function ThreatModelDetailPage() {
                       {canWrite &&
                         (testFor === c.id ? (
                           <div className="space-y-2 pt-1">
-                            <Textarea
-                              rows={2}
-                              placeholder={t("methodPlaceholder")}
-                              value={method}
-                              onChange={(e) => setMethod(e.target.value)}
-                            />
+                            <div className="space-y-1.5">
+                              <Label htmlFor={`test-method-${c.id}`} className="text-xs">{t("methodLabel")}</Label>
+                              <Textarea
+                                id={`test-method-${c.id}`}
+                                rows={2}
+                                placeholder={t("methodPlaceholder")}
+                                value={method}
+                                onChange={(e) => setMethod(e.target.value)}
+                              />
+                            </div>
                             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                               <div className="space-y-1.5">
                                 <Label className="text-xs">{t("resultLabel")}</Label>
@@ -504,12 +508,16 @@ export default function ThreatModelDetailPage() {
                                 />
                               </div>
                             </div>
-                            <Textarea
-                              rows={2}
-                              placeholder={t("notesPlaceholder")}
-                              value={notes}
-                              onChange={(e) => setNotes(e.target.value)}
-                            />
+                            <div className="space-y-1.5">
+                              <Label htmlFor={`test-notes-${c.id}`} className="text-xs">{t("notesLabel")}</Label>
+                              <Textarea
+                                id={`test-notes-${c.id}`}
+                                rows={2}
+                                placeholder={t("notesPlaceholder")}
+                                value={notes}
+                                onChange={(e) => setNotes(e.target.value)}
+                              />
+                            </div>
                             <div className="flex gap-2">
                               <Button
                                 size="sm"

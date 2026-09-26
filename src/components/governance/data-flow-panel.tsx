@@ -217,32 +217,40 @@ export function DataFlowPanel({
                 </div>
 
                 <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                  <Input
-                    className="h-8 text-xs"
-                    defaultValue={s.origin ?? ""}
-                    disabled={!canWrite}
-                    placeholder={t("originPlaceholder")}
-                    onBlur={(e) =>
-                      setSourceFacts.mutate({
-                        organizationId,
-                        dataSourceId: s.id,
-                        origin: e.target.value || null,
-                      })
-                    }
-                  />
-                  <Input
-                    className="h-8 text-xs"
-                    defaultValue={s.retentionPeriod ?? ""}
-                    disabled={!canWrite}
-                    placeholder={t("retentionPlaceholder")}
-                    onBlur={(e) =>
-                      setSourceFacts.mutate({
-                        organizationId,
-                        dataSourceId: s.id,
-                        retentionPeriod: e.target.value || null,
-                      })
-                    }
-                  />
+                  <div className="space-y-1">
+                    <Label htmlFor={`origin-${s.id}`} className="text-xs">{t("originLabel")}</Label>
+                    <Input
+                      id={`origin-${s.id}`}
+                      className="h-8 text-xs"
+                      defaultValue={s.origin ?? ""}
+                      disabled={!canWrite}
+                      placeholder={t("originPlaceholder")}
+                      onBlur={(e) =>
+                        setSourceFacts.mutate({
+                          organizationId,
+                          dataSourceId: s.id,
+                          origin: e.target.value || null,
+                        })
+                      }
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor={`retention-${s.id}`} className="text-xs">{t("retentionLabel")}</Label>
+                    <Input
+                      id={`retention-${s.id}`}
+                      className="h-8 text-xs"
+                      defaultValue={s.retentionPeriod ?? ""}
+                      disabled={!canWrite}
+                      placeholder={t("retentionPlaceholder")}
+                      onBlur={(e) =>
+                        setSourceFacts.mutate({
+                          organizationId,
+                          dataSourceId: s.id,
+                          retentionPeriod: e.target.value || null,
+                        })
+                      }
+                    />
+                  </div>
                 </div>
 
                 <div className="space-y-1.5">

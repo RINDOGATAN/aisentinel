@@ -350,12 +350,16 @@ export default function ProceedingDetailPage() {
                   />
                 </div>
               </div>
-              <Textarea
-                rows={2}
-                value={eventDetail}
-                onChange={(e) => setEventDetail(e.target.value)}
-                placeholder={t("eventDetailPlaceholder")}
-              />
+              <div className="space-y-1.5">
+                <Label htmlFor="event-detail" className="text-xs">{t("eventDetailLabel")}</Label>
+                <Textarea
+                  id="event-detail"
+                  rows={2}
+                  value={eventDetail}
+                  onChange={(e) => setEventDetail(e.target.value)}
+                  placeholder={t("eventDetailPlaceholder")}
+                />
+              </div>
               <div className="flex gap-2">
                 <Button
                   size="sm"

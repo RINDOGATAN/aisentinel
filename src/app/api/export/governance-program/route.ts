@@ -54,7 +54,18 @@ export async function GET(request: NextRequest) {
       ? localeParam
       : resolveContentLocale((name) => request.cookies.get(name)?.value);
 
-  const orgName = membership.organization.name;
+  // The programme name the quick start asked for, if any, is used on the
+  // document in place of the bare organisation name (it is prefilled with that
+  // name, so it matches unless the person changed it).
+  const settings = membership.organization.settings;
+  const programName =
+    settings && typeof settings === "object" && !Array.isArray(settings)
+      ? (settings as Record<string, unknown>).programName
+      : undefined;
+  const orgName =
+    typeof programName === "string" && programName.trim()
+      ? programName.trim()
+      : membership.organization.name;
   const { buffer, dateStr } = await renderProgramPdf(prisma, {
     organizationId,
     userId: membership.userId,

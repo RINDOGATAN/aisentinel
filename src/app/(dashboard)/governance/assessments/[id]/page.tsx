@@ -213,10 +213,22 @@ export default function AssessmentDetailPage() {
               {t("progressCount", { answered: answeredQuestions, total: totalQuestions })}
             </span>
           </div>
-          {!isComplete && (
-            <p className="text-xs text-muted-foreground">
-              {t("completeBeforeSubmit", { count: missingRequired.length })}
-            </p>
+          {!isComplete ? (
+            <div className="text-xs text-muted-foreground space-y-1">
+              <p>{t("completeBeforeSubmit", { count: missingRequired.length })}</p>
+              <ul className="list-disc pl-5 space-y-0.5">
+                {missingRequired.slice(0, 8).map((q) => (
+                  <li key={q.id}>{q.text}</li>
+                ))}
+                {missingRequired.length > 8 && (
+                  <li>{t("andMoreMissing", { count: missingRequired.length - 8 })}</li>
+                )}
+              </ul>
+            </div>
+          ) : (
+            canSubmit && (
+              <p className="text-xs text-muted-foreground">{t("submitRecipients")}</p>
+            )
           )}
         </div>
       )}

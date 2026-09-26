@@ -107,13 +107,21 @@ export function LegalHoldCard({
 
                     {mayHold &&
                       (releasing === h.id ? (
-                        <div className="space-y-2 pt-1">
+                        <div className="space-y-1.5 pt-1">
+                          <Label htmlFor={`release-reason-${h.id}`} className="text-xs">
+                            {t("releaseReasonLabel")}
+                          </Label>
                           <Textarea
+                            id={`release-reason-${h.id}`}
                             rows={2}
                             placeholder={t("releaseReasonPlaceholder")}
                             value={releaseReason}
                             onChange={(e) => setReleaseReason(e.target.value)}
+                            aria-describedby={`release-reason-help-${h.id}`}
                           />
+                          <p id={`release-reason-help-${h.id}`} className="text-[11px] text-muted-foreground">
+                            {t("releaseReasonHelp")}
+                          </p>
                           <div className="flex gap-2">
                             <Button
                               size="sm"

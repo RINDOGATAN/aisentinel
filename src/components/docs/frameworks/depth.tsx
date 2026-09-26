@@ -61,8 +61,10 @@ export function DepthLegend() {
   const t = useTranslations("docs.frameworks");
   const depths: Depth[] = [0, 1, 2, 3];
   return (
-    <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-      <span>{t("depth.legend")}</span>
+    <div className="space-y-2">
+      <p className="text-sm text-foreground">{t("depth.explain")}</p>
+      <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+        <span>{t("depth.legend")}</span>
       {depths.map((d) => (
         <span key={d} className="inline-flex items-center gap-1">
           <DepthChip depth={d} />
@@ -76,6 +78,7 @@ export function DepthLegend() {
         />
         {t("underReview")}
       </span>
+      </div>
     </div>
   );
 }

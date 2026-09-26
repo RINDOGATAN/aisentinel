@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { frameworksData, isUnderReview } from "@/lib/frameworks/model";
+import { isCellDimmed, toggleHighlight } from "@/lib/frameworks/highlight";
 import { CellDetail, type CellRef } from "./cell-detail";
 import { DEPTH_FILL } from "./depth";
 
@@ -117,7 +118,7 @@ export function FrameworksWheel() {
                   const review = isUnderReview(cell);
                   const k = key(fi, ri);
                   const isSel = selected?.framework === f.id && selected.ring === r.id;
-                  const dim = !!highlight && highlight !== r.id;
+                  const dim = isCellDimmed(highlight, r.id);
                   const label = t(review ? "wheel.cellReview" : "wheel.cell", {
                     framework: f.short,
                     dimension: r.label,
@@ -237,7 +238,7 @@ export function FrameworksWheel() {
                   type="button"
                   aria-pressed={on}
                   title={r.question}
-                  onClick={() => setHighlight(on ? null : r.id)}
+                  onClick={() => setHighlight((cur) => toggleHighlight(cur, r.id))}
                   className={`w-full rounded-md border px-2 py-1 text-left text-sm transition-colors ${
                     on
                       ? "border-primary/30 bg-primary/15 font-medium text-primary"

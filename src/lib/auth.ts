@@ -300,6 +300,12 @@ export const authOptions: NextAuthOptions = {
   ],
   session: {
     strategy: "jwt",
+    // A signed-in session ends 12 hours after sign-in (owner's decision). The
+    // JWT below carries the same lifetime so the token cannot outlive it.
+    maxAge: 12 * 60 * 60,
+  },
+  jwt: {
+    maxAge: 12 * 60 * 60,
   },
   callbacks: {
     async signIn({ user }) {

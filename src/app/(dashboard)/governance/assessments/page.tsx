@@ -30,6 +30,9 @@ import { formatRelativeTime } from "@/lib/utils";
 import { useTranslations, useLocale } from "next-intl";
 import { features } from "@/config/features";
 import { STATUS_OUTLINE } from "@/components/ui/status-note";
+import { SortControl } from "@/components/governance/sort-control";
+
+type AssessmentSort = "newest" | "oldest" | "name";
 
 const assessmentTypeKeys: Record<string, string> = {
   FRIA: "typeFria",
@@ -71,11 +74,16 @@ export default function AssessmentsPage() {
   const tc = useTranslations("common");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
+  const [sort, setSort] = useState<AssessmentSort>("newest");
   const debouncedSearch = useDebounce(searchQuery);
   const { organization, canWrite } = useOrganization();
   const { download } = useExportDownload();
 
   const typeFilter = activeTab === "all" ? undefined : activeTab.toUpperCase() as "FRIA" | "CONFORMITY" | "AI_RISK" | "BIAS_FAIRNESS" | "CUSTOM";
+  // Carry the chosen type into the wizard so it never asks for the type again.
+  const newAssessmentHref = typeFilter
+    ? `/governance/assessments/new?type=${typeFilter}`
+    : "/governance/assessments/new";
 
   const { data: statsData, isLoading: statsLoading } = trpc.assessment.getStats.useQuery(
     { organizationId: organization?.id ?? "" },
@@ -98,6 +106,7 @@ export default function AssessmentsPage() {
       organizationId: organization?.id ?? "",
       search: debouncedSearch || undefined,
       type: typeFilter,
+      sort,
       limit: 20,
     },
     {
@@ -149,7 +158,7 @@ export default function AssessmentsPage() {
               <span className="hidden sm:inline">{tc("export")}</span>
             </Button>
             {canWrite && (
-              <Link href="/governance/assessments/new">
+              <Link href={newAssessmentHref}>
                 <Button>
                   <Plus className="w-4 h-4 sm:mr-2" />
                   <span className="hidden sm:inline">{t("newAssessment")}</span>
@@ -195,15 +204,18 @@ export default function AssessmentsPage() {
         </Card>
       </div>
 
-      {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input
-          placeholder={t("searchPlaceholder")}
-          className="pl-9"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
+      {/* Search + sort */}
+      <div className="flex gap-2 sm:gap-4">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder={t("searchPlaceholder")}
+            className="pl-9"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+        <SortControl value={sort} onChange={(v) => setSort(v as AssessmentSort)} options={["newest", "oldest", "name"]} />
       </div>
 
       {/* Tabs */}
@@ -322,7 +334,7 @@ export default function AssessmentsPage() {
                     : t("emptyHint")}
                 </p>
                 {!searchQuery && canWrite && (
-                  <Link href="/governance/assessments/new">
+                  <Link href={newAssessmentHref}>
                     <Button>
                       <Plus className="w-4 h-4 mr-2" />
                       {t("newAssessment")}

@@ -68,6 +68,7 @@ export const assessmentRouter = createTRPCRouter({
         type: z.enum(["FRIA", "CONFORMITY", "AI_RISK", "BIAS_FAIRNESS", "CUSTOM"]).optional(),
         status: z.enum(["DRAFT", "IN_PROGRESS", "UNDER_REVIEW", "APPROVED", "REJECTED"]).optional(),
         cursor: z.string().optional(),
+        sort: z.enum(["newest", "oldest", "name"]).default("newest"),
         limit: z.number().min(1).max(50).default(20),
       })
     )
@@ -83,11 +84,18 @@ export const assessmentRouter = createTRPCRouter({
         ...(input.status && { status: input.status }),
       };
 
+      const orderBy =
+        input.sort === "oldest"
+          ? { createdAt: "asc" as const }
+          : input.sort === "name"
+            ? { title: "asc" as const }
+            : { createdAt: "desc" as const };
+
       const items = await ctx.prisma.aIAssessment.findMany({
         where,
         take: input.limit + 1,
         ...(input.cursor && { cursor: { id: input.cursor }, skip: 1 }),
-        orderBy: { updatedAt: "desc" },
+        orderBy,
         include: {
           template: { select: { name: true, type: true } },
           aiSystem: { select: { id: true, name: true } },

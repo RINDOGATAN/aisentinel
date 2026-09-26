@@ -490,6 +490,9 @@
     "backToDashboard": "Panel de control",
     "title": "Inicio rápido de gobernanza de IA",
     "subtitle": "Configura tu programa de gobernanza de IA en minutos",
+    "programNameLabel": "Da nombre a este programa",
+    "programNamePlaceholder": "El programa de gobernanza de IA de tu organización",
+    "programNameHelp": "Se rellena con el nombre de tu organización. Aparece en la pantalla de resultados y en el PDF del programa. Puedes cambiarlo.",
     "stepApplicability": "Qué se te aplica",
     "stepChoosePath": "Elegir ruta",
     "stepSelectVendors": "Seleccionar proveedores",
@@ -511,7 +514,7 @@
     "building": "Creando...",
     "buildAiGovernanceProgram": "Crear programa de gobernanza de IA",
     "successTitle": "¡Programa de gobernanza de IA creado!",
-    "successDescription": "Tu programa de gobernanza de IA ha sido configurado. Ahora puedes explorar y personalizar cada módulo.",
+    "successDescription": "Tu programa de gobernanza de IA está configurado. Abajo tienes todo lo creado, cada elemento como un enlace que puedes abrir.",
     "choosePathDescription": "Elige cómo quieres poner en marcha tu programa de gobernanza de la IA. Puedes combinar estas opciones.",
     "chipAiSystems": "Sistemas de IA",
     "chipRiskClassifications": "Clasificaciones de riesgo",
@@ -575,8 +578,8 @@
         "hint": "Revisar y aprobar políticas"
       },
       "dashboard": {
-        "title": "Panel",
-        "hint": "Ver resumen"
+        "title": "Tu programa de gobernanza",
+        "hint": "Verás todo lo configurado, incluidos tus sistemas"
       }
     },
     "statStarterAssessments": "{count, plural, one {# evaluación de impacto en borrador} other {# evaluaciones de impacto en borrador}}",

@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { STATUS_OUTLINE } from "@/components/ui/status-note";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -112,7 +113,10 @@ const SUCCESS_NAV = [
   { href: "/governance/compliance", icon: Scale, key: "compliance" },
   { href: "/governance/oversight", icon: Eye, key: "oversight" },
   { href: "/governance/policies", icon: ScrollText, key: "policies" },
-  { href: "/governance", icon: LayoutDashboard, key: "dashboard" },
+  // The consultant expected "Dashboard" to show their systems; the executive
+  // dashboard shows only counts. Point this at the program view, which lays
+  // out every system that was just created.
+  { href: "/governance/program", icon: LayoutDashboard, key: "dashboard" },
 ] as const;
 
 // Offered on the vendor step before anything is typed. Slugs are catalogue
@@ -195,6 +199,13 @@ export default function QuickstartPage() {
   const { download, isPending: downloadPending } = useExportDownload();
 
   // Wizard state
+  // The programme name is asked first, prefilled with the organisation's name.
+  // It names the result screen and the exported program PDF.
+  const [programName, setProgramName] = useState("");
+  const [programNameTouched, setProgramNameTouched] = useState(false);
+  useEffect(() => {
+    if (!programNameTouched && organization?.name) setProgramName(organization.name);
+  }, [organization?.name, programNameTouched]);
   // The applicability check comes first: what applies decides what to build.
   const [step, setStep] = useState<WizardStep>("scope");
   const [useVendors, setUseVendors] = useState(false);
@@ -488,6 +499,7 @@ export default function QuickstartPage() {
       builderCapabilities: useBuilder ? builderCapabilities : [],
       skipSystemNames,
       skipPolicyTitles,
+      programName: programName.trim() || undefined,
     });
   };
 
@@ -625,6 +637,27 @@ export default function QuickstartPage() {
           ════════════════════════════════════════════════ */}
       {step === "scope" && (
         <div className="space-y-4">
+          {/* Asked first: the name for this programme, prefilled with the
+              organisation's name. It titles the result screen and the PDF. */}
+          <Card>
+            <CardContent className="p-4 space-y-1.5">
+              <Label htmlFor="quickstart-program-name">{t("programNameLabel")}</Label>
+              <Input
+                id="quickstart-program-name"
+                value={programName}
+                onChange={(e) => {
+                  setProgramName(e.target.value);
+                  setProgramNameTouched(true);
+                }}
+                placeholder={t("programNamePlaceholder")}
+                aria-describedby="quickstart-program-name-help"
+              />
+              <p id="quickstart-program-name-help" className="text-xs text-muted-foreground">
+                {t("programNameHelp")}
+              </p>
+            </CardContent>
+          </Card>
+
           {/* The first, optional choice: take the worked example, or start
               empty. Renders nothing once either has been answered, or once
               the registry holds a system. */}
@@ -1987,6 +2020,9 @@ export default function QuickstartPage() {
               <h2 className="text-xl font-semibold">
                 {t("successTitle")}
               </h2>
+              {programName.trim() && (
+                <p className="text-base font-medium text-primary">{programName.trim()}</p>
+              )}
               <p className="text-muted-foreground max-w-md mx-auto">
                 {t("successDescription")}
               </p>
@@ -2039,34 +2075,72 @@ export default function QuickstartPage() {
                 </Button>
               </div>
 
-              {/* The numbers, demoted to a receipt line */}
-              <p className="text-xs text-muted-foreground pt-2">
-                {[
-                  executionResult.vendors > 0 && `${executionResult.vendors} ${t("statVendors")}`,
-                  executionResult.systems > 0 && `${executionResult.systems} ${t("statSystems")}`,
-                  executionResult.riskClassifications > 0 &&
-                    `${executionResult.riskClassifications} ${t("statRiskClassifications")}`,
-                  executionResult.oversightGates > 0 &&
-                    `${executionResult.oversightGates} ${t("statOversightGates")}`,
+              {/* What was created, each as a link to where it now lives, so the
+                  result screen names its outputs and every one is openable. */}
+              {(() => {
+                const items: { text: string; href?: string }[] = [
+                  executionResult.vendors > 0 && {
+                    text: `${executionResult.vendors} ${t("statVendors")}`,
+                    href: "/governance/vendors",
+                  },
+                  executionResult.systems > 0 && {
+                    text: `${executionResult.systems} ${t("statSystems")}`,
+                    href: "/governance/ai-registry",
+                  },
+                  executionResult.riskClassifications > 0 && {
+                    text: `${executionResult.riskClassifications} ${t("statRiskClassifications")}`,
+                    href: "/governance/risk-classification",
+                  },
+                  executionResult.oversightGates > 0 && {
+                    text: `${executionResult.oversightGates} ${t("statOversightGates")}`,
+                    href: "/governance/oversight",
+                  },
                   // Tier requirements plus the cross-border regimes attached after
                   // the build: the same total the program's scorecard counts.
-                  executionResult.complianceMappings + (executionResult.regimeMappings ?? 0) > 0 &&
-                    `${executionResult.complianceMappings + (executionResult.regimeMappings ?? 0)} ${t("statComplianceMappings")}`,
-                  executionResult.policies > 0 && `${executionResult.policies} ${t("statPolicies")}`,
-                  executionResult.policyLinks > 0 &&
-                    `${executionResult.policyLinks} ${t("statPolicyLinks")}`,
-                  executionResult.transparencyProfiles > 0 &&
-                    `${executionResult.transparencyProfiles} ${t("statTransparencyProfiles")}`,
-                  (executionResult.starterAssessments ?? 0) > 0 &&
-                    t("statStarterAssessments", { count: executionResult.starterAssessments ?? 0 }),
-                  (executionResult.starterVendorReviews ?? 0) > 0 &&
-                    t("statStarterVendorReviews", { count: executionResult.starterVendorReviews ?? 0 }),
-                  (executionResult.threatModelScenarios ?? 0) > 0 &&
-                    t("statThreatScenarios", { count: executionResult.threatModelScenarios ?? 0 }),
-                ]
-                  .filter(Boolean)
-                  .join(" · ")}
-              </p>
+                  executionResult.complianceMappings + (executionResult.regimeMappings ?? 0) > 0 && {
+                    text: `${executionResult.complianceMappings + (executionResult.regimeMappings ?? 0)} ${t("statComplianceMappings")}`,
+                    href: "/governance/compliance",
+                  },
+                  executionResult.policies > 0 && {
+                    text: `${executionResult.policies} ${t("statPolicies")}`,
+                    href: "/governance/policies",
+                  },
+                  executionResult.policyLinks > 0 && {
+                    text: `${executionResult.policyLinks} ${t("statPolicyLinks")}`,
+                  },
+                  executionResult.transparencyProfiles > 0 && {
+                    text: `${executionResult.transparencyProfiles} ${t("statTransparencyProfiles")}`,
+                  },
+                  (executionResult.starterAssessments ?? 0) > 0 && {
+                    text: t("statStarterAssessments", { count: executionResult.starterAssessments ?? 0 }),
+                    href: "/governance/assessments",
+                  },
+                  (executionResult.starterVendorReviews ?? 0) > 0 && {
+                    text: t("statStarterVendorReviews", { count: executionResult.starterVendorReviews ?? 0 }),
+                    href: "/governance/vendors",
+                  },
+                  (executionResult.threatModelScenarios ?? 0) > 0 && {
+                    text: t("statThreatScenarios", { count: executionResult.threatModelScenarios ?? 0 }),
+                    href: "/governance/threat-model",
+                  },
+                ].filter(Boolean) as { text: string; href?: string }[];
+                return (
+                  <p className="text-xs text-muted-foreground pt-2 flex flex-wrap justify-center gap-x-1">
+                    {items.map((it, i) => (
+                      <span key={i}>
+                        {it.href ? (
+                          <Link href={it.href} className="text-primary underline underline-offset-2">
+                            {it.text}
+                          </Link>
+                        ) : (
+                          it.text
+                        )}
+                        {i < items.length - 1 ? " · " : ""}
+                      </span>
+                    ))}
+                  </p>
+                );
+              })()}
 
               {/* Honesty line: auto-assessed content is waiting for a human */}
               {executionResult.complianceBaselined > 0 && (

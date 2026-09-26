@@ -490,6 +490,9 @@
     "backToDashboard": "Dashboard",
     "title": "AI Governance Quick Start",
     "subtitle": "Bootstrap your AI governance program in minutes",
+    "programNameLabel": "Name this programme",
+    "programNamePlaceholder": "Your organisation's AI governance programme",
+    "programNameHelp": "Prefilled with your organisation's name. This appears on the result screen and on the program PDF. You can change it.",
     "stepApplicability": "What applies",
     "stepChoosePath": "Choose Path",
     "stepSelectVendors": "Select Vendors",
@@ -511,7 +514,7 @@
     "building": "Building...",
     "buildAiGovernanceProgram": "Build AI Governance Program",
     "successTitle": "AI Governance Program Created!",
-    "successDescription": "Your AI governance program has been bootstrapped. You can now explore and customize each module.",
+    "successDescription": "Your AI governance program is set up. Everything created is listed below, each as a link you can open.",
     "choosePathDescription": "Choose how to bootstrap your AI governance program. You can combine these options.",
     "chipAiSystems": "AI Systems",
     "chipRiskClassifications": "Risk Classifications",
@@ -575,8 +578,8 @@
         "hint": "Review and approve policies"
       },
       "dashboard": {
-        "title": "Dashboard",
-        "hint": "View overview"
+        "title": "Your governance program",
+        "hint": "See everything set up, including your systems"
       }
     },
     "statStarterAssessments": "{count, plural, one {# impact assessment drafted} other {# impact assessments drafted}}",

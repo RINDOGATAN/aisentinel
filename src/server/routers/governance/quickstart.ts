@@ -395,6 +395,10 @@ export const quickstartRouter = createTRPCRouter({
          */
         builderCapabilities: z.array(z.string().max(40)).max(40).default([]),
         builderName: z.string().max(200).optional(),
+        // The programme (or organisation) name asked first in the wizard,
+        // prefilled with the organisation's name. Shown on the result screen
+        // and used on the exported program PDF.
+        programName: z.string().max(200).optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -1201,6 +1205,24 @@ export const quickstartRouter = createTRPCRouter({
                 changes: { source: "quickstart", profile },
               });
             }
+          }
+
+          // The programme name the wizard asked for first. Stored at the top
+          // level of settings (not inside the quickstart profile) so the PDF
+          // export and the result screen can read it whatever path was taken.
+          if (input.programName && input.programName.trim()) {
+            const org = await tx.organization.findUnique({
+              where: { id: orgId },
+              select: { settings: true },
+            });
+            const settings =
+              org?.settings && typeof org.settings === "object" && !Array.isArray(org.settings)
+                ? (org.settings as Record<string, unknown>)
+                : {};
+            await tx.organization.update({
+              where: { id: orgId },
+              data: { settings: { ...settings, programName: input.programName.trim() } },
+            });
           }
 
           // ─── AUDIT LOG ENTRIES (batch) ──────────────────

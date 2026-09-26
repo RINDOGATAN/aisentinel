@@ -95,6 +95,7 @@ Certain sensitive operations require `OWNER`, `ADMIN`, or `AI_OFFICER` roles:
 ### Session Security
 
 - **Strategy**: JWT-based sessions
+- **Lifetime**: 12 hours from sign-in (`session.maxAge` and `jwt.maxAge` in `src/lib/auth.ts`). When a session ends, the dashboard sends the person to sign-in with a plain message and returns them to the page they were on after they sign in again.
 - **Cookie naming**: `__Secure-aisentinel.session-token` (production), `aisentinel.session-token` (development)
 - **Cookie flags**: `httpOnly: true`, `sameSite: "lax"`, `secure: true` (production)
 - **Domain scoping**: `.todo.law` in production (allows cross-subdomain SSO)
@@ -293,7 +294,7 @@ Premium features (Shadow AI, Vendor Catalog, Conformity Assessment, Bias & Fairn
 | Audit log IP/userAgent | LOW | Populate `ipAddress` and `userAgent` fields in audit log entries |
 | Data retention policies | LOW | Implement anonymization schedule for audit logs and PII |
 | Content Security Policy | LOW | Add CSP headers for additional XSS protection |
-| Session rotation | LOW | Implement JWT rotation with shorter `maxAge` |
+| Session rotation | LOW | `maxAge` is now 12 hours; JWT rotation on top of that is still open |
 | Domain auto-join approval | LOW | Require admin approval for domain-matched organization joins |
 
 ---

@@ -8,6 +8,7 @@
  */
 
 import { hostedPilotActive } from "@/config/pilot";
+import { safeCallbackUrl } from "@/lib/safe-callback";
 import { SignInForm } from "./sign-in-form";
 
 export default async function SignInPage({
@@ -17,10 +18,7 @@ export default async function SignInPage({
 }) {
   const { callbackUrl, reason } = await searchParams;
   // Only accept a same-app return path, never an absolute URL to elsewhere.
-  const safeCallback =
-    callbackUrl && callbackUrl.startsWith("/") && !callbackUrl.startsWith("//")
-      ? callbackUrl
-      : "/governance";
+  const safeCallback = safeCallbackUrl(callbackUrl);
   return (
     <SignInForm
       hostedPilot={hostedPilotActive()}

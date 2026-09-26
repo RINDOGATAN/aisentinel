@@ -200,12 +200,11 @@ export default function QuickstartPage() {
 
   // Wizard state
   // The programme name is asked first, prefilled with the organisation's name.
-  // It names the result screen and the exported program PDF.
-  const [programName, setProgramName] = useState("");
-  const [programNameTouched, setProgramNameTouched] = useState(false);
-  useEffect(() => {
-    if (!programNameTouched && organization?.name) setProgramName(organization.name);
-  }, [organization?.name, programNameTouched]);
+  // It names the result screen and the exported program PDF. Derived rather
+  // than mirrored in an effect: until the person edits it, it shows the org
+  // name; once edited (even to empty), their value stands.
+  const [programNameEdit, setProgramNameEdit] = useState<string | null>(null);
+  const programName = programNameEdit ?? organization?.name ?? "";
   // The applicability check comes first: what applies decides what to build.
   const [step, setStep] = useState<WizardStep>("scope");
   const [useVendors, setUseVendors] = useState(false);
@@ -645,10 +644,7 @@ export default function QuickstartPage() {
               <Input
                 id="quickstart-program-name"
                 value={programName}
-                onChange={(e) => {
-                  setProgramName(e.target.value);
-                  setProgramNameTouched(true);
-                }}
+                onChange={(e) => setProgramNameEdit(e.target.value)}
                 placeholder={t("programNamePlaceholder")}
                 aria-describedby="quickstart-program-name-help"
               />

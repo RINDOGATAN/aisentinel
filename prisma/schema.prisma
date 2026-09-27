@@ -336,6 +336,16 @@ model AISystem {
 
   vendorId String?
 
+  /// Where this system record came from, and whether a person has taken it
+  /// over. A system created silently by an industry template is AUTO_TEMPLATE;
+  /// once someone edits it, confirmedAt is set and "Remove all template items"
+  /// leaves it alone. Pre-existing rows default to USER_ENTERED and are never
+  /// removed automatically. See src/server/services/template-items/.
+  provenance   Provenance @default(USER_ENTERED)
+  sourceRef    String?
+  confirmedBy  String?
+  confirmedAt  DateTime?
+
   organization        Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   vendor              AIVendor?            @relation(fields: [vendorId], references: [id], onDelete: SetNull)
   models              AIModel[]
@@ -687,6 +697,15 @@ model AIAssessmentTemplate {
   sections       Json
   frameworkRef   String?
   isSystem       Boolean          @default(false)
+  /// Content version of a SYSTEM template. v1 templates carry free-text
+  /// questions; v2 carries structured (choice / checklist / scale / yes-no /
+  /// date) questions a regulator can read. Null for org-authored templates.
+  version        Int?
+  /// When a newer version replaced this system template for NEW assessments.
+  /// Set on the v1 rows when v2 ships. Existing assessments keep their own
+  /// template (and its questions and answers) untouched; only the pickers hide
+  /// a superseded template. Null means this template is current.
+  supersededAt   DateTime?
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
 
@@ -715,6 +734,13 @@ model AIAssessment {
   approvedBy     String?
   approvedAt     DateTime?
   createdBy      String
+  /// See AISystem.provenance. A starter assessment drafted by the quickstart is
+  /// AUTO_TEMPLATE with an empty answer set; the moment a person saves an answer
+  /// confirmedAt is set and the assessment is kept.
+  provenance     Provenance       @default(USER_ENTERED)
+  sourceRef      String?
+  confirmedBy    String?
+  confirmedAt    DateTime?
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
 
@@ -1869,6 +1895,12 @@ model AIVendor {
   notes              String?          @db.Text
   catalogSlug        String?
   metadata           Json?
+  /// See AISystem.provenance. A vendor added silently by the quickstart is
+  /// AUTO_TEMPLATE; editing it sets confirmedAt and protects it from removal.
+  provenance         Provenance       @default(USER_ENTERED)
+  sourceRef          String?
+  confirmedBy        String?
+  confirmedAt        DateTime?
   createdAt          DateTime         @default(now())
   updatedAt          DateTime         @updatedAt
 

@@ -16,8 +16,6 @@ import { useOrganization } from "@/lib/organization-context";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Save, Send, CheckCircle, XCircle, Loader2, AlertTriangle } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
@@ -28,6 +26,17 @@ import { useSession } from "next-auth/react";
 import { AiDraftPanel } from "@/components/ai/AiDraftPanel";
 import { QuestionHelp } from "@/components/help/question-help";
 import { KeyTerms } from "@/components/help/key-terms";
+import { AssessmentQuestionField } from "@/components/governance/assessment-question-field";
+import {
+  answerProgress,
+  unansweredRequired,
+  isAnswered,
+  localizedText,
+  activeFollowUp,
+  noteKey,
+  type AnswerQuestion,
+  type AnswerSection,
+} from "@/lib/assessment-answers";
 import { AssessmentVersionHistory } from "@/components/governance/assessment-version-history";
 import { STATUS_CHIP, STATUS_OUTLINE } from "@/components/ui/status-note";
 import { PageHeader } from "@/components/governance/page-header";
@@ -56,13 +65,13 @@ export default function AssessmentDetailPage() {
   );
 
   const { data: session } = useSession();
-  const [responses, setResponses] = useState<Record<string, string>>({});
+  const [responses, setResponses] = useState<Record<string, unknown>>({});
   const [initialized, setInitialized] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const [selfReviewAcknowledged, setSelfReviewAcknowledged] = useState(false);
 
   if (assessment && !initialized) {
-    setResponses((assessment.responses as Record<string, string>) ?? {});
+    setResponses((assessment.responses as Record<string, unknown>) ?? {});
     setInitialized(true);
   }
 
@@ -103,26 +112,24 @@ export default function AssessmentDetailPage() {
   }
 
   const template = assessment.template;
-  const sections = (template?.sections as Array<{ id: string; title: string; questions: Array<{ id: string; text: string; type: string; required: boolean; helpText?: string; options?: string[] }> }>) ?? [];
+  const sections = (template?.sections as AnswerSection[]) ?? [];
   const canEdit = ["DRAFT", "IN_PROGRESS"].includes(assessment.status);
   const canSubmit = assessment.status === "IN_PROGRESS" || assessment.status === "DRAFT";
   const canApprove = assessment.status === "UNDER_REVIEW";
+  const contentLocale = locale === "es" ? "es" : "en";
 
-  const allQuestions = sections.flatMap((s) => s.questions || []);
-  const totalQuestions = allQuestions.length;
-  const answeredQuestions = allQuestions.filter((q) => responses[q.id]?.toString().trim()).length;
+  // Progress and the completeness gate come from the one shared rule
+  // (src/lib/assessment-answers.ts) that both v1 free text and v2 structured
+  // answers obey, and that the server enforces — so the count the user sees and
+  // the count that blocks submit can never drift apart. Follow-up questions are
+  // counted only while their parent has revealed them.
+  const { answered: answeredQuestions, total: totalQuestions } = answerProgress(sections, responses);
   const progressPercent = totalQuestions > 0 ? Math.round((answeredQuestions / totalQuestions) * 100) : 0;
   // The unified template carries, per question, why it is asked and what the
   // answer evidences. Older templates carry none of it and render unchanged.
   const coverage = assessmentCoverage(sections, responses);
-  const contentLocale = locale === "es" ? "es" : "en";
 
-  // Mirrors the server's completeness gate (assessment.submit) so an
-  // incomplete assessment is visibly blocked rather than rejected after the
-  // fact. `required` defaults to true when a template omits the flag.
-  const missingRequired = allQuestions.filter(
-    (q) => q.required !== false && !responses[q.id]?.toString().trim()
-  );
+  const missingRequired = unansweredRequired(sections, responses);
   const isComplete = missingRequired.length === 0;
 
   // Approving your own submission stays possible — a sole practitioner has no
@@ -157,6 +164,51 @@ export default function AssessmentDetailPage() {
       acknowledgeSelfReview: selfReviewAcknowledged,
     });
   };
+
+  const setAnswer = (qid: string, value: unknown) =>
+    setResponses((prev) => ({ ...prev, [qid]: value }));
+
+  const isFreeText = (q: AnswerQuestion) =>
+    !q.type || q.type === "text" || q.type === "textarea";
+
+  // One question's input, reused for a yes/no follow-up. `showAssist` is off for
+  // follow-ups (the AI draft is anchored to the parent question's id).
+  const renderQuestionField = (question: AnswerQuestion, showAssist: boolean) => (
+    <div key={question.id} className="space-y-2">
+      <label className="text-sm font-medium">
+        {localizedText(question.text, contentLocale)}
+        {question.required !== false && <span className="text-foreground ml-1">*</span>}
+      </label>
+      {typeof question.helpText === "string" && question.helpText && (
+        <p className="text-xs text-muted-foreground">{question.helpText}</p>
+      )}
+      <QuestionHelp questionId={question.id} help={question.help as never} />
+      <AssessmentQuestionField
+        question={question}
+        value={responses[question.id]}
+        note={typeof responses[noteKey(question.id)] === "string" ? (responses[noteKey(question.id)] as string) : ""}
+        onChange={(value) => setAnswer(question.id, value)}
+        onNoteChange={(note) => setAnswer(noteKey(question.id), note)}
+        disabled={!canEdit}
+      />
+      {/* Optional AI assist, free-text questions only: drafts from registry
+          facts; Insert fills the field above — saving still flows through the
+          normal save/submit/approve workflow. */}
+      {showAssist && isFreeText(question) && canEdit && (
+        <AiDraftPanel
+          organizationId={orgId}
+          onGenerate={() =>
+            generateDraft.mutateAsync({
+              organizationId: orgId,
+              id: assessment.id,
+              questionId: question.id,
+            })
+          }
+          onInsert={(content) => setAnswer(question.id, content)}
+        />
+      )}
+    </div>
+  );
 
   return (
     <div className="space-y-6">
@@ -222,7 +274,7 @@ export default function AssessmentDetailPage() {
               <p>{t("completeBeforeSubmit", { count: missingRequired.length })}</p>
               <ul className="list-disc pl-5 space-y-0.5">
                 {missingRequired.slice(0, 8).map((q) => (
-                  <li key={q.id}>{q.text}</li>
+                  <li key={q.id}>{localizedText(q.text, contentLocale)}</li>
                 ))}
                 {missingRequired.length > 8 && (
                   <li>{t("andMoreMissing", { count: missingRequired.length - 8 })}</li>
@@ -393,88 +445,39 @@ export default function AssessmentDetailPage() {
       {sections.map((section) => (
         <Card key={section.id}>
           <CardHeader>
-            <CardTitle>{section.title}</CardTitle>
+            <CardTitle>{localizedText(section.title, contentLocale)}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            {section.questions.map((question) => (
-              <div key={question.id} className="space-y-2">
-                {(() => {
-                  const meta = readQuestionMeta(question);
-                  if (!meta.reason) return null;
-                  return (
+            {(section.questions ?? []).map((question) => {
+              const meta = readQuestionMeta(question);
+              const follow = activeFollowUp(question, responses);
+              const feedLabel = (target: string) =>
+                target === "notice"
+                  ? t("feedsNotice")
+                  : target === "protocol"
+                    ? t("feedsProtocol")
+                    : t("feedsAssessment");
+              return (
+                <div key={question.id} className="space-y-2">
+                  {meta.reason && (
                     <p className="text-[11px] text-muted-foreground">
                       {meta.reason === "core"
                         ? t("whyCore")
                         : t("whyOverlay", { regime: overlayLabel(meta.reason, contentLocale) })}
                     </p>
-                  );
-                })()}
-                <label className="text-sm font-medium">
-                  {question.text}
-                  {question.required && <span className="text-foreground ml-1">*</span>}
-                </label>
-                {question.helpText && (
-                  <p className="text-xs text-muted-foreground">{question.helpText}</p>
-                )}
-                <QuestionHelp questionId={question.id} />
-                {question.type === "select" && question.options ? (
-                  <Select
-                    value={responses[question.id] ?? ""}
-                    onValueChange={(value) => setResponses({ ...responses, [question.id]: value })}
-                    disabled={!canEdit}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder={t("selectPlaceholder")} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {question.options.map((option) => (
-                        <SelectItem key={option} value={option}>{option}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                ) : (
-                  <>
-                    <Textarea
-                      value={responses[question.id] ?? ""}
-                      onChange={(e) => setResponses({ ...responses, [question.id]: e.target.value })}
-                      disabled={!canEdit}
-                      placeholder={t("textareaPlaceholder")}
-                      rows={3}
-                    />
-                    {/* Optional AI assist: drafts from registry facts; Insert
-                        puts the text in the editable field above — saving still
-                        flows through the normal save/submit/approve workflow. */}
-                    {canEdit && (
-                      <AiDraftPanel
-                        organizationId={orgId}
-                        onGenerate={() =>
-                          generateDraft.mutateAsync({
-                            organizationId: orgId,
-                            id: assessment.id,
-                            questionId: question.id,
-                          })
-                        }
-                        onInsert={(content) =>
-                          setResponses((prev) => ({ ...prev, [question.id]: content }))
-                        }
-                      />
-                    )}
-                  </>
-                )}
-                {/* What answering this closes, and where the answer travels.
-                    This is the payoff of the shared core: one answer standing
-                    as evidence in several registers at once. */}
-                {(() => {
-                  const meta = readQuestionMeta(question);
-                  if (meta.satisfies.length === 0 && meta.feeds.length === 0) return null;
-                  const answered = !!responses[question.id]?.toString().trim();
-                  const feedLabel = (target: string) =>
-                    target === "notice"
-                      ? t("feedsNotice")
-                      : target === "protocol"
-                        ? t("feedsProtocol")
-                        : t("feedsAssessment");
-                  return (
+                  )}
+                  {renderQuestionField(question, true)}
+                  {/* A yes/no follow-up is revealed only when its trigger is
+                      met; it counts toward completeness like any other. */}
+                  {follow && (
+                    <div className="ml-4 border-l border-border pl-4">
+                      {renderQuestionField(follow, false)}
+                    </div>
+                  )}
+                  {/* What answering this closes, and where the answer travels.
+                      This is the payoff of the shared core: one answer standing
+                      as evidence in several registers at once. */}
+                  {(meta.satisfies.length > 0 || meta.feeds.length > 0) && (
                     <div className="pt-1 space-y-1.5">
                       {meta.satisfies.length > 0 && (
                         <div className="flex flex-wrap items-center gap-1.5">
@@ -486,7 +489,7 @@ export default function AssessmentDetailPage() {
                               key={`${citation.framework}-${citation.code}`}
                               variant="outline"
                               className={
-                                answered
+                                isAnswered(question, responses)
                                   ? `text-[10px] ${STATUS_OUTLINE.good}`
                                   : "text-[10px] text-muted-foreground"
                               }
@@ -494,7 +497,7 @@ export default function AssessmentDetailPage() {
                               {citationText(citation)}
                             </Badge>
                           ))}
-                          {answered && (
+                          {isAnswered(question, responses) && (
                             <span className="text-[10px] text-foreground">{t("answeredMark")}</span>
                           )}
                         </div>
@@ -506,10 +509,10 @@ export default function AssessmentDetailPage() {
                         </p>
                       )}
                     </div>
-                  );
-                })()}
-              </div>
-            ))}
+                  )}
+                </div>
+              );
+            })}
           </CardContent>
         </Card>
       ))}

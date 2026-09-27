@@ -12,13 +12,17 @@
 
 import { useTranslations } from "next-intl";
 import { HelpCircle } from "lucide-react";
-import { questionHelp } from "@/config/help/question-help";
+import { questionHelp, type QuestionHelp as QuestionHelpData } from "@/config/help/question-help";
 import { useContentLocale } from "@/lib/content-locale";
 
-export function QuestionHelp({ questionId }: { questionId: string }) {
+/**
+ * `help` overrides the config lookup: v2 templates carry the help inside the
+ * question JSON, so a question with no central entry still shows its help.
+ */
+export function QuestionHelp({ questionId, help: inlineHelp }: { questionId: string; help?: QuestionHelpData }) {
   const t = useTranslations("help");
   const locale = useContentLocale();
-  const help = questionHelp(questionId);
+  const help = inlineHelp ?? questionHelp(questionId);
 
   if (!help) return null;
 

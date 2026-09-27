@@ -569,6 +569,8 @@ export const quickstartRouter = createTRPCRouter({
                   : "LOW",
                 catalogSlug: catalogVendor.slug,
                 metadata: { source: "quickstart" },
+                provenance: "AUTO_TEMPLATE",
+                sourceRef: "quickstart:vendor",
               },
             });
             counts.vendors++;
@@ -593,6 +595,8 @@ export const quickstartRouter = createTRPCRouter({
                 processesPersonalData: mapping.system.processesPersonalData,
                 vendorId: vendor.id,
                 metadata: { source: "quickstart" },
+                provenance: "AUTO_TEMPLATE",
+                sourceRef: "quickstart:vendor-system",
               },
             });
             counts.systems++;
@@ -701,6 +705,8 @@ export const quickstartRouter = createTRPCRouter({
                   purpose: templateSystem.purpose,
                   processesPersonalData: templateSystem.processesPersonalData,
                   metadata: { source: "quickstart", template: template.id },
+                  provenance: "AUTO_TEMPLATE",
+                  sourceRef: `quickstart:template:${template.id}`,
                 },
               });
               counts.systems++;
@@ -833,6 +839,8 @@ export const quickstartRouter = createTRPCRouter({
                     ? "MEDIUM"
                     : "LOW",
                   metadata: { source: "quickstart", profile: "lawfirm" },
+                  provenance: "AUTO_TEMPLATE",
+                  sourceRef: "quickstart:lawfirm-vendor",
                 },
               });
               vendorId = vendor.id;
@@ -863,6 +871,8 @@ export const quickstartRouter = createTRPCRouter({
                   toolId: tool.id,
                   locale: contentLocale,
                 },
+                provenance: "AUTO_TEMPLATE",
+                sourceRef: "quickstart:lawfirm-system",
               },
             });
             counts.systems++;

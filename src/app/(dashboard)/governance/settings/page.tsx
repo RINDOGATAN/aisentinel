@@ -22,6 +22,7 @@ import { DeleteOrganizationCard } from "@/components/governance/delete-organizat
 import { LegalHoldCard } from "@/components/governance/legal-hold-card";
 import { PilotStatusCard } from "@/components/governance/pilot-status-card";
 import { SampleDataCard } from "@/components/governance/worked-example-card";
+import { TemplateItemsCard } from "@/components/governance/template-items-card";
 import { LayoutCard } from "@/components/guided/layout-card";
 import type { JurisdictionId } from "@/config/jurisdictions";
 
@@ -114,6 +115,9 @@ export default function SettingsPage() {
 
       {/* The worked example's own removal. Renders nothing when there is none. */}
       {organization && <SampleDataCard organizationId={organization.id} />}
+
+      {/* Remove unedited template-created items. Renders nothing when there are none. */}
+      {organization && <TemplateItemsCard organizationId={organization.id} />}
 
       {/* Team: members and roles */}
       {organization && (

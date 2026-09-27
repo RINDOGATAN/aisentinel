@@ -94,6 +94,10 @@ export async function createUnifiedAssessmentDraft(
       status: "DRAFT",
       responses: {},
       createdBy: args.userId,
+      // Auto-drafted with an empty answer set; "Remove all template items" can
+      // clear it until a person saves an answer (which sets confirmedAt).
+      provenance: "AUTO_TEMPLATE",
+      sourceRef: args.source ?? "unified-assessment",
     },
   });
 

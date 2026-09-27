@@ -27,6 +27,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { useSession } from "next-auth/react";
 import { AiDraftPanel } from "@/components/ai/AiDraftPanel";
 import { QuestionHelp } from "@/components/help/question-help";
+import { KeyTerms } from "@/components/help/key-terms";
 import { AssessmentVersionHistory } from "@/components/governance/assessment-version-history";
 import { STATUS_CHIP, STATUS_OUTLINE } from "@/components/ui/status-note";
 import { PageHeader } from "@/components/governance/page-header";
@@ -196,6 +197,8 @@ export default function AssessmentDetailPage() {
           ) : undefined
         }
       />
+
+      <KeyTerms ids={["conformity-assessment", "fria", "bias", "evidence"]} />
 
       {actionError && (
         <Card className="border-destructive">

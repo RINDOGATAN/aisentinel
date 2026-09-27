@@ -5,6 +5,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { PageHeader } from "@/components/governance/page-header";
+import { KeyTerms } from "@/components/help/key-terms";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -102,6 +103,8 @@ export default function OversightPage() {
           )
         }
       />
+
+      <KeyTerms ids={["oversight-gate", "high-risk", "evidence"]} />
 
       {/* Stats Grid */}
       <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">

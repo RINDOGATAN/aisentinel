@@ -31,6 +31,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
+import { KeyTerms } from "@/components/help/key-terms";
 import { useEnumLabels } from "@/lib/enum-labels";
 import { keepPreviousData } from "@tanstack/react-query";
 import { trpc } from "@/lib/trpc";
@@ -162,6 +163,7 @@ export default function RiskClassificationPage() {
         <p className="text-sm text-muted-foreground">
           {t("subtitle")}
         </p>
+        <KeyTerms ids={["high-risk", "bias", "stakeholder"]} className="mt-2" />
       </div>
 
       {/* Stats Bar */}

@@ -139,6 +139,10 @@ const H = vi.hoisted(() => {
     aIIncidentTimeline: makeTable(),
     aIIncidentTask: makeTable(),
     auditLog: makeTable(),
+    // Department scope: no rows means every member sees the whole organization,
+    // so the org-isolation behaviour under test is unchanged.
+    businessUnit: makeTable(),
+    businessUnitMember: makeTable(),
     // Deletion now checks for a legal hold first. No holds in these fixtures:
     // the scoping tests are about org isolation, not preservation.
     legalHold: { findMany: async () => [], count: async () => 0 },

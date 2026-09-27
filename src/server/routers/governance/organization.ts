@@ -9,7 +9,9 @@ import {
   orgWriteProcedure,
 } from "../../trpc";
 import { TRPCError } from "@trpc/server";
-import { OrganizationRole } from "@prisma/client";
+import { OrganizationRole, type Prisma } from "@prisma/client";
+import { loadBusinessUnitScope } from "../../services/business-units/scope";
+import { systemScopeWhere } from "../../services/views/queries";
 import { computeMarkingDeadline } from "@/config/transparency-rules";
 import { JURISDICTION_IDS } from "@/config/jurisdictions";
 import { firstFreeSlug } from "@/lib/unique-slug";
@@ -506,9 +508,24 @@ export const organizationRouter = createTRPCRouter({
     }),
 
   getDashboardStats: organizationProcedure
-    .input(z.object({ organizationId: z.string() }))
-    .query(async ({ ctx }) => {
+    .input(z.object({ organizationId: z.string(), businessUnitId: z.string().optional() }))
+    .query(async ({ ctx, input }) => {
       const orgId = ctx.organization.id;
+
+      // The dashboard reads for what this member can see: the org guard, their
+      // department scope, and any department chosen with the "for my department"
+      // switch. Counts drawn from a system are narrowed through the system
+      // relation; organization-wide facts that do not hang off a system (recent
+      // activity, imported vendors) stay org-wide.
+      const scope = await loadBusinessUnitScope(ctx.prisma, ctx.membership.id);
+      const sysWhere = systemScopeWhere(scope, input.businessUnitId);
+      const sys = (extra: Prisma.AISystemWhereInput = {}): Prisma.AISystemWhereInput => ({
+        organizationId: orgId,
+        ...(sysWhere ? { AND: [sysWhere] } : {}),
+        ...extra,
+      });
+      // The relation fragment for models that hang off a system.
+      const rel = sysWhere ? { aiSystem: { is: sysWhere } } : {};
 
       const [
         totalSystems,
@@ -545,13 +562,13 @@ export const organizationRouter = createTRPCRouter({
         // Quickstart program profile (org settings)
         orgSettingsRow,
       ] = await Promise.all([
-        ctx.prisma.aISystem.count({ where: { organizationId: orgId } }),
-        ctx.prisma.aISystem.count({ where: { organizationId: orgId, status: "DEPLOYED" } }),
+        ctx.prisma.aISystem.count({ where: sys() }),
+        ctx.prisma.aISystem.count({ where: sys({ status: "DEPLOYED" }) }),
         ctx.prisma.riskClassification.count({
-          where: { organizationId: orgId, riskLevel: { in: ["HIGH", "UNACCEPTABLE"] } },
+          where: { organizationId: orgId, riskLevel: { in: ["HIGH", "UNACCEPTABLE"] }, ...rel } as Prisma.RiskClassificationWhereInput,
         }),
         ctx.prisma.aIAssessment.count({
-          where: { organizationId: orgId, status: { in: ["DRAFT", "IN_PROGRESS", "UNDER_REVIEW"] } },
+          where: { organizationId: orgId, status: { in: ["DRAFT", "IN_PROGRESS", "UNDER_REVIEW"] }, ...rel } as Prisma.AIAssessmentWhereInput,
         }),
         ctx.prisma.auditLog.findMany({
           where: { organizationId: orgId },
@@ -560,36 +577,38 @@ export const organizationRouter = createTRPCRouter({
           include: { user: { select: { name: true, email: true } } },
         }),
         // Risk posture counts
-        ctx.prisma.riskClassification.count({ where: { organizationId: orgId, riskLevel: "UNACCEPTABLE" } }),
-        ctx.prisma.riskClassification.count({ where: { organizationId: orgId, riskLevel: "HIGH" } }),
-        ctx.prisma.riskClassification.count({ where: { organizationId: orgId, riskLevel: "LIMITED" } }),
-        ctx.prisma.riskClassification.count({ where: { organizationId: orgId, riskLevel: "MINIMAL" } }),
+        ctx.prisma.riskClassification.count({ where: { organizationId: orgId, riskLevel: "UNACCEPTABLE", ...rel } as Prisma.RiskClassificationWhereInput }),
+        ctx.prisma.riskClassification.count({ where: { organizationId: orgId, riskLevel: "HIGH", ...rel } as Prisma.RiskClassificationWhereInput }),
+        ctx.prisma.riskClassification.count({ where: { organizationId: orgId, riskLevel: "LIMITED", ...rel } as Prisma.RiskClassificationWhereInput }),
+        ctx.prisma.riskClassification.count({ where: { organizationId: orgId, riskLevel: "MINIMAL", ...rel } as Prisma.RiskClassificationWhereInput }),
         // Incidents
-        ctx.prisma.aIIncident.count({ where: { organizationId: orgId } }),
-        ctx.prisma.aIIncident.count({ where: { organizationId: orgId, severity: "CRITICAL" } }),
+        ctx.prisma.aIIncident.count({ where: { organizationId: orgId, ...rel } as Prisma.AIIncidentWhereInput }),
+        ctx.prisma.aIIncident.count({ where: { organizationId: orgId, severity: "CRITICAL", ...rel } as Prisma.AIIncidentWhereInput }),
         ctx.prisma.aIIncident.count({
-          where: { organizationId: orgId, status: { in: ["REPORTED", "INVESTIGATING", "MITIGATING"] } },
+          where: { organizationId: orgId, status: { in: ["REPORTED", "INVESTIGATING", "MITIGATING"] }, ...rel } as Prisma.AIIncidentWhereInput,
         }),
         // Oversight
-        ctx.prisma.oversightGate.count({ where: { organizationId: orgId, status: "PENDING" } }),
+        ctx.prisma.oversightGate.count({ where: { organizationId: orgId, status: "PENDING", ...rel } as Prisma.OversightGateWhereInput }),
         ctx.prisma.oversightGate.count({
           where: {
             organizationId: orgId,
             status: { in: ["PENDING", "IN_REVIEW"] },
             nextReviewDate: { lt: new Date() },
-          },
+            ...rel,
+          } as Prisma.OversightGateWhereInput,
         }),
         // Assessment pipeline
-        ctx.prisma.aIAssessment.count({ where: { organizationId: orgId, status: "DRAFT" } }),
-        ctx.prisma.aIAssessment.count({ where: { organizationId: orgId, status: "IN_PROGRESS" } }),
-        ctx.prisma.aIAssessment.count({ where: { organizationId: orgId, status: "UNDER_REVIEW" } }),
-        ctx.prisma.aIAssessment.count({ where: { organizationId: orgId, status: "APPROVED" } }),
+        ctx.prisma.aIAssessment.count({ where: { organizationId: orgId, status: "DRAFT", ...rel } as Prisma.AIAssessmentWhereInput }),
+        ctx.prisma.aIAssessment.count({ where: { organizationId: orgId, status: "IN_PROGRESS", ...rel } as Prisma.AIAssessmentWhereInput }),
+        ctx.prisma.aIAssessment.count({ where: { organizationId: orgId, status: "UNDER_REVIEW", ...rel } as Prisma.AIAssessmentWhereInput }),
+        ctx.prisma.aIAssessment.count({ where: { organizationId: orgId, status: "APPROVED", ...rel } as Prisma.AIAssessmentWhereInput }),
         // Compliance summary
-        ctx.prisma.complianceMapping.count({ where: { organizationId: orgId, status: "COMPLIANT" } }),
-        ctx.prisma.complianceMapping.count({ where: { organizationId: orgId, status: "PARTIALLY_COMPLIANT" } }),
-        ctx.prisma.complianceMapping.count({ where: { organizationId: orgId, status: "NON_COMPLIANT" } }),
-        ctx.prisma.complianceMapping.count({ where: { organizationId: orgId, status: "NOT_ASSESSED" } }),
-        // Quickstart: count vendors imported from VW
+        ctx.prisma.complianceMapping.count({ where: { organizationId: orgId, status: "COMPLIANT", ...rel } as Prisma.ComplianceMappingWhereInput }),
+        ctx.prisma.complianceMapping.count({ where: { organizationId: orgId, status: "PARTIALLY_COMPLIANT", ...rel } as Prisma.ComplianceMappingWhereInput }),
+        ctx.prisma.complianceMapping.count({ where: { organizationId: orgId, status: "NON_COMPLIANT", ...rel } as Prisma.ComplianceMappingWhereInput }),
+        ctx.prisma.complianceMapping.count({ where: { organizationId: orgId, status: "NOT_ASSESSED", ...rel } as Prisma.ComplianceMappingWhereInput }),
+        // Quickstart: count vendors imported from VW. Vendors carry no
+        // department, so this stays organization-wide even under a department view.
         ctx.prisma.aIVendor.count({
           where: {
             organizationId: orgId,
@@ -599,7 +618,7 @@ export const organizationRouter = createTRPCRouter({
         // Art. 50: open marking obligations; overdue is computed with the
         // pure rules module so the deadline math has a single source of truth.
         ctx.prisma.transparencyProfile.findMany({
-          where: { organizationId: orgId, art50MarkingStatus: "REQUIRED" },
+          where: { organizationId: orgId, art50MarkingStatus: "REQUIRED", ...rel } as Prisma.TransparencyProfileWhereInput,
           select: { placedOnMarketBefore2Aug2026: true },
         }),
         ctx.prisma.organization.findUnique({

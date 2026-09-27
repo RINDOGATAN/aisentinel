@@ -41,6 +41,9 @@ import { aiuc1Router } from "./governance/aiuc1";
 import { pilotRouter } from "./pilot";
 import { sampleRouter } from "./governance/sample";
 import { diagnosticsRouter } from "./diagnostics";
+import { businessUnitRouter } from "./governance/businessUnit";
+import { savedViewRouter } from "./governance/savedView";
+import { viewsRouter } from "./governance/views";
 
 export const appRouter = createTRPCRouter({
   pilot: pilotRouter,
@@ -82,6 +85,9 @@ export const appRouter = createTRPCRouter({
   threatModel: threatModelRouter,
   aiuc1: aiuc1Router,
   diagnostics: diagnosticsRouter,
+  businessUnit: businessUnitRouter,
+  savedView: savedViewRouter,
+  views: viewsRouter,
 });
 
 export type AppRouter = typeof appRouter;

@@ -4523,6 +4523,8 @@
     "assumedJurisdictions": "Showing obligations for: {jurisdictions}",
     "jurisdictionsUndeclared": "You haven't told us where you operate, so US obligations show as undetermined rather than out of scope.",
     "declareJurisdictions": "Declare your operating jurisdictions",
+    "regimeExplainer": "Your systems can fall under several AI and data laws at once. AI Sentinel screens each regime and shows only the deadlines that reach you.",
+    "howThisWorks": "How this works",
     "empty": "No regulatory milestones match your current setup.",
     "next": {
       "timing": {

@@ -4523,6 +4523,8 @@
     "assumedJurisdictions": "Mostrando obligaciones para: {jurisdictions}",
     "jurisdictionsUndeclared": "No nos has indicado dónde operas, así que las obligaciones de EE. UU. se muestran como no determinadas y no como fuera de alcance.",
     "declareJurisdictions": "Declara tus jurisdicciones de operación",
+    "regimeExplainer": "Tus sistemas pueden estar sujetos a varias leyes de IA y de datos a la vez. AI Sentinel analiza cada régimen y muestra solo los plazos que te alcanzan.",
+    "howThisWorks": "Cómo funciona",
     "empty": "Ningún hito normativo coincide con tu configuración actual.",
     "next": {
       "timing": {

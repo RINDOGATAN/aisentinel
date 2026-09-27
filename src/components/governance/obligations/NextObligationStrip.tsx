@@ -165,6 +165,16 @@ export function NextObligationStrip() {
             <ArrowRight className="w-3 h-3" />
           </span>
         </Link>
+
+        {/* The cross-border idea in one line, up front rather than only in the
+            docs: several regimes can reach one system, and only the deadlines
+            that reach this organisation are shown. */}
+        <p className="basis-full border-t border-border/60 pt-2 mt-1 pl-12 sm:pl-0 text-xs text-muted-foreground">
+          {t("regimeExplainer")}{" "}
+          <Link href="/docs/cross-border" className="text-primary hover:underline whitespace-nowrap">
+            {t("howThisWorks")}
+          </Link>
+        </p>
       </CardContent>
     </Card>
   );

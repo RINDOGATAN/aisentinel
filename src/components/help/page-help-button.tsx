@@ -15,10 +15,10 @@
  */
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { HelpCircle, ExternalLink, ArrowRight, BookOpen } from "lucide-react";
+import { HelpCircle, ExternalLink, ArrowRight, BookOpen, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -29,23 +29,30 @@ import {
 } from "@/components/ui/sheet";
 import { helpForPath } from "@/config/help/pages";
 import { glossaryTerm } from "@/config/help/glossary";
+import { HELP_GUIDES } from "@/config/help/guide-links";
+import { setIntroCookie } from "@/lib/help-intro";
 import { useContentLocale } from "@/lib/content-locale";
 
-/** The three guides, linked from every panel and from the first-run card. */
-export const HELP_GUIDES = [
-  { href: "/docs/guides/my-role", key: "guideRole" },
-  { href: "/docs/guides/high-risk", key: "guideHighRisk" },
-  { href: "/docs/guides/which-rules", key: "guideRules" },
-] as const;
+export { HELP_GUIDES };
 
 export function PageHelpButton() {
   const pathname = usePathname();
+  const router = useRouter();
   const t = useTranslations("help");
   const locale = useContentLocale();
   const [open, setOpen] = useState(false);
 
   const help = helpForPath(pathname);
   if (!help) return null;
+
+  // Reopen the one-minute introduction: mark it open and go to the dashboard,
+  // where the card lives (src/components/help/first-run-card.tsx).
+  const reopenIntro = () => {
+    setIntroCookie("open");
+    setOpen(false);
+    if (pathname === "/governance") router.refresh();
+    else router.push("/governance");
+  };
 
   const terms = help.terms
     .map((id) => glossaryTerm(id))
@@ -145,6 +152,15 @@ export function PageHelpButton() {
               </ul>
             </Section>
           )}
+
+          <button
+            type="button"
+            onClick={reopenIntro}
+            className="flex items-center gap-2 rounded-md px-2 py-1.5 -mx-2 text-left text-muted-foreground hover:bg-secondary hover:text-foreground"
+          >
+            <Sparkles className="size-3.5 shrink-0" aria-hidden="true" />
+            {t("firstRun.title")}
+          </button>
         </div>
       </SheetContent>
     </Sheet>

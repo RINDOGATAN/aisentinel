@@ -52,6 +52,7 @@ import { TIER_BG_CLASS, type RiskTier } from "@/config/risk-tier-palette";
 import { useSkin } from "@/components/guided/skin-context";
 import { NextStepCard } from "@/components/guided/next-step-card";
 import { PageHeader } from "@/components/governance/page-header";
+import { FirstRunCard } from "@/components/help/first-run-card";
 
 export default function GovernanceDashboardPage() {
   const { organization, organizations, setOrganization, canWrite } = useOrganization();
@@ -170,6 +171,10 @@ export default function GovernanceDashboardPage() {
         )
         }
       />
+
+      {/* One minute on how it works, on the first visit; dismissal is
+          remembered per browser and it can be reopened from the "?" panel. */}
+      {organization && <FirstRunCard />}
 
       {/* Guided layout only: the next step on the program path. The program
           map is in the menu's "Library and tools", so it is not repeated here

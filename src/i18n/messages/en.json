@@ -6019,6 +6019,11 @@
     "officialText": "The law itself",
     "exampleLead": "For example:",
     "termMeaningOf": "Show the meaning of {term}",
+    "question": {
+      "toggle": "What this means",
+      "example": "Example answer",
+      "reference": "Legal reference"
+    },
     "firstRun": {
       "title": "One minute on how this works",
       "intro": "AI Sentinel turns AI law into a programme you can run. In short:",

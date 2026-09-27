@@ -6019,6 +6019,11 @@
     "officialText": "La propia ley",
     "exampleLead": "Por ejemplo:",
     "termMeaningOf": "Ver el significado de {term}",
+    "question": {
+      "toggle": "Qué significa esto",
+      "example": "Ejemplo de respuesta",
+      "reference": "Referencia legal"
+    },
     "firstRun": {
       "title": "Un minuto sobre cómo funciona",
       "intro": "AI Sentinel convierte la ley de IA en un programa que puedes ejecutar. En resumen:",

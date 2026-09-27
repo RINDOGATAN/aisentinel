@@ -26,6 +26,7 @@ import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
 import { useSession } from "next-auth/react";
 import { AiDraftPanel } from "@/components/ai/AiDraftPanel";
+import { QuestionHelp } from "@/components/help/question-help";
 import { AssessmentVersionHistory } from "@/components/governance/assessment-version-history";
 import { STATUS_CHIP, STATUS_OUTLINE } from "@/components/ui/status-note";
 import { PageHeader } from "@/components/governance/page-header";
@@ -412,6 +413,7 @@ export default function AssessmentDetailPage() {
                 {question.helpText && (
                   <p className="text-xs text-muted-foreground">{question.helpText}</p>
                 )}
+                <QuestionHelp questionId={question.id} />
                 {question.type === "select" && question.options ? (
                   <Select
                     value={responses[question.id] ?? ""}

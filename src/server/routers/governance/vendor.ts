@@ -7,6 +7,7 @@ import { TRPCError } from "@trpc/server";
 import { assertNotOnHold } from "../../services/legal-hold";
 import { assertPilotRoom, pilotLocale } from "../../services/pilot/caps";
 import { withoutTemplateCopyMark } from "@/config/client-template";
+import { markConfirmed } from "@/server/services/template-items/mark";
 import {
   parseSubprocessors,
   summarizeSupplyChain,
@@ -275,6 +276,14 @@ export const vendorRouter = createTRPCRouter({
       if (result.count === 0) {
         throw new TRPCError({ code: "NOT_FOUND", message: "Vendor not found" });
       }
+
+      // A person editing a template-created vendor takes ownership of it.
+      await markConfirmed(ctx.prisma, {
+        model: "aiVendor",
+        id,
+        organizationId: ctx.organization.id,
+        userId: ctx.session.user.id,
+      });
 
       await ctx.prisma.auditLog.create({
         data: {

@@ -23,9 +23,8 @@ import {
   buildAssessmentDraftSystemPrompt,
   buildAssessmentDraftUserPrompt,
 } from "../../services/ai/prompts/assessment-draft";
-
-type TemplateQuestion = { id: string; text?: string; required?: boolean };
-type TemplateSection = { id?: string; title?: string; questions?: TemplateQuestion[] };
+import { unansweredRequired, localizedText } from "@/lib/assessment-answers";
+import { markConfirmed } from "@/server/services/template-items/mark";
 
 /** Statuses in which an assessment is still a working document. */
 const EDITABLE_STATUSES = ["DRAFT", "IN_PROGRESS"];
@@ -36,27 +35,6 @@ function isEditable(status: string) {
 
 function readableStatus(status: string) {
   return status.replace("_", " ").toLowerCase();
-}
-
-/**
- * The questions a template marks as mandatory. `required` defaults to true in
- * the template authoring schema (see createTemplate), so a missing flag counts
- * as required — a template that omits it must not silently weaken the gate.
- */
-function requiredQuestionsOf(sections: unknown): TemplateQuestion[] {
-  if (!Array.isArray(sections)) return [];
-  return (sections as TemplateSection[])
-    .flatMap((section) => section?.questions ?? [])
-    .filter((question) => question?.id && question.required !== false);
-}
-
-/** Required questions with no answer recorded against them. */
-function unansweredRequired(sections: unknown, responses: unknown): TemplateQuestion[] {
-  const answers = (responses ?? {}) as Record<string, unknown>;
-  return requiredQuestionsOf(sections).filter((question) => {
-    const answer = answers[question.id];
-    return answer === undefined || answer === null || String(answer).trim() === "";
-  });
 }
 
 export const assessmentRouter = createTRPCRouter({
@@ -230,6 +208,15 @@ export const assessmentRouter = createTRPCRouter({
       await ctx.prisma.aIAssessment.updateMany({
         where: { id, organizationId: ctx.organization.id },
         data: patch as never,
+      });
+
+      // A person editing an assessment takes ownership of it: a template-drafted
+      // assessment is now kept by "Remove all template items".
+      await markConfirmed(ctx.prisma, {
+        model: "aiAssessment",
+        id,
+        organizationId: ctx.organization.id,
+        userId: ctx.session.user.id,
       });
 
       // The edit becomes part of the record: a dated version of the answers,
@@ -443,6 +430,9 @@ export const assessmentRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       return ctx.prisma.aIAssessmentTemplate.findMany({
         where: {
+          // A superseded system template (its v2 replaced it) is hidden from the
+          // picker so new assessments use v2; existing assessments keep theirs.
+          supersededAt: null,
           OR: [
             { organizationId: ctx.organization.id },
             { isSystem: true },
@@ -500,16 +490,19 @@ export const assessmentRouter = createTRPCRouter({
         throw new TRPCError({ code: "NOT_FOUND", message: "Assessment not found" });
       }
 
+      // Question text and section titles are a plain string on v1 templates and
+      // {en,es} on v2; localizedText absorbs the difference for the prompt.
       const sections = (assessment.template?.sections ?? []) as {
         id: string;
-        title: string;
-        questions: { id: string; text: string; helpText?: string }[];
+        title: string | Record<string, string>;
+        questions: { id: string; text: string | Record<string, string>; helpText?: string }[];
       }[];
       const section = sections.find((s) => s.questions?.some((q) => q.id === input.questionId));
       const question = section?.questions.find((q) => q.id === input.questionId);
       if (!section || !question) {
         throw new TRPCError({ code: "NOT_FOUND", message: "Question not found in template" });
       }
+      const promptContentLocale = ctx.getCookie("locale") === "es" ? "es" : "en";
 
       // Server-side context only (Prisma-derived, org-scoped).
       const { context } = await buildSystemContext(
@@ -528,8 +521,8 @@ export const assessmentRouter = createTRPCRouter({
         user: buildAssessmentDraftUserPrompt({
           context,
           assessment: { title: assessment.title, type: assessment.type },
-          sectionTitle: section.title,
-          question: { text: question.text, helpText: question.helpText },
+          sectionTitle: localizedText(section.title, promptContentLocale),
+          question: { text: localizedText(question.text, promptContentLocale), helpText: question.helpText },
           currentResponse: responses[input.questionId] ?? null,
         }),
         lane: postureLane(settings.posture),

@@ -2,6 +2,10 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { PrismaClient } from "@prisma/client";
+import {
+  ASSESSMENT_TEMPLATES_V2,
+  serializeSections,
+} from "../src/config/assessment-templates-v2";
 
 const prisma = new PrismaClient();
 
@@ -951,7 +955,42 @@ async function main() {
   });
   console.log("  Created Bias & Fairness Assessment template (system-bias-fairness-template) — 6 sections, 24 questions");
 
-  console.log("\nDone! 5 assessment templates seeded (FRIA: 22q, AI Risk: 18q, Custom: 6q, Conformity: 25q, Bias & Fairness: 24q).");
+  // ============================================================
+  // VERSION 2 — structured, regulator-readable questions
+  // ============================================================
+  // v2 templates supersede their v1 counterpart for NEW assessments. Existing
+  // assessments keep their own (v1) template, questions and answers untouched;
+  // only the pickers hide a superseded template (see aiSystem/assessment lists).
+  // The DB stores English name/description (single-valued columns); the section
+  // JSON carries the bilingual text, options and help. This matches the SQL in
+  // the accompanying migration, so a fresh install and an upgraded one converge.
+
+  for (const template of ASSESSMENT_TEMPLATES_V2) {
+    const row = {
+      type: template.type,
+      name: template.name.en,
+      description: template.description.en,
+      frameworkRef: template.frameworkRef ?? null,
+      isSystem: true,
+      version: 2,
+      supersededAt: null,
+      sections: serializeSections(template) as unknown as object[],
+    };
+    await prisma.aIAssessmentTemplate.upsert({
+      where: { id: template.id },
+      update: row,
+      create: { id: template.id, ...row },
+    });
+    console.log(`  Created ${template.name.en} v2 (${template.id})`);
+
+    // Retire the v1 row for new assessments — once, idempotently.
+    await prisma.aIAssessmentTemplate.updateMany({
+      where: { id: template.supersedes, supersededAt: null },
+      data: { version: 1, supersededAt: new Date() },
+    });
+  }
+
+  console.log("\nDone! 5 v1 templates + 5 v2 (structured) templates seeded; v1 marked superseded.");
 }
 
 main()

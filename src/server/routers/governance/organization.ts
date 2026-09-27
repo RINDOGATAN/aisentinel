@@ -21,6 +21,7 @@ import {
   assertPilotWritable,
   pilotLocale,
 } from "../../services/pilot/caps";
+import { planTemplateRemoval, removeTemplateItems } from "../../services/template-items/remove";
 
 export const organizationRouter = createTRPCRouter({
   list: protectedProcedure.query(async ({ ctx }) => {
@@ -261,6 +262,45 @@ export const organizationRouter = createTRPCRouter({
       });
       await ctx.prisma.organization.delete({ where: { id: ctx.organization.id } });
       return { deleted: true };
+    }),
+
+  /**
+   * How many template-created items "Remove all template items" would clear,
+   * and how many it would keep (the ones a person has edited). Read-only, so
+   * every member can see the count before anyone acts.
+   */
+  templateItemsPlan: organizationProcedure
+    .input(z.object({ organizationId: z.string() }))
+    .query(async ({ ctx }) => {
+      const plan = await planTemplateRemoval(ctx.prisma, ctx.organization.id);
+      // The ids stay on the server; the UI only needs the counts.
+      return {
+        systems: plan.systems,
+        vendors: plan.vendors,
+        assessments: plan.assessments,
+        totalRemove: plan.totalRemove,
+        totalKeep: plan.totalKeep,
+      };
+    }),
+
+  /**
+   * Remove the unedited template-created systems, vendors and assessments in one
+   * step. Edited items stay. Mirrors the worked-example removal: a legal hold
+   * blocks it, and it is recorded in the audit trail.
+   */
+  removeTemplateItems: orgWriteProcedure
+    .input(z.object({ organizationId: z.string() }))
+    .mutation(async ({ ctx }) => {
+      if (!["OWNER", "ADMIN", "AI_OFFICER"].includes(ctx.membership.role)) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You do not have permission to remove template items",
+        });
+      }
+      return removeTemplateItems(ctx.prisma, {
+        organizationId: ctx.organization.id,
+        userId: ctx.session.user.id,
+      });
     }),
 
   addMember: organizationProcedure

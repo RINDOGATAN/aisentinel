@@ -15,6 +15,7 @@ import { LIST_SORTS, DEFAULT_LIST_SORT, aiSystemOrderBy } from "@/lib/list-sort"
 import { createStarterArtifacts } from "@/server/services/program/starter-artifacts";
 import { assertPilotRoom, pilotLocale } from "@/server/services/pilot/caps";
 import { withoutTemplateCopyMark } from "@/config/client-template";
+import { markConfirmed } from "@/server/services/template-items/mark";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { TRPCError } from "@trpc/server";
 import { chatComplete } from "../../services/ai/llm-door";
@@ -267,6 +268,15 @@ export const aiSystemRouter = createTRPCRouter({
       if (system.count === 0) {
         throw new TRPCError({ code: "NOT_FOUND", message: "AI system not found" });
       }
+
+      // A person editing a template-created system takes ownership of it, so
+      // "Remove all template items" leaves it and its children alone.
+      await markConfirmed(ctx.prisma, {
+        model: "aiSystem",
+        id,
+        organizationId: ctx.organization.id,
+        userId: ctx.session.user.id,
+      });
 
       await ctx.prisma.auditLog.create({
         data: {

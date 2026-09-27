@@ -107,6 +107,7 @@ async function call(path: string): Promise<unknown> {
 const EDITS_THE_PILOT_REFUSES = [
   "sample.create",
   "organization.setJurisdictions",
+  "organization.removeTemplateItems",
   "aiSystem.importRows", "aiSystem.create", "aiSystem.update", "aiSystem.delete",
   "aiSystem.addModel", "aiSystem.updateModel", "aiSystem.deleteModel",
   "aiSystem.addDataSource", "aiSystem.updateDataSource", "aiSystem.deleteDataSource",

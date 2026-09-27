@@ -1729,6 +1729,9 @@
       "premiumLabel": "Premium",
       "nav": {
         "gettingStarted": "Getting Started",
+        "guideMyRole": "What is my role?",
+        "guideHighRisk": "What is high risk?",
+        "guideWhichRules": "Which rules apply to me?",
         "aiRegistry": "AI Registry",
         "riskClassification": "Risk Classification",
         "assessments": "Assessments",
@@ -1761,7 +1764,8 @@
         "security": "Security",
         "sourceCode": "Source code (AGPL-3.0)"
       },
-      "frameworksLabel": "Frameworks"
+      "frameworksLabel": "Frameworks",
+      "guidesLabel": "Guides"
     },
     "home": {
       "metaTitle": "Documentation: AI SENTINEL",
@@ -3968,7 +3972,12 @@
       "rings": {
         "title": "Dimensions, rim to centre",
         "help": "Select a dimension to highlight it across every framework; select it again to clear.",
-        "depthMeaning": "How depth is read here: {meaning}"
+        "depthMeaning": "How depth is read here: {meaning}",
+        "depthTableTitle": "{dimension}: depth per framework",
+        "depthTableFramework": "Framework",
+        "depthTableDepth": "Depth",
+        "depthTableReading": "In one sentence",
+        "openCell": "Open {framework}"
       },
       "detail": {
         "empty": "Select a cell in the wheel to see its detail here.",
@@ -4519,6 +4528,8 @@
     "assumedJurisdictions": "Showing obligations for: {jurisdictions}",
     "jurisdictionsUndeclared": "You haven't told us where you operate, so US obligations show as undetermined rather than out of scope.",
     "declareJurisdictions": "Declare your operating jurisdictions",
+    "regimeExplainer": "Your systems can fall under several AI and data laws at once. AI Sentinel screens each regime and shows only the deadlines that reach you.",
+    "howThisWorks": "How this works",
     "empty": "No regulatory milestones match your current setup.",
     "next": {
       "timing": {
@@ -5734,6 +5745,7 @@
       "vendorCatalog": "Vendor catalog",
       "skills": "Skills",
       "billing": "Billing",
+      "help": "Help and docs",
       "settings": "Settings"
     },
     "collapse": "Collapse the menu",
@@ -5992,5 +6004,39 @@
     "resultStarted": "Copied items count as started, not done, until someone reviews them for this client. Policies and gates wait in the review queue.",
     "resultFlaggedTitle": "Review these for mentions of the other client",
     "openClient": "Open {client}"
+  },
+  "help": {
+    "open": "Help for this page",
+    "subtitle": "What this page is for, and where to learn more.",
+    "purpose": "What this page is for",
+    "firstStep": "Do this first",
+    "terms": "Terms on this page",
+    "guides": "Short guides",
+    "guideRole": "What is my role?",
+    "guideHighRisk": "What is high risk?",
+    "guideRules": "Which rules apply to me?",
+    "learnMore": "Learn more",
+    "officialText": "The law itself",
+    "exampleLead": "For example:",
+    "termMeaningOf": "Show the meaning of {term}",
+    "keyTerms": "Key terms",
+    "question": {
+      "toggle": "What this means",
+      "example": "Example answer",
+      "reference": "Legal reference"
+    },
+    "firstRun": {
+      "title": "One minute on how this works",
+      "intro": "AI Sentinel turns AI law into a programme you can run. In short:",
+      "step1": "List your AI systems, so nothing is governed in the dark.",
+      "step2": "Classify each one and assess the ones that carry risk.",
+      "step3": "Put the controls and evidence in place, and keep watch.",
+      "crossBorder": "Answer one question set, drafted to the strictest regime that applies, and get the documents each regime expects.",
+      "guidesTitle": "New to this? Start here",
+      "clientsLine": "Working for several clients?",
+      "clientsLink": "All clients shows where each one stands.",
+      "dismiss": "Got it",
+      "reopen": "You can open this again from the \"?\" in the top bar."
+    }
   }
 }

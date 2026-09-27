@@ -3,6 +3,7 @@
 
 import { useTranslations } from "next-intl";
 import type { Depth } from "@/lib/frameworks/model";
+import { Term } from "@/components/help/term";
 
 // Depth reads as more of the brand colour: 0 is the muted surface, 3 is full
 // amber. The mixes are against the card colour so the steps stay even on the
@@ -62,7 +63,11 @@ export function DepthLegend() {
   const depths: Depth[] = [0, 1, 2, 3];
   return (
     <div className="space-y-2">
-      <p className="text-sm text-foreground">{t("depth.explain")}</p>
+      <p className="text-sm text-foreground">
+        <Term id="depth" />
+        {" · "}
+        {t("depth.explain")}
+      </p>
       <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
         <span>{t("depth.legend")}</span>
       {depths.map((d) => (

@@ -165,8 +165,11 @@ describe("the shape of the path", () => {
       ...PATH.library({ stripeEnabled: true, clientMode: true }).map((i) => i.href),
     ];
     for (const href of hrefs) {
-      const dir = join("src/app/(dashboard)", href.split(/[?#]/)[0]);
-      expect(existsSync(join(dir, "page.tsx")), href).toBe(true);
+      const path = href.split(/[?#]/)[0];
+      // Most links stay in the dashboard; "Help and docs" leaves it for the
+      // public docs, which live outside the (dashboard) route group.
+      const base = path.startsWith("/docs") ? "src/app" : "src/app/(dashboard)";
+      expect(existsSync(join(base, path, "page.tsx")), href).toBe(true);
     }
   });
 

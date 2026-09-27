@@ -31,6 +31,7 @@ import {
   History,
   KeyRound,
   Landmark,
+  LifeBuoy,
   Network,
   Scale,
   ScrollText,
@@ -480,6 +481,9 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
     ...(stripeEnabled
       ? [{ id: "billing", href: "/governance/billing", icon: CreditCard }]
       : []),
+    // Help and docs sits with the tools, alongside the footer "Docs" link: a
+    // second, more findable way to the guides and the reference.
+    { id: "help", href: "/docs", icon: LifeBuoy },
     { id: "settings", href: "/governance/settings", icon: Settings },
   ],
 };

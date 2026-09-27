@@ -9,7 +9,7 @@ import { useTranslations } from "next-intl";
 import { frameworksData, isUnderReview } from "@/lib/frameworks/model";
 import { isCellDimmed, toggleHighlight } from "@/lib/frameworks/highlight";
 import { CellDetail, type CellRef } from "./cell-detail";
-import { DEPTH_FILL } from "./depth";
+import { DEPTH_FILL, DepthChip } from "./depth";
 
 // Geometry kept from the alpha: rim at the outside, core at the centre.
 const R0 = 64;
@@ -119,6 +119,10 @@ export function FrameworksWheel() {
                   const k = key(fi, ri);
                   const isSel = selected?.framework === f.id && selected.ring === r.id;
                   const dim = isCellDimmed(highlight, r.id);
+                  // The selected dimension is outlined in the accent across
+                  // every framework, whatever its depth: a depth-0 cell used to
+                  // stay dark and read as unselected.
+                  const onRing = highlight === r.id;
                   const label = t(review ? "wheel.cellReview" : "wheel.cell", {
                     framework: f.short,
                     dimension: r.label,
@@ -133,8 +137,14 @@ export function FrameworksWheel() {
                         }}
                         d={arc(rin, ro, a0, a1)}
                         fill={DEPTH_FILL[cell.depth]}
-                        stroke={isSel || focused === k ? "var(--foreground)" : "var(--card)"}
-                        strokeWidth={isSel || focused === k ? 3 : 1.2}
+                        stroke={
+                          isSel || focused === k
+                            ? "var(--foreground)"
+                            : onRing
+                              ? "var(--primary)"
+                              : "var(--card)"
+                        }
+                        strokeWidth={isSel || focused === k ? 3 : onRing ? 2.5 : 1.2}
                         role="button"
                         tabIndex={focusPos.f === fi && focusPos.r === ri ? 0 : -1}
                         aria-label={label}
@@ -259,6 +269,52 @@ export function FrameworksWheel() {
                 .join(" ")
             : ""}
         </p>
+
+        {/* Depth per framework for the selected dimension: the frameworks that
+            say most about it, first, each row opening that cell's detail. It
+            makes the selection concrete even where the ring is dark. */}
+        {highlighted && (
+          <div className="mt-4 border-t border-border pt-3">
+            <table className="w-full text-left text-xs">
+              <caption className="sr-only">
+                {t("rings.depthTableTitle", { dimension: highlighted.label })}
+              </caption>
+              <thead>
+                <tr className="text-muted-foreground">
+                  <th scope="col" className="pb-1 font-medium">{t("rings.depthTableFramework")}</th>
+                  <th scope="col" className="pb-1 pl-2 font-medium">{t("rings.depthTableDepth")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {F.map((f) => ({ f, cell: f.cells[highlighted.id] }))
+                  .sort((a, b) => b.cell.depth - a.cell.depth || a.f.short.localeCompare(b.f.short))
+                  .map(({ f, cell }) => {
+                    const review = isUnderReview(cell);
+                    return (
+                      <tr key={f.id} className="border-t border-border/60 align-top">
+                        <td className="py-1.5 pr-2">
+                          <button
+                            type="button"
+                            onClick={() => setSelected({ framework: f.id, ring: highlighted.id })}
+                            className="text-left font-medium text-foreground hover:text-primary hover:underline"
+                            aria-label={t("rings.openCell", { framework: f.name })}
+                          >
+                            {f.short}
+                          </button>
+                          <p className="mt-0.5 font-normal text-muted-foreground">
+                            {review ? t("underReview") : cell.summary}
+                          </p>
+                        </td>
+                        <td className="py-1.5 pl-2">
+                          <DepthChip depth={cell.depth} underReview={review} />
+                        </td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       <CellDetail

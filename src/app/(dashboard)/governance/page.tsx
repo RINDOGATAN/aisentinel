@@ -26,6 +26,8 @@ import {
   Search,
   Sparkles,
   Network,
+  ListChecks,
+  ClipboardList,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -44,6 +46,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { NextObligationStrip } from "@/components/governance/obligations/NextObligationStrip";
 import { useOrganization } from "@/lib/organization-context";
+import { useDepartmentScope } from "@/lib/use-department-scope";
 import { formatRelativeTime } from "@/lib/utils";
 import { DeploymentExpertCta } from "@/components/governance/deployment-expert-cta";
 import { TierMarker } from "@/components/governance/risk-tier-badge";
@@ -64,8 +67,11 @@ export default function GovernanceDashboardPage() {
   const locale = useLocale();
   const tc = useTranslations("common");
 
+  // "For my department": when a department is chosen in the menu switch, the
+  // dashboard's system-derived counts are read for that department.
+  const { departmentId } = useDepartmentScope(organization?.id);
   const { data: stats, isLoading } = trpc.organization.getDashboardStats.useQuery(
-    { organizationId: organization?.id ?? "" },
+    { organizationId: organization?.id ?? "", businessUnitId: departmentId ?? undefined },
     { enabled: !!organization?.id }
   );
 
@@ -252,6 +258,33 @@ export default function GovernanceDashboardPage() {
 
       {/* Next regulatory deadline, bound to this org's own inventory */}
       <NextObligationStrip />
+
+      {/* The two ready lists: what needs action, and what is not yet registered.
+          Carry the chosen department through so the list opens scoped to it. */}
+      <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
+        <Link href={departmentId ? `/governance/needs-action?dept=${departmentId}` : "/governance/needs-action"}>
+          <Card className="hover:border-primary/50 transition-colors">
+            <CardContent className="flex items-center gap-3 p-4">
+              <ListChecks className="w-5 h-5 text-primary shrink-0" />
+              <div className="min-w-0">
+                <p className="font-medium text-sm">{t("needsActionTitle")}</p>
+                <p className="text-xs text-muted-foreground">{t("needsActionHint")}</p>
+              </div>
+            </CardContent>
+          </Card>
+        </Link>
+        <Link href={departmentId ? `/governance/incomplete?dept=${departmentId}` : "/governance/incomplete"}>
+          <Card className="hover:border-primary/50 transition-colors">
+            <CardContent className="flex items-center gap-3 p-4">
+              <ClipboardList className="w-5 h-5 text-primary shrink-0" />
+              <div className="min-w-0">
+                <p className="font-medium text-sm">{t("incompleteTitle")}</p>
+                <p className="text-xs text-muted-foreground">{t("incompleteHint")}</p>
+              </div>
+            </CardContent>
+          </Card>
+        </Link>
+      </div>
 
       {/* KPI Row - 6 cards */}
       <div className="grid gap-3 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">

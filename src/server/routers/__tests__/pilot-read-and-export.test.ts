@@ -151,6 +151,11 @@ const EDITS_THE_PILOT_REFUSES = [
   "threatModel.applyToRegister",
   // Read 2026-09-25: each appends an AIUC-1 evidence row or sets a mapping's status.
   "aiuc1.recordTest", "aiuc1.acceptPartial", "aiuc1.setApplicability",
+  // Read 2026-09-26: department management (create/change/delete a department,
+  // set a member's department limit). Saved views are a personal preference on
+  // organizationProcedure and are deliberately NOT refused.
+  "businessUnit.create", "businessUnit.update", "businessUnit.remove",
+  "businessUnit.setMemberDepartments",
 ];
 
 const refusedByPilot = (outcome: unknown) =>

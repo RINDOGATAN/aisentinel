@@ -184,6 +184,10 @@
     "openIncidents": "Open Incidents",
     "pendingGates": "Pending Gates",
     "activeAssessments": "Active Assessments",
+    "needsActionTitle": "Needs action",
+    "needsActionHint": "Everything waiting for you",
+    "incompleteTitle": "Incomplete registrations",
+    "incompleteHint": "Systems missing required fields",
     "riskPosture": "Risk Posture",
     "riskPostureDescription": "EU AI Act risk classification distribution",
     "noRiskClassificationsYet": "No risk classifications yet",
@@ -312,6 +316,9 @@
     "vendorAddLabel": "Name of a vendor to add",
     "vendorAddAction": "Add vendor",
     "vendorCreated": "{name} added and selected.",
+    "departmentLabel": "Department",
+    "departmentPlaceholder": "No department",
+    "departmentNone": "No department",
     "registering": "Registering...",
     "registerSystem": "Register System",
     "toastSuccess": "AI system registered successfully",
@@ -398,6 +405,8 @@
     "editTechnicalOwnerLabel": "Technical Owner",
     "editLinkedVendorLabel": "Linked Vendor",
     "editSelectVendorPlaceholder": "Select a vendor...",
+    "editDepartmentLabel": "Department",
+    "editDepartmentNone": "No department",
     "editDialogTitle": "Edit AI System",
     "editDialogDescription": "Update the details of this AI system.",
     "addModelDialogTitle": "Add Model",
@@ -5755,6 +5764,8 @@
       }
     },
     "library": {
+      "needsAction": "Needs action",
+      "incomplete": "Incomplete registrations",
       "program": "Program map",
       "vendorCatalog": "Vendor catalog",
       "skills": "Skills",
@@ -6051,6 +6062,109 @@
       "clientsLink": "All clients shows where each one stands.",
       "dismiss": "Got it",
       "reopen": "You can open this again from the \"?\" in the top bar."
+    }
+  },
+  "views": {
+    "filter": {
+      "any": "Any",
+      "unassigned": "No department",
+      "department": "Department",
+      "owner": "Owner",
+      "ownerPlaceholder": "Business or technical owner",
+      "region": "Region",
+      "role": "Role",
+      "risk": "Risk tier",
+      "riskNone": "Not classified",
+      "registration": "Registration",
+      "registration_complete": "Complete",
+      "registration_incomplete": "Incomplete",
+      "assessment": "Assessment",
+      "assessment_none": "None",
+      "assessment_in_progress": "In progress",
+      "assessment_approved": "Approved",
+      "clear": "Clear {count, plural, one {# filter} other {# filters}}"
+    },
+    "saved": {
+      "label": "Saved views",
+      "save": "Save this view",
+      "created": "View saved",
+      "remove": "Remove the saved view {name}",
+      "dialogTitle": "Save this view",
+      "nameLabel": "Name",
+      "namePlaceholder": "e.g. High-risk in HR",
+      "cancel": "Cancel",
+      "confirm": "Save"
+    },
+    "departmentSwitch": {
+      "label": "Viewing",
+      "wholeOrg": "Whole organization"
+    },
+    "needsAction": {
+      "title": "Needs action",
+      "subtitle": "Everything waiting for you or your role, in one place.",
+      "empty": "Nothing is waiting. You are up to date.",
+      "deptNote": "Showing one department. The confirmation queue is organization-wide and is not shown here.",
+      "kind": {
+        "assessment-review": "Assessments to review",
+        "oversight-gate": "Oversight gates to decide",
+        "overdue-retest": "Overdue re-tests",
+        "incident-open": "Open incidents",
+        "review-queue": "Items to confirm"
+      },
+      "hint": {
+        "assessment-review": "Sent for internal review and waiting on a decision.",
+        "oversight-gate": "A gate is pending a decision.",
+        "overdue-retest": "A threat model's review or re-test is overdue.",
+        "incident-open": "An incident is open and not yet resolved.",
+        "review-queue": "Auto-drafted items nobody has confirmed yet."
+      }
+    },
+    "incomplete": {
+      "title": "Incomplete registrations",
+      "subtitle": "Systems missing a required registration field, with what is missing.",
+      "empty": "Every system's registration is complete.",
+      "missingCount": "{count, plural, one {# field missing} other {# fields missing}}"
+    }
+  },
+  "registration": {
+    "field": {
+      "description": "Description",
+      "purpose": "Purpose",
+      "businessOwner": "Business owner",
+      "technicalOwner": "Technical owner",
+      "riskClassification": "Risk classification"
+    }
+  },
+  "departments": {
+    "title": "Departments",
+    "description": "Group systems by department, give each an owner, and limit a member to one or more departments.",
+    "empty": "No departments yet.",
+    "counts": "{systems, plural, one {# system} other {# systems}} · {members, plural, one {# member} other {# members}}",
+    "ownedBy": "Owner: {name}",
+    "edit": "Edit department",
+    "delete": "Delete",
+    "deleteTitle": "Delete department",
+    "deleteConfirm": "Delete {name}? Its systems keep their records and lose the department.",
+    "cancel": "Cancel",
+    "addLabel": "Add a department",
+    "namePlaceholder": "Department name",
+    "parent": "Parent department",
+    "noParent": "No parent",
+    "owner": "Owner",
+    "noOwner": "No owner",
+    "add": "Add",
+    "created": "Department created",
+    "updated": "Department updated",
+    "deleted": "Department deleted",
+    "editTitle": "Edit department",
+    "name": "Name",
+    "save": "Save",
+    "access": {
+      "title": "Member access",
+      "description": "Limit a member to one or more departments. With none selected, they see the whole organization.",
+      "wholeOrg": "Whole organization",
+      "limited": "Limited to {count, plural, one {# department} other {# departments}}",
+      "saved": "Access updated"
     }
   }
 }

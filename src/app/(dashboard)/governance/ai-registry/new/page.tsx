@@ -127,6 +127,7 @@ export default function NewAISystemPage() {
     technicalOwner: string;
     processesPersonalData: boolean;
     vendorId: string;
+    businessUnitId: string;
   }>({
     name: "",
     description: "",
@@ -138,7 +139,14 @@ export default function NewAISystemPage() {
     technicalOwner: "",
     processesPersonalData: false,
     vendorId: "",
+    businessUnitId: "",
   });
+
+  const { data: deptData } = trpc.businessUnit.listForScope.useQuery(
+    { organizationId: organization?.id ?? "" },
+    { enabled: !!organization?.id }
+  );
+  const departments = deptData?.departments ?? [];
 
   const { data: vendorsData } = trpc.vendor.list.useQuery(
     { organizationId: organization?.id ?? "", limit: 100 },
@@ -240,6 +248,7 @@ export default function NewAISystemPage() {
       technicalOwner: formData.technicalOwner || undefined,
       processesPersonalData: formData.processesPersonalData,
       vendorId: formData.vendorId || undefined,
+      businessUnitId: formData.businessUnitId || undefined,
     });
   };
 
@@ -431,6 +440,31 @@ export default function NewAISystemPage() {
                 </Button>
               </div>
             </div>
+
+            {/* Department (business unit) — optional, only when the org has any */}
+            {departments.length > 0 && (
+              <div className="space-y-2">
+                <Label htmlFor="department">{t("departmentLabel")}</Label>
+                <Select
+                  value={formData.businessUnitId || "__none__"}
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, businessUnitId: value === "__none__" ? "" : value })
+                  }
+                >
+                  <SelectTrigger id="department">
+                    <SelectValue placeholder={t("departmentPlaceholder")} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="__none__">{t("departmentNone")}</SelectItem>
+                    {departments.map((d) => (
+                      <SelectItem key={d.id} value={d.id}>
+                        {d.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
 
             {/* Purpose */}
             <div className="space-y-2">

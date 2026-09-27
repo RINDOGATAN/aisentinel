@@ -18,6 +18,7 @@ import { CaliforniaScreeningCard } from "@/components/governance/california-scre
 import { RegimeScreeningCard } from "@/components/governance/regime-screening-card";
 import { ApplicabilityCard } from "@/components/governance/applicability-check";
 import { TeamCard } from "@/components/governance/team-card";
+import { DepartmentsCard } from "@/components/governance/departments-card";
 import { DeleteOrganizationCard } from "@/components/governance/delete-organization-card";
 import { LegalHoldCard } from "@/components/governance/legal-hold-card";
 import { PilotStatusCard } from "@/components/governance/pilot-status-card";
@@ -126,6 +127,12 @@ export default function SettingsPage() {
           currentRole={userRole}
           currentUserId={profile?.id ?? null}
         />
+      )}
+
+      {/* Departments (business units): create them, assign owners, and limit a
+          member to one or more. Managed by owners, admins and AI officers. */}
+      {organization && userRole !== null && ["OWNER", "ADMIN", "AI_OFFICER"].includes(userRole) && (
+        <DepartmentsCard organizationId={organization.id} />
       )}
 
       {/* Operating jurisdictions — drives which regulatory regimes apply */}

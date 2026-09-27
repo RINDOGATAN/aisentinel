@@ -157,6 +157,7 @@ type EditForm = {
   technicalOwner: string;
   processesPersonalData: boolean;
   vendorId: string | null;
+  businessUnitId: string | null;
 };
 
 type ModelForm = {
@@ -362,6 +363,7 @@ export default function AISystemDetailPage() {
     technicalOwner: "",
     processesPersonalData: false,
     vendorId: null,
+    businessUnitId: null,
   });
 
   // --- Model dialog state ---
@@ -387,6 +389,11 @@ export default function AISystemDetailPage() {
     { organizationId, limit: 100 },
     { enabled: !!organization?.id && editOpen }
   );
+  const { data: deptData } = trpc.businessUnit.listForScope.useQuery(
+    { organizationId },
+    { enabled: !!organization?.id && editOpen }
+  );
+  const departments = deptData?.departments ?? [];
 
   // --- Mutations ---
   const updateSystem = trpc.aiSystem.update.useMutation({
@@ -498,6 +505,7 @@ export default function AISystemDetailPage() {
       technicalOwner: system.technicalOwner ?? "",
       processesPersonalData: system.processesPersonalData,
       vendorId: system.vendor?.id ?? null,
+      businessUnitId: system.businessUnit?.id ?? null,
     });
     setEditOpen(true);
   };
@@ -515,6 +523,7 @@ export default function AISystemDetailPage() {
       technicalOwner: editForm.technicalOwner || undefined,
       processesPersonalData: editForm.processesPersonalData,
       vendorId: editForm.vendorId || null,
+      businessUnitId: editForm.businessUnitId || null,
     });
     setEditOpen(false);
   };
@@ -1757,6 +1766,29 @@ export default function AISystemDetailPage() {
                 </SelectContent>
               </Select>
             </div>
+            {departments.length > 0 && (
+              <div className="space-y-2">
+                <Label>{t("editDepartmentLabel")}</Label>
+                <Select
+                  value={editForm.businessUnitId ?? "none"}
+                  onValueChange={(val) =>
+                    setEditForm((f) => ({ ...f, businessUnitId: val === "none" ? null : val }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">{t("editDepartmentNone")}</SelectItem>
+                    {departments.map((d) => (
+                      <SelectItem key={d.id} value={d.id}>
+                        {d.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditOpen(false)}>

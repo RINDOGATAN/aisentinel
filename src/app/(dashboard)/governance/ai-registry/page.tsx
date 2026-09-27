@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025-2026 Rindogatan LLC
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { PageHeader } from "@/components/governance/page-header";
@@ -40,7 +40,10 @@ import { InventoryImportDialog } from "@/components/governance/InventoryImportDi
 import { RiskTierBadge } from "@/components/governance/risk-tier-badge";
 import { SampleBadge, TemplateBadge, useSampleIds } from "@/components/governance/worked-example-card";
 import { SortControl } from "@/components/governance/sort-control";
-import { DEFAULT_LIST_SORT, type ListSort } from "@/lib/list-sort";
+import { SystemFilterBar } from "@/components/governance/system-filter-bar";
+import { DEFAULT_LIST_SORT } from "@/lib/list-sort";
+import { useSystemViewFilters } from "@/lib/use-system-view-filters";
+import type { SystemStage } from "@/lib/system-views";
 import { useEnumLabels } from "@/lib/enum-labels";
 import { useOrganization } from "@/lib/organization-context";
 import { useExportDownload } from "@/components/governance/use-export-download";
@@ -82,10 +85,19 @@ const techniqueIcons: Record<string, React.ElementType> = {
 };
 
 export default function AIRegistryPage() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [activeTab, setActiveTab] = useState("all");
-  const [sort, setSort] = useState<ListSort>(DEFAULT_LIST_SORT);
+  const { filters, setFilter, applyAll, clearAll } = useSystemViewFilters();
+  const sort = filters.sort ?? DEFAULT_LIST_SORT;
+  const activeTab = filters.stage ? filters.stage.toLowerCase() : "all";
+  // Search is typed locally and mirrored to the URL after a pause, so a filtered
+  // view stays shareable without a URL write on every keystroke.
+  const [searchQuery, setSearchQuery] = useState(filters.search ?? "");
   const debouncedSearch = useDebounce(searchQuery);
+  useEffect(() => {
+    if ((filters.search ?? "") !== (debouncedSearch || "")) {
+      setFilter("search", debouncedSearch || undefined);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedSearch]);
   const { organization, organizations, canWrite, isLoading: orgLoading } = useOrganization();
   const { download } = useExportDownload();
   const t = useTranslations("aiRegistry");
@@ -105,10 +117,15 @@ export default function AIRegistryPage() {
   // org is restored from localStorage.
   const orgResolving = orgLoading || (!organization && organizations.length > 0);
 
-  const statusFilter = transparencyView || activeTab === "all" ? undefined : activeTab.toUpperCase() as "DRAFT" | "DEVELOPMENT" | "TESTING" | "DEPLOYED" | "RETIRED";
+  // In the transparency view the stage tabs are hidden, so stage never narrows it.
+  const stageFilter = transparencyView ? undefined : filters.stage;
+  const departmentFilter =
+    filters.businessUnitId && filters.businessUnitId !== "unassigned"
+      ? filters.businessUnitId
+      : undefined;
 
-  const { data: statsData, isLoading: statsLoading } = trpc.aiSystem.getStats.useQuery(
-    { organizationId: organization?.id ?? "" },
+  const { data: statsData } = trpc.aiSystem.getStats.useQuery(
+    { organizationId: organization?.id ?? "", businessUnitId: departmentFilter },
     { enabled: !!organization?.id }
   );
 
@@ -122,7 +139,14 @@ export default function AIRegistryPage() {
     {
       organizationId: organization?.id ?? "",
       search: debouncedSearch || undefined,
-      status: statusFilter,
+      stage: stageFilter,
+      owner: filters.owner,
+      businessUnitId: filters.businessUnitId,
+      region: filters.region,
+      registration: filters.registration,
+      risk: filters.risk,
+      role: filters.role,
+      assessment: filters.assessment,
       sort,
       limit: 20,
     },
@@ -237,11 +261,27 @@ export default function AIRegistryPage() {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-        <SortControl value={sort} onChange={setSort} />
+        <SortControl value={sort} onChange={(v) => setFilter("sort", v)} />
       </div>
 
+      {/* Filters and saved views */}
+      {organization && (
+        <SystemFilterBar
+          organizationId={organization.id}
+          filters={filters}
+          onSetFilter={setFilter}
+          onApplyAll={applyAll}
+          onClear={clearAll}
+        />
+      )}
+
       {/* Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
+      <Tabs
+        value={activeTab}
+        onValueChange={(v) =>
+          setFilter("stage", v === "all" ? undefined : (v.toUpperCase() as SystemStage))
+        }
+      >
         <TabsList className="w-full justify-start overflow-x-auto">
           <TabsTrigger value="all" className="text-xs sm:text-sm">
             {tc("all")} ({stats.total})
@@ -315,6 +355,11 @@ export default function AIRegistryPage() {
                             <Badge variant="outline" className="text-xs">
                               {roleLabel(system.role)}
                             </Badge>
+                            {system.businessUnit && (
+                              <Badge variant="outline" className="text-xs">
+                                {system.businessUnit.name}
+                              </Badge>
+                            )}
                           </div>
                           <div className="flex justify-between text-xs text-muted-foreground">
                             <span>{t("countModels", { count: system._count?.models ?? 0 })}</span>

@@ -36,6 +36,7 @@ model User {
   aiSettingsAcknowledged  OrganizationAiSettings[]
   aiGenerations           AiGeneration[]
   pilotDisclosures        PilotDisclosureAcknowledgement[]
+  savedViews              SavedView[]
 
   @@map("users")
 }
@@ -53,13 +54,13 @@ model User {
 /// wording changed materially, so the old row still says exactly what that
 /// person read, and the new version is asked for again.
 model PilotDisclosureAcknowledgement {
-  id     String @id @default(cuid())
-  userId String
+  id             String   @id @default(cuid())
+  userId         String
   /// DISCLOSURE_VERSION of the wording read.
-  version String
+  version        String
   /// The language it was read in. Both say the same thing; which one was shown
   /// is part of the record.
-  locale String
+  locale         String
   acknowledgedAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -174,45 +175,47 @@ model Organization {
   jurisdictionsReviewedBy String?
   jurisdictionsReviewedAt DateTime?
 
-  members               OrganizationMember[]
-  aiSystems             AISystem[]
-  aiModels              AIModel[]
-  aiSystemDataSources   AISystemDataSource[]
-  riskClassifications   RiskClassification[]
-  transparencyProfiles  TransparencyProfile[]
-  admtProfiles          AdmtProfile[]
-  agentProfiles         AgentProfile[]
-  assessmentTemplates   AIAssessmentTemplate[]
-  assessments           AIAssessment[]
-  assessmentVersions    AIAssessmentVersion[]
+  members                  OrganizationMember[]
+  aiSystems                AISystem[]
+  aiModels                 AIModel[]
+  aiSystemDataSources      AISystemDataSource[]
+  riskClassifications      RiskClassification[]
+  transparencyProfiles     TransparencyProfile[]
+  admtProfiles             AdmtProfile[]
+  agentProfiles            AgentProfile[]
+  assessmentTemplates      AIAssessmentTemplate[]
+  assessments              AIAssessment[]
+  assessmentVersions       AIAssessmentVersion[]
   sensitiveDataAssessments SensitiveDataAssessment[]
-  dataRecipients        DataRecipient[]
-  legalHolds            LegalHold[]
-  proceedings           RegulatoryProceeding[]
-  boardReports          BoardReport[]
-  threatModels          ThreatModel[]
-  threatScenarios       ThreatScenario[]
-  threatControls        ThreatControl[]
-  controlTests          ControlTest[]
-  proceedingEvents      ProceedingEvent[]
-  oversightGates        OversightGate[]
-  oversightDecisions    OversightDecision[]
-  incidents             AIIncident[]
-  incidentTimelines     AIIncidentTimeline[]
-  incidentTasks         AIIncidentTask[]
-  incidentNotifications AIIncidentNotification[]
-  complianceMappings    ComplianceMapping[]
-  complianceEvidence    ComplianceEvidence[]
-  shadowAIReports       ShadowAIReport[]
-  aiVendors             AIVendor[]
-  aiVendorAssessments   AIVendorAssessment[]
-  aiPolicies            AIPolicy[]
-  auditLogs             AuditLog[]
-  customerLinks         CustomerOrganization[]
-  aiSettings            OrganizationAiSettings?
-  aiGenerations         AiGeneration[]
-  programSnapshots      ProgramSnapshotRecord[]
-  sampleRecords         SampleRecord[]
+  dataRecipients           DataRecipient[]
+  legalHolds               LegalHold[]
+  proceedings              RegulatoryProceeding[]
+  boardReports             BoardReport[]
+  threatModels             ThreatModel[]
+  threatScenarios          ThreatScenario[]
+  threatControls           ThreatControl[]
+  controlTests             ControlTest[]
+  proceedingEvents         ProceedingEvent[]
+  oversightGates           OversightGate[]
+  oversightDecisions       OversightDecision[]
+  incidents                AIIncident[]
+  incidentTimelines        AIIncidentTimeline[]
+  incidentTasks            AIIncidentTask[]
+  incidentNotifications    AIIncidentNotification[]
+  complianceMappings       ComplianceMapping[]
+  complianceEvidence       ComplianceEvidence[]
+  shadowAIReports          ShadowAIReport[]
+  aiVendors                AIVendor[]
+  aiVendorAssessments      AIVendorAssessment[]
+  aiPolicies               AIPolicy[]
+  auditLogs                AuditLog[]
+  customerLinks            CustomerOrganization[]
+  aiSettings               OrganizationAiSettings?
+  aiGenerations            AiGeneration[]
+  programSnapshots         ProgramSnapshotRecord[]
+  sampleRecords            SampleRecord[]
+  businessUnits            BusinessUnit[]
+  savedViews               SavedView[]
 
   /// GIN so `operatingJurisdictions has 'US_CA'` scoping queries stay indexed.
   @@index([operatingJurisdictions], type: Gin)
@@ -228,11 +231,84 @@ model OrganizationMember {
   invitedAt      DateTime?
   joinedAt       DateTime         @default(now())
 
-  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization       Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user               User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ownedBusinessUnits BusinessUnit[]       @relation("BusinessUnitOwner")
+  businessUnitScopes BusinessUnitMember[]
 
   @@unique([organizationId, userId])
   @@map("organization_members")
+}
+
+// ============================================================
+// BUSINESS UNITS (departments) + SAVED VIEWS
+// ============================================================
+
+/// A department within an organization. One level of nesting is enough for the
+/// consultant's need ("separate by dept."), so parent points at another unit in
+/// the same organization and the UI does not go deeper. An organization with no
+/// business units behaves exactly as before: every "for my department" affordance
+/// is hidden and no query is scoped.
+model BusinessUnit {
+  id             String   @id @default(cuid())
+  organizationId String
+  name           String
+  /// Optional parent department (one level of nesting). SetNull on delete so a
+  /// child is orphaned to the top level rather than cascade-deleted.
+  parentId       String?
+  /// The member who owns this department, if named. SetNull on delete.
+  ownerId        String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  parent       BusinessUnit?        @relation("BusinessUnitParent", fields: [parentId], references: [id], onDelete: SetNull)
+  children     BusinessUnit[]       @relation("BusinessUnitParent")
+  owner        OrganizationMember?  @relation("BusinessUnitOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  aiSystems    AISystem[]
+  members      BusinessUnitMember[]
+
+  @@index([organizationId])
+  @@index([parentId])
+  @@map("business_units")
+}
+
+/// Limits a member to one or more departments. No rows for a member means the
+/// whole organization, as today; this table only ever narrows what a member can
+/// see, and never widens the org guard it sits on top of.
+model BusinessUnitMember {
+  id             String   @id @default(cuid())
+  businessUnitId String
+  memberId       String
+  createdAt      DateTime @default(now())
+
+  businessUnit BusinessUnit       @relation(fields: [businessUnitId], references: [id], onDelete: Cascade)
+  member       OrganizationMember @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@unique([businessUnitId, memberId])
+  @@index([memberId])
+  @@map("business_unit_members")
+}
+
+/// A saved list view: a named filter set a person keeps for one organization.
+/// Per user (not shared), so one person's saved views never appear for another.
+model SavedView {
+  id             String   @id @default(cuid())
+  organizationId String
+  userId         String
+  name           String
+  /// The filter set, stored as JSON (owner, department, region, stage, status,
+  /// risk, role, assessment, search, sort). Kept as JSON because the vocabulary
+  /// grows as filters are added and none of it needs to be queried on.
+  filters        Json
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, userId])
+  @@map("saved_views")
 }
 
 // ============================================================
@@ -296,19 +372,19 @@ enum DataSourceType {
 }
 
 model AISystem {
-  id                    String         @id @default(cuid())
+  id                    String             @id @default(cuid())
   organizationId        String
   name                  String
-  description           String?        @db.Text
+  description           String?            @db.Text
   technique             AITechnique
   role                  AISystemRole
-  status                AISystemStatus @default(DRAFT)
-  purpose               String?        @db.Text
+  status                AISystemStatus     @default(DRAFT)
+  purpose               String?            @db.Text
   businessOwner         String?
   technicalOwner        String?
   deploymentDate        DateTime?
   retirementDate        DateTime?
-  processesPersonalData Boolean        @default(false)
+  processesPersonalData Boolean            @default(false)
   /// The data-protection role for this system's processing. Distinct from
   /// `role`, which is the EU AI Act supply-chain role (provider, deployer).
   /// UNDETERMINED is the honest default: nobody has decided yet.
@@ -336,37 +412,44 @@ model AISystem {
 
   vendorId String?
 
+  /// The department (business unit) that owns this system, within its
+  /// organization. Nullable: a system belongs to no department until one is
+  /// assigned, and organizations that never create departments are unaffected.
+  businessUnitId String?
+
   /// Where this system record came from, and whether a person has taken it
   /// over. A system created silently by an industry template is AUTO_TEMPLATE;
   /// once someone edits it, confirmedAt is set and "Remove all template items"
   /// leaves it alone. Pre-existing rows default to USER_ENTERED and are never
   /// removed automatically. See src/server/services/template-items/.
-  provenance   Provenance @default(USER_ENTERED)
-  sourceRef    String?
-  confirmedBy  String?
-  confirmedAt  DateTime?
+  provenance  Provenance @default(USER_ENTERED)
+  sourceRef   String?
+  confirmedBy String?
+  confirmedAt DateTime?
 
-  organization        Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  vendor              AIVendor?            @relation(fields: [vendorId], references: [id], onDelete: SetNull)
-  models              AIModel[]
-  dataSources         AISystemDataSource[]
-  riskClassification  RiskClassification?
-  transparencyProfile TransparencyProfile?
-  agentProfile        AgentProfile?
-  admtProfile         AdmtProfile?
-  assessments         AIAssessment[]
+  organization             Organization              @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  vendor                   AIVendor?                 @relation(fields: [vendorId], references: [id], onDelete: SetNull)
+  businessUnit             BusinessUnit?             @relation(fields: [businessUnitId], references: [id], onDelete: SetNull)
+  models                   AIModel[]
+  dataSources              AISystemDataSource[]
+  riskClassification       RiskClassification?
+  transparencyProfile      TransparencyProfile?
+  agentProfile             AgentProfile?
+  admtProfile              AdmtProfile?
+  assessments              AIAssessment[]
   sensitiveDataAssessments SensitiveDataAssessment[]
-  dataRecipients      DataRecipient[]
-  legalHolds          LegalHold[]
-  proceedings         RegulatoryProceeding[]
-  threatModels        ThreatModel[]
-  oversightGates      OversightGate[]
-  incidents           AIIncident[]
-  complianceMappings  ComplianceMapping[]
-  policyLinks         AIPolicySystemLink[]
+  dataRecipients           DataRecipient[]
+  legalHolds               LegalHold[]
+  proceedings              RegulatoryProceeding[]
+  threatModels             ThreatModel[]
+  oversightGates           OversightGate[]
+  incidents                AIIncident[]
+  complianceMappings       ComplianceMapping[]
+  policyLinks              AIPolicySystemLink[]
 
   @@index([organizationId])
   @@index([vendorId])
+  @@index([businessUnitId])
   @@map("ai_systems")
 }
 
@@ -506,31 +589,31 @@ enum AgentAutonomy {
 }
 
 model AgentProfile {
-  id             String        @id @default(cuid())
-  aiSystemId     String        @unique
-  organizationId String
-  autonomy       AgentAutonomy @default(NOT_ASSESSED)
+  id                 String        @id @default(cuid())
+  aiSystemId         String        @unique
+  organizationId     String
+  autonomy           AgentAutonomy @default(NOT_ASSESSED)
   /// What the agent may do without a person, as a bounded scope.
-  actionScope String? @db.Text
+  actionScope        String?       @db.Text
   /// Which agents or systems receive its output and act further.
-  downstreamAgents String? @db.Text
+  downstreamAgents   String?       @db.Text
   /// Tools, connectors and services the agent may call. An agent reaches
   /// further than the system's own contract does, so this is the list that
   /// has to sit inside the processing agreement.
-  tools String[]
+  tools              String[]
   /// The named person accountable for what the agent does.
-  humanSponsor String?
+  humanSponsor       String?
   /// Who can stop it, how quickly, and what happens to actions in flight.
-  killSwitch String? @db.Text
+  killSwitch         String?       @db.Text
   /// Oversight that has never been exercised is a claim, not a control.
   killSwitchTestedAt DateTime?
   /// How long an agent-initiated action can still be reversed.
-  reversalWindow String?
+  reversalWindow     String?
   /// How an action is traced back to the decision, model version and data.
-  traceability String?   @db.Text
-  notes        String?   @db.Text
-  reviewedBy   String
-  reviewedAt   DateTime  @default(now())
+  traceability       String?       @db.Text
+  notes              String?       @db.Text
+  reviewedBy         String
+  reviewedAt         DateTime      @default(now())
 
   provenance  Provenance @default(USER_ENTERED)
   sourceRef   String?
@@ -744,9 +827,9 @@ model AIAssessment {
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
 
-  organization Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  aiSystem     AISystem             @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
-  template     AIAssessmentTemplate @relation(fields: [templateId], references: [id])
+  organization Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  aiSystem     AISystem              @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  template     AIAssessmentTemplate  @relation(fields: [templateId], references: [id])
   versions     AIAssessmentVersion[]
 
   @@index([organizationId])
@@ -791,28 +874,28 @@ model ThreatModel {
 
 /// One thing that could go wrong, with its priority and what was decided.
 model ThreatScenario {
-  id            String            @id @default(cuid())
+  id             String           @id @default(cuid())
   organizationId String
-  threatModelId String
+  threatModelId  String
   /// The library entry this came from, where it was proposed rather than typed.
-  libraryId     String?
-  category      ScenarioCategory
-  title         String
-  description   String?           @db.Text
-  impact        ThreatLevel       @default(MEDIUM)
-  likelihood    ThreatLevel       @default(MEDIUM)
-  blastRadius   BlastRadius       @default(LIMITED)
+  libraryId      String?
+  category       ScenarioCategory
+  title          String
+  description    String?          @db.Text
+  impact         ThreatLevel      @default(MEDIUM)
+  likelihood     ThreatLevel      @default(MEDIUM)
+  blastRadius    BlastRadius      @default(LIMITED)
   /// Derived from the three above and stored so lists can sort without
   /// recomputing; the rule lives in src/config/threat-model.ts.
-  priority      ThreatPriority    @default(PLAN)
-  status        ScenarioStatus    @default(OPEN)
+  priority       ThreatPriority   @default(PLAN)
+  status         ScenarioStatus   @default(OPEN)
   /// Why it was accepted, or why it is out of scope. An accepted risk with no
   /// reason is the sentence that reads worst later.
-  decisionNote  String?           @db.Text
-  owner         String?
-  createdBy     String
-  createdAt     DateTime          @default(now())
-  updatedAt     DateTime          @updatedAt
+  decisionNote   String?          @db.Text
+  owner          String?
+  createdBy      String
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
 
   organization Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   threatModel  ThreatModel     @relation(fields: [threatModelId], references: [id], onDelete: Cascade)
@@ -935,28 +1018,28 @@ enum TestResult {
 /// snapshot it was drawn from, so the numbers put in front of the board can be
 /// reproduced exactly, months later.
 model BoardReport {
-  id             String          @id @default(cuid())
-  organizationId String
-  title          String
+  id                 String         @id @default(cuid())
+  organizationId     String
+  title              String
   /// The period covered, in the organisation's own words ("Q3 2026").
-  period         String?
-  audience       ReportAudience  @default(BOARD)
+  period             String?
+  audience           ReportAudience @default(BOARD)
   /// When it was actually presented, which is not when it was drafted.
-  reportedAt     DateTime
-  presenter      String?
-  attendees      String[]
-  summary        String?         @db.Text
+  reportedAt         DateTime
+  presenter          String?
+  attendees          String[]
+  summary            String?        @db.Text
   /// What the board was asked to decide, and what it decided. Kept apart: a
   /// request with no recorded answer is itself a finding.
-  decisionsRequested String?     @db.Text
-  decisionsTaken String?         @db.Text
-  actionsAgreed  String?         @db.Text
-  nextReportDue  DateTime?
+  decisionsRequested String?        @db.Text
+  decisionsTaken     String?        @db.Text
+  actionsAgreed      String?        @db.Text
+  nextReportDue      DateTime?
   /// The program snapshot the reported figures came from.
-  snapshotId     String?
-  createdBy      String
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+  snapshotId         String?
+  createdBy          String
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
 
   organization Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   snapshot     ProgramSnapshotRecord? @relation(fields: [snapshotId], references: [id], onDelete: SetNull)
@@ -983,37 +1066,37 @@ enum ReportAudience {
 /// and the factual position taken, so an inconsistency is visible here before
 /// it is found by someone on the other side.
 model RegulatoryProceeding {
-  id             String            @id @default(cuid())
-  organizationId String
-  title          String
+  id              String           @id @default(cuid())
+  organizationId  String
+  title           String
   /// The authority or court, written as it names itself.
-  authority      String
-  jurisdiction   Jurisdiction?
-  type           ProceedingType    @default(INQUIRY)
-  status         ProceedingStatus  @default(MONITORING)
+  authority       String
+  jurisdiction    Jurisdiction?
+  type            ProceedingType   @default(INQUIRY)
+  status          ProceedingStatus @default(MONITORING)
   /// Their case or file number.
-  reference      String?
-  openedAt       DateTime?
-  closedAt       DateTime?
-  summary        String?           @db.Text
+  reference       String?
+  openedAt        DateTime?
+  closedAt        DateTime?
+  summary         String?          @db.Text
   /// The factual position taken in this proceeding. Facts do not change
   /// between forums; legal characterisation may. Recording it here is what
   /// makes a divergence visible.
   positionSummary String?          @db.Text
   /// Where this proceeding came from: a foreign finding, an incident, a
   /// complaint. The cascade is the thing worth tracking.
-  originNote     String?           @db.Text
+  originNote      String?          @db.Text
   externalCounsel String?
   /// The incident this proceeding arises from, where there is one.
-  incidentId     String?
-  aiSystemId     String?
-  createdBy      String
-  createdAt      DateTime          @default(now())
-  updatedAt      DateTime          @updatedAt
+  incidentId      String?
+  aiSystemId      String?
+  createdBy       String
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
 
-  organization Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  incident     AIIncident?         @relation(fields: [incidentId], references: [id], onDelete: SetNull)
-  aiSystem     AISystem?           @relation(fields: [aiSystemId], references: [id], onDelete: SetNull)
+  organization Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  incident     AIIncident?       @relation(fields: [incidentId], references: [id], onDelete: SetNull)
+  aiSystem     AISystem?         @relation(fields: [aiSystemId], references: [id], onDelete: SetNull)
   events       ProceedingEvent[]
 
   @@index([organizationId, status])
@@ -1024,12 +1107,12 @@ model RegulatoryProceeding {
 /// Anything that happened in a proceeding, or is due to: a letter received, a
 /// filing made, a deadline, a decision. Appended, never edited away.
 model ProceedingEvent {
-  id             String        @id @default(cuid())
+  id             String              @id @default(cuid())
   organizationId String
   proceedingId   String
   kind           ProceedingEventKind @default(NOTE)
   title          String
-  detail         String?       @db.Text
+  detail         String?             @db.Text
   /// When it happened. Null for a deadline that has not been met yet.
   occurredAt     DateTime?
   /// When it is due, for a deadline.
@@ -1037,7 +1120,7 @@ model ProceedingEvent {
   completedAt    DateTime?
   reference      String?
   recordedBy     String
-  createdAt      DateTime      @default(now())
+  createdAt      DateTime            @default(now())
 
   organization Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   proceeding   RegulatoryProceeding @relation(fields: [proceedingId], references: [id], onDelete: Cascade)
@@ -1311,8 +1394,8 @@ model AIAssessmentVersion {
   createdBy      String
   createdAt      DateTime         @default(now())
 
-  organization Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  assessment   AIAssessment  @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  assessment   AIAssessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
 
   @@unique([assessmentId, version])
   @@index([organizationId])
@@ -1438,37 +1521,37 @@ enum NotificationStatus {
 }
 
 model AIIncident {
-  id                   String           @id @default(cuid())
-  organizationId       String
-  aiSystemId           String?
-  title                String
-  description          String           @db.Text
-  type                 AIIncidentType
-  severity             IncidentSeverity
-  status               IncidentStatus   @default(REPORTED)
-  rootCauseCategory    String?
-  rootCauseDescription String?          @db.Text
-  impactDescription    String?          @db.Text
-  notificationRequired Boolean          @default(false)
-  notifiedAuthorities  String[]
+  id                                 String           @id @default(cuid())
+  organizationId                     String
+  aiSystemId                         String?
+  title                              String
+  description                        String           @db.Text
+  type                               AIIncidentType
+  severity                           IncidentSeverity
+  status                             IncidentStatus   @default(REPORTED)
+  rootCauseCategory                  String?
+  rootCauseDescription               String?          @db.Text
+  impactDescription                  String?          @db.Text
+  notificationRequired               Boolean          @default(false)
+  notifiedAuthorities                String[]
   /// When the organisation became aware, which is when every statutory clock
   /// starts. Distinct from reportedAt, which is when it was entered here.
-  awareAt              DateTime?
+  awareAt                            DateTime?
   /// The facts that decide which clock applies. False is the honest default:
   /// nobody has said yes, and the deadline card says what it assumed.
-  deathOccurred        Boolean          @default(false)
-  widespreadOrCriticalInfrastructure Boolean @default(false)
-  personalDataBreach   Boolean          @default(false)
-  highRiskToIndividuals Boolean         @default(false)
+  deathOccurred                      Boolean          @default(false)
+  widespreadOrCriticalInfrastructure Boolean          @default(false)
+  personalDataBreach                 Boolean          @default(false)
+  highRiskToIndividuals              Boolean          @default(false)
   /// True where the AI Office is exclusively competent (amended Art. 75(1)),
   /// which changes who the report goes to.
-  aiOfficeCompetent    Boolean          @default(false)
-  dpoCentralIncidentId String?
-  reportedBy           String
-  reportedAt           DateTime         @default(now())
-  resolvedAt           DateTime?
-  createdAt            DateTime         @default(now())
-  updatedAt            DateTime         @updatedAt
+  aiOfficeCompetent                  Boolean          @default(false)
+  dpoCentralIncidentId               String?
+  reportedBy                         String
+  reportedAt                         DateTime         @default(now())
+  resolvedAt                         DateTime?
+  createdAt                          DateTime         @default(now())
+  updatedAt                          DateTime         @updatedAt
 
   organization  Organization             @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   aiSystem      AISystem?                @relation(fields: [aiSystemId], references: [id], onDelete: SetNull)
@@ -1585,21 +1668,21 @@ model ComplianceFramework {
 }
 
 model ComplianceRequirement {
-  id           String        @id @default(cuid())
-  frameworkId  String
-  code         String
-  title        String
-  description  String?       @db.Text
-  applicableTo AIRiskLevel[]
+  id                String        @id @default(cuid())
+  frameworkId       String
+  code              String
+  title             String
+  description       String?       @db.Text
+  applicableTo      AIRiskLevel[]
   // Second applicability axis, for regimes that are not keyed to EU risk tiers.
   // California ADMT rows carry tags like `jurisdiction:US_CA`, `admt:art11` or
   // `admt:art10:trigger:sell_share_pi`; src/config/admt-rules.ts owns the logic
   // that decides which tags a given system's facts select. ADMT rows keep
   // applicableTo EMPTY so the risk-tier auto-mapping paths can never match them.
-  applicabilityTags String[]  @default([])
-  parentId     String?
-  sortOrder    Int           @default(0)
-  createdAt    DateTime      @default(now())
+  applicabilityTags String[]      @default([])
+  parentId          String?
+  sortOrder         Int           @default(0)
+  createdAt         DateTime      @default(now())
 
   framework      ComplianceFramework     @relation(fields: [frameworkId], references: [id], onDelete: Cascade)
   parent         ComplianceRequirement?  @relation("RequirementHierarchy", fields: [parentId], references: [id])
@@ -2236,7 +2319,7 @@ model ProgramSnapshotRecord {
   createdBy      String
   createdAt      DateTime       @default(now())
 
-  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organization Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   boardReports BoardReport[]
 
   @@index([organizationId, createdAt])

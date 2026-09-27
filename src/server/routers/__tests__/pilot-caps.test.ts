@@ -97,6 +97,8 @@ const H = vi.hoisted(() => {
       deleteMany: async () => ({ count: 0 }),
     },
     legalHold: { findMany: async () => [], count: async () => 0 },
+    // No department limits in these fixtures: every member sees the whole org.
+    businessUnitMember: { findMany: async () => [] },
   };
 
   /**

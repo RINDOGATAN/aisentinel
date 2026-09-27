@@ -184,6 +184,10 @@
     "openIncidents": "Incidentes abiertos",
     "pendingGates": "Controles pendientes",
     "activeAssessments": "Evaluaciones activas",
+    "needsActionTitle": "Tareas pendientes",
+    "needsActionHint": "Todo lo que te espera",
+    "incompleteTitle": "Registros incompletos",
+    "incompleteHint": "Sistemas a los que les faltan campos obligatorios",
     "riskPosture": "Postura de riesgo",
     "riskPostureDescription": "Distribución de la clasificación de riesgos según el Reglamento de IA de la UE",
     "noRiskClassificationsYet": "Aún no hay clasificaciones de riesgo",
@@ -312,6 +316,9 @@
     "vendorAddLabel": "Nombre del proveedor que quieres añadir",
     "vendorAddAction": "Añadir proveedor",
     "vendorCreated": "{name} añadido y seleccionado.",
+    "departmentLabel": "Departamento",
+    "departmentPlaceholder": "Sin departamento",
+    "departmentNone": "Sin departamento",
     "registering": "Registrando...",
     "registerSystem": "Registrar sistema",
     "toastSuccess": "Sistema de IA registrado correctamente",
@@ -398,6 +405,8 @@
     "editTechnicalOwnerLabel": "Responsable técnico",
     "editLinkedVendorLabel": "Proveedor vinculado",
     "editSelectVendorPlaceholder": "Seleccionar proveedor...",
+    "editDepartmentLabel": "Departamento",
+    "editDepartmentNone": "Sin departamento",
     "editDialogTitle": "Editar sistema de IA",
     "editDialogDescription": "Actualiza los detalles de este sistema de IA.",
     "addModelDialogTitle": "Añadir modelo",
@@ -5755,6 +5764,8 @@
       }
     },
     "library": {
+      "needsAction": "Tareas pendientes",
+      "incomplete": "Registros incompletos",
       "program": "Mapa del programa",
       "vendorCatalog": "Catálogo de proveedores",
       "skills": "Skills",
@@ -6051,6 +6062,109 @@
       "clientsLink": "Todos los clientes muestra dónde está cada uno.",
       "dismiss": "Entendido",
       "reopen": "Puedes volver a abrir esto desde el «?» de la barra superior."
+    }
+  },
+  "views": {
+    "filter": {
+      "any": "Cualquiera",
+      "unassigned": "Sin departamento",
+      "department": "Departamento",
+      "owner": "Responsable",
+      "ownerPlaceholder": "Responsable de negocio o técnico",
+      "region": "Región",
+      "role": "Rol",
+      "risk": "Nivel de riesgo",
+      "riskNone": "Sin clasificar",
+      "registration": "Registro",
+      "registration_complete": "Completo",
+      "registration_incomplete": "Incompleto",
+      "assessment": "Evaluación",
+      "assessment_none": "Ninguna",
+      "assessment_in_progress": "En curso",
+      "assessment_approved": "Aprobada",
+      "clear": "Quitar {count, plural, one {# filtro} other {# filtros}}"
+    },
+    "saved": {
+      "label": "Vistas guardadas",
+      "save": "Guardar esta vista",
+      "created": "Vista guardada",
+      "remove": "Quitar la vista guardada {name}",
+      "dialogTitle": "Guardar esta vista",
+      "nameLabel": "Nombre",
+      "namePlaceholder": "p. ej. Alto riesgo en RR. HH.",
+      "cancel": "Cancelar",
+      "confirm": "Guardar"
+    },
+    "departmentSwitch": {
+      "label": "Viendo",
+      "wholeOrg": "Toda la organización"
+    },
+    "needsAction": {
+      "title": "Tareas pendientes",
+      "subtitle": "Todo lo que te espera a ti o a tu rol, en un solo sitio.",
+      "empty": "No hay nada pendiente. Estás al día.",
+      "deptNote": "Se muestra un solo departamento. La cola de confirmación es de toda la organización y no aparece aquí.",
+      "kind": {
+        "assessment-review": "Evaluaciones por revisar",
+        "oversight-gate": "Puertas de supervisión por decidir",
+        "overdue-retest": "Repeticiones de prueba vencidas",
+        "incident-open": "Incidentes abiertos",
+        "review-queue": "Elementos por confirmar"
+      },
+      "hint": {
+        "assessment-review": "Enviadas a revisión interna y a la espera de una decisión.",
+        "oversight-gate": "Una puerta está pendiente de una decisión.",
+        "overdue-retest": "La revisión o repetición de prueba de un modelo de amenazas está vencida.",
+        "incident-open": "Hay un incidente abierto y aún sin resolver.",
+        "review-queue": "Elementos redactados automáticamente que nadie ha confirmado todavía."
+      }
+    },
+    "incomplete": {
+      "title": "Registros incompletos",
+      "subtitle": "Sistemas a los que les falta un campo obligatorio del registro, con lo que falta.",
+      "empty": "El registro de todos los sistemas está completo.",
+      "missingCount": "{count, plural, one {falta # campo} other {faltan # campos}}"
+    }
+  },
+  "registration": {
+    "field": {
+      "description": "Descripción",
+      "purpose": "Finalidad",
+      "businessOwner": "Responsable de negocio",
+      "technicalOwner": "Responsable técnico",
+      "riskClassification": "Clasificación de riesgo"
+    }
+  },
+  "departments": {
+    "title": "Departamentos",
+    "description": "Agrupa los sistemas por departamento, asigna un responsable a cada uno y limita a un miembro a uno o varios departamentos.",
+    "empty": "Aún no hay departamentos.",
+    "counts": "{systems, plural, one {# sistema} other {# sistemas}} · {members, plural, one {# miembro} other {# miembros}}",
+    "ownedBy": "Responsable: {name}",
+    "edit": "Editar departamento",
+    "delete": "Eliminar",
+    "deleteTitle": "Eliminar departamento",
+    "deleteConfirm": "¿Eliminar {name}? Sus sistemas conservan sus registros y pierden el departamento.",
+    "cancel": "Cancelar",
+    "addLabel": "Añadir un departamento",
+    "namePlaceholder": "Nombre del departamento",
+    "parent": "Departamento superior",
+    "noParent": "Sin superior",
+    "owner": "Responsable",
+    "noOwner": "Sin responsable",
+    "add": "Añadir",
+    "created": "Departamento creado",
+    "updated": "Departamento actualizado",
+    "deleted": "Departamento eliminado",
+    "editTitle": "Editar departamento",
+    "name": "Nombre",
+    "save": "Guardar",
+    "access": {
+      "title": "Acceso de los miembros",
+      "description": "Limita a un miembro a uno o varios departamentos. Si no seleccionas ninguno, ve toda la organización.",
+      "wholeOrg": "Toda la organización",
+      "limited": "Limitado a {count, plural, one {# departamento} other {# departamentos}}",
+      "saved": "Acceso actualizado"
     }
   }
 }

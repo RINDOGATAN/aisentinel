@@ -51,6 +51,7 @@ import { trpc } from "@/lib/trpc";
 import type { Skin } from "@/lib/skin";
 import { SkinProvider, useSkin } from "@/components/guided/skin-context";
 import { GuidedLayout } from "@/components/guided/guided-layout";
+import { PageHelpButton } from "@/components/help/page-help-button";
 
 export function DashboardShell({
   children,
@@ -290,6 +291,8 @@ export function DashboardShell({
           </nav>
 
           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+            {/* Help for this page: one tap from every page, both layouts. */}
+            <PageHelpButton />
             {/* On phones, feedback and settings are in the side menu. */}
             <Button
               variant="ghost"

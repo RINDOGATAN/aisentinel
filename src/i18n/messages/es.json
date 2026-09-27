@@ -1729,6 +1729,9 @@
       "premiumLabel": "Premium",
       "nav": {
         "gettingStarted": "Primeros pasos",
+        "guideMyRole": "¿Cuál es mi papel?",
+        "guideHighRisk": "¿Qué es el alto riesgo?",
+        "guideWhichRules": "¿Qué normas me aplican?",
         "aiRegistry": "Registro de IA",
         "riskClassification": "Clasificación de riesgos",
         "assessments": "Evaluaciones",
@@ -1761,7 +1764,8 @@
         "security": "Seguridad",
         "sourceCode": "Código fuente (AGPL-3.0)"
       },
-      "frameworksLabel": "Marcos"
+      "frameworksLabel": "Marcos",
+      "guidesLabel": "Guías"
     },
     "home": {
       "metaTitle": "Documentación: AI SENTINEL",
@@ -5734,6 +5738,7 @@
       "vendorCatalog": "Catálogo de proveedores",
       "skills": "Skills",
       "billing": "Facturación",
+      "help": "Ayuda y documentación",
       "settings": "Configuración"
     },
     "collapse": "Contraer el menú",
@@ -5992,5 +5997,33 @@
     "resultStarted": "Los elementos copiados cuentan como iniciados, no como terminados, hasta que alguien los revise para este cliente. Las políticas y los controles de supervisión esperan en la cola de revisión.",
     "resultFlaggedTitle": "Revisa estos elementos por si mencionan al otro cliente",
     "openClient": "Abrir {client}"
+  },
+  "help": {
+    "open": "Ayuda de esta página",
+    "subtitle": "Para qué sirve esta página y dónde saber más.",
+    "purpose": "Para qué sirve esta página",
+    "firstStep": "Empieza por aquí",
+    "terms": "Términos de esta página",
+    "guides": "Guías breves",
+    "guideRole": "¿Cuál es mi papel?",
+    "guideHighRisk": "¿Qué es el alto riesgo?",
+    "guideRules": "¿Qué normas me aplican?",
+    "learnMore": "Saber más",
+    "officialText": "La propia ley",
+    "exampleLead": "Por ejemplo:",
+    "termMeaningOf": "Ver el significado de {term}",
+    "firstRun": {
+      "title": "Un minuto sobre cómo funciona",
+      "intro": "AI Sentinel convierte la ley de IA en un programa que puedes ejecutar. En resumen:",
+      "step1": "Enumera tus sistemas de IA, para que nada se gobierne a oscuras.",
+      "step2": "Clasifica cada uno y evalúa los que conllevan riesgo.",
+      "step3": "Implanta los controles y las pruebas, y mantente vigilante.",
+      "crossBorder": "Responde un único conjunto de preguntas, redactado según el régimen más estricto que aplique, y obtén los documentos que espera cada régimen.",
+      "guidesTitle": "¿Nuevo en esto? Empieza aquí",
+      "clientsLine": "¿Trabajas para varios clientes?",
+      "clientsLink": "Todos los clientes muestra dónde está cada uno.",
+      "dismiss": "Entendido",
+      "reopen": "Puedes volver a abrir esto desde el «?» de la barra superior."
+    }
   }
 }

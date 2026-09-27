@@ -41,6 +41,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { LocaleSwitcher } from "@/components/locale-switcher";
+import { PageHelpButton } from "@/components/help/page-help-button";
 import { useOrganization } from "@/lib/organization-context";
 import { useUserType } from "@/lib/use-user-type";
 import {
@@ -134,6 +135,7 @@ export function GuidedLayout({
             </Link>
           </div>
           <div className="flex shrink-0 items-center gap-1 sm:gap-2">
+            <PageHelpButton />
             <Button
               variant="ghost"
               size="icon"

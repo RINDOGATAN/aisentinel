@@ -43,11 +43,14 @@ type SidebarItem = {
   labelKey: string;
   icon: React.ComponentType<{ className?: string }>;
   exact?: boolean;
-  group?: "frameworks" | "premium";
+  group?: "frameworks" | "premium" | "guides";
 };
 
 const sidebarItems: SidebarItem[] = [
   { href: "/docs", labelKey: "gettingStarted", icon: BookOpen, exact: true },
+  { href: "/docs/guides/my-role", labelKey: "guideMyRole", icon: Users, group: "guides" },
+  { href: "/docs/guides/high-risk", labelKey: "guideHighRisk", icon: ShieldAlert, group: "guides" },
+  { href: "/docs/guides/which-rules", labelKey: "guideWhichRules", icon: Globe2, group: "guides" },
   { href: "/docs/ai-registry", labelKey: "aiRegistry", icon: Brain },
   { href: "/docs/risk-classification", labelKey: "riskClassification", icon: ShieldAlert },
   { href: "/docs/assessments", labelKey: "assessments", icon: ClipboardCheck },
@@ -139,7 +142,13 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
                   <div key={item.href}>
                     {startsGroup && (
                       <div className="px-3 pt-4 pb-1 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
-                        {t(item.group === "premium" ? "premiumLabel" : "frameworksLabel")}
+                        {t(
+                          item.group === "premium"
+                            ? "premiumLabel"
+                            : item.group === "guides"
+                              ? "guidesLabel"
+                              : "frameworksLabel",
+                        )}
                       </div>
                     )}
                     {startsGroup && item.group === "premium" && <PremiumNotice variant="compact" />}

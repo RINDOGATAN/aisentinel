@@ -132,6 +132,28 @@ function escape(s: string) {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#x27;");
 }
 
+describe("frameworks wheel renders identical, rounded coordinates", () => {
+  const wheelSvg = (html: string) => {
+    const start = html.indexOf('data-testid="frameworks-wheel"');
+    return html.slice(start, html.indexOf("</svg>", start));
+  };
+
+  it("produces identical markup across two renders", async () => {
+    const first = await render("en", pages.overview);
+    const second = await render("en", pages.overview);
+    expect(wheelSvg(second)).toBe(wheelSvg(first));
+  });
+
+  // The mismatch was full-precision trigonometry (x="-230.76668506779686" on
+  // the client against …689 from the server). Every coordinate and path value
+  // is rounded to two decimals so both sides emit the same string.
+  it("emits no coordinate with more than two decimal places", async () => {
+    const svg = wheelSvg(await render("en", pages.overview));
+    const offenders = svg.match(/\d+\.\d{3,}/g) ?? [];
+    expect(offenders).toEqual([]);
+  });
+});
+
 describe("refreshed docs pages", () => {
   const PRICING = { en: "https://www.todo.law/pricing", es: "https://www.todo.law/es/precios" };
 

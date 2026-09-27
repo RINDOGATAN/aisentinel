@@ -12,6 +12,7 @@ import {
   readQuestionMeta,
 } from "@/lib/assessment-metadata";
 import { overlayLabel } from "@/config/overlay-labels";
+import { useEnumLabels } from "@/lib/enum-labels";
 import { useOrganization } from "@/lib/organization-context";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -52,6 +53,7 @@ const statusColors: Record<string, string> = {
 export default function AssessmentDetailPage() {
   const t = useTranslations("assessmentDetail");
   const tc = useTranslations("common");
+  const { statusLabel, assessmentTypeLabel } = useEnumLabels();
   const locale = useLocale();
   const utils = trpc.useUtils();
   const params = useParams();
@@ -217,8 +219,8 @@ export default function AssessmentDetailPage() {
         title={assessment.title}
         meta={
           <>
-            <Badge variant="outline">{assessment.type}</Badge>
-            <Badge className={statusColors[assessment.status]}>{assessment.status.replace("_", " ")}</Badge>
+            <Badge variant="outline">{assessmentTypeLabel(assessment.type)}</Badge>
+            <Badge className={statusColors[assessment.status]}>{statusLabel(assessment.status)}</Badge>
             {assessment.aiSystem && (
               <span className="text-sm text-muted-foreground">
                 for <Link href={`/governance/ai-registry/${assessment.aiSystem.id}`} className="text-primary hover:underline">{assessment.aiSystem.name}</Link>

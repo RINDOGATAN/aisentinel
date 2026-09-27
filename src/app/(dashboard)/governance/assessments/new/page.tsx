@@ -38,7 +38,7 @@ const typeDescKeys: Record<AssessmentType, string> = {
 export default function NewAssessmentPage() {
   const t = useTranslations("assessmentsNew");
   const tt = useTranslations("assessments");
-  const { statusLabel } = useEnumLabels();
+  const { statusLabel, techniqueLabel, assessmentTypeLabel } = useEnumLabels();
   const tc = useTranslations("common");
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -83,6 +83,35 @@ export default function NewAssessmentPage() {
   const systems = systemsData?.items ?? [];
   const entitled = entitledTypes ?? [];
 
+  // "No choice with one option": when the type is fixed and exactly one
+  // entitled template applies, there is nothing to choose. Select it and skip
+  // the template step, so the person sees two steps, not three. A locked
+  // template is not auto-selected — the person could not proceed past it.
+  const currentTemplates = templates ?? [];
+  const soleTemplate =
+    presetType && currentTemplates.length === 1 && entitled.includes(currentTemplates[0].type)
+      ? currentTemplates[0]
+      : null;
+  const skipTemplateStep = !!soleTemplate;
+  // Only offer a way back to the picker when the organisation has authored its
+  // own templates; against a single system template there is nothing to swap to.
+  const orgHasOwnTemplates = currentTemplates.some((tpl) => !tpl.isSystem);
+  const selectedTemplate = currentTemplates.find((tpl) => tpl.id === selectedTemplateId) ?? null;
+  const totalSteps = skipTemplateStep ? 2 : 3;
+  const displayStep = skipTemplateStep ? (step >= 3 ? 2 : 1) : step;
+
+  const chooseSystem = (system: { id: string; name: string }) => {
+    setSelectedSystemId(system.id);
+    if (soleTemplate) {
+      setSelectedTemplateId(soleTemplate.id);
+      setSelectedType(soleTemplate.type);
+      setTitle(`${soleTemplate.name} - ${system.name}`);
+      setStep(3);
+    } else {
+      setStep(2);
+    }
+  };
+
   const handleCreate = () => {
     if (!selectedSystemId || !selectedTemplateId || !title || !selectedType) return;
     createMutation.mutate({
@@ -104,7 +133,7 @@ export default function NewAssessmentPage() {
           <h1 className="text-2xl font-bold">
             {presetType ? t("titleForType", { type: tt(typeNameKeys[presetType]) }) : t("title")}
           </h1>
-          <p className="text-muted-foreground">{t("stepIndicator", { step })}</p>
+          <p className="text-muted-foreground">{t("stepIndicator", { step: displayStep, total: totalSteps })}</p>
           {presetType && (
             <>
               <p className="text-sm text-foreground">{tt(typeDescKeys[presetType])}</p>
@@ -126,13 +155,13 @@ export default function NewAssessmentPage() {
               systems.map((system) => (
                 <button
                   key={system.id}
-                  onClick={() => { setSelectedSystemId(system.id); setStep(2); }}
+                  onClick={() => chooseSystem(system)}
                   className={`w-full text-left p-4 rounded-lg border transition-colors ${
                     selectedSystemId === system.id ? "border-primary bg-primary/10" : "border-border hover:border-muted-foreground"
                   }`}
                 >
                   <div className="font-medium">{system.name}</div>
-                  <div className="text-sm text-muted-foreground">{statusLabel(system.status)} &middot; {system.technique}</div>
+                  <div className="text-sm text-muted-foreground">{statusLabel(system.status)} &middot; {techniqueLabel(system.technique)}</div>
                 </button>
               ))
             )}
@@ -184,7 +213,7 @@ export default function NewAssessmentPage() {
                       )}
                     </div>
                     <div className="flex items-center gap-2">
-                      <Badge variant="outline">{template.type}</Badge>
+                      <Badge variant="outline">{assessmentTypeLabel(template.type)}</Badge>
                       {!isEntitled && <Lock className="w-4 h-4 text-muted-foreground" />}
                     </div>
                   </div>
@@ -202,12 +231,29 @@ export default function NewAssessmentPage() {
             <CardTitle>{t("step3Title")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
+            {selectedTemplate && (
+              <p className="text-sm text-muted-foreground">
+                {t("usingTemplate", { name: selectedTemplate.name })}
+                {skipTemplateStep && orgHasOwnTemplates && (
+                  <>
+                    {" "}
+                    <button
+                      type="button"
+                      onClick={() => setStep(2)}
+                      className="text-primary hover:underline"
+                    >
+                      {t("changeTemplate")}
+                    </button>
+                  </>
+                )}
+              </p>
+            )}
             <div className="space-y-2">
               <Label>{t("titleLabel")}</Label>
               <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={t("titlePlaceholder")} />
             </div>
             <div className="flex gap-3">
-              <Button variant="ghost" onClick={() => setStep(2)}>{tc("back")}</Button>
+              <Button variant="ghost" onClick={() => setStep(skipTemplateStep ? 1 : 2)}>{tc("back")}</Button>
               <Button onClick={handleCreate} disabled={!title || createMutation.isPending}>
                 {createMutation.isPending ? (
                   <><Loader2 className="w-4 h-4 animate-spin mr-2" />{t("creating")}</>

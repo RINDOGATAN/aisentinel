@@ -164,7 +164,7 @@ export default function AssessmentTemplatesPage() {
             <ClipboardCheck className="w-5 h-5 text-primary" />
           </div>
           <div className="flex gap-2">
-            <Badge variant="outline">{template.type}</Badge>
+            <Badge variant="outline">{typeLabel(template.type)}</Badge>
             {template.isSystem && <Badge variant="secondary">{t("systemBadge")}</Badge>}
           </div>
         </div>

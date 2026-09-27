@@ -3972,7 +3972,12 @@
       "rings": {
         "title": "Dimensions, rim to centre",
         "help": "Select a dimension to highlight it across every framework; select it again to clear.",
-        "depthMeaning": "How depth is read here: {meaning}"
+        "depthMeaning": "How depth is read here: {meaning}",
+        "depthTableTitle": "{dimension}: depth per framework",
+        "depthTableFramework": "Framework",
+        "depthTableDepth": "Depth",
+        "depthTableReading": "In one sentence",
+        "openCell": "Open {framework}"
       },
       "detail": {
         "empty": "Select a cell in the wheel to see its detail here.",

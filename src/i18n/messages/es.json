@@ -3972,7 +3972,12 @@
       "rings": {
         "title": "Dimensiones, del borde al centro",
         "help": "Selecciona una dimensión para resaltarla en todos los marcos; vuelve a seleccionarla para quitar el resaltado.",
-        "depthMeaning": "Cómo se lee aquí la profundidad: {meaning}"
+        "depthMeaning": "Cómo se lee aquí la profundidad: {meaning}",
+        "depthTableTitle": "{dimension}: profundidad por marco",
+        "depthTableFramework": "Marco",
+        "depthTableDepth": "Profundidad",
+        "depthTableReading": "En una frase",
+        "openCell": "Abrir {framework}"
       },
       "detail": {
         "empty": "Selecciona una celda de la rueda para ver aquí su detalle.",

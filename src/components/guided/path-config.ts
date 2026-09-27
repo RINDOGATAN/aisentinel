@@ -43,6 +43,7 @@ import {
   Sparkles,
   Users,
   ClipboardList,
+  ListChecks,
   Megaphone,
   Activity,
   Rocket,
@@ -475,6 +476,8 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
   // "All clients" (the portfolio, at the top of the menu) is the one client
   // view in Guided; the older client cards are reachable only by address.
   library: ({ stripeEnabled }) => [
+    { id: "needsAction", href: "/governance/needs-action", icon: ListChecks },
+    { id: "incomplete", href: "/governance/incomplete", icon: ClipboardList },
     { id: "program", href: "/governance/program", icon: Network },
     { id: "vendorCatalog", href: "/governance/vendor-catalog", icon: Database },
     { id: "skills", href: "/governance/skills", icon: KeyRound },

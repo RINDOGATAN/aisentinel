@@ -113,6 +113,37 @@ export function useEnumLabels() {
       key,
     );
 
+  const assessmentTypeLabel = (key?: string | null) =>
+    fromMap(
+      {
+        FRIA: tc("assessmentTypeFria"),
+        CONFORMITY: tc("assessmentTypeConformity"),
+        AI_RISK: tc("assessmentTypeAiRisk"),
+        BIAS_FAIRNESS: tc("assessmentTypeBiasFairness"),
+        CUSTOM: tc("assessmentTypeCustom"),
+      },
+      key,
+    );
+
+  const techniqueLabel = (key?: string | null) =>
+    fromMap(
+      {
+        MACHINE_LEARNING: tc("techniqueMachineLearning"),
+        DEEP_LEARNING: tc("techniqueDeepLearning"),
+        GENERATIVE_AI: tc("techniqueGenerativeAi"),
+        AGENTIC_AI: tc("techniqueAgenticAi"),
+        NLP: tc("techniqueNlp"),
+        COMPUTER_VISION: tc("techniqueComputerVision"),
+        SPEECH_RECOGNITION: tc("techniqueSpeechRecognition"),
+        ROBOTICS: tc("techniqueRobotics"),
+        RULE_BASED: tc("techniqueRuleBased"),
+        EXPERT_SYSTEM: tc("techniqueExpertSystem"),
+        STATISTICAL: tc("techniqueStatistical"),
+        OTHER: tc("techniqueOther"),
+      },
+      key,
+    );
+
   return {
     statusLabel,
     riskLabel,
@@ -120,5 +151,7 @@ export function useEnumLabels() {
     gateTypeLabel,
     roleLabel,
     complianceLabel,
+    assessmentTypeLabel,
+    techniqueLabel,
   };
 }

@@ -16,8 +16,17 @@ const R0 = 64;
 const R1 = 330;
 const GAP = 0.012;
 
+// Every computed coordinate and path value goes through here before it reaches
+// the SVG. Server and client compute the same trigonometry but keep different
+// trailing digits (…686 on the client, …689 from the server); the differing
+// full-precision strings are a hydration mismatch. Two decimals is more than
+// the 1200-unit viewBox can show, and both sides now emit the identical string.
+function r2(v: number): number {
+  return Math.round(v * 100) / 100;
+}
+
 function pt(r: number, a: number): [number, number] {
-  return [r * Math.sin(a), -r * Math.cos(a)];
+  return [r2(r * Math.sin(a)), r2(-r * Math.cos(a))];
 }
 
 function arc(ri: number, ro: number, a0: number, a1: number): string {
@@ -26,8 +35,11 @@ function arc(ri: number, ro: number, a0: number, a1: number): string {
   const p2 = pt(ri, a1);
   const p3 = pt(ri, a0);
   const large = a1 - a0 > Math.PI ? 1 : 0;
-  const f = (p: [number, number]) => `${p[0].toFixed(2)},${p[1].toFixed(2)}`;
-  return `M${f(p0)}A${ro},${ro} 0 ${large} 1 ${f(p1)}L${f(p2)}A${ri},${ri} 0 ${large} 0 ${f(p3)}Z`;
+  const f = (p: [number, number]) => `${p[0]},${p[1]}`;
+  // The ring radii are (R1 - R0) / rings apart, rarely a whole number, so they
+  // must be rounded too before they enter the arc-radius fields.
+  const [rri, rro] = [r2(ri), r2(ro)];
+  return `M${f(p0)}A${rro},${rro} 0 ${large} 1 ${f(p1)}L${f(p2)}A${rri},${rri} 0 ${large} 0 ${f(p3)}Z`;
 }
 
 export function FrameworksWheel() {

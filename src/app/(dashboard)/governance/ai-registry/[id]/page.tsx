@@ -256,6 +256,17 @@ export default function AISystemDetailPage() {
     return map[key] || key;
   };
 
+  const assessmentTypeLabel = (key: string) => {
+    const map: Record<string, string> = {
+      FRIA: tc("assessmentTypeFria"),
+      CONFORMITY: tc("assessmentTypeConformity"),
+      AI_RISK: tc("assessmentTypeAiRisk"),
+      BIAS_FAIRNESS: tc("assessmentTypeBiasFairness"),
+      CUSTOM: tc("assessmentTypeCustom"),
+    };
+    return map[key] || key;
+  };
+
   const roleLabel = (key: string) => {
     const map: Record<string, string> = {
       PROVIDER: tc("roleProvider"),
@@ -1335,13 +1346,13 @@ export default function AISystemDetailPage() {
                           <div className="min-w-0">
                             <p className="font-medium text-sm truncate">{assessment.title}</p>
                             <p className="text-xs text-muted-foreground">
-                              {assessment.template?.name || assessment.type}
+                              {assessment.template?.name || assessmentTypeLabel(assessment.type)}
                             </p>
                           </div>
                         </div>
                         <div className="flex items-center gap-2 shrink-0">
                           <Badge variant="outline" className="text-xs">
-                            {assessment.type}
+                            {assessmentTypeLabel(assessment.type)}
                           </Badge>
                           <Badge
                             variant="outline"

@@ -13,7 +13,7 @@ import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { History, Loader2, Sparkles, Network, ShieldCheck } from "lucide-react";
+import { History, Loader2, Sparkles, Network } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { ProgramMap } from "@/components/governance/program/ProgramMap";
@@ -24,7 +24,6 @@ import {
   type Deliverable,
 } from "@/components/governance/premium-deliverable";
 import { PageHeader } from "@/components/governance/page-header";
-import { useSkin } from "@/components/guided/skin-context";
 import { ProgramFigureCard } from "@/components/guided/program-figure";
 import {
   ScorecardTiles,
@@ -39,7 +38,6 @@ export default function ProgramPage() {
   const t = useTranslations("program.page");
   const orgId = organization?.id ?? "";
   const locale = useLocale() === "es" ? "es" : "en";
-  const guided = useSkin().skin === "guided";
 
   const { data: graph, isLoading: graphLoading } =
     trpc.program.getProgramGraph.useQuery(
@@ -79,8 +77,8 @@ export default function ProgramPage() {
       {/* Header: places to go, then the downloads in one menu. Both downloads
           are premium deliverables where the showcase is open, and included on
           the kit and on the hosted pilot; a locked one keeps its place with a
-          lock, and the reason is said once, under the header. In Guided the
-          review queue is a step of the menu, so it is not repeated here. */}
+          lock, and the reason is said once, under the header. The review queue
+          is a step of the menu, so it is not repeated here. */}
       <PageHeader
         icon={Network}
         title={t("title")}
@@ -88,14 +86,6 @@ export default function ProgramPage() {
         actions={
           !isEmpty && (
             <>
-              {!guided && (
-                <Link href="/governance/review">
-                  <Button variant="outline" size="icon" aria-label={t("reviewLink")} className="sm:size-auto sm:px-4 sm:py-2">
-                    <ShieldCheck className="w-4 h-4 sm:mr-2" />
-                    <span className="hidden sm:inline">{t("reviewLink")}</span>
-                  </Button>
-                </Link>
-              )}
               <Link href="/governance/program/history">
                 <Button variant="outline" size="icon" aria-label={t("historyLink")} className="sm:size-auto sm:px-4 sm:py-2">
                   <History className="w-4 h-4 sm:mr-2" />
@@ -114,8 +104,8 @@ export default function ProgramPage() {
       />
 
       {/* The one program figure, the headline here as on the dashboard, the
-          menu and All clients (Guided). The scorecard below is the detail. */}
-      {guided && <ProgramFigureCard />}
+          menu and All clients. The scorecard below is the detail. */}
+      <ProgramFigureCard />
 
       {/* Empty state */}
       {isEmpty ? (

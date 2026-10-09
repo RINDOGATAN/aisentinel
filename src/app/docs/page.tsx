@@ -84,7 +84,7 @@ const alsoItems = [
   { href: "/governance/quickstart", tKey: "quickstart" },
   { href: "/governance/settings", tKey: "aiPosture" },
   { href: "/governance/skills", tKey: "skills" },
-  { href: "/governance/clients", tKey: "clients" },
+  { href: "/governance/portfolio", tKey: "clients" },
 ] as const;
 
 export default async function DocsPage() {

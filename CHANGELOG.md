@@ -6,6 +6,17 @@ All notable changes to AI SENTINEL are documented here. The format follows
 
 ## [Unreleased]
 
+### Removed
+
+- **The Classic layout is retired; Guided is the only layout.** The layout switch (Settings
+  card, "Use the classic layout" in the account menu, "Use the guided layout" in Classic), the
+  Classic top bar and its menus, the Classic dashboard, the Classic client cards
+  (`/governance/clients`) and the dashboard's obligations strip are gone, with their
+  translations and tests. Every entry of the Classic menus was already in the Guided menu; a
+  test keeps it so. Bookmarks keep working: `/governance/clients` (and `?add=1`) goes to All
+  clients (`/governance/portfolio`), and the old `?skin=` parameter is dropped from any dashboard
+  address. A stored `ais_skin` cookie is left in place and ignored.
+
 ### Added
 
 - **The quick start opens with an applicability check.** Before templates and vendors, a few

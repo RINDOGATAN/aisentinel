@@ -364,7 +364,7 @@ describe("rows of actions fit a phone", () => {
       "src/components/guided/guided-layout.tsx",
       "src/components/guided/path-menu.tsx",
       "src/components/guided/next-step-card.tsx",
-      "src/components/guided/layout-card.tsx",
+      "src/components/guided/guided-dashboard.tsx",
       "src/app/(dashboard)/governance/portfolio/page.tsx",
     ]) {
       expect(FILES).toContain(file);

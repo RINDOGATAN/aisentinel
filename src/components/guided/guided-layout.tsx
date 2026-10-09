@@ -3,12 +3,11 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 /**
- * The Guided layout (a preview, off unless chosen): a slim top bar, the
- * program path as a left menu from the `lg` breakpoint, and on smaller
- * screens a one-line stage bar that opens the same path in the side sheet.
- *
- * Only the chrome differs from Classic. The pages, the footer and the
- * feedback dialog are the ones Classic uses (see dashboard-shell.tsx).
+ * The dashboard layout (Guided, the only one since Classic was retired on
+ * 9 October 2026): a slim top bar, the program path as a left menu from the
+ * `lg` breakpoint, and on smaller screens a one-line stage bar that opens the
+ * same path in the side sheet. The footer and the feedback dialog come from
+ * dashboard-shell.tsx.
  */
 
 import Link from "next/link";
@@ -23,7 +22,6 @@ import {
   ChevronsLeft,
   ChevronsRight,
   LayoutDashboard,
-  LayoutPanelTop,
   LogOut,
   Menu,
   MessageSquareWarning,
@@ -50,7 +48,7 @@ import {
   accountMode,
   organizationSwitcherView,
 } from "@/lib/account-mode";
-import { MENU_COOKIE, cookieAssignment } from "@/lib/skin";
+import { MENU_COOKIE, cookieAssignment } from "@/lib/menu-cookie";
 import { features } from "@/config/features";
 import { cn } from "@/lib/utils";
 import { AI_SENTINEL_PATH } from "./path-config";
@@ -61,7 +59,6 @@ import { StepBand } from "./step-band";
 import { ProgressBar } from "./progress-ring";
 import { usePlanState, useProgramPath, useProgramPathRefresh } from "./use-program-path";
 import { planDayText } from "./plan-text";
-import { useSkin } from "./skin-context";
 import { useProgrammeOverview } from "./use-programme-overview";
 import { stepNoteText } from "./document-words";
 import { attentionStages, notYetEntries, stepDocumentRows } from "@/lib/programme-overview";
@@ -252,7 +249,7 @@ export function GuidedLayout({
         </aside>
 
         <div className="flex min-w-0 flex-1 flex-col">
-          {/* min-w-0 so a wide child cannot stretch the page (as in Classic). */}
+          {/* min-w-0 so a wide child cannot stretch the page. */}
           <main className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 min-w-0 flex-1">
             {/* Keyed by the organisation and the address: a "stage complete"
                 message lasts for the page it was shown on. */}
@@ -336,11 +333,10 @@ function OrganizationBlock({ onNavigate }: { onNavigate?: () => void }) {
   );
 }
 
-/** The account: who is signed in, the way back to Classic, sign out. */
+/** The account: who is signed in, and sign out. */
 function AccountMenu() {
   const { data: session } = useSession();
   const { userRole } = useOrganization();
-  const { setSkin } = useSkin();
   const t = useTranslations("guided");
   const tn = useTranslations("nav");
 
@@ -363,11 +359,6 @@ function AccountMenu() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         {/* Settings is in "Library and tools"; one place for it. */}
-        <DropdownMenuItem onClick={() => setSkin("classic")} className="flex items-center gap-2">
-          <LayoutPanelTop className="size-4" />
-          {t("layout.useClassic")}
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={async () => {
             await fetch("/api/auth/cross-logout", { method: "POST" });

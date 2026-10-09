@@ -276,11 +276,11 @@ test("a new user's first session, end to end", async ({ page }, testInfo) => {
 });
 
 /**
- * Classic stays reachable while it is being retired: the `?skin=classic`
- * address keeps the choice in its cookie, the top-bar layout shows, and its
- * own sign-out works.
+ * The Classic layout is retired: a stored Classic choice is ignored, the old
+ * `?skin=` parameter is dropped, the Classic client cards lead to All
+ * clients, and no layout switch is offered anywhere.
  */
-test("the classic layout is still reachable", async ({ page }, testInfo) => {
+test("the retired classic layout leads to Guided", async ({ page, context }, testInfo) => {
   const run = `${testInfo.project.name}-classic-${Date.now()}`;
   const watch = new Watch(page, new URL(testInfo.project.use.baseURL ?? "http://localhost").origin);
 
@@ -296,28 +296,28 @@ test("the classic layout is still reachable", async ({ page }, testInfo) => {
     await page.waitForURL(/\/governance\/quickstart/);
   });
 
-  await step(page, watch, "choose Classic and see its menus", async () => {
+  await step(page, watch, "an old Classic choice and address open Guided", async () => {
+    const origin = new URL(testInfo.project.use.baseURL ?? "http://localhost").origin;
+    await context.addCookies([{ name: "ais_skin", value: "classic", url: origin }]);
     await page.goto("/governance?skin=classic");
-    // The middleware stores the choice and drops the parameter.
-    await expect(page).not.toHaveURL(/skin=/);
-    // Guided's account menu is gone; Classic offers the way back to Guided.
-    await expect(page.getByRole("button", { name: "Account", exact: true })).toHaveCount(0);
-    if (isPhone(page)) {
-      await page.getByRole("button", { name: "Open menu", exact: true }).click();
-      const sheet = page.getByRole("dialog");
-      await expect(sheet.getByRole("button", { name: "Use the guided layout" })).toBeVisible();
-      await page.keyboard.press("Escape");
-      await expect(sheet).toBeHidden();
-    } else {
-      await expect(page.getByRole("button", { name: "Use the guided layout" })).toBeVisible();
-      // The top-bar menus: the header's navigation holds the group triggers.
-      const topBar = page.locator("header nav");
-      await expect(topBar.getByRole("button").first()).toBeVisible();
-    }
+    await expect(page).toHaveURL(/\/governance$/);
+    await expect(page.getByTestId("guided-dashboard")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Account", exact: true })).toBeVisible();
+    await expect(page.getByText("Use the classic layout")).toHaveCount(0);
+    await expect(page.getByText("Use the guided layout")).toHaveCount(0);
   });
 
-  await step(page, watch, "sign out from Classic", async () => {
-    await page.getByRole("button", { name: "Sign out", exact: true }).click();
+  await step(page, watch, "the Classic client cards lead to All clients", async () => {
+    await page.goto("/governance/clients?add=1");
+    await expect(page).toHaveURL(/\/governance\/portfolio\?add=1$/);
+  });
+
+  await step(page, watch, "Settings offers no layout switch", async () => {
+    await page.goto("/governance/settings");
+    await expect(page.getByRole("group", { name: "Layout" })).toHaveCount(0);
+    await page.getByRole("button", { name: "Account", exact: true }).click();
+    await expect(page.getByRole("menuitem", { name: /classic/i })).toHaveCount(0);
+    await page.getByRole("menuitem", { name: "Sign out", exact: true }).click();
     await page.waitForURL(/\/sign-in/);
   });
 });

@@ -31,7 +31,7 @@ export interface OrganizationSwitcherView {
   show: boolean;
   /** List the other organizations the person belongs to. */
   listOrganizations: boolean;
-  /** Offer "My clients" and "+ Add organization". */
+  /** Offer "All clients" and "Add organization". */
   clientEntries: boolean;
 }
 
@@ -48,13 +48,11 @@ export function organizationSwitcherView(
   return { show: clients, listOrganizations: clients, clientEntries: clients };
 }
 
-/** Where the switcher's two client entries lead. */
-export const CLIENTS_DASHBOARD_HREF = "/governance/clients";
-export const ADD_ORGANIZATION_HREF = "/governance/clients?add=1";
-
 /**
- * The Guided layout's equivalents: "All clients" is the portfolio, and adding
- * an organisation opens the same dialog on it.
+ * Where the switcher's client entries lead: "All clients" is the portfolio,
+ * and adding an organisation opens its dialog there. (The Classic client
+ * cards at /governance/clients were retired; the middleware sends that
+ * address here.)
  */
 export const PORTFOLIO_HREF = "/governance/portfolio";
 export const PORTFOLIO_ADD_HREF = "/governance/portfolio?add=1";

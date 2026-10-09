@@ -22,7 +22,6 @@ import { useOrganization } from "@/lib/organization-context";
 import { ObligationsTimeline } from "@/components/governance/obligations/ObligationsTimeline";
 import { ObligationCard } from "@/components/governance/obligations/ObligationCard";
 import { EmptyStep } from "@/components/guided/empty-step";
-import { useSkin } from "@/components/guided/skin-context";
 import {
   aheadCount,
   filterByJurisdiction,
@@ -36,7 +35,6 @@ export default function ObligationsPage() {
   const t = useTranslations("obligations");
   const tjur = useTranslations("jurisdictions");
   const tg = useTranslations("guided");
-  const guided = useSkin().skin === "guided";
   const locale = useLocale();
   const orgId = organization?.id ?? "";
   const contentLocale = locale === "es" ? "es" : "en";
@@ -137,7 +135,7 @@ export default function ObligationsPage() {
         </p>
       ) : null}
 
-      {allRows.length === 0 && guided ? (
+      {allRows.length === 0 ? (
         // The banner above already offers the way to declare jurisdictions
         // when none are declared; the button here only when it does not.
         <EmptyStep

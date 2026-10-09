@@ -4,9 +4,8 @@
 
 /**
  * Add an organisation (organization.create; the creator becomes OWNER), then
- * switch into it and open its quick start. Shared by the client cards page
- * (/governance/clients) and the Guided portfolio (/governance/portfolio), so
- * the add flow stays on the page it was started from.
+ * switch into it and open its quick start. Opened from All clients
+ * (/governance/portfolio), where the switcher's "Add a client" also lands.
  */
 
 import { useState } from "react";
@@ -60,7 +59,6 @@ export function AddOrganizationDialog({
   const createOrg = trpc.organization.create.useMutation({
     onSuccess: (org) => {
       toast.success(t("orgCreated"));
-      void utils.clients.listClients.invalidate();
       void utils.programPath.portfolio.invalidate();
       onCreated();
       setOrgForm({ name: "", slug: "", domain: "", slugTouched: false });

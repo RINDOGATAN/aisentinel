@@ -165,7 +165,6 @@ export function CopyFromClientDialog({
       setResult({ ...copied, target });
       toast.success(t("done"));
       void utils.programPath.invalidate();
-      void utils.clients.listClients.invalidate();
       void utils.policy.invalidate();
       void utils.vendor.invalidate();
       void utils.aiSystem.invalidate();

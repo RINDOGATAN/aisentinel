@@ -372,21 +372,6 @@ export const PAGE_HELP: PageHelp[] = [
     official: [],
   },
   {
-    route: "/governance/clients",
-    title: L("Clients", "Clientes"),
-    purpose: L(
-      "Manage the client organisations this account works for, and switch between them. Governance data never crosses from one client to another; each is walled off on its own records.",
-      "Gestiona las organizaciones cliente para las que trabaja esta cuenta y cambia entre ellas. Los datos de gobernanza nunca pasan de un cliente a otro; cada uno está aislado en sus propios registros.",
-    ),
-    firstStep: L(
-      "Add a client, or select one to work on its programme.",
-      "Añade un cliente o selecciona uno para trabajar en su programa.",
-    ),
-    terms: [],
-    docs: [DOC("/docs/how-it-fits", "How the parts fit together", "Cómo encajan las partes")],
-    official: [],
-  },
-  {
     route: "/governance/skills",
     title: L("Skills", "Skills"),
     purpose: L(

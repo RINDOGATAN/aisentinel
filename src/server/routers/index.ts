@@ -24,7 +24,6 @@ import { admtRouter } from "./governance/admt";
 import { regimesRouter } from "./governance/regimes";
 import { unifiedRouter } from "./governance/unified";
 import { agentRouter } from "./governance/agent";
-import { clientsRouter } from "./governance/clients";
 import { clientTemplateRouter } from "./governance/clientTemplate";
 import { billingRouter } from "./billing";
 import { feedbackRouter } from "./feedback";
@@ -70,7 +69,6 @@ export const appRouter = createTRPCRouter({
   regimes: regimesRouter,
   unified: unifiedRouter,
   agent: agentRouter,
-  clients: clientsRouter,
   clientTemplate: clientTemplateRouter,
   billing: billingRouter,
   feedback: feedbackRouter,

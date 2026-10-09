@@ -11,7 +11,6 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import en from "@/i18n/messages/en.json";
 import es from "@/i18n/messages/es.json";
-import { buildNavGroups } from "@/components/nav-groups";
 import { AI_SENTINEL_PATH, EMPTY_PATH_COUNTS, type PathCounts } from "./path-config";
 import {
   currentLibraryId,
@@ -195,15 +194,42 @@ describe("the shape of the path", () => {
     }
   });
 
-  it("keeps every entry of the Classic menus reachable", () => {
+  it("keeps every entry of the retired Classic menus reachable", () => {
     const guided = new Set([
       ...steps.flatMap((s) => (s.href ? [s.href] : [])),
       ...PATH.library({ stripeEnabled: true }).map((i) => i.href),
     ]);
-    const classic = buildNavGroups((k) => k, { stripeEnabled: true }).flatMap((g) =>
-      g.items.map((i) => i.href),
-    );
-    for (const href of [...classic, "/governance/settings"]) {
+    // The Classic top-bar menus as they stood when Classic was retired
+    // (9 October 2026), plus its Settings icon. Every one stays in the menu.
+    const classic = [
+      "/governance/quickstart",
+      "/governance/ai-registry",
+      "/governance/risk-classification",
+      "/governance/threat-model",
+      "/governance/agent-testing",
+      "/governance/program",
+      "/governance/review",
+      "/governance/obligations",
+      "/governance/assessments",
+      "/governance/oversight",
+      "/governance/compliance",
+      "/governance/policies",
+      "/governance/sensitive-data",
+      "/governance/board",
+      "/governance/audit",
+      "/governance/incidents",
+      "/governance/proceedings",
+      "/governance/vendors",
+      "/governance/vendor-catalog",
+      "/governance/shadow-ai",
+      "/governance/skills",
+      "/governance/billing",
+      "/governance/settings",
+      // The Classic dashboard's two list cards.
+      "/governance/needs-action",
+      "/governance/incomplete",
+    ];
+    for (const href of classic) {
       expect(guided.has(href), href).toBe(true);
     }
   });

@@ -176,7 +176,7 @@ describe("no sideways scrolling on a phone, signed in", () => {
   it("reads every signed-in component", () => {
     expect(FILES.length).toBeGreaterThan(60);
     expect(FILES).toContain("src/components/dashboard-shell.tsx");
-    expect(FILES).toContain("src/app/(dashboard)/governance/page.tsx");
+    expect(FILES).toContain("src/components/guided/guided-dashboard.tsx");
   });
 
   it("finds no layout that widens the page body at 390 px", () => {
@@ -226,7 +226,7 @@ describe("no sideways scrolling on a phone, signed in", () => {
       "src/components/guided/guided-layout.tsx",
       "src/components/guided/path-menu.tsx",
       "src/components/guided/next-step-card.tsx",
-      "src/components/guided/layout-card.tsx",
+      "src/components/guided/guided-dashboard.tsx",
       "src/app/(dashboard)/governance/portfolio/page.tsx",
     ]) {
       expect(FILES).toContain(file);
@@ -281,7 +281,7 @@ describe("no sideways scrolling on a phone, signed in", () => {
   });
 
   it("keeps the dashboard's own grids on a stated column count", () => {
-    const page = readFileSync("src/app/(dashboard)/governance/page.tsx", "utf8");
+    const page = readFileSync("src/components/guided/guided-dashboard.tsx", "utf8");
     expect(page).toContain("grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-2");
   });
 });

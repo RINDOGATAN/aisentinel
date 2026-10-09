@@ -25,6 +25,7 @@ import {
 } from "@/components/governance/premium-deliverable";
 import { PageHeader } from "@/components/governance/page-header";
 import { useSkin } from "@/components/guided/skin-context";
+import { ProgramFigureCard } from "@/components/guided/program-figure";
 import {
   ScorecardTiles,
   DimensionGrid,
@@ -111,6 +112,10 @@ export default function ProgramPage() {
           )
         }
       />
+
+      {/* The one program figure, the headline here as on the dashboard, the
+          menu and All clients (Guided). The scorecard below is the detail. */}
+      {guided && <ProgramFigureCard />}
 
       {/* Empty state */}
       {isEmpty ? (

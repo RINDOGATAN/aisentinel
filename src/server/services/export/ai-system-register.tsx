@@ -8,6 +8,7 @@ import {
   StatCard, AccentSectionHeader, RiskBadge, StatusBadge,
   s, fmtDate,
 } from "./pdf-styles";
+import { DraftGapsPage, type DraftNote } from "./draft-gaps-page";
 
 export interface AISystemExportData {
   id: string;
@@ -35,9 +36,12 @@ export interface AISystemExportData {
 export function AISystemRegisterReport({
   systems,
   orgName,
+  draftNote,
 }: {
   systems: AISystemExportData[];
   orgName: string;
+  /** In the program pack, a draft opens on a page naming its gaps. */
+  draftNote?: DraftNote | null;
 }) {
   const date = fmtDate(new Date());
 
@@ -54,6 +58,7 @@ export function AISystemRegisterReport({
 
   return (
     <Document>
+      {draftNote && <DraftGapsPage note={draftNote} />}
       <CoverPage
         orgName={orgName}
         title="AI System Register"

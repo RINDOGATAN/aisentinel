@@ -5,23 +5,46 @@
  * The program pack: everything a governance professional hands to a board, a
  * regulator, an auditor or a client, in one ZIP and in the reader's language.
  *
- *   README                      what is inside, what is still a draft, and why
+ *   README (the index)          every document with its state and files,
+ *                               what stayed out and why, what is still a
+ *                               draft, which legal packs await sign-off
  *   program PDF                 the same report the Program page exports
  *   AI system register PDF
  *   policies/                   one Markdown document per policy
  *   obligations (.md and .ics)  the dated calendar, importable into Outlook
- *   systems/<name>/             the cross-border documents per system
+ *   systems/<name>/             the cross-border documents and data flow per system
  *   vendor due diligence (.md)
  *   AI inventory (.csv)         in the spreadsheet-import format, so it
  *                               round-trips into another organization
+ *   sensitive data, threat models (.md)
+ *   assessment portfolio, model inventory (PDF)
+ *   AIUC-1 evidence/            one document per AI agent
+ *   MANIFEST                    a SHA-256 digest for every file
  *
- * Every generated document keeps its own gap blocks and review markers; the
- * README repeats the one thing a reader must not miss: which parts are drafts
- * and which legal packs are still awaiting sign-off.
+ * What goes in is the document register's answer
+ * (src/config/document-register.ts, through src/lib/document-pack.ts): the
+ * documents that are ready and, when asked for, the drafts. A draft carries
+ * DRAFT (BORRADOR) in its file name and its gaps on its first page, so a
+ * reader who opens one file alone still learns it is not finished. Every
+ * generated document also keeps its own gap blocks and review markers.
  */
 
 import type { PrismaClient } from "@prisma/client";
 import { renderToBuffer } from "@react-pdf/renderer";
+import { createTranslator } from "next-intl";
+import { evaluateRegister } from "@/config/document-register";
+import { markDraft, planPack } from "@/lib/document-pack";
+import { loadDocumentFacts } from "@/server/services/program/document-facts";
+import type { DraftNote } from "@/server/services/export/draft-gaps-page";
+import { AssessmentPortfolioReport } from "@/server/services/export/assessment-portfolio";
+import { ModelInventoryReport } from "@/server/services/export/model-inventory";
+import {
+  loadAssessmentPortfolioData,
+  loadModelInventoryData,
+} from "@/server/services/export/document-data";
+import { agentReadiness, isAgentSystem } from "@/config/aiuc1-evidence";
+import { loadAgentRows } from "@/server/services/aiuc1/readiness";
+import { renderAiuc1EvidenceDoc } from "@/server/services/export/aiuc1-evidence-doc";
 import { createZip, type ZipEntry } from "@/lib/zip";
 import { buildIcs } from "@/lib/ics";
 import { renderProgramPdf } from "@/server/services/export/program-pdf";
@@ -66,7 +89,11 @@ const L = {
     inventory: "07-ai-inventory.csv",
     sensitive: "08-sensitive-data-analyses.md",
     threats: "09-threat-models.md",
-    manifest: "10-MANIFEST.txt",
+    assessmentPortfolio: "10-assessment-portfolio.pdf",
+    modelInventory: "11-ai-model-inventory.pdf",
+    aiuc1Dir: "12-aiuc1-evidence",
+    manifest: "99-MANIFEST.txt",
+    draftMark: "DRAFT",
     title: "AI governance program pack",
     generated: "Generated",
     contents: "Contents",
@@ -80,6 +107,9 @@ const L = {
       inventory: "The AI inventory as a spreadsheet, in the format the import accepts.",
       sensitive: "The five-factor analyses: how the organization decided whether a set of data is health data or another sensitive category, with the reasoning per factor, the band, the decision and the owner.",
       threats: "The threat models: what each system can see and do, what could go wrong, the controls against each scenario, and whether those controls were tested.",
+      assessmentPortfolio: "Every assessment with its type, status and who reviewed and approved it.",
+      modelInventory: "The AI models recorded on each system, with provider, version and known limitations.",
+      aiuc1: "Per AI agent: the AIUC-1 evidence, requirement by requirement, with each test and who recorded it.",
       manifest: "The integrity manifest: a SHA-256 digest for every file above, the application version that produced them, and the version and legal review date of every rule pack in force at that moment.",
     },
     status: "Status of this pack",
@@ -131,6 +161,31 @@ const L = {
     nextReview: "Next review",
     riskLevel: "Risk level",
     notSet: "not set",
+    index: {
+      readyOnly: "This pack holds the documents that are ready. Drafts were not asked for.",
+      withDrafts: "This pack holds the documents that are ready and the drafts. A draft has DRAFT in its file name and its gaps on its first page.",
+      colDocument: "Document",
+      colState: "State",
+      colFiles: "Files",
+      empty: "No document is ready yet.",
+      notIncluded: "Not in this pack",
+      whatEachHolds: "What each file holds",
+      manifestNote: "{file} lists a SHA-256 digest for every file in the pack, so any single file can be checked.",
+    },
+    draftNote: {
+      title: "This document is a draft",
+      intro: "It can be shared for review, but it is not finished. These gaps remain:",
+      generated: "Generated {date}",
+    },
+    reasons: {
+      draftsNotRequested: "draft ({gaps}); drafts were not asked for",
+      needsInput: "{needs}",
+      notYet: "not in AI SENTINEL yet",
+      screenOnly: "shown on screen only",
+      perRecord: "chosen per system and framework on its own page",
+      separateExport: "exported on its own page, by period",
+      empty: "nothing to write yet",
+    },
   },
   es: {
     readme: "00-LEEME.md",
@@ -144,7 +199,11 @@ const L = {
     inventory: "07-inventario-de-ia.csv",
     sensitive: "08-analisis-de-datos-sensibles.md",
     threats: "09-modelos-de-amenazas.md",
-    manifest: "10-MANIFIESTO.txt",
+    assessmentPortfolio: "10-cartera-de-evaluaciones.pdf",
+    modelInventory: "11-inventario-de-modelos-de-ia.pdf",
+    aiuc1Dir: "12-evidencias-aiuc-1",
+    manifest: "99-MANIFIESTO.txt",
+    draftMark: "BORRADOR",
     title: "Paquete del programa de gobernanza de la IA",
     generated: "Generado",
     contents: "Contenido",
@@ -158,6 +217,9 @@ const L = {
       inventory: "El inventario de IA como hoja de cálculo, en el formato que admite la importación.",
       sensitive: "Los análisis por factores: cómo decidió la organización si un conjunto de datos es dato de salud u otra categoría sensible, con el razonamiento de cada factor, la banda, la decisión y el responsable.",
       threats: "Los modelos de amenazas: qué puede ver y hacer cada sistema, qué podría salir mal, los controles de cada escenario y si esos controles se han probado.",
+      assessmentPortfolio: "Todas las evaluaciones con su tipo, su estado y quién las revisó y aprobó.",
+      modelInventory: "Los modelos de IA registrados en cada sistema, con proveedor, versión y limitaciones conocidas.",
+      aiuc1: "Por agente de IA: las evidencias AIUC-1, requisito por requisito, con cada prueba y quién la registró.",
       manifest: "El manifiesto de integridad: una huella SHA-256 de cada fichero anterior, la versión de la aplicación que los generó y la versión y la fecha de revisión jurídica de cada paquete de reglas vigente en ese momento.",
     },
     status: "Estado de este paquete",
@@ -209,6 +271,31 @@ const L = {
     nextReview: "Próxima revisión",
     riskLevel: "Nivel de riesgo",
     notSet: "sin indicar",
+    index: {
+      readyOnly: "Este paquete contiene los documentos que están listos. No se han pedido los borradores.",
+      withDrafts: "Este paquete contiene los documentos que están listos y los borradores. Un borrador lleva BORRADOR en el nombre del fichero y lo que le falta en su primera página.",
+      colDocument: "Documento",
+      colState: "Estado",
+      colFiles: "Ficheros",
+      empty: "Todavía no hay ningún documento listo.",
+      notIncluded: "Fuera de este paquete",
+      whatEachHolds: "Qué contiene cada fichero",
+      manifestNote: "{file} recoge una huella SHA-256 de cada fichero del paquete, para que cualquiera de ellos pueda comprobarse por separado.",
+    },
+    draftNote: {
+      title: "Este documento es un borrador",
+      intro: "Puede compartirse para revisión, pero no está terminado. Le falta lo siguiente:",
+      generated: "Generado el {date}",
+    },
+    reasons: {
+      draftsNotRequested: "borrador ({gaps}); no se han pedido los borradores",
+      needsInput: "{needs}",
+      notYet: "aún no en AI SENTINEL",
+      screenOnly: "solo se muestra en pantalla",
+      perRecord: "se elige por sistema y marco en su propia página",
+      separateExport: "se exporta en su propia página, por periodo",
+      empty: "todavía no hay nada que incluir",
+    },
   },
 } as const;
 
@@ -297,28 +384,112 @@ function csvCell(v: string): string {
   return /[",;\r\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v;
 }
 
+/** The words of the document register, on the server, in the reader's language. */
+async function registerWords(locale: Locale): Promise<(key: string, values?: Record<string, string | number>) => string> {
+  const messages = (await import(`../../../i18n/messages/${locale}.json`)).default as Record<string, unknown>;
+  return createTranslator({
+    locale,
+    messages,
+    namespace: "documentRegister",
+    onError: () => undefined,
+    getMessageFallback: ({ key }: { key: string }) => key.split(".").pop() ?? key,
+  } as unknown as Parameters<typeof createTranslator>[0]) as unknown as (
+    key: string,
+    values?: Record<string, string | number>,
+  ) => string;
+}
+
+/** A path with the draft mark on its last part: "03-policies/01-x.md" → "03-policies/01-DRAFT-x.md". */
+function markDraftPath(path: string, mark: string): string {
+  const slash = path.lastIndexOf("/");
+  return slash < 0 ? markDraft(path, mark) : `${path.slice(0, slash + 1)}${markDraft(path.slice(slash + 1), mark)}`;
+}
+
 export async function buildProgramPack(
   prisma: PrismaClient,
-  args: { organizationId: string; userId: string; orgName: string; locale: Locale },
+  args: {
+    organizationId: string;
+    userId: string;
+    orgName: string;
+    locale: Locale;
+    /**
+     * Whether the drafts go in too, marked as drafts. The dashboard's
+     * "Download ready documents" asks for the ready ones only unless the box
+     * is ticked; the Program page and the pilot's export keep everything.
+     */
+    includeDrafts?: boolean;
+  },
 ): Promise<{ zip: Uint8Array; filename: string; files: string[] }> {
   const { organizationId, userId, orgName, locale } = args;
+  const includeDrafts = args.includeDrafts ?? true;
   const l = L[locale];
   const n = NAMES[locale];
   const today = new Date().toISOString().slice(0, 10);
   const entries: ZipEntry[] = [];
 
+  // What goes in: the register's own answer, the one the dashboard shows.
+  const facts = await loadDocumentFacts(prisma, organizationId);
+  const documents = evaluateRegister(facts);
+  const plan = planPack(documents, { includeDrafts });
+  const packed = new Map(plan.include.map((d) => [d.entry.id, d]));
+  const tr = await registerWords(locale);
+  const gapsOf = (id: string): string[] =>
+    (packed.get(id)?.gaps ?? []).map((g) => tr(`gaps.${g.key}`, { count: g.count }));
+  const isDraft = (id: string) => packed.get(id)?.state === "draft";
+  const draftNote = (id: string): DraftNote | null =>
+    isDraft(id)
+      ? {
+          title: l.draftNote.title,
+          intro: l.draftNote.intro,
+          gaps: gapsOf(id),
+          generated: fill(l.draftNote.generated, { date: today }),
+        }
+      : null;
+  /** The files written for each register document, for the index. */
+  const filesOf = new Map<string, string[]>();
+  const add = (doc: string, name: string, data: ZipEntry["data"]) => {
+    const draft = isDraft(doc);
+    const finalName = draft ? markDraftPath(name, l.draftMark) : name;
+    let body = data;
+    if (draft && typeof data === "string" && finalName.endsWith(".md")) {
+      // A Markdown draft opens on its gaps, as a PDF draft opens on a page of them.
+      body = [
+        `> **${l.draftNote.title}.** ${l.draftNote.intro}`,
+        ...gapsOf(doc).map((g) => `> - ${g}`),
+        "",
+        data,
+      ].join("\n");
+    }
+    entries.push({ name: finalName, data: body });
+    filesOf.set(doc, [...(filesOf.get(doc) ?? []), finalName]);
+  };
+
   // PDFs
-  const program = await renderProgramPdf(prisma, { organizationId, userId, orgName, locale });
-  entries.push({ name: l.program, data: new Uint8Array(program.buffer) });
+  if (packed.has("programReport")) {
+    const program = await renderProgramPdf(prisma, {
+      organizationId,
+      userId,
+      orgName,
+      locale,
+      draftNote: draftNote("programReport"),
+    });
+    add("programReport", l.program, new Uint8Array(program.buffer));
+  }
   const registerRows = await loadRegisterExportData(prisma, organizationId);
-  const registerPdf = await renderToBuffer(AISystemRegisterReport({ systems: registerRows, orgName }));
-  entries.push({ name: l.register, data: new Uint8Array(registerPdf) });
+  if (packed.has("systemRegister")) {
+    const registerPdf = await renderToBuffer(
+      AISystemRegisterReport({ systems: registerRows, orgName, draftNote: draftNote("systemRegister") }),
+    );
+    add("systemRegister", l.register, new Uint8Array(registerPdf));
+  }
 
   // Policies
-  const policies = await prisma.aIPolicy.findMany({
-    where: { organizationId },
-    orderBy: [{ type: "asc" }, { title: "asc" }],
-  });
+  const policies = packed.has("policies")
+    ? await prisma.aIPolicy.findMany({
+        where: { organizationId },
+        orderBy: [{ type: "asc" }, { title: "asc" }],
+      })
+    : [];
   policies.forEach((p, i) => {
     const meta = fill(l.policyMeta, {
       type: n.policyType[p.type] ?? p.type,
@@ -340,86 +511,108 @@ export async function buildProgramPack(
       p.content ?? "",
       "",
     ].join("\n");
-    entries.push({
-      name: `${l.policiesDir}/${String(i + 1).padStart(2, "0")}-${fileSlug(p.title)}.md`,
-      data: md,
-    });
+    add("policies", `${l.policiesDir}/${String(i + 1).padStart(2, "0")}-${fileSlug(p.title)}.md`, md);
   });
 
   // Obligations
-  const obligations = await getObligationsData(prisma, organizationId, locale);
-  const relevant = obligations.rows.filter((r) => r.applicability !== "does-not-apply");
-  const obligationsMd = [
-    `# ${l.obligationsTitle}: ${orgName}`,
-    "",
-    l.obligationsIntro,
-    "",
-    `| ${l.colDate} | ${l.colInstrument} | ${l.colProvision} | ${l.colObligation} | ${l.colApplies} |`,
-    "|---|---|---|---|---|",
-    ...relevant.map(
-      (r) =>
-        `| ${r.dateIso.slice(0, 10)} | ${mdCell(n.instrument[r.instrument] ?? r.instrument)} | ${mdCell(r.provision)} | ${mdCell(r.title)} | ${l.applies[r.applicability] ?? r.applicability} |`,
-    ),
-    "",
-    obligations.reviewMarker,
-    "",
-  ].join("\n");
-  entries.push({ name: l.obligationsMd, data: obligationsMd });
-  entries.push({
-    name: l.obligationsIcs,
-    data: buildIcs(
-      relevant.map((r) => ({
-        uid: `${r.id}-${organizationId}@aisentinel`,
-        date: r.dateIso.slice(0, 10),
-        summary: `${n.instrument[r.instrument] ?? r.instrument} ${r.provision}: ${r.title}`,
-        description: [
-          r.whatItMeans,
-          r.inScope.length ? r.inScope.map((s) => s.name).join(", ") : "",
-          l.applies[r.applicability] ?? "",
-        ]
-          .filter(Boolean)
-          .join("\n\n"),
-      })),
-      { calendarName: fill(l.calendarName, { org: orgName }) },
-    ),
-  });
+  if (packed.has("obligationsCalendar")) {
+    const obligations = await getObligationsData(prisma, organizationId, locale);
+    const relevant = obligations.rows.filter((r) => r.applicability !== "does-not-apply");
+    const obligationsMd = [
+      `# ${l.obligationsTitle}: ${orgName}`,
+      "",
+      l.obligationsIntro,
+      "",
+      `| ${l.colDate} | ${l.colInstrument} | ${l.colProvision} | ${l.colObligation} | ${l.colApplies} |`,
+      "|---|---|---|---|---|",
+      ...relevant.map(
+        (r) =>
+          `| ${r.dateIso.slice(0, 10)} | ${mdCell(n.instrument[r.instrument] ?? r.instrument)} | ${mdCell(r.provision)} | ${mdCell(r.title)} | ${l.applies[r.applicability] ?? r.applicability} |`,
+      ),
+      "",
+      obligations.reviewMarker,
+      "",
+    ].join("\n");
+    add("obligationsCalendar", l.obligationsMd, obligationsMd);
+    add(
+      "obligationsCalendar",
+      l.obligationsIcs,
+      buildIcs(
+        relevant.map((r) => ({
+          uid: `${r.id}-${organizationId}@aisentinel`,
+          date: r.dateIso.slice(0, 10),
+          summary: `${n.instrument[r.instrument] ?? r.instrument} ${r.provision}: ${r.title}`,
+          description: [
+            r.whatItMeans,
+            r.inScope.length ? r.inScope.map((s) => s.name).join(", ") : "",
+            l.applies[r.applicability] ?? "",
+          ]
+            .filter(Boolean)
+            .join("\n\n"),
+        })),
+        { calendarName: fill(l.calendarName, { org: orgName }) },
+      ),
+    );
+  }
 
-  // Per-system cross-border documents
-  const systems = await prisma.aISystem.findMany({
-    where: { organizationId, status: { not: "RETIRED" } },
-    select: { id: true, name: true },
-    orderBy: { name: "asc" },
-  });
-  let jurisdictionsDeclared = true;
+  // Per-system documents: the cross-border documents (which need declared
+  // places, as the register says) and the data flow (part of the register).
+  const perSystemDocs = ["impactAssessment", "notice", "humanReviewProtocol"].some((id) => packed.has(id));
+  const systems =
+    perSystemDocs || packed.has("systemRegister")
+      ? await prisma.aISystem.findMany({
+          where: { organizationId, status: { not: "RETIRED" } },
+          select: { id: true, name: true },
+          orderBy: { name: "asc" },
+        })
+      : [];
   for (const system of systems) {
-    const scope = await loadSystemScope(prisma, organizationId, system.id);
-    if (!scope.jurisdictionsDeclared) {
-      jurisdictionsDeclared = false;
-      break;
-    }
-    const assessment = await prisma.aIAssessment.findFirst({
-      where: { organizationId, aiSystemId: system.id },
-      orderBy: { updatedAt: "desc" },
-      select: { responses: true },
-    });
-    const input = {
-      scope,
-      answers: (assessment?.responses ?? {}) as Record<string, unknown>,
-      locale,
-      generatedAt: today,
-    };
     const dir = `${l.systemsDir}/${fileSlug(system.name)}`;
-    const docs: [string, ReturnType<typeof buildAssessmentArtifact>][] = [
-      [locale === "es" ? "evaluacion-de-impacto.md" : "impact-assessment.md", buildAssessmentArtifact(input)],
-      [locale === "es" ? "aviso.md" : "notice.md", buildNoticeArtifact(input)],
-      [locale === "es" ? "protocolo-de-revision-humana.md" : "human-review-protocol.md", buildProtocolArtifact(input)],
-    ];
-    if (scope.overlayTags.includes("agentic")) {
-      docs.push([locale === "es" ? "anexo-agentico.md" : "agentic-addendum.md", buildAgenticAddendumArtifact(input)]);
+    if (perSystemDocs) {
+      const scope = await loadSystemScope(prisma, organizationId, system.id);
+      if (scope.jurisdictionsDeclared) {
+        const assessment = await prisma.aIAssessment.findFirst({
+          where: { organizationId, aiSystemId: system.id },
+          orderBy: { updatedAt: "desc" },
+          select: { responses: true },
+        });
+        const input = {
+          scope,
+          answers: (assessment?.responses ?? {}) as Record<string, unknown>,
+          locale,
+          generatedAt: today,
+        };
+        const docs: [string, string, ReturnType<typeof buildAssessmentArtifact>][] = [];
+        if (packed.has("impactAssessment")) {
+          docs.push([
+            "impactAssessment",
+            locale === "es" ? "evaluacion-de-impacto.md" : "impact-assessment.md",
+            buildAssessmentArtifact(input),
+          ]);
+          if (scope.overlayTags.includes("agentic")) {
+            docs.push([
+              "impactAssessment",
+              locale === "es" ? "anexo-agentico.md" : "agentic-addendum.md",
+              buildAgenticAddendumArtifact(input),
+            ]);
+          }
+        }
+        if (packed.has("notice")) {
+          docs.push(["notice", locale === "es" ? "aviso.md" : "notice.md", buildNoticeArtifact(input)]);
+        }
+        if (packed.has("humanReviewProtocol")) {
+          docs.push([
+            "humanReviewProtocol",
+            locale === "es" ? "protocolo-de-revision-humana.md" : "human-review-protocol.md",
+            buildProtocolArtifact(input),
+          ]);
+        }
+        for (const [doc, file, artifact] of docs) {
+          add(doc, `${dir}/${file}`, renderArtifactMarkdown(artifact));
+        }
+      }
     }
-    for (const [file, artifact] of docs) {
-      entries.push({ name: `${dir}/${file}`, data: renderArtifactMarkdown(artifact) });
-    }
+    if (!packed.has("systemRegister")) continue;
 
     // The data flow, as facts rather than prose: who sends what in, who
     // receives what, under which contract, for how long.
@@ -501,115 +694,262 @@ export async function buildProgramPack(
           "",
         );
       }
-      entries.push({
-        name: `${dir}/${locale === "es" ? "flujo-de-datos.md" : "data-flow.md"}`,
-        data: md.join("\n"),
-      });
+      add("systemRegister", `${dir}/${locale === "es" ? "flujo-de-datos.md" : "data-flow.md"}`, md.join("\n"));
     }
   }
 
   // Vendors
-  const vendors = await prisma.aIVendor.findMany({
-    where: { organizationId },
-    orderBy: { name: "asc" },
-    include: { assessments: { orderBy: { createdAt: "desc" } } },
-  });
-  const vendorMd = [`# ${l.vendorsTitle}: ${orgName}`, ""];
-  if (vendors.length === 0) vendorMd.push(l.noVendors, "");
-  for (const v of vendors) {
-    vendorMd.push(`## ${v.name}`, "", `${l.riskLevel}: ${v.riskLevel ? n.vendorRisk[v.riskLevel] ?? v.riskLevel : l.notSet}`, "");
-    if (v.assessments.length === 0) vendorMd.push(l.noReview, "");
-    for (const a of v.assessments) {
-      vendorMd.push(
-        `### ${a.title} (${n.reviewStatus[a.status] ?? a.status}${a.nextReviewDate ? ` · ${l.nextReview}: ${day(a.nextReviewDate)}` : ""})`,
-        "",
-        a.findings ?? "",
-        "",
-      );
+  if (packed.has("vendorDueDiligence")) {
+    const vendors = await prisma.aIVendor.findMany({
+      where: { organizationId },
+      orderBy: { name: "asc" },
+      include: { assessments: { orderBy: { createdAt: "desc" } } },
+    });
+    const vendorMd = [`# ${l.vendorsTitle}: ${orgName}`, ""];
+    if (vendors.length === 0) vendorMd.push(l.noVendors, "");
+    for (const v of vendors) {
+      vendorMd.push(`## ${v.name}`, "", `${l.riskLevel}: ${v.riskLevel ? n.vendorRisk[v.riskLevel] ?? v.riskLevel : l.notSet}`, "");
+      if (v.assessments.length === 0) vendorMd.push(l.noReview, "");
+      for (const a of v.assessments) {
+        vendorMd.push(
+          `### ${a.title} (${n.reviewStatus[a.status] ?? a.status}${a.nextReviewDate ? ` · ${l.nextReview}: ${day(a.nextReviewDate)}` : ""})`,
+          "",
+          a.findings ?? "",
+          "",
+        );
+      }
     }
+    add("vendorDueDiligence", l.vendors, vendorMd.join("\n"));
   }
-  entries.push({ name: l.vendors, data: vendorMd.join("\n") });
 
-  // Inventory CSV, in the import format
+  // Inventory CSV, in the import format (part of the AI system register).
+  if (packed.has("systemRegister")) {
+    const header =
+      locale === "es"
+        ? ["Nombre", "Descripción", "Finalidad", "Proveedor", "Técnica", "Rol", "Estado", "Responsable", "Responsable técnico", "Datos personales", "Nivel de riesgo"]
+        : ["Name", "Description", "Purpose", "Vendor", "Technique", "Role", "Status", "Business owner", "Technical owner", "Personal data", "Risk level"];
+    const sep = locale === "es" ? ";" : ",";
+    const csvRows = registerRows.map((r) =>
+      [
+        r.name,
+        r.description ?? "",
+        r.purpose ?? "",
+        r.vendorName ?? "",
+        r.technique,
+        r.role,
+        r.status,
+        r.businessOwner ?? "",
+        r.technicalOwner ?? "",
+        r.processesPersonalData ? (locale === "es" ? "Sí" : "Yes") : "No",
+        r.riskLevel ?? "",
+      ]
+        .map(csvCell)
+        .join(sep),
+    );
+    add("systemRegister", l.inventory, `﻿${[header.join(sep), ...csvRows].join("\r\n")}\r\n`);
+  }
+
   // Sensitive data analyses: the reasoning, not only the answer.
-  const sensitiveRows = await prisma.sensitiveDataAssessment.findMany({
-    where: { organizationId },
-    orderBy: { updatedAt: "desc" },
-    include: { aiSystem: { select: { name: true } } },
-  });
-  const sensitiveMd = [`# ${l.sensitiveTitle}: ${orgName}`, "", SENSITIVE_FACTORS_REVIEW_MARKER[locale], ""];
-  if (sensitiveRows.length === 0) sensitiveMd.push(l.noSensitive, "");
-  for (const row of sensitiveRows) {
-    const factors = (row.factors ?? {}) as Record<string, { rating?: string; reasoning?: string }>;
-    sensitiveMd.push(`## ${row.subject}`, "");
-    sensitiveMd.push(
-      `${row.completedAt ? l.sensitiveCompleted : l.sensitiveOpen}${row.aiSystem ? ` · ${row.aiSystem.name}` : ""}${row.owner ? ` · ${l.sensitiveOwner}: ${row.owner}` : ""}`,
-      "",
-    );
-    if (row.description) sensitiveMd.push(row.description, "");
-    sensitiveMd.push(
-      `${l.sensitiveBand}: ${row.band ?? "—"}${row.suggestedBand && row.suggestedBand !== row.band ? ` (${l.sensitiveSuggested}: ${row.suggestedBand})` : ""}`,
-      "",
-    );
-    if (row.bandRationale) sensitiveMd.push(row.bandRationale, "");
-    sensitiveMd.push(`### ${l.sensitiveFactors}`, "");
-    for (const factor of SENSITIVE_FACTORS) {
-      const entry = factors[factor.id];
+  if (packed.has("sensitiveData")) {
+    const sensitiveRows = await prisma.sensitiveDataAssessment.findMany({
+      where: { organizationId },
+      orderBy: { updatedAt: "desc" },
+      include: { aiSystem: { select: { name: true } } },
+    });
+    const sensitiveMd = [`# ${l.sensitiveTitle}: ${orgName}`, "", SENSITIVE_FACTORS_REVIEW_MARKER[locale], ""];
+    if (sensitiveRows.length === 0) sensitiveMd.push(l.noSensitive, "");
+    for (const row of sensitiveRows) {
+      const factors = (row.factors ?? {}) as Record<string, { rating?: string; reasoning?: string }>;
+      sensitiveMd.push(`## ${row.subject}`, "");
       sensitiveMd.push(
-        `- **${factor.label[locale]}** (${entry?.rating ?? "—"}): ${entry?.reasoning?.trim() || "—"}`,
+        `${row.completedAt ? l.sensitiveCompleted : l.sensitiveOpen}${row.aiSystem ? ` · ${row.aiSystem.name}` : ""}${row.owner ? ` · ${l.sensitiveOwner}: ${row.owner}` : ""}`,
+        "",
       );
+      if (row.description) sensitiveMd.push(row.description, "");
+      sensitiveMd.push(
+        `${l.sensitiveBand}: ${row.band ?? "—"}${row.suggestedBand && row.suggestedBand !== row.band ? ` (${l.sensitiveSuggested}: ${row.suggestedBand})` : ""}`,
+        "",
+      );
+      if (row.bandRationale) sensitiveMd.push(row.bandRationale, "");
+      sensitiveMd.push(`### ${l.sensitiveFactors}`, "");
+      for (const factor of SENSITIVE_FACTORS) {
+        const entry = factors[factor.id];
+        sensitiveMd.push(
+          `- **${factor.label[locale]}** (${entry?.rating ?? "—"}): ${entry?.reasoning?.trim() || "—"}`,
+        );
+      }
+      sensitiveMd.push("");
+      if (row.decision) sensitiveMd.push(`### ${l.sensitiveDecision}`, "", row.decision, "");
+      if (row.nextReviewDate) {
+        sensitiveMd.push(`${l.nextReview}: ${row.nextReviewDate.toISOString().slice(0, 10)}`, "");
+      }
     }
-    sensitiveMd.push("");
-    if (row.decision) sensitiveMd.push(`### ${l.sensitiveDecision}`, "", row.decision, "");
-    if (row.nextReviewDate) {
-      sensitiveMd.push(`${l.nextReview}: ${row.nextReviewDate.toISOString().slice(0, 10)}`, "");
+    add("sensitiveData", l.sensitive, sensitiveMd.join("\n"));
+  }
+
+  // Threat models: the builder-facing half of the record.
+  if (packed.has("threatModel")) {
+    const threatModels = await prisma.threatModel.findMany({
+      where: { organizationId, status: { not: "ARCHIVED" } },
+      orderBy: { updatedAt: "desc" },
+      include: {
+        aiSystem: { select: { name: true } },
+        scenarios: {
+          orderBy: [{ priority: "desc" }, { createdAt: "asc" }],
+          include: {
+            controls: {
+              orderBy: { createdAt: "asc" },
+              include: { tests: { orderBy: { testedAt: "desc" } } },
+            },
+          },
+        },
+      },
+    });
+    if (threatModels.length > 0) {
+      const docs = threatModels.map((m) =>
+        renderThreatModelDoc(
+          {
+            name: m.name,
+            systemSummary: m.systemSummary,
+            systemName: m.aiSystem?.name ?? null,
+            capabilities: m.capabilities,
+            reviewedAt: m.reviewedAt,
+            organizationName: orgName,
+            scenarios: m.scenarios,
+          },
+          locale,
+          new Date(),
+        ),
+      );
+      add("threatModel", l.threats, docs.join("\n\n---\n\n"));
     }
   }
-  entries.push({ name: l.sensitive, data: sensitiveMd.join("\n") });
 
-  const header =
-    locale === "es"
-      ? ["Nombre", "Descripción", "Finalidad", "Proveedor", "Técnica", "Rol", "Estado", "Responsable", "Responsable técnico", "Datos personales", "Nivel de riesgo"]
-      : ["Name", "Description", "Purpose", "Vendor", "Technique", "Role", "Status", "Business owner", "Technical owner", "Personal data", "Risk level"];
-  const sep = locale === "es" ? ";" : ",";
-  const csvRows = registerRows.map((r) =>
-    [
-      r.name,
-      r.description ?? "",
-      r.purpose ?? "",
-      r.vendorName ?? "",
-      r.technique,
-      r.role,
-      r.status,
-      r.businessOwner ?? "",
-      r.technicalOwner ?? "",
-      r.processesPersonalData ? (locale === "es" ? "Sí" : "Yes") : "No",
-      r.riskLevel ?? "",
-    ]
-      .map(csvCell)
-      .join(sep),
-  );
-  entries.push({ name: l.inventory, data: `﻿${[header.join(sep), ...csvRows].join("\r\n")}\r\n` });
+  // Assessment portfolio and model inventory: the same PDFs as their pages.
+  if (packed.has("assessmentPortfolio")) {
+    const rows = await loadAssessmentPortfolioData(prisma, organizationId);
+    const pdf = await renderToBuffer(
+      AssessmentPortfolioReport({ assessments: rows, orgName, draftNote: draftNote("assessmentPortfolio") }),
+    );
+    add("assessmentPortfolio", l.assessmentPortfolio, new Uint8Array(pdf));
+  }
+  if (packed.has("modelInventory")) {
+    const rows = await loadModelInventoryData(prisma, organizationId);
+    const pdf = await renderToBuffer(ModelInventoryReport({ models: rows, orgName }));
+    add("modelInventory", l.modelInventory, new Uint8Array(pdf));
+  }
 
-  // README last, so it can describe what was actually produced
+  // AIUC-1 evidence, one document per agent, as the agent's page exports it.
+  if (packed.has("aiuc1Evidence")) {
+    const candidates = await prisma.aISystem.findMany({
+      where: { organizationId, status: { not: "RETIRED" } },
+      select: { id: true, name: true, technique: true, agentProfile: { select: { autonomy: true } } },
+      orderBy: { name: "asc" },
+    });
+    const agents = candidates.filter((s) =>
+      isAgentSystem({ technique: s.technique, autonomy: s.agentProfile?.autonomy }),
+    );
+    const rowsByAgent = await loadAgentRows(prisma, organizationId, agents.map((a) => a.id));
+    const now = new Date();
+    for (const agent of agents) {
+      const readiness = agentReadiness(rowsByAgent.get(agent.id) ?? new Map(), now);
+      const ids = [
+        ...new Set(
+          readiness.domains.flatMap((d) =>
+            d.requirements.flatMap((r) => [
+              ...r.tests.map((x) => x.recordedBy),
+              ...(r.acceptance ? [r.acceptance.acceptedBy] : []),
+            ]),
+          ),
+        ),
+      ];
+      const users = ids.length
+        ? await prisma.user.findMany({
+            where: { id: { in: ids }, organizationMemberships: { some: { organizationId } } },
+            select: { id: true, name: true, email: true },
+          })
+        : [];
+      const people = Object.fromEntries(users.map((u) => [u.id, u.name || u.email]));
+      add(
+        "aiuc1Evidence",
+        `${l.aiuc1Dir}/${fileSlug(agent.name)}.md`,
+        renderAiuc1EvidenceDoc({ agentName: agent.name, organizationName: orgName, readiness, people }, locale),
+      );
+    }
+  }
+
+  // The index (README) last but first in the archive, so it can describe what
+  // was actually produced: every register document, its state and its files,
+  // then what stayed out and why.
+  const stateWord = (id: string) => {
+    const doc = documents.find((d) => d.id === id);
+    return doc ? tr(`state.${doc.status.state}`) : "";
+  };
+  const contents = plan.include.filter((d) => (filesOf.get(d.entry.id) ?? []).length > 0);
+  const leftOut = [
+    ...plan.leftOut,
+    // Included by the plan but nothing to write (no rows): said, not hidden.
+    ...plan.include
+      .filter((d) => (filesOf.get(d.entry.id) ?? []).length === 0)
+      .map((d) => ({ entry: d.entry, reason: "empty" as const, doc: documents.find((x) => x.id === d.entry.id)! })),
+  ];
+  const reasonText = (item: (typeof leftOut)[number]) => {
+    const status = item.doc.status;
+    if (item.reason === "needsInput" && status.state === "needsInput") {
+      return tr("needs", { input: tr(`inputs.${status.input}`) });
+    }
+    if (item.reason === "draftsNotRequested" && status.state === "draft") {
+      return fill(l.reasons.draftsNotRequested, {
+        gaps: status.gaps.map((g) => tr(`gaps.${g.key}`, { count: g.count })).join("; "),
+      });
+    }
+    return l.reasons[item.reason === "needsInput" ? "empty" : item.reason];
+  };
   const confirmation = await getConfirmationSummary(prisma, organizationId);
   const pending = pendingPacks(["EU_AI_ACT", "CA_CCPA_ADMT", "EU_GDPR", "CO_SB_26_189", "TX_TRAIGA", "WA_AI_RULES"]);
+  const describe: [string, string, string][] = [
+    ["programReport", l.program, l.items.program],
+    ["systemRegister", l.register, l.items.register],
+    ["policies", `${l.policiesDir}/`, l.items.policies],
+    ["obligationsCalendar", `${l.obligationsMd}, ${l.obligationsIcs}`, l.items.obligations],
+    ["impactAssessment", `${l.systemsDir}/`, l.items.systems],
+    ["vendorDueDiligence", l.vendors, l.items.vendors],
+    ["systemRegister", l.inventory, l.items.inventory],
+    ["sensitiveData", l.sensitive, l.items.sensitive],
+    ["threatModel", l.threats, l.items.threats],
+    ["assessmentPortfolio", l.assessmentPortfolio, l.items.assessmentPortfolio],
+    ["modelInventory", l.modelInventory, l.items.modelInventory],
+    ["aiuc1Evidence", `${l.aiuc1Dir}/`, l.items.aiuc1],
+  ];
   const readme = [
     `# ${l.title}: ${orgName}`,
     "",
     `${l.generated}: ${today}`,
     "",
+    includeDrafts ? l.index.withDrafts : l.index.readyOnly,
+    "",
     `## ${l.contents}`,
     "",
-    `- \`${l.program}\`: ${l.items.program}`,
-    `- \`${l.register}\`: ${l.items.register}`,
-    `- \`${l.policiesDir}/\`: ${policies.length > 0 ? l.items.policies : l.noPolicies}`,
-    `- \`${l.obligationsMd}\`, \`${l.obligationsIcs}\`: ${l.items.obligations}`,
-    `- \`${l.systemsDir}/\`: ${jurisdictionsDeclared ? l.items.systems : l.noJurisdictions}`,
-    `- \`${l.vendors}\`: ${l.items.vendors}`,
-    `- \`${l.inventory}\`: ${l.items.inventory}`,
-    `- \`${l.sensitive}\`: ${l.items.sensitive}`,
-    `- \`${l.threats}\`: ${l.items.threats}`,
+    ...(contents.length === 0
+      ? [l.index.empty]
+      : [
+          `| ${l.index.colDocument} | ${l.index.colState} | ${l.index.colFiles} |`,
+          "|---|---|---|",
+          ...contents.map((d) => {
+            const files = filesOf.get(d.entry.id) ?? [];
+            const shown = files.length > 4 ? [...files.slice(0, 3), `+${files.length - 3}`] : files;
+            return `| ${mdCell(tr(`items.${d.entry.id}`))} | ${stateWord(d.entry.id)} | ${shown.map((f) => (f.startsWith("+") ? f : `\`${f}\``)).join(", ")} |`;
+          }),
+        ]),
+    "",
+    ...(leftOut.length > 0
+      ? [`## ${l.index.notIncluded}`, "", ...leftOut.map((item) => `- ${tr(`items.${item.entry.id}`)}: ${reasonText(item)}`), ""]
+      : []),
+    `## ${l.index.whatEachHolds}`,
+    "",
+    ...describe
+      .filter(([id]) => (filesOf.get(id) ?? []).length > 0)
+      .map(([, file, text]) => `- \`${file}\`: ${text}`),
     `- \`${l.manifest}\`: ${l.items.manifest}`,
     "",
     `## ${l.status}`,
@@ -624,51 +964,10 @@ export async function buildProgramPack(
       ? fill(l.pending, { packs: pending.map((id) => n.pack[id] ?? id).join(", ") })
       : l.allSignedOff,
     "",
+    fill(l.index.manifestNote, { file: l.manifest }),
+    "",
   ].join("\n");
   entries.unshift({ name: l.readme, data: readme });
-
-  if (!jurisdictionsDeclared) {
-    // Drop any partial per-system output produced before the break.
-    for (let i = entries.length - 1; i >= 0; i--) {
-      if (entries[i].name.startsWith(`${l.systemsDir}/`)) entries.splice(i, 1);
-    }
-  }
-
-  // Threat models: the builder-facing half of the record.
-  const threatModels = await prisma.threatModel.findMany({
-    where: { organizationId, status: { not: "ARCHIVED" } },
-    orderBy: { updatedAt: "desc" },
-    include: {
-      aiSystem: { select: { name: true } },
-      scenarios: {
-        orderBy: [{ priority: "desc" }, { createdAt: "asc" }],
-        include: {
-          controls: {
-            orderBy: { createdAt: "asc" },
-            include: { tests: { orderBy: { testedAt: "desc" } } },
-          },
-        },
-      },
-    },
-  });
-  if (threatModels.length > 0) {
-    const docs = threatModels.map((m) =>
-      renderThreatModelDoc(
-        {
-          name: m.name,
-          systemSummary: m.systemSummary,
-          systemName: m.aiSystem?.name ?? null,
-          capabilities: m.capabilities,
-          reviewedAt: m.reviewedAt,
-          organizationName: orgName,
-          scenarios: m.scenarios,
-        },
-        locale,
-        new Date(),
-      ),
-    );
-    entries.push({ name: l.threats, data: docs.join("\n\n---\n\n") });
-  }
 
   // The manifest goes in last and covers every other file: a reader can check
   // any single file in the archive without trusting the archive as a whole.
@@ -694,6 +993,8 @@ export async function buildProgramPack(
         format: "zip",
         locale,
         files: entries.length,
+        includeDrafts,
+        documents: contents.map((d) => d.entry.id),
         appVersion: stamp.appVersion,
         commit: stamp.commit,
         generatedAt: stamp.generatedAt,

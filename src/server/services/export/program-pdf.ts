@@ -25,10 +25,18 @@ import {
   getSnapshot,
 } from "@/server/services/program/snapshot";
 import { diffSnapshots } from "@/lib/program-diff";
+import type { DraftNote } from "@/server/services/export/draft-gaps-page";
 
 export async function renderProgramPdf(
   prisma: PrismaClient,
-  args: { organizationId: string; userId: string; orgName: string; locale: "en" | "es" },
+  args: {
+    organizationId: string;
+    userId: string;
+    orgName: string;
+    locale: "en" | "es";
+    /** In the program pack, a draft opens on a page naming its gaps. */
+    draftNote?: DraftNote | null;
+  },
 ): Promise<{ buffer: Buffer; dateStr: string; systems: number }> {
   const { organizationId, orgName, locale, userId } = args;
   const [graph, scorecard, confirmation] = await Promise.all([
@@ -117,6 +125,7 @@ export async function renderProgramPdf(
       scorecard,
       derivation,
       snapshot: snapshotContext,
+      draftNote: args.draftNote ?? null,
     }),
   );
 

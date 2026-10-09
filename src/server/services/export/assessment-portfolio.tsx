@@ -8,6 +8,7 @@ import {
   StatCard, AccentSectionHeader, StatusBadge,
   s, fmtDate,
 } from "./pdf-styles";
+import { DraftGapsPage, type DraftNote } from "./draft-gaps-page";
 
 export interface AssessmentExportData {
   id: string;
@@ -28,9 +29,12 @@ export interface AssessmentExportData {
 export function AssessmentPortfolioReport({
   assessments,
   orgName,
+  draftNote,
 }: {
   assessments: AssessmentExportData[];
   orgName: string;
+  /** In the program pack, a draft opens on a page naming its gaps. */
+  draftNote?: DraftNote | null;
 }) {
   const date = fmtDate(new Date());
 
@@ -52,6 +56,7 @@ export function AssessmentPortfolioReport({
 
   return (
     <Document>
+      {draftNote && <DraftGapsPage note={draftNote} />}
       <CoverPage
         orgName={orgName}
         title="AI Risk Assessment Portfolio"

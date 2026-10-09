@@ -53,16 +53,23 @@ import { TierMarker } from "@/components/governance/risk-tier-badge";
 import { WorkedExampleOffer } from "@/components/governance/worked-example-card";
 import { TIER_BG_CLASS, type RiskTier } from "@/config/risk-tier-palette";
 import { useSkin } from "@/components/guided/skin-context";
-import { NextStepCard } from "@/components/guided/next-step-card";
+import { GuidedDashboard } from "@/components/guided/guided-dashboard";
 import { PageHeader } from "@/components/governance/page-header";
 import { FirstRunCard } from "@/components/help/first-run-card";
 
 export default function GovernanceDashboardPage() {
+  const { skin } = useSkin();
+  // Guided has its own dashboard: the program at one glance (the clarity work,
+  // src/components/guided/guided-dashboard.tsx). Classic keeps this one until
+  // it is retired.
+  if (skin === "guided") return <GuidedDashboard />;
+  return <ClassicDashboard />;
+}
+
+function ClassicDashboard() {
   const { organization, organizations, setOrganization, canWrite } = useOrganization();
   const { userType } = useUserType();
   const switcher = organizationSwitcherView(userType);
-  const { skin } = useSkin();
-  const guided = skin === "guided";
   const t = useTranslations("dashboard");
   const locale = useLocale();
   const tc = useTranslations("common");
@@ -136,7 +143,7 @@ export default function GovernanceDashboardPage() {
         title={organization?.name || "AI Governance"}
         description={t("subtitle")}
         actions={
-        switcher.show && !guided && (
+        switcher.show && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="gap-2">
@@ -182,22 +189,18 @@ export default function GovernanceDashboardPage() {
           remembered per browser and it can be reopened from the "?" panel. */}
       {organization && <FirstRunCard />}
 
-      {/* Guided layout only: the next step on the program path. The program
-          map is in the menu's "Library and tools", so it is not repeated here
-          (one place per action). */}
-      {guided && organization && <NextStepCard />}
 
       {/* The first-run choice, so an empty dashboard offers a way to fill
           itself in rather than only empty tiles. Renders nothing once either
           answer has been given. Classic only: in Guided the choice is the
           quick start's first, optional one, and the dashboard keeps a single
           call (the next step), which leads there. */}
-      {organization && !guided && <WorkedExampleOffer organizationId={organization.id} />}
+      {organization && <WorkedExampleOffer organizationId={organization.id} />}
 
       {/* Program CTA — once a quickstart profile is completed, the flagship
           deliverable is the Governance Program page. Classic only: Guided
           shows it as a link under the next step. */}
-      {!guided && stats?.quickstartProfile && (
+      {stats?.quickstartProfile && (
         <Card className="border-primary/30 bg-primary/5">
           <CardContent className="p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <div className="p-3 rounded-lg bg-primary/10 shrink-0">
@@ -223,8 +226,7 @@ export default function GovernanceDashboardPage() {
       {/* Quickstart prompt — show when org has few systems and no completed
           program profile. Classic only: in Guided the next-step card already
           leads to the quick start while it is not done. */}
-      {!guided &&
-        (stats?.totalSystems ?? 0) <= 3 &&
+      {(stats?.totalSystems ?? 0) <= 3 &&
         (stats?.deployedSystems ?? 0) === 0 &&
         !stats?.quickstartProfile && (
         <Card className="border-primary/30 bg-primary/5">
@@ -431,7 +433,7 @@ export default function GovernanceDashboardPage() {
               </div>
             </div>
             {/* In Guided the menu leads to each of these lists; not repeated here. */}
-            {incidents.total > 0 && !guided && (
+            {incidents.total > 0 && (
               <Link href="/governance/incidents" className="block mt-3">
                 <Button variant="outline" size="sm" className="w-full">
                   {t("viewIncidents")} <ArrowRight className="w-3 h-3 ml-1" />
@@ -474,13 +476,11 @@ export default function GovernanceDashboardPage() {
                 )}
               </div>
             </div>
-            {!guided && (
-              <Link href="/governance/oversight">
-                <Button variant="outline" size="sm" className="w-full">
-                  {t("viewOversight")} <ArrowRight className="w-3 h-3 ml-1" />
-                </Button>
-              </Link>
-            )}
+            <Link href="/governance/oversight">
+              <Button variant="outline" size="sm" className="w-full">
+                {t("viewOversight")} <ArrowRight className="w-3 h-3 ml-1" />
+              </Button>
+            </Link>
           </CardContent>
         </Card>
 
@@ -517,13 +517,11 @@ export default function GovernanceDashboardPage() {
                 )}
               </div>
             </div>
-            {!guided && (
-              <Link href="/governance/ai-registry">
-                <Button variant="outline" size="sm" className="w-full">
-                  {t("viewRegistry")} <ArrowRight className="w-3 h-3 ml-1" />
-                </Button>
-              </Link>
-            )}
+            <Link href="/governance/ai-registry">
+              <Button variant="outline" size="sm" className="w-full">
+                {t("viewRegistry")} <ArrowRight className="w-3 h-3 ml-1" />
+              </Button>
+            </Link>
           </CardContent>
         </Card>
 
@@ -634,7 +632,7 @@ export default function GovernanceDashboardPage() {
 
         {/* Quick Actions. In Guided each of these is the button on its own
             step's page, reached from the menu: one place per action. */}
-        {canWrite && !guided && (
+        {canWrite && (
           <Card>
             <CardHeader className="p-4 sm:p-6">
               <CardTitle className="text-base sm:text-lg">{t("quickActions")}</CardTitle>

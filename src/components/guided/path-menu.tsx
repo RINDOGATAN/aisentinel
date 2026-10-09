@@ -15,17 +15,19 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Check, ChevronDown, Circle, CircleDot, type LucideIcon } from "lucide-react";
+import { Check, ChevronDown, Circle, CircleDashed, CircleDot, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   currentLibraryId,
   currentStepId,
   isCounted,
   isShown,
-  overallPercent,
+  stageExpandable,
+  programFigure,
   stageOfStep,
   stageOpenByDefault,
   stageProgress,
+  stageWord,
   type PathConfig,
   type PathStage,
   type PathStatuses,
@@ -57,6 +59,29 @@ interface PathMenuProps<C> {
    * its plan ("Day 12 of 90"). Nothing when null.
    */
   planLine?: string | null;
+  /**
+   * False for a member limited to departments: the figures are the whole
+   * organisation's, so the overall progress, each stage's count and each
+   * step's state are not shown (the department switch).
+   */
+  showProgress?: boolean;
+  /**
+   * One quiet line under a step, by step id: the documents it produces and
+   * their states (owner's decision d6), worded by the product from its
+   * document register. Shown only with the progress.
+   */
+  stepNotes?: Record<string, string>;
+  /**
+   * The ids of the stages with work waiting for a person: their state word
+   * reads "needs action" (path.ts, stageWord).
+   */
+  attention?: readonly string[];
+  /**
+   * Everything the product does not offer yet, gathered in one group at the
+   * foot of the path (owner's decision d6) instead of "coming" lines spread
+   * over the stages. Nothing when null or empty.
+   */
+  notYet?: { title: string; items: string[] } | null;
 }
 
 /**
@@ -90,10 +115,16 @@ export function PathMenu<C>({
   t,
   overview,
   planLine = null,
+  showProgress = true,
+  stepNotes = {},
+  attention = [],
+  notYet = null,
 }: PathMenuProps<C>) {
   const library = config.library({ stripeEnabled, clientMode });
   const currentStep = currentStepId(config, pathname, search);
-  const percent = statuses ? overallPercent(config, statuses) : null;
+  // The one programme figure ("2 of 10 steps confirmed"), as on the
+  // dashboard, All clients and the Reports page (path.ts, programFigure).
+  const figure = statuses && showProgress ? programFigure(config, statuses) : null;
   const onOverview = pathname === overview.href;
   const currentStage = stageOfStep(config, currentStep);
   const openStage = stageOpenByDefault(config, currentStep, statuses, onOverview);
@@ -125,12 +156,16 @@ export function PathMenu<C>({
   if (collapsed && !sheet) {
     return (
       <nav aria-label={t("navLabel")} className="flex flex-col items-center gap-1 py-2">
+        {showProgress && (
         <span
           className="text-[11px] font-semibold tabular-nums text-primary"
-          title={percent === null ? t("loading") : t("overall", { percent })}
+          title={
+            figure === null ? t("loading") : t("figure.line", { done: figure.confirmed, total: figure.total })
+          }
         >
-          {percent === null ? " " : `${percent}%`}
+          {figure === null ? " " : `${figure.confirmed}/${figure.total}`}
         </span>
+        )}
         <IconLink
           href={overview.href}
           icon={overview.icon}
@@ -140,10 +175,14 @@ export function PathMenu<C>({
         />
         <div className="my-1 h-px w-8 bg-border" />
         {config.stages.map((stage, index) => {
-          const progress = statuses ? stageProgress(stage, statuses) : null;
+          const progress = statuses && showProgress ? stageProgress(stage, statuses) : null;
           const href = stageTarget(stage, statuses);
           const label = `${t("stageNumber", { number: index + 1 })}: ${t(`stages.${stage.id}`)}${
-            progress ? `, ${t("stageProgress", { done: progress.done, total: progress.total })}` : ""
+            progress
+              ? progress.state === "coming"
+                ? `, ${t("stageState.coming")}`
+                : `, ${t("stageProgress", { done: progress.done, total: progress.total })}`
+              : ""
           }`;
           const active = stage.id === currentStage?.id;
           const ring = (
@@ -193,25 +232,27 @@ export function PathMenu<C>({
     <nav aria-label={t("navLabel")} className="flex flex-col gap-1">
       {/* The whole program at a glance: always one line and a bar tall, so
           nothing moves when the figure arrives. */}
-      <div className="px-3 pb-2 flex flex-col gap-1.5" aria-busy={percent === null}>
-        <span className="flex items-baseline justify-between gap-2 text-sm">
+      {showProgress && (
+      <div className="px-3 pb-2 flex flex-col gap-1.5" aria-busy={figure === null}>
+        <span className="flex flex-col gap-0.5 text-sm">
           <span className="font-medium text-foreground">{t("overallLabel")}</span>
-          <span className="tabular-nums text-primary font-semibold">
-            {percent === null ? (
+          <span className="tabular-nums text-primary font-semibold" data-testid="menu-program-figure">
+            {figure === null ? (
               <>
                 <span aria-hidden="true">&nbsp;</span>
                 <span className="sr-only">{t("loading")}</span>
               </>
             ) : (
-              `${percent}%`
+              t("figure.line", { done: figure.confirmed, total: figure.total })
             )}
           </span>
         </span>
-        <ProgressBar value={percent} total={100} />
+        <ProgressBar value={figure?.confirmed ?? null} total={figure?.total ?? 0} />
         {planLine && (
           <span className="text-xs text-muted-foreground tabular-nums">{planLine}</span>
         )}
       </div>
+      )}
       <Link
         href={overview.href}
         onClick={onNavigate}
@@ -228,9 +269,87 @@ export function PathMenu<C>({
       <ol className="flex flex-col gap-0.5">
         {config.stages.map((stage, index) => {
           const open = isOpen(stage);
-          const progress = statuses ? stageProgress(stage, statuses) : null;
+          const progress = statuses && showProgress ? stageProgress(stage, statuses) : null;
           const panelId = `path-stage-${variant}-${stage.id}`;
           const holdsCurrent = stage.id === currentStage?.id;
+          // Steps with no page yet are not listed here: they are gathered in
+          // the "Not in AI Sentinel yet" group at the foot.
+          const shownSteps = stage.steps.filter((step) => isShown(step, statuses) && !step.coming);
+          if (shownSteps.length === 0) return null;
+          // Nothing to open: no chevron, and the row is plain text.
+          const expandable = stageExpandable(stage, statuses);
+          const stepList = (
+            <ul className="min-h-0 overflow-hidden flex flex-col gap-0.5 pl-5">
+              {shownSteps.map((step) => (
+                <li key={step.id} className="border-l border-border pl-2 first:mt-0.5 last:mb-1">
+                  <StepRow
+                    step={step}
+                    status={statuses ? statuses[step.id] ?? "todo" : null}
+                    showProgress={showProgress}
+                    note={showProgress ? stepNotes[step.id] : undefined}
+                    current={step.id === currentStep}
+                    className={itemBase}
+                    idle={itemIdle}
+                    active={itemActive}
+                    onNavigate={onNavigate}
+                    t={t}
+                  />
+                </li>
+              ))}
+            </ul>
+          );
+          const rowClass = cn(
+            "flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left",
+            sheet ? "min-h-12" : "min-h-11",
+          );
+          const rowContent = (
+            <>
+              <ProgressRing
+                value={progress?.done ?? null}
+                total={progress?.total ?? 0}
+                complete={progress?.state === "done"}
+              >
+                {index + 1}
+              </ProgressRing>
+              <span className="flex min-w-0 flex-1 flex-col">
+                <span
+                  className={cn(
+                    WRAP_LABEL,
+                    "font-medium",
+                    sheet ? "text-base" : "text-sm",
+                    holdsCurrent ? "text-primary" : "text-foreground",
+                  )}
+                >
+                  {t(`stages.${stage.id}`)}
+                </span>
+                {/* Always one line tall, filled or not, so nothing moves when progress arrives. */}
+                {showProgress && (
+                <span className="truncate text-xs text-muted-foreground tabular-nums">
+                  {progress ? (
+                    // One state word per stage (decision d6); the ring beside it
+                    // carries the count.
+                    <span data-testid={`stage-word-${stage.id}`}>
+                      {t(`stageState.${stageWord(stage, statuses!, attention)}`)}
+                    </span>
+                  ) : (
+                    <>
+                      <span aria-hidden="true">&nbsp;</span>
+                      <span className="sr-only">{t("loading")}</span>
+                    </>
+                  )}
+                </span>
+                )}
+              </span>
+            </>
+          );
+          if (!expandable) {
+            return (
+              <li key={stage.id} data-stage-static={stage.id}>
+                <div className={rowClass}>{rowContent}</div>
+                {shownSteps.length > 0 && stepList}
+              </li>
+            );
+          }
           return (
             <li key={stage.id}>
               <button
@@ -238,44 +357,9 @@ export function PathMenu<C>({
                 aria-expanded={open}
                 aria-controls={panelId}
                 onClick={() => toggle(stage)}
-                className={cn(
-                  "flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left motion-safe:transition-colors hover:bg-secondary",
-                  sheet ? "min-h-12" : "min-h-11",
-                  FOCUS,
-                )}
+                className={cn(rowClass, "motion-safe:transition-colors hover:bg-secondary", FOCUS)}
               >
-                <ProgressRing
-                  value={progress?.done ?? null}
-                  total={progress?.total ?? 0}
-                  complete={progress?.state === "done"}
-                >
-                  {index + 1}
-                </ProgressRing>
-                <span className="flex min-w-0 flex-1 flex-col">
-                  <span
-                    className={cn(
-                      WRAP_LABEL,
-                      "font-medium",
-                      sheet ? "text-base" : "text-sm",
-                      holdsCurrent ? "text-primary" : "text-foreground",
-                    )}
-                  >
-                    {t(`stages.${stage.id}`)}
-                  </span>
-                  {/* Always one line tall, filled or not, so nothing moves when progress arrives. */}
-                  <span className="truncate text-xs text-muted-foreground tabular-nums">
-                    {progress ? (
-                      `${t("stageProgress", { done: progress.done, total: progress.total })} · ${t(
-                        `stageState.${progress.state}`,
-                      )}`
-                    ) : (
-                      <>
-                        <span aria-hidden="true">&nbsp;</span>
-                        <span className="sr-only">{t("loading")}</span>
-                      </>
-                    )}
-                  </span>
-                </span>
+                {rowContent}
                 <ChevronDown
                   aria-hidden="true"
                   className={cn(
@@ -292,27 +376,23 @@ export function PathMenu<C>({
                   open ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
                 )}
               >
-                <ul className="min-h-0 overflow-hidden flex flex-col gap-0.5 pl-5">
-                  {stage.steps.filter((step) => isShown(step, statuses)).map((step) => (
-                    <li key={step.id} className="border-l border-border pl-2 first:mt-0.5 last:mb-1">
-                      <StepRow
-                        step={step}
-                        status={statuses ? statuses[step.id] ?? "todo" : null}
-                        current={step.id === currentStep}
-                        className={itemBase}
-                        idle={itemIdle}
-                        active={itemActive}
-                        onNavigate={onNavigate}
-                        t={t}
-                      />
-                    </li>
-                  ))}
-                </ul>
+                {stepList}
               </div>
             </li>
           );
         })}
       </ol>
+
+      {notYet && notYet.items.length > 0 && (
+        <div className="px-3 pt-4" data-testid="menu-not-yet">
+          <p className="pb-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+            {notYet.title} <span className="tabular-nums">({notYet.items.length})</span>
+          </p>
+          <p className={cn("text-muted-foreground leading-snug", sheet ? "text-sm" : "text-xs")}>
+            {notYet.items.join(" · ")}
+          </p>
+        </div>
+      )}
 
       <p className="px-3 pt-4 pb-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
         {t("libraryTitle")}
@@ -342,6 +422,8 @@ export function PathMenu<C>({
 function StepRow<C>({
   step,
   status,
+  showProgress = true,
+  note,
   current,
   className,
   idle,
@@ -351,6 +433,10 @@ function StepRow<C>({
 }: {
   step: PathStep<C>;
   status: StepStatus | null;
+  /** False: a plain mark, no state (the state is the whole organisation's). */
+  showProgress?: boolean;
+  /** The quiet line under the label: the step's documents and their states. */
+  note?: string;
   current: boolean;
   className: string;
   idle: string;
@@ -363,9 +449,13 @@ function StepRow<C>({
     return (
       <span className={cn(className, "cursor-default text-muted-foreground")} aria-disabled="true">
         <Circle className="size-3.5 shrink-0 opacity-40" aria-hidden="true" />
-        <span className={WRAP_LABEL}>{label}</span>
-        <span className="shrink-0 rounded-full border border-border px-1.5 py-0.5 text-[10px] uppercase tracking-wider">
-          {t("stepStatus.coming")}
+        {/* The badge sits under the name: beside it, in the phone sheet, it
+            left the name so little room that Spanish words broke mid-word. */}
+        <span className={WRAP_LABEL}>
+          <span className="block">{label}</span>
+          <span className="mt-1 inline-block rounded-full border border-border px-1.5 py-0.5 text-[10px] uppercase tracking-wider">
+            {t("stepStatus.coming")}
+          </span>
         </span>
       </span>
     );
@@ -377,8 +467,22 @@ function StepRow<C>({
       aria-current={current ? "page" : undefined}
       className={cn(className, current ? active : idle)}
     >
-      <StepMark status={status} optional={!!step.optional} t={t} />
-      <span className={WRAP_LABEL}>{label}</span>
+      {showProgress ? (
+        <StepMark status={status} optional={!!step.optional} t={t} />
+      ) : (
+        <step.icon className="size-3.5 shrink-0" aria-hidden="true" />
+      )}
+      <span className={WRAP_LABEL}>
+        <span className="block">{label}</span>
+        {note && (
+          <span
+            className="mt-0.5 block text-[11px] leading-snug text-muted-foreground"
+            data-testid={`step-docs-${step.id}`}
+          >
+            {note}
+          </span>
+        )}
+      </span>
     </Link>
   );
 }
@@ -408,6 +512,8 @@ function StepMark({
         <span className="flex size-3.5 items-center justify-center rounded-full bg-primary text-primary-foreground">
           <Check className="size-2.5" strokeWidth={3} aria-hidden="true" />
         </span>
+      ) : status === "toConfirm" ? (
+        <CircleDashed className="size-3.5 text-warning" aria-hidden="true" />
       ) : status === "started" ? (
         <CircleDot className="size-3.5 text-primary" aria-hidden="true" />
       ) : (

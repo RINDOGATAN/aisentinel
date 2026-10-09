@@ -15,14 +15,30 @@
  * Both carry `planStart`, day 1 of the 30/60/90-day plan
  * (src/server/services/program/plan-start.ts); the plan's state is worked out
  * where it is shown, from that date and the statuses (src/components/guided/plan.ts).
+ *
+ * `overview` (and each portfolio row) carries what the Guided dashboard, the
+ * menu's document lines and All clients read (the clarity work carried from
+ * DPO Central, owner's decision d10, 9 October 2026): every document of the
+ * register with its state, what needs action, and the deadlines at risk.
+ * Organisation-wide figures: a member limited to departments gets nothing
+ * but `limited: true`, as the dashboard shows such a member no
+ * organisation-wide figures.
  */
 
 import { z } from "zod";
 import { createTRPCRouter, organizationProcedure, protectedProcedure } from "../../trpc";
-import { AI_SENTINEL_PATH } from "@/components/guided/path-config";
+import { AI_SENTINEL_PATH, type PathCounts } from "@/components/guided/path-config";
 import { evaluatePath } from "@/components/guided/path";
 import { loadPathCounts } from "@/server/services/program/path-counts";
 import { loadPlanStart } from "@/server/services/program/plan-start";
+import { loadDocumentFacts } from "@/server/services/program/document-facts";
+import { loadDeadlines } from "@/server/services/program/deadlines";
+import { loadBusinessUnitScope } from "@/server/services/business-units/scope";
+import { collectNeedsAction } from "@/server/services/views/queries";
+import { evaluateRegister, type EvaluatedDocument } from "@/config/document-register";
+import type { NeedsActionItem } from "@/lib/needs-action";
+import type { RecordDeadline } from "@/lib/programme-overview";
+import type { PrismaClient } from "@prisma/client";
 
 /** The same ceiling as the client list (clients.ts). */
 const MAX_PORTFOLIO_ORGS = 50;
@@ -30,6 +46,49 @@ const MAX_PORTFOLIO_ORGS = 50;
 const PORTFOLIO_BATCH = 5;
 /** Open incidents, counted as the client cards count them (clients.ts). */
 const OPEN_INCIDENT_STATUSES = ["REPORTED", "INVESTIGATING", "MITIGATING"] as const;
+
+const localeInput = z.enum(["en", "es"]).default("en");
+
+export interface ProgrammeOverviewData {
+  limited: boolean;
+  documents: EvaluatedDocument[];
+  needsAction: NeedsActionItem[];
+  deadlines: RecordDeadline[];
+  /** Drafted items waiting for a person to confirm them (the review queue). */
+  drafts: number;
+}
+
+const LIMITED: ProgrammeOverviewData = {
+  limited: true,
+  documents: [],
+  needsAction: [],
+  deadlines: [],
+  drafts: 0,
+};
+
+/** One organisation's overview, for a membership whose department scope is known. */
+async function loadOverview(
+  prisma: PrismaClient,
+  organizationId: string,
+  membershipId: string,
+  locale: "en" | "es",
+  counts?: PathCounts,
+): Promise<ProgrammeOverviewData> {
+  const scope = await loadBusinessUnitScope(prisma, membershipId);
+  if (!scope.all) return LIMITED;
+  const [facts, needsAction, deadlines] = await Promise.all([
+    loadDocumentFacts(prisma, organizationId, counts),
+    collectNeedsAction(prisma, organizationId, scope),
+    loadDeadlines(prisma, organizationId, locale),
+  ]);
+  return {
+    limited: false,
+    documents: evaluateRegister(facts),
+    needsAction: needsAction.items,
+    deadlines,
+    drafts: facts.unconfirmed,
+  };
+}
 
 export const programPathRouter = createTRPCRouter({
   status: organizationProcedure
@@ -45,10 +104,20 @@ export const programPathRouter = createTRPCRouter({
       return { steps, planStart: planStart?.toISOString() ?? null };
     }),
 
-  portfolio: protectedProcedure.query(async ({ ctx }) => {
+  overview: organizationProcedure
+    .input(z.object({ organizationId: z.string(), locale: localeInput }))
+    .query(({ ctx, input }) =>
+      loadOverview(ctx.prisma, ctx.organization.id, ctx.membership.id, input.locale),
+    ),
+
+  portfolio: protectedProcedure
+    .input(z.object({ locale: localeInput }).optional())
+    .query(async ({ ctx, input }) => {
+    const locale = input?.locale ?? "en";
     const memberships = await ctx.prisma.organizationMember.findMany({
       where: { userId: ctx.session.user.id },
       select: {
+        id: true,
         role: true,
         organization: { select: { id: true, name: true, slug: true } },
       },
@@ -56,7 +125,7 @@ export const programPathRouter = createTRPCRouter({
       orderBy: { organization: { name: "asc" } },
     });
 
-    const rows: {
+    const rows: ({
       organizationId: string;
       organizationName: string;
       organizationSlug: string;
@@ -67,7 +136,7 @@ export const programPathRouter = createTRPCRouter({
       /** The two "needs attention" figures the older client cards showed. */
       openIncidents: number | null;
       pendingGates: number | null;
-    }[] = [];
+    } & ProgrammeOverviewData)[] = [];
 
     for (let i = 0; i < memberships.length; i += PORTFOLIO_BATCH) {
       const batch = memberships.slice(i, i + PORTFOLIO_BATCH);
@@ -81,14 +150,16 @@ export const programPathRouter = createTRPCRouter({
           };
           try {
             const orgId = m.organization.id;
-            const [counts, openIncidents, pendingGates] = await Promise.all([
-              loadPathCounts(ctx.prisma, orgId),
+            const counts = await loadPathCounts(ctx.prisma, orgId);
+            const [openIncidents, pendingGates, overview] = await Promise.all([
               ctx.prisma.aIIncident.count({
                 where: { organizationId: orgId, status: { in: [...OPEN_INCIDENT_STATUSES] } },
               }),
               ctx.prisma.oversightGate.count({
                 where: { organizationId: orgId, status: "PENDING" },
               }),
+              // What the client's own dashboard reads, so a row never disagrees with it.
+              loadOverview(ctx.prisma, orgId, m.id, locale, counts),
             ]);
             const steps = evaluatePath(AI_SENTINEL_PATH, counts);
             const planStart = await loadPlanStart(ctx.prisma, orgId, steps.quickstart === "done");
@@ -98,11 +169,20 @@ export const programPathRouter = createTRPCRouter({
               planStart: planStart?.toISOString() ?? null,
               openIncidents,
               pendingGates,
+              ...overview,
             };
           } catch (error) {
             // One organisation that cannot be read shows as unknown; the rest still load.
             console.error(`Program path: could not read organization ${m.organization.id}:`, error);
-            return { ...base, steps: null, planStart: null, openIncidents: null, pendingGates: null };
+            return {
+              ...base,
+              steps: null,
+              planStart: null,
+              openIncidents: null,
+              pendingGates: null,
+              ...LIMITED,
+              limited: false,
+            };
           }
         }),
       );

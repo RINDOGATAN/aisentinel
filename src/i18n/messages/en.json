@@ -5641,14 +5641,19 @@
     "stageState": {
       "todo": "Not started",
       "started": "In progress",
-      "done": "Done"
+      "done": "Done",
+      "toConfirm": "To confirm",
+      "action": "Needs action",
+      "coming": "Coming"
     },
     "stepStatus": {
       "todo": "Not started",
       "started": "In progress",
       "done": "Done",
       "coming": "Coming",
-      "optional": "When needed"
+      "optional": "When needed",
+      "toConfirm": "To confirm",
+      "action": "Needs action"
     },
     "stages": {
       "setup": "Set up",
@@ -5790,7 +5795,6 @@
     "phoneBarDone": "Every stage is done",
     "phoneBarOpen": "Open the program path",
     "overallLabel": "Your program",
-    "overall": "Your program · {percent}%",
     "band": {
       "step": "Step {number}",
       "next": "Next step",
@@ -5846,19 +5850,61 @@
       "useGuided": "Use the guided layout"
     },
     "portfolio": {
-      "title": "Clients",
-      "subtitle": "Where each client stands on the program path.",
-      "count": "{count, plural, one {# organization} other {# organizations}}",
-      "columnClient": "Client",
-      "columnNext": "Next step",
-      "allDone": "All stages done",
+      "title": "All clients",
+      "count": "{count, plural, one {# organization you manage} other {# organizations you manage}}",
       "unknown": "Could not be read",
       "empty": "No organizations yet.",
       "open": "Open {client}",
-      "stageCell": "{stage}: {done} of {total}",
-      "needsAttention": "Needs attention",
-      "openIncidents": "{count, plural, one {# open incident} other {# open incidents}}",
-      "pendingGates": "{count, plural, one {# decision waiting} other {# decisions waiting}}"
+      "addClient": "Add a client",
+      "needAttention": "{count, plural, one {# needs attention} other {# need attention}}",
+      "draftsToConfirm": "{count, plural, one {# item to confirm} other {# items to confirm}}",
+      "columns": {
+        "client": "Client",
+        "confirmed": "Confirmed",
+        "areas": "Areas",
+        "documents": "Documents ready",
+        "deadline": "Next deadline",
+        "action": "Next action",
+        "menu": "More"
+      },
+      "docsReady": "{ready} of {total} ready",
+      "noDeadline": "None",
+      "limited": "Limited to your departments: the organization-wide figures are not shown.",
+      "sortNote": "Sorted by the nearest deadline, the soonest first; clients with no deadline follow, by name."
+    },
+    "figure": {
+      "line": "{done} of {total} steps confirmed",
+      "toConfirm": "{count} to confirm",
+      "started": "{count} in progress",
+      "notStarted": "{count} not started",
+      "draftsWaiting": "{count, plural, one {# drafted item waits for a person to confirm it. It counts once confirmed.} other {# drafted items wait for a person to confirm them. They count once confirmed.}}",
+      "review": "Review and confirm"
+    },
+    "notYetGroup": "Not in AI SENTINEL yet",
+    "areas": {
+      "title": "Areas",
+      "coming": "Not in AI SENTINEL yet",
+      "confirm": "Confirm the drafted items",
+      "step": "Next: {step}",
+      "done": "Every step done"
+    },
+    "nextActions": {
+      "title": "Next three actions",
+      "open": "Open",
+      "review": "Review",
+      "continue": "Continue",
+      "allNeedsAction": "Everything that needs action ({count})",
+      "empty": "Nothing waits for you, and every step on the path is done.",
+      "toConfirm": "Drafted items count once a person confirms them."
+    },
+    "deadlines": {
+      "title": "Deadlines at risk",
+      "incidentReport": "Incident report due: {label}",
+      "retest": "Threat model review due: {label}",
+      "obligation": "Obligation: {label}",
+      "plan": "Plan: day {day} milestone",
+      "overdue": "overdue since {date}",
+      "empty": "No deadline in the next 30 days."
     }
   },
   "agentTesting": {
@@ -6172,6 +6218,113 @@
       "wholeOrg": "Whole organization",
       "limited": "Limited to {count, plural, one {# department} other {# departments}}",
       "saved": "Access updated"
+    }
+  },
+  "documentRegister": {
+    "title": "Documents you can produce today",
+    "subtitle": "Every document AI SENTINEL can produce, with its state and what it still needs.",
+    "state": {
+      "ready": "ready",
+      "draft": "draft",
+      "needsInput": "needs an input",
+      "notYet": "not in AI SENTINEL yet"
+    },
+    "legend": {
+      "ready": "Ready",
+      "draft": "Draft, the gaps are listed",
+      "needsInput": "Needs an input, named",
+      "notYet": "Not in AI SENTINEL yet"
+    },
+    "needs": "needs: {input}",
+    "inputs": {
+      "quickstart": "the quick start",
+      "jurisdiction": "where you operate",
+      "policy": "a policy",
+      "system": "an AI system",
+      "model": "a model recorded on a system",
+      "aiAssist": "AI assistance switched on",
+      "assessment": "an assessment",
+      "licence": "the licence for this document",
+      "threatModel": "a threat model",
+      "vendor": "a vendor",
+      "transparencyProfile": "a transparency profile",
+      "mapping": "requirements mapped to a system",
+      "sensitiveAnalysis": "a sensitive-data analysis"
+    },
+    "inputAction": {
+      "default": "Add it",
+      "quickstart": "Start",
+      "jurisdiction": "Open settings",
+      "aiAssist": "Open settings",
+      "licence": "How to get it",
+      "mapping": "Classify a system"
+    },
+    "gaps": {
+      "toConfirm": "{count, plural, one {# draft to confirm} other {# drafts to confirm}}",
+      "notApproved": "{count, plural, one {# not approved yet} other {# not approved yet}}",
+      "noOwner": "{count, plural, one {# system without a business owner} other {# systems without a business owner}}",
+      "unclassified": "{count, plural, one {# system not classified} other {# systems not classified}}",
+      "screeningUnanswered": "the regime screening has no answer yet",
+      "inDraft": "{count, plural, one {# model still in draft} other {# models still in draft}}",
+      "notReviewed": "{count, plural, one {# vendor without a completed review} other {# vendors without a completed review}}",
+      "agentsNotReady": "{count, plural, one {# agent not ready for the audit} other {# agents not ready for the audit}}",
+      "noGate": "{count, plural, one {# high-risk system without an oversight gate} other {# high-risk systems without an oversight gate}}",
+      "noProfile": "{count, plural, one {# system without a transparency profile} other {# systems without a transparency profile}}",
+      "notAssessed": "{count, plural, one {# requirement without a status} other {# requirements without a status}}",
+      "noEvidence": "no evidence attached yet",
+      "notCompleted": "{count, plural, one {# analysis not completed} other {# analyses not completed}}",
+      "personalDataUnassessed": "{count, plural, one {# system with personal data and no analysis} other {# systems with personal data and no analysis}}",
+      "withoutApprovedAssessment": "{count, plural, one {# system without an approved assessment} other {# systems without an approved assessment}}",
+      "aiDraft": "drafted by AI on request, to review before use",
+      "noRecords": "nothing recorded yet"
+    },
+    "readyLine": "Content is real and confirmed.",
+    "format": {
+      "pdf": "PDF",
+      "csv": "CSV",
+      "md": "Markdown",
+      "ics": "Calendar",
+      "screen": "on screen"
+    },
+    "open": "Open",
+    "downloadLabel": "Download {name} as {format}",
+    "items": {
+      "plan": "30/60/90-day plan",
+      "obligationsCalendar": "Obligations calendar",
+      "policies": "AI policies",
+      "systemRegister": "AI system register",
+      "modelInventory": "AI model inventory",
+      "annexIv": "Annex IV technical documentation (draft)",
+      "riskClassification": "Risk classification",
+      "assessmentPortfolio": "Assessment portfolio",
+      "impactAssessment": "Impact assessment, per system",
+      "threatModel": "Threat models",
+      "vendorDueDiligence": "Vendor due diligence",
+      "aiuc1Evidence": "AIUC-1 evidence, per agent",
+      "humanReviewProtocol": "Human review protocol, per system",
+      "notice": "Notice to affected people, per system",
+      "transparencyStatement": "Transparency statement (Art. 50)",
+      "complianceSummary": "Compliance summary, per system and framework",
+      "sensitiveData": "Sensitive data analyses",
+      "boardReport": "Board report",
+      "auditTrail": "Audit trail",
+      "programReport": "AI governance program report",
+      "prohibitedScreen": "Prohibited practices screen (Art. 5)",
+      "literacyRecord": "AI literacy record (Art. 4)",
+      "seriousIncidentReport": "Serious incident report (Art. 73)"
+    },
+    "notYetLine": "Not in AI SENTINEL yet: {names}",
+    "missing": {
+      "title": "What is missing",
+      "notStarted": "Not started: {steps}.",
+      "notYet": "Not in AI SENTINEL yet: {names}.",
+      "none": "Nothing is missing on the path."
+    },
+    "pack": {
+      "button": "Download ready documents",
+      "includeDrafts": "Include the drafts too ({count}), marked DRAFT",
+      "count": "{count, plural, one {# document in one ZIP, with an index} other {# documents in one ZIP, with an index}}",
+      "none": "No document is ready yet."
     }
   }
 }

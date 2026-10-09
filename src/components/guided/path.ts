@@ -21,23 +21,37 @@
 import type { LucideIcon } from "lucide-react";
 
 /**
- * - `done`     the rule is met
- * - `started`  there is something, but not yet enough
- * - `todo`     nothing yet
- * - `coming`   the product has no page for it yet
- * - `hidden`   the step does not concern this organisation (its `shownWhen`
- *              rule is not met): not shown, not counted, never the next step
+ * - `done`       the rule is met by records a person has confirmed
+ * - `toConfirm`  the rule would be met, but only with items the quick start,
+ *                a template or another client's copy drafted and nobody has
+ *                confirmed yet (the review queue). They count once a person
+ *                confirms them. Never counted as done.
+ * - `started`    there is something, but not yet enough
+ * - `todo`       nothing yet
+ * - `coming`     the product has no page for it yet
+ * - `hidden`     the step does not concern this organisation (its `shownWhen`
+ *                rule is not met): not shown, not counted, never the next step
  */
-export type StepStatus = "done" | "started" | "todo" | "coming" | "hidden";
+export type StepStatus = "done" | "toConfirm" | "started" | "todo" | "coming" | "hidden";
 
-/** A stage as a whole: not started, in progress, or done. */
-export type StageState = "todo" | "started" | "done";
+/**
+ * A stage as a whole: not started, in progress, drafts waiting to be
+ * confirmed, done, or "coming" (a stage whose steps all have no page yet, so
+ * it carries no count and no progress).
+ */
+export type StageState = "todo" | "started" | "toConfirm" | "done" | "coming";
 
 export interface PathStep<C> {
   /** Stable id; also the i18n key under `steps.<id>`. */
   id: string;
   /** The existing page the step opens. Null only for a step that is coming. */
   href: string | null;
+  /**
+   * Other places that belong to this step though they sit under another
+   * step's path (in DPO Central, a processing activity's own page sits under
+   * the assets step's prefix). Matched like `href`, and the longest match wins.
+   */
+  alsoAt?: string[];
   icon: LucideIcon;
   /** The "done" rule in plain words, for the next person to change it. */
   rule: string;
@@ -59,6 +73,35 @@ export interface PathStep<C> {
    * stage's progress and never offered as the next step.
    */
   optional?: boolean;
+  /**
+   * Acts on the whole organisation (the quick start): not shown to a member
+   * limited to departments (src/lib/department-limit.ts).
+   */
+  orgWide?: boolean;
+}
+
+/**
+ * The path as a department-limited member sees it: the organisation-wide steps
+ * removed, and a stage left with no step removed with them. The library is
+ * unchanged.
+ */
+export function withoutOrgWideSteps<C>(config: PathConfig<C>): PathConfig<C> {
+  return {
+    ...config,
+    stages: config.stages
+      .map((stage) => ({ ...stage, steps: stage.steps.filter((s) => !s.orgWide) }))
+      .filter((stage) => stage.steps.length > 0),
+  };
+}
+
+/** The path without the named steps (and without stages left empty). */
+export function withoutSteps<C>(config: PathConfig<C>, ids: readonly string[]): PathConfig<C> {
+  return {
+    ...config,
+    stages: config.stages
+      .map((stage) => ({ ...stage, steps: stage.steps.filter((s) => !ids.includes(s.id)) }))
+      .filter((stage) => stage.steps.length > 0),
+  };
 }
 
 export interface PathStage<C> {
@@ -112,6 +155,15 @@ export function isShown<C>(step: PathStep<C>, statuses: PathStatuses | null): bo
   return status !== undefined && status !== "hidden";
 }
 
+/**
+ * Whether a stage opens and closes in the menu: only when it holds a step a
+ * person can open. A stage with no step shown, or with only steps that are
+ * coming, has no expand control; its coming steps are listed as they are.
+ */
+export function stageExpandable<C>(stage: PathStage<C>, statuses: PathStatuses | null): boolean {
+  return stage.steps.some((step) => isShown(step, statuses) && !!step.href && !step.coming);
+}
+
 export interface StageProgress {
   done: number;
   total: number;
@@ -121,26 +173,94 @@ export interface StageProgress {
 /**
  * "2 of 3" for a stage: done steps over counted steps. The stage is done when
  * every counted step is; in progress when any counted step is done or started.
+ *
+ * A stage with no counted steps at all — only steps whose page is still to
+ * come — is "coming": it is shown with that word instead of a "0 of 0" count,
+ * never counts towards overall progress, and is never offered as a next step.
  */
 export function stageProgress<C>(stage: PathStage<C>, statuses: PathStatuses): StageProgress {
   const counted = stage.steps.filter((s) => isCounted(s) && isShown(s, statuses));
   const done = counted.filter((s) => statuses[s.id] === "done").length;
-  const moving = counted.some((s) => statuses[s.id] === "done" || statuses[s.id] === "started");
-  const state: StageState =
-    counted.length > 0 && done === counted.length ? "done" : moving ? "started" : "todo";
+  const moving = counted.some(
+    (s) => statuses[s.id] === "done" || statuses[s.id] === "started" || statuses[s.id] === "toConfirm",
+  );
+  const drafts = counted.some((s) => statuses[s.id] === "toConfirm");
+  const allComing = counted.length === 0 && stage.steps.some((s) => s.coming);
+  const state: StageState = allComing
+    ? "coming"
+    : counted.length > 0 && done === counted.length
+      ? "done"
+      : drafts
+        ? "toConfirm"
+        : moving
+          ? "started"
+          : "todo";
   return { done, total: counted.length, state };
+}
+
+/**
+ * The one state word a stage carries in the menu and on its dashboard tile
+ * (owner's decision d6, 9 October 2026): done, to confirm, in progress, not
+ * started, or "action" when something in the stage waits for a person
+ * (`attention`: the ids of such stages, from "Needs action"). A stage whose
+ * steps all have no page yet stays "coming".
+ */
+export type StageWord = StageState | "action";
+
+export function stageWord<C>(
+  stage: PathStage<C>,
+  statuses: PathStatuses,
+  attention: readonly string[] = [],
+): StageWord {
+  const { state } = stageProgress(stage, statuses);
+  if (state === "coming") return "coming";
+  if (attention.includes(stage.id)) return "action";
+  return state;
 }
 
 /** Done over counted, across the whole path. */
 export function overallProgress<C>(config: PathConfig<C>, statuses: PathStatuses) {
-  let done = 0;
-  let total = 0;
+  const figure = programFigure(config, statuses);
+  return { done: figure.confirmed, total: figure.total };
+}
+
+/**
+ * THE programme figure ("2 of 10 steps confirmed"), owner's decision d3,
+ * 9 October 2026. Computed here and only here: the dashboard, the menu, All
+ * clients and the Reports page all read it through this function, so they
+ * can never show different numbers.
+ *
+ * - `total`      the counted steps shown for this organisation (a step with a
+ *                page, not optional, not hidden)
+ * - `confirmed`  of those, the steps whose rule is met by confirmed records
+ * - `toConfirm`  steps met only by drafts waiting for a person to confirm them
+ * - `started`    steps with something, but not yet enough
+ * - `notStarted` steps with nothing yet
+ *
+ * The four parts always add up to `total`.
+ */
+export interface ProgramFigure {
+  confirmed: number;
+  total: number;
+  toConfirm: number;
+  started: number;
+  notStarted: number;
+}
+
+export function programFigure<C>(config: PathConfig<C>, statuses: PathStatuses): ProgramFigure {
+  const figure: ProgramFigure = { confirmed: 0, total: 0, toConfirm: 0, started: 0, notStarted: 0 };
   for (const stage of config.stages) {
-    const p = stageProgress(stage, statuses);
-    done += p.done;
-    total += p.total;
+    for (const step of stage.steps) {
+      if (!isCounted(step) || !isShown(step, statuses)) continue;
+      figure.total += 1;
+      const status = statuses[step.id];
+      if (status === "done") figure.confirmed += 1;
+      else if (status === "toConfirm") figure.toConfirm += 1;
+      else if (status === "started") figure.started += 1;
+      else figure.notStarted += 1;
+    }
   }
-  return { done, total };
+  return figure;
 }
 
 export interface NextStep<C> {
@@ -205,9 +325,12 @@ export function currentStepId<C>(
   let best: { id: string; score: number } | null = null;
   for (const stage of config.stages) {
     for (const step of stage.steps) {
-      if (!step.href || !matches(pathname, search, step.href)) continue;
-      const score = hrefQuery(step.href).length * 10_000 + hrefPath(step.href).length;
-      if (!best || score > best.score) best = { id: step.id, score };
+      if (!step.href) continue;
+      for (const href of [step.href, ...(step.alsoAt ?? [])]) {
+        if (!matches(pathname, search, href)) continue;
+        const score = hrefQuery(href).length * 10_000 + hrefPath(href).length;
+        if (!best || score > best.score) best = { id: step.id, score };
+      }
     }
   }
   return best?.id ?? null;
@@ -280,6 +403,20 @@ export function stageToCelebrate<C>(
     if (done.includes(stage.id) && !seen.includes(stage.id)) celebrate = index;
   }
   return { remember: [...new Set([...seen, ...done])], celebrate };
+}
+
+/**
+ * What the band says after "Stage N complete": the stage that holds the next
+ * step not done, or null when every counted step on the path is done. Read
+ * from the whole path, never from the stage that follows the one just
+ * finished: finishing the last stage while an earlier one is still open must
+ * not announce "Every stage is done".
+ */
+export function stageAfterCelebration<C>(
+  config: PathConfig<C>,
+  statuses: PathStatuses,
+): number | null {
+  return nextStep(config, statuses)?.stageIndex ?? null;
 }
 
 /** Progress across the whole path as a whole percentage; 0 when nothing counts. */

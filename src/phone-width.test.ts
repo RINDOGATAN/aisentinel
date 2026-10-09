@@ -241,11 +241,12 @@ describe("no sideways scrolling on a phone, signed in", () => {
     expect(layout).toMatch(/"min-h-0 flex-1 overflow-y-auto[\s\S]*"shrink-0 border-t border-border/);
     expect(layout).toContain('collapsed ? "lg:w-[4.5rem]" : "lg:w-72"');
     expect(layout).toMatch(/lg:hidden sticky top-14 z-40 flex min-h-11 w-full/);
-    // The portfolio is a table from md only; on a phone it is a list of cards.
+    // All clients is a table from lg only, scrolling inside its own box if it
+    // must; below that it is a list of cards with the same fields.
     const portfolio = readFileSync("src/app/(dashboard)/governance/portfolio/page.tsx", "utf8");
-    expect(portfolio).toContain('className="hidden md:block overflow-hidden"');
-    expect(portfolio).toContain('<div className="overflow-x-auto">');
-    expect(portfolio).toContain('className="md:hidden flex flex-col gap-3"');
+    expect(portfolio).toContain('className="hidden lg:block py-0"');
+    expect(portfolio).toContain('<CardContent className="p-0 overflow-x-auto">');
+    expect(portfolio).toContain('className="flex flex-col gap-3 lg:hidden"');
   });
 
   it("gives every Guided tap target on a phone at least 44 px", () => {
@@ -267,8 +268,11 @@ describe("no sideways scrolling on a phone, signed in", () => {
     }
     expect(classes.some((c) => c.startsWith("line-clamp"))).toBe(false);
     // Both step rows (linked and coming) and the stage title use it; the
-    // labels themselves carry no truncate.
-    expect(menu.match(/<span className=\{WRAP_LABEL\}>\{label\}<\/span>/g)).toHaveLength(2);
+    // labels themselves carry no truncate. A step's label sits on its own
+    // line inside it, with its documents line (or its "coming" badge) below.
+    expect(
+      menu.match(/<span className=\{WRAP_LABEL\}>\s*<span className="block">\{label\}<\/span>/g),
+    ).toHaveLength(2);
     expect(menu).toMatch(/WRAP_LABEL,\s*"font-medium"/);
     expect(menu).not.toMatch(/truncate[^"]*">\{label\}/);
     expect(menu).not.toMatch(/"truncate font-medium"/);

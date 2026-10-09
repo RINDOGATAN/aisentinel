@@ -80,6 +80,8 @@ export interface PathCounts {
   vendorAssessments: number;
 
   classified: number;
+  /** Risk classifications drafted (quick start, template, import) that nobody has confirmed. */
+  classificationsUnconfirmed: number;
   highRisk: number;
   /** High-risk or prohibited systems with at least one approved assessment. */
   highRiskAssessed: number;
@@ -96,9 +98,13 @@ export interface PathCounts {
   agentsStartedTesting: number;
 
   oversightGates: number;
+  /** Oversight gates drafted (quick start, template) that nobody has confirmed. */
+  gatesUnconfirmed: number;
   /** High-risk or prohibited systems with at least one oversight gate. */
   highRiskWithGate: number;
   transparencyProfiles: number;
+  /** Transparency profiles drafted (quick start, template) that nobody has confirmed. */
+  transparencyUnconfirmed: number;
   mappings: number;
   mappingsNotAssessed: number;
   evidence: number;
@@ -157,6 +163,7 @@ export const EMPTY_PATH_COUNTS: PathCounts = {
   vendorsAssessed: 0,
   vendorAssessments: 0,
   classified: 0,
+  classificationsUnconfirmed: 0,
   highRisk: 0,
   highRiskAssessed: 0,
   assessments: 0,
@@ -167,8 +174,10 @@ export const EMPTY_PATH_COUNTS: PathCounts = {
   agentsReadyForAudit: 0,
   agentsStartedTesting: 0,
   oversightGates: 0,
+  gatesUnconfirmed: 0,
   highRiskWithGate: 0,
   transparencyProfiles: 0,
+  transparencyUnconfirmed: 0,
   mappings: 0,
   mappingsNotAssessed: 0,
   evidence: 0,
@@ -301,10 +310,12 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
           id: "classification",
           href: "/governance/risk-classification",
           icon: ShieldAlert,
-          rule: "Done when every registered system has a risk classification. Started when some have one.",
+          rule: "Done when every registered system has a risk classification and none of them is a draft waiting for a person to confirm it (to confirm while any is). Started when some have one.",
           status: (c) =>
             c.systems > 0 && c.classified >= c.systems
-              ? "done"
+              ? c.classificationsUnconfirmed > 0
+                ? "toConfirm"
+                : "done"
               : c.classified > 0
                 ? "started"
                 : "todo",
@@ -368,17 +379,12 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
           id: "oversight",
           href: "/governance/oversight",
           icon: Eye,
-          rule: "Done when every high-risk system has an oversight gate, or, with no high-risk system, when at least one gate exists; in both cases only once no gate copied from another client's template is waiting for confirmation. Started when any gate exists.",
+          rule: "Done when every high-risk system has an oversight gate, or, with no high-risk system, when at least one gate exists; in both cases only once no gate copied from another client's template is waiting for confirmation (started while one is) and no drafted gate is waiting for a person to confirm it (to confirm while one is). Started when any gate exists.",
           status: (c) => {
             if (c.copiedGatesPending > 0) return "started";
-            if (c.highRisk > 0) {
-              return c.highRiskWithGate >= c.highRisk
-                ? "done"
-                : c.oversightGates > 0
-                  ? "started"
-                  : "todo";
-            }
-            return c.oversightGates > 0 ? "done" : "todo";
+            const met = c.highRisk > 0 ? c.highRiskWithGate >= c.highRisk : c.oversightGates > 0;
+            if (met) return c.gatesUnconfirmed > 0 ? "toConfirm" : "done";
+            return c.oversightGates > 0 ? "started" : "todo";
           },
         },
         {
@@ -387,10 +393,12 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
           // a profile, each card opening the system's Transparency tab.
           href: "/governance/ai-registry?view=transparency",
           icon: Megaphone,
-          rule: "Done when every registered system has a transparency (Art. 50) profile. Started when some have one. The profile is a tab on each system's page.",
+          rule: "Done when every registered system has a transparency (Art. 50) profile and none of them is a draft waiting for a person to confirm it (to confirm while any is). Started when some have one. The profile is a tab on each system's page.",
           status: (c) =>
             c.systems > 0 && c.transparencyProfiles >= c.systems
-              ? "done"
+              ? c.transparencyUnconfirmed > 0
+                ? "toConfirm"
+                : "done"
               : c.transparencyProfiles > 0
                 ? "started"
                 : "todo",

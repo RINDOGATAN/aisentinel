@@ -5641,14 +5641,19 @@
     "stageState": {
       "todo": "Sin empezar",
       "started": "En curso",
-      "done": "Hecho"
+      "done": "Hecho",
+      "toConfirm": "Por confirmar",
+      "action": "Requiere acción",
+      "coming": "Próximamente"
     },
     "stepStatus": {
       "todo": "Sin empezar",
       "started": "En curso",
       "done": "Hecho",
       "coming": "Próximamente",
-      "optional": "Cuando haga falta"
+      "optional": "Cuando haga falta",
+      "toConfirm": "Por confirmar",
+      "action": "Requiere acción"
     },
     "stages": {
       "setup": "Puesta en marcha",
@@ -5790,7 +5795,6 @@
     "phoneBarDone": "Todas las etapas están hechas",
     "phoneBarOpen": "Abrir la ruta del programa",
     "overallLabel": "Tu programa",
-    "overall": "Tu programa · {percent} %",
     "band": {
       "step": "Paso {number}",
       "next": "Siguiente paso",
@@ -5846,19 +5850,61 @@
       "useGuided": "Usar el diseño guiado"
     },
     "portfolio": {
-      "title": "Clientes",
-      "subtitle": "En qué punto de la ruta del programa está cada cliente.",
-      "count": "{count, plural, one {# organización} other {# organizaciones}}",
-      "columnClient": "Cliente",
-      "columnNext": "Siguiente paso",
-      "allDone": "Todas las etapas hechas",
+      "title": "Todos los clientes",
+      "count": "{count, plural, one {# organización que gestionas} other {# organizaciones que gestionas}}",
       "unknown": "No se ha podido leer",
       "empty": "Todavía no hay organizaciones.",
       "open": "Abrir {client}",
-      "stageCell": "{stage}: {done} de {total}",
-      "needsAttention": "Requiere atención",
-      "openIncidents": "{count, plural, one {# incidente abierto} other {# incidentes abiertos}}",
-      "pendingGates": "{count, plural, one {# decisión pendiente} other {# decisiones pendientes}}"
+      "addClient": "Añadir un cliente",
+      "needAttention": "{count, plural, one {# requiere atención} other {# requieren atención}}",
+      "draftsToConfirm": "{count, plural, one {# elemento por confirmar} other {# elementos por confirmar}}",
+      "columns": {
+        "client": "Cliente",
+        "confirmed": "Confirmado",
+        "areas": "Áreas",
+        "documents": "Documentos listos",
+        "deadline": "Próximo plazo",
+        "action": "Siguiente acción",
+        "menu": "Más"
+      },
+      "docsReady": "{ready} de {total} listos",
+      "noDeadline": "Ninguno",
+      "limited": "Limitado a tus departamentos: no se muestran las cifras de toda la organización.",
+      "sortNote": "Ordenados por el plazo más próximo, el más cercano primero; después, los clientes sin plazo, por nombre."
+    },
+    "figure": {
+      "line": "{done} de {total} pasos confirmados",
+      "toConfirm": "{count} por confirmar",
+      "started": "{count} en curso",
+      "notStarted": "{count} sin empezar",
+      "draftsWaiting": "{count, plural, one {# elemento en borrador espera a que una persona lo confirme. Cuenta cuando está confirmado.} other {# elementos en borrador esperan a que una persona los confirme. Cuentan cuando están confirmados.}}",
+      "review": "Revisar y confirmar"
+    },
+    "notYetGroup": "Aún no en AI SENTINEL",
+    "areas": {
+      "title": "Áreas",
+      "coming": "Aún no en AI SENTINEL",
+      "confirm": "Confirma los elementos en borrador",
+      "step": "Siguiente: {step}",
+      "done": "Todos los pasos hechos"
+    },
+    "nextActions": {
+      "title": "Tus tres próximas acciones",
+      "open": "Abrir",
+      "review": "Revisar",
+      "continue": "Continuar",
+      "allNeedsAction": "Todo lo que requiere acción ({count})",
+      "empty": "No hay nada pendiente y todos los pasos de la ruta están hechos.",
+      "toConfirm": "Los elementos en borrador cuentan cuando una persona los confirma."
+    },
+    "deadlines": {
+      "title": "Plazos en riesgo",
+      "incidentReport": "Vence la notificación del incidente: {label}",
+      "retest": "Vence la revisión del modelo de amenazas: {label}",
+      "obligation": "Obligación: {label}",
+      "plan": "Plan: hito del día {day}",
+      "overdue": "vencido desde el {date}",
+      "empty": "Ningún plazo en los próximos 30 días."
     }
   },
   "agentTesting": {
@@ -6172,6 +6218,113 @@
       "wholeOrg": "Toda la organización",
       "limited": "Limitado a {count, plural, one {# departamento} other {# departamentos}}",
       "saved": "Acceso actualizado"
+    }
+  },
+  "documentRegister": {
+    "title": "Documentos que puedes generar hoy",
+    "subtitle": "Todos los documentos que AI SENTINEL puede generar, con su estado y lo que aún les falta.",
+    "state": {
+      "ready": "listo",
+      "draft": "borrador",
+      "needsInput": "falta un dato",
+      "notYet": "aún no en AI SENTINEL"
+    },
+    "legend": {
+      "ready": "Listo",
+      "draft": "Borrador, con lo que falta",
+      "needsInput": "Falta un dato, que se indica",
+      "notYet": "Aún no en AI SENTINEL"
+    },
+    "needs": "necesita: {input}",
+    "inputs": {
+      "quickstart": "el inicio rápido",
+      "jurisdiction": "dónde operas",
+      "policy": "una política",
+      "system": "un sistema de IA",
+      "model": "un modelo registrado en un sistema",
+      "aiAssist": "la asistencia de IA activada",
+      "assessment": "una evaluación",
+      "licence": "la licencia para este documento",
+      "threatModel": "un modelo de amenazas",
+      "vendor": "un proveedor",
+      "transparencyProfile": "un perfil de transparencia",
+      "mapping": "requisitos asignados a un sistema",
+      "sensitiveAnalysis": "un análisis de datos sensibles"
+    },
+    "inputAction": {
+      "default": "Añadir",
+      "quickstart": "Empezar",
+      "jurisdiction": "Abrir ajustes",
+      "aiAssist": "Abrir ajustes",
+      "licence": "Cómo conseguirla",
+      "mapping": "Clasificar un sistema"
+    },
+    "gaps": {
+      "toConfirm": "{count, plural, one {# borrador por confirmar} other {# borradores por confirmar}}",
+      "notApproved": "{count, plural, one {# sin aprobar} other {# sin aprobar}}",
+      "noOwner": "{count, plural, one {# sistema sin responsable de negocio} other {# sistemas sin responsable de negocio}}",
+      "unclassified": "{count, plural, one {# sistema sin clasificar} other {# sistemas sin clasificar}}",
+      "screeningUnanswered": "el cribado de regímenes aún no tiene respuesta",
+      "inDraft": "{count, plural, one {# modelo aún en borrador} other {# modelos aún en borrador}}",
+      "notReviewed": "{count, plural, one {# proveedor sin revisión completada} other {# proveedores sin revisión completada}}",
+      "agentsNotReady": "{count, plural, one {# agente no preparado para la auditoría} other {# agentes no preparados para la auditoría}}",
+      "noGate": "{count, plural, one {# sistema de alto riesgo sin puerta de supervisión} other {# sistemas de alto riesgo sin puerta de supervisión}}",
+      "noProfile": "{count, plural, one {# sistema sin perfil de transparencia} other {# sistemas sin perfil de transparencia}}",
+      "notAssessed": "{count, plural, one {# requisito sin estado} other {# requisitos sin estado}}",
+      "noEvidence": "aún no hay evidencias adjuntas",
+      "notCompleted": "{count, plural, one {# análisis sin completar} other {# análisis sin completar}}",
+      "personalDataUnassessed": "{count, plural, one {# sistema con datos personales y sin análisis} other {# sistemas con datos personales y sin análisis}}",
+      "withoutApprovedAssessment": "{count, plural, one {# sistema sin evaluación aprobada} other {# sistemas sin evaluación aprobada}}",
+      "aiDraft": "redactado por IA a petición, para revisar antes de usarlo",
+      "noRecords": "aún no hay nada registrado"
+    },
+    "readyLine": "El contenido es real y está confirmado.",
+    "format": {
+      "pdf": "PDF",
+      "csv": "CSV",
+      "md": "Markdown",
+      "ics": "Calendario",
+      "screen": "en pantalla"
+    },
+    "open": "Abrir",
+    "downloadLabel": "Descargar {name} en {format}",
+    "items": {
+      "plan": "Plan de 30, 60 y 90 días",
+      "obligationsCalendar": "Calendario de obligaciones",
+      "policies": "Políticas de IA",
+      "systemRegister": "Registro de sistemas de IA",
+      "modelInventory": "Inventario de modelos de IA",
+      "annexIv": "Documentación técnica del anexo IV (borrador)",
+      "riskClassification": "Clasificación de riesgos",
+      "assessmentPortfolio": "Cartera de evaluaciones",
+      "impactAssessment": "Evaluación de impacto, por sistema",
+      "threatModel": "Modelos de amenazas",
+      "vendorDueDiligence": "Diligencia debida de proveedores",
+      "aiuc1Evidence": "Evidencias AIUC-1, por agente",
+      "humanReviewProtocol": "Protocolo de revisión humana, por sistema",
+      "notice": "Aviso a las personas afectadas, por sistema",
+      "transparencyStatement": "Declaración de transparencia (art. 50)",
+      "complianceSummary": "Resumen de cumplimiento, por sistema y marco",
+      "sensitiveData": "Análisis de datos sensibles",
+      "boardReport": "Informe para la dirección",
+      "auditTrail": "Registro de auditoría",
+      "programReport": "Informe del programa de gobernanza de la IA",
+      "prohibitedScreen": "Cribado de prácticas prohibidas (art. 5)",
+      "literacyRecord": "Registro de alfabetización en IA (art. 4)",
+      "seriousIncidentReport": "Notificación de incidente grave (art. 73)"
+    },
+    "notYetLine": "Aún no en AI SENTINEL: {names}",
+    "missing": {
+      "title": "Lo que falta",
+      "notStarted": "Sin empezar: {steps}.",
+      "notYet": "Aún no en AI SENTINEL: {names}.",
+      "none": "No falta nada en la ruta."
+    },
+    "pack": {
+      "button": "Descargar documentos listos",
+      "includeDrafts": "Incluir también los borradores ({count}), marcados como BORRADOR",
+      "count": "{count, plural, one {# documento en un ZIP, con un índice} other {# documentos en un ZIP, con un índice}}",
+      "none": "Todavía no hay ningún documento listo."
     }
   }
 }

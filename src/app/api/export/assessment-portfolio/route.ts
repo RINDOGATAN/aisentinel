@@ -6,7 +6,8 @@ import { getToken } from "next-auth/jwt";
 import { SESSION_COOKIE_NAME, useSecureCookies } from "@/lib/session-cookie";
 import prisma from "@/lib/prisma";
 import { renderToBuffer } from "@react-pdf/renderer";
-import { AssessmentPortfolioReport, type AssessmentExportData } from "@/server/services/export/assessment-portfolio";
+import { AssessmentPortfolioReport } from "@/server/services/export/assessment-portfolio";
+import { loadAssessmentPortfolioData } from "@/server/services/export/document-data";
 import { fmtDate } from "@/server/services/export/pdf-styles";
 
 export async function GET(request: NextRequest) {
@@ -37,30 +38,7 @@ export async function GET(request: NextRequest) {
     return Response.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const assessments = await prisma.aIAssessment.findMany({
-    where: { organizationId },
-    include: {
-      aiSystem: { select: { name: true } },
-      template: { select: { name: true } },
-    },
-    orderBy: { createdAt: "desc" },
-  });
-
-  const data: AssessmentExportData[] = assessments.map((a) => ({
-    id: a.id,
-    title: a.title,
-    type: a.type,
-    status: a.status,
-    riskScore: a.riskScore,
-    aiSystemName: a.aiSystem.name,
-    templateName: a.template?.name ?? null,
-    createdBy: a.createdBy,
-    reviewedBy: a.reviewedBy,
-    approvedBy: a.approvedBy,
-    createdAt: a.createdAt,
-    reviewedAt: a.reviewedAt,
-    approvedAt: a.approvedAt,
-  }));
+  const data = await loadAssessmentPortfolioData(prisma, organizationId);
 
   const orgName = membership.organization.name;
   const dateStr = fmtDate(new Date());

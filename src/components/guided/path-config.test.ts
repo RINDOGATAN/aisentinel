@@ -59,6 +59,7 @@ const COMPLETE: PathCounts = {
   vendorsAssessed: 2,
   vendorAssessments: 2,
   classified: 4,
+  classificationsUnconfirmed: 0,
   highRisk: 1,
   highRiskAssessed: 1,
   assessments: 2,
@@ -69,8 +70,10 @@ const COMPLETE: PathCounts = {
   agentsReadyForAudit: 2,
   agentsStartedTesting: 2,
   oversightGates: 3,
+  gatesUnconfirmed: 0,
   highRiskWithGate: 1,
   transparencyProfiles: 4,
+  transparencyUnconfirmed: 0,
   mappings: 40,
   mappingsNotAssessed: 0,
   evidence: 5,
@@ -88,6 +91,25 @@ const COMPLETE: PathCounts = {
   copiedGatesPending: 0,
   copiedObligationsPending: false,
 };
+
+describe("drafts count once a person confirms them", () => {
+  it("shows a step met only with drafted items as to confirm, never done", () => {
+    expect(statusOf("classification", { ...COMPLETE, classificationsUnconfirmed: 2 })).toBe("toConfirm");
+    expect(statusOf("oversight", { ...COMPLETE, gatesUnconfirmed: 1 })).toBe("toConfirm");
+    expect(statusOf("transparency", { ...COMPLETE, transparencyUnconfirmed: 4 })).toBe("toConfirm");
+  });
+
+  it("keeps a step that is not met yet as started or not started, whatever the drafts", () => {
+    expect(statusOf("classification", { systems: 4, classified: 2, classificationsUnconfirmed: 2 })).toBe("started");
+    expect(statusOf("transparency", { systems: 4, transparencyUnconfirmed: 0 })).toBe("todo");
+  });
+
+  it("is done once the drafts are confirmed", () => {
+    expect(statusOf("classification", COMPLETE)).toBe("done");
+    expect(statusOf("oversight", COMPLETE)).toBe("done");
+    expect(statusOf("transparency", COMPLETE)).toBe("done");
+  });
+});
 
 describe("a programme copied from another client's template", () => {
   // Directive D5: copied drafts count as "started", never "done".

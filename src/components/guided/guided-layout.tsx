@@ -62,6 +62,9 @@ import { ProgressBar } from "./progress-ring";
 import { usePlanState, useProgramPath, useProgramPathRefresh } from "./use-program-path";
 import { planDayText } from "./plan-text";
 import { useSkin } from "./skin-context";
+import { useProgrammeOverview } from "./use-programme-overview";
+import { stepNoteText } from "./document-words";
+import { attentionStages, notYetEntries, stepDocumentRows } from "@/lib/programme-overview";
 
 const OVERVIEW = { href: "/governance", icon: LayoutDashboard };
 
@@ -92,7 +95,11 @@ export function GuidedLayout({
   const stepId = currentStepId(AI_SENTINEL_PATH, pathname, search);
   const t = useTranslations("guided");
   const tn = useTranslations("nav");
+  const td = useTranslations("documentRegister");
   const statuses = useProgramPath();
+  // The document register's states and what needs action: the same answer
+  // the dashboard's panel and areas read.
+  const { overview } = useProgrammeOverview();
   const plan = usePlanState();
   const { organization } = useOrganization();
   useProgramPathRefresh();
@@ -115,6 +122,15 @@ export function GuidedLayout({
     t,
     overview: OVERVIEW,
     planLine: planDayText(plan, t),
+    // One quiet line under each step: its documents and their states.
+    stepNotes: Object.fromEntries(
+      Object.entries(
+        overview ? stepDocumentRows(AI_SENTINEL_PATH, statuses, overview.documents) : {},
+      ).map(([id, rows]) => [id, stepNoteText(td, rows)]),
+    ),
+    attention: overview ? attentionStages(overview.needsAction) : [],
+    // Everything AI Sentinel does not produce yet, in one group at the foot.
+    notYet: { title: t("notYetGroup"), items: notYetEntries().map((entry) => td(`items.${entry.id}`)) },
   };
 
   return (

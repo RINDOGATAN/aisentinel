@@ -6,7 +6,8 @@ import { getToken } from "next-auth/jwt";
 import { SESSION_COOKIE_NAME, useSecureCookies } from "@/lib/session-cookie";
 import prisma from "@/lib/prisma";
 import { renderToBuffer } from "@react-pdf/renderer";
-import { ModelInventoryReport, type ModelExportData } from "@/server/services/export/model-inventory";
+import { ModelInventoryReport } from "@/server/services/export/model-inventory";
+import { loadModelInventoryData } from "@/server/services/export/document-data";
 import { fmtDate } from "@/server/services/export/pdf-styles";
 
 export async function GET(request: NextRequest) {
@@ -37,28 +38,7 @@ export async function GET(request: NextRequest) {
     return Response.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const models = await prisma.aIModel.findMany({
-    where: { organizationId },
-    include: {
-      aiSystem: {
-        include: { riskClassification: true },
-      },
-    },
-    orderBy: [{ aiSystem: { name: "asc" } }, { name: "asc" }],
-  });
-
-  const data: ModelExportData[] = models.map((m) => ({
-    id: m.id,
-    name: m.name,
-    provider: m.provider,
-    modelType: m.modelType,
-    version: m.version,
-    trainingDataSummary: m.trainingDataSummary,
-    knownLimitations: m.knownLimitations,
-    aiSystemName: m.aiSystem.name,
-    aiSystemStatus: m.aiSystem.status,
-    riskLevel: m.aiSystem.riskClassification?.riskLevel ?? null,
-  }));
+  const data = await loadModelInventoryData(prisma, organizationId);
 
   const orgName = membership.organization.name;
   const dateStr = fmtDate(new Date());

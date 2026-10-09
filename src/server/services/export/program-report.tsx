@@ -14,6 +14,7 @@
  * page (compact metrics), paginated along lane boundaries.
  */
 
+import { DraftGapsPage, type DraftNote } from "./draft-gaps-page";
 import React from "react";
 import { Document, View, Text, StyleSheet } from "@react-pdf/renderer";
 import { createTranslator } from "next-intl";
@@ -334,6 +335,7 @@ export async function renderProgramReport({
   scorecard,
   derivation,
   snapshot,
+  draftNote,
 }: {
   orgName: string;
   locale: ContentLocale;
@@ -341,6 +343,8 @@ export async function renderProgramReport({
   scorecard: ProgramScorecardData;
   derivation?: DerivationSummary | null;
   snapshot?: SnapshotContext | null;
+  /** In the program pack, a draft opens on a page naming its gaps. */
+  draftNote?: DraftNote | null;
 }) {
   registerReportFonts();
 
@@ -438,6 +442,7 @@ export async function renderProgramReport({
       author="AI SENTINEL"
       language={locale}
     >
+      {draftNote && <DraftGapsPage note={draftNote} />}
       {/* ── 1 · Cover ─────────────────────────────────────────── */}
       <CoverFrame rightEyebrow={t("coverEyebrow")}>
         <Text style={s.coverTitle}>{t("title")}</Text>

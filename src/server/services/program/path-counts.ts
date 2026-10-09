@@ -126,7 +126,7 @@ export async function loadPathCounts(
     prisma.aIIncident.count({ where: org }),
     prisma.regulatoryProceeding.count({ where: org }),
     prisma.regulatoryProceeding.count({ where: { ...org, ...OPEN_PROCEEDING } }),
-    countUnconfirmed(prisma, organizationId),
+    loadUnconfirmed(prisma, organizationId),
     prisma.boardReport.count({ where: org }),
     prisma.auditLog.count({ where: org, take: 1 }),
     // Not a count: readiness is a rule over each agent's evidence. Two small
@@ -175,7 +175,10 @@ export async function loadPathCounts(
     incidents,
     proceedings,
     openProceedings,
-    unconfirmed,
+    unconfirmed: unconfirmed.total,
+    classificationsUnconfirmed: unconfirmed.classifications,
+    gatesUnconfirmed: unconfirmed.gates,
+    transparencyUnconfirmed: unconfirmed.transparency,
     // The five kinds the review queue holds, counted as provenance/summary.ts does.
     confirmable:
       classified + (mappings - mappingsNotAssessed) + oversightGates + policies + transparencyProfiles,
@@ -188,15 +191,27 @@ export async function loadPathCounts(
   };
 }
 
-/** Auto-derived items nobody has confirmed: what the review queue holds. */
-async function countUnconfirmed(prisma: PrismaClient, organizationId: string): Promise<number> {
+/**
+ * Auto-derived items nobody has confirmed: what the review queue holds, in
+ * total and for the three kinds a step's rule reads (a step met only by such
+ * drafts is "to confirm", never "done").
+ */
+async function loadUnconfirmed(
+  prisma: PrismaClient,
+  organizationId: string,
+): Promise<{ total: number; classifications: number; gates: number; transparency: number }> {
   const scope = { organizationId, ...UNCONFIRMED_WHERE };
-  const counts = await Promise.all([
+  const [classifications, mappings, gates, policies, transparency] = await Promise.all([
     prisma.riskClassification.count({ where: scope }),
     prisma.complianceMapping.count({ where: { ...scope, ...ASSERTED_MAPPING } }),
     prisma.oversightGate.count({ where: scope }),
     prisma.aIPolicy.count({ where: scope }),
     prisma.transparencyProfile.count({ where: scope }),
   ]);
-  return counts.reduce((a, b) => a + b, 0);
+  return {
+    total: classifications + mappings + gates + policies + transparency,
+    classifications,
+    gates,
+    transparency,
+  };
 }

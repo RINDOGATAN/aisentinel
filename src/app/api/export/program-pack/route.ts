@@ -2,8 +2,11 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 /**
- * GET /api/export/program-pack?organizationId=&locale=
+ * GET /api/export/program-pack?organizationId=&locale=&drafts=
  * The whole program in one ZIP (see src/server/services/export/program-pack.ts).
+ * `drafts=0` keeps the ready documents only (the dashboard's "Download ready
+ * documents" without its box ticked); otherwise the drafts go in too, marked
+ * as drafts, as the Program page and the pilot's export have always had them.
  * Same authentication as the other exports: the session JWT, then membership
  * of the requested organization.
  */
@@ -61,6 +64,7 @@ export async function GET(request: NextRequest) {
     userId: membership.userId,
     orgName: membership.organization.name,
     locale,
+    includeDrafts: request.nextUrl.searchParams.get("drafts") !== "0",
   });
 
   return new Response(new Blob([zip as BlobPart], { type: "application/zip" }), {

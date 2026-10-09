@@ -32,7 +32,6 @@ import { useOrganization } from "@/lib/organization-context";
 import { StatusNote } from "@/components/ui/status-note";
 import { PageHeader } from "@/components/governance/page-header";
 import { EmptyStep } from "@/components/guided/empty-step";
-import { useSkin } from "@/components/guided/skin-context";
 
 const AUDIENCES = [
   "BOARD",
@@ -46,7 +45,6 @@ const AUDIENCES = [
 export default function BoardReportingPage() {
   const t = useTranslations("boardReports");
   const tg = useTranslations("guided");
-  const guided = useSkin().skin === "guided";
   const { organization, canWrite } = useOrganization();
   const orgId = organization?.id ?? "";
   const utils = trpc.useUtils();
@@ -234,7 +232,7 @@ export default function BoardReportingPage() {
 
       {isLoading ? (
         <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
-      ) : guided && !open && (data?.reports ?? []).length === 0 ? (
+      ) : !open && (data?.reports ?? []).length === 0 ? (
         <EmptyStep
           action={
             canWrite && (

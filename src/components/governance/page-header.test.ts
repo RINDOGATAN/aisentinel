@@ -16,12 +16,10 @@ const ROOT = "src/app/(dashboard)/governance";
 
 /** Every list page whose header carries actions (surveyed 25 Sep 2026). */
 const PAGES_WITH_ACTIONS = [
-  ".", // the dashboard (the client switcher, Classic)
   "ai-registry",
   "assessments",
   "audit",
   "board",
-  "clients",
   "compliance",
   "incidents",
   "oversight",

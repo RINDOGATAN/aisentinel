@@ -37,11 +37,8 @@ import {
   ChevronUp,
   X,
   Brain,
-  ShieldAlert,
-  Eye,
   ScrollText,
   Scale,
-  LayoutDashboard,
   Download,
   Check,
   Copy,
@@ -63,7 +60,6 @@ import {
   suggestScenarios,
 } from "@/config/threat-model";
 import { ProgramMap } from "@/components/governance/program/ProgramMap";
-import { useSkin } from "@/components/guided/skin-context";
 import { NextStepCard } from "@/components/guided/next-step-card";
 import { useExportDownload } from "@/components/governance/use-export-download";
 import { JurisdictionPicker } from "@/components/governance/jurisdiction-picker";
@@ -105,19 +101,6 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
 // The Legal entry in the industry list. Not a server template: choosing it
 // runs the law-firm tool step (src/config/lawfirm-ai-toolkit.ts).
 const LEGAL_INDUSTRY_ID = "legal";
-
-// Where to go after the build. Titles and hints live in quickstart.nav.<key>.
-const SUCCESS_NAV = [
-  { href: "/governance/ai-registry", icon: Brain, key: "registry" },
-  { href: "/governance/risk-classification", icon: ShieldAlert, key: "risk" },
-  { href: "/governance/compliance", icon: Scale, key: "compliance" },
-  { href: "/governance/oversight", icon: Eye, key: "oversight" },
-  { href: "/governance/policies", icon: ScrollText, key: "policies" },
-  // The consultant expected "Dashboard" to show their systems; the executive
-  // dashboard shows only counts. Point this at the program view, which lays
-  // out every system that was just created.
-  { href: "/governance/program", icon: LayoutDashboard, key: "dashboard" },
-] as const;
 
 // Offered on the vendor step before anything is typed. Slugs are catalogue
 // keys (vendors/catalog-snapshot.json); a slug missing from a database simply
@@ -186,7 +169,6 @@ export default function QuickstartPage() {
     { enabled: !!organization && templateRole },
   );
   const canCopyFromClient = templateRole && (templateSources?.length ?? 0) > 0;
-  const guided = useSkin().skin === "guided";
   const utilsForJurisdictions = trpc.useUtils();
   const t = useTranslations("quickstart");
   const tc = useTranslations("common");
@@ -2029,8 +2011,8 @@ export default function QuickstartPage() {
           ════════════════════════════════════════════════ */}
       {step === "success" && executionResult && (
         <div className="space-y-6">
-          {/* Guided: one next step leads, the same card as the dashboard. */}
-          {guided && <NextStepCard waitForFresh />}
+          {/* One next step leads, the same card as the dashboard. */}
+          <NextStepCard waitForFresh />
 
           <Card className="border-primary/30 bg-primary/5">
             <CardContent className="p-8 text-center space-y-4">
@@ -2175,27 +2157,6 @@ export default function QuickstartPage() {
               )}
             </CardContent>
           </Card>
-
-          {/* Quick nav, Classic only: the six cards. In Guided the one next
-              step above and the menu already lead to each of these pages, so
-              they are not repeated (one place per action). */}
-          {!guided && (
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
-              {SUCCESS_NAV.map(({ href, icon: Icon, key }) => (
-                <Link key={href} href={href}>
-                  <Card className="hover:border-primary/50 transition-all cursor-pointer h-full">
-                    <CardContent className="p-4 flex items-center gap-3">
-                      <Icon className="w-5 h-5 text-primary shrink-0" />
-                      <div>
-                        <p className="text-sm font-medium">{t(`nav.${key}.title`)}</p>
-                        <p className="text-xs text-muted-foreground">{t(`nav.${key}.hint`)}</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))}
-            </div>
-          )}
         </div>
       )}
     </div>

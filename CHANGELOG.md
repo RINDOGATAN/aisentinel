@@ -19,6 +19,13 @@ All notable changes to AI SENTINEL are documented here. The format follows
 
 ### Added
 
+- **A small lock beside premium entries of the Guided menu, where licences are enforced.**
+  Shadow AI and the vendor catalogue carry a lock (labelled "Requires a licence" / "Requiere una
+  licencia", no price) only where their page would show its locked state: the menu runs the
+  pages' own access queries, so the two cannot disagree. Never on the hosted pilot, never where
+  every skill is free, never for an organisation that holds the licence. As the retired Classic
+  menu did.
+
 - **The quick start opens with an applicability check.** Before templates and vendors, a few
   plain questions (where you operate; whether you build AI for others, use AI, or offer a
   general-purpose model; whether any AI talks to people, decides about people, or acts as an

@@ -60,6 +60,7 @@ import { ProgressBar } from "./progress-ring";
 import { usePlanState, useProgramPath, useProgramPathRefresh } from "./use-program-path";
 import { planDayText } from "./plan-text";
 import { useProgrammeOverview } from "./use-programme-overview";
+import { useMenuLocks } from "./use-menu-locks";
 import { stepNoteText } from "./document-words";
 import { attentionStages, notYetEntries, stepDocumentRows } from "@/lib/programme-overview";
 
@@ -100,6 +101,8 @@ export function GuidedLayout({
   const plan = usePlanState();
   const { organization } = useOrganization();
   useProgramPathRefresh();
+  // A lock beside a premium entry only where its page would show it locked.
+  const locked = useMenuLocks();
   const { userType } = useUserType();
   const [collapsed, setCollapsedState] = useState(initialCollapsed);
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -128,6 +131,7 @@ export function GuidedLayout({
     attention: overview ? attentionStages(overview.needsAction) : [],
     // Everything AI Sentinel does not produce yet, in one group at the foot.
     notYet: { title: t("notYetGroup"), items: notYetEntries().map((entry) => td(`items.${entry.id}`)) },
+    locked,
   };
 
   return (

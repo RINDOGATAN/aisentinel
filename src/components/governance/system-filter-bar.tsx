@@ -242,10 +242,15 @@ function OwnerFilter({
   placeholder: string;
 }) {
   const [local, setLocal] = useState(value);
+  const [prevValue, setPrevValue] = useState(value);
   const debounced = useDebounce(local);
   // Keep the input in step when the URL changes from outside (a saved view, or
-  // "clear").
-  useEffect(() => setLocal(value), [value]);
+  // "clear"). Adjusted during render rather than in an effect, so no extra
+  // render pass is scheduled.
+  if (value !== prevValue) {
+    setPrevValue(value);
+    setLocal(value);
+  }
   useEffect(() => {
     if (debounced !== value) onChange(debounced);
     // eslint-disable-next-line react-hooks/exhaustive-deps

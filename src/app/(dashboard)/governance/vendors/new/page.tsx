@@ -148,39 +148,6 @@ function NewVendorForm() {
     { enabled: isCatalogMode && !!organization?.id && !!slugParam && !selectedCatalogVendor }
   );
 
-  // Auto-select catalog vendor when fetched via slug param
-  useEffect(() => {
-    if (slugCatalogEntry && !selectedCatalogVendor) {
-      handleSelectCatalogVendor(slugCatalogEntry as CatalogVendor);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [slugCatalogEntry]);
-
-  // Catalog search query
-  const { data: catalogResults, isLoading: catalogLoading } =
-    trpc.vendorCatalog.search.useQuery(
-      { organizationId: organization?.id ?? "", query: debouncedCatalogQuery, limit: 10 },
-      { enabled: isCatalogMode && !!organization?.id && debouncedCatalogQuery.length >= 2 }
-    );
-
-  // Click-outside handler
-  useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setShowDropdown(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  // Show dropdown when results arrive
-  useEffect(() => {
-    if (catalogResults && catalogResults.length > 0 && debouncedCatalogQuery.length >= 2) {
-      setShowDropdown(true);
-    }
-  }, [catalogResults, debouncedCatalogQuery]);
-
   const handleSelectCatalogVendor = (vendor: CatalogVendor) => {
     setSelectedCatalogVendor(vendor);
     setShowDropdown(false);
@@ -201,6 +168,48 @@ function NewVendorForm() {
       systemTechnique: suggestTechniqueFromCapabilities(vendor.aiCapabilities || []) || prev.systemTechnique,
     }));
   };
+
+  // Auto-select catalog vendor when fetched via slug param. Adjusted during
+  // render rather than in an effect. The tracker starts empty so an entry
+  // already in the query cache on first render is still selected.
+  const [prevSlugCatalogEntry, setPrevSlugCatalogEntry] =
+    useState<typeof slugCatalogEntry>(undefined);
+  if (slugCatalogEntry !== prevSlugCatalogEntry) {
+    setPrevSlugCatalogEntry(slugCatalogEntry);
+    if (slugCatalogEntry && !selectedCatalogVendor) {
+      handleSelectCatalogVendor(slugCatalogEntry as CatalogVendor);
+    }
+  }
+
+  // Catalog search query
+  const { data: catalogResults, isLoading: catalogLoading } =
+    trpc.vendorCatalog.search.useQuery(
+      { organizationId: organization?.id ?? "", query: debouncedCatalogQuery, limit: 10 },
+      { enabled: isCatalogMode && !!organization?.id && debouncedCatalogQuery.length >= 2 }
+    );
+
+  // Click-outside handler
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setShowDropdown(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Show dropdown when results arrive. Adjusted during render rather than in
+  // an effect, so no extra render pass is scheduled.
+  const [prevCatalogResults, setPrevCatalogResults] = useState(catalogResults);
+  const [prevCatalogQuery, setPrevCatalogQuery] = useState(debouncedCatalogQuery);
+  if (catalogResults !== prevCatalogResults || debouncedCatalogQuery !== prevCatalogQuery) {
+    setPrevCatalogResults(catalogResults);
+    setPrevCatalogQuery(debouncedCatalogQuery);
+    if (catalogResults && catalogResults.length > 0 && debouncedCatalogQuery.length >= 2) {
+      setShowDropdown(true);
+    }
+  }
 
   const handleClearCatalogVendor = () => {
     setSelectedCatalogVendor(null);

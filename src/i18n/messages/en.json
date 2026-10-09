@@ -5460,6 +5460,7 @@
     "stageProgress": "{done} of {total}",
     "stageNumber": "Stage {number}",
     "loading": "Loading progress",
+    "requiresLicence": "Requires a licence",
     "stageState": {
       "todo": "Not started",
       "started": "In progress",

@@ -15,7 +15,15 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Check, ChevronDown, Circle, CircleDashed, CircleDot, type LucideIcon } from "lucide-react";
+import {
+  Check,
+  ChevronDown,
+  Circle,
+  CircleDashed,
+  CircleDot,
+  Lock,
+  type LucideIcon,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   currentLibraryId,
@@ -82,6 +90,13 @@ interface PathMenuProps<C> {
    * over the stages. Nothing when null or empty.
    */
   notYet?: { title: string; items: string[] } | null;
+  /**
+   * The addresses whose page would show its locked state (a deployment that
+   * enforces licences, for an organisation without one): those entries carry
+   * a small lock, labelled `requiresLicence`. Empty everywhere else
+   * (src/lib/menu-locks.ts).
+   */
+  locked?: readonly string[];
 }
 
 /**
@@ -119,7 +134,10 @@ export function PathMenu<C>({
   stepNotes = {},
   attention = [],
   notYet = null,
+  locked = [],
 }: PathMenuProps<C>) {
+  const isLocked = (href: string | null) => !!href && locked.includes(href);
+  const lockLabel = t("requiresLicence");
   const library = config.library({ stripeEnabled, clientMode });
   const currentStep = currentStepId(config, pathname, search);
   // The one programme figure ("2 of 10 steps confirmed"), as on the
@@ -220,6 +238,7 @@ export function PathMenu<C>({
             href={item.href}
             icon={item.icon}
             label={t(`library.${item.id}`)}
+            lockLabel={isLocked(item.href) ? lockLabel : undefined}
             active={currentLibrary === item.id}
             onNavigate={onNavigate}
           />
@@ -288,6 +307,7 @@ export function PathMenu<C>({
                     showProgress={showProgress}
                     note={showProgress ? stepNotes[step.id] : undefined}
                     current={step.id === currentStep}
+                    lockLabel={isLocked(step.href) ? lockLabel : undefined}
                     className={itemBase}
                     idle={itemIdle}
                     active={itemActive}
@@ -410,6 +430,7 @@ export function PathMenu<C>({
               >
                 <item.icon className="size-4 shrink-0" aria-hidden="true" />
                 <span className="min-w-0 truncate">{t(`library.${item.id}`)}</span>
+                {isLocked(item.href) && <LockMark label={lockLabel} />}
               </Link>
             </li>
           );
@@ -425,6 +446,7 @@ function StepRow<C>({
   showProgress = true,
   note,
   current,
+  lockLabel,
   className,
   idle,
   active,
@@ -432,6 +454,8 @@ function StepRow<C>({
   t,
 }: {
   step: PathStep<C>;
+  /** Set when the step's page would show its locked state: draws the lock. */
+  lockLabel?: string;
   status: StepStatus | null;
   /** False: a plain mark, no state (the state is the whole organisation's). */
   showProgress?: boolean;
@@ -483,7 +507,25 @@ function StepRow<C>({
           </span>
         )}
       </span>
+      {lockLabel && <LockMark label={lockLabel} />}
     </Link>
+  );
+}
+
+/**
+ * The small lock beside a premium entry, as the retired Classic menu drew it:
+ * no price, and a label that is read out with the entry's name.
+ */
+function LockMark({ label }: { label: string }) {
+  return (
+    <span
+      className="ml-auto inline-flex shrink-0 text-muted-foreground"
+      title={label}
+      data-testid="menu-lock"
+    >
+      <Lock className="size-3.5" aria-hidden="true" />
+      <span className="sr-only">{label}</span>
+    </span>
   );
 }
 
@@ -528,29 +570,40 @@ function IconLink({
   href,
   icon: Icon,
   label,
+  lockLabel,
   active,
   onNavigate,
 }: {
   href: string;
   icon: LucideIcon;
   label: string;
+  /** Set when the page would show its locked state: a small lock on the icon. */
+  lockLabel?: string;
   active: boolean;
   onNavigate?: () => void;
 }) {
+  const fullLabel = lockLabel ? `${label}, ${lockLabel.toLowerCase()}` : label;
   return (
     <Link
       href={href}
       onClick={onNavigate}
-      title={label}
+      title={fullLabel}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "flex size-11 items-center justify-center rounded-lg motion-safe:transition-colors",
+        "relative flex size-11 items-center justify-center rounded-lg motion-safe:transition-colors",
         FOCUS,
         active ? "bg-primary/15 text-primary" : "text-muted-foreground hover:bg-secondary hover:text-foreground",
       )}
     >
       <Icon className="size-4" aria-hidden="true" />
-      <span className="sr-only">{label}</span>
+      {lockLabel && (
+        <Lock
+          className="absolute bottom-1.5 right-1.5 size-3 text-muted-foreground"
+          aria-hidden="true"
+          data-testid="menu-lock"
+        />
+      )}
+      <span className="sr-only">{fullLabel}</span>
     </Link>
   );
 }

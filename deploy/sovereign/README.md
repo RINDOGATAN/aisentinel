@@ -115,7 +115,7 @@ The short version:
 - Single-firm posture. The seed ships reference content only (frameworks,
   templates, catalogs) — create your own organization on first sign-in.
 - The Prisma datasource reads `ais_DATABASE_URL` (a Vercel-scoped variable
-  name) — the compose file sets it; keep that name if you wire your own DB.
+  name) — the compose file sets it; keep that name if you wire your own DB. Migrations use `ais_DATABASE_URL_UNPOOLED` (the direct, unpooled connection); the compose file sets it to the same value, and so should you unless a connection pooler sits in front of your database.
 - `vercel.json` in the repo root configures the HOSTED deployment's weekly
   cron. It is inert off Vercel; nothing reads it in this bundle. Ignore it.
 - License: AGPL-3.0-or-later (see repo LICENSE) — self-hosting your own

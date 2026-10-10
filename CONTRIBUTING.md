@@ -18,7 +18,7 @@ npm run dev                             # http://localhost:3003
 
 You need Node.js 20+ and a PostgreSQL database. The datasource variable is
 `ais_DATABASE_URL` (a Vercel-integration prefix; the sovereign compose file
-synthesizes it for you). `CLAUDE.md` carries the new-module checklist: read it
+synthesizes it for you). Migrations read a second variable, `ais_DATABASE_URL_UNPOOLED`, the direct connection (the same value locally). `CLAUDE.md` carries the new-module checklist: read it
 before touching auth, the tRPC procedure layer, or the seeded governance
 content.
 

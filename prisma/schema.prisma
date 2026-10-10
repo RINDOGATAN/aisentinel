@@ -8,6 +8,9 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("ais_DATABASE_URL")
+  // Migrations run over the direct (unpooled) connection: a session advisory lock
+  // taken through the pooler can stay held and block later builds (P1002).
+  directUrl = env("ais_DATABASE_URL_UNPOOLED")
 }
 
 // ============================================================

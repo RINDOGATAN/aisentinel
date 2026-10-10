@@ -23,6 +23,8 @@ export const SMOKE_BASE_URL = `http://localhost:${SMOKE_PORT}`;
 export const smokeEnv: Record<string, string> = {
   ais_DATABASE_URL:
     process.env.E2E_DATABASE_URL ?? "postgresql://aisentinel:e2e@localhost:55432/aisentinel",
+  ais_DATABASE_URL_UNPOOLED:
+    process.env.E2E_DATABASE_URL ?? "postgresql://aisentinel:e2e@localhost:55432/aisentinel",
   NEXTAUTH_URL: SMOKE_BASE_URL,
   NEXTAUTH_SECRET: "smoke-walk-secret-for-a-throwaway-database-only",
   NEXT_PUBLIC_APP_URL: SMOKE_BASE_URL,

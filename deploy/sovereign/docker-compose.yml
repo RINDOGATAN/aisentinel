@@ -70,6 +70,7 @@ services:
     environment:
       # NB: the Prisma datasource reads ais_DATABASE_URL (Vercel-scoped name).
       ais_DATABASE_URL: postgresql://aisentinel:${POSTGRES_PASSWORD}@db:5432/aisentinel
+      ais_DATABASE_URL_UNPOOLED: postgresql://aisentinel:${POSTGRES_PASSWORD}@db:5432/aisentinel
     volumes:
       - ./migrate.sh:/migrate.sh:ro
     entrypoint: ["/bin/sh", "/migrate.sh"]
@@ -87,6 +88,7 @@ services:
         condition: service_completed_successfully
     environment:
       ais_DATABASE_URL: postgresql://aisentinel:${POSTGRES_PASSWORD}@db:5432/aisentinel
+      ais_DATABASE_URL_UNPOOLED: postgresql://aisentinel:${POSTGRES_PASSWORD}@db:5432/aisentinel
       NEXTAUTH_URL: ${PUBLIC_URL:?e.g. http://localhost:8487}
       NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:?openssl rand -base64 32}
       # Empty = host-only session cookie (NextAuth defaults). The .todo.law

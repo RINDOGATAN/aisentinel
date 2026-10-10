@@ -16,7 +16,7 @@ Next.js 16, React 19, tRPC 11, Prisma 5, PostgreSQL, NextAuth, next-intl, Tailwi
 ## Quickstart (development)
 
 ```sh
-cp .env.example .env.local        # set ais_DATABASE_URL + NEXTAUTH_SECRET
+cp .env.example .env.local        # set ais_DATABASE_URL + ais_DATABASE_URL_UNPOOLED (same value locally) + NEXTAUTH_SECRET
 npm install
 npx prisma migrate deploy         # apply schema
 npm run db:seed                   # content-only seed (skill packages)

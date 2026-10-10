@@ -35,6 +35,7 @@ import {
   checkShowcaseAccess,
   lockedResponse,
 } from "@/server/services/licensing/showcase-gate";
+import { EXPORT_FILE_PREFIX, stripAccents } from "@/lib/file-name";
 
 const KINDS = ["assessment", "notice", "protocol", "agentic-addendum"] as const;
 type Kind = (typeof KINDS)[number];
@@ -42,15 +43,8 @@ type Kind = (typeof KINDS)[number];
 const FORMATS = ["markdown", "pdf"] as const;
 type Format = (typeof FORMATS)[number];
 
-const FILENAME: Record<Kind, string> = {
-  assessment: "unified-impact-assessment",
-  notice: "multi-jurisdictional-ai-notice",
-  protocol: "human-review-and-appeal-protocol",
-  "agentic-addendum": "agentic-addendum",
-};
-
 function slug(value: string): string {
-  return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60) || "system";
+  return stripAccents(value).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60) || "system";
 }
 
 export async function GET(request: NextRequest) {
@@ -196,7 +190,7 @@ export async function GET(request: NextRequest) {
     },
   });
 
-  const base = `${FILENAME[kind]}-${slug(scope.system.name)}-${input.generatedAt}`;
+  const base = `${EXPORT_FILE_PREFIX.unified[kind][locale]}-${slug(scope.system.name)}-${input.generatedAt}`;
 
   if (format === "pdf") {
     // The same stamp the Markdown carries, as the document's closing section,

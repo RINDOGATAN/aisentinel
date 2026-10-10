@@ -17,12 +17,15 @@ import { agentReadiness, isAgentSystem } from "@/config/aiuc1-evidence";
 import { loadAgentRows } from "@/server/services/aiuc1/readiness";
 import { renderAiuc1EvidenceDoc } from "@/server/services/export/aiuc1-evidence-doc";
 import { exportStamp, sha256, stampLines } from "@/server/services/export/integrity";
+import { exportLocale } from "@/server/services/export/pdf-labels";
+import { EXPORT_FILE_PREFIX, stripAccents } from "@/lib/file-name";
 
 export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
   const organizationId = params.get("organizationId");
   const aiSystemId = params.get("aiSystemId");
-  const locale = params.get("locale") === "es" ? "es" : "en";
+  // ?locale= wins; otherwise the same cookie the screens read, as the other exports do.
+  const locale = exportLocale(params.get("locale"), request.headers.get("cookie"));
 
   if (!organizationId || !aiSystemId) {
     return Response.json({ error: "organizationId and aiSystemId are required" }, { status: 400 });
@@ -109,8 +112,8 @@ export async function GET(request: NextRequest) {
     },
   });
 
-  const slug = system.name.replace(/[^a-zA-Z0-9]/g, "-").slice(0, 60) || "agent";
-  const filename = `AIUC-1-evidence-${slug}-${now.toISOString().slice(0, 10)}.md`;
+  const slug = stripAccents(system.name).replace(/[^a-zA-Z0-9]/g, "-").slice(0, 60) || "agent";
+  const filename = `${EXPORT_FILE_PREFIX.aiuc1[locale]}-${slug}-${now.toISOString().slice(0, 10)}.md`;
 
   return new Response(markdown, {
     headers: {

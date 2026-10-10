@@ -217,7 +217,7 @@ export default function VendorCatalogDetailPage() {
                   </Badge>
                 )}
                 {entry.transferSafeguards && (
-                  <Badge variant="outline">
+                  <Badge variant="outline" className="max-w-full shrink whitespace-normal text-left">
                     {t("transferSafeguards", { safeguards: entry.transferSafeguards })}
                   </Badge>
                 )}

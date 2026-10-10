@@ -45,6 +45,7 @@ const APPROVER_ROLES = ["OWNER", "ADMIN", "AI_OFFICER"];
 // these map them onto the shared labels in the "common" namespace.
 const CODE_LABEL: Record<string, string> = {
   NOT_ASSESSED: "complianceNotAssessed",
+  NOT_APPLICABLE: "complianceNotApplicable",
   COMPLIANT: "complianceCompliant",
   PARTIALLY_COMPLIANT: "compliancePartial",
   NON_COMPLIANT: "complianceNonCompliant",
@@ -241,7 +242,10 @@ export default function ReviewQueuePage() {
                     />
                   )}
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium truncate">{item.label}</p>
+                    <p className="text-sm font-medium truncate">
+                      {item.label}
+                      {"labelCode" in item && item.labelCode ? ` · ${humanize(item.labelCode)}` : ""}
+                    </p>
                     <p className="text-xs text-muted-foreground truncate">
                       {t(`entity.${item.entityType}`)} · {humanize(item.summary)} ·{" "}
                       {t(`origin.${item.provenance}`)}

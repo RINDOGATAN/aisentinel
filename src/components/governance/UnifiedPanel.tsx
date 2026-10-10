@@ -70,7 +70,7 @@ const CITATIONS: Record<SystemFactKey, string> = {
   isCompanionChatbot: "HB 2225 (2026 c 168)",
   usedInPriorAuthorization: "RCW 48.43.830",
   interactsWithConsumers: "TRAIGA § 552.051(a)",
-  handsOffToAutonomousAgent: "—",
+  handsOffToAutonomousAgent: "",
 };
 
 const ORDER: SystemFactKey[] = [
@@ -214,7 +214,8 @@ export function UnifiedPanel({
                       .map((s) => (
                         <li key={s.framework} className="text-xs text-muted-foreground">
                           <span className="font-medium">{frameworkChip(s.framework, lang)}</span>
-                          {s.openQuestions.length > 0 && ` — ${tr("openQuestions")}: ${s.openQuestions.join(", ")}`}
+                          {s.openQuestions.length > 0 &&
+                            ` · ${tr("openQuestions")}: ${s.openQuestions.map((q) => tr(`openQuestion.${q}`)).join(", ")}`}
                         </li>
                       ))}
                   </ul>
@@ -253,7 +254,9 @@ export function UnifiedPanel({
               <div key={key} className="space-y-1.5">
                 <div className="flex items-baseline justify-between gap-2 flex-wrap">
                   <p className="text-sm">{tr(`system.${key}.label`)}</p>
-                  <code className="text-[11px] text-muted-foreground shrink-0">{CITATIONS[key]}</code>
+                  {CITATIONS[key] && (
+                    <code className="text-[11px] text-muted-foreground shrink-0">{citationString(CITATIONS[key], lang)}</code>
+                  )}
                 </div>
                 <p className="text-xs text-muted-foreground">{tr(`system.${key}.help`)}</p>
                 <div className="flex flex-wrap gap-1.5">

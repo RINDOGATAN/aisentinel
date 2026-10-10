@@ -183,6 +183,7 @@ export const threatModelRouter = createTRPCRouter({
           model.id,
           ctx.session.user.id,
           suggestScenarios(input.capabilities).map((s) => s.id),
+          pilotLocale(ctx.getCookie),
         );
       }
 
@@ -279,6 +280,7 @@ export const threatModelRouter = createTRPCRouter({
         input.threatModelId,
         ctx.session.user.id,
         input.libraryIds,
+        pilotLocale(ctx.getCookie),
       );
 
       await ctx.prisma.auditLog.create({
@@ -587,13 +589,13 @@ export const threatModelRouter = createTRPCRouter({
    */
   previewRegisterLink: organizationProcedure
     .input(z.object({ organizationId: z.string(), id: z.string() }))
-    .query(async ({ ctx, input }) => buildLinkPlan(ctx.prisma, ctx.organization.id, input.id)),
+    .query(async ({ ctx, input }) => buildLinkPlan(ctx.prisma, ctx.organization.id, input.id, pilotLocale(ctx.getCookie))),
 
   /** Write the evidence. Only controls with a current passing test count. */
   applyToRegister: orgWriteProcedure
     .input(z.object({ organizationId: z.string(), id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const { plan, model } = await buildLinkPlan(ctx.prisma, ctx.organization.id, input.id);
+      const { plan, model } = await buildLinkPlan(ctx.prisma, ctx.organization.id, input.id, pilotLocale(ctx.getCookie));
       if (plan.evidence.length === 0) {
         return { ...plan.counts, applied: 0 };
       }
@@ -656,6 +658,7 @@ async function buildLinkPlan(
   prisma: PrismaClient,
   organizationId: string,
   threatModelId: string,
+  locale: "en" | "es" = "en",
 ) {
   const model = await prisma.threatModel.findFirst({
     where: { id: threatModelId, organizationId },
@@ -677,7 +680,9 @@ async function buildLinkPlan(
     throw new TRPCError({
       code: "PRECONDITION_FAILED",
       message:
-        "Link this threat model to a registered AI system first: the register holds evidence per system.",
+        locale === "es"
+          ? "Vincula primero este modelo de amenazas a un sistema de IA registrado: el registro guarda las evidencias por sistema."
+          : "Link this threat model to a registered AI system first: the register holds evidence per system.",
     });
   }
 

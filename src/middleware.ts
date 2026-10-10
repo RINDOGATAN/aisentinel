@@ -42,6 +42,11 @@ export default function middleware(request: NextRequest) {
   // layout) can send a signed-out visitor back to it after sign-in.
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-pathname", pathname);
+  // The landing shows the language of `?lang=` when there is one (src/app/page.tsx);
+  // the root layout reads this so the server-rendered <html lang> says the same.
+  const landingLang = pathname === "/" ? request.nextUrl.searchParams.get("lang") : null;
+  if (landingLang === "es" || landingLang === "en") requestHeaders.set("x-landing-lang", landingLang);
+  else requestHeaders.delete("x-landing-lang");
   const response = NextResponse.next({ request: { headers: requestHeaders } });
 
   // Set currency cookie based on geo-IP: EUR only for a known non-US country

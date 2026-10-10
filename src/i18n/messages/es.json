@@ -109,13 +109,14 @@
     "policyTypeIncidentResponse": "Respuesta a incidentes",
     "policyTypeTransparency": "Transparencia",
     "policyTypeCustom": "Personalizado",
-    "gateTypePreDeployment": "Pre-Despliegue",
-    "gateTypePostDeployment": "Post-Despliegue",
+    "gateTypePreDeployment": "Antes del despliegue",
+    "gateTypePostDeployment": "Tras el despliegue",
     "gateTypePeriodicReview": "Revisión periódica",
     "gateTypeIncidentTriggered": "Por incidente",
-    "gateTypeMaterialChange": "Cambio material",
+    "gateTypeMaterialChange": "Cambio sustancial",
     "complianceNonCompliant": "No conforme",
     "complianceNotAssessed": "Sin evaluar",
+    "complianceNotApplicable": "No aplicable",
     "complianceCompliant": "Conforme",
     "compliancePartial": "Parcial",
     "newPolicy": "Nueva política",
@@ -624,8 +625,8 @@
     "emptyTitle": "No se han encontrado controles de supervisión",
     "emptySearchHint": "Prueba a ajustar los términos de búsqueda",
     "emptyHint": "Comienza creando tu primer control de supervisión",
-    "gateTypePreDeployment": "Pre-Despliegue",
-    "gateTypePostDeployment": "Post-Despliegue",
+    "gateTypePreDeployment": "Antes del despliegue",
+    "gateTypePostDeployment": "Tras el despliegue",
     "gateTypePeriodicReview": "Revisión periódica",
     "gateTypeIncidentTriggered": "Activado por incidente",
     "gateTypeMaterialChange": "Cambio significativo",
@@ -804,6 +805,12 @@
     "resolvedAtLabel": "Fecha de resolución",
     "statisticsTitle": "Estadísticas",
     "tabTimeline": "Cronología ({count})",
+    "timelineSystem": {
+      "reportedAction": "Incidente notificado",
+      "reportedDescription": "Incidente notificado: gravedad {severity}, tipo {type}",
+      "statusAction": "Estado cambiado a {status}",
+      "statusDescription": "Estado actualizado de {from} a {to}"
+    },
     "tabTasks": "Tareas ({count})",
     "tabNotifications": "Notificaciones ({count})",
     "tabRootCause": "Causa raíz",
@@ -1459,6 +1466,14 @@
   },
   "skills": {
     "title": "Skills",
+    "packageName": {
+      "CONFORMITY": "Evaluación de la conformidad",
+      "BIAS_FAIRNESS": "Evaluación de sesgo y equidad",
+      "SHADOW_AI": "Detección de IA en la sombra",
+      "VENDOR_CATALOG": "Catálogo de proveedores de IA",
+      "IMPACT_ASSESSMENT": "Documentos de evaluación de impacto",
+      "PROGRAM_REPORT": "Informe y paquete del programa"
+    },
     "subtitle": "Skills premium compradas en TODO.LAW. Sube el archivo de licencia de tu correo de confirmación para activarlas en esta organización: se verifica localmente, sin conexión.",
     "activateTitle": "Activar con un archivo de licencia",
     "activateHint": "Elige el archivo .license.json que recibiste tras la compra. Solo los propietarios y administradores de la organización pueden activar.",
@@ -1487,7 +1502,7 @@
     "signInRequired": "Inicia sesión para continuar. Tu sesión dura 12 horas; cuando termina, vuelves aquí. Después de iniciar sesión regresas a la página en la que estabas.",
     "localTitle": "Acceso local",
     "localBody": "Tu cuenta reside en este ordenador. Introduce tu correo electrónico para abrirla. No se envía nada a ningún sitio.",
-    "emailPlaceholder": "tu@tudespacho.com",
+    "emailPlaceholder": "tu@empresa.com",
     "signInButton": "Iniciar sesión",
     "signingIn": "Iniciando sesión...",
     "localSignInFailed": "No se ha podido iniciar sesión.",
@@ -2158,11 +2173,11 @@
       "gateTypesIntro": "Los puntos de control son verificaciones que requieren revisión y aprobación humanas antes de que un sistema de IA pueda avanzar. Cada punto de control está vinculado a un sistema de IA concreto y asignado a un revisor.",
       "gateTypes": [
         {
-          "type": "Pre-Despliegue",
+          "type": "Antes del despliegue",
           "description": "Obligatorio antes de que un sistema de IA pase del estado de Pruebas a Desplegado. Asegura que se cumplen todos los requisitos de cumplimiento."
         },
         {
-          "type": "Post-Despliegue",
+          "type": "Tras el despliegue",
           "description": "Se activa tras el despliegue para verificar que el sistema funciona según lo esperado en producción. Vigila comportamientos inesperados."
         },
         {
@@ -4727,6 +4742,20 @@
     "stateOutOfScope": "No se aplica",
     "stateUndetermined": "Sin determinar",
     "openQuestions": "Pendiente de responder",
+    "openQuestion": {
+      "declare-jurisdictions": "dónde opera la organización",
+      "solely-automated": "decisión basada únicamente en un tratamiento automatizado",
+      "special-category": "datos de categorías especiales",
+      "consequential-decision": "decisión con consecuencias para un consumidor",
+      "public-agency": "organismo público",
+      "health-carrier": "aseguradora de salud",
+      "healthcare-provider": "prestador de asistencia sanitaria",
+      "covered-genai-provider": "proveedor de IA generativa cubierto",
+      "consumer-health-data": "datos de salud de consumidores",
+      "companion-chatbot": "chatbot de compañía",
+      "prior-authorization": "autorización previa",
+      "interacts-with-consumers": "interacción directa con consumidores"
+    },
     "attachRequirements": "Adjuntar requisitos",
     "attachedCount": "{count} requisitos adjuntados a este sistema",
     "attachDone": "{count} requisitos adjuntados",

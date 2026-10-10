@@ -30,7 +30,7 @@ import {
   Cpu,
 } from "lucide-react";
 import { toast } from "sonner";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { KeyTerms } from "@/components/help/key-terms";
 import { useEnumLabels } from "@/lib/enum-labels";
 import { keepPreviousData } from "@tanstack/react-query";
@@ -43,6 +43,7 @@ import { SortControl } from "@/components/governance/sort-control";
 import { DEFAULT_LIST_SORT, type ListSort } from "@/lib/list-sort";
 import { RiskScreeningPanel } from "@/components/ai/RiskScreeningPanel";
 import { RiskTierBadge, TierMarker } from "@/components/governance/risk-tier-badge";
+import { annexIIILabel } from "@/lib/annex-iii-label";
 
 /** Annex III points 1 to 8; labels come from riskClassification.annexIII.<value>. */
 const ANNEX_III_CATEGORIES = [
@@ -69,13 +70,11 @@ export default function RiskClassificationPage() {
   const router = useRouter();
   const { organization } = useOrganization();
   const t = useTranslations("riskClassification");
+  const locale = useLocale();
   const { formatDate } = useFormatDate();
   const { statusLabel, techniqueLabel } = useEnumLabels();
   const tc = useTranslations("common");
-  const annexLabel = (value: string) => {
-    const i = (ANNEX_III_CATEGORIES as readonly string[]).indexOf(value);
-    return i < 0 ? value : `${i + 1}. ${t(`annexIII.${value}`)}`;
-  };
+  const annexLabel = (value: string) => annexIIILabel(value, locale, (k) => t(`annexIII.${k}`));
 
   const { data: stats, isLoading: statsLoading } = trpc.riskClassification.getStats.useQuery(
     { organizationId: organization?.id ?? "" },
@@ -260,7 +259,7 @@ export default function RiskClassificationPage() {
                               className="text-xs"
                             />
                             {system.riskClassification.annexIIICategory && (
-                              <Badge variant="outline" className="text-xs">
+                              <Badge variant="outline" className="text-xs max-w-full shrink whitespace-normal text-left">
                                 {t("annexIIIBadge", { category: annexLabel(system.riskClassification.annexIIICategory) })}
                               </Badge>
                             )}

@@ -165,7 +165,7 @@ export const aiSystemRouter = createTRPCRouter({
           riskClassification: { include: { history: { orderBy: { changedAt: "desc" } } } },
           transparencyProfile: true,
           assessments: {
-            include: { template: { select: { name: true, type: true } } },
+            include: { template: { select: { id: true, name: true, type: true } } },
             orderBy: { updatedAt: "desc" },
           },
           oversightGates: { orderBy: { createdAt: "desc" } },

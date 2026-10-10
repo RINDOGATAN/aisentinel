@@ -10,6 +10,7 @@
  */
 
 import type { Artifact, ArtifactSection, Block } from "./types";
+import { localizeArtifactCitations } from "./localize-citations";
 
 /**
  * The renderer's own words. Everything else in a document arrives already in
@@ -102,8 +103,10 @@ function renderSection(
   return lines;
 }
 
-export function renderArtifactMarkdown(artifact: Artifact): string {
-  const c = CHROME[localeOf(artifact)];
+export function renderArtifactMarkdown(source: Artifact): string {
+  const locale = localeOf(source);
+  const artifact = localizeArtifactCitations(source, locale);
+  const c = CHROME[locale];
   const stamp = [
     `${c.generated} ${artifact.generatedAt}`,
     `${c.content} ${artifact.contentVersion}`,

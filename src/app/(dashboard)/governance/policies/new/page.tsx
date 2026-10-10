@@ -181,7 +181,7 @@ export default function NewPolicyPage() {
                   }));
                 }}
               >
-                <SelectTrigger>
+                <SelectTrigger className="w-full max-w-full">
                   <SelectValue placeholder={t("placeholderTemplate")} />
                 </SelectTrigger>
                 <SelectContent>

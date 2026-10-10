@@ -31,34 +31,34 @@ type AISystemRole = "PROVIDER" | "DEPLOYER" | "IMPORTER" | "DISTRIBUTOR" | "USER
 type AISystemStatus = "DRAFT" | "DEVELOPMENT" | "TESTING" | "DEPLOYED" | "RETIRED";
 
 const techniques = [
-  { value: "MACHINE_LEARNING", label: "Machine Learning" },
-  { value: "DEEP_LEARNING", label: "Deep Learning" },
-  { value: "GENERATIVE_AI", label: "Generative AI" },
-  { value: "AGENTIC_AI", label: "Agentic AI" },
-  { value: "NLP", label: "Natural Language Processing" },
-  { value: "COMPUTER_VISION", label: "Computer Vision" },
-  { value: "SPEECH_RECOGNITION", label: "Speech Recognition" },
-  { value: "ROBOTICS", label: "Robotics" },
-  { value: "RULE_BASED", label: "Rule-Based" },
-  { value: "EXPERT_SYSTEM", label: "Expert System" },
-  { value: "STATISTICAL", label: "Statistical" },
-  { value: "OTHER", label: "Other" },
+  { value: "MACHINE_LEARNING", labelKey: "techniqueMachineLearning" },
+  { value: "DEEP_LEARNING", labelKey: "techniqueDeepLearning" },
+  { value: "GENERATIVE_AI", labelKey: "techniqueGenerativeAi" },
+  { value: "AGENTIC_AI", labelKey: "techniqueAgenticAi" },
+  { value: "NLP", labelKey: "techniqueNlp" },
+  { value: "COMPUTER_VISION", labelKey: "techniqueComputerVision" },
+  { value: "SPEECH_RECOGNITION", labelKey: "techniqueSpeechRecognition" },
+  { value: "ROBOTICS", labelKey: "techniqueRobotics" },
+  { value: "RULE_BASED", labelKey: "techniqueRuleBased" },
+  { value: "EXPERT_SYSTEM", labelKey: "techniqueExpertSystem" },
+  { value: "STATISTICAL", labelKey: "techniqueStatistical" },
+  { value: "OTHER", labelKey: "techniqueOther" },
 ];
 
 const roles = [
-  { value: "PROVIDER", label: "Provider" },
-  { value: "DEPLOYER", label: "Deployer" },
-  { value: "IMPORTER", label: "Importer" },
-  { value: "DISTRIBUTOR", label: "Distributor" },
-  { value: "USER", label: "User" },
+  { value: "PROVIDER", labelKey: "roleProvider" },
+  { value: "DEPLOYER", labelKey: "roleDeployer" },
+  { value: "IMPORTER", labelKey: "roleImporter" },
+  { value: "DISTRIBUTOR", labelKey: "roleDistributor" },
+  { value: "USER", labelKey: "roleUser" },
 ];
 
 const statuses = [
-  { value: "DRAFT", label: "Draft" },
-  { value: "DEVELOPMENT", label: "Development" },
-  { value: "TESTING", label: "Testing" },
-  { value: "DEPLOYED", label: "Deployed" },
-  { value: "RETIRED", label: "Retired" },
+  { value: "DRAFT", labelKey: "statusDraft" },
+  { value: "DEVELOPMENT", labelKey: "statusDevelopment" },
+  { value: "TESTING", labelKey: "statusTesting" },
+  { value: "DEPLOYED", labelKey: "statusDeployed" },
+  { value: "RETIRED", labelKey: "statusRetired" },
 ];
 
 /**
@@ -314,9 +314,9 @@ export default function NewAISystemPage() {
                     <SelectValue placeholder={t("techniquePlaceholder")} />
                   </SelectTrigger>
                   <SelectContent>
-                    {techniques.map((t) => (
-                      <SelectItem key={t.value} value={t.value}>
-                        {t.label}
+                    {techniques.map((o) => (
+                      <SelectItem key={o.value} value={o.value}>
+                        {tc(o.labelKey)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -350,7 +350,7 @@ export default function NewAISystemPage() {
                   <SelectContent>
                     {roles.map((r) => (
                       <SelectItem key={r.value} value={r.value}>
-                        {r.label}
+                        {tc(r.labelKey)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -363,7 +363,7 @@ export default function NewAISystemPage() {
                   suggestion={suggestionFor("role")}
                   applied={!!applied.role}
                   onApply={apply}
-                  valueLabel={(v) => roles.find((r) => r.value === v)?.label ?? v}
+                  valueLabel={(v) => { const r = roles.find((x) => x.value === v); return r ? tc(r.labelKey) : v; }}
                 />
               </div>
               <div className="space-y-2">
@@ -378,7 +378,7 @@ export default function NewAISystemPage() {
                   <SelectContent>
                     {statuses.map((s) => (
                       <SelectItem key={s.value} value={s.value}>
-                        {s.label}
+                        {tc(s.labelKey)}
                       </SelectItem>
                     ))}
                   </SelectContent>

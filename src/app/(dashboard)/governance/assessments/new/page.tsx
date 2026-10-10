@@ -13,8 +13,9 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Lock, Loader2, ClipboardCheck } from "lucide-react";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEnumLabels } from "@/lib/enum-labels";
+import { templateDescription, templateName } from "@/lib/assessment-template-display";
 
 const ASSESSMENT_TYPES = ["FRIA", "CONFORMITY", "AI_RISK", "BIAS_FAIRNESS", "CUSTOM"] as const;
 type AssessmentType = (typeof ASSESSMENT_TYPES)[number];
@@ -37,6 +38,7 @@ const typeDescKeys: Record<AssessmentType, string> = {
 
 export default function NewAssessmentPage() {
   const t = useTranslations("assessmentsNew");
+  const locale = useLocale();
   const tt = useTranslations("assessments");
   const { statusLabel, techniqueLabel, assessmentTypeLabel } = useEnumLabels();
   const tc = useTranslations("common");
@@ -196,7 +198,7 @@ export default function NewAssessmentPage() {
                     if (!isEntitled) return;
                     setSelectedTemplateId(template.id);
                     setSelectedType(template.type);
-                    setTitle(`${template.name} - ${systems.find(s => s.id === selectedSystemId)?.name ?? ""}`);
+                    setTitle(`${templateName(template, locale)}: ${systems.find(s => s.id === selectedSystemId)?.name ?? ""}`);
                     setStep(3);
                   }}
                   disabled={!isEntitled}
@@ -206,8 +208,8 @@ export default function NewAssessmentPage() {
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="font-medium">{template.name}</div>
-                      <div className="text-sm text-muted-foreground">{template.description}</div>
+                      <div className="font-medium">{templateName(template, locale)}</div>
+                      <div className="text-sm text-muted-foreground">{templateDescription(template, locale)}</div>
                       {typeDescKeys[template.type as AssessmentType] && (
                         <div className="text-xs text-muted-foreground mt-1">{tt(typeDescKeys[template.type as AssessmentType])}</div>
                       )}

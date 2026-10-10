@@ -9,7 +9,8 @@ import { renderToBuffer } from "@react-pdf/renderer";
 import { ComplianceSummaryReport, type ComplianceSummaryData, type ComplianceRequirementExport } from "@/server/services/export/compliance-summary";
 import { fmtDate } from "@/server/services/export/pdf-styles";
 import { exportLocale } from "@/server/services/export/pdf-labels";
-import { frameworkName, requirementCode, requirementTitle } from "@/config/framework-display";
+import { frameworkChip, frameworkName, requirementCode, requirementTitle } from "@/config/framework-display";
+import { stripAccents } from "@/lib/file-name";
 
 export async function GET(request: NextRequest) {
   const organizationId = request.nextUrl.searchParams.get("organizationId");
@@ -132,7 +133,8 @@ export async function GET(request: NextRequest) {
     ComplianceSummaryReport({ data: reportData, locale })
   );
 
-  const filename = `${locale === "es" ? "Cumplimiento" : "Compliance"}-${framework.code}-${aiSystem.name.replace(/[^a-zA-Z0-9]/g, "-")}-${dateStr}.pdf`;
+  const fwName = locale === "es" ? frameworkChip(framework.code, "es").replace(/[^a-zA-Z0-9]/g, "-") : framework.code;
+  const filename = `${locale === "es" ? "Cumplimiento" : "Compliance"}-${fwName}-${stripAccents(aiSystem.name).replace(/[^a-zA-Z0-9]/g, "-")}-${dateStr}.pdf`;
 
   return new Response(new Uint8Array(buffer), {
     headers: {

@@ -14,12 +14,15 @@ import { SESSION_COOKIE_NAME, useSecureCookies } from "@/lib/session-cookie";
 import prisma from "@/lib/prisma";
 import { renderThreatModelDoc } from "@/server/services/export/threat-model-doc";
 import { exportStamp, sha256, stampLines } from "@/server/services/export/integrity";
+import { exportLocale } from "@/server/services/export/pdf-labels";
+import { EXPORT_FILE_PREFIX, stripAccents } from "@/lib/file-name";
 
 export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
   const organizationId = params.get("organizationId");
   const id = params.get("id");
-  const locale = params.get("locale") === "es" ? "es" : "en";
+  // ?locale= wins; otherwise the same cookie the screens read, as the other exports do.
+  const locale = exportLocale(params.get("locale"), request.headers.get("cookie"));
 
   if (!organizationId || !id) {
     return Response.json({ error: "organizationId and id are required" }, { status: 400 });
@@ -99,8 +102,8 @@ export async function GET(request: NextRequest) {
     },
   });
 
-  const slug = model.name.replace(/[^a-zA-Z0-9]/g, "-").slice(0, 60) || "threat-model";
-  const filename = `Threat-model-${slug}-${now.toISOString().slice(0, 10)}.md`;
+  const slug = stripAccents(model.name).replace(/[^a-zA-Z0-9]/g, "-").slice(0, 60) || "threat-model";
+  const filename = `${EXPORT_FILE_PREFIX.threatModel[locale]}-${slug}-${now.toISOString().slice(0, 10)}.md`;
 
   return new Response(markdown, {
     headers: {

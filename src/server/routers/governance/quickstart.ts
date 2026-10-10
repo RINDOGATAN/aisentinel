@@ -30,6 +30,7 @@ import {
 import { attachRegimeMappings } from "../../services/scope/attach-regimes";
 import { localizeTemplate } from "../../../config/ai-governance-templates.es";
 import { createStarterArtifacts } from "@/server/services/program/starter-artifacts";
+import { quickstartGateDescription } from "@/server/services/program/gate-description";
 import { createBuilderThreatModel } from "@/server/services/threat-model/create";
 import { assertPilotWithinCeilings, pilotLocale } from "@/server/services/pilot/caps";
 import {
@@ -667,7 +668,7 @@ export const quickstartRouter = createTRPCRouter({
                   organizationId: orgId,
                   aiSystemId: system.id,
                   gateType: mapping.gateType,
-                  description: `Pre-deployment oversight gate for ${systemName}. Required due to ${mapping.riskLevel} risk classification.`,
+                  description: quickstartGateDescription(systemName, mapping.riskLevel, contentLocale),
                   status: "PENDING",
                   provenance: "AUTO_TEMPLATE",
                   sourceRef: "quickstart:oversight-gate",
@@ -771,7 +772,7 @@ export const quickstartRouter = createTRPCRouter({
                     organizationId: orgId,
                     aiSystemId: system.id,
                     gateType: templateSystem.gateType,
-                    description: `Pre-deployment oversight gate for ${templateSystem.name}. Required due to ${templateSystem.riskLevel} risk classification.`,
+                    description: quickstartGateDescription(templateSystem.name, templateSystem.riskLevel, contentLocale),
                     status: "PENDING",
                     provenance: "AUTO_TEMPLATE",
                     sourceRef: "quickstart:oversight-gate",
@@ -1345,6 +1346,7 @@ export const quickstartRouter = createTRPCRouter({
               `${ctx.organization.name}: ${resolveContentLocale(ctx.getCookie) === "es" ? "producto de IA" : "AI product"}`,
             capabilities: input.builderCapabilities,
             aiSystemId: result.createdSystemIds[0] ?? null,
+            locale: resolveContentLocale(ctx.getCookie),
           });
           threatModel = {
             scenarios: built.scenariosAdded,

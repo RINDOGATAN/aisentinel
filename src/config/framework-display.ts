@@ -123,6 +123,8 @@ export function citationLabel(frameworkCode: string, code: string, locale: Local
 const CITATION_PREFIXES_ES: readonly [RegExp, string][] = [
   [/^EU AI ACT\b/i, "RIA"],
   [/^EU GDPR\b/, "RGPD"],
+  [/^GDPR\b/, "RGPD"],
+  [/^Reg\. \(EU\) (\d{4}\/\d+)/, "Reglamento (UE) $1"],
   [/^CA CCPA ADMT\b/, "ADMT de California"],
   [/^TX TRAIGA\b/, "TRAIGA de Texas"],
   [/^WA AI RULES\b/i, "Normas de IA de Washington"],
@@ -368,7 +370,17 @@ export function requirementDescription(
   locale: Locale
 ): string | null | undefined {
   if (locale !== "es") return storedDescription;
-  return REQUIREMENT_DESCRIPTIONS_ES[frameworkCode]?.[code] ?? storedDescription;
+  return REQUIREMENT_DESCRIPTIONS_ES[frameworkCode]?.[tableCode(frameworkCode, code)] ?? storedDescription;
+}
+
+/**
+ * The key a requirement has in the Spanish tables. The ISO/IEC 42001 rows are
+ * stored as "Clause 4.1" (scripts/seed-frameworks.ts prefixes the clause number),
+ * while the tables are keyed by the number alone, so without this every ISO title
+ * and description stayed in English on a Spanish screen.
+ */
+function tableCode(frameworkCode: string, code: string): string {
+  return frameworkCode === "ISO_42001" ? code.replace(/^Clause\s+/, "") : code;
 }
 
 /** A framework's full name in the screen's language; the stored name when the code is unknown. */
@@ -388,7 +400,18 @@ export function frameworkShort(code: string, locale: Locale): string {
 /** A requirement's title in the screen's language; the stored title when there is no translation. */
 export function requirementTitle(frameworkCode: string, code: string, storedTitle: string, locale: Locale): string {
   if (locale !== "es") return storedTitle;
-  return REQUIREMENT_TITLES_ES[frameworkCode]?.[code] ?? storedTitle;
+  return REQUIREMENT_TITLES_ES[frameworkCode]?.[tableCode(frameworkCode, code)] ?? storedTitle;
+}
+
+/**
+ * A requirement as the review queue names it, in the screen's language: the code
+ * as shown (Spanish "art." in lower case) and the title, joined by a colon.
+ */
+export function requirementLabel(
+  r: { code: string; title: string; framework: { code: string } },
+  locale: Locale,
+): string {
+  return `${requirementCode(r.framework.code, r.code, locale)}: ${requirementTitle(r.framework.code, r.code, r.title, locale)}`;
 }
 
 /**
@@ -398,6 +421,11 @@ export function requirementTitle(frameworkCode: string, code: string, storedTitl
  */
 export function requirementCode(frameworkCode: string, code: string, locale: Locale): string {
   if (locale !== "es") return code;
-  const shown = frameworkCode === "EU_AI_ACT" ? (EU_AI_ACT_CODES_ES[code] ?? code) : code;
+  const shown =
+    frameworkCode === "EU_AI_ACT"
+      ? (EU_AI_ACT_CODES_ES[code] ?? code)
+      : frameworkCode === "ISO_42001"
+        ? code.replace(/^Clause\b/, "Cláusula")
+        : code;
   return spanishCitationCode(shown);
 }

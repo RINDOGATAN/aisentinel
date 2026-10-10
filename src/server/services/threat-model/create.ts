@@ -10,6 +10,10 @@
  *
  * Idempotent on purpose. The wizard can be run twice on the same account, and
  * the second run must add nothing it already added.
+ *
+ * The scenario, control and test texts are written in the content language of
+ * the request (the `locale` cookie), as the quick start writes its policies;
+ * the library carries both languages (src/config/threat-model.ts).
  */
 
 import type { Prisma, PrismaClient } from "@prisma/client";
@@ -31,6 +35,7 @@ export async function addLibraryScenarios(
   threatModelId: string,
   userId: string,
   libraryIds: string[],
+  locale: "en" | "es" = "en",
 ): Promise<number> {
   const existing = await db.threatScenario.findMany({
     where: { threatModelId, organizationId },
@@ -56,8 +61,8 @@ export async function addLibraryScenarios(
         threatModelId,
         libraryId: entry.id,
         category: toDbCategory(entry.category) as never,
-        title: entry.title.en,
-        description: entry.story.en,
+        title: entry.title[locale],
+        description: entry.story[locale],
         impact: entry.defaults.impact,
         likelihood: entry.defaults.likelihood,
         blastRadius: entry.defaults.blastRadius,
@@ -72,8 +77,8 @@ export async function addLibraryScenarios(
           organizationId,
           scenarioId: scenario.id,
           layer: toDbLayer(control.layer) as never,
-          description: control.text.en,
-          howToTest: entry.test.en,
+          description: control.text[locale],
+          howToTest: entry.test[locale],
           createdBy: userId,
         },
       });
@@ -106,6 +111,7 @@ export async function createBuilderThreatModel(
     capabilities: string[];
     systemSummary?: string;
     aiSystemId?: string | null;
+    locale?: "en" | "es";
   },
 ): Promise<BuilderModelResult> {
   const existing = await db.threatModel.findFirst({
@@ -131,6 +137,7 @@ export async function createBuilderThreatModel(
       existing.id,
       args.userId,
       suggestScenarios(union).map((s) => s.id),
+      args.locale,
     );
     return { threatModelId: existing.id, created: false, scenariosAdded: added };
   }
@@ -152,6 +159,7 @@ export async function createBuilderThreatModel(
     model.id,
     args.userId,
     libraryIds,
+    args.locale,
   );
 
   return { threatModelId: model.id, created: true, scenariosAdded: added };

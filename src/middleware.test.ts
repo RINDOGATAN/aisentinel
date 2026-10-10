@@ -67,3 +67,21 @@ describe("middleware locale handling", () => {
     expect(cookies[1]).toMatch(/Domain=\.todo\.law/);
   });
 });
+
+describe("middleware: the landing language for <html lang>", () => {
+  const forwarded = (url: string, cookie?: string) => {
+    const headers = new Headers(cookie ? { cookie } : {});
+    return middleware(new NextRequest(url, { headers })).headers.get("x-middleware-request-x-landing-lang");
+  };
+
+  it("forwards ?lang= on the landing so the layout can say it", () => {
+    expect(forwarded("http://localhost:3003/?lang=es", "locale=en")).toBe("es");
+    expect(forwarded("http://localhost:3003/?lang=en", "locale=es")).toBe("en");
+  });
+
+  it("forwards nothing without a valid ?lang= or away from the landing", () => {
+    expect(forwarded("http://localhost:3003/")).toBeNull();
+    expect(forwarded("http://localhost:3003/?lang=fr")).toBeNull();
+    expect(forwarded("http://localhost:3003/governance?lang=es")).toBeNull();
+  });
+});

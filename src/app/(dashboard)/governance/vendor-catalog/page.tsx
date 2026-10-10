@@ -236,7 +236,7 @@ export default function VendorCatalogPage() {
                   >
                     <Card className="hover:border-primary/50 transition-colors cursor-pointer h-full">
                       <CardContent className="p-4 sm:p-6">
-                        <div className="flex items-start justify-between gap-2 mb-3">
+                        <div className="flex flex-wrap items-start justify-between gap-2 mb-3">
                           <div className="flex items-center gap-2">
                             <h3 className="font-semibold text-base sm:text-lg line-clamp-1">
                               {vendor.name}
@@ -245,11 +245,11 @@ export default function VendorCatalogPage() {
                               <CheckCircle className="w-4 h-4 text-success shrink-0" />
                             )}
                           </div>
-                          <Badge variant="secondary" className="text-xs shrink-0">
+                          <Badge variant="secondary" className="text-xs max-w-full shrink whitespace-normal text-left">
                             {vendor.category}
                           </Badge>
                           {vendor.subcategory && (
-                            <Badge variant="outline" className="text-xs shrink-0">
+                            <Badge variant="outline" className="text-xs max-w-full shrink whitespace-normal text-left">
                               {vendor.subcategory}
                             </Badge>
                           )}

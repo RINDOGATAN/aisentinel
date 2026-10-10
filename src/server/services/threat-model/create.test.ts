@@ -3,7 +3,7 @@
 
 import { describe, it, expect, vi } from "vitest";
 import { addLibraryScenarios, createBuilderThreatModel } from "./create";
-import { suggestScenarios } from "@/config/threat-model";
+import { SCENARIO_LIBRARY, suggestScenarios } from "@/config/threat-model";
 
 type Row = Record<string, unknown>;
 
@@ -151,5 +151,28 @@ describe("adding scenarios to an existing model", () => {
       "not-a-scenario",
     ]);
     expect(added).toBe(0);
+  });
+});
+
+describe("the language of the texts written", () => {
+  it("writes English by default, as before", async () => {
+    const { db, scenarios, controls } = fakeDb();
+    await createBuilderThreatModel(db, ARGS);
+    const lib = SCENARIO_LIBRARY.find((s) => s.id === scenarios[0].libraryId)!;
+    expect(scenarios[0].title).toBe(lib.title.en);
+    expect(controls[0].howToTest).toBe(lib.test.en);
+  });
+
+  it("writes the Spanish scenario, controls and test for a Spanish request", async () => {
+    const { db, scenarios, controls } = fakeDb();
+    await createBuilderThreatModel(db, { ...ARGS, locale: "es" });
+    for (const s of scenarios) {
+      const lib = SCENARIO_LIBRARY.find((x) => x.id === s.libraryId)!;
+      expect(s.title).toBe(lib.title.es);
+      expect(s.description).toBe(lib.story.es);
+    }
+    const lib0 = SCENARIO_LIBRARY.find((x) => x.id === scenarios[0].libraryId)!;
+    expect(controls[0].description).toBe(lib0.controls[0].text.es);
+    expect(controls[0].howToTest).toBe(lib0.test.es);
   });
 });

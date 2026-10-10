@@ -4,6 +4,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { BrandMark } from "@/components/brand-mark";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Building2, Briefcase, Loader2 } from "lucide-react";
@@ -63,8 +64,7 @@ export function PersonaSelector() {
       <div className="w-full max-w-lg space-y-6">
         <div className="text-center space-y-2">
           <div className="flex items-center justify-center gap-2">
-            <img src="/logo-negative.svg" alt="TODO.LAW" style={{ height: "28px", width: "auto" }} />
-            <span className="text-lg tracking-tight" style={{ fontFamily: "var(--font-jost), 'Jost', sans-serif", fontWeight: 600 }}>AI SENTINEL</span>
+            <BrandMark />
           </div>
           <h1 className="text-xl font-semibold">{t("personaTitle")}</h1>
           <p className="text-sm text-muted-foreground">{t("personaSubtitle")}</p>

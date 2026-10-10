@@ -7,6 +7,7 @@ import { ClipboardList, ShieldAlert, Eye, AlertOctagon } from "lucide-react";
 import StartupProductPage from "./components/StartupProductPage";
 import StartupsHeader from "./components/StartupsHeader";
 import StartupsFooter from "./components/StartupsFooter";
+import SpanishSections from "./components/SpanishSections";
 import en from "./i18n/en/ai-sentinel-startups.json";
 import es from "./i18n/es/ai-sentinel-startups.json";
 import authEn from "./i18n/en/startups-auth.json";
@@ -41,6 +42,12 @@ export default function LandingPage({ hostedPilot = false }: { hostedPilot?: boo
       return next;
     });
   }, []);
+
+  // `?lang=` and the toggle can differ from the language the server rendered
+  // with; <html lang> follows the text shown.
+  useEffect(() => {
+    document.documentElement.lang = locale;
+  }, [locale]);
 
   const dict = locale === "es" ? es : en;
   const authDict = locale === "es" ? authEs : authEn;
@@ -114,6 +121,7 @@ export default function LandingPage({ hostedPilot = false }: { hostedPilot?: boo
         pilotNotice={
           hostedPilot ? { sentence: PILOT_SENTENCE[locale], terms: PILOT_TERMS[locale] } : null
         }
+        middle={locale === "es" ? <SpanishSections t={t} /> : undefined}
       />
       <StartupsFooter t={t} />
     </>

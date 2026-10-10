@@ -39,6 +39,12 @@ interface StartupProductPageProps {
   callbackUrl: string;
   /** The hosted pilot's one sentence, shown in the sign-up card; null off the pilot. */
   pilotNotice?: { sentence: PilotSentence; terms: string } | null;
+  /**
+   * The sections between the value section and the closing call to action.
+   * When given (the Spanish page), they replace "How it works" and the
+   * feature showcase; when left out (the English page), those two show.
+   */
+  middle?: React.ReactNode;
 }
 
 const GoogleIcon = () => (
@@ -61,6 +67,7 @@ const StartupProductPage = ({
   accentGradient = "from-accent/20 to-accent/5",
   callbackUrl,
   pilotNotice = null,
+  middle,
 }: StartupProductPageProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [cardMode, setCardMode] = useState<"signup" | "login" | "sent">("signup");
@@ -127,10 +134,10 @@ const StartupProductPage = ({
       if (ok) {
         setCardMode("sent");
       } else {
-        setError("Email sign-in is not available. Please use Google.");
+        setError(tAuth("error.emailUnavailable"));
       }
     } catch {
-      setError("Failed to send sign-in link. Please try again.");
+      setError(tAuth("error.sendFailed"));
     } finally {
       setSending(false);
     }
@@ -142,10 +149,10 @@ const StartupProductPage = ({
     try {
       const ok = await sendMagicLink(emailInput);
       if (!ok) {
-        setError("Failed to resend link. Please try again.");
+        setError(tAuth("error.resendFailed"));
       }
     } catch {
-      setError("Failed to resend link. Please try again.");
+      setError(tAuth("error.resendFailed"));
     } finally {
       setSending(false);
     }
@@ -175,7 +182,7 @@ const StartupProductPage = ({
         className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-secondary/50 border border-border rounded-xl text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground transition-all"
       >
         <GoogleIcon />
-        Continue with Google
+        {tAuth("login.google")}
       </button>
     </>
   );
@@ -200,7 +207,7 @@ const StartupProductPage = ({
           <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-black/20" />
         </div>
 
-        <div className="relative z-10 container px-6 py-20 md:py-28">
+        <div className="relative z-10 container px-6 pt-28 pb-20 md:py-28">
           <div className="max-w-5xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
               <div>
@@ -215,8 +222,11 @@ const StartupProductPage = ({
                     <span className="text-accent">{t("hero.title.accent")}</span>
                     {t("hero.title.suffix")}
                   </h1>
-                  <p className="text-lg text-white/70 leading-relaxed font-body mb-8 max-w-lg">
-                    {t("hero.subtitle")}
+                  {/* The product summary (hero.subtitle) sits in the sign-up
+                      card on the right, so the left column carries only the
+                      badge, the title and the welcome line. */}
+                  <p className="text-lg text-white/90 leading-relaxed font-body mb-8 max-w-lg">
+                    {t("hero.welcome")}
                   </p>
                 </div>
               </div>
@@ -254,7 +264,7 @@ const StartupProductPage = ({
                           type="email"
                           value={emailInput}
                           onChange={(e) => setEmailInput(e.target.value)}
-                          placeholder="you@startup.com"
+                          placeholder={tAuth("emailPlaceholder")}
                           className="w-full px-4 py-3 bg-secondary/80 border border-border rounded-xl text-sm font-body text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent/50 transition-all"
                         />
                         <button
@@ -286,7 +296,7 @@ const StartupProductPage = ({
                           type="email"
                           value={emailInput}
                           onChange={(e) => setEmailInput(e.target.value)}
-                          placeholder="you@startup.com"
+                          placeholder={tAuth("emailPlaceholder")}
                           className="w-full px-4 py-3 bg-secondary/80 border border-border rounded-xl text-sm font-body text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent/50 transition-all"
                         />
                         <button
@@ -352,6 +362,8 @@ const StartupProductPage = ({
         </div>
       </section>
 
+      {middle ?? (
+        <>
       {/* HOW IT WORKS */}
       <section className="py-20 md:py-28 bg-secondary/20 border-y border-border">
         <div className="container px-6">
@@ -422,6 +434,8 @@ const StartupProductPage = ({
           </div>
         </div>
       </section>
+        </>
+      )}
 
       {/* BOTTOM CTA */}
       <section className="py-20 md:py-28 border-t border-border bg-secondary/10">

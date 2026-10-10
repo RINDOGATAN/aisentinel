@@ -8,7 +8,7 @@
   "login.magicLink": "Send magic link",
   "login.newHere": "New here? Sign up",
   "login.google": "Continue with Google",
-  "emailPlaceholder": "you@yourfirm.com",
+  "emailPlaceholder": "you@yourcompany.com",
   "error.emailUnavailable": "Email sign-in is not available. Please use Google.",
   "error.sendFailed": "Failed to send sign-in link. Please try again.",
   "error.resendFailed": "Failed to resend link. Please try again.",

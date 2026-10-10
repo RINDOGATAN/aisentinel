@@ -75,8 +75,8 @@ describe("English landing page", () => {
     expect(html).not.toContain(EN["feat.label"]);
   });
 
-  it("suggests a firm address in the English sign-up card; Spanish keeps its own", () => {
-    expect((authEn as Record<string, string>)["emailPlaceholder"]).toBe("you@yourfirm.com");
+  it("suggests a neutral company address in the English sign-up card; Spanish keeps its own", () => {
+    expect((authEn as Record<string, string>)["emailPlaceholder"]).toBe("you@yourcompany.com");
     expect((authEs as Record<string, string>)["emailPlaceholder"]).toBe("tu@empresa.com");
   });
 

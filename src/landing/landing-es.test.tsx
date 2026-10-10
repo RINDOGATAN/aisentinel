@@ -185,6 +185,24 @@ describe("Spanish sections", () => {
     expect(ES["es.videos.sub"]).toBe("AI Sentinel a vista de pájaro");
     expect(ES["es.videos.sub"]).not.toMatch(/cortos|sin sonido|subtítulos|inventados/i);
   });
+
+  it("ship the five recorded videos, with titles and captions that follow the copy rules", () => {
+    expect(LANDING_VIDEOS_ES.map((v) => v.file)).toEqual([
+      "01-inicio-rapido",
+      "02-aplicabilidad",
+      "03-clasificacion-riesgo",
+      "04-evidencias",
+      "05-plan-30-60-90",
+    ]);
+    for (const v of LANDING_VIDEOS_ES) {
+      for (const text of [v.title, v.caption]) {
+        expect(text, v.file).not.toMatch(/[–—]|ejecut(?!iv)|\busted\b|vosotr|sin sonido|inventad|subtítul/i);
+        expect(text.trim(), v.file).not.toBe("");
+      }
+    }
+    const html = renderToStaticMarkup(createElement(SpanishSections, { t: tEs }));
+    expect(html.match(/<video/g)).toHaveLength(5);
+  });
 });
 
 describe("English landing", () => {

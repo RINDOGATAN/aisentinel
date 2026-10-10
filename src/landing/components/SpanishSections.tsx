@@ -161,17 +161,19 @@ function Suite({ t }: { t: T }) {
 
 export function Videos({ t, videos = LANDING_VIDEOS_ES }: { t: T; videos?: readonly LandingVideo[] }) {
   if (videos.length === 0) return null;
-  const cols = videos.length >= 3 ? "md:grid-cols-3" : videos.length === 2 ? "md:grid-cols-2" : "max-w-3xl";
+  // A centred, wrapping row: three to a line on wide screens, two on tablets,
+  // one on phones, with an incomplete last line centred (five videos: 3 + 2).
+  const item = videos.length === 1 ? "w-full max-w-3xl" : "w-full md:w-[calc(50%-0.75rem)] lg:w-[calc((100%-3rem)/3)]";
   return (
     <section className="py-20 md:py-28" aria-labelledby="es.videos-heading" data-testid="es-videos">
       <div className="container px-6">
         <SectionHead t={t} k="es.videos" />
-        <div className={`grid grid-cols-1 ${cols} gap-6 max-w-6xl mx-auto`}>
+        <div className="flex flex-wrap justify-center gap-6 max-w-6xl mx-auto">
           {videos.map((video, i) => {
             const base = `/videos/es/${video.file}`;
             const captionId = `es-video-${i + 1}-caption`;
             return (
-              <figure key={video.file} className="rounded-2xl border border-border bg-card overflow-hidden flex flex-col">
+              <figure key={video.file} className={`${item} rounded-2xl border border-border bg-card overflow-hidden flex flex-col`}>
                 <video
                   className="block w-full aspect-video bg-black"
                   controls

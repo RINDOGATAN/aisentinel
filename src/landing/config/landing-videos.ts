@@ -28,4 +28,30 @@ export interface LandingVideo {
   caption: string;
 }
 
-export const LANDING_VIDEOS_ES: readonly LandingVideo[] = [];
+export const LANDING_VIDEOS_ES: readonly LandingVideo[] = [
+  {
+    file: "01-inicio-rapido",
+    title: "Tu programa de gobernanza de la IA en minutos",
+    caption: "Tu organización, dónde operas y una plantilla de tu sector para empezar.",
+  },
+  {
+    file: "02-aplicabilidad",
+    title: "Qué normas de IA se te aplican",
+    caption: "Unas preguntas sobre cómo usas la IA deciden qué normas te aplican y sus fechas.",
+  },
+  {
+    file: "03-clasificacion-riesgo",
+    title: "Clasifica el riesgo de cada sistema de IA",
+    caption: "Eliges el nivel de riesgo de cada sistema y dejas escrito el motivo.",
+  },
+  {
+    file: "04-evidencias",
+    title: "Las pruebas de tus agentes de IA, en orden",
+    caption: "Cada agente de IA frente a AIUC-1, con sus pruebas y su preparación para la auditoría.",
+  },
+  {
+    file: "05-plan-30-60-90",
+    title: "Tu plan de 30, 60 y 90 días",
+    caption: "En qué punto del plan estás y qué toca hacer en cada área.",
+  },
+];

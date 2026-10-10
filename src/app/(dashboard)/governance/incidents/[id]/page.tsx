@@ -38,7 +38,8 @@ import {
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
-import { formatDate, formatRelativeTime } from "@/lib/utils";
+import { formatRelativeTime } from "@/lib/utils";
+import { useFormatDate } from "@/lib/use-format-date";
 import { useTranslations, useLocale } from "next-intl";
 import { useEnumLabels } from "@/lib/enum-labels";
 import { STATUS_CHIP, STATUS_OUTLINE } from "@/components/ui/status-note";
@@ -92,6 +93,7 @@ const statusTransitions: Record<string, string[]> = {
 
 export default function IncidentDetailPage() {
   const t = useTranslations("incidentDetail");
+  const { formatDate } = useFormatDate();
   const locale = useLocale();
   const ti = useTranslations("incidents");
   const tc = useTranslations("common");

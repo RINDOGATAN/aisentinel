@@ -45,7 +45,8 @@ import {
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
-import { formatDate, formatRelativeTime } from "@/lib/utils";
+import { formatRelativeTime } from "@/lib/utils";
+import { useFormatDate } from "@/lib/use-format-date";
 import { useTranslations, useLocale } from "next-intl";
 import { useEnumLabels } from "@/lib/enum-labels";
 import { STATUS_CHIP, STATUS_OUTLINE } from "@/components/ui/status-note";
@@ -88,6 +89,7 @@ const decisionIcons: Record<string, React.ElementType> = {
 
 export default function OversightGateDetailPage() {
   const t = useTranslations("oversightDetail");
+  const { formatDate } = useFormatDate();
   const locale = useLocale();
   const to = useTranslations("oversight");
   const tc = useTranslations("common");

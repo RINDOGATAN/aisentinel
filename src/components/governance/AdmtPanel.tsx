@@ -22,7 +22,7 @@ import { AlertTriangle, Scale, ShieldAlert } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
-import { formatDate } from "@/lib/utils";
+import { useFormatDate } from "@/lib/use-format-date";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -170,6 +170,7 @@ export function AdmtPanel({
   canWrite,
 }: AdmtPanelProps) {
   const t = useTranslations("admt");
+  const { formatDate } = useFormatDate();
   // The sign-off marker is content, not chrome: it lives in the rules pack as a
   // bilingual pair rather than in the message files.
   const locale = useLocale() === "es" ? "es" : "en";

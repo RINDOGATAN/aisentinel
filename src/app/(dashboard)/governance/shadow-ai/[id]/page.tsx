@@ -48,7 +48,8 @@ import { useTranslations, useLocale } from "next-intl";
 import { useEnumLabels } from "@/lib/enum-labels";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
-import { formatDate, formatRelativeTime } from "@/lib/utils";
+import { formatRelativeTime } from "@/lib/utils";
+import { useFormatDate } from "@/lib/use-format-date";
 import { suggestTechnique } from "@/lib/ai-technique-mapping";
 import { STATUS_CHIP, STATUS_OUTLINE } from "@/components/ui/status-note";
 import { PageHeader } from "@/components/governance/page-header";
@@ -110,6 +111,7 @@ const riskIndicatorColors: Record<string, string> = {
 
 export default function ShadowAIDetailPage() {
   const t = useTranslations("shadowAiDetail");
+  const { formatDate } = useFormatDate();
   const { statusLabel, roleLabel } = useEnumLabels();
   const locale = useLocale();
   const tc = useTranslations("common");

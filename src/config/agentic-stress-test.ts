@@ -210,7 +210,7 @@ export const AGENTIC_FINDINGS: AgenticFinding[] = [
     ),
     breakage: L(
       "An agent running asynchronously, in a queue or across sessions may have no point at which a person can interrupt it, and actions already dispatched may be beyond recall. Oversight that exists only in the interface is not oversight of the agent.",
-      "Un agente que se ejecuta de forma asíncrona, en una cola o a lo largo de varias sesiones puede no ofrecer ningún punto en el que una persona pueda interrumpirlo, y las acciones ya emitidas pueden ser irrecuperables. La supervisión que solo existe en la interfaz no es supervisión del agente.",
+      "Un agente que funciona de forma asíncrona, en una cola o a lo largo de varias sesiones puede no ofrecer ningún punto en el que una persona pueda interrumpirlo, y las acciones ya emitidas pueden ser irrecuperables. La supervisión que solo existe en la interfaz no es supervisión del agente.",
     ),
     provision: L(
       "Document a stop control: who can halt the agent, how quickly it takes effect, what happens to actions in flight, and how the halt is tested. Name the person accountable for exercising it.",

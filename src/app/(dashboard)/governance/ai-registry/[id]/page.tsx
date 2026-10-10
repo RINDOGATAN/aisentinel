@@ -58,10 +58,12 @@ import {
   Gavel,
 } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
+import { frameworkShort, frameworkShortName, requirementCode, requirementTitle } from "@/config/framework-display";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { SampleBadge, TemplateBadge, useSampleIds } from "@/components/governance/worked-example-card";
-import { formatDate, formatRelativeTime } from "@/lib/utils";
+import { formatRelativeTime } from "@/lib/utils";
+import { useFormatDate } from "@/lib/use-format-date";
 import { AnnexIvCard } from "@/components/ai/AnnexIvCard";
 import { TransparencyPanel } from "@/components/governance/TransparencyPanel";
 import { AdmtPanel } from "@/components/governance/AdmtPanel";
@@ -217,6 +219,7 @@ export default function AISystemDetailPage() {
     requestedTab && LINKABLE_TABS.has(requestedTab) ? requestedTab : "models";
   const { organization, canWrite } = useOrganization();
   const t = useTranslations("aiRegistryDetail");
+  const { formatDate } = useFormatDate();
   const locale = useLocale();
   const tc = useTranslations("common");
   const tFlow = useTranslations("dataFlow");
@@ -809,7 +812,7 @@ export default function AISystemDetailPage() {
                 return (
                   <div key={fw.frameworkId} className="rounded-xl border border-border p-3 sm:p-4 space-y-2 sm:space-y-3">
                     <div className="flex items-center justify-between">
-                      <p className="text-sm font-semibold">{fw.frameworkCode}</p>
+                      <p className="text-sm font-semibold">{frameworkShortName(fw.frameworkCode, locale)}</p>
                       <span className="text-sm font-bold text-primary">{fwPercent}%</span>
                     </div>
                     <Progress value={fwPercent} className="h-2" />
@@ -859,9 +862,9 @@ export default function AISystemDetailPage() {
                             <AlertTriangle className="w-4 h-4 text-muted-foreground shrink-0" />
                           )}
                           <Badge variant="outline" className="text-xs shrink-0">
-                            {gap.frameworkCode}
+                            {frameworkShort(gap.frameworkCode, locale)}
                           </Badge>
-                          <span className="font-medium shrink-0">{gap.code}</span>
+                          <span className="font-medium shrink-0">{requirementCode(gap.frameworkCode, gap.code, locale)}</span>
                           <TierChip
                             level={gap.status === "NON_COMPLIANT" ? "CRITICAL" : null}
                             className="text-xs shrink-0 ml-auto"
@@ -870,7 +873,7 @@ export default function AISystemDetailPage() {
                           </TierChip>
                         </div>
                         <p className="text-muted-foreground text-xs mt-1 ml-6 line-clamp-1">
-                          {gap.title}
+                          {requirementTitle(gap.frameworkCode, gap.code, gap.title, locale)}
                         </p>
                       </div>
                     ))}

@@ -17,7 +17,7 @@ import { AlertTriangle, Scale } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
-import { formatDate } from "@/lib/utils";
+import { useFormatDate } from "@/lib/use-format-date";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -74,6 +74,7 @@ export function TransparencyPanel({
   canWrite,
 }: TransparencyPanelProps) {
   const t = useTranslations("transparency");
+  const { formatDate } = useFormatDate();
   const utils = trpc.useUtils();
 
   const { data, isLoading } = trpc.transparency.get.useQuery(

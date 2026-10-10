@@ -46,6 +46,7 @@ import { useExportDownload } from "@/components/governance/use-export-download";
 import { ReadinessBadge, StateBadge, TallyLine } from "@/components/governance/aiuc1-readiness";
 import { ProgressBar } from "@/components/guided/progress-ring";
 import { AIUC1_FRAMEWORK } from "@/config/aiuc1-requirements";
+import { aiuc1Capabilities, aiuc1Title } from "@/config/aiuc1-requirements-es";
 import { AIUC1_TEST_RESULTS, retestDue, type Aiuc1TestResult } from "@/config/aiuc1-evidence";
 
 const DECISION_ROLES = ["OWNER", "ADMIN", "AI_OFFICER"];
@@ -265,7 +266,7 @@ export default function AgentTestingDetailPage({ params }: { params: Promise<{ i
                       <div className="flex flex-wrap items-start gap-2">
                         <span className="min-w-0 flex-1 break-words text-sm">
                           <span className="font-mono text-xs text-muted-foreground">{r.code}</span>{" "}
-                          <span className="font-medium">{r.title}</span>
+                          <span className="font-medium">{aiuc1Title(r, lang)}</span>
                         </span>
                         <StateBadge state={r.state} accepted={!!r.acceptance} />
                       </div>
@@ -274,7 +275,7 @@ export default function AgentTestingDetailPage({ params }: { params: Promise<{ i
                         {r.application === "supplemental" && (
                           <Badge variant="outline" className="text-[10px]">{t("supplemental")}</Badge>
                         )}
-                        <span>{t("capabilities", { list: r.capabilities.join(", ") })}</span>
+                        <span>{t("capabilities", { list: aiuc1Capabilities(r.capabilities, lang) })}</span>
                         <a
                           href={`${AIUC1_FRAMEWORK.sourceUrl}${r.path}`}
                           target="_blank"
@@ -376,7 +377,7 @@ export default function AgentTestingDetailPage({ params }: { params: Promise<{ i
                       {data.isAgent && data.seeded && (canWrite || canDecide) && (
                         <div className="flex flex-wrap gap-2">
                           {canWrite && r.applicable && (
-                            <Button size="sm" variant="outline" onClick={() => open({ kind: "test", code: r.code, title: r.title })}>
+                            <Button size="sm" variant="outline" onClick={() => open({ kind: "test", code: r.code, title: aiuc1Title(r, lang) })}>
                               {t("recordTest")}
                             </Button>
                           )}
@@ -384,7 +385,7 @@ export default function AgentTestingDetailPage({ params }: { params: Promise<{ i
                             <Button
                               size="sm"
                               variant="outline"
-                              onClick={() => open({ kind: "accept", code: r.code, title: r.title, testId: latest.id })}
+                              onClick={() => open({ kind: "accept", code: r.code, title: aiuc1Title(r, lang), testId: latest.id })}
                             >
                               {t("acceptPartial")}
                             </Button>
@@ -393,7 +394,7 @@ export default function AgentTestingDetailPage({ params }: { params: Promise<{ i
                             <Button
                               size="sm"
                               variant="ghost"
-                              onClick={() => open({ kind: "notApplicable", code: r.code, title: r.title })}
+                              onClick={() => open({ kind: "notApplicable", code: r.code, title: aiuc1Title(r, lang) })}
                             >
                               {t("markNotApplicable")}
                             </Button>

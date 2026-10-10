@@ -25,7 +25,8 @@ import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
 import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
-import { formatRelativeTime, formatDate } from "@/lib/utils";
+import { formatRelativeTime } from "@/lib/utils";
+import { useFormatDate } from "@/lib/use-format-date";
 import { STATUS_OUTLINE } from "@/components/ui/status-note";
 
 // Translation keys in the `policies` namespace.
@@ -61,6 +62,7 @@ const tabTypeMap: Record<string, PolicyTypeFilter | undefined> = {
 
 export default function PoliciesPage() {
   const t = useTranslations("policies");
+  const { formatDate } = useFormatDate();
   const locale = useLocale();
   const tc = useTranslations("common");
   const { statusLabel } = useEnumLabels();

@@ -222,7 +222,7 @@ export default function AssessmentsPage() {
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="w-full justify-start overflow-x-auto">
           <TabsTrigger value="all" className="text-xs sm:text-sm">
-            All ({stats.total})
+            {t("tabAll", { count: stats.total })}
           </TabsTrigger>
           <TabsTrigger value="fria" className="text-xs sm:text-sm">
             {t("typeFria")}
@@ -297,7 +297,7 @@ export default function AssessmentsPage() {
                         )}
                         {assessment.template && (
                           <p className="text-xs text-muted-foreground mb-2 truncate">
-                            Template: {assessment.template.name}
+                            {t("templateLabel", { name: assessment.template.name })}
                           </p>
                         )}
                         <p className="text-xs text-muted-foreground">

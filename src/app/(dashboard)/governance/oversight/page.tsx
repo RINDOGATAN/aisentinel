@@ -25,7 +25,8 @@ import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
 import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
-import { formatRelativeTime, formatDate } from "@/lib/utils";
+import { formatRelativeTime } from "@/lib/utils";
+import { useFormatDate } from "@/lib/use-format-date";
 import { useTranslations, useLocale } from "next-intl";
 import { useEnumLabels } from "@/lib/enum-labels";
 import { STATUS_OUTLINE } from "@/components/ui/status-note";
@@ -48,6 +49,7 @@ const gateStatusColors: Record<string, string> = {
 
 export default function OversightPage() {
   const t = useTranslations("oversight");
+  const { formatDate } = useFormatDate();
   const locale = useLocale();
   const tc = useTranslations("common");
   const { statusLabel } = useEnumLabels();

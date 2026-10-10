@@ -396,7 +396,26 @@
     "emptySearchHint": "Try adjusting your search terms",
     "emptyDefaultHint": "Register AI systems first to classify their risk levels",
     "registerAiSystem": "Register AI System",
-    "toastClassified": "{name} classified as {level}{count, plural, =0 {} one {: # compliance requirement initialised} other {: # compliance requirements initialised}}"
+    "toastClassified": "{name} classified as {level}{count, plural, =0 {} one {: # compliance requirement initialised} other {: # compliance requirements initialised}}",
+    "classifyFailed": "Failed to classify risk",
+    "annexIIIBadge": "Annex III: {category}",
+    "classifiedOn": "Classified {date}",
+    "annexIII": {
+      "biometrics": "Biometrics",
+      "critical_infrastructure": "Critical Infrastructure",
+      "education": "Education & Vocational Training",
+      "employment": "Employment & Workers Management",
+      "essential_services": "Essential Private/Public Services",
+      "law_enforcement": "Law Enforcement",
+      "migration": "Migration, Asylum & Border Control",
+      "justice": "Administration of Justice"
+    },
+    "levelPhrase": {
+      "UNACCEPTABLE": "unacceptable risk",
+      "HIGH": "high risk",
+      "LIMITED": "limited risk",
+      "MINIMAL": "minimal risk"
+    }
   },
   "quickstart": {
     "backToDashboard": "Dashboard",
@@ -526,7 +545,9 @@
     "typeDescAiRisk": "A general risk assessment of an AI system: what could go wrong, how likely it is, and what reduces it.",
     "typeDescBiasFairness": "An examination of whether the system treats groups of people unequally, and what is done about it.",
     "typeDescCustom": "A blank assessment you shape with your own questions.",
-    "templatesButton": "Templates"
+    "templatesButton": "Templates",
+    "tabAll": "All ({count})",
+    "templateLabel": "Template: {name}"
   },
   "assessmentsNew": {
     "title": "New Assessment",
@@ -588,7 +609,8 @@
     "registerAlready": "{count} already carry this evidence.",
     "registerUnmapped": "{count} cited requirements do not reach this system, so they are skipped. Attach them from the system's compliance tab if they should.",
     "registerApply": "Apply to the register",
-    "registerApplied": "Evidence attached to {count} requirements"
+    "registerApplied": "Evidence attached to {count} requirements",
+    "forSystem": "for <link>{name}</link>"
   },
   "oversight": {
     "title": "Human Oversight",
@@ -1488,7 +1510,13 @@
     "errorBody": "Something went wrong during sign-in. The link may have expired or already been used.",
     "errorTryAgain": "Try Again",
     "crossSigningIn": "Signing you in...",
-    "crossFailed": "Authentication failed. Redirecting to sign-in..."
+    "crossFailed": "Authentication failed. Redirecting to sign-in...",
+    "tagline": "Cross-border AI Governance",
+    "sendFailed": "Failed to send magic link. Please try again.",
+    "unexpectedError": "An unexpected error occurred.",
+    "sentBody": "We've sent a magic link to <email>{address}</email>. Click the link in the email to sign in.",
+    "noProviders": "No sign-in providers configured. Please contact the administrator.",
+    "emailInputPlaceholder": "you@company.com"
   },
   "ai": {
     "panel": {
@@ -4031,11 +4059,11 @@
       "ariaLabel": "NIST AI RMF maturity radar"
     },
     "plan": {
-      "bucket1": "Days 1–30",
-      "bucket2": "Days 31–60",
-      "bucket3": "Days 61–90",
+      "bucket1": "Days 1 to 30",
+      "bucket2": "Days 31 to 60",
+      "bucket3": "Days 61 to 90",
       "empty": "Nothing scheduled",
-      "effort": "Effort: {effort}"
+      "effort": "Effort: {effort, select, S {small} M {medium} L {large} other {{effort}}}"
     },
     "stage": {
       "ADOPT": "Adopt",
@@ -4059,7 +4087,7 @@
     "map": {
       "ariaLabel": "AI governance map",
       "ungrouped": "Other systems",
-      "vendorSystems": "{count} systems",
+      "vendorSystems": "{count, plural, one {# system} other {# systems}}",
       "tier": {
         "UNACCEPTABLE": "Unacceptable",
         "HIGH": "High",
@@ -4179,9 +4207,9 @@
       "eyebrow": "Action Plan",
       "title": "The next 90 days",
       "bucket": {
-        "1-30": "Days 1–30",
-        "31-60": "Days 31–60",
-        "61-90": "Days 61–90"
+        "1-30": "Days 1 to 30",
+        "31-60": "Days 31 to 60",
+        "61-90": "Days 61 to 90"
       }
     },
     "rollout": {
@@ -4425,9 +4453,9 @@
       "unknown": "Scope unknown"
     },
     "counts": {
-      "inScope": "{count} systems",
+      "inScope": "{count, plural, one {# system} other {# systems}}",
       "inScopeWithUndetermined": "{inScope} in scope · {undetermined} undetermined",
-      "undeterminedOnly": "Scope not yet determined for {count} systems",
+      "undeterminedOnly": "Scope not yet determined for {count, plural, one {# system} other {# systems}}",
       "organization": "Applies to your organization",
       "notApplicable": "Does not apply to your inventory",
       "satisfied": "{satisfied} of {total} evidenced",
@@ -4450,10 +4478,10 @@
       "undeterminedSystems": "Scope not yet determined",
       "resolve": "Resolve this",
       "viewRequirements": "View requirements",
-      "trueInterval": "{days} days",
+      "trueInterval": "{days, plural, one {# day} other {# days}}",
       "appliesToday": "applies today",
-      "daysRemaining": "in {days} days",
-      "daysAgo": "{days} days ago"
+      "daysRemaining": "in {days, plural, one {# day} other {# days}}",
+      "daysAgo": "{days, plural, one {# day} other {# days}} ago"
     },
     "legend": {
       "title": "Legend",

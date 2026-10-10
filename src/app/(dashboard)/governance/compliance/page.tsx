@@ -59,25 +59,11 @@ import {
   Link2,
 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { frameworkName, frameworkShort, requirementCode, requirementDescription, requirementTitle } from "@/config/framework-display";
 import type { AdmtScopeState } from "@/config/admt-rules";
 import { STATUS_CHIP } from "@/components/ui/status-note";
 
-/**
- * Short chip labels for cross-framework links. Falls back to the raw framework
- * code, so a newly seeded framework can never silently render as another one.
- */
-const FRAMEWORK_ABBREVIATIONS: Record<string, string> = {
-  EU_AI_ACT: "EU",
-  NIST_AI_RMF: "NIST",
-  ISO_42001: "ISO",
-  CA_CCPA_ADMT: "CA",
-  EU_GDPR: "GDPR",
-  CO_SB_26_189: "CO",
-  TX_TRAIGA: "TX",
-  WA_AI_RULES: "WA",
-  AIUC_1: "AIUC-1",
-};
 
 const statusOptionKeys: Record<string, { labelKey: string; color: string }> = {
   NOT_ASSESSED: { labelKey: "statusNotAssessed", color: "bg-gray-500/20 text-gray-400" },
@@ -155,6 +141,7 @@ function exportComplianceCSV(
 
 export default function CompliancePage() {
   const t = useTranslations("compliance");
+  const locale = useLocale();
   const tc = useTranslations("common");
   const { organization } = useOrganization();
   const { download } = useExportDownload();
@@ -345,7 +332,7 @@ export default function CompliancePage() {
               );
               return (
                 <TabsTrigger key={fw.id} value={fw.id} className="flex-none">
-                  {fw.name} ({scoped?.count ?? fw._count.requirements})
+                  {frameworkName(fw.code, fw.name, locale)} ({scoped?.count ?? fw._count.requirements})
                 </TabsTrigger>
               );
             })}
@@ -392,8 +379,8 @@ export default function CompliancePage() {
                             {req.children && req.children.length > 0 ? (
                               expandedReqs.has(req.id) ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />
                             ) : <div className="w-4" />}
-                            <span className="font-mono text-sm text-primary">{req.code}</span>
-                            <span className="font-medium">{req.title}</span>
+                            <span className="font-mono text-sm text-primary">{requirementCode(fw.code, req.code, locale)}</span>
+                            <span className="font-medium">{requirementTitle(fw.code, req.code, req.title, locale)}</span>
                           </div>
                           {req.mapping && (
                             <Badge className={statusOptionKeys[req.mapping?.status ?? ""]?.color}>
@@ -405,7 +392,7 @@ export default function CompliancePage() {
                       {expandedReqs.has(req.id) && (
                         <CardContent className="p-4 pt-0 space-y-4">
                           {req.description && (
-                            <p className="text-sm text-muted-foreground">{req.description}</p>
+                            <p className="text-sm text-muted-foreground">{requirementDescription(fw.code, req.code, req.description, locale)}</p>
                           )}
 
                           <RequirementRow
@@ -424,8 +411,8 @@ export default function CompliancePage() {
                             <div key={child.id} className="ml-6 pl-4 border-l border-border space-y-2">
                               <div className="flex items-center justify-between">
                                 <div>
-                                  <span className="font-mono text-xs text-primary">{child.code}</span>
-                                  <span className="ml-2 text-sm">{child.title}</span>
+                                  <span className="font-mono text-xs text-primary">{requirementCode(fw.code, child.code, locale)}</span>
+                                  <span className="ml-2 text-sm">{requirementTitle(fw.code, child.code, child.title, locale)}</span>
                                 </div>
                                 {child.mapping && (
                                   <Badge className={statusOptionKeys[child.mapping?.status ?? ""]?.color}>
@@ -485,6 +472,7 @@ function RequirementRow({
   isEvidencePending: boolean;
 }) {
   const t = useTranslations("compliance");
+  const locale = useLocale();
   const tc = useTranslations("common");
   const [status, setStatus] = useState(mapping?.status ?? "NOT_ASSESSED");
   const [notes, setNotes] = useState(mapping?.notes ?? "");
@@ -642,7 +630,7 @@ function RequirementRow({
                 }`}
                 title={cm.notes ?? undefined}
               >
-                <span className="font-medium">{FRAMEWORK_ABBREVIATIONS[cm.frameworkCode] ?? cm.frameworkCode}</span>
+                <span className="font-medium">{frameworkShort(cm.frameworkCode, locale)}</span>
                 <span>{cm.code}</span>
               </span>
             ))}

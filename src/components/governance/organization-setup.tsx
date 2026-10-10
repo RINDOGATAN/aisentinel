@@ -27,7 +27,10 @@ export function OrganizationSetup() {
 
   const createOrg = trpc.organization.create.useMutation({
     onSuccess: (org) => {
-      setOrganization(org);
+      // The server makes the creator the owner (organization.create); the
+      // returned row carries no role, so say it here rather than wait for the
+      // list to refetch.
+      setOrganization({ id: org.id, name: org.name, slug: org.slug, role: "OWNER" });
       refetchOrganizations();
       // A new organization has nothing in it yet: the wizard is the next
       // useful screen, not an empty dashboard.

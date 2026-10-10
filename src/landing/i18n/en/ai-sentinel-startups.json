@@ -1,10 +1,12 @@
 {
-  "header.badge": "AI Sentinel",
   "header.cta": "Sign In",
+  "header.menuOpen": "Open the menu",
+  "header.menuClose": "Close the menu",
   "hero.badge": "AI Governance for Startups",
   "hero.title.prefix": "",
   "hero.title.accent": "Future-Proof",
   "hero.title.suffix": " AI Governance.",
+  "hero.welcome": "Welcome to a new generation of privacy and AI governance software.",
   "hero.subtitle": "Open framework for AI governance. Registry, risk classification, assessments, human oversight and incident management, mapped across nine frameworks: the EU AI Act, the GDPR, NIST AI RMF, ISO 42001, AIUC-1 (the certification standard for AI agents) and the California, Colorado, Texas and Washington AI rules.",
   "hero.cta": "Start Free",
   "hero.login": "Already have an account? Log in",
@@ -78,5 +80,7 @@
   "footer.tagline": "AI governance platform",
   "footer.privacy": "Privacy",
   "footer.terms": "Terms",
-  "footer.forLawFirms": "For Law Firms"
+  "footer.security": "Security",
+  "footer.forLawFirms": "For Law Firms",
+  "footer.productOf": "a TODO.LAW product"
 }

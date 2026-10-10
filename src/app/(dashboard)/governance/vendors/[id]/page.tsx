@@ -44,7 +44,8 @@ import { useEnumLabels } from "@/lib/enum-labels";
 import { TierChip } from "@/components/governance/risk-tier-badge";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
-import { formatDate, formatRelativeTime, getDaysUntil } from "@/lib/utils";
+import { formatRelativeTime, getDaysUntil } from "@/lib/utils";
+import { useFormatDate } from "@/lib/use-format-date";
 import { STATUS_OUTLINE } from "@/components/ui/status-note";
 import { PageHeader } from "@/components/governance/page-header";
 
@@ -98,6 +99,7 @@ const techniqueLabelKeys: Record<string, string> = {
 
 export default function VendorDetailPage() {
   const t = useTranslations("vendorDetail");
+  const { formatDate } = useFormatDate();
   const { riskLabel, statusLabel } = useEnumLabels();
   const locale = useLocale();
   const tc = useTranslations("common");

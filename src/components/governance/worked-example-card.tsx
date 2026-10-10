@@ -31,6 +31,7 @@ import { useOrganization } from "@/lib/organization-context";
 import { WORKED_EXAMPLE_CHROME } from "@/config/worked-example";
 import type { PilotLocale } from "@/config/pilot";
 import { templateOrigin } from "@/lib/template-provenance";
+import { localizeTemplateString } from "@/config/ai-governance-templates.es";
 
 /** Per organisation, so declining for one client never hides it for the next. */
 const dismissKey = (organizationId: string) => `ais.worked-example-declined.${organizationId}`;
@@ -66,11 +67,12 @@ export function SampleBadge() {
  */
 export function TemplateBadge({ metadata }: { metadata: unknown }) {
   const tc = useTranslations("common");
+  const locale = useLocale() === "es" ? "es" : "en";
   const origin = templateOrigin(metadata);
   if (!origin) return null;
   const label =
     origin.kind === "template"
-      ? tc("fromTemplate", { name: origin.templateName })
+      ? tc("fromTemplate", { name: localizeTemplateString(origin.templateName, locale) })
       : tc("fromQuickstart");
   return (
     <Badge

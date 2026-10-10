@@ -63,7 +63,8 @@ export function AddOrganizationDialog({
       onCreated();
       setOrgForm({ name: "", slug: "", domain: "", slugTouched: false });
       // Switch into the new organization and start its onboarding.
-      setOrganization({ id: org.id, name: org.name, slug: org.slug });
+      // The creator is the owner (organization.create).
+      setOrganization({ id: org.id, name: org.name, slug: org.slug, role: "OWNER" });
       router.push("/governance/quickstart");
     },
     onError: (e) => toast.error(e.message),

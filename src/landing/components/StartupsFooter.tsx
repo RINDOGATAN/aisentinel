@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025-2026 Rindogatan LLC
 
+import { brand } from "@/config/brand";
+
 interface StartupsFooterProps {
   t: (key: string) => string;
 }
@@ -10,12 +12,23 @@ const StartupsFooter = ({ t }: StartupsFooterProps) => {
     <footer className="py-12 border-t border-border">
       <div className="container px-6">
         <div className="flex flex-col items-center gap-6">
-          <a href="https://todo.law" className="flex items-center gap-2">
-            <img src="/logo-negative.svg" alt="TODO.LAW" style={{ height: "30px", width: "auto" }} />
-            <span className="text-xs text-muted-foreground font-body">
-              {t("footer.tagline")}
-            </span>
-          </a>
+          <div className="flex flex-col items-center gap-2">
+            <a href="https://todo.law" className="flex items-center gap-2">
+              <img src="/logo-negative.svg" alt="TODO.LAW" style={{ height: "30px", width: "auto" }} />
+              <span className="text-xs text-muted-foreground font-body">
+                {t("footer.tagline")}
+              </span>
+            </a>
+            {/* The product's line under the house logo, as in the approved
+                mock-up: "AI SENTINEL · a TODO.LAW product". */}
+            <a
+              href="https://todo.law"
+              data-testid="footer-product-of"
+              className="text-xs text-muted-foreground hover:text-foreground transition-colors font-body"
+            >
+              {brand.name.toUpperCase()} · {t("footer.productOf")}
+            </a>
+          </div>
 
           <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
             <a
@@ -34,7 +47,7 @@ const StartupsFooter = ({ t }: StartupsFooterProps) => {
               href="/docs/security"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
-              Security
+              {t("footer.security")}
             </a>
             <a
               href="https://todo.law/"

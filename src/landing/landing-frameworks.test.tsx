@@ -31,9 +31,16 @@ describe("landing page frameworks list", () => {
     }
   });
 
-  it("renders that list on the page", async () => {
+  // Since the October 2026 hero trim the hero's left column carries the
+  // welcome line, and the sign-up card the subtitle's first sentence; the
+  // full list stays in the "one matrix" card.
+  it("renders the list in the value card and the summary in the sign-up card", async () => {
     const { default: LandingPage } = await import("./LandingPage");
     const html = renderToStaticMarkup(<LandingPage />);
-    for (const k of KEYS) expect(html).toContain(en[k].replace(/&/g, "&amp;"));
+    for (const k of ["value.v4.title", "value.v4.desc"] as const) {
+      expect(html).toContain(en[k].replace(/&/g, "&amp;"));
+    }
+    expect(html).toContain(`${en["hero.subtitle"].split(".")[0]}.`);
+    expect(html).toContain(en["hero.welcome"]);
   });
 });

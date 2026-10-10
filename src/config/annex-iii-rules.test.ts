@@ -11,6 +11,50 @@
 import { describe, it, expect } from "vitest";
 import { screenAnnexIii, type AnnexIiiFacts } from "./annex-iii-rules";
 
+// Systems registered in Spanish are screened the same way (rules 2026.10.1).
+describe("screening a system described in Spanish", () => {
+  it("screens a hiring system as high risk under Annex III, point 4", () => {
+    const screening = screenAnnexIii({
+      name: "Asistente de selección",
+      description:
+        "Herramienta que filtra los currículums recibidos y ordena a los aspirantes antes de la entrevista.",
+      purpose: "Apoyar al equipo de recursos humanos en la selección de personal.",
+      technique: "MACHINE_LEARNING",
+    });
+    expect(screening.suggestedLevel).toBe("HIGH");
+    expect(screening.suggestedCategory).toBe("employment");
+    expect(screening.highRisk[0]?.article).toBe("Annex III, point 4");
+  });
+
+  it("screens Spanish credit scoring as high risk and Spanish fraud detection as carved out", () => {
+    expect(
+      screenAnnexIii({ name: "Motor de solvencia", description: "Calcula la puntuación crediticia de cada solicitante." })
+        .suggestedCategory
+    ).toBe("essential_services");
+    const fraud = screenAnnexIii({
+      name: "Antifraude",
+      description: "Detección de fraude en pagos con tarjeta.",
+    });
+    expect(fraud.carveOuts).toHaveLength(1);
+    expect(fraud.suggestedLevel).toBe("MINIMAL");
+  });
+
+  it("flags Spanish social scoring as prohibited and a Spanish chatbot as limited", () => {
+    expect(screenAnnexIii({ name: "Ciudadanía", description: "Sistema de puntuación social de vecinos." }).suggestedLevel).toBe(
+      "UNACCEPTABLE"
+    );
+    expect(
+      screenAnnexIii({ name: "Ayuda", description: "Asistente virtual que responde a los clientes en la web." }).suggestedLevel
+    ).toBe("LIMITED");
+  });
+
+  it("leaves an ordinary Spanish system at minimal risk", () => {
+    expect(
+      screenAnnexIii({ name: "Resúmenes", description: "Resume actas de reuniones internas para el equipo." }).suggestedLevel
+    ).toBe("MINIMAL");
+  });
+});
+
 interface Case {
   title: string;
   facts: AnnexIiiFacts;

@@ -72,6 +72,7 @@ ENV NEXT_PUBLIC_LOCAL_AUTH_ENABLED=$NEXT_PUBLIC_LOCAL_AUTH_ENABLED \
 # accidentally dials out during static generation. NB: the Prisma datasource
 # reads ais_DATABASE_URL (Vercel-scoped name), not DATABASE_URL.
 ENV ais_DATABASE_URL=postgresql://build:build@localhost:5432/build
+ENV ais_DATABASE_URL_UNPOOLED=postgresql://build:build@localhost:5432/build
 # The repo's `npm run build` also runs `prisma migrate deploy` (for the
 # hosted/Vercel lane) — that belongs to the migrator service, not an image
 # build with a placeholder DATABASE_URL. Invoke the buildable steps directly,
@@ -118,6 +119,7 @@ RUN node -e "const l=require('/tmp/app-package-lock.json').packages;const v=p=>l
 # Layer 2 — generated Prisma client (changes only when the schema changes).
 # generate needs no live DB; placeholder guards against accidental dial-out.
 ENV ais_DATABASE_URL=postgresql://build:build@localhost:5432/build
+ENV ais_DATABASE_URL_UNPOOLED=postgresql://build:build@localhost:5432/build
 COPY prisma/schema.prisma ./prisma/schema.prisma
 RUN npx prisma generate
 # Layer 3 — seed data snapshot (a few MB, changes on catalog refreshes).

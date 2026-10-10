@@ -62,6 +62,7 @@ jobs:
           # database is contacted during the build. (The datasource reads the
           # Vercel-scoped name ais_DATABASE_URL, not DATABASE_URL.)
           ais_DATABASE_URL: "postgresql://user:pass@localhost:5432/db?schema=public"
+          ais_DATABASE_URL_UNPOOLED: "postgresql://user:pass@localhost:5432/db?schema=public"
 
   fresh-install-smoke:
     # A fresh self-hosted install from zero, then a real browser walks it.

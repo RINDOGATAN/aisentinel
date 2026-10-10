@@ -60,6 +60,7 @@ A new migration is applied to a copy first, never first to a live database.
 
    ```sh
    docker run -d --name ais-rehearsal -e POSTGRES_PASSWORD=rehearsal -p 55432:5432 postgres:16
+   ais_DATABASE_URL_UNPOOLED="postgresql://postgres:rehearsal@localhost:55432/postgres" \
    ais_DATABASE_URL="postgresql://postgres:rehearsal@localhost:55432/postgres" npx prisma migrate deploy
    ais_DATABASE_URL="postgresql://postgres:rehearsal@localhost:55432/postgres" npx prisma migrate diff \
      --from-url "postgresql://postgres:rehearsal@localhost:55432/postgres" \
@@ -77,7 +78,7 @@ A new migration is applied to a copy first, never first to a live database.
 
 3. **On a copy of the hosted database** (owner only; any migration that
    rewrites or drops data). Create a branch of the production database on the
-   hosting provider, point `ais_DATABASE_URL` at the branch, run
+   hosting provider, point `ais_DATABASE_URL` and `ais_DATABASE_URL_UNPOOLED` at the branch, run
    `npx prisma migrate deploy`, check the application against it, then delete
    the branch. The hosted build runs `prisma migrate deploy` on every push to
    `main`, so this step must happen before the merge, not after.

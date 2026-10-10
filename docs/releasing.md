@@ -47,6 +47,7 @@ no database is contacted:
 
 ```bash
 ais_DATABASE_URL="postgresql://user:pass@localhost:5432/db?schema=public" \
+ais_DATABASE_URL_UNPOOLED="postgresql://user:pass@localhost:5432/db?schema=public" \
   npx prisma generate && npx next build
 ```
 
@@ -124,6 +125,7 @@ The Prisma datasource reads `ais_DATABASE_URL` (a Vercel-scoped name, not
 npx vercel env pull /tmp/prod.env --environment=production --yes
 export ais_DATABASE_URL="$(grep '^ais_POSTGRES_URL_NON_POOLING=' /tmp/prod.env \
   | cut -d= -f2- | tr -d '"')"
+export ais_DATABASE_URL_UNPOOLED="$ais_DATABASE_URL"
 
 npm run db:reconcile-requirements -- --dry-run   # read-only: what the next step will move
 npm run db:seed-frameworks
@@ -194,6 +196,7 @@ carries its own copy of the seed scripts and their inputs:
 ```bash
 docker run --rm \
   -e ais_DATABASE_URL="postgresql://…/scratch_db" \
+  -e ais_DATABASE_URL_UNPOOLED="postgresql://…/scratch_db" \
   ghcr.io/rindogatan/aisentinel-migrator:latest
 ```
 

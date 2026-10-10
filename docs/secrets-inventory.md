@@ -31,6 +31,7 @@ reads "unknown" until the operator starts a rotation log; that gap is itself an 
 
 | Variable | Kind | Where it lives | What it unlocks | Who rotates | Last rotation |
 |---|---|---|---|---|---|
+| `ais_DATABASE_URL_UNPOOLED` | S | Hosted (platform database integration, direct connection used by migrations); Kit (same value as `ais_DATABASE_URL`); CI and build args use a dummy value | Full read and write access to every tenant's data | Hosted operator (database provider console); install operator | unknown |
 | `ais_DATABASE_URL` | S | Hosted (platform database integration); Kit (built from `POSTGRES_PASSWORD`); CI uses a dummy value; Build arg uses a dummy value | Full read and write access to every tenant's data | Hosted operator (database provider console); install operator | unknown |
 | `POSTGRES_PASSWORD` | S | Kit | The bundled PostgreSQL superuser for the install | Install operator | unknown |
 | `NEXTAUTH_SECRET` | S | Hosted; Kit | Signs and encrypts session tokens; whoever holds it can mint a session for any user | Hosted operator; install operator (rotation signs everyone out) | unknown |

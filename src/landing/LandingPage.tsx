@@ -14,6 +14,7 @@ import authEn from "./i18n/en/startups-auth.json";
 import authEs from "./i18n/es/startups-auth.json";
 import { PILOT_SENTENCE, PILOT_TERMS } from "@/config/pilot";
 import { normalizeLocaleCookie, writeLocaleCookie } from "@/lib/locale-cookie";
+import { SEO } from "@/config/seo";
 
 function detectLocale(): "en" | "es" {
   if (typeof window === "undefined") return "en";
@@ -44,9 +45,11 @@ export default function LandingPage({ hostedPilot = false }: { hostedPilot?: boo
   }, []);
 
   // `?lang=` and the toggle can differ from the language the server rendered
-  // with; <html lang> follows the text shown.
+  // with; <html lang> and the tab title follow the text shown (the server
+  // already picks the title from `?lang=` and the cookie, src/app/page.tsx).
   useEffect(() => {
     document.documentElement.lang = locale;
+    document.title = SEO[locale].title;
   }, [locale]);
 
   const dict = locale === "es" ? es : en;

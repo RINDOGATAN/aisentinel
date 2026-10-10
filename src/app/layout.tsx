@@ -9,6 +9,7 @@ import "./globals.css";
 import { Providers } from "@/components/providers";
 import { Toaster } from "@/components/ui/sonner";
 import { brand } from "@/config/brand";
+import { OG_IMAGES, SEO, TWITTER_IMAGES } from "@/config/seo";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 
@@ -31,9 +32,9 @@ export const viewport: Viewport = {
 
 // Canonical origin comes from the brand system (NEXT_PUBLIC_SITE_URL override).
 const siteUrl = brand.siteUrl;
-const seoTitle = "AI SENTINEL: AI governance software for the EU AI Act, NIST AI RMF, ISO 42001, AIUC-1 and five more frameworks";
-const seoDescription =
-  "Open-source AI governance platform. AI system registry, EU AI Act risk classification, impact assessments, and compliance mapping across nine frameworks: the EU AI Act, NIST AI RMF, ISO/IEC 42001, AIUC-1 (the certification standard for AI agents), the GDPR and the California, Colorado, Texas and Washington AI rules. Human oversight, incident management and a complete program in minutes.";
+// English is the default; the landing returns Spanish when Spanish applies (src/config/seo.ts).
+const seoTitle = SEO.en.title;
+const seoDescription = SEO.en.description;
 
 export const metadata: Metadata = {
   title: seoTitle,
@@ -72,13 +73,13 @@ export const metadata: Metadata = {
     siteName: brand.name,
     title: seoTitle,
     description: seoDescription,
-    images: [{ url: "/apple-touch-icon.png", width: 180, height: 180, alt: "AI SENTINEL logo" }],
+    images: OG_IMAGES,
   },
   twitter: {
     card: "summary",
     title: seoTitle,
     description: seoDescription,
-    images: ["/favicon.png"],
+    images: TWITTER_IMAGES,
   },
   icons: {
     icon: [

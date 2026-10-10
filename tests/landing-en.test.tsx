@@ -30,6 +30,8 @@ import LandingSections, { KIT_URL, Videos } from "@/landing/components/LandingSe
 import { LANDING_VIDEOS, type LandingLocale, type LandingVideo } from "@/landing/config/landing-videos";
 import en from "@/landing/i18n/en/ai-sentinel-startups.json";
 import appEn from "@/i18n/messages/en.json";
+import authEn from "@/landing/i18n/en/startups-auth.json";
+import authEs from "@/landing/i18n/es/startups-auth.json";
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: () => {}, replace: () => {}, refresh: () => {} }),
@@ -71,6 +73,11 @@ describe("English landing page", () => {
     expect(html).toContain(EN["en.ways.heading.accent"]);
     expect(html).not.toContain(EN["workflow.heading.prefix"]);
     expect(html).not.toContain(EN["feat.label"]);
+  });
+
+  it("suggests a firm address in the English sign-up card; Spanish keeps its own", () => {
+    expect((authEn as Record<string, string>)["emailPlaceholder"]).toBe("you@yourfirm.com");
+    expect((authEs as Record<string, string>)["emailPlaceholder"]).toBe("tu@empresa.com");
   });
 
   it("keeps the hero title, in sentence case", () => {

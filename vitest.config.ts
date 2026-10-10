@@ -9,6 +9,8 @@ export default defineConfig({
       "src/**/*.test.tsx",
       "prisma/**/*.test.ts",
       "scripts/**/*.test.ts",
+      "tests/**/*.test.ts",
+      "tests/**/*.test.tsx",
     ],
   },
   resolve: {

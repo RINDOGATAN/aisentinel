@@ -2,14 +2,18 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 /**
- * The Spanish landing's middle (locale es only; the English page keeps its
- * "How it works" and "Features" sections), after DPO Central's landing:
- * the three tools and how they connect, the demo videos (only while the
- * configured list is not empty), the six stages of the programme as the
- * Guided path implements them with the 30/60/90-day plan beneath, the three
- * ways to run it that the storefront offers in Spain, then the customer logos
- * (only while the configured list is not empty). No prices, no hosting
- * location, no hardware and no installer kit.
+ * The landing's middle, the same sections in both languages, after DPO
+ * Central's landing: the three tools and how they connect, the demo videos
+ * (only while a video of that language is published), the six stages of the
+ * program as the Guided path implements them with the 30/60/90-day plan
+ * beneath, and the ways to host it. The Spanish page then shows the customer
+ * logos (only while the configured list is not empty); the English page
+ * shows none. No prices and no hosting location.
+ *
+ * Each language has its own copy under `<locale>.*` in the landing
+ * dictionary, and its own list of ways: three in Spanish (as the storefront
+ * offers in Spain: no hardware, no installer kit), five in English (as on
+ * the English storefront).
  *
  * Nothing moves or plays on its own: the videos load nothing until the
  * visitor presses play.
@@ -25,8 +29,11 @@ import {
   Check,
   ClipboardCheck,
   Cloud,
+  ExternalLink,
   GraduationCap,
+  HardDrive,
   Mail,
+  Package,
   Rocket,
   Server,
   ShieldCheck,
@@ -36,16 +43,69 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { brand } from "@/config/brand";
-import { LANDING_VIDEOS_ES, type LandingVideo } from "../config/landing-videos";
+import { LANDING_VIDEOS, type LandingLocale, type LandingVideo } from "../config/landing-videos";
 import CustomerLogos from "./CustomerLogos";
 
 type T = (key: string) => string;
+
+/** The public kit that installs the suite with Docker. */
+export const KIT_URL = "https://github.com/RINDOGATAN/todolaw-suite";
+
+type WayAction = "none" | "mail" | "link";
+
+interface Way {
+  icon: LucideIcon;
+  action: WayAction;
+  href?: string;
+}
+
+interface LocaleSetup {
+  bullets: { dpc: number; ais: number; vw: number };
+  ways: Way[];
+  captionsLang: string;
+  logos: boolean;
+}
+
+const SETUP: Record<LandingLocale, LocaleSetup> = {
+  es: {
+    bullets: { dpc: 3, ais: 5, vw: 3 },
+    ways: [
+      { icon: Cloud, action: "none" },
+      { icon: Server, action: "mail" },
+      { icon: GraduationCap, action: "mail" },
+    ],
+    captionsLang: "es",
+    logos: true,
+  },
+  en: {
+    bullets: { dpc: 3, ais: 5, vw: 3 },
+    ways: [
+      { icon: Cloud, action: "none" },
+      { icon: Package, action: "link", href: KIT_URL },
+      { icon: HardDrive, action: "mail" },
+      { icon: Server, action: "mail" },
+      { icon: GraduationCap, action: "mail" },
+    ],
+    captionsLang: "en",
+    // No customer logos on the English page.
+    logos: false,
+  },
+};
 
 /** Keeps names such as "AIUC-1" whole: a line never breaks at their hyphen. */
 function keepWhole(text: string) {
   return text.split(/(AIUC-1)/).map((part, i) =>
     part === "AIUC-1" ? <span key={i} className="whitespace-nowrap">{part}</span> : part
   );
+}
+
+/**
+ * Widths for the cards of a centred, wrapping row (gap-6 = 1.5rem): three
+ * to a line on wide screens, two on tablets, one on phones, with an
+ * incomplete last line centred (five cards: 3 + 2).
+ */
+function cardWidth(count: number): string {
+  return count === 1 ? "w-full max-w-3xl" : "w-full md:w-[calc(50%-0.75rem)] lg:w-[calc((100%-3rem)/3)]";
 }
 
 function SectionHead({ t, k, sub = true }: { t: T; k: string; sub?: boolean }) {
@@ -69,12 +129,6 @@ interface Tool {
   bullets: number;
   hub?: boolean;
 }
-
-const TOOLS: Record<"dpc" | "ais" | "vw", Tool> = {
-  dpc: { key: "es.suite.dpc", icon: ShieldCheck, bullets: 3 },
-  ais: { key: "es.suite.ais", icon: Bot, bullets: 5, hub: true },
-  vw: { key: "es.suite.vw", icon: Store, bullets: 3 },
-};
 
 function ToolPanel({ t, tool }: { t: T; tool: Tool }) {
   const Icon = tool.icon;
@@ -140,17 +194,24 @@ function Connector({ t, labelKey, direction }: { t: T; labelKey: string; directi
   );
 }
 
-function Suite({ t }: { t: T }) {
+function Suite({ t, p, setup }: { t: T; p: LandingLocale; setup: LocaleSetup }) {
+  const k = `${p}.suite`;
+  const tool = (id: "dpc" | "ais" | "vw", icon: LucideIcon, hub = false): Tool => ({
+    key: `${k}.${id}`,
+    icon,
+    bullets: setup.bullets[id],
+    hub,
+  });
   return (
-    <section className="py-20 md:py-28 bg-secondary/20 border-y border-border" aria-labelledby="es.suite-heading">
+    <section className="py-20 md:py-28 bg-secondary/20 border-y border-border" aria-labelledby={`${k}-heading`}>
       <div className="container px-6">
-        <SectionHead t={t} k="es.suite" />
+        <SectionHead t={t} k={k} />
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_7.5rem_minmax(0,1.12fr)_7.5rem_minmax(0,1fr)] items-stretch">
-          <ToolPanel t={t} tool={TOOLS.dpc} />
-          <Connector t={t} labelKey="es.suite.link.dpc" direction="both" />
-          <ToolPanel t={t} tool={TOOLS.ais} />
-          <Connector t={t} labelKey="es.suite.link.vw" direction="left" />
-          <ToolPanel t={t} tool={TOOLS.vw} />
+          <ToolPanel t={t} tool={tool("dpc", ShieldCheck)} />
+          <Connector t={t} labelKey={`${k}.link.dpc`} direction="both" />
+          <ToolPanel t={t} tool={tool("ais", Bot, true)} />
+          <Connector t={t} labelKey={`${k}.link.vw`} direction="left" />
+          <ToolPanel t={t} tool={tool("vw", Store)} />
         </div>
       </div>
     </section>
@@ -159,19 +220,28 @@ function Suite({ t }: { t: T }) {
 
 /* ── b. Videos ──────────────────────────────────────────────────────── */
 
-export function Videos({ t, videos = LANDING_VIDEOS_ES }: { t: T; videos?: readonly LandingVideo[] }) {
-  if (videos.length === 0) return null;
-  // A centred, wrapping row: three to a line on wide screens, two on tablets,
-  // one on phones, with an incomplete last line centred (five videos: 3 + 2).
-  const item = videos.length === 1 ? "w-full max-w-3xl" : "w-full md:w-[calc(50%-0.75rem)] lg:w-[calc((100%-3rem)/3)]";
+export function Videos({
+  t,
+  locale = "es",
+  videos = LANDING_VIDEOS[locale],
+}: {
+  t: T;
+  locale?: LandingLocale;
+  videos?: readonly LandingVideo[];
+}) {
+  const p = locale;
+  const k = `${p}.videos`;
+  const cards = videos.filter((v) => v.published);
+  if (cards.length === 0) return null;
+  const item = cardWidth(cards.length);
   return (
-    <section className="py-20 md:py-28" aria-labelledby="es.videos-heading" data-testid="es-videos">
+    <section className="py-20 md:py-28" aria-labelledby={`${k}-heading`} data-testid={`${p}-videos`}>
       <div className="container px-6">
-        <SectionHead t={t} k="es.videos" />
+        <SectionHead t={t} k={k} />
         <div className="flex flex-wrap justify-center gap-6 max-w-6xl mx-auto">
-          {videos.map((video, i) => {
-            const base = `/videos/es/${video.file}`;
-            const captionId = `es-video-${i + 1}-caption`;
+          {cards.map((video, i) => {
+            const base = `/videos/${p}/${video.file}`;
+            const captionId = `${p}-video-${i + 1}-caption`;
             return (
               <figure key={video.file} className={`${item} rounded-2xl border border-border bg-card overflow-hidden flex flex-col`}>
                 <video
@@ -186,7 +256,8 @@ export function Videos({ t, videos = LANDING_VIDEOS_ES }: { t: T; videos?: reado
                 >
                   <source src={`${base}.webm`} type="video/webm" />
                   <source src={`${base}.mp4`} type="video/mp4" />
-                  <track kind="captions" srcLang="es" label={t("es.videos.captions")} src={`${base}.vtt`} />
+                  {/* Subtitles are burned into the picture: the track is offered, never on by default. */}
+                  <track kind="captions" srcLang={SETUP[p].captionsLang} label={t(`${k}.captions`)} src={`${base}.vtt`} />
                 </video>
                 <figcaption id={captionId} className="p-5">
                   <span className="block text-base font-display mb-1">{video.title}</span>
@@ -207,11 +278,12 @@ export function Videos({ t, videos = LANDING_VIDEOS_ES }: { t: T; videos?: reado
 // in order, with the icons the menu uses for them.
 const STAGE_ICONS: LucideIcon[] = [Rocket, Users, Brain, ClipboardCheck, ShieldCheck, Activity];
 
-function Stages({ t }: { t: T }) {
+function Stages({ t, p }: { t: T; p: LandingLocale }) {
+  const k = `${p}.stages`;
   return (
-    <section className="py-20 md:py-28 bg-secondary/20 border-y border-border" aria-labelledby="es.stages-heading">
+    <section className="py-20 md:py-28 bg-secondary/20 border-y border-border" aria-labelledby={`${k}-heading`}>
       <div className="container px-6">
-        <SectionHead t={t} k="es.stages" />
+        <SectionHead t={t} k={k} />
         <div className="max-w-6xl mx-auto">
           <div className="relative">
           {/* the path that joins the stages */}
@@ -230,10 +302,10 @@ function Stages({ t }: { t: T }) {
                   </div>
                   <div className="paper-card flex-1 lg:w-full !p-5">
                     <span className="block text-[11px] uppercase tracking-wider text-muted-foreground font-medium font-body mb-1">
-                      {t("es.stages.stage")} {n}
+                      {t(`${k}.stage`)} {n}
                     </span>
-                    <h3 className="text-base font-display mb-2 leading-snug">{t(`es.stages.s${n}.title`)}</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed font-body">{keepWhole(t(`es.stages.s${n}.desc`))}</p>
+                    <h3 className="text-base font-display mb-2 leading-snug">{t(`${k}.s${n}.title`)}</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed font-body">{keepWhole(t(`${k}.s${n}.desc`))}</p>
                   </div>
                 </li>
               );
@@ -242,22 +314,22 @@ function Stages({ t }: { t: T }) {
           </div>
 
           {/* The plan: each thirty days covers two stages (PLAN_WINDOWS). */}
-          <div className="mt-10 lg:mt-12" aria-labelledby="es-plan-heading">
-            <h3 id="es-plan-heading" className="text-center text-base font-display mb-4">
-              {t("es.stages.plan.title")}
+          <div className="mt-10 lg:mt-12" aria-labelledby={`${p}-plan-heading`}>
+            <h3 id={`${p}-plan-heading`} className="text-center text-base font-display mb-4">
+              {t(`${k}.plan.title`)}
             </h3>
             <ol className="grid grid-cols-1 lg:grid-cols-3 gap-3 lg:gap-4">
-              {[1, 2, 3].map((p) => (
+              {[1, 2, 3].map((n) => (
                 <li
-                  key={p}
+                  key={n}
                   className="rounded-xl border border-accent/40 bg-accent/10 px-5 py-4 flex flex-col lg:items-center lg:text-center"
                 >
-                  <span className="text-sm font-display text-accent">{t(`es.stages.plan.p${p}.days`)}</span>
-                  <span className="text-sm font-body text-foreground/85">{t(`es.stages.plan.p${p}.stages`)}</span>
+                  <span className="text-sm font-display text-accent">{t(`${k}.plan.p${n}.days`)}</span>
+                  <span className="text-sm font-body text-foreground/85">{t(`${k}.plan.p${n}.stages`)}</span>
                 </li>
               ))}
             </ol>
-            <p className="mt-4 text-center text-sm text-muted-foreground font-body">{t("es.stages.plan.note")}</p>
+            <p className="mt-4 text-center text-sm text-muted-foreground font-body">{t(`${k}.plan.note`)}</p>
           </div>
         </div>
       </div>
@@ -265,41 +337,59 @@ function Stages({ t }: { t: T }) {
   );
 }
 
-/* ── d. Where it runs ───────────────────────────────────────────────── */
+/* ── d. Where it is hosted ──────────────────────────────────────────── */
 
-const WAYS: Array<{ icon: LucideIcon; letter: string; request: boolean }> = [
-  { icon: Cloud, letter: "a", request: false },
-  { icon: Server, letter: "b", request: true },
-  { icon: GraduationCap, letter: "c", request: true },
-];
+const LETTERS = "abcdefghij";
 
-function Ways({ t }: { t: T }) {
+const linkClass =
+  "mt-auto inline-flex items-center gap-2 self-start text-sm font-medium text-accent hover:text-foreground transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 focus-visible:ring-offset-2 focus-visible:ring-offset-card";
+
+function Ways({ t, p, setup }: { t: T; p: LandingLocale; setup: LocaleSetup }) {
+  const k = `${p}.ways`;
+  // Three ways sit in a plain three-column grid; any other count wraps,
+  // centred, three to a line on wide screens.
+  const grid = setup.ways.length === 3;
+  const width = grid ? "" : `${cardWidth(setup.ways.length)} `;
   return (
-    <section className="py-20 md:py-28" aria-labelledby="es.ways-heading">
+    <section className="py-20 md:py-28" aria-labelledby={`${k}-heading`}>
       <div className="container px-6">
-        <SectionHead t={t} k="es.ways" />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          {WAYS.map(({ icon: Icon, letter, request }, i) => {
+        <SectionHead t={t} k={k} />
+        <div
+          className={
+            grid
+              ? "grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto"
+              : "flex flex-wrap justify-center gap-6 max-w-6xl mx-auto"
+          }
+        >
+          {setup.ways.map(({ icon: Icon, action, href }, i) => {
             const n = i + 1;
-            const mailto = `mailto:${brand.supportEmail}?subject=${encodeURIComponent(t(`es.ways.w${n}.subject`))}`;
+            const letter = LETTERS[i];
+            const title = t(`${k}.w${n}.title`);
             return (
-              <article key={letter} className="paper-card flex flex-col">
+              <article key={letter} className={`${width}paper-card flex flex-col`}>
                 <div className="flex items-center justify-between mb-5">
                   <div className="w-12 h-12 rounded-2xl bg-accent/10 text-accent flex items-center justify-center">
                     <Icon className="w-6 h-6" aria-hidden="true" />
                   </div>
                   <span className="text-3xl font-display text-muted-foreground" aria-hidden="true">{letter}</span>
                 </div>
-                <h3 className="text-lg font-display mb-2">{t(`es.ways.w${n}.title`)}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed font-body mb-5">{t(`es.ways.w${n}.desc`)}</p>
-                {request && (
+                <h3 className="text-lg font-display mb-2">{title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed font-body mb-5">{t(`${k}.w${n}.desc`)}</p>
+                {action === "mail" && (
                   <a
-                    href={mailto}
-                    className="mt-auto inline-flex items-center gap-2 self-start text-sm font-medium text-accent hover:text-foreground transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 focus-visible:ring-offset-2 focus-visible:ring-offset-card"
+                    href={`mailto:${brand.supportEmail}?subject=${encodeURIComponent(t(`${k}.w${n}.subject`))}`}
+                    className={linkClass}
                   >
                     <Mail className="w-4 h-4" aria-hidden="true" />
-                    {t("es.ways.request")}
-                    <span className="sr-only">: {t(`es.ways.w${n}.title`)}</span>
+                    {t(`${k}.request`)}
+                    <span className="sr-only">: {title}</span>
+                  </a>
+                )}
+                {action === "link" && href && (
+                  <a href={href} target="_blank" rel="noopener noreferrer" className={linkClass}>
+                    <ExternalLink className="w-4 h-4" aria-hidden="true" />
+                    {t(`${k}.w${n}.link`)}
+                    <span className="sr-only">: {title}</span>
                   </a>
                 )}
               </article>
@@ -311,15 +401,22 @@ function Ways({ t }: { t: T }) {
   );
 }
 
-export default function SpanishSections({ t, videos }: { t: T; videos?: readonly LandingVideo[] }) {
+interface LandingSectionsProps {
+  t: T;
+  locale: LandingLocale;
+  /** For tests; the page uses the configured list. */
+  videos?: readonly LandingVideo[];
+}
+
+export default function LandingSections({ t, locale, videos = LANDING_VIDEOS[locale] }: LandingSectionsProps) {
+  const setup = SETUP[locale];
   return (
     <>
-      <Suite t={t} />
-      <Videos t={t} videos={videos} />
-      <Stages t={t} />
-      <Ways t={t} />
-      <CustomerLogos t={t} />
+      <Suite t={t} p={locale} setup={setup} />
+      <Videos t={t} locale={locale} videos={videos} />
+      <Stages t={t} p={locale} />
+      <Ways t={t} p={locale} setup={setup} />
+      {setup.logos && <CustomerLogos t={t} />}
     </>
   );
 }
-

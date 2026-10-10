@@ -41,8 +41,9 @@ interface StartupProductPageProps {
   pilotNotice?: { sentence: PilotSentence; terms: string } | null;
   /**
    * The sections between the value section and the closing call to action.
-   * When given (the Spanish page), they replace "How it works" and the
-   * feature showcase; when left out (the English page), those two show.
+   * When given (both languages since October 2026, LandingSections), they
+   * replace "How it works" and the feature showcase; when left out, those
+   * two show.
    */
   middle?: React.ReactNode;
 }

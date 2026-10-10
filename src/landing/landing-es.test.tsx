@@ -9,7 +9,8 @@
  *   - the hero's left column shows the badge, the title and the welcome line
  *     only (the summary lives in the sign-up card);
  *   - the Spanish page replaces "How it works" and "Features" with its own
- *     sections; the English page keeps them;
+ *     sections (the English page has done the same since the English round,
+ *     tests/landing-en.test.tsx);
  *   - the Spanish copy offers exactly the three ways the storefront offers in
  *     Spain (no hardware, no installer kit, no open code), claims no hosting
  *     location, shows no price, says "tú" and never "ejecutar" for software;
@@ -25,7 +26,7 @@ import path from "path";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import CustomerLogos from "./components/CustomerLogos";
-import SpanishSections, { Videos } from "./components/SpanishSections";
+import LandingSections, { Videos } from "./components/LandingSections";
 import { CUSTOMER_LOGOS } from "./config/customer-logos";
 import { LANDING_VIDEOS_ES } from "./config/landing-videos";
 import es from "./i18n/es/ai-sentinel-startups.json";
@@ -48,8 +49,8 @@ const tEs = (k: string) => ES[k] ?? k;
 const esOnly = Object.entries(ES).filter(([k]) => k.startsWith("es."));
 
 const SAMPLE_VIDEOS = [
-  { file: "01-sample", title: "Título uno", caption: "Pie uno" },
-  { file: "02-sample", title: "Título dos", caption: "Pie dos" },
+  { file: "01-sample", title: "Título uno", caption: "Pie uno", published: true },
+  { file: "02-sample", title: "Título dos", caption: "Pie dos", published: true },
 ];
 
 function flatten(obj: unknown, prefix = ""): Array<[string, string]> {
@@ -98,8 +99,8 @@ describe("landing hero", () => {
 });
 
 describe("Spanish sections", () => {
-  const withVideos = renderToStaticMarkup(createElement(SpanishSections, { t: tEs, videos: SAMPLE_VIDEOS }));
-  const asShipped = renderToStaticMarkup(createElement(SpanishSections, { t: tEs }));
+  const withVideos = renderToStaticMarkup(createElement(LandingSections, { t: tEs, locale: "es", videos: SAMPLE_VIDEOS }));
+  const asShipped = renderToStaticMarkup(createElement(LandingSections, { t: tEs, locale: "es" }));
 
   it("render in order, with every key translated", () => {
     const order = ["Tres herramientas", "Descubre cómo", "Seis etapas", "Tú eliges"].map((s) => withVideos.indexOf(s));
@@ -202,17 +203,19 @@ describe("Spanish sections", () => {
         expect(text.trim(), v.file).not.toBe("");
       }
     }
-    const html = renderToStaticMarkup(createElement(SpanishSections, { t: tEs }));
+    const html = renderToStaticMarkup(createElement(LandingSections, { t: tEs, locale: "es" }));
     expect(html.match(/<video/g)).toHaveLength(5);
   });
 });
 
 describe("English landing", () => {
-  it("keeps its own How it works and Features sections", async () => {
+  // Since October 2026 the English page has the same sections, with its own
+  // copy (tests/landing-en.test.tsx); it never shows the Spanish text.
+  it("shows the shared sections in English, not the Spanish copy", async () => {
     const { default: LandingPage } = await import("./LandingPage");
     const html = renderToStaticMarkup(createElement(LandingPage));
-    expect(html).toContain(EN["workflow.label"]);
-    expect(html).toContain(EN["feat.label"]);
+    expect(html).toContain(EN["en.suite.heading.prefix"]);
+    expect(html).not.toContain(EN["feat.label"]);
     expect(html).not.toContain(ES["es.suite.heading.prefix"]);
   });
 });

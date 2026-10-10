@@ -20,7 +20,7 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Save, Send, CheckCircle, XCircle, Loader2, AlertTriangle } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
-import { formatDate } from "@/lib/utils";
+import { useFormatDate } from "@/lib/use-format-date";
 import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
 import { useSession } from "next-auth/react";
@@ -52,6 +52,7 @@ const statusColors: Record<string, string> = {
 
 export default function AssessmentDetailPage() {
   const t = useTranslations("assessmentDetail");
+  const { formatDate } = useFormatDate();
   const tc = useTranslations("common");
   const { statusLabel, assessmentTypeLabel } = useEnumLabels();
   const locale = useLocale();
@@ -223,7 +224,12 @@ export default function AssessmentDetailPage() {
             <Badge className={statusColors[assessment.status]}>{statusLabel(assessment.status)}</Badge>
             {assessment.aiSystem && (
               <span className="text-sm text-muted-foreground">
-                for <Link href={`/governance/ai-registry/${assessment.aiSystem.id}`} className="text-primary hover:underline">{assessment.aiSystem.name}</Link>
+                {t.rich("forSystem", {
+                  name: assessment.aiSystem.name,
+                  link: (chunks) => (
+                    <Link href={`/governance/ai-registry/${assessment.aiSystem!.id}`} className="text-primary hover:underline">{chunks}</Link>
+                  ),
+                })}
               </span>
             )}
           </>

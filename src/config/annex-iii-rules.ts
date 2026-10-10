@@ -25,7 +25,7 @@
  * categories, prohibited-practice triggers) so exported artifacts can state
  * which revision produced them. See src/config/rule-pack-versions.ts.
  */
-export const ANNEX_III_RULES_VERSION = "2026.08.1";
+export const ANNEX_III_RULES_VERSION = "2026.10.1";
 export const ANNEX_III_RULES_LAW_REVIEWED_AS_OF = "2026-08-05";
 
 // ---------------------------------------------------------------------------
@@ -104,14 +104,14 @@ interface KeywordRule {
 
 /** Art. 5(1) prohibited practices — the corrected (a)–(h) list. */
 const PROHIBITED_RULES: KeywordRule[] = [
-  { ruleId: "art5_subliminal", article: "Art. 5(1)(a)", keywords: ["subliminal", "manipulative technique"] },
-  { ruleId: "art5_vulnerabilities", article: "Art. 5(1)(b)", keywords: ["exploit vulnerabilit", "exploiting vulnerabilit"] },
-  { ruleId: "art5_social_scoring", article: "Art. 5(1)(c)", keywords: ["social scoring", "social score", "social credit"] },
-  { ruleId: "art5_predictive_policing", article: "Art. 5(1)(d)", keywords: ["predictive policing", "predict criminal", "predicting criminal"] },
-  { ruleId: "art5_facial_scraping", article: "Art. 5(1)(e)", keywords: ["untargeted scraping", "facial recognition database", "scraping of facial"] },
-  { ruleId: "art5_emotion_work_edu", article: "Art. 5(1)(f)", keywords: ["emotion recognition in the workplace", "employee emotion", "student emotion", "emotion recognition at work", "emotion recognition in education"] },
-  { ruleId: "art5_biometric_categorisation", article: "Art. 5(1)(g)", keywords: ["biometric categorisation", "biometric categorization"] },
-  { ruleId: "art5_rbi_public", article: "Art. 5(1)(h)", keywords: ["real-time biometric identification", "real-time remote biometric", "live facial recognition in public"] },
+  { ruleId: "art5_subliminal", article: "Art. 5(1)(a)", keywords: ["subliminal", "manipulative technique", "técnica manipuladora", "técnicas manipuladoras", "tecnicas manipuladoras"] },
+  { ruleId: "art5_vulnerabilities", article: "Art. 5(1)(b)", keywords: ["exploit vulnerabilit", "exploiting vulnerabilit", "explotar vulnerabilidad", "explota vulnerabilidad", "explotar las vulnerabilidad", "aprovechar las vulnerabilidad"] },
+  { ruleId: "art5_social_scoring", article: "Art. 5(1)(c)", keywords: ["social scoring", "social score", "social credit", "puntuación social", "puntuacion social", "crédito social", "credito social"] },
+  { ruleId: "art5_predictive_policing", article: "Art. 5(1)(d)", keywords: ["predictive policing", "predict criminal", "predicting criminal", "policía predictiva", "policia predictiva", "predecir delitos", "predicción de delitos", "prediccion de delitos", "predecir la comisión de delitos"] },
+  { ruleId: "art5_facial_scraping", article: "Art. 5(1)(e)", keywords: ["untargeted scraping", "facial recognition database", "scraping of facial", "extracción no selectiva", "extraccion no selectiva", "base de datos de reconocimiento facial", "rastreo de imágenes faciales"] },
+  { ruleId: "art5_emotion_work_edu", article: "Art. 5(1)(f)", keywords: ["emotion recognition in the workplace", "employee emotion", "student emotion", "emotion recognition at work", "emotion recognition in education", "reconocimiento de emociones en el trabajo", "reconocimiento de emociones en el lugar de trabajo", "emociones de los empleados", "emociones de los trabajadores", "emociones de los alumnos", "emociones de los estudiantes", "reconocimiento de emociones en la educación"] },
+  { ruleId: "art5_biometric_categorisation", article: "Art. 5(1)(g)", keywords: ["biometric categorisation", "biometric categorization", "categorización biométrica", "categorizacion biometrica"] },
+  { ruleId: "art5_rbi_public", article: "Art. 5(1)(h)", keywords: ["real-time biometric identification", "real-time remote biometric", "live facial recognition in public", "identificación biométrica en tiempo real", "identificacion biometrica en tiempo real", "identificación biométrica remota en tiempo real", "reconocimiento facial en tiempo real en espacios públicos", "reconocimiento facial en directo en espacios públicos"] },
 ];
 
 /** Annex III points 1–8 mapped to the classification wizard's category values. */
@@ -120,49 +120,49 @@ const HIGH_RISK_RULES: (KeywordRule & { category: HighRiskHit["category"] })[] =
     ruleId: "annex3_biometrics",
     category: "biometrics",
     article: "Annex III, point 1",
-    keywords: ["biometric", "face recognition", "facial recognition", "fingerprint", "iris scan", "voice identification"],
+    keywords: ["biometric", "face recognition", "facial recognition", "fingerprint", "iris scan", "voice identification", "biométric", "reconocimiento facial", "huella dactilar", "huellas dactilares", "escaneo del iris", "identificación por voz", "identificacion por voz"],
   },
   {
     ruleId: "annex3_critical_infrastructure",
     category: "critical_infrastructure",
     article: "Annex III, point 2",
-    keywords: ["critical infrastructure", "electricity grid", "power grid", "water supply", "gas supply", "road traffic management", "critical digital infrastructure"],
+    keywords: ["critical infrastructure", "electricity grid", "power grid", "water supply", "gas supply", "road traffic management", "critical digital infrastructure", "infraestructura crítica", "infraestructuras críticas", "infraestructura critica", "infraestructuras criticas", "red eléctrica", "red electrica", "suministro de agua", "suministro de gas", "gestión del tráfico", "gestion del trafico"],
   },
   {
     ruleId: "annex3_education",
     category: "education",
     article: "Annex III, point 3",
-    keywords: ["student admission", "admission decision", "exam scoring", "grading", "proctoring", "educational assessment", "vocational training access"],
+    keywords: ["student admission", "admission decision", "exam scoring", "grading", "proctoring", "educational assessment", "vocational training access", "admisión de estudiantes", "admisión de alumnos", "decisión de admisión", "decisiones de admisión", "corrección de exámenes", "calificación de exámenes", "supervisión de exámenes", "evaluación educativa", "acceso a la formación profesional"],
   },
   {
     ruleId: "annex3_employment",
     category: "employment",
     article: "Annex III, point 4",
-    keywords: ["recruit", "hiring", "cv screening", "resume screening", "candidate ranking", "job applicant", "promotion decision", "termination decision", "employee monitoring", "task allocation"],
+    keywords: ["recruit", "hiring", "cv screening", "resume screening", "candidate ranking", "job applicant", "promotion decision", "termination decision", "employee monitoring", "task allocation", "selección de personal", "seleccion de personal", "reclutamiento", "contratación de personal", "proceso de contratación", "procesos de contratación", "currícul", "cribado de cv", "filtrado de cv", "candidatos a", "aspirantes", "decisión de ascenso", "decisiones de ascenso", "decisión de despido", "decisiones de despido", "supervisión de empleados", "seguimiento de empleados", "monitorización de empleados", "asignación de tareas"],
   },
   {
     ruleId: "annex3_essential_services",
     category: "essential_services",
     article: "Annex III, point 5",
-    keywords: ["credit scoring", "creditworthiness", "credit score", "insurance pricing", "insurance risk assessment", "public assistance", "social benefits", "emergency call", "emergency dispatch"],
+    keywords: ["credit scoring", "creditworthiness", "credit score", "insurance pricing", "insurance risk assessment", "public assistance", "social benefits", "emergency call", "emergency dispatch", "puntuación crediticia", "puntuacion crediticia", "solvencia", "calificación crediticia", "scoring de crédito", "tarificación de seguros", "precio del seguro", "evaluación del riesgo de seguros", "asistencia pública", "prestaciones sociales", "ayudas sociales", "llamadas de emergencia", "servicios de emergencia"],
   },
   {
     ruleId: "annex3_law_enforcement",
     category: "law_enforcement",
     article: "Annex III, point 6",
-    keywords: ["law enforcement", "police", "criminal offence", "criminal offense", "evidence reliability", "recidivism"],
+    keywords: ["law enforcement", "police", "criminal offence", "criminal offense", "evidence reliability", "recidivism", "fuerzas del orden", "fuerzas y cuerpos de seguridad", "policía", "policia", "policial", "infracción penal", "delito", "fiabilidad de las pruebas", "reincidencia"],
   },
   {
     ruleId: "annex3_migration",
     category: "migration",
     article: "Annex III, point 7",
-    keywords: ["asylum", "visa application", "border control", "migration", "residence permit"],
+    keywords: ["asylum", "visa application", "border control", "migration", "residence permit", "asilo", "solicitud de visado", "solicitudes de visado", "control de fronteras", "control fronterizo", "migración", "migracion", "permiso de residencia"],
   },
   {
     ruleId: "annex3_justice",
     category: "justice",
     article: "Annex III, point 8",
-    keywords: ["judicial", "court decision", "sentencing", "administration of justice", "dispute resolution", "election", "voting behaviour", "voting behavior"],
+    keywords: ["judicial", "court decision", "sentencing", "administration of justice", "dispute resolution", "election", "voting behaviour", "voting behavior", "decisión judicial", "resolución judicial", "imposición de penas", "administración de justicia", "resolución de conflictos", "resolución de litigios", "elecciones", "electoral", "intención de voto"],
   },
 ];
 
@@ -174,17 +174,17 @@ const HIGH_RISK_RULES: (KeywordRule & { category: HighRiskHit["category"] })[] =
 const FRAUD_CARVE_OUT: KeywordRule = {
   ruleId: "annex3_5b_fraud_carveout",
   article: "Annex III, point 5(b)",
-  keywords: ["fraud detection", "detect fraud", "detecting fraud", "fraud prevention", "anti-fraud"],
+  keywords: ["fraud detection", "detect fraud", "detecting fraud", "fraud prevention", "anti-fraud", "detección de fraude", "deteccion de fraude", "detección del fraude", "detectar fraude", "detectar el fraude", "prevención del fraude", "prevencion del fraude", "antifraude"],
 };
 
 /** Art. 50 transparency triggers (interaction, synthetic content, deepfakes). */
 const TRANSPARENCY_RULES: KeywordRule[] = [
-  { ruleId: "art50_interaction", article: "Art. 50(1)", keywords: ["chatbot", "conversational", "virtual assistant", "customer service bot"] },
-  { ruleId: "art50_synthetic", article: "Art. 50(2)", keywords: ["synthetic content", "content generation", "generated content", "image generation", "text generation"] },
+  { ruleId: "art50_interaction", article: "Art. 50(1)", keywords: ["chatbot", "conversational", "virtual assistant", "customer service bot", "conversacional", "asistente virtual", "bot de atención al cliente"] },
+  { ruleId: "art50_synthetic", article: "Art. 50(2)", keywords: ["synthetic content", "content generation", "generated content", "image generation", "text generation", "contenido sintético", "contenido sintetico", "generación de contenido", "contenido generado", "generación de imágenes", "generación de texto"] },
   // Deliberately no "sentiment" keyword: text sentiment analysis is not
   // emotion recognition from biometric data under the Act's definitions.
-  { ruleId: "art50_emotion", article: "Art. 50(3)", keywords: ["emotion recognition", "emotion detection", "facial expression analysis", "biometric categorisation system", "biometric categorization system"] },
-  { ruleId: "art50_deepfake", article: "Art. 50(4)", keywords: ["deepfake", "deep fake", "face swap"] },
+  { ruleId: "art50_emotion", article: "Art. 50(3)", keywords: ["emotion recognition", "emotion detection", "facial expression analysis", "biometric categorisation system", "biometric categorization system", "reconocimiento de emociones", "detección de emociones", "deteccion de emociones", "análisis de expresiones faciales", "sistema de categorización biométrica"] },
+  { ruleId: "art50_deepfake", article: "Art. 50(4)", keywords: ["deepfake", "deep fake", "face swap", "ultrasuplantaci", "ultrafalso", "ultrafalsificación", "intercambio de caras"] },
 ];
 
 /** Techniques that alone imply an Art. 50 transparency conversation. */

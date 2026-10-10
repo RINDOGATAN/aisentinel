@@ -271,7 +271,7 @@
     "annexIIIPrefix": "Anexo III: {category}",
     "classificationHistory": "Historial de clasificaciones",
     "notClassifiedTitle": "Aún sin clasificar",
-    "notClassifiedDescription": "Clasifique este sistema según el marco de riesgos del Reglamento de IA de la UE",
+    "notClassifiedDescription": "Clasifica este sistema según el marco de riesgos del Reglamento Europeo de IA",
     "classifyRisk": "Clasificar riesgo",
     "assessmentsTitle": "Evaluaciones",
     "assessmentsDescription": "FRIA, conformidad y otras evaluaciones de este sistema",
@@ -396,7 +396,26 @@
     "emptySearchHint": "Prueba a ajustar los términos de búsqueda",
     "emptyDefaultHint": "Registra primero los sistemas de IA para clasificar sus niveles de riesgo",
     "registerAiSystem": "Registrar sistema de IA",
-    "toastClassified": "{name} clasificado como {level}{count, plural, =0 {} one {: # requisito de cumplimiento iniciado} other {: # requisitos de cumplimiento iniciados}}"
+    "toastClassified": "{name} clasificado como {level}{count, plural, =0 {} one {: # requisito de cumplimiento iniciado} other {: # requisitos de cumplimiento iniciados}}",
+    "classifyFailed": "No se ha podido clasificar el riesgo",
+    "annexIIIBadge": "Anexo III: {category}",
+    "classifiedOn": "Clasificado el {date}",
+    "annexIII": {
+      "biometrics": "Biometría",
+      "critical_infrastructure": "Infraestructuras críticas",
+      "education": "Educación y formación profesional",
+      "employment": "Empleo y gestión de los trabajadores",
+      "essential_services": "Servicios esenciales, públicos y privados",
+      "law_enforcement": "Garantía del cumplimiento del Derecho",
+      "migration": "Migración, asilo y control fronterizo",
+      "justice": "Administración de justicia y procesos democráticos"
+    },
+    "levelPhrase": {
+      "UNACCEPTABLE": "riesgo inaceptable",
+      "HIGH": "alto riesgo",
+      "LIMITED": "riesgo limitado",
+      "MINIMAL": "riesgo mínimo"
+    }
   },
   "quickstart": {
     "backToDashboard": "Panel de control",
@@ -526,7 +545,9 @@
     "typeDescAiRisk": "Una evaluación general del riesgo de un sistema de IA: qué puede salir mal, con qué probabilidad y qué lo reduce.",
     "typeDescBiasFairness": "Un examen de si el sistema trata de forma desigual a grupos de personas, y qué se hace al respecto.",
     "typeDescCustom": "Una evaluación en blanco que das forma con tus propias preguntas.",
-    "templatesButton": "Plantillas"
+    "templatesButton": "Plantillas",
+    "tabAll": "Todas ({count})",
+    "templateLabel": "Plantilla: {name}"
   },
   "assessmentsNew": {
     "title": "Nueva evaluación",
@@ -588,7 +609,8 @@
     "registerAlready": "{count} ya tienen esta prueba.",
     "registerUnmapped": "{count} requisitos citados no alcanzan a este sistema, así que se omiten. Adjúntalos desde la pestaña de cumplimiento del sistema si procede.",
     "registerApply": "Aplicar al registro",
-    "registerApplied": "Pruebas adjuntadas a {count} requisitos"
+    "registerApplied": "Pruebas adjuntadas a {count} requisitos",
+    "forSystem": "del sistema <link>{name}</link>"
   },
   "oversight": {
     "title": "Supervisión humana",
@@ -687,7 +709,7 @@
   },
   "compliance": {
     "title": "Cumplimiento",
-    "description": "Mapee el cumplimiento de los sistemas de IA frente a los marcos normativos",
+    "description": "Relaciona el cumplimiento de tus sistemas de IA con cada marco normativo",
     "exportCsv": "Exportar CSV",
     "selectSystemPlaceholder": "Selecciona un sistema de IA...",
     "selectSystemPrompt": "Selecciona un sistema de IA arriba para ver su matriz de cumplimiento.",
@@ -4030,18 +4052,18 @@
       "shadowAi": "IA en la sombra"
     },
     "nist": {
-      "GOVERN": "GOVERN",
-      "MAP": "MAP",
-      "MEASURE": "MEASURE",
-      "MANAGE": "MANAGE",
+      "GOVERN": "Gobernar",
+      "MAP": "Mapear",
+      "MEASURE": "Medir",
+      "MANAGE": "Gestionar",
       "ariaLabel": "Radar de madurez NIST AI RMF"
     },
     "plan": {
-      "bucket1": "Días 1–30",
-      "bucket2": "Días 31–60",
-      "bucket3": "Días 61–90",
+      "bucket1": "Días 1 a 30",
+      "bucket2": "Días 31 a 60",
+      "bucket3": "Días 61 a 90",
       "empty": "Nada programado",
-      "effort": "Esfuerzo: {effort}"
+      "effort": "Esfuerzo: {effort, select, S {bajo} M {medio} L {alto} other {{effort}}}"
     },
     "stage": {
       "ADOPT": "Adoptar",
@@ -4065,7 +4087,7 @@
     "map": {
       "ariaLabel": "Mapa de gobernanza de IA",
       "ungrouped": "Otros sistemas",
-      "vendorSystems": "{count} sistemas",
+      "vendorSystems": "{count, plural, one {# sistema} other {# sistemas}}",
       "tier": {
         "UNACCEPTABLE": "Inaceptable",
         "HIGH": "Alto",
@@ -4135,10 +4157,10 @@
       "openGaps": "Carencias abiertas"
     },
     "nist": {
-      "GOVERN": "GOVERN",
-      "MAP": "MAP",
-      "MEASURE": "MEASURE",
-      "MANAGE": "MANAGE"
+      "GOVERN": "Gobernar",
+      "MAP": "Mapear",
+      "MEASURE": "Medir",
+      "MANAGE": "Gestionar"
     },
     "dimension": {
       "inventory": "Inventario",
@@ -4185,9 +4207,9 @@
       "eyebrow": "Plan de acción",
       "title": "Los próximos 90 días",
       "bucket": {
-        "1-30": "Días 1–30",
-        "31-60": "Días 31–60",
-        "61-90": "Días 61–90"
+        "1-30": "Días 1 a 30",
+        "31-60": "Días 31 a 60",
+        "61-90": "Días 61 a 90"
       }
     },
     "rollout": {
@@ -4431,9 +4453,9 @@
       "unknown": "Alcance sin determinar"
     },
     "counts": {
-      "inScope": "{count} sistemas",
+      "inScope": "{count, plural, one {# sistema} other {# sistemas}}",
       "inScopeWithUndetermined": "{inScope} en alcance · {undetermined} sin determinar",
-      "undeterminedOnly": "Alcance aún sin determinar para {count} sistemas",
+      "undeterminedOnly": "Alcance aún sin determinar para {count, plural, one {# sistema} other {# sistemas}}",
       "organization": "Aplica a tu organización",
       "notApplicable": "No aplica a tu inventario",
       "satisfied": "{satisfied} de {total} evidenciados",
@@ -4456,10 +4478,10 @@
       "undeterminedSystems": "Alcance aún sin determinar",
       "resolve": "Resolver",
       "viewRequirements": "Ver requisitos",
-      "trueInterval": "{days} días",
+      "trueInterval": "{days, plural, one {# día} other {# días}}",
       "appliesToday": "se aplica hoy",
-      "daysRemaining": "en {days} días",
-      "daysAgo": "hace {days} días"
+      "daysRemaining": "en {days, plural, one {# día} other {# días}}",
+      "daysAgo": "hace {days, plural, one {# día} other {# días}}"
     },
     "legend": {
       "title": "Leyenda",

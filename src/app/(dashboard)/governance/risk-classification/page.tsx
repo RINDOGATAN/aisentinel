@@ -38,33 +38,23 @@ import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
 import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
-import { formatDate } from "@/lib/utils";
+import { useFormatDate } from "@/lib/use-format-date";
 import { SortControl } from "@/components/governance/sort-control";
 import { DEFAULT_LIST_SORT, type ListSort } from "@/lib/list-sort";
 import { RiskScreeningPanel } from "@/components/ai/RiskScreeningPanel";
 import { RiskTierBadge, TierMarker } from "@/components/governance/risk-tier-badge";
 
-const riskLevelDescriptions: Record<string, string> = {
-  UNACCEPTABLE:
-    "Prohibited AI practices (Art. 5): social scoring, real-time biometric identification, manipulation.",
-  HIGH:
-    "High-risk AI systems (Art. 6, Annex III): biometrics, critical infrastructure, education, employment, law enforcement.",
-  LIMITED:
-    "Limited risk requiring transparency obligations (Art. 50): chatbots, deepfakes, emotion recognition.",
-  MINIMAL:
-    "Minimal risk with no specific regulatory obligations beyond voluntary codes of conduct.",
-};
-
-const annexIIICategories = [
-  { value: "biometrics", label: "1. Biometrics" },
-  { value: "critical_infrastructure", label: "2. Critical Infrastructure" },
-  { value: "education", label: "3. Education & Vocational Training" },
-  { value: "employment", label: "4. Employment & Workers Management" },
-  { value: "essential_services", label: "5. Essential Private/Public Services" },
-  { value: "law_enforcement", label: "6. Law Enforcement" },
-  { value: "migration", label: "7. Migration, Asylum & Border Control" },
-  { value: "justice", label: "8. Administration of Justice" },
-];
+/** Annex III points 1 to 8; labels come from riskClassification.annexIII.<value>. */
+const ANNEX_III_CATEGORIES = [
+  "biometrics",
+  "critical_infrastructure",
+  "education",
+  "employment",
+  "essential_services",
+  "law_enforcement",
+  "migration",
+  "justice",
+] as const;
 
 export default function RiskClassificationPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -79,8 +69,13 @@ export default function RiskClassificationPage() {
   const router = useRouter();
   const { organization } = useOrganization();
   const t = useTranslations("riskClassification");
-  const { statusLabel } = useEnumLabels();
+  const { formatDate } = useFormatDate();
+  const { statusLabel, techniqueLabel } = useEnumLabels();
   const tc = useTranslations("common");
+  const annexLabel = (value: string) => {
+    const i = (ANNEX_III_CATEGORIES as readonly string[]).indexOf(value);
+    return i < 0 ? value : `${i + 1}. ${t(`annexIII.${value}`)}`;
+  };
 
   const { data: stats, isLoading: statsLoading } = trpc.riskClassification.getStats.useQuery(
     { organizationId: organization?.id ?? "" },
@@ -103,7 +98,7 @@ export default function RiskClassificationPage() {
       toast.success(
         t("toastClassified", {
           name: data.aiSystem.name,
-          level: data.riskLevel,
+          level: t(`levelPhrase.${data.riskLevel}`),
           count: data.complianceMappingsCreated ?? 0,
         }),
         {
@@ -122,7 +117,7 @@ export default function RiskClassificationPage() {
       });
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to classify risk");
+      toast.error(error.message || t("classifyFailed"));
     },
   });
 
@@ -230,7 +225,7 @@ export default function RiskClassificationPage() {
                           {system.name}
                         </Link>
                         <p className="text-xs text-muted-foreground">
-                          {system.technique.replace("_", " ")} &middot; {statusLabel(system.status)}
+                          {techniqueLabel(system.technique)} &middot; {statusLabel(system.status)}
                         </p>
                       </div>
                     </div>
@@ -266,7 +261,7 @@ export default function RiskClassificationPage() {
                             />
                             {system.riskClassification.annexIIICategory && (
                               <Badge variant="outline" className="text-xs">
-                                Annex III: {system.riskClassification.annexIIICategory}
+                                {t("annexIIIBadge", { category: annexLabel(system.riskClassification.annexIIICategory) })}
                               </Badge>
                             )}
                           </div>
@@ -274,7 +269,7 @@ export default function RiskClassificationPage() {
                             {system.riskClassification.rationale}
                           </p>
                           <p className="text-xs text-muted-foreground">
-                            Classified {formatDate(system.riskClassification.classifiedAt)}
+                            {t("classifiedOn", { date: formatDate(system.riskClassification.classifiedAt) })}
                           </p>
                         </div>
                       )}
@@ -348,9 +343,9 @@ export default function RiskClassificationPage() {
                                 <SelectValue placeholder={t("annexIIICategoryPlaceholder")} />
                               </SelectTrigger>
                               <SelectContent>
-                                {annexIIICategories.map((cat) => (
-                                  <SelectItem key={cat.value} value={cat.value}>
-                                    {cat.label}
+                                {ANNEX_III_CATEGORIES.map((value) => (
+                                  <SelectItem key={value} value={value}>
+                                    {annexLabel(value)}
                                   </SelectItem>
                                 ))}
                               </SelectContent>

@@ -17,6 +17,7 @@ import { Scale } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { AiDraftPanel } from "@/components/ai/AiDraftPanel";
+import { useEnumLabels } from "@/lib/enum-labels";
 
 interface RiskScreeningPanelProps {
   organizationId: string;
@@ -35,6 +36,7 @@ export function RiskScreeningPanel({
   onInsertRationale,
 }: RiskScreeningPanelProps) {
   const t = useTranslations("ai");
+  const { riskLabel } = useEnumLabels();
 
   const { data: screening } = trpc.riskClassification.screen.useQuery(
     { organizationId, aiSystemId },
@@ -59,7 +61,7 @@ export function RiskScreeningPanel({
           <Scale className="w-3.5 h-3.5 text-primary" />
           {t("screening.title")}
         </p>
-        <p className="text-xs">{t("screening.suggested", { level: screening.suggestedLevel })}</p>
+        <p className="text-xs">{t("screening.suggested", { level: riskLabel(screening.suggestedLevel) })}</p>
         {hasHits ? (
           <ul className="text-xs text-muted-foreground space-y-0.5">
             {screening.prohibited.map((hit) => (

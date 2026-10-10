@@ -50,7 +50,8 @@ import { useTranslations, useLocale } from "next-intl";
 import { useEnumLabels } from "@/lib/enum-labels";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
-import { formatDate, formatRelativeTime } from "@/lib/utils";
+import { formatRelativeTime } from "@/lib/utils";
+import { useFormatDate } from "@/lib/use-format-date";
 import { STATUS_OUTLINE } from "@/components/ui/status-note";
 
 // Translation keys in the `common` namespace.
@@ -84,6 +85,7 @@ const systemStatusColors: Record<string, string> = {
 
 export default function PolicyDetailPage() {
   const t = useTranslations("policyDetail");
+  const { formatDate } = useFormatDate();
   const { statusLabel } = useEnumLabels();
   const locale = useLocale();
   const tc = useTranslations("common");

@@ -10,7 +10,7 @@
  * logos (only while the configured list is not empty); the English page
  * shows none. No prices. No hosting location in the sections; the safeguards
  * guide after the ways (SafeguardsGuide) says, as the storefront does, that
- * the cloud pilot is served from the United States.
+ * the cloud pilot is hosted in the EU.
  *
  * Each language has its own copy under `<locale>.*` in the landing
  * dictionary, and its own list of ways: three in Spanish (as the storefront

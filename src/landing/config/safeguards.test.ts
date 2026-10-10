@@ -164,7 +164,7 @@ describe("copy rules", () => {
     expect(es).not.toMatch(/\busted(es)?\b|vosotros|\bvuestr/i);
   });
 
-  it("managed is hosted in Asturias with open-weight models on the instance; the cloud states pilot, shared, United States, no certification", () => {
+  it("managed is hosted in Asturias with open-weight models on the instance; the cloud states EU, pilot, shared, no certification", () => {
     expect(COPY.en.summaries.managed).toBe(
       "An isolated instance we run for your organization alone, hosted in Asturias, Spain. Your records stay on that instance. AI features stay off until you turn them on, and can use open-weight models hosted on the instance itself, so the record details do not leave it, or your own provider key.",
     );
@@ -175,8 +175,8 @@ describe("copy rules", () => {
     for (const l of LOCALES) expect(all(l)).not.toMatch(/selected text|texto seleccionado/);
     // No unqualified "your data stays" where AI could send text out.
     for (const l of LOCALES) expect(all(l)).not.toMatch(/Your data stays on (that instance|your servers|your hardware)|Tus datos se quedan/);
-    expect(COPY.en.summaries.cloud).toMatch(/capped pilot[\s\S]*test records[\s\S]*shared[\s\S]*United States[\s\S]*no service level or independent certification/);
-    expect(COPY.es.summaries.cloud).toMatch(/piloto[\s\S]*con límites[\s\S]*registros de prueba[\s\S]*comparte[\s\S]*Estados Unidos[\s\S]*certificación independiente/);
+    expect(COPY.en.summaries.cloud).toMatch(/capped pilot[\s\S]*test records[\s\S]*shared[\s\S]*no service level or independent certification/);
+    expect(COPY.es.summaries.cloud).toMatch(/piloto[\s\S]*con límites[\s\S]*registros de prueba[\s\S]*comparte[\s\S]*certificación independiente/);
   });
 
   it("leaves the classifier sentence out of the panel", () => {
@@ -192,11 +192,13 @@ describe("copy rules", () => {
     expect(all("en")).not.toMatch(/organisation|licence|colour|programme|centre/);
   });
 
-  it("keeps ISO 27001 as the example in question 6; names Asturias only for managed and the US for the cloud", () => {
+  it("keeps ISO 27001 as the example in question 6; names Asturias only for managed and the EU for the cloud", () => {
     expect(COPY.en.questions.cert.label).toMatch(/for example ISO 27001/);
     expect(COPY.es.questions.cert.label).toMatch(/por ejemplo, ISO 27001/);
-    // No EU-wide or European hosting claim anywhere; the one location named is the managed instance's.
-    for (const l of LOCALES) expect(all(l)).not.toMatch(/\bEU\b|\bUE\b|Europ|Unión Europea|Frankfurt/);
+    // The cloud is hosted in the EU (Frankfurt); the one place named is the managed instance's Asturias. The cloud is never said to be in the United States.
+    for (const l of LOCALES) expect(all(l)).not.toMatch(/United States|Estados Unidos|EE\. ?UU|Frankfurt/);
+    expect(COPY.en.summaries.cloud).toMatch(/Hosted by us in the EU[\s\S]*may be outside the EU/);
+    expect(COPY.es.summaries.cloud).toMatch(/en la UE[\s\S]*puede estar fuera de la UE/);
     for (const l of LOCALES) {
       const { managed, ...rest } = COPY[l].summaries;
       expect(managed).toMatch(/Asturias/);

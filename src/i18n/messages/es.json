@@ -489,7 +489,7 @@
       "vendorImports": "Proveedores importados",
       "industryTemplate": "Plantilla sectorial: {name}"
     },
-    "legalIndustryName": "Legal",
+    "legalIndustryName": "Sector jurídico",
     "legalIndustryDescription": "Despachos de abogados y asesorías jurídicas: elige las herramientas de IA que usas (investigación jurídica, redacción, revisión contractual, e-discovery, traducción) y obtén el paquete de políticas para despachos.",
     "legalIndustryTools": "{count} herramientas para elegir",
     "builderTitle": "Estoy construyendo un producto de IA",
@@ -1423,7 +1423,7 @@
     "orgCreated": "Organización creada: abriendo su asistente inicial"
   },
   "experts": {
-    "deploymentCtaTitle": "Ejecuta AI Sentinel en tu propio hardware",
+    "deploymentCtaTitle": "Instala AI Sentinel en tu propio hardware",
     "deploymentCtaDescription": "Los ingenieros de TODO.LAW lo despliegan y mantienen en tu infraestructura, incluso sin conexión.",
     "deploymentCtaButton": "Hablemos",
     "dismiss": "Descartar"
@@ -1473,22 +1473,28 @@
     "continueWithEmail": "Continuar con el correo",
     "sending": "Enviando...",
     "noPasswordNeeded": "No necesitas contraseña. Te enviaremos un enlace seguro.",
-    "orContinueWith": "O continúe con",
+    "orContinueWith": "O continúa con",
     "continueWithGoogle": "Continuar con Google",
     "googleSigningIn": "Iniciando sesión...",
-    "legalPrefix": "Al iniciar sesión, acepta nuestros",
+    "legalPrefix": "Al iniciar sesión, aceptas nuestros",
     "termsOfService": "Términos del servicio",
     "privacyPolicy": "Política de privacidad",
     "legalAnd": "y",
     "verifyTitle": "Revisa tu correo",
     "verifyBody": "Te hemos enviado un enlace de acceso a tu correo electrónico. Haz clic en el enlace para iniciar sesión.",
-    "verifyDidntReceive": "¿No lo ha recibido?",
-    "verifyTryAgain": "Inténtelo de nuevo",
+    "verifyDidntReceive": "¿No lo has recibido?",
+    "verifyTryAgain": "Inténtalo de nuevo",
     "errorTitle": "Error de autenticación",
     "errorBody": "Se ha producido un error al iniciar sesión. Puede que el enlace haya caducado o ya se haya utilizado.",
     "errorTryAgain": "Intentar de nuevo",
     "crossSigningIn": "Iniciando sesión...",
-    "crossFailed": "No se ha podido autenticar. Redirigiendo al inicio de sesión..."
+    "crossFailed": "No se ha podido autenticar. Redirigiendo al inicio de sesión...",
+    "tagline": "Gobierno de la IA entre jurisdicciones",
+    "sendFailed": "No se ha podido enviar el enlace de acceso. Inténtalo de nuevo.",
+    "unexpectedError": "Se ha producido un error inesperado.",
+    "sentBody": "Te hemos enviado un enlace de acceso a <email>{address}</email>. Haz clic en el enlace del correo para iniciar sesión.",
+    "noProviders": "No hay ningún método de inicio de sesión configurado. Ponte en contacto con el administrador.",
+    "emailInputPlaceholder": "tu@empresa.com"
   },
   "ai": {
     "panel": {
@@ -1594,7 +1600,7 @@
     "createTitle": "Crear plantilla",
     "createDescription": "Un punto de partida sencillo: una sección con tus preguntas. Clona una plantilla del sistema para los cuestionarios completos por secciones.",
     "systemEmpty": "No hay plantillas del sistema instaladas.",
-    "systemEmptyHint": "Un administrador puede instalar los cuestionarios estándar del Reglamento de IA de la UE ejecutando la siembra de plantillas (db:seed-templates), o crear una plantilla propia.",
+    "systemEmptyHint": "Un administrador puede instalar los cuestionarios estándar del Reglamento de IA de la UE con la orden de carga de plantillas (db:seed-templates), o crear una plantilla propia.",
     "customEmpty": "Todavía no hay plantillas propias.",
     "customEmptyHint": "Clona una plantilla del sistema o crea la tuya.",
     "typeFria": "Evaluación de impacto en los derechos fundamentales (FRIA)",
@@ -3197,7 +3203,7 @@
       },
       "accessControl": {
         "title": "Control de acceso",
-        "intro": "AI SENTINEL aplica control de acceso basado en roles (RBAC) en toda la plataforma. Cada acción se comprueba contra tu rol antes de ejecutarse.",
+        "intro": "AI SENTINEL aplica control de acceso basado en roles (RBAC) en toda la plataforma. Cada acción se comprueba contra tu rol antes de llevarse a cabo.",
         "roles": [
           "Propietario",
           "Administrador",
@@ -3420,7 +3426,7 @@
       "gapsBody": "Una pregunta sin responder no suprime en silencio el párrafo que habría completado. Se convierte en una laguna visible con la obligación que habría acreditado, y todas las lagunas se recogen en un resumen de asuntos abiertos al principio del documento. Un documento generado que omite discretamente una obligación sin responder es peor que no tener documento, porque parece completo.",
       "agenticTitle": "La prueba de esfuerzo agéntica",
       "agenticBody1": "Todos los regímenes de este producto se escribieron pensando en un sistema que produce un resultado que después usa una persona. Un agente autónomo que actúa sobre ese resultado rompe esa premisa en un punto distinto en cada régimen.",
-      "agenticBody2": "La prueba de esfuerzo ejecuta once hallazgos sobre el sistema; cada uno identifica el documento que rompe, la premisa de la que partía el régimen, qué le hace la delegación y qué disposición exige la capa agéntica. Los hallazgos se filtran por los regímenes que realmente se aplican, de modo que a un responsable del despliegue de Texas no se le muestra un fallo del RGPD.",
+      "agenticBody2": "La prueba de esfuerzo comprueba once hallazgos sobre el sistema; cada uno identifica el documento que rompe, la premisa de la que partía el régimen, qué le hace la delegación y qué disposición exige la capa agéntica. Los hallazgos se filtran por los regímenes que realmente se aplican, de modo que a un responsable del despliegue de Texas no se le muestra un fallo del RGPD.",
       "agenticExamples": [
         {
           "name": "La frontera del artículo 22 se desplaza al agente",
@@ -3428,7 +3434,7 @@
         },
         {
           "name": "Los elementos de intervención humana fallan en la delegación",
-          "description": "La prueba de California exige una persona revisora con autoridad para cambiar la decisión. Un agente que ejecuta antes de que concluya la revisión elimina esa autoridad en la práctica, y la prueba es conjuntiva."
+          "description": "La prueba de California exige una persona revisora con autoridad para cambiar la decisión. Un agente que actúa antes de que concluya la revisión elimina esa autoridad en la práctica, y la prueba es conjuntiva."
         },
         {
           "name": "El protocolo revisa lo que no puede revertirse",
@@ -3542,7 +3548,7 @@
             },
             {
               "title": "Una corrección en la actualización autoalojada",
-              "body": "La comprobación previa a la línea base del migrador nunca llegaba a ejecutarse, de modo que las instalaciones creadas antes de la línea base de migraciones no podían actualizarse. Ambos fallos están corregidos y la vía de actualización se verifica ahora contra la imagen publicada en cada versión."
+              "body": "La comprobación previa a la línea base del migrador nunca llegaba a hacerse, de modo que las instalaciones creadas antes de la línea base de migraciones no podían actualizarse. Ambos fallos están corregidos y la vía de actualización se verifica ahora contra la imagen publicada en cada versión."
             }
           ]
         },
@@ -3629,7 +3635,7 @@
         }
       ],
       "backTitle": "Qué obtienes",
-      "backIntro": "Escenarios concretos, cada uno con controles en las capas adecuadas y una prueba redactada para poder ejecutarla esta misma tarde. Cinco capacidades suelen producir ocho escenarios y unos veinte controles.",
+      "backIntro": "Escenarios concretos, cada uno con controles en las capas adecuadas y una prueba redactada para poder hacerla esta misma tarde. Cinco capacidades suelen producir ocho escenarios y unos veinte controles.",
       "examples": [
         {
           "name": "Responde con un documento que esa persona no podía ver",
@@ -3645,7 +3651,7 @@
         },
         {
           "name": "Funciona como se diseñó y aun así trata peor a un grupo",
-          "body": "Factores de decisión declarados, revisión de variables sustitutivas y seguimiento de resultados tras el despliegue. Prueba: ejecuta los mismos casos variando una característica."
+          "body": "Factores de decisión declarados, revisión de variables sustitutivas y seguimiento de resultados tras el despliegue. Prueba: repite los mismos casos cambiando una sola característica."
         }
       ],
       "layersTitle": "Las cinco capas de control",
@@ -3797,7 +3803,7 @@
         "Una pregunta sin responder no genera nada. El producto nunca deduce el alcance del silencio, y una laguna se muestra como laguna.",
         "Todo lo derivado automáticamente figura como tal hasta que una persona lo confirma, y la proporción confirmada aparece en cada exportación.",
         "Solo un control con una prueba superada y vigente se convierte en evidencia. Una barrera sin probar no acredita nada.",
-        "Volver a ejecutar el asistente completa lo que falta en lugar de crear una segunda copia: sistemas, políticas, proveedores y modelos de amenazas se deduplican por nombre.",
+        "Volver a usar el asistente completa lo que falta en lugar de crear una segunda copia: sistemas, políticas, proveedores y modelos de amenazas se deduplican por nombre.",
         "Cada exportación indica cuándo se generó, con qué versión y con qué paquetes de reglas; el paquete incluye una huella por fichero.",
         "La validación jurídica del contenido normativo sigue pendiente, y cada documento lo dice en lugar de dar a entender lo contrario."
       ]
@@ -3998,7 +4004,7 @@
       "dutiesTitle": "Cobertura de deberes profesionales",
       "dutiesSubtitle": "Cómo los controles del programa responden a las obligaciones profesionales del abogado.",
       "emptyTitle": "Aún no hay sistemas de IA registrados",
-      "emptyBody": "Ejecuta el inicio rápido para construir tu programa de gobernanza: el mapa, el cuadro de madurez y el plan de acción aparecerán aquí en cuanto termine.",
+      "emptyBody": "Completa el inicio rápido para construir tu programa de gobernanza: el mapa, el cuadro de madurez y el plan de acción aparecerán aquí en cuanto termine.",
       "emptyCta": "Abrir inicio rápido",
       "historyLink": "Historial",
       "historyFootnote": "Se captura una instantánea automáticamente cada vez que se exporta el PDF del programa. Las puntuaciones se calculan con la versión del modelo de madurez registrada en cada instantánea.",
@@ -4464,7 +4470,7 @@
     "allMilestones": "Todos los hitos",
     "emptyInventoryTitle": "Aún no hay sistemas de IA registrados",
     "emptyInventoryBody": "Estos plazos son reales, pero hasta que registres tus sistemas de IA no podemos indicarte a cuáles afecta cada uno.",
-    "emptyInventoryCta": "Ejecutar inicio rápido",
+    "emptyInventoryCta": "Ir al inicio rápido",
     "groupOverdue": "Vencido",
     "groupImminent": "Próximos 90 días",
     "groupUpcoming": "Más adelante este año",
@@ -4787,7 +4793,7 @@
     "noAssessmentYet": "Todavía no consta ninguna respuesta de evaluación. Los documentos se generarán como un conjunto completo de lagunas.",
     "stressTitle": "Prueba de esfuerzo agéntica",
     "stressDescription": "Dónde se rompe cada documento cuando este sistema entrega su resultado a un agente autónomo posterior.",
-    "stressNotDeclared": "Nadie ha respondido si este sistema entrega su resultado a un agente autónomo. Respóndelo en el cribado del sistema para ejecutar la prueba de esfuerzo.",
+    "stressNotDeclared": "Nadie ha respondido si este sistema entrega su resultado a un agente autónomo. Respóndelo en el cribado del sistema para que se haga la prueba de esfuerzo.",
     "stressCounts": "{breaks} rompen, {weakens} debilitan, {watch} a vigilar",
     "severityBreaks": "Rompe",
     "severityWeakens": "Debilita",
@@ -4806,8 +4812,8 @@
     "controlsTitle": "Pendiente de documentar",
     "controlsRecorded": "Documentado",
     "controlsNone": "En este nivel no se espera nada más.",
-    "undetermined": "Nadie ha respondido a qué nivel de autonomía tiene este sistema. Hasta que alguien lo haga, el análisis agéntico no se ejecuta y los documentos generados lo indican.",
-    "isAgentic": "La capa agéntica se aplica a este sistema. La prueba de esfuerzo se ejecuta y la evaluación plantea las preguntas agénticas.",
+    "undetermined": "Nadie ha respondido a qué nivel de autonomía tiene este sistema. Hasta que alguien lo haga, no se hace el análisis agéntico y los documentos generados lo indican.",
+    "isAgentic": "La capa agéntica se aplica a este sistema. Se hace la prueba de esfuerzo y la evaluación plantea las preguntas agénticas.",
     "notAgentic": "La capa agéntica no se aplica: hay una persona entre este sistema y su efecto.",
     "fieldActionScope": "¿Qué puede hacer sin una persona?",
     "fieldActionScopeHelp": "Una lista acotada de categorías de acción, no un objetivo general. Un objetivo sin restricciones es el hecho que un regulador leerá como intención.",
@@ -5343,7 +5349,7 @@
     "systemCardOpen": "Abrir el modelo de amenazas"
   },
   "premiumShowcase": {
-    "lockedHint": "Forma parte de un módulo premium, que se vende para el kit a {price} al año. Activa una licencia o ejecuta tu propia instancia.",
+    "lockedHint": "Forma parte de un módulo premium, que se vende para el kit a {price} al año. Activa una licencia o instala tu propia instancia.",
     "activate": "Activar una licencia",
     "buy": "Ver los módulos",
     "exportLockedTitle": "Este módulo se licencia para instalaciones autoalojadas",
@@ -5363,7 +5369,7 @@
     "ceilingReachedMark": "Límite alcanzado",
     "readOnlyBody": "Los 90 días de edición han terminado. Esta organización es de solo lectura: todo se puede abrir y exportar, nada se puede modificar.",
     "ceilingReachedBody": "Se ha alcanzado un límite. Dos salidas:",
-    "runOwn": "Ejecuta tu propia instancia",
+    "runOwn": "Instala tu propia instancia",
     "exportAll": "Exportar todo (paquete del programa)",
     "afterExportBody": "Tu archivo se ha descargado. Ya puedes vaciar esta cuenta.",
     "afterExportAction": "Vaciar la cuenta"
@@ -5919,7 +5925,7 @@
     },
     "firstRun": {
       "title": "Un minuto sobre cómo funciona",
-      "intro": "AI Sentinel convierte la ley de IA en un programa que puedes ejecutar. En resumen:",
+      "intro": "AI Sentinel convierte la ley de IA en un programa que puedes poner en marcha. En resumen:",
       "step1": "Enumera tus sistemas de IA, para que nada se gobierne a oscuras.",
       "step2": "Clasifica cada uno y evalúa los que conllevan riesgo.",
       "step3": "Implanta los controles y las pruebas, y mantente vigilante.",

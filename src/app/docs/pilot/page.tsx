@@ -74,10 +74,10 @@ const COPY: Record<
     ceilingsTitle: "Registros por organización",
     oneOrgTitle: "Una organización por cuenta",
     oneOrg:
-      "El piloto alojado admite una organización por cuenta. Si necesitas llevar varias organizaciones, ejecuta tu propia instancia.",
+      "El piloto alojado admite una organización por cuenta. Si necesitas llevar varias organizaciones, instala tu propia instancia.",
     waysOutTitle: "Las dos salidas",
     waysOut:
-      "Cuando un límite te detenga, tienes dos caminos: exportar todo lo que has creado como paquete del programa, o ejecutar tu propia instancia, que no tiene límites.",
+      "Cuando un límite te detenga, tienes dos caminos: exportar todo lo que has creado como paquete del programa, o instalar tu propia instancia, que no tiene límites.",
     versionLine: (version, reviewed) => `Versión ${version} del aviso, revisada el ${reviewed}.`,
   },
 };

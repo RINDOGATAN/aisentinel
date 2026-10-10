@@ -535,7 +535,7 @@ export const LAWFIRM_TOOLS: LawFirmTool[] = [
     categoryId: "CONTRACT_CLM",
     description: {
       en: "Open-source, fully self-hosted legal AI stack (Donna frontend on the LQ.AI backend): drafting, review, playbooks, and research with verified citations — runs on the firm's own hardware, so matter data never leaves the office.",
-      es: "Stack de IA jurídica de código abierto y totalmente autoalojado (interfaz Donna sobre el backend LQ.AI): redacción, revisión, playbooks e investigación con citas verificadas; se ejecuta en el propio hardware del despacho, de modo que los datos de los asuntos nunca salen de la oficina.",
+      es: "Stack de IA jurídica de código abierto y totalmente autoalojado (interfaz Donna sobre el backend LQ.AI): redacción, revisión, playbooks e investigación con citas verificadas; funciona en el propio hardware del despacho, de modo que los datos de los asuntos nunca salen de la oficina.",
     },
   },
 

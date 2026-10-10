@@ -63,12 +63,12 @@ export function SignInForm({
       });
 
       if (result?.error) {
-        setError("Failed to send magic link. Please try again.");
+        setError(t("sendFailed"));
       } else {
         setIsEmailSent(true);
       }
     } catch {
-      setError("An unexpected error occurred.");
+      setError(t("unexpectedError"));
     } finally {
       setIsLoading(false);
     }
@@ -109,15 +109,14 @@ export function SignInForm({
           <div className="w-16 h-16 bg-primary/20 flex items-center justify-center mx-auto mb-6">
             <Mail className="w-8 h-8 text-primary" />
           </div>
-          <h1 className="text-2xl font-bold mb-2">Check Your Email</h1>
+          <h1 className="text-2xl font-bold mb-2">{t("verifyTitle")}</h1>
           <p className="text-muted-foreground mb-6">
-            We&apos;ve sent a magic link to <span className="text-foreground font-medium">{email}</span>.
-            Click the link in the email to sign in.
+            {t.rich("sentBody", { address: email, email: (chunks) => <span className="text-foreground font-medium">{chunks}</span> })}
           </p>
           <p className="text-sm text-muted-foreground">
-            Didn&apos;t receive it?{" "}
+            {t("verifyDidntReceive")}{" "}
             <button onClick={() => setIsEmailSent(false)} className="text-primary hover:underline">
-              Try again
+              {t("verifyTryAgain")}
             </button>
           </p>
         </div>
@@ -130,7 +129,7 @@ export function SignInForm({
       <div className="card-brutal">
         <div className="text-center mb-8">
           <h1 className="text-3xl mb-4 text-white uppercase tracking-wide" style={{ fontFamily: "var(--font-jost), 'Jost', sans-serif", fontWeight: 600 }}>AI SENTINEL</h1>
-          <p className="text-muted-foreground text-sm">Cross-border AI Governance</p>
+          <p className="text-muted-foreground text-sm">{t("tagline")}</p>
         </div>
 
         {/* Sent here because a session ended or was never started. Plain, and
@@ -196,7 +195,7 @@ export function SignInForm({
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@company.com"
+                  placeholder={t("emailInputPlaceholder")}
                   className="input-brutal"
                   required
                   autoFocus={!isDev}
@@ -262,7 +261,7 @@ export function SignInForm({
             on self-host the local form above is a fully working provider. */}
         {!hasEmail && !hasGoogle && !isDev && providers !== null && (
           <div className="p-4 bg-destructive/10 border border-destructive text-sm text-foreground">
-            No sign-in providers configured. Please contact the administrator.
+            {t("noProviders")}
           </div>
         )}
 

@@ -1488,7 +1488,13 @@
     "errorBody": "Something went wrong during sign-in. The link may have expired or already been used.",
     "errorTryAgain": "Try Again",
     "crossSigningIn": "Signing you in...",
-    "crossFailed": "Authentication failed. Redirecting to sign-in..."
+    "crossFailed": "Authentication failed. Redirecting to sign-in...",
+    "tagline": "Cross-border AI Governance",
+    "sendFailed": "Failed to send magic link. Please try again.",
+    "unexpectedError": "An unexpected error occurred.",
+    "sentBody": "We've sent a magic link to <email>{address}</email>. Click the link in the email to sign in.",
+    "noProviders": "No sign-in providers configured. Please contact the administrator.",
+    "emailInputPlaceholder": "you@company.com"
   },
   "ai": {
     "panel": {

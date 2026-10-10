@@ -94,7 +94,8 @@ describe("what the public copy says about the hosted pilot", () => {
     expect(landingEn["cta.text"]).toMatch(/free, capped pilot/);
     expect(landingEn["cta.text"]).toMatch(/run your own instance/);
     expect(landingEs["cta.text"]).toMatch(/piloto gratuito y con límites/);
-    expect(landingEs["cta.text"]).toMatch(/ejecuta tu propia instancia/);
+    expect(landingEs["cta.text"]).toMatch(/usa tu propia instancia/);
+    expect(landingEs["cta.text"]).not.toMatch(/ejecut/);
   });
 
   it("the docs and lock strings tie the price to the kit, in both languages", () => {

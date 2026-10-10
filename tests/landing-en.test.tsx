@@ -80,8 +80,12 @@ describe("English landing page", () => {
     expect((authEs as Record<string, string>)["emailPlaceholder"]).toBe("tu@empresa.com");
   });
 
-  it("keeps the hero title, in sentence case", () => {
-    expect(EN["hero.title.prefix"] + EN["hero.title.accent"] + EN["hero.title.suffix"]).toBe("Future-proof AI governance.");
+  it("names the audience in the badge and the program in the hero title, in sentence case", () => {
+    expect(EN["hero.title.prefix"] + EN["hero.title.accent"] + EN["hero.title.suffix"]).toBe("Your entry point to an AI governance program.");
+    expect(EN["hero.title.accent"]).toBe("AI governance program");
+    expect(EN["hero.badge"]).toBe("For law firms, privacy consultants and in-house teams");
+    // "firms" alone is ambiguous: the audience is law firms and privacy consultants.
+    for (const [k, v] of shown) expect(v.replace(/law firms?|Law-Firm-in-a-Box/gi, ""), k).not.toMatch(/\bfirms?\b/i);
     for (const k of ["hero.badge", "hero.cta", "header.cta", "cta.button"]) {
       const words = EN[k].split(" ").slice(1);
       for (const w of words) expect(w, k).not.toMatch(/^[A-Z][a-z]/);

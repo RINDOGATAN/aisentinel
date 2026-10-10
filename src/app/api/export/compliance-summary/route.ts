@@ -8,11 +8,14 @@ import prisma from "@/lib/prisma";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { ComplianceSummaryReport, type ComplianceSummaryData, type ComplianceRequirementExport } from "@/server/services/export/compliance-summary";
 import { fmtDate } from "@/server/services/export/pdf-styles";
+import { exportLocale } from "@/server/services/export/pdf-labels";
+import { frameworkName, requirementCode, requirementTitle } from "@/config/framework-display";
 
 export async function GET(request: NextRequest) {
   const organizationId = request.nextUrl.searchParams.get("organizationId");
   const aiSystemId = request.nextUrl.searchParams.get("aiSystemId");
   const frameworkId = request.nextUrl.searchParams.get("frameworkId");
+  const locale = exportLocale(request.nextUrl.searchParams.get("locale"), request.headers.get("cookie"));
 
   if (!organizationId) {
     return Response.json({ error: "organizationId is required" }, { status: 400 });
@@ -86,16 +89,16 @@ export async function GET(request: NextRequest) {
   const reqs: ComplianceRequirementExport[] = requirements.map((req) => {
     const mapping = req.mappings[0];
     return {
-      code: req.code,
-      title: req.title,
+      code: requirementCode(framework.code, req.code, locale),
+      title: requirementTitle(framework.code, req.code, req.title, locale),
       status: mapping?.status ?? "NOT_ASSESSED",
       evidenceCount: mapping?.evidenceItems?.length ?? 0,
       notes: mapping?.notes ?? null,
       children: req.children.map((child) => {
         const childMapping = child.mappings[0];
         return {
-          code: child.code,
-          title: child.title,
+          code: requirementCode(framework.code, child.code, locale),
+          title: requirementTitle(framework.code, child.code, child.title, locale),
           status: childMapping?.status ?? "NOT_ASSESSED",
           evidenceCount: childMapping?.evidenceItems?.length ?? 0,
           notes: childMapping?.notes ?? null,
@@ -107,7 +110,7 @@ export async function GET(request: NextRequest) {
   const reportData: ComplianceSummaryData = {
     orgName: membership.organization.name,
     aiSystemName: aiSystem.name,
-    frameworkName: framework.name,
+    frameworkName: locale === "es" ? frameworkName(framework.code, framework.name, "es") : framework.name,
     frameworkCode: framework.code,
     requirements: reqs,
   };
@@ -126,10 +129,10 @@ export async function GET(request: NextRequest) {
   });
 
   const buffer = await renderToBuffer(
-    ComplianceSummaryReport({ data: reportData })
+    ComplianceSummaryReport({ data: reportData, locale })
   );
 
-  const filename = `Compliance-${framework.code}-${aiSystem.name.replace(/[^a-zA-Z0-9]/g, "-")}-${dateStr}.pdf`;
+  const filename = `${locale === "es" ? "Cumplimiento" : "Compliance"}-${framework.code}-${aiSystem.name.replace(/[^a-zA-Z0-9]/g, "-")}-${dateStr}.pdf`;
 
   return new Response(new Uint8Array(buffer), {
     headers: {

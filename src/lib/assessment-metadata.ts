@@ -17,6 +17,8 @@
  * keep rendering exactly as they did. Pure.
  */
 
+import { citationLabel } from "@/config/framework-display";
+
 export interface QuestionCitation {
   framework: string;
   code: string;
@@ -143,7 +145,10 @@ export function assessmentCoverage(
   };
 }
 
-/** A framework code as it should read in a citation, e.g. "EU GDPR Art. 22". */
-export function citationText(citation: QuestionCitation): string {
-  return `${citation.framework.replace(/_/g, " ")} ${citation.code}`;
+/**
+ * A framework code as it should read in a citation, e.g. "EU GDPR Art. 22";
+ * in Spanish "RGPD art. 22" (src/config/framework-display.ts).
+ */
+export function citationText(citation: QuestionCitation, locale: string = "en"): string {
+  return citationLabel(citation.framework, citation.code, locale);
 }

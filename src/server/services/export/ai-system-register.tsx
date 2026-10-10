@@ -8,6 +8,7 @@ import {
   StatCard, AccentSectionHeader, RiskBadge, StatusBadge,
   s, fmtDate,
 } from "./pdf-styles";
+import { pdfLabels, riskLabel, roleLabel, statusLabel, techniqueLabel, type PdfLocale } from "./pdf-labels";
 import { DraftGapsPage, type DraftNote } from "./draft-gaps-page";
 
 export interface AISystemExportData {
@@ -37,13 +38,17 @@ export function AISystemRegisterReport({
   systems,
   orgName,
   draftNote,
+  locale = "en",
 }: {
   systems: AISystemExportData[];
   orgName: string;
   /** In the program pack, a draft opens on a page naming its gaps. */
   draftNote?: DraftNote | null;
+  locale?: PdfLocale;
 }) {
   const date = fmtDate(new Date());
+  const l = pdfLabels(locale);
+  const r = l.register;
 
   const byStatus: Record<string, number> = {};
   const byRisk: Record<string, number> = {};
@@ -57,43 +62,46 @@ export function AISystemRegisterReport({
   const highRisk = (byRisk["HIGH"] || 0) + (byRisk["UNACCEPTABLE"] || 0);
 
   return (
-    <Document>
+    <Document language={locale}>
       {draftNote && <DraftGapsPage note={draftNote} />}
       <CoverPage
         orgName={orgName}
-        title="AI System Register"
-        subtitle="Complete inventory of AI systems under governance"
+        title={r.title}
+        subtitle={r.subtitle}
         date={date}
+        locale={locale}
       />
 
-      <ContentPage title="AI System Register" orgName={orgName} date={date}>
-        <Text style={s.sectionTitle}>Executive Summary</Text>
+      <ContentPage title={r.title} orgName={orgName} date={date} locale={locale}>
+        <Text style={s.sectionTitle}>{l.executiveSummary}</Text>
         <View style={s.statsGrid}>
-          <StatCard value={systems.length} label="Total Systems" />
-          <StatCard value={deployed} label="Deployed" />
-          <StatCard value={highRisk} label="High / Unacceptable Risk" />
-          <StatCard value={byStatus["DRAFT"] || 0} label="Draft" />
+          <StatCard value={systems.length} label={r.totalSystems} />
+          <StatCard value={deployed} label={r.deployed} />
+          <StatCard value={highRisk} label={r.highOrUnacceptable} />
+          <StatCard value={byStatus["DRAFT"] || 0} label={r.draft} />
         </View>
 
-        <Text style={s.sectionTitle}>System Overview</Text>
+        <Text style={s.sectionTitle}>{r.systemOverview}</Text>
         <DataTable
-          headers={["System Name", "Status", "Risk Level", "Technique", "Role", "Models"]}
+          locale={locale}
+          headers={[r.systemName, l.status, l.riskLevel, r.technique, r.role, r.models]}
           colWidths={[3, 1.2, 1.2, 1.5, 1, 0.8]}
           rows={systems.map((sys) => [
             sys.name,
-            sys.status.replace(/_/g, " "),
-            sys.riskLevel || "—",
-            sys.technique.replace(/_/g, " "),
-            sys.role,
+            statusLabel(sys.status, locale),
+            sys.riskLevel ? riskLabel(sys.riskLevel, locale) : "—",
+            techniqueLabel(sys.technique, locale),
+            roleLabel(sys.role, locale),
             sys.modelCount,
           ])}
         />
       </ContentPage>
 
-      <ContentPage title="AI System Register" orgName={orgName} date={date}>
-        <Text style={s.sectionTitle}>Risk Distribution</Text>
+      <ContentPage title={r.title} orgName={orgName} date={date} locale={locale}>
+        <Text style={s.sectionTitle}>{l.riskDistribution}</Text>
         <DataTable
-          headers={["Risk Level", "Count", "Percentage"]}
+          locale={locale}
+          headers={[l.riskLevel, l.count, l.percentage]}
           colWidths={[2, 1, 1]}
           rows={Object.entries(byRisk)
             .sort(([a], [b]) => {
@@ -101,18 +109,19 @@ export function AISystemRegisterReport({
               return order.indexOf(a) - order.indexOf(b);
             })
             .map(([level, count]) => [
-              level,
+              riskLabel(level, locale),
               count,
               `${Math.round((count / systems.length) * 100)}%`,
             ])}
         />
 
-        <Text style={s.sectionTitle}>Status Distribution</Text>
+        <Text style={s.sectionTitle}>{l.statusDistribution}</Text>
         <DataTable
-          headers={["Status", "Count", "Percentage"]}
+          locale={locale}
+          headers={[l.status, l.count, l.percentage]}
           colWidths={[2, 1, 1]}
           rows={Object.entries(byStatus).map(([status, count]) => [
-            status.replace(/_/g, " "),
+            statusLabel(status, locale),
             count,
             `${Math.round((count / systems.length) * 100)}%`,
           ])}
@@ -120,39 +129,39 @@ export function AISystemRegisterReport({
       </ContentPage>
 
       {systems.map((sys) => (
-        <ContentPage key={sys.id} title="AI System Register" orgName={orgName} date={date}>
+        <ContentPage key={sys.id} title={r.title} orgName={orgName} date={date} locale={locale}>
           <AccentSectionHeader title={sys.name} description={sys.purpose || undefined} />
           <View style={s.row}>
-            <StatusBadge status={sys.status} />
+            <StatusBadge status={sys.status} locale={locale} />
             <Text style={{ marginHorizontal: 6 }}> </Text>
-            <RiskBadge level={sys.riskLevel} />
+            <RiskBadge level={sys.riskLevel} locale={locale} />
           </View>
           <MetadataBlock
             items={[
-              { label: "Technique", value: sys.technique.replace(/_/g, " ") },
-              { label: "Role", value: sys.role },
-              { label: "Business Owner", value: sys.businessOwner },
-              { label: "Technical Owner", value: sys.technicalOwner },
-              { label: "Vendor", value: sys.vendorName },
-              { label: "Deployment Date", value: fmtDate(sys.deploymentDate) !== "—" ? fmtDate(sys.deploymentDate) : null },
-              { label: "Retirement Date", value: fmtDate(sys.retirementDate) !== "—" ? fmtDate(sys.retirementDate) : null },
-              { label: "Processes Personal Data", value: sys.processesPersonalData ? "Yes" : "No" },
-              { label: "Models", value: String(sys.modelCount) },
-              { label: "Data Sources", value: String(sys.dataSourceCount) },
-              { label: "Assessments", value: String(sys.assessmentCount) },
-              { label: "Incidents", value: String(sys.incidentCount) },
-              { label: "Compliance Mappings", value: String(sys.complianceMappingCount) },
+              { label: r.technique, value: techniqueLabel(sys.technique, locale) },
+              { label: r.role, value: roleLabel(sys.role, locale) },
+              { label: r.businessOwner, value: sys.businessOwner },
+              { label: r.technicalOwner, value: sys.technicalOwner },
+              { label: r.vendor, value: sys.vendorName },
+              { label: r.deploymentDate, value: fmtDate(sys.deploymentDate) !== "—" ? fmtDate(sys.deploymentDate) : null },
+              { label: r.retirementDate, value: fmtDate(sys.retirementDate) !== "—" ? fmtDate(sys.retirementDate) : null },
+              { label: r.processesPersonalData, value: sys.processesPersonalData ? l.yes : l.no },
+              { label: r.models, value: String(sys.modelCount) },
+              { label: r.dataSources, value: String(sys.dataSourceCount) },
+              { label: r.assessments, value: String(sys.assessmentCount) },
+              { label: r.incidents, value: String(sys.incidentCount) },
+              { label: r.complianceMappings, value: String(sys.complianceMappingCount) },
             ]}
           />
           {sys.description && (
             <View>
-              <Text style={s.sectionSubtitle}>Description</Text>
+              <Text style={s.sectionSubtitle}>{r.description}</Text>
               <Text style={s.paragraph}>{sys.description}</Text>
             </View>
           )}
           {sys.rationale && (
             <View>
-              <Text style={s.sectionSubtitle}>Risk Classification Rationale</Text>
+              <Text style={s.sectionSubtitle}>{r.rationale}</Text>
               <Text style={s.paragraph}>{sys.rationale}</Text>
             </View>
           )}

@@ -222,7 +222,7 @@ const friaV2: V2Template = {
           allowNote: true,
           text: L(
             "Which EU AI Act Annex III high-risk area(s) does the system fall under?",
-            "¿En qué ámbito(s) de alto riesgo del anexo III del Reglamento de IA de la UE se enmarca el sistema?",
+            "¿En qué ámbito o ámbitos de alto riesgo del anexo III del Reglamento de IA de la UE se enmarca el sistema?",
           ),
           options: ANNEX_III,
           help: H(

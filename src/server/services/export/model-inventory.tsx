@@ -8,6 +8,7 @@ import {
   StatCard, AccentSectionHeader, RiskBadge,
   s, fmtDate,
 } from "./pdf-styles";
+import { pdfLabels, riskLabel, statusLabel, type PdfLocale } from "./pdf-labels";
 
 export interface ModelExportData {
   id: string;
@@ -25,20 +26,24 @@ export interface ModelExportData {
 export function ModelInventoryReport({
   models,
   orgName,
+  locale = "en",
 }: {
   models: ModelExportData[];
   orgName: string;
+  locale?: PdfLocale;
 }) {
   const date = fmtDate(new Date());
+  const l = pdfLabels(locale);
+  const inv = l.inventory;
 
   const byProvider: Record<string, number> = {};
   const byType: Record<string, number> = {};
   const byRisk: Record<string, number> = {};
 
   for (const m of models) {
-    const provider = m.provider || "Unknown";
+    const provider = m.provider || inv.unknown;
     byProvider[provider] = (byProvider[provider] || 0) + 1;
-    const modelType = m.modelType || "Unspecified";
+    const modelType = m.modelType || inv.unspecified;
     byType[modelType] = (byType[modelType] || 0) + 1;
     const risk = m.riskLevel || "UNCLASSIFIED";
     byRisk[risk] = (byRisk[risk] || 0) + 1;
@@ -48,26 +53,28 @@ export function ModelInventoryReport({
   const uniqueSystems = new Set(models.map((m) => m.aiSystemName)).size;
 
   return (
-    <Document>
+    <Document language={locale}>
       <CoverPage
         orgName={orgName}
-        title="AI Model Inventory"
-        subtitle="Complete catalogue of AI models across all systems"
+        title={inv.title}
+        subtitle={inv.subtitle}
         date={date}
+        locale={locale}
       />
 
-      <ContentPage title="AI Model Inventory" orgName={orgName} date={date}>
-        <Text style={s.sectionTitle}>Executive Summary</Text>
+      <ContentPage title={inv.title} orgName={orgName} date={date} locale={locale}>
+        <Text style={s.sectionTitle}>{l.executiveSummary}</Text>
         <View style={s.statsGrid}>
-          <StatCard value={models.length} label="Total Models" />
-          <StatCard value={uniqueProviders} label="Providers" />
-          <StatCard value={uniqueSystems} label="AI Systems" />
-          <StatCard value={byRisk["HIGH"] || 0} label="High Risk" />
+          <StatCard value={models.length} label={inv.totalModels} />
+          <StatCard value={uniqueProviders} label={l.providers} />
+          <StatCard value={uniqueSystems} label={l.aiSystems} />
+          <StatCard value={byRisk["HIGH"] || 0} label={inv.highRisk} />
         </View>
 
-        <Text style={s.sectionTitle}>Model Register</Text>
+        <Text style={s.sectionTitle}>{inv.modelRegister}</Text>
         <DataTable
-          headers={["Model Name", "Provider", "Type", "Version", "AI System", "Risk"]}
+          locale={locale}
+          headers={[inv.modelName, l.provider, l.type, l.version, l.aiSystem, inv.risk]}
           colWidths={[2.5, 1.5, 1.2, 0.8, 2, 1]}
           rows={models.map((m) => [
             m.name,
@@ -75,15 +82,16 @@ export function ModelInventoryReport({
             m.modelType || "—",
             m.version || "—",
             m.aiSystemName,
-            m.riskLevel || "—",
+            m.riskLevel ? riskLabel(m.riskLevel, locale) : "—",
           ])}
         />
       </ContentPage>
 
-      <ContentPage title="AI Model Inventory" orgName={orgName} date={date}>
-        <Text style={s.sectionTitle}>By Provider</Text>
+      <ContentPage title={inv.title} orgName={orgName} date={date} locale={locale}>
+        <Text style={s.sectionTitle}>{inv.byProvider}</Text>
         <DataTable
-          headers={["Provider", "Count", "Percentage"]}
+          locale={locale}
+          headers={[l.provider, l.count, l.percentage]}
           colWidths={[2, 1, 1]}
           rows={Object.entries(byProvider)
             .sort(([, a], [, b]) => b - a)
@@ -94,9 +102,10 @@ export function ModelInventoryReport({
             ])}
         />
 
-        <Text style={s.sectionTitle}>By Model Type</Text>
+        <Text style={s.sectionTitle}>{inv.byModelType}</Text>
         <DataTable
-          headers={["Type", "Count", "Percentage"]}
+          locale={locale}
+          headers={[l.type, l.count, l.percentage]}
           colWidths={[2, 1, 1]}
           rows={Object.entries(byType)
             .sort(([, a], [, b]) => b - a)
@@ -107,9 +116,10 @@ export function ModelInventoryReport({
             ])}
         />
 
-        <Text style={s.sectionTitle}>Risk Distribution</Text>
+        <Text style={s.sectionTitle}>{l.riskDistribution}</Text>
         <DataTable
-          headers={["Risk Level", "Count", "Percentage"]}
+          locale={locale}
+          headers={[l.riskLevel, l.count, l.percentage]}
           colWidths={[2, 1, 1]}
           rows={Object.entries(byRisk)
             .sort(([a], [b]) => {
@@ -117,7 +127,7 @@ export function ModelInventoryReport({
               return order.indexOf(a) - order.indexOf(b);
             })
             .map(([level, count]) => [
-              level,
+              riskLabel(level, locale),
               count,
               `${Math.round((count / models.length) * 100)}%`,
             ])}
@@ -125,27 +135,34 @@ export function ModelInventoryReport({
       </ContentPage>
 
       {models.filter((m) => m.trainingDataSummary || m.knownLimitations).map((m) => (
-        <ContentPage key={m.id} title="AI Model Inventory" orgName={orgName} date={date}>
-          <AccentSectionHeader title={m.name} description={`${m.aiSystemName} — ${m.provider || "Unknown provider"}`} />
-          <RiskBadge level={m.riskLevel} />
+        <ContentPage key={m.id} title={inv.title} orgName={orgName} date={date} locale={locale}>
+          <AccentSectionHeader
+            title={m.name}
+            description={
+              locale === "es"
+                ? `${m.aiSystemName} (${m.provider || inv.unknownProvider})`
+                : `${m.aiSystemName} — ${m.provider || inv.unknownProvider}`
+            }
+          />
+          <RiskBadge level={m.riskLevel} locale={locale} />
           <MetadataBlock
             items={[
-              { label: "Provider", value: m.provider },
-              { label: "Type", value: m.modelType },
-              { label: "Version", value: m.version },
-              { label: "AI System", value: m.aiSystemName },
-              { label: "System Status", value: m.aiSystemStatus.replace(/_/g, " ") },
+              { label: l.provider, value: m.provider },
+              { label: l.type, value: m.modelType },
+              { label: l.version, value: m.version },
+              { label: l.aiSystem, value: m.aiSystemName },
+              { label: inv.systemStatus, value: statusLabel(m.aiSystemStatus, locale) },
             ]}
           />
           {m.trainingDataSummary && (
             <View>
-              <Text style={s.sectionSubtitle}>Training Data Summary</Text>
+              <Text style={s.sectionSubtitle}>{inv.trainingData}</Text>
               <Text style={s.paragraph}>{m.trainingDataSummary}</Text>
             </View>
           )}
           {m.knownLimitations && (
             <View>
-              <Text style={s.sectionSubtitle}>Known Limitations</Text>
+              <Text style={s.sectionSubtitle}>{inv.limitations}</Text>
               <Text style={s.paragraph}>{m.knownLimitations}</Text>
             </View>
           )}

@@ -18,6 +18,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
+import { citationLabel } from "@/config/framework-display";
 import { toast } from "sonner";
 import { Check, Loader2, Plus, ShieldCheck, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -326,7 +327,10 @@ export default function ThreatModelDetailPage() {
                   {[
                     ...new Set(
                       registerLink.data.plan.evidence.map(
-                        (e) => `${e.frameworkCode} ${e.requirementCode}`,
+                        (e) =>
+                          lang === "es"
+                            ? citationLabel(e.frameworkCode, e.requirementCode, "es")
+                            : `${e.frameworkCode} ${e.requirementCode}`,
                       ),
                     ),
                   ].map((label) => (

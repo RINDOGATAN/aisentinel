@@ -46,7 +46,7 @@ import { useExportDownload } from "@/components/governance/use-export-download";
 import { ReadinessBadge, StateBadge, TallyLine } from "@/components/governance/aiuc1-readiness";
 import { ProgressBar } from "@/components/guided/progress-ring";
 import { AIUC1_FRAMEWORK } from "@/config/aiuc1-requirements";
-import { aiuc1Capabilities, aiuc1Title } from "@/config/aiuc1-requirements-es";
+import { aiuc1Capabilities, aiuc1Paraphrase, aiuc1Title } from "@/config/aiuc1-requirements-es";
 import { AIUC1_TEST_RESULTS, retestDue, type Aiuc1TestResult } from "@/config/aiuc1-evidence";
 
 const DECISION_ROLES = ["OWNER", "ADMIN", "AI_OFFICER"];
@@ -288,7 +288,7 @@ export default function AgentTestingDetailPage({ params }: { params: Promise<{ i
                         </a>
                       </div>
 
-                      {lang === "en" && <p className="text-xs text-muted-foreground">{r.paraphrase}</p>}
+                      <p className="text-xs text-muted-foreground">{aiuc1Paraphrase(r, lang)}</p>
 
                       {r.reasonMissing && <p className="text-xs">{t("reasonMissing")}</p>}
                       {r.notApplicableReason && (

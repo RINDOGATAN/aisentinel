@@ -1238,7 +1238,7 @@ export function buildAgenticAddendumArtifact(input: ArtifactInput): Artifact {
       blocks: [
         paragraph(
           locale === "es"
-            ? `La prueba de esfuerzo identifica ${result.applicable.length} punto(s) en los que la delegación en un agente autónomo afecta a los tres documentos: ${result.counts.breaks} que los rompen, ${result.counts.weakens} que los debilitan y ${result.counts.watch} a vigilar.`
+            ? `La prueba de esfuerzo identifica ${result.applicable.length === 1 ? "1 punto en el que" : `${result.applicable.length} puntos en los que`} la delegación en un agente autónomo afecta a los tres documentos: ${result.counts.breaks} que los rompen, ${result.counts.weakens} que los debilitan y ${result.counts.watch} a vigilar.`
             : `The stress test identifies ${result.applicable.length} point(s) at which the handoff to an autonomous agent affects the three documents: ${result.counts.breaks} that break them, ${result.counts.weakens} that weaken them and ${result.counts.watch} to watch.`,
         ),
         table(

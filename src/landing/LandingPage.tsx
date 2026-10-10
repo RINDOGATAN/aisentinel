@@ -7,7 +7,7 @@ import { ClipboardList, ShieldAlert, Eye, AlertOctagon } from "lucide-react";
 import StartupProductPage from "./components/StartupProductPage";
 import StartupsHeader from "./components/StartupsHeader";
 import StartupsFooter from "./components/StartupsFooter";
-import SpanishSections from "./components/SpanishSections";
+import LandingSections from "./components/LandingSections";
 import en from "./i18n/en/ai-sentinel-startups.json";
 import es from "./i18n/es/ai-sentinel-startups.json";
 import authEn from "./i18n/en/startups-auth.json";
@@ -121,7 +121,7 @@ export default function LandingPage({ hostedPilot = false }: { hostedPilot?: boo
         pilotNotice={
           hostedPilot ? { sentence: PILOT_SENTENCE[locale], terms: PILOT_TERMS[locale] } : null
         }
-        middle={locale === "es" ? <SpanishSections t={t} /> : undefined}
+        middle={<LandingSections t={t} locale={locale} />}
       />
       <StartupsFooter t={t} />
     </>

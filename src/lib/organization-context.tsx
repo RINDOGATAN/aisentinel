@@ -27,6 +27,21 @@ interface OrganizationContextType {
   refetchOrganizations: () => void;
 }
 
+/**
+ * The signed-in user's role in the selected organisation. The selected object
+ * may come from a create call or a client switch, which carry no role; the
+ * organisation list does, so it fills the gap. Without this a brand-new
+ * organisation read as no role (so read-only, and the quick start hid its
+ * first choice) until the page was reloaded.
+ */
+export function resolveRole(
+  selected: Pick<Organization, "id" | "role"> | null,
+  list: readonly Pick<Organization, "id" | "role">[],
+): OrganizationRole | null {
+  if (!selected) return null;
+  return selected.role ?? list.find((o) => o.id === selected.id)?.role ?? null;
+}
+
 const OrganizationContext = createContext<OrganizationContextType | undefined>(undefined);
 
 export function OrganizationProvider({ children }: { children: ReactNode }) {
@@ -59,7 +74,7 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("currentOrganizationId", org.id);
   };
 
-  const userRole = organization?.role ?? null;
+  const userRole = resolveRole(organization, organizations);
   const canWrite = userRole !== null && userRole !== "VIEWER";
 
   return (

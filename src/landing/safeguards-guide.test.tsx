@@ -171,8 +171,10 @@ describe("safeguards guide, English only", () => {
     }
   });
 
-  it("says the cloud pilot is served from the United States", () => {
+  it("says the cloud pilot is hosted in the EU and the AI provider may be outside it", () => {
     const g = text(guideOf(render("en", { open: true, answers: { loc: "any" } })));
-    expect(g).toContain("served from the United States");
+    expect(g).toContain("Hosted by us in the EU");
+    expect(g).toContain("external AI provider set up on the service, which may be outside the EU");
+    expect(g).not.toContain("United States");
   });
 });

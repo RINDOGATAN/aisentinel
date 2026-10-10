@@ -150,12 +150,14 @@ describe("Spanish sections", () => {
     }
   });
 
-  it("claim no hosting location (the production database is not in the EU yet)", () => {
-    for (const [k, v] of [...Object.entries(ES), ...Object.entries(EN)]) {
+  it("claim the EU location only for the cloud box (database in Frankfurt, functions in fra1), nowhere else", () => {
+    for (const [k, v] of [...Object.entries(ES), ...Object.entries(EN)].filter(([k]) => !/^es\.ways\.w1\./.test(k))) {
       expect(v, k).not.toMatch(
         /(alojad[oa]s?|datos|nube|servidor(es)?|aloja(mos)?) (en|de) (la )?(UE|Unión Europea|Europa)|in the EU|EU[- ]hosted|hosted in (the )?(EU|Europe)/i
       );
     }
+    expect(ES["es.ways.w1.title"]).toBe("En la nube de la UE");
+    expect(ES["es.ways.w1.desc"]).toMatch(/alojado en la UE/);
   });
 
   it("show no videos section while the list is empty, and the list's files all exist", () => {

@@ -238,7 +238,7 @@ export const COPY: Record<Locale, SafeguardsCopy> = {
     seeResult: "See the result",
     whyH: "Why this matters",
     whyP:
-      "Many tools with built-in AI send your text to an external AI provider. Here you choose. AI features are off until an administrator turns them on, and while they are off the product makes no AI calls at all. On your own servers or on the Box, AI features can use open-weight models hosted there, so the text does not leave that system.",
+      "Many tools with built-in AI send your text to an external AI provider. Here you choose. AI features are off until an administrator turns them on, and while they are off the product makes no AI calls at all. On your own servers or on TODO.LAW hardware, AI features can use open-weight models hosted there, so the text does not leave that system.",
     questions: {
       loc: {
         label: "Where must your data stay?",

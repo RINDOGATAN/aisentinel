@@ -175,7 +175,9 @@ describe("copy rules", () => {
 
   it("leaves the classifier sentence out of the panel", () => {
     for (const l of LOCALES) expect(COPY[l].whyP).not.toMatch(/classifier|clasificador/i);
-    expect(COPY.en.whyP).toMatch(/on the Box/);
+    // The panel names the box as this landing does (its title is "TODO.LAW hardware").
+    expect(COPY.en.whyP).toMatch(/On your own servers or on TODO\.LAW hardware, AI features/);
+    expect(COPY.en.whyP).not.toMatch(/the Box/);
     expect(COPY.es.whyP).not.toMatch(/Box/);
   });
 

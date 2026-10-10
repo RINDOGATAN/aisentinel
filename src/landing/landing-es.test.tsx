@@ -134,6 +134,9 @@ describe("Spanish sections", () => {
 
   it("offer exactly the three ways sold in Spain: cloud pilot, managed instance, own servers with training", () => {
     expect(asShipped.match(/<article class="paper-card/g)).toHaveLength(3);
+    // The owner's heading for the section, as the eyebrow (English: "Guarantees and hosting").
+    expect(ES["es.ways.label"]).toBe("Garantías y alojamiento");
+    expect(EN["en.ways.label"]).toBe("Guarantees and hosting");
     expect(ES["es.ways.w1.desc"]).toMatch(/piloto gratuito y con límites/);
     expect(ES["es.ways.w2.desc"]).toMatch(/instancia aislada/);
     expect(ES["es.ways.w3.desc"]).toMatch(/servidores de tu organización/);

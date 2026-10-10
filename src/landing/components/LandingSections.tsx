@@ -8,7 +8,9 @@
  * program as the Guided path implements them with the 30/60/90-day plan
  * beneath, and the ways to host it. The Spanish page then shows the customer
  * logos (only while the configured list is not empty); the English page
- * shows none. No prices and no hosting location.
+ * shows none. No prices. No hosting location in the sections; the safeguards
+ * guide after the ways (SafeguardsGuide) says, as the storefront does, that
+ * the cloud pilot is served from the United States.
  *
  * Each language has its own copy under `<locale>.*` in the landing
  * dictionary, and its own list of ways: three in Spanish (as the storefront
@@ -42,9 +44,12 @@ import {
   Bot,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { useState } from "react";
 import { brand } from "@/config/brand";
 import { LANDING_VIDEOS, type LandingLocale, type LandingVideo } from "../config/landing-videos";
 import CustomerLogos from "./CustomerLogos";
+import SafeguardsGuide, { wayBoxId } from "./SafeguardsGuide";
+import { WAY_CARD, recommend, type Answers, type QuestionId } from "../config/safeguards";
 
 type T = (key: string) => string;
 
@@ -344,12 +349,37 @@ const LETTERS = "abcdefghij";
 const linkClass =
   "mt-auto inline-flex items-center gap-2 self-start text-sm font-medium text-accent hover:text-foreground transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 focus-visible:ring-offset-2 focus-visible:ring-offset-card";
 
-function Ways({ t, p, setup }: { t: T; p: LandingLocale; setup: LocaleSetup }) {
+/** A box the safeguards guide recommends: the accent border and glow of the hub panel, nothing added inside. */
+const WAY_ON =
+  " !border-accent shadow-[0_0_0_1px_rgba(245,166,35,0.25),0_20px_60px_-20px_rgba(245,166,35,0.45)]";
+
+/** The guide's state, for tests that render a given moment (the page starts closed and empty). */
+export interface GuideState {
+  open: boolean;
+  answers: Answers;
+}
+
+function Ways({
+  t,
+  p,
+  setup,
+  initialGuide = { open: false, answers: {} },
+}: {
+  t: T;
+  p: LandingLocale;
+  setup: LocaleSetup;
+  initialGuide?: GuideState;
+}) {
   const k = `${p}.ways`;
   // Three ways sit in a plain three-column grid; any other count wraps,
   // centred, three to a line on wide screens.
   const grid = setup.ways.length === 3;
   const width = grid ? "" : `${cardWidth(setup.ways.length)} `;
+  const [open, setOpen] = useState(initialGuide.open);
+  const [answers, setAnswers] = useState<Answers>(initialGuide.answers);
+  // The box the guide recommends, by its number on this page (1-based), while the guide is open.
+  const rec = open ? recommend(answers, p) : null;
+  const marked = rec ? WAY_CARD[p][rec.way] : null;
   return (
     <section className="py-20 md:py-28" aria-labelledby={`${k}-heading`}>
       <div className="container px-6">
@@ -366,7 +396,11 @@ function Ways({ t, p, setup }: { t: T; p: LandingLocale; setup: LocaleSetup }) {
             const letter = LETTERS[i];
             const title = t(`${k}.w${n}.title`);
             return (
-              <article key={letter} className={`${width}paper-card flex flex-col`}>
+              <article
+                key={letter}
+                className={`${width}paper-card flex flex-col scroll-mt-24${marked === n ? WAY_ON : ""}`}
+                id={wayBoxId(p, n)}
+              >
                 <div className="flex items-center justify-between mb-5">
                   <div className="w-12 h-12 rounded-2xl bg-accent/10 text-accent flex items-center justify-center">
                     <Icon className="w-6 h-6" aria-hidden="true" />
@@ -396,6 +430,15 @@ function Ways({ t, p, setup }: { t: T; p: LandingLocale; setup: LocaleSetup }) {
             );
           })}
         </div>
+        <SafeguardsGuide
+          t={t}
+          p={p}
+          open={open}
+          answers={answers}
+          onToggle={() => setOpen((o) => !o)}
+          onAnswer={(q: QuestionId, v: string) => setAnswers((a) => ({ ...a, [q]: v }))}
+          onReset={() => setAnswers({})}
+        />
       </div>
     </section>
   );
@@ -406,16 +449,19 @@ interface LandingSectionsProps {
   locale: LandingLocale;
   /** For tests; the page uses the configured list. */
   videos?: readonly LandingVideo[];
+  /** For tests; the page starts with the guide closed and nothing answered. */
+  initialGuide?: GuideState;
 }
 
-export default function LandingSections({ t, locale, videos = LANDING_VIDEOS[locale] }: LandingSectionsProps) {
+export default function LandingSections({ t, locale, videos = LANDING_VIDEOS[locale], initialGuide }: LandingSectionsProps) {
   const setup = SETUP[locale];
   return (
     <>
       <Suite t={t} p={locale} setup={setup} />
       <Videos t={t} locale={locale} videos={videos} />
       <Stages t={t} p={locale} />
-      <Ways t={t} p={locale} setup={setup} />
+      {/* Keyed by language: the toggle starts the guide afresh, as the ways change. */}
+      <Ways key={locale} t={t} p={locale} setup={setup} initialGuide={initialGuide} />
       {setup.logos && <CustomerLogos t={t} />}
     </>
   );

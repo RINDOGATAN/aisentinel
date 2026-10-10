@@ -3,26 +3,36 @@
 
 import { brand } from "@/config/brand";
 
+import { storefrontLogoLabel, storefrontUrl, type LandingLocale } from "../config/storefront";
+
 interface StartupsFooterProps {
   t: (key: string) => string;
+  locale: LandingLocale;
 }
 
-const StartupsFooter = ({ t }: StartupsFooterProps) => {
+const StartupsFooter = ({ t, locale }: StartupsFooterProps) => {
   return (
     <footer className="py-12 border-t border-border">
       <div className="container px-6">
         <div className="flex flex-col items-center gap-6">
           <div className="flex flex-col items-center gap-2">
-            <a href="https://todo.law" className="flex items-center gap-2">
-              <img src="/logo-negative.svg" alt="TODO.LAW" style={{ height: "30px", width: "auto" }} />
+            <div className="flex items-center gap-2">
+              <a
+                href={storefrontUrl(locale)}
+                aria-label={storefrontLogoLabel(locale)}
+                data-testid="footer-logo-link"
+                className="flex items-center"
+              >
+                <img src="/logo-negative.svg" alt="TODO.LAW" style={{ height: "30px", width: "auto" }} />
+              </a>
               <span className="text-xs text-muted-foreground font-body">
                 {t("footer.tagline")}
               </span>
-            </a>
+            </div>
             {/* The product's line under the house logo, as in the approved
                 mock-up: "AI SENTINEL · a TODO.LAW product". */}
             <a
-              href="https://todo.law"
+              href={storefrontUrl(locale)}
               data-testid="footer-product-of"
               className="text-xs text-muted-foreground hover:text-foreground transition-colors font-body"
             >

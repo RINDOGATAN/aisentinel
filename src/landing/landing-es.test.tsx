@@ -177,7 +177,9 @@ describe("Spanish sections", () => {
       expect(v).toMatch(/poster="\/videos\/es\/[^"]+\.png"/);
       expect(v).toMatch(/<source src="\/videos\/es\/[^"]+\.webm" type="video\/webm"/);
       expect(v).toMatch(/<source src="\/videos\/es\/[^"]+\.mp4" type="video\/mp4"/);
-      expect(v).toMatch(/<track[^>]*kind="captions"[^>]*srclang="es"[^>]*default/i);
+      expect(v).toMatch(/<track[^>]*kind="captions"[^>]*srclang="es"/i);
+      // Subtitles are burned into the picture: the track must be offered but never on by default.
+      expect(v).not.toMatch(/<track[^>]*\sdefault/i);
     }
   });
 

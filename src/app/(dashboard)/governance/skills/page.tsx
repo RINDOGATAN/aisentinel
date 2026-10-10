@@ -191,7 +191,9 @@ export default function SkillsPage() {
                 <li key={pkg.id}>
                   <Card className="flex items-center justify-between gap-3 p-4">
                     <div className="min-w-0">
-                      <div className="truncate text-sm font-medium">{pkg.displayName}</div>
+                      <div className="truncate text-sm font-medium">
+                        {t.has(`packageName.${pkg.name}`) ? t(`packageName.${pkg.name}`) : pkg.displayName}
+                      </div>
                       <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
                         {active && pkg.entitlement ? (
                           <>

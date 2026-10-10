@@ -44,9 +44,10 @@ import {
 } from "@/components/ui/select";
 import { ArrowLeft, Plus, Search, FileText, ClipboardCheck, Copy, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
+import { templateDescription, templateName } from "@/lib/assessment-template-display";
 
 const ASSESSMENT_TYPES = ["FRIA", "CONFORMITY", "AI_RISK", "BIAS_FAIRNESS", "CUSTOM"] as const;
 type AssessmentType = (typeof ASSESSMENT_TYPES)[number];
@@ -62,6 +63,7 @@ interface TemplateRow {
 
 export default function AssessmentTemplatesPage() {
   const t = useTranslations("assessmentTemplates");
+  const locale = useLocale();
   const tc = useTranslations("common");
   const { organization, canWrite } = useOrganization();
   const orgId = organization?.id ?? "";
@@ -159,18 +161,18 @@ export default function AssessmentTemplatesPage() {
   const renderCard = (template: TemplateRow) => (
     <Card key={template.id} className="hover:border-primary/50 transition-colors">
       <CardHeader>
-        <div className="flex items-start justify-between">
-          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+        <div className="flex items-start justify-between gap-3">
+          <div className="w-10 h-10 shrink-0 rounded-lg bg-primary/10 flex items-center justify-center">
             <ClipboardCheck className="w-5 h-5 text-primary" />
           </div>
-          <div className="flex gap-2">
-            <Badge variant="outline">{typeLabel(template.type)}</Badge>
+          <div className="flex min-w-0 flex-wrap justify-end gap-2">
+            <Badge variant="outline" className="max-w-full shrink whitespace-normal text-left">{typeLabel(template.type)}</Badge>
             {template.isSystem && <Badge variant="secondary">{t("systemBadge")}</Badge>}
           </div>
         </div>
-        <CardTitle className="mt-3 text-base">{template.name}</CardTitle>
+        <CardTitle className="mt-3 text-base">{templateName(template, locale)}</CardTitle>
         {template.description && (
-          <CardDescription className="line-clamp-2">{template.description}</CardDescription>
+          <CardDescription className="line-clamp-2">{templateDescription(template, locale)}</CardDescription>
         )}
       </CardHeader>
       <CardContent>
@@ -185,7 +187,7 @@ export default function AssessmentTemplatesPage() {
                 size="sm"
                 onClick={() => {
                   setCloneSource(template);
-                  setCloneName(t("cloneDefaultName", { name: template.name }));
+                  setCloneName(t("cloneDefaultName", { name: templateName(template, locale) }));
                 }}
                 disabled={cloneTemplate.isPending}
               >

@@ -24,7 +24,7 @@ const ROWS: [keyof Answers, string, number][] = [
   ["ai", "none", 0],
   ["ai", "ext", 0],
   ["ai", "key", 1],
-  ["ai", "local", 2],
+  ["ai", "local", 1],
   ["iso", "yes", 1],
   ["iso", "no", 0],
   ["it", "yes", 0],
@@ -60,6 +60,13 @@ describe.each(LOCALES)("level table (%s)", (locale) => {
     expect(pickWay({ data: "special" }, locale)).toBe("managed");
   });
 
+  it("sends 'local models only' to managed, which meets it (owner, 10 Oct 2026)", () => {
+    expect(pickWay({ ai: "local" }, locale)).toBe("managed");
+    expect(pickWay({ ai: "local", it: "no" }, locale)).toBe("managed");
+    const r = recommend({ ai: "local" }, locale)!;
+    expect(r.checks).toEqual([{ key: "ai:local", met: true }]);
+  });
+
   it("has copy for every option it offers and a note for every way on the ladder", () => {
     const c = COPY[locale];
     for (const q of QUESTIONS) for (const o of optionsFor(q, locale)) expect(c.questions[q.id].options[o.value]).toBeTruthy();
@@ -77,10 +84,9 @@ describe.each(LOCALES)("level table (%s)", (locale) => {
 describe("level 2 in Spain: three ways only", () => {
   it.each([
     [{ loc: "servers" }],
-    [{ ai: "local" }],
     [{ cert: "yes" }],
     [{ loc: "servers", it: "yes" }],
-    [{ ai: "local", it: "no" }],
+    [{ loc: "servers", ai: "local", it: "no" }],
   ] as Answers[][])("%o leads to Despliegue y formación", (a) => {
     expect(pickWay(a, "es")).toBe("deploy");
   });
@@ -118,7 +124,8 @@ describe("level 2 in English: five ways", () => {
   it("leads to the Box with no IT team and the office or local models only", () => {
     expect(levelOf({ loc: "office" }, "en")).toBe(2);
     expect(pickWay({ loc: "office", it: "no" }, "en")).toBe("box");
-    expect(pickWay({ ai: "local", it: "no" }, "en")).toBe("box");
+    // local models only no longer reaches level 2 by itself; with own servers it still steers to the Box
+    expect(pickWay({ loc: "servers", ai: "local", it: "no" }, "en")).toBe("box");
   });
 
   it("leads to Deployment and capability with no IT team otherwise, or when the IT question is unanswered", () => {
@@ -157,14 +164,13 @@ describe("copy rules", () => {
     expect(es).not.toMatch(/\busted(es)?\b|vosotros|\bvuestr/i);
   });
 
-  it("managed never claims local models; the cloud states pilot, shared, United States, no certification", () => {
-    for (const l of LOCALES) {
-      const managed = COPY[l].summaries.managed!;
-      expect(managed).not.toMatch(/local|pesos abiertos|open-weight/i);
-    }
-    // Accurate once AI is on: records stay, the record details an AI draft uses go to the provider whose key is set.
-    expect(COPY.en.summaries.managed).toMatch(/Your records stay on that instance\. If you turn AI features on, the record details each AI draft uses go to the AI provider whose key you set\./);
-    expect(COPY.es.summaries.managed).toMatch(/Tus registros se quedan en esa instancia\. Si activas las funciones de IA, los datos del registro que usa cada borrador de IA van al proveedor de IA cuya clave configures\./);
+  it("managed is hosted in Asturias with open-weight models on the instance; the cloud states pilot, shared, United States, no certification", () => {
+    expect(COPY.en.summaries.managed).toBe(
+      "An isolated instance we run for your organization alone, hosted in Asturias, Spain. Your records stay on that instance. AI features stay off until you turn them on, and can use open-weight models hosted on the instance itself, so the record details do not leave it, or your own provider key.",
+    );
+    expect(COPY.es.summaries.managed).toBe(
+      "Una instancia aislada que operamos nosotros, solo para tu organización, alojada en Asturias (España). Tus registros se quedan en esa instancia. Las funciones de IA están desactivadas hasta que las activas, y pueden usar modelos de pesos abiertos alojados en la propia instancia, de modo que los datos del registro no salen de ella, o la clave de tu propio proveedor.",
+    );
     // AI Sentinel sends record details to a draft, never "the selected text".
     for (const l of LOCALES) expect(all(l)).not.toMatch(/selected text|texto seleccionado/);
     // No unqualified "your data stays" where AI could send text out.
@@ -176,7 +182,8 @@ describe("copy rules", () => {
   it("leaves the classifier sentence out of the panel", () => {
     for (const l of LOCALES) expect(COPY[l].whyP).not.toMatch(/classifier|clasificador/i);
     // The panel names the box as this landing does (its title is "TODO.LAW hardware").
-    expect(COPY.en.whyP).toMatch(/On your own servers or on TODO\.LAW hardware, AI features/);
+    expect(COPY.en.whyP).toMatch(/On the managed instance, on your own servers or on TODO\.LAW hardware, AI features/);
+    expect(COPY.es.whyP).toMatch(/En la instancia gestionada o si lo instalas en tus servidores, las funciones de IA pueden usar modelos de pesos abiertos/);
     expect(COPY.en.whyP).not.toMatch(/the Box/);
     expect(COPY.es.whyP).not.toMatch(/Box/);
   });
@@ -185,10 +192,16 @@ describe("copy rules", () => {
     expect(all("en")).not.toMatch(/organisation|licence|colour|programme|centre/);
   });
 
-  it("keeps ISO 27001 as the example in question 6, and claims no EU hosting", () => {
+  it("keeps ISO 27001 as the example in question 6; names Asturias only for managed and the US for the cloud", () => {
     expect(COPY.en.questions.cert.label).toMatch(/for example ISO 27001/);
     expect(COPY.es.questions.cert.label).toMatch(/por ejemplo, ISO 27001/);
-    for (const l of LOCALES) expect(all(l)).not.toMatch(/\bEU\b|\bUE\b|Europ|Unión Europea/);
+    // No EU-wide or European hosting claim anywhere; the one location named is the managed instance's.
+    for (const l of LOCALES) expect(all(l)).not.toMatch(/\bEU\b|\bUE\b|Europ|Unión Europea|Frankfurt/);
+    for (const l of LOCALES) {
+      const { managed, ...rest } = COPY[l].summaries;
+      expect(managed).toMatch(/Asturias/);
+      expect(JSON.stringify(rest)).not.toMatch(/Asturias|Spain|España/);
+    }
   });
 
   it("says AI is off until an administrator turns it on, with no AI call while off", () => {

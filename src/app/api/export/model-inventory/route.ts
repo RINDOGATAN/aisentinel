@@ -10,6 +10,7 @@ import { ModelInventoryReport } from "@/server/services/export/model-inventory";
 import { loadModelInventoryData } from "@/server/services/export/document-data";
 import { fmtDate } from "@/server/services/export/pdf-styles";
 import { exportLocale } from "@/server/services/export/pdf-labels";
+import { stripAccents } from "@/lib/file-name";
 
 export async function GET(request: NextRequest) {
   const organizationId = request.nextUrl.searchParams.get("organizationId");
@@ -60,7 +61,7 @@ export async function GET(request: NextRequest) {
     ModelInventoryReport({ models: data, orgName, locale })
   );
 
-  const filename = `${locale === "es" ? "Inventario-de-modelos-de-IA" : "AI-Model-Inventory"}-${orgName.replace(/[^a-zA-Z0-9]/g, "-")}-${dateStr}.pdf`;
+  const filename = `${locale === "es" ? "Inventario-de-modelos-de-IA" : "AI-Model-Inventory"}-${stripAccents(orgName).replace(/[^a-zA-Z0-9]/g, "-")}-${dateStr}.pdf`;
 
   return new Response(new Uint8Array(buffer), {
     headers: {

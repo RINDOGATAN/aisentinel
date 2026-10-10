@@ -12,6 +12,7 @@ import { brand } from "@/config/brand";
 import { OG_IMAGES, SEO, TWITTER_IMAGES } from "@/config/seo";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
+import { headers } from "next/headers";
 
 const jost = Jost({
   subsets: ["latin"],
@@ -104,9 +105,12 @@ export default async function RootLayout({
   const session = await getServerSession(authOptions);
   const locale = await getLocale();
   const messages = await getMessages();
+  // On the landing, `?lang=` decides the language shown (src/middleware.ts sets the header).
+  const landingLang = (await headers()).get("x-landing-lang");
+  const htmlLang = landingLang === "es" || landingLang === "en" ? landingLang : locale;
 
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html lang={htmlLang} suppressHydrationWarning>
       <head>
         <script
           type="application/ld+json"

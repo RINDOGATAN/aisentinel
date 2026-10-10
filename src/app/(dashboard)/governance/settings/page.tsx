@@ -86,7 +86,7 @@ export default function SettingsPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center gap-4 p-3 rounded-lg border border-primary bg-primary/5">
+            <div className="flex flex-wrap items-center gap-4 p-3 rounded-lg border border-primary bg-primary/5">
               <div className="p-2 rounded-lg shrink-0 bg-primary/10 text-primary">
                 <Icon className="w-5 h-5" />
               </div>
@@ -96,6 +96,7 @@ export default function SettingsPage() {
               <Button
                 variant="outline"
                 size="sm"
+                className="h-auto min-h-8 max-w-full whitespace-normal text-left"
                 disabled={setUserType.isPending}
                 onClick={() => setUserType.mutate({ userType: otherPersona })}
               >

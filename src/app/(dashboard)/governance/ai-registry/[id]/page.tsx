@@ -75,6 +75,8 @@ import { TransparencyStatementCard } from "@/components/ai/TransparencyStatement
 import { DataFlowPanel } from "@/components/governance/data-flow-panel";
 import { SystemThreatModelCard } from "@/components/governance/system-threat-model-card";
 import { STATUS_CHIP, STATUS_OUTLINE } from "@/components/ui/status-note";
+import { templateName } from "@/lib/assessment-template-display";
+import { annexIIILabel } from "@/lib/annex-iii-label";
 
 const statusColors: Record<string, string> = {
   DRAFT: "border-muted-foreground text-muted-foreground",
@@ -222,6 +224,7 @@ export default function AISystemDetailPage() {
   const { formatDate } = useFormatDate();
   const locale = useLocale();
   const tc = useTranslations("common");
+  const tRisk = useTranslations("riskClassification");
   const tFlow = useTranslations("dataFlow");
   const tRegimes = useTranslations("regimes");
   const tAgent = useTranslations("agent");
@@ -1239,8 +1242,10 @@ export default function AISystemDetailPage() {
                       {tc("riskWithLevel", { level: riskLabel(system.riskClassification.riskLevel) })}
                     </TierChip>
                     {system.riskClassification.annexIIICategory && (
-                      <Badge variant="outline" className="text-xs">
-                        {t("annexIIIPrefix", { category: system.riskClassification.annexIIICategory })}
+                      <Badge variant="outline" className="text-xs max-w-full shrink whitespace-normal text-left">
+                        {t("annexIIIPrefix", {
+                          category: annexIIILabel(system.riskClassification.annexIIICategory, locale, (k) => tRisk(`annexIII.${k}`)),
+                        })}
                       </Badge>
                     )}
                   </div>
@@ -1349,7 +1354,7 @@ export default function AISystemDetailPage() {
                           <div className="min-w-0">
                             <p className="font-medium text-sm truncate">{assessment.title}</p>
                             <p className="text-xs text-muted-foreground">
-                              {assessment.template?.name || assessmentTypeLabel(assessment.type)}
+                              {(assessment.template && templateName(assessment.template, locale)) || assessmentTypeLabel(assessment.type)}
                             </p>
                           </div>
                         </div>

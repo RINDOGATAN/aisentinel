@@ -60,19 +60,20 @@ const statusColors: Record<string, string> = {
   RETIRED: "border-muted-foreground/50 text-muted-foreground/50",
 };
 
-const techniqueLabels: Record<string, string> = {
-  MACHINE_LEARNING: "Machine Learning",
-  DEEP_LEARNING: "Deep Learning",
-  GENERATIVE_AI: "Generative AI",
-  AGENTIC_AI: "Agentic AI",
-  NLP: "NLP",
-  COMPUTER_VISION: "Computer Vision",
-  SPEECH_RECOGNITION: "Speech Recognition",
-  ROBOTICS: "Robotics",
-  RULE_BASED: "Rule-Based",
-  EXPERT_SYSTEM: "Expert System",
-  STATISTICAL: "Statistical",
-  OTHER: "Other",
+/** Message keys (common.*) for each technique, so the badge follows the language. */
+const techniqueLabelKeys: Record<string, string> = {
+  MACHINE_LEARNING: "techniqueMachineLearning",
+  DEEP_LEARNING: "techniqueDeepLearning",
+  GENERATIVE_AI: "techniqueGenerativeAi",
+  AGENTIC_AI: "techniqueAgenticAi",
+  NLP: "techniqueNlp",
+  COMPUTER_VISION: "techniqueComputerVision",
+  SPEECH_RECOGNITION: "techniqueSpeechRecognition",
+  ROBOTICS: "techniqueRobotics",
+  RULE_BASED: "techniqueRuleBased",
+  EXPERT_SYSTEM: "techniqueExpertSystem",
+  STATISTICAL: "techniqueStatistical",
+  OTHER: "techniqueOther",
 };
 
 const techniqueIcons: Record<string, React.ElementType> = {
@@ -350,7 +351,7 @@ export default function AIRegistryPage() {
                         <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
                           <div className="flex flex-wrap gap-1.5 mb-3">
                             <Badge variant="outline" className="text-xs">
-                              {techniqueLabels[system.technique] || system.technique}
+                              {techniqueLabelKeys[system.technique] ? tc(techniqueLabelKeys[system.technique]) : system.technique}
                             </Badge>
                             <Badge variant="outline" className="text-xs">
                               {roleLabel(system.role)}

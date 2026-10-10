@@ -21,6 +21,7 @@ import { deadlineState } from "@/config/incident-deadlines";
 import type { StatusKey } from "@/config/status-palette";
 import { StatusMark, StatusNote } from "@/components/ui/status-note";
 import { useNow } from "@/lib/use-now";
+import { citationString } from "@/config/framework-display";
 
 /**
  * The state of a clock is shown by the border of the date chip and by a word
@@ -149,7 +150,7 @@ export function IncidentDeadlinesCard({
                   </div>
                   <p className="text-xs text-muted-foreground">{d.recipient[lang]}</p>
                   <p className="text-[11px] text-muted-foreground">{d.basis[lang]}</p>
-                  <p className="text-[11px] font-mono text-muted-foreground">{d.citation}</p>
+                  <p className="text-[11px] font-mono text-muted-foreground">{citationString(d.citation, lang)}</p>
                 </div>
               );
             })}

@@ -75,7 +75,7 @@ export const assessmentRouter = createTRPCRouter({
         ...(input.cursor && { cursor: { id: input.cursor }, skip: 1 }),
         orderBy,
         include: {
-          template: { select: { name: true, type: true } },
+          template: { select: { id: true, name: true, type: true } },
           aiSystem: { select: { id: true, name: true } },
         },
       });

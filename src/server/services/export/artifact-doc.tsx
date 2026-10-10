@@ -23,6 +23,7 @@
 import React from "react";
 import { Document, View, Text, StyleSheet } from "@react-pdf/renderer";
 import type { Artifact, ArtifactSection, Block } from "@/server/services/artifacts/types";
+import { localizeArtifactCitations } from "@/server/services/artifacts/localize-citations";
 import {
   registerReportFonts,
   tokens,
@@ -322,7 +323,7 @@ export const ARTIFACT_CHROME: Record<"en" | "es", Chrome> = {
  * one, and a long section flows.
  */
 export function renderArtifactDocument({
-  artifact,
+  artifact: source,
   chrome,
   locale,
 }: {
@@ -331,6 +332,7 @@ export function renderArtifactDocument({
   locale: "en" | "es";
 }) {
   registerReportFonts();
+  const artifact = localizeArtifactCitations(source, locale);
 
   const facts: [string, string][] = [
     [chrome.generatedLabel, artifact.generatedAt],

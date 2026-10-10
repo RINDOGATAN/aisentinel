@@ -20,6 +20,7 @@ import prisma from "@/lib/prisma";
 import { fmtDate } from "@/server/services/export/pdf-styles";
 import { exportStamp, stampLines } from "@/server/services/export/integrity";
 import { exportLocale, pdfLabels } from "@/server/services/export/pdf-labels";
+import { stripAccents } from "@/lib/file-name";
 
 const READER_ROLES = ["OWNER", "ADMIN", "AI_OFFICER"];
 
@@ -149,7 +150,7 @@ export async function GET(request: NextRequest) {
     },
   });
 
-  const orgName = membership.organization.name.replace(/[^a-zA-Z0-9]/g, "-");
+  const orgName = stripAccents(membership.organization.name).replace(/[^a-zA-Z0-9]/g, "-");
   const filename = `${words.filename}-${orgName}-${fmtDate(new Date())}.csv`;
 
   return new Response(csv, {

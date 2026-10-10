@@ -42,6 +42,7 @@ import { formatRelativeTime } from "@/lib/utils";
 import { useFormatDate } from "@/lib/use-format-date";
 import { useTranslations, useLocale } from "next-intl";
 import { useEnumLabels } from "@/lib/enum-labels";
+import { parseSystemTimelineEntry } from "@/lib/incident-timeline";
 import { STATUS_CHIP, STATUS_OUTLINE } from "@/components/ui/status-note";
 import { PageHeader } from "@/components/governance/page-header";
 
@@ -98,6 +99,29 @@ export default function IncidentDetailPage() {
   const ti = useTranslations("incidents");
   const tc = useTranslations("common");
   const { statusLabel, severityLabel } = useEnumLabels();
+
+  // The entries the router writes by itself are stored in English with raw codes;
+  // in Spanish they are said in Spanish (src/lib/incident-timeline.ts).
+  const timelineText = (entry: { action: string; description: string | null }) => {
+    const sys = locale === "es" ? parseSystemTimelineEntry(entry.action, entry.description) : null;
+    if (!sys) return { action: entry.action, description: entry.description };
+    const lower = (x: string) => x.toLocaleLowerCase("es");
+    if (sys.kind === "reported") {
+      return {
+        action: t("timelineSystem.reportedAction"),
+        description: t("timelineSystem.reportedDescription", {
+          severity: lower(severityLabel(sys.severity)),
+          type: lower(typeKeys[sys.type] ? ti(typeKeys[sys.type]) : sys.type.replace(/_/g, " ")),
+        }),
+      };
+    }
+    return {
+      action: t("timelineSystem.statusAction", { status: lower(statusLabel(sys.to)) }),
+      description: sys.from
+        ? t("timelineSystem.statusDescription", { from: lower(statusLabel(sys.from)), to: lower(statusLabel(sys.to)) })
+        : null,
+    };
+  };
   const taskStatusLabel = (status: string) =>
     status === "COMPLETED" ? t("taskStatusCompleted") : statusLabel(status);
   const notificationStatusLabel = (status: string) =>
@@ -432,17 +456,17 @@ export default function IncidentDetailPage() {
                     >
                       <Clock className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium text-sm">{entry.action}</p>
-                        {entry.description && (
+                        <p className="font-medium text-sm">{timelineText(entry).action}</p>
+                        {timelineText(entry).description && (
                           <p className="text-xs text-muted-foreground mt-1">
-                            {entry.description}
+                            {timelineText(entry).description}
                           </p>
                         )}
                         <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
                           {entry.performedBy && (
                             <span className="flex items-center gap-1">
                               <User className="w-3 h-3" />
-                              {entry.performedBy}
+                              {incident.performers?.[entry.performedBy] ?? entry.performedBy}
                             </span>
                           )}
                           <span className="flex items-center gap-1">

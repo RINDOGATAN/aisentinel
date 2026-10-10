@@ -11,6 +11,7 @@ import {
   checkShowcaseAccess,
   lockedResponse,
 } from "@/server/services/licensing/showcase-gate";
+import { EXPORT_FILE_PREFIX, stripAccents } from "@/lib/file-name";
 
 export async function GET(request: NextRequest) {
   const organizationId = request.nextUrl.searchParams.get("organizationId");
@@ -73,7 +74,7 @@ export async function GET(request: NextRequest) {
     locale,
   });
 
-  const filename = `AI-Governance-Program-${orgName.replace(/[^a-zA-Z0-9]/g, "-")}-${dateStr}.pdf`;
+  const filename = `${EXPORT_FILE_PREFIX.program[locale]}-${stripAccents(orgName).replace(/[^a-zA-Z0-9]/g, "-")}-${dateStr}.pdf`;
 
   return new Response(new Uint8Array(buffer), {
     headers: {

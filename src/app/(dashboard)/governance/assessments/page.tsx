@@ -31,6 +31,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { features } from "@/config/features";
 import { STATUS_OUTLINE } from "@/components/ui/status-note";
 import { SortControl } from "@/components/governance/sort-control";
+import { templateName } from "@/lib/assessment-template-display";
 
 type AssessmentSort = "newest" | "oldest" | "name";
 
@@ -297,7 +298,7 @@ export default function AssessmentsPage() {
                         )}
                         {assessment.template && (
                           <p className="text-xs text-muted-foreground mb-2 truncate">
-                            {t("templateLabel", { name: assessment.template.name })}
+                            {t("templateLabel", { name: templateName(assessment.template, locale) })}
                           </p>
                         )}
                         <p className="text-xs text-muted-foreground">

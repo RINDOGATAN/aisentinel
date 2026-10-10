@@ -25,6 +25,8 @@ import {
   UNCONFIRMED_WHERE,
 } from "../../services/provenance/summary";
 import { computeConfirmationSummary } from "@/lib/provenance/state";
+import { requirementLabel } from "@/config/framework-display";
+import { resolveContentLocale } from "@/config/lawfirm-ai-toolkit";
 import { ARTIFACT_CLASSES, type ArtifactClass } from "@/lib/provenance/types";
 
 /** The five models that carry provenance columns. */
@@ -107,6 +109,7 @@ export const provenanceRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       const orgId = ctx.organization.id;
+      const locale = resolveContentLocale(ctx.getCookie);
       const base = { organizationId: orgId, ...UNCONFIRMED_WHERE };
       const systemScope = input.aiSystemId ? { aiSystemId: input.aiSystemId } : {};
       const wants = (entity: ConfirmableEntity) =>
@@ -141,7 +144,7 @@ export const provenanceRouter = createTRPCRouter({
                 updatedAt: true,
                 aiSystemId: true,
                 aiSystem: { select: { name: true } },
-                requirement: { select: { code: true, title: true } },
+                requirement: { select: { code: true, title: true, framework: { select: { code: true } } } },
               },
               orderBy: { updatedAt: "desc" },
               take: input.limit,
@@ -211,7 +214,7 @@ export const provenanceRouter = createTRPCRouter({
         ...mappings.map((m) => ({
           entityType: "ComplianceMapping" as const,
           id: m.id,
-          label: `${m.requirement.code} — ${m.requirement.title}`,
+          label: requirementLabel(m.requirement, locale),
           summary: m.status,
           provenance: m.provenance,
           sourceRef: m.sourceRef ?? m.evidence?.slice(0, 160) ?? null,
@@ -221,7 +224,8 @@ export const provenanceRouter = createTRPCRouter({
         ...gates.map((g) => ({
           entityType: "OversightGate" as const,
           id: g.id,
-          label: `${g.aiSystem.name} — ${g.gateType}`,
+          label: g.aiSystem.name,
+          labelCode: g.gateType,
           summary: g.status,
           provenance: g.provenance,
           sourceRef: g.sourceRef,

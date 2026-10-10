@@ -29,6 +29,7 @@ import {
 import { runAgenticStressTest } from "@/config/agentic-stress-test";
 import { LEGAL_SIGNOFF, pendingPacks, type SignoffRecord } from "@/config/legal-signoff";
 import { overlayLabels } from "@/config/overlay-labels";
+import { citationString } from "@/config/framework-display";
 import { tierShapeText, toRiskTier } from "@/config/risk-tier-palette";
 import type { SystemScope } from "@/server/services/scope/system-scope";
 import {
@@ -641,12 +642,12 @@ function openItemsSection(input: ArtifactInput, gaps: Artifact["gaps"]): Artifac
     blocks: [
       paragraph(
         es
-          ? `Quedan ${gaps.length} apartados abiertos. Este borrador no está completo: cada línea es una obligación que el documento no puede acreditar hasta que alguien la responda.`
-          : `${gaps.length} items are open. This draft is not complete: each line is an obligation the document cannot evidence until someone answers it.`,
+          ? `${gaps.length === 1 ? "Queda 1 apartado abierto" : `Quedan ${gaps.length} apartados abiertos`}. Este borrador no está completo: cada línea es una obligación que el documento no puede acreditar hasta que alguien la responda.`
+          : `${gaps.length === 1 ? "1 item is open" : `${gaps.length} items are open`}. This draft is not complete: each line is an obligation the document cannot evidence until someone answers it.`,
       ),
       table(
         es ? ["Apartado", "Qué falta", "Obligación"] : ["Section", "What is missing", "Obligation"],
-        gaps.map((g) => [g.section, g.text, g.citations.join("; ") || (es ? "No consta" : "Not recorded")]),
+        gaps.map((g) => [g.section, g.text, g.citations.map((c) => citationString(c, input.locale)).join("; ") || (es ? "No consta" : "Not recorded")]),
       ),
     ],
   };
@@ -1273,7 +1274,7 @@ export function buildAgenticAddendumArtifact(input: ArtifactInput): Artifact {
     if (answered.length > 0) {
       blocks.push(
         paragraph(`**${locale === "es" ? "Lo que ya consta" : "What is already recorded"}:**`),
-        list(answered.map((e) => `${e.question!.text[locale]} — ${e.answer}`)),
+        list(answered.map((e) => `${e.question!.text[locale]} · ${e.answer}`)),
       );
     }
     const findingCitations = filterCitationStrings(finding.citations, applicable);
@@ -1282,7 +1283,7 @@ export function buildAgenticAddendumArtifact(input: ArtifactInput): Artifact {
     }
 
     sections.push({
-      heading: `${severityLabel[finding.severity][locale]} — ${finding.title[locale]}`,
+      heading: `${severityLabel[finding.severity][locale]} · ${finding.title[locale]}`,
       citations: findingCitations,
       blocks,
     });

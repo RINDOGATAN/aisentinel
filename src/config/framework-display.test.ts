@@ -21,6 +21,7 @@ import {
   frameworkShortName,
   requirementCode,
   requirementDescription,
+  requirementLabel,
   requirementTitle,
 } from "./framework-display";
 import { EU_ART113_SUBTREE } from "./eu-timeline-requirements";
@@ -234,5 +235,52 @@ describe("regime chips and citations", () => {
     expect(citationString("EU AI ACT Art. 50", "es")).toBe("RIA art. 50");
     expect(citationString("EU GDPR Art. 13(2)(f) / 14(2)(g)", "es")).toBe("RGPD art. 13(2)(f) / 14(2)(g)");
     expect(citationString("CO SB 26-189 CO-DEP-1", "es")).toBe("CO SB 26-189 CO-DEP-1");
+  });
+});
+
+describe("review queue requirement label", () => {
+  it("names a GDPR row in Spanish with a lower-case art. and no long dash", () => {
+    const row = { code: "Art. 5", title: "Principles relating to processing", framework: { code: "EU_GDPR" } };
+    expect(requirementLabel(row, "es")).toBe("art. 5: Principios relativos al tratamiento");
+    expect(requirementLabel(row, "en")).toBe("Art. 5: Principles relating to processing");
+  });
+
+  it("keeps a NIST code and gives its Spanish title", () => {
+    const label = requirementLabel({ code: "GOVERN 1", title: "Policies for AI risk management", framework: { code: "NIST_AI_RMF" } }, "es");
+    expect(label.startsWith("GOVERN 1: ")).toBe(true);
+    expect(label).not.toMatch(/Policies|—/);
+  });
+});
+
+describe("free-text citations in Spanish", () => {
+  it("names the GDPR and the EU regulations in Spanish, with a lower-case art.", () => {
+    expect(citationString("GDPR Art. 22", "es")).toBe("RGPD art. 22");
+    expect(citationString("GDPR Art. 9 · RCW 19.373", "es")).toBe("RGPD art. 9 · RCW 19.373");
+    expect(citationString("Reg. (EU) 2024/1689, Art. 26(5)", "es")).toBe("Reglamento (UE) 2024/1689, art. 26(5)");
+    expect(citationString("Reg. (EU) 2016/679, Art. 33(1)", "es")).toBe("Reglamento (UE) 2016/679, art. 33(1)");
+    expect(citationString("Reg. (EU) 2024/1689, Art. 26(5)", "en")).toBe("Reg. (EU) 2024/1689, Art. 26(5)");
+  });
+});
+
+describe("ISO/IEC 42001 rows as stored", () => {
+  // scripts/seed-frameworks.ts writes the code as `Clause ${clause.code}`.
+  it("seeds the ISO codes with the Clause prefix (the shape the lookups must accept)", () => {
+    expect(SEED).toContain("code: `Clause ${clause.code}`");
+  });
+
+  it("find the Spanish title and description of a stored Clause code", () => {
+    for (const code of seededCodes('code: "ISO_42001"', "AIUC1_FRAMEWORK.code")) {
+      const stored = `Clause ${code}`;
+      expect(requirementTitle("ISO_42001", stored, "English", "es"), stored).not.toBe("English");
+      expect(requirementDescription("ISO_42001", stored, "English", "es"), stored).not.toBe("English");
+    }
+    expect(requirementTitle("ISO_42001", "Clause 4.1", "Understanding the organization and its context", "es")).toBe(
+      "Comprensión de la organización y de su contexto",
+    );
+    expect(requirementCode("ISO_42001", "Clause 4.1", "es")).toBe("Cláusula 4.1");
+    expect(requirementCode("ISO_42001", "Clause 4.1", "en")).toBe("Clause 4.1");
+    expect(requirementTitle("ISO_42001", "Clause 4.1", "Understanding the organization and its context", "en")).toBe(
+      "Understanding the organization and its context",
+    );
   });
 });

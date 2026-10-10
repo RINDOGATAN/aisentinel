@@ -391,8 +391,13 @@ export function requirementTitle(frameworkCode: string, code: string, storedTitl
   return REQUIREMENT_TITLES_ES[frameworkCode]?.[code] ?? storedTitle;
 }
 
-/** A requirement's code as shown; only the EU timeline rows differ in Spanish. */
+/**
+ * A requirement's code as shown. English is the stored code. Spanish writes
+ * "art." and "anexo" in lower case, as Spanish legal citations do, and gives
+ * the EU timeline rows their Spanish dates.
+ */
 export function requirementCode(frameworkCode: string, code: string, locale: Locale): string {
-  if (locale === "es" && frameworkCode === "EU_AI_ACT") return EU_AI_ACT_CODES_ES[code] ?? code;
-  return code;
+  if (locale !== "es") return code;
+  const shown = frameworkCode === "EU_AI_ACT" ? (EU_AI_ACT_CODES_ES[code] ?? code) : code;
+  return spanishCitationCode(shown);
 }

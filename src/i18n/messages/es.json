@@ -189,7 +189,7 @@
     "vendorHelp": "Vincula este sistema a un proveedor de tu registro de proveedores",
     "purposeLabel": "Finalidad prevista",
     "purposePlaceholder": "Describe la finalidad prevista y los casos de uso de este sistema de IA...",
-    "purposeHelp": "Obligatorio para sistemas de alto riesgo según el Reglamento de IA de la UE (Art. 13)",
+    "purposeHelp": "Obligatorio para sistemas de alto riesgo según el Reglamento de IA de la UE (art. 13)",
     "businessOwnerLabel": "Responsable de negocio",
     "businessOwnerPlaceholder": "p. ej., Responsable del Equipo de Producto",
     "technicalOwnerLabel": "Responsable técnico",
@@ -250,7 +250,7 @@
     "tabModels": "Modelos ({count})",
     "tabDataSources": "Fuentes de datos ({count})",
     "tabRiskClassification": "Clasificación de riesgos",
-    "tabTransparency": "Transparencia (Art. 50)",
+    "tabTransparency": "Transparencia (art. 50)",
     "tabAssessments": "Evaluaciones ({count})",
     "tabOversight": "Supervisión ({count})",
     "tabPolicies": "Políticas ({count})",
@@ -341,20 +341,20 @@
     "tabAdmt": "ADMT de California"
   },
   "transparency": {
-    "title": "Obligaciones de transparencia del Art. 50",
+    "title": "Obligaciones de transparencia del art. 50",
     "description": "Obligaciones de información y marcado del artículo 50 del Reglamento de IA de la UE, aplicables desde el 2 de agosto de 2026",
     "loading": "Cargando el perfil de transparencia…",
-    "obligationInteraction": "Informar de la interacción con IA (Art. 50(1))",
-    "obligationMarking": "Marcado legible por máquina del contenido sintético (Art. 50(2))",
-    "obligationEmotion": "Informar del reconocimiento de emociones / categorización biométrica (Art. 50(3))",
-    "obligationDeepfake": "Etiquetar ultrasuplantaciones y textos de interés público generados por IA (Art. 50(4))",
+    "obligationInteraction": "Informar de la interacción con IA (art. 50(1))",
+    "obligationMarking": "Marcado legible por máquina del contenido sintético (art. 50(2))",
+    "obligationEmotion": "Informar del reconocimiento de emociones / categorización biométrica (art. 50(3))",
+    "obligationDeepfake": "Etiquetar ultrasuplantaciones y textos de interés público generados por IA (art. 50(4))",
     "actorProvider": "Obligación del proveedor",
     "actorDeployer": "Obligación del responsable del despliegue",
     "statusNotApplicable": "No aplicable",
     "statusRequired": "Requerida",
     "statusImplemented": "Implementada",
     "suggestedByRules": "Sugerida por el cribado: \"{matched}\"",
-    "prohibitedWarning": "Atención: se ha detectado un indicio de práctica prohibida (p. ej., reconocimiento de emociones en el trabajo o la educación, Art. 5(1)(f)). Un uso prohibido nunca se subsana con la mera información.",
+    "prohibitedWarning": "Atención: se ha detectado un indicio de práctica prohibida (p. ej., reconocimiento de emociones en el trabajo o la educación, art. 5(1)(f)). Un uso prohibido nunca se subsana con la mera información.",
     "placedBeforeLabel": "Introducido en el mercado antes del 2 de agosto de 2026",
     "placedBeforeHelp": "Los sistemas generativos preexistentes disponen de un período de gracia para el marcado legible por máquina hasta el 2 de diciembre de 2026 (art. 111.4, introducido por el Reglamento (UE) 2026/1744).",
     "deadlineDue": "Marcado exigible antes del {date}",
@@ -366,7 +366,7 @@
     "methodMetadata": "Etiquetado de metadatos",
     "methodLogging": "Registro de generaciones",
     "notesLabel": "Notas del revisor",
-    "guidelinesHint": "La Comisión adoptó las directrices definitivas sobre las obligaciones de transparencia del Art. 50 el 20 de julio de 2026; el Código de Buenas Prácticas sobre Transparencia de Contenidos Generados por IA fue declarado adecuado en julio de 2026.",
+    "guidelinesHint": "La Comisión adoptó las directrices definitivas sobre las obligaciones de transparencia del art. 50 el 20 de julio de 2026; el Código de Buenas Prácticas sobre Transparencia de Contenidos Generados por IA fue declarado adecuado en julio de 2026.",
     "save": "Guardar perfil",
     "saving": "Guardando…",
     "toastSaved": "Perfil de transparencia guardado",
@@ -380,9 +380,9 @@
     "currentClassification": "Clasificación actual",
     "riskLevelLabel": "Nivel de riesgo",
     "riskLevelPlaceholder": "Selecciona el nivel de riesgo",
-    "riskDescriptionUnacceptable": "Prácticas de IA prohibidas (Art. 5): puntuación social, identificación biométrica en tiempo real, manipulación.",
-    "riskDescriptionHigh": "Sistemas de IA de alto riesgo (Art. 6, Anexo III): biometría, infraestructuras críticas, educación, empleo, fuerzas del orden.",
-    "riskDescriptionLimited": "Riesgo limitado con obligaciones de transparencia (Art. 50): chatbots, deepfakes, reconocimiento de emociones.",
+    "riskDescriptionUnacceptable": "Prácticas de IA prohibidas (art. 5): puntuación social, identificación biométrica en tiempo real, manipulación.",
+    "riskDescriptionHigh": "Sistemas de IA de alto riesgo (art. 6, Anexo III): biometría, infraestructuras críticas, educación, empleo, fuerzas del orden.",
+    "riskDescriptionLimited": "Riesgo limitado con obligaciones de transparencia (art. 50): chatbots, deepfakes, reconocimiento de emociones.",
     "riskDescriptionMinimal": "Riesgo mínimo sin obligaciones normativas específicas, más allá de códigos de conducta voluntarios.",
     "annexIIICategoryLabel": "Categoría del anexo III",
     "annexIIICategoryPlaceholder": "Selecciona una categoría (opcional)",
@@ -614,7 +614,7 @@
   },
   "oversight": {
     "title": "Supervisión humana",
-    "description": "Controles de aprobación, registro de decisiones y cumplimiento del Art. 14",
+    "description": "Controles de aprobación, registro de decisiones y cumplimiento del art. 14",
     "createGate": "Crear control",
     "searchPlaceholder": "Buscar controles de supervisión...",
     "statsPending": "Pendientes",
@@ -641,7 +641,7 @@
     "title": "Crear control de supervisión",
     "description": "Añadir un nuevo control de aprobación de supervisión humana",
     "cardTitle": "Detalles del control",
-    "cardDescription": "Configura el control de supervisión para un sistema de IA (Art. 14)",
+    "cardDescription": "Configura el control de supervisión para un sistema de IA (art. 14)",
     "aiSystemLabel": "Sistema de IA",
     "aiSystemPlaceholder": "Selecciona un sistema de IA",
     "gateTypeLabel": "Tipo de control",
@@ -743,7 +743,7 @@
   },
   "incidents": {
     "title": "Incidentes de IA",
-    "description": "Seguimiento de fallos de IA, gravedad, cronología y notificaciones del Art. 73",
+    "description": "Seguimiento de fallos de IA, gravedad, cronología y notificaciones del art. 73",
     "reportIncident": "Notificar incidente",
     "searchPlaceholder": "Buscar incidentes...",
     "statsTotal": "Total de incidentes",
@@ -780,7 +780,7 @@
     "severityPlaceholder": "Selecciona la gravedad",
     "aiSystemLabel": "Sistema de IA (opcional)",
     "aiSystemPlaceholder": "Selecciona el sistema de IA afectado",
-    "notificationRequiredLabel": "Notificación a la autoridad requerida (Art. 73)",
+    "notificationRequiredLabel": "Notificación a la autoridad requerida (art. 73)",
     "notificationRequiredHint": "Los incidentes graves con sistemas de IA deben notificarse a las autoridades de vigilancia del mercado según el Artículo 62 del Reglamento de IA de la UE.",
     "dpoCentralIdLabel": "ID de incidente en DPO Central (opcional)",
     "dpoCentralIdPlaceholder": "p. ej., inc_abc123...",
@@ -818,7 +818,7 @@
     "emptyTasksTitle": "Aún no hay tareas",
     "emptyTasksHint": "Añade tareas para hacer seguimiento de las acciones de resolución",
     "notificationsTitle": "Notificaciones a autoridades",
-    "notificationsDescription": "Notificaciones del Art. 73 a las autoridades de vigilancia del mercado",
+    "notificationsDescription": "Notificaciones del art. 73 a las autoridades de vigilancia del mercado",
     "addNotification": "Añadir notificación",
     "tableAuthority": "Autoridad",
     "tableType": "Tipo",
@@ -852,7 +852,7 @@
     "notifAuthorityLabel": "Autoridad",
     "notifAuthorityPlaceholder": "p. ej., Oficina Nacional de IA, Autoridad de Protección de Datos",
     "notifTypeLabel": "Tipo de notificación",
-    "notifTypePlaceholder": "p. ej., Informe de Incidente Grave del Art. 73",
+    "notifTypePlaceholder": "p. ej., Informe de Incidente Grave del art. 73",
     "notifDueByLabel": "Plazo",
     "taskStatusCompleted": "Completada",
     "notificationStatusSent": "Enviada",
@@ -1581,8 +1581,8 @@
       "disclaimer": "Un borrador de trabajo a partir de los datos del registro: la persona responsable del sistema debe completarlo y revisarlo antes de cualquier uso."
     },
     "transparencyStatement": {
-      "title": "Declaración de transparencia del Art. 50",
-      "description": "Redacta una declaración de transparencia a partir de los datos registrados de este sistema, las obligaciones anotadas y el cribado determinista del Art. 50. Las lagunas quedan marcadas para que las complete la persona responsable.",
+      "title": "Declaración de transparencia del art. 50",
+      "description": "Redacta una declaración de transparencia a partir de los datos registrados de este sistema, las obligaciones anotadas y el cribado determinista del art. 50. Las lagunas quedan marcadas para que las complete la persona responsable.",
       "copy": "Copiar markdown",
       "copied": "Borrador de la declaración de transparencia copiado al portapapeles",
       "disclaimer": "Un borrador de trabajo a partir de los datos del registro: la persona responsable del sistema debe completarlo y revisarlo antes de cualquier uso."
@@ -1646,7 +1646,7 @@
         "assessments": "Evaluaciones",
         "oversight": "Supervisión humana",
         "incidents": "Incidentes de IA",
-        "transparency": "Transparencia (Art. 50)",
+        "transparency": "Transparencia (art. 50)",
         "compliance": "Cumplimiento",
         "vendors": "Riesgo de proveedores",
         "policies": "Gestión de políticas",
@@ -1738,15 +1738,15 @@
         },
         "oversight": {
           "title": "Supervisión humana",
-          "description": "Puntos de control de aprobación, programación de revisiones y registro de decisiones para el cumplimiento del Art. 14."
+          "description": "Puntos de control de aprobación, programación de revisiones y registro de decisiones para el cumplimiento del art. 14."
         },
         "incidents": {
           "title": "Incidentes de IA",
-          "description": "Haz seguimiento de fallos específicos de IA, coordina tareas de respuesta y gestiona las notificaciones a autoridades del Art. 73."
+          "description": "Haz seguimiento de fallos específicos de IA, coordina tareas de respuesta y gestiona las notificaciones a autoridades del art. 73."
         },
         "transparency": {
-          "title": "Transparencia (Art. 50)",
-          "description": "Obligaciones del Art. 50 por sistema, el plazo de marcado de contenido sintético y la declaración de interacción con IA."
+          "title": "Transparencia (art. 50)",
+          "description": "Obligaciones del art. 50 por sistema, el plazo de marcado de contenido sintético y la declaración de interacción con IA."
         },
         "compliance": {
           "title": "Cumplimiento",
@@ -1780,7 +1780,7 @@
         },
         "conformity": {
           "title": "Evaluación de conformidad",
-          "description": "Plantilla de evaluación de conformidad del Art. 43 del Reglamento de IA de la UE para sistemas de IA de alto riesgo, con secciones de evaluación estructuradas."
+          "description": "Plantilla de evaluación de conformidad del art. 43 del Reglamento de IA de la UE para sistemas de IA de alto riesgo, con secciones de evaluación estructuradas."
         },
         "biasFairness": {
           "title": "Evaluación de sesgo y equidad",
@@ -1831,7 +1831,7 @@
         ],
         "commercialBadge": "Comercial",
         "premiumTitle": "Premium",
-        "commercialConformity": "Plantilla de evaluación de conformidad (Art. 43)",
+        "commercialConformity": "Plantilla de evaluación de conformidad (art. 43)",
         "commercialBiasFairness": "Evaluación de sesgo y equidad",
         "commercialShadowAi": "Detección de IA en la sombra (catálogo de {count} herramientas)",
         "commercialVendorCatalog": "Catálogo de proveedores de IA (integración con vendor.watch)",
@@ -1920,7 +1920,7 @@
         }
       ],
       "euRolesTitle": "Roles del Reglamento de IA de la UE",
-      "euRolesIntro": "El Reglamento de IA de la UE asigna obligaciones distintas según tu rol en la cadena de valor de la IA (Art. 3). Asigna el rol correcto a cada sistema para determinar los requisitos aplicables.",
+      "euRolesIntro": "El Reglamento de IA de la UE asigna obligaciones distintas según tu rol en la cadena de valor de la IA (art. 3). Asigna el rol correcto a cada sistema para determinar los requisitos aplicables.",
       "euRoles": [
         {
           "role": "Proveedor",
@@ -1978,17 +1978,17 @@
       "tiers": {
         "unacceptable": {
           "level": "Inaceptable",
-          "description": "Sistemas de IA que suponen un riesgo inaceptable para la seguridad o los derechos fundamentales. Están prohibidos por el Art. 5.",
+          "description": "Sistemas de IA que suponen un riesgo inaceptable para la seguridad o los derechos fundamentales. Están prohibidos por el art. 5.",
           "examples": "Puntuación social, identificación biométrica remota en tiempo real en espacios públicos, técnicas de manipulación."
         },
         "high": {
           "level": "Alto",
-          "description": "Sistemas de IA incluidos en el Anexo III o usados como componentes de seguridad. Sujetos a los requisitos completos de cumplimiento (Art. 6-51).",
+          "description": "Sistemas de IA incluidos en el Anexo III o usados como componentes de seguridad. Sujetos a los requisitos completos de cumplimiento (art. 6-51).",
           "examples": "Identificación biométrica, infraestructuras críticas, decisiones de empleo, fuerzas del orden."
         },
         "limited": {
           "level": "Limitado",
-          "description": "Sistemas de IA con obligaciones específicas de transparencia. Los usuarios deben ser informados de que interactúan con una IA (Art. 50).",
+          "description": "Sistemas de IA con obligaciones específicas de transparencia. Los usuarios deben ser informados de que interactúan con una IA (art. 50).",
           "examples": "Chatbots, generadores de deepfakes, sistemas de reconocimiento de emociones."
         },
         "minimal": {
@@ -2067,7 +2067,7 @@
       "templates": {
         "fria": {
           "label": "Evaluación de impacto sobre los derechos fundamentales",
-          "description": "Obligatoria según el Art. 27 para IA de alto riesgo desplegada por organismos públicos o determinadas entidades privadas."
+          "description": "Obligatoria según el art. 27 para IA de alto riesgo desplegada por organismos públicos o determinadas entidades privadas."
         },
         "aiRisk": {
           "label": "Evaluación de riesgos de IA",
@@ -2079,7 +2079,7 @@
         },
         "conformity": {
           "label": "Evaluación de conformidad",
-          "description": "Evaluación de conformidad del Art. 43 y los Anexos VI/VII para sistemas de IA de alto riesgo. Obligatoria antes de la introducción en el mercado."
+          "description": "Evaluación de conformidad del art. 43 y los Anexos VI/VII para sistemas de IA de alto riesgo. Obligatoria antes de la introducción en el mercado."
         },
         "biasFairness": {
           "label": "Evaluación de sesgo y equidad",
@@ -2151,9 +2151,9 @@
     },
     "oversight": {
       "metaTitle": "Supervisión humana: documentación de AI SENTINEL",
-      "metaDescription": "Puntos de control de aprobación, programación de revisiones y registro de decisiones para el cumplimiento del Art. 14 del Reglamento de IA de la UE.",
+      "metaDescription": "Puntos de control de aprobación, programación de revisiones y registro de decisiones para el cumplimiento del art. 14 del Reglamento de IA de la UE.",
       "title": "Supervisión humana",
-      "intro": "Implementa los requisitos de supervisión humana del Art. 14 para sistemas de IA de alto riesgo. Configura puntos de control de aprobación en las etapas clave del ciclo de vida, programa revisiones periódicas y mantén un registro completo de decisiones para los reguladores.",
+      "intro": "Implementa los requisitos de supervisión humana del art. 14 para sistemas de IA de alto riesgo. Configura puntos de control de aprobación en las etapas clave del ciclo de vida, programa revisiones periódicas y mantén un registro completo de decisiones para los reguladores.",
       "gateTypesTitle": "Tipos de puntos de control",
       "gateTypesIntro": "Los puntos de control son verificaciones que requieren revisión y aprobación humanas antes de que un sistema de IA pueda avanzar. Cada punto de control está vinculado a un sistema de IA concreto y asignado a un revisor.",
       "gateTypes": [
@@ -2179,7 +2179,7 @@
         }
       ],
       "decisionTitle": "Registro de decisiones",
-      "decisionIntro": "Cada decisión de supervisión se registra con el revisor, la fecha y hora, el resultado y la justificación. Esto constituye el registro de auditoría del Art. 14 exigido para los sistemas de IA de alto riesgo.",
+      "decisionIntro": "Cada decisión de supervisión se registra con el revisor, la fecha y hora, el resultado y la justificación. Esto constituye el registro de auditoría del art. 14 exigido para los sistemas de IA de alto riesgo.",
       "decisions": {
         "approve": {
           "label": "Aprobar",
@@ -2225,9 +2225,9 @@
     },
     "incidents": {
       "metaTitle": "Incidentes de IA: documentación de AI SENTINEL",
-      "metaDescription": "Haz seguimiento de fallos específicos de IA, coordina tareas de respuesta y gestiona las notificaciones a autoridades del Art. 73.",
+      "metaDescription": "Haz seguimiento de fallos específicos de IA, coordina tareas de respuesta y gestiona las notificaciones a autoridades del art. 73.",
       "title": "Incidentes de IA",
-      "intro": "Haz seguimiento de los incidentes específicos de IA desde la notificación inicial hasta la resolución. Gestiona los plazos de respuesta, coordina tareas y tramita las notificaciones a autoridades del Art. 73 para incidentes graves que afecten a sistemas de IA de alto riesgo.",
+      "intro": "Haz seguimiento de los incidentes específicos de IA desde la notificación inicial hasta la resolución. Gestiona los plazos de respuesta, coordina tareas y tramita las notificaciones a autoridades del art. 73 para incidentes graves que afecten a sistemas de IA de alto riesgo.",
       "typesTitle": "Tipos de incidente",
       "typesIntro": "AI SENTINEL registra tipos de incidente específicos de los sistemas de IA, distintos de los incidentes de protección de datos gestionados en DPO Central.",
       "types": [
@@ -2264,14 +2264,14 @@
         },
         "high": {
           "level": "Alta",
-          "description": "Impacto significativo. Probablemente requiere notificación a la autoridad conforme al Art. 73."
+          "description": "Impacto significativo. Probablemente requiere notificación a la autoridad conforme al art. 73."
         },
         "critical": {
           "level": "Crítica",
-          "description": "Fallo a gran escala o riesgo para la seguridad. Requiere notificación inmediata conforme al Art. 73."
+          "description": "Fallo a gran escala o riesgo para la seguridad. Requiere notificación inmediata conforme al art. 73."
         }
       },
-      "art73Title": "Notificaciones a autoridades (Art. 73)",
+      "art73Title": "Notificaciones a autoridades (art. 73)",
       "art73Intro": "Conforme al artículo 73 del Reglamento de IA de la UE, los proveedores de sistemas de IA de alto riesgo deben notificar los incidentes graves a la autoridad de vigilancia del mercado competente. AI SENTINEL registra los plazos de notificación, las autoridades destinatarias y el estado de presentación.",
       "art73": {
         "whenTitle": "Cuándo notificar",
@@ -2297,7 +2297,7 @@
           "badge": "ACTUALIZACIÓN"
         },
         "notification": {
-          "event": "Notificación del Art. 73 enviada a la autoridad",
+          "event": "Notificación del art. 73 enviada a la autoridad",
           "badge": "NOTIFICACIÓN"
         },
         "mitigation": {
@@ -2329,7 +2329,7 @@
         {
           "role": "Responsable de IA",
           "title": "Notifica a las autoridades si procede",
-          "description": "Para sistemas de alto riesgo con incidentes graves, prepara y presenta la notificación del Art. 73."
+          "description": "Para sistemas de alto riesgo con incidentes graves, prepara y presenta la notificación del art. 73."
         },
         {
           "role": "Responsable de IA",
@@ -2339,12 +2339,12 @@
       ]
     },
     "transparency": {
-      "metaTitle": "Transparencia (Art. 50): Documentación de AI SENTINEL",
-      "metaDescription": "Haz seguimiento de las obligaciones de transparencia del Art. 50 del Reglamento de IA de la UE por sistema de IA: información de la interacción con IA, marcado de contenido sintético, reconocimiento de emociones y etiquetado de ultrasuplantaciones.",
-      "title": "Transparencia (Art. 50)",
-      "intro": "El artículo 50 del Reglamento de IA de la UE impone deberes de transparencia que atraviesan los niveles de riesgo: incluso un chatbot de riesgo mínimo debe informar. AI SENTINEL registra las cuatro obligaciones del Art. 50 por sistema de IA, las separa según quién las debe realmente y cuenta atrás el único plazo que tiene período transitorio.",
+      "metaTitle": "Transparencia (art. 50): Documentación de AI SENTINEL",
+      "metaDescription": "Haz seguimiento de las obligaciones de transparencia del art. 50 del Reglamento de IA de la UE por sistema de IA: información de la interacción con IA, marcado de contenido sintético, reconocimiento de emociones y etiquetado de ultrasuplantaciones.",
+      "title": "Transparencia (art. 50)",
+      "intro": "El artículo 50 del Reglamento de IA de la UE impone deberes de transparencia que atraviesan los niveles de riesgo: incluso un chatbot de riesgo mínimo debe informar. AI SENTINEL registra las cuatro obligaciones del art. 50 por sistema de IA, las separa según quién las debe realmente y cuenta atrás el único plazo que tiene período transitorio.",
       "applicabilityTitle": "Cuándo se aplica",
-      "applicabilityBody1": "El Art. 50 se aplica desde el <strong>2 de agosto de 2026</strong> (Art. 113, párrafo segundo). El Art. 111(4), introducido por el Reglamento (UE) 2026/1744 (el Ómnibus Digital sobre IA, DO L de 24 de julio de 2026), da a los proveedores de sistemas generativos introducidos en el mercado <em>antes</em> de esa fecha hasta el <strong>2 de diciembre de 2026</strong> para cumplir la obligación de marcado legible por máquina del Art. 50(2).",
+      "applicabilityBody1": "El art. 50 se aplica desde el <strong>2 de agosto de 2026</strong> (art. 113, párrafo segundo). El art. 111(4), introducido por el Reglamento (UE) 2026/1744 (el Ómnibus Digital sobre IA, DO L de 24 de julio de 2026), da a los proveedores de sistemas generativos introducidos en el mercado <em>antes</em> de esa fecha hasta el <strong>2 de diciembre de 2026</strong> para cumplir la obligación de marcado legible por máquina del art. 50(2).",
       "applicabilityBody2": "Ese período de gracia es el motivo por el que el Registro de IA pregunta si un sistema se introdujo en el mercado antes del 2 de agosto de 2026. Respóndelo con precisión: es el único dato que modifica el plazo de marcado, y el contador de «marcado vencido» del panel se deriva de él.",
       "obligationsTitle": "Las cuatro obligaciones",
       "obligationsIntro": "Dos corresponden al proveedor y dos al responsable del despliegue. Una misma organización suele desempeñar ambos papeles, pero registrarlas por separado es lo que te permite responder a un regulador que pregunte en calidad de qué actuabas.",
@@ -2365,7 +2365,7 @@
           "article": "Art. 50(3)",
           "actorLabel": "Obligación del responsable del despliegue",
           "title": "Reconocimiento de emociones y categorización biométrica",
-          "description": "Los responsables del despliegue deben informar a las personas expuestas a un sistema de reconocimiento de emociones o de categorización biométrica de que está en uso. Ten en cuenta que varios de estos usos están directamente prohibidos por el Art. 5: el módulo señala ese solapamiento en lugar de permitirte registrar una información sobre una práctica que no puedes ejercer legalmente."
+          "description": "Los responsables del despliegue deben informar a las personas expuestas a un sistema de reconocimiento de emociones o de categorización biométrica de que está en uso. Ten en cuenta que varios de estos usos están directamente prohibidos por el art. 5: el módulo señala ese solapamiento en lugar de permitirte registrar una información sobre una práctica que no puedes ejercer legalmente."
         },
         {
           "article": "Art. 50(4)",
@@ -2393,7 +2393,7 @@
       "workingSteps": [
         {
           "step": "Abre la pestaña de Transparencia del sistema",
-          "body": "Cada sistema de IA del registro tiene una pestaña de Transparencia (Art. 50) junto a Modelos, Fuentes de Datos y Clasificación de Riesgos."
+          "body": "Cada sistema de IA del registro tiene una pestaña de Transparencia (art. 50) junto a Modelos, Fuentes de Datos y Clasificación de Riesgos."
         },
         {
           "step": "Revisa las obligaciones sugeridas",
@@ -2409,7 +2409,7 @@
         }
       ],
       "scopeTitle": "Una nota sobre el alcance",
-      "scopeBody": "Este módulo registra tu posición respecto al Art. 50; no marca el contenido por ti. El marcado legible por máquina se implementa en el propio sistema generador. AI SENTINEL es donde documentas qué sistemas deben cumplir la obligación, si está satisfecha y cómo: para que la respuesta exista antes de que alguien la pida."
+      "scopeBody": "Este módulo registra tu posición respecto al art. 50; no marca el contenido por ti. El marcado legible por máquina se implementa en el propio sistema generador. AI SENTINEL es donde documentas qué sistemas deben cumplir la obligación, si está satisfecha y cómo: para que la respuesta exista antes de que alguien la pida."
     },
     "compliance": {
       "metaTitle": "Cumplimiento: documentación de AI SENTINEL",
@@ -2421,7 +2421,7 @@
       "frameworks": {
         "euAiAct": {
           "name": "Reglamento de IA de la UE",
-          "description": "Mapeo de obligaciones clave desde el Art. 4 (alfabetización en IA) y el Art. 5 (prácticas prohibidas) hasta el Art. 73 (incidentes graves) y el calendario de aplicación del Art. 113, además de los anexos relevantes. El principal marco normativo para los sistemas de IA en la Unión Europea.",
+          "description": "Mapeo de obligaciones clave desde el art. 4 (alfabetización en IA) y el art. 5 (prácticas prohibidas) hasta el art. 73 (incidentes graves) y el calendario de aplicación del art. 113, además de los anexos relevantes. El principal marco normativo para los sistemas de IA en la Unión Europea.",
           "items": "{count} requisitos: artículos y anexos"
         },
         "nist": {
@@ -2487,13 +2487,13 @@
       "matrixExport": [
         "Exportación CSV para análisis en hoja de cálculo",
         "Exportación PDF para presentaciones regulatorias",
-        "Paquetes de documentación técnica (Art. 11 / Anexo IV)",
+        "Paquetes de documentación técnica (art. 11 / Anexo IV)",
         "Informes de cumplimiento listos para auditoría"
       ],
       "crossTitle": "Mapeo entre marcos",
       "crossIntro": "Muchos requisitos de los nueve marcos se solapan. AI SENTINEL incluye {count} mapeos entre marcos predefinidos, para que un mismo trabajo pueda servir de evidencia en varios marcos a la vez.",
       "crossBody1": "Cuando marcas un requisito como <s>Conforme</s> o <s>Parcialmente Conforme</s>, AI SENTINEL muestra los requisitos vinculados de otros marcos y ofrece propagar el estado automáticamente.",
-      "crossBody2": "Por ejemplo, marcar como conforme el Art. 9 del Reglamento de IA de la UE (Gestión de Riesgos) puede actualizar automáticamente NIST GOVERN 1 (Políticas de Gestión de Riesgos) y la Cláusula 6.1 de ISO 42001 (Acciones para Abordar Riesgos), porque cubren la misma obligación.",
+      "crossBody2": "Por ejemplo, marcar como conforme el art. 9 del Reglamento de IA de la UE (Gestión de Riesgos) puede actualizar automáticamente NIST GOVERN 1 (Políticas de Gestión de Riesgos) y la Cláusula 6.1 de ISO 42001 (Acciones para Abordar Riesgos), porque cubren la misma obligación.",
       "crossStats": {
         "equivalent": "Mapeos equivalentes",
         "partial": "Mapeos parciales",
@@ -2853,7 +2853,7 @@
         },
         {
           "title": "Cumplimiento normativo",
-          "description": "El Reglamento de IA de la UE exige a los responsables del despliegue conocer los sistemas de IA que utilizan. Los niveles de riesgo preclasificados y los indicadores de cumplimiento ayudan a cumplir las obligaciones de los Art. 6 y 26."
+          "description": "El Reglamento de IA de la UE exige a los responsables del despliegue conocer los sistemas de IA que utilizan. Los niveles de riesgo preclasificados y los indicadores de cumplimiento ayudan a cumplir las obligaciones de los art. 6 y 26."
         },
         {
           "title": "Actualizaciones continuas",
@@ -2921,26 +2921,26 @@
     },
     "conformity": {
       "metaTitle": "Evaluación de conformidad: documentación de AI SENTINEL",
-      "metaDescription": "Plantilla de evaluación de conformidad del Art. 43 del Reglamento de IA de la UE para sistemas de IA de alto riesgo. Evaluación estructurada de la documentación técnica, la gestión de la calidad y el seguimiento poscomercialización.",
+      "metaDescription": "Plantilla de evaluación de conformidad del art. 43 del Reglamento de IA de la UE para sistemas de IA de alto riesgo. Evaluación estructurada de la documentación técnica, la gestión de la calidad y el seguimiento poscomercialización.",
       "premiumBadge": "Premium",
       "title": "Evaluación de conformidad",
       "intro": "Los sistemas de IA de alto riesgo bajo el Reglamento de IA de la UE deben someterse a una evaluación de conformidad antes de su introducción en el mercado. AI SENTINEL proporciona una plantilla estructurada que guía a tu equipo por cada requisito (desde la documentación técnica hasta el seguimiento poscomercialización) para que nada se quede en el tintero.",
       "whatTitle": "¿Qué es una evaluación de conformidad?",
-      "whatP1": "Una evaluación de conformidad es un proceso de evaluación formal exigido por el Art. 43 del Reglamento de IA de la UE para los sistemas de IA de alto riesgo. Verifica que el sistema de IA cumple todos los requisitos aplicables antes del despliegue, cubriendo la gobernanza de datos, la transparencia, la supervisión humana, la precisión, la solidez y la ciberseguridad.",
+      "whatP1": "Una evaluación de conformidad es un proceso de evaluación formal exigido por el art. 43 del Reglamento de IA de la UE para los sistemas de IA de alto riesgo. Verifica que el sistema de IA cumple todos los requisitos aplicables antes del despliegue, cubriendo la gobernanza de datos, la transparencia, la supervisión humana, la precisión, la solidez y la ciberseguridad.",
       "whatP2": "Según el caso de uso, las evaluaciones de conformidad pueden realizarse internamente por el proveedor o a través de un organismo notificado externo. En ambos casos, la evaluación debe seguir una metodología estructurada y producir evidencia documentada del cumplimiento.",
       "whoTitle": "¿Quién la necesita?",
       "whoItems": [
         {
           "title": "Proveedores de IA",
-          "description": "Las organizaciones que desarrollan o introducen sistemas de IA de alto riesgo en el mercado de la UE deben completar una evaluación de conformidad antes del despliegue (Art. 16)."
+          "description": "Las organizaciones que desarrollan o introducen sistemas de IA de alto riesgo en el mercado de la UE deben completar una evaluación de conformidad antes del despliegue (art. 16)."
         },
         {
           "title": "Responsables del despliegue",
-          "description": "Las organizaciones que despliegan sistemas de IA de alto riesgo deben verificar que el proveedor ha completado la evaluación de conformidad y que el marcado CE está en su sitio (Art. 26)."
+          "description": "Las organizaciones que despliegan sistemas de IA de alto riesgo deben verificar que el proveedor ha completado la evaluación de conformidad y que el marcado CE está en su sitio (art. 26)."
         },
         {
           "title": "Sistemas del Anexo III",
-          "description": "Sistemas de IA utilizados en biometría, infraestructuras críticas, educación, empleo, servicios esenciales, aplicación de la ley, migración o administración de justicia (Art. 6, apartado 2)."
+          "description": "Sistemas de IA utilizados en biometría, infraestructuras críticas, educación, empleo, servicios esenciales, aplicación de la ley, migración o administración de justicia (art. 6, apartado 2)."
         },
         {
           "title": "Equipos internos de cumplimiento",
@@ -2951,39 +2951,39 @@
       "coversItems": [
         {
           "area": "Sistema de Gestión de Riesgos",
-          "description": "Verificación de que existe un sistema de gestión de riesgos establecido y mantenido durante todo el ciclo de vida del sistema de IA (Art. 9)."
+          "description": "Verificación de que existe un sistema de gestión de riesgos establecido y mantenido durante todo el ciclo de vida del sistema de IA (art. 9)."
         },
         {
           "area": "Gobernanza de Datos",
-          "description": "Evaluación de los datos de entrenamiento, validación y prueba, incluida su pertinencia, representatividad y el examen de sesgos (Art. 10)."
+          "description": "Evaluación de los datos de entrenamiento, validación y prueba, incluida su pertinencia, representatividad y el examen de sesgos (art. 10)."
         },
         {
           "area": "Documentación Técnica",
-          "description": "Revisión de la exhaustividad de la documentación técnica: descripción del sistema, especificaciones de diseño, proceso de desarrollo y métricas de rendimiento (Art. 11, Anexo IV)."
+          "description": "Revisión de la exhaustividad de la documentación técnica: descripción del sistema, especificaciones de diseño, proceso de desarrollo y métricas de rendimiento (art. 11, Anexo IV)."
         },
         {
           "area": "Registros y Trazabilidad",
-          "description": "Evaluación de las capacidades de registro automático para la trazabilidad, incluidos los registros de entradas/salidas y los eventos del sistema (Art. 12)."
+          "description": "Evaluación de las capacidades de registro automático para la trazabilidad, incluidos los registros de entradas/salidas y los eventos del sistema (art. 12)."
         },
         {
           "area": "Transparencia",
-          "description": "Evaluación de las instrucciones de uso, la divulgación de la naturaleza de IA y las medidas de interpretabilidad para responsables del despliegue y personas afectadas (Art. 13)."
+          "description": "Evaluación de las instrucciones de uso, la divulgación de la naturaleza de IA y las medidas de interpretabilidad para responsables del despliegue y personas afectadas (art. 13)."
         },
         {
           "area": "Supervisión Humana",
-          "description": "Verificación de que el sistema incorpora por diseño medidas adecuadas de supervisión humana y de que están documentadas (Art. 14)."
+          "description": "Verificación de que el sistema incorpora por diseño medidas adecuadas de supervisión humana y de que están documentadas (art. 14)."
         },
         {
           "area": "Precisión, Solidez y Ciberseguridad",
-          "description": "Pruebas y validación de los niveles de precisión, la resiliencia frente a errores y ataques adversarios, y las medidas de ciberseguridad (Art. 15)."
+          "description": "Pruebas y validación de los niveles de precisión, la resiliencia frente a errores y ataques adversarios, y las medidas de ciberseguridad (art. 15)."
         },
         {
           "area": "Sistema de Gestión de la Calidad",
-          "description": "Revisión del sistema de gestión de la calidad del proveedor, que cubre los procesos de desarrollo, las pruebas y las obligaciones poscomercialización (Art. 17)."
+          "description": "Revisión del sistema de gestión de la calidad del proveedor, que cubre los procesos de desarrollo, las pruebas y las obligaciones poscomercialización (art. 17)."
         },
         {
           "area": "Seguimiento Poscomercialización",
-          "description": "Verificación de que existe un plan de seguimiento poscomercialización para detectar y abordar problemas tras el despliegue (Art. 72)."
+          "description": "Verificación de que existe un plan de seguimiento poscomercialización para detectar y abordar problemas tras el despliegue (art. 72)."
         }
       ],
       "howTitle": "Cómo funciona",
@@ -3014,16 +3014,16 @@
       "intro": "Los sistemas de IA pueden producir resultados discriminatorios, a menudo de forma involuntaria. La Evaluación de Sesgo y Equidad proporciona una metodología estructurada para evaluar los riesgos de sesgo de tus sistemas de IA, documentar los atributos protegidos afectados y hacer seguimiento de las medidas de mitigación.",
       "whatTitle": "¿Qué es una evaluación de sesgo y equidad?",
       "whatP1": "Una evaluación de sesgo y equidad es una evaluación sistemática del potencial de un sistema de IA para producir resultados que perjudiquen injustamente a personas o grupos por características protegidas, como la raza, el género, la edad, la discapacidad, el origen étnico o el nivel socioeconómico.",
-      "whatP2": "Según el Reglamento de IA de la UE, los proveedores de sistemas de IA de alto riesgo deben examinar los datos de entrenamiento en busca de posibles sesgos (Art. 10) e implantar medidas para prevenir resultados discriminatorios. La Carta de los Derechos Fundamentales de la UE (Art. 21) prohíbe explícitamente la discriminación, y los sistemas de IA que puntúan, clasifican o toman decisiones sobre personas están especialmente expuestos a este riesgo.",
+      "whatP2": "Según el Reglamento de IA de la UE, los proveedores de sistemas de IA de alto riesgo deben examinar los datos de entrenamiento en busca de posibles sesgos (art. 10) e implantar medidas para prevenir resultados discriminatorios. La Carta de los Derechos Fundamentales de la UE (art. 21) prohíbe explícitamente la discriminación, y los sistemas de IA que puntúan, clasifican o toman decisiones sobre personas están especialmente expuestos a este riesgo.",
       "whyTitle": "Por qué es importante",
       "whyItems": [
         {
           "title": "Obligación legal",
-          "description": "El Reglamento de IA de la UE exige examinar los sesgos de los datos de entrenamiento (Art. 10(2)(f)) y aplicar salvaguardias de no discriminación en los sistemas de alto riesgo. El incumplimiento conlleva multas de hasta el 3 % del volumen de negocio mundial."
+          "description": "El Reglamento de IA de la UE exige examinar los sesgos de los datos de entrenamiento (art. 10(2)(f)) y aplicar salvaguardias de no discriminación en los sistemas de alto riesgo. El incumplimiento conlleva multas de hasta el 3 % del volumen de negocio mundial."
         },
         {
           "title": "Derechos fundamentales",
-          "description": "La discriminación provocada por la IA puede vulnerar el derecho a la no discriminación (Art. 21 de la Carta de la UE), las directivas de igualdad de trato y la legislación nacional en materia de igualdad."
+          "description": "La discriminación provocada por la IA puede vulnerar el derecho a la no discriminación (art. 21 de la Carta de la UE), las directivas de igualdad de trato y la legislación nacional en materia de igualdad."
         },
         {
           "title": "Impacto en el mundo real",
@@ -4081,7 +4081,7 @@
       "controlGate": "Punto de control: {gateType}",
       "control": {
         "register": "Registro de IA",
-        "transparency": "Transparencia (Art. 50)"
+        "transparency": "Transparencia (art. 50)"
       }
     },
     "map": {
@@ -4113,7 +4113,7 @@
         "risk-unclassified": "Sin clasificar",
         "glyph-gate": "Punto de control",
         "glyph-policy": "Políticas vinculadas",
-        "glyph-transparency": "Transparencia (Art. 50)",
+        "glyph-transparency": "Transparencia (art. 50)",
         "glyph-personal-data": "Datos personales"
       }
     }
@@ -4138,7 +4138,7 @@
       "risk-unclassified": "Sin clasificar",
       "glyph-gate": "Punto de control",
       "glyph-policy": "Políticas vinculadas",
-      "glyph-transparency": "Transparencia Art. 50",
+      "glyph-transparency": "Transparencia art. 50",
       "glyph-personal-data": "Trata datos personales"
     },
     "scorecard": {
@@ -4314,7 +4314,7 @@
       "ComplianceMapping": "Requisito de cumplimiento",
       "OversightGate": "Punto de control",
       "AIPolicy": "Política",
-      "TransparencyProfile": "Perfil del Art. 50"
+      "TransparencyProfile": "Perfil del art. 50"
     },
     "queue": {
       "title": "Cola de revisión",
@@ -5302,7 +5302,7 @@
     "methodPlaceholder": "¿Qué hiciste exactamente? Con detalle suficiente para que otra persona pueda repetirlo.",
     "resultLabel": "Resultado",
     "evidenceLabel": "Evidencia",
-    "evidencePlaceholder": "Un identificador de ejecución, un ticket, una transcripción",
+    "evidencePlaceholder": "Un identificador de la prueba, un ticket, una transcripción",
     "notesLabel": "Notas",
     "notesPlaceholder": "¿Qué observaste? Incluido lo que aun así se coló.",
     "implemented": "Implantado",
@@ -5587,7 +5587,7 @@
       },
       "transparency": {
         "label": "Avisar de que es IA",
-        "why": "Registra para cada sistema si hay que avisar a las personas de que tratan con IA (Art. 50).",
+        "why": "Registra para cada sistema si hay que avisar a las personas de que tratan con IA (art. 50).",
         "do": "Registra para cada sistema si hay que avisar a las personas de que tratan con IA. Abre un sistema para hacerlo."
       },
       "evidence": {
@@ -5834,7 +5834,7 @@
     "placeholder": {
       "method": "Por ejemplo: enviamos 50 intentos de inyección de instrucciones del conjunto de pruebas público al agente de atención al cliente, por su chat.",
       "observed": "Por ejemplo: rechazó 48; 2 revelaron las instrucciones del sistema (intentos 17 y 31).",
-      "evidenceRef": "Un enlace, un identificador de ejecución, un archivo o una incidencia",
+      "evidenceRef": "Un enlace, un identificador de la prueba, un archivo o una incidencia",
       "performedBy": "Déjalo vacío si la hiciste tú"
     },
     "help": {

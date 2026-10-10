@@ -42,7 +42,7 @@ export const AUTONOMY_LABELS: Record<AgentAutonomyValue, Localized> = {
   },
   SUGGESTS: {
     en: "Proposes an action; a person carries it out",
-    es: "Propone una acción; la ejecuta una persona",
+    es: "Propone una acción; la lleva a cabo una persona",
   },
   ACTS_WITH_APPROVAL: {
     en: "Acts itself, after explicit approval",
@@ -57,7 +57,7 @@ export const AUTONOMY_LABELS: Record<AgentAutonomyValue, Localized> = {
 export const AUTONOMY_HELP: Record<AgentAutonomyValue, Localized> = {
   NOT_ASSESSED: {
     en: "Nobody has answered. The agentic analysis will not run until someone does.",
-    es: "Nadie ha respondido. El análisis agéntico no se ejecutará hasta que alguien lo haga.",
+    es: "Nadie ha respondido. El análisis agéntico no se pondrá en marcha hasta que alguien lo haga.",
   },
   NONE: {
     en: "The ordinary case the regimes were written for: the system scores, ranks or drafts, and a person decides what happens next.",
@@ -69,7 +69,7 @@ export const AUTONOMY_HELP: Record<AgentAutonomyValue, Localized> = {
   },
   ACTS_WITH_APPROVAL: {
     en: "The agent executes, but only once approved. The approval is what keeps the decision out of the solely-automated category, so it has to be real and recorded.",
-    es: "El agente ejecuta, pero solo una vez aprobado. Esa aprobación es lo que mantiene la decisión fuera de la categoría de únicamente automatizada, así que debe ser real y quedar registrada.",
+    es: "El agente actúa, pero solo una vez aprobado. Esa aprobación es lo que mantiene la decisión fuera de la categoría de únicamente automatizada, así que debe ser real y quedar registrada.",
   },
   ACTS_AUTONOMOUSLY: {
     en: "The agent acts on its own. The decision the person experiences is the agent's action, and every artifact needs the agentic provisions.",

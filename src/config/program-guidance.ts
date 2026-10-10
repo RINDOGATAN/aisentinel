@@ -320,7 +320,7 @@ export const PROGRAM_ACTION_TEMPLATES: ActionTemplate[] = [
   },
   {
     id: "no-systems",
-    title: { en: "Run the quick start", es: "Ejecutar el inicio rápido" },
+    title: { en: "Run the quick start", es: "Completar el inicio rápido" },
     detail: {
       en: "Register the AI tools your organization actually uses to create the program baseline: systems, risk classifications, oversight gates, and policies in one pass.",
       es: "Registra las herramientas de IA que tu organización utiliza realmente para crear la base del programa: sistemas, clasificaciones de riesgo, puntos de control y políticas en un solo paso.",
@@ -388,11 +388,11 @@ export const PROGRAM_ACTION_TEMPLATES: ActionTemplate[] = [
     id: "missing-transparency-profiles",
     title: {
       en: "Complete Art. 50 transparency profiles",
-      es: "Completar los perfiles de transparencia del Art. 50",
+      es: "Completar los perfiles de transparencia del art. 50",
     },
     detail: {
       en: "Record the Art. 50 transparency posture for each generative system: user disclosure, content marking, and applicable exceptions.",
-      es: "Registra la situación de transparencia del Art. 50 de cada sistema generativo: información al usuario, marcado de contenidos y excepciones aplicables.",
+      es: "Registra la situación de transparencia del art. 50 de cada sistema generativo: información al usuario, marcado de contenidos y excepciones aplicables.",
     },
     href: "/governance/ai-registry",
     effort: "M",

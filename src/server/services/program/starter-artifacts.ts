@@ -52,6 +52,13 @@ export function toTemplateSections(sections: SelectedSection[], locale: ContentL
   }));
 }
 
+/** The title a new unified assessment gets: "<kind>: <system>", in the content language. */
+export function unifiedAssessmentTitle(systemName: string, locale: ContentLocale): string {
+  return locale === "es"
+    ? `Evaluación unificada de impacto de la IA: ${systemName}`
+    : `Unified AI impact assessment: ${systemName}`;
+}
+
 export type UnifiedDraftResult =
   | { created: true; assessmentId: string; templateId: string; overlayTags: string[] }
   | { created: false; reason: "jurisdictions-undeclared" };
@@ -70,14 +77,17 @@ export async function createUnifiedAssessmentDraft(
 
   const sections = selectUnifiedQuestions(scope.overlayTags);
   const templateSections = toTemplateSections(sections, args.locale);
-  const name = args.title ?? `Unified AI impact assessment — ${scope.system.name}`;
+  const name = args.title ?? unifiedAssessmentTitle(scope.system.name, args.locale);
 
   const template = await prisma.aIAssessmentTemplate.create({
     data: {
       organizationId: args.organizationId,
       name,
       type: "CUSTOM",
-      description: `Unified impact assessment calibrated to ${scope.jurisdictions.join(", ")}. Content ${UNIFIED_ASSESSMENT_VERSION}; law reviewed ${UNIFIED_ASSESSMENT_LAW_REVIEWED_AS_OF}; legal sign-off pending.`,
+      description:
+        args.locale === "es"
+          ? `Evaluación unificada de impacto ajustada a ${scope.jurisdictions.join(", ")}. Contenido ${UNIFIED_ASSESSMENT_VERSION}; revisión jurídica a ${UNIFIED_ASSESSMENT_LAW_REVIEWED_AS_OF}; validación jurídica pendiente.`
+          : `Unified impact assessment calibrated to ${scope.jurisdictions.join(", ")}. Content ${UNIFIED_ASSESSMENT_VERSION}; law reviewed ${UNIFIED_ASSESSMENT_LAW_REVIEWED_AS_OF}; legal sign-off pending.`,
       frameworkRef: "Unified: EU AI Act Art. 27 / GDPR Art. 35 / CCPA ADMT / CO / TX / WA",
       sections: templateSections as unknown as object[],
       isSystem: false,

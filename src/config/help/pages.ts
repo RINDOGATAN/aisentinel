@@ -101,7 +101,7 @@ export const PAGE_HELP: PageHelp[] = [
     ),
     firstStep: L(
       "Run the wizard for each registered system; the answers place it in a tier and record why.",
-      "Ejecuta el asistente para cada sistema registrado; las respuestas lo sitúan en un nivel y registran el motivo.",
+      "Completa el asistente para cada sistema registrado; las respuestas lo sitúan en un nivel y registran el motivo.",
     ),
     terms: ["high-risk", "bias", "stakeholder"],
     docs: [

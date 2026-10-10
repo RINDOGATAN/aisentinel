@@ -631,7 +631,7 @@ function RequirementRow({
                 title={cm.notes ?? undefined}
               >
                 <span className="font-medium">{frameworkShort(cm.frameworkCode, locale)}</span>
-                <span>{cm.code}</span>
+                <span>{requirementCode(cm.frameworkCode, cm.code, locale)}</span>
               </span>
             ))}
           </div>

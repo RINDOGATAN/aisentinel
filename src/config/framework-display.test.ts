@@ -219,6 +219,14 @@ describe("regime chips and citations", () => {
     expect(citationString("EU GDPR Art. 22", "en")).toBe("EU GDPR Art. 22");
   });
 
+  it("write requirement codes with a lower-case art. in Spanish, as stored in English", () => {
+    expect(requirementCode("EU_AI_ACT", "Art. 53", "es")).toBe("art. 53");
+    expect(requirementCode("EU_GDPR", "Art. 22(3)", "es")).toBe("art. 22(3)");
+    expect(requirementCode("EU_AI_ACT", "Art. 113 — 2 Aug 2026", "es")).toBe("art. 113, 2 ago 2026");
+    expect(requirementCode("EU_AI_ACT", "Art. 53", "en")).toBe("Art. 53");
+    expect(requirementCode("NIST_AI_RMF", "GOVERN 1", "es")).toBe("GOVERN 1");
+  });
+
   it("write citations in Spanish style", () => {
     expect(citationLabel("EU_GDPR", "Art. 22(3)", "es")).toBe("RGPD art. 22(3)");
     expect(citationLabel("EU_AI_ACT", "Annex III", "es")).toBe("RIA anexo III");

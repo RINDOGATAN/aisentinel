@@ -8,6 +8,7 @@ import {
   StatCard, AccentSectionHeader, StatusBadge,
   s, fmtDate,
 } from "./pdf-styles";
+import { assessmentTypeLabel, pdfLabels, statusLabel, type PdfLocale } from "./pdf-labels";
 import { DraftGapsPage, type DraftNote } from "./draft-gaps-page";
 
 export interface AssessmentExportData {
@@ -30,13 +31,17 @@ export function AssessmentPortfolioReport({
   assessments,
   orgName,
   draftNote,
+  locale = "en",
 }: {
   assessments: AssessmentExportData[];
   orgName: string;
   /** In the program pack, a draft opens on a page naming its gaps. */
   draftNote?: DraftNote | null;
+  locale?: PdfLocale;
 }) {
   const date = fmtDate(new Date());
+  const l = pdfLabels(locale);
+  const p = l.portfolio;
 
   const byType: Record<string, number> = {};
   const byStatus: Record<string, number> = {};
@@ -55,57 +60,61 @@ export function AssessmentPortfolioReport({
   const avgScore = scoredCount > 0 ? (totalScore / scoredCount).toFixed(1) : "—";
 
   return (
-    <Document>
+    <Document language={locale}>
       {draftNote && <DraftGapsPage note={draftNote} />}
       <CoverPage
         orgName={orgName}
-        title="AI Risk Assessment Portfolio"
-        subtitle="Overview of all AI risk assessments and their outcomes"
+        title={p.coverTitle}
+        subtitle={p.subtitle}
         date={date}
+        locale={locale}
       />
 
-      <ContentPage title="Assessment Portfolio" orgName={orgName} date={date}>
-        <Text style={s.sectionTitle}>Executive Summary</Text>
+      <ContentPage title={p.title} orgName={orgName} date={date} locale={locale}>
+        <Text style={s.sectionTitle}>{l.executiveSummary}</Text>
         <View style={s.statsGrid}>
-          <StatCard value={assessments.length} label="Total Assessments" />
-          <StatCard value={byStatus["APPROVED"] || 0} label="Approved" />
-          <StatCard value={byStatus["IN_PROGRESS"] || 0} label="In Progress" />
-          <StatCard value={avgScore} label="Avg Risk Score" />
+          <StatCard value={assessments.length} label={p.totalAssessments} />
+          <StatCard value={byStatus["APPROVED"] || 0} label={p.approved} />
+          <StatCard value={byStatus["IN_PROGRESS"] || 0} label={p.inProgress} />
+          <StatCard value={avgScore} label={p.avgRiskScore} />
         </View>
 
-        <Text style={s.sectionTitle}>By Assessment Type</Text>
+        <Text style={s.sectionTitle}>{p.byType}</Text>
         <DataTable
-          headers={["Type", "Count", "Percentage"]}
+          locale={locale}
+          headers={[l.type, l.count, l.percentage]}
           colWidths={[2, 1, 1]}
           rows={Object.entries(byType).map(([type, count]) => [
-            type.replace(/_/g, " "),
+            assessmentTypeLabel(type, locale),
             count,
             `${Math.round((count / assessments.length) * 100)}%`,
           ])}
         />
 
-        <Text style={s.sectionTitle}>By Status</Text>
+        <Text style={s.sectionTitle}>{p.byStatus}</Text>
         <DataTable
-          headers={["Status", "Count", "Percentage"]}
+          locale={locale}
+          headers={[l.status, l.count, l.percentage]}
           colWidths={[2, 1, 1]}
           rows={Object.entries(byStatus).map(([status, count]) => [
-            status.replace(/_/g, " "),
+            statusLabel(status, locale),
             count,
             `${Math.round((count / assessments.length) * 100)}%`,
           ])}
         />
       </ContentPage>
 
-      <ContentPage title="Assessment Portfolio" orgName={orgName} date={date}>
-        <Text style={s.sectionTitle}>Assessment Register</Text>
+      <ContentPage title={p.title} orgName={orgName} date={date} locale={locale}>
+        <Text style={s.sectionTitle}>{p.register}</Text>
         <DataTable
-          headers={["Title", "AI System", "Type", "Status", "Risk Score", "Created"]}
+          locale={locale}
+          headers={[p.assessmentTitle, l.aiSystem, l.type, l.status, p.riskScore, p.created]}
           colWidths={[3, 2, 1.2, 1.2, 1, 1]}
           rows={assessments.map((a) => [
             a.title,
             a.aiSystemName,
-            a.type.replace(/_/g, " "),
-            a.status.replace(/_/g, " "),
+            assessmentTypeLabel(a.type, locale),
+            statusLabel(a.status, locale),
             a.riskScore != null ? a.riskScore.toFixed(1) : "—",
             fmtDate(a.createdAt),
           ])}
@@ -113,21 +122,21 @@ export function AssessmentPortfolioReport({
       </ContentPage>
 
       {assessments.map((a) => (
-        <ContentPage key={a.id} title="Assessment Portfolio" orgName={orgName} date={date}>
+        <ContentPage key={a.id} title={p.title} orgName={orgName} date={date} locale={locale}>
           <AccentSectionHeader title={a.title} />
-          <StatusBadge status={a.status} />
+          <StatusBadge status={a.status} locale={locale} />
           <MetadataBlock
             items={[
-              { label: "AI System", value: a.aiSystemName },
-              { label: "Type", value: a.type.replace(/_/g, " ") },
-              { label: "Template", value: a.templateName },
-              { label: "Risk Score", value: a.riskScore != null ? a.riskScore.toFixed(1) : null },
-              { label: "Created By", value: a.createdBy },
-              { label: "Created", value: fmtDate(a.createdAt) },
-              { label: "Reviewed By", value: a.reviewedBy },
-              { label: "Reviewed", value: fmtDate(a.reviewedAt) },
-              { label: "Approved By", value: a.approvedBy },
-              { label: "Approved", value: fmtDate(a.approvedAt) },
+              { label: l.aiSystem, value: a.aiSystemName },
+              { label: l.type, value: assessmentTypeLabel(a.type, locale) },
+              { label: p.template, value: a.templateName },
+              { label: p.riskScore, value: a.riskScore != null ? a.riskScore.toFixed(1) : null },
+              { label: p.createdBy, value: a.createdBy },
+              { label: p.created, value: fmtDate(a.createdAt) },
+              { label: p.reviewedBy, value: a.reviewedBy },
+              { label: p.reviewed, value: fmtDate(a.reviewedAt) },
+              { label: p.approvedBy, value: a.approvedBy },
+              { label: p.approvedOn, value: fmtDate(a.approvedAt) },
             ]}
           />
         </ContentPage>

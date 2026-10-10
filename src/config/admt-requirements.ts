@@ -169,7 +169,7 @@ const clusterA: AdmtRequirementSeed[] = [
     },
     description: {
       en: "Document, for each system, whether a human reviewer (A) knows how to interpret and use the technology's output to make the decision, (B) reviews and analyses that output together with any other information relevant to making or changing the decision, and (C) has authority to make or change the decision based on that analysis. The test is conjunctive: failing any one prong means the technology substantially replaces human decisionmaking and IS ADMT. Rubber-stamp review — a reviewer without authority to overturn — does not satisfy it.",
-      es: "Documenta, para cada sistema, si la persona revisora (A) sabe interpretar y utilizar el resultado de la tecnología para adoptar la decisión, (B) revisa y analiza ese resultado junto con cualquier otra información pertinente para adoptar o modificar la decisión, y (C) tiene autoridad para adoptar o modificar la decisión con base en ese análisis. El test es acumulativo: el incumplimiento de cualquiera de los tres requisitos implica que la tecnología sustituye sustancialmente la decisión humana y ES ADMT. Una revisión meramente formal —sin autoridad para revocar— no lo satisface.",
+      es: "Documenta, para cada sistema, si la persona revisora (A) sabe interpretar y utilizar el resultado de la tecnología para adoptar la decisión, (B) revisa y analiza ese resultado junto con cualquier otra información pertinente para adoptar o modificar la decisión, y (C) tiene autoridad para adoptar o modificar la decisión a partir de ese análisis. El test es acumulativo: el incumplimiento de cualquiera de los tres requisitos implica que la tecnología sustituye sustancialmente la decisión humana y ES ADMT. Una revisión meramente formal (sin autoridad para revocar) no lo satisface.",
     },
     applicabilityTags: GATE,
     sortOrder: 7001,
@@ -743,7 +743,7 @@ const clusterD: AdmtRequirementSeed[] = [
         },
         description: {
           en: "Trade secrets and security, fraud-resistance or physical-safety information may be withheld — the same three-part carve-out as § 7220(d) — but only from subsections (b)(2) and (b)(3). Record each redaction and its ground.",
-          es: "Pueden omitirse los secretos empresariales y la información relativa a seguridad, resistencia al fraude o seguridad física —la misma salvedad triple del § 7220(d)—, pero únicamente respecto de los apartados (b)(2) y (b)(3). Deja constancia de cada supresión y de su fundamento.",
+          es: "Pueden omitirse los secretos empresariales y la información relativa a seguridad, resistencia al fraude o seguridad física (la misma salvedad triple del § 7220(d)), pero únicamente respecto de los apartados (b)(2) y (b)(3). Deja constancia de cada supresión y de su fundamento.",
         },
         applicabilityTags: ART11,
         sortOrder: 6,
@@ -875,7 +875,7 @@ const clusterE: AdmtRequirementSeed[] = [
     },
     description: {
       en: "Respond substantively within forty-five calendar days of receipt. One further forty-five-day extension is permitted — ninety days maximum — with notice to the consumer and an explanation.",
-      es: "Responde de forma sustantiva en el plazo de cuarenta y cinco días naturales desde la recepción. Se permite una única prórroga de otros cuarenta y cinco días —noventa como máximo— previa notificación al consumidor con explicación de los motivos.",
+      es: "Responde de forma sustantiva en el plazo de cuarenta y cinco días naturales desde la recepción. Se permite una única prórroga de otros cuarenta y cinco días (noventa como máximo) previa notificación al consumidor con explicación de los motivos.",
     },
     applicabilityTags: ART11,
     sortOrder: 7022,
@@ -903,7 +903,7 @@ const clusterE: AdmtRequirementSeed[] = [
     },
     description: {
       en: "The privacy policy must disclose the right to opt out of ADMT (except where a § 7221(b) exception applies), the right to access ADMT, and the right not to be retaliated against — expressly extended to educational-program applicants, job applicants, students, employees and independent contractors — and must describe the verification process for requests to access ADMT.",
-      es: "La política de privacidad debe informar del derecho de exclusión de la ADMT (salvo cuando resulte aplicable una excepción del § 7221(b)), del derecho de acceso a la ADMT y del derecho a no sufrir represalias —extendido expresamente a solicitantes de programas educativos, candidatos a empleo, estudiantes, personas empleadas y contratistas independientes—, y debe describir el proceso de verificación de las solicitudes de acceso a la ADMT.",
+      es: "La política de privacidad debe informar del derecho de exclusión de la ADMT (salvo cuando resulte aplicable una excepción del § 7221(b)), del derecho de acceso a la ADMT y del derecho a no sufrir represalias (extendido expresamente a solicitantes de programas educativos, candidatos a empleo, estudiantes, personas empleadas y contratistas independientes), y debe describir el proceso de verificación de las solicitudes de acceso a la ADMT.",
     },
     applicabilityTags: ["jurisdiction:US_CA", "admt:art11", "admt:org"],
     sortOrder: 7011,
@@ -1169,7 +1169,7 @@ const clusterF: AdmtRequirementSeed[] = [
         title: { en: "Safeguards", es: "Salvaguardias" },
         description: {
           en: "Document the safeguards planned. The illustrative list includes encryption, segmentation, access controls, change management and monitoring; privacy-enhancing technologies such as trusted execution environments, federated learning, homomorphic encryption and differential privacy; consulting external parties for emergent-risk knowledge; and policies, procedures and training to ensure that the business's ADMT works for the business's purpose and does not unlawfully discriminate based upon protected characteristics. That last item is what makes bias testing effectively mandatory documentation.",
-          es: "Documenta las salvaguardias previstas. La lista ilustrativa comprende cifrado, segmentación, controles de acceso, gestión de cambios y supervisión; tecnologías de mejora de la privacidad como entornos de ejecución confiables, aprendizaje federado, cifrado homomórfico y privacidad diferencial; la consulta a terceros para conocer riesgos emergentes; y políticas, procedimientos y formación que garanticen que la ADMT de la empresa funciona para su finalidad y no discrimina ilícitamente por características protegidas. Este último elemento convierte la verificación de sesgos en documentación materialmente obligatoria.",
+          es: "Documenta las salvaguardias previstas. La lista ilustrativa comprende cifrado, segmentación, controles de acceso, gestión de cambios y supervisión; tecnologías de mejora de la privacidad como entornos aislados de confianza (TEE), aprendizaje federado, cifrado homomórfico y privacidad diferencial; la consulta a terceros para conocer riesgos emergentes; y políticas, procedimientos y formación que garanticen que la ADMT de la empresa funciona para su finalidad y no discrimina ilícitamente por características protegidas. Este último elemento convierte la verificación de sesgos en documentación materialmente obligatoria.",
         },
         applicabilityTags: ART10,
         sortOrder: 7,
@@ -1266,7 +1266,7 @@ const clusterF: AdmtRequirementSeed[] = [
     },
     description: {
       en: "A single assessment may cover a comparable set of processing activities presenting similar risks. An assessment prepared for another law — for example another state's data-protection statute, or an EU AI Act Art. 27 fundamental-rights impact assessment — may be reused if supplemented with anything § 7152 requires that the other law omits.",
-      es: "Una misma evaluación puede cubrir un conjunto comparable de actividades de tratamiento que presenten riesgos similares. Una evaluación elaborada para otra norma —por ejemplo, la legislación de protección de datos de otro estado o una evaluación de impacto en los derechos fundamentales del art. 27 del Reglamento de IA de la UE— puede reutilizarse si se completa con todo lo que exige el § 7152 y aquella omite.",
+      es: "Una misma evaluación puede cubrir un conjunto comparable de actividades de tratamiento que presenten riesgos similares. Una evaluación elaborada para otra norma (por ejemplo, la legislación de protección de datos de otro estado o una evaluación de impacto en los derechos fundamentales del art. 27 del Reglamento de IA de la UE) puede reutilizarse si se completa con todo lo que exige el § 7152 y aquella omite.",
     },
     applicabilityTags: ART10,
     sortOrder: 7156,
@@ -1428,7 +1428,7 @@ const clusterG: AdmtRequirementSeed[] = [
     },
     description: {
       en: "For each year an audit is required, submit a written certification to the Agency via cppa.ca.gov by 1 April following the audit year, signed by a member of the executive management team who is directly responsible, sufficiently knowledgeable and authorised. It must include the business name and contact, a statement that the audit was completed, the period covered by month and year, the verbatim electronically signed attestation under penalty of perjury — which includes an affirmative statement that the business has not made any attempt to influence the auditor's decisions or assessments — and the submitter's name, title and date.",
-      es: "Por cada ejercicio en que se exija auditoría, presenta a la Agencia a través de cppa.ca.gov, antes del 1 de abril siguiente al año auditado, una certificación escrita firmada por un miembro del equipo directivo directamente responsable, con conocimiento suficiente y debidamente autorizado. Deberá incluir la denominación y el contacto de la empresa, la manifestación de que la auditoría se completó, el periodo cubierto expresado en mes y año, la declaración literal firmada electrónicamente bajo pena de perjurio —que incorpora la afirmación expresa de que la empresa no ha intentado influir en las decisiones o valoraciones del auditor— y el nombre, cargo y fecha de quien la presenta.",
+      es: "Por cada ejercicio en que se exija auditoría, presenta a la Agencia a través de cppa.ca.gov, antes del 1 de abril siguiente al año auditado, una certificación escrita firmada por un miembro del equipo directivo directamente responsable, con conocimiento suficiente y debidamente autorizado. Deberá incluir la denominación y el contacto de la empresa, la manifestación de que la auditoría se completó, el periodo cubierto expresado en mes y año, la declaración literal firmada electrónicamente bajo pena de perjurio (que incorpora la afirmación expresa de que la empresa no ha intentado influir en las decisiones o valoraciones del auditor) y el nombre, cargo y fecha de quien la presenta.",
     },
     applicabilityTags: ART9_ORG,
     sortOrder: 7124,

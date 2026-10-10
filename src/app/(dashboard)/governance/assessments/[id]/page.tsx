@@ -12,6 +12,7 @@ import {
   readQuestionMeta,
 } from "@/lib/assessment-metadata";
 import { overlayLabel } from "@/config/overlay-labels";
+import { frameworkChip } from "@/config/framework-display";
 import { useEnumLabels } from "@/lib/enum-labels";
 import { useOrganization } from "@/lib/organization-context";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -376,7 +377,7 @@ export default function AssessmentDetailPage() {
                       : "text-xs"
                   }
                 >
-                  {f.framework.replace(/_/g, " ")} {f.evidenced}/{f.total}
+                  {frameworkChip(f.framework, contentLocale)} {f.evidenced}/{f.total}
                 </Badge>
               ))}
             </div>
@@ -502,7 +503,7 @@ export default function AssessmentDetailPage() {
                                   : "text-[10px] text-muted-foreground"
                               }
                             >
-                              {citationText(citation)}
+                              {citationText(citation, contentLocale)}
                             </Badge>
                           ))}
                           {isAnswered(question, responses) && (

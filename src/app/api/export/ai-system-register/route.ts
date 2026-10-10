@@ -9,6 +9,7 @@ import { renderToBuffer } from "@react-pdf/renderer";
 import { AISystemRegisterReport } from "@/server/services/export/ai-system-register";
 import { loadRegisterExportData } from "@/server/services/export/register-data";
 import { fmtDate } from "@/server/services/export/pdf-styles";
+import { exportLocale } from "@/server/services/export/pdf-labels";
 
 export async function GET(request: NextRequest) {
   const organizationId = request.nextUrl.searchParams.get("organizationId");
@@ -41,6 +42,7 @@ export async function GET(request: NextRequest) {
   const data = await loadRegisterExportData(prisma, organizationId);
 
   const orgName = membership.organization.name;
+  const locale = exportLocale(request.nextUrl.searchParams.get("locale"), request.headers.get("cookie"));
   const dateStr = fmtDate(new Date());
 
   await prisma.auditLog.create({
@@ -55,10 +57,10 @@ export async function GET(request: NextRequest) {
   });
 
   const buffer = await renderToBuffer(
-    AISystemRegisterReport({ systems: data, orgName })
+    AISystemRegisterReport({ systems: data, orgName, locale })
   );
 
-  const filename = `AI-System-Register-${orgName.replace(/[^a-zA-Z0-9]/g, "-")}-${dateStr}.pdf`;
+  const filename = `${locale === "es" ? "Registro-de-sistemas-de-IA" : "AI-System-Register"}-${orgName.replace(/[^a-zA-Z0-9]/g, "-")}-${dateStr}.pdf`;
 
   return new Response(new Uint8Array(buffer), {
     headers: {

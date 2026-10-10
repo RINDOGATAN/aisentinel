@@ -17,9 +17,12 @@
  *     each pack already carries (src/config/admt-requirements.ts and
  *     src/config/regimes/).
  *
+ * Descriptions follow the same split (./requirement-descriptions-es.ts for
+ * the EU AI Act, NIST and ISO; ./aiuc1-requirements-es.ts for AIUC-1).
+ *
  * A code with no entry falls back to the stored text, so a newly seeded row
  * shows in English rather than not at all. A test checks that every seeded
- * EU, NIST, ISO and AIUC-1 code has a Spanish title.
+ * EU, NIST, ISO and AIUC-1 code has a Spanish title and description.
  *
  * Pure module: no Prisma, no React, no Next.
  */
@@ -27,7 +30,13 @@
 import { ADMT_FRAMEWORK, ADMT_REQUIREMENTS, flattenAdmtRequirements } from "./admt-requirements";
 import { REGIME_PACKS } from "./regimes";
 import { flattenRegimeRequirements } from "./regimes/types";
-import { AIUC1_TITLES_ES } from "./aiuc1-requirements-es";
+import { AIUC1_DOMAIN_PARAPHRASES_ES, AIUC1_TITLES_ES, aiuc1RequirementDescriptionEs } from "./aiuc1-requirements-es";
+import { allAiuc1Requirements } from "./aiuc1-requirements";
+import {
+  EU_AI_ACT_DESCRIPTIONS_ES,
+  ISO_42001_DESCRIPTIONS_ES,
+  NIST_AI_RMF_DESCRIPTIONS_ES,
+} from "./requirement-descriptions-es";
 
 type Locale = string;
 
@@ -72,6 +81,68 @@ const FRAMEWORK_COMPACT: Record<string, { en: string; es: string }> = {
   WA_AI_RULES: { en: "Washington AI rules", es: "Normas de IA de Washington" },
   AIUC_1: { en: "AIUC-1", es: "AIUC-1" },
 };
+
+/**
+ * Spanish names for chips and for the framework part of a citation: the
+ * usual Spanish abbreviations (RIA for the Reglamento de IA, RGPD) where one
+ * exists, otherwise the name a Spanish reader would use.
+ */
+const FRAMEWORK_CHIP_ES: Record<string, string> = {
+  EU_AI_ACT: "RIA",
+  EU_GDPR: "RGPD",
+  NIST_AI_RMF: "NIST AI RMF",
+  ISO_42001: "ISO/IEC 42001",
+  CA_CCPA_ADMT: "ADMT de California",
+  CO_SB_26_189: "Colorado SB 26-189",
+  TX_TRAIGA: "TRAIGA de Texas",
+  WA_AI_RULES: "Normas de IA de Washington",
+  AIUC_1: "AIUC-1",
+};
+
+/**
+ * A framework code as it reads on a chip ("RIA 3/5") or before a citation
+ * code. English keeps the code as it has always read ("EU AI ACT").
+ */
+export function frameworkChip(code: string, locale: Locale): string {
+  if (locale === "es" && FRAMEWORK_CHIP_ES[code]) return FRAMEWORK_CHIP_ES[code];
+  return code.replace(/_/g, " ");
+}
+
+/** Article and annex words in a citation code, in Spanish style ("art. 22", "anexo III"). */
+function spanishCitationCode(code: string): string {
+  return code.replace(/\bArts\./g, "arts.").replace(/\bArt\./g, "art.").replace(/\bAnnex\b/g, "anexo");
+}
+
+/** A structured citation as one label, e.g. "EU GDPR Art. 22" or, in Spanish, "RGPD art. 22". */
+export function citationLabel(frameworkCode: string, code: string, locale: Locale): string {
+  if (locale !== "es") return `${frameworkCode.replace(/_/g, " ")} ${code}`;
+  return `${frameworkChip(frameworkCode, "es")} ${spanishCitationCode(code)}`;
+}
+
+/** Free-text citation prefixes, longest first, with their Spanish chip names. */
+const CITATION_PREFIXES_ES: readonly [RegExp, string][] = [
+  [/^EU AI ACT\b/i, "RIA"],
+  [/^EU GDPR\b/, "RGPD"],
+  [/^CA CCPA ADMT\b/, "ADMT de California"],
+  [/^TX TRAIGA\b/, "TRAIGA de Texas"],
+  [/^WA AI RULES\b/i, "Normas de IA de Washington"],
+];
+
+/**
+ * A free-text citation such as "EU GDPR Art. 22(3)" in the screen's language:
+ * in Spanish "RGPD art. 22(3)". English is returned as written.
+ */
+export function citationString(text: string, locale: Locale): string {
+  if (locale !== "es") return text;
+  let out = text;
+  for (const [pattern, name] of CITATION_PREFIXES_ES) {
+    if (pattern.test(out)) {
+      out = out.replace(pattern, name);
+      break;
+    }
+  }
+  return spanishCitationCode(out);
+}
 
 /** A framework's compact name for small cards; the raw code only when the code is unknown. */
 export function frameworkShortName(code: string, locale: Locale): string {
@@ -265,11 +336,19 @@ export const REQUIREMENT_TITLES_ES: Readonly<Record<string, Readonly<Record<stri
 };
 
 /**
- * Spanish descriptions, where the pack carries them (California ADMT and the
- * regimes). The EU AI Act, NIST, ISO and AIUC-1 descriptions are not
- * translated yet and show as stored.
+ * Spanish descriptions by framework code, then requirement code: the EU AI
+ * Act, NIST and ISO tables (./requirement-descriptions-es.ts), AIUC-1 built
+ * the way the seed builds the English (paraphrase, application, tags,
+ * source), and the text the ADMT and regime packs already carry.
  */
-const REQUIREMENT_DESCRIPTIONS_ES: Readonly<Record<string, Readonly<Record<string, string>>>> = {
+export const REQUIREMENT_DESCRIPTIONS_ES: Readonly<Record<string, Readonly<Record<string, string>>>> = {
+  EU_AI_ACT: EU_AI_ACT_DESCRIPTIONS_ES,
+  NIST_AI_RMF: NIST_AI_RMF_DESCRIPTIONS_ES,
+  ISO_42001: ISO_42001_DESCRIPTIONS_ES,
+  AIUC_1: {
+    ...AIUC1_DOMAIN_PARAPHRASES_ES,
+    ...Object.fromEntries(allAiuc1Requirements().map((r) => [r.code, aiuc1RequirementDescriptionEs(r)])),
+  },
   [ADMT_FRAMEWORK.code]: Object.fromEntries(
     flattenAdmtRequirements(ADMT_REQUIREMENTS).map((r) => [r.code, r.description.es])
   ),
@@ -312,8 +391,13 @@ export function requirementTitle(frameworkCode: string, code: string, storedTitl
   return REQUIREMENT_TITLES_ES[frameworkCode]?.[code] ?? storedTitle;
 }
 
-/** A requirement's code as shown; only the EU timeline rows differ in Spanish. */
+/**
+ * A requirement's code as shown. English is the stored code. Spanish writes
+ * "art." and "anexo" in lower case, as Spanish legal citations do, and gives
+ * the EU timeline rows their Spanish dates.
+ */
 export function requirementCode(frameworkCode: string, code: string, locale: Locale): string {
-  if (locale === "es" && frameworkCode === "EU_AI_ACT") return EU_AI_ACT_CODES_ES[code] ?? code;
-  return code;
+  if (locale !== "es") return code;
+  const shown = frameworkCode === "EU_AI_ACT" ? (EU_AI_ACT_CODES_ES[code] ?? code) : code;
+  return spanishCitationCode(shown);
 }

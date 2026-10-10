@@ -66,7 +66,7 @@ export const GDPR_REQUIREMENTS: RegimeRequirementSeed[] = [
         title: { en: "Purpose limitation", es: "Limitación de la finalidad" },
         description: {
           en: "Personal data collected for one purpose may not be used to train or run an AI system for an incompatible purpose. Document the compatibility assessment for any re-use of existing data as training data.",
-          es: "Los datos personales recogidos para una finalidad no pueden usarse para entrenar o ejecutar un sistema de IA con una finalidad incompatible. Documenta el análisis de compatibilidad de cualquier reutilización de datos existentes como datos de entrenamiento.",
+          es: "Los datos personales recogidos para una finalidad no pueden usarse para entrenar o usar un sistema de IA con una finalidad incompatible. Documenta el análisis de compatibilidad de cualquier reutilización de datos existentes como datos de entrenamiento.",
         },
         applicabilityTags: CORE,
         sortOrder: 52,

@@ -478,7 +478,7 @@ export async function buildProgramPack(
   const registerRows = await loadRegisterExportData(prisma, organizationId);
   if (packed.has("systemRegister")) {
     const registerPdf = await renderToBuffer(
-      AISystemRegisterReport({ systems: registerRows, orgName, draftNote: draftNote("systemRegister") }),
+      AISystemRegisterReport({ systems: registerRows, orgName, draftNote: draftNote("systemRegister"), locale }),
     );
     add("systemRegister", l.register, new Uint8Array(registerPdf));
   }
@@ -829,13 +829,13 @@ export async function buildProgramPack(
   if (packed.has("assessmentPortfolio")) {
     const rows = await loadAssessmentPortfolioData(prisma, organizationId);
     const pdf = await renderToBuffer(
-      AssessmentPortfolioReport({ assessments: rows, orgName, draftNote: draftNote("assessmentPortfolio") }),
+      AssessmentPortfolioReport({ assessments: rows, orgName, draftNote: draftNote("assessmentPortfolio"), locale }),
     );
     add("assessmentPortfolio", l.assessmentPortfolio, new Uint8Array(pdf));
   }
   if (packed.has("modelInventory")) {
     const rows = await loadModelInventoryData(prisma, organizationId);
-    const pdf = await renderToBuffer(ModelInventoryReport({ models: rows, orgName }));
+    const pdf = await renderToBuffer(ModelInventoryReport({ models: rows, orgName, locale }));
     add("modelInventory", l.modelInventory, new Uint8Array(pdf));
   }
 

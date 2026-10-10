@@ -82,7 +82,7 @@ export const WASHINGTON_REQUIREMENTS: RegimeRequirementSeed[] = [
         title: { en: "Opt-in consent for collection and sharing", es: "Consentimiento previo para la recogida y la puesta a disposición" },
         description: {
           en: "Collect or share consumer health data only with the consumer's consent for a specified purpose, or to the extent necessary to provide a product or service the consumer requested. Consent is a clear affirmative act, freely given, specific, informed, opt-in and unambiguous; inferring health data to train or run a model is collection.",
-          es: "Recoge o comparte datos de salud del consumidor solo con su consentimiento para una finalidad determinada, o en la medida necesaria para prestar un producto o servicio que haya solicitado. El consentimiento es un acto afirmativo claro, libre, específico, informado, previo e inequívoco; inferir datos de salud para entrenar o ejecutar un modelo es recogida.",
+          es: "Recoge o comparte datos de salud del consumidor solo con su consentimiento para una finalidad determinada, o en la medida necesaria para prestar un producto o servicio que haya solicitado. El consentimiento es un acto afirmativo claro, libre, específico, informado, previo e inequívoco; inferir datos de salud para entrenar o usar un modelo es recogida.",
         },
         applicabilityTags: MHMDA,
         sortOrder: 103,

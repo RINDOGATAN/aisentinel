@@ -761,7 +761,7 @@ export function buildAssessmentArtifact(input: ArtifactInput): Artifact {
   return header(
     input,
     "assessment",
-    locale === "es" ? "Evaluación de impacto de IA unificada" : "Unified AI impact assessment",
+    locale === "es" ? "Evaluación unificada de impacto de la IA" : "Unified AI impact assessment",
     locale === "es"
       ? "Un único expediente que responde a la evaluación de impacto sobre los derechos fundamentales del Reglamento de IA de la UE, la evaluación de impacto relativa a la protección de datos del RGPD, la evaluación de riesgos de ADMT de California y los regímenes de Colorado, Texas y Washington."
       : "One record answering the EU AI Act fundamental rights impact assessment, the GDPR data protection impact assessment, the California ADMT risk assessment, and the Colorado, Texas and Washington regimes.",
@@ -1211,7 +1211,7 @@ export function buildAgenticAddendumArtifact(input: ArtifactInput): Artifact {
           blocks: [
             gap(
               locale === "es"
-                ? "Nadie ha respondido si este sistema entrega su resultado a un agente autónomo. Responde esa pregunta antes de dar por cerrado el análisis: la prueba de esfuerzo agéntica no se ha ejecutado."
+                ? "Nadie ha respondido si este sistema entrega su resultado a un agente autónomo. Responde esa pregunta antes de dar por cerrado el análisis: la prueba de esfuerzo agéntica no se ha hecho."
                 : "Nobody has answered whether this system hands its output to an autonomous agent. Answer that before treating the analysis as closed: the agentic stress test has not run.",
               [],
             ),
@@ -1238,7 +1238,7 @@ export function buildAgenticAddendumArtifact(input: ArtifactInput): Artifact {
       blocks: [
         paragraph(
           locale === "es"
-            ? `La prueba de esfuerzo identifica ${result.applicable.length} punto(s) en los que la delegación en un agente autónomo afecta a los tres documentos: ${result.counts.breaks} que los rompen, ${result.counts.weakens} que los debilitan y ${result.counts.watch} a vigilar.`
+            ? `La prueba de esfuerzo identifica ${result.applicable.length === 1 ? "1 punto en el que" : `${result.applicable.length} puntos en los que`} la delegación en un agente autónomo afecta a los tres documentos: ${result.counts.breaks} que los rompen, ${result.counts.weakens} que los debilitan y ${result.counts.watch} a vigilar.`
             : `The stress test identifies ${result.applicable.length} point(s) at which the handoff to an autonomous agent affects the three documents: ${result.counts.breaks} that break them, ${result.counts.weakens} that weaken them and ${result.counts.watch} to watch.`,
         ),
         table(

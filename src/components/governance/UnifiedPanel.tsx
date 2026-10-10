@@ -29,7 +29,9 @@ import {
   Loader2,
   Plus,
 } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { citationString, frameworkChip } from "@/config/framework-display";
+import { overlayLabel } from "@/config/overlay-labels";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import { useExportDownload } from "@/components/governance/use-export-download";
@@ -107,6 +109,7 @@ export function UnifiedPanel({
   const tr = useTranslations("regimes");
   const tc = useTranslations("common");
   const tp = useTranslations("premiumShowcase");
+  const lang = useLocale() === "es" ? "es" : "en";
   const utils = trpc.useUtils();
   const [edits, setEdits] = useState<Partial<Record<SystemFactKey, Answer>>>({});
 
@@ -197,7 +200,7 @@ export function UnifiedPanel({
                 ) : (
                   (template?.overlayTags ?? []).map((tag) => (
                     <Badge key={tag} className="bg-primary/15 text-primary text-xs">
-                      {tag}
+                      {lang === "es" ? overlayLabel(tag, "es") : tag}
                     </Badge>
                   ))
                 )}
@@ -210,7 +213,7 @@ export function UnifiedPanel({
                       .filter((s) => s.state === "UNDETERMINED")
                       .map((s) => (
                         <li key={s.framework} className="text-xs text-muted-foreground">
-                          <span className="font-medium">{s.framework.replace(/_/g, " ")}</span>
+                          <span className="font-medium">{frameworkChip(s.framework, lang)}</span>
                           {s.openQuestions.length > 0 && ` — ${tr("openQuestions")}: ${s.openQuestions.join(", ")}`}
                         </li>
                       ))}
@@ -509,7 +512,7 @@ export function UnifiedPanel({
                         </Badge>
                       ))}
                       <code className="text-[10px] text-muted-foreground ml-1">
-                        {f.citations.join(" · ")}
+                        {f.citations.map((c) => citationString(c, lang)).join(" · ")}
                       </code>
                     </div>
                   </div>

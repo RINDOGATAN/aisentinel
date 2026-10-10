@@ -193,7 +193,7 @@ export const CAPABILITIES: Capability[] = [
     label: { en: "Code or shell commands", es: "Código u órdenes de consola" },
     note: {
       en: "Execution turns a text mistake into a system change.",
-      es: "La ejecución convierte un error de texto en un cambio en el sistema.",
+      es: "Que el agente actúe convierte un error de texto en un cambio en el sistema.",
     },
   },
   {
@@ -660,7 +660,7 @@ export const SCENARIO_LIBRARY: LibraryScenario[] = [
         layer: "prevent",
         text: {
           en: "Validate parameters outside the model: the policy layer decides whether the proposal may execute.",
-          es: "Valida los parámetros fuera del modelo: la capa de políticas decide si la propuesta puede ejecutarse.",
+          es: "Valida los parámetros fuera del modelo: la capa de políticas decide si la propuesta puede llevarse a cabo.",
         },
       },
       {
@@ -784,11 +784,11 @@ export const SCENARIO_LIBRARY: LibraryScenario[] = [
     anyOf: ["code_execution", "deploy_code"],
     title: {
       en: "It runs a command that changes something real",
-      es: "Ejecuta una orden que cambia algo real",
+      es: "Lleva a cabo una orden que cambia algo real",
     },
     story: {
       en: "A readme, an issue or a web page suggests a command. The agent runs it, because running commands is what it does.",
-      es: "Un archivo de descripción, una incidencia o una página web sugiere una orden. El agente la ejecuta, porque ejecutar órdenes es lo suyo.",
+      es: "Un archivo de descripción, una incidencia o una página web sugiere una orden. El agente la cumple, porque cumplir órdenes es lo suyo.",
     },
     defaults: { impact: "HIGH", likelihood: "MEDIUM", blastRadius: "SEVERE" },
     controls: [
@@ -796,7 +796,7 @@ export const SCENARIO_LIBRARY: LibraryScenario[] = [
         layer: "prevent",
         text: {
           en: "Sandbox execution, with no production credentials by default and restricted network access.",
-          es: "Aísla la ejecución, sin credenciales de producción por defecto y con acceso de red restringido.",
+          es: "Aísla el entorno en que actúa el agente, sin credenciales de producción por defecto y con acceso de red restringido.",
         },
       },
       {
@@ -965,7 +965,7 @@ export const SCENARIO_LIBRARY: LibraryScenario[] = [
     ],
     test: {
       en: "Run the same set of cases with one characteristic varied, and compare outcome rates. Keep the numbers: they are the evidence.",
-      es: "Ejecuta el mismo conjunto de casos variando una característica y compara las tasas de resultado. Guarda las cifras: son la prueba.",
+      es: "Pasa el mismo conjunto de casos variando una característica y compara las tasas de resultado. Guarda las cifras: son la prueba.",
     },
     references: ["NIST AI RMF MEASURE", "EU AI Act Art. 10", "Art. 26"],
     satisfies: [

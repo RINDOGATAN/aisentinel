@@ -251,7 +251,7 @@ export function pilotBannerVisible(env: PilotEnv, dismissCookie: string | undefi
 /** The two ways out, spelled out wherever a cap stops someone. */
 function waysOut(locale: PilotLocale, exportUrl: string): string {
   return locale === "es"
-    ? `Dos salidas: ejecuta tu propia instancia (${PILOT_RUN_URL}) o exporta todo lo que has creado (${exportUrl}).`
+    ? `Dos salidas: aloja tu propia instancia (${PILOT_RUN_URL}) o exporta todo lo que has creado (${exportUrl}).`
     : `Two ways out: run your own instance (${PILOT_RUN_URL}) or export everything you created (${exportUrl}).`;
 }
 
@@ -279,6 +279,6 @@ export function pilotCeilingMessage(
 
 export function pilotOneOrganizationMessage(locale: PilotLocale): string {
   return locale === "es"
-    ? `Piloto alojado: una organización por cuenta. Para llevar varias organizaciones, ejecuta tu propia instancia (${PILOT_RUN_URL}).`
+    ? `Piloto alojado: una organización por cuenta. Para llevar varias organizaciones, aloja tu propia instancia (${PILOT_RUN_URL}).`
     : `Hosted pilot: one organisation per account. To run several organisations, run your own instance (${PILOT_RUN_URL}).`;
 }

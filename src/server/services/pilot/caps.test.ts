@@ -94,7 +94,7 @@ describe("on the hosted pilot", () => {
       assertPilotWritable(ORG, "es", new Date(START.getTime() + 91 * DAY)),
     );
     expect(message).toContain("solo lectura");
-    expect(message).toContain("ejecuta tu propia instancia");
+    expect(message).toContain("aloja tu propia instancia");
   });
 
   it("still allows every export once read-only", async () => {

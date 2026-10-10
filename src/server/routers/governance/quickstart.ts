@@ -1340,7 +1340,9 @@ export const quickstartRouter = createTRPCRouter({
           const built = await createBuilderThreatModel(ctx.prisma, {
             organizationId: orgId,
             userId,
-            name: input.builderName?.trim() || `${ctx.organization.name}: AI product`,
+            name:
+              input.builderName?.trim() ||
+              `${ctx.organization.name}: ${resolveContentLocale(ctx.getCookie) === "es" ? "producto de IA" : "AI product"}`,
             capabilities: input.builderCapabilities,
             aiSystemId: result.createdSystemIds[0] ?? null,
           });

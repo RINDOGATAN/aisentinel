@@ -70,7 +70,7 @@ export const AGENTIC_FINDINGS: AgenticFinding[] = [
     ),
     provision: L(
       "State, in the assessment and in the protocol, where the decision ends for Art. 22 purposes. Either the agent may not execute an action with legal or similarly significant effect until a reviewer with authority has approved it, or you accept the decision is solely automated and provide the Art. 22(3) safeguards on the agent's action itself.",
-      "Establece, en la evaluación y en el protocolo, dónde termina la decisión a efectos del art. 22. O bien el agente no puede ejecutar una acción con efectos jurídicos o similarmente significativos hasta que una persona revisora con autoridad la haya aprobado, o bien aceptas que la decisión es únicamente automatizada y ofreces las garantías del art. 22.3 sobre la propia acción del agente.",
+      "Establece, en la evaluación y en el protocolo, dónde termina la decisión a efectos del art. 22. O bien el agente no puede llevar a cabo una acción con efectos jurídicos o similarmente significativos hasta que una persona revisora con autoridad la haya aprobado, o bien aceptas que la decisión es únicamente automatizada y ofreces las garantías del art. 22.3 sobre la propia acción del agente.",
     ),
     citations: ["EU GDPR Art. 22", "EU GDPR Art. 22(3)"],
     evidencedBy: ["agt_still_human", "agt_handoff"],
@@ -90,7 +90,7 @@ export const AGENTIC_FINDINGS: AgenticFinding[] = [
     ),
     breakage: L(
       "An agent that executes before or without that review removes the third prong in practice: the reviewer cannot change a decision that has already taken effect. The test is conjunctive, so failing one prong makes the technology ADMT and pulls in the full Article 11 notice, opt-out and access duties.",
-      "Un agente que ejecuta antes de esa revisión, o sin ella, elimina en la práctica el tercer elemento: la persona revisora no puede cambiar una decisión que ya ha producido efectos. La prueba es conjuntiva, de modo que fallar un elemento convierte la tecnología en ADMT y arrastra todos los deberes de aviso, exclusión y acceso del artículo 11.",
+      "Un agente que actúa antes de esa revisión, o sin ella, elimina en la práctica el tercer elemento: la persona revisora no puede cambiar una decisión que ya ha producido efectos. La prueba es conjuntiva, de modo que fallar un elemento convierte la tecnología en ADMT y arrastra todos los deberes de aviso, exclusión y acceso del artículo 11.",
     ),
     provision: L(
       "Record whether the agent can act before review completes. If it can, re-run the ADMT determination on that basis and attach the Article 11 duties, rather than relying on a human-involvement finding the workflow no longer supports.",
@@ -118,7 +118,7 @@ export const AGENTIC_FINDINGS: AgenticFinding[] = [
     ),
     provision: L(
       "Describe the agent's authority in the notice as a bounded scope: the categories of action it may take without a person, and the point at which a person is involved. Say plainly that some steps are carried out by an autonomous agent, and how the person is told when one acted on their case.",
-      "Describe en el aviso la autoridad del agente como un ámbito acotado: las categorías de acción que puede realizar sin intervención humana y el punto en que interviene una persona. Di con claridad que algunas fases las ejecuta un agente autónomo y cómo se informa a la persona cuando uno ha actuado en su expediente.",
+      "Describe en el aviso la autoridad del agente como un ámbito acotado: las categorías de acción que puede realizar sin intervención humana y el punto en que interviene una persona. Di con claridad que algunas fases las lleva a cabo un agente autónomo y cómo se informa a la persona cuando uno ha actuado en su expediente.",
     ),
     citations: ["EU GDPR Art. 13(2)(f) / 14(2)(g)", "EU AI Act Art. 50(1)", "CO SB 26-189 CO-DEP-1"],
     evidencedBy: ["agt_notice_coverage", "agt_handoff"],
@@ -130,7 +130,7 @@ export const AGENTIC_FINDINGS: AgenticFinding[] = [
     severity: "breaks",
     title: L(
       "The protocol reviews a decision the agent has already carried out",
-      "El protocolo revisa una decisión que el agente ya ha ejecutado",
+      "El protocolo revisa una decisión que el agente ya ha llevado a cabo",
     ),
     assumption: L(
       "The appeal protocol assumes review happens before or instead of the outcome taking effect, so a reviewer changing the decision changes what happens to the person.",

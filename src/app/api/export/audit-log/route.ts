@@ -19,6 +19,7 @@ import { SESSION_COOKIE_NAME, useSecureCookies } from "@/lib/session-cookie";
 import prisma from "@/lib/prisma";
 import { fmtDate } from "@/server/services/export/pdf-styles";
 import { exportStamp, stampLines } from "@/server/services/export/integrity";
+import { exportLocale, pdfLabels } from "@/server/services/export/pdf-labels";
 
 const READER_ROLES = ["OWNER", "ADMIN", "AI_OFFICER"];
 
@@ -32,6 +33,8 @@ function csvCell(v: string): string {
 export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
   const organizationId = params.get("organizationId");
+  const locale = exportLocale(params.get("locale"), request.headers.get("cookie"));
+  const words = pdfLabels(locale).audit;
 
   if (!organizationId) {
     return Response.json({ error: "organizationId is required" }, { status: 400 });
@@ -86,17 +89,7 @@ export async function GET(request: NextRequest) {
     include: { user: { select: { id: true, name: true, email: true } } },
   });
 
-  const header = [
-    "Timestamp (UTC)",
-    "Action",
-    "Entity type",
-    "Entity id",
-    "Actor name",
-    "Actor email",
-    "Actor id",
-    "Changes",
-    "Metadata",
-  ];
+  const header = words.header;
 
   const body = rows.map((r) =>
     [
@@ -119,13 +112,11 @@ export async function GET(request: NextRequest) {
   // spreadsheet shows them as text; a reader knows when it was made, from
   // which build, and whether the ceiling truncated it.
   const preamble = [
-    ...stampLines(stamp).map((l) => csvCell(`# ${l}`)),
-    csvCell(`# Organisation: ${membership.organization.name}`),
+    ...stampLines(stamp, locale).map((l) => csvCell(`# ${l}`)),
+    csvCell(`# ${words.organisation}: ${membership.organization.name}`),
+    csvCell(`# ${words.rows}: ${rows.length}${rows.length === MAX_ROWS ? words.truncated(MAX_ROWS) : ""}`),
     csvCell(
-      `# Rows: ${rows.length}${rows.length === MAX_ROWS ? ` (truncated at the ${MAX_ROWS} row limit; narrow the date range)` : ""}`,
-    ),
-    csvCell(
-      `# Filters: ${[
+      `# ${words.filters}: ${[
         entityType ? `entity=${entityType}` : null,
         action ? `action=${action}` : null,
         userId ? `actor=${userId}` : null,
@@ -133,7 +124,7 @@ export async function GET(request: NextRequest) {
         to ? `to=${to.toISOString()}` : null,
       ]
         .filter(Boolean)
-        .join(" ") || "none"}`,
+        .join(" ") || words.none}`,
     ),
   ];
 
@@ -159,7 +150,7 @@ export async function GET(request: NextRequest) {
   });
 
   const orgName = membership.organization.name.replace(/[^a-zA-Z0-9]/g, "-");
-  const filename = `Audit-Trail-${orgName}-${fmtDate(new Date())}.csv`;
+  const filename = `${words.filename}-${orgName}-${fmtDate(new Date())}.csv`;
 
   return new Response(csv, {
     headers: {

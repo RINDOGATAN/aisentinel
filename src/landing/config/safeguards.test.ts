@@ -8,7 +8,7 @@
  * details an AI draft uses, not "the selected text").
  */
 import { describe, it, expect } from "vitest";
-import { COPY, LADDER, QUESTIONS, WAY_CARD, levelOf, optionsFor, pickWay, recommend, requirementsOf, type Answers, type Locale } from "./safeguards";
+import { COPY, LADDER, QUESTIONS, WAY_CARD, levelOf, meets, optionsFor, pickWay, recommend, requirementsOf, type Answers, type Locale } from "./safeguards";
 import en from "../i18n/en/ai-sentinel-startups.json";
 import es from "../i18n/es/ai-sentinel-startups.json";
 
@@ -35,11 +35,15 @@ const ROWS: [keyof Answers, string, number][] = [
 
 describe.each(LOCALES)("level table (%s)", (locale) => {
   it.each(ROWS)("%s = %s sets level %i", (q, v, level) => {
-    expect(levelOf({ [q]: v }, locale)).toBe(level);
+    // Spanish, from 10 Oct 2026: real data goes to the cloud with the Plan nube UE (level 0).
+    const expected = locale === "es" && q === "data" && v === "real" ? 0 : level;
+    expect(levelOf({ [q]: v }, locale)).toBe(expected);
   });
 
   it("takes the highest level any answer asks for", () => {
-    expect(levelOf({ data: "real", ai: "ext" }, locale)).toBe(1);
+    expect(levelOf({ data: "real", ai: "ext" }, locale)).toBe(locale === "es" ? 0 : 1);
+    expect(levelOf({ data: "real", ai: "key" }, locale)).toBe(1);
+    expect(levelOf({ data: "special", ai: "ext" }, locale)).toBe(1);
     expect(levelOf({ data: "real", cert: "yes" }, locale)).toBe(2);
     expect(levelOf({ iso: "no", it: "no", data: "test" }, locale)).toBe(0);
   });
@@ -51,7 +55,7 @@ describe.each(LOCALES)("level table (%s)", (locale) => {
 
   it("level 0 leads to the cloud and level 1 to managed", () => {
     expect(pickWay({ loc: "any" }, locale)).toBe("cloud");
-    expect(pickWay({ data: "real" }, locale)).toBe("managed");
+    expect(pickWay({ data: "real" }, locale)).toBe(locale === "es" ? "cloud" : "managed");
     expect(pickWay({ ai: "key" }, locale)).toBe("managed");
     expect(pickWay({ iso: "yes" }, locale)).toBe("managed");
   });
@@ -78,6 +82,38 @@ describe.each(LOCALES)("level table (%s)", (locale) => {
           expect(c.safeguards[k]).toBeTruthy();
           for (const w of LADDER[locale]) expect(c.notes[k][w]).toBeTruthy();
         }
+  });
+});
+
+describe("real data in Spain: the Plan nube UE", () => {
+  it("real data sets level 0 (cloud), special categories stay at level 1 (managed)", () => {
+    expect(levelOf({ data: "real" }, "es")).toBe(0);
+    expect(pickWay({ data: "real" }, "es")).toBe("cloud");
+    expect(levelOf({ data: "special" }, "es")).toBe(1);
+    expect(pickWay({ data: "special" }, "es")).toBe("managed");
+    // English is unchanged.
+    expect(levelOf({ data: "real" }, "en")).toBe(1);
+    expect(pickWay({ data: "real" }, "en")).toBe("managed");
+  });
+
+  it("the cloud meets real data with the plan's note, and special categories stay unmet", () => {
+    expect(meets("cloud", "data:real", "es")).toBe(true);
+    expect(meets("cloud", "data:special", "es")).toBe(false);
+    expect(meets("cloud", "data:real", "en")).toBe(false);
+    expect(meets("cloud", "data:real")).toBe(false);
+    expect(COPY.es.notes["data:real"].cloud).toBe("Con el Plan nube UE.");
+    expect(COPY.es.notes["data:special"].cloud).toBe("Elige la instancia gestionada.");
+    expect(recommend({ data: "real" }, "es")!.checks).toEqual([{ key: "data:real", met: true }]);
+    expect(recommend({ data: "special" }, "es")!.checks).toEqual([{ key: "data:special", met: true }]);
+    expect(recommend({ data: "special" }, "es")!.down).toEqual({ way: "cloud", missing: ["data:special"] });
+  });
+
+  it("the Spanish cloud result carries the owner's text,", () => {
+    const ai = "los datos del registro que usa cada borrador de IA";
+    expect(COPY.es.summaries.cloud).toBe(
+      "Lo alojamos nosotros, con los datos en la UE (Fráncfort). Puedes probarlo con el piloto gratuito y con límites, solo con datos de prueba, o contratar el Plan nube UE para datos reales. Es un servicio compartido (los registros de cada organización están separados) y no tiene certificación independiente. Si activas las funciones de IA, " + ai + " van al proveedor de IA externo configurado en el servicio, que puede estar fuera de la UE.",
+    );
+    expect(COPY.en.summaries.cloud).not.toMatch(/€|Plan nube/);
   });
 });
 
@@ -153,7 +189,8 @@ describe("copy rules", () => {
 
   it("states no prices, no long dashes and no certification marks", () => {
     for (const l of LOCALES) {
-      expect(all(l)).not.toMatch(/[$€]|\d{3}\s?(USD|EUR)|—|–|SOC\s?2|®|™/);
+      const text = all(l);
+      expect(text).not.toMatch(/[$€]|\d{3}\s?(USD|EUR)|—|–|SOC\s?2|®|™/);
       expect(all(l)).not.toMatch(/guarantee|garantizamos/i);
     }
   });
@@ -176,7 +213,7 @@ describe("copy rules", () => {
     // No unqualified "your data stays" where AI could send text out.
     for (const l of LOCALES) expect(all(l)).not.toMatch(/Your data stays on (that instance|your servers|your hardware)|Tus datos se quedan/);
     expect(COPY.en.summaries.cloud).toMatch(/capped pilot[\s\S]*test records[\s\S]*shared[\s\S]*no service level or independent certification/);
-    expect(COPY.es.summaries.cloud).toMatch(/piloto[\s\S]*con límites[\s\S]*registros de prueba[\s\S]*comparte[\s\S]*certificación independiente/);
+    expect(COPY.es.summaries.cloud).toMatch(/piloto[\s\S]*con límites[\s\S]*datos de prueba[\s\S]*Plan nube UE[\s\S]*datos reales[\s\S]*compartido[\s\S]*certificación independiente/);
   });
 
   it("leaves the classifier sentence out of the panel", () => {

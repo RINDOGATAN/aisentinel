@@ -126,7 +126,7 @@ export default function LandingPage({ hostedPilot = false }: { hostedPilot?: boo
         }
         middle={<LandingSections t={t} locale={locale} />}
       />
-      <StartupsFooter t={t} />
+      <StartupsFooter t={t} locale={locale} />
     </>
   );
 }

@@ -5422,7 +5422,7 @@
     "ceilingsTitle": "Límites de este piloto",
     "counter": "{used} de {max}",
     "ceilingReachedMark": "Límite alcanzado",
-    "readOnlyBody": "Los 90 días de edición han terminado. Esta organización es de solo lectura: todo se puede abrir y exportar, nada se puede modificar.",
+    "readOnlyBody": "El periodo de edición ha terminado. Esta organización es de solo lectura: todo se puede abrir y exportar, nada se puede modificar.",
     "ceilingReachedBody": "Se ha alcanzado un límite. Dos salidas:",
     "runOwn": "Instala tu propia instancia",
     "exportAll": "Exportar todo (paquete del programa)",

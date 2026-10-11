@@ -8,6 +8,9 @@ import {
   PILOT_CEILING_KEYS,
   PILOT_CEILING_LABELS,
   PILOT_EDIT_DAYS,
+  PILOT_EDIT_DAYS_BEFORE_SHORTENING,
+  PILOT_WINDOW_SHORTENED_AT,
+  pilotEndsAt,
   PILOT_LIVE_FROM,
   PILOT_MANAGED_URL,
   PILOT_RUN_URL,
@@ -69,24 +72,25 @@ describe("recognising the hosted pilot", () => {
   });
 });
 
-describe("the editing clock: 90 days from the first sign-in after the pilot went live", () => {
+describe("the editing clock: 15 days from the first sign-in after the pilot went live", () => {
   const day = 24 * 60 * 60 * 1000;
-  const firstSignIn = new Date("2026-10-01T10:00:00.000Z");
+  // After the window was shortened, so the plain rule applies.
+  const firstSignIn = new Date("2026-11-01T10:00:00.000Z");
 
-  it("runs ninety days from the organisation's first sign-in", () => {
-    expect(PILOT_EDIT_DAYS).toBe(90);
+  it("runs fifteen days from the organisation's first sign-in", () => {
+    expect(PILOT_EDIT_DAYS).toBe(15);
     const clock = pilotClock(firstSignIn, firstSignIn);
     expect(clock.startedAt).toEqual(firstSignIn);
-    expect(clock.daysLeft).toBe(90);
+    expect(clock.daysLeft).toBe(15);
     expect(clock.readOnly).toBe(false);
   });
 
-  it("counts down and switches to read-only on day ninety-one", () => {
-    expect(pilotClock(firstSignIn, new Date(firstSignIn.getTime() + 30 * day)).daysLeft).toBe(60);
-    const lastDay = pilotClock(firstSignIn, new Date(firstSignIn.getTime() + 90 * day - 1));
+  it("counts down and switches to read-only on day sixteen", () => {
+    expect(pilotClock(firstSignIn, new Date(firstSignIn.getTime() + 10 * day)).daysLeft).toBe(5);
+    const lastDay = pilotClock(firstSignIn, new Date(firstSignIn.getTime() + 15 * day - 1));
     expect(lastDay.daysLeft).toBe(1);
     expect(lastDay.readOnly).toBe(false);
-    const over = pilotClock(firstSignIn, new Date(firstSignIn.getTime() + 90 * day));
+    const over = pilotClock(firstSignIn, new Date(firstSignIn.getTime() + 15 * day));
     expect(over.daysLeft).toBe(0);
     expect(over.readOnly).toBe(true);
     expect(pilotClock(firstSignIn, new Date(firstSignIn.getTime() + 400 * day)).daysLeft).toBe(0);
@@ -98,7 +102,7 @@ describe("the editing clock: 90 days from the first sign-in after the pilot went
     const muchLater = new Date("2027-06-01T00:00:00.000Z");
     const clock = pilotClock(null, muchLater);
     expect(clock.startedAt).toEqual(muchLater);
-    expect(clock.daysLeft).toBe(90);
+    expect(clock.daysLeft).toBe(15);
     expect(clock.readOnly).toBe(false);
     expect(pilotClock(undefined, muchLater).readOnly).toBe(false);
   });
@@ -108,16 +112,51 @@ describe("the editing clock: 90 days from the first sign-in after the pilot went
     expect(pilotFirstSignInStamp(beforeLive)).toEqual(PILOT_LIVE_FROM);
     const clock = pilotClock(beforeLive, PILOT_LIVE_FROM);
     expect(clock.startedAt).toEqual(PILOT_LIVE_FROM);
-    expect(clock.daysLeft).toBe(90);
+    // Started before the window was shortened: the transition rule applies.
+    expect(clock.endsAt).toEqual(new Date(PILOT_WINDOW_SHORTENED_AT.getTime() + 15 * day));
+    expect(clock.readOnly).toBe(false);
     expect(clock.readOnly).toBe(false);
     expect(pilotFirstSignInStamp(firstSignIn)).toEqual(firstSignIn);
   });
 
   it("states the rule in the words the other suite apps use, in both languages", () => {
-    expect(PILOT_TERMS.en).toBe("90 days of editing from your first sign-in, then read-only with export.");
+    expect(PILOT_TERMS.en).toBe("15 days of editing from your first sign-in, then read-only with export.");
     expect(PILOT_TERMS.es).toBe(
-      "90 días de edición desde tu primer inicio de sesión y después solo lectura con exportación.",
+      "15 días de edición desde tu primer inicio de sesión y después solo lectura con exportación.",
     );
+  });
+});
+
+describe("the transition when the window went from 90 to 15 days (11 Oct 2026)", () => {
+  const day = 24 * 60 * 60 * 1000;
+  const shortened = PILOT_WINDOW_SHORTENED_AT.getTime();
+
+  it("takes effect at the end of the release day", () => {
+    expect(PILOT_WINDOW_SHORTENED_AT.toISOString()).toBe("2026-10-12T00:00:00.000Z");
+    expect(PILOT_EDIT_DAYS_BEFORE_SHORTENING).toBe(90);
+  });
+
+  it("gives an organisation already in its pilot the earlier of its 90-day end and 15 days from the change", () => {
+    // Started on the day the pilot went live: 90 days would run to 18 Dec; 15 from the change is earlier.
+    expect(pilotEndsAt(PILOT_LIVE_FROM)).toEqual(new Date(shortened + 15 * day));
+    // Started the day before the change: the same, never less than 15 days from it.
+    const dayBefore = new Date(shortened - day);
+    expect(pilotEndsAt(dayBefore)).toEqual(new Date(shortened + 15 * day));
+  });
+
+  it("leaves nobody read-only at the release", () => {
+    const atRelease = new Date("2026-10-11T18:00:00.000Z");
+    for (const start of [PILOT_LIVE_FROM, new Date("2026-10-01T00:00:00.000Z"), new Date("2026-10-11T12:00:00.000Z")]) {
+      const clock = pilotClock(start, atRelease);
+      expect(clock.readOnly).toBe(false);
+      expect(clock.daysLeft).toBeGreaterThanOrEqual(15);
+    }
+  });
+
+  it("applies the plain 15 days to a first sign-in from the change onwards", () => {
+    expect(pilotEndsAt(PILOT_WINDOW_SHORTENED_AT)).toEqual(new Date(shortened + 15 * day));
+    const later = new Date("2026-12-01T09:00:00.000Z");
+    expect(pilotEndsAt(later)).toEqual(new Date(later.getTime() + 15 * day));
   });
 });
 
@@ -146,7 +185,7 @@ describe("what the pilot says", () => {
       expect(ceiling).toContain(PILOT_RUN_URL);
       expect(ceiling).toContain(exportUrl);
       const readOnly = pilotReadOnlyMessage(locale, exportUrl);
-      expect(readOnly).toContain("90");
+      expect(readOnly).toMatch(locale === "es" ? /periodo de edición/ : /editing window/);
       expect(readOnly).toContain(PILOT_RUN_URL);
       expect(readOnly).toContain(exportUrl);
       expect(pilotOneOrganizationMessage(locale)).toContain(PILOT_RUN_URL);

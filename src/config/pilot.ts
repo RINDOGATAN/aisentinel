@@ -74,13 +74,31 @@ export function pilotKeepGoing(locale: PilotLocale): string {
   return `${PILOT_KEEP_GOING[locale]} (${PILOT_MANAGED_URL[locale]}).`;
 }
 
-/** Editing window, in days, from the organisation's first sign-in. */
-export const PILOT_EDIT_DAYS = 90;
+/**
+ * Editing window, in days, from the organisation's first sign-in. Fifteen
+ * since the owner's decision of 11 Oct 2026 (it was ninety); organisations
+ * already in their pilot then keep the transition rule in pilotClock.
+ */
+export const PILOT_EDIT_DAYS = 15;
+
+/** The editing window before 11 Oct 2026, kept only for the transition rule. */
+export const PILOT_EDIT_DAYS_BEFORE_SHORTENING = 90;
+
+/**
+ * When the shorter window took effect: the end of its release day (11 Oct
+ * 2026, UTC), so that an organisation already in its pilot has at least
+ * PILOT_EDIT_DAYS full days from the release. An organisation whose first
+ * sign-in is before this instant keeps whichever ends EARLIER of its original
+ * ninety-day end and PILOT_EDIT_DAYS from this instant: nobody becomes
+ * read-only at the release, and nobody keeps more than the new window from it.
+ * Computed, not stored: no data migration.
+ */
+export const PILOT_WINDOW_SHORTENED_AT = new Date("2026-10-12T00:00:00.000Z");
 
 /**
  * The day the pilot terms go live. The clock never starts before it.
  *
- * The rule is the same across the suite: ninety days of editing counted from
+ * The rule is the same across the suite: PILOT_EDIT_DAYS of editing counted from
  * the organisation's FIRST SIGN-IN after the pilot is live. The creation date
  * plays no part: an organisation made months before the terms were published
  * was never told of a clock. The first sign-in is recorded on the
@@ -95,6 +113,22 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 /** The instant to record as a first sign-in happening at `now`: never before the pilot went live. */
 export function pilotFirstSignInStamp(now: Date = new Date()): Date {
   return now.getTime() > PILOT_LIVE_FROM.getTime() ? now : PILOT_LIVE_FROM;
+}
+
+/**
+ * The end of the editing window for a pilot that started at `startedAt`.
+ * A start on or after PILOT_WINDOW_SHORTENED_AT gets PILOT_EDIT_DAYS; an
+ * earlier start (an organisation already in its pilot when the window was
+ * shortened) gets the earlier of its original ninety-day end and
+ * PILOT_EDIT_DAYS from PILOT_WINDOW_SHORTENED_AT.
+ */
+export function pilotEndsAt(startedAt: Date): Date {
+  const start = startedAt.getTime();
+  const shortenedAt = PILOT_WINDOW_SHORTENED_AT.getTime();
+  if (start >= shortenedAt) return new Date(start + PILOT_EDIT_DAYS * DAY_MS);
+  return new Date(
+    Math.min(start + PILOT_EDIT_DAYS_BEFORE_SHORTENING * DAY_MS, shortenedAt + PILOT_EDIT_DAYS * DAY_MS),
+  );
 }
 
 export interface PilotClock {
@@ -113,7 +147,7 @@ export interface PilotClock {
  */
 export function pilotClock(firstSignInAt: Date | null | undefined, now: Date = new Date()): PilotClock {
   const startedAt = pilotFirstSignInStamp(firstSignInAt ?? now);
-  const endsAt = new Date(startedAt.getTime() + PILOT_EDIT_DAYS * DAY_MS);
+  const endsAt = pilotEndsAt(startedAt);
   const remainingMs = endsAt.getTime() - now.getTime();
   return {
     startedAt,
@@ -258,8 +292,8 @@ function waysOut(locale: PilotLocale, exportUrl: string): string {
 export function pilotReadOnlyMessage(locale: PilotLocale, exportUrl: string): string {
   const lead =
     locale === "es"
-      ? `Piloto alojado: los ${PILOT_EDIT_DAYS} días de edición de esta organización han terminado y ahora es de solo lectura.`
-      : `Hosted pilot: this organisation's ${PILOT_EDIT_DAYS} editing days are over and it is now read-only.`;
+      ? "Piloto alojado: el periodo de edición de esta organización ha terminado y ahora es de solo lectura."
+      : "Hosted pilot: this organisation's editing window is over and it is now read-only.";
   return `${lead} ${waysOut(locale, exportUrl)} ${pilotKeepGoing(locale)}`;
 }
 

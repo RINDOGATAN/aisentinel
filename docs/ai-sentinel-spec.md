@@ -785,7 +785,7 @@ All core modules are freely available:
 
 Decision of 2026-09-16: the hosted service is a free, capped pilot and nothing is sold there
 (every module open to every organisation; caps in `src/config/pilot.ts`: one organisation
-per account, 90 days of editing from the first sign-in after the pilot went live, then
+per account, 15 days of editing (90 until 11 Oct 2026) from the first sign-in after the pilot went live, then
 read-only with exports, a records ceiling). Premium modules are sold only for the kit
 (self-hosted), at 60 a year each in the kit (in your currency: dollars unless the visitor
 is known to be outside the US, euros only then), on the TODO.LAW marketplace, and

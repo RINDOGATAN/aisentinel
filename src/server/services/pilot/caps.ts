@@ -122,7 +122,7 @@ export async function getPilotStatus(
 }
 
 /**
- * The ninety-day switch. Throws FORBIDDEN once the organisation is read-only.
+ * The editing-window switch. Throws FORBIDDEN once the organisation is read-only.
  * Pure apart from the clock: the organisation row already carries what it
  * needs, so the write middleware can call it without another query.
  */
@@ -141,7 +141,7 @@ export function assertPilotWritable(
   });
 }
 
-/** The fixed name the audit row gives the ninety-day limit; the ceilings use their keys. */
+/** The fixed name the audit row gives the editing-window limit; the ceilings use their keys. */
 export const PILOT_EDITING_DAYS_LIMIT = "editing_days";
 
 export type PilotLimitName = PilotCeilingKey | typeof PILOT_EDITING_DAYS_LIMIT;

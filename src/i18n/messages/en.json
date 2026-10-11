@@ -5422,7 +5422,7 @@
     "ceilingsTitle": "Ceilings on this pilot",
     "counter": "{used} of {max}",
     "ceilingReachedMark": "Ceiling reached",
-    "readOnlyBody": "The 90 editing days are over. This organisation is read-only: everything can still be opened and exported, nothing can be changed.",
+    "readOnlyBody": "The editing window is over. This organisation is read-only: everything can still be opened and exported, nothing can be changed.",
     "ceilingReachedBody": "A ceiling has been reached. Two ways out:",
     "runOwn": "Run your own instance",
     "exportAll": "Export everything (program pack)",

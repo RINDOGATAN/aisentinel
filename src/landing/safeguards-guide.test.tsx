@@ -94,7 +94,7 @@ describe.each(["es", "en"] as Locale[])("safeguards guide (%s)", (locale) => {
   it("announces the result, marks the matching box, and keeps a quiet phone bar", () => {
     const html = render(locale, { open: true, answers: { data: "special" } });
     const g = guideOf(html);
-    const managed = locale === "es" ? "2" : "4";
+    const managed = "2";
     const name = DICT[locale][`${locale}.ways.w${managed}.title`];
     const status = g.match(/<div role="status"[\s\S]*?<\/div>/)![0];
     expect(text(status)).toContain(name);
@@ -153,16 +153,16 @@ describe("safeguards guide, Spanish only", () => {
 });
 
 describe("safeguards guide, English only", () => {
-  it("shows the five ways and offers all of them", () => {
+  // Three ways, as on the storefront home (owner, 10 Oct 2026); the office answer stays and leads to own hardware.
+  it("shows the three ways and offers all of them", () => {
     const html = render("en", { open: true, answers: {} });
-    expect(boxes(html)).toHaveLength(5);
+    expect(boxes(html)).toHaveLength(3);
     expect(text(guideOf(html))).toContain(COPY.en.questions.loc.options.office);
     const cases: [Answers, string][] = [
       [{ loc: "any" }, "1"],
-      [{ loc: "servers", it: "yes" }, "2"],
+      [{ data: "real" }, "2"],
+      [{ loc: "servers", it: "yes" }, "3"],
       [{ loc: "office", it: "no" }, "3"],
-      [{ data: "real" }, "4"],
-      [{ loc: "servers", it: "no" }, "5"],
     ];
     for (const [answers, n] of cases) {
       const h = render("en", { open: true, answers });

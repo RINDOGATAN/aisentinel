@@ -20,7 +20,7 @@ export const AA_NON_TEXT = 3;
 /** WCAG 2.x relative luminance of a #rrggbb colour. */
 export function luminance(hex: string): number {
   const m = /^#([0-9a-f]{6})$/i.exec(hex);
-  if (!m) throw new Error(`not a #rrggbb colour: ${hex}`);
+  if (!m) throw new Error(`not a #rrggbb color: ${hex}`);
   const [r, g, b] = [0, 2, 4].map((i) => {
     const c = parseInt(m[1].slice(i, i + 2), 16) / 255;
     return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;

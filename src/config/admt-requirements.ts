@@ -521,7 +521,7 @@ const clusterC: AdmtRequirementSeed[] = [
           es: "NO puede exigirse verificación",
         },
         description: {
-          en: "An opt-out must not be conditioned on a verifiable consumer request. The business may ask for information reasonably necessary to identify the consumer, but must honour the request where possible without it. Contrast § 7222(e), where verification IS required for access requests.",
+          en: "An opt-out must not be conditioned on a verifiable consumer request. The business may ask for information reasonably necessary to identify the consumer, but must honor the request where possible without it. Contrast § 7222(e), where verification IS required for access requests.",
           es: "La exclusión no puede condicionarse a una solicitud verificable del consumidor. La empresa puede pedir la información razonablemente necesaria para identificarlo, pero debe atender la solicitud, cuando sea posible, sin ella. Contrasta con el § 7222(e), que SÍ exige verificación para las solicitudes de acceso.",
         },
         applicabilityTags: ART11,
@@ -1007,7 +1007,7 @@ const clusterF: AdmtRequirementSeed[] = [
           es: "Supuesto: elaboración de perfiles laborales o educativos",
         },
         description: {
-          en: "Automated processing to infer or extrapolate intelligence, ability, aptitude, performance at work, economic situation, health (including mental health), preferences, interests, reliability, predispositions, behaviour, location or movements, based on systematic observation of a person acting as an educational-program applicant, job applicant, student, employee or independent contractor.",
+          en: "Automated processing to infer or extrapolate intelligence, ability, aptitude, performance at work, economic situation, health (including mental health), preferences, interests, reliability, predispositions, behavior, location or movements, based on systematic observation of a person acting as an educational-program applicant, job applicant, student, employee or independent contractor.",
           es: "Tratamiento automatizado dirigido a inferir o extrapolar inteligencia, capacidad, aptitud, rendimiento laboral, situación económica, salud (incluida la salud mental), preferencias, intereses, fiabilidad, predisposiciones, comportamiento, localización o movimientos, a partir de la observación sistemática de una persona en su condición de solicitante de un programa educativo, candidato a empleo, estudiante, persona empleada o contratista independiente.",
         },
         applicabilityTags: [
@@ -1411,7 +1411,7 @@ const clusterG: AdmtRequirementSeed[] = [
           es: "Reutilización de una auditoría existente: se cita el NIST CSF 2.0",
         },
         description: {
-          en: "An audit or assessment prepared for another purpose may be reused if it meets all Article 9 requirements alone or with supplementation. The regulation names the NIST Cybersecurity Framework 2.0 as the example, which makes an existing CSF programme directly reusable here.",
+          en: "An audit or assessment prepared for another purpose may be reused if it meets all Article 9 requirements alone or with supplementation. The regulation names the NIST Cybersecurity Framework 2.0 as the example, which makes an existing CSF program directly reusable here.",
           es: "Puede reutilizarse una auditoría o evaluación elaborada con otra finalidad si cumple todos los requisitos del artículo 9, por sí sola o completada. La norma cita como ejemplo el NIST Cybersecurity Framework 2.0, lo que permite reutilizar directamente un programa CSF existente.",
         },
         applicabilityTags: ART9_ORG,
@@ -1427,7 +1427,7 @@ const clusterG: AdmtRequirementSeed[] = [
       es: "Certificación de finalización",
     },
     description: {
-      en: "For each year an audit is required, submit a written certification to the Agency via cppa.ca.gov by 1 April following the audit year, signed by a member of the executive management team who is directly responsible, sufficiently knowledgeable and authorised. It must include the business name and contact, a statement that the audit was completed, the period covered by month and year, the verbatim electronically signed attestation under penalty of perjury — which includes an affirmative statement that the business has not made any attempt to influence the auditor's decisions or assessments — and the submitter's name, title and date.",
+      en: "For each year an audit is required, submit a written certification to the Agency via cppa.ca.gov by 1 April following the audit year, signed by a member of the executive management team who is directly responsible, sufficiently knowledgeable and authorized. It must include the business name and contact, a statement that the audit was completed, the period covered by month and year, the verbatim electronically signed attestation under penalty of perjury — which includes an affirmative statement that the business has not made any attempt to influence the auditor's decisions or assessments — and the submitter's name, title and date.",
       es: "Por cada ejercicio en que se exija auditoría, presenta a la Agencia a través de cppa.ca.gov, antes del 1 de abril siguiente al año auditado, una certificación escrita firmada por un miembro del equipo directivo directamente responsable, con conocimiento suficiente y debidamente autorizado. Deberá incluir la denominación y el contacto de la empresa, la manifestación de que la auditoría se completó, el periodo cubierto expresado en mes y año, la declaración literal firmada electrónicamente bajo pena de perjurio (que incorpora la afirmación expresa de que la empresa no ha intentado influir en las decisiones o valoraciones del auditor) y el nombre, cargo y fecha de quien la presenta.",
     },
     applicabilityTags: ART9_ORG,

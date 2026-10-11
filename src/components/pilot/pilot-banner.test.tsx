@@ -5,7 +5,7 @@
  * The end-of-pilot bar (owner, 11 Oct 2026), which replaced the warning
  * banner. On signed-in pages of the hosted pilot only; nothing for most of
  * the pilot, the end date in the last five days, the read-only line after;
- * never for a paid organisation. The rule is a pure function; the markup is
+ * never for a paid organization. The rule is a pure function; the markup is
  * rendered here without the app shell.
  */
 import { describe, it, expect } from "vitest";
@@ -43,7 +43,7 @@ describe("when the bar shows", () => {
     expect(pilotEndBarState(pilot(null), NOW)).toBe("hidden");
   });
 
-  it("is never shown to a paid organisation, in any state", () => {
+  it("is never shown to a paid organization, in any state", () => {
     for (const status of [pilot(at(2)), pilot(at(-2), true)]) {
       expect(pilotEndBarState({ ...status, paid: true }, NOW)).toBe("hidden");
     }
@@ -80,9 +80,9 @@ describe("what the bar says", () => {
     expect(es).toContain(`href="${PILOT_PRICING_URL.es}"`);
   });
 
-  it("says the organisation is read-only and exportable once the pilot is over", () => {
+  it("says the organization is read-only and exportable once the pilot is over", () => {
     expect(text(render("en", "readOnly"))).toBe(
-      "Your pilot has ended: the organisation is read-only and you can export it at any time. See pricing",
+      "Your pilot has ended: the organization is read-only and you can export it at any time. See pricing",
     );
     expect(text(render("es", "readOnly"))).toBe(
       "Tu piloto ha terminado: la organización está en solo lectura y puedes exportarla cuando quieras. Ver precios",
@@ -169,7 +169,7 @@ describe("the bar shows only once a person is signed in", () => {
     expect(found.sort()).toEqual([
       "src/app/(dashboard)/layout.tsx",
       "src/components/pilot/hosted-pilot-banner.tsx",
-      // the client part that reads the organisation (rendered only by hosted-pilot-banner.tsx)
+      // the client part that reads the organization (rendered only by hosted-pilot-banner.tsx)
       "src/components/pilot/pilot-banner.tsx",
     ]);
   });

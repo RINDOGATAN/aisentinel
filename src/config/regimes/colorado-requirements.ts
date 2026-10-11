@@ -121,7 +121,7 @@ export const COLORADO_REQUIREMENTS: RegimeRequirementSeed[] = [
     code: "CO-DEP-5",
     title: { en: "Deployer: public statement on ADMT use", es: "Responsable del despliegue: declaración pública sobre el uso de ADMT" },
     description: {
-      en: "Maintain a clear, readily available public statement summarising the types of covered ADMT the deployer uses, how it manages the risks of those uses, and the nature and sources of information collected and used.",
+      en: "Maintain a clear, readily available public statement summarizing the types of covered ADMT the deployer uses, how it manages the risks of those uses, and the nature and sources of information collected and used.",
       es: "Mantén una declaración pública clara y fácilmente accesible que resuma los tipos de ADMT cubierta que utiliza, cómo gestiona los riesgos de esos usos y la naturaleza y las fuentes de la información recogida y utilizada.",
     },
     applicabilityTags: DEP,

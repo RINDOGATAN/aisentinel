@@ -71,7 +71,7 @@ export const EU_ART113_SUBTREE: EuTimelineSubtree = {
       code: "Art. 113 — 2 Aug 2026",
       title: "Art. 50 transparency applies; GPAI enforcement begins",
       description:
-        "From 2 August 2026, the general date of application (Art. 113, second paragraph): Art. 50 transparency obligations (chatbot disclosure, synthetic-content marking, deepfake labelling) apply, and the Commission's GPAI enforcement powers (Arts. 91-93, Art. 101 fines) begin. Providers of generative AI systems placed on the market before 2 August 2026 comply with Art. 50(2) by 2 December 2026 (Art. 111(4), inserted by Regulation (EU) 2026/1744). Annex III high-risk obligations do NOT apply on this date (deferred by the Digital Omnibus; see the 2 Dec 2027 entry).",
+        "From 2 August 2026, the general date of application (Art. 113, second paragraph): Art. 50 transparency obligations (chatbot disclosure, synthetic-content marking, deepfake labeling) apply, and the Commission's GPAI enforcement powers (Arts. 91-93, Art. 101 fines) begin. Providers of generative AI systems placed on the market before 2 August 2026 comply with Art. 50(2) by 2 December 2026 (Art. 111(4), inserted by Regulation (EU) 2026/1744). Annex III high-risk obligations do NOT apply on this date (deferred by the Digital Omnibus; see the 2 Dec 2027 entry).",
       sortOrder: 3,
     },
     {

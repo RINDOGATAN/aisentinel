@@ -118,7 +118,7 @@ export const CAPABILITIES: Capability[] = [
     group: "retrieves",
     label: { en: "Internal documents", es: "Documentos internos" },
     note: {
-      en: "Retrieval is where authorisation has to happen; a prompt asking the model to keep a secret is not access control.",
+      en: "Retrieval is where authorization has to happen; a prompt asking the model to keep a secret is not access control.",
       es: "La autorización tiene que ocurrir en la recuperación; pedirle al modelo que guarde un secreto no es control de acceso.",
     },
   },
@@ -201,7 +201,7 @@ export const CAPABILITIES: Capability[] = [
     group: "calls",
     label: { en: "Third-party services", es: "Servicios de terceros" },
     note: {
-      en: "Scoped credentials, and a record of what leaves the organisation with each call.",
+      en: "Scoped credentials, and a record of what leaves the organization with each call.",
       es: "Credenciales limitadas y constancia de qué sale de la organización en cada llamada.",
     },
   },
@@ -508,7 +508,7 @@ export const SCENARIO_LIBRARY: LibraryScenario[] = [
       {
         layer: "prevent",
         text: {
-          en: "Enforce authorisation at retrieval, with the asker's own permissions. Never ask the model to withhold what it was given.",
+          en: "Enforce authorization at retrieval, with the asker's own permissions. Never ask the model to withhold what it was given.",
           es: "Aplica la autorización en la recuperación, con los permisos de quien pregunta. Nunca pidas al modelo que oculte lo que se le ha entregado.",
         },
       },
@@ -707,7 +707,7 @@ export const SCENARIO_LIBRARY: LibraryScenario[] = [
       {
         layer: "constrain",
         text: {
-          en: "Authorise per tool, not per agent: each tool call carries the permission it needs and no more.",
+          en: "Authorize per tool, not per agent: each tool call carries the permission it needs and no more.",
           es: "Autoriza por herramienta, no por agente: cada llamada lleva el permiso que necesita y ninguno más.",
         },
       },
@@ -755,7 +755,7 @@ export const SCENARIO_LIBRARY: LibraryScenario[] = [
       {
         layer: "constrain",
         text: {
-          en: "Confirm before anything leaves the organisation, and verify the recipient against the record the message is about.",
+          en: "Confirm before anything leaves the organization, and verify the recipient against the record the message is about.",
           es: "Confirma antes de que algo salga de la organización y verifica el destinatario contra el registro del que trata el mensaje.",
         },
       },
@@ -1048,7 +1048,7 @@ export const SCENARIO_LIBRARY: LibraryScenario[] = [
       {
         layer: "detect",
         text: {
-          en: "Set rate and volume alerts on the actions that cost money or leave the organisation.",
+          en: "Set rate and volume alerts on the actions that cost money or leave the organization.",
           es: "Pon alertas de frecuencia y volumen en las acciones que cuestan dinero o salen de la organización.",
         },
       },
@@ -1081,7 +1081,7 @@ export const SCENARIO_LIBRARY: LibraryScenario[] = [
       es: "Dos pasos sensatos suman algo que nadie aprobó",
     },
     story: {
-      en: "One agent summarises, another acts on the summary, and the second one never sees the caveats the first one dropped. Each step passes review on its own.",
+      en: "One agent summarizes, another acts on the summary, and the second one never sees the caveats the first one dropped. Each step passes review on its own.",
       es: "Un agente resume, otro actúa sobre el resumen, y el segundo nunca ve las salvedades que el primero descartó. Cada paso, por separado, pasa la revisión.",
     },
     defaults: { impact: "HIGH", likelihood: "MEDIUM", blastRadius: "SIGNIFICANT" },
@@ -1096,7 +1096,7 @@ export const SCENARIO_LIBRARY: LibraryScenario[] = [
       {
         layer: "prevent",
         text: {
-          en: "Carry provenance and confidence with the payload, so the acting agent knows what the summarising one was unsure about.",
+          en: "Carry provenance and confidence with the payload, so the acting agent knows what the summarizing one was unsure about.",
           es: "Traslada la procedencia y la confianza junto con los datos, para que el agente que actúa sepa de qué no estaba seguro el que resumió.",
         },
       },

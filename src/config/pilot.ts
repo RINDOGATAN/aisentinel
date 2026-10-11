@@ -299,7 +299,7 @@ export const PILOT_END_BAR_COPY: Record<
 > = {
   en: {
     ending: (date) => `Your pilot ends on ${date}. Move to the paid plan to keep editing with all your records.`,
-    readOnly: "Your pilot has ended: the organisation is read-only and you can export it at any time.",
+    readOnly: "Your pilot has ended: the organization is read-only and you can export it at any time.",
     pricing: "See pricing",
   },
   es: {
@@ -330,7 +330,7 @@ export function pilotReadOnlyMessage(locale: PilotLocale, exportUrl: string): st
   const lead =
     locale === "es"
       ? "Piloto alojado: el periodo de edición de esta organización ha terminado y ahora es de solo lectura."
-      : "Hosted pilot: this organisation's editing window is over and it is now read-only.";
+      : "Hosted pilot: this organization's editing window is over and it is now read-only.";
   return `${lead} ${waysOut(locale, exportUrl)} ${pilotKeepGoing(locale)}`;
 }
 
@@ -344,12 +344,12 @@ export function pilotCeilingMessage(
   const lead =
     locale === "es"
       ? `Piloto alojado: esta organización ha alcanzado su límite de ${max} ${label}.`
-      : `Hosted pilot: this organisation has reached its ceiling of ${max} ${label}.`;
+      : `Hosted pilot: this organization has reached its ceiling of ${max} ${label}.`;
   return `${lead} ${waysOut(locale, exportUrl)} ${pilotKeepGoing(locale)}`;
 }
 
 export function pilotOneOrganizationMessage(locale: PilotLocale): string {
   return locale === "es"
     ? `Piloto alojado: una organización por cuenta. Para llevar varias organizaciones, pide una instancia gestionada (${PILOT_MANAGED_URL.es}).`
-    : `Hosted pilot: one organisation per account. To run several organisations, ask for a managed instance (${PILOT_MANAGED_URL.en}).`;
+    : `Hosted pilot: one organization per account. To run several organizations, ask for a managed instance (${PILOT_MANAGED_URL.en}).`;
 }

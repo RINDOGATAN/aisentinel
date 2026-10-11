@@ -64,7 +64,7 @@ export const GLOSSARY: GlossaryTerm[] = [
     id: "deployer",
     label: L("deployer", "responsable del despliegue"),
     meaning: L(
-      "The party that uses an AI system under its own authority in the course of its work, that is, the organisation running it, not the one that built it (EU AI Act Art. 3).",
+      "The party that uses an AI system under its own authority in the course of its work, that is, the organization running it, not the one that built it (EU AI Act Art. 3).",
       "La parte que utiliza un sistema de IA bajo su propia autoridad en el marco de su actividad, es decir, la organización que lo opera, no la que lo construyó (Reglamento de IA de la UE, art. 3).",
     ),
     docHref: "/docs/guides/my-role",

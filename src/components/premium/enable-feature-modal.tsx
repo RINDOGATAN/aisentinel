@@ -76,7 +76,7 @@ export function EnableFeatureModal({
             <p className="text-sm text-muted-foreground">
               {features.allSkillsFree
                 ? `${skillName} is included in your self-hosted deployment. It is already available to your organization.`
-                : `${skillName} is a premium feature. Activate the licence file you received on the Skills page to enable it for your organization.`}
+                : `${skillName} is a premium feature. Activate the license file you received on the Skills page to enable it for your organization.`}
             </p>
           </CardContent>
           <CardFooter className="flex flex-wrap justify-end gap-3">

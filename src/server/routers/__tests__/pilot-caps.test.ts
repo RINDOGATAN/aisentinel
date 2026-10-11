@@ -6,8 +6,8 @@
  * write middleware (src/server/trpc.ts) against an in-memory fake, so what
  * is proven is the wiring and not only the service:
  *
- *   - organization.create refuses a second organisation for the account;
- *   - every orgWriteProcedure refuses once the organisation is read-only,
+ *   - organization.create refuses a second organization for the account;
+ *   - every orgWriteProcedure refuses once the organization is read-only,
  *     except organization.delete, which is the way out;
  *   - aiSystem.create refuses at the records ceiling and writes nothing;
  *   - on the kit none of this applies.
@@ -75,7 +75,7 @@ const H = vi.hoisted(() => {
     auditLog: {
       create: async ({ data }: { data: Row }) => {
         if (auditFails.on) throw new Error("audit store down");
-        // An id, because deleting an organisation writes its tombstone and then
+        // An id, because deleting an organization writes its tombstone and then
         // prunes the rest of the trail by "everything but this row".
         const row = { id: `audit-${audit.length + 1}`, createdAt: new Date(), ...data };
         audit.push(row);
@@ -103,7 +103,7 @@ const H = vi.hoisted(() => {
 
   /**
    * `signedInDaysAgo` is the recorded first sign-in (null: none yet). The
-   * organisation itself is always 400 days old: its age must play no part.
+   * organization itself is always 400 days old: its age must play no part.
    */
   function reset(opts: { signedInDaysAgo: number | null; systemCount: number }) {
     organizations.length = 0;
@@ -166,17 +166,17 @@ describe("hosted pilot caps through the routers", () => {
     vi.unstubAllEnvs();
   });
 
-  it("one organisation per account: a second create is refused, the first stands", async () => {
+  it("one organization per account: a second create is refused, the first stands", async () => {
     H.reset({ signedInDaysAgo: 1, systemCount: 0 });
     const caller = organizationRouter.createCaller(ctx());
     await expect(caller.create({ name: "Second", slug: "second" })).rejects.toMatchObject({
       code: "FORBIDDEN",
-      message: expect.stringContaining("one organisation per account"),
+      message: expect.stringContaining("one organization per account"),
     });
     expect(H.organizations).toHaveLength(1);
   });
 
-  it("an account with no organisation may create its one", async () => {
+  it("an account with no organization may create its one", async () => {
     H.reset({ signedInDaysAgo: 1, systemCount: 0 });
     H.members.length = 0;
     const caller = organizationRouter.createCaller(ctx());
@@ -201,14 +201,14 @@ describe("hosted pilot caps through the routers", () => {
     expect(H.systems).toHaveLength(0);
   });
 
-  it("an old organisation with no recorded first sign-in gets its window from now, not from its creation", async () => {
+  it("an old organization with no recorded first sign-in gets its window from now, not from its creation", async () => {
     H.reset({ signedInDaysAgo: null, systemCount: 0 });
     const caller = aiSystemRouter.createCaller(ctx());
     await expect(caller.create(newSystem)).resolves.toBeTruthy();
     expect(H.organizations[0].pilotFirstSignInAt).toEqual(new Date());
   });
 
-  it("the editing-window switch does not close the way out: the owner can still delete the organisation", async () => {
+  it("the editing-window switch does not close the way out: the owner can still delete the organization", async () => {
     H.reset({ signedInDaysAgo: 400, systemCount: 0 });
     const caller = organizationRouter.createCaller(ctx());
     await expect(caller.delete({ organizationId: "org-a", confirmName: "Org A" })).resolves.toEqual({
@@ -263,7 +263,7 @@ describe("a pilot limit becomes a lead: the refusal carries the link and is coun
     });
   });
 
-  it("writes exactly the contract row, once per organisation, per limit, per day", async () => {
+  it("writes exactly the contract row, once per organization, per limit, per day", async () => {
     H.reset({ signedInDaysAgo: 1, systemCount: PILOT_CEILINGS.systems });
     const caller = aiSystemRouter.createCaller(ctx());
     for (let i = 0; i < 3; i += 1) await expect(caller.create(newSystem)).rejects.toBeTruthy();
@@ -308,7 +308,7 @@ describe("a pilot limit becomes a lead: the refusal carries the link and is coun
     expect(limitRows()).toHaveLength(0);
   });
 
-  it("an organisation at its limit still reads everything, and a read writes no row", async () => {
+  it("an organization at its limit still reads everything, and a read writes no row", async () => {
     H.reset({ signedInDaysAgo: 1, systemCount: PILOT_CEILINGS.systems });
     const caller = aiSystemRouter.createCaller(ctx());
     await expect(caller.create(newSystem)).rejects.toBeTruthy();
@@ -318,7 +318,7 @@ describe("a pilot limit becomes a lead: the refusal carries the link and is coun
     expect(limitRows()).toHaveLength(1);
   });
 
-  it("an organisation past its editing days still reads everything", async () => {
+  it("an organization past its editing days still reads everything", async () => {
     H.reset({ signedInDaysAgo: 91, systemCount: 3 });
     const caller = aiSystemRouter.createCaller(ctx());
     const { items } = await caller.list({ organizationId: "org-a" });
@@ -336,7 +336,7 @@ describe("on the kit the routers apply no pilot cap", () => {
   });
   afterEach(() => vi.unstubAllEnvs());
 
-  it("creates a second organisation, writes to an old one, and passes the ceiling", async () => {
+  it("creates a second organization, writes to an old one, and passes the ceiling", async () => {
     H.reset({ signedInDaysAgo: 400, systemCount: PILOT_CEILINGS.systems + 10 });
     const orgs = organizationRouter.createCaller(ctx());
     await expect(orgs.create({ name: "Second", slug: "second" })).resolves.toBeTruthy();

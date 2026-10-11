@@ -227,11 +227,11 @@ export function pilotReminderCopy(input: PilotReminderEmailInput) {
     heading: kind === "fiveDays" ? "Your pilot ends in 5 days" : "Your pilot ends within 24 hours",
     intro: `The editing window of the ${orgName} pilot on ${product} ends ${when}.`,
     after:
-      "After that, the organisation becomes read-only: you can open and export everything you created, but you cannot add or change records.",
+      "After that, the organization becomes read-only: you can open and export everything you created, but you cannot add or change records.",
     keepGoing: "To keep working:",
     options: [
       {
-        text: `Cloud Plan: ${PLAN_PRICE.en}. It lifts the pilot's limits and keeps your records as they are. We activate the paid plan on your organisation after payment.`,
+        text: `Cloud Plan: ${PLAN_PRICE.en}. It lifts the pilot's limits and keeps your records as they are. We activate the paid plan on your organization after payment.`,
         label: "See pricing",
         url: PRICING_URL.en,
       },

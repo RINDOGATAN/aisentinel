@@ -71,7 +71,7 @@ export function lockedResponse(access: ShowcaseAccess): Response {
       skillId: access.locked?.skillId,
       purchaseUrl: access.locked?.purchaseUrl,
       message:
-        "This document is part of a premium module. Activate your licence in Settings.",
+        "This document is part of a premium module. Activate your license in Settings.",
     },
     { status: 402 },
   );

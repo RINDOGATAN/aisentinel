@@ -642,15 +642,15 @@ const PAIRS: readonly Pair[] = [
     "Medios y publicidad",
   ],
   [
-    "AI systems in publishing, advertising and marketing: audience modelling, generative creative, content recommendation and brand safety.",
+    "AI systems in publishing, advertising and marketing: audience modeling, generative creative, content recommendation and brand safety.",
     "Sistemas de IA en la edición, la publicidad y el marketing: modelización de audiencias, creatividades generativas, recomendación de contenidos y seguridad de marca.",
   ],
   [
-    "Audience Segmentation and Lookalike Modelling",
+    "Audience Segmentation and Lookalike Modeling",
     "Segmentación de audiencias y modelos de públicos similares",
   ],
   [
-    "Model that groups people into audience segments and finds similar people from behavioural, purchase and contextual signals.",
+    "Model that groups people into audience segments and finds similar people from behavioral, purchase and contextual signals.",
     "Modelo que agrupa a las personas en segmentos de audiencia y encuentra personas similares a partir de señales de comportamiento, de compra y contextuales.",
   ],
   [
@@ -718,7 +718,7 @@ const PAIRS: readonly Pair[] = [
     "Cómo puede usarse la IA en el trabajo editorial, creativo y de campañas",
   ],
   [
-    "This policy governs AI use across editorial, creative, campaign and audience work. Every AI tool used on client or reader data must be registered before use, with the contract that governs it recorded alongside it.\n\nEditorial judgement stays with people. AI may draft, summarise and vary, and a named person approves anything published. Where AI has materially produced a published piece, the publication says so in the way its style guide requires.\n\nCampaign teams may not promise an advertiser a targeting capability that legal and product have not approved. Segment names are evidence: a segment must be named for what it actually is, because its name will be read back in an investigation.",
+    "This policy governs AI use across editorial, creative, campaign and audience work. Every AI tool used on client or reader data must be registered before use, with the contract that governs it recorded alongside it.\n\nEditorial judgment stays with people. AI may draft, summarize and vary, and a named person approves anything published. Where AI has materially produced a published piece, the publication says so in the way its style guide requires.\n\nCampaign teams may not promise an advertiser a targeting capability that legal and product have not approved. Segment names are evidence: a segment must be named for what it actually is, because its name will be read back in an investigation.",
     "Esta política regula el uso de la IA en el trabajo editorial, creativo, de campañas y de audiencias. Toda herramienta de IA que se utilice sobre datos de clientes o de lectores se registra antes de su uso, junto con el contrato que la rige.\n\nEl criterio editorial sigue siendo de las personas. La IA puede redactar, resumir y generar variantes, y una persona identificada aprueba todo lo que se publica. Cuando la IA haya producido de forma sustancial una pieza publicada, la publicación lo indica del modo que exija su libro de estilo.\n\nLos equipos de campañas no pueden prometer a un anunciante una capacidad de segmentación que el departamento jurídico y el de producto no hayan aprobado. Los nombres de los segmentos son prueba: un segmento debe llamarse por lo que realmente es, porque su nombre se leerá en voz alta en una investigación.",
   ],
   [
@@ -726,11 +726,11 @@ const PAIRS: readonly Pair[] = [
     "Política de datos sensibles en publicidad",
   ],
   [
-    "How the organisation decides whether advertising data is sensitive, and what follows",
+    "How the organization decides whether advertising data is sensitive, and what follows",
     "Cómo decide la organización si un dato publicitario es sensible y qué se deriva de ello",
   ],
   [
-    "This policy governs data used to build, extend and target advertising audiences. Before a segment or feed is used, it is classified through the five-factor analysis (source, content, use, consumer expectations, harm) and the result is recorded with its reasoning, an owner and a review date.\n\nA segment classified as high is treated as sensitive everywhere: opt-in consent where it can be obtained, suppression where it cannot, no sale or share, and a contract that binds every recipient. Health data receives particular care, because several US state laws reach health status inferred from ordinary purchase or browsing data, and one of them requires a signed authorisation to sell that is not achievable in programmatic advertising.\n\nContractual assurances from partners are not a substitute for diligence. Where the organisation has reason to believe a partner is not complying, it stops sending data to that partner until the position is resolved. Classifications are reviewed on a set cadence, because statutory definitions, industry practice and consumer expectations all move.",
+    "This policy governs data used to build, extend and target advertising audiences. Before a segment or feed is used, it is classified through the five-factor analysis (source, content, use, consumer expectations, harm) and the result is recorded with its reasoning, an owner and a review date.\n\nA segment classified as high is treated as sensitive everywhere: opt-in consent where it can be obtained, suppression where it cannot, no sale or share, and a contract that binds every recipient. Health data receives particular care, because several US state laws reach health status inferred from ordinary purchase or browsing data, and one of them requires a signed authorization to sell that is not achievable in programmatic advertising.\n\nContractual assurances from partners are not a substitute for diligence. Where the organization has reason to believe a partner is not complying, it stops sending data to that partner until the position is resolved. Classifications are reviewed on a set cadence, because statutory definitions, industry practice and consumer expectations all move.",
     "Esta política regula los datos utilizados para construir, ampliar y segmentar audiencias publicitarias. Antes de usar un segmento o un flujo, se clasifica mediante el análisis de cinco factores (origen, contenido, uso, expectativas de la persona y perjuicio) y el resultado se registra con su razonamiento, un responsable y una fecha de revisión.\n\nUn segmento clasificado como alto se trata como sensible en todas partes: consentimiento expreso donde pueda obtenerse, supresión donde no, sin venta ni comunicación, y un contrato que vincule a cada destinatario. Los datos de salud reciben un cuidado particular, porque varias leyes estatales de EE. UU. alcanzan al estado de salud inferido a partir de datos corrientes de compra o de navegación, y una de ellas exige para la venta una autorización firmada que no es viable en la publicidad programática.\n\nLas garantías contractuales de los socios no sustituyen a la diligencia debida. Cuando la organización tenga motivos para creer que un socio no cumple, deja de enviarle datos hasta que se aclare la situación. Las clasificaciones se revisan con una periodicidad fijada, porque las definiciones legales, la práctica del sector y las expectativas de las personas cambian.",
   ],
   [
@@ -742,7 +742,7 @@ const PAIRS: readonly Pair[] = [
     "Marcar el contenido generado, y los límites de lo que el marcado resuelve",
   ],
   [
-    "This policy governs synthetic content produced or published by the organisation. Generated audio, image, video and text is marked in a machine-readable format so that it can be detected as artificially generated or manipulated, and deep fake content is disclosed as such where it is published.\n\nMarking is not permission. A real person's voice or likeness may not be generated without a documented right to use it, an existing work may not be imitated without clearance, and a generated endorsement may not imply that a person or organisation has endorsed anything they have not.\n\nWhere a system interacts directly with a person, the person is told they are dealing with an AI system unless that is obvious from the context. Records of what was generated, from which prompt and by whom, are retained for the period set in the records schedule.",
+    "This policy governs synthetic content produced or published by the organization. Generated audio, image, video and text is marked in a machine-readable format so that it can be detected as artificially generated or manipulated, and deep fake content is disclosed as such where it is published.\n\nMarking is not permission. A real person's voice or likeness may not be generated without a documented right to use it, an existing work may not be imitated without clearance, and a generated endorsement may not imply that a person or organization has endorsed anything they have not.\n\nWhere a system interacts directly with a person, the person is told they are dealing with an AI system unless that is obvious from the context. Records of what was generated, from which prompt and by whom, are retained for the period set in the records schedule.",
     "Esta política regula el contenido sintético que la organización produce o publica. El audio, las imágenes, el vídeo y el texto generados se marcan en un formato legible por máquina para que pueda detectarse que se han generado o manipulado artificialmente, y el contenido ultrasuplantado se indica como tal cuando se publica.\n\nEl marcado no es una autorización. No puede generarse la voz o la imagen de una persona real sin un derecho documentado a utilizarlas, no puede imitarse una obra existente sin la autorización correspondiente, y un aval generado no puede dar a entender que una persona u organización ha respaldado algo que no ha respaldado.\n\nCuando un sistema interactúe directamente con una persona, se le informa de que está tratando con un sistema de IA, salvo que resulte evidente por el contexto. Los registros de lo generado, a partir de qué instrucción y por quién, se conservan durante el plazo fijado en el calendario de conservación.",
   ],
   [
@@ -774,11 +774,11 @@ const PAIRS: readonly Pair[] = [
     "Triaje de elegibilidad de prestaciones",
   ],
   [
-    "Model that scores and orders applications for public assistance so that cases are routed and prioritised.",
+    "Model that scores and orders applications for public assistance so that cases are routed and prioritized.",
     "Modelo que puntúa y ordena las solicitudes de prestaciones públicas para encaminar y priorizar los expedientes.",
   ],
   [
-    "Route and prioritise applications for public assistance benefits and services",
+    "Route and prioritize applications for public assistance benefits and services",
     "Encaminar y priorizar las solicitudes de prestaciones y servicios de asistencia pública",
   ],
   [
@@ -826,7 +826,7 @@ const PAIRS: readonly Pair[] = [
     "Cómo puede el personal público utilizar la IA en la tramitación administrativa",
   ],
   [
-    "This policy governs AI use in administrative work. Every system is registered before use, with its purpose, its legal basis and the official responsible for it recorded. A system that contributes to a decision about a person is registered as such even where a person signs the decision.\n\nAI output is never the decision. The official taking the decision is accountable for it, must be able to explain it without referring to the system's internal workings, and must be able to depart from the system's output without seeking permission.\n\nPublic bodies hold records for longer and disclose them more often than private organisations. Anything a system generates is a record: it is retained on the applicable schedule and is disclosable on request unless an exemption applies.",
+    "This policy governs AI use in administrative work. Every system is registered before use, with its purpose, its legal basis and the official responsible for it recorded. A system that contributes to a decision about a person is registered as such even where a person signs the decision.\n\nAI output is never the decision. The official taking the decision is accountable for it, must be able to explain it without referring to the system's internal workings, and must be able to depart from the system's output without seeking permission.\n\nPublic bodies hold records for longer and disclose them more often than private organizations. Anything a system generates is a record: it is retained on the applicable schedule and is disclosable on request unless an exemption applies.",
     "Esta política regula el uso de la IA en la tramitación administrativa. Cada sistema se registra antes de su uso, dejando constancia de su finalidad, su base jurídica y el cargo responsable. Un sistema que contribuya a una decisión sobre una persona se registra como tal aunque sea una persona quien firme la decisión.\n\nEl resultado de la IA nunca es la decisión. Quien decide responde de ella, debe poder explicarla sin referirse al funcionamiento interno del sistema y debe poder apartarse del resultado del sistema sin pedir autorización.\n\nLos organismos públicos conservan documentación durante más tiempo y la divulgan con más frecuencia que las organizaciones privadas. Todo lo que genere un sistema es documentación: se conserva según el calendario aplicable y es divulgable a petición, salvo que se aplique una excepción.",
   ],
   [

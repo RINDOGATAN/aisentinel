@@ -87,7 +87,7 @@ export const EXAMPLE_SYSTEMS: readonly ExampleSystem[] = [
     key: "applicant-screening",
     name: { en: "Applicant screening model (sample)", es: "Modelo de cribado de candidaturas (muestra)" },
     description: {
-      en: "An invented model that scores applications for junior roles and orders them for a first sift. Trained on five years of the example organisation's own hiring records and retrained each quarter.",
+      en: "An invented model that scores applications for junior roles and orders them for a first sift. Trained on five years of the example organization's own hiring records and retrained each quarter.",
       es: "Un modelo inventado que puntúa las candidaturas a puestos de nivel inicial y las ordena para un primer cribado. Entrenado con cinco años de registros de contratación de la organización de ejemplo y reentrenado cada trimestre.",
     },
     purpose: {
@@ -114,7 +114,7 @@ export const EXAMPLE_SYSTEMS: readonly ExampleSystem[] = [
     key: "customer-assistant",
     name: { en: "Customer assistant (sample)", es: "Asistente de clientes (muestra)" },
     description: {
-      en: "An invented generative assistant on the example organisation's public site. It answers questions about products and opening hours, and hands anything else to a person.",
+      en: "An invented generative assistant on the example organization's public site. It answers questions about products and opening hours, and hands anything else to a person.",
       es: "Un asistente generativo inventado en el sitio público de la organización de ejemplo. Responde preguntas sobre productos y horarios y deriva cualquier otro asunto a una persona.",
     },
     purpose: {
@@ -138,9 +138,9 @@ export const EXAMPLE_SYSTEMS: readonly ExampleSystem[] = [
   },
   {
     key: "meeting-notes",
-    name: { en: "Internal meeting summariser (sample)", es: "Resumidor de reuniones internas (muestra)" },
+    name: { en: "Internal meeting summarizer (sample)", es: "Resumidor de reuniones internas (muestra)" },
     description: {
-      en: "An invented tool that turns the example organisation's own internal meeting transcripts into summaries for the people who attended.",
+      en: "An invented tool that turns the example organization's own internal meeting transcripts into summaries for the people who attended.",
       es: "Una herramienta inventada que convierte las transcripciones de reuniones internas de la organización de ejemplo en resúmenes para quienes asistieron.",
     },
     purpose: {
@@ -157,7 +157,7 @@ export const EXAMPLE_SYSTEMS: readonly ExampleSystem[] = [
       level: "MINIMAL",
       annexIIICategory: null,
       rationale: {
-        en: "Summarises the organisation's own internal records for the people who were in the room. It informs no decision about anyone and interacts with no member of the public, so neither Annex III nor Article 50 is engaged. Data protection duties still apply to the transcripts.",
+        en: "Summarizes the organization's own internal records for the people who were in the room. It informs no decision about anyone and interacts with no member of the public, so neither Annex III nor Article 50 is engaged. Data protection duties still apply to the transcripts.",
         es: "Resume registros internos de la propia organización para las personas que estuvieron en la reunión. No fundamenta ninguna decisión sobre nadie ni interactúa con el público, por lo que no entran en juego ni el anexo III ni el artículo 50. Las obligaciones de protección de datos siguen aplicándose a las transcripciones.",
       },
     },
@@ -172,11 +172,11 @@ export const EXAMPLE_SYSTEMS: readonly ExampleSystem[] = [
  */
 export const EXAMPLE_ASSESSMENT_ANSWERS: Record<string, Record<PilotLocale, string>> = {
   sys_description: {
-    en: "A gradient-boosted model over the text of an application and its structured fields, trained on five years of the example organisation's own hiring outcomes and retrained each quarter. It returns a score between 0 and 1 and an ordering; it returns no decision.",
+    en: "A gradient-boosted model over the text of an application and its structured fields, trained on five years of the example organization's own hiring outcomes and retrained each quarter. It returns a score between 0 and 1 and an ordering; it returns no decision.",
     es: "Un modelo de refuerzo del gradiente sobre el texto de la candidatura y sus campos estructurados, entrenado con cinco años de resultados de contratación de la propia organización de ejemplo y reentrenado cada trimestre. Devuelve una puntuación entre 0 y 1 y una ordenación; no devuelve una decisión.",
   },
   sys_purpose: {
-    en: "To put the most relevant applications in front of a recruiter first, for roles that receive several hundred applications each. The organisation uses it to shorten time to first response, not to reduce the number of people who read an application.",
+    en: "To put the most relevant applications in front of a recruiter first, for roles that receive several hundred applications each. The organization uses it to shorten time to first response, not to reduce the number of people who read an application.",
     es: "Situar las candidaturas más relevantes ante la persona de selección en primer lugar, en puestos que reciben varios cientos de candidaturas cada uno. La organización lo utiliza para acortar el tiempo hasta la primera respuesta, no para reducir el número de personas que leen una candidatura.",
   },
   sys_necessity: {
@@ -204,7 +204,7 @@ export const EXAMPLE_ASSESSMENT_ANSWERS: Record<string, Record<PilotLocale, stri
     es: "La persona de selección ve la candidatura completa, la puntuación del modelo y la advertencia de que la puntuación es solo una ayuda a la ordenación. También ve, en una lista aparte que está obligada a revisar, las candidaturas peor ordenadas. Puede convocar a entrevista a cualquier persona en cualquier posición y no se le pide justificar apartarse del orden.",
   },
   risk_discrimination: {
-    en: "The main risk is that the model learns the pattern of past hiring rather than the requirements of the role, and so reproduces any historic under-representation. The characteristics at stake are sex, age, ethnic origin and disability. The example organisation tests selection rates by sex and age band each quarter against a four-fifths rule and records the result; ethnic origin and disability are not held, so those are tested by proxy audit on applicant surveys.",
+    en: "The main risk is that the model learns the pattern of past hiring rather than the requirements of the role, and so reproduces any historic under-representation. The characteristics at stake are sex, age, ethnic origin and disability. The example organization tests selection rates by sex and age band each quarter against a four-fifths rule and records the result; ethnic origin and disability are not held, so those are tested by proxy audit on applicant surveys.",
     es: "El riesgo principal es que el modelo aprenda el patrón de contrataciones pasadas en lugar de los requisitos del puesto y reproduzca así cualquier infrarrepresentación histórica. Las características en juego son el sexo, la edad, el origen étnico y la discapacidad. La organización de ejemplo comprueba cada trimestre las tasas de selección por sexo y tramo de edad frente a una regla de cuatro quintos y registra el resultado; el origen étnico y la discapacidad no constan, por lo que se comprueban mediante auditoría indirecta sobre encuestas a las personas candidatas.",
   },
   meas_oversight: {
@@ -212,11 +212,11 @@ export const EXAMPLE_ASSESSMENT_ANSWERS: Record<string, Record<PilotLocale, stri
     es: "Dos personas de selección supervisan cada puesto, y una de ellas debe ser ajena al equipo contratante. Ambas reciben formación sobre cómo se produce la puntuación y sobre el sesgo de automatización, y la formación se repite cada año. La obligación de revisar las candidaturas peor ordenadas es la contramedida concreta frente a aceptar el orden sin criterio.",
   },
   rev_route: {
-    en: "Every applicant is told, in the acknowledgement email and on the application page, that an AI system helps order applications, and is given an address at which to ask for their application to be read by a person outside the process. The route does not require a reason.",
+    en: "Every applicant is told, in the acknowledgment email and on the application page, that an AI system helps order applications, and is given an address at which to ask for their application to be read by a person outside the process. The route does not require a reason.",
     es: "A cada persona candidata se le informa, en el correo de acuse de recibo y en la página de la candidatura, de que un sistema de IA ayuda a ordenar las candidaturas, y se le facilita una dirección para pedir que su candidatura la lea una persona ajena al proceso. La vía no exige alegar un motivo.",
   },
   gov_owners: {
-    en: "Business owner: the head of hiring of the example organisation. Technical owner: its data platform team. Accountable for this assessment: the AI officer, who signs it before the next quarterly retraining.",
+    en: "Business owner: the head of hiring of the example organization. Technical owner: its data platform team. Accountable for this assessment: the AI officer, who signs it before the next quarterly retraining.",
     es: "Responsable de negocio: la dirección de selección de la organización de ejemplo. Responsable técnico: su equipo de plataforma de datos. Responsable de esta evaluación: el responsable de IA, que la firma antes del siguiente reentrenamiento trimestral.",
   },
 };
@@ -234,12 +234,12 @@ export const EXAMPLE_POLICY: ExamplePolicy = {
   title: { en: "Acceptable use of AI (sample)", es: "Uso aceptable de la IA (muestra)" },
   type: "AI_USAGE",
   description: {
-    en: "An invented one-page rule for how people in the example organisation may use AI tools at work. Short on purpose: a policy nobody reads governs nothing.",
+    en: "An invented one-page rule for how people in the example organization may use AI tools at work. Short on purpose: a policy nobody reads governs nothing.",
     es: "Una norma inventada de una página sobre cómo pueden usar herramientas de IA en el trabajo las personas de la organización de ejemplo. Breve a propósito: una política que nadie lee no gobierna nada.",
   },
   content: {
     en: [
-      "1. Any AI tool used for work goes in the AI inventory before it touches organisation data. Adding it takes a few minutes and is not a request for permission.",
+      "1. Any AI tool used for work goes in the AI inventory before it touches organization data. Adding it takes a few minutes and is not a request for permission.",
       "",
       "2. Do not put personal data about a colleague, a customer or an applicant into a tool that is not in the inventory.",
       "",
@@ -247,7 +247,7 @@ export const EXAMPLE_POLICY: ExamplePolicy = {
       "",
       "4. Where people interact with an AI system, they are told so plainly, in the first exchange.",
       "",
-      "5. If an AI system produces a result that harms someone or could have, report it as an incident the same day. Reporting is never penalised.",
+      "5. If an AI system produces a result that harms someone or could have, report it as an incident the same day. Reporting is never penalized.",
       "",
       "This is a sample policy in a worked example. Replace it with your own before you rely on it.",
     ].join("\n"),
@@ -288,12 +288,12 @@ export const EXAMPLE_INCIDENT = {
     es: "El asistente indicó un plazo de devolución que no existe (muestra)",
   },
   description: {
-    en: "In this invented incident the customer assistant told several people they had 60 days to return an item, where the published term is 30. Three customers relied on it. The example organisation honoured the 60 days for those three, corrected the retrieval source the same day, and added the published terms to the assistant's grounding set. Recorded here to show what an incident record and its clocks look like.",
+    en: "In this invented incident the customer assistant told several people they had 60 days to return an item, where the published term is 30. Three customers relied on it. The example organization honored the 60 days for those three, corrected the retrieval source the same day, and added the published terms to the assistant's grounding set. Recorded here to show what an incident record and its clocks look like.",
     es: "En este incidente inventado, el asistente de clientes indicó a varias personas que disponían de 60 días para devolver un artículo, cuando el plazo publicado es de 30. Tres clientes se fiaron de esa información. La organización de ejemplo respetó los 60 días en esos tres casos, corrigió la fuente de recuperación el mismo día y añadió las condiciones publicadas al conjunto de anclaje del asistente. Se registra aquí para mostrar el aspecto de un registro de incidente y de sus plazos.",
   },
   rootCauseCategory: { en: "Ungrounded retrieval", es: "Recuperación sin anclaje" },
   impactDescription: {
-    en: "Three customers were given a term the organisation does not offer. No personal data was exposed and nobody was refused a refund.",
+    en: "Three customers were given a term the organization does not offer. No personal data was exposed and nobody was refused a refund.",
     es: "Tres clientes recibieron una condición que la organización no ofrece. No se expuso ningún dato personal y no se denegó ninguna devolución.",
   },
 };
@@ -318,18 +318,18 @@ export const WORKED_EXAMPLE_CHROME: Record<
 > = {
   en: {
     title: "Start from a worked example, or start empty",
-    lead: "A governance programme is easier to judge filled in than blank. Take the example and change what does not fit, or start with nothing. Either way you can change your mind.",
+    lead: "A governance program is easier to judge filled in than blank. Take the example and change what does not fit, or start with nothing. Either way you can change your mind.",
     startExample: "Start from the worked example",
     startEmpty: "Start empty",
     contents:
       "The example adds three AI systems with their risk classifications, the vendor behind one of them, an acceptable-use policy, a quarterly oversight review, one incident, and an impact assessment with its answers already recorded.",
     jurisdictionNote:
-      "It also records that the example organisation operates in the European Union, because nothing can be assessed until somewhere is declared. Change it in Settings at any time; removing the example puts back whatever was there before.",
+      "It also records that the example organization operates in the European Union, because nothing can be assessed until somewhere is declared. Change it in Settings at any time; removing the example puts back whatever was there before.",
     markedNote:
       "Everything the example creates is marked as sample data wherever it appears, and one action removes all of it without touching anything you have created yourself.",
     removeTitle: "Sample data",
     removeLead:
-      "This organisation holds records from the worked example. Removing them deletes only those records; anything you have created yourself stays.",
+      "This organization holds records from the worked example. Removing them deletes only those records; anything you have created yourself stays.",
     remove: "Remove the sample data",
     removed: "The sample data is gone.",
     badge: "Sample",

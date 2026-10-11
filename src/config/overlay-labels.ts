@@ -37,7 +37,7 @@ export const OVERLAY_LABELS: Record<OverlayTag, Localized> = {
   "wa:mhmda": L("Washington My Health My Data Act", "Ley My Health My Data de Washington"),
   "wa:genai-provenance": L("Washington HB 1170 (provenance)", "HB 1170 de Washington (procedencia)"),
   "wa:companion": L("Washington HB 2225 (companion chatbots)", "HB 2225 de Washington (chatbots de compañía)"),
-  "wa:prior-auth": L("Washington RCW 48.43.830 (prior authorisation)", "RCW 48.43.830 de Washington (autorización previa)"),
+  "wa:prior-auth": L("Washington RCW 48.43.830 (prior authorization)", "RCW 48.43.830 de Washington (autorización previa)"),
   "wa:public-agency": L("Washington RCW 43.105 (public agencies)", "RCW 43.105 de Washington (entidades públicas)"),
   agentic: L("Agentic layer", "Capa agéntica"),
 };

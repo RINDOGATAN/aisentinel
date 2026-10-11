@@ -45,7 +45,7 @@ const OBLIGATION_LABELS: Record<Art50Suggestion["obligation"], string> = {
   art50_interaction: "AI-interaction disclosure",
   art50_marking: "machine-readable marking of synthetic content",
   art50_emotion: "emotion-recognition / biometric-categorisation disclosure",
-  art50_deepfake: "deepfake and AI-text labelling",
+  art50_deepfake: "deepfake and AI-text labeling",
 };
 
 export interface TransparencyStatementInput {
@@ -124,7 +124,7 @@ export function buildTransparencyStatementUserPrompt(
     lines.push(statusLine("Art. 50(1) interaction disclosure", profile.art50InteractionStatus));
     lines.push(statusLine("Art. 50(2) synthetic-content marking", profile.art50MarkingStatus));
     lines.push(statusLine("Art. 50(3) emotion-recognition disclosure", profile.art50EmotionStatus));
-    lines.push(statusLine("Art. 50(4) deepfake labelling", profile.art50DeepfakeStatus));
+    lines.push(statusLine("Art. 50(4) deepfake labeling", profile.art50DeepfakeStatus));
     if (profile.markingMethods.length) {
       const labels = profile.markingMethods.map(
         (m) => METHOD_LABELS[m as MarkingMethod] ?? m,

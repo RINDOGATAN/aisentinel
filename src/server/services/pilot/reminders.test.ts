@@ -5,7 +5,7 @@
  * Pilot-ending reminders (reminders.ts): the two send days, the transition
  * end (26 Oct 2026), never twice, owners and administrators only, the
  * language, and nothing when the switch is off, off the hosted pilot or for
- * an organisation on the paid plan.
+ * an organization on the paid plan.
  */
 
 import { describe, it, expect, vi } from "vitest";
@@ -200,7 +200,7 @@ describe("language", () => {
     const mail = renderPilotReminderEmail({ locale: "en", kind: "lastDay", orgName: "Acme", endsAt: new Date("2026-10-28T15:00:00Z") });
     expect(mail.text).toContain("https://www.todo.law/pricing");
     expect(mail.text).toContain("$1,800 a year or $179 a month");
-    expect(mail.text).toContain("We activate the paid plan on your organisation after payment.");
+    expect(mail.text).toContain("We activate the paid plan on your organization after payment.");
     expect(mail.text).not.toMatch(/instant|immediately/i);
   });
 });
@@ -224,7 +224,7 @@ describe("nothing is sent", () => {
     expect((await runPilotReminders(asDb(db), null, run("2026-10-24"), ON)).skipped).toBe("email-not-configured");
   });
 
-  it("for an organisation on the paid plan", async () => {
+  it("for an organization on the paid plan", async () => {
     const { sent } = await sendDays(makeDb([fresh({ plan: "EU_CLOUD" })]), "2026-10-12", "2026-11-02");
     expect(sent).toHaveLength(0);
   });

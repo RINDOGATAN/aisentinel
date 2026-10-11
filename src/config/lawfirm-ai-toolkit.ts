@@ -242,7 +242,7 @@ export const LAWFIRM_TOOL_CATEGORIES: LawFirmToolCategory[] = [
       processesPersonalData: true,
       riskLevel: "LIMITED",
       riskRationale: withMarker({
-        en: "Speech recognition with transparency obligations; deployed privately by the firm, outside Annex III. Voice recordings are personal data and frequently capture privileged conversations verbatim — recording requires informed participant consent, client calls need express clearance, and transcripts must follow the matter retention schedule. No emotion recognition or biometric categorisation is in scope; adding either would change the classification.",
+        en: "Speech recognition with transparency obligations; deployed privately by the firm, outside Annex III. Voice recordings are personal data and frequently capture privileged conversations verbatim — recording requires informed participant consent, client calls need express clearance, and transcripts must follow the matter retention schedule. No emotion recognition or biometric categorization is in scope; adding either would change the classification.",
         es: "Reconocimiento de voz con obligaciones de transparencia; desplegado de forma privada por el despacho, fuera del Anexo III. Las grabaciones de voz son datos personales y con frecuencia capturan literalmente conversaciones amparadas por el secreto profesional: grabar exige el consentimiento informado de los participantes, las llamadas con clientes requieren autorización expresa y las transcripciones deben seguir el calendario de conservación del asunto. No incluye reconocimiento de emociones ni categorización biométrica; incorporar cualquiera de ellos cambiaría la clasificación.",
       }),
     },

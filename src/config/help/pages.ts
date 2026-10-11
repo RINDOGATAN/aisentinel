@@ -30,7 +30,7 @@ export const PAGE_HELP: PageHelp[] = [
     route: "/governance",
     title: L("Dashboard", "Panel"),
     purpose: L(
-      "The one screen that shows where your AI governance programme stands: what is registered, what still needs doing, and the next legal deadline that touches your own systems.",
+      "The one screen that shows where your AI governance program stands: what is registered, what still needs doing, and the next legal deadline that touches your own systems.",
       "La pantalla que muestra dónde está tu programa de gobernanza de la IA: qué está registrado, qué queda por hacer y el próximo plazo legal que afecta a tus propios sistemas.",
     ),
     firstStep: L(
@@ -48,11 +48,11 @@ export const PAGE_HELP: PageHelp[] = [
     route: "/governance/quickstart",
     title: L("Quick start", "Inicio rápido"),
     purpose: L(
-      "A short guided path that sets up a working programme in minutes: it adds core policies, drafts an impact assessment for each high-risk system, and reviews your catalogue vendors.",
+      "A short guided path that sets up a working program in minutes: it adds core policies, drafts an impact assessment for each high-risk system, and reviews your catalog vendors.",
       "Un recorrido guiado breve que pone en marcha un programa en minutos: añade políticas básicas, redacta una evaluación de impacto para cada sistema de alto riesgo y revisa los proveedores de tu catálogo.",
     ),
     firstStep: L(
-      "Choose whether you are working for your own organisation or for clients, then follow the steps in order.",
+      "Choose whether you are working for your own organization or for clients, then follow the steps in order.",
       "Elige si trabajas para tu propia organización o para clientes y sigue los pasos en orden.",
     ),
     terms: ["high-risk", "provider", "deployer"],
@@ -64,9 +64,9 @@ export const PAGE_HELP: PageHelp[] = [
   },
   {
     route: "/governance/program",
-    title: L("Programme", "Programa"),
+    title: L("Program", "Programa"),
     purpose: L(
-      "The whole programme on one page: the six stages, how far each has come, and a 30/60/90-day plan over them. It is where you see progress rather than do a single task.",
+      "The whole program on one page: the six stages, how far each has come, and a 30/60/90-day plan over them. It is where you see progress rather than do a single task.",
       "Todo el programa en una página: las seis etapas, hasta dónde ha llegado cada una y un plan de 30/60/90 días sobre ellas. Es donde ves el avance, no donde haces una tarea concreta.",
     ),
     firstStep: L(
@@ -81,7 +81,7 @@ export const PAGE_HELP: PageHelp[] = [
     route: "/governance/ai-registry",
     title: L("AI registry", "Registro de IA"),
     purpose: L(
-      "The inventory of every AI system your organisation builds or uses. A complete inventory is the starting point for every other duty, because you cannot govern what you have not written down.",
+      "The inventory of every AI system your organization builds or uses. A complete inventory is the starting point for every other duty, because you cannot govern what you have not written down.",
       "El inventario de todos los sistemas de IA que tu organización construye o utiliza. Un inventario completo es el punto de partida de cualquier otra obligación, porque no se puede gobernar lo que no se ha registrado.",
     ),
     firstStep: L(
@@ -181,7 +181,7 @@ export const PAGE_HELP: PageHelp[] = [
       "Tu registro de los proveedores externos que hay detrás de tu IA y la revisión de diligencia debida de cada uno. Cuando un sistema depende de un proveedor, sus fallos pasan a ser tu responsabilidad.",
     ),
     firstStep: L(
-      "Add a vendor from the catalogue, then complete its due-diligence assessment.",
+      "Add a vendor from the catalog, then complete its due-diligence assessment.",
       "Añade un proveedor desde el catálogo y completa su evaluación de diligencia debida.",
     ),
     terms: ["provider", "evidence", "stakeholder"],
@@ -190,9 +190,9 @@ export const PAGE_HELP: PageHelp[] = [
   },
   {
     route: "/governance/vendor-catalog",
-    title: L("Vendor catalogue", "Catálogo de proveedores"),
+    title: L("Vendor catalog", "Catálogo de proveedores"),
     purpose: L(
-      "A ready-made library of AI vendors with their governance facts already gathered. Adding one from here saves you finding and typing the same details for every organisation.",
+      "A ready-made library of AI vendors with their governance facts already gathered. Adding one from here saves you finding and typing the same details for every organization.",
       "Una biblioteca de proveedores de IA con sus datos de gobernanza ya recopilados. Añadir uno desde aquí te ahorra buscar y escribir los mismos datos para cada organización.",
     ),
     firstStep: L(
@@ -200,14 +200,14 @@ export const PAGE_HELP: PageHelp[] = [
       "Busca un proveedor que utilices y añádelo; se convierte en un registro de proveedor que luego puedes evaluar.",
     ),
     terms: ["provider"],
-    docs: [DOC("/docs/vendor-catalog", "The vendor catalogue", "El catálogo de proveedores")],
+    docs: [DOC("/docs/vendor-catalog", "The vendor catalog", "El catálogo de proveedores")],
     official: [],
   },
   {
     route: "/governance/policies",
     title: L("Policies", "Políticas"),
     purpose: L(
-      "Your organisation's written rules for building and using AI: acceptable use, incident response and the rest. Policies are how a duty becomes something staff can actually follow.",
+      "Your organization's written rules for building and using AI: acceptable use, incident response and the rest. Policies are how a duty becomes something staff can actually follow.",
       "Las reglas escritas de tu organización para construir y usar IA: uso aceptable, respuesta ante incidentes y demás. Las políticas son la forma en que una obligación se convierte en algo que el personal puede cumplir.",
     ),
     firstStep: L(
@@ -270,7 +270,7 @@ export const PAGE_HELP: PageHelp[] = [
     route: "/governance/board",
     title: L("Board reporting", "Informes al consejo"),
     purpose: L(
-      "Produces a report for senior management or the board, capturing a snapshot of the programme so the figures can be reproduced later. Governance the board never sees is governance it cannot back.",
+      "Produces a report for senior management or the board, capturing a snapshot of the program so the figures can be reproduced later. Governance the board never sees is governance it cannot back.",
       "Genera un informe para la dirección o el consejo, con una instantánea del programa para que las cifras puedan reproducirse después. Una gobernanza que el consejo nunca ve es una gobernanza que no puede respaldar.",
     ),
     firstStep: L(
@@ -293,7 +293,7 @@ export const PAGE_HELP: PageHelp[] = [
       "Crea un modelo de amenazas a partir de las capacidades del sistema y sácalo del borrador una vez revisado.",
     ),
     terms: ["evidence", "oversight-gate"],
-    docs: [DOC("/docs/threat-model", "Threat modelling", "Modelado de amenazas")],
+    docs: [DOC("/docs/threat-model", "Threat modeling", "Modelado de amenazas")],
     official: [OFFICIAL_LINKS.euArt9],
   },
   {
@@ -330,7 +330,7 @@ export const PAGE_HELP: PageHelp[] = [
     route: "/governance/audit",
     title: L("Audit trail", "Registro de auditoría"),
     purpose: L(
-      "The record of who changed what and when across the programme, which the product keeps on its own. It is the account you rely on when someone asks how a decision was reached.",
+      "The record of who changed what and when across the program, which the product keeps on its own. It is the account you rely on when someone asks how a decision was reached.",
       "El registro de quién cambió qué y cuándo en todo el programa, que el producto mantiene por sí solo. Es la cuenta en la que te apoyas cuando alguien pregunta cómo se llegó a una decisión.",
     ),
     firstStep: L(
@@ -345,7 +345,7 @@ export const PAGE_HELP: PageHelp[] = [
     route: "/governance/review",
     title: L("Review queue", "Cola de revisión"),
     purpose: L(
-      "Everything the product derived for you and marked as needing a person's confirmation, in one queue. Anything auto-derived stays marked until a human agrees, so the programme is never falsely complete.",
+      "Everything the product derived for you and marked as needing a person's confirmation, in one queue. Anything auto-derived stays marked until a human agrees, so the program is never falsely complete.",
       "Todo lo que el producto ha derivado por ti y ha marcado como pendiente de confirmación, en una sola cola. Lo derivado automáticamente sigue marcado hasta que una persona lo acepta, para que el programa nunca parezca completo por error.",
     ),
     firstStep: L(
@@ -360,11 +360,11 @@ export const PAGE_HELP: PageHelp[] = [
     route: "/governance/portfolio",
     title: L("All clients", "Todos los clientes"),
     purpose: L(
-      "For accounts that work for several client organisations: one view showing where each client stands, so you can see at a glance which needs attention. Each client keeps its own separate records.",
+      "For accounts that work for several client organizations: one view showing where each client stands, so you can see at a glance which needs attention. Each client keeps its own separate records.",
       "Para las cuentas que trabajan para varias organizaciones cliente: una vista que muestra dónde está cada cliente, para ver de un vistazo cuál necesita atención. Cada cliente conserva sus propios registros separados.",
     ),
     firstStep: L(
-      "Pick a client to open its programme, or add a new client organisation.",
+      "Pick a client to open its program, or add a new client organization.",
       "Elige un cliente para abrir su programa o añade una nueva organización cliente.",
     ),
     terms: [],
@@ -375,11 +375,11 @@ export const PAGE_HELP: PageHelp[] = [
     route: "/governance/skills",
     title: L("Skills", "Skills"),
     purpose: L(
-      "Where you upload and activate a licence for a premium skill package bought from the storefront. A licence unlocks a feature; it never installs code, and it is tied to the buyer's email.",
+      "Where you upload and activate a license for a premium skill package bought from the storefront. A license unlocks a feature; it never installs code, and it is tied to the buyer's email.",
       "Donde subes y activas una licencia de un paquete de complementos premium comprado en la tienda. Una licencia desbloquea una función; nunca instala código y está vinculada al correo del comprador.",
     ),
     firstStep: L(
-      "Upload your licence file to activate it; only an owner or admin can do this.",
+      "Upload your license file to activate it; only an owner or admin can do this.",
       "Sube tu archivo de licencia para activarla; solo un propietario o administrador puede hacerlo.",
     ),
     terms: [],
@@ -390,7 +390,7 @@ export const PAGE_HELP: PageHelp[] = [
     route: "/governance/settings",
     title: L("Settings", "Configuración"),
     purpose: L(
-      "Your organisation's own details: its operating jurisdictions, the cross-border regime screening, the team and their roles. The jurisdictions you set here decide which regimes the rest of the product applies.",
+      "Your organization's own details: its operating jurisdictions, the cross-border regime screening, the team and their roles. The jurisdictions you set here decide which regimes the rest of the product applies.",
       "Los datos de tu organización: sus jurisdicciones de actividad, el análisis de regímenes transfronterizos, el equipo y sus funciones. Las jurisdicciones que fijes aquí deciden qué regímenes aplica el resto del producto.",
     ),
     firstStep: L(

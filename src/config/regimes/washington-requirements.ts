@@ -101,9 +101,9 @@ export const WASHINGTON_REQUIREMENTS: RegimeRequirementSeed[] = [
       {
         slug: "mhmda-sale",
         code: "RCW 19.373.060",
-        title: { en: "Sale only with valid authorisation", es: "Venta solo con autorización válida" },
+        title: { en: "Sale only with valid authorization", es: "Venta solo con autorización válida" },
         description: {
-          en: "Selling consumer health data requires a separate, signed authorisation that names the buyer and the purpose and is valid for one year. Sharing inferred health data with an AI vendor for its own purposes may be a sale.",
+          en: "Selling consumer health data requires a separate, signed authorization that names the buyer and the purpose and is valid for one year. Sharing inferred health data with an AI vendor for its own purposes may be a sale.",
           es: "La venta de datos de salud del consumidor exige una autorización separada y firmada que identifique al comprador y la finalidad, válida durante un año. Compartir datos de salud inferidos con un proveedor de IA para sus propias finalidades puede constituir una venta.",
         },
         applicabilityTags: MHMDA,
@@ -195,7 +195,7 @@ export const WASHINGTON_REQUIREMENTS: RegimeRequirementSeed[] = [
   {
     slug: "prior-auth",
     code: "RCW 48.43.830",
-    title: { en: "Prior authorisation: no denial by AI alone", es: "Autorización previa: sin denegación solo por IA" },
+    title: { en: "Prior authorization: no denial by AI alone", es: "Autorización previa: sin denegación solo por IA" },
     description: {
       en: "In force since 11 June 2026 (ESSB 5395, 2026 c 157 § 2). A health carrier may not use artificial intelligence as the sole means to deny, delay or modify health care services. Algorithms may process and approve a request, but may not deny care on medical necessity without human review, and only a licensed physician or licensed health professional acting within their scope may make that denial. A carrier using AI must also ensure it decides on the enrollee's own clinical history and circumstances rather than a group data set alone, does not discriminate, is applied fairly, is open to audit by the insurance commissioner, is periodically reviewed for accuracy, and does not use patient data beyond its stated purpose. The 1 January 2027 date shown against this section is the reenactment in § 3 that reconciles two 2025 amendments, not the start of these duties.",
       es: "En vigor desde el 11 de junio de 2026 (ESSB 5395, 2026 c 157 § 2). Una aseguradora sanitaria no puede utilizar la inteligencia artificial como único medio para denegar, retrasar o modificar servicios sanitarios. Los algoritmos pueden tramitar y aprobar una solicitud, pero no pueden denegar la asistencia por necesidad médica sin revisión humana, y solo un médico o profesional sanitario colegiado que actúe dentro de su ámbito puede adoptar esa denegación. La aseguradora que use IA debe además garantizar que esta decide a partir del historial y las circunstancias clínicas del propio asegurado y no únicamente de un conjunto de datos de grupo, que no discrimina, que se aplica de forma equitativa, que está sujeta a auditoría del comisionado de seguros, que se revisa periódicamente para asegurar su exactitud y que no usa los datos del paciente más allá de la finalidad declarada. La fecha del 1 de enero de 2027 que figura junto a esta sección corresponde a la reactivación del § 3, que concilia dos modificaciones de 2025, y no al inicio de estos deberes.",

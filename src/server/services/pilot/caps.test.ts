@@ -2,7 +2,7 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 /**
- * The hosted pilot's caps: one organisation per account, the fifteen-day
+ * The hosted pilot's caps: one organization per account, the fifteen-day
  * switch to read-only, the records ceiling, and exports that stay open.
  * No database: a counting fake stands in for the eleven delegates.
  */
@@ -59,18 +59,18 @@ describe("on the hosted pilot", () => {
   });
   afterEach(() => vi.unstubAllEnvs());
 
-  it("allows one organisation per account and refuses a second", async () => {
+  it("allows one organization per account and refuses a second", async () => {
     await expect(
       assertPilotOrganizationLimit({ organizationMember: { count: async () => 0 } }, "u1", "en"),
     ).resolves.toBeUndefined();
     const message = await forbidden(() =>
       assertPilotOrganizationLimit({ organizationMember: { count: async () => 1 } }, "u1", "en"),
     );
-    expect(message).toContain("one organisation per account");
+    expect(message).toContain("one organization per account");
     expect(message).toContain(PILOT_MANAGED_URL.en);
   });
 
-  it("allows edits for fifteen days and then makes the organisation read-only", async () => {
+  it("allows edits for fifteen days and then makes the organization read-only", async () => {
     expect(() => assertPilotWritable(ORG, "en", new Date(START.getTime() + 14 * DAY))).not.toThrow();
     const message = await forbidden(() =>
       assertPilotWritable(ORG, "en", new Date(START.getTime() + 15 * DAY)),
@@ -80,7 +80,7 @@ describe("on the hosted pilot", () => {
     expect(message).toContain("/api/export/program-pack?organizationId=org-1");
   });
 
-  it("never makes an organisation read-only before its first sign-in is recorded", async () => {
+  it("never makes an organization read-only before its first sign-in is recorded", async () => {
     const neverSignedIn = { id: "org-2", pilotFirstSignInAt: null };
     const later = new Date(START.getTime() + 400 * DAY);
     expect(() => assertPilotWritable(neverSignedIn, "en", later)).not.toThrow();

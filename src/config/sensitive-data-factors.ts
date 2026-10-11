@@ -66,7 +66,7 @@ export const SENSITIVE_FACTORS: FactorDefinition[] = [
       es: "¿De dónde procede el dato?",
     },
     guidance: {
-      en: "Data that originates in a clinical or medical context carries more risk than data collected in a general consumer context. Source is a starting point, never a safe harbour: consumer browsing or purchase data can still be health data because of what it reveals or how it is used.",
+      en: "Data that originates in a clinical or medical context carries more risk than data collected in a general consumer context. Source is a starting point, never a safe harbor: consumer browsing or purchase data can still be health data because of what it reveals or how it is used.",
       es: "Un dato que nace en un contexto clínico o médico conlleva más riesgo que uno recogido en un contexto de consumo general. El origen es un punto de partida, nunca un puerto seguro: los datos de navegación o de compra pueden ser datos de salud por lo que revelan o por el uso que se les da.",
     },
   },
@@ -92,7 +92,7 @@ export const SENSITIVE_FACTORS: FactorDefinition[] = [
       es: "¿Para qué se utiliza el dato?",
     },
     guidance: {
-      en: "Ordinary data becomes sensitive when it is used to target, personalise or decide on a health basis. Common purchases, combined and modelled into a pregnancy score, became a health determination. Aggregation that cannot reach an individual can lower sensitivity. Regulators increasingly frame the question this way, and so should the record.",
+      en: "Ordinary data becomes sensitive when it is used to target, personalize or decide on a health basis. Common purchases, combined and modeled into a pregnancy score, became a health determination. Aggregation that cannot reach an individual can lower sensitivity. Regulators increasingly frame the question this way, and so should the record.",
       es: "Un dato corriente se vuelve sensible cuando se utiliza para segmentar, personalizar o decidir con criterios de salud. Unas compras habituales, combinadas y modelizadas en una puntuación de embarazo, se convirtieron en una determinación sobre la salud. Una agregación que no permite llegar a una persona concreta puede reducir la sensibilidad. Los reguladores plantean cada vez más la cuestión así, y el registro debe hacerlo igual.",
     },
   },

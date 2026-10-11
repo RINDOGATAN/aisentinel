@@ -12,7 +12,6 @@ import en from "./i18n/en/ai-sentinel-startups.json";
 import es from "./i18n/es/ai-sentinel-startups.json";
 import authEn from "./i18n/en/startups-auth.json";
 import authEs from "./i18n/es/startups-auth.json";
-import { PILOT_SENTENCE, PILOT_TERMS } from "@/config/pilot";
 import { localeCookieValues, normalizeLocaleCookie, writeLocaleCookie } from "@/lib/locale-cookie";
 import { SEO } from "@/config/seo";
 
@@ -32,7 +31,7 @@ function detectLocale(rendered: "en" | "es"): "en" | "es" {
   return localeCookieValues(document.cookie).length > 0 ? fromCookie : rendered;
 }
 
-export default function LandingPage({ hostedPilot = false, initialLocale = "en" }: { hostedPilot?: boolean; initialLocale?: "en" | "es" }) {
+export default function LandingPage({ initialLocale = "en" }: { initialLocale?: "en" | "es" }) {
   // The server decided the language (src/app/page.tsx), so the first paint is already in it.
   const [locale, setLocale] = useState<"en" | "es">(initialLocale);
 
@@ -129,9 +128,6 @@ export default function LandingPage({ hostedPilot = false, initialLocale = "en" 
         heroVideo="/hero-sentinel-bg-720.mp4"
         heroPoster="/hero-sentinel-poster.jpg"
         callbackUrl="/governance"
-        pilotNotice={
-          hostedPilot ? { sentence: PILOT_SENTENCE[locale], terms: PILOT_TERMS[locale] } : null
-        }
         middle={<LandingSections t={t} locale={locale} />}
         plain
         docsLocale={locale}

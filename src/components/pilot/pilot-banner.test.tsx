@@ -113,11 +113,10 @@ describe("what the banner says", () => {
     expect(html.replace(/<[^>]+>/g, "")).toBe(pilotSentenceText(locale));
   });
 
-  it("the sign-up screens and the Settings card add the editing terms, word for word", () => {
-    // The banner stays one line; these three show PILOT_TERMS beneath the sentence.
+  it("the sign-in screen and the Settings card add the editing terms, word for word", () => {
+    // The banner stays one line; these two show PILOT_TERMS beneath the sentence.
     for (const file of [
       "src/app/(auth)/sign-in/sign-in-form.tsx",
-      "src/landing/LandingPage.tsx",
       "src/components/governance/pilot-status-card.tsx",
     ]) {
       expect(readFileSync(join(process.cwd(), file), "utf8"), file).toMatch(/PILOT_TERMS\[\w+\]/);
@@ -128,10 +127,16 @@ describe("what the banner says", () => {
     for (const file of [
       "src/components/pilot/pilot-banner.tsx",
       "src/app/(auth)/sign-in/sign-in-form.tsx",
-      "src/landing/components/StartupProductPage.tsx",
       "src/components/governance/pilot-status-card.tsx",
     ]) {
       expect(readFileSync(join(process.cwd(), file), "utf8"), file).toMatch(/<PilotSentenceText\b/);
+    }
+  });
+
+  it("keeps the landing's sign-in box free of the pilot text, as on DPO Central (owner, 11 Oct 2026)", () => {
+    for (const file of ["src/landing/LandingPage.tsx", "src/landing/components/StartupProductPage.tsx"]) {
+      const source = readFileSync(join(process.cwd(), file), "utf8");
+      expect(source, file).not.toMatch(/PILOT_TERMS|PILOT_SENTENCE|PilotSentenceText|pilot-signup-notice/);
     }
   });
 

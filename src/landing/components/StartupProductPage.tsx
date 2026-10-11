@@ -5,8 +5,6 @@ import { useState, useRef, useEffect } from "react";
 import { signIn } from "next-auth/react";
 import { ArrowRight, BookOpen, Check, Loader2 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import type { PilotSentence } from "@/config/pilot";
-import { PilotSentenceText } from "@/components/pilot/pilot-sentence";
 import { writeLocaleCookie } from "@/lib/locale-cookie";
 
 export interface Feature {
@@ -40,8 +38,6 @@ interface StartupProductPageProps {
   heroPoster?: string;
   accentGradient?: string;
   callbackUrl: string;
-  /** The hosted pilot's one sentence, shown in the sign-up card; null off the pilot. */
-  pilotNotice?: { sentence: PilotSentence; terms: string } | null;
   /**
    * The sections between the value section and the closing call to action.
    * When given (both languages since October 2026, LandingSections), they
@@ -80,7 +76,6 @@ const StartupProductPage = ({
   heroPoster,
   accentGradient = "from-accent/20 to-accent/5",
   callbackUrl,
-  pilotNotice = null,
   middle,
   plain = false,
   docsLocale = "en",
@@ -188,13 +183,6 @@ const StartupProductPage = ({
   const handleGoogleSignIn = () => {
     signIn("google", { callbackUrl });
   };
-
-  const pilotLine = pilotNotice ? (
-    <p data-testid="pilot-signup-notice" className="text-xs text-muted-foreground font-body mt-4 leading-relaxed">
-      <PilotSentenceText sentence={pilotNotice.sentence} linkClassName="underline underline-offset-2 text-foreground hover:text-accent" />
-      <span className="block mt-1">{pilotNotice.terms}</span>
-    </p>
-  ) : null;
 
   const googleDivider = (
     <>
@@ -339,7 +327,6 @@ const StartupProductPage = ({
                       </form>
                       {googleDivider}
                       {error && <p className="text-sm text-red-400 mt-3">{error}</p>}
-                      {pilotLine}
                       <button
                         onClick={() => { setCardMode("login"); setError(""); }}
                         className="block w-full text-center text-sm text-muted-foreground hover:text-accent transition-colors mt-4 font-body"

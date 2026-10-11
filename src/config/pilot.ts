@@ -188,7 +188,7 @@ export function pilotExportUrl(organizationId: string): string {
 /**
  * The editing terms, word for word as the other two suite apps state them, so
  * a visitor reads the same rule wherever the pilot runs. Shown as their own
- * line under the pilot sentence on the sign-up screens and in Settings; the
+ * line under the pilot sentence on the sign-in screen and in Settings (not on the landing, owner 11 Oct 2026); the
  * banner keeps to the sentence so it stays one line on a desktop.
  */
 export const PILOT_TERMS: Record<PilotLocale, string> = {

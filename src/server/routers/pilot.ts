@@ -16,7 +16,7 @@ import {
   publicProcedure,
 } from "../trpc";
 import { hostedPilotActive } from "@/config/pilot";
-import { DISCLOSURE_VERSION } from "@/config/pilot-disclosure";
+import { DISCLOSURE_DPA, DISCLOSURE_VERSION } from "@/config/pilot-disclosure";
 import { getPilotStatus } from "@/server/services/pilot/caps";
 
 export const pilotRouter = createTRPCRouter({
@@ -35,7 +35,7 @@ export const pilotRouter = createTRPCRouter({
    */
   disclosure: protectedProcedure.query(async ({ ctx }) => {
     if (!hostedPilotActive()) {
-      return { required: false, version: DISCLOSURE_VERSION, acknowledgedAt: null };
+      return { required: false, version: DISCLOSURE_VERSION, dpaVersion: DISCLOSURE_DPA.version, acknowledgedAt: null };
     }
     const row = await ctx.prisma.pilotDisclosureAcknowledgement.findUnique({
       where: { userId_version: { userId: ctx.session.user.id, version: DISCLOSURE_VERSION } },
@@ -44,12 +44,16 @@ export const pilotRouter = createTRPCRouter({
     return {
       required: row === null,
       version: DISCLOSURE_VERSION,
+      // The agreement this disclosure version accepts (2.0.0 accepts DPA 1.1).
+      dpaVersion: DISCLOSURE_DPA.version,
       acknowledgedAt: row?.acknowledgedAt ?? null,
     };
   }),
 
   /**
-   * Record the acknowledgement with its date. Idempotent: a second click keeps
+   * Record the acknowledgement with its date. From disclosure 2.0.0 this is
+   * also the acceptance of the data processing agreement (DISCLOSURE_DPA):
+   * the row's version and date are the record of which agreement, and when. Idempotent: a second click keeps
    * the first date, because that is the date the person was actually told.
    */
   acknowledgeDisclosure: protectedProcedure
@@ -65,6 +69,6 @@ export const pilotRouter = createTRPCRouter({
         update: {},
         select: { acknowledgedAt: true },
       });
-      return { acknowledgedAt: row.acknowledgedAt, version: DISCLOSURE_VERSION };
+      return { acknowledgedAt: row.acknowledgedAt, version: DISCLOSURE_VERSION, dpaVersion: DISCLOSURE_DPA.version };
     }),
 });

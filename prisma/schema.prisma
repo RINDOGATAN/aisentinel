@@ -46,11 +46,14 @@ model User {
 
 /// A person's acknowledgement of the hosted pilot disclosure, with its date.
 ///
-/// The disclosure says what the hosted service is: a free pilot on our servers,
-/// no security certifications, no real client matter, export whenever you like,
-/// deletion that is real (src/config/pilot-disclosure.ts). It is shown once and
-/// acknowledged once, and this row is the record of that: who, which version of
-/// the wording, in which language, and when.
+/// The disclosure says what the hosted service is: a free pilot on the
+/// TODO.LAW cloud, the sub-processors' certifications, when real data calls for
+/// a managed instance, export whenever you like, deletion that is real
+/// (src/config/pilot-disclosure.ts). It is shown once and acknowledged once,
+/// and this row is the record of that: who, which version of the wording, in
+/// which language, and when. From version 2.0.0 the same acknowledgement
+/// accepts the data processing agreement named in DISCLOSURE_DPA (1.1), so this
+/// row is also the record of that acceptance; no column was added for it.
 ///
 /// Kept per USER, not per organisation: the statement is about the service, and
 /// a person who is told it once has been told it. A version bump means the

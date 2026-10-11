@@ -14,7 +14,7 @@
  */
 
 import { getLocale } from "next-intl/server";
-import { DisclosureList } from "@/components/pilot/pilot-disclosure";
+import { DisclosureDpaLine, DisclosureList } from "@/components/pilot/pilot-disclosure";
 import {
   DISCLOSURE_CHROME,
   DISCLOSURE_REVIEWED_AS_OF,
@@ -152,6 +152,9 @@ export default async function PilotDocsPage() {
       <section>
         <div className="rounded-xl border border-border bg-card p-6 max-w-3xl">
           <DisclosureList locale={locale} />
+          <div className="mt-4">
+            <DisclosureDpaLine locale={locale} />
+          </div>
         </div>
         <p className="text-xs text-muted-foreground mt-3">
           {copy.versionLine(DISCLOSURE_VERSION, DISCLOSURE_REVIEWED_AS_OF)}

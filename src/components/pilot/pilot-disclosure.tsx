@@ -6,7 +6,9 @@
  * The disclosure screen: what the hosted pilot is, before anything is entered.
  *
  * Shown once per person per wording version, ahead of every other onboarding
- * step, and recorded with its date. The five points come from
+ * step, and recorded with its date. From version 2.0.0 the same action also
+ * accepts the data processing agreement that covers the pilot (DISCLOSURE_DPA),
+ * so the stored version is the record of which agreement was accepted, and when. The five points come from
  * src/config/pilot-disclosure.ts, which is also what /docs/pilot renders, so the
  * screen someone acknowledged and the page they can go back to cannot drift.
  *
@@ -26,9 +28,43 @@ import { trpc } from "@/lib/trpc";
 import {
   DISCLOSURE_CHROME,
   DISCLOSURE_DOCS_PATH,
+  DISCLOSURE_DPA,
   DISCLOSURE_POINTS,
+  type DisclosurePoint,
 } from "@/config/pilot-disclosure";
 import type { PilotLocale } from "@/config/pilot";
+
+/** A point's text, with its link (if it has one) made clickable. */
+function PointText({ point, locale }: { point: DisclosurePoint; locale: PilotLocale }) {
+  const text = point.text[locale];
+  const link = point.link?.[locale];
+  const at = link ? text.indexOf(link.label) : -1;
+  if (!link || at < 0) return <span>{text}</span>;
+  return (
+    <span>
+      {text.slice(0, at)}
+      <a href={link.href} target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">
+        {link.label}
+      </a>
+      {text.slice(at + link.label.length)}
+    </span>
+  );
+}
+
+/** The agreement line, with its link. Shared by this screen and the documentation page. */
+export function DisclosureDpaLine({ locale }: { locale: PilotLocale }) {
+  const chrome = DISCLOSURE_CHROME[locale];
+  const at = chrome.dpa.indexOf(chrome.dpaLinkLabel);
+  return (
+    <p className="text-sm leading-relaxed" data-testid="pilot-dpa-line">
+      {chrome.dpa.slice(0, at)}
+      <a href={DISCLOSURE_DPA.href[locale]} target="_blank" rel="noopener noreferrer" className="underline font-medium">
+        {chrome.dpaLinkLabel}
+      </a>
+      {chrome.dpa.slice(at + chrome.dpaLinkLabel.length)}
+    </p>
+  );
+}
 
 /** The five points as a list. Shared by this screen and the documentation page. */
 export function DisclosureList({ locale }: { locale: PilotLocale }) {
@@ -42,7 +78,7 @@ export function DisclosureList({ locale }: { locale: PilotLocale }) {
           >
             {i + 1}
           </span>
-          <span>{point.text[locale]}</span>
+          <PointText point={point} locale={locale} />
         </li>
       ))}
     </ul>
@@ -79,6 +115,7 @@ export function PilotDisclosureScreen() {
         </CardHeader>
         <CardContent className="space-y-6">
           <DisclosureList locale={locale} />
+          <DisclosureDpaLine locale={locale} />
           <p className="text-xs text-muted-foreground">
             <Link href={DISCLOSURE_DOCS_PATH} className="underline hover:text-foreground">
               {chrome.docsLink}

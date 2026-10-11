@@ -13,28 +13,35 @@ import es from "./i18n/es/ai-sentinel-startups.json";
 import authEn from "./i18n/en/startups-auth.json";
 import authEs from "./i18n/es/startups-auth.json";
 import { PILOT_SENTENCE, PILOT_TERMS } from "@/config/pilot";
-import { normalizeLocaleCookie, writeLocaleCookie } from "@/lib/locale-cookie";
+import { localeCookieValues, normalizeLocaleCookie, writeLocaleCookie } from "@/lib/locale-cookie";
 import { SEO } from "@/config/seo";
 
-function detectLocale(): "en" | "es" {
-  if (typeof window === "undefined") return "en";
+/**
+ * The language in the browser, by the server's rule (src/lib/landing-locale.ts):
+ * `?lang=`, then the cookie when there is one, otherwise the language the server
+ * rendered in (it read Accept-Language), so a first visit never switches.
+ */
+function detectLocale(rendered: "en" | "es"): "en" | "es" {
+  if (typeof window === "undefined") return rendered;
   const params = new URLSearchParams(window.location.search);
   const lang = params.get("lang");
   // Collapse duplicate cookies first; a ?lang= link shows that language
   // without recording it, since only the toggle is a visitor's choice.
   const fromCookie = normalizeLocaleCookie();
   if (lang === "es" || lang === "en") return lang;
-  return fromCookie;
+  return localeCookieValues(document.cookie).length > 0 ? fromCookie : rendered;
 }
 
-export default function LandingPage({ hostedPilot = false }: { hostedPilot?: boolean }) {
-  const [locale, setLocale] = useState<"en" | "es">("en");
+export default function LandingPage({ hostedPilot = false, initialLocale = "en" }: { hostedPilot?: boolean; initialLocale?: "en" | "es" }) {
+  // The server decided the language (src/app/page.tsx), so the first paint is already in it.
+  const [locale, setLocale] = useState<"en" | "es">(initialLocale);
 
   useEffect(() => {
-    // SSR-safe mount-only locale detection (URL/cookie are browser-only).
+    // Normally the same as the server's; differs only if the page came from a cache.
+    const detected = detectLocale(initialLocale);
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setLocale(detectLocale());
-  }, []);
+    if (detected !== initialLocale) setLocale(detected);
+  }, [initialLocale]);
 
   const toggleLocale = useCallback(() => {
     setLocale((prev) => {
@@ -119,7 +126,8 @@ export default function LandingPage({ hostedPilot = false }: { hostedPilot?: boo
         workflowSteps={workflowSteps}
         valueProps={valueProps}
         socialProofs={socialProofs}
-        heroVideo="/hero-sentinel-bg.mp4"
+        heroVideo="/hero-sentinel-bg-720.mp4"
+        heroPoster="/hero-sentinel-poster.jpg"
         callbackUrl="/governance"
         pilotNotice={
           hostedPilot ? { sentence: PILOT_SENTENCE[locale], terms: PILOT_TERMS[locale] } : null

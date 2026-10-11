@@ -69,8 +69,8 @@ describe("middleware locale handling", () => {
 });
 
 describe("middleware: the landing language for <html lang>", () => {
-  const forwarded = (url: string, cookie?: string) => {
-    const headers = new Headers(cookie ? { cookie } : {});
+  const forwarded = (url: string, cookie?: string, acceptLanguage?: string) => {
+    const headers = new Headers({ ...(cookie ? { cookie } : {}), ...(acceptLanguage ? { "accept-language": acceptLanguage } : {}) });
     return middleware(new NextRequest(url, { headers })).headers.get("x-middleware-request-x-landing-lang");
   };
 
@@ -79,9 +79,16 @@ describe("middleware: the landing language for <html lang>", () => {
     expect(forwarded("http://localhost:3003/?lang=en", "locale=es")).toBe("en");
   });
 
-  it("forwards nothing without a valid ?lang= or away from the landing", () => {
-    expect(forwarded("http://localhost:3003/")).toBeNull();
-    expect(forwarded("http://localhost:3003/?lang=fr")).toBeNull();
+  // Since 10 Oct 2026 the landing always gets a decided language: then the cookie, then Accept-Language.
+  it("decides the landing language without ?lang= from the cookie, then the browser", () => {
+    expect(forwarded("http://localhost:3003/")).toBe("en");
+    expect(forwarded("http://localhost:3003/?lang=fr")).toBe("en");
+    expect(forwarded("http://localhost:3003/", undefined, "es-ES,es;q=0.9")).toBe("es");
+    expect(forwarded("http://localhost:3003/", "locale=en", "es-ES")).toBe("en");
+    expect(forwarded("http://localhost:3003/", "locale=es", "en-US")).toBe("es");
+  });
+
+  it("forwards nothing away from the landing", () => {
     expect(forwarded("http://localhost:3003/governance?lang=es")).toBeNull();
   });
 });

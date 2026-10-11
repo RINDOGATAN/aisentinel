@@ -36,6 +36,8 @@ interface StartupProductPageProps {
   valueProps: ValueProp[];
   socialProofs: string[];
   heroVideo: string;
+  /** The still shown at once and kept on phones, with data saving or reduced motion. */
+  heroPoster?: string;
   accentGradient?: string;
   callbackUrl: string;
   /** The hosted pilot's one sentence, shown in the sign-up card; null off the pilot. */
@@ -75,6 +77,7 @@ const StartupProductPage = ({
   valueProps,
   socialProofs,
   heroVideo,
+  heroPoster,
   accentGradient = "from-accent/20 to-accent/5",
   callbackUrl,
   pilotNotice = null,
@@ -100,10 +103,20 @@ const StartupProductPage = ({
       .catch(() => {});
   }, []);
 
-  // Robust autoplay with interaction fallback
+  // The video loads only after the page has loaded, and never on phones, with data
+  // saving on, or with reduced motion: the poster stands in (owner, 10 Oct 2026,
+  // the page weighed 13 MB, nearly all of it the video). Autoplay keeps its fallback.
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid) return;
+    const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true;
+    if (saveData || window.matchMedia("(max-width: 767px), (prefers-reduced-motion: reduce)").matches) return;
+    const start = () => {
+      vid.src = heroVideo;
+      vid.load();
+      if (vid.readyState >= 3) tryPlay();
+      else vid.addEventListener("canplay", tryPlay, { once: true });
+    };
     const tryPlay = () => {
       vid.play().catch(() => {
         const handler = () => {
@@ -115,9 +128,10 @@ const StartupProductPage = ({
         document.addEventListener("touchstart", handler, { once: true });
       });
     };
-    if (vid.readyState >= 3) tryPlay();
-    else vid.addEventListener("canplay", tryPlay, { once: true });
-  }, []);
+    if (document.readyState === "complete") start();
+    else window.addEventListener("load", start, { once: true });
+    return () => window.removeEventListener("load", start);
+  }, [heroVideo]);
 
   const sendMagicLink = async (email: string): Promise<boolean> => {
     const providerId = emailProviderRef.current;
@@ -205,15 +219,15 @@ const StartupProductPage = ({
       {/* HERO with video background */}
       <section className="relative min-h-screen flex items-center overflow-hidden">
         <div className="absolute inset-0 z-0">
+          {/* No src in the HTML: the effect above adds it after the page has loaded. */}
           <video
             ref={videoRef}
-            autoPlay
             loop
             muted
             playsInline
-            preload="auto"
+            preload="none"
+            poster={heroPoster}
             className="absolute inset-0 w-full h-full object-cover"
-            src={heroVideo}
           />
           <div className="absolute inset-0 bg-black/55" />
           <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-black/30" />

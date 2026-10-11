@@ -9,20 +9,32 @@ import { authOptions } from "@/lib/auth";
 import LandingPage from "@/landing/LandingPage";
 import { hostedPilotActive } from "@/config/pilot";
 import { brand } from "@/config/brand";
-import { OG_IMAGES, SEO, TWITTER_IMAGES, landingLocale } from "@/config/seo";
-import { readLocale } from "@/lib/locale-cookie";
+import { OG_IMAGES, SEO, TWITTER_IMAGES } from "@/config/seo";
+import { requestLandingLocale } from "@/lib/landing-locale";
+import type { Locale } from "@/lib/locale-cookie";
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
 /**
- * The landing's title and description in the language it shows: `?lang=` first, then
- * the `locale` cookie (the same rule as the landing in the browser). English keeps the
+ * The landing's language: `?lang=`, then the `locale` cookie, then Accept-Language
+ * (src/lib/landing-locale.ts). The middleware decides it for "/" and passes it on;
+ * the search parameters and the request headers are read again here as a fallback.
+ */
+async function pageLocale(searchParams: SearchParams): Promise<Locale> {
+  const h = await headers();
+  const decided = h.get("x-landing-lang");
+  if (decided === "es" || decided === "en") return decided;
+  const { lang } = await searchParams;
+  return requestLandingLocale(Array.isArray(lang) ? lang[0] : lang, h.get("cookie"), h.get("accept-language"));
+}
+
+/**
+ * The landing's title and description in the language it shows. English keeps the
  * layout's metadata untouched; Spanish replaces the title, the description and their
  * Open Graph and Twitter copies.
  */
 export async function generateMetadata({ searchParams }: { searchParams: SearchParams }): Promise<Metadata> {
-  const { lang } = await searchParams;
-  const locale = landingLocale(lang, readLocale((await headers()).get("cookie")));
+  const locale = await pageLocale(searchParams);
   if (locale === "en") return {};
   const { title, description, ogLocale } = SEO.es;
   return {
@@ -41,7 +53,7 @@ export async function generateMetadata({ searchParams }: { searchParams: SearchP
   };
 }
 
-export default async function HomePage() {
+export default async function HomePage({ searchParams }: { searchParams: SearchParams }) {
   const session = await getServerSession(authOptions);
 
   if (session) {
@@ -54,5 +66,6 @@ export default async function HomePage() {
     redirect("/sign-in");
   }
 
-  return <LandingPage hostedPilot={hostedPilotActive()} />;
+  // Rendered in its language on the server, so the first paint is never in the other one.
+  return <LandingPage hostedPilot={hostedPilotActive()} initialLocale={await pageLocale(searchParams)} />;
 }

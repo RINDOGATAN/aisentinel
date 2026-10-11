@@ -51,7 +51,7 @@ export function hostedPilotActive(env: PilotEnv = process.env): boolean {
   return resolveCookieDomain(env) === HOSTED_COOKIE_DOMAIN;
 }
 
-/** Where a pilot organisation goes to run its own instance. */
+/** Where a pilot organisation goes for a paid plan or a managed instance. */
 export const PILOT_RUN_URL = "https://www.todo.law/run";
 
 /**
@@ -214,17 +214,17 @@ export interface PilotSentence {
  */
 export const PILOT_SENTENCE: Record<PilotLocale, PilotSentence> = {
   en: {
-    before: "Hosted pilot: free, capped (",
+    before: "Hosted pilot: free and capped (",
     docs: "see docs",
-    middle: "), and with no contractual safeguards. To deploy real customer details, ",
-    link: "run your own instance",
+    middle: "). For real data, ",
+    link: "choose a paid plan or a managed instance",
     after: ".",
   },
   es: {
-    before: "Piloto alojado: gratuito, limitado (",
-    docs: "ver documentación",
-    middle: ") y sin garantías contractuales. Para manejar datos reales de clientes, ",
-    link: "usa tu propia instancia",
+    before: "Piloto alojado: gratuito y con límites (",
+    docs: "consulta la documentación",
+    middle: "). Para datos reales, ",
+    link: "elige un plan de pago o una instancia gestionada",
     after: ".",
   },
 };

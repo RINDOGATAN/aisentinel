@@ -33,10 +33,3 @@ export const SEO: Record<Locale, { title: string; description: string; ogLocale:
 /** Shared by the default (English) metadata and the Spanish landing metadata. */
 export const OG_IMAGES = [{ url: "/apple-touch-icon.png", width: 180, height: 180, alt: "AI SENTINEL logo" }];
 export const TWITTER_IMAGES = ["/favicon.png"];
-
-/** The language the landing shows: `?lang=` first, then the cookie (last `locale` value wins). */
-export function landingLocale(lang: string | string[] | undefined, cookieLocale: Locale): Locale {
-  const v = Array.isArray(lang) ? lang[0] : lang;
-  if (v === "es" || v === "en") return v;
-  return cookieLocale;
-}

@@ -105,9 +105,9 @@ describe("what the public copy says about the hosted pilot", () => {
     const enNotice = (en as { docs: { premiumNotice: Record<string, string> } }).docs.premiumNotice;
     const esNotice = (es as { docs: { premiumNotice: Record<string, string> } }).docs.premiumNotice;
     expect(enNotice.hosted).toMatch(/hosted pilot/);
-    expect(enNotice.selfHosted).toMatch(/self-hosted/);
+    expect(enNotice.selfHosted).toMatch(/your own hardware/);
     expect(esNotice.hosted).toMatch(/piloto alojado/);
-    expect(esNotice.selfHosted).toMatch(/autoalojadas/);
+    expect(esNotice.selfHosted).toMatch(/tu propio hardware/);
     expect((en as { premiumShowcase: { lockedHint: string } }).premiumShowcase.lockedHint).toMatch(/kit/);
     expect((es as { premiumShowcase: { lockedHint: string } }).premiumShowcase.lockedHint).toMatch(/kit/);
     // The in-app strings take the price with its currency, never a bare figure.

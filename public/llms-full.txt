@@ -7,12 +7,12 @@ AI SENTINEL by TODO.LAW is an open-core AI governance platform for organizations
 Hosted pilot: https://aisentinel.todo.law (free and capped; every module open; for real data, a paid plan or a managed instance)
 Paid plans and managed instances: https://www.todo.law/run
 Documentation: https://aisentinel.todo.law/docs
-License: AGPL-3.0 (core) + proprietary premium modules, sold only for the self-hosted kit
+License: AGPL-3.0 (core) + proprietary premium modules for self-hosted installations
 Parent brand: TODO.LAW (https://todo.law)
 
 ---
 
-## Core Modules (Open Source — AGPL-3.0)
+## Core Modules (Open Source, AGPL-3.0)
 
 ### AI Registry
 URL: https://aisentinel.todo.law/docs/ai-registry
@@ -133,11 +133,11 @@ Create, version, and manage AI governance policies with approval workflows and s
 
 ---
 
-## Premium Modules (60 a year each in the kit, in your currency)
+## Premium Modules ($60 a year each, self-hosted)
 
 On the hosted pilot every module, these included, is open to every organisation at no charge. The hosted service is a free, capped pilot: one organisation per account, edits for 15 days from the organisation's first sign-in (then read-only, with every export still available), and a records ceiling per organisation (25 AI systems, 50 vendors, 50 assessments, 25 incidents, 25 policies, 50 oversight gates, 10 threat models, 50 shadow AI reports, 10 proceedings, 10 board reports, 5 members). For real data, choose a paid plan or a managed instance (https://www.todo.law/run).
 
-Premium modules are sold only for the self-hosted kit: 60 a year each in the kit (in your currency), on the TODO.LAW marketplace (https://todo.law/marketplace), and activated offline in the app with a licence file.
+Premium modules are sold only for self-hosted installations: $60 a year each, on the TODO.LAW marketplace (https://todo.law/marketplace), and activated offline in the app with a licence file.
 
 ### Shadow AI Discovery
 URL: https://aisentinel.todo.law/docs/shadow-ai
@@ -155,7 +155,7 @@ Identify and govern unauthorized AI tool usage across your organization. Shadow 
 ### AI Vendor Catalog
 URL: https://aisentinel.todo.law/docs/vendor-catalog
 
-Access a catalog of 884 reviewed AI vendors powered by Vendor.Watch. Each vendor profile includes AI model information, data and privacy practices, compliance certifications, and governance metadata.
+Access a catalog of 884 reviewed AI vendors powered by VendorWatch. Each vendor profile includes AI model information, data and privacy practices, compliance certifications, and governance metadata.
 
 **Vendor profile includes:**
 - Identity (name, description, website, category)
@@ -209,7 +209,7 @@ Evaluate AI systems for bias and fairness across protected characteristics. Prov
 - **Role-based access control**: Owner > Admin > AI Officer > Member > Viewer
 - **Authentication**: Google OAuth and email magic links
 - **Tech stack**: Next.js, tRPC, Prisma, PostgreSQL
-- **Licensing**: Open-core model: AGPL-3.0 core + proprietary premium modules, sold only for the self-hosted kit (60 a year each in the kit, in your currency); the hosted pilot is free, capped, and gates nothing
+- **Licensing**: Open-core model: AGPL-3.0 core + proprietary premium modules, sold only for self-hosted installations ($60 a year each); the hosted pilot is free, capped, and gates nothing
 
 ## Regulatory Coverage
 
@@ -218,7 +218,7 @@ AI SENTINEL helps organizations comply with:
 - **EU AI Act (Regulation 2024/1689)**: The European Union's comprehensive AI regulation. AI SENTINEL covers risk classification (Art. 6-7), conformity assessment (Art. 43), fundamental rights impact assessment (Art. 27), human oversight (Art. 14), incident reporting (Art. 73), transparency obligations, and technical documentation requirements.
 - **NIST AI RMF 1.0**: The U.S. framework for managing AI risks across four functions: Govern, Map, Measure, and Manage. AI SENTINEL maps NIST controls to platform features and cross-references them with EU AI Act and ISO 42001 requirements.
 - **ISO 42001:2023**: The international standard for AI Management Systems. AI SENTINEL maps ISO 42001 clauses to platform capabilities including leadership commitment, risk assessment, operational controls, and performance evaluation.
-- **AIUC-1**: the certification standard for AI agents, maintained by the Artificial Intelligence Underwriting Company (https://standard.aiuc-1.com/). AI SENTINEL carries its six domains and 51 requirements as a framework an organisation chooses for its agents, and compares it with twelve other frameworks on the frameworks wheel (https://aisentinel.todo.law/docs/frameworks). AI SENTINEL does not certify anything.
+- **AIUC-1**: the certification standard for AI agents, maintained by the Artificial Intelligence Underwriting Company (https://standard.aiuc-1.com/). AI SENTINEL carries its six domains and 51 requirements as a framework an organisation chooses for its agents, and compares it with twelve other frameworks on the frameworks wheel (https://aisentinel.todo.law/docs/frameworks). AIUC-1 certification is issued by the standard's own auditors.
 
 ## Integration with DPO Central
 

@@ -173,7 +173,7 @@ describe("English sections", () => {
     for (const t of titles) expect(html).toContain(t);
     expect(EN["en.ways.label"]).toBe("Guarantees and hosting");
     expect(EN["en.ways.heading.prefix"] + EN["en.ways.heading.accent"]).toBe("Tailored to your needs");
-    expect(EN["en.ways.sub"]).toBe("Three hosting options, with different safeguards, certifications and levels of control.");
+    expect(EN["en.ways.sub"]).toBe("Three hosting options, with different safeguards and levels of control.");
     expect(EN["en.ways.w1.desc"]).toMatch(/take your program elsewhere whenever you like with a simple export/);
     expect(EN["en.ways.w2.desc"]).toMatch(/Asturias, Spain, with open LLMs available and a tailored SLA/);
     expect(EN["en.ways.w3.desc"]).not.toMatch(/train|runbook|six weeks/i);

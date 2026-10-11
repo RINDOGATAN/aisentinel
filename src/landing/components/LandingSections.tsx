@@ -11,8 +11,9 @@
  * ways, the pricing block (owner, 11 Oct 2026: PricingSection.tsx), in both
  * languages, the one place with prices. No hosting location in the other
  * sections (the Spanish pricing row says "en la nube UE"); the safeguards
- * guide after the ways (SafeguardsGuide) says, as the storefront does, that
- * the cloud pilot is hosted in the EU. The Spanish managed box names
+ * guide after the ways (SafeguardsGuide) says, in Spanish only, that
+ * the cloud pilot is hosted in the EU (owner, 11 Oct 2026: never to English
+ * visitors). The Spanish managed box names
  * Asturias, as the storefront does (owner, 10 Oct 2026).
  *
  * Each language has its own copy under `<locale>.*` in the landing

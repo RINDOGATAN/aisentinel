@@ -76,11 +76,11 @@ const COPY: Record<
     pricingLink: "See the plans and prices",
     pricingUrl: "https://www.todo.law/pricing",
     hostingTitle: "Three hosting options",
-    hostingIntro: "Three hosting options, with different safeguards, certifications and levels of control.",
+    hostingIntro: "Three hosting options, with different safeguards and levels of control.",
     hosting: [
       {
         title: "In the TODO.LAW cloud",
-        body: "You use it in the browser, on desktop or mobile. Nothing to install, and you can take your program elsewhere whenever you like with a simple export. The data is stored in the European Union (Frankfurt).",
+        body: "You use it in the browser, on desktop or mobile. Nothing to install, and you can take your program elsewhere whenever you like with a simple export.",
       },
       {
         title: "Managed virtual server",
@@ -113,7 +113,7 @@ const COPY: Record<
     pricingLink: "Consulta los planes y precios",
     pricingUrl: "https://www.todo.law/es/precios",
     hostingTitle: "Tres modalidades de alojamiento",
-    hostingIntro: "Te ofrecemos tres modalidades de alojamiento con diferentes garantías, certificaciones y niveles de control.",
+    hostingIntro: "Te ofrecemos tres modalidades de alojamiento con diferentes garantías y niveles de control.",
     hosting: [
       {
         title: "En la nube de TODO.LAW",
@@ -121,7 +121,7 @@ const COPY: Record<
       },
       {
         title: "Servidor virtual gestionado",
-        body: "Una instancia aislada que operamos nosotros desde Asturias, con disponibilidad de LLMs abiertos y SLA a medida.",
+        body: "Una instancia aislada que operamos nosotros desde Asturias, con disponibilidad de LLM abiertos y SLA a medida.",
       },
       {
         title: "Tu propio hardware",

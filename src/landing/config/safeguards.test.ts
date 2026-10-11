@@ -225,7 +225,9 @@ describe("copy rules", () => {
     expect(COPY.es.questions.cert.label).toMatch(/por ejemplo, ISO 27001/);
     // The cloud is hosted in the EU (Frankfurt); the one place named is the managed instance's Asturias. The cloud is never said to be in the United States.
     for (const l of LOCALES) expect(all(l)).not.toMatch(/United States|Estados Unidos|EE\. ?UU|Frankfurt/);
-    expect(COPY.en.summaries.cloud).toMatch(/Hosted by us in the EU[\s\S]*may be outside the EU/);
+    // English names no hosting location for the cloud (owner, 11 Oct 2026: no EU hosting to US visitors).
+    expect(COPY.en.summaries.cloud).toMatch(/^Hosted by us\. /);
+    expect(all("en")).not.toMatch(/\bEU\b|Europe/);
     expect(COPY.es.summaries.cloud).toMatch(/en la UE[\s\S]*puede estar fuera de la UE/);
     for (const l of LOCALES) {
       const { managed, ...rest } = COPY[l].summaries;

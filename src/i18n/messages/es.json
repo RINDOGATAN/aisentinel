@@ -3620,7 +3620,7 @@
       "ctaBody": "Abre cualquier sistema de IA y elige la pestaña Regímenes transfronterizos.",
       "ctaLink": "Leer la documentación transfronteriza",
       "offerTitle": "Módulos premium",
-      "offerBody": "Cada cuenta empieza con un piloto gratuito y con límites en la nube de TODO.LAW, con todos los módulos abiertos, también los premium. Para datos reales, elige un plan de pago o una instancia gestionada (consulta la página de precios). En tu propio hardware, los módulos premium se activan con un archivo de licencia sin conexión."
+      "offerBody": "Cada cuenta empieza con un piloto gratuito en la nube de TODO.LAW, con todos los módulos abiertos, también los premium. El Plan nube UE elimina los límites y conserva tus registros (consulta la página de precios); una instancia gestionada o tu propio hardware se ofrecen bajo presupuesto. En tu propio hardware, los módulos premium se activan con un archivo de licencia sin conexión."
     },
     "threatModel": {
       "metaTitle": "Modelado de amenazas para quien construye",
@@ -4086,7 +4086,7 @@
     },
     "stage": {
       "ADOPT": "Adoptar",
-      "PILOT": "Pilotar",
+      "PILOT": "En piloto",
       "RESTRICT": "Restringir",
       "HOLD": "Detener"
     },
@@ -4120,7 +4120,7 @@
       },
       "stage": {
         "ADOPT": "Adoptar",
-        "PILOT": "Pilotar",
+        "PILOT": "En piloto",
         "RESTRICT": "Restringir",
         "HOLD": "En espera"
       },
@@ -4236,7 +4236,7 @@
     },
     "stage": {
       "ADOPT": "Adoptar",
-      "PILOT": "Pilotar",
+      "PILOT": "En piloto",
       "RESTRICT": "Restringir",
       "HOLD": "Retener"
     },

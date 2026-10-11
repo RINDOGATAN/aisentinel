@@ -345,7 +345,7 @@ export function renderArtifactDocument({
 
   return (
     <Document
-      title={`${artifact.title} — ${artifact.systemName}`}
+      title={`${artifact.title}: ${artifact.systemName}`}
       author="AI SENTINEL"
       subject={artifact.subtitle}
       language={locale}

@@ -438,7 +438,7 @@ export async function renderProgramReport({
 
   return (
     <Document
-      title={`${t("title")} — ${orgName}`}
+      title={`${t("title")}: ${orgName}`}
       author="AI SENTINEL"
       language={locale}
     >
@@ -697,7 +697,7 @@ export async function renderProgramReport({
                 {duty.controls.map((control, i) => (
                   <View key={i} style={s.controlItem}>
                     <PillBadge tone={DUTY_STATUS_TONE[control.status]}>
-                      {`${control.label ?? t(`dutyControl.${control.kind}`)} — ${t(`dutyStatus.${control.status}`)}`}
+                      {`${control.label ?? t(`dutyControl.${control.kind}`)}: ${t(`dutyStatus.${control.status}`)}`}
                     </PillBadge>
                   </View>
                 ))}

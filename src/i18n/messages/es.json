@@ -893,7 +893,7 @@
     "statsExpiringSoon": "Próximos a vencer",
     "searchPlaceholder": "Buscar proveedores...",
     "catalogCardTitle": "Catálogo de proveedores de IA",
-    "catalogCardDescription": "Busca proveedores de IA en Vendor.Watch y autocompleta los registros de proveedor",
+    "catalogCardDescription": "Busca proveedores de IA en VendorWatch y autocompleta los registros de proveedor",
     "addFromCatalog": "Añadir desde el catálogo",
     "enableCatalog": "Activar",
     "emptyTitle": "No se han encontrado proveedores",
@@ -922,13 +922,13 @@
     "systemsCount": "{count, plural, one {# sistema} other {# sistemas}}",
     "assessmentsCount": "{count, plural, one {# evaluación} other {# evaluaciones}}",
     "contractExpiresInDays": "El contrato vence dentro de {count, plural, one {# día} other {# días}}",
-    "catalogSkillDescription": "Busca proveedores de IA en la base de datos de Vendor.Watch y rellena automáticamente tus registros de proveedores con datos de cumplimiento."
+    "catalogSkillDescription": "Busca proveedores de IA en la base de datos de VendorWatch y rellena automáticamente tus registros de proveedores con datos de cumplimiento."
   },
   "vendorsNew": {
     "title": "Añadir proveedor",
     "subtitle": "Registrar un nuevo proveedor externo de IA",
     "catalogSearchTitle": "Catálogo de proveedores de IA",
-    "catalogSearchDescription": "Busca proveedores de IA en la base de datos de Vendor.Watch para autocompletar los datos del proveedor",
+    "catalogSearchDescription": "Busca proveedores de IA en la base de datos de VendorWatch para autocompletar los datos del proveedor",
     "catalogSearchPlaceholder": "Buscar proveedores de IA (p. ej., OpenAI, Anthropic, Google)...",
     "catalogNoResults": "No se han encontrado proveedores para \"{query}\"",
     "formTitle": "Detalles del proveedor",
@@ -1334,7 +1334,7 @@
   },
   "vendorCatalog": {
     "title": "Catálogo de proveedores de IA",
-    "subtitle": "Explora proveedores de IA de la base de datos de Vendor.Watch",
+    "subtitle": "Explora proveedores de IA de la base de datos de VendorWatch",
     "premiumBadge": "Premium",
     "enableCatalog": "Activar catálogo de proveedores de IA",
     "statsTotalVendors": "Total de proveedores",
@@ -2623,7 +2623,7 @@
       ],
       "catalogTitle": "Catálogo de proveedores de IA",
       "catalogPremium": "Premium",
-      "catalogIntro": "El Catálogo de Proveedores de IA (con tecnología de Vendor.Watch) ofrece una base de datos de proveedores de IA. Busca en el catálogo, consulta perfiles de proveedores y añádelos directamente a tu registro con los datos autocompletados.",
+      "catalogIntro": "El Catálogo de Proveedores de IA (con tecnología de VendorWatch) ofrece una base de datos de proveedores de IA. Busca en el catálogo, consulta perfiles de proveedores y añádelos directamente a tu registro con los datos autocompletados.",
       "catalogSearchTitle": "Buscar y explorar",
       "catalogSearchBody": "Busca por nombre de proveedor o explora por categoría. Cada entrada del catálogo incluye una descripción, el sitio web e indicadores de cumplimiento.",
       "catalogAutofillTitle": "Autocompletado",
@@ -2849,13 +2849,13 @@
     },
     "vendorCatalog": {
       "metaTitle": "Catálogo de proveedores de IA: documentación de AI SENTINEL",
-      "metaDescription": "Catálogo de más de 850 proveedores de IA con perfiles de riesgo, datos de cumplimiento y metadatos de gobernanza, impulsado por Vendor.Watch.",
+      "metaDescription": "Catálogo de más de 850 proveedores de IA con perfiles de riesgo, datos de cumplimiento y metadatos de gobernanza, impulsado por VendorWatch.",
       "premiumBadge": "Premium",
       "title": "Catálogo de proveedores de IA",
       "intro": "Evaluar proveedores de IA desde cero consume tiempo y es propenso a errores. El Catálogo de Proveedores de IA da a tu equipo de gobernanza una ventaja inicial con perfiles precargados de más de 850 proveedores de IA, completos con indicadores de riesgo, certificaciones de cumplimiento y metadatos de despliegue.",
       "whatTitle": "¿Qué es el catálogo de proveedores de IA?",
       "whatP1": "El Catálogo de Proveedores de IA es un directorio precargado y con búsqueda de proveedores de herramientas y servicios de IA. Cada perfil de proveedor incluye datos de gobernanza estructurados: qué hace el proveedor, dónde se procesan los datos, qué certificaciones posee, si entrena con datos de clientes y su clasificación de riesgo según el Reglamento de IA de la UE.",
-      "whatP2": "El catálogo está impulsado por <vw>Vendor.Watch</vw>, un servicio independiente de inteligencia sobre proveedores de IA que audita y actualiza continuamente los perfiles. Los datos se sincronizan automáticamente, de modo que tu catálogo se mantiene al día sin investigación manual.",
+      "whatP2": "El catálogo está impulsado por <vw>VendorWatch</vw>, un servicio independiente de inteligencia sobre proveedores de IA que audita y actualiza continuamente los perfiles. Los datos se sincronizan automáticamente, de modo que tu catálogo se mantiene al día sin investigación manual.",
       "whyTitle": "Por qué es importante",
       "whyItems": [
         {
@@ -2880,7 +2880,7 @@
       "vsCatalogTitle": "Catálogo de proveedores",
       "vsCatalogItems": [
         "Directorio precargado con más de 850 proveedores de IA",
-        "Inteligencia externa: datos de Vendor.Watch",
+        "Inteligencia externa: datos de VendorWatch",
         "Referencia de solo lectura para la diligencia debida inicial",
         "Pregunta clave: «¿Qué sabemos de este proveedor?»"
       ],
@@ -2911,7 +2911,7 @@
         },
         {
           "category": "Metadatos de Gobernanza",
-          "fields": "Fecha de la última auditoría, puntuación de riesgo de Vendor.Watch, marca temporal de sincronización del catálogo, URL de origen"
+          "fields": "Fecha de la última auditoría, puntuación de riesgo de VendorWatch, marca temporal de sincronización del catálogo, URL de origen"
         }
       ],
       "howTitle": "Cómo funciona",
@@ -2930,7 +2930,7 @@
         },
         {
           "title": "Sincronización automática",
-          "description": "El catálogo se sincroniza con Vendor.Watch de forma periódica. Los nuevos proveedores se añaden y los perfiles existentes se actualizan automáticamente a medida que hay nueva inteligencia disponible."
+          "description": "El catálogo se sincroniza con VendorWatch de forma periódica. Los nuevos proveedores se añaden y los perfiles existentes se actualizan automáticamente a medida que hay nueva inteligencia disponible."
         }
       ]
     },
@@ -3871,7 +3871,7 @@
       "contentInEnglish": "El contenido de los marcos en estas páginas está en inglés.",
       "stats": "{frameworks} marcos, {rings} dimensiones, {cells} celdas, {review} en revisión.",
       "method": "Cada celda se contrastó con el texto oficial cuando ese texto pudo consultarse en la fecha indicada. Las celdas que no pudieron contrastarse se marcan «En revisión», se dibujan rayadas y no afirman nada. La profundidad es una lectura editorial de hasta dónde llega un marco en una dimensión, no una nota de calidad.",
-      "footerNote": "Cuando se menciona AI SENTINEL, da soporte a la dimensión o la mapea; no certifica nada. Las fechas son las que indican los textos oficiales en la fecha mostrada.",
+      "footerNote": "Cuando se menciona AI SENTINEL, da soporte a la dimensión o la mapea. Las fechas son las que indican los textos oficiales en la fecha mostrada.",
       "views": {
         "overview": "Rueda",
         "table": "Tabla",

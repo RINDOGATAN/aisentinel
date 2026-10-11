@@ -81,13 +81,15 @@ describe("the old banner phrase", () => {
 });
 
 describe("what the public copy says about the hosted pilot", () => {
-  it.each(Object.keys(PUBLIC_TEXT))("%s calls the hosted service a free, capped pilot and prices modules for the kit only", (file) => {
+  it.each(Object.keys(PUBLIC_TEXT))("%s calls the hosted service a free, capped pilot and prices modules for self-hosted installations only", (file) => {
     const text = PUBLIC_TEXT[file];
     expect(text).toMatch(/free(,| and) capped/i);
-    expect(text).toMatch(/60 a year/);
-    // One string serves every visitor, so it names no currency of its own.
-    expect(text).toMatch(/60 a year each in the kit[ ,(]+in your currency/);
-    expect(text).not.toMatch(/[€$]\s?60\b|\b60\s?[€$]/);
+    // The English text states dollars (owner, 11 Oct 2026: one currency per visitor, "$60"), names no kit,
+    // and never says the figure is the same in another currency.
+    expect(text).toMatch(/\$60 a year each/);
+    expect(text).not.toMatch(/in your currency|same figure|€\s?60\b|\b60\s?€/);
+    // The README is for people installing the kit; the llms files name no kit (three ways in public).
+    if (file !== "README.md") expect(text).not.toMatch(/\bthe (self-hosted )?kit\b/i);
     expect(text).toMatch(/https:\/\/www\.todo\.law\/run/);
     // Nothing per month, and no licence attached to the hosted service.
     expect(text).not.toMatch(/\/mo\b/);

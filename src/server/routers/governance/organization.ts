@@ -25,6 +25,19 @@ import {
 } from "../../services/pilot/caps";
 import { planTemplateRemoval, removeTemplateItems } from "../../services/template-items/remove";
 
+/**
+ * The plan fields only the operator reads: the operator's note and the payment
+ * subscription behind an automatic upgrade. The plan itself and its dates go
+ * to the screens; these two never do.
+ */
+function withoutOperatorPlanFields<T extends { planNote?: unknown; planStripeSubscriptionId?: unknown }>(
+  org: T,
+): Omit<T, "planNote" | "planStripeSubscriptionId"> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { planNote, planStripeSubscriptionId, ...rest } = org;
+  return rest;
+}
+
 export const organizationRouter = createTRPCRouter({
   list: protectedProcedure.query(async ({ ctx }) => {
     const memberships = await ctx.prisma.organizationMember.findMany({
@@ -47,7 +60,7 @@ export const organizationRouter = createTRPCRouter({
     });
 
     return memberships.map((m) => ({
-      ...m.organization,
+      ...withoutOperatorPlanFields(m.organization),
       role: m.role,
       joinedAt: m.joinedAt,
     }));
@@ -78,7 +91,7 @@ export const organizationRouter = createTRPCRouter({
       });
 
       return {
-        ...org,
+        ...(org ? withoutOperatorPlanFields(org) : org),
         currentUserRole: ctx.membership.role,
       };
     }),
@@ -362,8 +375,9 @@ export const organizationRouter = createTRPCRouter({
         });
       }
 
-      // Hosted pilot: one organisation per account applies to the invitee too.
-      await assertPilotOrganizationLimit(ctx.prisma, user.id, locale);
+      // Hosted pilot: one organisation per account applies to the invitee too,
+      // unless the organisation they join is on the paid plan.
+      await assertPilotOrganizationLimit(ctx.prisma, user.id, locale, ctx.organization);
 
       const membership = await ctx.prisma.organizationMember.create({
         data: {

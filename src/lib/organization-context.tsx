@@ -13,6 +13,8 @@ interface Organization {
   name: string;
   slug: string;
   role?: OrganizationRole;
+  /** The hosted plan: "EU_CLOUD" is the paid plan; anything else the pilot. */
+  plan?: string | null;
 }
 
 interface OrganizationContextType {
@@ -92,6 +94,11 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
       {children}
     </OrganizationContext.Provider>
   );
+}
+
+/** The context when inside the provider, else undefined (components that also render without the app shell). */
+export function useOptionalOrganization() {
+  return useContext(OrganizationContext);
 }
 
 export function useOrganization() {

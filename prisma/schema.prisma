@@ -169,6 +169,25 @@ model Organization {
   /// then, and always null on the kit.
   pilotFirstSignInAt DateTime?
 
+  /// Hosted service only: the organization's plan. PILOT (the default; null
+  /// also counts as the pilot) is the free, capped pilot; EU_CLOUD is the paid
+  /// EU cloud plan, which lifts the pilot caps and the editing window
+  /// (src/server/services/pilot/caps.ts). Set by an operator with
+  /// scripts/set-org-plan.ts, or by the automatic upgrade after a confirmed
+  /// payment (src/server/services/plan-eu/sync.ts); every change writes one
+  /// audit-trail entry (PLAN_CHANGE). planNote is an operator's reference,
+  /// never shown to the organization. planStripeSubscriptionId is the payment
+  /// subscription behind an automatic upgrade, so its end returns the
+  /// organization to the pilot; null when the plan was set by hand.
+  /// EU_CLOUD is an internal name: the same plan lifts the same limits
+  /// whichever currency was paid (the EUR plan or the USD plan).
+  /// Meaningless on the kit, which is never capped.
+  plan                     OrganizationPlan? @default(PILOT)
+  planStartedAt            DateTime?
+  planRenewsAt             DateTime?
+  planNote                 String?
+  planStripeSubscriptionId String?
+
   /// Where this organization operates, driving regulatory scoping.
   /// An EMPTY array means UNDECLARED — "we have not been told yet" — and must
   /// never be read as "operates nowhere" or "no regime applies". Every
@@ -222,6 +241,7 @@ model Organization {
 
   /// GIN so `operatingJurisdictions has 'US_CA'` scoping queries stay indexed.
   @@index([operatingJurisdictions], type: Gin)
+  @@index([planStripeSubscriptionId])
   @@map("organizations")
 }
 
@@ -2327,4 +2347,10 @@ model ProgramSnapshotRecord {
 
   @@index([organizationId, createdAt])
   @@map("program_snapshots")
+}
+
+/// The hosted plan of an organization (Organization.plan).
+enum OrganizationPlan {
+  PILOT
+  EU_CLOUD
 }

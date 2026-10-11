@@ -11,6 +11,15 @@
  *
  * Reads are never refused: a read-only organisation can open everything and
  * export everything. Only the write procedures and the create paths call in.
+ *
+ * An organisation on the paid EU cloud plan (Organization.plan = EU_CLOUD,
+ * set by scripts/set-org-plan.ts or by the automatic upgrade after a
+ * confirmed payment) is not on the pilot: no ceiling, no editing window and
+ * no one-organisation rule for joining it. The pilot clock is still
+ * recorded, so an organisation returned to PILOT finds its window where it
+ * was. Anything unknown (no plan, null, an organisation not found, a test
+ * double without the organisations model) counts as the pilot: the caps then
+ * apply, never the reverse.
  */
 
 import { TRPCError } from "@trpc/server";
@@ -28,11 +37,43 @@ import {
   type PilotLocale,
 } from "@/config/pilot";
 
+/**
+ * The plan that lifts the pilot's caps (Prisma enum OrganizationPlan). An
+ * internal name: the same plan, and the same limits lifted, whichever currency
+ * was paid (the EUR plan or the USD plan).
+ */
+export const PAID_PLAN = "EU_CLOUD" as const;
+
+/** The plan field as the caps read it; absent or null counts as the pilot. */
+export type PlanOrg = { plan?: string | null };
+
+/** True for an organisation on the paid EU cloud plan. */
+export function isPaidPlan(org: PlanOrg | null | undefined): boolean {
+  return org?.plan === PAID_PLAN;
+}
+
+/** The organisations delegate, optional so test doubles without it count as the pilot. */
+export type PlanLookupDb = {
+  organization?: {
+    findUnique(args: {
+      where: { id: string };
+      select: { plan: true };
+    }): Promise<{ plan: string | null } | null>;
+  };
+};
+
+/** Reads the organisation's plan; anything unknown counts as the pilot. */
+export async function organizationOnPaidPlan(db: PlanLookupDb, organizationId: string): Promise<boolean> {
+  if (!db.organization?.findUnique) return false;
+  const org = await db.organization.findUnique({ where: { id: organizationId }, select: { plan: true } });
+  return isPaidPlan(org);
+}
+
 type CountArgs = { where: { organizationId: string } };
 type Counter = { count(args: CountArgs): Promise<number> };
 
 /** The delegates the ceilings count on. PrismaClient and a transaction client both fit. */
-export interface PilotDb {
+export interface PilotDb extends PlanLookupDb {
   aISystem: Counter;
   aIVendor: Counter;
   aIAssessment: Counter;
@@ -46,7 +87,7 @@ export interface PilotDb {
   organizationMember: Counter;
 }
 
-const DELEGATE: Record<PilotCeilingKey, keyof PilotDb> = {
+const DELEGATE: Record<PilotCeilingKey, Exclude<keyof PilotDb, "organization">> = {
   systems: "aISystem",
   vendors: "aIVendor",
   assessments: "aIAssessment",
@@ -64,6 +105,8 @@ export interface PilotOrganization {
   id: string;
   /** Start of the editing clock; null until the first sign-in is recorded. */
   pilotFirstSignInAt: Date | null;
+  /** The hosted plan; EU_CLOUD lifts every cap. Absent or null: the pilot. */
+  plan?: string | null;
 }
 
 export interface PilotCeilingStatus {
@@ -103,6 +146,7 @@ export async function getPilotStatus(
   now: Date = new Date(),
 ): Promise<PilotStatus> {
   if (!hostedPilotActive()) return { active: false };
+  if (isPaidPlan(organization)) return { active: false };
   const clock = pilotClock(organization.pilotFirstSignInAt, now);
   const ceilings = await Promise.all(
     PILOT_CEILING_KEYS.map(async (key) => ({
@@ -132,6 +176,7 @@ export function assertPilotWritable(
   now: Date = new Date(),
 ): void {
   if (!hostedPilotActive()) return;
+  if (isPaidPlan(organization)) return;
   const clock = pilotClock(organization.pilotFirstSignInAt, now);
   if (!clock.readOnly) return;
   throw new TRPCError({
@@ -185,6 +230,7 @@ export async function pilotRemaining(
   key: PilotCeilingKey,
 ): Promise<number> {
   if (!hostedPilotActive()) return Infinity;
+  if (await organizationOnPaidPlan(db, organizationId)) return Infinity;
   const used = await pilotUsed(db, organizationId, key);
   return Math.max(0, PILOT_CEILINGS[key] - used);
 }
@@ -219,6 +265,7 @@ export async function assertPilotWithinCeilings(
   keys: readonly PilotCeilingKey[] = PILOT_CEILING_KEYS,
 ): Promise<void> {
   if (!hostedPilotActive()) return;
+  if (await organizationOnPaidPlan(db, organizationId)) return;
   for (const key of keys) {
     const used = await pilotUsed(db, organizationId, key);
     if (used > PILOT_CEILINGS[key]) throw pilotCeilingError(organizationId, key, locale);
@@ -228,13 +275,19 @@ export async function assertPilotWithinCeilings(
 /**
  * One organisation per account. Throws FORBIDDEN when the account already
  * belongs to an organisation, whether it created it or was added to it.
+ * `joining` is the organisation the account is being added to: when it is on
+ * the paid plan the rule does not apply. Creating an organisation passes
+ * none, so the rule still applies there (a new organisation starts on the
+ * pilot).
  */
 export async function assertPilotOrganizationLimit(
   db: { organizationMember: { count(args: { where: { userId: string } }): Promise<number> } },
   userId: string,
   locale: PilotLocale,
+  joining?: PlanOrg,
 ): Promise<void> {
   if (!hostedPilotActive()) return;
+  if (isPaidPlan(joining)) return;
   const memberships = await db.organizationMember.count({ where: { userId } });
   if (memberships > 0) {
     throw new TRPCError({ code: "FORBIDDEN", message: pilotOneOrganizationMessage(locale) });

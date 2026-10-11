@@ -33,7 +33,10 @@ const DICT: Record<Locale, Record<string, string>> = { en, es };
 
 function render(locale: Locale, guide?: { open: boolean; answers: Answers }) {
   const t = (k: string) => DICT[locale][k] ?? k;
-  return renderToStaticMarkup(createElement(LandingSections, { t, locale, videos: [], initialGuide: guide }));
+  const html = renderToStaticMarkup(createElement(LandingSections, { t, locale, videos: [], initialGuide: guide }));
+  // Up to the pricing section that follows the ways (tests/landing-pricing.test.tsx covers it).
+  const marker = html.indexOf('data-testid="landing-pricing"');
+  return marker < 0 ? html : html.slice(0, html.lastIndexOf("<section", marker));
 }
 
 /** The guide's own markup. */

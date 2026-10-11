@@ -7,7 +7,10 @@
  * (only while a video of that language is published), the six stages of the
  * program as the Guided path implements them with the 30/60/90-day plan
  * beneath, and the ways to host it. Both pages then show the customer logos
- * above the footer (only while the configured list is not empty). No prices. No hosting location in the sections; the safeguards
+ * above the footer (only while the configured list is not empty). After the
+ * ways, the pricing section (owner, 11 Oct 2026: PricingSection.tsx), the one
+ * place with prices and the Cloud Plan's EU storage. No hosting location in
+ * the other sections; the safeguards
  * guide after the ways (SafeguardsGuide) says, as the storefront does, that
  * the cloud pilot is hosted in the EU. The Spanish managed box names
  * Asturias, as the storefront does (owner, 10 Oct 2026).
@@ -47,6 +50,7 @@ import { brand } from "@/config/brand";
 import { LANDING_VIDEOS, type LandingLocale, type LandingVideo } from "../config/landing-videos";
 import CustomerLogos from "./CustomerLogos";
 import SafeguardsGuide, { wayBoxId } from "./SafeguardsGuide";
+import PricingSection from "./PricingSection";
 import { WAY_CARD, recommend, type Answers, type QuestionId } from "../config/safeguards";
 
 type T = (key: string) => string;
@@ -458,6 +462,7 @@ export default function LandingSections({ t, locale, videos = LANDING_VIDEOS[loc
       <Stages t={t} p={locale} />
       {/* Keyed by language: the toggle starts the guide afresh, as the ways change. */}
       <Ways key={locale} t={t} p={locale} setup={setup} initialGuide={initialGuide} />
+      <PricingSection locale={locale} />
       {setup.logos && <CustomerLogos label={t(`${locale}.logos.label`)} />}
     </>
   );

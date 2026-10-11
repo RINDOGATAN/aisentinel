@@ -5,9 +5,18 @@
 AI SENTINEL by TODO.LAW is an open-core AI governance platform for organizations managing AI systems under the EU AI Act, NIST AI RMF, ISO 42001 and AIUC-1, the certification standard for AI agents, among nine frameworks. It provides a complete toolkit for AI system inventory, risk classification, compliance mapping, human oversight, incident management, and policy governance.
 
 Hosted pilot: https://aisentinel.todo.law (free and capped; every module open; for real data, a paid plan or a managed instance)
-Paid plans and managed instances: https://www.todo.law/run
+Pricing (free pilot, Cloud Plan, managed instance or your own hardware): https://aisentinel.todo.law/#pricing
+Run your own instance: https://www.todo.law/run
 Documentation: https://aisentinel.todo.law/docs
 License: AGPL-3.0 (core) + proprietary premium modules, sold only for the self-hosted kit
+
+## Pricing
+
+- [Pricing on the landing](https://aisentinel.todo.law/#pricing) (Spanish: https://aisentinel.todo.law/?lang=es#precios)
+- Free pilot: one organization per account; 90 days of editing from the organization's first sign-in, then read-only with export; record limits; for test records, not real personal data.
+- Cloud Plan, per organization: DPO Central, AI Sentinel and VendorWatch (Monitor plan), unlimited users, data stored in EU data centers (Frankfurt), no editing window and no record limits. English pages: $1,800 a year (or $179 a month). Spanish pages ("Plan nube UE"): 1.800 € al año (o 179 € al mes). One currency per page. Sold by Rindogatan LLC (United States), which does not charge Spanish VAT. Rights-request module, when available: $49 / 49 € a month.
+- Managed instance or your own hardware: on quotation (https://www.todo.law/contact/managed, https://www.todo.law/contact/deployment).
+- Sub-processors: https://www.todo.law/legal/eu-cloud-plan-subprocessors
 
 ## Core Modules (Open Source — AGPL-3.0)
 

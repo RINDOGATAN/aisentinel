@@ -87,7 +87,8 @@ describe("English landing page", () => {
     // "firms" alone is ambiguous: the audience is law firms and privacy consultants.
     for (const [k, v] of shown) expect(v.replace(/law firms?|Law-Firm-in-a-Box/gi, ""), k).not.toMatch(/\bfirms?\b/i);
     for (const k of ["hero.badge", "hero.cta", "header.cta", "cta.button"]) {
-      const words = EN[k].split(" ").slice(1);
+      // Product names keep their capitals ("Open AI Sentinel").
+      const words = EN[k].replace("AI Sentinel", "product").split(" ").slice(1);
       for (const w of words) expect(w, k).not.toMatch(/^[A-Z][a-z]/);
     }
   });
@@ -97,7 +98,7 @@ describe("English sections", () => {
   const html = render(allPublished);
 
   it("render the four sections in order, with every key translated", () => {
-    const order = ["Three tools", "See how it", "Six stages", "You choose <"].map((s) => html.indexOf(s));
+    const order = ["Three tools", "See how it", "Six stages", "Tailored to <"].map((s) => html.indexOf(s));
     expect(order.every((i) => i >= 0)).toBe(true);
     expect([...order].sort((a, b) => a - b)).toEqual(order);
     expect(html).not.toMatch(/>en\.[a-z]/);
@@ -148,8 +149,8 @@ describe("English sections", () => {
 
   it("say the starting-point positioning calmly, at most twice", () => {
     const all = shown.map(([, v]) => v).join(" ");
-    expect(all.match(/grows with you|take your program with you/g)?.length ?? 0).toBeGreaterThanOrEqual(1);
-    expect(all.match(/grows with you|take your program with you|larger platform/g)?.length ?? 0).toBeLessThanOrEqual(3);
+    expect(all.match(/grows with you|take your program (with you|elsewhere)/g)?.length ?? 0).toBeGreaterThanOrEqual(1);
+    expect(all.match(/grows with you|take your program (with you|elsewhere)|larger platform/g)?.length ?? 0).toBeLessThanOrEqual(3);
   });
 
   it("use no long dash, US spelling and no word about how the videos were made", () => {
@@ -160,20 +161,24 @@ describe("English sections", () => {
     }
   });
 
-  it("offer five ways, as on the English storefront", () => {
+  // The Spanish wording carried over (owner, 10 Oct 2026); the kit and the Box stay on the English page.
+  it("offer five ways, with the cloud, managed and own-hardware wording of the Spanish page", () => {
     const titles = [1, 2, 3, 4, 5].map((n) => EN[`en.ways.w${n}.title`]);
     expect(titles).toEqual([
-      "TODO.LAW cloud",
+      "In the TODO.LAW cloud",
       "The self-install kit",
       "TODO.LAW hardware",
-      "A managed instance",
-      "Deployment and training on your servers",
+      "Managed virtual server",
+      "Your own hardware",
     ]);
     expect(EN["en.ways.w6.title"]).toBeUndefined();
     for (const t of titles) expect(html).toContain(t);
     expect(EN["en.ways.label"]).toBe("Guarantees and hosting");
-    expect(EN["en.ways.heading.prefix"] + EN["en.ways.heading.accent"]).toBe("You choose where it lives");
-    expect(EN["en.ways.sub"]).toMatch(/take your program with you at any time/);
+    expect(EN["en.ways.heading.prefix"] + EN["en.ways.heading.accent"]).toBe("Tailored to your needs");
+    expect(EN["en.ways.sub"]).toBe("Five ways to run it, with different safeguards, certifications and levels of control.");
+    expect(EN["en.ways.w1.desc"]).toMatch(/take your program elsewhere whenever you like with a simple export/);
+    expect(EN["en.ways.w4.desc"]).toMatch(/Asturias, Spain, with open LLMs available and a tailored SLA/);
+    expect(EN["en.ways.w5.desc"]).not.toMatch(/train|runbook|six weeks/i);
     expect(EN["en.ways.w2.desc"]).toMatch(/Open source/);
     expect(EN["en.ways.w2.desc"]).toMatch(/Docker/);
     expect(EN["en.ways.w3.desc"]).toMatch(/Law-Firm-in-a-Box™/);

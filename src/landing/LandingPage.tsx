@@ -125,7 +125,8 @@ export default function LandingPage({ hostedPilot = false }: { hostedPilot?: boo
           hostedPilot ? { sentence: PILOT_SENTENCE[locale], terms: PILOT_TERMS[locale] } : null
         }
         middle={<LandingSections t={t} locale={locale} />}
-        plain={locale === "es"}
+        plain
+        docsLocale={locale}
       />
       <StartupsFooter t={t} locale={locale} />
     </>

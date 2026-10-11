@@ -81,32 +81,39 @@ describe("landing header and footer", () => {
 });
 
 describe("landing hero", () => {
-  it("shows the welcome line, not the subtitle, in the left column", () => {
+  // The generic welcome line is gone (owner, 10 Oct 2026): the product summary is back under the title.
+  it("shows the product summary, not a welcome line, under the title", () => {
     const page = read("src/landing/components/StartupProductPage.tsx");
-    expect(page).toContain('t("hero.welcome")');
-    // hero.subtitle is used once: its first sentence, in the sign-up card.
+    expect(page).not.toContain("hero.welcome");
+    expect(EN["hero.welcome"]).toBeUndefined();
+    expect(ES["hero.welcome"]).toBeUndefined();
     expect(page.match(/t\("hero\.subtitle"\)/g)).toHaveLength(1);
-    expect(page).toContain('t("hero.subtitle").split(".")[0]');
+    expect(ES["hero.subtitle"]).toMatch(/^Marco abierto para la gobernanza de la IA\. Inventario, /);
   });
 
-  it("gives the Spanish sign-up card its own one-line summary", () => {
+  it("gives the sign-up card its own one-line summary in both languages", () => {
     expect(ES["hero.card"]).toMatch(/^Inventario de sistemas de IA, .+\. Listo para volar en unos pocos minutos\.$/);
-    expect(EN["hero.card"]).toBeUndefined();
+    expect(EN["hero.card"]).toBe("AI system inventory, risk classification, impact assessments, human oversight and incidents. Ready to fly in a few minutes.");
     expect(read("src/landing/components/StartupProductPage.tsx")).toContain('t("hero.card")');
   });
 
-  it("links the Spanish page to the public documentation, in plain words", () => {
+  it("links both pages to the public documentation, in plain words, in the page's language", () => {
     expect(ES["value.docs"]).toBe("Consulta la documentación");
-    expect(EN["value.docs"]).toBeUndefined();
+    expect(EN["value.docs"]).toBe("Read the documentation");
+    expect(read("src/landing/components/StartupProductPage.tsx")).toContain("writeLocaleCookie(docsLocale)");
     const page = read("src/landing/components/StartupProductPage.tsx");
     expect(page).toContain('href="/docs"');
     expect(page).not.toMatch(/regulatorio\/ai-sentinel/);
   });
 
-  it("closes the Spanish page with the button alone (no closing heading or pilot text)", () => {
-    for (const k of ["cta.heading.prefix", "cta.heading.accent", "cta.heading.suffix", "cta.text"]) expect(ES[k], k).toBeUndefined();
+  it("closes both pages with the button alone (no closing heading or pilot text)", () => {
+    for (const k of ["cta.heading.prefix", "cta.heading.accent", "cta.heading.suffix", "cta.text"]) {
+      expect(ES[k], k).toBeUndefined();
+      expect(EN[k], k).toBeUndefined();
+    }
     expect(ES["cta.button"]).toBe("Abrir AI Sentinel");
-    expect(read("src/landing/LandingPage.tsx")).toContain('plain={locale === "es"}');
+    expect(EN["cta.button"]).toBe("Open AI Sentinel");
+    expect(read("src/landing/LandingPage.tsx")).toMatch(/\n\s+plain\n/);
   });
 
   it("leaves no hard-coded English in the sign-up card", () => {

@@ -111,7 +111,7 @@ describe("real data in Spain: the Plan nube UE", () => {
   it("the Spanish cloud result carries the owner's text,", () => {
     const ai = "los datos del registro que usa cada borrador de IA";
     expect(COPY.es.summaries.cloud).toBe(
-      "Lo alojamos nosotros, con los datos en la UE (Fráncfort). Puedes probarlo con el piloto gratuito y con límites, solo con datos de prueba, o contratar el Plan nube UE para datos reales. Es un servicio compartido (los registros de cada organización están separados) y no tiene certificación independiente. Si activas las funciones de IA, " + ai + " van al proveedor de IA externo configurado en el servicio, que puede estar fuera de la UE.",
+      "Lo alojamos nosotros, con los datos en la UE (Fráncfort). Puedes probarlo con el piloto gratuito y con límites, solo con datos de prueba, o contratar el Plan nube UE para datos reales. Es un servicio compartido (los registros de cada organización están separados). Si activas las funciones de IA, " + ai + " van al proveedor de IA externo configurado en el servicio, que puede estar fuera de la UE.",
     );
     expect(COPY.en.summaries.cloud).not.toMatch(/€|Plan nube/);
   });
@@ -201,7 +201,7 @@ describe("copy rules", () => {
     expect(es).not.toMatch(/\busted(es)?\b|vosotros|\bvuestr/i);
   });
 
-  it("managed is hosted in Asturias with open-weight models on the instance; the cloud states EU, pilot, shared, no certification", () => {
+  it("managed is hosted in Asturias with open-weight models on the instance; the cloud states EU, pilot, shared, and never a lack of certification", () => {
     expect(COPY.en.summaries.managed).toBe(
       "An isolated instance we run for your organization alone, hosted in Asturias, Spain. Your records stay on that instance. AI features stay off until you turn them on, and can use open-weight models hosted on the instance itself, so the record details do not leave it, or your own provider key.",
     );
@@ -212,8 +212,10 @@ describe("copy rules", () => {
     for (const l of LOCALES) expect(all(l)).not.toMatch(/selected text|texto seleccionado/);
     // No unqualified "your data stays" where AI could send text out.
     for (const l of LOCALES) expect(all(l)).not.toMatch(/Your data stays on (that instance|your servers|your hardware)|Tus datos se quedan/);
-    expect(COPY.en.summaries.cloud).toMatch(/capped pilot[\s\S]*test records[\s\S]*shared[\s\S]*no service level or independent certification/);
-    expect(COPY.es.summaries.cloud).toMatch(/piloto[\s\S]*con límites[\s\S]*datos de prueba[\s\S]*Plan nube UE[\s\S]*datos reales[\s\S]*compartido[\s\S]*certificación independiente/);
+    expect(COPY.en.summaries.cloud).toMatch(/capped pilot[\s\S]*test records[\s\S]*shared/);
+    expect(COPY.es.summaries.cloud).toMatch(/piloto[\s\S]*con límites[\s\S]*datos de prueba[\s\S]*Plan nube UE[\s\S]*datos reales[\s\S]*compartido/);
+    // "We always have an answer" (owner, 10 Oct 2026): no line saying we lack a certification.
+    for (const l of LOCALES) expect(all(l)).not.toMatch(/no (service level or )?independent certification|no independent certification today|sin certificación independiente|no tenemos certificación independiente/);
   });
 
   it("leaves the classifier sentence out of the panel", () => {

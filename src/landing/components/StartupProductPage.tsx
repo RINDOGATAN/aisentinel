@@ -48,11 +48,14 @@ interface StartupProductPageProps {
    */
   middle?: React.ReactNode;
   /**
-   * The Spanish page (owner, 10 Oct 2026): the cards stay still under the
-   * pointer while the page scrolls, and the page closes with the button back
-   * to the sign-up card alone, without the closing heading and text.
+   * The plain page (owner, 10 Oct 2026; Spanish first, English the same night):
+   * the cards stay still under the pointer while the page scrolls, and the
+   * page closes with the button back to the sign-up card alone, without the
+   * closing heading and text.
    */
   plain?: boolean;
+  /** The page's language, recorded for the documentation when its link is followed. */
+  docsLocale?: "en" | "es";
 }
 
 const GoogleIcon = () => (
@@ -77,6 +80,7 @@ const StartupProductPage = ({
   pilotNotice = null,
   middle,
   plain = false,
+  docsLocale = "en",
 }: StartupProductPageProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [cardMode, setCardMode] = useState<"signup" | "login" | "sent">("signup");
@@ -231,11 +235,11 @@ const StartupProductPage = ({
                     <span className="text-accent">{t("hero.title.accent")}</span>
                     {t("hero.title.suffix")}
                   </h1>
-                  {/* The product summary (hero.subtitle) sits in the sign-up
-                      card on the right, so the left column carries only the
-                      badge, the title and the welcome line. */}
+                  {/* The product summary under the title (owner, 10 Oct 2026: the
+                      generic welcome line it replaced in PR 72 is gone); the
+                      sign-up card carries its own short line (hero.card). */}
                   <p className="text-lg text-white/90 leading-relaxed font-body mb-8 max-w-lg">
-                    {t("hero.welcome")}
+                    {t("hero.subtitle")}
                   </p>
                 </div>
               </div>
@@ -298,8 +302,8 @@ const StartupProductPage = ({
                     <div className="relative animate-fade-in">
                       <h2 className="text-xl md:text-2xl font-display mb-2">{t("hero.cta")}</h2>
                       <p className="text-sm text-muted-foreground font-body mb-6">
-                        {/* The card's own line where the language has one (hero.card), else the summary's first sentence. */}
-                        {t("hero.card") !== "hero.card" ? t("hero.card") : `${t("hero.subtitle").split(".")[0]}.`}
+                        {/* The card's own short line (hero.card); the full summary sits under the title. */}
+                        {t("hero.card")}
                       </p>
                       <form onSubmit={handleMagicLink} className="space-y-4">
                         <input
@@ -370,15 +374,15 @@ const StartupProductPage = ({
             ))}
           </div>
           {/* The public documentation, where the language has a label for it
-              (value.docs, Spanish only). The docs follow the locale cookie, so
-              the link records Spanish first: a ?lang=es visitor reads them in
-              Spanish too. */}
+              (value.docs). The docs follow the locale cookie, so the link
+              records the page's language first: a ?lang=es visitor reads them
+              in Spanish too. */}
           {t("value.docs") !== "value.docs" && (
             <div className="mt-10 text-center">
               <a
                 href="/docs"
                 data-testid="landing-docs-link"
-                onClick={() => writeLocaleCookie("es")}
+                onClick={() => writeLocaleCookie(docsLocale)}
                 className="inline-flex items-center gap-2 text-base font-medium text-accent hover:text-foreground transition-colors"
               >
                 <BookOpen className="w-5 h-5" aria-hidden="true" />

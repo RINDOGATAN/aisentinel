@@ -23,17 +23,18 @@
  */
 
 import {
+  Activity,
   ArrowLeft,
   ArrowLeftRight,
   ArrowUp,
   ArrowUpDown,
-  Activity,
+  Bot,
+  Box,
   Brain,
   Check,
   ClipboardCheck,
   Cloud,
   ExternalLink,
-  GraduationCap,
   HardDrive,
   Mail,
   Package,
@@ -42,7 +43,6 @@ import {
   ShieldCheck,
   Store,
   Users,
-  Bot,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useState } from "react";
@@ -88,9 +88,9 @@ const SETUP: Record<LandingLocale, LocaleSetup> = {
     ways: [
       { icon: Cloud, action: "none" },
       { icon: Package, action: "link", href: KIT_URL },
-      { icon: HardDrive, action: "mail" },
+      { icon: Box, action: "mail" },
       { icon: Server, action: "mail" },
-      { icon: GraduationCap, action: "mail" },
+      { icon: HardDrive, action: "mail" },
     ],
     captionsLang: "en",
     // No customer logos on the English page.

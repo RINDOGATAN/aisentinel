@@ -300,17 +300,17 @@ export const COPY: Record<Locale, SafeguardsCopy> = {
       "ai:key": { cloud: "We set the AI provider for the whole service; you cannot use your own key.", managed: "The instance can be set up with your own key.", kit: "You set the AI engine and key yourself.", deploy: "We set up AI with your own key.", box: "You can add your own key, or keep to the local models." },
       "ai:local": { cloud: "With AI on, the record details each AI draft uses go to the service's external AI provider, which may be outside the EU.", managed: "Open-weight models can run on the instance itself, so the record details do not leave it.", kit: "Point AI at a local model engine you run; the kit does not include one.", deploy: "We can set up an open-weight model on your servers, if they have the capacity.", box: "Open-weight models run on the box itself." },
       "iso:yes": { cloud: "A shared service: each organization's records are kept apart, but the system is shared.", managed: "An isolated instance for you alone.", kit: "Your own installation.", deploy: "Your own installation.", box: "Your own installation." },
-      "it:no": { cloud: "We run it.", managed: "We run it for you.", kit: "Your team installs it, updates it and backs it up.", deploy: "We install it, train your people and leave a runbook.", box: "Set-up and maintenance are included." },
-      "cert:yes": { cloud: "It works under our controls, with no independent certification.", managed: "It works under our controls; we hold no independent certification today.", kit: PERIMETER_EN, deploy: PERIMETER_EN, box: PERIMETER_EN },
+      "it:no": { cloud: "We run it.", managed: "We run it for you.", kit: "Your team installs it, updates it and backs it up.", deploy: "We install it with you, with our on-site or remote help.", box: "Set-up and maintenance are included." },
+      "cert:yes": { cloud: "It works under our controls.", managed: "It works under our controls.", kit: PERIMETER_EN, deploy: PERIMETER_EN, box: PERIMETER_EN },
     },
     summaries: {
       cloud:
-        "Hosted by us in the EU. A free, capped pilot to try the workflows with test records. It is not for real client data, it is shared with other organizations (each one's records kept apart), and it has no service level or independent certification. If you turn AI features on, the record details each AI draft uses go to the external AI provider set up on the service, which may be outside the EU.",
+        "Hosted by us in the EU. A free, capped pilot to try the workflows with test records. It is not for real client data, it is shared with other organizations (each one's records kept apart). If you turn AI features on, the record details each AI draft uses go to the external AI provider set up on the service, which may be outside the EU.",
       managed:
         "An isolated instance we run for your organization alone, hosted in Asturias, Spain. Your records stay on that instance. AI features stay off until you turn them on, and can use open-weight models hosted on the instance itself, so the record details do not leave it, or your own provider key.",
       kit: "Open source and Docker, installed by your own team on a machine you choose. Your data stays on that machine, unless you connect an outside AI service with your own key. AI features can also use a local model engine that you run on your own network; the kit does not include one.",
       deploy:
-        "Six weeks with us: the suite installed on your servers, your people trained, and a runbook. Your records stay inside your perimeter, under your own controls. For AI features, we can set up an open-weight model on your servers, if they have the capacity, or your own key.",
+        "The suite installed on your own servers, with our on-site or remote help. Your records stay inside your perimeter, under your own controls. For AI features, we can set up an open-weight model on your servers, if they have the capacity, or your own key.",
       box: "Your own hardware in your office, with everything pre-loaded, set-up and maintenance. Open-weight models run on the box itself, so AI features can work without sending text out of your office. Specifications indicative for now.",
     },
   },
@@ -392,11 +392,11 @@ export const COPY: Record<Locale, SafeguardsCopy> = {
       "ai:local": { cloud: "Con la IA activada, los datos del registro que usa cada borrador de IA van al proveedor de IA externo del servicio, que puede estar fuera de la UE.", managed: "Los modelos de pesos abiertos pueden funcionar en la propia instancia, de modo que los datos del registro no salen de ella.", deploy: "Podemos configurar un modelo de pesos abiertos en tus servidores, si tienen capacidad." },
       "iso:yes": { cloud: "Es un servicio compartido: los registros de cada organización están separados, pero el sistema es común.", managed: "Una instancia aislada solo para ti.", deploy: "Tu propia instalación." },
       "it:no": { cloud: "Lo mantenemos nosotros.", managed: "Lo mantenemos nosotros para ti.", deploy: "Lo instalamos contigo, con nuestra asistencia presencial o remota." },
-      "cert:yes": { cloud: "Funciona bajo nuestros controles y sin certificación independiente.", managed: "Funciona bajo nuestros controles; hoy no tenemos certificación independiente.", deploy: "Queda dentro de tu perímetro, bajo tus propios controles y certificaciones." },
+      "cert:yes": { cloud: "Funciona bajo nuestros controles.", managed: "Funciona bajo nuestros controles.", deploy: "Queda dentro de tu perímetro, bajo tus propios controles y certificaciones." },
     },
     summaries: {
       cloud:
-        "Lo alojamos nosotros, con los datos en la UE (Fráncfort). Puedes probarlo con el piloto gratuito y con límites, solo con datos de prueba, o contratar el Plan nube UE para datos reales. Es un servicio compartido (los registros de cada organización están separados) y no tiene certificación independiente. Si activas las funciones de IA, los datos del registro que usa cada borrador de IA van al proveedor de IA externo configurado en el servicio, que puede estar fuera de la UE.",
+        "Lo alojamos nosotros, con los datos en la UE (Fráncfort). Puedes probarlo con el piloto gratuito y con límites, solo con datos de prueba, o contratar el Plan nube UE para datos reales. Es un servicio compartido (los registros de cada organización están separados). Si activas las funciones de IA, los datos del registro que usa cada borrador de IA van al proveedor de IA externo configurado en el servicio, que puede estar fuera de la UE.",
       managed:
         "Una instancia aislada que operamos nosotros, solo para tu organización, alojada en Asturias (España). Tus registros se quedan en esa instancia. Las funciones de IA están desactivadas hasta que las activas, y pueden usar modelos de pesos abiertos alojados en la propia instancia, de modo que los datos del registro no salen de ella, o la clave de tu propio proveedor.",
       deploy:

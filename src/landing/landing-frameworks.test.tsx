@@ -40,7 +40,8 @@ describe("landing page frameworks list", () => {
     for (const k of ["value.v4.title", "value.v4.desc"] as const) {
       expect(html).toContain(en[k].replace(/&/g, "&amp;"));
     }
-    expect(html).toContain(`${en["hero.subtitle"].split(".")[0]}.`);
-    expect(html).toContain(en["hero.welcome"]);
+    // The sign-up card carries its own line (hero.card, both languages since 10 Oct 2026).
+    expect(html).toContain(en["hero.card"]);
+    expect(html).toContain(en["hero.subtitle"].split(":")[0]);
   });
 });

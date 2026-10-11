@@ -90,10 +90,9 @@ describe("what the public copy says about the hosted pilot", () => {
     expect(text).not.toMatch(/hosted instance[^.]*need(s)? a licence/i);
   });
 
-  it("the landing call to action says pilot and points to an own instance (English; the Spanish page has the button alone)", () => {
-    expect(landingEn["cta.text"]).toMatch(/free, capped pilot/);
-    expect(landingEn["cta.text"]).toMatch(/run your own instance/);
-    // The Spanish page closes with the button alone since 10 Oct 2026 (owner): no closing text.
+  // Both pages close with the button alone since 10 Oct 2026 (owner): no closing text about the pilot.
+  it("the landing closes with the button alone, with no pilot text, in both languages", () => {
+    expect((landingEn as Record<string, string>)["cta.text"]).toBeUndefined();
     expect((landingEs as Record<string, string>)["cta.text"]).toBeUndefined();
   });
 

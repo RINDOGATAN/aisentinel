@@ -7,7 +7,6 @@ import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import LandingPage from "@/landing/LandingPage";
-import { hostedPilotActive } from "@/config/pilot";
 import { brand } from "@/config/brand";
 import { OG_IMAGES, SEO, TWITTER_IMAGES } from "@/config/seo";
 import { requestLandingLocale } from "@/lib/landing-locale";
@@ -67,5 +66,5 @@ export default async function HomePage({ searchParams }: { searchParams: SearchP
   }
 
   // Rendered in its language on the server, so the first paint is never in the other one.
-  return <LandingPage hostedPilot={hostedPilotActive()} initialLocale={await pageLocale(searchParams)} />;
+  return <LandingPage initialLocale={await pageLocale(searchParams)} />;
 }

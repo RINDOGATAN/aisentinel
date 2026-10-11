@@ -14,9 +14,9 @@
  * Asturias, as the storefront does (owner, 10 Oct 2026).
  *
  * Each language has its own copy under `<locale>.*` in the landing
- * dictionary, and its own list of ways: three in Spanish (as the storefront
- * offers in Spain: cloud, managed, your own hardware; no installer kit), five in English (as on
- * the English storefront).
+ * dictionary, and its own list of ways: three in both languages, as the
+ * storefront home offers them (cloud, managed, your own hardware; owner,
+ * 10 Oct 2026).
  *
  * Nothing moves or plays on its own: the videos load nothing until the
  * visitor presses play.
@@ -29,7 +29,6 @@ import {
   ArrowUp,
   ArrowUpDown,
   Bot,
-  Box,
   Brain,
   Check,
   ClipboardCheck,
@@ -37,7 +36,6 @@ import {
   ExternalLink,
   HardDrive,
   Mail,
-  Package,
   Rocket,
   Server,
   ShieldCheck,
@@ -54,8 +52,6 @@ import { WAY_CARD, recommend, type Answers, type QuestionId } from "../config/sa
 
 type T = (key: string) => string;
 
-/** The public kit that installs the suite with Docker. */
-export const KIT_URL = "https://github.com/RINDOGATAN/todolaw-suite";
 
 type WayAction = "none" | "mail" | "link";
 
@@ -85,10 +81,10 @@ const SETUP: Record<LandingLocale, LocaleSetup> = {
   },
   en: {
     bullets: { dpc: 3, ais: 5, vw: 3 },
+    // Three ways, as the storefront home (owner, 10 Oct 2026): the kit and the Box
+    // are offered on the storefront's Run it your way page only.
     ways: [
       { icon: Cloud, action: "none" },
-      { icon: Package, action: "link", href: KIT_URL },
-      { icon: Box, action: "mail" },
       { icon: Server, action: "mail" },
       { icon: HardDrive, action: "mail" },
     ],

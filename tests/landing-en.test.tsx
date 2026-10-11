@@ -26,7 +26,7 @@ import { existsSync, readFileSync } from "fs";
 import path from "path";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import LandingSections, { KIT_URL, Videos } from "@/landing/components/LandingSections";
+import LandingSections, { Videos } from "@/landing/components/LandingSections";
 import { LANDING_VIDEOS, type LandingLocale, type LandingVideo } from "@/landing/config/landing-videos";
 import en from "@/landing/i18n/en/ai-sentinel-startups.json";
 import appEn from "@/i18n/messages/en.json";
@@ -162,32 +162,24 @@ describe("English sections", () => {
   });
 
   // The Spanish wording carried over (owner, 10 Oct 2026); the kit and the Box stay on the English page.
-  it("offer five ways, with the cloud, managed and own-hardware wording of the Spanish page", () => {
-    const titles = [1, 2, 3, 4, 5].map((n) => EN[`en.ways.w${n}.title`]);
-    expect(titles).toEqual([
-      "In the TODO.LAW cloud",
-      "The self-install kit",
-      "TODO.LAW hardware",
-      "Managed virtual server",
-      "Your own hardware",
-    ]);
-    expect(EN["en.ways.w6.title"]).toBeUndefined();
+  // Three ways, as on the storefront home (owner, 10 Oct 2026): the kit and the Box are on the storefront's Run it your way page only.
+  it("offer three ways, with the wording of the Spanish page", () => {
+    const titles = [1, 2, 3].map((n) => EN[`en.ways.w${n}.title`]);
+    expect(titles).toEqual(["In the TODO.LAW cloud", "Managed virtual server", "Your own hardware"]);
+    expect(EN["en.ways.w4.title"]).toBeUndefined();
     for (const t of titles) expect(html).toContain(t);
     expect(EN["en.ways.label"]).toBe("Guarantees and hosting");
     expect(EN["en.ways.heading.prefix"] + EN["en.ways.heading.accent"]).toBe("Tailored to your needs");
-    expect(EN["en.ways.sub"]).toBe("Five ways to run it, with different safeguards, certifications and levels of control.");
+    expect(EN["en.ways.sub"]).toBe("Three hosting options, with different safeguards, certifications and levels of control.");
     expect(EN["en.ways.w1.desc"]).toMatch(/take your program elsewhere whenever you like with a simple export/);
-    expect(EN["en.ways.w4.desc"]).toMatch(/Asturias, Spain, with open LLMs available and a tailored SLA/);
-    expect(EN["en.ways.w5.desc"]).not.toMatch(/train|runbook|six weeks/i);
-    expect(EN["en.ways.w2.desc"]).toMatch(/Open source/);
-    expect(EN["en.ways.w2.desc"]).toMatch(/Docker/);
-    expect(EN["en.ways.w3.desc"]).toMatch(/Law-Firm-in-a-Box™/);
+    expect(EN["en.ways.w2.desc"]).toMatch(/Asturias, Spain, with open LLMs available and a tailored SLA/);
+    expect(EN["en.ways.w3.desc"]).not.toMatch(/train|runbook|six weeks/i);
+    expect(html).not.toMatch(/self-install kit|Law-Firm-in-a-Box|TODO\.LAW hardware|github\.com\/RINDOGATAN\/todolaw-suite/);
   });
 
-  it("ask by email for the Box, the managed instance and the deployment, and link the kit", () => {
-    expect(html.match(/href="mailto:[^"]+"/g)).toHaveLength(3);
-    expect(html).toContain(`href="${KIT_URL}"`);
-    expect(html.match(/<article class="[^"]*paper-card/g)).toHaveLength(5);
+  it("ask by email for the managed instance and your own hardware", () => {
+    expect(html.match(/href="mailto:[^"]+"/g)).toHaveLength(2);
+    expect(html.match(/<article class="[^"]*paper-card/g)).toHaveLength(3);
   });
 
   it("play five videos only on request, muted, with a poster, two formats and English captions", () => {

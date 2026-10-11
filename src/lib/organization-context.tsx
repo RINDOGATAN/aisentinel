@@ -13,6 +13,8 @@ interface Organization {
   name: string;
   slug: string;
   role?: OrganizationRole;
+  /** The hosted plan: "EU_CLOUD" is the paid plan; anything else the pilot. */
+  plan?: string | null;
 }
 
 interface OrganizationContextType {

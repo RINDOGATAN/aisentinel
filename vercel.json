@@ -13,5 +13,6 @@
       "path": "/api/cron/pilot-reminders",
       "schedule": "15 7 * * *"
     }
-  ]
+  ],
+  "ignoreCommand": "case \"$VERCEL_GIT_COMMIT_REF\" in plan/*|auto-upgrade/*) exit 0;; *) exit 1;; esac"
 }

@@ -122,8 +122,8 @@ export function PilotEndBar({ locale, state, endsAt, transition = false }: Pilot
 
 export function OrganizationPilotEndBar({ locale }: { locale: PilotLocale }) {
   const { organization } = useOrganization();
-  // The organisation record carries no plan yet; once it does, a paid one is never asked about.
-  const paid = isPaidPlanValue((organization as { plan?: string | null } | null)?.plan);
+  // A paid organisation is never asked about (and its status is inactive anyway).
+  const paid = isPaidPlanValue(organization?.plan);
   const { data } = trpc.pilot.status.useQuery(
     { organizationId: organization?.id ?? "" },
     { enabled: !!organization?.id && !paid, staleTime: 60 * 1000 },

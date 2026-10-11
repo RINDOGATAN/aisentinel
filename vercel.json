@@ -8,6 +8,10 @@
     {
       "path": "/api/cron/sync-catalog",
       "schedule": "0 0 * * 0"
+    },
+    {
+      "path": "/api/cron/pilot-reminders",
+      "schedule": "15 7 * * *"
     }
   ]
 }

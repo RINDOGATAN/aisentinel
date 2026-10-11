@@ -2,7 +2,7 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 /**
- * The hosted pilot's caps: one organisation per account, the ninety-day
+ * The hosted pilot's caps: one organisation per account, the fifteen-day
  * switch to read-only, the records ceiling, and exports that stay open.
  * No database: a counting fake stands in for the eleven delegates.
  */
@@ -20,7 +20,8 @@ import {
 } from "./caps";
 
 const DAY = 24 * 60 * 60 * 1000;
-const START = new Date("2026-10-01T00:00:00.000Z");
+// After the window was shortened (11 Oct 2026), so the plain 15-day rule applies.
+const START = new Date("2026-11-01T00:00:00.000Z");
 const ORG = { id: "org-1", pilotFirstSignInAt: START };
 
 function fakeDb(counts: Partial<Record<keyof PilotDb, number>> = {}): PilotDb {
@@ -69,10 +70,10 @@ describe("on the hosted pilot", () => {
     expect(message).toContain(PILOT_RUN_URL);
   });
 
-  it("allows edits for ninety days and then makes the organisation read-only", async () => {
-    expect(() => assertPilotWritable(ORG, "en", new Date(START.getTime() + 89 * DAY))).not.toThrow();
+  it("allows edits for fifteen days and then makes the organisation read-only", async () => {
+    expect(() => assertPilotWritable(ORG, "en", new Date(START.getTime() + 14 * DAY))).not.toThrow();
     const message = await forbidden(() =>
-      assertPilotWritable(ORG, "en", new Date(START.getTime() + 90 * DAY)),
+      assertPilotWritable(ORG, "en", new Date(START.getTime() + 15 * DAY)),
     );
     expect(message).toContain("read-only");
     expect(message).toContain(PILOT_RUN_URL);
@@ -84,14 +85,14 @@ describe("on the hosted pilot", () => {
     const later = new Date(START.getTime() + 400 * DAY);
     expect(() => assertPilotWritable(neverSignedIn, "en", later)).not.toThrow();
     const status = await getPilotStatus(fakeDb(), neverSignedIn, later);
-    expect(status.active && status.daysLeft).toBe(90);
+    expect(status.active && status.daysLeft).toBe(15);
   });
 
   it("speaks Spanish when the locale cookie says so", async () => {
     expect(pilotLocale(() => "es")).toBe("es");
     expect(pilotLocale(() => undefined)).toBe("en");
     const message = await forbidden(() =>
-      assertPilotWritable(ORG, "es", new Date(START.getTime() + 91 * DAY)),
+      assertPilotWritable(ORG, "es", new Date(START.getTime() + 16 * DAY)),
     );
     expect(message).toContain("solo lectura");
     expect(message).toContain("aloja tu propia instancia");
@@ -129,7 +130,7 @@ describe("on the hosted pilot", () => {
     const status = await getPilotStatus(db, ORG, START);
     expect(status.active).toBe(true);
     if (!status.active) return;
-    expect(status.daysLeft).toBe(90);
+    expect(status.daysLeft).toBe(15);
     expect(status.ceilings.map((c) => c.key)).toEqual([...PILOT_CEILING_KEYS]);
     expect(status.ceilings.find((c) => c.key === "systems")).toEqual({ key: "systems", used: 3, max: 25 });
     expect(status.ceilings.find((c) => c.key === "vendors")).toEqual({ key: "vendors", used: 7, max: 50 });

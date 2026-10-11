@@ -89,7 +89,7 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
 
 /**
  * When a pilot limit refuses the call (anywhere below: the write middleware's
- * ninety-day switch, or a create path's ceiling), write the day's
+ * editing-window switch, or a create path's ceiling), write the day's
  * PILOT_LIMIT_REACHED row and hand the refusal back unchanged. It runs after
  * any transaction has rolled back, so the row survives the refused run.
  */

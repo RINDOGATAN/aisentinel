@@ -185,7 +185,7 @@ describe("hosted pilot caps through the routers", () => {
     expect(H.members).toHaveLength(1);
   });
 
-  it("the ninety-day switch: writes are refused with the two ways out, reads still work", async () => {
+  it("the editing-window switch: writes are refused with the two ways out, reads still work", async () => {
     H.reset({ signedInDaysAgo: 91, systemCount: 0 });
     const caller = aiSystemRouter.createCaller(ctx("es"));
     await expect(caller.create(newSystem)).rejects.toMatchObject({
@@ -208,7 +208,7 @@ describe("hosted pilot caps through the routers", () => {
     expect(H.organizations[0].pilotFirstSignInAt).toEqual(new Date());
   });
 
-  it("the ninety-day switch does not close the way out: the owner can still delete the organisation", async () => {
+  it("the editing-window switch does not close the way out: the owner can still delete the organisation", async () => {
     H.reset({ signedInDaysAgo: 400, systemCount: 0 });
     const caller = organizationRouter.createCaller(ctx());
     await expect(caller.delete({ organizationId: "org-a", confirmName: "Org A" })).resolves.toEqual({
@@ -228,7 +228,7 @@ describe("hosted pilot caps through the routers", () => {
   });
 
   it("below the ceiling and inside the window, a create goes through", async () => {
-    H.reset({ signedInDaysAgo: 89, systemCount: PILOT_CEILINGS.systems - 1 });
+    H.reset({ signedInDaysAgo: 14, systemCount: PILOT_CEILINGS.systems - 1 });
     const caller = aiSystemRouter.createCaller(ctx());
     const created = await caller.create(newSystem);
     expect(created.id).toBeTruthy();

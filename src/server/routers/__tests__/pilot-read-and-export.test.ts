@@ -5,7 +5,7 @@
  * The hosted pilot never locks a firm out of its own records.
  *
  * One suite for the promise the pilot makes: an organisation at every records
- * ceiling, and far past its ninety editing days, can still read everything and
+ * ceiling, and far past its editing window, can still read everything and
  * export everything. Only editing stops.
  *
  *   1. Every query in the application, called through the real middleware as
@@ -33,7 +33,7 @@ const H = vi.hoisted(() => {
     slug: "org-a",
     settings: {},
     createdAt: new Date("2026-09-19T00:00:00.000Z"),
-    // 400 days before the fake present below: far past the ninety.
+    // 400 days before the fake present below: far past the window.
     pilotFirstSignInAt: new Date(new Date("2027-12-01T12:00:00.000Z").getTime() - 400 * DAY),
   };
   const membership = { organizationId: "org-a", userId: "user-a", role: "OWNER", organization };
@@ -174,7 +174,7 @@ afterAll(() => {
   vi.restoreAllMocks();
 });
 
-describe("a firm at every ceiling and past its ninety days", () => {
+describe("a firm at every ceiling and past its editing window", () => {
   it("still reaches every query in the application", async () => {
     const queries = procedures.filter(([, p]) => p._def.type === "query").map(([path]) => path);
     expect(queries.length).toBeGreaterThan(50);

@@ -6,6 +6,15 @@ All notable changes to AI SENTINEL are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- **The hosted pilot's editing window is 15 days, not 90** (owner, 11 Oct 2026). One constant,
+  `PILOT_EDIT_DAYS` in `src/config/pilot.ts`; every sentence that states the window reads it.
+  Transition, computed and not stored (no migration): an organisation whose first sign-in is
+  before the end of 11 Oct 2026 (UTC) keeps whichever ends earlier of its original 90-day end and
+  15 days from then, so nobody becomes read-only at the release. The read-only messages no longer
+  name a number of days.
+
 ### Removed
 
 - **The Classic layout is retired; Guided is the only layout.** The layout switch (Settings

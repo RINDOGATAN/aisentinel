@@ -8,7 +8,7 @@
  */
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { TRPCError } from "@trpc/server";
-import { PILOT_CEILINGS, PILOT_RUN_URL, PILOT_CEILING_KEYS } from "@/config/pilot";
+import { PILOT_CEILINGS, PILOT_CEILING_KEYS, PILOT_MANAGED_URL, PILOT_PRICING_URL } from "@/config/pilot";
 import {
   assertPilotOrganizationLimit,
   assertPilotRoom,
@@ -67,7 +67,7 @@ describe("on the hosted pilot", () => {
       assertPilotOrganizationLimit({ organizationMember: { count: async () => 1 } }, "u1", "en"),
     );
     expect(message).toContain("one organisation per account");
-    expect(message).toContain(PILOT_RUN_URL);
+    expect(message).toContain(PILOT_MANAGED_URL.en);
   });
 
   it("allows edits for fifteen days and then makes the organisation read-only", async () => {
@@ -76,7 +76,7 @@ describe("on the hosted pilot", () => {
       assertPilotWritable(ORG, "en", new Date(START.getTime() + 15 * DAY)),
     );
     expect(message).toContain("read-only");
-    expect(message).toContain(PILOT_RUN_URL);
+    expect(message).toContain(PILOT_PRICING_URL.en);
     expect(message).toContain("/api/export/program-pack?organizationId=org-1");
   });
 
@@ -95,7 +95,7 @@ describe("on the hosted pilot", () => {
       assertPilotWritable(ORG, "es", new Date(START.getTime() + 16 * DAY)),
     );
     expect(message).toContain("solo lectura");
-    expect(message).toContain("aloja tu propia instancia");
+    expect(message).toContain("pasa al plan de pago");
   });
 
   it("still allows every export once read-only", async () => {
@@ -116,7 +116,7 @@ describe("on the hosted pilot", () => {
     const atCap = fakeDb({ aISystem: PILOT_CEILINGS.systems });
     const message = await forbidden(() => assertPilotRoom(atCap, "org-1", "systems", "en"));
     expect(message).toContain(`ceiling of ${PILOT_CEILINGS.systems} AI systems`);
-    expect(message).toContain(PILOT_RUN_URL);
+    expect(message).toContain(PILOT_PRICING_URL.en);
     expect(message).toContain("/api/export/program-pack?organizationId=org-1");
 
     const oneBelow = fakeDb({ aISystem: PILOT_CEILINGS.systems - 1 });

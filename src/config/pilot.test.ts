@@ -14,7 +14,8 @@ import {
   PILOT_LIVE_FROM,
   PILOT_MANAGED_URL,
   PILOT_RUN_URL,
-  PILOT_SENTENCE,
+  PILOT_PRICING_URL,
+  PILOT_SIGN_IN_LINE,
   PILOT_TERMS,
   pilotFirstSignInStamp,
   hostedPilotActive,
@@ -23,7 +24,6 @@ import {
   pilotExportUrl,
   pilotOneOrganizationMessage,
   pilotReadOnlyMessage,
-  pilotSentenceText,
   resolveCookieDomain,
 } from "./pilot";
 
@@ -122,7 +122,7 @@ describe("the editing clock: 15 days from the first sign-in after the pilot went
   it("states the rule in the words the other suite apps use, in both languages", () => {
     expect(PILOT_TERMS.en).toBe("15 days of editing from your first sign-in, then read-only with export.");
     expect(PILOT_TERMS.es).toBe(
-      "15 días de edición desde tu primer inicio de sesión y después solo lectura con exportación.",
+      "15 días de edición desde tu primer inicio de sesión; después, solo lectura con exportación.",
     );
   });
 });
@@ -182,21 +182,24 @@ describe("what the pilot says", () => {
     for (const locale of ["en", "es"] as const) {
       const ceiling = pilotCeilingMessage(locale, "systems", exportUrl);
       expect(ceiling).toContain("25");
-      expect(ceiling).toContain(PILOT_RUN_URL);
+      expect(ceiling).toContain(PILOT_PRICING_URL[locale]);
       expect(ceiling).toContain(exportUrl);
       const readOnly = pilotReadOnlyMessage(locale, exportUrl);
       expect(readOnly).toMatch(locale === "es" ? /periodo de edición/ : /editing window/);
-      expect(readOnly).toContain(PILOT_RUN_URL);
+      expect(readOnly).toContain(PILOT_PRICING_URL[locale]);
       expect(readOnly).toContain(exportUrl);
-      expect(pilotOneOrganizationMessage(locale)).toContain(PILOT_RUN_URL);
+      expect(pilotOneOrganizationMessage(locale)).toContain(PILOT_MANAGED_URL[locale]);
+      for (const m of [ceiling, readOnly, pilotOneOrganizationMessage(locale)]) {
+        expect(m).not.toMatch(/own instance|propia instancia|todo\.law\/run/);
+      }
     }
   });
 
   it("closes every limit message with the one keep-going link, to the managed wizard in the reader's language", () => {
     const exportUrl = pilotExportUrl("org-1");
     const expected = {
-      en: "Keep going on your own instance (https://www.todo.law/contact/managed).",
-      es: "Sigue en tu propia instancia (https://www.todo.law/es/contact/managed).",
+      en: "For a managed instance or your own hardware, ask for a quote (https://www.todo.law/contact/managed).",
+      es: "Para una instancia gestionada o tu propio hardware, pide presupuesto (https://www.todo.law/es/contact/managed).",
     };
     for (const locale of ["en", "es"] as const) {
       const other = locale === "en" ? "es" : "en";
@@ -212,25 +215,21 @@ describe("what the pilot says", () => {
     }
   });
 
-  it("carries the one sentence in both languages, with the link on the way out", () => {
-    // The owner's wording of 10 Oct 2026, word for word (it replaced the earlier sentence about safeguards).
-    expect(pilotSentenceText("en")).toBe(
-      "Hosted pilot: free and capped (see docs). For real data, choose a paid plan or a managed instance.",
+  it("states only the editing terms on the sign-in screen, as DPO Central does (owner, 11 Oct 2026)", () => {
+    expect(PILOT_SIGN_IN_LINE.en).toBe(
+      "Free pilot: 15 days of editing from your first sign-in, then read-only with export.",
     );
-    expect(pilotSentenceText("es")).toBe(
-      "Piloto alojado: gratuito y con límites (consulta la documentación). Para datos reales, elige un plan de pago o una instancia gestionada.",
+    expect(PILOT_SIGN_IN_LINE.es).toBe(
+      "Piloto gratuito: 15 días de edición desde tu primer inicio de sesión; después, solo lectura con exportación.",
     );
-    expect(PILOT_SENTENCE.en.docs).toBe("see docs");
-    expect(PILOT_SENTENCE.en.link).toBe("choose a paid plan or a managed instance");
-    expect(PILOT_SENTENCE.es.docs).toBe("consulta la documentación");
-    expect(PILOT_SENTENCE.es.link).toBe("elige un plan de pago o una instancia gestionada");
     expect(PILOT_RUN_URL).toBe("https://www.todo.law/run");
   });
 
-  it("leaves certification to the disclosure: the sentence does not mention it, and has no long dash", () => {
+  it("leaves certification to the disclosure: the sign-in line does not mention it, and has no long dash", () => {
     for (const locale of ["en", "es"] as const) {
-      expect(pilotSentenceText(locale)).not.toMatch(/certific/i);
-      expect(pilotSentenceText(locale)).not.toMatch(/[—–]/);
+      expect(PILOT_SIGN_IN_LINE[locale]).not.toMatch(/certific/i);
+      expect(PILOT_SIGN_IN_LINE[locale]).not.toMatch(/[—–]/);
+      expect(PILOT_SIGN_IN_LINE[locale]).not.toMatch(/For real data|Para datos reales/);
     }
   });
 });

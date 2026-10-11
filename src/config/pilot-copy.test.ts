@@ -130,7 +130,7 @@ describe("what the public copy says about the hosted pilot", () => {
   it("the Spanish copy addresses the reader as tú", () => {
     const strings = [
       (es as { pilot: Record<string, string> }).pilot.editsUntil,
-      (es as { pilot: Record<string, string> }).pilot.runOwn,
+      (es as { pilot: Record<string, string> }).pilot.paidPlan,
       (es as { premiumShowcase: { lockedHint: string } }).premiumShowcase.lockedHint,
     ];
     for (const s of strings) {

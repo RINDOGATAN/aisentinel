@@ -65,8 +65,8 @@ export const PILOT_MANAGED_URL: Record<PilotLocale, string> = {
 };
 
 export const PILOT_KEEP_GOING: Record<PilotLocale, string> = {
-  en: "Keep going on your own instance",
-  es: "Sigue en tu propia instancia",
+  en: "For a managed instance or your own hardware, ask for a quote",
+  es: "Para una instancia gestionada o tu propio hardware, pide presupuesto",
 };
 
 /** The keep-going sentence, closing every message a pilot limit writes. */
@@ -227,47 +227,23 @@ export function pilotExportUrl(organizationId: string): string {
  */
 export const PILOT_TERMS: Record<PilotLocale, string> = {
   en: `${PILOT_EDIT_DAYS} days of editing from your first sign-in, then read-only with export.`,
-  es: `${PILOT_EDIT_DAYS} días de edición desde tu primer inicio de sesión y después solo lectura con exportación.`,
+  es: `${PILOT_EDIT_DAYS} días de edición desde tu primer inicio de sesión; después, solo lectura con exportación.`,
 };
-
-export interface PilotSentence {
-  before: string;
-  /** Link text leading to DISCLOSURE_DOCS_PATH, the hosted-pilot documentation page. */
-  docs: string;
-  middle: string;
-  /** Link text leading to PILOT_RUN_URL. */
-  link: string;
-  after: string;
-}
 
 /**
- * The one sentence the pilot shows everywhere: the banner, the sign-up screen
- * and the Settings card. It carries two links: the docs part leads to
- * DISCLOSURE_DOCS_PATH, the link part to PILOT_RUN_URL. What the service holds by
- * way of certification is stated in the disclosure, not here.
+ * The sign-in screen's one line (owner, 11 Oct 2026): the editing terms, no
+ * more. The same line as DPO Central's sign-in screen.
  */
-export const PILOT_SENTENCE: Record<PilotLocale, PilotSentence> = {
-  en: {
-    before: "Hosted pilot: free and capped (",
-    docs: "see docs",
-    middle: "). For real data, ",
-    link: "choose a paid plan or a managed instance",
-    after: ".",
-  },
-  es: {
-    before: "Piloto alojado: gratuito y con límites (",
-    docs: "consulta la documentación",
-    middle: "). Para datos reales, ",
-    link: "elige un plan de pago o una instancia gestionada",
-    after: ".",
-  },
+export const PILOT_SIGN_IN_LINE: Record<PilotLocale, string> = {
+  en: `Free pilot: ${PILOT_TERMS.en}`,
+  es: `Piloto gratuito: ${PILOT_TERMS.es}`,
 };
 
-/** The sentence as plain text, for metadata and anywhere a link cannot go. */
-export function pilotSentenceText(locale: PilotLocale): string {
-  const s = PILOT_SENTENCE[locale];
-  return s.before + s.docs + s.middle + s.link + s.after;
-}
+/** The Settings card's lead, before the editing terms: DPO Central's words. */
+export const PILOT_DESCRIPTION: Record<PilotLocale, string> = {
+  en: "The hosted service is a free pilot. Every module is included, within the limits below.",
+  es: "El servicio alojado es un piloto gratuito. Incluye todos los módulos, dentro de los límites que ves abajo.",
+};
 
 /**
  * The end-of-pilot bar (owner, 11 Oct 2026). It replaced the warning banner
@@ -311,8 +287,11 @@ export function isPaidPlanValue(plan: string | null | undefined): boolean {
   return !!plan && plan !== "PILOT";
 }
 
-/** Where the bar's link goes: the storefront's pricing page (English landing prices are not published yet). */
-export const PILOT_PRICING_URL = "https://www.todo.law/pricing";
+/** The storefront's prices page in the reader's language: the end bar, the Settings card and the limit messages link here. */
+export const PILOT_PRICING_URL: Record<PilotLocale, string> = {
+  en: "https://www.todo.law/pricing",
+  es: "https://www.todo.law/es/precios",
+};
 
 export const PILOT_END_BAR_COPY: Record<
   PilotLocale,
@@ -343,8 +322,8 @@ export function pilotEndBarDate(endsAt: Date | string, locale: PilotLocale): str
 /** The two ways out, spelled out wherever a cap stops someone. */
 function waysOut(locale: PilotLocale, exportUrl: string): string {
   return locale === "es"
-    ? `Dos salidas: aloja tu propia instancia (${PILOT_RUN_URL}) o exporta todo lo que has creado (${exportUrl}).`
-    : `Two ways out: run your own instance (${PILOT_RUN_URL}) or export everything you created (${exportUrl}).`;
+    ? `Dos salidas: pasa al plan de pago (${PILOT_PRICING_URL.es}) o exporta todo lo que has creado (${exportUrl}).`
+    : `Two ways out: move to the paid plan (${PILOT_PRICING_URL.en}) or export everything you created (${exportUrl}).`;
 }
 
 export function pilotReadOnlyMessage(locale: PilotLocale, exportUrl: string): string {
@@ -371,6 +350,6 @@ export function pilotCeilingMessage(
 
 export function pilotOneOrganizationMessage(locale: PilotLocale): string {
   return locale === "es"
-    ? `Piloto alojado: una organización por cuenta. Para llevar varias organizaciones, aloja tu propia instancia (${PILOT_RUN_URL}).`
-    : `Hosted pilot: one organisation per account. To run several organisations, run your own instance (${PILOT_RUN_URL}).`;
+    ? `Piloto alojado: una organización por cuenta. Para llevar varias organizaciones, pide una instancia gestionada (${PILOT_MANAGED_URL.es}).`
+    : `Hosted pilot: one organisation per account. To run several organisations, ask for a managed instance (${PILOT_MANAGED_URL.en}).`;
 }

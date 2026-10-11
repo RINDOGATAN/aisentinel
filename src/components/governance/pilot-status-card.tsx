@@ -14,9 +14,8 @@ import { Button } from "@/components/ui/button";
 import { StatusMark } from "@/components/ui/status-note";
 import { Download, ExternalLink, FlaskConical, Lock } from "lucide-react";
 import { trpc } from "@/lib/trpc";
-import { PILOT_CEILING_LABELS, PILOT_RUN_URL, PILOT_SENTENCE, PILOT_TERMS } from "@/config/pilot";
+import { PILOT_CEILING_LABELS, PILOT_DESCRIPTION, PILOT_PRICING_URL, PILOT_TERMS } from "@/config/pilot";
 import { DISCLOSURE_CHROME, DISCLOSURE_DOCS_PATH } from "@/config/pilot-disclosure";
-import { PilotSentenceText } from "@/components/pilot/pilot-sentence";
 
 export function PilotStatusCard({ organizationId }: { organizationId: string }) {
   const t = useTranslations("pilot");
@@ -28,7 +27,6 @@ export function PilotStatusCard({ organizationId }: { organizationId: string }) 
   if (!data?.active) return null;
 
   const systems = data.ceilings.find((c) => c.key === "systems");
-  const sentence = PILOT_SENTENCE[locale];
   // "18 December 2026" / "18 de diciembre de 2026", read the same everywhere.
   const endsOn = new Date(data.endsAt).toLocaleDateString(locale === "es" ? "es-ES" : "en-GB", {
     day: "numeric",
@@ -45,8 +43,7 @@ export function PilotStatusCard({ organizationId }: { organizationId: string }) 
           {t("title")}
         </CardTitle>
         <CardDescription>
-          <PilotSentenceText sentence={sentence} linkClassName="underline underline-offset-2 hover:text-foreground" />
-          <span className="block mt-1">{PILOT_TERMS[locale]}</span>
+          {PILOT_DESCRIPTION[locale]} {PILOT_TERMS[locale]}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4 text-sm">
@@ -64,7 +61,7 @@ export function PilotStatusCard({ organizationId }: { organizationId: string }) 
             <Lock className="w-4 h-4 text-warning shrink-0 mt-0.5" />
             <div className="space-y-2">
               <p className="text-xs">{t("readOnlyBody")}</p>
-              <WaysOut exportUrl={data.exportUrl} />
+              <WaysOut exportUrl={data.exportUrl} locale={locale} />
             </div>
           </div>
         ) : (
@@ -96,7 +93,7 @@ export function PilotStatusCard({ organizationId }: { organizationId: string }) 
         {data.ceilings.some((c) => c.used >= c.max) && !data.readOnly && (
           <div className="rounded-md border border-warning bg-warning/10 p-3 space-y-2 text-foreground">
             <p className="text-xs">{t("ceilingReachedBody")}</p>
-            <WaysOut exportUrl={data.exportUrl} />
+            <WaysOut exportUrl={data.exportUrl} locale={locale} />
           </div>
         )}
 
@@ -122,14 +119,14 @@ export function PilotStatusCard({ organizationId }: { organizationId: string }) 
 }
 
 /** The two ways out, always both, always in this order. */
-function WaysOut({ exportUrl }: { exportUrl: string }) {
+function WaysOut({ exportUrl, locale }: { exportUrl: string; locale: "en" | "es" }) {
   const t = useTranslations("pilot");
   return (
     <div className="flex flex-wrap gap-2">
       <Button asChild variant="outline" size="sm" className="h-7 text-xs">
-        <a href={PILOT_RUN_URL} target="_blank" rel="noopener noreferrer">
+        <a href={PILOT_PRICING_URL[locale]} target="_blank" rel="noopener noreferrer">
           <ExternalLink className="w-3.5 h-3.5 mr-1.5" />
-          {t("runOwn")}
+          {t("paidPlan")}
         </a>
       </Button>
       <Button asChild variant="outline" size="sm" className="h-7 text-xs">

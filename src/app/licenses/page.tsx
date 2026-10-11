@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Licences & source — AI Sentinel",
+  title: "Licences & source | AI Sentinel",
   description:
     "AI Sentinel is licensed under the GNU Affero General Public License v3 or later. Complete corresponding source is available.",
   robots: { index: false, follow: true },

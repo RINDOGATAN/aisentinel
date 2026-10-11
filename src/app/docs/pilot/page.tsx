@@ -25,8 +25,8 @@ import {
   PILOT_CEILING_LABELS,
   PILOT_CEILINGS,
   PILOT_EDIT_DAYS,
+  PILOT_SIGN_IN_LINE,
   PILOT_TERMS,
-  pilotSentenceText,
   type PilotLocale,
 } from "@/config/pilot";
 
@@ -34,7 +34,7 @@ export async function generateMetadata() {
   const locale: PilotLocale = (await getLocale()) === "es" ? "es" : "en";
   return {
     title: DISCLOSURE_CHROME[locale].title,
-    description: pilotSentenceText(locale),
+    description: PILOT_SIGN_IN_LINE[locale],
   };
 }
 
@@ -72,7 +72,7 @@ const COPY: Record<
       "The hosted pilot holds one organisation per account. To carry several organisations, choose a managed instance or your own hardware.",
     waysOutTitle: "When you reach a limit",
     waysOut:
-      "The pilot is for trying the tool with invented data. For real data, choose a paid plan or a managed instance, where the limits of the pilot do not apply. You can also export everything you created as a program pack at any time.",
+      "The pilot is for trying the tool with test records. For real data, choose a paid plan or a managed instance, where the limits of the pilot do not apply. You can also export everything you created as a program pack at any time.",
     pricingLink: "See the plans and prices",
     pricingUrl: "https://www.todo.law/pricing",
     hostingTitle: "Three hosting options",
@@ -109,7 +109,7 @@ const COPY: Record<
       "El piloto alojado admite una organización por cuenta. Si necesitas llevar varias organizaciones, elige una instancia gestionada o tu propio hardware.",
     waysOutTitle: "Cuando llegues a un límite",
     waysOut:
-      "El piloto sirve para probar la herramienta con datos inventados. Para datos reales, elige un plan de pago (el Plan nube UE cuesta 179 € al mes o 1.800 € al año por organización) o una instancia gestionada, donde no se aplican los límites del piloto. También puedes exportar todo lo que has creado como paquete del programa cuando quieras.",
+      "El piloto sirve para probar la herramienta con registros de prueba. Para datos reales, elige un plan de pago (el Plan nube UE cuesta 179 € al mes o 1.800 € al año por organización) o una instancia gestionada, donde no se aplican los límites del piloto. También puedes exportar todo lo que has creado como paquete del programa cuando quieras.",
     pricingLink: "Consulta los planes y precios",
     pricingUrl: "https://www.todo.law/es/precios",
     hostingTitle: "Tres modalidades de alojamiento",
@@ -117,7 +117,7 @@ const COPY: Record<
     hosting: [
       {
         title: "En la nube de TODO.LAW",
-        body: "Lo usas desde el navegador, en desktop o móvil. No instalas nada y puedes llevarte tu programa a otro sitio cuando quieras, mediante una sencilla exportación. Los datos se guardan en la Unión Europea (Fráncfort).",
+        body: "Lo usas desde el navegador, en el ordenador o en el móvil. No instalas nada y puedes llevarte tu programa a otro sitio cuando quieras, mediante una sencilla exportación. Los datos se guardan en la Unión Europea (Fráncfort).",
       },
       {
         title: "Servidor virtual gestionado",

@@ -270,16 +270,74 @@ export function pilotSentenceText(locale: PilotLocale): string {
 }
 
 /**
- * The banner is dismissible per session: a session cookie (no max-age) with
- * this name and value hides it until the browser is closed. The server reads
- * it so a dismissed banner never renders and then vanishes.
+ * The end-of-pilot bar (owner, 11 Oct 2026). It replaced the warning banner
+ * that sat on every signed-in page: for most of the pilot nothing is shown;
+ * in the last PILOT_END_BAR_DAYS days a slim, neutral bar gives the end date
+ * and a link to the prices; once the organisation is read-only the bar says
+ * so and that the export stays open. Never off the hosted pilot, nor for an
+ * organisation on the paid plan.
  */
-export const PILOT_BANNER_COOKIE = "ais.pilot-banner";
-export const PILOT_BANNER_DISMISSED = "dismissed";
+export const PILOT_END_BAR_DAYS = 5;
 
-/** Show the banner on this page load? Hosted pilot, and not dismissed this session. */
-export function pilotBannerVisible(env: PilotEnv, dismissCookie: string | undefined): boolean {
-  return hostedPilotActive(env) && dismissCookie !== PILOT_BANNER_DISMISSED;
+export type PilotEndBarState = "hidden" | "ending" | "readOnly";
+
+/** What the bar needs: the Settings card's status (pilot.status) and whether the organisation pays. */
+export interface PilotEndBarInput {
+  active: boolean;
+  endsAt?: Date | string | null;
+  readOnly?: boolean;
+  /** The organisation is on the paid plan: no pilot, no bar. */
+  paid?: boolean;
+}
+
+export function pilotEndBarState(
+  status: PilotEndBarInput | null | undefined,
+  now: Date = new Date(),
+): PilotEndBarState {
+  if (!status || !status.active || status.paid) return "hidden";
+  if (status.readOnly) return "readOnly";
+  if (!status.endsAt) return "hidden";
+  const remaining = new Date(status.endsAt).getTime() - now.getTime();
+  if (remaining <= 0) return "readOnly";
+  return remaining <= PILOT_END_BAR_DAYS * DAY_MS ? "ending" : "hidden";
+}
+
+/**
+ * A plan value that is not the pilot. The organisation record carries no plan
+ * yet; once it does (a "PILOT" or a paid value), a paid organisation never
+ * sees the bar.
+ */
+export function isPaidPlanValue(plan: string | null | undefined): boolean {
+  return !!plan && plan !== "PILOT";
+}
+
+/** Where the bar's link goes: the storefront's pricing page (English landing prices are not published yet). */
+export const PILOT_PRICING_URL = "https://www.todo.law/pricing";
+
+export const PILOT_END_BAR_COPY: Record<
+  PilotLocale,
+  { ending: (date: string) => string; readOnly: string; pricing: string }
+> = {
+  en: {
+    ending: (date) => `Your pilot ends on ${date}. Move to the paid plan to keep editing with all your records.`,
+    readOnly: "Your pilot has ended: the organisation is read-only and you can export it at any time.",
+    pricing: "See pricing",
+  },
+  es: {
+    ending: (date) => `Tu piloto termina el ${date}. Pasa al plan de pago para seguir editando con todos tus registros.`,
+    readOnly: "Tu piloto ha terminado: la organización está en solo lectura y puedes exportarla cuando quieras.",
+    pricing: "Ver precios",
+  },
+};
+
+/** The end date as the bar and the Settings card write it: "26 October 2026" / "26 de octubre de 2026". */
+export function pilotEndBarDate(endsAt: Date | string, locale: PilotLocale): string {
+  return new Date(endsAt).toLocaleDateString(locale === "es" ? "es-ES" : "en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  });
 }
 
 /** The two ways out, spelled out wherever a cap stops someone. */

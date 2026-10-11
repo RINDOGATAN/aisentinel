@@ -28,8 +28,8 @@ export default async function DashboardLayout({
   }
 
   // Decided on the server: the platform signals that mark the hosted pilot
-  // are not visible to the client bundle. The pilot banner is mounted here
-  // and only here, so a visitor who has not signed in never sees it.
+  // are not visible to the client bundle. The end-of-pilot bar is mounted
+  // here and only here, so a visitor who has not signed in never sees it.
   // Whether the left menu is collapsed is a cookie, read here so the first
   // paint is already right (src/lib/menu-cookie.ts).
   const cookieStore = await cookies();

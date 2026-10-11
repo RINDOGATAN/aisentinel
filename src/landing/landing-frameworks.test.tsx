@@ -45,3 +45,17 @@ describe("landing page frameworks list", () => {
     expect(html).toContain(en["hero.subtitle"].split(":")[0]);
   });
 });
+
+// A Spanish browser saw English for a moment before the switch (owner, 10 Oct 2026):
+// the server now renders in the language it decided, so the first HTML is already Spanish.
+describe("the first render", () => {
+  it("is in Spanish when the server decided Spanish, and in English otherwise", async () => {
+    const { default: LandingPage } = await import("./LandingPage");
+    const esHtml = renderToStaticMarkup(<LandingPage initialLocale="es" />);
+    expect(esHtml).toContain(es["hero.cta"]);
+    expect(esHtml).toContain(es["hero.subtitle"].split(":")[0]);
+    expect(esHtml).not.toContain(en["hero.subtitle"].split(":")[0]);
+    const enHtml = renderToStaticMarkup(<LandingPage />);
+    expect(enHtml).toContain(en["hero.subtitle"].split(":")[0]);
+  });
+});

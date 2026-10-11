@@ -25,14 +25,17 @@ const PUBLIC_TEXT: Record<string, string> = {
 };
 
 /**
- * The banner once said the pilot had "no security certification". The agreed
- * sentence says "no contractual safeguards" instead, and every repeat of it
- * (README, llms files, docs pages, strings) follows. The versioned disclosure
+ * The banner once said the pilot had "no security certification", and later "no
+ * contractual safeguards". Since 10 Oct 2026 (owner) it says what to choose for real
+ * data instead, and every repeat of it (README, llms files, docs pages, strings) follows. The versioned disclosure
  * is the one place that speaks of certifications: it is a fact a person
  * acknowledges, not the banner, and it changes only with a new version.
  */
 const OLD_PHRASE = new RegExp(
-  ["no security", "certification"].join(" ") + "|" + ["sin certificaci[oó]n(es)?", "de seguridad"].join(" "),
+  ["no security", "certification"].join(" ") +
+    "|" + ["sin certificaci[oó]n(es)?", "de seguridad"].join(" ") +
+    "|" + ["no contractual", "safeguards"].join(" ") +
+    "|" + ["sin garant[ií]as", "contractuales"].join(" "),
   "i",
 );
 const SCANNED_ROOTS = ["README.md", "public", "docs", "src", "prisma", "deploy", "scripts"];
@@ -67,18 +70,20 @@ describe("the old banner phrase", () => {
     expect("a free, capped pilot with no security certification").toMatch(OLD_PHRASE);
     expect("(free, capped, No Security Certifications; every module open)").toMatch(OLD_PHRASE);
     expect("un piloto sin certificación de seguridad").toMatch(OLD_PHRASE);
-    expect("with no contractual safeguards").not.toMatch(OLD_PHRASE);
+    expect("with no contractual safeguards").toMatch(OLD_PHRASE);
+    expect("y sin garantías contractuales").toMatch(OLD_PHRASE);
+    expect("For real data, choose a paid plan or a managed instance.").not.toMatch(OLD_PHRASE);
   });
 
   it.each(Object.keys(PUBLIC_TEXT))("%s says what the banner says instead", (file) => {
-    expect(PUBLIC_TEXT[file]).toMatch(/no contractual safeguards/);
+    expect(PUBLIC_TEXT[file]).toMatch(/a paid plan or a managed instance/);
   });
 });
 
 describe("what the public copy says about the hosted pilot", () => {
   it.each(Object.keys(PUBLIC_TEXT))("%s calls the hosted service a free, capped pilot and prices modules for the kit only", (file) => {
     const text = PUBLIC_TEXT[file];
-    expect(text).toMatch(/free, capped/i);
+    expect(text).toMatch(/free(,| and) capped/i);
     expect(text).toMatch(/60 a year/);
     // One string serves every visitor, so it names no currency of its own.
     expect(text).toMatch(/60 a year each in the kit[ ,(]+in your currency/);

@@ -14,6 +14,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
+import { requestLandingLocale } from "@/lib/landing-locale";
 import { localeCleanupSetCookies } from "@/lib/locale-cookie";
 import { currencyForCountry } from "@/lib/currency";
 import { retiredClassicRedirect } from "@/lib/menu-cookie";
@@ -42,11 +43,14 @@ export default function middleware(request: NextRequest) {
   // layout) can send a signed-out visitor back to it after sign-in.
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-pathname", pathname);
-  // The landing shows the language of `?lang=` when there is one (src/app/page.tsx);
-  // the root layout reads this so the server-rendered <html lang> says the same.
-  const landingLang = pathname === "/" ? request.nextUrl.searchParams.get("lang") : null;
-  if (landingLang === "es" || landingLang === "en") requestHeaders.set("x-landing-lang", landingLang);
-  else requestHeaders.delete("x-landing-lang");
+  // The landing's language, decided here once (src/lib/landing-locale.ts): the page
+  // renders in it (src/app/page.tsx) and the root layout's <html lang> says the same.
+  if (pathname === "/") {
+    requestHeaders.set(
+      "x-landing-lang",
+      requestLandingLocale(request.nextUrl.searchParams.get("lang"), request.headers.get("cookie"), request.headers.get("accept-language")),
+    );
+  } else requestHeaders.delete("x-landing-lang");
   const response = NextResponse.next({ request: { headers: requestHeaders } });
 
   // Set currency cookie based on geo-IP: EUR only for a known non-US country

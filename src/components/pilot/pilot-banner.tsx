@@ -3,58 +3,75 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 /**
- * The one-line banner of the hosted pilot. Rendered by the server component
- * in hosted-pilot-banner.tsx only when the pilot is active and the banner has
- * not been dismissed this session, so it never flashes in and out.
+ * The end-of-pilot bar (owner, 11 Oct 2026), which replaced the warning
+ * banner. Mounted once, by the server gate in hosted-pilot-banner.tsx, and
+ * only on the hosted pilot. Nothing for most of the pilot; in the last
+ * PILOT_END_BAR_DAYS days the end date and a link to the prices; once
+ * read-only, that the export stays open. Never for a paid organisation.
  *
- * Plain anchors and no translation hook: the server passes the words in, so
- * this renders anywhere, including in a test without the app shell.
+ * PilotEndBar draws the bar from its state and needs no app shell, so a test
+ * can render it on its own; OrganizationPilotEndBar feeds it the selected
+ * organisation's status, the same query as the Settings card.
  */
 
-import { useState } from "react";
-import { X } from "lucide-react";
-import { PILOT_BANNER_COOKIE, PILOT_BANNER_DISMISSED, type PilotLocale, type PilotSentence } from "@/config/pilot";
-import { PilotSentenceText } from "./pilot-sentence";
+import { useOrganization } from "@/lib/organization-context";
+import { trpc } from "@/lib/trpc";
+import {
+  PILOT_END_BAR_COPY,
+  PILOT_PRICING_URL,
+  isPaidPlanValue,
+  pilotEndBarDate,
+  pilotEndBarState,
+  type PilotEndBarState,
+  type PilotLocale,
+} from "@/config/pilot";
 
-export interface PilotBannerProps {
+export interface PilotEndBarProps {
   locale: PilotLocale;
-  sentence: PilotSentence;
-  dismissLabel: string;
+  state: PilotEndBarState;
+  /** The end of the editing window; needed in the "ending" state. */
+  endsAt: Date | string | null;
 }
 
-export function PilotBanner({ sentence, dismissLabel }: PilotBannerProps) {
-  const [visible, setVisible] = useState(true);
-  if (!visible) return null;
-
-  function dismiss() {
-    // A session cookie: no max-age, so the browser drops it when it closes.
-    document.cookie = `${PILOT_BANNER_COOKIE}=${PILOT_BANNER_DISMISSED}; path=/; SameSite=Lax`;
-    setVisible(false);
-  }
-
+export function PilotEndBar({ locale, state, endsAt }: PilotEndBarProps) {
+  if (state === "hidden") return null;
+  if (state === "ending" && !endsAt) return null;
+  const copy = PILOT_END_BAR_COPY[locale];
+  const text = state === "ending" ? copy.ending(pilotEndBarDate(endsAt!, locale)) : copy.readOnly;
   return (
     <div
       role="status"
-      data-testid="pilot-banner"
-      className="relative z-[60] w-full min-h-10 bg-primary/10 border-b border-primary/30 text-[13px] leading-snug text-foreground"
+      data-testid="pilot-end-bar"
+      data-state={state}
+      className="relative z-[60] w-full border-b border-border bg-muted/60 text-[13px] leading-snug text-foreground"
     >
-      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-2 pr-12 sm:pr-14 flex items-center justify-center text-center">
-        {/* min-w-0 and the wrapping rule keep the sentence inside the viewport
-            on a phone: without them the longest word sets a minimum width and
-            the banner, not the words, decides how wide the page is. */}
-        <p className="min-w-0 break-words">
-          <PilotSentenceText sentence={sentence} linkClassName="underline underline-offset-2 font-medium hover:text-primary" />
-        </p>
-        <button
-          type="button"
-          onClick={dismiss}
-          aria-label={dismissLabel}
-          title={dismissLabel}
-          className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+      {/* min-w-0 and the wrapping rule keep the sentence inside the viewport
+          on a phone: the words wrap, the page does not widen. */}
+      <p className="max-w-[1600px] mx-auto min-w-0 px-4 sm:px-6 py-1.5 text-center break-words">
+        {text}{" "}
+        <a
+          href={PILOT_PRICING_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline underline-offset-2 font-medium hover:text-primary"
         >
-          <X className="w-4 h-4" />
-        </button>
-      </div>
+          {copy.pricing}
+        </a>
+      </p>
     </div>
   );
+}
+
+export function OrganizationPilotEndBar({ locale }: { locale: PilotLocale }) {
+  const { organization } = useOrganization();
+  // The organisation record carries no plan yet; once it does, a paid one is never asked about.
+  const paid = isPaidPlanValue((organization as { plan?: string | null } | null)?.plan);
+  const { data } = trpc.pilot.status.useQuery(
+    { organizationId: organization?.id ?? "" },
+    { enabled: !!organization?.id && !paid, staleTime: 60 * 1000 },
+  );
+  if (!organization || paid) return null;
+  const endsAt = data?.active ? data.endsAt : null;
+  const state = pilotEndBarState(data ? { ...data, paid } : null);
+  return <PilotEndBar locale={locale} state={state} endsAt={endsAt} />;
 }

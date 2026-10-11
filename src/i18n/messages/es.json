@@ -5415,7 +5415,6 @@
     "retry": "Reintentar"
   },
   "pilot": {
-    "dismiss": "Cerrar",
     "title": "Piloto alojado",
     "summary": "Piloto: quedan {days} días, {used} de {max} sistemas",
     "editsUntil": "Puedes editar hasta el {date}. Después, la organización pasa a solo lectura y todo lo que ha creado se puede seguir exportando.",

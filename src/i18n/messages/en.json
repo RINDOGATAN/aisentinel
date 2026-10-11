@@ -5415,7 +5415,6 @@
     "retry": "Retry"
   },
   "pilot": {
-    "dismiss": "Dismiss",
     "title": "Hosted pilot",
     "summary": "Pilot: {days} days left, {used} of {max} systems",
     "editsUntil": "Edits are allowed until {date}. After that the organisation is read-only, and everything it created can still be exported.",

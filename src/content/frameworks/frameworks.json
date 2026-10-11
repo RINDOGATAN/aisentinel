@@ -4,7 +4,7 @@
   "asOf": "2026-09-22",
   "disclaimer": "A learning aid, not legal advice.",
   "method": "Each cell was checked against the official text where the official site could be read on the as-of date; cells that could not be checked say \"to verify\" and are drawn hatched. Depth is an editorial reading of how far the framework goes on that dimension, not a score of quality.",
-  "footer": "Dates are those the official texts state on the as-of date; announced delays and amendments are noted with their source. Where AI Sentinel is mentioned, it supports or maps to the dimension; it does not certify anything.",
+  "footer": "Dates are those the official texts state on the as-of date; announced delays and amendments are noted with their source. Where AI Sentinel is mentioned, it supports or maps to the dimension.",
   "depthScale": {
     "0": "not addressed",
     "1": "mentioned or light",

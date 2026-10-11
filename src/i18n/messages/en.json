@@ -893,7 +893,7 @@
     "statsExpiringSoon": "Expiring Soon",
     "searchPlaceholder": "Search vendors...",
     "catalogCardTitle": "AI Vendor Catalog",
-    "catalogCardDescription": "Search AI vendors from Vendor.Watch and auto-fill vendor records",
+    "catalogCardDescription": "Search AI vendors from VendorWatch and auto-fill vendor records",
     "addFromCatalog": "Add from Catalog",
     "enableCatalog": "Enable",
     "emptyTitle": "No vendors found",
@@ -922,13 +922,13 @@
     "systemsCount": "{count, plural, one {# system} other {# systems}}",
     "assessmentsCount": "{count, plural, one {# assessment} other {# assessments}}",
     "contractExpiresInDays": "Contract expires in {count, plural, one {# day} other {# days}}",
-    "catalogSkillDescription": "Search AI vendors from the Vendor.Watch database and auto-fill your local vendor records with compliance data."
+    "catalogSkillDescription": "Search AI vendors from the VendorWatch database and auto-fill your local vendor records with compliance data."
   },
   "vendorsNew": {
     "title": "Add Vendor",
     "subtitle": "Register a new third-party AI vendor",
     "catalogSearchTitle": "AI Vendor Catalog",
-    "catalogSearchDescription": "Search AI vendors from the Vendor.Watch database to auto-fill vendor details",
+    "catalogSearchDescription": "Search AI vendors from the VendorWatch database to auto-fill vendor details",
     "catalogSearchPlaceholder": "Search AI vendors (e.g., OpenAI, Anthropic, Google)...",
     "catalogNoResults": "No vendors found for \"{query}\"",
     "formTitle": "Vendor Details",
@@ -1334,7 +1334,7 @@
   },
   "vendorCatalog": {
     "title": "AI Vendor Catalog",
-    "subtitle": "Browse AI vendors from the Vendor.Watch database",
+    "subtitle": "Browse AI vendors from the VendorWatch database",
     "premiumBadge": "Premium",
     "enableCatalog": "Enable AI Vendor Catalog",
     "statsTotalVendors": "Total Vendors",
@@ -2623,7 +2623,7 @@
       ],
       "catalogTitle": "AI Vendor Catalog",
       "catalogPremium": "Premium",
-      "catalogIntro": "The AI Vendor Catalog (powered by Vendor.Watch) provides a database of AI vendors. Search the catalog, view vendor profiles, and add vendors directly to your registry with auto-filled details.",
+      "catalogIntro": "The AI Vendor Catalog (powered by VendorWatch) provides a database of AI vendors. Search the catalog, view vendor profiles, and add vendors directly to your registry with auto-filled details.",
       "catalogSearchTitle": "Search & Browse",
       "catalogSearchBody": "Search by vendor name or browse by category. Each catalog entry includes a description, website, and compliance flags.",
       "catalogAutofillTitle": "Auto-fill",
@@ -2849,13 +2849,13 @@
     },
     "vendorCatalog": {
       "metaTitle": "AI Vendor Catalog: AI SENTINEL Docs",
-      "metaDescription": "Catalog of more than 850 AI vendors with risk profiles, compliance data, and governance metadata powered by Vendor.Watch.",
+      "metaDescription": "Catalog of more than 850 AI vendors with risk profiles, compliance data, and governance metadata powered by VendorWatch.",
       "premiumBadge": "Premium",
       "title": "AI Vendor Catalog",
       "intro": "Evaluating AI vendors from scratch is time-consuming and error-prone. The AI Vendor Catalog gives your governance team a head start with pre-populated profiles for more than 850 AI vendors: complete with risk indicators, compliance certifications, and deployment metadata.",
       "whatTitle": "What is the AI Vendor Catalog?",
       "whatP1": "The AI Vendor Catalog is a searchable, pre-populated directory of AI tool and service providers. Each vendor profile includes structured governance data: what the vendor does, where data is processed, what certifications they hold, whether they train on customer data, and their EU AI Act risk classification.",
-      "whatP2": "The catalog is powered by <vw>Vendor.Watch</vw>, an independent AI vendor intelligence service that continuously audits and updates vendor profiles. Data syncs automatically, so your catalog stays current without manual research.",
+      "whatP2": "The catalog is powered by <vw>VendorWatch</vw>, an independent AI vendor intelligence service that continuously audits and updates vendor profiles. Data syncs automatically, so your catalog stays current without manual research.",
       "whyTitle": "Why it matters",
       "whyItems": [
         {
@@ -2880,7 +2880,7 @@
       "vsCatalogTitle": "Vendor Catalog",
       "vsCatalogItems": [
         "Pre-populated directory of more than 850 AI vendors",
-        "External intelligence: data from Vendor.Watch",
+        "External intelligence: data from VendorWatch",
         "Read-only reference for initial due diligence",
         "Core question: “What do we know about this vendor?”"
       ],
@@ -2911,7 +2911,7 @@
         },
         {
           "category": "Governance Metadata",
-          "fields": "Last audit date, Vendor.Watch risk score, catalog sync timestamp, source URL"
+          "fields": "Last audit date, VendorWatch risk score, catalog sync timestamp, source URL"
         }
       ],
       "howTitle": "How it works",
@@ -2930,7 +2930,7 @@
         },
         {
           "title": "Automatic sync",
-          "description": "The catalog syncs with Vendor.Watch on a regular schedule. New vendors are added and existing profiles are updated automatically as intelligence becomes available."
+          "description": "The catalog syncs with VendorWatch on a regular schedule. New vendors are added and existing profiles are updated automatically as intelligence becomes available."
         }
       ]
     },
@@ -3334,7 +3334,7 @@
           },
           {
             "title": "Where the data is stored",
-            "description": "On the TODO.LAW cloud, the data is stored in the European Union (Frankfurt). If an admin turns AI features on, the text they use goes to the AI provider set up on the service, which may be outside the EU. On a managed instance or on your own hardware, the data stays there."
+            "description": "On the TODO.LAW cloud, if an admin turns AI features on, the text they use goes to the AI provider set up on the service. On a managed instance or on your own hardware, the data stays there."
           }
         ]
       },
@@ -3871,7 +3871,7 @@
       "contentInEnglish": "The framework content on these pages is in English.",
       "stats": "{frameworks} frameworks, {rings} dimensions, {cells} cells, {review} under review.",
       "method": "Each cell was checked against the official text where that text could be read on the date shown. Cells that could not be checked are marked “Under review”, drawn hatched, and make no claim. Depth is an editorial reading of how far a framework goes on a dimension, not a score of quality.",
-      "footerNote": "Where AI SENTINEL is mentioned, it supports or maps to the dimension; it does not certify anything. Dates are those the official texts state on the date shown.",
+      "footerNote": "Where AI SENTINEL is mentioned, it supports or maps to the dimension. Dates are those the official texts state on the date shown.",
       "views": {
         "overview": "Wheel",
         "table": "Table",

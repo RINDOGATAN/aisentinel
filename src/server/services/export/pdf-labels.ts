@@ -251,7 +251,7 @@ const PORTFOLIO = {
 const INVENTORY = {
   en: {
     title: "AI Model Inventory",
-    subtitle: "Complete catalogue of AI models across all systems",
+    subtitle: "Complete catalog of AI models across all systems",
     totalModels: "Total Models",
     highRisk: "High Risk",
     modelRegister: "Model Register",
@@ -345,7 +345,7 @@ const AUDIT = {
       "Changes",
       "Metadata",
     ],
-    organisation: "Organisation",
+    organisation: "Organization",
     rows: "Rows",
     truncated: (max: number) => ` (truncated at the ${max} row limit; narrow the date range)`,
     filters: "Filters",

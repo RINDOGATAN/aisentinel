@@ -148,7 +148,7 @@
     "roleViewer": "Viewer",
     "loading": "Loading…",
     "openMenu": "Open menu",
-    "sourceAndLicence": "Source & licence"
+    "sourceAndLicence": "Source & license"
   },
   "dashboard": {
     "title": "AI Governance",
@@ -347,7 +347,7 @@
     "loading": "Loading transparency profile…",
     "obligationInteraction": "Disclose AI interaction (Art. 50(1))",
     "obligationMarking": "Machine-readable marking of synthetic content (Art. 50(2))",
-    "obligationEmotion": "Disclose emotion recognition / biometric categorisation (Art. 50(3))",
+    "obligationEmotion": "Disclose emotion recognition / biometric categorization (Art. 50(3))",
     "obligationDeepfake": "Label deepfakes and AI-generated public-interest text (Art. 50(4))",
     "actorProvider": "Provider duty",
     "actorDeployer": "Deployer duty",
@@ -397,7 +397,7 @@
     "emptySearchHint": "Try adjusting your search terms",
     "emptyDefaultHint": "Register AI systems first to classify their risk levels",
     "registerAiSystem": "Register AI System",
-    "toastClassified": "{name} classified as {level}{count, plural, =0 {} one {: # compliance requirement initialised} other {: # compliance requirements initialised}}",
+    "toastClassified": "{name} classified as {level}{count, plural, =0 {} one {: # compliance requirement initialized} other {: # compliance requirements initialized}}",
     "classifyFailed": "Failed to classify risk",
     "annexIIIBadge": "Annex III: {category}",
     "classifiedOn": "Classified {date}",
@@ -422,9 +422,9 @@
     "backToDashboard": "Dashboard",
     "title": "AI Governance Quick Start",
     "subtitle": "Bootstrap your AI governance program in minutes",
-    "programNameLabel": "Name this programme",
-    "programNamePlaceholder": "Your organisation's AI governance programme",
-    "programNameHelp": "Prefilled with your organisation's name. This appears on the result screen and on the program PDF. You can change it.",
+    "programNameLabel": "Name this program",
+    "programNamePlaceholder": "Your organization's AI governance program",
+    "programNameHelp": "Prefilled with your organization's name. This appears on the result screen and on the program PDF. You can change it.",
     "stepApplicability": "What applies",
     "stepChoosePath": "Choose Path",
     "stepSelectVendors": "Select Vendors",
@@ -574,7 +574,7 @@
     "notFound": "Assessment not found.",
     "saveButton": "Save",
     "submitForReview": "Send for internal review",
-    "submitRecipients": "When you send this, your organisation's reviewers (owners, admins and AI officers) can approve or reject it.",
+    "submitRecipients": "When you send this, your organization's reviewers (owners, admins and AI officers) can approve or reject it.",
     "andMoreMissing": "and {count} more",
     "awaitingReview": "This assessment is awaiting your review.",
     "approve": "Approve",
@@ -1210,8 +1210,8 @@
     "statusRegistered": "Registered",
     "gateSubtitle": "Find and triage the AI tools people use without approval.",
     "gateTitle": "Shadow AI discovery",
-    "gateBody": "Record the AI tools people use without approval, whether reported by staff or found in a review. Each one is matched against a catalogue of common AI tools, triaged (under review, approved or prohibited), and approved tools can be registered in the AI inventory in one step.",
-    "gateSkillDescription": "Record unapproved AI tools, match them against a catalogue of common AI tools, triage them and register the approved ones in the inventory.",
+    "gateBody": "Record the AI tools people use without approval, whether reported by staff or found in a review. Each one is matched against a catalog of common AI tools, triaged (under review, approved or prohibited), and approved tools can be registered in the AI inventory in one step.",
+    "gateSkillDescription": "Record unapproved AI tools, match them against a catalog of common AI tools, triage them and register the approved ones in the inventory.",
     "tabAll": "All ({count})"
   },
   "shadowAiNew": {
@@ -1344,8 +1344,8 @@
     "searchPlaceholder": "Search vendors...",
     "emptyTitle": "No vendors found",
     "emptySearchHint": "Try adjusting your search terms",
-    "gateTitle": "AI vendor catalogue",
-    "gateBody": "A catalogue of about 880 AI vendors with the compliance information they publish: certifications, data locations, data processing agreements and AI capabilities. Entries come from public sources: confirm each one with the vendor as part of your due diligence.",
+    "gateTitle": "AI vendor catalog",
+    "gateBody": "A catalog of about 880 AI vendors with the compliance information they publish: certifications, data locations, data processing agreements and AI capabilities. Entries come from public sources: confirm each one with the vendor as part of your due diligence.",
     "gateSkillDescription": "Browse about 880 AI vendors with their published certifications, data locations, data processing agreements and AI capabilities."
   },
   "vendorCatalogDetail": {
@@ -1474,13 +1474,13 @@
       "IMPACT_ASSESSMENT": "Impact assessment documents",
       "PROGRAM_REPORT": "Program report and pack"
     },
-    "subtitle": "Premium skills purchased on TODO.LAW. Upload the licence file from your confirmation email to activate them for this organization: verified locally, no network required.",
-    "activateTitle": "Activate with a licence file",
+    "subtitle": "Premium skills purchased on TODO.LAW. Upload the license file from your confirmation email to activate them for this organization: verified locally, no network required.",
+    "activateTitle": "Activate with a license file",
     "activateHint": "Choose the .license.json file you received after your purchase. Only organization owners and admins can activate.",
-    "chooseFile": "Choose licence file",
+    "chooseFile": "Choose license file",
     "activate": "Activate skill",
     "activating": "Activating...",
-    "badFile": "That file isn't a valid licence. Use the .license.json from your purchase email.",
+    "badFile": "That file isn't a valid license. Use the .license.json from your purchase email.",
     "activated": "{name} activated.",
     "packagesTitle": "Available skills",
     "packagesNone": "No skill packages installed.",
@@ -1493,10 +1493,10 @@
     "includedHint": "Included in your self-hosted deployment",
     "includedHintPilot": "Open on the hosted pilot. In the kit, {price} a year.",
     "expires": "Expires {date}",
-    "perpetual": "Perpetual licence",
+    "perpetual": "Perpetual license",
     "activations": "{used} of {max} activations used",
     "perMonth": "/mo",
-    "nothingToLicense": "Nothing needs a licence right now."
+    "nothingToLicense": "Nothing needs a license right now."
   },
   "signIn": {
     "signInRequired": "Please sign in to continue. Your session lasts 12 hours; once it ends you are brought back here. After signing in you return to the page you were on.",
@@ -1718,7 +1718,7 @@
       "roles": [
         {
           "name": "Owner",
-          "description": "Team management, organization settings, licence activation, deleting the organization"
+          "description": "Team management, organization settings, license activation, deleting the organization"
         },
         {
           "name": "Admin",
@@ -1807,19 +1807,19 @@
       "also": {
         "quickstart": {
           "title": "Quick Start wizard",
-          "description": "Bootstrap a programme from an industry template, or import an existing vendor portfolio."
+          "description": "Bootstrap a program from an industry template, or import an existing vendor portfolio."
         },
         "aiPosture": {
           "title": "AI posture",
           "description": "Choose whether embedded AI assists are off, use a cloud LLM, or route through a local gateway. Off by default: no AI call leaves your instance until an admin turns it on."
         },
         "skills": {
-          "title": "Skills & licences",
-          "description": "Activate TODO.LAW licence files offline. Owner and admin only; a licence never installs code, it only unlocks an entitlement."
+          "title": "Skills & licenses",
+          "description": "Activate TODO.LAW license files offline. Owner and admin only; a license never installs code, it only unlocks an entitlement."
         },
         "clients": {
           "title": "Managed organizations",
-          "description": "For governance professionals running programmes for several clients: switch between organizations you manage."
+          "description": "For governance professionals running programs for several clients: switch between organizations you manage."
         },
         "howItFits": {
           "title": "How it fits together",
@@ -2355,7 +2355,7 @@
     },
     "transparency": {
       "metaTitle": "Transparency (Art. 50): AI SENTINEL Docs",
-      "metaDescription": "Track EU AI Act Art. 50 transparency obligations per AI system: AI interaction disclosure, synthetic-content marking, emotion recognition, and deepfake labelling.",
+      "metaDescription": "Track EU AI Act Art. 50 transparency obligations per AI system: AI interaction disclosure, synthetic-content marking, emotion recognition, and deepfake labeling.",
       "title": "Transparency (Art. 50)",
       "intro": "Article 50 of the EU AI Act imposes transparency duties that cut across risk tiers: even a minimal-risk chatbot owes a disclosure. AI SENTINEL tracks the four Art. 50 obligations per AI system, splits them by who actually owes them, and counts down the one deadline that has a transitional period.",
       "applicabilityTitle": "When it applies",
@@ -2379,13 +2379,13 @@
         {
           "article": "Art. 50(3)",
           "actorLabel": "Deployer obligation",
-          "title": "Emotion recognition and biometric categorisation",
+          "title": "Emotion recognition and biometric categorization",
           "description": "Deployers must inform the people exposed to an emotion-recognition or biometric-categorisation system that it is in use. Note that several such uses are prohibited outright under Art. 5: the module flags that overlap rather than letting you record a disclosure for a practice you cannot lawfully run."
         },
         {
           "article": "Art. 50(4)",
           "actorLabel": "Deployer obligation",
-          "title": "Deepfake and public-interest text labelling",
+          "title": "Deepfake and public-interest text labeling",
           "description": "Deployers publishing deepfakes must disclose that the content is artificially generated or manipulated. The same applies to AI-generated text published to inform the public on matters of public interest."
         }
       ],
@@ -2471,12 +2471,12 @@
         },
         "texas": {
           "name": "Texas TRAIGA",
-          "description": "House Bill 149: intent-based prohibitions, government and health care disclosure duties, and the NIST safe harbour. Attaches by jurisdiction.",
+          "description": "House Bill 149: intent-based prohibitions, government and health care disclosure duties, and the NIST safe harbor. Attaches by jurisdiction.",
           "items": "{count} requirements"
         },
         "washington": {
           "name": "Washington",
-          "description": "Five instruments: consumer health data, content provenance, companion chatbots, prior authorisation and public agencies. Attaches by jurisdiction.",
+          "description": "Five instruments: consumer health data, content provenance, companion chatbots, prior authorization and public agencies. Attaches by jurisdiction.",
           "items": "{count} requirements"
         }
       },
@@ -2516,7 +2516,7 @@
       },
       "snapshotTitle": "Auto-Generated Compliance Snapshot",
       "snapshotBody1": "When you classify an AI system's risk level (e.g., high risk under the EU AI Act), AI SENTINEL automatically creates compliance mapping records for every applicable requirement of the EU AI Act, NIST AI RMF and ISO/IEC 42001. The GDPR and the US state rules attach once the organization's jurisdictions and screening questions are answered. You arrive at the compliance matrix with the relevant controls pre-populated: no manual setup needed.",
-      "snapshotBody2": "For a High Risk system, this means {count} requirements are initialised at once across the EU AI Act, the NIST AI RMF and ISO/IEC 42001, each set to “Not Assessed” and ready for evaluation.",
+      "snapshotBody2": "For a High Risk system, this means {count} requirements are initialized at once across the EU AI Act, the NIST AI RMF and ISO/IEC 42001, each set to “Not Assessed” and ready for evaluation.",
       "howTitle": "Mapping Compliance",
       "steps": [
         {
@@ -3127,7 +3127,7 @@
       "roles": {
         "owner": {
           "name": "Owner",
-          "summary": "Full platform control. Team management, licence activation, deleting the organization and all governance operations.",
+          "summary": "Full platform control. Team management, license activation, deleting the organization and all governance operations.",
           "capabilities": [
             "Delete the organization",
             "Invite and remove members",
@@ -3141,7 +3141,7 @@
           "capabilities": [
             "Invite and remove members",
             "Configure organization settings",
-            "Activate licence files",
+            "Activate license files",
             "All AI Officer capabilities"
           ]
         },
@@ -3194,7 +3194,7 @@
         "oversightDecisions": "Make oversight decisions",
         "inviteMembers": "Invite & remove members",
         "changeRoles": "Change member roles",
-        "activateLicences": "Activate licence files",
+        "activateLicences": "Activate license files",
         "deleteOrganization": "Delete the organization"
       },
       "assignTitle": "How Roles Are Assigned",
@@ -3387,7 +3387,7 @@
       "metaTitle": "Cross-border AI governance: one assessment, six regimes | AI SENTINEL",
       "metaDescription": "Answer the EU AI Act, the GDPR, California ADMT, Colorado, Texas and Washington from a single impact assessment, and generate the notice and appeal protocol that follow.",
       "title": "Cross-border regimes",
-      "intro": "Most organisations deploying AI answer to several regulators at once, and each asks a version of the same question in different words. AI SENTINEL resolves which regimes reach each system, asks one question set drafted to the strictest of them, and generates the documents each regime expects.",
+      "intro": "Most organizations deploying AI answer to several regulators at once, and each asks a version of the same question in different words. AI SENTINEL resolves which regimes reach each system, asks one question set drafted to the strictest of them, and generates the documents each regime expects.",
       "architectureTitle": "Highest common denominator, plus overlays",
       "architectureBody1": "The assessment has a <strong>common core</strong> that is always asked. Each core question is drafted to the strictest formulation among the regimes, so answering it once satisfies every regime that asks a weaker version of the same thing.",
       "architectureBody2": "On top of that core sit <strong>jurisdictional overlays</strong>. An overlay question appears only when that regime's rules have put the system in scope, so a European deployer is never asked about Washington health carriers, and a Texas-only business never sees a California section number.",
@@ -3416,7 +3416,7 @@
         },
         {
           "name": "Texas TRAIGA",
-          "detail": "House Bill 149, in force since January 2026. Intent-based prohibitions, government and health care disclosure duties, the NIST safe harbour and the regulatory sandbox.",
+          "detail": "House Bill 149, in force since January 2026. Intent-based prohibitions, government and health care disclosure duties, the NIST safe harbor and the regulatory sandbox.",
           "count": "11 requirements"
         },
         {
@@ -3426,7 +3426,7 @@
         }
       ],
       "scopeTitle": "How scope is decided",
-      "scopeBody": "Each regime has its own deterministic rules module. It reads the jurisdictions your organisation has declared plus a handful of screening answers, and returns one of three states.",
+      "scopeBody": "Each regime has its own deterministic rules module. It reads the jurisdictions your organization has declared plus a handful of screening answers, and returns one of three states.",
       "scopeStates": [
         {
           "name": "Applies",
@@ -3486,10 +3486,10 @@
       "startSteps": [
         {
           "step": "Declare your jurisdictions",
-          "body": "In Settings, record where the organisation operates. Nothing can resolve until this is done, and the product says so rather than guessing."
+          "body": "In Settings, record where the organization operates. Nothing can resolve until this is done, and the product says so rather than guessing."
         },
         {
-          "step": "Answer the organisation screening",
+          "step": "Answer the organization screening",
           "body": "Five questions, each shown only if a jurisdiction you declared turns on it. Whether you are a public agency, a health carrier, a health care provider, a covered generative AI provider, or process Washington consumer health data."
         },
         {
@@ -3509,7 +3509,7 @@
     },
     "whatsNew": {
       "metaTitle": "What's new in AI SENTINEL",
-      "metaDescription": "Release notes: threat modelling for builders, the program pack, legal hold, and one assessment answering six regulatory regimes.",
+      "metaDescription": "Release notes: threat modeling for builders, the program pack, legal hold, and one assessment answering six regulatory regimes.",
       "title": "What's new",
       "intro": "The releases below are listed newest first. Every regulatory addition carries a law-review date and a pending legal sign-off marker.",
       "releases": [
@@ -3517,7 +3517,7 @@
           "version": "Unreleased",
           "date": "22 September 2026",
           "headline": "AIUC-1, the certification standard for AI agents",
-          "summary": "AIUC-1 joins the frameworks an organisation can map its systems against, and the frameworks wheel.",
+          "summary": "AIUC-1 joins the frameworks an organization can map its systems against, and the frameworks wheel.",
           "items": [
             {
               "title": "AIUC-1 as a compliance framework",
@@ -3532,15 +3532,15 @@
         {
           "version": "0.4.0 to 0.5.0",
           "date": "11 to 13 September 2026",
-          "headline": "A programme in minutes, and the builder's view",
-          "summary": "These releases shorten the path from an empty account to a working programme, and add the records a team building AI, a board and a defence team each need.",
+          "headline": "A program in minutes, and the builder's view",
+          "summary": "These releases shorten the path from an empty account to a working program, and add the records a team building AI, a board and a defense team each need.",
           "items": [
             {
-              "title": "A programme in minutes",
-              "body": "Onboarding asks who the programme is for and goes straight into the Quick Start wizard, which now covers nine industries, adds a core policy pack for any policy type that is missing, and drafts an impact assessment for each high-risk system and a due-diligence review for each catalogue vendor. An existing inventory can be imported from a spreadsheet; a risk tier is imported only when the sheet states it, and stays unconfirmed until a person confirms it."
+              "title": "A program in minutes",
+              "body": "Onboarding asks who the program is for and goes straight into the Quick Start wizard, which now covers nine industries, adds a core policy pack for any policy type that is missing, and drafts an impact assessment for each high-risk system and a due-diligence review for each catalog vendor. An existing inventory can be imported from a spreadsheet; a risk tier is imported only when the sheet states it, and stays unconfirmed until a person confirms it."
             },
             {
-              "title": "Threat modelling for builders",
+              "title": "Threat modeling for builders",
               "body": "Tick what a system can see, retrieve, remember, call and do, and the scenarios that follow are proposed with controls at five layers, each with a concrete test. Only a control with a current passing test can be written into the compliance register as evidence."
             },
             {
@@ -3561,7 +3561,7 @@
           "version": "0.3.0",
           "date": "8 September 2026",
           "headline": "One assessment, five regimes",
-          "summary": "Most organisations deploying AI now answer to several regulators at once, and reconciling them by hand is where governance programmes stall. This release makes one impact assessment answer all of them, and generates the documents each regime expects.",
+          "summary": "Most organizations deploying AI now answer to several regulators at once, and reconciling them by hand is where governance programs stall. This release makes one impact assessment answer all of them, and generates the documents each regime expects.",
           "items": [
             {
               "title": "Four more regulatory regimes",
@@ -3605,7 +3605,7 @@
             },
             {
               "title": "Jurisdictions and the regulatory calendar",
-              "body": "A jurisdiction model on the organisation and per system, driving a dated obligation timeline bound to your own inventory rather than a generic list of deadlines."
+              "body": "A jurisdiction model on the organization and per system, driving a dated obligation timeline bound to your own inventory rather than a generic list of deadlines."
             },
             {
               "title": "Article 50 transparency",
@@ -3620,12 +3620,12 @@
       "ctaBody": "Open any AI system and choose the Cross-border regimes tab.",
       "ctaLink": "Read the cross-border documentation",
       "offerTitle": "Premium modules",
-      "offerBody": "Every account starts with a free pilot on the TODO.LAW cloud, with every module open, premium included. The Cloud Plan lifts the limits and keeps your records (see the pricing page); a managed instance or your own hardware is on quotation. On your own hardware, premium modules are activated with an offline licence file."
+      "offerBody": "Every account starts with a free pilot on the TODO.LAW cloud, with every module open, premium included. The Cloud Plan lifts the limits and keeps your records (see the pricing page); a managed instance or your own hardware is on quotation. On your own hardware, premium modules are activated with an offline license file."
     },
     "threatModel": {
-      "metaTitle": "Threat modelling for builders",
+      "metaTitle": "Threat modeling for builders",
       "metaDescription": "Start from the system you are building: what could go wrong, what stops it, and whether that was tested.",
-      "title": "Threat modelling",
+      "title": "Threat modeling",
       "intro": "Telling a five-person team to implement a governance framework is not helpful. Asking what could go wrong with the thing they are actually building is. This module makes that question systematic, and does most of the writing for you.",
       "intro2": "It takes about thirty minutes with the people who built the system, and it produces a record a customer's security review, an auditor or a regulator can read.",
       "loopTitle": "The loop",
@@ -3639,7 +3639,7 @@
           "body": "What could go wrong: by accident, by attack, or in ordinary use. The product proposes the list."
         },
         {
-          "step": "Prioritise",
+          "step": "Prioritize",
           "body": "By impact, likelihood and blast radius. Computed, so two people rating the same facts get the same answer."
         },
         {
@@ -3680,7 +3680,7 @@
       "examples": [
         {
           "name": "It answers with a document the person was not allowed to see",
-          "body": "Authorisation at retrieval, with the asker's own permissions. Test: ask the same question as three people with different permissions."
+          "body": "Authorization at retrieval, with the asker's own permissions. Test: ask the same question as three people with different permissions."
         },
         {
           "name": "A retrieved document tells it what to do, and it obeys",
@@ -3828,7 +3828,7 @@
       "paths": [
         {
           "name": "We use AI tools",
-          "body": "Start from the vendor catalogue or an industry template. The wizard registers the systems, classifies them and drafts the policies."
+          "body": "Start from the vendor catalog or an industry template. The wizard registers the systems, classifies them and drafts the policies."
         },
         {
           "name": "We are building AI",
@@ -3836,7 +3836,7 @@
         },
         {
           "name": "We advise others",
-          "body": "Set up as a consultant: each client is an organisation, with its own register, documents and evidence."
+          "body": "Set up as a consultant: each client is an organization, with its own register, documents and evidence."
         }
       ],
       "rulesTitle": "The rules that hold it together",
@@ -3892,13 +3892,13 @@
         "cell": "{framework}, {dimension}: depth {depth} of 3",
         "cellReview": "{framework}, {dimension}: depth {depth} of 3, under review",
         "rim": "rim: {ring}",
-        "core": "centre: {ring}",
+        "core": "center: {ring}",
         "sliceKey": "Slice numbers, clockwise from the top",
         "help": "Select a cell to see its detail. Select a framework name to compare it. The table carries the same data as text.",
         "tableLink": "Open the table"
       },
       "rings": {
-        "title": "Dimensions, rim to centre",
+        "title": "Dimensions, rim to center",
         "help": "Select a dimension to highlight it across every framework; select it again to clear.",
         "depthMeaning": "How depth is read here: {meaning}",
         "depthTableTitle": "{dimension}: depth per framework",
@@ -4541,8 +4541,8 @@
       "ARTICLE_10_AND_11": "Notice, opt-out and access apply"
     },
     "stateDetail": {
-      "JURISDICTION_UNDECLARED": "Tell us where your organisation operates and we can say whether California's ADMT rules reach this system.",
-      "JURISDICTION_CONFLICT": "This system is restricted to jurisdictions your organisation has not declared. Resolve the conflict to get an answer.",
+      "JURISDICTION_UNDECLARED": "Tell us where your organization operates and we can say whether California's ADMT rules reach this system.",
+      "JURISDICTION_CONFLICT": "This system is restricted to jurisdictions your organization has not declared. Resolve the conflict to get an answer.",
       "OUT_OF_SCOPE_NO_CA_NEXUS": "Your declared jurisdictions do not include California, so Articles 10 and 11 do not attach to this system.",
       "COVERED_BUSINESS_NOT_ASSESSED": "Answer the CCPA business-threshold questions to complete this assessment.",
       "PROFILE_NOT_ASSESSED": "Answer the § 7001(e) questions below to determine whether this technology is ADMT.",
@@ -4551,10 +4551,10 @@
     },
     "reason": {
       "jurisdictionsUndeclared": "Operating jurisdictions have not been declared",
-      "jurisdictionConflict": "This system's jurisdictions do not overlap the organisation's",
+      "jurisdictionConflict": "This system's jurisdictions do not overlap the organization's",
       "noCaliforniaNexus": "California is not among the declared jurisdictions",
       "coveredBusinessUnanswered": "The CCPA business-threshold screen is unanswered",
-      "coveredBusinessNo": "The organisation does not meet a CCPA business threshold",
+      "coveredBusinessNo": "The organization does not meet a CCPA business threshold",
       "noProfile": "No ADMT determination has been recorded for this system",
       "determinationUnanswered": "The § 7001(e) determination is unanswered",
       "prongsUnresolved": "The human-involvement test is only partly answered",
@@ -4570,7 +4570,7 @@
       "optOutExceptionRelied": "An opt-out exception under § 7221(b) is relied on"
     },
     "openQuestion": {
-      "declareJurisdictions": "Declare where your organisation operates",
+      "declareJurisdictions": "Declare where your organization operates",
       "answerCoveredBusiness": "Answer the CCPA business-threshold questions",
       "createProfile": "Record an ADMT determination for this system",
       "answerDetermination": "Answer whether this technology is ADMT",
@@ -4606,7 +4606,7 @@
       "legend": "Significant decisions (§ 7001(ddd)): advertising is expressly excluded",
       "financial_lending": "Financial or lending services",
       "housing": "Housing",
-      "education_enrollment": "Education enrolment or opportunities",
+      "education_enrollment": "Education enrollment or opportunities",
       "employment_contracting": "Employment or independent-contracting opportunities or compensation",
       "healthcare": "Healthcare services"
     },
@@ -4710,12 +4710,12 @@
         "NOT_ASSESSED": "Not answered"
       },
       "coveredBusiness": {
-        "label": "Is the organisation a “business” under the CCPA?",
+        "label": "Is the organization a “business” under the CCPA?",
         "help": "Met by any one of: annual gross revenue above the CPI-adjusted threshold ($26,625,000 for 2025–2026); buying, selling or sharing the personal information of 100,000+ consumers or households; or deriving 50% or more of annual revenue from selling or sharing personal information. There is no small-business exemption, the thresholds are the carve-out."
       },
       "sellShareRevenue50Plus": {
         "label": "Does 50% or more of annual revenue come from selling or sharing personal information?",
-        "help": "On its own this puts the organisation into the Article 9 cybersecurity-audit regime."
+        "help": "On its own this puts the organization into the Article 9 cybersecurity-audit regime."
       },
       "revenueOverCcpaThreshold": {
         "label": "Is annual gross revenue above the CPI-adjusted CCPA threshold?",
@@ -4737,8 +4737,8 @@
     "reviewMarkerNote": "Regulatory content for these regimes was signed off on 8 September 2026. The EU AI Act and California packs remain pending.",
     "copiedFromTemplate": "These answers were copied from a template. Check each one for this client, then confirm them.",
     "confirmCopied": "Confirm answers",
-    "orgTitle": "Organisation screening",
-    "orgDescription": "Five facts about the organisation. Each is tri-state: not answered stays visibly unanswered and never reads as no.",
+    "orgTitle": "Organization screening",
+    "orgDescription": "Five facts about the organization. Each is tri-state: not answered stays visibly unanswered and never reads as no.",
     "systemTitle": "System screening",
     "systemDescription": "What this system does, in the terms each regime tests. Answers here decide which overlay questions the unified assessment asks.",
     "saved": "Screening answers saved",
@@ -4757,14 +4757,14 @@
       "covered-genai-provider": "covered generative AI provider",
       "consumer-health-data": "consumer health data",
       "companion-chatbot": "companion chatbot",
-      "prior-authorization": "prior authorisation",
+      "prior-authorization": "prior authorization",
       "interacts-with-consumers": "direct interaction with consumers"
     },
     "attachRequirements": "Attach requirements",
     "attachedCount": "{count} requirements attached to this system",
     "attachDone": "{count} requirements attached",
     "attachNothing": "Nothing to attach yet: no regime has resolved into scope.",
-    "declareJurisdictionsFirst": "Declare the organisation's operating jurisdictions in settings before any regime can resolve.",
+    "declareJurisdictionsFirst": "Declare the organization's operating jurisdictions in settings before any regime can resolve.",
     "answer": {
       "YES": "Yes",
       "NO": "No",
@@ -4772,23 +4772,23 @@
     },
     "org": {
       "isPublicAgency": {
-        "label": "Is the organisation a public agency or governmental entity?",
+        "label": "Is the organization a public agency or governmental entity?",
         "help": "Texas TRAIGA adds disclosure and social-scoring duties for government; Washington RCW 43.105 governs agency use of automated decision systems."
       },
       "isHealthCarrier": {
-        "label": "Is the organisation a health carrier making prior-authorisation decisions?",
+        "label": "Is the organization a health carrier making prior-authorisation decisions?",
         "help": "Washington RCW 48.43.830 bars an AI tool from denying, delaying or modifying coverage on its own."
       },
       "isHealthcareProvider": {
-        "label": "Is the organisation a health care service provider?",
+        "label": "Is the organization a health care service provider?",
         "help": "Texas TRAIGA requires telling the patient when AI is used in their care."
       },
       "isCoveredGenAiProvider": {
-        "label": "Does the organisation provide a generative AI system with more than one million monthly users, publicly available in Washington?",
+        "label": "Does the organization provide a generative AI system with more than one million monthly users, publicly available in Washington?",
         "help": "That is the covered-provider test in Washington HB 1170, which requires provenance data in generated media."
       },
       "processesConsumerHealthData": {
-        "label": "Does the organisation process consumer health data of Washington consumers?",
+        "label": "Does the organization process consumer health data of Washington consumers?",
         "help": "The My Health My Data Act includes health inferred by algorithms from non-health information."
       }
     },
@@ -4832,7 +4832,7 @@
     "create": "Create the assessment",
     "created": "Assessment created",
     "openAssessment": "Open the assessment",
-    "declareFirst": "Declare the organisation's operating jurisdictions before generating a unified assessment: without them no overlay can be resolved.",
+    "declareFirst": "Declare the organization's operating jurisdictions before generating a unified assessment: without them no overlay can be resolved.",
     "previewTitle": "What this system will be asked",
     "reasonCore": "Common core",
     "satisfies": "Evidences",
@@ -4915,7 +4915,7 @@
     "description": "Upload a CSV export of your inventory spreadsheet. You will see what will be created before anything is saved.",
     "chooseFile": "Choose a CSV file",
     "downloadTemplate": "Download a template",
-    "formatHint": "Columns are recognised in English or Spanish: name (required), vendor, purpose, technique, role, status, risk level, personal data, owners, description. Commas or semicolons both work. A risk level is imported only when the sheet states one; otherwise the system stays unclassified for you to classify.",
+    "formatHint": "Columns are recognized in English or Spanish: name (required), vendor, purpose, technique, role, status, risk level, personal data, owners, description. Commas or semicolons both work. A risk level is imported only when the sheet states one; otherwise the system stays unclassified for you to classify.",
     "errorNoName": "No column with the system name was found. Add a column called Name (or Nombre).",
     "errorNoRows": "The file has no data rows.",
     "summary": "{rows, plural, one {# system} other {# systems}} ready to import; {unclassified, plural, =0 {all with a stated risk level} one {# without a risk level (it will stay unclassified)} other {# without a risk level (they will stay unclassified)}}.",
@@ -5165,7 +5165,7 @@
     "statusLabel": "Status",
     "referenceLabel": "Their reference",
     "positionTitle": "The factual position taken here",
-    "positionHelp": "Facts do not change between forums; the legal characterisation may. Record the facts as stated in this proceeding, so a divergence is visible to you first.",
+    "positionHelp": "Facts do not change between forums; the legal characterization may. Record the facts as stated in this proceeding, so a divergence is visible to you first.",
     "positionPlaceholder": "What has been said, to whom, and when",
     "contextTitle": "Context",
     "summaryLabel": "Summary",
@@ -5279,7 +5279,7 @@
     "loop": {
       "map": "Map",
       "imagine": "Imagine",
-      "prioritise": "Prioritise",
+      "prioritise": "Prioritize",
       "control": "Control",
       "test": "Test"
     },
@@ -5404,11 +5404,11 @@
     "systemCardOpen": "Open the threat model"
   },
   "premiumShowcase": {
-    "lockedHint": "Part of a premium module, sold for the kit at {price} a year. Activate a licence to use it.",
-    "activate": "Activate a licence",
+    "lockedHint": "Part of a premium module, sold for the kit at {price} a year. Activate a license to use it.",
+    "activate": "Activate a license",
     "buy": "See the modules",
-    "exportLockedTitle": "This document needs a premium licence",
-    "exportLockedBody": "The document is part of a premium module. Activate its licence in Settings to export it.",
+    "exportLockedTitle": "This document needs a premium license",
+    "exportLockedBody": "The document is part of a premium module. Activate its license in Settings to export it.",
     "seePricing": "See pricing",
     "exportFailedTitle": "The document could not be generated",
     "exportFailedBody": "Nothing was downloaded. Please try again in a moment.",
@@ -5417,11 +5417,11 @@
   "pilot": {
     "title": "Hosted pilot",
     "summary": "Pilot: {days, plural, one {# day} other {# days}} left, {used} of {max} systems",
-    "editsUntil": "Edits are allowed until {date}. After that the organisation is read-only, and everything it created can still be exported.",
+    "editsUntil": "Edits are allowed until {date}. After that the organization is read-only, and everything it created can still be exported.",
     "ceilingsTitle": "Ceilings on this pilot",
     "counter": "{used} of {max}",
     "ceilingReachedMark": "Ceiling reached",
-    "readOnlyBody": "The editing window is over. This organisation is read-only: everything can still be opened and exported, nothing can be changed.",
+    "readOnlyBody": "The editing window is over. This organization is read-only: everything can still be opened and exported, nothing can be changed.",
     "ceilingReachedBody": "A ceiling has been reached. Two ways out:",
     "paidPlan": "Move to the paid plan",
     "exportAll": "Export everything (program pack)",
@@ -5520,7 +5520,7 @@
     "stageProgress": "{done} of {total}",
     "stageNumber": "Stage {number}",
     "loading": "Loading progress",
-    "requiresLicence": "Requires a licence",
+    "requiresLicence": "Requires a license",
     "stageState": {
       "todo": "Not started",
       "started": "In progress",
@@ -5893,15 +5893,15 @@
   },
   "clientTemplate": {
     "cardTitle": "Start from another client",
-    "cardDescription": "Copy a programme you built for another client, then adjust it. Everything arrives as a draft.",
+    "cardDescription": "Copy a program you built for another client, then adjust it. Everything arrives as a draft.",
     "chipCopiedDrafts": "Copied as drafts",
     "chipNoLinks": "Never linked",
     "copyIntoNew": "Copy into a new client",
     "rowMenu": "More for {client}",
     "titleCurrent": "Start from another client",
     "titleNew": "Copy into a new client",
-    "descriptionCurrent": "Copy parts of a programme you built for another client into this one. The copy is independent: later changes in either client never reach the other, and this client's records never show where the copy came from.",
-    "descriptionNew": "Create a new client and copy parts of {source}'s programme into it. The copy is independent: later changes in either client never reach the other, and the new client's records never show where the copy came from.",
+    "descriptionCurrent": "Copy parts of a program you built for another client into this one. The copy is independent: later changes in either client never reach the other, and this client's records never show where the copy came from.",
+    "descriptionNew": "Create a new client and copy parts of {source}'s program into it. The copy is independent: later changes in either client never reach the other, and the new client's records never show where the copy came from.",
     "sourceLabel": "Copy from",
     "sourcePlaceholder": "Choose a client",
     "sourceHint": "Only clients where you are an owner or an admin are listed.",
@@ -5942,7 +5942,7 @@
     },
     "needsPart": "Needs \"{part}\" as well.",
     "skipped": "{count, plural, one {# already exists here and is left as it is.} other {# already exist here and are left as they are.}}",
-    "neverCopied": "Never copied: incidents, proceedings, evidence files, the audit trail, board reports, people and members, licences and billing.",
+    "neverCopied": "Never copied: incidents, proceedings, evidence files, the audit trail, board reports, people and members, licenses and billing.",
     "flagsTitle": "{count, plural, one {# item still points at the other client} other {# items still point at the other client}}",
     "flagsHint": "The other client's full name is replaced with this client's. These other mentions (a short form of the name, or its web or e-mail domain) are copied as they are, for you to review.",
     "moreFlags": "{count, plural, one {and # more mention} other {and # more mentions}}",
@@ -5979,7 +5979,7 @@
     },
     "firstRun": {
       "title": "One minute on how this works",
-      "intro": "AI Sentinel turns AI law into a programme you can run. In short:",
+      "intro": "AI Sentinel turns AI law into a program you can run. In short:",
       "step1": "List your AI systems, so nothing is governed in the dark.",
       "step2": "Classify each one and assess the ones that carry risk.",
       "step3": "Put the controls and evidence in place, and keep watch.",
@@ -6118,7 +6118,7 @@
       "model": "a model recorded on a system",
       "aiAssist": "AI assistance switched on",
       "assessment": "an assessment",
-      "licence": "the licence for this document",
+      "licence": "the license for this document",
       "threatModel": "a threat model",
       "vendor": "a vendor",
       "transparencyProfile": "a transparency profile",

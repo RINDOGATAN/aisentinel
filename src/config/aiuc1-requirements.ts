@@ -90,16 +90,16 @@ export const AIUC1_DOMAINS: readonly Aiuc1Domain[] = [
     paraphrase: "Defends agents against manipulation (adversarial input, prompt injection, endpoint scraping, unauthorised actions) through input filtering, access enforcement and a protected deployment environment.",
     path: "security",
     requirements: [
-      { code: "B001", title: "Third-party testing of adversarial robustness", paraphrase: "Run an adversarial testing programme, with third-party testing, against prompt injection, jailbreaks and other adversarial inputs.", application: "mandatory", capabilities: U, path: "security/test-adversarial-robustness" },
+      { code: "B001", title: "Third-party testing of adversarial robustness", paraphrase: "Run an adversarial testing program, with third-party testing, against prompt injection, jailbreaks and other adversarial inputs.", application: "mandatory", capabilities: U, path: "security/test-adversarial-robustness" },
       { code: "B002", title: "Detect adversarial input", paraphrase: "Monitor for adversarial inputs and prompt injection attempts so they can be detected and answered.", application: "supplemental", capabilities: U, path: "security/detect-adversarial-input" },
-      { code: "B003", title: "Manage public release of technical details", paraphrase: "Avoid publishing technical or organisational details about AI systems that would help an attacker target them.", application: "supplemental", capabilities: U, path: "security/limit-technical-over-disclosure" },
+      { code: "B003", title: "Manage public release of technical details", paraphrase: "Avoid publishing technical or organizational details about AI systems that would help an attacker target them.", application: "supplemental", capabilities: U, path: "security/limit-technical-over-disclosure" },
       { code: "B004", title: "Prevent AI endpoint scraping", paraphrase: "Protect external AI endpoints against probing and scraping, for example with rate limits and query quotas.", application: "mandatory", capabilities: U, path: "security/prevent-ai-endpoint-scraping" },
       { code: "B005", title: "Implement real-time input filtering", paraphrase: "Filter inputs in real time with automated moderation tools.", application: "supplemental", capabilities: GEN, path: "security/implement-real-time-input-filtering" },
       { code: "B006", title: "Prevent unauthorized AI agent actions", paraphrase: "For agents that act, stop actions beyond the intended scope and the privileges granted.", application: "mandatory", capabilities: ["Automation"], path: "security/enforce-contextual-access-controls" },
       { code: "B007", title: "Enforce user access privileges to AI systems", paraphrase: "Keep user access rights and administrator privileges to AI systems in line with policy.", application: "mandatory", capabilities: U, path: "security/enforce-ai-access-privileges" },
-      { code: "B008", title: "Protect AI system deployment environment", paraphrase: "Secure the environment the AI system runs in, including encryption, access control and authorisation.", application: "mandatory", capabilities: U, path: "security/protect-model-deployment-environment" },
+      { code: "B008", title: "Protect AI system deployment environment", paraphrase: "Secure the environment the AI system runs in, including encryption, access control and authorization.", application: "mandatory", capabilities: U, path: "security/protect-model-deployment-environment" },
       { code: "B009", title: "Limit output over-exposure", paraphrase: "Limit and obscure outputs so they do not leak information an attacker could use.", application: "mandatory", capabilities: GEN, path: "security/limit-output-over-exposure" },
-      { code: "B010", title: "Promote secure patterns in generated code", paraphrase: "For code-generating agents, favour secure patterns and avoid known vulnerabilities in the code produced.", application: "mandatory", capabilities: ["Code-generation"], path: "security/promote-secure-code-patterns" },
+      { code: "B010", title: "Promote secure patterns in generated code", paraphrase: "For code-generating agents, favor secure patterns and avoid known vulnerabilities in the code produced.", application: "mandatory", capabilities: ["Code-generation"], path: "security/promote-secure-code-patterns" },
     ],
   },
   {
@@ -151,7 +151,7 @@ export const AIUC1_DOMAINS: readonly Aiuc1Domain[] = [
       { code: "E010", title: "Establish AI acceptable use policy", paraphrase: "Adopt and apply an acceptable use policy for AI.", application: "mandatory", capabilities: U, path: "accountability/establish-ai-acceptable-use-policy" },
       { code: "E011", title: "Record processing locations", paraphrase: "Record where AI data is processed.", application: "mandatory", capabilities: U, path: "accountability/record-processing-locations" },
       { code: "E012", title: "Document regulatory compliance", paraphrase: "Record which AI laws and standards apply, the data protections they require and the plan for meeting them.", application: "mandatory", capabilities: U, path: "accountability/document-regulatory-compliance" },
-      { code: "E013", title: "Implement quality management system", paraphrase: "Run a quality management system for AI systems, proportionate to the size of the organisation.", application: "supplemental", capabilities: U, path: "accountability/implement-quality-management-system" },
+      { code: "E013", title: "Implement quality management system", paraphrase: "Run a quality management system for AI systems, proportionate to the size of the organization.", application: "supplemental", capabilities: U, path: "accountability/implement-quality-management-system" },
       { code: "E015", title: "Log AI system activity", paraphrase: "Keep logs of AI system processes, actions and outputs, where permitted, for investigation, audit and explanation.", application: "mandatory", capabilities: U, path: "accountability/log-model-activity" },
       { code: "E016", title: "Implement AI disclosure mechanisms", paraphrase: "Tell users clearly when they are dealing with an AI system rather than a person.", application: "mandatory", capabilities: U, path: "accountability/implement-ai-disclosure-mechanisms" },
       { code: "E017", title: "Document system transparency policy", paraphrase: "Adopt a transparency policy and keep model cards, datasheets and interpretability reports for major systems.", application: "supplemental", capabilities: U, path: "accountability/document-system-transparency-policy" },
@@ -182,7 +182,7 @@ export const aiuc1RequirementId = (code: string) => `${AIUC1_FRAMEWORK.idPrefix}
 /** The database description of a requirement: the paraphrase, then how the standard applies it. */
 export function aiuc1RequirementDescription(r: Aiuc1Requirement): string {
   const application =
-    r.application === "mandatory" ? "Mandatory for certification" : "Supplemental (optional; an organisation opts in)";
+    r.application === "mandatory" ? "Mandatory for certification" : "Supplemental (optional; an organization opts in)";
   return `${r.paraphrase} ${application}; capability tags: ${r.capabilities.join(", ")}. Source: ${AIUC1_FRAMEWORK.sourceUrl}${r.path}`;
 }
 

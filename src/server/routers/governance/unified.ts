@@ -110,7 +110,7 @@ export const unifiedRouter = createTRPCRouter({
         throw new TRPCError({
           code: "PRECONDITION_FAILED",
           message:
-            "Declare the organisation's operating jurisdictions before generating a unified assessment: without them no overlay can be resolved.",
+            "Declare the organization's operating jurisdictions before generating a unified assessment: without them no overlay can be resolved.",
         });
       }
       return { assessmentId: draft.assessmentId, templateId: draft.templateId, overlayTags: draft.overlayTags };

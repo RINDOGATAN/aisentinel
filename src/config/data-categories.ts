@@ -122,7 +122,7 @@ export const SENSITIVE_CATEGORIES: SensitiveCategory[] = [
   },
   {
     id: "criminal",
-    label: { en: "Criminal offences", es: "Infracciones penales" },
+    label: { en: "Criminal offenses", es: "Infracciones penales" },
     basis: { en: "GDPR Art. 10", es: "RGPD art. 10" },
   },
 ];

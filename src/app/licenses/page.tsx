@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Licences & source | AI Sentinel",
+  title: "Licenses & source | AI Sentinel",
   description:
     "AI Sentinel is licensed under the GNU Affero General Public License v3 or later. Complete corresponding source is available.",
   robots: { index: false, follow: true },
@@ -27,7 +27,7 @@ export default function LicensesPage() {
     <div className="min-h-screen bg-background">
       <main className="max-w-2xl mx-auto px-6 py-16">
         <h1 className="text-2xl font-semibold tracking-tight mb-6">
-          Licences &amp; source
+          Licenses &amp; source
         </h1>
 
         <section className="space-y-3 text-sm text-muted-foreground leading-relaxed">
@@ -37,7 +37,7 @@ export default function LicensesPage() {
           <p>Copyright (C) 2025-2026 Rindogatan LLC</p>
           <p>
             Licensed under the GNU Affero General Public License, version 3 or
-            later (AGPL-3.0-or-later). A copy of the licence ships with the
+            later (AGPL-3.0-or-later). A copy of the license ships with the
             source as the <code>LICENSE</code> file.
           </p>
           <p>This program comes with ABSOLUTELY NO WARRANTY.</p>
@@ -70,7 +70,7 @@ export default function LicensesPage() {
               Under AGPL-3.0 section 13, users interacting with this program over
               a network are offered the complete corresponding source code of the
               version running here, at no charge. The public source repository is
-              being finalised; until it is published, request the corresponding
+              being finalized; until it is published, request the corresponding
               source by emailing{" "}
               <a
                 href="mailto:support@rindogatan.com?subject=AGPL%20corresponding%20source%20request"

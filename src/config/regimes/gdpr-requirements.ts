@@ -74,7 +74,7 @@ export const GDPR_REQUIREMENTS: RegimeRequirementSeed[] = [
       {
         slug: "art-5-1-c",
         code: "Art. 5(1)(c)",
-        title: { en: "Data minimisation", es: "Minimización de datos" },
+        title: { en: "Data minimization", es: "Minimización de datos" },
         description: {
           en: "Training, validation and inference data must be adequate, relevant and limited to what is necessary. Record why each category of input is needed for the system's stated purpose.",
           es: "Los datos de entrenamiento, validación e inferencia deben ser adecuados, pertinentes y limitados a lo necesario. Deja constancia de por qué cada categoría de entrada es necesaria para la finalidad declarada del sistema.",
@@ -177,7 +177,7 @@ export const GDPR_REQUIREMENTS: RegimeRequirementSeed[] = [
         code: "Art. 22(2)",
         title: { en: "Permitted grounds", es: "Supuestos permitidos" },
         description: {
-          en: "The solely automated decision is allowed only if it is necessary for entering into or performing a contract with the person, authorised by Union or Member State law with suitable safeguards, or based on the person's explicit consent. Record which ground the system relies on.",
+          en: "The solely automated decision is allowed only if it is necessary for entering into or performing a contract with the person, authorized by Union or Member State law with suitable safeguards, or based on the person's explicit consent. Record which ground the system relies on.",
           es: "La decisión únicamente automatizada solo se permite si es necesaria para celebrar o ejecutar un contrato con la persona, está autorizada por el Derecho de la Unión o de un Estado miembro con garantías adecuadas, o se basa en el consentimiento explícito de la persona. Deja constancia del supuesto en que se apoya el sistema.",
         },
         applicabilityTags: ADM,
@@ -212,7 +212,7 @@ export const GDPR_REQUIREMENTS: RegimeRequirementSeed[] = [
     code: "Art. 25",
     title: { en: "Data protection by design and by default", es: "Protección de datos desde el diseño y por defecto" },
     description: {
-      en: "Design and default settings of the AI system must implement the principles effectively: minimised inputs, pseudonymisation where feasible, and no processing beyond what the purpose needs unless the person chooses it.",
+      en: "Design and default settings of the AI system must implement the principles effectively: minimized inputs, pseudonymization where feasible, and no processing beyond what the purpose needs unless the person chooses it.",
       es: "El diseño y la configuración por defecto del sistema de IA deben aplicar los principios de forma efectiva: entradas minimizadas, seudonimización cuando sea viable y ningún tratamiento más allá de lo que la finalidad exige salvo elección de la persona.",
     },
     applicabilityTags: CORE,
@@ -245,7 +245,7 @@ export const GDPR_REQUIREMENTS: RegimeRequirementSeed[] = [
     code: "Art. 32",
     title: { en: "Security of processing", es: "Seguridad del tratamiento" },
     description: {
-      en: "Apply technical and organisational measures appropriate to the risk, including against model-specific threats such as training-data extraction, prompt injection and membership inference.",
+      en: "Apply technical and organizational measures appropriate to the risk, including against model-specific threats such as training-data extraction, prompt injection and membership inference.",
       es: "Aplica medidas técnicas y organizativas adecuadas al riesgo, incluidas las frente a amenazas propias de los modelos, como la extracción de datos de entrenamiento, la inyección de instrucciones y la inferencia de pertenencia.",
     },
     applicabilityTags: CORE,

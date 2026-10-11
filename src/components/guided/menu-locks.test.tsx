@@ -4,7 +4,7 @@
 /**
  * The lock beside a premium menu entry (owner's decision, 9 October 2026):
  * shown only where the page itself would show its locked state, which is a
- * deployment that enforces licences, for an organisation without one. Never
+ * deployment that enforces licenses, for an organization without one. Never
  * on the hosted pilot, never where every skill is free.
  *
  * The decision is the page's own entitlement check; these tests run that check
@@ -39,7 +39,7 @@ import { PathMenu } from "./path-menu";
 
 const BOTH = ["/governance/shadow-ai", "/governance/vendor-catalog"];
 
-/** The menu's answer for one organisation, from the pages' own access checks. */
+/** The menu's answer for one organization, from the pages' own access checks. */
 async function menuLocksFor(organizationId: string) {
   return lockedMenuHrefs({
     shadowAi: await hasShadowAiAccess(organizationId),
@@ -84,14 +84,14 @@ describe("by deployment", () => {
     else process.env.NEXT_PUBLIC_HOSTED_PILOT = savedPilot;
   });
 
-  it("enforced, no licence: both premium entries carry the lock", async () => {
+  it("enforced, no license: both premium entries carry the lock", async () => {
     vi.mocked(prisma.skillPackage.findFirst).mockResolvedValue({ id: "pkg" } as never);
     vi.mocked(prisma.customerOrganization.findFirst).mockResolvedValue(null as never);
 
     expect(await menuLocksFor("org-1")).toEqual(BOTH);
   });
 
-  it("enforced, licence held: no lock", async () => {
+  it("enforced, license held: no lock", async () => {
     vi.mocked(prisma.skillPackage.findFirst).mockResolvedValue({ id: "pkg" } as never);
     vi.mocked(prisma.customerOrganization.findFirst).mockResolvedValue({
       customer: {
@@ -160,10 +160,10 @@ describe("the lock in the menu", () => {
 
   const locks = (html: string) => html.match(/data-testid="menu-lock"/g)?.length ?? 0;
 
-  it("draws one labelled lock per locked entry, with no price", () => {
+  it("draws one labeled lock per locked entry, with no price", () => {
     const html = render(BOTH);
     expect(locks(html)).toBe(2);
-    expect(html).toContain("Requires a licence");
+    expect(html).toContain("Requires a license");
     expect(html).not.toMatch(/[$€£]|\/yr|\/mo/);
   });
 
@@ -174,13 +174,13 @@ describe("the lock in the menu", () => {
   it("draws nothing where nothing is locked", () => {
     const html = render([]);
     expect(locks(html)).toBe(0);
-    expect(html).not.toContain("Requires a licence");
+    expect(html).not.toContain("Requires a license");
   });
 
   it("keeps the label on the icons-only menu", () => {
     const html = render(BOTH, "en", true);
-    // Shadow AI is a step (not drawn when icons only); the catalogue is in the library.
+    // Shadow AI is a step (not drawn when icons only); the catalog is in the library.
     expect(locks(html)).toBe(1);
-    expect(html).toContain("requires a licence");
+    expect(html).toContain("requires a license");
   });
 });

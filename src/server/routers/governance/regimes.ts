@@ -240,7 +240,7 @@ export const regimesRouter = createTRPCRouter({
       if (!SCREENING_ROLES.includes(ctx.membership.role)) {
         throw new TRPCError({
           code: "FORBIDDEN",
-          message: "Only owners, admins and AI officers can set organisation screening facts",
+          message: "Only owners, admins and AI officers can set organization screening facts",
         });
       }
       const org = await ctx.prisma.organization.findUnique({

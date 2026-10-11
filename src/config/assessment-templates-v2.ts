@@ -419,7 +419,7 @@ const friaV2: V2Template = {
           required: true,
           allowNote: true,
           text: L(
-            "Which organisational measures mitigate the identified risks?",
+            "Which organizational measures mitigate the identified risks?",
             "¿Qué medidas organizativas mitigan los riesgos identificados?",
           ),
           options: [
@@ -617,7 +617,7 @@ const aiRiskV2: V2Template = {
               "Nombra los tipos de sesgo presentes, no solo «hay sesgo». La taxonomía indica al revisor dónde mirar.",
             ),
             L(
-              "\"Historical bias: the training data reflects past hiring that favoured men.\"",
+              "\"Historical bias: the training data reflects past hiring that favored men.\"",
               "«Sesgo histórico: los datos de entrenamiento reflejan contrataciones pasadas que favorecían a los hombres.»",
             ),
           ),
@@ -702,7 +702,7 @@ const aiRiskV2: V2Template = {
           type: "multi_choice",
           required: true,
           allowNote: true,
-          text: L("Which organisational safeguards are in place or planned?", "¿Qué salvaguardas organizativas existen o están previstas?"),
+          text: L("Which organizational safeguards are in place or planned?", "¿Qué salvaguardas organizativas existen o están previstas?"),
           options: [
             opt("training", "Training", "Formación"),
             opt("oversight_committee", "Oversight committee", "Comité de supervisión"),
@@ -1231,7 +1231,7 @@ const biasFairnessV2: V2Template = {
           id: "bf2_3",
           type: "text",
           required: true,
-          text: L("Describe the data labelling methodology and quality controls.", "Describe la metodología de etiquetado de datos y los controles de calidad."),
+          text: L("Describe the data labeling methodology and quality controls.", "Describe la metodología de etiquetado de datos y los controles de calidad."),
         },
         {
           id: "bf2_4",
@@ -1394,7 +1394,7 @@ const biasFairnessV2: V2Template = {
           options: [
             opt("adversarial_debiasing", "Adversarial debiasing", "Eliminación de sesgo adversaria"),
             opt("regularisation", "Fairness-aware regularisation", "Regularización sensible a la equidad"),
-            opt("constrained_optimisation", "Constrained optimisation", "Optimización con restricciones"),
+            opt("constrained_optimisation", "Constrained optimization", "Optimización con restricciones"),
             opt("none", "None", "Ninguna"),
           ],
         },

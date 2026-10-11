@@ -32,7 +32,7 @@ const EXPECTED_IDS = [
   "core-ai-incident-response",
 ];
 
-/** Every Localized field of every policy, labelled for failure messages. */
+/** Every Localized field of every policy, labeled for failure messages. */
 function allLocalized(): Array<{ path: string; l: Localized }> {
   return CORE_POLICY_PACK.flatMap((p) => [
     { path: `${p.id}.title`, l: p.title },
@@ -151,10 +151,10 @@ describe("core policy pack: style and substance", () => {
     }
   });
 
-  it("each content uses paragraph breaks and names the organisation neutrally", () => {
+  it("each content uses paragraph breaks and names the organization neutrally", () => {
     for (const p of CORE_POLICY_PACK) {
       expect(p.content.en.split("\n\n").length, p.id).toBeGreaterThan(6);
-      expect(p.content.en).toContain("the organisation");
+      expect(p.content.en).toContain("the organization");
       expect(p.content.es).toContain("la organización");
     }
   });

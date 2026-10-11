@@ -46,7 +46,7 @@ import {
 export type ContentLocale = "en" | "es";
 
 const DISCLAIMER_BASE: Record<ContentLocale, string> = {
-  en: "This document was assembled from the AI registry and the answers recorded in the unified impact assessment. It is a drafting aid, not legal advice. Review every section before it leaves the organisation.",
+  en: "This document was assembled from the AI registry and the answers recorded in the unified impact assessment. It is a drafting aid, not legal advice. Review every section before it leaves the organization.",
   es: "Este documento se ha compuesto a partir del registro de IA y de las respuestas recogidas en la evaluación de impacto unificada. Es una ayuda a la redacción, no asesoramiento jurídico. Revisa cada apartado antes de que salga de la organización.",
 };
 
@@ -347,11 +347,11 @@ function identificationSection(input: ArtifactInput): ArtifactSection {
       es ? ["Dato", "Valor"] : ["Item", "Value"],
       rows([
         [es ? "Sistema" : "System", sys.name],
-        [es ? "Organización" : "Organisation", scope.organizationName],
+        [es ? "Organización" : "Organization", scope.organizationName],
         [es ? "Finalidad" : "Purpose", sys.purpose],
         [es ? "Descripción" : "Description", sys.description],
         [es ? "Técnica" : "Technique", enumLabel(sys.technique, locale)],
-        [es ? "Papel de la organización" : "The organisation's role", enumLabel(sys.role, locale)],
+        [es ? "Papel de la organización" : "The organization's role", enumLabel(sys.role, locale)],
         [es ? "Situación" : "Lifecycle status", enumLabel(sys.status, locale)],
         [es ? "Responsable de negocio" : "Business owner", sys.businessOwner],
         [es ? "Responsable técnico" : "Technical owner", sys.technicalOwner],
@@ -376,7 +376,7 @@ function identificationSection(input: ArtifactInput): ArtifactSection {
       gap(
         es
           ? "El registro no recoge ni la finalidad ni la descripción del sistema. Un lector externo no puede juzgar el resto del documento sin saber para qué se usa el sistema."
-          : "The registry records neither the purpose nor a description of the system. A reader outside the organisation cannot judge the rest of this document without knowing what the system is for.",
+          : "The registry records neither the purpose nor a description of the system. A reader outside the organization cannot judge the rest of this document without knowing what the system is for.",
         // Scoped: a document must never cite an instrument the organisation is
         // not under. Three separate bugs of this class have been caught here.
         filterCitationStrings(
@@ -663,7 +663,7 @@ function notAdviceSection(input: ArtifactInput): ArtifactSection {
       paragraph(
         es
           ? "No es asesoramiento jurídico y no crea una relación profesional con nadie. No es una declaración de conformidad ni la certificación de un tercero. Es la evaluación de la propia organización, compuesta a partir de lo que su registro contiene, y necesita el criterio de una persona cualificada antes de que se actúe conforme a él."
-          : "It is not legal advice and it creates no professional relationship with anyone. It is not a declaration of conformity and it is not a third party's certification. It is the organisation's own assessment, assembled from what its registry holds, and it needs the judgment of a qualified person before anyone acts on it.",
+          : "It is not legal advice and it creates no professional relationship with anyone. It is not a declaration of conformity and it is not a third party's certification. It is the organization's own assessment, assembled from what its registry holds, and it needs the judgment of a qualified person before anyone acts on it.",
       ),
     ],
   };
@@ -676,7 +676,7 @@ function scopeSection(input: ArtifactInput): ArtifactSection {
     paragraph(
       locale === "es"
         ? `Este documento se ha calibrado para las jurisdicciones declaradas por la organización: ${scope.jurisdictions.join(", ") || "ninguna declarada"}.`
-        : `This document was calibrated to the jurisdictions the organisation has declared: ${scope.jurisdictions.join(", ") || "none declared"}.`,
+        : `This document was calibrated to the jurisdictions the organization has declared: ${scope.jurisdictions.join(", ") || "none declared"}.`,
     ),
     table(
       locale === "es" ? ["Régimen", "Situación"] : ["Regime", "Status"],
@@ -985,7 +985,7 @@ export function buildNoticeArtifact(input: ArtifactInput): Artifact {
         gap(
           locale === "es"
             ? "Ningún régimen resuelto añade obligaciones de información. Confirma las jurisdicciones de la organización y el cuestionario de aplicabilidad antes de publicar este aviso."
-            : "No resolved regime adds a notice obligation. Confirm the organisation's jurisdictions and the applicability screening before publishing this notice.",
+            : "No resolved regime adds a notice obligation. Confirm the organization's jurisdictions and the applicability screening before publishing this notice.",
           [],
         ),
       ],

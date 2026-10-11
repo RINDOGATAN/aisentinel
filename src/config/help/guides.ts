@@ -51,7 +51,7 @@ export const GUIDES: Guide[] = [
     slug: "my-role",
     title: L("What is my role?", "¿Cuál es mi papel?"),
     lead: L(
-      "The EU AI Act gives you duties according to the role you play around an AI system. Most organisations are deployers; some are also providers. The same organisation can hold more than one role, even for the same system.",
+      "The EU AI Act gives you duties according to the role you play around an AI system. Most organizations are deployers; some are also providers. The same organization can hold more than one role, even for the same system.",
       "El Reglamento de IA de la UE te asigna obligaciones según el papel que desempeñes en relación con un sistema de IA. La mayoría de las organizaciones son responsables del despliegue; algunas son además proveedores. Una misma organización puede tener más de un papel, incluso respecto al mismo sistema.",
     ),
     sections: [
@@ -142,7 +142,7 @@ export const GUIDES: Guide[] = [
           {
             term: L("A use listed in Annex III", "Un uso enumerado en el anexo III"),
             body: L(
-              "The system is used in one of the areas the Act lists as high risk in Annex III. This is the route most organisations meet.",
+              "The system is used in one of the areas the Act lists as high risk in Annex III. This is the route most organizations meet.",
               "El sistema se utiliza en una de las áreas que la norma enumera como de alto riesgo en el anexo III. Es la vía que encuentran la mayoría de las organizaciones.",
             ),
           },

@@ -292,7 +292,7 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
           id: "vendors",
           href: "/governance/vendors",
           icon: Building2,
-          rule: "Done when at least one vendor is recorded (the vendor catalogue is the way to add one) and no vendor copied from another client's template is waiting for review. Started while copied vendors wait.",
+          rule: "Done when at least one vendor is recorded (the vendor catalog is the way to add one) and no vendor copied from another client's template is waiting for review. Started while copied vendors wait.",
           status: (c) =>
             c.vendors > 0 && c.copiedVendorsPending === 0
               ? "done"

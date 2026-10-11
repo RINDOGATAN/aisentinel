@@ -101,7 +101,7 @@ export const VENDOR_AI_MAPPINGS: Record<string, VendorAIMapping> = {
       processesPersonalData: true,
     },
     riskLevel: "HIGH",
-    riskRationale: "Computer vision systems may involve biometric processing or remote identification. EU AI Act Annex III covers biometric identification and categorisation. Requires conformity assessment and human oversight before deployment.",
+    riskRationale: "Computer vision systems may involve biometric processing or remote identification. EU AI Act Annex III covers biometric identification and categorization. Requires conformity assessment and human oversight before deployment.",
     annexIIICategory: "1. Biometrics",
     requiresOversightGate: true,
     gateType: "PRE_DEPLOYMENT",

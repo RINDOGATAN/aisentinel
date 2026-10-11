@@ -26,7 +26,7 @@ export const TEXAS_FRAMEWORK: RegimeFramework = {
   version: "Tex. Bus. & Com. Code ch. 552, in force 1 Jan 2026",
   abbreviation: "TX",
   description:
-    "The Texas Responsible Artificial Intelligence Governance Act: intent-based prohibitions on manipulation, constitutional-rights infringement, unlawful discrimination and unlawful explicit content; disclosure duties for government agencies and health care providers; a ban on government social scoring and non-consensual biometric identification; Attorney General enforcement with a cure period; a NIST AI RMF safe harbour and a 36-month regulatory sandbox.",
+    "The Texas Responsible Artificial Intelligence Governance Act: intent-based prohibitions on manipulation, constitutional-rights infringement, unlawful discrimination and unlawful explicit content; disclosure duties for government agencies and health care providers; a ban on government social scoring and non-consensual biometric identification; Attorney General enforcement with a cure period; a NIST AI RMF safe harbor and a 36-month regulatory sandbox.",
   contentVersion: "2026.09.1",
   lawReviewedAsOf: REVIEWED,
   reviewMarker: signoffMarker("TX_TRAIGA"),
@@ -62,7 +62,7 @@ export const TEXAS_REQUIREMENTS: RegimeRequirementSeed[] = [
   {
     slug: "552-052-manipulation",
     code: "§ 552.052",
-    title: { en: "Prohibition: manipulation of human behaviour to cause harm", es: "Prohibición: manipulación del comportamiento humano para causar daño" },
+    title: { en: "Prohibition: manipulation of human behavior to cause harm", es: "Prohibición: manipulación del comportamiento humano para causar daño" },
     description: {
       en: "No person may develop or deploy an AI system in a manner that intentionally aims to incite or encourage a person to commit physical self-harm, including suicide, to harm another person, or to engage in criminal activity. Document the safety measures that prevent these outputs.",
       es: "Nadie puede desarrollar ni desplegar un sistema de IA de un modo que pretenda intencionadamente incitar o animar a una persona a autolesionarse, incluido el suicidio, a dañar a otra persona o a cometer actividades delictivas. Documenta las medidas de seguridad que impiden estos resultados.",
@@ -75,7 +75,7 @@ export const TEXAS_REQUIREMENTS: RegimeRequirementSeed[] = [
     code: "§ 552.053",
     title: { en: "Government: prohibition of social scoring", es: "Administración: prohibición de la puntuación social" },
     description: {
-      en: "A governmental entity may not develop or deploy an AI system that evaluates or classifies natural persons based on social behaviour or personal characteristics with the intent to assign a social score that leads to detrimental or unfavourable treatment unrelated to the context or disproportionate to the behaviour.",
+      en: "A governmental entity may not develop or deploy an AI system that evaluates or classifies natural persons based on social behavior or personal characteristics with the intent to assign a social score that leads to detrimental or unfavourable treatment unrelated to the context or disproportionate to the behavior.",
       es: "Una entidad pública no puede desarrollar ni desplegar un sistema de IA que evalúe o clasifique a personas físicas según su comportamiento social o sus características personales con la intención de asignar una puntuación social que conduzca a un trato perjudicial o desfavorable ajeno al contexto o desproporcionado respecto del comportamiento.",
     },
     applicabilityTags: GOV,
@@ -128,9 +128,9 @@ export const TEXAS_REQUIREMENTS: RegimeRequirementSeed[] = [
   {
     slug: "enforcement-cure",
     code: "§ 552.101-.104",
-    title: { en: "Enforcement, 60-day cure period and safe harbours", es: "Aplicación, plazo de subsanación de 60 días y puertos seguros" },
+    title: { en: "Enforcement, 60-day cure period and safe harbors", es: "Aplicación, plazo de subsanación de 60 días y puertos seguros" },
     description: {
-      en: "The Attorney General enforces the act; there is no private right of action. Before suit, the AG must give written notice and a 60-day cure period. Substantial compliance with the NIST AI Risk Management Framework or a comparable recognised framework, and discovery of a violation through internal testing or red-teaming followed by a cure, are affirmative defences. Map this system to the NIST AI RMF framework in this product to evidence the safe harbour.",
+      en: "The Attorney General enforces the act; there is no private right of action. Before suit, the AG must give written notice and a 60-day cure period. Substantial compliance with the NIST AI Risk Management Framework or a comparable recognized framework, and discovery of a violation through internal testing or red-teaming followed by a cure, are affirmative defences. Map this system to the NIST AI RMF framework in this product to evidence the safe harbor.",
       es: "La Fiscalía General aplica la ley; no existe acción privada. Antes de demandar, debe notificar por escrito y conceder un plazo de subsanación de 60 días. El cumplimiento sustancial del Marco de Gestión de Riesgos de IA del NIST o de un marco reconocido comparable, y el descubrimiento de una infracción mediante pruebas internas o ejercicios de equipo rojo seguido de su subsanación, son eximentes. Vincula este sistema al marco NIST AI RMF en este producto para acreditar el puerto seguro.",
     },
     applicabilityTags: CORE,
@@ -139,7 +139,7 @@ export const TEXAS_REQUIREMENTS: RegimeRequirementSeed[] = [
   {
     slug: "sandbox",
     code: "Subch. D",
-    title: { en: "Regulatory sandbox programme", es: "Programa de espacio controlado de pruebas" },
+    title: { en: "Regulatory sandbox program", es: "Programa de espacio controlado de pruebas" },
     description: {
       en: "The act creates a regulatory sandbox administered by the Department of Information Resources under which a participant may test an AI system for up to 36 months with relief from certain licensing and regulatory requirements, subject to quarterly reporting. Record whether this system is, or should be, enrolled.",
       es: "La ley crea un espacio controlado de pruebas administrado por el Departamento de Recursos de Información en el que un participante puede probar un sistema de IA durante un máximo de 36 meses con exención de determinados requisitos de licencia y regulatorios, sujeto a informes trimestrales. Deja constancia de si este sistema está, o debería estar, inscrito.",

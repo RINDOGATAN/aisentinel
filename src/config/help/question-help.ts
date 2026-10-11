@@ -72,7 +72,7 @@ export const QUESTION_HELP: Record<string, QuestionHelp> = {
   },
   fria1_4: {
     meaning: L(
-      "Say where and in which parts of the organisation the system is deployed, so the scope of the assessment is clear.",
+      "Say where and in which parts of the organization the system is deployed, so the scope of the assessment is clear.",
       "Di dónde y en qué partes de la organización se despliega el sistema, para que quede claro el alcance de la evaluación.",
     ),
     example: L(
@@ -131,7 +131,7 @@ export const QUESTION_HELP: Record<string, QuestionHelp> = {
       "Identifica cómo el sistema podría tratar a las personas de forma injusta por una característica protegida, se pretenda o no.",
     ),
     example: L(
-      "\"Trained on past hires, the model may favour men for technical roles and so entrench a historical imbalance.\"",
+      "\"Trained on past hires, the model may favor men for technical roles and so entrench a historical imbalance.\"",
       "«Entrenado con contrataciones pasadas, el modelo puede favorecer a los hombres en puestos técnicos y así perpetuar un desequilibrio histórico.»",
     ),
     reference: L("Art. 21 EU Charter", "Art. 21 de la Carta de la UE"),
@@ -186,7 +186,7 @@ export const QUESTION_HELP: Record<string, QuestionHelp> = {
       "Anota cualquier otro derecho que el sistema pudiera afectar y que las preguntas anteriores no cubrieran.",
     ),
     example: L(
-      "\"Right to work (Art. 15): an over-strict filter could shut qualified people out of the labour market.\"",
+      "\"Right to work (Art. 15): an over-strict filter could shut qualified people out of the labor market.\"",
       "«Derecho a trabajar (art. 15): un filtro demasiado estricto podría dejar fuera del mercado laboral a personas cualificadas.»",
     ),
     reference: L("EU Charter of Fundamental Rights", "Carta de los Derechos Fundamentales de la UE"),
@@ -215,7 +215,7 @@ export const QUESTION_HELP: Record<string, QuestionHelp> = {
   },
   fria4_3: {
     meaning: L(
-      "List the organisational measures, the things people and procedures do, that reduce the risks you found.",
+      "List the organizational measures, the things people and procedures do, that reduce the risks you found.",
       "Enumera las medidas organizativas, lo que hacen las personas y los procedimientos, que reducen los riesgos que has hallado.",
     ),
     example: L(

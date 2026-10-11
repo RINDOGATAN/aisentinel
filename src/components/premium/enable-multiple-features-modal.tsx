@@ -65,7 +65,7 @@ export function EnableMultipleFeaturesModal({
             <CardDescription>
               {features.allSkillsFree
                 ? "These features are included in your self-hosted deployment."
-                : "Activate the licence files you received on the Skills page to enable these features."}
+                : "Activate the license files you received on the Skills page to enable these features."}
             </CardDescription>
           </CardHeader>
           <CardContent>

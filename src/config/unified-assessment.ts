@@ -412,7 +412,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
       {
         id: "dec_art22_ground",
         text: t(
-          "On which Art. 22(2) ground does the solely automated decision rest: contract, authorising law, or explicit consent?",
+          "On which Art. 22(2) ground does the solely automated decision rest: contract, authorizing law, or explicit consent?",
           "¿En qué supuesto del art. 22.2 se apoya la decisión únicamente automatizada: contrato, norma habilitante o consentimiento explícito?",
         ),
         type: "textarea",
@@ -550,7 +550,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
       {
         id: "risk_prohibited",
         text: t(
-          "Confirm the system is not used to manipulate behaviour to cause harm, to score people socially, or to infringe constitutional rights, and describe the controls that prevent it.",
+          "Confirm the system is not used to manipulate behavior to cause harm, to score people socially, or to infringe constitutional rights, and describe the controls that prevent it.",
           "Confirma que el sistema no se usa para manipular el comportamiento causando daño, para puntuar socialmente a las personas ni para vulnerar derechos constitucionales, y describe los controles que lo impiden.",
         ),
         helpText: t(
@@ -620,11 +620,11 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
       {
         id: "meas_nist_mapping",
         text: t(
-          "Which recognised risk-management framework does this programme follow, and where is the mapping recorded?",
+          "Which recognized risk-management framework does this program follow, and where is the mapping recorded?",
           "¿Qué marco reconocido de gestión de riesgos sigue este programa y dónde está documentada la correspondencia?",
         ),
         helpText: t(
-          "Substantial compliance with the NIST AI Risk Management Framework is an affirmative defence under Texas TRAIGA. The compliance matrix in this product is the record.",
+          "Substantial compliance with the NIST AI Risk Management Framework is an affirmative defense under Texas TRAIGA. The compliance matrix in this product is the record.",
           "El cumplimiento sustancial del Marco de Gestión de Riesgos de IA del NIST es una eximente conforme a la TRAIGA de Texas. La matriz de cumplimiento de este producto es el registro.",
         ),
         type: "textarea",
@@ -685,7 +685,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
       {
         id: "rev_timing",
         text: t(
-          "State the service levels: acknowledgement, decision and communication of the outcome, with the deadlines you commit to.",
+          "State the service levels: acknowledgment, decision and communication of the outcome, with the deadlines you commit to.",
           "Indica los niveles de servicio: acuse de recibo, decisión y comunicación del resultado, con los plazos que asumes.",
         ),
         type: "textarea",

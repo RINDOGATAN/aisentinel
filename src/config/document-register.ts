@@ -193,7 +193,7 @@ export const DOCUMENT_REGISTER: readonly DocumentEntry[] = [
     href: "/governance/obligations",
     formats: ["md", "ics"],
     packed: true,
-    needs: "At least one declared jurisdiction (where the organisation operates).",
+    needs: "At least one declared jurisdiction (where the organization operates).",
     rule: "Needs a jurisdiction when none is declared. Draft while the regime screening has no answer or the places were copied from another client and not saved again here; ready otherwise.",
     evaluate: (f) =>
       f.jurisdictions === 0
@@ -298,8 +298,8 @@ export const DOCUMENT_REGISTER: readonly DocumentEntry[] = [
     href: "/governance/ai-registry",
     formats: ["md"],
     packed: true,
-    needs: "A declared jurisdiction and a system; behind the licence where the deployment keeps it there. With the agentic addendum where a system acts as an agent.",
-    rule: "Needs a jurisdiction, then a system, then the licence where it is locked. Draft while any system has no approved assessment; ready otherwise.",
+    needs: "A declared jurisdiction and a system; behind the license where the deployment keeps it there. With the agentic addendum where a system acts as an agent.",
+    rule: "Needs a jurisdiction, then a system, then the license where it is locked. Draft while any system has no approved assessment; ready otherwise.",
     evaluate: (f) =>
       perSystemInputs(f) ??
       (f.impactAssessmentLocked
@@ -464,8 +464,8 @@ export const DOCUMENT_REGISTER: readonly DocumentEntry[] = [
     downloads: { pdf: "/api/export/governance-program" },
     formats: ["pdf"],
     packed: true,
-    needs: "Nothing; useful once there is confirmed content. Behind the licence where the deployment keeps it there.",
-    rule: "Needs the licence where it is locked. Draft while there is no system or any drafted item waits to be confirmed; ready otherwise.",
+    needs: "Nothing; useful once there is confirmed content. Behind the license where the deployment keeps it there.",
+    rule: "Needs the license where it is locked. Draft while there is no system or any drafted item waits to be confirmed; ready otherwise.",
     evaluate: (f) =>
       f.programReportLocked
         ? needs("licence")

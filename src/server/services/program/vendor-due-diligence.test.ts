@@ -50,7 +50,7 @@ describe("vendorDueDiligenceFindings", () => {
       "en",
     );
     expect(text).toContain("Certifications: ISO 27001, SOC 2 Type II");
-    expect(text).toContain("Data locations: US, EU (EU data centre: yes)");
+    expect(text).toContain("Data locations: US, EU (EU data center: yes)");
     expect(text).toContain("82/100");
     expect(text).toContain("Publicly reported breach in the catalog's window: no");
     expect(text).not.toContain("Which security and AI management certifications");

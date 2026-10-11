@@ -66,10 +66,10 @@ const COPY: Record<
     capsIntro:
       "Nobody pays for a module on the hosted pilot. Instead it has three limits, and they are the same for every account.",
     editingTitle: "Editing window",
-    ceilingsTitle: "Records per organisation",
-    oneOrgTitle: "One organisation per account",
+    ceilingsTitle: "Records per organization",
+    oneOrgTitle: "One organization per account",
     oneOrg:
-      "The hosted pilot holds one organisation per account. To carry several organisations, choose a managed instance or your own hardware.",
+      "The hosted pilot holds one organization per account. To carry several organizations, choose a managed instance or your own hardware.",
     waysOutTitle: "When you reach a limit",
     waysOut:
       "The pilot is for trying the tool with test records. The Cloud Plan lifts the limits and keeps your records; a managed instance or your own hardware is on quotation. You can also export everything you created as a program pack at any time.",

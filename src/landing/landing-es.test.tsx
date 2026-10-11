@@ -95,6 +95,14 @@ describe("landing hero", () => {
     expect(read("src/landing/components/StartupProductPage.tsx")).toContain('t("hero.card")');
   });
 
+  it("links the Spanish page to the public documentation, in plain words", () => {
+    expect(ES["value.docs"]).toBe("Consulta la documentación");
+    expect(EN["value.docs"]).toBeUndefined();
+    const page = read("src/landing/components/StartupProductPage.tsx");
+    expect(page).toContain('href="/docs"');
+    expect(page).not.toMatch(/regulatorio\/ai-sentinel/);
+  });
+
   it("closes the Spanish page with the button alone (no closing heading or pilot text)", () => {
     for (const k of ["cta.heading.prefix", "cta.heading.accent", "cta.heading.suffix", "cta.text"]) expect(ES[k], k).toBeUndefined();
     expect(ES["cta.button"]).toBe("Abrir AI Sentinel");

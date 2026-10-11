@@ -28,6 +28,7 @@
   "value.v3.desc": "Realiza evaluaciones de impacto sobre los derechos fundamentales, de conformidad, de riesgo de la IA y de sesgo y equidad con plantillas guiadas y flujos de aprobación.",
   "value.v4.title": "Nueve marcos, una matriz",
   "value.v4.desc": "Mapea controles contra el Reglamento de IA de la UE, el NIST AI RMF, la ISO/IEC 42001 y AIUC-1, la norma de certificación para agentes de IA, y cinco más: el RGPD y las normas de IA de California, Colorado, Texas y Washington. Una sola respuesta sirve de evidencia para cada marco que satisface. Exporta matrices de cumplimiento para auditorías.",
+  "value.docs": "Consulta la documentación",
   "workflow.label": "Cómo funciona",
   "workflow.heading.prefix": "De cero a ",
   "workflow.heading.accent": "cumplimiento en IA",

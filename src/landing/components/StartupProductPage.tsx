@@ -3,10 +3,11 @@
 
 import { useState, useRef, useEffect } from "react";
 import { signIn } from "next-auth/react";
-import { ArrowRight, Check, Loader2 } from "lucide-react";
+import { ArrowRight, BookOpen, Check, Loader2 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { PilotSentence } from "@/config/pilot";
 import { PilotSentenceText } from "@/components/pilot/pilot-sentence";
+import { writeLocaleCookie } from "@/lib/locale-cookie";
 
 export interface Feature {
   id: string;
@@ -368,6 +369,24 @@ const StartupProductPage = ({
               </div>
             ))}
           </div>
+          {/* The public documentation, where the language has a label for it
+              (value.docs, Spanish only). The docs follow the locale cookie, so
+              the link records Spanish first: a ?lang=es visitor reads them in
+              Spanish too. */}
+          {t("value.docs") !== "value.docs" && (
+            <div className="mt-10 text-center">
+              <a
+                href="/docs"
+                data-testid="landing-docs-link"
+                onClick={() => writeLocaleCookie("es")}
+                className="inline-flex items-center gap-2 text-base font-medium text-accent hover:text-foreground transition-colors"
+              >
+                <BookOpen className="w-5 h-5" aria-hidden="true" />
+                {t("value.docs")}
+                <ArrowRight className="w-4 h-4" aria-hidden="true" />
+              </a>
+            </div>
+          )}
         </div>
       </section>
 

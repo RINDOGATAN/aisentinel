@@ -46,6 +46,12 @@ interface StartupProductPageProps {
    * two show.
    */
   middle?: React.ReactNode;
+  /**
+   * The Spanish page (owner, 10 Oct 2026): the cards stay still under the
+   * pointer while the page scrolls, and the page closes with the button back
+   * to the sign-up card alone, without the closing heading and text.
+   */
+  plain?: boolean;
 }
 
 const GoogleIcon = () => (
@@ -69,6 +75,7 @@ const StartupProductPage = ({
   callbackUrl,
   pilotNotice = null,
   middle,
+  plain = false,
 }: StartupProductPageProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [cardMode, setCardMode] = useState<"signup" | "login" | "sent">("signup");
@@ -189,7 +196,7 @@ const StartupProductPage = ({
   );
 
   return (
-    <main>
+    <main className={plain ? "landing-still" : undefined}>
       {/* HERO with video background */}
       <section className="relative min-h-screen flex items-center overflow-hidden">
         <div className="absolute inset-0 z-0">
@@ -290,7 +297,8 @@ const StartupProductPage = ({
                     <div className="relative animate-fade-in">
                       <h2 className="text-xl md:text-2xl font-display mb-2">{t("hero.cta")}</h2>
                       <p className="text-sm text-muted-foreground font-body mb-6">
-                        {t("hero.subtitle").split(".")[0]}.
+                        {/* The card's own line where the language has one (hero.card), else the summary's first sentence. */}
+                        {t("hero.card") !== "hero.card" ? t("hero.card") : `${t("hero.subtitle").split(".")[0]}.`}
                       </p>
                       <form onSubmit={handleMagicLink} className="space-y-4">
                         <input
@@ -438,16 +446,20 @@ const StartupProductPage = ({
         </>
       )}
 
-      {/* BOTTOM CTA */}
-      <section className="py-20 md:py-28 border-t border-border bg-secondary/10">
+      {/* BOTTOM CTA: on the plain page, the button alone */}
+      <section className={`${plain ? "py-14 md:py-20" : "py-20 md:py-28"} border-t border-border bg-secondary/10`}>
         <div className="container px-6 text-center">
           <div>
-            <h2 className="text-2xl md:text-4xl mb-6">
-              {t("cta.heading.prefix")}
-              <span className="text-accent">{t("cta.heading.accent")}</span>
-              {t("cta.heading.suffix")}
-            </h2>
-            <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto font-body">{t("cta.text")}</p>
+            {!plain && (
+              <>
+                <h2 className="text-2xl md:text-4xl mb-6">
+                  {t("cta.heading.prefix")}
+                  <span className="text-accent">{t("cta.heading.accent")}</span>
+                  {t("cta.heading.suffix")}
+                </h2>
+                <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto font-body">{t("cta.text")}</p>
+              </>
+            )}
             <button
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
               className="btn-primary text-base px-10 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"

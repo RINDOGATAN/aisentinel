@@ -893,7 +893,7 @@
     "statsExpiringSoon": "Próximos a vencer",
     "searchPlaceholder": "Buscar proveedores...",
     "catalogCardTitle": "Catálogo de proveedores de IA",
-    "catalogCardDescription": "Busca proveedores de IA preauditados en Vendor.Watch y autocompleta los registros de proveedor",
+    "catalogCardDescription": "Busca proveedores de IA en Vendor.Watch y autocompleta los registros de proveedor",
     "addFromCatalog": "Añadir desde el catálogo",
     "enableCatalog": "Activar",
     "emptyTitle": "No se han encontrado proveedores",
@@ -922,13 +922,13 @@
     "systemsCount": "{count, plural, one {# sistema} other {# sistemas}}",
     "assessmentsCount": "{count, plural, one {# evaluación} other {# evaluaciones}}",
     "contractExpiresInDays": "El contrato vence dentro de {count, plural, one {# día} other {# días}}",
-    "catalogSkillDescription": "Busca proveedores de IA preauditados en la base de datos de Vendor.Watch y rellena automáticamente tus registros de proveedores con datos de cumplimiento."
+    "catalogSkillDescription": "Busca proveedores de IA en la base de datos de Vendor.Watch y rellena automáticamente tus registros de proveedores con datos de cumplimiento."
   },
   "vendorsNew": {
     "title": "Añadir proveedor",
     "subtitle": "Registrar un nuevo proveedor externo de IA",
     "catalogSearchTitle": "Catálogo de proveedores de IA",
-    "catalogSearchDescription": "Busca proveedores de IA preauditados en la base de datos de Vendor.Watch para autocompletar los datos del proveedor",
+    "catalogSearchDescription": "Busca proveedores de IA en la base de datos de Vendor.Watch para autocompletar los datos del proveedor",
     "catalogSearchPlaceholder": "Buscar proveedores de IA (p. ej., OpenAI, Anthropic, Google)...",
     "catalogNoResults": "No se han encontrado proveedores para \"{query}\"",
     "formTitle": "Detalles del proveedor",
@@ -1334,7 +1334,7 @@
   },
   "vendorCatalog": {
     "title": "Catálogo de proveedores de IA",
-    "subtitle": "Explore proveedores de IA preauditados de la base de datos de Vendor.Watch",
+    "subtitle": "Explora proveedores de IA de la base de datos de Vendor.Watch",
     "premiumBadge": "Premium",
     "enableCatalog": "Activar catálogo de proveedores de IA",
     "statsTotalVendors": "Total de proveedores",
@@ -1673,7 +1673,7 @@
         "security": "Seguridad y confianza",
         "crossBorder": "Regímenes transfronterizos",
         "whatsNew": "Novedades",
-        "pilot": "El piloto alojado",
+        "pilot": "Piloto gratuito y alojamiento",
         "support": "Cómo informar de un problema",
         "frameworksOverview": "Resumen y rueda",
         "frameworksTable": "Tabla",
@@ -1791,7 +1791,7 @@
         },
         "vendorCatalog": {
           "title": "Catálogo de proveedores de IA",
-          "description": "Catálogo preauditado de {count} proveedores de IA con perfiles de riesgo, certificaciones de cumplimiento y metadatos de gobernanza."
+          "description": "Catálogo de {count} proveedores de IA con perfiles de riesgo, certificaciones de cumplimiento y metadatos de gobernanza."
         },
         "conformity": {
           "title": "Evaluación de conformidad",
@@ -2623,7 +2623,7 @@
       ],
       "catalogTitle": "Catálogo de proveedores de IA",
       "catalogPremium": "Premium",
-      "catalogIntro": "El Catálogo de Proveedores de IA (con tecnología de Vendor.Watch) ofrece una base de datos de proveedores de IA preauditados. Busca en el catálogo, consulta perfiles de proveedores y añádelos directamente a tu registro con los datos autocompletados.",
+      "catalogIntro": "El Catálogo de Proveedores de IA (con tecnología de Vendor.Watch) ofrece una base de datos de proveedores de IA. Busca en el catálogo, consulta perfiles de proveedores y añádelos directamente a tu registro con los datos autocompletados.",
       "catalogSearchTitle": "Buscar y explorar",
       "catalogSearchBody": "Busca por nombre de proveedor o explora por categoría. Cada entrada del catálogo incluye una descripción, el sitio web e indicadores de cumplimiento.",
       "catalogAutofillTitle": "Autocompletado",
@@ -2849,10 +2849,10 @@
     },
     "vendorCatalog": {
       "metaTitle": "Catálogo de proveedores de IA: documentación de AI SENTINEL",
-      "metaDescription": "Catálogo preauditado de más de 665 proveedores de IA con perfiles de riesgo, datos de cumplimiento y metadatos de gobernanza, impulsado por Vendor.Watch.",
+      "metaDescription": "Catálogo de más de 850 proveedores de IA con perfiles de riesgo, datos de cumplimiento y metadatos de gobernanza, impulsado por Vendor.Watch.",
       "premiumBadge": "Premium",
       "title": "Catálogo de proveedores de IA",
-      "intro": "Evaluar proveedores de IA desde cero consume tiempo y es propenso a errores. El Catálogo de Proveedores de IA da a tu equipo de gobernanza una ventaja inicial con perfiles preauditados de más de 665 proveedores de IA, completos con indicadores de riesgo, certificaciones de cumplimiento y metadatos de despliegue.",
+      "intro": "Evaluar proveedores de IA desde cero consume tiempo y es propenso a errores. El Catálogo de Proveedores de IA da a tu equipo de gobernanza una ventaja inicial con perfiles precargados de más de 850 proveedores de IA, completos con indicadores de riesgo, certificaciones de cumplimiento y metadatos de despliegue.",
       "whatTitle": "¿Qué es el catálogo de proveedores de IA?",
       "whatP1": "El Catálogo de Proveedores de IA es un directorio precargado y con búsqueda de proveedores de herramientas y servicios de IA. Cada perfil de proveedor incluye datos de gobernanza estructurados: qué hace el proveedor, dónde se procesan los datos, qué certificaciones posee, si entrena con datos de clientes y su clasificación de riesgo según el Reglamento de IA de la UE.",
       "whatP2": "El catálogo está impulsado por <vw>Vendor.Watch</vw>, un servicio independiente de inteligencia sobre proveedores de IA que audita y actualiza continuamente los perfiles. Los datos se sincronizan automáticamente, de modo que tu catálogo se mantiene al día sin investigación manual.",
@@ -2879,7 +2879,7 @@
       "vsIntro": "El Catálogo de Proveedores de IA y el módulo de Riesgo de Proveedores cumplen funciones distintas en el ciclo de vida de la gobernanza. Se complementan entre sí.",
       "vsCatalogTitle": "Catálogo de proveedores",
       "vsCatalogItems": [
-        "Directorio precargado con más de 665 proveedores de IA",
+        "Directorio precargado con más de 850 proveedores de IA",
         "Inteligencia externa: datos de Vendor.Watch",
         "Referencia de solo lectura para la diligencia debida inicial",
         "Pregunta clave: «¿Qué sabemos de este proveedor?»"
@@ -3213,12 +3213,12 @@
     },
     "security": {
       "metaTitle": "Seguridad y confianza: documentación de AI SENTINEL",
-      "metaDescription": "Cómo AI SENTINEL protege los datos de tu organización con controles de seguridad de nivel empresarial.",
+      "metaDescription": "Cómo protege AI SENTINEL los datos de tu organización: registros separados, control de acceso, validación de entradas, registro de auditoría y dónde se guardan los datos.",
       "title": "Seguridad y confianza",
       "intro": "AI SENTINEL está diseñado para organizaciones que gestionan datos sensibles de gobernanza de IA. La seguridad está integrada en cada capa de la plataforma: desde cómo aislamos tus datos hasta cómo controlamos el acceso y protegemos tu información.",
       "isolation": {
         "title": "Aislamiento de datos",
-        "intro": "Cada organización en AI SENTINEL opera en un entorno totalmente aislado. Tus sistemas de IA, evaluaciones, políticas, incidentes y datos de proveedores nunca son accesibles para otras organizaciones.",
+        "intro": "Los registros de cada organización están separados de los de todas las demás. Tus sistemas de IA, evaluaciones, políticas, incidentes y datos de proveedores nunca son accesibles para otras organizaciones.",
         "items": [
           {
             "title": "Consultas restringidas por organización",
@@ -3288,7 +3288,7 @@
           },
           {
             "title": "Consultas parametrizadas",
-            "description": "Todas las consultas a la base de datos utilizan parámetros. Nunca se usa SQL en bruto, lo que elimina el riesgo de inyección SQL."
+            "description": "Todas las consultas a la base de datos usan parámetros, también las pocas escritas en SQL, que vinculan cada valor. Así se elimina el riesgo de inyección SQL."
           },
           {
             "title": "Validación de enumeraciones",
@@ -3331,6 +3331,10 @@
           {
             "title": "Permisos mínimos",
             "description": "Las API del navegador (cámara, micrófono, geolocalización) están explícitamente desactivadas: la aplicación nunca solicita accesos innecesarios."
+          },
+          {
+            "title": "Dónde se guardan los datos",
+            "description": "En la nube de TODO.LAW, los datos se guardan en la Unión Europea (Fráncfort). Si un administrador activa las funciones de IA, el texto que se usa va al proveedor de IA configurado en el servicio, que puede estar fuera de la UE. En una instancia gestionada o en tu propio hardware, los datos se quedan allí."
           }
         ]
       },
@@ -3616,7 +3620,7 @@
       "ctaBody": "Abre cualquier sistema de IA y elige la pestaña Regímenes transfronterizos.",
       "ctaLink": "Leer la documentación transfronteriza",
       "offerTitle": "Módulos premium",
-      "offerBody": "El servicio alojado es un piloto gratuito: todos los módulos, también los premium, están abiertos a todas las organizaciones. Los módulos premium tienen licencia para instalaciones autoalojadas y se activan con un archivo de licencia sin conexión."
+      "offerBody": "Cada cuenta empieza con un piloto gratuito y con límites en la nube de TODO.LAW, con todos los módulos abiertos, también los premium. Para datos reales, elige un plan de pago o una instancia gestionada (consulta la página de precios). En tu propio hardware, los módulos premium se activan con un archivo de licencia sin conexión."
     },
     "threatModel": {
       "metaTitle": "Modelado de amenazas para quien construye",
@@ -3848,7 +3852,7 @@
     "premiumNotice": {
       "title": "Cómo se ofrecen los módulos premium",
       "hosted": "Abiertos a todo el mundo en el piloto alojado.",
-      "selfHosted": "Con licencia para instalaciones autoalojadas.",
+      "selfHosted": "Con licencia para instalaciones en tu propio hardware.",
       "seePricing": "Ver precios",
       "newTab": "(se abre en una pestaña nueva)"
     },

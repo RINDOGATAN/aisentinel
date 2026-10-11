@@ -100,7 +100,7 @@ export default async function DocsPage() {
 
   const premiumValues: Record<string, Record<string, string | number>> = {
     shadowAi: { count: counts.tools ?? "60+" },
-    vendorCatalog: { count: approx(counts.vendors) ?? "800+" },
+    vendorCatalog: { count: approx(counts.vendors) ?? "850+" },
   };
 
   return (

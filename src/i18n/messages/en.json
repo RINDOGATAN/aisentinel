@@ -893,7 +893,7 @@
     "statsExpiringSoon": "Expiring Soon",
     "searchPlaceholder": "Search vendors...",
     "catalogCardTitle": "AI Vendor Catalog",
-    "catalogCardDescription": "Search pre-audited AI vendors from Vendor.Watch and auto-fill vendor records",
+    "catalogCardDescription": "Search AI vendors from Vendor.Watch and auto-fill vendor records",
     "addFromCatalog": "Add from Catalog",
     "enableCatalog": "Enable",
     "emptyTitle": "No vendors found",
@@ -922,13 +922,13 @@
     "systemsCount": "{count, plural, one {# system} other {# systems}}",
     "assessmentsCount": "{count, plural, one {# assessment} other {# assessments}}",
     "contractExpiresInDays": "Contract expires in {count, plural, one {# day} other {# days}}",
-    "catalogSkillDescription": "Search pre-audited AI vendors from the Vendor.Watch database and auto-fill your local vendor records with compliance data."
+    "catalogSkillDescription": "Search AI vendors from the Vendor.Watch database and auto-fill your local vendor records with compliance data."
   },
   "vendorsNew": {
     "title": "Add Vendor",
     "subtitle": "Register a new third-party AI vendor",
     "catalogSearchTitle": "AI Vendor Catalog",
-    "catalogSearchDescription": "Search pre-audited AI vendors from the Vendor.Watch database to auto-fill vendor details",
+    "catalogSearchDescription": "Search AI vendors from the Vendor.Watch database to auto-fill vendor details",
     "catalogSearchPlaceholder": "Search AI vendors (e.g., OpenAI, Anthropic, Google)...",
     "catalogNoResults": "No vendors found for \"{query}\"",
     "formTitle": "Vendor Details",
@@ -1334,7 +1334,7 @@
   },
   "vendorCatalog": {
     "title": "AI Vendor Catalog",
-    "subtitle": "Browse pre-audited AI vendors from the Vendor.Watch database",
+    "subtitle": "Browse AI vendors from the Vendor.Watch database",
     "premiumBadge": "Premium",
     "enableCatalog": "Enable AI Vendor Catalog",
     "statsTotalVendors": "Total Vendors",
@@ -1673,7 +1673,7 @@
         "security": "Security & Trust",
         "crossBorder": "Cross-border regimes",
         "whatsNew": "What's new",
-        "pilot": "The hosted pilot",
+        "pilot": "Free pilot and hosting",
         "support": "Reporting a problem",
         "frameworksOverview": "Overview and wheel",
         "frameworksTable": "Table",
@@ -1791,7 +1791,7 @@
         },
         "vendorCatalog": {
           "title": "AI Vendor Catalog",
-          "description": "Pre-audited catalog of {count} AI vendors with risk profiles, compliance certifications, and governance metadata."
+          "description": "Catalog of {count} AI vendors with risk profiles, compliance certifications, and governance metadata."
         },
         "conformity": {
           "title": "Conformity Assessment",
@@ -2623,7 +2623,7 @@
       ],
       "catalogTitle": "AI Vendor Catalog",
       "catalogPremium": "Premium",
-      "catalogIntro": "The AI Vendor Catalog (powered by Vendor.Watch) provides a pre-audited database of AI vendors. Search the catalog, view vendor profiles, and add vendors directly to your registry with auto-filled details.",
+      "catalogIntro": "The AI Vendor Catalog (powered by Vendor.Watch) provides a database of AI vendors. Search the catalog, view vendor profiles, and add vendors directly to your registry with auto-filled details.",
       "catalogSearchTitle": "Search & Browse",
       "catalogSearchBody": "Search by vendor name or browse by category. Each catalog entry includes a description, website, and compliance flags.",
       "catalogAutofillTitle": "Auto-fill",
@@ -2849,10 +2849,10 @@
     },
     "vendorCatalog": {
       "metaTitle": "AI Vendor Catalog: AI SENTINEL Docs",
-      "metaDescription": "Pre-audited catalog of 800+ AI vendors with risk profiles, compliance data, and governance metadata powered by Vendor.Watch.",
+      "metaDescription": "Catalog of more than 850 AI vendors with risk profiles, compliance data, and governance metadata powered by Vendor.Watch.",
       "premiumBadge": "Premium",
       "title": "AI Vendor Catalog",
-      "intro": "Evaluating AI vendors from scratch is time-consuming and error-prone. The AI Vendor Catalog gives your governance team a head start with pre-audited profiles for 800+ AI vendors: complete with risk indicators, compliance certifications, and deployment metadata.",
+      "intro": "Evaluating AI vendors from scratch is time-consuming and error-prone. The AI Vendor Catalog gives your governance team a head start with pre-populated profiles for more than 850 AI vendors: complete with risk indicators, compliance certifications, and deployment metadata.",
       "whatTitle": "What is the AI Vendor Catalog?",
       "whatP1": "The AI Vendor Catalog is a searchable, pre-populated directory of AI tool and service providers. Each vendor profile includes structured governance data: what the vendor does, where data is processed, what certifications they hold, whether they train on customer data, and their EU AI Act risk classification.",
       "whatP2": "The catalog is powered by <vw>Vendor.Watch</vw>, an independent AI vendor intelligence service that continuously audits and updates vendor profiles. Data syncs automatically, so your catalog stays current without manual research.",
@@ -2879,7 +2879,7 @@
       "vsIntro": "The AI Vendor Catalog and the Vendor Risk module serve different purposes in the governance lifecycle. They complement each other.",
       "vsCatalogTitle": "Vendor Catalog",
       "vsCatalogItems": [
-        "Pre-populated directory of 800+ AI vendors",
+        "Pre-populated directory of more than 850 AI vendors",
         "External intelligence: data from Vendor.Watch",
         "Read-only reference for initial due diligence",
         "Core question: “What do we know about this vendor?”"
@@ -3213,12 +3213,12 @@
     },
     "security": {
       "metaTitle": "Security & Trust: AI SENTINEL Docs",
-      "metaDescription": "How AI SENTINEL protects your organization's data with enterprise-grade security controls.",
+      "metaDescription": "How AI SENTINEL protects your organization's data: records kept apart, access control, input validation, an audit trail, and where the data is stored.",
       "title": "Security & Trust",
       "intro": "AI SENTINEL is built for organizations that manage sensitive AI governance data. Security is embedded in every layer of the platform: from how we isolate your data to how we control access and protect your information.",
       "isolation": {
         "title": "Data Isolation",
-        "intro": "Every organization on AI SENTINEL operates in a fully isolated environment. Your AI systems, assessments, policies, incidents, and vendor data are never accessible to other organizations.",
+        "intro": "Every organization's records are kept apart from every other organization's. Your AI systems, assessments, policies, incidents, and vendor data are never accessible to other organizations.",
         "items": [
           {
             "title": "Organization-Scoped Queries",
@@ -3288,7 +3288,7 @@
           },
           {
             "title": "Parameterized Queries",
-            "description": "All database queries use parameterized inputs. Raw SQL is never used, eliminating SQL injection risk."
+            "description": "All database queries use parameterized inputs, including the few written in SQL, which bind every value. This removes the risk of SQL injection."
           },
           {
             "title": "Enum Enforcement",
@@ -3331,6 +3331,10 @@
           {
             "title": "Minimal Permissions",
             "description": "Browser APIs (camera, microphone, geolocation) are explicitly disabled: the application never requests unnecessary access."
+          },
+          {
+            "title": "Where the data is stored",
+            "description": "On the TODO.LAW cloud, the data is stored in the European Union (Frankfurt). If an admin turns AI features on, the text they use goes to the AI provider set up on the service, which may be outside the EU. On a managed instance or on your own hardware, the data stays there."
           }
         ]
       },
@@ -3616,7 +3620,7 @@
       "ctaBody": "Open any AI system and choose the Cross-border regimes tab.",
       "ctaLink": "Read the cross-border documentation",
       "offerTitle": "Premium modules",
-      "offerBody": "The hosted service is a free pilot: every module, premium included, is open to every organization. The premium modules are licensed for self-hosted installations, activated with an offline licence file."
+      "offerBody": "Every account starts with a free, capped pilot on the TODO.LAW cloud, with every module open, premium included. For real data, choose a paid plan or a managed instance (see the pricing page). On your own hardware, premium modules are activated with an offline licence file."
     },
     "threatModel": {
       "metaTitle": "Threat modelling for builders",
@@ -3848,7 +3852,7 @@
     "premiumNotice": {
       "title": "How the premium modules are offered",
       "hosted": "Open to everyone on the hosted pilot.",
-      "selfHosted": "Licensed for self-hosted installations.",
+      "selfHosted": "Licensed for installations on your own hardware.",
       "seePricing": "See pricing",
       "newTab": "(opens in a new tab)"
     },

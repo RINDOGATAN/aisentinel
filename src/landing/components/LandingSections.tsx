@@ -8,7 +8,8 @@
  * program as the Guided path implements them with the 30/60/90-day plan
  * beneath, and the ways to host it. Both pages then show the customer logos
  * above the footer (only while the configured list is not empty). After the
- * ways, the pricing section (owner, 11 Oct 2026: PricingSection.tsx), the one
+ * ways, the pricing section (owner, 11 Oct 2026: PricingSection.tsx), only
+ * in the languages listed in PRICING_SECTION_LOCALES (Spanish for now), the one
  * place with prices and the Cloud Plan's EU storage. No hosting location in
  * the other sections; the safeguards
  * guide after the ways (SafeguardsGuide) says, as the storefront does, that
@@ -51,6 +52,7 @@ import { LANDING_VIDEOS, type LandingLocale, type LandingVideo } from "../config
 import CustomerLogos from "./CustomerLogos";
 import SafeguardsGuide, { wayBoxId } from "./SafeguardsGuide";
 import PricingSection from "./PricingSection";
+import { pricingShownFor } from "../config/pricing";
 import { WAY_CARD, recommend, type Answers, type QuestionId } from "../config/safeguards";
 
 type T = (key: string) => string;
@@ -462,7 +464,7 @@ export default function LandingSections({ t, locale, videos = LANDING_VIDEOS[loc
       <Stages t={t} p={locale} />
       {/* Keyed by language: the toggle starts the guide afresh, as the ways change. */}
       <Ways key={locale} t={t} p={locale} setup={setup} initialGuide={initialGuide} />
-      <PricingSection locale={locale} />
+      {pricingShownFor(locale) && <PricingSection locale={locale} />}
       {setup.logos && <CustomerLogos label={t(`${locale}.logos.label`)} />}
     </>
   );

@@ -302,7 +302,7 @@ export const COPY: Record<Locale, SafeguardsCopy> = {
     },
     summaries: {
       cloud:
-        "Hosted by us in the EU. A free, capped pilot to try the workflows with test records. It is not for real client data, it is shared with other organizations (each one's records kept apart). If you turn AI features on, the record details each AI draft uses go to the external AI provider set up on the service, which may be outside the EU.",
+        "Hosted by us in the EU. A free, capped pilot to try the workflows with test records. It is not for real client data, and it is shared with other organizations (each one's records kept apart). If you turn AI features on, the record details each AI draft uses go to the external AI provider set up on the service, which may be outside the EU.",
       managed:
         "An isolated instance we run for your organization alone, hosted in Asturias, Spain. Your records stay on that instance. AI features stay off until you turn them on, and can use open-weight models hosted on the instance itself, so the record details do not leave it, or your own provider key.",
       deploy:

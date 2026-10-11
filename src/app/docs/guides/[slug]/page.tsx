@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!guide) return {};
   const locale = ((await getLocale()) === "es" ? "es" : "en") as ContentLocale;
   return {
-    title: `${guide.title[locale]} — AI SENTINEL`,
+    title: `${guide.title[locale]}: AI SENTINEL`,
     description: guide.lead[locale],
   };
 }

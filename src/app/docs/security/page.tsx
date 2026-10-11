@@ -230,7 +230,7 @@ export default async function SecurityDocsPage() {
               </span>
               <div>
                 <span className="font-medium">{item.category}</span>
-                <span className="text-muted-foreground"> — {item.description}</span>
+                <span className="text-muted-foreground">: {item.description}</span>
               </div>
             </div>
           ))}

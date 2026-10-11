@@ -1,4 +1,4 @@
-# AI SENTINEL — Complete Reference
+# AI SENTINEL: Complete Reference
 
 > AI Governance Made Accountable
 
@@ -36,10 +36,10 @@ URL: https://aisentinel.todo.law/docs/risk-classification
 Classify AI systems according to the EU AI Act's four-tier risk framework. Includes an Annex III high-risk category wizard and maintains a full classification history with audit trail.
 
 **Risk tiers:**
-- **Unacceptable Risk** — Prohibited AI practices (social scoring, real-time biometric identification in public spaces, manipulation of vulnerable groups, emotion recognition in workplace/education)
-- **High Risk** — AI in critical areas requiring strict compliance (biometrics, critical infrastructure, education, employment, essential services, law enforcement, migration, justice)
-- **Limited Risk** — AI with transparency obligations (chatbots, emotion recognition, deepfakes, AI-generated content)
-- **Minimal Risk** — Low-risk AI with no specific EU AI Act obligations (spam filters, AI-enhanced games, inventory management)
+- **Unacceptable Risk**: Prohibited AI practices (social scoring, real-time biometric identification in public spaces, manipulation of vulnerable groups, emotion recognition in workplace/education)
+- **High Risk**: AI in critical areas requiring strict compliance (biometrics, critical infrastructure, education, employment, essential services, law enforcement, migration, justice)
+- **Limited Risk**: AI with transparency obligations (chatbots, emotion recognition, deepfakes, AI-generated content)
+- **Minimal Risk**: Low-risk AI with no specific EU AI Act obligations (spam filters, AI-enhanced games, inventory management)
 
 **Annex III high-risk categories:** Biometric identification, Critical infrastructure management, Education and vocational training, Employment and worker management, Essential private and public services, Law enforcement, Migration and border control, Administration of justice
 
@@ -49,11 +49,11 @@ URL: https://aisentinel.todo.law/docs/assessments
 Conduct structured assessments of AI systems using built-in templates or custom questionnaires. Supports approval workflows and risk scoring.
 
 **Assessment templates:**
-- **FRIA (Fundamental Rights Impact Assessment)** — 22 questions covering rights to dignity, non-discrimination, privacy, freedom of expression, access to justice, and more. Required for high-risk AI systems under the EU AI Act.
-- **AI Risk Assessment** — 18 questions evaluating technical risks, data quality, security, transparency, and human oversight.
-- **Custom Assessment** — 6 baseline questions with the ability to add custom questions tailored to your organization.
-- **Conformity Assessment** (Premium) — 25 questions aligned with Art. 43 EU AI Act requirements across 9 evaluation areas.
-- **Bias & Fairness Assessment** (Premium) — 24 questions covering protected attributes, data representativeness, fairness metrics, proxy detection, mitigation measures, and monitoring.
+- **FRIA (Fundamental Rights Impact Assessment)**: 22 questions covering rights to dignity, non-discrimination, privacy, freedom of expression, access to justice, and more. Required for high-risk AI systems under the EU AI Act.
+- **AI Risk Assessment**: 18 questions evaluating technical risks, data quality, security, transparency, and human oversight.
+- **Custom Assessment**: 6 baseline questions with the ability to add custom questions tailored to your organization.
+- **Conformity Assessment** (Premium): 25 questions aligned with Art. 43 EU AI Act requirements across 9 evaluation areas.
+- **Bias & Fairness Assessment** (Premium): 24 questions covering protected attributes, data representativeness, fairness metrics, proxy detection, mitigation measures, and monitoring.
 
 **Approval workflow:** Draft → In Progress → Under Review → Approved
 
@@ -65,9 +65,9 @@ URL: https://aisentinel.todo.law/docs/compliance
 Map AI systems to regulatory requirements across nine frameworks. Track compliance status per requirement, attach evidence, and generate compliance snapshots.
 
 **Supported frameworks:**
-- **EU AI Act** — European Union's comprehensive AI regulation with requirements for risk management, data governance, transparency, human oversight, accuracy, and robustness
-- **NIST AI RMF** — U.S. National Institute of Standards and Technology AI Risk Management Framework with Govern, Map, Measure, and Manage functions
-- **ISO 42001** — International standard for AI Management Systems covering leadership, planning, support, operation, and performance evaluation
+- **EU AI Act**: European Union's comprehensive AI regulation with requirements for risk management, data governance, transparency, human oversight, accuracy, and robustness
+- **NIST AI RMF**: U.S. National Institute of Standards and Technology AI Risk Management Framework with Govern, Map, Measure, and Manage functions
+- **ISO 42001**: International standard for AI Management Systems covering leadership, planning, support, operation, and performance evaluation
 - **AIUC-1**: the certification standard for AI agents (security, safety and reliability), in six domains with 51 requirements in force (Q3 2026 release). It is chosen per system, not attached by risk tier, and linked to ISO 42001, the NIST AI RMF and the EU AI Act through the crosswalks the standard publishes
 - **By jurisdiction**: the GDPR (AI-relevant articles) and the California, Colorado, Texas and Washington AI rules
 
@@ -83,11 +83,11 @@ URL: https://aisentinel.todo.law/docs/oversight
 Implement human-in-the-loop controls for AI systems as required by EU AI Act Article 14. Create approval gates at critical points in the AI lifecycle and log all oversight decisions.
 
 **Gate types:**
-- **Pre-deployment** — Review and approve before an AI system goes live
-- **Post-deployment** — Monitor and review after deployment
-- **Periodic Review** — Scheduled recurring reviews
-- **Incident-triggered** — Automatic review triggered by AI incidents
-- **Material Change** — Review required when significant changes are made
+- **Pre-deployment**: Review and approve before an AI system goes live
+- **Post-deployment**: Monitor and review after deployment
+- **Periodic Review**: Scheduled recurring reviews
+- **Incident-triggered**: Automatic review triggered by AI incidents
+- **Material Change**: Review required when significant changes are made
 
 **Decision options:** Approve, Reject, Defer (with rationale and conditions)
 
@@ -192,12 +192,12 @@ URL: https://aisentinel.todo.law/docs/bias-fairness
 Evaluate AI systems for bias and fairness across protected characteristics. Provides a structured 24-question template covering 6 evaluation areas.
 
 **Evaluation areas:**
-1. Protected Attributes — Identify which characteristics the AI system may affect (age, gender, ethnicity, disability, etc.)
-2. Data Representativeness — Assess whether training data adequately represents affected populations
-3. Fairness Metrics — Define and measure fairness using demographic parity, equalized odds, or other metrics
-4. Proxy Detection — Identify features that may serve as proxies for protected attributes
-5. Mitigation Measures — Document bias mitigation strategies applied during development and deployment
-6. Monitoring Plan — Establish ongoing monitoring for bias drift and fairness degradation
+1. Protected Attributes: Identify which characteristics the AI system may affect (age, gender, ethnicity, disability, etc.)
+2. Data Representativeness: Assess whether training data adequately represents affected populations
+3. Fairness Metrics: Define and measure fairness using demographic parity, equalized odds, or other metrics
+4. Proxy Detection: Identify features that may serve as proxies for protected attributes
+5. Mitigation Measures: Document bias mitigation strategies applied during development and deployment
+6. Monitoring Plan: Establish ongoing monitoring for bias drift and fairness degradation
 
 **Types of AI bias covered:** Training data bias, Selection bias, Measurement bias, Aggregation bias, Deployment bias
 
@@ -205,19 +205,19 @@ Evaluate AI systems for bias and fairness across protected characteristics. Prov
 
 ## Platform Architecture
 
-- **Multi-tenant SaaS** — All data is organization-scoped with strict tenant isolation
-- **Role-based access control** — Owner > Admin > AI Officer > Member > Viewer
-- **Authentication** — Google OAuth and email magic links
-- **Tech stack** — Next.js, tRPC, Prisma, PostgreSQL
-- **Licensing** — Open-core model: AGPL-3.0 core + proprietary premium modules, sold only for the self-hosted kit (60 a year each in the kit, in your currency); the hosted pilot is free, capped, and gates nothing
+- **Multi-tenant SaaS**: All data is organization-scoped with strict tenant isolation
+- **Role-based access control**: Owner > Admin > AI Officer > Member > Viewer
+- **Authentication**: Google OAuth and email magic links
+- **Tech stack**: Next.js, tRPC, Prisma, PostgreSQL
+- **Licensing**: Open-core model: AGPL-3.0 core + proprietary premium modules, sold only for the self-hosted kit (60 a year each in the kit, in your currency); the hosted pilot is free, capped, and gates nothing
 
 ## Regulatory Coverage
 
 AI SENTINEL helps organizations comply with:
 
-- **EU AI Act (Regulation 2024/1689)** — The European Union's comprehensive AI regulation. AI SENTINEL covers risk classification (Art. 6-7), conformity assessment (Art. 43), fundamental rights impact assessment (Art. 27), human oversight (Art. 14), incident reporting (Art. 73), transparency obligations, and technical documentation requirements.
-- **NIST AI RMF 1.0** — The U.S. framework for managing AI risks across four functions: Govern, Map, Measure, and Manage. AI SENTINEL maps NIST controls to platform features and cross-references them with EU AI Act and ISO 42001 requirements.
-- **ISO 42001:2023** — The international standard for AI Management Systems. AI SENTINEL maps ISO 42001 clauses to platform capabilities including leadership commitment, risk assessment, operational controls, and performance evaluation.
+- **EU AI Act (Regulation 2024/1689)**: The European Union's comprehensive AI regulation. AI SENTINEL covers risk classification (Art. 6-7), conformity assessment (Art. 43), fundamental rights impact assessment (Art. 27), human oversight (Art. 14), incident reporting (Art. 73), transparency obligations, and technical documentation requirements.
+- **NIST AI RMF 1.0**: The U.S. framework for managing AI risks across four functions: Govern, Map, Measure, and Manage. AI SENTINEL maps NIST controls to platform features and cross-references them with EU AI Act and ISO 42001 requirements.
+- **ISO 42001:2023**: The international standard for AI Management Systems. AI SENTINEL maps ISO 42001 clauses to platform capabilities including leadership commitment, risk assessment, operational controls, and performance evaluation.
 - **AIUC-1**: the certification standard for AI agents, maintained by the Artificial Intelligence Underwriting Company (https://standard.aiuc-1.com/). AI SENTINEL carries its six domains and 51 requirements as a framework an organisation chooses for its agents, and compares it with twelve other frameworks on the frameworks wheel (https://aisentinel.todo.law/docs/frameworks). AI SENTINEL does not certify anything.
 
 ## Integration with DPO Central

@@ -43,12 +43,12 @@ On the hosted pilot every module, these included, is open to every organisation 
 
 AI SENTINEL is part of the TODO.LAW platform for AI-native legal services:
 
-- **Dealroom** (dealroom.todo.law) — Contract negotiation
-- **DPO Central** (dpocentral.todo.law) — Privacy compliance management
-- **AI Sentinel** (aisentinel.todo.law) — AI governance and EU AI Act compliance
-- **Seneca** (seneca.todo.law) — Privacy litigation research
-- **Vendor.Watch** (vendor.watch) — SaaS vendor compliance database
-- **Clausemaster** (clausemaster.todo.law) — AI-powered contract analysis
-- **Gavel** (gavel.todo.law) — Digital arbitration protocol
+- **Dealroom** (dealroom.todo.law): Contract negotiation
+- **DPO Central** (dpocentral.todo.law): Privacy compliance management
+- **AI Sentinel** (aisentinel.todo.law): AI governance and EU AI Act compliance
+- **Seneca** (seneca.todo.law): Privacy litigation research
+- **Vendor.Watch** (vendor.watch): SaaS vendor compliance database
+- **Clausemaster** (clausemaster.todo.law): AI-powered contract analysis
+- **Gavel** (gavel.todo.law): Digital arbitration protocol
 
 For full ecosystem context, see: https://todo.law/llms-full.txt

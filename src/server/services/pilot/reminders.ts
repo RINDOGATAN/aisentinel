@@ -241,7 +241,7 @@ export function pilotReminderCopy(input: PilotReminderEmailInput) {
         url: PILOT_MANAGED_URL.en,
       },
     ],
-    exportLine: "The export is always available, also after the pilot.",
+    exportLine: "The export is always available, including after the pilot.",
     exportLabel: "Export",
     exportUrl: settingsUrl(),
     whyYou: `You receive this e-mail as an owner or administrator of ${orgName}. If you have a question, reply to this message.`,

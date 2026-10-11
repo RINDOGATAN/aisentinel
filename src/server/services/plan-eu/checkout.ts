@@ -50,9 +50,9 @@ export async function planCheckout(
   const admin = memberships.filter((m) => (UPGRADE_ROLES as readonly string[]).includes(m.role));
   if (organizationId && memberships.length === 0) return { status: 404, error: "Not found" };
   if (admin.length === 0) {
-    return { status: 403, error: "Only an owner or administrator can move the organisation to the paid plan" };
+    return { status: 403, error: "Only an owner or administrator can move the organization to the paid plan" };
   }
-  if (!organizationId && admin.length > 1) return { status: 409, error: "Choose the organisation" };
+  if (!organizationId && admin.length > 1) return { status: 409, error: "Choose the organization" };
   const target = admin[0];
   if (isPaidPlan(target.organization)) return { status: 409, error: "Already on the paid plan" };
 

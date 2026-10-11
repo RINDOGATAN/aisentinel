@@ -262,3 +262,12 @@ describe("way names come from this landing's boxes", () => {
     expect(WAY_CARD.es).toEqual({ cloud: 1, managed: 2, deploy: 3 });
   });
 });
+
+describe("the Spanish own-hardware result (owner, 10 Oct 2026)", () => {
+  it("offers our on-site or remote assistance, with no six-week engagement, training or price", () => {
+    expect((COPY.es.summaries.deploy ?? "").startsWith("La suite instalada en tus propios servidores, con nuestra asistencia presencial o remota. ")).toBe(true);
+    expect(COPY.es.summaries.deploy).toMatch(/dentro de tu perímetro/);
+    const all = JSON.stringify(COPY.es);
+    expect(all).not.toMatch(/semanas|formamos|\bformad[oa]|\bformación|manual de operación|15\.000/);
+  });
+});

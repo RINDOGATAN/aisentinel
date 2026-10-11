@@ -391,7 +391,7 @@ export const COPY: Record<Locale, SafeguardsCopy> = {
       "ai:key": { cloud: "El proveedor de IA lo configuramos nosotros para todo el servicio; no puedes usar tu clave.", managed: "La instancia se puede configurar con tu propia clave.", deploy: "Configuramos la IA con tu propia clave." },
       "ai:local": { cloud: "Con la IA activada, los datos del registro que usa cada borrador de IA van al proveedor de IA externo del servicio, que puede estar fuera de la UE.", managed: "Los modelos de pesos abiertos pueden funcionar en la propia instancia, de modo que los datos del registro no salen de ella.", deploy: "Podemos configurar un modelo de pesos abiertos en tus servidores, si tienen capacidad." },
       "iso:yes": { cloud: "Es un servicio compartido: los registros de cada organización están separados, pero el sistema es común.", managed: "Una instancia aislada solo para ti.", deploy: "Tu propia instalación." },
-      "it:no": { cloud: "Lo mantenemos nosotros.", managed: "Lo mantenemos nosotros para ti.", deploy: "Lo instalamos, formamos a tu equipo y te dejamos un manual de operación." },
+      "it:no": { cloud: "Lo mantenemos nosotros.", managed: "Lo mantenemos nosotros para ti.", deploy: "Lo instalamos contigo, con nuestra asistencia presencial o remota." },
       "cert:yes": { cloud: "Funciona bajo nuestros controles y sin certificación independiente.", managed: "Funciona bajo nuestros controles; hoy no tenemos certificación independiente.", deploy: "Queda dentro de tu perímetro, bajo tus propios controles y certificaciones." },
     },
     summaries: {
@@ -400,7 +400,7 @@ export const COPY: Record<Locale, SafeguardsCopy> = {
       managed:
         "Una instancia aislada que operamos nosotros, solo para tu organización, alojada en Asturias (España). Tus registros se quedan en esa instancia. Las funciones de IA están desactivadas hasta que las activas, y pueden usar modelos de pesos abiertos alojados en la propia instancia, de modo que los datos del registro no salen de ella, o la clave de tu propio proveedor.",
       deploy:
-        "Seis semanas con nosotros: la suite instalada en tus servidores, tu equipo formado y un manual de operación. Los registros se quedan dentro de tu perímetro, bajo tus propios controles. Para las funciones de IA, podemos configurar un modelo de pesos abiertos alojado en tus servidores, si tienen capacidad, o tu propia clave.",
+        "La suite instalada en tus propios servidores, con nuestra asistencia presencial o remota. Los registros se quedan dentro de tu perímetro, bajo tus propios controles. Para las funciones de IA, podemos configurar un modelo de pesos abiertos alojado en tus servidores, si tienen capacidad, o tu propia clave.",
     },
   },
 };

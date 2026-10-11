@@ -60,8 +60,7 @@ reads "unknown" until the operator starts a rotation log; that gap is itself an 
 | `AISENTINEL_INSTANCE_ID` | C | Kit (optional) | Stable instance identity for licence activation limits | n/a | n/a |
 | `LLM_GATEWAY_URL`, `LLM_MODEL_ALIAS` (and the `_LOCAL`, `_EU`, `_US` variants) | C | Hosted; Kit (optional) | Which AI engine drafting calls go to | n/a | n/a |
 | `LLM_GATEWAY_KEY` (and the `_LOCAL`, `_EU`, `_US` variants) | S | Hosted; Kit (optional) | Spend on the configured AI gateway | Issuer (gateway operator) | unknown |
-| `OPENAI_API_KEY` | S | Hosted; Kit (optional) | Spend on the OpenAI account when no gateway is set | Issuer (provider console) | unknown |
-| `ANTHROPIC_API_KEY` | S | Hosted; Kit (optional) | Spend on the Anthropic account when no gateway or OpenAI key is set | Issuer (provider console) | unknown |
+| `ANTHROPIC_API_KEY` | S | Hosted; Kit (optional) | Spend on the Anthropic account when no gateway is set | Issuer (provider console) | unknown |
 | `BACKUP_PASSPHRASE` | S | Kit | Decrypts every backup taken by `deploy/sovereign/backup.sh`; losing it loses the backups | Install operator (rotation needs a fresh backup) | unknown |
 | `BACKUP_RCLONE_REMOTE` | P | Kit (optional) | Off-host destination for encrypted backups | n/a | n/a |
 | `TLS_DOMAIN`, `BIND_ADDR`, `PORT` | C | Kit | Proxy hostname, listen address and port | n/a | n/a |

@@ -1565,7 +1565,7 @@
         "cloud_us": "Nube"
       },
       "laneNoEngine": "Sin motor",
-      "notConfiguredWarning": "Esta postura necesita un motor de IA en el servidor: configura LLM_GATEWAY_URL + LLM_MODEL_ALIAS (cualquier endpoint compatible con OpenAI, p. ej. un Ollama local) o una OPENAI_API_KEY / ANTHROPIC_API_KEY.",
+      "notConfiguredWarning": "Esta postura necesita un motor de IA en el servidor: configura LLM_GATEWAY_URL + LLM_MODEL_ALIAS (cualquier endpoint compatible con OpenAI, p. ej. un Ollama local) o una ANTHROPIC_API_KEY.",
       "ackLabel": "Tengo autorización para activar la asistencia de IA en esta organización",
       "ackBullets": {
         "data": "Los datos seleccionados se envían al motor de IA de la postura elegida.",

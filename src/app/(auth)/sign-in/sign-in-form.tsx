@@ -10,8 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { features } from "@/config/features";
 import { brand } from "@/config/brand";
-import { PILOT_SENTENCE, PILOT_TERMS } from "@/config/pilot";
-import { PilotSentenceText } from "@/components/pilot/pilot-sentence";
+import { PILOT_SIGN_IN_LINE } from "@/config/pilot";
 
 // Local (passwordless credentials) login: dev mode, or sovereign/self-hosted
 // builds with NEXT_PUBLIC_LOCAL_AUTH_ENABLED=true. The NextAuth provider id
@@ -30,8 +29,7 @@ export function SignInForm({
 }) {
   const t = useTranslations("signIn");
   const pilotLocale = useLocale() === "es" ? "es" : "en";
-  const pilotSentence = PILOT_SENTENCE[pilotLocale];
-  const pilotTerms = PILOT_TERMS[pilotLocale];
+  const pilotLine = PILOT_SIGN_IN_LINE[pilotLocale];
   const [email, setEmail] = useState("");
   const [devEmail, setDevEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -143,8 +141,7 @@ export function SignInForm({
         {/* The hosted pilot says what it is before anyone signs up. */}
         {hostedPilot && (
           <p data-testid="pilot-signup-notice" className="mb-6 p-3 border border-primary/30 bg-primary/10 text-xs text-foreground text-center">
-            <PilotSentenceText sentence={pilotSentence} linkClassName="underline underline-offset-2 font-medium hover:text-primary" />
-            <span className="block mt-1">{pilotTerms}</span>
+            {pilotLine}
           </p>
         )}
 

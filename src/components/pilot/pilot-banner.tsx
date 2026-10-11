@@ -50,7 +50,7 @@ export function PilotEndBar({ locale, state, endsAt }: PilotEndBarProps) {
       <p className="max-w-[1600px] mx-auto min-w-0 px-4 sm:px-6 py-1.5 text-center break-words">
         {text}{" "}
         <a
-          href={PILOT_PRICING_URL}
+          href={PILOT_PRICING_URL[locale]}
           target="_blank"
           rel="noopener noreferrer"
           className="underline underline-offset-2 font-medium hover:text-primary"

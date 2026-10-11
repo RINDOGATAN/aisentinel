@@ -5404,11 +5404,11 @@
     "systemCardOpen": "Abrir el modelo de amenazas"
   },
   "premiumShowcase": {
-    "lockedHint": "Forma parte de un módulo premium, que se vende para el kit a {price} al año. Activa una licencia o instala tu propia instancia.",
+    "lockedHint": "Forma parte de un módulo premium, que se vende para el kit a {price} al año. Activa una licencia para usarlo.",
     "activate": "Activar una licencia",
     "buy": "Ver los módulos",
-    "exportLockedTitle": "Este módulo se licencia para instalaciones autoalojadas",
-    "exportLockedBody": "El documento forma parte de un módulo de pago en esta instancia alojada. Al autoalojarlo, todos los módulos están incluidos.",
+    "exportLockedTitle": "Este documento necesita una licencia premium",
+    "exportLockedBody": "El documento forma parte de un módulo premium. Activa su licencia en Configuración para exportarlo.",
     "seePricing": "Ver precios",
     "exportFailedTitle": "No se ha podido generar el documento",
     "exportFailedBody": "No se ha descargado nada. Vuelve a intentarlo en un momento.",
@@ -5416,14 +5416,14 @@
   },
   "pilot": {
     "title": "Piloto alojado",
-    "summary": "Piloto: quedan {days} días, {used} de {max} sistemas",
+    "summary": "Piloto: {days, plural, one {queda # día} other {quedan # días}}, {used} de {max} sistemas",
     "editsUntil": "Puedes editar hasta el {date}. Después, la organización pasa a solo lectura y todo lo que ha creado se puede seguir exportando.",
     "ceilingsTitle": "Límites de este piloto",
     "counter": "{used} de {max}",
     "ceilingReachedMark": "Límite alcanzado",
     "readOnlyBody": "El periodo de edición ha terminado. Esta organización es de solo lectura: todo se puede abrir y exportar, nada se puede modificar.",
     "ceilingReachedBody": "Se ha alcanzado un límite. Dos salidas:",
-    "runOwn": "Instala tu propia instancia",
+    "paidPlan": "Pasa al plan de pago",
     "exportAll": "Exportar todo (paquete del programa)",
     "afterExportBody": "Tu archivo se ha descargado. Ya puedes vaciar esta cuenta.",
     "afterExportAction": "Vaciar la cuenta"

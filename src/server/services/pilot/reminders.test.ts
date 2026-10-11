@@ -199,7 +199,7 @@ describe("language", () => {
   it("the English e-mail links the storefront's pricing page and promises no instant activation", () => {
     const mail = renderPilotReminderEmail({ locale: "en", kind: "lastDay", orgName: "Acme", endsAt: new Date("2026-10-28T15:00:00Z") });
     expect(mail.text).toContain("https://www.todo.law/pricing");
-    expect(mail.text).toContain("1,800 USD a year or 179 USD a month");
+    expect(mail.text).toContain("$1,800 a year or $179 a month");
     expect(mail.text).toContain("We activate the paid plan on your organisation after payment.");
     expect(mail.text).not.toMatch(/instant|immediately/i);
   });

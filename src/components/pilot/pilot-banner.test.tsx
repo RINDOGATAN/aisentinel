@@ -72,12 +72,12 @@ describe("what the bar says", () => {
     expect(text(en)).toBe(
       "Your pilot ends on 26 October 2026. Move to the paid plan to keep editing with all your records. See pricing",
     );
-    expect(en).toContain(`href="${PILOT_PRICING_URL}"`);
+    expect(en).toContain(`href="${PILOT_PRICING_URL.en}"`);
     const es = render("es", "ending");
     expect(text(es)).toBe(
       "Tu piloto termina el 26 de octubre de 2026. Pasa al plan de pago para seguir editando con todos tus registros. Ver precios",
     );
-    expect(es).toContain(`href="${PILOT_PRICING_URL}"`);
+    expect(es).toContain(`href="${PILOT_PRICING_URL.es}"`);
   });
 
   it("says the organisation is read-only and exportable once the pilot is over", () => {
@@ -87,11 +87,11 @@ describe("what the bar says", () => {
     expect(text(render("es", "readOnly"))).toBe(
       "Tu piloto ha terminado: la organización está en solo lectura y puedes exportarla cuando quieras. Ver precios",
     );
-    expect(render("es", "readOnly")).toContain(`href="${PILOT_PRICING_URL}"`);
+    expect(render("es", "readOnly")).toContain(`href="${PILOT_PRICING_URL.es}"`);
   });
 
   it("carries none of the old warning texts, no long dash, and says tú", () => {
-    expect(PILOT_PRICING_URL).toBe("https://www.todo.law/pricing");
+    expect(PILOT_PRICING_URL).toEqual({ en: "https://www.todo.law/pricing", es: "https://www.todo.law/es/precios" });
     for (const locale of ["en", "es"] as const) {
       for (const state of ["ending", "readOnly"] as const) {
         const t = text(render(locale, state));
@@ -105,12 +105,12 @@ describe("what the bar says", () => {
     expect(render("en", "ending")).not.toContain("<button");
   });
 
-  it("the pilot sentence stays on the sign-in screen and the Settings card, not in the bar", () => {
+  it("the old pilot sentence is gone from the sign-in screen, the Settings card and the bar (owner, 11 Oct 2026)", () => {
     for (const file of [
       "src/app/(auth)/sign-in/sign-in-form.tsx",
       "src/components/governance/pilot-status-card.tsx",
     ]) {
-      expect(readFileSync(join(process.cwd(), file), "utf8"), file).toMatch(/<PilotSentenceText\b/);
+      expect(readFileSync(join(process.cwd(), file), "utf8"), file).not.toMatch(/PilotSentenceText|PILOT_SENTENCE/);
     }
     const bar = readFileSync(join(process.cwd(), "src/components/pilot/pilot-banner.tsx"), "utf8");
     expect(bar).not.toMatch(/PilotSentenceText|PILOT_SENTENCE/);
@@ -176,14 +176,14 @@ describe("the bar shows only once a person is signed in", () => {
 });
 
 describe("the pilot sentence elsewhere", () => {
-  it("the sign-in screen and the Settings card add the editing terms, word for word", () => {
-    // These two show PILOT_TERMS beneath the sentence.
-    for (const file of [
-      "src/app/(auth)/sign-in/sign-in-form.tsx",
-      "src/components/governance/pilot-status-card.tsx",
-    ]) {
-      expect(readFileSync(join(process.cwd(), file), "utf8"), file).toMatch(/PILOT_TERMS\[\w+\]/);
-    }
+  it("the sign-in screen and the Settings card state the editing terms, word for word", () => {
+    // The sign-in screen shows only the terms line; the old sentence is gone (owner, 11 Oct 2026).
+    const signIn = readFileSync(join(process.cwd(), "src/app/(auth)/sign-in/sign-in-form.tsx"), "utf8");
+    expect(signIn).toMatch(/PILOT_SIGN_IN_LINE\[\w+\]/);
+    expect(signIn).not.toMatch(/PILOT_SENTENCE|PilotSentenceText/);
+    const card = readFileSync(join(process.cwd(), "src/components/governance/pilot-status-card.tsx"), "utf8");
+    expect(card).toMatch(/PILOT_TERMS\[\w+\]/);
+    expect(card).not.toMatch(/PILOT_SENTENCE|PilotSentenceText|PILOT_RUN_URL/);
   });
 
   it("keeps the landing's sign-in box free of the pilot text, as on DPO Central (owner, 11 Oct 2026)", () => {

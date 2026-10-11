@@ -6,9 +6,8 @@
  * Central's landing: the three tools and how they connect, the demo videos
  * (only while a video of that language is published), the six stages of the
  * program as the Guided path implements them with the 30/60/90-day plan
- * beneath, and the ways to host it. The Spanish page then shows the customer
- * logos (only while the configured list is not empty); the English page
- * shows none. No prices. No hosting location in the sections; the safeguards
+ * beneath, and the ways to host it. Both pages then show the customer logos
+ * above the footer (only while the configured list is not empty). No prices. No hosting location in the sections; the safeguards
  * guide after the ways (SafeguardsGuide) says, as the storefront does, that
  * the cloud pilot is hosted in the EU. The Spanish managed box names
  * Asturias, as the storefront does (owner, 10 Oct 2026).
@@ -89,8 +88,8 @@ const SETUP: Record<LandingLocale, LocaleSetup> = {
       { icon: HardDrive, action: "mail" },
     ],
     captionsLang: "en",
-    // No customer logos on the English page.
-    logos: false,
+    // Customer logos on the English page too (draft, 11 Oct 2026).
+    logos: true,
   },
 };
 
@@ -459,7 +458,7 @@ export default function LandingSections({ t, locale, videos = LANDING_VIDEOS[loc
       <Stages t={t} p={locale} />
       {/* Keyed by language: the toggle starts the guide afresh, as the ways change. */}
       <Ways key={locale} t={t} p={locale} setup={setup} initialGuide={initialGuide} />
-      {setup.logos && <CustomerLogos t={t} />}
+      {setup.logos && <CustomerLogos label={t(`${locale}.logos.label`)} />}
     </>
   );
 }

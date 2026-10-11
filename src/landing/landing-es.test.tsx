@@ -16,12 +16,12 @@
  *     location, shows no price, says "tú" and never "ejecutar" for software;
  *   - the videos come from a config, play only on request, and the section
  *     is absent while the list is empty;
- *   - customer logos render nothing while the configured list is empty, and
- *     the list ships empty (logos only with written consent).
+ *   - customer logos render nothing while the configured list is empty; the
+ *     draft list (11 Oct 2026) carries ten clean, sized files.
  */
 
 import { describe, it, expect, vi } from "vitest";
-import { existsSync, readFileSync } from "fs";
+import { existsSync, readFileSync, statSync } from "fs";
 import path from "path";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -289,19 +289,28 @@ describe("landing copy rules", () => {
 });
 
 describe("customer logos", () => {
-  it("ship with an empty list", () => {
-    expect(CUSTOMER_LOGOS).toEqual([]);
+  it("list the ten organizations, each with a clean file and a size", () => {
+    expect(CUSTOMER_LOGOS).toHaveLength(10);
+    for (const l of CUSTOMER_LOGOS) {
+      const file = path.join(ROOT, "public", l.src);
+      expect(existsSync(file), l.src).toBe(true);
+      expect(statSync(file).size, l.src).toBeLessThan(20_000);
+      if (l.src.endsWith(".svg")) expect(readFileSync(file, "utf8")).not.toMatch(/<script|href=|<image|<foreignObject|\son[a-z]+=/i);
+      expect(l.width).toBeGreaterThan(0);
+      expect(l.height).toBeGreaterThan(0);
+    }
   });
 
   it("render nothing while the list is empty", () => {
-    expect(renderToStaticMarkup(createElement(CustomerLogos, { t: tEs }))).toBe("");
+    expect(renderToStaticMarkup(createElement(CustomerLogos, { label: ES["es.logos.label"], logos: [] }))).toBe("");
   });
 
-  it("render a labelled row once a logo is configured", () => {
-    const html = renderToStaticMarkup(
-      createElement(CustomerLogos, { t: tEs, logos: [{ name: "Example", src: "/x.svg" }] })
-    );
-    expect(html).toContain('alt="Example"');
+  it("render a labelled row with sized, lazy images", () => {
+    const html = renderToStaticMarkup(createElement(CustomerLogos, { label: ES["es.logos.label"] }));
     expect(html).toContain(ES["es.logos.label"]);
+    expect(html).toContain('alt="Toyota"');
+    expect(html.match(/<img /g)).toHaveLength(10);
+    expect(html.match(/loading="lazy"/g)).toHaveLength(10);
+    expect(html.match(/width="\d+" height="\d+"/g)).toHaveLength(10);
   });
 });

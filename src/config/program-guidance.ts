@@ -168,7 +168,7 @@ export const LAWFIRM_ROLLOUT_RECOMMENDATIONS: RolloutRecommendation[] = [
     stage: "PILOT",
     summary: withMarker({
       en: "Pilot with one practice group on a defined matter set before firm-wide rollout. Contract AI touches client work product directly, so the pre-deployment gate, information barriers, and professional review must be proven at pilot scale first.",
-      es: "Pilotar con un área de práctica sobre un conjunto definido de asuntos antes de la implantación general. La IA contractual incide directamente en el producto del trabajo para clientes, por lo que el punto de control previo al despliegue, las barreras de información y la revisión profesional deben acreditarse primero a escala de piloto.",
+      es: "Hacer un piloto con un área de práctica sobre un conjunto definido de asuntos antes de la implantación general. La IA contractual incide directamente en el producto del trabajo para clientes, por lo que el punto de control previo al despliegue, las barreras de información y la revisión profesional deben acreditarse primero a escala de piloto.",
     }),
     preconditions: [
       {
@@ -190,7 +190,7 @@ export const LAWFIRM_ROLLOUT_RECOMMENDATIONS: RolloutRecommendation[] = [
     stage: "PILOT",
     summary: withMarker({
       en: "Pilot within the litigation support team under a documented defensibility protocol. TAR workflows are well accepted where validation is documented — undocumented use is the actual risk.",
-      es: "Pilotar en el equipo de apoyo procesal bajo un protocolo de defendibilidad documentado. Los flujos de TAR gozan de amplia aceptación cuando la validación está documentada; el riesgo real es el uso sin documentar.",
+      es: "Hacer un piloto en el equipo de apoyo procesal bajo un protocolo de defendibilidad documentado. Los flujos de TAR gozan de amplia aceptación cuando la validación está documentada; el riesgo real es el uso sin documentar.",
     }),
     preconditions: [
       {
@@ -270,7 +270,7 @@ export const LAWFIRM_ROLLOUT_RECOMMENDATIONS: RolloutRecommendation[] = [
     stage: "PILOT",
     summary: withMarker({
       en: "Pilot on a walled corpus before opening the firm-wide knowledge assistant. Retrieval-time enforcement of ethical walls is the make-or-break control — verify it under test, then scale.",
-      es: "Pilotar sobre un corpus delimitado antes de abrir el asistente de conocimiento a todo el despacho. La aplicación de las barreras de información en el momento de la recuperación es el control decisivo: verificarla en pruebas y, después, escalar.",
+      es: "Hacer un piloto sobre un corpus delimitado antes de abrir el asistente de conocimiento a todo el despacho. La aplicación de las barreras de información en el momento de la recuperación es el control decisivo: verificarla en pruebas y, después, escalar.",
     }),
     preconditions: [
       {

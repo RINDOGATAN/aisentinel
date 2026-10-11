@@ -72,7 +72,7 @@ const COPY: Record<
       "The hosted pilot holds one organisation per account. To carry several organisations, choose a managed instance or your own hardware.",
     waysOutTitle: "When you reach a limit",
     waysOut:
-      "The pilot is for trying the tool with test records. For real data, choose a paid plan or a managed instance, where the limits of the pilot do not apply. You can also export everything you created as a program pack at any time.",
+      "The pilot is for trying the tool with test records. The Cloud Plan lifts the limits and keeps your records; a managed instance or your own hardware is on quotation. You can also export everything you created as a program pack at any time.",
     pricingLink: "See the plans and prices",
     pricingUrl: "https://www.todo.law/pricing",
     hostingTitle: "Three hosting options",
@@ -109,7 +109,7 @@ const COPY: Record<
       "El piloto alojado admite una organización por cuenta. Si necesitas llevar varias organizaciones, elige una instancia gestionada o tu propio hardware.",
     waysOutTitle: "Cuando llegues a un límite",
     waysOut:
-      "El piloto sirve para probar la herramienta con registros de prueba. Para datos reales, elige un plan de pago (el Plan nube UE cuesta 179 € al mes o 1.800 € al año por organización) o una instancia gestionada, donde no se aplican los límites del piloto. También puedes exportar todo lo que has creado como paquete del programa cuando quieras.",
+      "El piloto sirve para probar la herramienta con registros de prueba. El Plan nube UE elimina los límites y conserva tus registros; una instancia gestionada o tu propio hardware se ofrecen bajo presupuesto. También puedes exportar todo lo que has creado como paquete del programa cuando quieras.",
     pricingLink: "Consulta los planes y precios",
     pricingUrl: "https://www.todo.law/es/precios",
     hostingTitle: "Tres modalidades de alojamiento",

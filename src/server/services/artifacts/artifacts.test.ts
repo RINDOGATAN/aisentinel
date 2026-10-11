@@ -133,7 +133,7 @@ describe("the multi-jurisdictional notice", () => {
     expect(names).toContain("Colorado");
     expect(names).toContain("Texas");
     expect(names).not.toContain("California");
-    expect(names).not.toContain("Washington — companion chatbot");
+    expect(names).not.toContain("Washington: companion chatbot");
   });
 
   it("states the rights in the addendum even when the answer is missing", () => {

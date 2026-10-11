@@ -56,7 +56,11 @@ describe("public docs follow the current offer", () => {
     for (const title of ["In the TODO.LAW cloud", "Managed virtual server", "Your own hardware", "En la nube de TODO.LAW", "Servidor virtual gestionado", "Tu propio hardware"]) {
       expect(pilotPage).toContain(title);
     }
-    expect(pilotPage).toContain("179 € al mes o 1.800 € al año");
+    // No price in the app (owner, 11 Oct 2026, AIS-1): the prices page states it.
+    expect(pilotPage).not.toMatch(/\d\s?€|€\s?\d/);
+    expect(pilotPage).toContain("https://www.todo.law/es/precios");
+    expect(pilotPage).toContain("The Cloud Plan lifts the limits");
+    expect(pilotPage).toContain("El Plan nube UE elimina los límites");
     expect(pilotPage).not.toMatch(/\$\s?\d/);
   });
 

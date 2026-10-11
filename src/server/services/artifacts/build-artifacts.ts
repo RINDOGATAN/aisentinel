@@ -843,7 +843,7 @@ const NOTICE_ADDENDA: AddendumSpec[] = [
   },
   {
     tag: "tx:healthcare",
-    heading: { en: "Texas — health care", es: "Texas — asistencia sanitaria" },
+    heading: { en: "Texas: health care", es: "Texas: asistencia sanitaria" },
     citations: ["TX TRAIGA § 552.051(b)"],
     questionIds: ["not_health_treatment"],
     statements: [
@@ -855,7 +855,7 @@ const NOTICE_ADDENDA: AddendumSpec[] = [
   },
   {
     tag: "wa:mhmda",
-    heading: { en: "Washington — health data", es: "Washington — datos de salud" },
+    heading: { en: "Washington: health data", es: "Washington: datos de salud" },
     citations: ["WA RCW 19.373.020", "WA RCW 19.373.030", "WA RCW 19.373.040"],
     questionIds: ["data_health_inference"],
     statements: [
@@ -867,7 +867,7 @@ const NOTICE_ADDENDA: AddendumSpec[] = [
   },
   {
     tag: "wa:genai-provenance",
-    heading: { en: "Washington — generated content", es: "Washington — contenido generado" },
+    heading: { en: "Washington: generated content", es: "Washington: contenido generado" },
     citations: ["WA HB 1170 (2026 c 167)", "EU AI Act Art. 50(2)"],
     questionIds: ["not_provenance"],
     statements: [
@@ -879,7 +879,7 @@ const NOTICE_ADDENDA: AddendumSpec[] = [
   },
   {
     tag: "wa:companion",
-    heading: { en: "Washington — companion chatbot", es: "Washington — chatbot de compañía" },
+    heading: { en: "Washington: companion chatbot", es: "Washington: chatbot de compañía" },
     citations: ["WA HB 2225 § 3", "WA HB 2225 § 4", "WA HB 2225 § 5"],
     questionIds: ["not_companion"],
     statements: [

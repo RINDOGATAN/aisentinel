@@ -141,7 +141,7 @@ export function ModelInventoryReport({
             description={
               locale === "es"
                 ? `${m.aiSystemName} (${m.provider || inv.unknownProvider})`
-                : `${m.aiSystemName} — ${m.provider || inv.unknownProvider}`
+                : `${m.aiSystemName}: ${m.provider || inv.unknownProvider}`
             }
           />
           <RiskBadge level={m.riskLevel} locale={locale} />

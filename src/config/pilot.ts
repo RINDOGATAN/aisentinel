@@ -246,16 +246,19 @@ export const PILOT_DESCRIPTION: Record<PilotLocale, string> = {
 };
 
 /**
- * The end-of-pilot bar (owner, 11 Oct 2026). It replaced the warning banner
- * that sat on every signed-in page: for most of the pilot nothing is shown;
- * in the last PILOT_END_BAR_DAYS days a slim, neutral bar gives the end date
- * and a link to the prices; once the organisation is read-only the bar says
- * so and that the export stays open. Never off the hosted pilot, nor for an
- * organisation on the paid plan.
+ * The pilot bar on signed-in pages (owner, 11 Oct 2026, second version). For
+ * the WHOLE pilot, to every member (owners, admins and members alike), a
+ * slim top bar gives the end date and the Cloud Plan's price in the reader's
+ * currency (English $, Spanish €), with a link to the landing's pricing
+ * block. In the last PILOT_END_BAR_DAYS days it switches to the stronger
+ * "ending" wording; once the organisation is read-only it says so and that
+ * the export stays open. Never off the hosted pilot, nor for an organisation
+ * on the paid plan. A pilot begun before the window was shortened (the
+ * transition) is told "Free until {date}", not "for 15 days".
  */
 export const PILOT_END_BAR_DAYS = 5;
 
-export type PilotEndBarState = "hidden" | "ending" | "readOnly";
+export type PilotEndBarState = "hidden" | "trial" | "ending" | "readOnly";
 
 /** What the bar needs: the Settings card's status (pilot.status) and whether the organisation pays. */
 export interface PilotEndBarInput {
@@ -275,7 +278,7 @@ export function pilotEndBarState(
   if (!status.endsAt) return "hidden";
   const remaining = new Date(status.endsAt).getTime() - now.getTime();
   if (remaining <= 0) return "readOnly";
-  return remaining <= PILOT_END_BAR_DAYS * DAY_MS ? "ending" : "hidden";
+  return remaining <= PILOT_END_BAR_DAYS * DAY_MS ? "ending" : "trial";
 }
 
 /**
@@ -293,19 +296,56 @@ export const PILOT_PRICING_URL: Record<PilotLocale, string> = {
   es: "https://www.todo.law/es/precios",
 };
 
+/** A pilot begun before the window was shortened (it keeps the transition rule). */
+export function isTransitionPilot(startedAt: Date | string | null | undefined): boolean {
+  return !!startedAt && new Date(startedAt).getTime() < PILOT_WINDOW_SHORTENED_AT.getTime();
+}
+
+/**
+ * Where the bar's link goes: the pricing block on this product's own landing
+ * (owner, 11 Oct 2026), in the reader's language. Relative, so it stays on
+ * the app's own domain. The `lang` parameter makes the landing show in that
+ * language and lets a signed-in person see it (src/app/page.tsx sends a
+ * signed-in visitor without it to the application).
+ */
+export const PILOT_BAR_PRICING_URL: Record<PilotLocale, string> = {
+  en: "/?lang=en#pricing",
+  es: "/?lang=es#precios",
+};
+
+/** The session key that remembers a dismissed trial bar until the tab is closed. */
+export const PILOT_BAR_DISMISS_KEY = "pilot-bar-dismissed";
+
 export const PILOT_END_BAR_COPY: Record<
   PilotLocale,
-  { ending: (date: string) => string; readOnly: string; pricing: string }
+  {
+    trial: (days: number, date: string) => string;
+    trialTransition: (date: string) => string;
+    ending: (date: string) => string;
+    readOnly: string;
+    pricing: string;
+    dismiss: string;
+  }
 > = {
   en: {
+    trial: (days, date) =>
+      `Free for ${days} days, until ${date}. Then export your program or keep going on the Cloud Plan: $179 a month or $1,800 a year.`,
+    trialTransition: (date) =>
+      `Free until ${date}. Then export your program or keep going on the Cloud Plan: $179 a month or $1,800 a year.`,
     ending: (date) => `Your pilot ends on ${date}. Move to the paid plan to keep editing with all your records.`,
     readOnly: "Your pilot has ended: the organization is read-only and you can export it at any time.",
     pricing: "See pricing",
+    dismiss: "Close",
   },
   es: {
+    trial: (days, date) =>
+      `Gratis durante ${days} días, hasta el ${date}. Después, exporta tu programa o sigue con el Plan nube UE: 179 € al mes o 1.800 € al año.`,
+    trialTransition: (date) =>
+      `Gratis hasta el ${date}. Después, exporta tu programa o sigue con el Plan nube UE: 179 € al mes o 1.800 € al año.`,
     ending: (date) => `Tu piloto termina el ${date}. Pasa al plan de pago para seguir editando con todos tus registros.`,
     readOnly: "Tu piloto ha terminado: la organización está en solo lectura y puedes exportarla cuando quieras.",
     pricing: "Ver precios",
+    dismiss: "Cerrar",
   },
 };
 

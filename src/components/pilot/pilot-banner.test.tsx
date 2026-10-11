@@ -2,9 +2,11 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 /**
- * The end-of-pilot bar (owner, 11 Oct 2026), which replaced the warning
- * banner. On signed-in pages of the hosted pilot only; nothing for most of
- * the pilot, the end date in the last five days, the read-only line after;
+ * The pilot bar (owner, 11 Oct 2026, second version). On signed-in pages of
+ * the hosted pilot only; for the whole pilot the free window, its end date
+ * and the Cloud Plan's price in the reader's currency (closable for the
+ * session); "Free until {date}" for a pilot begun before the shorter window;
+ * the stronger end wording in the last five days; the read-only line after;
  * never for a paid organization. The rule is a pure function; the markup is
  * rendered here without the app shell.
  */
@@ -13,9 +15,12 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
 import {
+  PILOT_BAR_PRICING_URL,
+  PILOT_END_BAR_COPY,
   PILOT_END_BAR_DAYS,
   PILOT_PRICING_URL,
   isPaidPlanValue,
+  isTransitionPilot,
   pilotEndBarState,
 } from "@/config/pilot";
 import { PilotEndBar } from "./pilot-banner";
@@ -26,10 +31,11 @@ const at = (days: number) => new Date(NOW.getTime() + days * DAY);
 const pilot = (endsAt: Date | null, readOnly = false) => ({ active: true, endsAt, readOnly });
 
 describe("when the bar shows", () => {
-  it("is hidden for most of the pilot, shown in the last five days, read-only after", () => {
+  it("shows the trial for the whole pilot, the end wording in the last five days, read-only after", () => {
     expect(PILOT_END_BAR_DAYS).toBe(5);
-    expect(pilotEndBarState(pilot(at(14)), NOW)).toBe("hidden");
-    expect(pilotEndBarState(pilot(at(5.01)), NOW)).toBe("hidden");
+    expect(pilotEndBarState(pilot(at(15)), NOW)).toBe("trial");
+    expect(pilotEndBarState(pilot(at(14)), NOW)).toBe("trial");
+    expect(pilotEndBarState(pilot(at(5.01)), NOW)).toBe("trial");
     expect(pilotEndBarState(pilot(at(5)), NOW)).toBe("ending");
     expect(pilotEndBarState(pilot(at(0.1)), NOW)).toBe("ending");
     expect(pilotEndBarState(pilot(at(-1), true), NOW)).toBe("readOnly");
@@ -44,7 +50,7 @@ describe("when the bar shows", () => {
   });
 
   it("is never shown to a paid organization, in any state", () => {
-    for (const status of [pilot(at(2)), pilot(at(-2), true)]) {
+    for (const status of [pilot(at(12)), pilot(at(2)), pilot(at(-2), true)]) {
       expect(pilotEndBarState({ ...status, paid: true }, NOW)).toBe("hidden");
     }
     expect(isPaidPlanValue("EU_CLOUD")).toBe(true);
@@ -55,9 +61,9 @@ describe("when the bar shows", () => {
 });
 
 describe("what the bar says", () => {
-  const render = (locale: "en" | "es", state: "hidden" | "ending" | "readOnly") =>
+  const render = (locale: "en" | "es", state: "hidden" | "trial" | "ending" | "readOnly", transition = false) =>
     renderToStaticMarkup(
-      <PilotEndBar locale={locale} state={state} endsAt={new Date("2026-10-26T09:00:00Z")} />,
+      <PilotEndBar locale={locale} state={state} endsAt={new Date("2026-10-26T09:00:00Z")} transition={transition} />,
     );
   const text = (html: string) => html.replace(/<[^>]+>/g, "");
 
@@ -66,18 +72,62 @@ describe("what the bar says", () => {
     expect(render("es", "hidden")).toBe("");
   });
 
+  it("gives the free window, the end date and the Cloud Plan's price for the whole pilot, one currency per language", () => {
+    const en = render("en", "trial");
+    expect(en).toContain('data-state="trial"');
+    expect(text(en)).toBe(
+      "Free for 15 days, until 26 October 2026. Then export your program or keep going on the Cloud Plan: $179 a month or $1,800 a year. See pricing",
+    );
+    expect(en).toContain('href="/?lang=en#pricing"');
+    expect(text(en)).not.toMatch(/€|\bEUR\b|\bEU\b/);
+    const es = render("es", "trial");
+    expect(text(es)).toBe(
+      "Gratis durante 15 días, hasta el 26 de octubre de 2026. Después, exporta tu programa o sigue con el Plan nube UE: 179 € al mes o 1.800 € al año. Ver precios",
+    );
+    expect(es).toContain('href="/?lang=es#precios"');
+    expect(text(es)).not.toMatch(/\$|\bUSD\b/);
+    // The trial bar can be closed for the session.
+    expect(en).toContain('data-testid="pilot-end-bar-dismiss"');
+    expect(en).toContain('aria-label="Close"');
+    expect(es).toContain('aria-label="Cerrar"');
+  });
+
+  it("tells a pilot begun before the shorter window its real end date, without '15 days'", () => {
+    expect(text(render("en", "trial", true))).toBe(
+      "Free until 26 October 2026. Then export your program or keep going on the Cloud Plan: $179 a month or $1,800 a year. See pricing",
+    );
+    expect(text(render("es", "trial", true))).toBe(
+      "Gratis hasta el 26 de octubre de 2026. Después, exporta tu programa o sigue con el Plan nube UE: 179 € al mes o 1.800 € al año. Ver precios",
+    );
+    expect(isTransitionPilot(new Date("2026-10-01T00:00:00Z"))).toBe(true);
+    expect(isTransitionPilot("2026-10-11T23:59:59Z")).toBe(true);
+    expect(isTransitionPilot(new Date("2026-10-12T00:00:00Z"))).toBe(false);
+    expect(isTransitionPilot(null)).toBe(false);
+  });
+
+  it("never says the dollar and euro prices are the same", () => {
+    const all = [render("en", "trial"), render("es", "trial"), render("en", "trial", true), render("es", "trial", true)]
+      .map(text)
+      .join(" | ");
+    expect(all).not.toMatch(/same price|mismo precio|equivalent|equivalente/i);
+    for (const line of [text(render("en", "trial")), text(render("es", "trial"))]) {
+      expect(/\$/.test(line) && /€/.test(line)).toBe(false);
+    }
+    expect(Object.keys(PILOT_END_BAR_COPY)).toEqual(["en", "es"]);
+  });
+
   it("gives the end date and the pricing link in the last five days", () => {
     const en = render("en", "ending");
     expect(en).toContain('data-testid="pilot-end-bar"');
     expect(text(en)).toBe(
       "Your pilot ends on 26 October 2026. Move to the paid plan to keep editing with all your records. See pricing",
     );
-    expect(en).toContain(`href="${PILOT_PRICING_URL.en}"`);
+    expect(en).toContain(`href="${PILOT_BAR_PRICING_URL.en}"`);
     const es = render("es", "ending");
     expect(text(es)).toBe(
       "Tu piloto termina el 26 de octubre de 2026. Pasa al plan de pago para seguir editando con todos tus registros. Ver precios",
     );
-    expect(es).toContain(`href="${PILOT_PRICING_URL.es}"`);
+    expect(es).toContain(`href="${PILOT_BAR_PRICING_URL.es}"`);
   });
 
   it("says the organization is read-only and exportable once the pilot is over", () => {
@@ -87,13 +137,13 @@ describe("what the bar says", () => {
     expect(text(render("es", "readOnly"))).toBe(
       "Tu piloto ha terminado: la organización está en solo lectura y puedes exportarla cuando quieras. Ver precios",
     );
-    expect(render("es", "readOnly")).toContain(`href="${PILOT_PRICING_URL.es}"`);
+    expect(render("es", "readOnly")).toContain(`href="${PILOT_BAR_PRICING_URL.es}"`);
   });
 
   it("carries none of the old warning texts, no long dash, and says tú", () => {
     expect(PILOT_PRICING_URL).toEqual({ en: "https://www.todo.law/pricing", es: "https://www.todo.law/es/precios" });
     for (const locale of ["en", "es"] as const) {
-      for (const state of ["ending", "readOnly"] as const) {
+      for (const state of ["trial", "ending", "readOnly"] as const) {
         const t = text(render(locale, state));
         expect(t).not.toMatch(/Hosted pilot|For real data|managed instance|Run your own instance/i);
         expect(t).not.toMatch(/Piloto alojado|datos reales|instancia gestionada/i);
@@ -101,8 +151,9 @@ describe("what the bar says", () => {
         expect(t).not.toMatch(/\busted\b/i);
       }
     }
-    // No dismiss button: the bar is quiet and only shows when it matters.
+    // The stronger bars cannot be closed.
     expect(render("en", "ending")).not.toContain("<button");
+    expect(render("en", "readOnly")).not.toContain("<button");
   });
 
   it("the old pilot sentence is gone from the sign-in screen, the Settings card and the bar (owner, 11 Oct 2026)", () => {

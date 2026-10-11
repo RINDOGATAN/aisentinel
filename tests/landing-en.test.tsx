@@ -80,10 +80,12 @@ describe("English landing page", () => {
     expect((authEs as Record<string, string>)["emailPlaceholder"]).toBe("tu@empresa.com");
   });
 
-  it("names the audience in the badge and the program in the hero title, in sentence case", () => {
-    expect(EN["hero.title.prefix"] + EN["hero.title.accent"] + EN["hero.title.suffix"]).toBe("Your entry point to an AI governance program.");
-    expect(EN["hero.title.accent"]).toBe("AI governance program");
-    expect(EN["hero.badge"]).toBe("For law firms, privacy consultants and in-house teams");
+  it("says how fast it starts in the badge and restores the earlier hero title (owner, 11 Oct 2026)", () => {
+    // The title before "Your entry point to an AI governance program." (#75), verbatim.
+    expect(EN["hero.title.prefix"] + EN["hero.title.accent"] + EN["hero.title.suffix"]).toBe("Future-Proof AI Governance.");
+    expect(EN["hero.title.accent"]).toBe("Future-Proof");
+    // Stored in sentence case; the bubble's style sets it in capitals, as on DPO Central.
+    expect(EN["hero.badge"]).toBe("Get up and running in minutes");
     // "firms" alone is ambiguous: the audience is law firms and privacy consultants.
     for (const [k, v] of shown) expect(v.replace(/law firms?|Law-Firm-in-a-Box/gi, ""), k).not.toMatch(/\bfirms?\b/i);
     for (const k of ["hero.badge", "hero.cta", "header.cta", "cta.button"]) {

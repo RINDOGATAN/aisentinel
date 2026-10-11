@@ -90,12 +90,11 @@ describe("what the public copy says about the hosted pilot", () => {
     expect(text).not.toMatch(/hosted instance[^.]*need(s)? a licence/i);
   });
 
-  it("the landing call to action says pilot and points to an own instance, in both languages", () => {
+  it("the landing call to action says pilot and points to an own instance (English; the Spanish page has the button alone)", () => {
     expect(landingEn["cta.text"]).toMatch(/free, capped pilot/);
     expect(landingEn["cta.text"]).toMatch(/run your own instance/);
-    expect(landingEs["cta.text"]).toMatch(/piloto gratuito y con límites/);
-    expect(landingEs["cta.text"]).toMatch(/usa tu propia instancia/);
-    expect(landingEs["cta.text"]).not.toMatch(/ejecut/);
+    // The Spanish page closes with the button alone since 10 Oct 2026 (owner): no closing text.
+    expect((landingEs as Record<string, string>)["cta.text"]).toBeUndefined();
   });
 
   it("the docs and lock strings tie the price to the kit, in both languages", () => {
@@ -126,7 +125,6 @@ describe("what the public copy says about the hosted pilot", () => {
 
   it("the Spanish copy addresses the reader as tú", () => {
     const strings = [
-      landingEs["cta.text"],
       (es as { pilot: Record<string, string> }).pilot.editsUntil,
       (es as { pilot: Record<string, string> }).pilot.runOwn,
       (es as { premiumShowcase: { lockedHint: string } }).premiumShowcase.lockedHint,

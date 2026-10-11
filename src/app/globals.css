@@ -243,6 +243,15 @@
     box-shadow: var(--shadow-hover);
     transform: translateY(-2px);
   }
+  /* The Spanish landing: cards do not lift or animate under the pointer, so
+     nothing jumps while the page scrolls past it. */
+  .landing-still .paper-card {
+    transition: none;
+  }
+  .landing-still .paper-card:hover {
+    box-shadow: var(--shadow-card);
+    transform: none;
+  }
 
   .btn-primary {
     @apply inline-flex items-center justify-center px-6 py-3 bg-primary text-primary-foreground rounded-full font-medium transition-all duration-200;

@@ -89,6 +89,26 @@ describe("landing hero", () => {
     expect(page).toContain('t("hero.subtitle").split(".")[0]');
   });
 
+  it("gives the Spanish sign-up card its own one-line summary", () => {
+    expect(ES["hero.card"]).toMatch(/^Inventario de sistemas de IA, .+\. Listo para volar en unos pocos minutos\.$/);
+    expect(EN["hero.card"]).toBeUndefined();
+    expect(read("src/landing/components/StartupProductPage.tsx")).toContain('t("hero.card")');
+  });
+
+  it("links the Spanish page to the public documentation, in plain words", () => {
+    expect(ES["value.docs"]).toBe("Consulta la documentación");
+    expect(EN["value.docs"]).toBeUndefined();
+    const page = read("src/landing/components/StartupProductPage.tsx");
+    expect(page).toContain('href="/docs"');
+    expect(page).not.toMatch(/regulatorio\/ai-sentinel/);
+  });
+
+  it("closes the Spanish page with the button alone (no closing heading or pilot text)", () => {
+    for (const k of ["cta.heading.prefix", "cta.heading.accent", "cta.heading.suffix", "cta.text"]) expect(ES[k], k).toBeUndefined();
+    expect(ES["cta.button"]).toBe("Abrir AI Sentinel");
+    expect(read("src/landing/LandingPage.tsx")).toContain('plain={locale === "es"}');
+  });
+
   it("leaves no hard-coded English in the sign-up card", () => {
     const page = read("src/landing/components/StartupProductPage.tsx");
     expect(page).not.toMatch(/setError\("[A-Za-z]/);
@@ -103,7 +123,7 @@ describe("Spanish sections", () => {
   const asShipped = renderToStaticMarkup(createElement(LandingSections, { t: tEs, locale: "es" }));
 
   it("render in order, with every key translated", () => {
-    const order = ["Tres herramientas", "Descubre cómo", "Seis etapas", "Tú eliges"].map((s) => withVideos.indexOf(s));
+    const order = ["Tres herramientas", "Descubre cómo", "Seis etapas", "Adaptado a"].map((s) => withVideos.indexOf(s));
     expect(order.every((i) => i >= 0)).toBe(true);
     expect([...order].sort((a, b) => a - b)).toEqual(order);
     expect(withVideos).not.toMatch(/>es\.[a-z]/);
@@ -132,21 +152,25 @@ describe("Spanish sections", () => {
     }
   });
 
-  it("offer exactly the three ways sold in Spain: cloud pilot, managed instance, own servers with training", () => {
+  it("offer exactly the three ways sold in Spain: TODO.LAW cloud, managed virtual server, your own hardware", () => {
     expect(asShipped.match(/<article class="paper-card/g)).toHaveLength(3);
     // The owner's heading for the section, as the eyebrow (English: "Guarantees and hosting").
     expect(ES["es.ways.label"]).toBe("Garantías y alojamiento");
     expect(EN["en.ways.label"]).toBe("Guarantees and hosting");
-    expect(ES["es.ways.w1.desc"]).toMatch(/piloto gratuito y con límites/);
-    expect(ES["es.ways.w2.desc"]).toMatch(/instancia aislada/);
-    expect(ES["es.ways.w3.desc"]).toMatch(/servidores de tu organización/);
-    expect(ES["es.ways.w3.desc"]).toMatch(/formamos a tu equipo/);
+    // The owner's wording (10 Oct 2026), the same as DPO Central's landing.
+    expect(ES["es.ways.heading.prefix"] + ES["es.ways.heading.accent"]).toBe("Adaptado a tus necesidades");
+    expect(ES["es.ways.w1.title"]).toBe("En la nube de TODO.LAW");
+    expect(ES["es.ways.w1.desc"]).toMatch(/sencilla exportación/);
+    expect(ES["es.ways.w2.title"]).toBe("Servidor virtual gestionado");
+    expect(ES["es.ways.w2.desc"]).toMatch(/instancia aislada que operamos nosotros desde Asturias/);
+    expect(ES["es.ways.w3.title"]).toBe("Tu propio hardware");
+    expect(ES["es.ways.w3.desc"]).toMatch(/no salen de tus instalaciones/);
     expect(asShipped.match(/href="mailto:[^"]+"/g)).toHaveLength(2);
   });
 
-  it("never offer hardware, the installer kit, Docker or open code in Spanish", () => {
+  it("never offer the installer kit, Docker or open code in Spanish", () => {
     for (const [k, v] of Object.entries(ES)) {
-      expect(v, k).not.toMatch(/hardware|docker|\bkit\b|código abierto|tus propios equipos/i);
+      expect(v, k).not.toMatch(/docker|\bkit\b|código abierto|tus propios equipos/i);
     }
   });
 
@@ -156,8 +180,6 @@ describe("Spanish sections", () => {
         /(alojad[oa]s?|datos|nube|servidor(es)?|aloja(mos)?) (en|de) (la )?(UE|Unión Europea|Europa)|in the EU|EU[- ]hosted|hosted in (the )?(EU|Europe)/i
       );
     }
-    expect(ES["es.ways.w1.title"]).toBe("En la nube de la UE");
-    expect(ES["es.ways.w1.desc"]).toMatch(/alojado en la UE/);
   });
 
   it("show no videos section while the list is empty, and the list's files all exist", () => {

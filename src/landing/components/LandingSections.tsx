@@ -10,11 +10,12 @@
  * logos (only while the configured list is not empty); the English page
  * shows none. No prices. No hosting location in the sections; the safeguards
  * guide after the ways (SafeguardsGuide) says, as the storefront does, that
- * the cloud pilot is hosted in the EU.
+ * the cloud pilot is hosted in the EU. The Spanish managed box names
+ * Asturias, as the storefront does (owner, 10 Oct 2026).
  *
  * Each language has its own copy under `<locale>.*` in the landing
  * dictionary, and its own list of ways: three in Spanish (as the storefront
- * offers in Spain: no hardware, no installer kit), five in English (as on
+ * offers in Spain: cloud, managed, your own hardware; no installer kit), five in English (as on
  * the English storefront).
  *
  * Nothing moves or plays on its own: the videos load nothing until the
@@ -77,7 +78,7 @@ const SETUP: Record<LandingLocale, LocaleSetup> = {
     ways: [
       { icon: Cloud, action: "none" },
       { icon: Server, action: "mail" },
-      { icon: GraduationCap, action: "mail" },
+      { icon: HardDrive, action: "mail" },
     ],
     captionsLang: "es",
     logos: true,

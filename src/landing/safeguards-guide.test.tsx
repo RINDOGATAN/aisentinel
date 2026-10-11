@@ -121,9 +121,10 @@ describe.each(["es", "en"] as Locale[])("safeguards guide (%s)", (locale) => {
 });
 
 describe("safeguards guide, Spanish only", () => {
-  const bad = /\bkit\b|hardware|\bBox\b|Docker|Instalador local|ejecut|\$/i;
+  // "Tu propio hardware" is the third way's name since 10 Oct 2026 (owner), as on the storefront.
+  const bad = /\bkit\b|\bBox\b|Docker|Instalador local|ejecut|\$/i;
 
-  it("shows three ways, and no kit, hardware, 'ejecut' or '$' anywhere, with any answer chosen", () => {
+  it("shows three ways, and no kit, Box, 'ejecut' or '$' anywhere, with any answer chosen", () => {
     const closed = render("es");
     expect(boxes(closed)).toHaveLength(3);
     expect(text(closed)).not.toMatch(bad);

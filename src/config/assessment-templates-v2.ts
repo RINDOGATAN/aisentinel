@@ -1094,7 +1094,7 @@ const conformityV2: V2Template = {
           options: [
             opt("conforms", "Conforms to all applicable requirements", "Conforme con todos los requisitos aplicables"),
             opt("minor", "Conforms with minor observations", "Conforme con observaciones menores"),
-            opt("not_conform", "Does not conform — corrective actions required", "No conforme: se requieren acciones correctivas"),
+            opt("not_conform", "Does not conform: corrective actions required", "No conforme: se requieren acciones correctivas"),
           ],
         },
         {
@@ -1104,8 +1104,8 @@ const conformityV2: V2Template = {
           allowNote: true,
           text: L("Which conformity assessment pathway is being followed?", "¿Qué vía de evaluación de la conformidad se sigue?"),
           options: [
-            opt("annex_vi", "Annex VI — internal control (self-assessment)", "Anexo VI: control interno (autoevaluación)"),
-            opt("annex_vii", "Annex VII — assessment by notified body", "Anexo VII: evaluación por organismo notificado"),
+            opt("annex_vi", "Annex VI: internal control (self-assessment)", "Anexo VI: control interno (autoevaluación)"),
+            opt("annex_vii", "Annex VII: assessment by notified body", "Anexo VII: evaluación por organismo notificado"),
           ],
           help: H(
             L(
@@ -1113,7 +1113,7 @@ const conformityV2: V2Template = {
               "El anexo VI es autoevaluación; el anexo VII implica a un organismo notificado. Cuál aplica depende del sistema y de las normas armonizadas utilizadas.",
             ),
             L(
-              "\"Annex VI — internal control, since harmonised standards are applied in full.\"",
+              "\"Annex VI: internal control, since harmonised standards are applied in full.\"",
               "«Anexo VI: control interno, ya que se aplican íntegramente las normas armonizadas.»",
             ),
             L("EU AI Act Art. 43", "RIA, art. 43"),
@@ -1430,10 +1430,10 @@ const biasFairnessV2: V2Template = {
           allowNote: true,
           text: L("What is the overall fairness determination?", "¿Cuál es la determinación general de equidad?"),
           options: [
-            opt("fair", "Fair — meets all fairness criteria", "Equitativo: cumple todos los criterios de equidad"),
-            opt("conditionally_fair", "Conditionally fair — acceptable with monitoring", "Equitativo con condiciones: aceptable con vigilancia"),
-            opt("unfair", "Unfair — significant bias requiring remediation", "No equitativo: sesgo significativo que exige corrección"),
-            opt("inconclusive", "Inconclusive — insufficient data", "No concluyente: datos insuficientes"),
+            opt("fair", "Fair: meets all fairness criteria", "Equitativo: cumple todos los criterios de equidad"),
+            opt("conditionally_fair", "Conditionally fair: acceptable with monitoring", "Equitativo con condiciones: aceptable con vigilancia"),
+            opt("unfair", "Unfair: significant bias requiring remediation", "No equitativo: sesgo significativo que exige corrección"),
+            opt("inconclusive", "Inconclusive: insufficient data", "No concluyente: datos insuficientes"),
           ],
         },
         {

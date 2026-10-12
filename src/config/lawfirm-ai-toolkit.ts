@@ -746,8 +746,8 @@ export const LAWFIRM_POLICY_PACK: LawFirmPolicy[] = [
   {
     id: "lf-ai-use",
     title: {
-      en: "AI Use Policy — Law Firm",
-      es: "Política de uso de IA — Despacho de abogados",
+      en: "AI Use Policy: Law Firm",
+      es: "Política de uso de IA: despacho de abogados",
     },
     type: "AI_USAGE",
     description: {
@@ -826,8 +826,8 @@ export const LAWFIRM_POLICY_PACK: LawFirmPolicy[] = [
   {
     id: "lf-incident",
     title: {
-      en: "AI Incident Response — Legal Practice",
-      es: "Respuesta a incidentes de IA — Ejercicio de la abogacía",
+      en: "AI Incident Response: Legal Practice",
+      es: "Respuesta a incidentes de IA: ejercicio de la abogacía",
     },
     type: "AI_INCIDENT_RESPONSE",
     description: {

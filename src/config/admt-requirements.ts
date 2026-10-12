@@ -63,8 +63,8 @@ export const ADMT_REQUIREMENTS_REVIEW_MARKER: Localized = {
 
 export const ADMT_FRAMEWORK = {
   code: "CA_CCPA_ADMT",
-  name: "California CCPA — ADMT, Risk Assessments & Cybersecurity Audits",
-  version: "11 CCR §§ 7001–7222 (OAL-approved 22 Sept 2025; effective 1 Jan 2026)",
+  name: "California CCPA: ADMT, Risk Assessments & Cybersecurity Audits",
+  version: "11 CCR §§ 7001-7222 (OAL-approved 22 Sept 2025; effective 1 Jan 2026)",
   description:
     "California Consumer Privacy Act regulations on automated decisionmaking technology (Article 11), risk assessments (Article 10) and cybersecurity audits (Article 9), as approved by the Office of Administrative Law on 22 September 2025.",
 } as const;
@@ -364,7 +364,7 @@ const clusterB: AdmtRequirementSeed[] = [
         slug: "7220-d",
         code: "§ 7220(d)",
         title: {
-          en: "Permitted redactions — a redaction right, not an exemption",
+          en: "Permitted redactions: a redaction right, not an exemption",
           es: "Supresiones permitidas: derecho de supresión, no exención",
         },
         description: {
@@ -423,7 +423,7 @@ const clusterC: AdmtRequirementSeed[] = [
         slug: "7221-b-1",
         code: "§ 7221(b)(1)",
         title: {
-          en: "Exception 1 — human appeal",
+          en: "Exception 1: human appeal",
           es: "Excepción 1: apelación humana",
         },
         description: {
@@ -437,7 +437,7 @@ const clusterC: AdmtRequirementSeed[] = [
         slug: "7221-b-2",
         code: "§ 7221(b)(2)",
         title: {
-          en: "Exception 2 — admission, acceptance or hiring assessment",
+          en: "Exception 2: admission, acceptance or hiring assessment",
           es: "Excepción 2: evaluación de admisión, aceptación o contratación",
         },
         description: {
@@ -451,7 +451,7 @@ const clusterC: AdmtRequirementSeed[] = [
         slug: "7221-b-3",
         code: "§ 7221(b)(3)",
         title: {
-          en: "Exception 3 — work allocation or compensation",
+          en: "Exception 3: work allocation or compensation",
           es: "Excepción 3: asignación de trabajo o retribución",
         },
         description: {
@@ -950,7 +950,7 @@ const clusterF: AdmtRequirementSeed[] = [
         slug: "7150-b-1",
         code: "§ 7150(b)(1)",
         title: {
-          en: "Trigger — selling or sharing personal information",
+          en: "Trigger: selling or sharing personal information",
           es: "Supuesto: venta o comunicación de datos personales",
         },
         description: {
@@ -968,7 +968,7 @@ const clusterF: AdmtRequirementSeed[] = [
         slug: "7150-b-2",
         code: "§ 7150(b)(2)",
         title: {
-          en: "Trigger — processing sensitive personal information",
+          en: "Trigger: processing sensitive personal information",
           es: "Supuesto: tratamiento de datos personales sensibles",
         },
         description: {
@@ -986,7 +986,7 @@ const clusterF: AdmtRequirementSeed[] = [
         slug: "7150-b-3",
         code: "§ 7150(b)(3)",
         title: {
-          en: "Trigger — ADMT for a significant decision",
+          en: "Trigger: ADMT for a significant decision",
           es: "Supuesto: ADMT para una decisión significativa",
         },
         description: {
@@ -1004,7 +1004,7 @@ const clusterF: AdmtRequirementSeed[] = [
         slug: "7150-b-4",
         code: "§ 7150(b)(4)",
         title: {
-          en: "Trigger — work or educational profiling",
+          en: "Trigger: work or educational profiling",
           es: "Supuesto: elaboración de perfiles laborales o educativos",
         },
         description: {
@@ -1022,7 +1022,7 @@ const clusterF: AdmtRequirementSeed[] = [
         slug: "7150-b-5",
         code: "§ 7150(b)(5)",
         title: {
-          en: "Trigger — sensitive-location profiling",
+          en: "Trigger: sensitive-location profiling",
           es: "Supuesto: elaboración de perfiles en ubicaciones sensibles",
         },
         description: {
@@ -1040,7 +1040,7 @@ const clusterF: AdmtRequirementSeed[] = [
         slug: "7150-b-6",
         code: "§ 7150(b)(6)",
         title: {
-          en: "Trigger — training ADMT or biometric technology",
+          en: "Trigger: training ADMT or biometric technology",
           es: "Supuesto: entrenamiento de ADMT o de tecnología biométrica",
         },
         description: {
@@ -1408,7 +1408,7 @@ const clusterG: AdmtRequirementSeed[] = [
         slug: "7123-f",
         code: "§ 7123(f)",
         title: {
-          en: "Reuse of an existing audit — NIST CSF 2.0 named",
+          en: "Reuse of an existing audit: NIST CSF 2.0 named",
           es: "Reutilización de una auditoría existente: se cita el NIST CSF 2.0",
         },
         description: {

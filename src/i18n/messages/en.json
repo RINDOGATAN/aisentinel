@@ -6299,5 +6299,35 @@
     "premiumTitle": "Premium skills",
     "premium": "Optional premium skills and commercial add-ons are separately licensed by Rindogatan LLC and are not covered by the AGPL. See the source repository for details.",
     "back": "Back to AI Sentinel"
+  },
+  "deleteRecord": {
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "confirm": "Yes, delete",
+    "aiSystem": {
+      "title": "Delete this AI system",
+      "warning": "Delete this AI system? Its assessments, oversight gates, risk classification and the other records kept on the system are deleted with it. Incidents stay, without the link. This cannot be undone.",
+      "deleted": "AI system deleted."
+    },
+    "vendor": {
+      "title": "Delete this vendor",
+      "warning": "Delete this vendor? Its vendor assessments are deleted with it. This cannot be undone.",
+      "deleted": "Vendor deleted."
+    },
+    "assessment": {
+      "title": "Delete this draft assessment",
+      "warning": "Delete this draft assessment? Its answers and saved versions are lost. This cannot be undone.",
+      "deleted": "Assessment deleted."
+    },
+    "policy": {
+      "title": "Delete this policy",
+      "warning": "Delete this policy? Its versions and its links to AI systems are deleted with it. This cannot be undone.",
+      "deleted": "Policy deleted."
+    },
+    "gate": {
+      "title": "Delete this oversight gate",
+      "warning": "Delete this oversight gate? The decisions recorded on it are deleted with it. This cannot be undone.",
+      "deleted": "Oversight gate deleted."
+    }
   }
 }

@@ -25,6 +25,8 @@ import {
 } from "../../services/ai/prompts/assessment-draft";
 import { unansweredRequired, localizedText } from "@/lib/assessment-answers";
 import { markConfirmed } from "@/server/services/template-items/mark";
+import { assertNotOnHold } from "../../services/legal-hold";
+import { assertCanDeleteRecords } from "../../services/authz/delete-roles";
 
 /** Statuses in which an assessment is still a working document. */
 const EDITABLE_STATUSES = ["DRAFT", "IN_PROGRESS"];
@@ -445,6 +447,50 @@ export const assessmentRouter = createTRPCRouter({
           aiSystem: { select: { id: true, name: true } },
         },
       });
+    }),
+
+  /**
+   * Delete an assessment that has not been submitted (DRAFT or IN_PROGRESS).
+   * Owners and admins only. Once submitted it is a record of what was put up
+   * for review and stays; its versions go with it while it is still a draft.
+   */
+  delete: orgWriteProcedure
+    .input(z.object({ organizationId: z.string(), id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      assertCanDeleteRecords(ctx.membership.role);
+
+      const existing = await ctx.prisma.aIAssessment.findFirst({
+        where: { id: input.id, organizationId: ctx.organization.id },
+        select: { id: true, title: true, status: true, submittedAt: true, aiSystemId: true },
+      });
+      if (!existing) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Assessment not found" });
+      }
+      if (!isEditable(existing.status) || existing.submittedAt) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: `This assessment is ${readableStatus(existing.status)}. Only an assessment that has not been submitted can be deleted.`,
+        });
+      }
+
+      await assertNotOnHold(ctx.prisma, ctx.organization.id, { aiSystemId: existing.aiSystemId });
+
+      await ctx.prisma.aIAssessment.deleteMany({
+        where: { id: input.id, organizationId: ctx.organization.id },
+      });
+
+      await ctx.prisma.auditLog.create({
+        data: {
+          organizationId: ctx.organization.id,
+          userId: ctx.session.user.id,
+          entityType: "AIAssessment",
+          entityId: input.id,
+          action: "DELETE",
+          changes: { title: existing.title, status: existing.status },
+        },
+      });
+
+      return { deleted: true };
     }),
 
   listTemplates: organizationProcedure

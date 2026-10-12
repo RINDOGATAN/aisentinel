@@ -33,6 +33,7 @@ import { withoutTemplateCopyMark } from "@/config/client-template";
 import { markConfirmed } from "@/server/services/template-items/mark";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { assertOwnedVendor } from "../../services/authz/owned";
+import { assertCanDeleteRecords } from "../../services/authz/delete-roles";
 import { TRPCError } from "@trpc/server";
 import { chatComplete } from "../../services/ai/llm-door";
 import {
@@ -379,9 +380,24 @@ export const aiSystemRouter = createTRPCRouter({
       return ctx.prisma.aISystem.findFirst({ where: { id, organizationId: ctx.organization.id } });
     }),
 
+  /**
+   * Owners and admins only. The system's assessments, gates, classification
+   * and other system-owned records go with it (schema cascades); incidents,
+   * proceedings and sensitive-data analyses stay and lose the link.
+   */
   delete: orgWriteProcedure
     .input(z.object({ organizationId: z.string(), id: z.string() }))
     .mutation(async ({ ctx, input }) => {
+      assertCanDeleteRecords(ctx.membership.role);
+
+      const existing = await ctx.prisma.aISystem.findFirst({
+        where: { id: input.id, organizationId: ctx.organization.id },
+        select: { id: true, name: true },
+      });
+      if (!existing) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "AI system not found" });
+      }
+
       // A hold on this system, or on the whole organisation, refuses this.
       await assertNotOnHold(ctx.prisma, ctx.organization.id, { aiSystemId: input.id });
 
@@ -396,6 +412,7 @@ export const aiSystemRouter = createTRPCRouter({
           entityType: "AISystem",
           entityId: input.id,
           action: "DELETE",
+          changes: { name: existing.name },
         },
       });
 

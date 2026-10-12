@@ -33,6 +33,11 @@ interface OrganizationContextType {
    * AI_OFFICER), the roles the server checks for those mutations.
    */
   canDecide: boolean;
+  /**
+   * Whether the current user can delete register records (OWNER, ADMIN), the
+   * roles src/server/services/authz/delete-roles.ts accepts.
+   */
+  canDelete: boolean;
   setOrganization: (org: Organization) => void;
   refetchOrganizations: () => void;
 }
@@ -54,6 +59,9 @@ export function resolveRole(
 
 /** The roles the server lets approve, decide and publish. */
 export const DECIDER_ROLES: readonly OrganizationRole[] = ["OWNER", "ADMIN", "AI_OFFICER"];
+
+/** The roles the server lets delete register records. */
+export const DELETER_ROLES: readonly OrganizationRole[] = ["OWNER", "ADMIN"];
 
 const OrganizationContext = createContext<OrganizationContextType | undefined>(undefined);
 
@@ -98,6 +106,7 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
   const readOnly = pilot?.active === true && pilot.readOnly;
   const canWrite = userRole !== null && userRole !== "VIEWER" && !readOnly;
   const canDecide = canWrite && userRole !== null && DECIDER_ROLES.includes(userRole);
+  const canDelete = canWrite && userRole !== null && DELETER_ROLES.includes(userRole);
 
   return (
     <OrganizationContext.Provider
@@ -108,6 +117,7 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
         userRole,
         canWrite,
         canDecide,
+        canDelete,
         setOrganization,
         refetchOrganizations: refetch,
       }}

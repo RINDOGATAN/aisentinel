@@ -6,6 +6,8 @@ import { editConfirmation } from "@/server/services/provenance/edit-stamp";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { assertPilotRoom, pilotLocale } from "../../services/pilot/caps";
 import { TRPCError } from "@trpc/server";
+import { assertNotOnHold } from "../../services/legal-hold";
+import { assertCanDeleteRecords } from "../../services/authz/delete-roles";
 
 /** Roles that may approve or publish a policy (approve, publishVersion, update). */
 const POLICY_DECIDER_ROLES = ["OWNER", "ADMIN", "AI_OFFICER"] as const;
@@ -370,6 +372,47 @@ export const policyRouter = createTRPCRouter({
           aiSystemId: input.aiSystemId,
         },
       });
+    }),
+
+  /**
+   * Owners and admins only. Its versions and system links go with it. An
+   * organisation-wide hold, or a hold on any system the policy is linked to,
+   * refuses the deletion.
+   */
+  delete: orgWriteProcedure
+    .input(z.object({ organizationId: z.string(), id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      assertCanDeleteRecords(ctx.membership.role);
+
+      const existing = await ctx.prisma.aIPolicy.findFirst({
+        where: { id: input.id, organizationId: ctx.organization.id },
+        select: { id: true, title: true, status: true, systemLinks: { select: { aiSystemId: true } } },
+      });
+      if (!existing) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Policy not found" });
+      }
+
+      await assertNotOnHold(ctx.prisma, ctx.organization.id);
+      for (const aiSystemId of new Set(existing.systemLinks.map((l) => l.aiSystemId))) {
+        await assertNotOnHold(ctx.prisma, ctx.organization.id, { aiSystemId });
+      }
+
+      await ctx.prisma.aIPolicy.deleteMany({
+        where: { id: input.id, organizationId: ctx.organization.id },
+      });
+
+      await ctx.prisma.auditLog.create({
+        data: {
+          organizationId: ctx.organization.id,
+          userId: ctx.session.user.id,
+          entityType: "AIPolicy",
+          entityId: input.id,
+          action: "DELETE",
+          changes: { title: existing.title, status: existing.status },
+        },
+      });
+
+      return { deleted: true };
     }),
 
   getStats: organizationProcedure

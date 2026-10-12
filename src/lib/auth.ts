@@ -21,6 +21,8 @@ import { mailFrom, signInSubject } from "@/lib/mail-from";
 import { resolveCookieDomain } from "@/config/pilot";
 import { recordPilotSignIn } from "@/server/services/pilot/first-sign-in";
 import { claimableDomain, emailDomain as domainOfEmail } from "@/lib/org-domain";
+import { isBlockedAccountEmail } from "@/lib/email-policy";
+import { EMAIL_NOT_ACCEPTED_ERROR } from "@/lib/auth-email-policy";
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
@@ -83,6 +85,9 @@ export const authOptions: NextAuthOptions = {
                 return null;
               }
               if (!credentials?.email) return null;
+              if (isBlockedAccountEmail(credentials.email)) {
+                throw new Error(EMAIL_NOT_ACCEPTED_ERROR);
+              }
 
               let user = await prisma.user.findUnique({
                 where: { email: credentials.email },
@@ -222,6 +227,10 @@ export const authOptions: NextAuthOptions = {
             }
 
             if (!email) return null;
+            // Refused before any account is created (src/lib/email-policy.ts).
+            if (isBlockedAccountEmail(email)) {
+              throw new Error(EMAIL_NOT_ACCEPTED_ERROR);
+            }
 
             let user = await prisma.user.findUnique({
               where: { email },
@@ -311,7 +320,14 @@ export const authOptions: NextAuthOptions = {
     maxAge: 12 * 60 * 60,
   },
   callbacks: {
-    async signIn({ user }) {
+    async signIn({ user, profile }) {
+      // E-mail policy (src/lib/email-policy.ts): Google, magic link and every
+      // other provider. Runs before the adapter creates an account and before
+      // a magic link is sent.
+      const address = user.email ?? (profile as { email?: string } | undefined)?.email;
+      if (isBlockedAccountEmail(address)) {
+        return `/auth-error?error=${EMAIL_NOT_ACCEPTED_ERROR}`;
+      }
       // Auto-join organization by email domain
       try {
         if (user.email) {

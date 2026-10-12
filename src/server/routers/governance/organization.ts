@@ -9,6 +9,11 @@ import {
   orgWriteProcedure,
 } from "../../trpc";
 import { TRPCError } from "@trpc/server";
+import {
+  BLOCKED_EMAIL_MESSAGE_KEY,
+  blockedEmailMessage,
+  isBlockedAccountEmail,
+} from "@/lib/email-policy";
 import { OrganizationRole, type Prisma } from "@prisma/client";
 import { loadBusinessUnitScope } from "../../services/business-units/scope";
 import { systemScopeWhere } from "../../services/views/queries";
@@ -347,6 +352,16 @@ export const organizationRouter = createTRPCRouter({
       const locale = pilotLocale(ctx.getCookie);
       assertPilotWritable(ctx.organization, locale);
       await assertPilotRoom(ctx.prisma, ctx.organization.id, "members", locale);
+
+      // E-mail policy (src/lib/email-policy.ts): a refused address cannot be
+      // invited. BAD_REQUEST is an HTTP 400.
+      if (isBlockedAccountEmail(input.email)) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: blockedEmailMessage(locale),
+          cause: new Error(BLOCKED_EMAIL_MESSAGE_KEY),
+        });
+      }
 
       const user = await ctx.prisma.user.findFirst({
         where: { email: { equals: input.email.trim(), mode: "insensitive" } },

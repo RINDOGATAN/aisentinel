@@ -36,6 +36,9 @@ export default function CrossLoginPage() {
       (result) => {
         if (result?.ok) {
           router.replace("/governance");
+        } else if (result?.error === "EmailNotAccepted") {
+          // Refused by the e-mail policy: show the error page with its message.
+          router.replace("/auth-error?error=EmailNotAccepted");
         } else {
           setError(t("crossFailed"));
           setTimeout(() => router.replace("/sign-in"), 2000);

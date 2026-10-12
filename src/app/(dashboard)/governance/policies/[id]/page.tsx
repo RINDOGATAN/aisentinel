@@ -3,11 +3,12 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/governance/page-header";
+import { DeleteRecordButton } from "@/components/governance/delete-record-button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -85,7 +86,9 @@ export default function PolicyDetailPage() {
   const tc = useTranslations("common");
   const params = useParams();
   const id = params.id as string;
-  const { organization, canWrite, canDecide } = useOrganization();
+  const { organization, canWrite, canDecide, canDelete } = useOrganization();
+  const router = useRouter();
+  const tDelete = useTranslations("deleteRecord");
   const orgId = organization?.id ?? "";
 
   const [publishDialogOpen, setPublishDialogOpen] = useState(false);
@@ -113,6 +116,15 @@ export default function PolicyDetailPage() {
     onError: (error) => {
       toast.error(error.message || t("toastPolicyUpdateError"));
     },
+  });
+
+  const deleteMutation = trpc.policy.delete.useMutation({
+    onSuccess: () => {
+      toast.success(tDelete("policy.deleted"));
+      router.push("/governance/policies");
+      void utils.policy.invalidate();
+    },
+    onError: (error) => toast.error(error.message),
   });
 
   const approveMutation = trpc.policy.approve.useMutation({
@@ -290,6 +302,13 @@ export default function PolicyDetailPage() {
         actions={
           <>
             {/* Only the actions the status allows; always in this one row. */}
+            {canDelete && (
+              <DeleteRecordButton
+                record="policy"
+                pending={deleteMutation.isPending}
+                onConfirm={() => deleteMutation.mutate({ organizationId: orgId, id })}
+              />
+            )}
             {policy.status === "DRAFT" && canWrite && (
               <Button variant="outline" onClick={handleSubmitForReview} disabled={updateMutation.isPending}>
                 {updateMutation.isPending ? (

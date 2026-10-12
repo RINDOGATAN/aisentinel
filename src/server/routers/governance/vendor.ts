@@ -5,6 +5,7 @@ import { z } from "zod";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { TRPCError } from "@trpc/server";
 import { assertNotOnHold } from "../../services/legal-hold";
+import { assertCanDeleteRecords } from "../../services/authz/delete-roles";
 import { assertPilotRoom, pilotLocale } from "../../services/pilot/caps";
 import { withoutTemplateCopyMark } from "@/config/client-template";
 import { markConfirmed } from "@/server/services/template-items/mark";
@@ -299,10 +300,44 @@ export const vendorRouter = createTRPCRouter({
       return ctx.prisma.aIVendor.findFirst({ where: { id, organizationId: ctx.organization.id } });
     }),
 
+  /**
+   * Owners and admins only. Refused while an AI system still names the vendor:
+   * the schema would clear the link silently, so the systems are moved to
+   * another vendor (or none) first. Its vendor assessments go with it.
+   */
   delete: orgWriteProcedure
     .input(z.object({ organizationId: z.string(), id: z.string() }))
     .mutation(async ({ ctx, input }) => {
+      assertCanDeleteRecords(ctx.membership.role);
+
+      const existing = await ctx.prisma.aIVendor.findFirst({
+        where: { id: input.id, organizationId: ctx.organization.id },
+        select: { id: true, name: true },
+      });
+      if (!existing) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Vendor not found" });
+      }
+
+      const systemsUsing = await ctx.prisma.aISystem.count({
+        where: { vendorId: input.id, organizationId: ctx.organization.id },
+      });
+      if (systemsUsing > 0) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: `This vendor is linked to ${systemsUsing} AI system(s). Change their vendor before deleting it.`,
+        });
+      }
+
       await assertNotOnHold(ctx.prisma, ctx.organization.id);
+      // Data recipients that name the vendor lose the link; a hold on their
+      // system refuses that too.
+      const recipients = await ctx.prisma.dataRecipient.findMany({
+        where: { vendorId: input.id, organizationId: ctx.organization.id },
+        select: { aiSystemId: true },
+      });
+      for (const aiSystemId of new Set(recipients.map((r) => r.aiSystemId))) {
+        await assertNotOnHold(ctx.prisma, ctx.organization.id, { aiSystemId });
+      }
 
       await ctx.prisma.aIVendor.deleteMany({
         where: { id: input.id, organizationId: ctx.organization.id },
@@ -315,6 +350,7 @@ export const vendorRouter = createTRPCRouter({
           entityType: "AIVendor",
           entityId: input.id,
           action: "DELETE",
+          changes: { name: existing.name },
         },
       });
 

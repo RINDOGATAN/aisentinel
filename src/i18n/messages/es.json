@@ -6299,5 +6299,35 @@
     "premiumTitle": "Skills premium",
     "premium": "Las Skills premium opcionales y los complementos comerciales tienen una licencia aparte de Rindogatan LLC y no están cubiertos por la AGPL. Consulta los detalles en el repositorio del código fuente.",
     "back": "Volver a AI Sentinel"
+  },
+  "deleteRecord": {
+    "delete": "Eliminar",
+    "cancel": "Cancelar",
+    "confirm": "Sí, eliminar",
+    "aiSystem": {
+      "title": "Eliminar este sistema de IA",
+      "warning": "¿Eliminar este sistema de IA? Se eliminan con él sus evaluaciones, controles de supervisión, clasificación de riesgo y los demás registros del sistema. Los incidentes se conservan, sin el vínculo. No se puede deshacer.",
+      "deleted": "Sistema de IA eliminado."
+    },
+    "vendor": {
+      "title": "Eliminar este proveedor",
+      "warning": "¿Eliminar este proveedor? Se eliminan con él sus evaluaciones de proveedor. No se puede deshacer.",
+      "deleted": "Proveedor eliminado."
+    },
+    "assessment": {
+      "title": "Eliminar este borrador de evaluación",
+      "warning": "¿Eliminar este borrador de evaluación? Se pierden sus respuestas y las versiones guardadas. No se puede deshacer.",
+      "deleted": "Evaluación eliminada."
+    },
+    "policy": {
+      "title": "Eliminar esta política",
+      "warning": "¿Eliminar esta política? Se eliminan con ella sus versiones y sus vínculos con sistemas de IA. No se puede deshacer.",
+      "deleted": "Política eliminada."
+    },
+    "gate": {
+      "title": "Eliminar este control de supervisión",
+      "warning": "¿Eliminar este control de supervisión? Se eliminan con él las decisiones registradas. No se puede deshacer.",
+      "deleted": "Control de supervisión eliminado."
+    }
   }
 }

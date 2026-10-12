@@ -14,7 +14,7 @@
  */
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Loader2, Trash2, UserPlus, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -28,6 +28,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { trpc } from "@/lib/trpc";
+import { blockedEmailMessage, isBlockedAccountEmail } from "@/lib/email-policy";
 
 const ROLES = ["OWNER", "ADMIN", "AI_OFFICER", "MEMBER", "VIEWER"] as const;
 type Role = (typeof ROLES)[number];
@@ -53,6 +54,9 @@ export function TeamCard({
   const utils = trpc.useUtils();
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<Role>("MEMBER");
+  const locale = useLocale();
+  // Set when the e-mail policy refuses the address; shown under the field.
+  const [refused, setRefused] = useState(false);
 
   const isOwner = currentRole === "OWNER";
   const canManage = currentRole === "OWNER" || currentRole === "ADMIN";
@@ -155,8 +159,8 @@ export function TeamCard({
                 type="email"
                 value={email}
                 placeholder={t("emailPlaceholder")}
-                onChange={(e) => setEmail(e.target.value)}
-                aria-describedby="team-invite-help"
+                onChange={(e) => { setEmail(e.target.value); setRefused(false); }}
+                aria-describedby={refused ? "team-invite-refused team-invite-help" : "team-invite-help"}
               />
               <Select value={role} onValueChange={(v) => setRole(v as Role)}>
                 <SelectTrigger className="sm:w-44">
@@ -172,7 +176,13 @@ export function TeamCard({
               </Select>
               <Button
                 disabled={!email.trim() || add.isPending}
-                onClick={() => add.mutate({ organizationId, email: email.trim(), role })}
+                onClick={() => {
+                  if (isBlockedAccountEmail(email)) {
+                    setRefused(true);
+                    return;
+                  }
+                  add.mutate({ organizationId, email: email.trim(), role });
+                }}
               >
                 {add.isPending ? (
                   <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />
@@ -182,6 +192,11 @@ export function TeamCard({
                 {t("add")}
               </Button>
             </div>
+            {refused && (
+              <p id="team-invite-refused" data-testid="email-not-accepted" className="text-sm text-destructive">
+                {blockedEmailMessage(locale)}
+              </p>
+            )}
             <p id="team-invite-help" className="text-xs text-muted-foreground">{t("addHint")}</p>
           </div>
         )}

@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { features } from "@/config/features";
 import { brand } from "@/config/brand";
 import { PILOT_SIGN_IN_LINE } from "@/config/pilot";
+import { blockedEmailMessage, isBlockedAccountEmail } from "@/lib/email-policy";
 
 // Local (passwordless credentials) login: dev mode, or sovereign/self-hosted
 // builds with NEXT_PUBLIC_LOCAL_AUTH_ENABLED=true. The NextAuth provider id
@@ -37,6 +38,9 @@ export function SignInForm({
   const [isDevLoading, setIsDevLoading] = useState(false);
   const [isEmailSent, setIsEmailSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Which field's address the e-mail policy refused; the message sits under it.
+  const [refusedField, setRefusedField] = useState<"email" | "dev" | null>(null);
+  const refusedMessage = blockedEmailMessage(pilotLocale);
   const [csrfToken, setCsrfToken] = useState<string>();
   const [providers, setProviders] = useState<Record<string, { id: string; name: string }> | null>(null);
 
@@ -50,8 +54,13 @@ export function SignInForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
     setError(null);
+    setRefusedField(null);
+    if (isBlockedAccountEmail(email)) {
+      setRefusedField("email");
+      return;
+    }
+    setIsLoading(true);
 
     try {
       const result = await signIn("email", {
@@ -60,7 +69,9 @@ export function SignInForm({
         callbackUrl,
       });
 
-      if (result?.error) {
+      if (result?.error === "EmailNotAccepted") {
+        setRefusedField("email");
+      } else if (result?.error) {
         setError(t("sendFailed"));
       } else {
         setIsEmailSent(true);
@@ -79,8 +90,13 @@ export function SignInForm({
 
   const handleDevSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsDevLoading(true);
     setError(null);
+    setRefusedField(null);
+    if (isBlockedAccountEmail(devEmail)) {
+      setRefusedField("dev");
+      return;
+    }
+    setIsDevLoading(true);
 
     try {
       const result = await signIn("dev-credentials", {
@@ -88,7 +104,10 @@ export function SignInForm({
         redirect: false,
         callbackUrl,
       });
-      if (result?.error) {
+      if (result?.error === "EmailNotAccepted") {
+        setRefusedField("dev");
+        setIsDevLoading(false);
+      } else if (result?.error) {
         setError(t("localSignInFailed"));
         setIsDevLoading(false);
       } else {
@@ -153,11 +172,14 @@ export function SignInForm({
               <Input
                 type="email"
                 value={devEmail}
-                onChange={(e) => setDevEmail(e.target.value)}
+                onChange={(e) => { setDevEmail(e.target.value); setRefusedField(null); }}
                 placeholder={t("emailPlaceholder")}
                 className="input-brutal"
                 required
               />
+              {refusedField === "dev" && (
+                <p data-testid="email-not-accepted" className="text-sm text-destructive">{refusedMessage}</p>
+              )}
               <button
                 type="submit"
                 disabled={isDevLoading}
@@ -191,12 +213,18 @@ export function SignInForm({
                   id="email"
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => { setEmail(e.target.value); setRefusedField(null); }}
                   placeholder={t("emailInputPlaceholder")}
                   className="input-brutal"
                   required
                   autoFocus={!isDev}
+                  aria-describedby={refusedField === "email" ? "email-not-accepted" : undefined}
                 />
+                {refusedField === "email" && (
+                  <p id="email-not-accepted" data-testid="email-not-accepted" className="text-sm text-destructive">
+                    {refusedMessage}
+                  </p>
+                )}
               </div>
 
               <button

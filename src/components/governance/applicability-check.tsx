@@ -20,6 +20,8 @@ import { CheckCircle2, CircleHelp, ListChecks, Loader2 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { trpc } from "@/lib/trpc";
+import { SCREENING_ANCHOR } from "@/lib/settings-anchors";
+import { useProgramPath } from "@/components/guided/use-program-path";
 import { cn } from "@/lib/utils";
 import {
   APPLICABILITY_QUESTIONS,
@@ -132,7 +134,24 @@ export function ApplicabilityQuestions({
   );
 }
 
-function ItemLine({ item }: { item: ApplicabilityItem }) {
+/**
+ * The laws whose requirements reach the register only once the screening in
+ * Settings is answered (an unanswered question never adds obligations).
+ */
+const SCREENING_GATED: ReadonlySet<ApplicabilityItem["id"]> = new Set([
+  "colorado",
+  "californiaAdmt",
+  "washington",
+]);
+
+function ItemLine({
+  item,
+  screeningLink,
+}: {
+  item: ApplicabilityItem;
+  /** Where the screening is, when it is still to answer; null hides the line. */
+  screeningLink: { href: string; newTab: boolean } | null;
+}) {
   const t = useTranslations("applicability");
   const Icon = item.state === "applies" ? CheckCircle2 : CircleHelp;
   return (
@@ -150,6 +169,15 @@ function ItemLine({ item }: { item: ApplicabilityItem }) {
           <span className="sr-only">{t("whyLabel")}: </span>
           {item.reasons.map((r) => t(`reasons.${r}`)).join(" ")}
         </span>
+        {screeningLink && SCREENING_GATED.has(item.id) && (
+          <a
+            href={screeningLink.href}
+            {...(screeningLink.newTab ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+            className="block text-xs text-primary underline underline-offset-2 hover:text-primary/80"
+          >
+            {t("answerScreening")}
+          </a>
+        )}
       </span>
     </li>
   );
@@ -158,11 +186,21 @@ function ItemLine({ item }: { item: ApplicabilityItem }) {
 export function ApplicabilityResult({
   jurisdictions,
   answers,
+  screeningInNewTab = false,
 }: {
   jurisdictions: readonly JurisdictionId[];
   answers: ApplicabilityAnswers;
+  /** Open the screening link in a new tab (the quick start keeps its place). */
+  screeningInNewTab?: boolean;
 }) {
   const t = useTranslations("applicability");
+  // The obligations step is "done" once the screening has an answer; until
+  // then the laws it gates say where to answer it.
+  const pathSteps = useProgramPath();
+  const screeningLink =
+    pathSteps?.obligations === "done"
+      ? null
+      : { href: `/governance/settings#${SCREENING_ANCHOR}`, newTab: screeningInNewTab };
   const items = evaluateApplicability(jurisdictions, answers);
   const applies = items.filter((i) => i.state === "applies");
   const check = items.filter((i) => i.state === "check");
@@ -177,7 +215,7 @@ export function ApplicabilityResult({
         {applies.length > 0 ? (
           <ul className="space-y-2.5">
             {applies.map((item) => (
-              <ItemLine key={item.id} item={item} />
+              <ItemLine key={item.id} item={item} screeningLink={screeningLink} />
             ))}
           </ul>
         ) : (
@@ -189,7 +227,7 @@ export function ApplicabilityResult({
           <h3 className="text-sm font-semibold">{t("checkTitle")}</h3>
           <ul className="space-y-2.5">
             {check.map((item) => (
-              <ItemLine key={item.id} item={item} />
+              <ItemLine key={item.id} item={item} screeningLink={screeningLink} />
             ))}
           </ul>
         </div>

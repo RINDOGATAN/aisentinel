@@ -1515,6 +1515,8 @@
     "statusActive": "Active",
     "statusLocked": "Locked",
     "statusIncluded": "Included",
+    "statusLicenceRequired": "License required",
+    "licenceRequiredHint": "Activate a license file to use it on this deployment.",
     "includedHint": "Included in your self-hosted deployment",
     "includedHintPilot": "Open on the hosted pilot. In the kit, {price} a year.",
     "expires": "Expires {date}",
@@ -1770,7 +1772,7 @@
         },
         "riskClassification": {
           "title": "Risk Classification",
-          "description": "EU AI Act four-tier risk classification with guided Annex III wizard and classification history."
+          "description": "EU AI Act four-tier risk classification: a rule screening suggests a level, you choose it and the Annex III category, with classification history."
         },
         "assessments": {
           "title": "Assessments",
@@ -2010,9 +2012,9 @@
     },
     "riskClassification": {
       "metaTitle": "Risk Classification: AI SENTINEL Docs",
-      "metaDescription": "EU AI Act four-tier risk classification with guided Annex III wizard.",
+      "metaDescription": "EU AI Act four-tier risk classification: a rule screening suggests a level from the system's facts, and you decide.",
       "title": "Risk Classification",
-      "intro": "Classify your AI systems using the EU AI Act four-tier risk framework. The guided wizard walks you through Annex III categories to determine the correct risk level, with full classification history for audit purposes.",
+      "intro": "Classify your AI systems using the EU AI Act four-tier risk framework. The classification form shows a rule screening of the system's registered facts (prohibited practices, Annex III areas, transparency duties) with a suggested level; you choose the level and, for high risk, the Annex III category. Every classification is kept in the history for audit purposes.",
       "tiersTitle": "Risk Tiers",
       "tiersIntro": "The EU AI Act defines four risk levels. Each level carries different compliance obligations, from outright prohibition to minimal transparency requirements.",
       "tiers": {
@@ -2039,7 +2041,7 @@
       },
       "examplesLabel": "Examples:",
       "annexTitle": "Annex III Categories",
-      "annexIntro": "The classification wizard guides you through the Annex III high-risk categories. If your AI system falls into any of these areas, it is likely classified as High Risk.",
+      "annexIntro": "The classification form lists the Annex III high-risk categories. If your AI system falls into any of these areas, it is likely classified as High Risk.",
       "annexCategories": [
         "Biometrics",
         "Critical infrastructure",
@@ -2080,16 +2082,16 @@
           "description": "Navigate to the AI Registry and select the system you want to classify."
         },
         {
-          "title": "Start the classification wizard",
-          "description": "Go to AI Systems → Risk Classification and click Classify to launch the guided wizard."
+          "title": "Open the classification form",
+          "description": "Choose Classify for that system to open the risk classification form."
         },
         {
-          "title": "Answer the Annex III questions",
-          "description": "The wizard asks whether your system falls into any high-risk category. Answer honestly: the result determines compliance obligations."
+          "title": "Read the rule screening",
+          "description": "The form shows which rules matched the system's registered facts (prohibited practices, Annex III areas, transparency duties) and the level they suggest. It is a triage aid, not a legal determination."
         },
         {
-          "title": "Review the suggested risk level",
-          "description": "Based on your answers, the system suggests a risk tier. You can accept or override with justification."
+          "title": "Choose the risk level",
+          "description": "Choose the risk level, accepting the suggestion or not, and for high risk the Annex III category. The level you choose determines the compliance obligations."
         },
         {
           "title": "Document the rationale",
@@ -3894,7 +3896,6 @@
       "intro": "Thirteen widely used AI governance frameworks, including AIUC-1, the certification standard for AI agents, compared on fourteen dimensions. Each cell gives a depth from 0 to 3, one sentence, the official source, and the AI SENTINEL module that supports it.",
       "asOf": "As of {date}",
       "disclaimer": "A learning aid, not legal advice.",
-      "contentInEnglish": "The framework content on these pages is in English.",
       "stats": "{frameworks} frameworks, {rings} dimensions, {cells} cells, {review} under review.",
       "method": "Each cell was checked against the official text where that text could be read on the date shown. Cells that could not be checked are marked “Under review”, drawn hatched, and make no claim. Depth is an editorial reading of how far a framework goes on a dimension, not a score of quality.",
       "footerNote": "Where AI SENTINEL is mentioned, it supports or maps to the dimension. Dates are those the official texts state on the date shown.",
@@ -5480,6 +5481,7 @@
     "ceilingReachedBody": "A ceiling has been reached. Two ways out:",
     "paidPlan": "Move to the paid plan",
     "exportAll": "Export everything (program pack)",
+    "managedQuote": "Ask for a managed instance",
     "afterExportBody": "Your file is downloaded. You can now empty this account.",
     "afterExportAction": "Empty the account",
     "docsLink": "How the hosted pilot works, in the documentation."
@@ -5566,7 +5568,8 @@
       "answerUnsure": "You answered \"Not sure yet\".",
       "thresholds": "The CCPA size thresholds decide first; the California screening in Settings asks them.",
       "screeningDecides": "Which rules apply depends on the screening questions in Settings."
-    }
+    },
+    "answerScreening": "Answer the screening in Settings to add its requirements."
   },
   "guided": {
     "navLabel": "Program path",
@@ -5773,6 +5776,7 @@
       "label": "30/60/90-day plan",
       "column": "Plan",
       "day": "Day {day} of {total}",
+      "dayLabelled": "Program plan: day {day} of {total}",
       "onPlan": "On plan",
       "behind": "Behind plan by {days, plural, one {# day} other {# days}}",
       "complete": "Plan complete",
@@ -6281,5 +6285,19 @@
     "noResults": "No AI system with that name.",
     "more": "Showing the first {count}. Type a name to find the others.",
     "clear": "Clear the selection"
+  },
+  "licenses": {
+    "metaTitle": "Licenses & source | AI Sentinel",
+    "metaDescription": "AI Sentinel is licensed under the GNU Affero General Public License v3 or later. Complete corresponding source is available.",
+    "title": "Licenses & source",
+    "license": "Licensed under the GNU Affero General Public License, version 3 or later (AGPL-3.0-or-later). A copy of the license ships with the source as the <code>LICENSE</code> file.",
+    "warranty": "This program comes with ABSOLUTELY NO WARRANTY.",
+    "sourceTitle": "Complete corresponding source code",
+    "sourcePublic": "Under AGPL-3.0 section 13, users interacting with this program over a network are offered the complete corresponding source code of the version running here:",
+    "sourceOnRequest": "Under AGPL-3.0 section 13, users interacting with this program over a network are offered the complete corresponding source code of the version running here, at no charge. The public source repository is being finalized; until it is published, request the corresponding source by emailing <mail>{email}</mail> and we will provide it.",
+    "runningCommit": "Running commit: <code>{commit}</code>",
+    "premiumTitle": "Premium skills",
+    "premium": "Optional premium skills and commercial add-ons are separately licensed by Rindogatan LLC and are not covered by the AGPL. See the source repository for details.",
+    "back": "Back to AI Sentinel"
   }
 }

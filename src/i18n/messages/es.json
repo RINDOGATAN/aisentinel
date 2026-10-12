@@ -1515,6 +1515,8 @@
     "statusActive": "Activa",
     "statusLocked": "Bloqueada",
     "statusIncluded": "Incluida",
+    "statusLicenceRequired": "Licencia necesaria",
+    "licenceRequiredHint": "Activa un archivo de licencia para usarla en esta instalación.",
     "includedHint": "Incluida en tu instalación autoalojada",
     "includedHintPilot": "Abierta en el piloto alojado. En el kit, {price} al año.",
     "expires": "Caduca el {date}",
@@ -1770,7 +1772,7 @@
         },
         "riskClassification": {
           "title": "Clasificación de riesgos",
-          "description": "Clasificación de riesgo en cuatro niveles según el RIA, con asistente guiado del Anexo III e historial de clasificaciones."
+          "description": "Clasificación de riesgo en cuatro niveles según el RIA: un cribado por reglas sugiere un nivel, tú eliges el nivel y la categoría del Anexo III, con historial de clasificaciones."
         },
         "assessments": {
           "title": "Evaluaciones",
@@ -2010,9 +2012,9 @@
     },
     "riskClassification": {
       "metaTitle": "Clasificación de riesgos: documentación de AI SENTINEL",
-      "metaDescription": "Clasificación de riesgos en cuatro niveles según el RIA, con asistente guiado del Anexo III.",
+      "metaDescription": "Clasificación de riesgos en cuatro niveles según el RIA: un cribado por reglas sugiere un nivel a partir de los datos del sistema, y tú decides.",
       "title": "Clasificación de riesgos",
-      "intro": "Clasifica tus sistemas de IA con el marco de cuatro niveles de riesgo del RIA. El asistente guiado te acompaña por las categorías del Anexo III para determinar el nivel de riesgo correcto, con un historial completo de clasificaciones a efectos de auditoría.",
+      "intro": "Clasifica tus sistemas de IA con el marco de cuatro niveles de riesgo del RIA. El formulario de clasificación muestra un cribado por reglas de los datos registrados del sistema (prácticas prohibidas, áreas del Anexo III, obligaciones de transparencia) con un nivel sugerido; tú eliges el nivel y, si es alto riesgo, la categoría del Anexo III. Cada clasificación se guarda en el historial a efectos de auditoría.",
       "tiersTitle": "Niveles de riesgo",
       "tiersIntro": "El RIA define cuatro niveles de riesgo. Cada nivel conlleva obligaciones de cumplimiento distintas, desde la prohibición total hasta requisitos mínimos de transparencia.",
       "tiers": {
@@ -2039,7 +2041,7 @@
       },
       "examplesLabel": "Ejemplos:",
       "annexTitle": "Categorías del anexo III",
-      "annexIntro": "El asistente de clasificación te guía por las categorías de alto riesgo del Anexo III. Si tu sistema de IA encaja en alguna de estas áreas, es probable que se clasifique como de Alto Riesgo.",
+      "annexIntro": "El formulario de clasificación enumera las categorías de alto riesgo del Anexo III. Si tu sistema de IA encaja en alguna de estas áreas, es probable que se clasifique como de Alto Riesgo.",
       "annexCategories": [
         "Biometría",
         "Infraestructuras críticas",
@@ -2080,16 +2082,16 @@
           "description": "Accede al Registro de IA y selecciona el sistema que quieres clasificar."
         },
         {
-          "title": "Inicia el asistente de clasificación",
-          "description": "Ve a Sistemas de IA → Clasificación de Riesgos y pulsa Clasificar para lanzar el asistente guiado."
+          "title": "Abre el formulario de clasificación",
+          "description": "Pulsa Clasificar en ese sistema para abrir el formulario de clasificación de riesgos."
         },
         {
-          "title": "Responde a las preguntas del Anexo III",
-          "description": "El asistente pregunta si tu sistema encaja en alguna categoría de alto riesgo. Responde con honestidad: el resultado determina las obligaciones de cumplimiento."
+          "title": "Lee el cribado por reglas",
+          "description": "El formulario muestra qué reglas coinciden con los datos registrados del sistema (prácticas prohibidas, áreas del Anexo III, obligaciones de transparencia) y el nivel que sugieren. Es una ayuda para priorizar, no una determinación jurídica."
         },
         {
-          "title": "Revisa el nivel de riesgo sugerido",
-          "description": "Según tus respuestas, el sistema sugiere un nivel de riesgo. Puedes aceptarlo o modificarlo con una justificación."
+          "title": "Elige el nivel de riesgo",
+          "description": "Elige el nivel de riesgo, aceptes o no la sugerencia, y, si es alto riesgo, la categoría del Anexo III. El nivel que eliges determina las obligaciones de cumplimiento."
         },
         {
           "title": "Documenta la justificación",
@@ -3894,7 +3896,6 @@
       "intro": "Trece marcos de gobernanza de la IA muy utilizados, entre ellos AIUC-1, la norma de certificación para agentes de IA, comparados en catorce dimensiones. Cada celda indica una profundidad de 0 a 3, una frase, la fuente oficial y el módulo de AI SENTINEL que le da soporte.",
       "asOf": "Actualizado a {date}",
       "disclaimer": "Material de aprendizaje, no asesoramiento jurídico.",
-      "contentInEnglish": "El contenido de los marcos en estas páginas está en inglés.",
       "stats": "{frameworks} marcos, {rings} dimensiones, {cells} celdas, {review} en revisión.",
       "method": "Cada celda se contrastó con el texto oficial cuando ese texto pudo consultarse en la fecha indicada. Las celdas que no pudieron contrastarse se marcan «En revisión», se dibujan rayadas y no afirman nada. La profundidad es una lectura editorial de hasta dónde llega un marco en una dimensión, no una nota de calidad.",
       "footerNote": "Cuando se menciona AI SENTINEL, da soporte a la dimensión o la mapea. Las fechas son las que indican los textos oficiales en la fecha mostrada.",
@@ -5480,6 +5481,7 @@
     "ceilingReachedBody": "Se ha alcanzado un límite. Dos salidas:",
     "paidPlan": "Pasa al plan de pago",
     "exportAll": "Exportar todo (paquete del programa)",
+    "managedQuote": "Pide una instancia gestionada",
     "afterExportBody": "Tu archivo se ha descargado. Ya puedes vaciar esta cuenta.",
     "afterExportAction": "Vaciar la cuenta",
     "docsLink": "Cómo funciona el piloto alojado, en la documentación."
@@ -5566,7 +5568,8 @@
       "answerUnsure": "Respondiste «Todavía no lo sé».",
       "thresholds": "Primero deciden los umbrales de tamaño de la CCPA; los pregunta la evaluación de California en Configuración.",
       "screeningDecides": "Qué normas se aplican depende de las preguntas de evaluación en Configuración."
-    }
+    },
+    "answerScreening": "Responde a la evaluación en Configuración para añadir sus requisitos."
   },
   "guided": {
     "navLabel": "Ruta del programa",
@@ -5773,6 +5776,7 @@
       "label": "Plan de 30, 60 y 90 días",
       "column": "Plan",
       "day": "Día {day} de {total}",
+      "dayLabelled": "Plan del programa: día {day} de {total}",
       "onPlan": "Al día con el plan",
       "behind": "Retraso de {days, plural, one {# día} other {# días}} sobre el plan",
       "complete": "Plan completado",
@@ -6281,5 +6285,19 @@
     "noResults": "Ningún sistema de IA con ese nombre.",
     "more": "Se muestran los primeros {count}. Escribe un nombre para encontrar los demás.",
     "clear": "Quitar la selección"
+  },
+  "licenses": {
+    "metaTitle": "Licencias y código fuente | AI Sentinel",
+    "metaDescription": "AI Sentinel se distribuye con la licencia GNU Affero General Public License, versión 3 o posterior. El código fuente correspondiente completo está disponible.",
+    "title": "Licencias y código fuente",
+    "license": "Se distribuye con la licencia GNU Affero General Public License, versión 3 o posterior (AGPL-3.0-or-later). El código fuente incluye una copia de la licencia en el archivo <code>LICENSE</code>.",
+    "warranty": "Este programa se ofrece SIN NINGUNA GARANTÍA.",
+    "sourceTitle": "Código fuente correspondiente completo",
+    "sourcePublic": "Conforme a la sección 13 de la AGPL-3.0, a quienes interactúan con este programa a través de una red se les ofrece el código fuente correspondiente completo de la versión en servicio aquí:",
+    "sourceOnRequest": "Conforme a la sección 13 de la AGPL-3.0, a quienes interactúan con este programa a través de una red se les ofrece, sin coste, el código fuente correspondiente completo de la versión en servicio aquí. El repositorio público del código se está terminando; hasta que se publique, solicita el código fuente correspondiente escribiendo a <mail>{email}</mail> y te lo facilitaremos.",
+    "runningCommit": "Versión en servicio (commit): <code>{commit}</code>",
+    "premiumTitle": "Skills premium",
+    "premium": "Las Skills premium opcionales y los complementos comerciales tienen una licencia aparte de Rindogatan LLC y no están cubiertos por la AGPL. Consulta los detalles en el repositorio del código fuente.",
+    "back": "Volver a AI Sentinel"
   }
 }

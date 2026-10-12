@@ -675,7 +675,7 @@ async function main() {
             text: "What is the overall conformity conclusion?",
             type: "select",
             required: true,
-            options: ["Conforms to all applicable requirements", "Conforms with minor observations", "Does not conform — corrective actions required"],
+            options: ["Conforms to all applicable requirements", "Conforms with minor observations", "Does not conform: corrective actions required"],
           },
           {
             id: "conf6_2",
@@ -683,8 +683,8 @@ async function main() {
             type: "select",
             required: true,
             options: [
-              "Annex VI — Internal control (self-assessment)",
-              "Annex VII — Assessment by notified body",
+              "Annex VI: Internal control (self-assessment)",
+              "Annex VII: Assessment by notified body",
             ],
           },
           {
@@ -916,10 +916,10 @@ async function main() {
             type: "select",
             required: true,
             options: [
-              "Fair — meets all fairness criteria",
-              "Conditionally fair — acceptable with ongoing monitoring",
-              "Unfair — significant bias requiring remediation",
-              "Inconclusive — insufficient data for determination",
+              "Fair: meets all fairness criteria",
+              "Conditionally fair: acceptable with ongoing monitoring",
+              "Unfair: significant bias requiring remediation",
+              "Inconclusive: insufficient data for determination",
             ],
           },
           {

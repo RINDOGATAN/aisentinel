@@ -11,9 +11,9 @@
  * ways, the pricing block (PricingSection.tsx), in both
  * languages, the one place with prices. No hosting location in the other
  * sections (the Spanish pricing row says "en la nube UE"); the safeguards
- * guide after the ways (SafeguardsGuide) says, in Spanish only, that
- * the cloud pilot is hosted in the EU (the English
- * copy states no hosting location). The Spanish managed box names
+ * guide after the ways (SafeguardsGuide) names the cloud's hosting
+ * location (HOSTING: the EU, Frankfurt) in Spanish and to EU visitors
+ * only, never to other visitors. The Spanish managed box names
  * Asturias, as the storefront does.
  *
  * Each language has its own copy under `<locale>.*` in the landing
@@ -364,11 +364,14 @@ function Ways({
   p,
   setup,
   initialGuide = { open: false, answers: {} },
+  eu = false,
 }: {
   t: T;
   p: LandingLocale;
   setup: LocaleSetup;
   initialGuide?: GuideState;
+  /** True for a visitor in the EU (euros): the guide may name EU hosting in English. */
+  eu?: boolean;
 }) {
   const k = `${p}.ways`;
   // Three ways sit in a plain three-column grid; any other count wraps,
@@ -433,6 +436,7 @@ function Ways({
         <SafeguardsGuide
           t={t}
           p={p}
+          eu={eu}
           open={open}
           answers={answers}
           onToggle={() => setOpen((o) => !o)}
@@ -463,7 +467,7 @@ export default function LandingSections({ t, locale, videos = LANDING_VIDEOS[loc
       <Videos t={t} locale={locale} videos={videos} />
       <Stages t={t} p={locale} />
       {/* Keyed by language: the toggle starts the guide afresh, as the ways change. */}
-      <Ways key={locale} t={t} p={locale} setup={setup} initialGuide={initialGuide} />
+      <Ways key={locale} t={t} p={locale} setup={setup} initialGuide={initialGuide} eu={currency === "EUR"} />
       <PricingSection locale={locale} currency={currency} />
       {setup.logos && <CustomerLogos label={t(`${locale}.logos.label`)} />}
     </>

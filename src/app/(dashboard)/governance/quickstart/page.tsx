@@ -699,6 +699,7 @@ export default function QuickstartPage() {
               <ApplicabilityResult
                 jurisdictions={jurisdictionsUnsure ? [] : selectedJurisdictions}
                 answers={applicabilityAnswers}
+                screeningInNewTab
               />
             </CardContent>
           </Card>

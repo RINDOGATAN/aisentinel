@@ -26,11 +26,14 @@ import {
 import { planTemplateRemoval, removeTemplateItems } from "../../services/template-items/remove";
 
 /**
- * The plan field only the operator reads: the operator's note (an invoice id).
- * The plan itself and its dates go to the screens; the note never does.
+ * The plan fields only the operator reads: the operator's note and the payment
+ * subscription behind an automatic upgrade. The plan itself and its dates go
+ * to the screens; these two never do.
  */
-function withoutOperatorPlanFields<T extends { planNote?: unknown }>(org: T): Omit<T, "planNote"> {
-  const { planNote, ...rest } = org;
+function withoutOperatorPlanFields<T extends { planNote?: unknown; planStripeSubscriptionId?: unknown }>(
+  org: T,
+): Omit<T, "planNote" | "planStripeSubscriptionId"> {
+  const { planNote, planStripeSubscriptionId, ...rest } = org;
   return rest;
 }
 

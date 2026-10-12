@@ -3,8 +3,9 @@
 
 /**
  * Sets an organisation's hosted plan. Operator use only: there is no screen
- * for it, and nothing in the app sells the plan (payment is collected
- * outside the app, by a payment link or an invoice).
+ * for it. Payment is collected outside the app (an invoice, or the payment
+ * link, whose confirmed payment can also set the plan automatically when
+ * AUTO_UPGRADE_ENABLED is on; see src/server/services/plan-eu/sync.ts).
  *
  * A DRY RUN BY DEFAULT: without --execute it prints before and after and
  * writes nothing.
@@ -17,7 +18,8 @@
  * Options:
  *   --org      the organisation's id or slug (required)
  *   --plan     EU_CLOUD (paid: the pilot limits and editing window do not
- *              apply) or PILOT (back to the free, capped pilot; nothing the
+ *              apply) or PILOT (back to the free, capped pilot; clears the
+ *              payment subscription of an automatic upgrade; nothing the
  *              organisation holds is deleted) (required)
  *   --started  start of the paid plan, YYYY-MM-DD (UTC) or an ISO time;
  *              default: kept if already paid, else now; "none" clears it
@@ -100,6 +102,7 @@ function show(label: string, s: PlanState): string {
     `  planStartedAt  ${d(s.planStartedAt)}`,
     `  planRenewsAt   ${d(s.planRenewsAt)}`,
     `  planNote       ${s.planNote ?? "-"}`,
+    `  subscription   ${s.planStripeSubscriptionId ?? "-"}`,
   ].join("\n");
 }
 

@@ -7,7 +7,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { NextIntlClientProvider, createTranslator } from "next-intl";
 import en from "@/i18n/messages/en.json";
 import es from "@/i18n/messages/es.json";
-import { frameworksData, underReviewCount } from "@/lib/frameworks/model";
+import { frameworksData, frameworksDataFor, underReviewCount } from "@/lib/frameworks/model";
 
 const MESSAGES = { en, es } as const;
 type Locale = keyof typeof MESSAGES;
@@ -60,8 +60,11 @@ describe("frameworks docs pages", () => {
         expect(html).toContain(t.disclaimer);
         expect(html).toContain(`dateTime="${frameworksData.asOf}"`);
         expect(html).toContain(locale === "es" ? "septiembre de 2026" : "September 2026");
-        // The Spanish pages say once that the framework content is in English.
-        expect(html.split(MESSAGES.es.docs.frameworks.contentInEnglish).length - 1).toBe(locale === "es" ? 1 : 0);
+        // The framework content is in the page's language: the views name the dimensions in it.
+        if (name !== "selector") {
+          expect(html).toContain(locale === "es" ? "Supervisión humana" : "Human oversight");
+          if (locale === "es") expect(html).not.toContain(">Human oversight<");
+        }
         for (const view of Object.values(t.views).slice(0, 4)) expect(html).toContain(view);
       });
     }
@@ -73,8 +76,9 @@ describe("frameworks docs pages", () => {
       // Roving focus: exactly one cell is in the tab order, every other one can take focus.
       expect(cells.filter((c) => c.includes('tabindex="0"'))).toHaveLength(1);
       expect(cells.filter((c) => c.includes('tabindex="-1"'))).toHaveLength(cells.length - 1);
-      const f = frameworksData.frameworks[0];
-      const r = frameworksData.rings[0];
+      const data = frameworksDataFor(locale);
+      const f = data.frameworks[0];
+      const r = data.rings[0];
       const name = t.wheel.cell
         .replace("{framework}", f.short)
         .replace("{dimension}", r.label)
@@ -110,13 +114,16 @@ describe("frameworks docs pages", () => {
     expect(html).toContain(MESSAGES.es.docs.frameworks.selector.needJurisdiction);
     expect(html).toContain(MESSAGES.es.docs.frameworks.selector.whyTitle);
     expect(html).toContain("Jurisdicciones");
+    // Rule reasons are in Spanish.
+    expect(html).toContain("TRAIGA se aplica a quien desarrolle o despliegue IA en Texas");
+    expect(html).not.toContain("TRAIGA applies to anyone");
   });
 
   for (const locale of ["en", "es"] as const) {
     it(`the wheel and the selector carry AIUC-1 and the agents question in ${locale}`, async () => {
       const t = MESSAGES[locale].docs.frameworks;
       const wheel = await render(locale, pages.overview);
-      expect(wheel).toContain(`aria-label="${t.wheel.cell.replace("{framework}", "AIUC-1").replace("{dimension}", "Testing, robustness and security").replace("{depth}", "3")}"`);
+      expect(wheel).toContain(`aria-label="${t.wheel.cell.replace("{framework}", "AIUC-1").replace("{dimension}", locale === "es" ? "Pruebas, solidez y seguridad" : "Testing, robustness and security").replace("{depth}", "3")}"`);
       expect(wheel).toContain(t.intro);
       expect(t.intro).toContain("AIUC-1");
       const selector = await render(locale, pages.selector);

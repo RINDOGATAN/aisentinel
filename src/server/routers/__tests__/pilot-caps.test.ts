@@ -136,7 +136,7 @@ vi.mock("next/headers", () => ({ cookies: async () => ({ get: () => undefined })
 import { createInnerTRPCContext } from "@/server/trpc";
 import { organizationRouter } from "@/server/routers/governance/organization";
 import { aiSystemRouter } from "@/server/routers/governance/aiSystem";
-import { PILOT_CEILINGS, PILOT_PRICING_URL } from "@/config/pilot";
+import { PILOT_CEILINGS } from "@/config/pilot";
 
 const session = {
   user: { id: "user-a", email: "user-a@example.test", name: "user-a" },
@@ -190,10 +190,10 @@ describe("hosted pilot caps through the routers", () => {
     const caller = aiSystemRouter.createCaller(ctx("es"));
     await expect(caller.create(newSystem)).rejects.toMatchObject({
       code: "FORBIDDEN",
-      message: expect.stringContaining(PILOT_PRICING_URL.es),
+      message: expect.stringContaining("pasa al plan de pago"),
     });
     await expect(caller.create(newSystem)).rejects.toMatchObject({
-      message: expect.stringContaining("/api/export/program-pack?organizationId=org-a"),
+      message: expect.stringContaining("paquete del programa"),
     });
     await expect(caller.create(newSystem)).rejects.toMatchObject({
       message: expect.stringContaining("solo lectura"),
@@ -240,7 +240,7 @@ describe("hosted pilot caps through the routers", () => {
 /** The PILOT_LIMIT_REACHED rows written so far. */
 const limitRows = () => H.audit.filter((r) => r.action === "PILOT_LIMIT_REACHED");
 
-describe("a pilot limit becomes a lead: the refusal carries the link and is counted", () => {
+describe("a pilot limit: the refusal carries the keep-going sentence and is counted", () => {
   beforeEach(() => {
     vi.stubEnv("VERCEL_ENV", "production");
     vi.stubEnv("NEXT_PUBLIC_HOSTED_PILOT", "");
@@ -252,14 +252,17 @@ describe("a pilot limit becomes a lead: the refusal carries the link and is coun
   });
 
   it.each([
-    ["en", "For a managed instance or your own hardware, ask for a quote (https://www.todo.law/contact/managed)."],
-    ["es", "Para una instancia gestionada o tu propio hardware, pide presupuesto (https://www.todo.law/es/contact/managed)."],
-  ])("the ceiling's refusal carries the one keep-going link (%s)", async (locale, link) => {
+    ["en", "For a managed instance or your own hardware, ask for a quote."],
+    ["es", "Para una instancia gestionada o tu propio hardware, pide presupuesto."],
+  ])("the ceiling's refusal carries the keep-going sentence, with no address (%s)", async (locale, link) => {
     H.reset({ signedInDaysAgo: 1, systemCount: PILOT_CEILINGS.systems });
     const caller = aiSystemRouter.createCaller(ctx(locale));
     await expect(caller.create(newSystem)).rejects.toMatchObject({
       code: "FORBIDDEN",
       message: expect.stringContaining(link),
+    });
+    await expect(caller.create(newSystem)).rejects.toMatchObject({
+      message: expect.not.stringMatching(/https?:\/\/|\/api\//),
     });
   });
 
@@ -291,7 +294,7 @@ describe("a pilot limit becomes a lead: the refusal carries the link and is coun
     await expect(caller.create(newSystem)).rejects.toBeTruthy();
     H.organizations[0].pilotFirstSignInAt = new Date(Date.now() - 91 * 24 * 60 * 60 * 1000);
     await expect(caller.create(newSystem)).rejects.toMatchObject({
-      message: expect.stringContaining("For a managed instance or your own hardware, ask for a quote (https://www.todo.law/contact/managed)."),
+      message: expect.stringContaining("For a managed instance or your own hardware, ask for a quote."),
     });
     await expect(caller.create(newSystem)).rejects.toBeTruthy();
     expect(limitRows().map((r) => r.metadata)).toEqual([{ limit: "systems" }, { limit: "editing_days" }]);

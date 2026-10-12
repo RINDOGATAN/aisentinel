@@ -31,6 +31,7 @@ function row(over: Partial<PlanOrgRow> = {}): PlanOrgRow {
     planStartedAt: null,
     planRenewsAt: null,
     planNote: null,
+    planStripeSubscriptionId: null,
     ...over,
   };
 }
@@ -97,6 +98,7 @@ describe("setOrganizationPlan", () => {
         planStartedAt: new Date("2026-10-12T00:00:00Z"),
         planRenewsAt: new Date("2026-11-12T00:00:00Z"),
         planNote: "invoice 1",
+        planStripeSubscriptionId: null,
       },
     });
     expect(t.auditCreate).toHaveBeenCalledTimes(1);
@@ -156,12 +158,19 @@ describe("setOrganizationPlan", () => {
 });
 
 describe("resolvePlanState", () => {
-  const pilot: PlanState = { plan: "PILOT", planStartedAt: null, planRenewsAt: null, planNote: null };
+  const pilot: PlanState = {
+    plan: "PILOT",
+    planStartedAt: null,
+    planRenewsAt: null,
+    planNote: null,
+    planStripeSubscriptionId: null,
+  };
   const paid: PlanState = {
     plan: "EU_CLOUD",
     planStartedAt: new Date("2026-09-01T00:00:00Z"),
     planRenewsAt: new Date("2026-10-01T00:00:00Z"),
     planNote: "n",
+    planStripeSubscriptionId: null,
   };
 
   it("a new paid plan starts now unless a start is given", () => {

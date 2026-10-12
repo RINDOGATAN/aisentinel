@@ -16,6 +16,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { guardImportRequest } from "@/lib/import-auth";
+import { checkImportIdentity } from "@/lib/import-identity";
 import { resolveImportAccount } from "@/lib/import-account";
 
 const OPEN_GATE_STATUSES = ["PENDING", "IN_REVIEW"];
@@ -36,6 +37,10 @@ export async function POST(request: Request) {
       { status: 400 },
     );
   }
+
+  // The signed statement of the person, when the caller sends one (src/lib/import-identity.ts).
+  const identity = checkImportIdentity(request, String(userEmail));
+  if (identity) return identity;
 
   // Resolve the caller's organization (src/lib/import-account.ts): the one the
   // sender names, else the account's oldest membership, never an undefined one.

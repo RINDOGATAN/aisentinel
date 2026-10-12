@@ -18,6 +18,7 @@ import { NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { guardImportRequest } from "@/lib/import-auth";
+import { checkImportIdentity } from "@/lib/import-identity";
 import { resolveImportAccount } from "@/lib/import-account";
 import { pilotRemaining } from "@/server/services/pilot/caps";
 import { mapRole, mapTechnique } from "@/lib/dpc-import-mapping";
@@ -61,6 +62,10 @@ export async function POST(request: Request) {
   if (!Array.isArray(systems) || systems.length === 0) {
     return NextResponse.json({ error: "systems array is required" }, { status: 400 });
   }
+
+  // The signed statement of the person, when the caller sends one (src/lib/import-identity.ts).
+  const identity = checkImportIdentity(request, String(userEmail));
+  if (identity) return identity;
 
   // Resolve the organization the push acts on, and refuse an account that may
   // not write there (src/lib/import-account.ts).

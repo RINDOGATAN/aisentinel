@@ -14,6 +14,8 @@ import { OrganizationSetup } from "@/components/governance/organization-setup";
 import { PersonaSelector } from "@/components/governance/persona-selector";
 import { FeedbackDialog } from "@/components/FeedbackDialog";
 import { GuidedLayout } from "@/components/guided/guided-layout";
+import { trpc } from "@/lib/trpc";
+import { DpaAcceptanceStep, DpaPendingNote } from "@/components/pilot/dpa-accept";
 
 export function DashboardShell({
   children,
@@ -27,9 +29,19 @@ export function DashboardShell({
   const { needsOnboarding, isLoading: userTypeLoading } = useUserType();
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const t = useTranslations("nav");
+  // Hosted pilot: an organization with no acceptance of the current data
+  // processing agreement on record (one opened before it was asked at
+  // opening) is asked once. An owner or admin sees the acceptance step; other
+  // members see a note and are not blocked. If the check fails, nothing is blocked.
+  const hosted = !!trpc.pilot.mode.useQuery(undefined, { staleTime: Infinity }).data?.active;
+  const dpa = trpc.organization.getDpaStatus.useQuery(
+    { organizationId: organization?.id ?? "" },
+    { enabled: hosted && !!organization, retry: false }
+  );
+  const dpaLoading = hosted && !!organization && dpa.isLoading;
 
   // Full-screen loading gate: prevent chrome from rendering before org is ready
-  if (orgLoading || userTypeLoading) {
+  if (orgLoading || userTypeLoading || dpaLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-muted-foreground text-sm">{t("loading")}</div>
@@ -49,10 +61,21 @@ export function DashboardShell({
     return <OrganizationSetup />;
   }
 
+  if (organization && dpa.data?.required && dpa.data.canAccept) {
+    return (
+      <DpaAcceptanceStep
+        organizationId={organization.id}
+        organizationName={organization.name}
+        onAccepted={() => void dpa.refetch()}
+      />
+    );
+  }
+
   // The one layout: the program path as a left menu (Guided). The Classic
   // top-bar layout was retired on 9 October 2026.
   return (
     <>
+      {dpa.data?.required && !dpa.data.canAccept && <DpaPendingNote />}
       <GuidedLayout
         footer={<DashboardFooter />}
         initialCollapsed={menuCollapsed}

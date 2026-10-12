@@ -96,6 +96,7 @@ const H = vi.hoisted(() => {
         );
       },
       deleteMany: async () => ({ count: 0 }),
+      findMany: async ({ where }: { where: Row }) => audit.filter((r) => matches(r, where)),
     },
     legalHold: { findMany: async () => [], count: async () => 0 },
     // No department limits in these fixtures: every member sees the whole org.
@@ -377,5 +378,47 @@ describe("on the kit the routers apply no pilot cap", () => {
     expect(H.audit.some((r) => r.action === PILOT_DPA_ACTION)).toBe(false);
     const sys = aiSystemRouter.createCaller(ctx());
     await expect(sys.create(newSystem)).resolves.toBeTruthy();
+  });
+});
+
+describe("hosted pilot: the data processing agreement for organizations opened before it was asked", () => {
+  beforeEach(() => {
+    vi.stubEnv("VERCEL_ENV", "production");
+    vi.stubEnv("NEXT_PUBLIC_HOSTED_PILOT", "");
+    vi.useFakeTimers({ now: new Date("2027-03-01T12:00:00.000Z"), toFake: ["Date"] });
+  });
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.unstubAllEnvs();
+  });
+
+  it("the data processing agreement: an organization opened before it was asked is asked once", async () => {
+    // Read-only by now: accepting changes no program record, so it stays open.
+    H.reset({ signedInDaysAgo: 400, systemCount: 0 });
+    H.members.push({ organizationId: "org-a", userId: "user-b", role: "MEMBER" });
+    const owner = organizationRouter.createCaller(ctx());
+    const member = organizationRouter.createCaller(
+      createInnerTRPCContext({ session: { ...session, user: { ...session.user, id: "user-b" } } as Session, getCookie: () => undefined }),
+    );
+    await expect(owner.getDpaStatus({ organizationId: "org-a" })).resolves.toEqual({ required: true, canAccept: true });
+    await expect(member.getDpaStatus({ organizationId: "org-a" })).resolves.toEqual({ required: true, canAccept: false });
+    await expect(member.acceptDpa({ organizationId: "org-a", accept: true })).rejects.toMatchObject({ code: "FORBIDDEN" });
+
+    await owner.acceptDpa({ organizationId: "org-a", accept: true });
+    await owner.acceptDpa({ organizationId: "org-a", accept: true });
+    const entries = H.audit.filter((r) => r.action === PILOT_DPA_ACTION);
+    expect(entries).toHaveLength(1);
+    expect(entries[0].userId).toBe("user-a");
+    expect((entries[0].changes as Record<string, string>).dpaVersion).toBe(PILOT_DPA.version);
+    await expect(member.getDpaStatus({ organizationId: "org-a" })).resolves.toEqual({ required: false, canAccept: false });
+  });
+
+  it("the data processing agreement: an earlier version on record asks again; off the pilot nothing is asked", async () => {
+    H.reset({ signedInDaysAgo: 1, systemCount: 0 });
+    H.audit.push({ id: "old", organizationId: "org-a", action: PILOT_DPA_ACTION, changes: { dpaVersion: "1.0" } });
+    const owner = organizationRouter.createCaller(ctx());
+    await expect(owner.getDpaStatus({ organizationId: "org-a" })).resolves.toMatchObject({ required: true });
+    vi.stubEnv("NEXT_PUBLIC_HOSTED_PILOT", "false");
+    await expect(owner.getDpaStatus({ organizationId: "org-a" })).resolves.toEqual({ required: false, canAccept: false });
   });
 });

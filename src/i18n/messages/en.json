@@ -4950,6 +4950,7 @@
     "orgNameLabel": "Organization name",
     "orgNamePlaceholder": "e.g. Acme Payments",
     "createAndContinue": "Create organization and continue",
+    "dpaAccept": "I accept the <link>data processing agreement</link> (version {version}) for this organization. It covers the free pilot and the EU Cloud Plan.",
     "creating": "Creating…",
     "createFailed": "The organization could not be created. Please try again.",
     "orgDescriptionClient": "Name your first client organization. A short wizard then builds its AI governance program; add more clients later from My clients.",

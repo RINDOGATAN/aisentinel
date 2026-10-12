@@ -4950,6 +4950,7 @@
     "orgNameLabel": "Nombre de la organización",
     "orgNamePlaceholder": "p. ej., Acme Pagos",
     "createAndContinue": "Crear la organización y continuar",
+    "dpaAccept": "Acepto el <link>contrato de encargo del tratamiento</link> (versión {version}) para esta organización. Cubre el piloto gratuito y el Plan nube UE.",
     "creating": "Creando…",
     "createFailed": "No se ha podido crear la organización. Inténtalo de nuevo.",
     "orgDescriptionClient": "Pon nombre a tu primera organización cliente. A continuación, un asistente breve crea su programa de gobernanza de la IA; podrás añadir más clientes desde Mis clientes.",

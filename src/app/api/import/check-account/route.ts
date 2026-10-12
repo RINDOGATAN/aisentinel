@@ -11,6 +11,7 @@
  */
 import { NextResponse } from "next/server";
 import { guardImportRequest } from "@/lib/import-auth";
+import { checkImportIdentity } from "@/lib/import-identity";
 import { resolveImportAccount } from "@/lib/import-account";
 
 export async function POST(request: Request) {
@@ -26,6 +27,13 @@ export async function POST(request: Request) {
       { status: 400 }
     );
   }
+
+  // The signed statement of the person, when the caller sends one (src/lib/import-identity.ts).
+
+  const identity = checkImportIdentity(request, String(userEmail));
+
+  if (identity) return identity;
+
 
   const account = await resolveImportAccount(userEmail, body.organizationId, "read");
   if (!account.ok) {

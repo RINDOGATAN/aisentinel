@@ -4,6 +4,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { guardImportRequest } from "@/lib/import-auth";
+import { checkImportIdentity } from "@/lib/import-identity";
 import { resolveImportAccount } from "@/lib/import-account";
 import { pilotRemaining } from "@/server/services/pilot/caps";
 
@@ -58,6 +59,10 @@ export async function POST(request: Request) {
 
   // Resolve the organization the push acts on, and refuse an account that may
   // not write there (src/lib/import-account.ts).
+  // The signed statement of the person, when the caller sends one (src/lib/import-identity.ts).
+  const identity = checkImportIdentity(request, String(userEmail));
+  if (identity) return identity;
+
   const account = await resolveImportAccount(userEmail, body.organizationId, "write");
   if (!account.ok) {
     return NextResponse.json({ error: account.error }, { status: account.status });

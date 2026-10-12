@@ -351,7 +351,7 @@ export function AdmtPanel({
                   {d.status === "overdue"
                     ? t("deadline.overdue")
                     : t("deadline.article_11_compliance")}
-                  {d.date ? ` — ${formatDate(d.date)}` : ""}
+                  {d.date ? ` · ${formatDate(d.date)}` : ""}
                 </span>
               </p>
             ))}

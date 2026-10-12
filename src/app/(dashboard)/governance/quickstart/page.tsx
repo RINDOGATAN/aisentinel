@@ -1069,7 +1069,7 @@ export default function QuickstartPage() {
                               ? ` > ${vendor.subcategory}`
                               : ""}
                             {vendor.description
-                              ? ` — ${vendor.description}`
+                              ? ` · ${vendor.description}`
                               : ""}
                           </span>
                         </div>
@@ -1585,9 +1585,9 @@ export default function QuickstartPage() {
               reviewTotals.systems > 0 && t("countSystems", { count: reviewTotals.systems }),
               reviewTotals.policies > 0 && t("countPolicies", { count: reviewTotals.policies }),
               reviewTotals.oversightGates > 0 &&
-                `${reviewTotals.oversightGates} ${t("statOversightGates")}`,
+                `${t("statOversightGates", { count: reviewTotals.oversightGates })}`,
               reviewTotals.riskClassifications > 0 &&
-                `${reviewTotals.riskClassifications} ${t("statRiskClassifications")}`,
+                `${t("statRiskClassifications", { count: reviewTotals.riskClassifications })}`,
               reviewTotals.vendors > 0 && t("countVendors", { count: reviewTotals.vendors }),
             ].filter(Boolean) as string[];
             if (parts.length === 0) return null;
@@ -1697,7 +1697,7 @@ export default function QuickstartPage() {
                             {p.vendorName}
                           </p>
                           <p className="text-xs text-muted-foreground truncate">
-                            {p.systemName} — {p.category}
+                            {p.systemName} · {p.category}
                           </p>
                         </div>
                       </div>
@@ -1889,7 +1889,7 @@ export default function QuickstartPage() {
                               {toolPreview.name}
                             </p>
                             <p className="text-xs text-muted-foreground truncate">
-                              {toolPreview.vendorName} — {toolPreview.categoryLabel}
+                              {toolPreview.vendorName} · {toolPreview.categoryLabel}
                             </p>
                           </div>
                         </div>
@@ -2082,36 +2082,36 @@ export default function QuickstartPage() {
               {(() => {
                 const items: { text: string; href?: string }[] = [
                   executionResult.vendors > 0 && {
-                    text: `${executionResult.vendors} ${t("statVendors")}`,
+                    text: `${t("statVendors", { count: executionResult.vendors })}`,
                     href: "/governance/vendors",
                   },
                   executionResult.systems > 0 && {
-                    text: `${executionResult.systems} ${t("statSystems")}`,
+                    text: `${t("statSystems", { count: executionResult.systems })}`,
                     href: "/governance/ai-registry",
                   },
                   executionResult.riskClassifications > 0 && {
-                    text: `${executionResult.riskClassifications} ${t("statRiskClassifications")}`,
+                    text: `${t("statRiskClassifications", { count: executionResult.riskClassifications })}`,
                     href: "/governance/risk-classification",
                   },
                   executionResult.oversightGates > 0 && {
-                    text: `${executionResult.oversightGates} ${t("statOversightGates")}`,
+                    text: `${t("statOversightGates", { count: executionResult.oversightGates })}`,
                     href: "/governance/oversight",
                   },
                   // Tier requirements plus the cross-border regimes attached after
                   // the build: the same total the program's scorecard counts.
                   executionResult.complianceMappings + (executionResult.regimeMappings ?? 0) > 0 && {
-                    text: `${executionResult.complianceMappings + (executionResult.regimeMappings ?? 0)} ${t("statComplianceMappings")}`,
+                    text: `${t("statComplianceMappings", { count: executionResult.complianceMappings + (executionResult.regimeMappings ?? 0) })}`,
                     href: "/governance/compliance",
                   },
                   executionResult.policies > 0 && {
-                    text: `${executionResult.policies} ${t("statPolicies")}`,
+                    text: `${t("statPolicies", { count: executionResult.policies })}`,
                     href: "/governance/policies",
                   },
                   executionResult.policyLinks > 0 && {
-                    text: `${executionResult.policyLinks} ${t("statPolicyLinks")}`,
+                    text: `${t("statPolicyLinks", { count: executionResult.policyLinks })}`,
                   },
                   executionResult.transparencyProfiles > 0 && {
-                    text: `${executionResult.transparencyProfiles} ${t("statTransparencyProfiles")}`,
+                    text: `${t("statTransparencyProfiles", { count: executionResult.transparencyProfiles })}`,
                   },
                   (executionResult.starterAssessments ?? 0) > 0 && {
                     text: t("statStarterAssessments", { count: executionResult.starterAssessments ?? 0 }),

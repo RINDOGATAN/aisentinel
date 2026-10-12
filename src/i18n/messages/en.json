@@ -468,18 +468,18 @@
     "lawFirmPolicyPack": "Law Firm Policy Pack",
     "chipVendors": "Vendors",
     "viewProgram": "View your AI Governance Program",
-    "statPolicyLinks": "policy links",
-    "statTransparencyProfiles": "Art. 50 profiles",
+    "statPolicyLinks": "{count, plural, one {# policy link} other {# policy links}}",
+    "statTransparencyProfiles": "{count, plural, one {# Art. 50 profile} other {# Art. 50 profiles}}",
     "statComplianceBaselined": "Requirements pre-assessed",
     "handoffMapCaption": "Your governance map: every AI system, its risk tier, controls and vendors.",
     "downloadProgramPdf": "Download your AI Governance Program (PDF)",
     "handoffConfirmPrompt": "{count} requirements were auto-assessed from the artifacts just created and are waiting for your confirmation.",
-    "statVendors": "vendors",
-    "statSystems": "AI systems",
-    "statRiskClassifications": "risk classifications",
-    "statOversightGates": "oversight gates",
-    "statComplianceMappings": "compliance requirements",
-    "statPolicies": "policies",
+    "statVendors": "{count, plural, one {# vendor} other {# vendors}}",
+    "statSystems": "{count, plural, one {# AI system} other {# AI systems}}",
+    "statRiskClassifications": "{count, plural, one {# risk classification} other {# risk classifications}}",
+    "statOversightGates": "{count, plural, one {# oversight gate} other {# oversight gates}}",
+    "statComplianceMappings": "{count, plural, one {# compliance requirement} other {# compliance requirements}}",
+    "statPolicies": "{count, plural, one {# policy} other {# policies}}",
     "popularVendors": "Common AI vendors: pick the ones your organization uses, or search the full catalog above.",
     "vendorsSelected": "{count, plural, one {# selected} other {# selected}}",
     "toastNothingNew": "Everything already exists: nothing new to create.",
@@ -764,7 +764,8 @@
     "typePerformanceDegradation": "Performance Degradation",
     "typeDataPoisoning": "Data Poisoning",
     "typePrivacyViolation": "Privacy Violation",
-    "typeOther": "Other"
+    "typeOther": "Other",
+    "tabAll": "All ({count})"
   },
   "incidentsNew": {
     "title": "Report Incident",
@@ -4988,7 +4989,30 @@
     "showing": "Showing {count} of {total} entries",
     "since": "Trail starts {date}",
     "actorRemoved": "Account removed",
-    "noDetail": "No detail recorded"
+    "noDetail": "No detail recorded",
+    "actionLabels": {
+      "CREATE": "Created",
+      "UPDATE": "Updated",
+      "DELETE": "Deleted",
+      "CREATE_FROM_TEMPLATE": "Created from a template",
+      "COMPLETE": "Completed",
+      "ACTIVATE": "Activated",
+      "DEACTIVATE": "Deactivated",
+      "UNCONFIRM": "Marked unconfirmed",
+      "CONFIRM": "Confirmed",
+      "SUBMIT": "Submitted",
+      "APPROVE": "Approved",
+      "PUBLISH": "Published",
+      "PLACE_LEGAL_HOLD": "Legal hold placed",
+      "RELEASE_LEGAL_HOLD": "Legal hold released",
+      "PILOT_REMINDER_SENT": "Pilot reminder sent",
+      "PILOT_LIMIT_REACHED": "Pilot limit reached",
+      "EXPORT_PROGRAM_PACK": "Program pack exported",
+      "EXPORT_GOVERNANCE_PROGRAM": "Program report exported",
+      "DELETE_TEMPLATE_ITEMS": "Template items deleted",
+      "DELETE_SAMPLE_DATA": "Sample data deleted",
+      "CREATE_SAMPLE_DATA": "Sample data created"
+    }
   },
   "assessmentVersions": {
     "title": "Version history",
@@ -5121,7 +5145,8 @@
       "AFFILIATE": "Affiliate",
       "PUBLIC_AUTHORITY": "Public authority",
       "OTHER": "Other"
-    }
+    },
+    "removeRecipient": "Remove {name}"
   },
   "legalHold": {
     "title": "Legal hold",
@@ -6198,7 +6223,7 @@
       "button": "Download ready documents",
       "includeDrafts": "Include the drafts too ({count}), marked DRAFT",
       "count": "{count, plural, one {# document in one ZIP, with an index} other {# documents in one ZIP, with an index}}",
-      "none": "No document is ready yet."
+      "none": "No document for the ZIP is ready yet."
     }
   }
 }

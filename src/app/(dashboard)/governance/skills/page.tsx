@@ -47,6 +47,14 @@ export default function SkillsPage() {
   );
   // On the hosted pilot every package is open; the price belongs to the kit.
   const hostedPilot = !!trpc.pilot.mode.useQuery(undefined, { staleTime: Infinity }).data?.active;
+  // A deployment with the licence-gated posture keeps a few finished
+  // deliverables behind a licence (src/config/premium-showcase.ts); their
+  // packages are not "included" there, whatever allSkillsFree says.
+  const showcase = trpc.skills.showcaseStatus.useQuery(
+    { organizationId: organization?.id ?? "" },
+    { enabled: !!organization?.id, staleTime: 5 * 60 * 1000 },
+  );
+  const lockedSkillIds = new Set(showcase.data?.lockedSkillIds ?? []);
 
   const activate = trpc.skills.activateOffline.useMutation({
     onSuccess: (r) => {
@@ -84,7 +92,7 @@ export default function SkillsPage() {
   // a quiet one-liner. While the list is still loading (cloud posture) keep
   // the form, matching the previous behaviour.
   const licensingPossible =
-    !features.allSkillsFree &&
+    (!features.allSkillsFree || lockedSkillIds.size > 0) &&
     (!list.data || list.data.some((pkg) => !pkg.entitlement?.isActive));
 
   return (
@@ -188,7 +196,8 @@ export default function SkillsPage() {
               // and the hosted pilot gates nothing, so an unentitled package is
               // simply included, not "locked". Only a Stripe deployment
               // (selfServiceUpgrade) ever shows a per-month price.
-              const included = !active && (features.allSkillsFree || hostedPilot);
+              const licenceRequired = !active && lockedSkillIds.has(pkg.skillId);
+              const included = !active && !licenceRequired && (features.allSkillsFree || hostedPilot);
               return (
                 <li key={pkg.id}>
                   <Card className="flex items-center justify-between gap-3 p-4">
@@ -213,6 +222,8 @@ export default function SkillsPage() {
                               })}
                             </span>
                           </>
+                        ) : licenceRequired ? (
+                          <span>{t("licenceRequiredHint")}</span>
                         ) : included ? (
                           <span>
                             {hostedPilot
@@ -236,6 +247,11 @@ export default function SkillsPage() {
                       <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">
                         <CheckCircle2 className="h-3.5 w-3.5" />
                         {active ? t("statusActive") : t("statusIncluded")}
+                      </span>
+                    ) : licenceRequired ? (
+                      <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">
+                        <Lock className="h-3.5 w-3.5" />
+                        {t("statusLicenceRequired")}
                       </span>
                     ) : STOREFRONT_BUY ? (
                       <a

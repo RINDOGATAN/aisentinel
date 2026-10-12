@@ -30,6 +30,11 @@ const SKILL_BY_FEATURE: Record<ShowcaseFeature, string> = {
   "bias-fairness-assessment": "com.todolaw.aisentinel.bias-fairness",
 };
 
+/** The skill package that unlocks a showcase deliverable. */
+export function showcaseSkillId(feature: ShowcaseFeature): string {
+  return SKILL_BY_FEATURE[feature];
+}
+
 export interface ShowcaseAccess {
   allowed: boolean;
   /** Set when the deliverable is locked: what to tell the person. */

@@ -290,7 +290,7 @@ export const GDPR_REQUIREMENTS: RegimeRequirementSeed[] = [
         title: { en: "Seeking the views of data subjects", es: "Recabar la opinión de los interesados" },
         description: {
           en: "Where appropriate, seek the views of data subjects or their representatives on the intended processing. Record whom you consulted, or why consultation was not appropriate.",
-          es: "Cuando proceda, recaba la opinión de los interesados o de sus representantes sobre el tratamiento previsto. Deja constancia de a quién consultaste, o de por qué la consulta no era procedente.",
+          es: "Cuando proceda, recaba la opinión de los interesados o de sus representantes sobre el tratamiento previsto. Deja constancia de a quién has consultado, o de por qué la consulta no era procedente.",
         },
         applicabilityTags: DPIA,
         sortOrder: 359,

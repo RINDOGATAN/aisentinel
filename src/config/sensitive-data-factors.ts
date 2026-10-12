@@ -95,7 +95,7 @@ export const SENSITIVE_FACTORS: FactorDefinition[] = [
     },
     guidance: {
       en: "Ordinary data becomes sensitive when it is used to target, personalize or decide on a health basis. Common purchases, combined and modeled into a pregnancy score, became a health determination. Aggregation that cannot reach an individual can lower sensitivity. Regulators increasingly frame the question this way, and so should the record.",
-      es: "Un dato corriente se vuelve sensible cuando se utiliza para segmentar, personalizar o decidir con criterios de salud. Unas compras habituales, combinadas y modelizadas en una puntuación de embarazo, se convirtieron en una determinación sobre la salud. Una agregación que no permite llegar a una persona concreta puede reducir la sensibilidad. Los reguladores plantean cada vez más la cuestión así, y el registro debe hacerlo igual.",
+      es: "Un dato corriente se vuelve sensible cuando se utiliza para segmentar, personalizar o decidir con criterios de salud. Unas compras habituales, combinadas y modelizadas en una puntuación de embarazo, se han convertido en una determinación sobre la salud. Una agregación que no permite llegar a una persona concreta puede reducir la sensibilidad. Los reguladores plantean cada vez más la cuestión así, y el registro debe hacerlo igual.",
     },
   },
   {
@@ -104,7 +104,7 @@ export const SENSITIVE_FACTORS: FactorDefinition[] = [
     label: { en: "Consumer expectations", es: "Expectativas de la persona" },
     question: {
       en: "What would a reasonable person expect, given where the data was collected and what they were told?",
-      es: "¿Qué esperaría una persona razonable, según dónde se recogió el dato y qué se le dijo?",
+      es: "¿Qué esperaría una persona razonable, según dónde se ha recogido el dato y qué se le ha dicho?",
     },
     guidance: {
       en: "Judged by the environment of collection, the disclosures made and the norms of the product. Expectations of privacy are highest around reproductive health, mental health and conditions that carry stigma. They are dynamic and highly fact-dependent, so the same data can weigh differently in another context.",

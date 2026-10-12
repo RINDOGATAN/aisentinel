@@ -285,7 +285,7 @@ const friaV2: V2Template = {
           required: true,
           text: L(
             "Were affected persons or their representatives consulted?",
-            "¿Se consultó a las personas afectadas o a sus representantes?",
+            "¿Se ha consultado a las personas afectadas o a sus representantes?",
           ),
           followUp: {
             when: "yes",
@@ -295,7 +295,7 @@ const friaV2: V2Template = {
               required: true,
               text: L(
                 "Describe how they were consulted.",
-                "Describe cómo se les consultó.",
+                "Describe cómo se les ha consultado.",
               ),
             },
           },
@@ -1339,7 +1339,7 @@ const biasFairnessV2: V2Template = {
           id: "bf4_3",
           type: "text",
           required: true,
-          text: L("What disparities were identified between groups?", "¿Qué disparidades se identificaron entre los grupos?"),
+          text: L("What disparities were identified between groups?", "¿Qué disparidades se han identificado entre los grupos?"),
         },
         {
           id: "bf4_4",
@@ -1360,7 +1360,7 @@ const biasFairnessV2: V2Template = {
             ),
             L(
               "\"Full: tested race, gender and their combination.\"",
-              "«Completo: se probaron raza, género y su combinación.»",
+              "«Completo: se han probado raza, género y su combinación.»",
             ),
           ),
         },

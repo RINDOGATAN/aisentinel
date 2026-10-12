@@ -117,7 +117,7 @@ export const QUESTION_HELP: Record<string, QuestionHelp> = {
   fria2_4: {
     meaning: L(
       "Record whether affected people, or those who represent them, had any say in this assessment.",
-      "Registra si las personas afectadas, o quienes las representan, tuvieron voz en esta evaluación.",
+      "Registra si las personas afectadas, o quienes las representan, han tenido voz en esta evaluación.",
     ),
     example: L(
       "\"The works council reviewed the tool and its concerns are recorded in the minutes of 12 March.\"",
@@ -271,7 +271,7 @@ export const QUESTION_HELP: Record<string, QuestionHelp> = {
   fria5_4: {
     meaning: L(
       "Record whether, and how, you told the market surveillance authority the results, where that duty applies.",
-      "Registra si comunicaste los resultados a la autoridad de vigilancia del mercado, y cómo, cuando esa obligación aplica.",
+      "Registra si has comunicado los resultados a la autoridad de vigilancia del mercado, y cómo, cuando esa obligación aplica.",
     ),
     example: L(
       "\"Notified through the national authority's template on 3 April; reference number recorded in the file.\"",

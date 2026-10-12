@@ -62,7 +62,7 @@ export const AGENTIC_FINDINGS: AgenticFinding[] = [
     ),
     assumption: L(
       "Your Art. 22 analysis concluded the decision is not solely automated because a person reviews the model's output before it takes effect.",
-      "Tu análisis del art. 22 concluyó que la decisión no es únicamente automatizada porque una persona revisa el resultado del modelo antes de que produzca efectos.",
+      "Tu análisis del art. 22 ha concluido que la decisión no es únicamente automatizada porque una persona revisa el resultado del modelo antes de que produzca efectos.",
     ),
     breakage: L(
       "When an agent acts on the output, the decision the person experiences is the agent's action, not the model's score. If nobody reviews the action, that decision is solely automated even though the score was reviewed. The CJEU already treats an automatically generated score as a decision when a third party draws heavily on it; an agent that acts on the score is a stronger case, not a weaker one.",
@@ -86,7 +86,7 @@ export const AGENTIC_FINDINGS: AgenticFinding[] = [
     ),
     assumption: L(
       "The California determination rested on a reviewer who interprets the output, reviews it against other relevant information, and has authority to make or change the decision.",
-      "La determinación de California se apoyó en una persona revisora que interpreta el resultado, lo contrasta con otra información pertinente y tiene autoridad para adoptar o cambiar la decisión.",
+      "La determinación de California se ha apoyado en una persona revisora que interpreta el resultado, lo contrasta con otra información pertinente y tiene autoridad para adoptar o cambiar la decisión.",
     ),
     breakage: L(
       "An agent that executes before or without that review removes the third prong in practice: the reviewer cannot change a decision that has already taken effect. The test is conjunctive, so failing one prong makes the technology ADMT and pulls in the full Article 11 notice, opt-out and access duties.",
@@ -114,7 +114,7 @@ export const AGENTIC_FINDINGS: AgenticFinding[] = [
     ),
     breakage: L(
       "An agent chains actions the notice never named: it may open a case, contact a third party, adjust an entitlement or trigger a second model. Each is a processing operation, and some are decisions in their own right. A notice that lists only the first decision is incomplete for every one that follows.",
-      "Un agente encadena acciones que el aviso nunca mencionó: puede abrir un expediente, contactar con un tercero, ajustar un derecho o activar un segundo modelo. Cada una es una operación de tratamiento y algunas son decisiones por sí mismas. Un aviso que solo enumera la primera decisión es incompleto para todas las siguientes.",
+      "Un agente encadena acciones que el aviso nunca ha mencionado: puede abrir un expediente, contactar con un tercero, ajustar un derecho o activar un segundo modelo. Cada una es una operación de tratamiento y algunas son decisiones por sí mismas. Un aviso que solo enumera la primera decisión es incompleto para todas las siguientes.",
     ),
     provision: L(
       "Describe the agent's authority in the notice as a bounded scope: the categories of action it may take without a person, and the point at which a person is involved. Say plainly that some steps are carried out by an autonomous agent, and how the person is told when one acted on their case.",
@@ -162,11 +162,11 @@ export const AGENTIC_FINDINGS: AgenticFinding[] = [
     ),
     breakage: L(
       "The agent's chain sits between the output and the effect. Without a trace linking an action back to the decision, the model version and the data behind it, neither the Colorado three-year record nor the AI Act logging duty can answer the only question that matters after the fact: why did this happen to this person?",
-      "La cadena del agente se sitúa entre el resultado y el efecto. Sin una traza que enlace la acción con la decisión, la versión del modelo y los datos que la sustentan, ni el registro trienal de Colorado ni el deber de registro del RIA pueden responder a la única pregunta que importa después: ¿por qué le ocurrió esto a esta persona?",
+      "La cadena del agente se sitúa entre el resultado y el efecto. Sin una traza que enlace la acción con la decisión, la versión del modelo y los datos que la sustentan, ni el registro trienal de Colorado ni el deber de registro del RIA pueden responder a la única pregunta que importa después: ¿por qué le ha ocurrido esto a esta persona?",
     ),
     provision: L(
       "Log every agent-initiated action with the decision id, the model version, the input data reference and the authority under which the agent acted, and retain it for the longest applicable period.",
-      "Registra cada acción iniciada por el agente con el identificador de la decisión, la versión del modelo, la referencia a los datos de entrada y la habilitación en virtud de la cual actuó el agente, y consérvalo durante el plazo aplicable más largo.",
+      "Registra cada acción iniciada por el agente con el identificador de la decisión, la versión del modelo, la referencia a los datos de entrada y la habilitación en virtud de la cual ha actuado el agente, y consérvalo durante el plazo aplicable más largo.",
     ),
     citations: ["EU AI Act Art. 12(1)", "CO SB 26-189 CO-REC-1"],
     evidencedBy: ["agt_traceability", "gov_records"],
@@ -182,11 +182,11 @@ export const AGENTIC_FINDINGS: AgenticFinding[] = [
     ),
     assumption: L(
       "After an adverse decision the deployer can state the principal reasons and the categories of personal data that drove it, because the model produced the decision.",
-      "Tras una decisión desfavorable, el responsable del despliegue puede indicar las razones principales y las categorías de datos personales que la determinaron, porque el modelo produjo la decisión.",
+      "Tras una decisión desfavorable, el responsable del despliegue puede indicar las razones principales y las categorías de datos personales que la han determinado, porque el modelo ha producido la decisión.",
     ),
     breakage: L(
       "If the agent selected among the model's options, weighed a policy or combined several outputs, the reasons the person receives must reflect the agent's reasoning too. A disclosure that explains only the score is incomplete and, worse, misleading about what actually decided.",
-      "Si el agente eligió entre las opciones del modelo, ponderó una política o combinó varios resultados, las razones que recibe la persona deben reflejar también el razonamiento del agente. Una información que solo explica la puntuación es incompleta y, peor aún, engañosa sobre lo que realmente decidió.",
+      "Si el agente ha elegido entre las opciones del modelo, ha ponderado una política o ha combinado varios resultados, las razones que recibe la persona deben reflejar también el razonamiento del agente. Una información que solo explica la puntuación es incompleta y, peor aún, engañosa sobre lo que realmente ha decidido.",
     ),
     provision: L(
       "Require the agent to record its own decisive factors at the moment it acts, in the same plain language the adverse-decision disclosure uses, and include them in that disclosure.",
@@ -234,7 +234,7 @@ export const AGENTIC_FINDINGS: AgenticFinding[] = [
     ),
     breakage: L(
       "An agent with tool access can call services nobody assessed: a search API, a messaging provider, a second model, a customer system. Each may receive personal data under no contract, and some sit outside the transfer safeguards you documented.",
-      "Un agente con acceso a herramientas puede llamar a servicios que nadie evaluó: una API de búsqueda, un proveedor de mensajería, un segundo modelo, un sistema de clientes. Cada uno puede recibir datos personales sin contrato alguno, y algunos quedan fuera de las garantías de transferencia que documentaste.",
+      "Un agente con acceso a herramientas puede llamar a servicios que nadie ha evaluado: una API de búsqueda, un proveedor de mensajería, un segundo modelo, un sistema de clientes. Cada uno puede recibir datos personales sin contrato alguno, y algunos quedan fuera de las garantías de transferencia que has documentado.",
     ),
     provision: L(
       "Enumerate the tools and services the agent may call, restrict it to that list, and bring each within the processing contract and the transfer analysis before it is enabled.",
@@ -254,11 +254,11 @@ export const AGENTIC_FINDINGS: AgenticFinding[] = [
     ),
     assumption: L(
       "The Texas prohibitions turn on whether a person developed or deployed the system with the intent to manipulate, discriminate or infringe rights.",
-      "Las prohibiciones de Texas dependen de si una persona desarrolló o desplegó el sistema con la intención de manipular, discriminar o vulnerar derechos.",
+      "Las prohibiciones de Texas dependen de si una persona ha desarrollado o desplegado el sistema con la intención de manipular, discriminar o vulnerar derechos.",
     ),
     breakage: L(
       "An agent that discovers a prohibited route to its objective raises an unsettled question: whose intent counts. The safe reading is that the intent examined is that of the party who gave the agent an objective and an unconstrained action space.",
-      "Un agente que descubre una vía prohibida para alcanzar su objetivo plantea una cuestión no resuelta: de quién es la intención relevante. La lectura prudente es que se examina la intención de quien fijó al agente un objetivo y un espacio de acción sin restricciones.",
+      "Un agente que descubre una vía prohibida para alcanzar su objetivo plantea una cuestión no resuelta: de quién es la intención relevante. La lectura prudente es que se examina la intención de quien ha fijado al agente un objetivo y un espacio de acción sin restricciones.",
     ),
     provision: L(
       "Constrain the agent's action space explicitly against the prohibited categories, and record that constraint as part of the design rationale. An unconstrained objective is the fact a regulator will read as intent.",

@@ -374,7 +374,7 @@
     "save": "Guardar perfil",
     "saving": "Guardando…",
     "toastSaved": "Perfil de transparencia guardado",
-    "toastError": "No se pudo guardar el perfil de transparencia"
+    "toastError": "No se ha podido guardar el perfil de transparencia"
   },
   "riskClassification": {
     "title": "Nivel de riesgo",
@@ -590,8 +590,8 @@
     "no": "No",
     "progressCount": "{answered} de {total}",
     "completeBeforeSubmit": "{count, plural, one {Falta # pregunta obligatoria por responder} other {Faltan # preguntas obligatorias por responder}} antes de poder enviarla a revisión.",
-    "selfReviewWarning": "Tú enviaste esta evaluación. La decisión sobre tu propio envío quedará registrada en el registro de auditoría.",
-    "selfApprovedNote": "Aprobada por la misma persona que la envió.",
+    "selfReviewWarning": "Tú has enviado esta evaluación. La decisión sobre tu propio envío quedará registrada en el registro de auditoría.",
+    "selfApprovedNote": "Aprobada por la misma persona que la ha enviado.",
     "approvedOn": "Aprobada el {date}",
     "coverageTitle": "Qué acredita esta evaluación",
     "coverageSummary": "{evidenced} de {total} obligaciones acreditadas en {frameworks} marcos.",
@@ -791,7 +791,7 @@
     "titleLabel": "Título del incidente",
     "titlePlaceholder": "p. ej., Chatbot generando contenido perjudicial",
     "descriptionLabel": "Descripción",
-    "descriptionPlaceholder": "Describe el incidente en detalle: qué ocurrió, cuándo se detectó, el impacto observado...",
+    "descriptionPlaceholder": "Describe el incidente en detalle: qué ha ocurrido, cuándo se detectó, el impacto observado...",
     "typeLabel": "Tipo de incidente",
     "typePlaceholder": "Selecciona el tipo de incidente",
     "severityLabel": "Gravedad",
@@ -909,7 +909,7 @@
       "cancel": "Cancelar",
       "confirm": "Marcar como registrado por error",
       "done": "Incidente marcado como registrado por error.",
-      "banner": "Este incidente se marcó como registrado por error. Se conserva en el registro y queda fuera de los recuentos, los plazos legales y los informes.",
+      "banner": "Este incidente se ha marcado como registrado por error. Se conserva en el registro y queda fuera de los recuentos, los plazos legales y los informes.",
       "bannerReason": "Motivo: {reason}"
     }
   },
@@ -1449,7 +1449,7 @@
     "title": "Configuración",
     "subtitle": "Tu organización: dónde opera, sus respuestas al cribado, sus miembros y sus ajustes de IA",
     "templateItemsTitle": "Elementos de plantilla",
-    "templateItemsLead": "Sistemas, proveedores y evaluaciones iniciales que una plantilla creó por ti. Al quitarlos solo se eliminan los que nadie ha editado; se conserva todo lo que hayas cambiado.",
+    "templateItemsLead": "Sistemas, proveedores y evaluaciones iniciales que una plantilla ha creado por ti. Al quitarlos solo se eliminan los que nadie ha editado; se conserva todo lo que hayas cambiado.",
     "templateItemsCount": "Se quitarán {remove}. Se conservarán {keep} que has editado.",
     "templateItemsSystems": "sistemas",
     "templateItemsVendors": "proveedores",
@@ -1496,12 +1496,12 @@
     "redirecting": "Redirigiendo al pago...",
     "addToOrganization": "Añade {name} a tu organización.",
     "includedSelfHosted": "Tu instalación autoalojada ya incluye {name} y tu organización ya tiene acceso.",
-    "activateOnSkills": "{name} es una funcionalidad premium. Activa en la página de Skills el archivo de licencia que recibiste para habilitarla en tu organización.",
+    "activateOnSkills": "{name} es una funcionalidad premium. Activa en la página de Skills el archivo de licencia que has recibido para habilitarla en tu organización.",
     "close": "Cerrar",
     "goToSkills": "Ir a la página de Skills",
     "enableMany": "{count, plural, one {Activar # funcionalidad} other {Activar # funcionalidades}}",
     "manyIncludedSelfHosted": "Estas funcionalidades están incluidas en tu instalación autoalojada.",
-    "manyActivateOnSkills": "Activa en la página de Skills los archivos de licencia que recibiste para habilitar estas funcionalidades."
+    "manyActivateOnSkills": "Activa en la página de Skills los archivos de licencia que has recibido para habilitar estas funcionalidades."
   },
   "skills": {
     "title": "Skills",
@@ -1515,7 +1515,7 @@
     },
     "subtitle": "Skills premium compradas en TODO.LAW. Sube el archivo de licencia de tu correo de confirmación para activarlas en esta organización: se verifica localmente, sin conexión.",
     "activateTitle": "Activar con un archivo de licencia",
-    "activateHint": "Elige el archivo .license.json que recibiste tras la compra. Solo los propietarios y administradores de la organización pueden activar.",
+    "activateHint": "Elige el archivo .license.json que has recibido tras la compra. Solo los propietarios y administradores de la organización pueden activar.",
     "chooseFile": "Elegir archivo de licencia",
     "activate": "Activar skill",
     "activating": "Activando...",
@@ -2507,7 +2507,7 @@
         },
         "colorado": {
           "name": "Colorado SB 26-189",
-          "description": "La ley que sustituyó a la ley de IA original de Colorado: aviso previo, información tras la decisión, corrección y revisión, y documentación del desarrollador. Se incorpora según la jurisdicción.",
+          "description": "La ley que ha sustituido a la ley de IA original de Colorado: aviso previo, información tras la decisión, corrección y revisión, y documentación del desarrollador. Se incorpora según la jurisdicción.",
           "items": "{count} requisitos"
         },
         "texas": {
@@ -2834,7 +2834,7 @@
       "vsVendorTitle": "Riesgo de proveedores",
       "vsVendorItems": [
         "La organización contrata al proveedor por canales formales",
-        "Conocido desde el primer día: la organización eligió al proveedor",
+        "Conocido desde el primer día: la organización ha elegido al proveedor",
         "Pregunta clave: «¿Es arriesgado este proveedor que hemos seleccionado?»",
         "Ciclo de vida: Contratación → Evaluación → Seguimiento"
       ],
@@ -3094,7 +3094,7 @@
       "typesItems": [
         {
           "type": "Sesgo de los datos de entrenamiento",
-          "description": "Los datos históricos reflejan discriminaciones pasadas. Un modelo de contratación entrenado con decisiones históricas hereda los sesgos sobre quién fue contratado o ascendido anteriormente."
+          "description": "Los datos históricos reflejan discriminaciones pasadas. Un modelo de contratación entrenado con decisiones históricas hereda los sesgos sobre quién ha sido contratado o ascendido anteriormente."
         },
         {
           "type": "Sesgo de selección",
@@ -3110,7 +3110,7 @@
         },
         {
           "type": "Sesgo de despliegue",
-          "description": "El sistema se utiliza en un contexto distinto de aquel para el que fue diseñado, o sus resultados son interpretados de forma sesgada por los operadores humanos."
+          "description": "El sistema se utiliza en un contexto distinto de aquel para el que ha sido diseñado, o sus resultados son interpretados de forma sesgada por los operadores humanos."
         }
       ],
       "coversTitle": "Qué cubre la plantilla",
@@ -3453,7 +3453,7 @@
         },
         {
           "name": "SB 26-189 de Colorado",
-          "detail": "La norma que derogó y sustituyó la ley de IA original de Colorado. Aviso previo, información posterior a la decisión, corrección y revisión, y documentación del desarrollador. En vigor el 1 de enero de 2027, sujeta a un litigio federal pendiente.",
+          "detail": "La norma que ha derogado y sustituido la ley de IA original de Colorado. Aviso previo, información posterior a la decisión, corrección y revisión, y documentación del desarrollador. En vigor el 1 de enero de 2027, sujeta a un litigio federal pendiente.",
           "count": "10 requisitos"
         },
         {
@@ -3476,15 +3476,15 @@
         },
         {
           "name": "No se aplica",
-          "description": "Alguien respondió a las preguntas que lo descartan. Es una afirmación, así que solo se formula a partir de respuestas que una persona ha dado efectivamente."
+          "description": "Alguien ha respondido a las preguntas que lo descartan. Es una afirmación, así que solo se formula a partir de respuestas que una persona ha dado efectivamente."
         },
         {
           "name": "Sin determinar",
           "description": "Todavía nadie ha respondido. No se incorpora nada, y el estado se muestra como una pregunta abierta en lugar de leerse como un no. Una pregunta sin responder es una laguna visible, nunca silenciosa."
         }
       ],
-      "reuseTitle": "Respuestas que ya dio",
-      "reuseBody": "Cuando dos regímenes plantean la misma cuestión jurídica, el producto reutiliza la respuesta en lugar de preguntar dos veces. Una determinación de ADMT de California que concluya que la tecnología es el factor único de una decisión significativa responde también a la pregunta del art. 22 del RGPD, y una determinación positiva con un ámbito de decisión identificado responde a la prueba de tecnología cubierta de Colorado. La evaluación deja constancia de la respuesta de la que se dedujo, para que el razonamiento siga siendo auditable.",
+      "reuseTitle": "Respuestas que ya ha dado",
+      "reuseBody": "Cuando dos regímenes plantean la misma cuestión jurídica, el producto reutiliza la respuesta en lugar de preguntar dos veces. Una determinación de ADMT de California que concluya que la tecnología es el factor único de una decisión significativa responde también a la pregunta del art. 22 del RGPD, y una determinación positiva con un ámbito de decisión identificado responde a la prueba de tecnología cubierta de Colorado. La evaluación deja constancia de la respuesta de la que se ha deducido, para que el razonamiento siga siendo auditable.",
       "artifactsTitle": "Qué se lleva",
       "artifactsBody": "A partir de una evaluación respondida, el producto compone cuatro documentos. La composición es determinista: no se llama a ningún modelo, de modo que un documento que cita normas es reproducible y cada frase se remonta a una respuesta. Se descargan en Markdown, para incorporarlos directamente a tus propios sistemas de registro.",
       "artifacts": [
@@ -3508,12 +3508,12 @@
       "gapsTitle": "Las lagunas se muestran, no se ocultan",
       "gapsBody": "Una pregunta sin responder no suprime en silencio el párrafo que habría completado. Se convierte en una laguna visible con la obligación que habría acreditado, y todas las lagunas se recogen en un resumen de asuntos abiertos al principio del documento. Un documento generado que omite discretamente una obligación sin responder es peor que no tener documento, porque parece completo.",
       "agenticTitle": "La prueba de esfuerzo agéntica",
-      "agenticBody1": "Todos los regímenes de este producto se escribieron pensando en un sistema que produce un resultado que después usa una persona. Un agente autónomo que actúa sobre ese resultado rompe esa premisa en un punto distinto en cada régimen.",
+      "agenticBody1": "Todos los regímenes de este producto se han escrito pensando en un sistema que produce un resultado que después usa una persona. Un agente autónomo que actúa sobre ese resultado rompe esa premisa en un punto distinto en cada régimen.",
       "agenticBody2": "La prueba de esfuerzo comprueba once hallazgos sobre el sistema; cada uno identifica el documento que rompe, la premisa de la que partía el régimen, qué le hace la delegación y qué disposición exige la capa agéntica. Los hallazgos se filtran por los regímenes que realmente se aplican, de modo que a un responsable del despliegue de Texas no se le muestra un fallo del RGPD.",
       "agenticExamples": [
         {
           "name": "La frontera del artículo 22 se desplaza al agente",
-          "description": "Tu análisis concluyó que la decisión no es únicamente automatizada porque una persona revisa el resultado. Si después un agente actúa sobre él y nadie revisa esa acción, la decisión que experimenta la persona sí es únicamente automatizada."
+          "description": "Tu análisis ha concluido que la decisión no es únicamente automatizada porque una persona revisa el resultado. Si después un agente actúa sobre él y nadie revisa esa acción, la decisión que experimenta la persona sí es únicamente automatizada."
         },
         {
           "name": "Los elementos de intervención humana fallan en la delegación",
@@ -3639,7 +3639,7 @@
           "version": "0.2.x",
           "date": "Agosto de 2026",
           "headline": "California, jurisdicciones y el calendario de obligaciones",
-          "summary": "Las versiones que hicieron multijurisdiccional el producto.",
+          "summary": "Las versiones que han hecho multijurisdiccional el producto.",
           "items": [
             {
               "title": "ADMT de la CCPA de California",
@@ -3733,7 +3733,7 @@
           "body": "Un límite para lo que ocurre sin una persona y aprobación por encima. Prueba: intenta saltarte el límite de tres formas, una de ellas mediante un documento."
         },
         {
-          "name": "Funciona como se diseñó y aun así trata peor a un grupo",
+          "name": "Funciona como se ha diseñado y aun así trata peor a un grupo",
           "body": "Factores de decisión declarados, revisión de variables sustitutivas y seguimiento de resultados tras el despliegue. Prueba: repite los mismos casos cambiando una sola característica."
         }
       ],
@@ -3770,7 +3770,7 @@
         },
         {
           "name": "No aguanta",
-          "body": "La última prueba falló o solo se superó en parte. Un control a medias no es un control."
+          "body": "La última prueba ha fallado o solo se ha superado en parte. Un control a medias no es un control."
         },
         {
           "name": "Prueba caducada",
@@ -4408,7 +4408,7 @@
     "report": {
       "coverLine": "{percent}% confirmado por una persona ({confirmed} de {total} elementos del programa)",
       "unconfirmedPill": "Contiene contenido generado automáticamente pendiente de revisión",
-      "legend": "Los elementos marcados con este símbolo se evaluaron automáticamente y están pendientes de confirmación humana."
+      "legend": "Los elementos marcados con este símbolo se han evaluado automáticamente y están pendientes de confirmación humana."
     }
   },
   "snapshots": {
@@ -4449,7 +4449,7 @@
     "diffGapsClosed": "Carencias resueltas",
     "diffGapsOpened": "Carencias abiertas",
     "diffRulePacks": "Paquetes de reglas modificados",
-    "diffRulePacksHint": "Una puntuación puede variar porque han variado las reglas. Estos paquetes cambiaron entre ambas instantáneas."
+    "diffRulePacksHint": "Una puntuación puede variar porque han variado las reglas. Estos paquetes han cambiado entre ambas instantáneas."
   },
   "jurisdictions": {
     "title": "Jurisdicciones de actividad",
@@ -4781,7 +4781,7 @@
     "title": "Regímenes transfronterizos",
     "description": "Los regímenes regulatorios son las leyes, y los reguladores que las hacen cumplir. Aquí eso significa el RGPD, Colorado, Texas y Washington junto al RIA y California. Cada régimen resuelve su propio ámbito a partir de las jurisdicciones declaradas y de unas pocas respuestas de cribado.",
     "reviewMarkerNote": "El contenido normativo de estos regímenes se validó el 8 de septiembre de 2026. Los paquetes del RIA y de California siguen pendientes.",
-    "copiedFromTemplate": "Estas respuestas se copiaron de una plantilla. Revisa cada una para este cliente y después confírmalas.",
+    "copiedFromTemplate": "Estas respuestas se han copiado de una plantilla. Revisa cada una para este cliente y después confírmalas.",
     "confirmCopied": "Confirmar respuestas",
     "orgTitle": "Cribado de la organización",
     "orgDescription": "Cinco hechos sobre la organización. Cada uno tiene tres estados: sin responder permanece visiblemente sin responder y nunca se lee como un no.",
@@ -5070,7 +5070,7 @@
     "reasonReject": "Rechazada",
     "answered": "{count} respondidas",
     "hashLabel": "Huella del contenido (SHA-256)",
-    "noAnswers": "En esta versión no se registró ninguna respuesta.",
+    "noAnswers": "En esta versión no se ha registrado ninguna respuesta.",
     "collapse": "Cerrar"
   },
   "sensitiveData": {
@@ -5311,7 +5311,7 @@
     "title": "Informe al consejo",
     "subtitle": "Informes al consejo: qué se informó, cuándo, a quién y qué se decidió. Cada registro congela las cifras del programa tal y como estaban ese día, de modo que puede reproducirse después lo que vio el consejo.",
     "record": "Registrar un informe",
-    "noneYet": "Todavía no hay nada registrado. Una reclamación que sostenga que al consejo nunca se le informó empieza aquí.",
+    "noneYet": "Todavía no hay nada registrado. Una reclamación que sostenga que al consejo nunca se le ha informado empieza aquí.",
     "cadence": "{count, plural, one {# informe registrado} other {# informes registrados}}. El último fue el {last}.",
     "nextDue": "Próximo informe previsto para el {date}.",
     "titleLabel": "Título",
@@ -5403,12 +5403,12 @@
     "saveTest": "Guardar la prueba",
     "testRecorded": "Prueba registrada.",
     "methodLabel": "Método",
-    "methodPlaceholder": "¿Qué hiciste exactamente? Con detalle suficiente para que otra persona pueda repetirlo.",
+    "methodPlaceholder": "¿Qué has hecho exactamente? Con detalle suficiente para que otra persona pueda repetirlo.",
     "resultLabel": "Resultado",
     "evidenceLabel": "Evidencia",
     "evidencePlaceholder": "Un identificador de la prueba, un ticket, una transcripción",
     "notesLabel": "Notas",
-    "notesPlaceholder": "¿Qué observaste? Incluido lo que aun así se coló.",
+    "notesPlaceholder": "¿Qué has observado? Incluido lo que aun así se ha colado.",
     "implemented": "Implantado",
     "markImplemented": "Marcar como implantado",
     "cancel": "Cancelar",
@@ -5468,7 +5468,7 @@
     "registerApplied": "{count} evidencias escritas en el registro.",
     "untestedReason": {
       "no-test": "sin pruebas registradas",
-      "not-passing": "la última prueba falló, fue parcial o ha caducado"
+      "not-passing": "la última prueba ha fallado, ha sido parcial o ha caducado"
     },
     "systemCardHint": "Qué puede salir mal con este sistema y si los controles aguantan.",
     "systemCardNone": "Todavía no hay un modelo de amenazas para este sistema. Media hora con quienes lo han construido basta para el primer borrador.",
@@ -5580,7 +5580,7 @@
       "usesAgents": "Usas agentes de IA que actúan por su cuenta.",
       "wantsCertification": "Quieres un sistema de gestión que pueda certificarse.",
       "roleUnsure": "Tu papel con la IA aún no está claro.",
-      "answerUnsure": "Respondiste «Todavía no lo sé».",
+      "answerUnsure": "Has respondido «Todavía no lo sé».",
       "thresholds": "Primero deciden los umbrales de tamaño de la CCPA; los pregunta la evaluación de California en Configuración.",
       "screeningDecides": "Qué normas se aplican depende de las preguntas de evaluación en Configuración."
     },
@@ -5684,7 +5684,7 @@
       "agentTesting": {
         "label": "Prueba tus agentes de IA (AIUC-1)",
         "why": "Antes de la auditoría AIUC-1, cada agente de IA necesita que cada requisito que le aplica esté probado y superado, o un resultado parcial aceptado.",
-        "do": "Prueba cada agente de IA frente a AIUC-1: anota qué hiciste y el resultado, hasta superar cada requisito que le aplica."
+        "do": "Prueba cada agente de IA frente a AIUC-1: anota qué has hecho y el resultado, hasta superar cada requisito que le aplica."
       },
       "oversight": {
         "label": "Supervisión humana",
@@ -5859,7 +5859,7 @@
   "agentTesting": {
     "title": "Prueba tus agentes de IA (AIUC-1)",
     "subtitle": "AIUC-1 es la norma de certificación para agentes de IA. Anota cada prueba que hagas a un agente y mira cuánto le falta para la auditoría.",
-    "howItWorks": "En cada requisito, anota qué hiciste (con detalle suficiente para repetirlo), el resultado, qué observaste y dónde están las pruebas. Las pruebas se conservan: una prueba nueva se suma al registro, nunca sustituye a otra.",
+    "howItWorks": "En cada requisito, anota qué has hecho (con detalle suficiente para repetirlo), el resultado, qué has observado y dónde están las pruebas. Las pruebas se conservan: una prueba nueva se suma al registro, nunca sustituye a otra.",
     "readyRule": "Un agente está listo para la auditoría cuando cada requisito que le aplica tiene un resultado superado de los últimos tres meses, o un resultado parcial que una persona ha aceptado.",
     "readyExplained": "Cada requisito que aplica tiene un resultado superado vigente o un resultado parcial aceptado. La auditoría la hace un tercero acreditado.",
     "notSeeded": "Los requisitos de AIUC-1 todavía no están cargados en esta instancia, así que no se pueden anotar pruebas. Tu administrador los carga con la carga inicial de marcos.",
@@ -5922,7 +5922,7 @@
     "acceptPartial": "Aceptar este resultado parcial",
     "markNotApplicable": "No aplica",
     "applicableAgain": "Sí aplica",
-    "notACertificate": "Esta página recoge las pruebas que hizo tu organización y lo que decidió. No es un certificado: la certificación AIUC-1 exige una auditoría externa acreditada.",
+    "notACertificate": "Esta página recoge las pruebas que ha hecho tu organización y lo que ha decidido. No es un certificado: la certificación AIUC-1 exige una auditoría externa acreditada.",
     "formerMember": "un antiguo miembro",
     "result": {
       "PASS": "Superada",
@@ -5930,23 +5930,23 @@
       "FAIL": "No superada"
     },
     "field": {
-      "method": "Qué se hizo",
+      "method": "Qué se ha hecho",
       "result": "Resultado",
       "testedOn": "Fecha de la prueba",
-      "observed": "Qué se observó",
+      "observed": "Qué se ha observado",
       "evidenceRef": "Dónde están las pruebas",
-      "performedBy": "Quién hizo la prueba",
+      "performedBy": "Quién ha hecho la prueba",
       "reason": "Motivo"
     },
     "placeholder": {
-      "method": "Por ejemplo: enviamos 50 intentos de inyección de instrucciones del conjunto de pruebas público al agente de atención al cliente, por su chat.",
-      "observed": "Por ejemplo: rechazó 48; 2 revelaron las instrucciones del sistema (intentos 17 y 31).",
+      "method": "Por ejemplo: hemos enviado 50 intentos de inyección de instrucciones del conjunto de pruebas público al agente de atención al cliente, por su chat.",
+      "observed": "Por ejemplo: ha rechazado 48; 2 han revelado las instrucciones del sistema (intentos 17 y 31).",
       "evidenceRef": "Un enlace, un identificador de la prueba, un archivo o una incidencia",
-      "performedBy": "Déjalo vacío si la hiciste tú"
+      "performedBy": "Déjalo vacío si la has hecho tú"
     },
     "help": {
       "method": "Con detalle suficiente para que otra persona pueda repetirla.",
-      "performedBy": "Indica aquí al evaluador externo cuando la prueba la hizo un tercero."
+      "performedBy": "Indica aquí al evaluador externo cuando la prueba la ha hecho un tercero."
     },
     "dialog": {
       "testTitle": "Registrar una prueba",

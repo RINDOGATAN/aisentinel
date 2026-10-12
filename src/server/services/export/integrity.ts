@@ -94,7 +94,7 @@ export function renderManifest(
             "Este archivo enumera cada fichero del paquete con su huella SHA-256. Para comprobar un fichero, calcula su huella (por ejemplo, con `shasum -a 256 <fichero>`) y compárala con la que figura aquí.",
           packs: "Paquetes de reglas en vigor en el momento de la generación",
           files: "Ficheros",
-          note: "El manifiesto acredita lo que produjo la aplicación. No acredita que el archivo no se haya modificado después: para eso haría falta una firma.",
+          note: "El manifiesto acredita lo que ha producido la aplicación. No acredita que el archivo no se haya modificado después: para eso haría falta una firma.",
           cols: ["Huella SHA-256", "Bytes", "Fichero"],
           packCols: ["Paquete", "Versión", "Derecho revisado a", "Validación"],
         }

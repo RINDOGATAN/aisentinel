@@ -3879,8 +3879,8 @@
     },
     "premiumNotice": {
       "title": "Cómo se ofrecen los módulos premium",
-      "hosted": "Abiertos a todo el mundo en el piloto alojado.",
-      "selfHosted": "Con licencia para instalaciones en tu propio hardware.",
+      "hosted": "Incluidos en la nube de TODO.LAW, tanto en el piloto gratuito como en el plan de pago.",
+      "selfHosted": "En una instancia gestionada o en tu propio hardware, se contratan aparte.",
       "seePricing": "Ver precios",
       "newTab": "(se abre en una pestaña nueva)"
     },

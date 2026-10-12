@@ -14,7 +14,13 @@ import { Button } from "@/components/ui/button";
 import { StatusMark } from "@/components/ui/status-note";
 import { Download, ExternalLink, FlaskConical, Lock } from "lucide-react";
 import { trpc } from "@/lib/trpc";
-import { PILOT_CEILING_LABELS, PILOT_DESCRIPTION, PILOT_PRICING_URL, PILOT_TERMS } from "@/config/pilot";
+import {
+  PILOT_CEILING_LABELS,
+  PILOT_DESCRIPTION,
+  PILOT_MANAGED_URL,
+  PILOT_PRICING_URL,
+  PILOT_TERMS,
+} from "@/config/pilot";
 
 export function PilotStatusCard({ organizationId }: { organizationId: string }) {
   const t = useTranslations("pilot");
@@ -105,7 +111,7 @@ export function PilotStatusCard({ organizationId }: { organizationId: string }) 
   );
 }
 
-/** The two ways out, always both, always in this order. */
+/** The two ways out, always both, always in this order; then the quote for a managed instance. */
 function WaysOut({ exportUrl, locale }: { exportUrl: string; locale: "en" | "es" }) {
   const t = useTranslations("pilot");
   return (
@@ -120,6 +126,12 @@ function WaysOut({ exportUrl, locale }: { exportUrl: string; locale: "en" | "es"
         <a href={exportUrl}>
           <Download className="w-3.5 h-3.5 mr-1.5" />
           {t("exportAll")}
+        </a>
+      </Button>
+      <Button asChild variant="ghost" size="sm" className="h-7 text-xs">
+        <a href={PILOT_MANAGED_URL[locale]} target="_blank" rel="noopener noreferrer">
+          <ExternalLink className="w-3.5 h-3.5 mr-1.5" />
+          {t("managedQuote")}
         </a>
       </Button>
     </div>

@@ -180,7 +180,7 @@ export function assertPilotWritable(
   if (!clock.readOnly) return;
   throw new TRPCError({
     code: "FORBIDDEN",
-    message: pilotReadOnlyMessage(locale, pilotExportUrl(organization.id)),
+    message: pilotReadOnlyMessage(locale),
     cause: new PilotLimitReached(organization.id, PILOT_EDITING_DAYS_LIMIT),
   });
 }
@@ -214,7 +214,7 @@ export function pilotCeilingError(
 ): TRPCError {
   return new TRPCError({
     code: "FORBIDDEN",
-    message: pilotCeilingMessage(locale, key, pilotExportUrl(organizationId)),
+    message: pilotCeilingMessage(locale, key),
     cause: new PilotLimitReached(organizationId, key),
   });
 }

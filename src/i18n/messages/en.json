@@ -5480,6 +5480,7 @@
     "ceilingReachedBody": "A ceiling has been reached. Two ways out:",
     "paidPlan": "Move to the paid plan",
     "exportAll": "Export everything (program pack)",
+    "managedQuote": "Ask for a managed instance",
     "afterExportBody": "Your file is downloaded. You can now empty this account.",
     "afterExportAction": "Empty the account",
     "docsLink": "How the hosted pilot works, in the documentation."
@@ -5773,6 +5774,7 @@
       "label": "30/60/90-day plan",
       "column": "Plan",
       "day": "Day {day} of {total}",
+      "dayLabelled": "Program plan: day {day} of {total}",
       "onPlan": "On plan",
       "behind": "Behind plan by {days, plural, one {# day} other {# days}}",
       "complete": "Plan complete",

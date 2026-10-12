@@ -176,41 +176,34 @@ describe("the records ceiling", () => {
 });
 
 describe("what the pilot says", () => {
-  it("names the two ways out in both languages when a cap is reached", () => {
-    const exportUrl = pilotExportUrl("org-1");
-    expect(exportUrl).toBe("/api/export/program-pack?organizationId=org-1");
+  it("names the two ways out in both languages when a cap is reached, with no address in the text", () => {
+    expect(pilotExportUrl("org-1")).toBe("/api/export/program-pack?organizationId=org-1");
     for (const locale of ["en", "es"] as const) {
-      const ceiling = pilotCeilingMessage(locale, "systems", exportUrl);
+      const ceiling = pilotCeilingMessage(locale, "systems");
       expect(ceiling).toContain("25");
-      expect(ceiling).toContain(PILOT_PRICING_URL[locale]);
-      expect(ceiling).toContain(exportUrl);
-      const readOnly = pilotReadOnlyMessage(locale, exportUrl);
+      expect(ceiling).toMatch(locale === "es" ? /en Configuración: pasa al plan de pago o exporta todo/ : /in Settings: move to the paid plan or export everything/);
+      expect(ceiling).toMatch(locale === "es" ? /paquete del programa/ : /program pack/);
+      const readOnly = pilotReadOnlyMessage(locale);
       expect(readOnly).toMatch(locale === "es" ? /periodo de edición/ : /editing window/);
-      expect(readOnly).toContain(PILOT_PRICING_URL[locale]);
-      expect(readOnly).toContain(exportUrl);
-      expect(pilotOneOrganizationMessage(locale)).toContain(PILOT_MANAGED_URL[locale]);
       for (const m of [ceiling, readOnly, pilotOneOrganizationMessage(locale)]) {
-        expect(m).not.toMatch(/own instance|propia instancia|todo\.law\/run/);
+        expect(m).not.toMatch(/https?:\/\/|\/api\/|organizationId|todo\.law/);
+        expect(m).not.toMatch(/own instance|propia instancia/);
       }
     }
   });
 
-  it("closes every limit message with the one keep-going link, to the managed wizard in the reader's language", () => {
-    const exportUrl = pilotExportUrl("org-1");
+  it("closes every limit message with the keep-going sentence in the reader's language", () => {
     const expected = {
-      en: "For a managed instance or your own hardware, ask for a quote (https://www.todo.law/contact/managed).",
-      es: "Para una instancia gestionada o tu propio hardware, pide presupuesto (https://www.todo.law/es/contact/managed).",
+      en: "For a managed instance or your own hardware, ask for a quote.",
+      es: "Para una instancia gestionada o tu propio hardware, pide presupuesto.",
     };
     for (const locale of ["en", "es"] as const) {
-      const other = locale === "en" ? "es" : "en";
       const messages = [
-        ...PILOT_CEILING_KEYS.map((key) => pilotCeilingMessage(locale, key, exportUrl)),
-        pilotReadOnlyMessage(locale, exportUrl),
+        ...PILOT_CEILING_KEYS.map((key) => pilotCeilingMessage(locale, key)),
+        pilotReadOnlyMessage(locale),
       ];
       for (const message of messages) {
         expect(message.endsWith(expected[locale]), message).toBe(true);
-        expect(message).not.toContain(PILOT_MANAGED_URL[other]);
-        expect(message).not.toContain("/contact/deploy");
       }
     }
   });

@@ -3,9 +3,9 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { useMemo, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
-import { frameworksData, isUnderReview } from "@/lib/frameworks/model";
+import { frameworksDataFor, isUnderReview } from "@/lib/frameworks/model";
 import { CellDetail, type CellRef } from "./cell-detail";
 import { DepthChip, UnderReviewTag } from "./depth";
 
@@ -13,7 +13,8 @@ type SortKey = "name" | string;
 
 export function FrameworksTable() {
   const t = useTranslations("docs.frameworks");
-  const { frameworks: F, rings: R } = frameworksData;
+  const locale = useLocale();
+  const { frameworks: F, rings: R } = useMemo(() => frameworksDataFor(locale), [locale]);
   const [sort, setSort] = useState<{ key: SortKey | null; dir: 1 | -1 }>({ key: null, dir: 1 });
   const [selected, setSelected] = useState<CellRef | null>(null);
 

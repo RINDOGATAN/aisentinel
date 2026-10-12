@@ -4,11 +4,11 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { TierMarker } from "@/components/governance/risk-tier-badge";
 import {
   defaultAnswers,
-  frameworksData,
+  frameworksDataFor,
   REQUIRED_STACK_SLOTS,
   runSelector,
   STACK_SLOTS,
@@ -19,10 +19,12 @@ import {
 
 export function FrameworksSelector({ initial }: { initial?: Answers }) {
   const t = useTranslations("docs.frameworks");
-  const P = frameworksData.picker;
-  const byId = useMemo(() => new Map(frameworksData.frameworks.map((f) => [f.id, f])), []);
+  const locale = useLocale();
+  const data = useMemo(() => frameworksDataFor(locale), [locale]);
+  const P = data.picker;
+  const byId = useMemo(() => new Map(data.frameworks.map((f) => [f.id, f])), [data]);
   const [answers, setAnswers] = useState<Answers>(() => initial ?? defaultAnswers());
-  const result = runSelector(answers);
+  const result = runSelector(answers, data);
 
   // Interface labels come from the message files; the data's English label is the fallback.
   const inputLabel = (id: string) => {
@@ -188,7 +190,7 @@ export function FrameworksSelector({ initial }: { initial?: Answers }) {
 
       <p className="text-sm">
         <Link href="/docs/cross-border" className="text-primary hover:underline">
-          {t("detail.relatedDocs")}: {frameworksData.modules.regimes.label}
+          {t("detail.relatedDocs")}: {data.modules.regimes.label}
         </Link>
       </p>
     </div>

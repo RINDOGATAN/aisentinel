@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025-2026 Rindogatan LLC
 
-import { createHash, timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { logger } from "@/lib/logger";
+import { isCronAuthorized } from "@/lib/safe-equal";
 import { pilotReminderMailerFromEnv, runPilotReminders } from "@/server/services/pilot/reminders";
 
 export const runtime = "nodejs";
@@ -20,19 +20,13 @@ export const dynamic = "force-dynamic";
 // skipped. Fails closed without CRON_SECRET; constant-time comparison.
 // ---------------------------------------------------------------------------
 
-function sameSecret(given: string, expected: string): boolean {
-  const a = createHash("sha256").update(given).digest();
-  const b = createHash("sha256").update(expected).digest();
-  return timingSafeEqual(a, b);
-}
-
 export async function GET(request: Request) {
   const cronSecret = process.env.CRON_SECRET;
   if (!cronSecret) {
     logger.warn("Pilot reminders cron called but CRON_SECRET is not set; refusing to run");
     return NextResponse.json({ error: "Cron disabled: CRON_SECRET is not configured" }, { status: 503 });
   }
-  if (!sameSecret(request.headers.get("authorization") ?? "", `Bearer ${cronSecret}`)) {
+  if (!isCronAuthorized(request.headers.get("authorization"), cronSecret)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

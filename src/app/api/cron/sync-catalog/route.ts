@@ -5,13 +5,11 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import type { VendorWatchSyncResponse } from "@/lib/vendor-watch-types";
 import { mapVendorToUpsert } from "@/lib/vendor-watch-mapper";
+import { isCronAuthorized } from "@/lib/safe-equal";
 
 export async function GET(request: Request) {
-  // Verify cron secret
-  const authHeader = request.headers.get("authorization");
-  const cronSecret = process.env.CRON_SECRET;
-
-  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+  // Verify cron secret (constant-time; an unset secret refuses everyone).
+  if (!isCronAuthorized(request.headers.get("authorization"), process.env.CRON_SECRET)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

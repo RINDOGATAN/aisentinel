@@ -13,22 +13,8 @@
  *    unlimited guesses however good the comparison is.
  */
 
-import { createHash, timingSafeEqual } from "node:crypto";
+import { safeEqualAny } from "@/lib/safe-equal";
 import { enforce } from "@/lib/rate-limit";
-
-/**
- * Compare two strings without revealing where they first differ.
- *
- * Both sides are hashed to a fixed 32 bytes before the comparison, so neither
- * the position of the first difference nor the length of the candidate is
- * observable in the timing. Comparing the raw strings would need a length
- * check first, and that check is itself a length oracle.
- */
-function constantTimeEquals(a: string, b: string): boolean {
-  const left = createHash("sha256").update(a, "utf8").digest();
-  const right = createHash("sha256").update(b, "utf8").digest();
-  return timingSafeEqual(left, right);
-}
 
 function configuredKeys(): string[] {
   return (process.env.VW_IMPORT_API_KEYS ?? "")
@@ -41,14 +27,9 @@ export function validateImportApiKey(request: Request): boolean {
   const apiKey = request.headers.get("x-api-key");
   if (!apiKey) return false;
 
-  const keys = configuredKeys();
-  // Check every key rather than returning on the first match, so the time
-  // taken does not reveal which key matched or how many are configured.
-  let matched = false;
-  for (const key of keys) {
-    if (constantTimeEquals(apiKey, key)) matched = true;
-  }
-  return matched;
+  // Every key is compared (src/lib/safe-equal.ts), so the time taken does not
+  // reveal which key matched.
+  return safeEqualAny(apiKey, configuredKeys());
 }
 
 /**

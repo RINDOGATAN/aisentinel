@@ -52,8 +52,10 @@ export function DashboardShell({
     return <PilotDisclosureScreen />;
   }
 
-  // Step 1: Show persona selection if user hasn't chosen yet
-  if (needsOnboarding) {
+  // Step 1: Show persona selection if user hasn't chosen yet. A person added
+  // to an existing organization goes straight in: the question decides how a
+  // new account starts, and they can still change it in Settings.
+  if (needsOnboarding && organizations.length === 0) {
     return <PersonaSelector />;
   }
 

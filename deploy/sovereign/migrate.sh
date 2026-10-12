@@ -22,6 +22,16 @@ set -eu
 APP_DIR="${APP_DIR:-/app}"
 cd "$APP_DIR"
 
+# prisma/schema.prisma takes migrations over directUrl (ais_DATABASE_URL_UNPOOLED).
+# Installs that pass only ais_DATABASE_URL (older compose files, the suite kit)
+# would otherwise reach the build-time placeholder the image bakes in for
+# `prisma generate`, and `migrate deploy` would fail. A self-hosted database has
+# no pooler, so the same connection string serves both.
+case "${ais_DATABASE_URL_UNPOOLED:-}" in
+  ""|postgresql://build:build@localhost:5432/build)
+    export ais_DATABASE_URL_UNPOOLED="$ais_DATABASE_URL" ;;
+esac
+
 # Pre-baseline install detection: tables exist (db push era) but the migrations
 # ledger does not. Baseline once, then migrate deploy takes over forever.
 cat > /tmp/baseline-check.js <<'EOF'

@@ -96,7 +96,7 @@ export default function OversightGateDetailPage() {
   const { statusLabel } = useEnumLabels();
   const params = useParams();
   const id = params.id as string;
-  const { organization, canWrite } = useOrganization();
+  const { organization, canWrite, canDecide } = useOrganization();
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [decisionForm, setDecisionForm] = useState({
@@ -217,12 +217,14 @@ export default function OversightGateDetailPage() {
             </Button>
           )}
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="w-4 h-4 mr-2" />
-              {t("addDecision")}
-            </Button>
-          </DialogTrigger>
+          {canDecide && (
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="w-4 h-4 mr-2" />
+                {t("addDecision")}
+              </Button>
+            </DialogTrigger>
+          )}
           <DialogContent>
             <DialogHeader>
               <DialogTitle>{t("dialogTitle")}</DialogTitle>
@@ -452,10 +454,12 @@ export default function OversightGateDetailPage() {
               <p className="text-sm mb-4">
                 {t("emptyDecisionsHint")}
               </p>
-              <Button onClick={() => setDialogOpen(true)}>
-                <Plus className="w-4 h-4 mr-2" />
-                {t("addDecision")}
-              </Button>
+              {canDecide && (
+                <Button onClick={() => setDialogOpen(true)}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  {t("addDecision")}
+                </Button>
+              )}
             </div>
           )}
         </CardContent>

@@ -35,7 +35,7 @@ import { PageHeader } from "@/components/governance/page-header";
 const READER_ROLES = ["OWNER", "ADMIN", "AI_OFFICER"];
 const ALL = "ALL";
 
-/** Codes are shown as written; only the separators are made readable. */
+/** A code with no label of its own: shown as written, separators made readable. */
 function humanizeCode(code: string): string {
   return code
     .toLowerCase()
@@ -53,6 +53,10 @@ function detailOf(changes: unknown, metadata: unknown): string {
 
 export default function AuditTrailPage() {
   const t = useTranslations("audit");
+  // The common actions read in the reader's language; the stored code (and
+  // the CSV export) stays as written.
+  const actionLabel = (code: string) =>
+    t.has(`actionLabels.${code}`) ? t(`actionLabels.${code}`) : humanizeCode(code);
   const { organization, userRole } = useOrganization();
   const { download, isPending: downloadPending } = useExportDownload();
   const orgId = organization?.id ?? "";
@@ -154,7 +158,7 @@ export default function AuditTrailPage() {
                 <SelectItem value={ALL}>{t("filters.all")}</SelectItem>
                 {(facets?.actions ?? []).map((a) => (
                   <SelectItem key={a.value} value={a.value}>
-                    {humanizeCode(a.value)} ({a.count})
+                    {actionLabel(a.value)} ({a.count})
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -286,7 +290,7 @@ export default function AuditTrailPage() {
                             </span>
                           )}
                         </td>
-                        <td className="p-3 whitespace-nowrap">{humanizeCode(e.action)}</td>
+                        <td className="p-3 whitespace-nowrap">{actionLabel(e.action)}</td>
                         <td className="p-3 text-xs">
                           <div>{e.entityType}</div>
                           <div className="text-muted-foreground font-mono">{e.entityId}</div>

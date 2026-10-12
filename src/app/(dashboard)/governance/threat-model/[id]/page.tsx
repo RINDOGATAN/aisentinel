@@ -316,7 +316,7 @@ export default function ThreatModelDetailPage() {
                   </p>
                   {registerLink.data.plan.untested.slice(0, 5).map((u) => (
                     <p key={u.scenarioId} className="text-[11px] text-muted-foreground">
-                      · {u.title} — {t(`untestedReason.${u.reason}`)}
+                      · {u.title}: {t(`untestedReason.${u.reason}`)}
                     </p>
                   ))}
                 </div>

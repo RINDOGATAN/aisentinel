@@ -54,7 +54,7 @@ export const TEXAS_REQUIREMENTS: RegimeRequirementSeed[] = [
     title: { en: "Health care: disclose AI use in treatment", es: "Sanidad: informar del uso de IA en el tratamiento" },
     description: {
       en: "A health care service provider that uses an AI system in relation to health care service or treatment must disclose the use to the patient, or to the patient's representative, no later than the date the service is first provided, except in an emergency, where the disclosure follows as soon as reasonably possible.",
-      es: "El prestador de servicios sanitarios que utilice un sistema de IA en relación con un servicio o tratamiento sanitario debe informar de ello al paciente, o a su representante, a más tardar en la fecha en que se preste el servicio por primera vez, salvo en caso de urgencia, en que la información se facilita tan pronto como sea razonablemente posible.",
+      es: "El proveedor de servicios sanitarios que utilice un sistema de IA en relación con un servicio o tratamiento sanitario debe informar de ello al paciente, o a su representante, a más tardar en la fecha en que se preste el servicio por primera vez, salvo en caso de urgencia, en que la información se facilita tan pronto como sea razonablemente posible.",
     },
     applicabilityTags: HEALTH,
     sortOrder: 511,

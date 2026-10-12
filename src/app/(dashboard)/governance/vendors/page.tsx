@@ -207,13 +207,15 @@ export default function VendorRiskPage() {
                 </p>
               </div>
             </div>
-            <Link href="/governance/vendors/new?catalog=true" className="flex-none">
-              <Button size="sm" className="w-full sm:w-auto">
-                <Database className="w-4 h-4 sm:mr-2" />
-                <span className="hidden sm:inline">{t("addFromCatalog")}</span>
-                <span className="sm:hidden">{t("catalogShort")}</span>
-              </Button>
-            </Link>
+            {canWrite && (
+              <Link href="/governance/vendors/new?catalog=true" className="flex-none">
+                <Button size="sm" className="w-full sm:w-auto">
+                  <Database className="w-4 h-4 sm:mr-2" />
+                  <span className="hidden sm:inline">{t("addFromCatalog")}</span>
+                  <span className="sm:hidden">{t("catalogShort")}</span>
+                </Button>
+              </Link>
+            )}
           </CardContent>
         </Card>
       ) : (

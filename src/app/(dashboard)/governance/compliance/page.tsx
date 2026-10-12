@@ -143,7 +143,7 @@ export default function CompliancePage() {
   const t = useTranslations("compliance");
   const locale = useLocale();
   const tc = useTranslations("common");
-  const { organization } = useOrganization();
+  const { organization, canWrite } = useOrganization();
   const { download } = useExportDownload();
   const orgId = organization?.id ?? "";
   const searchParams = useSearchParams();
@@ -408,6 +408,7 @@ export default function CompliancePage() {
                             onRemoveEvidence={(data) => removeEvidence.mutate(data)}
                             isUpdatePending={updateMapping.isPending}
                             isEvidencePending={addEvidence.isPending || removeEvidence.isPending}
+                            canWrite={canWrite}
                           />
 
                           {req.children?.map((child) => (
@@ -433,6 +434,7 @@ export default function CompliancePage() {
                                 onRemoveEvidence={(data) => removeEvidence.mutate(data)}
                                 isUpdatePending={updateMapping.isPending}
                                 isEvidencePending={addEvidence.isPending || removeEvidence.isPending}
+                                canWrite={canWrite}
                               />
                             </div>
                           ))}
@@ -463,6 +465,7 @@ function RequirementRow({
   onRemoveEvidence,
   isUpdatePending,
   isEvidencePending,
+  canWrite,
 }: {
   reqId: string;
   mapping: MappingData | null;
@@ -473,6 +476,8 @@ function RequirementRow({
   onRemoveEvidence: (data: { organizationId: string; evidenceId: string }) => void;
   isUpdatePending: boolean;
   isEvidencePending: boolean;
+  /** Viewers (and read-only pilot organizations) see the record without the controls. */
+  canWrite: boolean;
 }) {
   const t = useTranslations("compliance");
   const locale = useLocale();
@@ -527,6 +532,8 @@ function RequirementRow({
           return (
             <button
               key={value}
+              disabled={!canWrite}
+              aria-pressed={status === value}
               onClick={() => { setStatus(value); setDirty(true); }}
               className={`px-3 py-1 text-xs rounded-full border transition-colors ${
                 status === value ? opt.color + " border-current" : "border-border text-muted-foreground hover:text-foreground"
@@ -544,15 +551,17 @@ function RequirementRow({
           <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
             {t("evidenceCount", { count: evidenceItems.length })}
           </span>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-7 text-xs"
-            onClick={() => setShowAddDialog(true)}
-          >
-            <Plus className="w-3 h-3 mr-1" />
-            {t("addEvidence")}
-          </Button>
+          {canWrite && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 text-xs"
+              onClick={() => setShowAddDialog(true)}
+            >
+              <Plus className="w-3 h-3 mr-1" />
+              {t("addEvidence")}
+            </Button>
+          )}
         </div>
 
         {evidenceItems.length === 0 ? (
@@ -591,13 +600,15 @@ function RequirementRow({
                         <ExternalLink className="w-3 h-3" />
                       </a>
                     )}
-                    <button
-                      className="text-muted-foreground hover:text-destructive p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                      onClick={() => onRemoveEvidence({ organizationId: orgId, evidenceId: item.id })}
-                      disabled={isEvidencePending}
-                    >
-                      <Trash2 className="w-3 h-3" />
-                    </button>
+                    {canWrite && (
+                      <button
+                        className="text-muted-foreground hover:text-destructive p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={() => onRemoveEvidence({ organizationId: orgId, evidenceId: item.id })}
+                        disabled={isEvidencePending}
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </button>
+                    )}
                   </div>
                 </div>
               );
@@ -611,6 +622,7 @@ function RequirementRow({
         placeholder={t("notesPlaceholder")}
         value={notes}
         onChange={(e) => { setNotes(e.target.value); setDirty(true); }}
+        readOnly={!canWrite}
         rows={1}
         className="text-sm"
       />

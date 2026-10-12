@@ -170,7 +170,7 @@ export default function IncidentsPage() {
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="w-full justify-start overflow-x-auto">
           <TabsTrigger value="all" className="text-xs sm:text-sm">
-            All ({stats.total})
+            {t("tabAll", { count: stats.total })}
           </TabsTrigger>
           <TabsTrigger value="hallucination" className="text-xs sm:text-sm">
             {t("typeHallucination")}

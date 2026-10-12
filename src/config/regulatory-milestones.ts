@@ -985,7 +985,7 @@ export const REGULATORY_MILESTONES: RegulatoryMilestone[] = [
     },
     whatItMeans: {
       en: "In force since 1 January 2026 for anyone doing business in Texas. Intent-based prohibitions on unlawful discrimination (disparate impact alone is expressly insufficient), infringement of constitutional rights, and behavioral manipulation inciting harm. Healthcare providers must disclose AI use to patients. Attorney-General enforcement with a 60-day cure period, and a safe harbor for compliance with the NIST AI RMF — which the framework you already track supports.",
-      es: "En vigor desde el 1 de enero de 2026 para quien opere en Texas. Prohibiciones basadas en la intención sobre discriminación ilícita (el impacto dispar por sí solo es expresamente insuficiente), vulneración de derechos constitucionales y manipulación conductual que incite a causar daño. Los prestadores sanitarios deben informar a los pacientes del uso de IA. Aplicación por el Fiscal General con un plazo de subsanación de 60 días y un puerto seguro por cumplir el NIST AI RMF, que este producto ya sigue.",
+      es: "En vigor desde el 1 de enero de 2026 para quien opere en Texas. Prohibiciones basadas en la intención sobre discriminación ilícita (el impacto dispar por sí solo es expresamente insuficiente), vulneración de derechos constitucionales y manipulación conductual que incite a causar daño. Los proveedores sanitarios deben informar a los pacientes del uso de IA. Aplicación por el Fiscal General con un plazo de subsanación de 60 días y un puerto seguro por cumplir el NIST AI RMF, que este producto ya sigue.",
     },
     orgApplies: (org) => jurisdictionGate(org, "US_TX") ?? "in-scope",
     undeterminedReason: () => "no-jurisdictions",

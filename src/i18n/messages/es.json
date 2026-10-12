@@ -468,18 +468,18 @@
     "lawFirmPolicyPack": "Paquete de políticas del despacho",
     "chipVendors": "Proveedores",
     "viewProgram": "Ver tu programa de gobernanza de IA",
-    "statPolicyLinks": "vínculos entre políticas y sistemas",
-    "statTransparencyProfiles": "perfiles del art. 50",
+    "statPolicyLinks": "{count, plural, one {# vínculo entre políticas y sistemas} other {# vínculos entre políticas y sistemas}}",
+    "statTransparencyProfiles": "{count, plural, one {# perfil del art. 50} other {# perfiles del art. 50}}",
     "statComplianceBaselined": "Requisitos preevaluados",
     "handoffMapCaption": "Tu mapa de gobernanza: cada sistema de IA, su nivel de riesgo, sus controles y sus proveedores.",
     "downloadProgramPdf": "Descargar tu programa de gobernanza de IA (PDF)",
     "handoffConfirmPrompt": "{count} requisitos se han preevaluado a partir de los artefactos recién creados y esperan tu confirmación.",
-    "statVendors": "proveedores",
-    "statSystems": "sistemas de IA",
-    "statRiskClassifications": "clasificaciones de riesgo",
-    "statOversightGates": "puntos de control",
-    "statComplianceMappings": "requisitos de cumplimiento",
-    "statPolicies": "políticas",
+    "statVendors": "{count, plural, one {# proveedor} other {# proveedores}}",
+    "statSystems": "{count, plural, one {# sistema de IA} other {# sistemas de IA}}",
+    "statRiskClassifications": "{count, plural, one {# clasificación de riesgo} other {# clasificaciones de riesgo}}",
+    "statOversightGates": "{count, plural, one {# punto de control} other {# puntos de control}}",
+    "statComplianceMappings": "{count, plural, one {# requisito de cumplimiento} other {# requisitos de cumplimiento}}",
+    "statPolicies": "{count, plural, one {# política} other {# políticas}}",
     "popularVendors": "Proveedores de IA habituales: elige los que usa tu organización o busca en el catálogo completo.",
     "vendorsSelected": "{count, plural, one {# seleccionado} other {# seleccionados}}",
     "toastNothingNew": "Todo existe ya: no hay nada nuevo que crear.",
@@ -764,7 +764,8 @@
     "typePerformanceDegradation": "Degradación del rendimiento",
     "typeDataPoisoning": "Envenenamiento de datos",
     "typePrivacyViolation": "Vulneración de privacidad",
-    "typeOther": "Otro"
+    "typeOther": "Otro",
+    "tabAll": "Todos ({count})"
   },
   "incidentsNew": {
     "title": "Notificar incidente",
@@ -3490,7 +3491,7 @@
         },
         {
           "step": "Responde al cribado de la organización",
-          "body": "Cinco preguntas, cada una visible solo si una jurisdicción declarada la activa. Si es una entidad pública, una aseguradora sanitaria, un prestador de servicios sanitarios, un proveedor cubierto de IA generativa, o si trata datos de salud de consumidores de Washington."
+          "body": "Cinco preguntas, cada una visible solo si una jurisdicción declarada la activa. Si es una entidad pública, una aseguradora sanitaria, un proveedor de servicios sanitarios, un proveedor cubierto de IA generativa, o si trata datos de salud de consumidores de Washington."
         },
         {
           "step": "Abre la pestaña Regímenes transfronterizos de un sistema",
@@ -4753,7 +4754,7 @@
       "consequential-decision": "decisión con consecuencias para un consumidor",
       "public-agency": "organismo público",
       "health-carrier": "aseguradora de salud",
-      "healthcare-provider": "prestador de asistencia sanitaria",
+      "healthcare-provider": "proveedor de asistencia sanitaria",
       "covered-genai-provider": "proveedor de IA generativa cubierto",
       "consumer-health-data": "datos de salud de consumidores",
       "companion-chatbot": "chatbot de compañía",
@@ -4780,7 +4781,7 @@
         "help": "El RCW 48.43.830 de Washington impide que una herramienta de IA deniegue, retrase o modifique la cobertura por sí sola."
       },
       "isHealthcareProvider": {
-        "label": "¿Es la organización un prestador de servicios sanitarios?",
+        "label": "¿Es la organización un proveedor de servicios sanitarios?",
         "help": "La TRAIGA de Texas exige informar al paciente cuando se usa IA en su atención."
       },
       "isCoveredGenAiProvider": {
@@ -4988,7 +4989,30 @@
     "showing": "Se muestran {count} de {total} entradas",
     "since": "El registro empieza el {date}",
     "actorRemoved": "Cuenta eliminada",
-    "noDetail": "Sin detalle registrado"
+    "noDetail": "Sin detalle registrado",
+    "actionLabels": {
+      "CREATE": "Creación",
+      "UPDATE": "Modificación",
+      "DELETE": "Eliminación",
+      "CREATE_FROM_TEMPLATE": "Creación desde una plantilla",
+      "COMPLETE": "Finalización",
+      "ACTIVATE": "Activación",
+      "DEACTIVATE": "Desactivación",
+      "UNCONFIRM": "Marcado como sin confirmar",
+      "CONFIRM": "Confirmación",
+      "SUBMIT": "Envío a revisión",
+      "APPROVE": "Aprobación",
+      "PUBLISH": "Publicación",
+      "PLACE_LEGAL_HOLD": "Suspensión por litigio establecida",
+      "RELEASE_LEGAL_HOLD": "Suspensión por litigio levantada",
+      "PILOT_REMINDER_SENT": "Aviso del piloto enviado",
+      "PILOT_LIMIT_REACHED": "Límite del piloto alcanzado",
+      "EXPORT_PROGRAM_PACK": "Exportación del paquete del programa",
+      "EXPORT_GOVERNANCE_PROGRAM": "Exportación del informe del programa",
+      "DELETE_TEMPLATE_ITEMS": "Eliminación de elementos de plantilla",
+      "DELETE_SAMPLE_DATA": "Eliminación de los datos de ejemplo",
+      "CREATE_SAMPLE_DATA": "Creación de los datos de ejemplo"
+    }
   },
   "assessmentVersions": {
     "title": "Historial de versiones",
@@ -5121,7 +5145,8 @@
       "AFFILIATE": "Empresa del grupo",
       "PUBLIC_AUTHORITY": "Autoridad pública",
       "OTHER": "Otro"
-    }
+    },
+    "removeRecipient": "Quitar {name}"
   },
   "legalHold": {
     "title": "Suspensión por litigio",
@@ -6198,7 +6223,7 @@
       "button": "Descargar documentos listos",
       "includeDrafts": "Incluir también los borradores ({count}), marcados como BORRADOR",
       "count": "{count, plural, one {# documento en un ZIP, con un índice} other {# documentos en un ZIP, con un índice}}",
-      "none": "Todavía no hay ningún documento listo."
+      "none": "Todavía no hay ningún documento listo para el ZIP."
     }
   }
 }

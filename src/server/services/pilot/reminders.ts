@@ -24,10 +24,8 @@
  * so Spanish for an organisation in the euro market (it declares the EU or
  * the EEA and no US jurisdiction), else English.
  *
- * The paid plan: an organisation whose row carries plan = EU_CLOUD is never
- * reminded. The column arrives with the paid-plan switch (draft PR #96); the
- * row is read whole, so the check applies as soon as the column exists, and
- * until then every organisation is on the pilot.
+ * The paid plan: an organisation whose row carries plan = EU_CLOUD (set by an
+ * operator with scripts/set-org-plan.ts) is never reminded.
  *
  * Never twice: before sending, the job writes an audit-log row whose id is
  * derived from the kind, the end of the window and the organisation, so a
@@ -44,6 +42,7 @@ import type { PrismaClient } from "@prisma/client";
 import { brand } from "@/config/brand";
 import { logger } from "@/lib/logger";
 import { mailFrom } from "@/lib/mail-from";
+import { isPaidPlan } from "@/server/services/pilot/caps";
 import {
   hostedPilotActive,
   PILOT_MANAGED_URL,
@@ -63,8 +62,6 @@ export const PILOT_REMINDER_SENT = "PILOT_REMINDER_SENT";
 /** Roles that receive the reminders. */
 export const PILOT_REMINDER_ROLES = ["OWNER", "ADMIN"] as const;
 
-/** The plan that lifts the pilot (Organization.plan, from PR #96). */
-const PAID_PLAN = "EU_CLOUD";
 
 /** Where the price is stated, per language. */
 export const PRICING_URL: Record<Locale, string> = {
@@ -371,8 +368,7 @@ export async function runPilotReminders(
     return { ...summary, skipped: "email-not-configured" };
   }
 
-  // The row is read whole (no `select`), so the plan column is checked as
-  // soon as it exists (see the header).
+  // Paid organisations are skipped (see the header).
   const orgs = await db.organization.findMany({
     where: { pilotFirstSignInAt: { not: null } },
     include: {
@@ -386,7 +382,7 @@ export async function runPilotReminders(
   const replyTo = replyToAddresses(env);
 
   for (const org of orgs) {
-    if ((org as { plan?: string | null }).plan === PAID_PLAN) continue;
+    if (isPaidPlan(org)) continue;
     if (!org.pilotFirstSignInAt) continue;
     const endsAt = pilotEndsAt(pilotFirstSignInStamp(org.pilotFirstSignInAt));
     summary.checked++;

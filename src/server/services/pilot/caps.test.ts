@@ -159,3 +159,52 @@ describe("on the kit", () => {
     expect(await getPilotStatus(full, ORG)).toEqual({ active: false });
   });
 });
+
+describe("the paid plan lifts every cap (hosted pilot)", () => {
+  beforeEach(() => {
+    vi.stubEnv("VERCEL_ENV", "production");
+    vi.stubEnv("NEXT_PUBLIC_HOSTED_PILOT", "");
+  });
+  afterEach(() => vi.unstubAllEnvs());
+
+  const LATE = new Date(START.getTime() + 120 * DAY);
+  const full = (plan: string | null) => {
+    const counts = Object.fromEntries(
+      (Object.keys(fakeDb()) as (keyof PilotDb)[]).map((k) => [k, 1000]),
+    ) as Partial<Record<keyof PilotDb, number>>;
+    return {
+      ...fakeDb(counts),
+      organization: { findUnique: async () => ({ plan }) },
+    } as PilotDb;
+  };
+
+  it("an EU_CLOUD organisation is not read-only after the ninety days; a PILOT or null one is", async () => {
+    expect(() => assertPilotWritable({ ...ORG, plan: "EU_CLOUD" }, "en", LATE)).not.toThrow();
+    await forbidden(() => assertPilotWritable({ ...ORG, plan: "PILOT" }, "en", LATE));
+    await forbidden(() => assertPilotWritable({ ...ORG, plan: null }, "en", LATE));
+    await forbidden(() => assertPilotWritable(ORG, "en", LATE));
+  });
+
+  it("an EU_CLOUD organisation passes every ceiling; a PILOT or null one is stopped at each", async () => {
+    for (const key of PILOT_CEILING_KEYS) {
+      await expect(assertPilotRoom(full("EU_CLOUD"), "org-1", key, "en")).resolves.toBeUndefined();
+      expect(await pilotRemaining(full("EU_CLOUD"), "org-1", key)).toBe(Infinity);
+      await forbidden(() => assertPilotRoom(full("PILOT"), "org-1", key, "en"));
+      await forbidden(() => assertPilotRoom(full(null), "org-1", key, "en"));
+    }
+    // a database handle without the organisations model counts as the pilot
+    await forbidden(() => assertPilotRoom(fakeDb({ aISystem: 1000 }), "org-1", "systems", "en"));
+  });
+
+  it("joining a paid organisation is not stopped by one organisation per account", async () => {
+    const db = { organizationMember: { count: async () => 1 } };
+    await expect(assertPilotOrganizationLimit(db, "u1", "en", { plan: "EU_CLOUD" })).resolves.toBeUndefined();
+    await forbidden(() => assertPilotOrganizationLimit(db, "u1", "en", { plan: "PILOT" }));
+    await forbidden(() => assertPilotOrganizationLimit(db, "u1", "en"));
+  });
+
+  it("the Settings pilot card is off for a paid organisation", async () => {
+    expect(await getPilotStatus(full("EU_CLOUD"), { ...ORG, plan: "EU_CLOUD" })).toEqual({ active: false });
+    expect((await getPilotStatus(full("PILOT"), ORG)).active).toBe(true);
+  });
+});

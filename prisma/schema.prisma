@@ -169,6 +169,20 @@ model Organization {
   /// then, and always null on the kit.
   pilotFirstSignInAt DateTime?
 
+  /// Hosted service only: the organization's plan. PILOT (the default) is the
+  /// free, capped pilot; EU_CLOUD is the paid cloud plan, which lifts the pilot
+  /// caps and the editing window (src/server/services/pilot/caps.ts). Payment
+  /// is collected outside the app; an operator sets the plan with
+  /// scripts/set-org-plan.ts (npm run db:set-org-plan), which writes one
+  /// audit-trail entry (PLAN_CHANGE). planNote is an operator's reference (an
+  /// invoice id), never shown to the organization. EU_CLOUD is an internal
+  /// name: the same plan lifts the same limits whichever currency was paid.
+  /// Meaningless on the kit, which is never capped.
+  plan          OrganizationPlan @default(PILOT)
+  planStartedAt DateTime?
+  planRenewsAt  DateTime?
+  planNote      String?
+
   /// Where this organization operates, driving regulatory scoping.
   /// An EMPTY array means UNDECLARED — "we have not been told yet" — and must
   /// never be read as "operates nowhere" or "no regime applies". Every
@@ -2327,4 +2341,10 @@ model ProgramSnapshotRecord {
 
   @@index([organizationId, createdAt])
   @@map("program_snapshots")
+}
+
+/// The hosted plan of an organization (Organization.plan).
+enum OrganizationPlan {
+  PILOT
+  EU_CLOUD
 }

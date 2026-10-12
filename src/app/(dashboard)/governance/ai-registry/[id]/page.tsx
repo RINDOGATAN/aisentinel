@@ -2,9 +2,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025-2026 Rindogatan LLC
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { ComplianceMatrix } from "@/components/governance/compliance-matrix";
+import { RiskClassificationForm } from "@/components/governance/risk-classification-form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -204,6 +206,7 @@ const LINKABLE_TABS = new Set([
   "data-sources",
   "data-flow",
   "risk",
+  "evidence",
   "transparency",
   "assessments",
   "oversight",
@@ -219,6 +222,19 @@ export default function AISystemDetailPage() {
   const requestedTab = useSearchParams().get("tab");
   const initialTab =
     requestedTab && LINKABLE_TABS.has(requestedTab) ? requestedTab : "models";
+  // The system's page is the home of everything about it: a link with
+  // `?tab=` (the step lists, the search, the review queue) opens that tab,
+  // and `?classify=1` opens the classification form on the risk tab.
+  const [tab, setTab] = useState(initialTab);
+  const [classifyOpen, setClassifyOpen] = useState(useSearchParams().get("classify") === "1");
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (requestedTab && LINKABLE_TABS.has(requestedTab)) setTab(requestedTab);
+  }, [requestedTab]);
+  const openTab = (value: string) => {
+    setTab(value);
+    document.getElementById("system-tabs")?.scrollIntoView({ block: "start" });
+  };
   const { organization, canWrite, canDecide } = useOrganization();
   const t = useTranslations("aiRegistryDetail");
   const { formatDate } = useFormatDate();
@@ -396,6 +412,13 @@ export default function AISystemDetailPage() {
     { organizationId, id },
     { enabled: !!organization?.id && !!id }
   );
+  // A link that names a tab lands on it: the tabs sit below the overview, so
+  // scroll there once the system has loaded.
+  const systemLoaded = !!system;
+  useEffect(() => {
+    if (!systemLoaded || !requestedTab || !LINKABLE_TABS.has(requestedTab)) return;
+    document.getElementById("system-tabs")?.scrollIntoView({ block: "start" });
+  }, [systemLoaded, requestedTab]);
 
   const { data: scorecard } = trpc.compliance.getSystemScorecard.useQuery(
     { organizationId, aiSystemId: id },
@@ -779,12 +802,10 @@ export default function AISystemDetailPage() {
                   {tc("requirementsAcrossFrameworks", { total: scorecard.total, count: scorecard.frameworks.length })}
                 </CardDescription>
               </div>
-              <Link href={`/governance/compliance?systemId=${id}`} className="self-start">
-                <Button variant="outline" size="sm">
-                  {t("viewMatrix")}
-                  <ChevronRight className="w-4 h-4 ml-1" />
-                </Button>
-              </Link>
+              <Button variant="outline" size="sm" className="self-start" onClick={() => openTab("evidence")}>
+                {t("viewMatrix")}
+                <ChevronRight className="w-4 h-4 ml-1" />
+              </Button>
             </div>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -1010,7 +1031,7 @@ export default function AISystemDetailPage() {
 
       {/* Tabs */}
       {/* `?tab=transparency` (from the path's transparency view) opens on that tab. */}
-      <Tabs defaultValue={initialTab}>
+      <Tabs value={tab} onValueChange={setTab} id="system-tabs" className="scroll-mt-20">
         <TabsList className="w-full justify-start overflow-x-auto">
           <TabsTrigger value="models" className="text-xs sm:text-sm">
             {t("tabModels", { count: system.models?.length ?? 0 })}
@@ -1023,6 +1044,9 @@ export default function AISystemDetailPage() {
           </TabsTrigger>
           <TabsTrigger value="risk" className="text-xs sm:text-sm">
             {t("tabRiskClassification")}
+          </TabsTrigger>
+          <TabsTrigger value="evidence" className="text-xs sm:text-sm">
+            {t("tabEvidence")}
           </TabsTrigger>
           <TabsTrigger value="transparency" className="text-xs sm:text-sm">
             {t("tabTransparency")}
@@ -1259,14 +1283,11 @@ export default function AISystemDetailPage() {
                     <span>
                       {tc("classified", { date: formatDate(system.riskClassification.classifiedAt) })}
                     </span>
-                    {/* The form lives on the risk-level page; this opens it on this system. */}
-                    {canWrite && (
-                      <Link href={`/governance/risk-classification?system=${id}`}>
-                        <Button variant="outline" size="sm">
-                          <Shield className="w-4 h-4 mr-2" />
-                          {tRisk("reclassify")}
-                        </Button>
-                      </Link>
+                    {canWrite && !classifyOpen && (
+                      <Button variant="outline" size="sm" onClick={() => setClassifyOpen(true)}>
+                        <Shield className="w-4 h-4 mr-2" />
+                        {tRisk("reclassify")}
+                      </Button>
                     )}
                   </div>
 
@@ -1302,16 +1323,32 @@ export default function AISystemDetailPage() {
                   <p className="text-sm mb-4">
                     {t("notClassifiedDescription")}
                   </p>
-                  <Link href={`/governance/risk-classification?system=${id}`}>
-                    <Button variant="outline">
+                  {canWrite && !classifyOpen && (
+                    <Button variant="outline" onClick={() => setClassifyOpen(true)}>
                       <Shield className="w-4 h-4 mr-2" />
                       {t("classifyRisk")}
                     </Button>
-                  </Link>
+                  )}
+                </div>
+              )}
+              {canWrite && classifyOpen && (
+                <div className="mt-4 border-t pt-4">
+                  <RiskClassificationForm
+                    organizationId={organizationId}
+                    aiSystemId={id}
+                    current={system.riskClassification}
+                    onDone={() => setClassifyOpen(false)}
+                    onCancel={() => setClassifyOpen(false)}
+                  />
                 </div>
               )}
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* Evidence tab: the compliance matrix for this system */}
+        <TabsContent value="evidence" className="mt-4">
+          {tab === "evidence" && <ComplianceMatrix aiSystemId={id} />}
         </TabsContent>
 
         {/* Transparency Tab (Art. 50) */}

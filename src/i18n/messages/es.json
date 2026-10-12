@@ -340,7 +340,8 @@
     "toastDataSourceAdded": "Fuente de datos añadida",
     "toastDataSourceUpdated": "Fuente de datos actualizada",
     "toastDataSourceDeleted": "Fuente de datos eliminada",
-    "tabAdmt": "ADMT de California"
+    "tabAdmt": "ADMT de California",
+    "tabEvidence": "Evidencias"
   },
   "transparency": {
     "title": "Obligaciones de transparencia del art. 50",
@@ -741,7 +742,17 @@
     "evidenceCount": "Evidencia ({count})",
     "linkedAcrossFrameworks": "Vinculado entre marcos ({count})",
     "alsoApplyToEquivalent": "Aplicar también a {count} requisitos equivalentes de otros marcos",
-    "downloadPdf": "Descargar en PDF"
+    "downloadPdf": "Descargar en PDF",
+    "listIntro": "Cada sistema de IA guarda sus requisitos, su estado y sus evidencias en su propia página. Abre un sistema para trabajar en ellos.",
+    "searchSystems": "Buscar sistemas por nombre",
+    "noSystemsFound": "Ningún sistema tiene ese nombre.",
+    "notClassified": "Sin nivel de riesgo",
+    "openEvidence": "Abrir sus evidencias",
+    "loadMore": "Mostrar más",
+    "matrixIntro": "Los requisitos que se aplican a este sistema, marco por marco: indica el estado de cada uno y adjunta sus evidencias.",
+    "noFrameworkForSystem": "Todavía ningún marco tiene requisitos para este sistema. Dale un nivel de riesgo e indica dónde trabajas en Configuración para que aparezcan aquí sus requisitos.",
+    "frameworksNotShown": "{count, plural, one {No se muestra: # marco sin requisitos para este sistema, como la ley de un lugar que no has declarado.} other {No se muestran: # marcos sin requisitos para este sistema, como las leyes de lugares que no has declarado.}}",
+    "frameworksNotShownLink": "Dónde trabajas se indica en Configuración."
   },
   "incidents": {
     "title": "Incidentes",

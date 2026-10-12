@@ -5,32 +5,11 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Shield,
-  ShieldAlert,
-  ShieldCheck,
-  ShieldQuestion,
-  Search,
-  Loader2,
-  ChevronDown,
-  ChevronUp,
-  Cpu,
-} from "lucide-react";
-import { toast } from "sonner";
-import { useLocale, useTranslations } from "next-intl";
+import { ChevronRight, Cpu, Search, Shield } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { KeyTerms } from "@/components/help/key-terms";
 import { useEnumLabels } from "@/lib/enum-labels";
 import { keepPreviousData } from "@tanstack/react-query";
@@ -38,52 +17,34 @@ import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
 import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
-import { useFormatDate } from "@/lib/use-format-date";
 import { SortControl } from "@/components/governance/sort-control";
 import { DEFAULT_LIST_SORT, type ListSort } from "@/lib/list-sort";
-import { RiskScreeningPanel } from "@/components/ai/RiskScreeningPanel";
 import { RiskTierBadge, TierMarker } from "@/components/governance/risk-tier-badge";
-import { annexIIILabel } from "@/lib/annex-iii-label";
 
 /** Annex III points 1 to 8; labels come from riskClassification.annexIII.<value>. */
-const ANNEX_III_CATEGORIES = [
-  "biometrics",
-  "critical_infrastructure",
-  "education",
-  "employment",
-  "essential_services",
-  "law_enforcement",
-  "migration",
-  "justice",
-] as const;
+
+/** The classification form lives on the system's page, on its Risk Classification tab. */
+function classifyHref(id: string): string {
+  return `/governance/ai-registry/${id}?tab=risk&classify=1`;
+}
 
 export default function RiskClassificationPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sort, setSort] = useState<ListSort>(DEFAULT_LIST_SORT);
-  // `?system=<id>` (the system page's Reclassify link) opens that system's form.
-  const [scrolledTo, setScrolledTo] = useState(false);
+  // `?system=<id>` (the old Reclassify address) now goes to the system's own
+  // page, where the form lives.
   const systemParam = useSearchParams().get("system");
-  const [expandedSystem, setExpandedSystem] = useState<string | null>(systemParam);
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (systemParam) { setExpandedSystem(systemParam); setScrolledTo(false); }
-  }, [systemParam]);
-  const [classifyForm, setClassifyForm] = useState<Record<string, {
-    riskLevel: string;
-    rationale: string;
-    annexIIICategory: string;
-  }>>({});
   const debouncedSearch = useDebounce(searchQuery);
   const router = useRouter();
+  useEffect(() => {
+    if (systemParam) router.replace(classifyHref(systemParam));
+  }, [systemParam, router]);
   const { organization, canWrite } = useOrganization();
   const t = useTranslations("riskClassification");
-  const locale = useLocale();
-  const { formatDate } = useFormatDate();
   const { statusLabel, techniqueLabel } = useEnumLabels();
   const tc = useTranslations("common");
-  const annexLabel = (value: string) => annexIIILabel(value, locale, (k) => t(`annexIII.${k}`));
 
-  const { data: stats, isLoading: statsLoading } = trpc.riskClassification.getStats.useQuery(
+  const { data: stats } = trpc.riskClassification.getStats.useQuery(
     { organizationId: organization?.id ?? "" },
     { enabled: !!organization?.id }
   );
@@ -96,63 +57,6 @@ export default function RiskClassificationPage() {
     },
     { enabled: !!organization?.id, placeholderData: keepPreviousData }
   );
-
-  const utils = trpc.useUtils();
-
-  const classifyMutation = trpc.riskClassification.classify.useMutation({
-    onSuccess: (data) => {
-      toast.success(
-        t("toastClassified", {
-          name: data.aiSystem.name,
-          level: t(`levelPhrase.${data.riskLevel}`),
-          count: data.complianceMappingsCreated ?? 0,
-        }),
-        {
-        action: {
-          label: t("viewCompliance"),
-          onClick: () => router.push(`/governance/compliance?systemId=${data.aiSystemId}`),
-        },
-      });
-      utils.riskClassification.list.invalidate();
-      utils.riskClassification.getStats.invalidate();
-      setExpandedSystem(null);
-      setClassifyForm((prev) => {
-        const next = { ...prev };
-        delete next[data.aiSystemId];
-        return next;
-      });
-    },
-    onError: (error) => {
-      toast.error(error.message || t("classifyFailed"));
-    },
-  });
-
-  const handleClassify = (aiSystemId: string) => {
-    const form = classifyForm[aiSystemId];
-    if (!organization?.id || !form?.riskLevel || !form?.rationale) return;
-
-    classifyMutation.mutate({
-      organizationId: organization.id,
-      aiSystemId,
-      riskLevel: form.riskLevel as "UNACCEPTABLE" | "HIGH" | "LIMITED" | "MINIMAL",
-      rationale: form.rationale,
-      annexIIICategory: form.annexIIICategory || undefined,
-    });
-  };
-
-  const getFormForSystem = (systemId: string) => {
-    return classifyForm[systemId] || { riskLevel: "", rationale: "", annexIIICategory: "" };
-  };
-
-  const updateFormForSystem = (
-    systemId: string,
-    updates: Partial<{ riskLevel: string; rationale: string; annexIIICategory: string }>
-  ) => {
-    setClassifyForm((prev) => ({
-      ...prev,
-      [systemId]: { ...getFormForSystem(systemId), ...updates },
-    }));
-  };
 
   const riskStats = stats ?? { unacceptable: 0, high: 0, limited: 0, minimal: 0, unclassified: 0 };
 
@@ -205,15 +109,12 @@ export default function RiskClassificationPage() {
       </div>
 
       {/* Systems List */}
-      <ScrollToSystem id={scrolledTo ? null : expandedSystem} ready={!!systems} onDone={() => setScrolledTo(true)} />
       {systemsLoading && !systems ? (
         <ListPageSkeleton />
       ) : systems && systems.length > 0 ? (
         <div className="space-y-3">
           {systems.map((system) => {
-            const isExpanded = expandedSystem === system.id;
             const currentLevel = system.riskClassification?.riskLevel;
-            const form = getFormForSystem(system.id);
 
             return (
               <Card key={system.id} id={`system-${system.id}`} className="scroll-mt-24">
@@ -240,189 +141,16 @@ export default function RiskClassificationPage() {
                       <RiskTierBadge level={currentLevel} className="text-xs" />
                       {/* The form behind it classifies (orgWriteProcedure): writers only. */}
                       {canWrite && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          aria-expanded={isExpanded}
-                          onClick={() =>
-                            setExpandedSystem(isExpanded ? null : system.id)
-                          }
-                        >
-                          {currentLevel ? t("reclassify") : t("classify")}
-                          {isExpanded ? (
-                            <ChevronUp className="w-4 h-4 ml-1" />
-                          ) : (
-                            <ChevronDown className="w-4 h-4 ml-1" />
-                          )}
-                        </Button>
+                        <Link href={classifyHref(system.id)}>
+                          <Button variant="ghost" size="sm">
+                            {currentLevel ? t("reclassify") : t("classify")}
+                            <ChevronRight className="w-4 h-4 ml-1" aria-hidden="true" />
+                          </Button>
+                        </Link>
                       )}
                     </div>
                   </div>
 
-                  {/* Expanded Classification Form */}
-                  {isExpanded && (
-                    <div className="mt-4 pt-4 border-t space-y-4">
-                      {/* Current Classification Info */}
-                      {system.riskClassification && (
-                        <div className="p-3 bg-muted/50 space-y-2">
-                          <p className="text-xs font-medium">{t("currentClassification")}</p>
-                          <div className="flex items-center gap-2">
-                            <RiskTierBadge
-                              level={system.riskClassification.riskLevel}
-                              className="text-xs"
-                            />
-                            {system.riskClassification.annexIIICategory && (
-                              <Badge variant="outline" className="text-xs max-w-full shrink whitespace-normal text-left">
-                                {t("annexIIIBadge", { category: annexLabel(system.riskClassification.annexIIICategory) })}
-                              </Badge>
-                            )}
-                          </div>
-                          <p className="text-xs text-muted-foreground">
-                            {system.riskClassification.rationale}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            {t("classifiedOn", { date: formatDate(system.riskClassification.classifiedAt) })}
-                          </p>
-                        </div>
-                      )}
-
-                      {/* Classification Form */}
-                      <div className="space-y-4">
-                        <div className="space-y-2">
-                          <Label>{t("riskLevelLabel")} *</Label>
-                          <Select
-                            value={form.riskLevel}
-                            onValueChange={(value) =>
-                              updateFormForSystem(system.id, { riskLevel: value })
-                            }
-                          >
-                            <SelectTrigger>
-                              <SelectValue placeholder={t("riskLevelPlaceholder")} />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="UNACCEPTABLE">
-                                <div className="flex items-center gap-2">
-                                  <TierMarker level="UNACCEPTABLE" />
-                                  <ShieldAlert className="w-4 h-4 text-muted-foreground" />
-                                  {tc("riskUnacceptable")}
-                                </div>
-                              </SelectItem>
-                              <SelectItem value="HIGH">
-                                <div className="flex items-center gap-2">
-                                  <TierMarker level="HIGH" />
-                                  <ShieldAlert className="w-4 h-4 text-muted-foreground" />
-                                  {tc("riskHigh")}
-                                </div>
-                              </SelectItem>
-                              <SelectItem value="LIMITED">
-                                <div className="flex items-center gap-2">
-                                  <TierMarker level="LIMITED" />
-                                  <ShieldQuestion className="w-4 h-4 text-muted-foreground" />
-                                  {tc("riskLimited")}
-                                </div>
-                              </SelectItem>
-                              <SelectItem value="MINIMAL">
-                                <div className="flex items-center gap-2">
-                                  <TierMarker level="MINIMAL" />
-                                  <ShieldCheck className="w-4 h-4 text-muted-foreground" />
-                                  {tc("riskMinimal")}
-                                </div>
-                              </SelectItem>
-                            </SelectContent>
-                          </Select>
-                          {form.riskLevel && (
-                            <p className="text-xs text-muted-foreground">
-                              {({
-                                UNACCEPTABLE: t("riskDescriptionUnacceptable"),
-                                HIGH: t("riskDescriptionHigh"),
-                                LIMITED: t("riskDescriptionLimited"),
-                                MINIMAL: t("riskDescriptionMinimal"),
-                              } as Record<string, string>)[form.riskLevel]}
-                            </p>
-                          )}
-                        </div>
-
-                        {(form.riskLevel === "HIGH" || form.riskLevel === "UNACCEPTABLE") && (
-                          <div className="space-y-2">
-                            <Label>{t("annexIIICategoryLabel")}</Label>
-                            <Select
-                              value={form.annexIIICategory}
-                              onValueChange={(value) =>
-                                updateFormForSystem(system.id, { annexIIICategory: value })
-                              }
-                            >
-                              <SelectTrigger>
-                                <SelectValue placeholder={t("annexIIICategoryPlaceholder")} />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {ANNEX_III_CATEGORIES.map((value) => (
-                                  <SelectItem key={value} value={value}>
-                                    {annexLabel(value)}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </div>
-                        )}
-
-                        <div className="space-y-2">
-                          <Label>{t("rationaleLabel")} *</Label>
-                          <Textarea
-                            placeholder={t("rationalePlaceholder")}
-                            rows={3}
-                            value={form.rationale}
-                            onChange={(e) =>
-                              updateFormForSystem(system.id, { rationale: e.target.value })
-                            }
-                          />
-                        </div>
-
-                        {/* Deterministic Annex III screening + optional AI-drafted
-                            rationale (grounded in the rule hits; Insert fills the
-                            editable rationale field — the user picks the level). */}
-                        <RiskScreeningPanel
-                          organizationId={organization?.id ?? ""}
-                          aiSystemId={system.id}
-                          chosenLevel={form.riskLevel}
-                          chosenCategory={form.annexIIICategory}
-                          onInsertRationale={(content) =>
-                            updateFormForSystem(system.id, { rationale: content })
-                          }
-                        />
-
-                        <div className="flex justify-end gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setExpandedSystem(null)}
-                          >
-                            {tc("cancel")}
-                          </Button>
-                          <Button
-                            size="sm"
-                            disabled={
-                              !form.riskLevel ||
-                              !form.rationale ||
-                              classifyMutation.isPending
-                            }
-                            onClick={() => handleClassify(system.id)}
-                          >
-                            {classifyMutation.isPending ? (
-                              <>
-                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                {t("classifying")}
-                              </>
-                            ) : (
-                              <>
-                                <Shield className="w-4 h-4 mr-2" />
-                                {currentLevel ? t("reclassify") : t("classify")}
-                              </>
-                            )}
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
                 </CardContent>
               </Card>
             );
@@ -448,14 +176,4 @@ export default function RiskClassificationPage() {
       )}
     </div>
   );
-}
-
-/** Scrolls once to the system opened from `?system=`, after the list has loaded. */
-function ScrollToSystem({ id, ready, onDone }: { id: string | null; ready: boolean; onDone: () => void }) {
-  useEffect(() => {
-    if (!id || !ready) return;
-    document.getElementById(`system-${id}`)?.scrollIntoView({ block: "start" });
-    onDone();
-  }, [id, ready, onDone]);
-  return null;
 }

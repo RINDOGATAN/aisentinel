@@ -520,6 +520,7 @@ function NewVendorForm() {
               <Label htmlFor="name">{t("labelVendorName")} *</Label>
               <Input
                 id="name"
+                maxLength={200}
                 placeholder={t("placeholderVendorName")}
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}

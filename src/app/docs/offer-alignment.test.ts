@@ -2,7 +2,7 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 /**
- * The public docs follow the offer as it stands (owner, 10 Oct 2026): a free, capped
+ * The public docs follow the offer as it stands: a free, capped
  * pilot, a paid plan or a managed instance for real data, three hosting options, no
  * six-week engagement, and none of the retired pilot warnings (see FORBIDDEN).
  * The pilot disclosure people acknowledge (src/config/pilot-disclosure.ts) is legal
@@ -56,7 +56,7 @@ describe("public docs follow the current offer", () => {
     for (const title of ["In the TODO.LAW cloud", "Managed virtual server", "Your own hardware", "En la nube de TODO.LAW", "Servidor virtual gestionado", "Tu propio hardware"]) {
       expect(pilotPage).toContain(title);
     }
-    // No price in the app (owner, 11 Oct 2026, AIS-1): the prices page states it.
+    // No price in the app: the prices page states it.
     expect(pilotPage).not.toMatch(/\d\s?€|€\s?\d/);
     expect(pilotPage).toContain("https://www.todo.law/es/precios");
     expect(pilotPage).toContain("The Cloud Plan lifts the limits");

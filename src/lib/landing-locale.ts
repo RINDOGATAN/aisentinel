@@ -23,7 +23,7 @@ export function prefersSpanish(acceptLanguage: string | null | undefined): boole
 
 /**
  * The language the landing is rendered in, decided on the server so the first
- * paint is already in that language (owner, 10 Oct 2026: a Spanish browser saw
+ * paint is already in that language (a Spanish browser saw
  * English for a moment): `?lang=` first, then the `locale` cookie when there is
  * one, then the browser's Accept-Language, English otherwise. The browser keeps
  * the same order (src/landing/LandingPage.tsx), so nothing switches after load.

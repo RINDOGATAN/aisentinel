@@ -4,7 +4,7 @@
 /**
  * Print one JSON object of account and activity counts for this instance.
  *
- * Reads a production database: do not run without the owner's go-ahead.
+ * Reads a production database: do not run without the operator's authorisation.
  *
  * Read-only by construction: the only database call this script ever makes is
  * Prisma `count`. No row is selected, nothing is written. The unit test hands
@@ -21,8 +21,8 @@
  *   paying         distinct Customers holding at least one entitlement that is
  *                  ACTIVE and not past its expiry. Stripe is switched off on
  *                  the hosted instance, so in practice this counts offline
- *                  licence holders. It is the honest answer to "who has bought
- *                  something", not a recurring-revenue figure.
+ *                  licence holders. It counts licence holders, not
+ *                  subscriptions.
  *   installs       null, always. Self-hosted installs are not tracked by
  *                  design: the published images report to nobody, and this
  *                  script has no way of counting them. The field exists so a

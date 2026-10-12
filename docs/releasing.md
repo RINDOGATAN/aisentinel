@@ -289,8 +289,7 @@ current behaviour and what pinning would take; it changes nothing by itself.
    older app image is not guaranteed to run against a newer schema. Take a
    backup (`deploy/sovereign/backup.sh`) before any pinned upgrade.
 
-**What a pinned hosted deploy would need** (a platform setting, owner's
-decision): production deploys from a tag or a release branch rather than every
+**What a pinned hosted deploy would need** (a platform setting): production deploys from a tag or a release branch rather than every
 push to `main`, with previews kept for `main`; and the migration moved out of
 `npm run build` into a step that runs against a copy of the database first.
 

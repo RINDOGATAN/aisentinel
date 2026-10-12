@@ -8,18 +8,17 @@
  * program as the Guided path implements them with the 30/60/90-day plan
  * beneath, and the ways to host it. Both pages then show the customer logos
  * above the footer (only while the configured list is not empty). After the
- * ways, the pricing block (owner, 11 Oct 2026: PricingSection.tsx), in both
+ * ways, the pricing block (PricingSection.tsx), in both
  * languages, the one place with prices. No hosting location in the other
  * sections (the Spanish pricing row says "en la nube UE"); the safeguards
  * guide after the ways (SafeguardsGuide) says, in Spanish only, that
- * the cloud pilot is hosted in the EU (owner, 11 Oct 2026: never to English
- * visitors). The Spanish managed box names
- * Asturias, as the storefront does (owner, 10 Oct 2026).
+ * the cloud pilot is hosted in the EU (the English
+ * copy states no hosting location). The Spanish managed box names
+ * Asturias, as the storefront does.
  *
  * Each language has its own copy under `<locale>.*` in the landing
  * dictionary, and its own list of ways: three in both languages, as the
- * storefront home offers them (cloud, managed, your own hardware; owner,
- * 10 Oct 2026).
+ * storefront home offers them (cloud, managed, your own hardware).
  *
  * Nothing moves or plays on its own: the videos load nothing until the
  * visitor presses play.
@@ -85,7 +84,7 @@ const SETUP: Record<LandingLocale, LocaleSetup> = {
   },
   en: {
     bullets: { dpc: 3, ais: 5, vw: 3 },
-    // Three ways, as the storefront home (owner, 10 Oct 2026): the kit and the Box
+    // Three ways, as the storefront home: the kit and the Box
     // are offered on the storefront's Run it your way page only.
     ways: [
       { icon: Cloud, action: "none" },

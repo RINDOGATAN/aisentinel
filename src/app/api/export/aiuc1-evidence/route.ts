@@ -6,7 +6,7 @@
  * stamp every other export carries and the SHA-256 of the text.
  *
  * Not behind the premium showcase: that list (src/config/premium-showcase.ts)
- * names the deliverables that are sold, and adding one is a pricing decision.
+ * names the licensed deliverables, and this export is not one of them.
  */
 
 import { NextRequest } from "next/server";

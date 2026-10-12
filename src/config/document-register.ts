@@ -2,8 +2,7 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 /**
- * THE DOCUMENT REGISTER (owner's decision d10, 9 October 2026: the clarity
- * work of DPO Central carried to AI Sentinel): every document AI Sentinel can
+ * THE DOCUMENT REGISTER (the same structure as DPO Central's): every document AI Sentinel can
  * produce, and the ones it does not produce yet, in one list. The dashboard's
  * "Documents you can produce today" panel, the quiet line under each step of
  * the Guided menu and the program pack all read this file (through

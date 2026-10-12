@@ -26,7 +26,7 @@ const PUBLIC_TEXT: Record<string, string> = {
 
 /**
  * The banner once said the pilot had "no security certification", and later "no
- * contractual safeguards". Since 10 Oct 2026 (owner) it says what to choose for real
+ * contractual safeguards". Now it says what to choose for real
  * data instead, and every repeat of it (README, llms files, docs pages, strings) follows. The versioned disclosure
  * is the one place that speaks of certifications: it is a fact a person
  * acknowledges, not the banner, and it changes only with a new version.
@@ -84,7 +84,7 @@ describe("what the public copy says about the hosted pilot", () => {
   it.each(Object.keys(PUBLIC_TEXT))("%s calls the hosted service a free, capped pilot and prices modules for self-hosted installations only", (file) => {
     const text = PUBLIC_TEXT[file];
     expect(text).toMatch(/free(,| and) capped/i);
-    // The English text states dollars (owner, 11 Oct 2026: one currency per visitor, "$60"), names no kit,
+    // The English text states dollars (one currency per visitor, "$60"), names no kit,
     // and never says the figure is the same in another currency.
     expect(text).toMatch(/\$60 a year each/);
     expect(text).not.toMatch(/in your currency|same figure|€\s?60\b|\b60\s?€/);
@@ -97,7 +97,7 @@ describe("what the public copy says about the hosted pilot", () => {
     expect(text).not.toMatch(/hosted instance[^.]*need(s)? a licence/i);
   });
 
-  // Both pages close with the button alone since 10 Oct 2026 (owner): no closing text about the pilot.
+  // Both pages close with the button alone: no closing text about the pilot.
   it("the landing closes with the button alone, with no pilot text, in both languages", () => {
     expect((landingEn as Record<string, string>)["cta.text"]).toBeUndefined();
     expect((landingEs as Record<string, string>)["cta.text"]).toBeUndefined();

@@ -3,8 +3,8 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 /**
- * "All clients": the consultant's firm view (the clarity work carried from
- * DPO Central, owner's decision d10, 9 October 2026). One row per
+ * "All clients": the consultant's firm view (the same view as in
+ * DPO Central). One row per
  * organisation the person belongs to:
  *
  *   client | confirmed figure | the six areas in words | documents ready |

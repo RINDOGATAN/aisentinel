@@ -3,8 +3,8 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 /**
- * The one program figure, "2 of 17 steps confirmed" (the clarity work carried
- * from DPO Central, owner's decision d10, 9 October 2026). The number comes
+ * The one program figure, "2 of 17 steps confirmed" (as in DPO Central).
+ * The number comes
  * from `programFigure` (./path.ts) and the words from one message
  * (`guided.figure.line`), so the dashboard, the menu, All clients and the
  * Program page all say exactly the same thing.

@@ -76,7 +76,7 @@ A new migration is applied to a copy first, never first to a live database.
    published or locally built migrator against it. The procedure and the
    counts to compare are in `docs/releasing.md`, section 5, check 5.
 
-3. **On a copy of the hosted database** (owner only; any migration that
+3. **On a copy of the hosted database** (maintainers only; any migration that
    rewrites or drops data). Create a branch of the production database on the
    hosting provider, point `ais_DATABASE_URL` and `ais_DATABASE_URL_UNPOOLED` at the branch, run
    `npx prisma migrate deploy`, check the application against it, then delete

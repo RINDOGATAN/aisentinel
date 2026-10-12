@@ -11,7 +11,7 @@
 
 1. [Executive Summary](#1-executive-summary)
 2. [Product Identity](#2-product-identity)
-3. [Problem Statement & Market Context](#3-problem-statement--market-context)
+3. [Problem Statement](#3-problem-statement)
 4. [Module Structure](#4-module-structure)
 5. [Data Models](#5-data-models)
 6. [Core vs Premium Split](#6-core-vs-premium-split)
@@ -28,9 +28,9 @@
 
 **AI SENTINEL** is a standalone AI governance application under the TODO.LAW brand. It gives Data Protection Officers and compliance teams a purpose-built tool for managing AI systems, EU AI Act compliance, risk classification, human oversight, and AI-specific incidents — without cluttering the data-privacy workflows in DPO Central.
 
-DPO Central covers **data privacy** (GDPR, DSAR, incidents, vendor risk). DPOs are increasingly asked to also govern **AI usage** — shadow AI, model registries, EU AI Act compliance, bias assessments — even when no personal data is involved. The market (OneTrust, Credo AI, Holistic AI, etc.) is racing to fill this gap. AI SENTINEL gives a DPO familiar UX and tooling for AI governance as a dedicated application.
+DPO Central covers **data privacy** (GDPR, DSAR, incidents, vendor risk). DPOs are increasingly asked to also govern **AI usage** — shadow AI, model registries, EU AI Act compliance, bias assessments — even when no personal data is involved. AI SENTINEL gives a DPO familiar UX and tooling for AI governance as a dedicated application.
 
-**Regulatory urgency**: EU AI Act full high-risk compliance is due **August 2, 2026** — approximately 18 months from project inception.
+**Regulatory timeline**: EU AI Act high-risk obligations were originally due **August 2, 2026** (see the regulatory milestones in the app for the current dates).
 
 ---
 
@@ -53,7 +53,7 @@ DPO Central covers **data privacy** (GDPR, DSAR, incidents, vendor risk). DPOs a
 
 ---
 
-## 3. Problem Statement & Market Context
+## 3. Problem Statement
 
 ### The Gap
 
@@ -62,14 +62,13 @@ DPOs and AI governance officers face a fragmented landscape:
 - **DPO Central** handles data privacy compliance (GDPR, DSAR, breach tracking) but was never designed for AI-specific governance concerns.
 - **EU AI Act** (effective Aug 1, 2024; high-risk obligations due Aug 2, 2026) introduces new compliance requirements that don't map cleanly onto existing privacy tools: AI system registration (Art. 49), risk classification (Art. 5-6), conformity assessments (Art. 43), human oversight (Art. 14), and serious incident reporting (Art. 73).
 - **Shadow AI** proliferation means organizations have dozens of AI tools in use with no central inventory or policy governance. Studies show ~60% of employees use unapproved AI tools at work, yet most organizations have no visibility into this usage. Traditional vendor management only covers tools acquired through formal procurement — it cannot account for tools employees adopt on their own.
-- **Existing solutions** (OneTrust AI Governance, Credo AI, Holistic AI) are enterprise-priced and often bundled with broader GRC suites.
 
 ### Why a Separate Application
 
 - **Separation of concerns**: AI governance and data privacy are distinct disciplines with different regulatory frameworks, workflows, and stakeholders.
 - **Focused UX**: A dedicated tool avoids overloading DPO Central's navigation and mental model.
 - **Independent lifecycle**: AI governance features can evolve rapidly without regression risk to stable privacy workflows.
-- **Market positioning**: A standalone product can be sold and marketed independently to AI governance teams who may not need data privacy tooling.
+- **Independent deployment**: A standalone application can be installed and used by AI governance teams who do not need data privacy tooling.
 
 ### What AI SENTINEL Does NOT Do (Stays in DPO Central)
 
@@ -783,9 +782,9 @@ All core modules are freely available:
 
 ### 6.2 Premium (Proprietary — sold only for the kit)
 
-Decision of 2026-09-16: the hosted service is a free, capped pilot and nothing is sold there
+The hosted service is a free, capped pilot and nothing is sold there
 (every module open to every organisation; caps in `src/config/pilot.ts`: one organisation
-per account, 15 days of editing (90 until 11 Oct 2026) from the first sign-in after the pilot went live, then
+per account, 15 days of editing from the first sign-in after the pilot went live, then
 read-only with exports, a records ceiling). Premium modules are sold only for the kit
 (self-hosted), at 60 a year each in the kit (in your currency: dollars unless the visitor
 is known to be outside the US, euros only then), on the TODO.LAW marketplace, and
@@ -1056,7 +1055,7 @@ aisentinel/
 
 ### Phase 4 — Future
 
-**Goal**: Market differentiation, cross-product integration, AI-assisted features.
+**Goal**: Cross-product integration and AI-assisted features.
 
 **Scope** (planned):
 - Shared authentication with DPO Central (single sign-on)

@@ -3,8 +3,8 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 /**
- * The Guided dashboard: the program at one glance (the clarity work carried
- * from DPO Central, owner's decision d10, 9 October 2026). Subtract before
+ * The Guided dashboard: the program at one glance (the same layout as in
+ * DPO Central). Subtract before
  * adding: what it shows replaces the next-step card, the expert banner (it
  * stays in Settings), the deadline strip (now a line among the deadlines),
  * the two list cards, the six counters and the five summary cards, and the

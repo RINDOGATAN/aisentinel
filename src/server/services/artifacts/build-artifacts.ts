@@ -31,6 +31,7 @@ import { LEGAL_SIGNOFF, pendingPacks, type SignoffRecord } from "@/config/legal-
 import { overlayLabels } from "@/config/overlay-labels";
 import { citationString } from "@/config/framework-display";
 import { tierShapeText, toRiskTier } from "@/config/risk-tier-palette";
+import { annexIIIText } from "@/lib/annex-iii-label";
 import type { SystemScope } from "@/server/services/scope/system-scope";
 import {
   collectGaps,
@@ -555,7 +556,11 @@ function findingsSection(input: ArtifactInput): ArtifactSection {
           ? [
               [
                 es ? "Categoría del anexo III" : "Annex III category",
-                scope.annexIiiCategory ?? (es ? "Ninguna determinada" : "None determined"),
+                scope.annexIiiCategory
+                  ? annexIIIText(scope.annexIiiCategory, locale)
+                  : es
+                    ? "Ninguna determinada"
+                    : "None determined",
                 "EU AI ACT Annex III",
               ],
               [

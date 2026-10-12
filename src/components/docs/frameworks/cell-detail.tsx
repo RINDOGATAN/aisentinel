@@ -3,11 +3,11 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { ExternalLink } from "lucide-react";
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { frameworksData, isUnderReview } from "@/lib/frameworks/model";
+import { frameworksDataFor, isUnderReview } from "@/lib/frameworks/model";
 import { docsPageForModule } from "@/lib/frameworks/doc-links";
 import { DepthChip, UnderReviewTag } from "./depth";
 
@@ -30,8 +30,9 @@ const external = { target: "_blank", rel: "noopener noreferrer" } as const;
 /** The detail of one cell, as a side sheet. Closing returns focus to the cell. */
 export function CellDetail({ cell, onClose }: { cell: CellRef | null; onClose: () => void }) {
   const t = useTranslations("docs.frameworks");
-  const f = cell ? frameworksData.frameworks.find((x) => x.id === cell.framework) : undefined;
-  const r = cell ? frameworksData.rings.find((x) => x.id === cell.ring) : undefined;
+  const data = frameworksDataFor(useLocale());
+  const f = cell ? data.frameworks.find((x) => x.id === cell.framework) : undefined;
+  const r = cell ? data.rings.find((x) => x.id === cell.ring) : undefined;
   const c = f && r ? f.cells[r.id] : undefined;
   const review = c ? isUnderReview(c) : false;
 
@@ -77,7 +78,7 @@ export function CellDetail({ cell, onClose }: { cell: CellRef | null; onClose: (
               <Row label={t("detail.modules")}>
                 <ul className="space-y-1">
                   {c.modules.map((m) => {
-                    const mod = frameworksData.modules[m];
+                    const mod = data.modules[m];
                     const href = docsPageForModule(m);
                     return (
                       <li key={m} className="flex flex-wrap items-baseline gap-x-2">

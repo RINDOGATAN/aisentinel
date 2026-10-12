@@ -3896,7 +3896,6 @@
       "intro": "Trece marcos de gobernanza de la IA muy utilizados, entre ellos AIUC-1, la norma de certificación para agentes de IA, comparados en catorce dimensiones. Cada celda indica una profundidad de 0 a 3, una frase, la fuente oficial y el módulo de AI SENTINEL que le da soporte.",
       "asOf": "Actualizado a {date}",
       "disclaimer": "Material de aprendizaje, no asesoramiento jurídico.",
-      "contentInEnglish": "El contenido de los marcos en estas páginas está en inglés.",
       "stats": "{frameworks} marcos, {rings} dimensiones, {cells} celdas, {review} en revisión.",
       "method": "Cada celda se contrastó con el texto oficial cuando ese texto pudo consultarse en la fecha indicada. Las celdas que no pudieron contrastarse se marcan «En revisión», se dibujan rayadas y no afirman nada. La profundidad es una lectura editorial de hasta dónde llega un marco en una dimensión, no una nota de calidad.",
       "footerNote": "Cuando se menciona AI SENTINEL, da soporte a la dimensión o la mapea. Las fechas son las que indican los textos oficiales en la fecha mostrada.",
@@ -6279,5 +6278,19 @@
       "incident": "Incidentes",
       "shadowAi": "Herramientas de IA sin aprobar"
     }
+  },
+  "licenses": {
+    "metaTitle": "Licencias y código fuente | AI Sentinel",
+    "metaDescription": "AI Sentinel se distribuye con la licencia GNU Affero General Public License, versión 3 o posterior. El código fuente correspondiente completo está disponible.",
+    "title": "Licencias y código fuente",
+    "license": "Se distribuye con la licencia GNU Affero General Public License, versión 3 o posterior (AGPL-3.0-or-later). El código fuente incluye una copia de la licencia en el archivo <code>LICENSE</code>.",
+    "warranty": "Este programa se ofrece SIN NINGUNA GARANTÍA.",
+    "sourceTitle": "Código fuente correspondiente completo",
+    "sourcePublic": "Conforme a la sección 13 de la AGPL-3.0, a quienes interactúan con este programa a través de una red se les ofrece el código fuente correspondiente completo de la versión en servicio aquí:",
+    "sourceOnRequest": "Conforme a la sección 13 de la AGPL-3.0, a quienes interactúan con este programa a través de una red se les ofrece, sin coste, el código fuente correspondiente completo de la versión en servicio aquí. El repositorio público del código se está terminando; hasta que se publique, solicita el código fuente correspondiente escribiendo a <mail>{email}</mail> y te lo facilitaremos.",
+    "runningCommit": "Versión en servicio (commit): <code>{commit}</code>",
+    "premiumTitle": "Skills premium",
+    "premium": "Las Skills premium opcionales y los complementos comerciales tienen una licencia aparte de Rindogatan LLC y no están cubiertos por la AGPL. Consulta los detalles en el repositorio del código fuente.",
+    "back": "Volver a AI Sentinel"
   }
 }

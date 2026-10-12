@@ -3896,7 +3896,6 @@
       "intro": "Thirteen widely used AI governance frameworks, including AIUC-1, the certification standard for AI agents, compared on fourteen dimensions. Each cell gives a depth from 0 to 3, one sentence, the official source, and the AI SENTINEL module that supports it.",
       "asOf": "As of {date}",
       "disclaimer": "A learning aid, not legal advice.",
-      "contentInEnglish": "The framework content on these pages is in English.",
       "stats": "{frameworks} frameworks, {rings} dimensions, {cells} cells, {review} under review.",
       "method": "Each cell was checked against the official text where that text could be read on the date shown. Cells that could not be checked are marked “Under review”, drawn hatched, and make no claim. Depth is an editorial reading of how far a framework goes on a dimension, not a score of quality.",
       "footerNote": "Where AI SENTINEL is mentioned, it supports or maps to the dimension. Dates are those the official texts state on the date shown.",
@@ -6279,5 +6278,19 @@
       "incident": "Incidents",
       "shadowAi": "Unapproved AI tools"
     }
+  },
+  "licenses": {
+    "metaTitle": "Licenses & source | AI Sentinel",
+    "metaDescription": "AI Sentinel is licensed under the GNU Affero General Public License v3 or later. Complete corresponding source is available.",
+    "title": "Licenses & source",
+    "license": "Licensed under the GNU Affero General Public License, version 3 or later (AGPL-3.0-or-later). A copy of the license ships with the source as the <code>LICENSE</code> file.",
+    "warranty": "This program comes with ABSOLUTELY NO WARRANTY.",
+    "sourceTitle": "Complete corresponding source code",
+    "sourcePublic": "Under AGPL-3.0 section 13, users interacting with this program over a network are offered the complete corresponding source code of the version running here:",
+    "sourceOnRequest": "Under AGPL-3.0 section 13, users interacting with this program over a network are offered the complete corresponding source code of the version running here, at no charge. The public source repository is being finalized; until it is published, request the corresponding source by emailing <mail>{email}</mail> and we will provide it.",
+    "runningCommit": "Running commit: <code>{commit}</code>",
+    "premiumTitle": "Premium skills",
+    "premium": "Optional premium skills and commercial add-ons are separately licensed by Rindogatan LLC and are not covered by the AGPL. See the source repository for details.",
+    "back": "Back to AI Sentinel"
   }
 }

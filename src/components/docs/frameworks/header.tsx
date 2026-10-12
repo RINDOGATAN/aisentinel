@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
-import { frameworksData, underReviewCount } from "@/lib/frameworks/model";
+import { frameworksDataFor, underReviewCount } from "@/lib/frameworks/model";
 import { DepthLegend } from "./depth";
 
 export type FrameworksView = "overview" | "table" | "compare" | "selector";
@@ -20,7 +20,7 @@ export function FrameworksHeader({ active, showMethod = false }: { active: Frame
   const t = useTranslations("docs.frameworks");
   const format = useFormatter();
   const locale = useLocale();
-  const data = frameworksData;
+  const data = frameworksDataFor(locale);
   const asOf = format.dateTime(new Date(`${data.asOf}T12:00:00Z`), { month: "long", year: "numeric", timeZone: "UTC" });
 
   return (
@@ -34,11 +34,6 @@ export function FrameworksHeader({ active, showMethod = false }: { active: Frame
         </span>
         <strong className="font-semibold">{t("disclaimer")}</strong>
       </p>
-      {locale === "es" && (
-        <p className="text-sm text-muted-foreground" data-content-language-note>
-          {t("contentInEnglish")}
-        </p>
-      )}
       {showMethod && (
         <>
           <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl">{t("intro")}</p>

@@ -2,33 +2,27 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 /**
- * What we are, said before anyone trusts us with anything.
+ * RETIRED. The hosted pilot no longer shows an opening statement, and nothing
+ * in the application renders or asks for this wording any more.
  *
- * The hosted instance is a free pilot on our own servers. Before a person puts
- * work into it they are told five things, once, and the acknowledgement is
- * recorded with its date. The same five points are published in the
- * documentation (/docs/pilot) so nobody has to remember a pop-up, and both
- * surfaces read them from this file: the wording cannot drift between the
- * screen someone acknowledged and the page they can go back to.
+ * It is kept as the record of what earlier acknowledgements refer to: each row
+ * of `pilot_disclosure_acknowledgements` stores the version a person read
+ * (DISCLOSURE_VERSION below) with its date and language, and those rows are
+ * kept. This file is the wording of that version, word for word, so a stored
+ * acknowledgement can still be read against what was shown.
  *
- * What this file must never say: that we hold a certification, that anything
- * here is "enterprise grade", or anything else we cannot evidence. The value
- * of the disclosure is that it is true and short.
+ * Do not import this module from a screen, a page or a router. A test checks
+ * that only tests import it.
  *
- * Pure leaf module: no Prisma, no Next, no React. Bumping DISCLOSURE_VERSION
- * means the wording changed materially, and every account is asked again.
+ * Pure leaf module: no Prisma, no Next, no React.
  */
 
 import type { PilotLocale } from "./pilot";
 
-/**
- * Bump ONLY when the meaning changes. An acknowledgement is stored against the
- * version acknowledged, so a bump asks everyone again and the old record still
- * says exactly what that person agreed to.
- */
+/** The version stored on every acknowledgement row: the only version ever shown. */
 export const DISCLOSURE_VERSION = "1.0.0";
 
-/** The day the wording below was last reviewed. */
+/** The day the wording below was last reviewed, while it was shown. */
 export const DISCLOSURE_REVIEWED_AS_OF = "2026-09-19";
 
 export interface DisclosurePoint {
@@ -37,9 +31,7 @@ export interface DisclosurePoint {
   text: Record<PilotLocale, string>;
 }
 
-/**
- * The five points, in the order they are read. Castilian, "tú", no long dashes.
- */
+/** The five points of version 1.0.0, in the order they were shown. */
 export const DISCLOSURE_POINTS: readonly DisclosurePoint[] = [
   {
     id: "free-pilot",
@@ -78,31 +70,7 @@ export const DISCLOSURE_POINTS: readonly DisclosurePoint[] = [
   },
 ] as const;
 
-/** Heading and the one action, for the screen and for the docs page. */
-export const DISCLOSURE_CHROME: Record<
-  PilotLocale,
-  { title: string; lead: string; acknowledge: string; acknowledgedOn: string; docsLink: string }
-> = {
-  en: {
-    title: "Before you start: what this is",
-    lead: "Five things about the hosted pilot. Read them once, then get on with the work.",
-    acknowledge: "I have read this",
-    acknowledgedOn: "Acknowledged on",
-    docsLink: "This wording is also published in the documentation.",
-  },
-  es: {
-    title: "Antes de empezar: qué es esto",
-    lead: "Cinco cosas sobre el piloto alojado. Léelas una vez y sigue con tu trabajo.",
-    acknowledge: "Lo he leído",
-    acknowledgedOn: "Aceptado el",
-    docsLink: "Este texto también está publicado en la documentación.",
-  },
-};
-
-/** Where the same wording is published. */
-export const DISCLOSURE_DOCS_PATH = "/docs/pilot";
-
-/** The points as plain lines, for a text surface (an export, a log, a test). */
+/** The points of the recorded version as plain lines (for an export of the record, or a test). */
 export function disclosureLines(locale: PilotLocale): string[] {
   return DISCLOSURE_POINTS.map((point) => point.text[locale]);
 }

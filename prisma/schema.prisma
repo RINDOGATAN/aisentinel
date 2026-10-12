@@ -44,18 +44,13 @@ model User {
   @@map("users")
 }
 
-/// A person's acknowledgement of the hosted pilot disclosure, with its date.
+/// A person's acknowledgement of the hosted pilot's former opening statement,
+/// with its date.
 ///
-/// The disclosure says what the hosted service is: a free pilot on our servers,
-/// no security certifications, no real client matter, export whenever you like,
-/// deletion that is real (src/config/pilot-disclosure.ts). It is shown once and
-/// acknowledged once, and this row is the record of that: who, which version of
-/// the wording, in which language, and when.
-///
-/// Kept per USER, not per organisation: the statement is about the service, and
-/// a person who is told it once has been told it. A version bump means the
-/// wording changed materially, so the old row still says exactly what that
-/// person read, and the new version is asked for again.
+/// The statement is retired: it is no longer shown or asked for, and nothing
+/// writes to this table. The rows are kept as the record of who acknowledged
+/// which version (src/config/pilot-disclosure.ts keeps that version's wording),
+/// in which language, and when.
 model PilotDisclosureAcknowledgement {
   id             String   @id @default(cuid())
   userId         String

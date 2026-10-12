@@ -7,7 +7,6 @@ import { MENU_COOKIE, parseMenuCollapsed } from "@/lib/menu-cookie";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { DashboardShell } from "@/components/dashboard-shell";
-import { hostedPilotActive } from "@/config/pilot";
 import { HostedPilotBanner } from "@/components/pilot/hosted-pilot-banner";
 
 export default async function DashboardLayout({
@@ -38,7 +37,7 @@ export default async function DashboardLayout({
   return (
     <>
       <HostedPilotBanner />
-      <DashboardShell hostedPilot={hostedPilotActive()} menuCollapsed={menuCollapsed}>
+      <DashboardShell menuCollapsed={menuCollapsed}>
         {children}
       </DashboardShell>
     </>

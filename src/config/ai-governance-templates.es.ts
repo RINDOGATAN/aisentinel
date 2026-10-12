@@ -13,7 +13,7 @@
  * purpose and riskRationale; each policy's title, description and content.
  * Every other field (ids, icons, enums, annexIIICategory) is left untouched.
  *
- * Terminology follows the official Spanish texts: "Reglamento de IA",
+ * Terminology follows the official Spanish texts: "RIA",
  * "RGPD", "anexo III", "art. 50", "supervisión humana", "evaluación de la
  * conformidad", "evaluación de impacto sobre los derechos fundamentales".
  * Legal sign-off pending, as for the English source.
@@ -54,7 +54,7 @@ const PAIRS: readonly Pair[] = [
   ],
   [
     "Product recommendation engines are not listed in EU AI Act Annex III and carry no Art. 50 transparency duty of their own, so they are minimal-risk under the Act. Obligations arise instead from the GDPR (profiling, Art. 22 where decisions are solely automated with significant effects) and, for online platforms, DSA Art. 27 recommender-system transparency.",
-    "Los motores de recomendación de productos no figuran en el anexo III del Reglamento de IA y no conllevan por sí mismos ninguna obligación de transparencia del art. 50, por lo que son de riesgo mínimo con arreglo al Reglamento. Las obligaciones derivan, en cambio, del RGPD (elaboración de perfiles; art. 22 cuando las decisiones se basan únicamente en un tratamiento automatizado y producen efectos significativos) y, en el caso de las plataformas en línea, de la transparencia de los sistemas de recomendación prevista en el art. 27 del Reglamento de Servicios Digitales (DSA).",
+    "Los motores de recomendación de productos no figuran en el anexo III del RIA y no conllevan por sí mismos ninguna obligación de transparencia del art. 50, por lo que son de riesgo mínimo con arreglo al Reglamento. Las obligaciones derivan, en cambio, del RGPD (elaboración de perfiles; art. 22 cuando las decisiones se basan únicamente en un tratamiento automatizado y producen efectos significativos) y, en el caso de las plataformas en línea, de la transparencia de los sistemas de recomendación prevista en el art. 27 del Reglamento de Servicios Digitales (DSA).",
   ],
 
   // Customer Support Chatbot (name shared with the SaaS template)
@@ -69,7 +69,7 @@ const PAIRS: readonly Pair[] = [
   ],
   [
     "Conversational AI system with transparency obligations under EU AI Act Art. 50. Users must be clearly informed they are interacting with an AI system. Risk of hallucination in responses.",
-    "Sistema de IA conversacional sujeto a obligaciones de transparencia con arreglo al art. 50 del Reglamento de IA. Debe informarse claramente a los usuarios de que están interactuando con un sistema de IA. Riesgo de alucinaciones en las respuestas.",
+    "Sistema de IA conversacional sujeto a obligaciones de transparencia con arreglo al art. 50 del RIA. Debe informarse claramente a los usuarios de que están interactuando con un sistema de IA. Riesgo de alucinaciones en las respuestas.",
   ],
 
   // Transaction Fraud Detection
@@ -84,7 +84,7 @@ const PAIRS: readonly Pair[] = [
   ],
   [
     "NOT high-risk under the EU AI Act: Annex III 5(b) (creditworthiness/credit scoring) expressly excludes 'AI systems used for the purpose of detecting financial fraud'. Fraud detection is therefore outside Annex III. Automated blocking of transactions can still engage GDPR Art. 22 (right to human intervention), so human-review mechanisms remain required.",
-    "NO es de alto riesgo con arreglo al Reglamento de IA: el punto 5, letra b), del anexo III (solvencia y calificación crediticia) excluye expresamente «los sistemas de IA utilizados al objeto de detectar fraudes financieros». Por tanto, la detección de fraude queda fuera del anexo III. No obstante, el bloqueo automatizado de transacciones puede activar el art. 22 del RGPD (derecho a obtener intervención humana), por lo que siguen siendo necesarios mecanismos de revisión humana.",
+    "NO es de alto riesgo con arreglo al RIA: el punto 5, letra b), del anexo III (solvencia y calificación crediticia) excluye expresamente «los sistemas de IA utilizados al objeto de detectar fraudes financieros». Por tanto, la detección de fraude queda fuera del anexo III. No obstante, el bloqueo automatizado de transacciones puede activar el art. 22 del RGPD (derecho a obtener intervención humana), por lo que siguen siendo necesarios mecanismos de revisión humana.",
   ],
 
   // Dynamic Pricing Engine
@@ -134,7 +134,7 @@ const PAIRS: readonly Pair[] = [
   ],
   [
     "This policy ensures customers are appropriately informed about AI systems that affect their shopping experience. In compliance with EU AI Act Article 50, all customer-facing AI systems must clearly disclose AI involvement.\n\nChatbots and virtual assistants must identify themselves as AI at the start of each conversation. AI-generated product recommendations must be labeled as such. Dynamic pricing must not discriminate based on protected characteristics, and customers must be able to request human review of AI-driven decisions that significantly affect them.\n\nRegular transparency reports must be published documenting which AI systems are in use, their purposes, and their impact on customer experiences.",
-    "Esta política garantiza que los clientes estén debidamente informados sobre los sistemas de IA que afectan a su experiencia de compra. En cumplimiento del artículo 50 del Reglamento de IA, todos los sistemas de IA que interactúan con los clientes deben informar claramente de la intervención de la IA.\n\nLos chatbots y asistentes virtuales deben identificarse como IA al inicio de cada conversación. Las recomendaciones de productos generadas por IA deben etiquetarse como tales. Los precios dinámicos no deben discriminar por razón de características protegidas, y los clientes deben poder solicitar la revisión humana de las decisiones basadas en IA que les afecten de manera significativa.\n\nDeben publicarse periódicamente informes de transparencia que documenten qué sistemas de IA se utilizan, sus finalidades y su repercusión en las experiencias de los clientes.",
+    "Esta política garantiza que los clientes estén debidamente informados sobre los sistemas de IA que afectan a su experiencia de compra. En cumplimiento del artículo 50 del RIA, todos los sistemas de IA que interactúan con los clientes deben informar claramente de la intervención de la IA.\n\nLos chatbots y asistentes virtuales deben identificarse como IA al inicio de cada conversación. Las recomendaciones de productos generadas por IA deben etiquetarse como tales. Los precios dinámicos no deben discriminar por razón de características protegidas, y los clientes deben poder solicitar la revisión humana de las decisiones basadas en IA que les afecten de manera significativa.\n\nDeben publicarse periódicamente informes de transparencia que documenten qué sistemas de IA se utilizan, sus finalidades y su repercusión en las experiencias de los clientes.",
   ],
 
   // ──────────────────────────────────────────────────
@@ -158,7 +158,7 @@ const PAIRS: readonly Pair[] = [
   ],
   [
     "AI system intended for use in healthcare that directly influences clinical decisions affecting patient health and safety. High-risk via EU AI Act Art. 6(1): clinical decision support is typically software as a medical device under the MDR (Reg. (EU) 2017/745, Rule 11 — usually Class IIa or higher), i.e. a product covered by Annex I Union harmonisation legislation subject to third-party conformity assessment. Not an Annex III listing.",
-    "Sistema de IA destinado a utilizarse en la asistencia sanitaria que influye directamente en decisiones clínicas que afectan a la salud y la seguridad de los pacientes. Es de alto riesgo por la vía del art. 6, apartado 1, del Reglamento de IA: el apoyo a la decisión clínica suele ser un programa informático que constituye un producto sanitario con arreglo al MDR (Reglamento (UE) 2017/745, regla 11, normalmente clase IIa o superior), es decir, un producto regulado por los actos legislativos de armonización de la Unión enumerados en el anexo I y sujeto a una evaluación de la conformidad de terceros. No figura en el anexo III.",
+    "Sistema de IA destinado a utilizarse en la asistencia sanitaria que influye directamente en decisiones clínicas que afectan a la salud y la seguridad de los pacientes. Es de alto riesgo por la vía del art. 6, apartado 1, del RIA: el apoyo a la decisión clínica suele ser un programa informático que constituye un producto sanitario con arreglo al MDR (Reglamento (UE) 2017/745, regla 11, normalmente clase IIa o superior), es decir, un producto regulado por los actos legislativos de armonización de la Unión enumerados en el anexo I y sujeto a una evaluación de la conformidad de terceros. No figura en el anexo III.",
   ],
 
   // Medical Imaging Analysis
@@ -173,7 +173,7 @@ const PAIRS: readonly Pair[] = [
   ],
   [
     "AI system processing sensitive health data and directly influencing diagnostic decisions. As medical-device software under the MDR (Reg. (EU) 2017/745), it is high-risk via EU AI Act Art. 6(1)/Annex I — the medical-device route, not Annex III. Requires rigorous validation and human oversight.",
-    "Sistema de IA que trata datos sensibles de salud e influye directamente en decisiones diagnósticas. Como programa informático que constituye un producto sanitario con arreglo al MDR (Reglamento (UE) 2017/745), es de alto riesgo en virtud del art. 6, apartado 1, y del anexo I del Reglamento de IA (la vía de los productos sanitarios, no el anexo III). Requiere una validación rigurosa y supervisión humana.",
+    "Sistema de IA que trata datos sensibles de salud e influye directamente en decisiones diagnósticas. Como programa informático que constituye un producto sanitario con arreglo al MDR (Reglamento (UE) 2017/745), es de alto riesgo en virtud del art. 6, apartado 1, y del anexo I del RIA (la vía de los productos sanitarios, no el anexo III). Requiere una validación rigurosa y supervisión humana.",
   ],
 
   // Patient Triage Chatbot
@@ -188,7 +188,7 @@ const PAIRS: readonly Pair[] = [
   ],
   [
     "AI system making triage decisions that affect patient access to urgent care. Incorrect triage could delay critical care. Where used for emergency healthcare patient triage, it falls under EU AI Act Annex III 5(d) (evaluation/classification of emergency calls and emergency healthcare patient triage systems). Requires robust human oversight and fallback mechanisms.",
-    "Sistema de IA que adopta decisiones de triaje que afectan al acceso de los pacientes a la atención urgente. Un triaje incorrecto podría retrasar una atención crítica. Cuando se utiliza para el triaje de pacientes en la asistencia sanitaria de urgencia, está comprendido en el punto 5, letra d), del anexo III del Reglamento de IA (evaluación y clasificación de llamadas de emergencia y sistemas de triaje de pacientes en la asistencia sanitaria de urgencia). Requiere una supervisión humana sólida y mecanismos alternativos de respaldo.",
+    "Sistema de IA que adopta decisiones de triaje que afectan al acceso de los pacientes a la atención urgente. Un triaje incorrecto podría retrasar una atención crítica. Cuando se utiliza para el triaje de pacientes en la asistencia sanitaria de urgencia, está comprendido en el punto 5, letra d), del anexo III del RIA (evaluación y clasificación de llamadas de emergencia y sistemas de triaje de pacientes en la asistencia sanitaria de urgencia). Requiere una supervisión humana sólida y mecanismos alternativos de respaldo.",
   ],
 
   // Drug Interaction Checker
@@ -203,7 +203,7 @@ const PAIRS: readonly Pair[] = [
   ],
   [
     "Safety-critical AI system where errors could lead to adverse drug events. Directly impacts patient safety through medication-related decisions. As clinical software under the MDR, it is high-risk via EU AI Act Art. 6(1)/Annex I (medical-device route), not Annex III.",
-    "Sistema de IA crítico para la seguridad, en el que los errores podrían provocar acontecimientos adversos por medicamentos. Repercute directamente en la seguridad del paciente a través de decisiones relacionadas con la medicación. Como programa informático clínico sujeto al MDR, es de alto riesgo en virtud del art. 6, apartado 1, y del anexo I del Reglamento de IA (vía de los productos sanitarios), no del anexo III.",
+    "Sistema de IA crítico para la seguridad, en el que los errores podrían provocar acontecimientos adversos por medicamentos. Repercute directamente en la seguridad del paciente a través de decisiones relacionadas con la medicación. Como programa informático clínico sujeto al MDR, es de alto riesgo en virtud del art. 6, apartado 1, y del anexo I del RIA (vía de los productos sanitarios), no del anexo III.",
   ],
 
   // Policies
@@ -256,7 +256,7 @@ const PAIRS: readonly Pair[] = [
   ],
   [
     "EU AI Act Annex III 5(b) explicitly lists AI systems intended to evaluate the creditworthiness of natural persons or establish their credit score as high-risk (fraud-detection systems are excluded from that point). Decisions directly affect individuals' access to financial services. Requires explainability, bias testing, and human oversight.",
-    "El punto 5, letra b), del anexo III del Reglamento de IA incluye expresamente como de alto riesgo los sistemas de IA destinados a evaluar la solvencia de personas físicas o a establecer su calificación crediticia (los sistemas de detección de fraude quedan excluidos de ese punto). Las decisiones afectan directamente al acceso de las personas a los servicios financieros. Requiere explicabilidad, pruebas de sesgo y supervisión humana.",
+    "El punto 5, letra b), del anexo III del RIA incluye expresamente como de alto riesgo los sistemas de IA destinados a evaluar la solvencia de personas físicas o a establecer su calificación crediticia (los sistemas de detección de fraude quedan excluidos de ese punto). Las decisiones afectan directamente al acceso de las personas a los servicios financieros. Requiere explicabilidad, pruebas de sesgo y supervisión humana.",
   ],
 
   // Financial Fraud Detection
@@ -271,7 +271,7 @@ const PAIRS: readonly Pair[] = [
   ],
   [
     "NOT high-risk under the EU AI Act: Annex III 5(b) expressly excludes 'AI systems used for the purpose of detecting financial fraud' from the creditworthiness listing. False positives can still deny access to financial services, so GDPR Art. 22 human-review mechanisms and internal monitoring remain essential.",
-    "NO es de alto riesgo con arreglo al Reglamento de IA: el punto 5, letra b), del anexo III excluye expresamente de la categoría de solvencia «los sistemas de IA utilizados al objeto de detectar fraudes financieros». Aun así, los falsos positivos pueden denegar el acceso a servicios financieros, por lo que los mecanismos de revisión humana del art. 22 del RGPD y la vigilancia interna siguen siendo esenciales.",
+    "NO es de alto riesgo con arreglo al RIA: el punto 5, letra b), del anexo III excluye expresamente de la categoría de solvencia «los sistemas de IA utilizados al objeto de detectar fraudes financieros». Aun así, los falsos positivos pueden denegar el acceso a servicios financieros, por lo que los mecanismos de revisión humana del art. 22 del RGPD y la vigilancia interna siguen siendo esenciales.",
   ],
 
   // Anti-Money Laundering Monitor
@@ -286,7 +286,7 @@ const PAIRS: readonly Pair[] = [
   ],
   [
     "NOT high-risk under the EU AI Act: transaction monitoring by an obliged entity is not listed in Annex III (point 6 covers law-enforcement authorities, and point 5(b) concerns creditworthiness), consistent with this template's governance policy. It still triggers account restrictions and reports to financial intelligence units, so it stays under model risk management, AML rules on documentation and review, and GDPR Art. 22 human-review safeguards, with a pre-deployment validation gate.",
-    "NO es de alto riesgo con arreglo al Reglamento de IA: el seguimiento de transacciones por un sujeto obligado no figura en el anexo III (el punto 6 se refiere a las autoridades garantes del cumplimiento del Derecho y el punto 5, letra b), a la solvencia), en coherencia con la política de gobernanza de esta plantilla. Aun así, da lugar a restricciones de cuentas y a comunicaciones a las unidades de inteligencia financiera, por lo que sigue sujeto a la gestión del riesgo de modelo, a las normas de prevención del blanqueo de capitales sobre documentación y revisión y a las garantías de revisión humana del art. 22 del RGPD, con un punto de control de validación previo al despliegue.",
+    "NO es de alto riesgo con arreglo al RIA: el seguimiento de transacciones por un sujeto obligado no figura en el anexo III (el punto 6 se refiere a las autoridades garantes del cumplimiento del Derecho y el punto 5, letra b), a la solvencia), en coherencia con la política de gobernanza de esta plantilla. Aun así, da lugar a restricciones de cuentas y a comunicaciones a las unidades de inteligencia financiera, por lo que sigue sujeto a la gestión del riesgo de modelo, a las normas de prevención del blanqueo de capitales sobre documentación y revisión y a las garantías de revisión humana del art. 22 del RGPD, con un punto de control de validación previo al despliegue.",
   ],
 
   // Robo-Advisory Platform
@@ -316,7 +316,7 @@ const PAIRS: readonly Pair[] = [
   ],
   [
     "Customer-facing AI system with transparency obligations under EU AI Act Art. 50. Must disclose AI nature to customers. Handles sensitive financial data requiring appropriate access controls.",
-    "Sistema de IA de cara al cliente sujeto a obligaciones de transparencia con arreglo al art. 50 del Reglamento de IA. Debe revelar a los clientes que se trata de una IA. Trata datos financieros sensibles que requieren controles de acceso adecuados.",
+    "Sistema de IA de cara al cliente sujeto a obligaciones de transparencia con arreglo al art. 50 del RIA. Debe revelar a los clientes que se trata de una IA. Trata datos financieros sensibles que requieren controles de acceso adecuados.",
   ],
 
   // Policies
@@ -327,7 +327,7 @@ const PAIRS: readonly Pair[] = [
   ],
   [
     "This policy establishes the AI governance framework for our financial institution. An AI Governance Committee, reporting to the Board Risk Committee, oversees all AI deployments and sets risk appetite for AI usage.\n\nAll AI systems must be classified under the EU AI Act risk framework. High-risk systems (e.g. credit scoring under Annex III 5(b)) require conformity assessment, ongoing monitoring, and quarterly model validation. Fraud-detection and AML monitoring systems fall outside Annex III high-risk (the 5(b) financial-fraud carve-out) but remain subject to model risk management and GDPR Art. 22 human-review safeguards. Model risk management follows supervisory expectations from ECB/EBA guidelines.\n\nAI models must undergo independent validation before production deployment. Model documentation must include intended use, training data descriptions, performance metrics, known limitations, and bias testing results.",
-    "Esta política establece el marco de gobernanza de la IA de nuestra entidad financiera. Un Comité de Gobernanza de la IA, que depende del Comité de Riesgos del Consejo de Administración, supervisa todos los despliegues de IA y fija el apetito de riesgo para el uso de la IA.\n\nTodos los sistemas de IA deben clasificarse conforme al marco de riesgos del Reglamento de IA. Los sistemas de alto riesgo (por ejemplo, la calificación crediticia del punto 5, letra b), del anexo III) requieren una evaluación de la conformidad, un seguimiento continuo y una validación trimestral de los modelos. Los sistemas de detección de fraude y de vigilancia para la prevención del blanqueo de capitales quedan fuera del alto riesgo del anexo III, en virtud de la excepción relativa al fraude financiero del punto 5, letra b), pero siguen sujetos a la gestión del riesgo de modelo y a las garantías de revisión humana del art. 22 del RGPD. La gestión del riesgo de modelo sigue las expectativas supervisoras de las directrices del BCE/ABE.\n\nLos modelos de IA deben someterse a una validación independiente antes de su despliegue en producción. La documentación de los modelos debe incluir el uso previsto, la descripción de los datos de entrenamiento, las métricas de rendimiento, las limitaciones conocidas y los resultados de las pruebas de sesgo.",
+    "Esta política establece el marco de gobernanza de la IA de nuestra entidad financiera. Un Comité de Gobernanza de la IA, que depende del Comité de Riesgos del Consejo de Administración, supervisa todos los despliegues de IA y fija el apetito de riesgo para el uso de la IA.\n\nTodos los sistemas de IA deben clasificarse conforme al marco de riesgos del RIA. Los sistemas de alto riesgo (por ejemplo, la calificación crediticia del punto 5, letra b), del anexo III) requieren una evaluación de la conformidad, un seguimiento continuo y una validación trimestral de los modelos. Los sistemas de detección de fraude y de vigilancia para la prevención del blanqueo de capitales quedan fuera del alto riesgo del anexo III, en virtud de la excepción relativa al fraude financiero del punto 5, letra b), pero siguen sujetos a la gestión del riesgo de modelo y a las garantías de revisión humana del art. 22 del RGPD. La gestión del riesgo de modelo sigue las expectativas supervisoras de las directrices del BCE/ABE.\n\nLos modelos de IA deben someterse a una validación independiente antes de su despliegue en producción. La documentación de los modelos debe incluir el uso previsto, la descripción de los datos de entrenamiento, las métricas de rendimiento, las limitaciones conocidas y los resultados de las pruebas de sesgo.",
   ],
   ["AI Risk Management Policy - Financial Services", "Política de gestión de riesgos de la IA - Servicios financieros"],
   [
@@ -384,7 +384,7 @@ const PAIRS: readonly Pair[] = [
   ],
   [
     "Content generation AI with transparency obligations under EU AI Act Art. 50. AI-generated content must be labeled as such. Risk of hallucination, copyright issues, and brand misrepresentation.",
-    "IA de generación de contenidos sujeta a obligaciones de transparencia con arreglo al art. 50 del Reglamento de IA. El contenido generado por IA debe etiquetarse como tal. Riesgo de alucinaciones, problemas de derechos de autor y representación inexacta de la marca.",
+    "IA de generación de contenidos sujeta a obligaciones de transparencia con arreglo al art. 50 del RIA. El contenido generado por IA debe etiquetarse como tal. Riesgo de alucinaciones, problemas de derechos de autor y representación inexacta de la marca.",
   ],
 
   // Product Analytics AI
@@ -517,7 +517,7 @@ const PAIRS: readonly Pair[] = [
   ],
   [
     "EU AI Act Annex III Section 4 covers AI systems used in employment and worker management. Worker monitoring systems that can identify individuals and affect their employment conditions are high-risk. Privacy impact on workers requires careful human oversight.",
-    "El punto 4 del anexo III del Reglamento de IA abarca los sistemas de IA utilizados en el empleo y la gestión de los trabajadores. Los sistemas de vigilancia de los trabajadores que pueden identificar a personas y afectar a sus condiciones laborales son de alto riesgo. La repercusión en la privacidad de los trabajadores exige una supervisión humana cuidadosa.",
+    "El punto 4 del anexo III del RIA abarca los sistemas de IA utilizados en el empleo y la gestión de los trabajadores. Los sistemas de vigilancia de los trabajadores que pueden identificar a personas y afectar a sus condiciones laborales son de alto riesgo. La repercusión en la privacidad de los trabajadores exige una supervisión humana cuidadosa.",
   ],
 
   // Policies

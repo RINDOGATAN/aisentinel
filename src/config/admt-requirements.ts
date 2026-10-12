@@ -1224,7 +1224,7 @@ const clusterF: AdmtRequirementSeed[] = [
     },
     description: {
       en: "A business that makes ADMT available to another business for significant decisions must provide that recipient all facts available to it that are necessary for the recipient to conduct its own risk assessment. This applies to ADMT trained using personal information and is the structural analogue of the provider-to-deployer information duty in EU AI Act Art. 13.",
-      es: "La empresa que ponga una ADMT a disposición de otra para decisiones significativas debe facilitarle todos los datos de que disponga que resulten necesarios para que esta realice su propia evaluación de riesgos. Se aplica a las ADMT entrenadas con datos personales y constituye el análogo estructural del deber de información del proveedor al responsable del despliegue del art. 13 del Reglamento de IA de la UE.",
+      es: "La empresa que ponga una ADMT a disposición de otra para decisiones significativas debe facilitarle todos los datos de que disponga que resulten necesarios para que esta realice su propia evaluación de riesgos. Se aplica a las ADMT entrenadas con datos personales y constituye el análogo estructural del deber de información del proveedor al responsable del despliegue del art. 13 del RIA.",
     },
     applicabilityTags: ART10,
     sortOrder: 7153,
@@ -1266,7 +1266,7 @@ const clusterF: AdmtRequirementSeed[] = [
     },
     description: {
       en: "A single assessment may cover a comparable set of processing activities presenting similar risks. An assessment prepared for another law — for example another state's data-protection statute, or an EU AI Act Art. 27 fundamental-rights impact assessment — may be reused if supplemented with anything § 7152 requires that the other law omits.",
-      es: "Una misma evaluación puede cubrir un conjunto comparable de actividades de tratamiento que presenten riesgos similares. Una evaluación elaborada para otra norma (por ejemplo, la legislación de protección de datos de otro estado o una evaluación de impacto en los derechos fundamentales del art. 27 del Reglamento de IA de la UE) puede reutilizarse si se completa con todo lo que exige el § 7152 y aquella omite.",
+      es: "Una misma evaluación puede cubrir un conjunto comparable de actividades de tratamiento que presenten riesgos similares. Una evaluación elaborada para otra norma (por ejemplo, la legislación de protección de datos de otro estado o una evaluación de impacto en los derechos fundamentales del art. 27 del RIA) puede reutilizarse si se completa con todo lo que exige el § 7152 y aquella omite.",
     },
     applicabilityTags: ART10,
     sortOrder: 7156,

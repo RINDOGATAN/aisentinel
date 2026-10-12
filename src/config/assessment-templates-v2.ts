@@ -163,7 +163,7 @@ const friaV2: V2Template = {
   name: L("Fundamental Rights Impact Assessment", "Evaluación de impacto sobre los derechos fundamentales"),
   description: L(
     "EU AI Act Article 27 assessment of a high-risk system's impact on fundamental rights, with structured answers a regulator can read.",
-    "Evaluación conforme al artículo 27 del Reglamento de IA de la UE del impacto de un sistema de alto riesgo sobre los derechos fundamentales, con respuestas estructuradas que un regulador puede leer.",
+    "Evaluación conforme al artículo 27 del RIA del impacto de un sistema de alto riesgo sobre los derechos fundamentales, con respuestas estructuradas que un regulador puede leer.",
   ),
   frameworkRef: "EU AI Act Art. 27",
   version: 2,
@@ -222,7 +222,7 @@ const friaV2: V2Template = {
           allowNote: true,
           text: L(
             "Which EU AI Act Annex III high-risk area(s) does the system fall under?",
-            "¿En qué ámbito o ámbitos de alto riesgo del anexo III del Reglamento de IA de la UE se enmarca el sistema?",
+            "¿En qué ámbito o ámbitos de alto riesgo del anexo III del RIA se enmarca el sistema?",
           ),
           options: ANNEX_III,
           help: H(
@@ -234,7 +234,7 @@ const friaV2: V2Template = {
               "\"Employment and worker management\" for a CV-screening tool.",
               "«Empleo y gestión de trabajadores» para una herramienta de cribado de currículums.",
             ),
-            L("EU AI Act Annex III", "Reglamento de IA de la UE, anexo III"),
+            L("EU AI Act Annex III", "RIA, anexo III"),
           ),
         },
       ],
@@ -865,7 +865,7 @@ const conformityV2: V2Template = {
   name: L("Conformity Assessment", "Evaluación de la conformidad"),
   description: L(
     "EU AI Act Article 43 conformity assessment for high-risk systems: quality management, technical documentation, risk management, transparency and the declaration, with structured answers.",
-    "Evaluación de la conformidad conforme al artículo 43 del Reglamento de IA de la UE para sistemas de alto riesgo: gestión de la calidad, documentación técnica, gestión de riesgos, transparencia y la declaración, con respuestas estructuradas.",
+    "Evaluación de la conformidad conforme al artículo 43 del RIA para sistemas de alto riesgo: gestión de la calidad, documentación técnica, gestión de riesgos, transparencia y la declaración, con respuestas estructuradas.",
   ),
   frameworkRef: "EU AI Act Art. 43, Annex VI, Annex VII",
   version: 2,
@@ -897,7 +897,7 @@ const conformityV2: V2Template = {
           type: "single_choice",
           required: true,
           allowNote: true,
-          text: L("What is the risk classification under the EU AI Act?", "¿Cuál es la clasificación de riesgo conforme al Reglamento de IA de la UE?"),
+          text: L("What is the risk classification under the EU AI Act?", "¿Cuál es la clasificación de riesgo conforme al RIA?"),
           options: [
             opt("annex_iii", "High-risk (Annex III)", "Alto riesgo (anexo III)"),
             opt("union_harmonisation", "High-risk (Union harmonisation legislation)", "Alto riesgo (legislación de armonización de la Unión)"),
@@ -1116,7 +1116,7 @@ const conformityV2: V2Template = {
               "\"Annex VI — internal control, since harmonised standards are applied in full.\"",
               "«Anexo VI: control interno, ya que se aplican íntegramente las normas armonizadas.»",
             ),
-            L("EU AI Act Art. 43", "Reglamento de IA de la UE, art. 43"),
+            L("EU AI Act Art. 43", "RIA, art. 43"),
           ),
         },
         {
@@ -1153,7 +1153,7 @@ const biasFairnessV2: V2Template = {
   name: L("Bias & Fairness Assessment", "Evaluación de sesgo y equidad"),
   description: L(
     "Structured bias and fairness assessment covering data composition, fairness metrics, disaggregated testing and mitigation, aligned with EU AI Act Article 10 and NIST AI RMF.",
-    "Evaluación estructurada de sesgo y equidad que cubre la composición de los datos, las métricas de equidad, las pruebas desagregadas y la mitigación, alineada con el artículo 10 del Reglamento de IA de la UE y el NIST AI RMF.",
+    "Evaluación estructurada de sesgo y equidad que cubre la composición de los datos, las métricas de equidad, las pruebas desagregadas y la mitigación, alineada con el artículo 10 del RIA y el NIST AI RMF.",
   ),
   frameworkRef: "EU AI Act Art. 10 / NIST AI RMF",
   version: 2,
@@ -1249,7 +1249,7 @@ const biasFairnessV2: V2Template = {
               "\"Representation bias: older applicants are under-represented in the data.\"",
               "«Sesgo de representación: los candidatos de mayor edad están infrarrepresentados en los datos.»",
             ),
-            L("EU AI Act Art. 10", "Reglamento de IA de la UE, art. 10"),
+            L("EU AI Act Art. 10", "RIA, art. 10"),
           ),
         },
       ],

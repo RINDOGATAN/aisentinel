@@ -118,7 +118,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
     title: t("1. System, purpose and role", "1. Sistema, finalidad y papel"),
     intro: t(
       "The description every regime opens with. Answer once, to the level of detail the EU AI Act Annex IV expects, and it serves the GDPR record, the California risk assessment and the Colorado notice.",
-      "La descripción con la que empieza cada régimen. Respóndela una vez, con el detalle que espera el anexo IV del Reglamento de IA de la UE, y sirve para el registro del RGPD, la evaluación de riesgos de California y el aviso de Colorado.",
+      "La descripción con la que empieza cada régimen. Respóndela una vez, con el detalle que espera el anexo IV del RIA, y sirve para el registro del RGPD, la evaluación de riesgos de California y el aviso de Colorado.",
     ),
     questions: [
       {
@@ -170,7 +170,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         ),
         helpText: t(
           "Provider or deployer under the EU AI Act; developer or deployer under Colorado; controller or processor under the GDPR. The duties differ by role.",
-          "Proveedor o responsable del despliegue conforme al Reglamento de IA; desarrollador o responsable del despliegue conforme a Colorado; responsable o encargado conforme al RGPD. Los deberes cambian según el papel.",
+          "Proveedor o responsable del despliegue conforme al RIA; desarrollador o responsable del despliegue conforme a Colorado; responsable o encargado conforme al RGPD. Los deberes cambian según el papel.",
         ),
         type: "textarea",
         required: true,
@@ -207,7 +207,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
     title: t("2. People affected", "2. Personas afectadas"),
     intro: t(
       "Every regime asks who is on the receiving end. The strictest formulation, from the EU AI Act Art. 27, also covers the GDPR and the California risk assessment.",
-      "Todos los regímenes preguntan quién está al otro lado. La formulación más estricta, la del art. 27 del Reglamento de IA, cubre también el RGPD y la evaluación de riesgos de California.",
+      "Todos los regímenes preguntan quién está al otro lado. La formulación más estricta, la del art. 27 del RIA, cubre también el RGPD y la evaluación de riesgos de California.",
     ),
     questions: [
       {
@@ -480,7 +480,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
     title: t("5. Risks to rights and freedoms", "5. Riesgos para los derechos y libertades"),
     intro: t(
       "The EU AI Act asks for risks to fundamental rights; the GDPR for risks to rights and freedoms; California for negative impacts. One risk register, written to the widest of those, answers all three.",
-      "El Reglamento de IA pregunta por los riesgos para los derechos fundamentales; el RGPD, por los riesgos para los derechos y libertades; California, por los impactos negativos. Un único registro de riesgos, redactado conforme al más amplio, responde a los tres.",
+      "El RIA pregunta por los riesgos para los derechos fundamentales; el RGPD, por los riesgos para los derechos y libertades; California, por los impactos negativos. Un único registro de riesgos, redactado conforme al más amplio, responde a los tres.",
     ),
     questions: [
       {
@@ -644,7 +644,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
     title: t("7. Human review and appeal", "7. Revisión humana y recurso"),
     intro: t(
       "The material for the human-review and appeal protocol. GDPR Art. 22(3), the California § 7221 human-appeal exception, Colorado's review right and the EU AI Act right to an explanation converge on one workflow with different labels.",
-      "El material del protocolo de revisión humana y recurso. El art. 22.3 del RGPD, la excepción de recurso humano del § 7221 de California, el derecho de revisión de Colorado y el derecho a una explicación del Reglamento de IA convergen en un único flujo con etiquetas distintas.",
+      "El material del protocolo de revisión humana y recurso. El art. 22.3 del RGPD, la excepción de recurso humano del § 7221 de California, el derecho de revisión de Colorado y el derecho a una explicación del RIA convergen en un único flujo con etiquetas distintas.",
     ),
     questions: [
       {
@@ -825,7 +825,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         ),
         helpText: t(
           "One implementation, typically C2PA plus an invisible watermark, can satisfy both the EU AI Act Art. 50(2) and Washington HB 1170.",
-          "Una única implementación, normalmente C2PA más una marca de agua invisible, puede cumplir a la vez el art. 50.2 del Reglamento de IA de la UE y la HB 1170 de Washington.",
+          "Una única implementación, normalmente C2PA más una marca de agua invisible, puede cumplir a la vez el art. 50.2 del RIA y la HB 1170 de Washington.",
         ),
         type: "textarea",
         required: true,

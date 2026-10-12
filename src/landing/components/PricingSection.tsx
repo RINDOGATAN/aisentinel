@@ -27,6 +27,7 @@ import {
 } from "../config/pricing";
 import type { LandingLocale } from "../config/storefront";
 import { displayCurrency, type Currency } from "@/lib/currency";
+import { writeLocaleCookie } from "@/lib/locale-cookie";
 
 /** A cell: stacked on phones, a table cell from `sm`, as on the storefront home. */
 const CELL = "block sm:table-cell px-5 sm:px-6 align-top text-left";
@@ -88,7 +89,7 @@ export default function PricingSection({ locale, currency = "USD" }: { locale: L
             </a>
           </p>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-border px-5 sm:px-6 py-5">
-            <a href="/sign-in" className="btn-primary" data-testid="pricing-start">
+            <a href="/sign-in" className="btn-primary" data-testid="pricing-start" onClick={() => writeLocaleCookie(locale)}>
               {c.start}
             </a>
             <a

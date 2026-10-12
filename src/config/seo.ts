@@ -23,9 +23,9 @@ export const SEO: Record<Locale, { title: string; description: string; ogLocale:
     ogLocale: "en_US",
   },
   es: {
-    title: "AI SENTINEL: software de gobernanza de la IA para el Reglamento de IA, NIST AI RMF, ISO 42001, AIUC-1 y cinco marcos más",
+    title: "AI SENTINEL: software de gobernanza de la IA para el RIA, NIST AI RMF, ISO 42001, AIUC-1 y cinco marcos más",
     description:
-      "Software de gobernanza de la IA. Registro de sistemas de IA, clasificación de riesgo según el Reglamento de IA de la UE, evaluaciones de impacto y correspondencia con nueve marcos: el Reglamento de IA, el NIST AI RMF, la ISO/IEC 42001, AIUC-1 (la norma de certificación para agentes de IA), el RGPD y las normas de IA de California, Colorado, Texas y Washington. Supervisión humana, gestión de incidentes y un programa completo en minutos.",
+      "Software de gobernanza de la IA. Registro de sistemas de IA, clasificación de riesgo según el RIA, evaluaciones de impacto y correspondencia con nueve marcos: el RIA, el NIST AI RMF, la ISO/IEC 42001, AIUC-1 (la norma de certificación para agentes de IA), el RGPD y las normas de IA de California, Colorado, Texas y Washington. Supervisión humana, gestión de incidentes y un programa completo en minutos.",
     ogLocale: "es_ES",
   },
 };

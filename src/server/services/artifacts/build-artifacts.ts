@@ -764,7 +764,7 @@ export function buildAssessmentArtifact(input: ArtifactInput): Artifact {
     "assessment",
     locale === "es" ? "Evaluación unificada de impacto de la IA" : "Unified AI impact assessment",
     locale === "es"
-      ? "Un único expediente que responde a la evaluación de impacto sobre los derechos fundamentales del Reglamento de IA de la UE, la evaluación de impacto relativa a la protección de datos del RGPD, la evaluación de riesgos de ADMT de California y los regímenes de Colorado, Texas y Washington."
+      ? "Un único expediente que responde a la evaluación de impacto sobre los derechos fundamentales del RIA, la evaluación de impacto relativa a la protección de datos del RGPD, la evaluación de riesgos de ADMT de California y los regímenes de Colorado, Texas y Washington."
       : "One record answering the EU AI Act fundamental rights impact assessment, the GDPR data protection impact assessment, the California ADMT risk assessment, and the Colorado, Texas and Washington regimes.",
     docSections,
   );
@@ -1182,7 +1182,7 @@ export function buildProtocolArtifact(input: ArtifactInput): Artifact {
     "protocol",
     locale === "es" ? "Protocolo de revisión humana y recurso" : "Human review and appeal protocol",
     locale === "es"
-      ? "Un único flujo de revisión que satisface el art. 22.3 del RGPD, la excepción de recurso humano de California, el derecho de revisión de Colorado y el derecho a una explicación del Reglamento de IA."
+      ? "Un único flujo de revisión que satisface el art. 22.3 del RGPD, la excepción de recurso humano de California, el derecho de revisión de Colorado y el derecho a una explicación del RIA."
       : "One review workflow satisfying GDPR Art. 22(3), the California human-appeal exception, the Colorado review right and the EU AI Act right to an explanation.",
     sections,
   );

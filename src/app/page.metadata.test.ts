@@ -67,13 +67,13 @@ describe("landing metadata", () => {
 
   it("writes the Spanish title and description in plain, true Castilian", () => {
     expect(SEO.es.title).toBe(
-      "AI SENTINEL: software de gobernanza de la IA para el Reglamento de IA, NIST AI RMF, ISO 42001, AIUC-1 y cinco marcos más"
+      "AI SENTINEL: software de gobernanza de la IA para el RIA, NIST AI RMF, ISO 42001, AIUC-1 y cinco marcos más"
     );
     for (const s of [SEO.es.title, SEO.es.description]) {
       expect(s).not.toMatch(/[–—]|ejecut(?!iv)|\busted\b|vosotr|código abierto|hardware|\bkit\b|[$€]/i);
     }
     // Nine frameworks, the same nine as the English description.
-    for (const name of ["Reglamento de IA", "RGPD", "NIST AI RMF", "ISO/IEC 42001", "AIUC-1", "California", "Colorado", "Texas", "Washington"]) {
+    for (const name of ["RIA", "RGPD", "NIST AI RMF", "ISO/IEC 42001", "AIUC-1", "California", "Colorado", "Texas", "Washington"]) {
       expect(SEO.es.description).toContain(name);
     }
     expect(SEO.es.description).toContain("nueve marcos");

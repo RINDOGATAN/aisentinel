@@ -393,7 +393,7 @@ export const REGULATORY_MILESTONES: RegulatoryMilestone[] = [
     href: "/governance/ai-registry",
     title: {
       en: "EU AI Act transparency obligations apply",
-      es: "Se aplican las obligaciones de transparencia del Reglamento de IA de la UE",
+      es: "Se aplican las obligaciones de transparencia del RIA",
     },
     whatItMeans: {
       en: "Art. 50 has applied since 2 August 2026: people must be told when they are interacting with an AI system, synthetic content must be marked in a machine-readable format, and deepfakes and AI-generated text published to inform the public must be disclosed. Not deferred by the Digital Omnibus.",
@@ -921,7 +921,7 @@ export const REGULATORY_MILESTONES: RegulatoryMilestone[] = [
     },
     whatItMeans: {
       en: "Operative since 2 August 2026 (AB 853 moved it from 1 January 2026 to align with the EU AI Act date): covered generative AI providers with more than one million monthly users must offer a free AI-detection tool and support manifest and latent provenance disclosures. Large online platform duties follow on 1 January 2027.",
-      es: "Vigente desde el 2 de agosto de 2026 (la AB 853 la trasladó desde el 1 de enero de 2026 para alinearla con la fecha del Reglamento de IA de la UE): los proveedores de IA generativa cubiertos con más de un millón de usuarios mensuales deben ofrecer una herramienta gratuita de detección de IA y admitir divulgaciones de procedencia manifiestas y latentes. Los deberes de las grandes plataformas en línea llegan el 1 de enero de 2027.",
+      es: "Vigente desde el 2 de agosto de 2026 (la AB 853 la trasladó desde el 1 de enero de 2026 para alinearla con la fecha del RIA): los proveedores de IA generativa cubiertos con más de un millón de usuarios mensuales deben ofrecer una herramienta gratuita de detección de IA y admitir divulgaciones de procedencia manifiestas y latentes. Los deberes de las grandes plataformas en línea llegan el 1 de enero de 2027.",
     },
     orgApplies: (org) => {
       const gate = jurisdictionGate(org, "US_CA");

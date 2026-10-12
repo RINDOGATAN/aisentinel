@@ -59,7 +59,7 @@ export const SENSITIVE_CATEGORIES: SensitiveCategory[] = [
     label: { en: "Biometric", es: "Biométrico" },
     basis: {
       en: "GDPR Art. 9 where used to identify; Illinois and Texas biometric statutes; EU AI Act Annex III",
-      es: "RGPD art. 9 cuando se usa para identificar; leyes biométricas de Illinois y Texas; anexo III del Reglamento de IA",
+      es: "RGPD art. 9 cuando se usa para identificar; leyes biométricas de Illinois y Texas; anexo III del RIA",
     },
   },
   {

@@ -421,7 +421,7 @@
   "quickstart": {
     "backToDashboard": "Dashboard",
     "title": "AI Governance Quick Start",
-    "subtitle": "Bootstrap your AI governance program in minutes",
+    "subtitle": "Set up your AI governance program in minutes",
     "programNameLabel": "Name this program",
     "programNamePlaceholder": "Your organization's AI governance program",
     "programNameHelp": "Prefilled with your organization's name. This appears on the result screen and on the program PDF. You can change it.",
@@ -449,7 +449,7 @@
     "buildAiGovernanceProgram": "Build AI Governance Program",
     "successTitle": "AI Governance Program Created!",
     "successDescription": "Your AI governance program is set up. Everything created is listed below, each as a link you can open.",
-    "choosePathDescription": "Choose how to bootstrap your AI governance program. You can combine these options.",
+    "choosePathDescription": "Choose how to set up your AI governance program. You can combine these options.",
     "chipAiSystems": "AI Systems",
     "chipRiskClassifications": "Risk Classifications",
     "chipOversightGates": "Oversight Gates",
@@ -1418,7 +1418,7 @@
   },
   "settings": {
     "title": "Settings",
-    "subtitle": "Manage your account preferences",
+    "subtitle": "Your organization: where it operates, its screening answers, its members and its AI settings",
     "templateItemsTitle": "Template items",
     "templateItemsLead": "Systems, vendors and starter assessments a template created for you. Removing them clears only the ones nobody has edited; anything you have changed is kept.",
     "templateItemsCount": "{remove} will be removed. {keep} you have edited will be kept.",
@@ -1808,7 +1808,7 @@
       "also": {
         "quickstart": {
           "title": "Quick Start wizard",
-          "description": "Bootstrap a program from an industry template, or import an existing vendor portfolio."
+          "description": "Set up a program from an industry template, or import an existing vendor portfolio."
         },
         "aiPosture": {
           "title": "AI posture",

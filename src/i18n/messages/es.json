@@ -182,7 +182,7 @@
     "descriptionPlaceholder": "Describe qué hace este sistema de IA, sus capacidades y uso previsto...",
     "roleLabel": "Rol de la organización",
     "rolePlaceholder": "Selecciona un rol",
-    "roleHelp": "El rol de tu organización según el Reglamento de IA de la UE",
+    "roleHelp": "El rol de tu organización según el RIA",
     "statusLabel": "Estado del ciclo de vida",
     "statusPlaceholder": "Selecciona un estado",
     "vendorLabel": "Proveedor",
@@ -190,7 +190,7 @@
     "vendorHelp": "Vincula este sistema a un proveedor de tu registro de proveedores",
     "purposeLabel": "Finalidad prevista",
     "purposePlaceholder": "Describe la finalidad prevista y los casos de uso de este sistema de IA...",
-    "purposeHelp": "Obligatorio para sistemas de alto riesgo según el Reglamento de IA de la UE (art. 13)",
+    "purposeHelp": "Obligatorio para sistemas de alto riesgo según el RIA (art. 13)",
     "businessOwnerLabel": "Responsable de negocio",
     "businessOwnerPlaceholder": "p. ej., Responsable del Equipo de Producto",
     "technicalOwnerLabel": "Responsable técnico",
@@ -267,12 +267,12 @@
     "noDataSourcesTitle": "Aún no hay fuentes de datos documentadas",
     "noDataSourcesDescription": "Documenta las fuentes de datos de entrenamiento, validación y entrada",
     "riskClassificationTitle": "Clasificación de riesgos",
-    "riskClassificationDescription": "Clasificación de riesgos en cuatro niveles según el Reglamento de IA de la UE",
+    "riskClassificationDescription": "Clasificación de riesgos en cuatro niveles según el RIA",
     "rationale": "Justificación",
     "annexIIIPrefix": "Anexo III: {category}",
     "classificationHistory": "Historial de clasificaciones",
     "notClassifiedTitle": "Aún sin clasificar",
-    "notClassifiedDescription": "Clasifica este sistema según el marco de riesgos del Reglamento Europeo de IA",
+    "notClassifiedDescription": "Clasifica este sistema según el marco de riesgos del RIA",
     "classifyRisk": "Clasificar riesgo",
     "assessmentsTitle": "Evaluaciones",
     "assessmentsDescription": "FRIA, conformidad y otras evaluaciones de este sistema",
@@ -343,7 +343,7 @@
   },
   "transparency": {
     "title": "Obligaciones de transparencia del art. 50",
-    "description": "Obligaciones de información y marcado del artículo 50 del Reglamento de IA de la UE, aplicables desde el 2 de agosto de 2026",
+    "description": "Obligaciones de información y marcado del artículo 50 del RIA, aplicables desde el 2 de agosto de 2026",
     "loading": "Cargando el perfil de transparencia…",
     "obligationInteraction": "Informar de la interacción con IA (art. 50(1))",
     "obligationMarking": "Marcado legible por máquina del contenido sintético (art. 50(2))",
@@ -375,7 +375,7 @@
   },
   "riskClassification": {
     "title": "Clasificación de riesgos",
-    "subtitle": "Clasificación de riesgos en cuatro niveles según el Reglamento de IA de la UE para tus sistemas de IA",
+    "subtitle": "Clasificación de riesgos en cuatro niveles según el RIA para tus sistemas de IA",
     "unclassified": "Sin clasificar",
     "searchPlaceholder": "Buscar sistemas de IA...",
     "currentClassification": "Clasificación actual",
@@ -503,7 +503,7 @@
       "policies": "Políticas",
       "gate": "Punto de control",
       "exists": "Ya existe",
-      "euAiActBadge": "Reglamento de IA",
+      "euAiActBadge": "RIA",
       "vendors": "Proveedores",
       "importPreview": "Vista previa de la importación",
       "vendorImports": "Proveedores importados",
@@ -615,7 +615,7 @@
   },
   "oversight": {
     "title": "Supervisión humana",
-    "description": "Controles de aprobación, registro de decisiones y cumplimiento del art. 14",
+    "description": "Puntos de control de aprobación, registro de decisiones y cumplimiento del art. 14",
     "createGate": "Crear control",
     "searchPlaceholder": "Buscar controles de supervisión...",
     "statsPending": "Pendientes",
@@ -783,7 +783,7 @@
     "aiSystemLabel": "Sistema de IA (opcional)",
     "aiSystemPlaceholder": "Selecciona el sistema de IA afectado",
     "notificationRequiredLabel": "Notificación a la autoridad requerida (art. 73)",
-    "notificationRequiredHint": "Los incidentes graves con sistemas de IA deben notificarse a las autoridades de vigilancia del mercado según el Artículo 62 del Reglamento de IA de la UE.",
+    "notificationRequiredHint": "Los incidentes graves con sistemas de IA deben notificarse a las autoridades de vigilancia del mercado según el Artículo 62 del RIA.",
     "dpoCentralIdLabel": "ID de incidente en DPO Central (opcional)",
     "dpoCentralIdPlaceholder": "p. ej., inc_abc123...",
     "reporting": "Notificando...",
@@ -963,7 +963,7 @@
     "statusSuspended": "Suspendido",
     "statusTerminated": "Finalizado",
     "badgeGdpr": "RGPD",
-    "badgeEuAiAct": "Reglamento de IA de la UE",
+    "badgeEuAiAct": "RIA",
     "linkPrivacyPolicy": "Política de privacidad",
     "linkTrustCenter": "Centro de confianza",
     "linkDpa": "Contrato de encargado del tratamiento (DPA)",
@@ -979,7 +979,7 @@
     "dpoCentralVendorIdHelp": "Opcional. Vincula este proveedor a un registro de DPO Central para integrarlo con la gestión de la privacidad.",
     "placeholderSystemName": "p. ej., Integración de OpenAI GPT-4",
     "placeholderSelectRole": "Selecciona un rol",
-    "organizationRoleHelp": "El rol de tu organización según el Reglamento de IA de la UE",
+    "organizationRoleHelp": "El rol de tu organización según el RIA",
     "placeholderSelectTechnique": "Selecciona una técnica",
     "placeholderIntendedPurpose": "Describe la finalidad prevista del sistema de IA...",
     "placeholderNotes": "Notas adicionales sobre la relación con este proveedor..."
@@ -1341,7 +1341,7 @@
     "statsTotalVendors": "Total de proveedores",
     "statsWithAiModels": "Con modelos de IA",
     "statsVerified": "Verificados",
-    "statsEuAiActCompliant": "Conformes con el Reglamento de IA de la UE",
+    "statsEuAiActCompliant": "Conformes con el RIA",
     "searchPlaceholder": "Buscar proveedores...",
     "emptyTitle": "No se han encontrado proveedores",
     "emptySearchHint": "Prueba a ajustar los términos de búsqueda",
@@ -1385,7 +1385,7 @@
     "linkTrustCenter": "Centro de confianza",
     "linkSecurityPage": "Página de seguridad",
     "badgeGdprCompliant": "Conforme con el RGPD",
-    "badgeEuAiActCompliant": "Conforme con el Reglamento de IA de la UE",
+    "badgeEuAiActCompliant": "Conforme con el RIA",
     "badgeCcpaCompliant": "Conforme con la CCPA",
     "badgeHipaaCompliant": "Conforme con la HIPAA",
     "badgeDsarSupport": "Atiende solicitudes de derechos (DSAR)",
@@ -1397,7 +1397,7 @@
     "labelModelHosting": "Alojamiento del modelo:",
     "labelIncidentSla": "Plazo de notificación de incidentes (SLA):",
     "labelDataTransparency": "Transparencia en el tratamiento de datos:",
-    "labelAiActRole": "Rol según el Reglamento de IA:",
+    "labelAiActRole": "Rol según el RIA:",
     "annexIiiDomainsTitle": "Ámbitos del anexo III",
     "labelDataLocations": "Ubicaciones de los datos:",
     "euDataCenterAvailable": "Centro de datos en la UE disponible",
@@ -1418,7 +1418,7 @@
   },
   "settings": {
     "title": "Configuración",
-    "subtitle": "Gestiona las preferencias de tu cuenta",
+    "subtitle": "Tu organización: dónde opera, sus respuestas al cribado, sus miembros y sus ajustes de IA",
     "templateItemsTitle": "Elementos de plantilla",
     "templateItemsLead": "Sistemas, proveedores y evaluaciones iniciales que una plantilla creó por ti. Al quitarlos solo se eliminan los que nadie ha editado; se conserva todo lo que hayas cambiado.",
     "templateItemsCount": "Se quitarán {remove}. Se conservarán {keep} que has editado.",
@@ -1580,7 +1580,7 @@
       "adminOnly": "Solo los propietarios y administradores de la organización pueden cambiar la postura de IA."
     },
     "screening": {
-      "title": "Cribado por reglas (Reglamento de IA de la UE)",
+      "title": "Cribado por reglas (RIA)",
       "suggested": "Las reglas sugieren: {level}",
       "prohibitedHit": "Práctica prohibida: {article} (coincidencia: “{matched}”)",
       "highRiskHit": "Alto riesgo: {article} (coincidencia: “{matched}”)",
@@ -1638,7 +1638,7 @@
     "createTitle": "Crear plantilla",
     "createDescription": "Un punto de partida sencillo: una sección con tus preguntas. Clona una plantilla del sistema para los cuestionarios completos por secciones.",
     "systemEmpty": "No hay plantillas del sistema instaladas.",
-    "systemEmptyHint": "Un administrador puede instalar los cuestionarios estándar del Reglamento de IA de la UE con la orden de carga de plantillas (db:seed-templates), o crear una plantilla propia.",
+    "systemEmptyHint": "Un administrador puede instalar los cuestionarios estándar del RIA con la orden de carga de plantillas (db:seed-templates), o crear una plantilla propia.",
     "customEmpty": "Todavía no hay plantillas propias.",
     "customEmptyHint": "Clona una plantilla del sistema o crea la tuya.",
     "typeFria": "Evaluación de impacto en los derechos fundamentales (FRIA)",
@@ -1694,8 +1694,8 @@
     },
     "home": {
       "metaTitle": "Documentación: AI SENTINEL",
-      "metaDescription": "Aprende a usar AI SENTINEL para la gobernanza de IA, el cumplimiento del Reglamento de IA de la UE, la clasificación de riesgos y la gestión de incidentes.",
-      "heroIntro": "Una plataforma diseñada específicamente para la gobernanza de IA. Gestiona tu inventario de sistemas de IA, el cumplimiento del Reglamento de IA de la UE, la clasificación de riesgos, la supervisión humana y los incidentes específicos de IA, todo en un mismo lugar.",
+      "metaDescription": "Aprende a usar AI SENTINEL para la gobernanza de IA, el cumplimiento del RIA, la clasificación de riesgos y la gestión de incidentes.",
+      "heroIntro": "Una plataforma diseñada específicamente para la gobernanza de IA. Gestiona tu inventario de sistemas de IA, el cumplimiento del RIA, la clasificación de riesgos, la supervisión humana y los incidentes específicos de IA, todo en un mismo lugar.",
       "quickStartTitle": "Inicio rápido",
       "quickStartSteps": [
         {
@@ -1746,7 +1746,7 @@
         },
         "riskClassification": {
           "title": "Clasificación de riesgos",
-          "description": "Clasificación de riesgo en cuatro niveles según el Reglamento de IA de la UE, con asistente guiado del Anexo III e historial de clasificaciones."
+          "description": "Clasificación de riesgo en cuatro niveles según el RIA, con asistente guiado del Anexo III e historial de clasificaciones."
         },
         "assessments": {
           "title": "Evaluaciones",
@@ -1766,7 +1766,7 @@
         },
         "compliance": {
           "title": "Cumplimiento",
-          "description": "Correspondencia entre marcos: Reglamento de IA de la UE, RGPD, NIST AI RMF, ISO 42001, AIUC-1 (la norma de certificación para agentes de IA), ADMT de California, Colorado, Texas y Washington, con gestión de pruebas y enlaces entre marcos."
+          "description": "Correspondencia entre marcos: RIA, RGPD, NIST AI RMF, ISO 42001, AIUC-1 (la norma de certificación para agentes de IA), ADMT de California, Colorado, Texas y Washington, con gestión de pruebas y enlaces entre marcos."
         },
         "vendors": {
           "title": "Riesgo de proveedores",
@@ -1778,7 +1778,7 @@
         },
         "crossBorder": {
           "title": "Regímenes transfronterizos",
-          "description": "Una evaluación de impacto que responde al Reglamento de IA de la UE, al RGPD, a la ADMT de California, a Colorado, a Texas y a Washington, y los tres documentos que genera."
+          "description": "Una evaluación de impacto que responde al RIA, al RGPD, a la ADMT de California, a Colorado, a Texas y a Washington, y los tres documentos que genera."
         },
         "threatModel": {
           "title": "Modelo de amenazas",
@@ -1796,7 +1796,7 @@
         },
         "conformity": {
           "title": "Evaluación de conformidad",
-          "description": "Plantilla de evaluación de conformidad del art. 43 del Reglamento de IA de la UE para sistemas de IA de alto riesgo, con secciones de evaluación estructuradas."
+          "description": "Plantilla de evaluación de conformidad del art. 43 del RIA para sistemas de IA de alto riesgo, con secciones de evaluación estructuradas."
         },
         "biasFairness": {
           "title": "Evaluación de sesgo y equidad",
@@ -1836,11 +1836,11 @@
         "coreTitle": "Núcleo",
         "coreItems": [
           "Registro de IA y seguimiento del ciclo de vida",
-          "Clasificación de riesgos según el Reglamento de IA de la UE",
+          "Clasificación de riesgos según el RIA",
           "Evaluaciones FRIA y de riesgo de IA",
           "Supervisión humana y puntos de control de aprobación",
           "Gestión de incidentes de IA",
-          "Mapeo de cumplimiento en nueve marcos (Reglamento de IA de la UE, RGPD, NIST AI RMF, ISO/IEC 42001, AIUC-1, California, Colorado, Texas y Washington)",
+          "Mapeo de cumplimiento en nueve marcos (RIA, RGPD, NIST AI RMF, ISO/IEC 42001, AIUC-1, California, Colorado, Texas y Washington)",
           "Gestión de riesgo de proveedores",
           "Gestión de políticas",
           "Panel ejecutivo"
@@ -1887,7 +1887,7 @@
           "items": [
             "Responsable de negocio",
             "Responsable técnico",
-            "Rol según el Reglamento de IA de la UE (Proveedor, Responsable del despliegue, Importador, etc.)"
+            "Rol según el RIA (Proveedor, Responsable del despliegue, Importador, etc.)"
           ]
         },
         {
@@ -1935,8 +1935,8 @@
           ]
         }
       ],
-      "euRolesTitle": "Roles del Reglamento de IA de la UE",
-      "euRolesIntro": "El Reglamento de IA de la UE asigna obligaciones distintas según tu rol en la cadena de valor de la IA (art. 3). Asigna el rol correcto a cada sistema para determinar los requisitos aplicables.",
+      "euRolesTitle": "Roles del RIA",
+      "euRolesIntro": "El RIA asigna obligaciones distintas según tu rol en la cadena de valor de la IA (art. 3). Asigna el rol correcto a cada sistema para determinar los requisitos aplicables.",
       "euRoles": [
         {
           "role": "Proveedor",
@@ -1972,7 +1972,7 @@
         },
         {
           "title": "Completa los datos del sistema",
-          "description": "Introduce el nombre, la descripción, la finalidad, la técnica de IA y el rol según el Reglamento de IA de la UE. Establece el estado en Borrador."
+          "description": "Introduce el nombre, la descripción, la finalidad, la técnica de IA y el rol según el RIA. Establece el estado en Borrador."
         },
         {
           "title": "Añade modelos y fuentes de datos",
@@ -1986,11 +1986,11 @@
     },
     "riskClassification": {
       "metaTitle": "Clasificación de riesgos: documentación de AI SENTINEL",
-      "metaDescription": "Clasificación de riesgos en cuatro niveles según el Reglamento de IA de la UE, con asistente guiado del Anexo III.",
+      "metaDescription": "Clasificación de riesgos en cuatro niveles según el RIA, con asistente guiado del Anexo III.",
       "title": "Clasificación de riesgos",
-      "intro": "Clasifica tus sistemas de IA con el marco de cuatro niveles de riesgo del Reglamento de IA de la UE. El asistente guiado te acompaña por las categorías del Anexo III para determinar el nivel de riesgo correcto, con un historial completo de clasificaciones a efectos de auditoría.",
+      "intro": "Clasifica tus sistemas de IA con el marco de cuatro niveles de riesgo del RIA. El asistente guiado te acompaña por las categorías del Anexo III para determinar el nivel de riesgo correcto, con un historial completo de clasificaciones a efectos de auditoría.",
       "tiersTitle": "Niveles de riesgo",
-      "tiersIntro": "El Reglamento de IA de la UE define cuatro niveles de riesgo. Cada nivel conlleva obligaciones de cumplimiento distintas, desde la prohibición total hasta requisitos mínimos de transparencia.",
+      "tiersIntro": "El RIA define cuatro niveles de riesgo. Cada nivel conlleva obligaciones de cumplimiento distintas, desde la prohibición total hasta requisitos mínimos de transparencia.",
       "tiers": {
         "unacceptable": {
           "level": "Inaceptable",
@@ -2167,7 +2167,7 @@
     },
     "oversight": {
       "metaTitle": "Supervisión humana: documentación de AI SENTINEL",
-      "metaDescription": "Puntos de control de aprobación, programación de revisiones y registro de decisiones para el cumplimiento del art. 14 del Reglamento de IA de la UE.",
+      "metaDescription": "Puntos de control de aprobación, programación de revisiones y registro de decisiones para el cumplimiento del art. 14 del RIA.",
       "title": "Supervisión humana",
       "intro": "Implementa los requisitos de supervisión humana del art. 14 para sistemas de IA de alto riesgo. Configura puntos de control de aprobación en las etapas clave del ciclo de vida, programa revisiones periódicas y mantén un registro completo de decisiones para los reguladores.",
       "gateTypesTitle": "Tipos de puntos de control",
@@ -2288,7 +2288,7 @@
         }
       },
       "art73Title": "Notificaciones a autoridades (art. 73)",
-      "art73Intro": "Conforme al artículo 73 del Reglamento de IA de la UE, los proveedores de sistemas de IA de alto riesgo deben notificar los incidentes graves a la autoridad de vigilancia del mercado competente. AI SENTINEL registra los plazos de notificación, las autoridades destinatarias y el estado de presentación.",
+      "art73Intro": "Conforme al artículo 73 del RIA, los proveedores de sistemas de IA de alto riesgo deben notificar los incidentes graves a la autoridad de vigilancia del mercado competente. AI SENTINEL registra los plazos de notificación, las autoridades destinatarias y el estado de presentación.",
       "art73": {
         "whenTitle": "Cuándo notificar",
         "whenBody": "Incidentes graves que impliquen fallecimiento, daños graves a la salud, a los bienes o al medio ambiente, o una perturbación grave e irreversible de infraestructuras críticas.",
@@ -2356,9 +2356,9 @@
     },
     "transparency": {
       "metaTitle": "Transparencia (art. 50): Documentación de AI SENTINEL",
-      "metaDescription": "Haz seguimiento de las obligaciones de transparencia del art. 50 del Reglamento de IA de la UE por sistema de IA: información de la interacción con IA, marcado de contenido sintético, reconocimiento de emociones y etiquetado de ultrasuplantaciones.",
+      "metaDescription": "Haz seguimiento de las obligaciones de transparencia del art. 50 del RIA por sistema de IA: información de la interacción con IA, marcado de contenido sintético, reconocimiento de emociones y etiquetado de ultrasuplantaciones.",
       "title": "Transparencia (art. 50)",
-      "intro": "El artículo 50 del Reglamento de IA de la UE impone deberes de transparencia que atraviesan los niveles de riesgo: incluso un chatbot de riesgo mínimo debe informar. AI SENTINEL registra las cuatro obligaciones del art. 50 por sistema de IA, las separa según quién las debe realmente y cuenta atrás el único plazo que tiene período transitorio.",
+      "intro": "El artículo 50 del RIA impone deberes de transparencia que atraviesan los niveles de riesgo: incluso un chatbot de riesgo mínimo debe informar. AI SENTINEL registra las cuatro obligaciones del art. 50 por sistema de IA, las separa según quién las debe realmente y cuenta atrás el único plazo que tiene período transitorio.",
       "applicabilityTitle": "Cuándo se aplica",
       "applicabilityBody1": "El art. 50 se aplica desde el <strong>2 de agosto de 2026</strong> (art. 113, párrafo segundo). El art. 111(4), introducido por el Reglamento (UE) 2026/1744 (el Ómnibus Digital sobre IA, DO L de 24 de julio de 2026), da a los proveedores de sistemas generativos introducidos en el mercado <em>antes</em> de esa fecha hasta el <strong>2 de diciembre de 2026</strong> para cumplir la obligación de marcado legible por máquina del art. 50(2).",
       "applicabilityBody2": "Ese período de gracia es el motivo por el que el Registro de IA pregunta si un sistema se introdujo en el mercado antes del 2 de agosto de 2026. Respóndelo con precisión: es el único dato que modifica el plazo de marcado, y el contador de «marcado vencido» del panel se deriva de él.",
@@ -2429,14 +2429,14 @@
     },
     "compliance": {
       "metaTitle": "Cumplimiento: documentación de AI SENTINEL",
-      "metaDescription": "Mapeo en nueve marcos (Reglamento de IA de la UE, RGPD, NIST AI RMF, ISO/IEC 42001, AIUC-1, California, Colorado, Texas y Washington) con gestión de evidencias y exportación.",
+      "metaDescription": "Mapeo en nueve marcos (RIA, RGPD, NIST AI RMF, ISO/IEC 42001, AIUC-1, California, Colorado, Texas y Washington) con gestión de evidencias y exportación.",
       "title": "Cumplimiento",
       "intro": "Mapea tus sistemas de IA frente a los principales marcos normativos. Sigue el estado de cumplimiento a nivel de requisito, adjunta evidencias y exporta paquetes de cumplimiento para reguladores y auditores.",
       "frameworksTitle": "Marcos normativos compatibles",
-      "frameworksIntro": "AI SENTINEL incluye nueve marcos precargados: tres que se aplican según el nivel de riesgo (el Reglamento de IA de la UE, el NIST AI RMF y la ISO/IEC 42001), cinco que se aplican según la jurisdicción (el RGPD y las normas de IA de California, Colorado, Texas y Washington) y uno que eliges tú: AIUC-1, la norma de certificación para agentes de IA. Cada marco se desglosa en artículos, cláusulas o funciones con seguimiento de cumplimiento individual.",
+      "frameworksIntro": "AI SENTINEL incluye nueve marcos precargados: tres que se aplican según el nivel de riesgo (el RIA, el NIST AI RMF y la ISO/IEC 42001), cinco que se aplican según la jurisdicción (el RGPD y las normas de IA de California, Colorado, Texas y Washington) y uno que eliges tú: AIUC-1, la norma de certificación para agentes de IA. Cada marco se desglosa en artículos, cláusulas o funciones con seguimiento de cumplimiento individual.",
       "frameworks": {
         "euAiAct": {
-          "name": "Reglamento de IA de la UE",
+          "name": "Reglamento de Inteligencia Artificial (RIA)",
           "description": "Mapeo de obligaciones clave desde el art. 4 (alfabetización en IA) y el art. 5 (prácticas prohibidas) hasta el art. 73 (incidentes graves) y el calendario de aplicación del art. 113, además de los anexos relevantes. El principal marco normativo para los sistemas de IA en la Unión Europea.",
           "items": "{count} requisitos: artículos y anexos"
         },
@@ -2509,15 +2509,15 @@
       "crossTitle": "Mapeo entre marcos",
       "crossIntro": "Muchos requisitos de los nueve marcos se solapan. AI SENTINEL incluye {count} mapeos entre marcos predefinidos, para que un mismo trabajo pueda servir de evidencia en varios marcos a la vez.",
       "crossBody1": "Cuando marcas un requisito como <s>Conforme</s> o <s>Parcialmente Conforme</s>, AI SENTINEL muestra los requisitos vinculados de otros marcos y ofrece propagar el estado automáticamente.",
-      "crossBody2": "Por ejemplo, marcar como conforme el art. 9 del Reglamento de IA de la UE (Gestión de Riesgos) puede actualizar automáticamente NIST GOVERN 1 (Políticas de Gestión de Riesgos) y la Cláusula 6.1 de ISO 42001 (Acciones para Abordar Riesgos), porque cubren la misma obligación.",
+      "crossBody2": "Por ejemplo, marcar como conforme el art. 9 del RIA (Gestión de Riesgos) puede actualizar automáticamente NIST GOVERN 1 (Políticas de Gestión de Riesgos) y la Cláusula 6.1 de ISO 42001 (Acciones para Abordar Riesgos), porque cubren la misma obligación.",
       "crossStats": {
         "equivalent": "Mapeos equivalentes",
         "partial": "Mapeos parciales",
         "related": "Mapeos relacionados"
       },
       "snapshotTitle": "Instantánea de cumplimiento autogenerada",
-      "snapshotBody1": "Cuando clasificas el nivel de riesgo de un sistema de IA (p. ej., alto riesgo según el Reglamento de IA de la UE), AI SENTINEL crea automáticamente registros de mapeo de cumplimiento para cada requisito aplicable del Reglamento de IA, el NIST AI RMF y la ISO/IEC 42001. El RGPD y las normas estatales de EE. UU. se incorporan en cuanto se responden las jurisdicciones y las preguntas de cribado de la organización. Llegas a la matriz de cumplimiento con los controles pertinentes ya rellenados, sin configuración manual.",
-      "snapshotBody2": "Para un sistema de Alto Riesgo, esto supone inicializar al instante {count} requisitos del Reglamento de IA de la UE, el NIST AI RMF y la ISO/IEC 42001, cada uno en estado «Sin Evaluar» y listo para su evaluación.",
+      "snapshotBody1": "Cuando clasificas el nivel de riesgo de un sistema de IA (p. ej., alto riesgo según el RIA), AI SENTINEL crea automáticamente registros de mapeo de cumplimiento para cada requisito aplicable del RIA, el NIST AI RMF y la ISO/IEC 42001. El RGPD y las normas estatales de EE. UU. se incorporan en cuanto se responden las jurisdicciones y las preguntas de cribado de la organización. Llegas a la matriz de cumplimiento con los controles pertinentes ya rellenados, sin configuración manual.",
+      "snapshotBody2": "Para un sistema de Alto Riesgo, esto supone inicializar al instante {count} requisitos del RIA, el NIST AI RMF y la ISO/IEC 42001, cada uno en estado «Sin Evaluar» y listo para su evaluación.",
       "howTitle": "Mapear el cumplimiento",
       "steps": [
         {
@@ -2769,7 +2769,7 @@
       "intro": "La IA en la sombra son las herramientas de IA adoptadas por los empleados sin el conocimiento o la aprobación de la organización. Los estudios sugieren que en torno al 60% de los empleados utiliza herramientas de IA no aprobadas en el trabajo: desde ChatGPT y Copilot hasta generadores de imágenes y analítica basada en IA. Las organizaciones no pueden gobernar sistemas de IA que desconocen.",
       "whatTitle": "¿Qué es la IA en la sombra?",
       "whatP1": "La IA en la sombra es el equivalente en IA del Shadow IT: el uso de herramientas, servicios y aplicaciones basados en IA por parte de los empleados sin autorización organizativa explícita. A diferencia de los proveedores contratados formalmente, que pasan por evaluación de riesgos y revisión contractual, las herramientas de IA en la sombra entran en la organización por adopción individual: un ingeniero instala un asistente de código, un abogado usa ChatGPT para revisar contratos, un equipo de marketing se suscribe a una herramienta de redacción con IA.",
-      "whatP2": "Según el Reglamento de IA de la UE, las organizaciones que despliegan sistemas de IA tienen obligaciones específicas como responsables del despliegue, con independencia de que el despliegue estuviera autorizado o no. La IA en la sombra crea puntos ciegos en los programas de cumplimiento, protección de datos y gestión de riesgos.",
+      "whatP2": "Según el RIA, las organizaciones que despliegan sistemas de IA tienen obligaciones específicas como responsables del despliegue, con independencia de que el despliegue estuviera autorizado o no. La IA en la sombra crea puntos ciegos en los programas de cumplimiento, protección de datos y gestión de riesgos.",
       "whyTitle": "Por qué es importante",
       "whyItems": [
         {
@@ -2782,7 +2782,7 @@
         },
         {
           "title": "Exposición regulatoria",
-          "description": "Según el Reglamento de IA de la UE, los responsables del despliegue responden de los sistemas de IA utilizados en su organización, incluidos los adoptados informalmente por el personal."
+          "description": "Según el RIA, los responsables del despliegue responden de los sistemas de IA utilizados en su organización, incluidos los adoptados informalmente por el personal."
         },
         {
           "title": "Brecha de gobernanza",
@@ -2855,7 +2855,7 @@
       "title": "Catálogo de proveedores de IA",
       "intro": "Evaluar proveedores de IA desde cero consume tiempo y es propenso a errores. El Catálogo de Proveedores de IA da a tu equipo de gobernanza una ventaja inicial con perfiles precargados de más de 850 proveedores de IA, completos con indicadores de riesgo, certificaciones de cumplimiento y metadatos de despliegue.",
       "whatTitle": "¿Qué es el catálogo de proveedores de IA?",
-      "whatP1": "El Catálogo de Proveedores de IA es un directorio precargado y con búsqueda de proveedores de herramientas y servicios de IA. Cada perfil de proveedor incluye datos de gobernanza estructurados: qué hace el proveedor, dónde se procesan los datos, qué certificaciones posee, si entrena con datos de clientes y su clasificación de riesgo según el Reglamento de IA de la UE.",
+      "whatP1": "El Catálogo de Proveedores de IA es un directorio precargado y con búsqueda de proveedores de herramientas y servicios de IA. Cada perfil de proveedor incluye datos de gobernanza estructurados: qué hace el proveedor, dónde se procesan los datos, qué certificaciones posee, si entrena con datos de clientes y su clasificación de riesgo según el RIA.",
       "whatP2": "El catálogo está impulsado por <vw>VendorWatch</vw>, un servicio independiente de inteligencia sobre proveedores de IA que audita y actualiza continuamente los perfiles. Los datos se sincronizan automáticamente, de modo que tu catálogo se mantiene al día sin investigación manual.",
       "whyTitle": "Por qué es importante",
       "whyItems": [
@@ -2869,7 +2869,7 @@
         },
         {
           "title": "Cumplimiento normativo",
-          "description": "El Reglamento de IA de la UE exige a los responsables del despliegue conocer los sistemas de IA que utilizan. Los niveles de riesgo preclasificados y los indicadores de cumplimiento ayudan a cumplir las obligaciones de los art. 6 y 26."
+          "description": "El RIA exige a los responsables del despliegue conocer los sistemas de IA que utilizan. Los niveles de riesgo preclasificados y los indicadores de cumplimiento ayudan a cumplir las obligaciones de los art. 6 y 26."
         },
         {
           "title": "Actualizaciones continuas",
@@ -2908,7 +2908,7 @@
         },
         {
           "category": "Cumplimiento y Certificaciones",
-          "fields": "SOC 2, ISO 27001, estado de cumplimiento del RGPD, clasificación de riesgo según el Reglamento de IA de la UE, elegibilidad HIPAA"
+          "fields": "SOC 2, ISO 27001, estado de cumplimiento del RGPD, clasificación de riesgo según el RIA, elegibilidad HIPAA"
         },
         {
           "category": "Metadatos de Gobernanza",
@@ -2937,12 +2937,12 @@
     },
     "conformity": {
       "metaTitle": "Evaluación de conformidad: documentación de AI SENTINEL",
-      "metaDescription": "Plantilla de evaluación de conformidad del art. 43 del Reglamento de IA de la UE para sistemas de IA de alto riesgo. Evaluación estructurada de la documentación técnica, la gestión de la calidad y el seguimiento poscomercialización.",
+      "metaDescription": "Plantilla de evaluación de conformidad del art. 43 del RIA para sistemas de IA de alto riesgo. Evaluación estructurada de la documentación técnica, la gestión de la calidad y el seguimiento poscomercialización.",
       "premiumBadge": "Premium",
       "title": "Evaluación de conformidad",
-      "intro": "Los sistemas de IA de alto riesgo bajo el Reglamento de IA de la UE deben someterse a una evaluación de conformidad antes de su introducción en el mercado. AI SENTINEL proporciona una plantilla estructurada que guía a tu equipo por cada requisito (desde la documentación técnica hasta el seguimiento poscomercialización) para que nada se quede en el tintero.",
+      "intro": "Los sistemas de IA de alto riesgo bajo el RIA deben someterse a una evaluación de conformidad antes de su introducción en el mercado. AI SENTINEL proporciona una plantilla estructurada que guía a tu equipo por cada requisito (desde la documentación técnica hasta el seguimiento poscomercialización) para que nada se quede en el tintero.",
       "whatTitle": "¿Qué es una evaluación de conformidad?",
-      "whatP1": "Una evaluación de conformidad es un proceso de evaluación formal exigido por el art. 43 del Reglamento de IA de la UE para los sistemas de IA de alto riesgo. Verifica que el sistema de IA cumple todos los requisitos aplicables antes del despliegue, cubriendo la gobernanza de datos, la transparencia, la supervisión humana, la precisión, la solidez y la ciberseguridad.",
+      "whatP1": "Una evaluación de conformidad es un proceso de evaluación formal exigido por el art. 43 del RIA para los sistemas de IA de alto riesgo. Verifica que el sistema de IA cumple todos los requisitos aplicables antes del despliegue, cubriendo la gobernanza de datos, la transparencia, la supervisión humana, la precisión, la solidez y la ciberseguridad.",
       "whatP2": "Según el caso de uso, las evaluaciones de conformidad pueden realizarse internamente por el proveedor o a través de un organismo notificado externo. En ambos casos, la evaluación debe seguir una metodología estructurada y producir evidencia documentada del cumplimiento.",
       "whoTitle": "¿Quién la necesita?",
       "whoItems": [
@@ -3010,7 +3010,7 @@
         },
         {
           "title": "Trabaja cada sección",
-          "description": "Cada sección presenta preguntas estructuradas alineadas con los requisitos del Reglamento de IA de la UE. Registra hallazgos, adjunta evidencias y anota las deficiencias."
+          "description": "Cada sección presenta preguntas estructuradas alineadas con los requisitos del RIA. Registra hallazgos, adjunta evidencias y anota las deficiencias."
         },
         {
           "title": "Envía a revisión",
@@ -3030,12 +3030,12 @@
       "intro": "Los sistemas de IA pueden producir resultados discriminatorios, a menudo de forma involuntaria. La Evaluación de Sesgo y Equidad proporciona una metodología estructurada para evaluar los riesgos de sesgo de tus sistemas de IA, documentar los atributos protegidos afectados y hacer seguimiento de las medidas de mitigación.",
       "whatTitle": "¿Qué es una evaluación de sesgo y equidad?",
       "whatP1": "Una evaluación de sesgo y equidad es una evaluación sistemática del potencial de un sistema de IA para producir resultados que perjudiquen injustamente a personas o grupos por características protegidas, como la raza, el género, la edad, la discapacidad, el origen étnico o el nivel socioeconómico.",
-      "whatP2": "Según el Reglamento de IA de la UE, los proveedores de sistemas de IA de alto riesgo deben examinar los datos de entrenamiento en busca de posibles sesgos (art. 10) e implantar medidas para prevenir resultados discriminatorios. La Carta de los Derechos Fundamentales de la UE (art. 21) prohíbe explícitamente la discriminación, y los sistemas de IA que puntúan, clasifican o toman decisiones sobre personas están especialmente expuestos a este riesgo.",
+      "whatP2": "Según el RIA, los proveedores de sistemas de IA de alto riesgo deben examinar los datos de entrenamiento en busca de posibles sesgos (art. 10) e implantar medidas para prevenir resultados discriminatorios. La Carta de los Derechos Fundamentales de la UE (art. 21) prohíbe explícitamente la discriminación, y los sistemas de IA que puntúan, clasifican o toman decisiones sobre personas están especialmente expuestos a este riesgo.",
       "whyTitle": "Por qué es importante",
       "whyItems": [
         {
           "title": "Obligación legal",
-          "description": "El Reglamento de IA de la UE exige examinar los sesgos de los datos de entrenamiento (art. 10(2)(f)) y aplicar salvaguardias de no discriminación en los sistemas de alto riesgo. El incumplimiento conlleva multas de hasta el 3 % del volumen de negocio mundial."
+          "description": "El RIA exige examinar los sesgos de los datos de entrenamiento (art. 10(2)(f)) y aplicar salvaguardias de no discriminación en los sistemas de alto riesgo. El incumplimiento conlleva multas de hasta el 3 % del volumen de negocio mundial."
         },
         {
           "title": "Derechos fundamentales",
@@ -3386,7 +3386,7 @@
     },
     "crossBorder": {
       "metaTitle": "Gobernanza de IA transfronteriza: una evaluación, seis regímenes | AI SENTINEL",
-      "metaDescription": "Responde al Reglamento de IA de la UE, al RGPD, a la ADMT de California, a Colorado, a Texas y a Washington desde una única evaluación de impacto, y genera el aviso y el protocolo de recurso que se derivan de ella.",
+      "metaDescription": "Responde al RIA, al RGPD, a la ADMT de California, a Colorado, a Texas y a Washington desde una única evaluación de impacto, y genera el aviso y el protocolo de recurso que se derivan de ella.",
       "title": "Regímenes transfronterizos",
       "intro": "La mayoría de las organizaciones que despliegan IA responden ante varios reguladores a la vez, y cada uno formula una versión de la misma pregunta con palabras distintas. AI SENTINEL determina qué regímenes alcanzan a cada sistema, plantea un único cuestionario redactado conforme al más exigente de ellos y genera los documentos que espera cada régimen.",
       "architectureTitle": "Máximo común denominador, más capas",
@@ -3396,7 +3396,7 @@
       "regimesTitle": "Los regímenes",
       "regimes": [
         {
-          "name": "Reglamento de IA de la UE",
+          "name": "Reglamento de Inteligencia Artificial (RIA)",
           "detail": "Reglamento (UE) 2024/1689. Clasificación de riesgo, cribado del anexo III, evaluación de impacto sobre los derechos fundamentales del art. 27, transparencia del art. 50, documentación técnica del anexo IV y calendario de obligaciones.",
           "count": "83 requisitos"
         },
@@ -3449,7 +3449,7 @@
       "artifacts": [
         {
           "name": "Evaluación de impacto unificada",
-          "description": "Un único expediente que responde a la evaluación de impacto sobre los derechos fundamentales del Reglamento de IA, a la evaluación de impacto relativa a la protección de datos del RGPD, a la evaluación de riesgos de California y a los regímenes estatales."
+          "description": "Un único expediente que responde a la evaluación de impacto sobre los derechos fundamentales del RIA, a la evaluación de impacto relativa a la protección de datos del RGPD, a la evaluación de riesgos de California y a los regímenes estatales."
         },
         {
           "name": "Aviso de IA multijurisdiccional",
@@ -3457,7 +3457,7 @@
         },
         {
           "name": "Protocolo de revisión humana y recurso",
-          "description": "Un único flujo de revisión que satisface el art. 22.3 del RGPD, la excepción de recurso humano de California, el derecho de revisión de Colorado y el derecho a una explicación del Reglamento de IA, con una tabla de lo que cada jurisdicción formula de otro modo."
+          "description": "Un único flujo de revisión que satisface el art. 22.3 del RGPD, la excepción de recurso humano de California, el derecho de revisión de Colorado y el derecho a una explicación del RIA, con una tabla de lo que cada jurisdicción formula de otro modo."
         },
         {
           "name": "Anexo agéntico",
@@ -3506,7 +3506,7 @@
           "body": "Descarga la evaluación, el aviso, el protocolo y el anexo agéntico. Responde a más preguntas y vuelve a generarlos: las lagunas se van cerrando."
         }
       ],
-      "reviewNote": "El contenido normativo de este módulo se validó el 8 de septiembre de 2026 y lleva esa marca en cada documento generado, junto con la fecha de la última revisión frente a la fuente. Los paquetes del Reglamento de IA de la UE y de California siguen pendientes de su propia validación, y todo documento que los cite lo indica. Nada de esto es asesoramiento jurídico."
+      "reviewNote": "El contenido normativo de este módulo se validó el 8 de septiembre de 2026 y lleva esa marca en cada documento generado, junto con la fecha de la última revisión frente a la fuente. Los paquetes del RIA y de California siguen pendientes de su propia validación, y todo documento que los cite lo indica. Nada de esto es asesoramiento jurídico."
     },
     "whatsNew": {
       "metaTitle": "Novedades de AI SENTINEL",
@@ -3522,7 +3522,7 @@
           "items": [
             {
               "title": "AIUC-1 como marco de cumplimiento",
-              "body": "Sus seis dominios y los 51 requisitos en vigor en la versión del tercer trimestre de 2026, cada uno con su identificador y un resumen de una línea, y 186 enlaces con la ISO/IEC 42001, el NIST AI RMF y el Reglamento de IA de la UE tomados de las tablas de correspondencia que publica la propia norma. Nunca se aplica por nivel de riesgo: la eliges tú en la página de cumplimiento para los sistemas que son agentes."
+              "body": "Sus seis dominios y los 51 requisitos en vigor en la versión del tercer trimestre de 2026, cada uno con su identificador y un resumen de una línea, y 186 enlaces con la ISO/IEC 42001, el NIST AI RMF y el RIA tomados de las tablas de correspondencia que publica la propia norma. Nunca se aplica por nivel de riesgo: la eliges tú en la página de cumplimiento para los sistemas que son agentes."
             },
             {
               "title": "La rueda de marcos: trece marcos",
@@ -3566,7 +3566,7 @@
           "items": [
             {
               "title": "Cuatro regímenes normativos más",
-              "body": "El RGPD, la SB 26-189 de Colorado, la TRAIGA de Texas y los cinco instrumentos sectoriales de Washington se suman al Reglamento de IA de la UE, al NIST AI RMF, a la ISO 42001 y a la ADMT de California. Son 294 requisitos en ocho marcos y 115 correspondencias entre marcos, todo bilingüe. Cada régimen determina su propio ámbito a partir de las jurisdicciones declaradas y de unas pocas respuestas de cribado, y una pregunta sin responder permanece visiblemente sin determinar en lugar de leerse discretamente como un no."
+              "body": "El RGPD, la SB 26-189 de Colorado, la TRAIGA de Texas y los cinco instrumentos sectoriales de Washington se suman al RIA, al NIST AI RMF, a la ISO 42001 y a la ADMT de California. Son 294 requisitos en ocho marcos y 115 correspondencias entre marcos, todo bilingüe. Cada régimen determina su propio ámbito a partir de las jurisdicciones declaradas y de unas pocas respuestas de cribado, y una pregunta sin responder permanece visiblemente sin determinar en lugar de leerse discretamente como un no."
             },
             {
               "title": "La evaluación de impacto unificada",
@@ -3616,7 +3616,7 @@
         }
       ],
       "pendingTitle": "Situación de la revisión jurídica",
-      "pendingBody": "Los paquetes del RGPD, Colorado, Texas y Washington, la evaluación unificada y la prueba de esfuerzo agéntica se validaron el 8 de septiembre de 2026. Antes se verificaron con las leyes de sesión los dos aspectos de Washington señalados como no confirmados: la HB 1170 es el capítulo 167 de las Leyes de 2026, en vigor el 1 de febrero de 2027, y la HB 2225 es el capítulo 168, en vigor el 1 de enero de 2027. Los límites a la autorización previa están en vigor desde el 11 de junio de 2026, no desde 2027, porque la fecha de enero de 2027 que figura junto al RCW 48.43.830 corresponde a una sección posterior que concilia dos modificaciones de 2025 y no a los deberes sobre inteligencia artificial. Los paquetes del Reglamento de IA de la UE y de la ADMT de California llevan sus propias fechas de revisión y siguen pendientes de validación; todo documento que los cite lo indica.",
+      "pendingBody": "Los paquetes del RGPD, Colorado, Texas y Washington, la evaluación unificada y la prueba de esfuerzo agéntica se validaron el 8 de septiembre de 2026. Antes se verificaron con las leyes de sesión los dos aspectos de Washington señalados como no confirmados: la HB 1170 es el capítulo 167 de las Leyes de 2026, en vigor el 1 de febrero de 2027, y la HB 2225 es el capítulo 168, en vigor el 1 de enero de 2027. Los límites a la autorización previa están en vigor desde el 11 de junio de 2026, no desde 2027, porque la fecha de enero de 2027 que figura junto al RCW 48.43.830 corresponde a una sección posterior que concilia dos modificaciones de 2025 y no a los deberes sobre inteligencia artificial. Los paquetes del RIA y de la ADMT de California llevan sus propias fechas de revisión y siguen pendientes de validación; todo documento que los cite lo indica.",
       "ctaTitle": "Véalo en el producto",
       "ctaBody": "Abre cualquier sistema de IA y elige la pestaña Regímenes transfronterizos.",
       "ctaLink": "Leer la documentación transfronteriza",
@@ -4417,7 +4417,7 @@
     "reviewedOn": "Última revisión: {date}",
     "neverReviewed": "Sin revisar todavía",
     "wizardQuestion": "¿Dónde opera tu organización?",
-    "wizardHint": "Opcional, y podrás cambiarlo más adelante. Determina qué regímenes comprobamos, por ejemplo las normas ADMT de California o el Reglamento de IA de la UE.",
+    "wizardHint": "Opcional, y podrás cambiarlo más adelante. Determina qué regímenes comprobamos, por ejemplo las normas ADMT de California o el RIA.",
     "notSureYet": "Todavía no lo sé",
     "group": {
       "eu": "Europa",
@@ -4734,8 +4734,8 @@
   },
   "regimes": {
     "title": "Regímenes transfronterizos",
-    "description": "Los regímenes regulatorios son las leyes, y los reguladores que las hacen cumplir. Aquí eso significa el RGPD, Colorado, Texas y Washington junto al Reglamento de IA de la UE y California. Cada régimen resuelve su propio ámbito a partir de las jurisdicciones declaradas y de unas pocas respuestas de cribado.",
-    "reviewMarkerNote": "El contenido normativo de estos regímenes se validó el 8 de septiembre de 2026. Los paquetes del Reglamento de IA de la UE y de California siguen pendientes.",
+    "description": "Los regímenes regulatorios son las leyes, y los reguladores que las hacen cumplir. Aquí eso significa el RGPD, Colorado, Texas y Washington junto al RIA y California. Cada régimen resuelve su propio ámbito a partir de las jurisdicciones declaradas y de unas pocas respuestas de cribado.",
+    "reviewMarkerNote": "El contenido normativo de estos regímenes se validó el 8 de septiembre de 2026. Los paquetes del RIA y de California siguen pendientes.",
     "copiedFromTemplate": "Estas respuestas se copiaron de una plantilla. Revisa cada una para este cliente y después confírmalas.",
     "confirmCopied": "Confirmar respuestas",
     "orgTitle": "Cribado de la organización",
@@ -4826,7 +4826,7 @@
   },
   "unified": {
     "title": "Evaluación de impacto unificada",
-    "subtitle": "Un único cuestionario que responde a la vez al Reglamento de IA de la UE, al RGPD, a la ADMT de California, a Colorado, a Texas y a Washington.",
+    "subtitle": "Un único cuestionario que responde a la vez al RIA, al RGPD, a la ADMT de California, a Colorado, a Texas y a Washington.",
     "scopeTitle": "Regímenes aplicables",
     "counts": "{total} preguntas: {core} del núcleo común y {overlay} que añaden los regímenes aplicables",
     "noOverlays": "Todavía no se ha resuelto ninguna capa de régimen. El núcleo común sigue siendo respondible, y la evaluación indicará qué regímenes quedan sin determinar.",
@@ -5503,10 +5503,10 @@
     "cardDescription": "Las preguntas de aplicabilidad del inicio rápido. Cambia una respuesta y la lista se actualiza.",
     "saved": "Respuestas guardadas",
     "items": {
-      "euAiAct": "Reglamento de IA de la UE",
-      "euGeneralPurpose": "Reglamento de IA: obligaciones de los modelos de uso general",
-      "euTransparency": "Reglamento de IA: obligaciones de transparencia (art. 50)",
-      "euHighRisk": "Reglamento de IA: normas de alto riesgo (anexo III)",
+      "euAiAct": "RIA",
+      "euGeneralPurpose": "RIA: obligaciones de los modelos de uso general",
+      "euTransparency": "RIA: obligaciones de transparencia (art. 50)",
+      "euHighRisk": "RIA: normas de alto riesgo (anexo III)",
       "gdpr": "RGPD (y RGPD del Reino Unido)",
       "californiaAdmt": "California: normas sobre decisiones automatizadas (CCPA)",
       "colorado": "Colorado: SB 26-189 sobre decisiones automatizadas",
@@ -5589,7 +5589,7 @@
       },
       "prohibited": {
         "label": "Revisión de usos prohibidos",
-        "why": "Una revisión de cada uso frente a las prácticas que prohíbe el Reglamento de IA de la UE.",
+        "why": "Una revisión de cada uso frente a las prácticas que prohíbe el RIA.",
         "do": "Comprueba que ningún uso de la IA sea de los que prohíbe la ley."
       },
       "literacy": {
@@ -5864,11 +5864,11 @@
     "newTab": "(se abre en una pestaña nueva)",
     "reasonMissing": "Marcado como no aplicable sin motivo, así que sigue contando como aplicable. Vuelve a marcarlo con el motivo.",
     "notApplicableReason": "Por qué no aplica",
-    "latestLine": "Última prueba: {result}, {date}, anotada por {person}",
+    "latestLine": "Última prueba: {result}, {date}, registrada por {person}",
     "retestBy": "Repetir antes del {date}",
     "acceptedLine": "Aceptada por {person} el {date}:",
     "history": "{count, plural, one {# registro anterior} other {# registros anteriores}}",
-    "recordTest": "Anotar una prueba",
+    "recordTest": "Registrar una prueba",
     "acceptPartial": "Aceptar este resultado parcial",
     "markNotApplicable": "No aplica",
     "applicableAgain": "Sí aplica",
@@ -5899,7 +5899,7 @@
       "performedBy": "Indica aquí al evaluador externo cuando la prueba la hizo un tercero."
     },
     "dialog": {
-      "testTitle": "Anotar una prueba",
+      "testTitle": "Registrar una prueba",
       "acceptTitle": "Aceptar un resultado parcial",
       "notApplicableTitle": "Marcar como no aplicable",
       "appendOnly": "Una vez guardada, la prueba se conserva tal cual. Para corregirla, anota una prueba nueva.",
@@ -5910,7 +5910,7 @@
       "notApplicableHelp": "Explica por qué este requisito no aplica a este agente, por ejemplo porque no genera código. El motivo figura en el expediente de pruebas."
     },
     "toast": {
-      "recorded": "Prueba anotada",
+      "recorded": "Prueba registrada",
       "accepted": "Resultado parcial aceptado",
       "notApplicable": "Marcado como no aplicable",
       "applicableAgain": "El requisito vuelve a aplicar"

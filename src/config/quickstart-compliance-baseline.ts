@@ -176,7 +176,7 @@ export const QUICKSTART_COMPLIANCE_BASELINE: BaselineRule[] = [
     status: "PARTIALLY_COMPLIANT",
     evidence: ev({
       en: "Context mapped: the system is registered with purpose, technique, deployment role and vendor, and carries a documented EU AI Act risk classification.",
-      es: "Contexto cartografiado: el sistema está registrado con finalidad, técnica, rol de despliegue y proveedor, y cuenta con una clasificación de riesgo documentada conforme al Reglamento de IA de la UE.",
+      es: "Contexto cartografiado: el sistema está registrado con finalidad, técnica, rol de despliegue y proveedor, y cuenta con una clasificación de riesgo documentada conforme al RIA.",
     }),
   },
   {

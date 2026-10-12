@@ -105,7 +105,7 @@ export const EXAMPLE_SYSTEMS: readonly ExampleSystem[] = [
       annexIIICategory: "employment_contracting",
       rationale: {
         en: "Used in recruitment to filter applications and rank candidates, which Annex III point 4 of the EU AI Act lists as high risk. The decision affects access to employment, and the people affected are applicants who cannot negotiate the terms on which they are assessed.",
-        es: "Se utiliza en la contratación para filtrar candidaturas y ordenar personas candidatas, un supuesto que el anexo III, punto 4, del Reglamento de IA de la UE califica de alto riesgo. La decisión afecta al acceso al empleo y las personas afectadas no pueden negociar las condiciones en que se las evalúa.",
+        es: "Se utiliza en la contratación para filtrar candidaturas y ordenar personas candidatas, un supuesto que el anexo III, punto 4, del RIA califica de alto riesgo. La decisión afecta al acceso al empleo y las personas afectadas no pueden negociar las condiciones en que se las evalúa.",
       },
     },
     vendorKey: "example-vendor",
@@ -132,7 +132,7 @@ export const EXAMPLE_SYSTEMS: readonly ExampleSystem[] = [
       annexIIICategory: null,
       rationale: {
         en: "Interacts directly with people, so Article 50 of the EU AI Act requires that they be told they are dealing with an AI system. It informs no decision about a person, so no high-risk use case in Annex III applies.",
-        es: "Interactúa directamente con personas, por lo que el artículo 50 del Reglamento de IA de la UE exige informarles de que tratan con un sistema de IA. No fundamenta ninguna decisión sobre una persona, de modo que no se aplica ningún supuesto de alto riesgo del anexo III.",
+        es: "Interactúa directamente con personas, por lo que el artículo 50 del RIA exige informarles de que tratan con un sistema de IA. No fundamenta ninguna decisión sobre una persona, de modo que no se aplica ningún supuesto de alto riesgo del anexo III.",
       },
     },
   },

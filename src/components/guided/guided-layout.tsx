@@ -54,6 +54,7 @@ import { cn } from "@/lib/utils";
 import { AI_SENTINEL_PATH } from "./path-config";
 import { currentStepId, nextStep, overallProgress } from "./path";
 import { PathMenu } from "./path-menu";
+import { GlobalSearch } from "./global-search";
 import { DepartmentSwitch } from "./department-switch";
 import { StepBand } from "./step-band";
 import { ProgressBar } from "./progress-ring";
@@ -151,6 +152,9 @@ export function GuidedLayout({
             <Link href="/governance" className="flex shrink-0 items-center">
               <span className="text-lg tracking-tight" style={BRAND_STYLE}>AI SENTINEL</span>
             </Link>
+          </div>
+          <div className="flex min-w-0 flex-1 justify-end sm:justify-center">
+            <GlobalSearch />
           </div>
           <div className="flex shrink-0 items-center gap-1 sm:gap-2">
             <PageHelpButton />

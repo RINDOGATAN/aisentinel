@@ -6233,5 +6233,21 @@
       "count": "{count, plural, one {# document in one ZIP, with an index} other {# documents in one ZIP, with an index}}",
       "none": "No document for the ZIP is ready yet."
     }
+  },
+  "search": {
+    "label": "Search the program by name",
+    "placeholder": "Search by name",
+    "results": "Search results",
+    "noResults": "Nothing found with that name.",
+    "namesOnly": "Searches names only: AI systems, vendors, policies, assessments, oversight gates, incidents and unapproved AI tools.",
+    "kinds": {
+      "system": "AI systems",
+      "vendor": "Vendors",
+      "policy": "Policies",
+      "assessment": "Assessments",
+      "gate": "Oversight gates",
+      "incident": "Incidents",
+      "shadowAi": "Unapproved AI tools"
+    }
   }
 }

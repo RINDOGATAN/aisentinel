@@ -43,6 +43,7 @@ import { diagnosticsRouter } from "./diagnostics";
 import { businessUnitRouter } from "./governance/businessUnit";
 import { savedViewRouter } from "./governance/savedView";
 import { viewsRouter } from "./governance/views";
+import { searchRouter } from "./governance/search";
 
 export const appRouter = createTRPCRouter({
   pilot: pilotRouter,
@@ -85,6 +86,7 @@ export const appRouter = createTRPCRouter({
   diagnostics: diagnosticsRouter,
   businessUnit: businessUnitRouter,
   savedView: savedViewRouter,
+  search: searchRouter,
   views: viewsRouter,
 });
 

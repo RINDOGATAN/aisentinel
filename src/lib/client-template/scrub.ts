@@ -8,7 +8,9 @@
  *    (any letter case, whole words only).
  * 2. Anything else that points at the source is FLAGGED, not changed: its
  *    e-mail or web domain, the domain's first label, and the distinctive words
- *    of its name ("Acme" in "Acme Holdings Ltd"). A flag is shown to the person
+ *    of its name ("Acme" in "Acme Holdings Ltd"), leaving out ordinary words
+ *    that governance text uses anyway ("Counsel" in "Counsel QA LLP" would
+ *    otherwise flag every "outside-counsel guidelines"). A flag is shown to the person
  *    before the copy runs and listed again after it, so nothing identifying is
  *    carried across silently. It is not rewritten because a word such as a
  *    product name can match by coincidence, and only a person can tell.
@@ -43,6 +45,29 @@ const GENERIC_WORDS = new Set([
   "de", "del", "la", "el", "los", "las", "of", "for", "partners", "services", "servicios",
   "solutions", "soluciones", "technologies", "technology", "tech", "systems", "ai", "labs",
   "consulting", "bank", "banco",
+]);
+
+/**
+ * Ordinary words, in English and Spanish, that a firm's name may carry but that
+ * the copied policies and templates also use in their own sense. Flagging them
+ * as a short form of the name would flag ordinary sentences; the full name and
+ * the domain are still caught.
+ */
+const ORDINARY_WORDS = new Set([
+  // law and advice
+  "counsel", "legal", "law", "laws", "lawyers", "attorneys", "advocates", "advisors", "advisers", "advisory",
+  "compliance", "governance", "privacy", "policy", "risk", "audit", "trust", "rights", "justice", "chambers",
+  "abogados", "asesores", "asesoria", "asesoría", "consultores", "legal", "juridico", "jurídico", "derecho",
+  "cumplimiento", "gobernanza", "privacidad", "riesgo", "auditoria", "auditoría", "confianza", "despacho", "bufete",
+  // data, technology and operations
+  "data", "digital", "cloud", "software", "security", "cyber", "analytics", "intelligence", "research", "platform",
+  "network", "media", "health", "care", "medical", "clinic", "insurance", "finance", "financial", "capital",
+  "investment", "investments", "energy", "retail", "logistics", "education", "learning", "management", "operations",
+  "human", "resources", "people", "talent", "marketing", "sales", "support", "customer", "customers", "public",
+  "datos", "nube", "seguridad", "salud", "seguros", "finanzas", "capital", "inversiones", "energia", "energía",
+  "educacion", "educación", "gestion", "gestión", "recursos", "humanos", "personas", "clientes", "publico", "público",
+  // quality and testing
+  "quality", "test", "testing", "assurance", "calidad", "pruebas",
 ]);
 
 /** Public mail providers: a match on these says nothing about the client. */
@@ -85,14 +110,14 @@ export function flagTerms(source: ScrubSource): { term: string; kind: ScrubFlag[
   const terms = new Map<string, ScrubFlag["kind"]>();
   for (const word of words(source.name)) {
     const lower = word.toLowerCase();
-    if (lower.length < MIN_WORD || GENERIC_WORDS.has(lower) || /^\d+$/.test(lower)) continue;
+    if (lower.length < MIN_WORD || GENERIC_WORDS.has(lower) || ORDINARY_WORDS.has(lower) || /^\d+$/.test(lower)) continue;
     terms.set(lower, "name");
   }
   const domain = normaliseDomain(source.domain);
   if (domain) {
     terms.set(domain, "domain");
     const label = domain.split(".")[0];
-    if (label.length >= MIN_WORD && !GENERIC_WORDS.has(label) && !terms.has(label)) {
+    if (label.length >= MIN_WORD && !GENERIC_WORDS.has(label) && !ORDINARY_WORDS.has(label) && !terms.has(label)) {
       terms.set(label, "domain");
     }
   }

@@ -5567,7 +5567,8 @@
       "answerUnsure": "You answered \"Not sure yet\".",
       "thresholds": "The CCPA size thresholds decide first; the California screening in Settings asks them.",
       "screeningDecides": "Which rules apply depends on the screening questions in Settings."
-    }
+    },
+    "answerScreening": "Answer the screening in Settings to add its requirements."
   },
   "guided": {
     "navLabel": "Program path",

@@ -5567,7 +5567,8 @@
       "answerUnsure": "Respondiste «Todavía no lo sé».",
       "thresholds": "Primero deciden los umbrales de tamaño de la CCPA; los pregunta la evaluación de California en Configuración.",
       "screeningDecides": "Qué normas se aplican depende de las preguntas de evaluación en Configuración."
-    }
+    },
+    "answerScreening": "Responde a la evaluación en Configuración para añadir sus requisitos."
   },
   "guided": {
     "navLabel": "Ruta del programa",

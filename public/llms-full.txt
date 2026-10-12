@@ -33,7 +33,7 @@ Maintain a comprehensive inventory of all AI systems, models, and agents across 
 ### Risk Classification
 URL: https://aisentinel.todo.law/docs/risk-classification
 
-Classify AI systems according to the EU AI Act's four-tier risk framework. Includes an Annex III high-risk category wizard and maintains a full classification history with audit trail.
+Classify AI systems according to the EU AI Act's four-tier risk framework. A rule screening of the registered facts suggests a level; you choose the level and the Annex III category. Maintains a full classification history with audit trail.
 
 **Risk tiers:**
 - **Unacceptable Risk**: Prohibited AI practices (social scoring, real-time biometric identification in public spaces, manipulation of vulnerable groups, emotion recognition in workplace/education)

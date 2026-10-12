@@ -1770,7 +1770,7 @@
         },
         "riskClassification": {
           "title": "Clasificación de riesgos",
-          "description": "Clasificación de riesgo en cuatro niveles según el RIA, con asistente guiado del Anexo III e historial de clasificaciones."
+          "description": "Clasificación de riesgo en cuatro niveles según el RIA: un cribado por reglas sugiere un nivel, tú eliges el nivel y la categoría del Anexo III, con historial de clasificaciones."
         },
         "assessments": {
           "title": "Evaluaciones",
@@ -2010,9 +2010,9 @@
     },
     "riskClassification": {
       "metaTitle": "Clasificación de riesgos: documentación de AI SENTINEL",
-      "metaDescription": "Clasificación de riesgos en cuatro niveles según el RIA, con asistente guiado del Anexo III.",
+      "metaDescription": "Clasificación de riesgos en cuatro niveles según el RIA: un cribado por reglas sugiere un nivel a partir de los datos del sistema, y tú decides.",
       "title": "Clasificación de riesgos",
-      "intro": "Clasifica tus sistemas de IA con el marco de cuatro niveles de riesgo del RIA. El asistente guiado te acompaña por las categorías del Anexo III para determinar el nivel de riesgo correcto, con un historial completo de clasificaciones a efectos de auditoría.",
+      "intro": "Clasifica tus sistemas de IA con el marco de cuatro niveles de riesgo del RIA. El formulario de clasificación muestra un cribado por reglas de los datos registrados del sistema (prácticas prohibidas, áreas del Anexo III, obligaciones de transparencia) con un nivel sugerido; tú eliges el nivel y, si es alto riesgo, la categoría del Anexo III. Cada clasificación se guarda en el historial a efectos de auditoría.",
       "tiersTitle": "Niveles de riesgo",
       "tiersIntro": "El RIA define cuatro niveles de riesgo. Cada nivel conlleva obligaciones de cumplimiento distintas, desde la prohibición total hasta requisitos mínimos de transparencia.",
       "tiers": {
@@ -2039,7 +2039,7 @@
       },
       "examplesLabel": "Ejemplos:",
       "annexTitle": "Categorías del anexo III",
-      "annexIntro": "El asistente de clasificación te guía por las categorías de alto riesgo del Anexo III. Si tu sistema de IA encaja en alguna de estas áreas, es probable que se clasifique como de Alto Riesgo.",
+      "annexIntro": "El formulario de clasificación enumera las categorías de alto riesgo del Anexo III. Si tu sistema de IA encaja en alguna de estas áreas, es probable que se clasifique como de Alto Riesgo.",
       "annexCategories": [
         "Biometría",
         "Infraestructuras críticas",
@@ -2080,16 +2080,16 @@
           "description": "Accede al Registro de IA y selecciona el sistema que quieres clasificar."
         },
         {
-          "title": "Inicia el asistente de clasificación",
-          "description": "Ve a Sistemas de IA → Clasificación de Riesgos y pulsa Clasificar para lanzar el asistente guiado."
+          "title": "Abre el formulario de clasificación",
+          "description": "Pulsa Clasificar en ese sistema para abrir el formulario de clasificación de riesgos."
         },
         {
-          "title": "Responde a las preguntas del Anexo III",
-          "description": "El asistente pregunta si tu sistema encaja en alguna categoría de alto riesgo. Responde con honestidad: el resultado determina las obligaciones de cumplimiento."
+          "title": "Lee el cribado por reglas",
+          "description": "El formulario muestra qué reglas coinciden con los datos registrados del sistema (prácticas prohibidas, áreas del Anexo III, obligaciones de transparencia) y el nivel que sugieren. Es una ayuda para priorizar, no una determinación jurídica."
         },
         {
-          "title": "Revisa el nivel de riesgo sugerido",
-          "description": "Según tus respuestas, el sistema sugiere un nivel de riesgo. Puedes aceptarlo o modificarlo con una justificación."
+          "title": "Elige el nivel de riesgo",
+          "description": "Elige el nivel de riesgo, aceptes o no la sugerencia, y, si es alto riesgo, la categoría del Anexo III. El nivel que eliges determina las obligaciones de cumplimiento."
         },
         {
           "title": "Documenta la justificación",

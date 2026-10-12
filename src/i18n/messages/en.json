@@ -1770,7 +1770,7 @@
         },
         "riskClassification": {
           "title": "Risk Classification",
-          "description": "EU AI Act four-tier risk classification with guided Annex III wizard and classification history."
+          "description": "EU AI Act four-tier risk classification: a rule screening suggests a level, you choose it and the Annex III category, with classification history."
         },
         "assessments": {
           "title": "Assessments",
@@ -2010,9 +2010,9 @@
     },
     "riskClassification": {
       "metaTitle": "Risk Classification: AI SENTINEL Docs",
-      "metaDescription": "EU AI Act four-tier risk classification with guided Annex III wizard.",
+      "metaDescription": "EU AI Act four-tier risk classification: a rule screening suggests a level from the system's facts, and you decide.",
       "title": "Risk Classification",
-      "intro": "Classify your AI systems using the EU AI Act four-tier risk framework. The guided wizard walks you through Annex III categories to determine the correct risk level, with full classification history for audit purposes.",
+      "intro": "Classify your AI systems using the EU AI Act four-tier risk framework. The classification form shows a rule screening of the system's registered facts (prohibited practices, Annex III areas, transparency duties) with a suggested level; you choose the level and, for high risk, the Annex III category. Every classification is kept in the history for audit purposes.",
       "tiersTitle": "Risk Tiers",
       "tiersIntro": "The EU AI Act defines four risk levels. Each level carries different compliance obligations, from outright prohibition to minimal transparency requirements.",
       "tiers": {
@@ -2039,7 +2039,7 @@
       },
       "examplesLabel": "Examples:",
       "annexTitle": "Annex III Categories",
-      "annexIntro": "The classification wizard guides you through the Annex III high-risk categories. If your AI system falls into any of these areas, it is likely classified as High Risk.",
+      "annexIntro": "The classification form lists the Annex III high-risk categories. If your AI system falls into any of these areas, it is likely classified as High Risk.",
       "annexCategories": [
         "Biometrics",
         "Critical infrastructure",
@@ -2080,16 +2080,16 @@
           "description": "Navigate to the AI Registry and select the system you want to classify."
         },
         {
-          "title": "Start the classification wizard",
-          "description": "Go to AI Systems → Risk Classification and click Classify to launch the guided wizard."
+          "title": "Open the classification form",
+          "description": "Choose Classify for that system to open the risk classification form."
         },
         {
-          "title": "Answer the Annex III questions",
-          "description": "The wizard asks whether your system falls into any high-risk category. Answer honestly: the result determines compliance obligations."
+          "title": "Read the rule screening",
+          "description": "The form shows which rules matched the system's registered facts (prohibited practices, Annex III areas, transparency duties) and the level they suggest. It is a triage aid, not a legal determination."
         },
         {
-          "title": "Review the suggested risk level",
-          "description": "Based on your answers, the system suggests a risk tier. You can accept or override with justification."
+          "title": "Choose the risk level",
+          "description": "Choose the risk level, accepting the suggestion or not, and for high risk the Annex III category. The level you choose determines the compliance obligations."
         },
         {
           "title": "Document the rationale",

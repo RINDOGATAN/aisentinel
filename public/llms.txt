@@ -12,7 +12,7 @@ License: AGPL-3.0 (core) + proprietary premium modules for self-hosted installat
 ## Core Modules (Open Source, AGPL-3.0)
 
 - [AI Registry](https://aisentinel.todo.law/docs/ai-registry): Inventory all AI systems, models, and agents with full lifecycle tracking (Draft → Development → Testing → Deployed → Retired)
-- [Risk Classification](https://aisentinel.todo.law/docs/risk-classification): EU AI Act four-tier risk framework (Unacceptable, High, Limited, Minimal) with Annex III wizard
+- [Risk Classification](https://aisentinel.todo.law/docs/risk-classification): EU AI Act four-tier risk framework (Unacceptable, High, Limited, Minimal): rule screening suggests a level, you choose it and the Annex III category
 - [Assessments](https://aisentinel.todo.law/docs/assessments): FRIA, AI Risk, and Custom assessment templates with approval workflows and risk scoring
 - [Compliance Mapping](https://aisentinel.todo.law/docs/compliance): mapping across nine frameworks (EU AI Act, NIST AI RMF, ISO 42001, AIUC-1, the GDPR and the California, Colorado, Texas and Washington AI rules) with about 300 cross-framework mappings, evidence management, and compliance snapshots
 - [Human Oversight](https://aisentinel.todo.law/docs/oversight): Approval gates (pre-deploy, post-deploy, periodic review, incident-triggered, material change) with decision logging per Art. 14

@@ -40,7 +40,8 @@ describe("dates", () => {
   it("are formatted with the screen's language on every page that showed English dates", () => {
     const pages = [
       "src/app/(dashboard)/governance/ai-registry/[id]/page.tsx",
-      "src/app/(dashboard)/governance/risk-classification/page.tsx",
+      // The risk-level list no longer shows a date: the classification and
+      // its date are on the system's page (above).
       "src/app/(dashboard)/governance/assessments/[id]/page.tsx",
       "src/app/(dashboard)/governance/incidents/[id]/page.tsx",
     ];
@@ -105,6 +106,10 @@ describe("no hard-coded English or raw values on the recorded screens", () => {
     expect(src).not.toMatch(/label: "\d\. /);
     expect(src).not.toMatch(/level: data\.riskLevel,/);
     expect(read("src/components/ai/RiskScreeningPanel.tsx")).toContain("riskLabel(screening.suggestedLevel)");
+    // The form itself moved to the system's page.
+    const form = read("src/components/governance/risk-classification-form.tsx");
+    expect(form).not.toContain('"Failed to classify risk"');
+    expect(form).not.toMatch(/level: data\.riskLevel,/);
   });
 
   it("assessments", () => {

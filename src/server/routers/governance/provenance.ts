@@ -222,7 +222,7 @@ export const provenanceRouter = createTRPCRouter({
           provenance: m.provenance,
           sourceRef: m.sourceRef ?? m.evidence?.slice(0, 160) ?? null,
           at: m.updatedAt,
-          href: `/governance/compliance?systemId=${m.aiSystemId}`,
+          href: `/governance/ai-registry/${m.aiSystemId}?tab=evidence`,
         })),
         ...gates.map((g) => ({
           entityType: "OversightGate" as const,

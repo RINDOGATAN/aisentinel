@@ -340,7 +340,8 @@
     "toastDataSourceAdded": "Data source added",
     "toastDataSourceUpdated": "Data source updated",
     "toastDataSourceDeleted": "Data source deleted",
-    "tabAdmt": "California ADMT"
+    "tabAdmt": "California ADMT",
+    "tabEvidence": "Evidence"
   },
   "transparency": {
     "title": "Art. 50 Transparency Obligations",
@@ -741,7 +742,17 @@
     "evidenceCount": "Evidence ({count})",
     "linkedAcrossFrameworks": "Linked across frameworks ({count})",
     "alsoApplyToEquivalent": "Also apply to {count} equivalent requirements across frameworks",
-    "downloadPdf": "Download as PDF"
+    "downloadPdf": "Download as PDF",
+    "listIntro": "Each AI system keeps its requirements, their status and their evidence on its own page. Open a system to work on them.",
+    "searchSystems": "Search systems by name",
+    "noSystemsFound": "No system has that name.",
+    "notClassified": "No risk level yet",
+    "openEvidence": "Open its evidence",
+    "loadMore": "Show more",
+    "matrixIntro": "The requirements that apply to this system, framework by framework: set each status and attach its evidence.",
+    "noFrameworkForSystem": "No framework has a requirement for this system yet. Give it a risk level, and say where you work in Settings, so its requirements appear here.",
+    "frameworksNotShown": "{count, plural, one {Not shown: # framework with no requirement for this system, such as the law of a place you have not declared.} other {Not shown: # frameworks with no requirement for this system, such as the laws of places you have not declared.}}",
+    "frameworksNotShownLink": "Where you work is set in Settings."
   },
   "incidents": {
     "title": "Incidents",

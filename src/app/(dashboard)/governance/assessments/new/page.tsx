@@ -2,9 +2,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025-2026 Rindogatan LLC
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
+import { isPerSystemUnifiedTemplate } from "@/lib/unified-template";
 import { useOrganization } from "@/lib/organization-context";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -76,9 +78,15 @@ export default function NewAssessmentPage() {
     { enabled: !!orgId }
   );
 
+  const creating = useRef(false);
   const createMutation = trpc.assessment.create.useMutation({
     onSuccess: (data) => {
       router.push(`/governance/assessments/${data.id}`);
+    },
+    onError: (err) => {
+      creating.current = false;
+      // A refusal (a pilot limit, a role) is a sentence for the person.
+      toast.error(err.message);
     },
   });
 
@@ -89,7 +97,8 @@ export default function NewAssessmentPage() {
   // entitled template applies, there is nothing to choose. Select it and skip
   // the template step, so the person sees two steps, not three. A locked
   // template is not auto-selected — the person could not proceed past it.
-  const currentTemplates = templates ?? [];
+  // A per-system unified template is that system's own (src/lib/unified-template.ts).
+  const currentTemplates = (templates ?? []).filter((tpl) => !isPerSystemUnifiedTemplate(tpl));
   const soleTemplate =
     presetType && currentTemplates.length === 1 && entitled.includes(currentTemplates[0].type)
       ? currentTemplates[0]
@@ -116,6 +125,11 @@ export default function NewAssessmentPage() {
 
   const handleCreate = () => {
     if (!selectedSystemId || !selectedTemplateId || !title || !selectedType) return;
+    // `isPending` reaches the button only on the next render, so a double
+    // click sent two creates. The lock is taken synchronously; it is released
+    // on an error and kept on success, while the page moves to the new record.
+    if (creating.current) return;
+    creating.current = true;
     createMutation.mutate({
       organizationId: orgId,
       aiSystemId: selectedSystemId,
@@ -180,7 +194,7 @@ export default function NewAssessmentPage() {
             {presetType && (
               <p className="text-sm text-muted-foreground">{t("step2ForType", { type: tt(typeNameKeys[presetType]) })}</p>
             )}
-            {templates && templates.length === 0 && (
+            {templates && currentTemplates.length === 0 && (
               <p className="text-muted-foreground">
                 {t("step2Empty")}{" "}
                 <Link href="/governance/assessments/templates" className="text-primary hover:underline">
@@ -189,7 +203,7 @@ export default function NewAssessmentPage() {
                 .
               </p>
             )}
-            {(templates ?? []).map((template) => {
+            {currentTemplates.map((template) => {
               const isEntitled = entitled.includes(template.type);
               return (
                 <button

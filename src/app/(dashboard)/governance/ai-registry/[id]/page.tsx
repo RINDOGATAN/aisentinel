@@ -1255,10 +1255,19 @@ export default function AISystemDetailPage() {
                       {system.riskClassification.rationale}
                     </p>
                   </div>
-                  <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                  <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
                     <span>
                       {tc("classified", { date: formatDate(system.riskClassification.classifiedAt) })}
                     </span>
+                    {/* The form lives on the risk-level page; this opens it on this system. */}
+                    {canWrite && (
+                      <Link href={`/governance/risk-classification?system=${id}`}>
+                        <Button variant="outline" size="sm">
+                          <Shield className="w-4 h-4 mr-2" />
+                          {tRisk("reclassify")}
+                        </Button>
+                      </Link>
+                    )}
                   </div>
 
                   {/* History */}
@@ -1293,7 +1302,7 @@ export default function AISystemDetailPage() {
                   <p className="text-sm mb-4">
                     {t("notClassifiedDescription")}
                   </p>
-                  <Link href="/governance/risk-classification">
+                  <Link href={`/governance/risk-classification?system=${id}`}>
                     <Button variant="outline">
                       <Shield className="w-4 h-4 mr-2" />
                       {t("classifyRisk")}

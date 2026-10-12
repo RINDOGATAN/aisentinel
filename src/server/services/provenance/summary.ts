@@ -43,7 +43,7 @@ export const needsConfirmation = needsConfirmationPure;
  * no person ever looked at. They are excluded from numerator and denominator
  * alike; they re-enter the moment someone gives them a real status.
  */
-const ASSERTED_MAPPING_WHERE = {
+export const ASSERTED_MAPPING_WHERE = {
   status: { not: "NOT_ASSESSED" as const },
 };
 

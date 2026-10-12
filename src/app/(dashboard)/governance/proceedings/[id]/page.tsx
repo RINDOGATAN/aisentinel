@@ -33,6 +33,7 @@ import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useNow } from "@/lib/use-now";
 import { PageHeader } from "@/components/governance/page-header";
+import { useFormatDate } from "@/lib/use-format-date";
 
 const STATUSES = ["MONITORING", "OPEN", "RESPONDING", "DECIDED", "APPEALED", "CLOSED"] as const;
 const EVENT_KINDS = [
@@ -47,6 +48,7 @@ const EVENT_KINDS = [
 
 export default function ProceedingDetailPage() {
   const t = useTranslations("proceedings");
+  const { formatDate: fmtDate } = useFormatDate();
   const tc = useTranslations("common");
   const params = useParams();
   const id = params.id as string;
@@ -271,12 +273,12 @@ export default function ProceedingDetailPage() {
                     <span
                       className={`text-xs ${overdue ? "text-destructive" : "text-muted-foreground"}`}
                     >
-                      {t("due", { date: new Date(e.dueAt).toLocaleDateString() })}
+                      {t("due", { date: fmtDate(e.dueAt) })}
                     </span>
                   )}
                   {e.occurredAt && (
                     <span className="text-xs text-muted-foreground">
-                      {new Date(e.occurredAt).toLocaleDateString()}
+                      {fmtDate(e.occurredAt)}
                     </span>
                   )}
                   {e.completedAt ? (

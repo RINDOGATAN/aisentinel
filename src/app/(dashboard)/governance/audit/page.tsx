@@ -31,6 +31,7 @@ import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useExportDownload } from "@/components/governance/use-export-download";
 import { PageHeader } from "@/components/governance/page-header";
+import { useFormatDate } from "@/lib/use-format-date";
 
 const READER_ROLES = ["OWNER", "ADMIN", "AI_OFFICER"];
 const ALL = "ALL";
@@ -53,6 +54,7 @@ function detailOf(changes: unknown, metadata: unknown): string {
 
 export default function AuditTrailPage() {
   const t = useTranslations("audit");
+  const { formatDate: fmtDate, formatDateTime: fmtDateTime } = useFormatDate();
   // The common actions read in the reader's language; the stored code (and
   // the CSV export) stays as written.
   const actionLabel = (code: string) =>
@@ -231,7 +233,7 @@ export default function AuditTrailPage() {
         )}
         {facets?.earliest && (
           <span>
-            {t("since", { date: new Date(facets.earliest).toLocaleDateString() })}
+            {t("since", { date: fmtDate(facets.earliest) })}
           </span>
         )}
         {filtered && (
@@ -281,7 +283,7 @@ export default function AuditTrailPage() {
                     return (
                       <tr key={e.id} className="border-b last:border-0 align-top">
                         <td className="p-3 whitespace-nowrap text-xs text-muted-foreground">
-                          {new Date(e.createdAt).toLocaleString()}
+                          {fmtDateTime(e.createdAt)}
                         </td>
                         <td className="p-3">
                           {e.actorName ?? e.actorEmail ?? (

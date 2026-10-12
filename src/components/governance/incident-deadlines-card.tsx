@@ -22,6 +22,7 @@ import type { StatusKey } from "@/config/status-palette";
 import { StatusMark, StatusNote } from "@/components/ui/status-note";
 import { useNow } from "@/lib/use-now";
 import { citationString } from "@/config/framework-display";
+import { useFormatDate } from "@/lib/use-format-date";
 
 /**
  * The state of a clock is shown by the border of the date chip and by a word
@@ -55,6 +56,7 @@ export function IncidentDeadlinesCard({
   canWrite: boolean;
 }) {
   const t = useTranslations("incidentDeadlines");
+  const { formatDateTime: fmtDateTime } = useFormatDate();
   const locale = useLocale();
   const lang = locale === "es" ? "es" : "en";
   const utils = trpc.useUtils();
@@ -121,7 +123,7 @@ export function IncidentDeadlinesCard({
           </div>
           <p className="text-[11px] text-muted-foreground">
             {facts.usedReportedAt ? t("awareFromReported") : t("awareRecorded")}{" "}
-            {new Date(facts.awareAt).toLocaleString()}
+            {fmtDateTime(facts.awareAt)}
           </p>
         </div>
 
@@ -140,7 +142,7 @@ export function IncidentDeadlinesCard({
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="text-sm font-medium">{d.label[lang]}</span>
                     <Badge variant="outline" className={`text-[10px] ${STATE_STYLE[state]}`}>
-                      {d.dueAt ? new Date(d.dueAt).toLocaleString() : t("immediate")}
+                      {d.dueAt ? fmtDateTime(d.dueAt) : t("immediate")}
                     </Badge>
                     {STATE_STATUS[state] && (
                       <StatusMark status={STATE_STATUS[state]!} className="text-[11px]">

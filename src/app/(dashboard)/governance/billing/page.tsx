@@ -17,9 +17,11 @@ import { useTranslations } from "next-intl";
 import { features } from "@/config/features";
 import { brand } from "@/config/brand";
 import { formatPrice } from "@/lib/currency";
+import { useFormatDate } from "@/lib/use-format-date";
 
 export default function BillingPage() {
   const t = useTranslations("billing");
+  const { formatDate: fmtDate } = useFormatDate();
   const { organization } = useOrganization();
   const [enableSkill, setEnableSkill] = useState<{
     id: string;
@@ -131,7 +133,7 @@ export default function BillingPage() {
       stripeSubscriptionId: entitlement?.stripeSubscriptionId ?? null,
       licenseType: entitlement?.licenseType ?? null,
       renewsAt: entitlement?.expiresAt
-        ? new Date(entitlement.expiresAt).toLocaleDateString()
+        ? fmtDate(entitlement.expiresAt)
         : null,
     };
   });

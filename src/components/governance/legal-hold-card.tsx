@@ -21,6 +21,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
+import { useFormatDate } from "@/lib/use-format-date";
 
 const HOLD_ROLES = ["OWNER", "ADMIN", "AI_OFFICER"];
 
@@ -32,6 +33,7 @@ export function LegalHoldCard({
   userRole: string | null;
 }) {
   const t = useTranslations("legalHold");
+  const { formatDate: fmtDate } = useFormatDate();
   const utils = trpc.useUtils();
   const mayHold = userRole !== null && HOLD_ROLES.includes(userRole);
 
@@ -101,7 +103,7 @@ export function LegalHoldCard({
                     <p className="text-[11px] text-muted-foreground">
                       {t("placedBy", {
                         who: h.issuedByName ?? "—",
-                        when: new Date(h.issuedAt).toLocaleDateString(),
+                        when: fmtDate(h.issuedAt),
                       })}
                     </p>
 
@@ -215,7 +217,7 @@ export function LegalHoldCard({
                     {h.matter} ·{" "}
                     {t("releasedBy", {
                       who: h.releasedByName ?? "—",
-                      when: h.releasedAt ? new Date(h.releasedAt).toLocaleDateString() : "—",
+                      when: h.releasedAt ? fmtDate(h.releasedAt) : "—",
                     })}
                     {h.releaseReason ? ` · ${h.releaseReason}` : ""}
                   </p>

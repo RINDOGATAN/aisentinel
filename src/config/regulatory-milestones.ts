@@ -45,6 +45,7 @@ import {
   EU_AI_ACT_DATES,
   EU_AI_ACT_DATES_LAW_REVIEWED_AS_OF,
 } from "./eu-ai-act-dates";
+import { formatDayIn } from "@/lib/format-date";
 
 /**
  * Rule-pack version. Bump on any content change (milestones, dates,
@@ -55,8 +56,8 @@ export const REGULATORY_MILESTONES_VERSION = "2026.09.2";
 export const REGULATORY_MILESTONES_LAW_REVIEWED_AS_OF = "2026-08-21";
 
 export const REGULATORY_MILESTONES_REVIEW_MARKER: Localized = {
-  en: `Law reviewed as of ${REGULATORY_MILESTONES_LAW_REVIEWED_AS_OF}; legal sign-off pending.`,
-  es: `Revisión jurídica a fecha de ${REGULATORY_MILESTONES_LAW_REVIEWED_AS_OF}; pendiente de validación jurídica.`,
+  en: `Law reviewed as of ${formatDayIn("en", REGULATORY_MILESTONES_LAW_REVIEWED_AS_OF)}; legal sign-off pending.`,
+  es: `Revisión jurídica a fecha de ${formatDayIn("es", REGULATORY_MILESTONES_LAW_REVIEWED_AS_OF)}; pendiente de validación jurídica.`,
 };
 
 // ---------------------------------------------------------------------------

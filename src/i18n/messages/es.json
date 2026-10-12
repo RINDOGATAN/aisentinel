@@ -152,11 +152,12 @@
   },
   "dashboard": {
     "title": "Gobernanza de IA",
-    "subtitle": "Panel ejecutivo"
+    "subtitle": "El panel ejecutivo: todo el programa de un vistazo",
+    "subtitleOrg": "{org}: el panel ejecutivo, todo el programa de un vistazo"
   },
   "aiRegistry": {
-    "title": "Registro de IA",
-    "subtitle": "Inventario de todos los sistemas de IA, modelos y agentes",
+    "title": "Tus sistemas de IA",
+    "subtitle": "El registro de IA: cada sistema, modelo y agente",
     "registerAiSystem": "Registrar sistema de IA",
     "searchPlaceholder": "Buscar sistemas de IA...",
     "emptyTitle": "No se han encontrado sistemas de IA",
@@ -374,8 +375,8 @@
     "toastError": "No se pudo guardar el perfil de transparencia"
   },
   "riskClassification": {
-    "title": "Clasificación de riesgos",
-    "subtitle": "Clasificación de riesgos en cuatro niveles según el RIA para tus sistemas de IA",
+    "title": "Nivel de riesgo",
+    "subtitle": "Clasificación de riesgos: los cuatro niveles del RIA para tus sistemas de IA",
     "unclassified": "Sin clasificar",
     "searchPlaceholder": "Buscar sistemas de IA...",
     "currentClassification": "Clasificación actual",
@@ -420,8 +421,8 @@
   },
   "quickstart": {
     "backToDashboard": "Panel de control",
-    "title": "Inicio rápido de gobernanza de IA",
-    "subtitle": "Configura tu programa de gobernanza de IA en minutos",
+    "title": "Inicio rápido",
+    "subtitle": "El inicio rápido de gobernanza de IA: configura tu programa en minutos",
     "programNameLabel": "Da nombre a este programa",
     "programNamePlaceholder": "El programa de gobernanza de IA de tu organización",
     "programNameHelp": "Se rellena con el nombre de tu organización. Aparece en la pantalla de resultados y en el PDF del programa. Puedes cambiarlo.",
@@ -524,8 +525,8 @@
     "statThreatScenarios": "{count} escenarios de amenaza"
   },
   "assessments": {
-    "title": "Evaluaciones",
-    "description": "FRIA, conformidad y evaluaciones de riesgos de sistemas de IA",
+    "title": "Evaluaciones de impacto",
+    "description": "Evaluaciones: FRIA, conformidad y evaluaciones de riesgos de sistemas de IA",
     "newAssessment": "Nueva evaluación",
     "searchPlaceholder": "Buscar evaluaciones...",
     "statsTotal": "Total",
@@ -709,8 +710,8 @@
     "decidedBy": "Decidido por: {name}"
   },
   "compliance": {
-    "title": "Cumplimiento",
-    "description": "Relaciona el cumplimiento de tus sistemas de IA con cada marco normativo",
+    "title": "Evidencias",
+    "description": "Cumplimiento: cada sistema de IA relacionado con sus marcos normativos, con las evidencias de cada requisito",
     "exportCsv": "Exportar CSV",
     "selectSystemPlaceholder": "Selecciona un sistema de IA...",
     "selectSystemPrompt": "Selecciona un sistema de IA arriba para ver su matriz de cumplimiento.",
@@ -743,8 +744,8 @@
     "downloadPdf": "Descargar en PDF"
   },
   "incidents": {
-    "title": "Incidentes de IA",
-    "description": "Seguimiento de fallos de IA, gravedad, cronología y notificaciones del art. 73",
+    "title": "Incidentes",
+    "description": "Incidentes de IA: fallos, gravedad, cronología y notificaciones del art. 73",
     "reportIncident": "Notificar incidente",
     "searchPlaceholder": "Buscar incidentes...",
     "statsTotal": "Total de incidentes",
@@ -885,8 +886,8 @@
     "labelLastUpdated": "Última actualización"
   },
   "vendors": {
-    "title": "Riesgo de proveedores",
-    "subtitle": "Gestiona el riesgo de proveedores externos de IA y sus evaluaciones",
+    "title": "Proveedores",
+    "subtitle": "Riesgo de proveedores: tus proveedores externos de IA y sus evaluaciones",
     "addVendor": "Añadir proveedor",
     "statsTotalVendors": "Total de proveedores",
     "statsCriticalRisk": "Riesgo crítico",
@@ -1065,8 +1066,8 @@
     "placeholderFindings": "Documenta los hallazgos iniciales, las observaciones o el alcance..."
   },
   "policies": {
-    "title": "Políticas",
-    "subtitle": "Políticas y estándares de gobernanza de IA",
+    "title": "Política de IA",
+    "subtitle": "Políticas: las políticas y estándares de gobernanza de IA de tu organización",
     "createPolicy": "Crear política",
     "statsTotal": "Total",
     "statsDraft": "Borrador",
@@ -1191,8 +1192,8 @@
     "archiving": "Archivando..."
   },
   "shadowAi": {
-    "title": "Detección de IA en la sombra",
-    "subtitle": "Descubre y gestiona el uso no autorizado de herramientas de IA",
+    "title": "Herramientas de IA sin aprobar",
+    "subtitle": "Detección de IA en la sombra: descubre y gestiona las herramientas de IA que se usan sin aprobación",
     "premiumBadge": "Premium",
     "enableShadowAi": "Activar detección de IA en la sombra",
     "reportAiTool": "Notificar herramienta de IA",
@@ -1334,8 +1335,8 @@
     }
   },
   "vendorCatalog": {
-    "title": "Catálogo de proveedores de IA",
-    "subtitle": "Explora proveedores de IA de la base de datos de VendorWatch",
+    "title": "Catálogo de proveedores",
+    "subtitle": "El catálogo de proveedores de IA: proveedores de IA de la base de datos de VendorWatch",
     "premiumBadge": "Premium",
     "enableCatalog": "Activar catálogo de proveedores de IA",
     "statsTotalVendors": "Total de proveedores",
@@ -4030,8 +4031,8 @@
   },
   "program": {
     "page": {
-      "title": "Programa de gobernanza de IA",
-      "subtitle": "La imagen viva de cómo tu organización gobierna la IA: mapa, madurez y el camino por delante.",
+      "title": "Mapa del programa",
+      "subtitle": "El programa de gobernanza de IA: la imagen viva de cómo tu organización gobierna la IA, con su mapa, su madurez y el camino por delante.",
       "exportPdf": "Exportar PDF",
       "mapTitle": "Mapa de gobernanza",
       "mapSubtitle": "Cada sistema de IA, su nivel de riesgo, sus controles y los proveedores detrás, con las carencias a la vista.",
@@ -4337,8 +4338,8 @@
       "TransparencyProfile": "Perfil del art. 50"
     },
     "queue": {
-      "title": "Cola de revisión",
-      "subtitle": "Elementos evaluados automáticamente a la espera de que una persona los asuma.",
+      "title": "Revisar lo redactado",
+      "subtitle": "La cola de revisión: elementos evaluados automáticamente a la espera de que una persona los asuma.",
       "empty": "Nada que confirmar: todos los artefactos han sido revisados.",
       "filterAll": "Todos los tipos",
       "selectAll": "Seleccionar todo",
@@ -4450,8 +4451,8 @@
     }
   },
   "obligations": {
-    "title": "Calendario de obligaciones",
-    "subtitle": "Plazos normativos proyectados sobre tu propio inventario de IA.",
+    "title": "Dónde trabajas y tus normas",
+    "subtitle": "El calendario de obligaciones: plazos normativos proyectados sobre tu propio inventario de IA.",
     "ariaLabel": "Cronología de obligaciones normativas",
     "assumedJurisdictions": "Mostrando obligaciones para: {jurisdictions}",
     "changePlaces": "Cambiar en Configuración",
@@ -5031,8 +5032,8 @@
     "collapse": "Cerrar"
   },
   "sensitiveData": {
-    "title": "Análisis de datos sensibles",
-    "subtitle": "Decide, y deja constancia, de si un conjunto de datos debe tratarse como dato de salud u otra categoría sensible.",
+    "title": "Datos sensibles",
+    "subtitle": "Análisis de datos sensibles: decide, y deja constancia, de si un conjunto de datos debe tratarse como dato de salud u otra categoría sensible.",
     "whyTitle": "Por qué un análisis por factores",
     "whyBody": "Las leyes estatales de EE. UU. definen el dato de salud de forma distinta y varias de ellas atienden al uso que se le da, no al campo en el que figura. Cinco factores (origen, contenido, uso, expectativas de la persona y perjuicio) ofrecen una forma repetible de razonar, y es ese razonamiento lo que un regulador pide ver.",
     "subjectLabel": "¿Qué estás clasificando?",
@@ -5177,8 +5178,8 @@
     "effect": "Mientras hay una suspensión en vigor, se rechaza eliminar sistemas, proveedores, evidencias, destinatarios, análisis, instantáneas y la propia organización."
   },
   "proceedings": {
-    "title": "Procedimientos",
-    "subtitle": "Cada investigación, actuación sancionadora y reclamación, con sus plazos, su correspondencia y la posición fáctica adoptada. Un incidente se convierte en varios procedimientos; el riesgo es que lo afirmado en uno se lea en otro.",
+    "title": "Asuntos e investigaciones",
+    "subtitle": "Procedimientos: cada investigación, actuación sancionadora y reclamación, con sus plazos, su correspondencia y la posición fáctica adoptada. Un incidente se convierte en varios procedimientos; el riesgo es que lo afirmado en uno se lea en otro.",
     "deadlinesTitle": "Próximos plazos",
     "overdueMark": "Fuera de plazo",
     "titleLabel": "Procedimiento",
@@ -5265,8 +5266,8 @@
     "marker": "Verificado contra los textos consolidados el 11-09-2026. Orientativo: los plazos se calculan con lo registrado y quien notifica puede no saberlo todo aún."
   },
   "boardReports": {
-    "title": "Informes al consejo",
-    "subtitle": "Qué se informó, cuándo, a quién y qué se decidió. Cada registro congela las cifras del programa tal y como estaban ese día, de modo que puede reproducirse después lo que vio el consejo.",
+    "title": "Informe al consejo",
+    "subtitle": "Informes al consejo: qué se informó, cuándo, a quién y qué se decidió. Cada registro congela las cifras del programa tal y como estaban ese día, de modo que puede reproducirse después lo que vio el consejo.",
     "record": "Registrar un informe",
     "noneYet": "Todavía no hay nada registrado. Una reclamación que sostenga que al consejo nunca se le informó empieza aquí.",
     "cadence": "{count, plural, one {# informe registrado} other {# informes registrados}}. El último fue el {last}.",

@@ -48,6 +48,7 @@ import { ProgressBar } from "@/components/guided/progress-ring";
 import { AIUC1_FRAMEWORK } from "@/config/aiuc1-requirements";
 import { aiuc1Capabilities, aiuc1Paraphrase, aiuc1Title } from "@/config/aiuc1-requirements-es";
 import { AIUC1_TEST_RESULTS, retestDue, type Aiuc1TestResult } from "@/config/aiuc1-evidence";
+import { formatDateIn } from "@/lib/use-format-date";
 
 const DECISION_ROLES = ["OWNER", "ADMIN", "AI_OFFICER"];
 
@@ -130,7 +131,7 @@ export default function AgentTestingDetailPage({ params }: { params: Promise<{ i
   }
 
   const person = (userId: string) => data.people[userId] ?? t("formerMember");
-  const day = (d: Date | string) => new Date(d).toLocaleDateString(locale);
+  const day = (d: Date | string) => formatDateIn(locale, d);
   const pending = recordTest.isPending || acceptPartial.isPending || setApplicability.isPending;
   const minText = 10;
 

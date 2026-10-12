@@ -33,6 +33,7 @@ import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useNow } from "@/lib/use-now";
 import { STATUS_OUTLINE, StatusMark } from "@/components/ui/status-note";
+import { useFormatDate } from "@/lib/use-format-date";
 
 const TYPES = [
   "INQUIRY",
@@ -59,6 +60,7 @@ const STATUS_STYLE: Record<string, string> = {
 
 export default function ProceedingsPage() {
   const t = useTranslations("proceedings");
+  const { formatDate: fmtDate } = useFormatDate();
   const router = useRouter();
   const { organization, canWrite } = useOrganization();
   const orgId = organization?.id ?? "";
@@ -112,7 +114,7 @@ export default function ProceedingsPage() {
                 <p key={d.id} className="text-xs">
                   {/* A date is a fact; being past the limit is said in a word. */}
                   <span className="text-muted-foreground">
-                    {d.dueAt ? new Date(d.dueAt).toLocaleDateString() : "—"}
+                    {d.dueAt ? fmtDate(d.dueAt) : "—"}
                   </span>{" "}
                   {overdue && (
                     <StatusMark status="danger" className="items-baseline">
@@ -220,7 +222,7 @@ export default function ProceedingsPage() {
                     {r.nextDeadline?.dueAt && (
                       <span className="text-muted-foreground">
                         {t("nextDeadline", {
-                          date: new Date(r.nextDeadline.dueAt).toLocaleDateString(),
+                          date: fmtDate(r.nextDeadline.dueAt),
                           what: r.nextDeadline.title,
                         })}
                       </span>

@@ -46,6 +46,7 @@
 
 import type { ContentLocale, Localized } from "@/config/lawfirm-ai-toolkit";
 import type { AdmtApplicabilityTag } from "@/config/admt-rules";
+import { formatDayIn } from "@/lib/format-date";
 
 // ============================================================
 // VERSION + REVIEW MARKER
@@ -56,8 +57,8 @@ export const ADMT_REQUIREMENTS_VERSION = "2026.08.2";
 export const ADMT_REQUIREMENTS_LAW_REVIEWED_AS_OF = "2026-08-21";
 
 export const ADMT_REQUIREMENTS_REVIEW_MARKER: Localized = {
-  en: `Law reviewed as of ${ADMT_REQUIREMENTS_LAW_REVIEWED_AS_OF}; California legal sign-off pending.`,
-  es: `Revisión jurídica a fecha de ${ADMT_REQUIREMENTS_LAW_REVIEWED_AS_OF}; pendiente de validación jurídica en California.`,
+  en: `Law reviewed as of ${formatDayIn("en", ADMT_REQUIREMENTS_LAW_REVIEWED_AS_OF)}; California legal sign-off pending.`,
+  es: `Revisión jurídica a fecha de ${formatDayIn("es", ADMT_REQUIREMENTS_LAW_REVIEWED_AS_OF)}; pendiente de validación jurídica en California.`,
 };
 
 export const ADMT_FRAMEWORK = {

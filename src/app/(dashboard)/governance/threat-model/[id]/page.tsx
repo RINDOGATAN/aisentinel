@@ -51,6 +51,7 @@ import {
   EvidenceRing,
   PriorityMatrix,
 } from "@/components/governance/threat-model-visuals";
+import { useFormatDate } from "@/lib/use-format-date";
 
 const PRIORITY_STYLE: Record<string, string> = {
   ACT_NOW: STATUS_OUTLINE.danger,
@@ -67,6 +68,7 @@ const STATE_STYLE: Record<string, string> = {
 
 export default function ThreatModelDetailPage() {
   const t = useTranslations("threatModel");
+  const { formatDate: fmtDate } = useFormatDate();
   const tc = useTranslations("common");
   const locale = useLocale();
   const lang = locale === "es" ? "es" : "en";
@@ -210,7 +212,7 @@ export default function ThreatModelDetailPage() {
               t("noSystemLinked")
             )}
             {data.reviewedAt
-              ? ` · ${t("reviewedOn", { date: new Date(data.reviewedAt).toLocaleDateString() })}`
+              ? ` · ${t("reviewedOn", { date: fmtDate(data.reviewedAt) })}`
               : ""}
           </>
         }
@@ -450,7 +452,7 @@ export default function ThreatModelDetailPage() {
                         <div className="space-y-1">
                           {c.tests.slice(0, 3).map((test) => (
                             <p key={test.id} className="text-[11px] text-muted-foreground">
-                              {new Date(test.testedAt).toLocaleDateString()} ·{" "}
+                              {fmtDate(test.testedAt)} ·{" "}
                               <span
                                 className={
                                   test.result === "PASS"

@@ -152,11 +152,12 @@
   },
   "dashboard": {
     "title": "AI Governance",
-    "subtitle": "Executive Dashboard"
+    "subtitle": "The executive dashboard: the whole program at a glance",
+    "subtitleOrg": "{org}: the executive dashboard, the whole program at a glance"
   },
   "aiRegistry": {
-    "title": "AI Registry",
-    "subtitle": "Inventory of all AI systems, models, and agents",
+    "title": "Your AI systems",
+    "subtitle": "The AI registry: every system, model and agent",
     "registerAiSystem": "Register AI System",
     "searchPlaceholder": "Search AI systems...",
     "emptyTitle": "No AI systems found",
@@ -374,8 +375,8 @@
     "toastError": "Could not save the transparency profile"
   },
   "riskClassification": {
-    "title": "Risk Classification",
-    "subtitle": "EU AI Act four-tier risk classification for your AI systems",
+    "title": "Risk level",
+    "subtitle": "Risk classification: the EU AI Act's four tiers for your AI systems",
     "unclassified": "Unclassified",
     "searchPlaceholder": "Search AI systems...",
     "currentClassification": "Current Classification",
@@ -420,8 +421,8 @@
   },
   "quickstart": {
     "backToDashboard": "Dashboard",
-    "title": "AI Governance Quick Start",
-    "subtitle": "Set up your AI governance program in minutes",
+    "title": "Quick start",
+    "subtitle": "The AI governance quick start: set up your program in minutes",
     "programNameLabel": "Name this program",
     "programNamePlaceholder": "Your organization's AI governance program",
     "programNameHelp": "Prefilled with your organization's name. This appears on the result screen and on the program PDF. You can change it.",
@@ -524,8 +525,8 @@
     "statThreatScenarios": "{count} threat scenarios"
   },
   "assessments": {
-    "title": "Assessments",
-    "description": "FRIA, conformity, and risk assessments for AI systems",
+    "title": "Impact assessments",
+    "description": "Assessments: FRIA, conformity and risk assessments for AI systems",
     "newAssessment": "New Assessment",
     "searchPlaceholder": "Search assessments...",
     "statsTotal": "Total",
@@ -614,7 +615,7 @@
     "forSystem": "for <link>{name}</link>"
   },
   "oversight": {
-    "title": "Human Oversight",
+    "title": "Human oversight",
     "description": "Approval gates, decision logging & Art. 14 compliance",
     "createGate": "Create Gate",
     "searchPlaceholder": "Search oversight gates...",
@@ -709,8 +710,8 @@
     "decidedBy": "Decided by: {name}"
   },
   "compliance": {
-    "title": "Compliance",
-    "description": "Map AI system compliance against regulatory frameworks",
+    "title": "Evidence",
+    "description": "Compliance: each AI system mapped against its regulatory frameworks, with the evidence for each requirement",
     "exportCsv": "Export CSV",
     "selectSystemPlaceholder": "Select AI System...",
     "selectSystemPrompt": "Select an AI system above to view its compliance matrix.",
@@ -743,8 +744,8 @@
     "downloadPdf": "Download as PDF"
   },
   "incidents": {
-    "title": "AI Incidents",
-    "description": "Track AI-specific failures, severity, timeline & Art. 73 notifications",
+    "title": "Incidents",
+    "description": "AI incidents: failures, severity, timeline and Art. 73 notifications",
     "reportIncident": "Report Incident",
     "searchPlaceholder": "Search incidents...",
     "statsTotal": "Total Incidents",
@@ -885,8 +886,8 @@
     "labelLastUpdated": "Last Updated"
   },
   "vendors": {
-    "title": "Vendor Risk",
-    "subtitle": "Manage third-party AI vendor risk and assessments",
+    "title": "Vendors",
+    "subtitle": "Vendor risk: your third-party AI vendors and their assessments",
     "addVendor": "Add Vendor",
     "statsTotalVendors": "Total Vendors",
     "statsCriticalRisk": "Critical Risk",
@@ -1065,8 +1066,8 @@
     "placeholderFindings": "Document initial findings, observations, or scope..."
   },
   "policies": {
-    "title": "Policies",
-    "subtitle": "AI governance policies and standards",
+    "title": "AI policy",
+    "subtitle": "Policies: the AI governance policies and standards of your organization",
     "createPolicy": "Create Policy",
     "statsTotal": "Total",
     "statsDraft": "Draft",
@@ -1191,8 +1192,8 @@
     "archiving": "Archiving..."
   },
   "shadowAi": {
-    "title": "Shadow AI Discovery",
-    "subtitle": "Discover and manage unauthorized AI tool usage",
+    "title": "Unapproved AI tools",
+    "subtitle": "Shadow AI discovery: find and manage the AI tools people use without approval",
     "premiumBadge": "Premium",
     "enableShadowAi": "Enable Shadow AI Discovery",
     "reportAiTool": "Report AI Tool",
@@ -1334,8 +1335,8 @@
     }
   },
   "vendorCatalog": {
-    "title": "AI Vendor Catalog",
-    "subtitle": "Browse AI vendors from the VendorWatch database",
+    "title": "Vendor catalog",
+    "subtitle": "The AI vendor catalog: AI vendors from the VendorWatch database",
     "premiumBadge": "Premium",
     "enableCatalog": "Enable AI Vendor Catalog",
     "statsTotalVendors": "Total Vendors",
@@ -4030,8 +4031,8 @@
   },
   "program": {
     "page": {
-      "title": "AI Governance Program",
-      "subtitle": "The living picture of how your organization governs AI: map, maturity, and the road ahead.",
+      "title": "Program map",
+      "subtitle": "The AI governance program: the living picture of how your organization governs AI, with its map, maturity and the road ahead.",
       "exportPdf": "Export PDF",
       "mapTitle": "Governance Map",
       "mapSubtitle": "Every AI system, its risk tier, controls, and the vendors behind them: gaps included.",
@@ -4337,8 +4338,8 @@
       "TransparencyProfile": "Art. 50 profile"
     },
     "queue": {
-      "title": "Review queue",
-      "subtitle": "Auto-assessed items waiting for a person to take ownership.",
+      "title": "Check what was drafted",
+      "subtitle": "The review queue: auto-assessed items waiting for a person to take ownership.",
       "empty": "Nothing to confirm: every artifact has been reviewed.",
       "filterAll": "All types",
       "selectAll": "Select all",
@@ -4450,8 +4451,8 @@
     }
   },
   "obligations": {
-    "title": "Obligations calendar",
-    "subtitle": "Regulatory deadlines plotted against your own AI inventory.",
+    "title": "Where you work and your rules",
+    "subtitle": "The obligations calendar: regulatory deadlines plotted against your own AI inventory.",
     "ariaLabel": "Regulatory obligations timeline",
     "assumedJurisdictions": "Showing obligations for: {jurisdictions}",
     "changePlaces": "Change in Settings",
@@ -5031,8 +5032,8 @@
     "collapse": "Close"
   },
   "sensitiveData": {
-    "title": "Sensitive data analysis",
-    "subtitle": "Decide, and record, whether a set of data should be treated as health data or another sensitive category.",
+    "title": "Sensitive data",
+    "subtitle": "Sensitive data analysis: decide, and record, whether a set of data should be treated as health data or another sensitive category.",
     "whyTitle": "Why a factor analysis",
     "whyBody": "US state laws define health data differently, and several of them turn on what the data is used for rather than what field it sits in. Five factors (source, content, use, consumer expectations, harm) give a repeatable way to reason, and the record of that reasoning is what a regulator asks to see.",
     "subjectLabel": "What are you classifying?",
@@ -5177,8 +5178,8 @@
     "effect": "While a hold is in force, deleting systems, vendors, evidence, recipients, analyses, snapshots and the organization itself is refused."
   },
   "proceedings": {
-    "title": "Proceedings",
-    "subtitle": "Every inquiry, enforcement action and claim, with its deadlines, its correspondence and the factual position taken. One incident becomes several proceedings; the risk is that a position taken in one is read in another.",
+    "title": "Cases and inquiries",
+    "subtitle": "Proceedings: every inquiry, enforcement action and claim, with its deadlines, its correspondence and the factual position taken. One incident becomes several proceedings; the risk is that a position taken in one is read in another.",
     "deadlinesTitle": "Next deadlines",
     "overdueMark": "Past the limit",
     "titleLabel": "Proceeding",
@@ -5265,8 +5266,8 @@
     "marker": "Verified against the consolidated texts on 2026-09-11. Advisory: the clocks compute from what has been recorded, and the person reporting may not yet know everything."
   },
   "boardReports": {
-    "title": "Board reporting",
-    "subtitle": "What was reported, when, to whom, and what came back. Each record freezes the program figures as they stood on the day, so what the board saw can be reproduced later.",
+    "title": "Board report",
+    "subtitle": "Board reporting: what was reported, when, to whom, and what came back. Each record freezes the program figures as they stood on the day, so what the board saw can be reproduced later.",
     "record": "Record a report",
     "noneYet": "Nothing recorded yet. A claim that the board was never told starts here.",
     "cadence": "{count, plural, one {# report} other {# reports}} recorded. The last was on {last}.",

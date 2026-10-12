@@ -22,6 +22,7 @@ import { PREMIUM_KIT_PRICE_PER_YEAR, formatPrice } from "@/lib/currency";
 import { useCurrency } from "@/lib/use-currency";
 import { features } from "@/config/features";
 import { MARKETPLACE_APP_URL, STOREFRONT_BUY } from "@/lib/marketplace";
+import { useFormatDate } from "@/lib/use-format-date";
 
 // Minimal shape check before we send it to the server.
 function looksLikeLicense(x: unknown): x is Record<string, unknown> {
@@ -30,6 +31,7 @@ function looksLikeLicense(x: unknown): x is Record<string, unknown> {
 
 export default function SkillsPage() {
   const t = useTranslations("skills");
+  const { formatDate: fmtDate } = useFormatDate();
   const locale = useLocale();
   const currency = useCurrency();
   const { organization, userRole } = useOrganization();
@@ -200,7 +202,7 @@ export default function SkillsPage() {
                             <span>
                               {pkg.entitlement.expiresAt
                                 ? t("expires", {
-                                    date: new Date(pkg.entitlement.expiresAt).toLocaleDateString(locale),
+                                    date: fmtDate(pkg.entitlement.expiresAt),
                                   })
                                 : t("perpetual")}
                             </span>

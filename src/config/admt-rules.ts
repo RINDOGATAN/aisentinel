@@ -41,6 +41,7 @@
 
 import type { JurisdictionId } from "./jurisdictions";
 import { resolveEffectiveJurisdictions } from "./jurisdictions";
+import { formatDayIn } from "@/lib/format-date";
 
 /**
  * Rule-pack version. Bump on any content change (vocabularies, resolver
@@ -57,8 +58,8 @@ export interface LocalizedText {
 
 /** Appended to every rationale until California counsel signs the pack off. */
 export const ADMT_RULES_REVIEW_MARKER: LocalizedText = {
-  en: `Law reviewed as of ${ADMT_RULES_LAW_REVIEWED_AS_OF}; California legal sign-off pending.`,
-  es: `Revisión jurídica a fecha de ${ADMT_RULES_LAW_REVIEWED_AS_OF}; pendiente de validación jurídica en California.`,
+  en: `Law reviewed as of ${formatDayIn("en", ADMT_RULES_LAW_REVIEWED_AS_OF)}; California legal sign-off pending.`,
+  es: `Revisión jurídica a fecha de ${formatDayIn("es", ADMT_RULES_LAW_REVIEWED_AS_OF)}; pendiente de validación jurídica en California.`,
 };
 
 // ---------------------------------------------------------------------------

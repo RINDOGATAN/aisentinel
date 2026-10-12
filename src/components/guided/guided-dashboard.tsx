@@ -99,13 +99,17 @@ export function Chip({
 
 export function GuidedDashboard() {
   const td = useTranslations("dashboard");
+  const tg = useTranslations("guided");
   const { organization } = useOrganization();
   const { steps: statuses } = useProgramPathQuery();
   const { overview: ready, limited } = useProgrammeOverview();
 
   return (
     <div className="space-y-4 sm:space-y-6" data-testid="guided-dashboard">
-      <PageHeader title={organization?.name || "AI Governance"} description={td("subtitle")} />
+      <PageHeader
+        title={tg("overview")}
+        description={organization?.name ? td("subtitleOrg", { org: organization.name }) : td("subtitle")}
+      />
 
       {organization && <FirstRunCard />}
 

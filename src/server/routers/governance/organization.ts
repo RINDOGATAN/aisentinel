@@ -45,6 +45,20 @@ function withoutOperatorPlanFields<T extends { planNote?: unknown; planStripeSub
   return rest;
 }
 
+/** Whether the organization has an acceptance of the current agreement on record. */
+async function hasAcceptedCurrentDpa(
+  db: { auditLog: { findMany: (args: { where: { organizationId: string; action: string }; select: { changes: true } }) => Promise<Array<{ changes: unknown }>> } },
+  organizationId: string
+): Promise<boolean> {
+  const entries = await db.auditLog.findMany({
+    where: { organizationId, action: PILOT_DPA_ACTION },
+    select: { changes: true },
+  });
+  return entries.some(
+    (e) => (e.changes as { dpaVersion?: unknown } | null)?.dpaVersion === PILOT_DPA.version
+  );
+}
+
 export const organizationRouter = createTRPCRouter({
   list: protectedProcedure.query(async ({ ctx }) => {
     const memberships = await ctx.prisma.organizationMember.findMany({
@@ -101,6 +115,52 @@ export const organizationRouter = createTRPCRouter({
         ...(org ? withoutOperatorPlanFields(org) : org),
         currentUserRole: ctx.membership.role,
       };
+    }),
+
+  // Hosted pilot: whether this organization still has to accept the current
+  // data processing agreement (src/config/pilot-dpa.ts). Organizations opened
+  // before acceptance was asked at opening have no entry for it and are asked
+  // once, at the next sign-in. An owner or admin accepts on behalf of the
+  // organization; other members only see a note. Never asked off the pilot.
+  getDpaStatus: organizationProcedure
+    .input(z.object({ organizationId: z.string() }))
+    .query(async ({ ctx }) => {
+      if (!hostedPilotActive()) return { required: false, canAccept: false };
+      const accepted = await hasAcceptedCurrentDpa(ctx.prisma, ctx.organization.id);
+      return {
+        required: !accepted,
+        canAccept: ctx.membership.role === "OWNER" || ctx.membership.role === "ADMIN",
+      };
+    }),
+
+  // Hosted pilot: an owner or admin accepts the current agreement for an
+  // organization with no acceptance of it on record. Recorded as the same
+  // audit-log entry as at opening. Accepting twice records nothing new. Not a
+  // write procedure: it changes no program record, so it stays open once the
+  // pilot is read-only.
+  acceptDpa: organizationProcedure
+    .input(z.object({ organizationId: z.string(), accept: z.literal(true) }))
+    .mutation(async ({ ctx }) => {
+      if (!["OWNER", "ADMIN"].includes(ctx.membership.role)) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Only an owner or admin can accept the data processing agreement",
+        });
+      }
+      if (!hostedPilotActive()) return { accepted: false };
+      if (await hasAcceptedCurrentDpa(ctx.prisma, ctx.organization.id)) return { accepted: true };
+      const lang = pilotLocale(ctx.getCookie);
+      await ctx.prisma.auditLog.create({
+        data: {
+          organizationId: ctx.organization.id,
+          userId: ctx.session.user.id,
+          entityType: "Organization",
+          entityId: ctx.organization.id,
+          action: PILOT_DPA_ACTION,
+          changes: { dpaVersion: PILOT_DPA.version, locale: lang, document: PILOT_DPA.href[lang] },
+        },
+      });
+      return { accepted: true };
     }),
 
   create: protectedProcedure

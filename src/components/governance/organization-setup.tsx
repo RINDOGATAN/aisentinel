@@ -4,18 +4,17 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useUserType } from "@/lib/use-user-type";
-import { PILOT_DPA, pilotDpaHref } from "@/config/pilot-dpa";
+import { DpaAcceptCheckbox } from "@/components/pilot/dpa-accept";
 
 export function OrganizationSetup() {
   const [name, setName] = useState("");
@@ -29,7 +28,6 @@ export function OrganizationSetup() {
   // Hosted pilot: the data processing agreement is accepted when the
   // organization is opened (src/config/pilot-dpa.ts). Never asked on the kit.
   const hosted = !!trpc.pilot.mode.useQuery(undefined, { staleTime: Infinity }).data?.active;
-  const locale = useLocale();
   const [acceptDpa, setAcceptDpa] = useState(false);
 
   const createOrg = trpc.organization.create.useMutation({
@@ -97,29 +95,7 @@ export function OrganizationSetup() {
               />
             </div>
             {hosted && (
-              <div className="flex items-start gap-2" data-testid="pilot-dpa-accept">
-                <Checkbox
-                  id="accept-dpa"
-                  checked={acceptDpa}
-                  onCheckedChange={(v) => setAcceptDpa(v === true)}
-                  className="mt-0.5"
-                />
-                <Label htmlFor="accept-dpa" className="text-sm font-normal leading-snug block">
-                  {t.rich("dpaAccept", {
-                    version: PILOT_DPA.version,
-                    link: (chunks) => (
-                      <a
-                        href={pilotDpaHref(locale)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="underline text-primary"
-                      >
-                        {chunks}
-                      </a>
-                    ),
-                  })}
-                </Label>
-              </div>
+              <DpaAcceptCheckbox id="accept-dpa" checked={acceptDpa} onCheckedChange={setAcceptDpa} />
             )}
             <Button
               type="submit"

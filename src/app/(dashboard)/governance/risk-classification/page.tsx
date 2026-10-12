@@ -68,7 +68,7 @@ export default function RiskClassificationPage() {
   }>>({});
   const debouncedSearch = useDebounce(searchQuery);
   const router = useRouter();
-  const { organization } = useOrganization();
+  const { organization, canWrite } = useOrganization();
   const t = useTranslations("riskClassification");
   const locale = useLocale();
   const { formatDate } = useFormatDate();
@@ -230,19 +230,22 @@ export default function RiskClassificationPage() {
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
                       <RiskTierBadge level={currentLevel} className="text-xs" />
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() =>
-                          setExpandedSystem(isExpanded ? null : system.id)
-                        }
-                      >
-                        {isExpanded ? (
-                          <ChevronUp className="w-4 h-4" />
-                        ) : (
-                          <ChevronDown className="w-4 h-4" />
-                        )}
-                      </Button>
+                      {/* The form behind it classifies (orgWriteProcedure): writers only. */}
+                      {canWrite && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() =>
+                            setExpandedSystem(isExpanded ? null : system.id)
+                          }
+                        >
+                          {isExpanded ? (
+                            <ChevronUp className="w-4 h-4" />
+                          ) : (
+                            <ChevronDown className="w-4 h-4" />
+                          )}
+                        </Button>
+                      )}
                     </div>
                   </div>
 

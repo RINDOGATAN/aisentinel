@@ -365,7 +365,11 @@ export default function IncidentDetailPage() {
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">{t("reportedByLabel")}</p>
-                <p className="font-medium text-sm">{incident.reportedBy || t("unknown")}</p>
+                <p className="font-medium text-sm">
+                  {incident.reportedBy
+                    ? (incident.performers?.[incident.reportedBy] ?? incident.reportedBy)
+                    : t("unknown")}
+                </p>
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">{t("reportedAtLabel")}</p>

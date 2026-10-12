@@ -74,9 +74,12 @@ export const incidentRouter = createTRPCRouter({
         throw new TRPCError({ code: "NOT_FOUND", message: "Incident not found" });
       }
 
-      // Timeline entries store the user id of whoever made them; the screen shows a
-      // name instead. Only members of this organization are looked up.
-      const performerIds = [...new Set((incident.timeline ?? []).map((e) => e.performedBy))];
+      // Timeline entries and the incident itself store the user id of whoever
+      // made them; the screen shows a name instead. Only members of this
+      // organization are looked up.
+      const performerIds = [
+        ...new Set([...(incident.timeline ?? []).map((e) => e.performedBy), incident.reportedBy].filter(Boolean)),
+      ];
       const members = performerIds.length
         ? await ctx.prisma.organizationMember.findMany({
             where: { organizationId: ctx.organization.id, userId: { in: performerIds } },

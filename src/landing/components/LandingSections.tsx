@@ -253,7 +253,6 @@ export function Videos({
                 <video
                   className="block w-full aspect-video bg-black"
                   controls
-                  muted
                   playsInline
                   preload="none"
                   poster={`${base}.png`}

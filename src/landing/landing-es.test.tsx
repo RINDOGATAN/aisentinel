@@ -202,13 +202,14 @@ describe("Spanish sections", () => {
     }
   });
 
-  it("play videos only on request, muted, with a poster, two formats and Spanish captions", () => {
+  it("play videos only on request, with sound, with a poster, two formats and Spanish captions", () => {
     const videos = withVideos.match(/<video[\s\S]*?<\/video>/g) ?? [];
     expect(videos).toHaveLength(SAMPLE_VIDEOS.length);
     for (const v of videos) {
       expect(v).not.toMatch(/autoplay/i);
       expect(v).toMatch(/preload="none"/);
-      expect(v).toMatch(/muted/);
+      // Narrated: started by the visitor, so it plays with sound.
+      expect(v).not.toMatch(/\smuted(=|\s|>)/);
       expect(v).toMatch(/playsinline/i);
       expect(v).toMatch(/controls/);
       expect(v).toMatch(/poster="\/videos\/es\/[^"]+\.png"/);

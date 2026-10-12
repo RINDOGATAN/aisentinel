@@ -3879,8 +3879,8 @@
     },
     "premiumNotice": {
       "title": "How the premium modules are offered",
-      "hosted": "Open to everyone on the hosted pilot.",
-      "selfHosted": "Licensed for installations on your own hardware.",
+      "hosted": "Included on the TODO.LAW cloud, in the free pilot and on the paid plan.",
+      "selfHosted": "On a managed instance or on your own hardware, they are licensed separately.",
       "seePricing": "See pricing",
       "newTab": "(opens in a new tab)"
     },

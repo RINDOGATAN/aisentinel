@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { ExternalLink } from "lucide-react";
 
 // The storefront's pricing page, in the reader's language. Premium modules are
-// sold for self-hosted installations only; the hosted service is a free pilot.
+// open on the TODO.LAW cloud (pilot and paid plan); other installations license them.
 export const PRICING_URLS = {
   en: "https://www.todo.law/pricing",
   es: "https://www.todo.law/es/precios",

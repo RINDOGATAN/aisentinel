@@ -12,9 +12,8 @@
  * Reads are never refused: a read-only organisation can open everything and
  * export everything. Only the write procedures and the create paths call in.
  *
- * An organisation on the paid EU cloud plan (Organization.plan = EU_CLOUD,
- * set by scripts/set-org-plan.ts or by the automatic upgrade after a
- * confirmed payment) is not on the pilot: no ceiling, no editing window and
+ * An organisation on the paid cloud plan (Organization.plan = EU_CLOUD, set by
+ * an operator with scripts/set-org-plan.ts) is not on the pilot: no ceiling, no editing window and
  * no one-organisation rule for joining it. The pilot clock is still
  * recorded, so an organisation returned to PILOT finds its window where it
  * was. Anything unknown (no plan, null, an organisation not found, a test
@@ -47,7 +46,7 @@ export const PAID_PLAN = "EU_CLOUD" as const;
 /** The plan field as the caps read it; absent or null counts as the pilot. */
 export type PlanOrg = { plan?: string | null };
 
-/** True for an organisation on the paid EU cloud plan. */
+/** True for an organisation on the paid cloud plan. */
 export function isPaidPlan(org: PlanOrg | null | undefined): boolean {
   return org?.plan === PAID_PLAN;
 }

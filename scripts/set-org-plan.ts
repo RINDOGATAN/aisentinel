@@ -7,14 +7,20 @@
  * link, whose confirmed payment can also set the plan automatically when
  * AUTO_UPGRADE_ENABLED is on; see src/server/services/plan-eu/sync.ts).
  *
+ * A DRY RUN BY DEFAULT: without --execute it prints before and after and
+ * writes nothing.
+ *
  *   npm run db:set-org-plan -- --org <id or slug> --plan EU_CLOUD \
- *     --started 2026-10-12 --renews 2026-11-12 --note "invoice in_..." --dry-run
+ *     --started 2026-10-12 --renews 2026-11-12 --note "invoice in_..."
+ *   npm run db:set-org-plan -- --org <id or slug> --plan EU_CLOUD \
+ *     --started 2026-10-12 --renews 2026-11-12 --note "invoice in_..." --execute
  *
  * Options:
  *   --org      the organisation's id or slug (required)
  *   --plan     EU_CLOUD (paid: the pilot limits and editing window do not
  *              apply) or PILOT (back to the free, capped pilot; clears the
- *              payment subscription of an automatic upgrade) (required)
+ *              payment subscription of an automatic upgrade; nothing the
+ *              organisation holds is deleted) (required)
  *   --started  start of the paid plan, YYYY-MM-DD (UTC) or an ISO time;
  *              default: kept if already paid, else now; "none" clears it
  *   --renews   next renewal, same format; informative only (nothing expires
@@ -22,7 +28,8 @@
  *   --note     the operator's reference, e.g. an invoice id; "none" clears it
  *   --by       who is making the change, for the audit entry (default
  *              "operator")
- *   --dry-run  print before and after, write nothing
+ *   --execute  write the change (without it: a dry run, nothing written)
+ *   --dry-run  accepted and redundant (the default); refused with --execute
  *
  * Prints the organisation, the plan before and after, and whether it wrote.
  * A real run writes the change and one audit-trail entry (PLAN_CHANGE) in a
@@ -50,11 +57,16 @@ export function parseDateArg(name: string, value: string | undefined): Date | nu
 
 export function parseArgs(argv: string[]): SetPlanInput {
   const values: Record<string, string> = {};
-  let dryRun = false;
+  let execute = false;
+  let explicitDryRun = false;
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
+    if (a === "--execute") {
+      execute = true;
+      continue;
+    }
     if (a === "--dry-run") {
-      dryRun = true;
+      explicitDryRun = true;
       continue;
     }
     if (!a.startsWith("--")) throw new PlanInputError(`Unexpected argument: ${a}`);
@@ -67,6 +79,7 @@ export function parseArgs(argv: string[]): SetPlanInput {
     values[name] = v;
     i++;
   }
+  if (execute && explicitDryRun) throw new PlanInputError("Give --execute or --dry-run, not both.");
   if (!values.org) throw new PlanInputError("--org is required (id or slug).");
   const plan = (values.plan ?? "").toUpperCase();
   if (!isPlan(plan)) throw new PlanInputError("--plan must be EU_CLOUD or PILOT.");
@@ -77,7 +90,7 @@ export function parseArgs(argv: string[]): SetPlanInput {
     renewsAt: parseDateArg("renews", values.renews),
     note: values.note === undefined ? undefined : values.note === "none" ? null : values.note,
     operator: values.by ?? "operator",
-    dryRun,
+    dryRun: !execute,
   };
 }
 
@@ -109,7 +122,7 @@ async function main(): Promise<number> {
     console.log(show("Before", result.before));
     console.log(show("After", result.after));
     if (!result.changed) console.log("Nothing to change.");
-    else if (input.dryRun) console.log("Dry run: nothing written.");
+    else if (input.dryRun) console.log("Dry run: nothing written. Add --execute to write the change.");
     else console.log("Written, with one audit-trail entry (PLAN_CHANGE).");
     return 0;
   } catch (err) {

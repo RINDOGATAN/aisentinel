@@ -80,10 +80,12 @@ describe("English landing page", () => {
     expect((authEs as Record<string, string>)["emailPlaceholder"]).toBe("tu@empresa.com");
   });
 
-  it("names the audience in the badge and the program in the hero title, in sentence case", () => {
-    expect(EN["hero.title.prefix"] + EN["hero.title.accent"] + EN["hero.title.suffix"]).toBe("Your entry point to an AI governance program.");
-    expect(EN["hero.title.accent"]).toBe("AI governance program");
-    expect(EN["hero.badge"]).toBe("For law firms, privacy consultants and in-house teams");
+  it("says how fast it starts in the badge and restores the earlier hero title (owner, 11 Oct 2026)", () => {
+    // The title before "Your entry point to an AI governance program." (#75), verbatim.
+    expect(EN["hero.title.prefix"] + EN["hero.title.accent"] + EN["hero.title.suffix"]).toBe("Future-Proof AI Governance.");
+    expect(EN["hero.title.accent"]).toBe("Future-Proof");
+    // Stored in sentence case; the bubble's style sets it in capitals, as on DPO Central.
+    expect(EN["hero.badge"]).toBe("Get up and running in minutes");
     // "firms" alone is ambiguous: the audience is law firms and privacy consultants.
     for (const [k, v] of shown) expect(v.replace(/law firms?|Law-Firm-in-a-Box/gi, ""), k).not.toMatch(/\bfirms?\b/i);
     for (const k of ["hero.badge", "hero.cta", "header.cta", "cta.button"]) {
@@ -171,7 +173,7 @@ describe("English sections", () => {
     for (const t of titles) expect(html).toContain(t);
     expect(EN["en.ways.label"]).toBe("Guarantees and hosting");
     expect(EN["en.ways.heading.prefix"] + EN["en.ways.heading.accent"]).toBe("Tailored to your needs");
-    expect(EN["en.ways.sub"]).toBe("Three hosting options, with different safeguards, certifications and levels of control.");
+    expect(EN["en.ways.sub"]).toBe("Three hosting options, with different safeguards and levels of control.");
     expect(EN["en.ways.w1.desc"]).toMatch(/take your program elsewhere whenever you like with a simple export/);
     expect(EN["en.ways.w2.desc"]).toMatch(/Asturias, Spain, with open LLMs available and a tailored SLA/);
     expect(EN["en.ways.w3.desc"]).not.toMatch(/train|runbook|six weeks/i);

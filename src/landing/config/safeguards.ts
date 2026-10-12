@@ -21,7 +21,9 @@
  * routers/governance/ai.ts setPosture), and while off there is no AI call at all.
  *
  * Copy rules: no prices, no certification logos, no competitor names, no long dashes.
- * The cloud is hosted in the EU (database in Frankfurt, functions in fra1), so the copy says so, and says the external AI provider may be outside the EU. The managed instance is hosted
+ * The cloud is hosted in the EU (database in Frankfurt, functions in fra1). Only the Spanish copy says so,
+ * and that the external AI provider may be outside the EU: English copy names no hosting location for the
+ * cloud (owner, 11 Oct 2026: no EU hosting to US visitors). The managed instance is hosted
  * in Asturias, Spain, and can use open-weight models hosted on the instance itself, so
  * "local models only" asks for managed (level 1), not level 2 (owner, 10 Oct 2026).
  * The classifier sentence of the mockup is left out.
@@ -289,20 +291,20 @@ export const COPY: Record<Locale, SafeguardsCopy> = {
       "cert:yes": "Your own controls and certifications cover the system",
     },
     notes: {
-      "loc:servers": { cloud: "Hosted by us in the EU, on a shared service.", managed: "Hosted by us, on an instance for you alone.", deploy: "Installed on your servers." },
-      "loc:office": { cloud: "Hosted by us in the EU.", managed: "Hosted by us, outside your office.", deploy: "On your servers, in your office if they are there." },
+      "loc:servers": { cloud: "Hosted by us, on a shared service.", managed: "Hosted by us, on an instance for you alone.", deploy: "Installed on your servers." },
+      "loc:office": { cloud: "Hosted by us.", managed: "Hosted by us, outside your office.", deploy: "On your servers, in your office if they are there." },
       "data:real": { cloud: "The pilot is for test records or pseudonyms only.", managed: "An instance for your organization alone.", deploy: "Your records stay on your servers." },
       "data:special": { cloud: "The pilot is for test records or pseudonyms only.", managed: "An instance for your organization alone.", deploy: "Your records stay on your servers." },
       "ai:none": { cloud: AI_OFF_EN, managed: AI_OFF_EN, deploy: AI_OFF_EN },
       "ai:key": { cloud: "We set the AI provider for the whole service; you cannot use your own key.", managed: "The instance can be set up with your own key.", deploy: "We set up AI with your own key." },
-      "ai:local": { cloud: "With AI on, the record details each AI draft uses go to the service's external AI provider, which may be outside the EU.", managed: "Open-weight models can run on the instance itself, so the record details do not leave it.", deploy: "We can set up an open-weight model on your servers, if they have the capacity." },
+      "ai:local": { cloud: "With AI on, the record details each AI draft uses go to the service's external AI provider.", managed: "Open-weight models can run on the instance itself, so the record details do not leave it.", deploy: "We can set up an open-weight model on your servers, if they have the capacity." },
       "iso:yes": { cloud: "A shared service: each organization's records are kept apart, but the system is shared.", managed: "An isolated instance for you alone.", deploy: "Your own installation." },
       "it:no": { cloud: "We run it.", managed: "We run it for you.", deploy: "We install it with you, with our on-site or remote help." },
       "cert:yes": { cloud: "It works under our controls.", managed: "It works under our controls.", deploy: PERIMETER_EN },
     },
     summaries: {
       cloud:
-        "Hosted by us in the EU. A free, capped pilot to try the workflows with test records. It is not for real client data, and it is shared with other organizations (each one's records kept apart). If you turn AI features on, the record details each AI draft uses go to the external AI provider set up on the service, which may be outside the EU.",
+        "Hosted by us. A free, capped pilot to try the workflows with test records. It is not for real client data, and it is shared with other organizations (each one's records kept apart). If you turn AI features on, the record details each AI draft uses go to the external AI provider set up on the service.",
       managed:
         "An isolated instance we run for your organization alone, hosted in Asturias, Spain. Your records stay on that instance. AI features stay off until you turn them on, and can use open-weight models hosted on the instance itself, so the record details do not leave it, or your own provider key.",
       deploy:

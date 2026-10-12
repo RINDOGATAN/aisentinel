@@ -169,23 +169,23 @@ model Organization {
   /// then, and always null on the kit.
   pilotFirstSignInAt DateTime?
 
-  /// Hosted service only: the organization's plan. PILOT (the default; null
-  /// also counts as the pilot) is the free, capped pilot; EU_CLOUD is the paid
-  /// EU cloud plan, which lifts the pilot caps and the editing window
-  /// (src/server/services/pilot/caps.ts). Set by an operator with
-  /// scripts/set-org-plan.ts, or by the automatic upgrade after a confirmed
-  /// payment (src/server/services/plan-eu/sync.ts); every change writes one
-  /// audit-trail entry (PLAN_CHANGE). planNote is an operator's reference,
-  /// never shown to the organization. planStripeSubscriptionId is the payment
-  /// subscription behind an automatic upgrade, so its end returns the
-  /// organization to the pilot; null when the plan was set by hand.
-  /// EU_CLOUD is an internal name: the same plan lifts the same limits
-  /// whichever currency was paid (the EUR plan or the USD plan).
+  /// Hosted service only: the organization's plan. PILOT (the default) is the
+  /// free, capped pilot; EU_CLOUD is the paid cloud plan, which lifts the pilot
+  /// caps and the editing window (src/server/services/pilot/caps.ts). Payment
+  /// is collected outside the app; an operator sets the plan with
+  /// scripts/set-org-plan.ts (npm run db:set-org-plan), which writes one
+  /// audit-trail entry (PLAN_CHANGE). planNote is an operator's reference (an
+  /// invoice id), never shown to the organization. EU_CLOUD is an internal
+  /// name: the same plan lifts the same limits whichever currency was paid.
   /// Meaningless on the kit, which is never capped.
-  plan                     OrganizationPlan? @default(PILOT)
-  planStartedAt            DateTime?
-  planRenewsAt             DateTime?
-  planNote                 String?
+  plan          OrganizationPlan @default(PILOT)
+  planStartedAt DateTime?
+  planRenewsAt  DateTime?
+  planNote      String?
+  /// The payment subscription behind an automatic upgrade
+  /// (src/server/services/plan-eu/sync.ts, behind AUTO_UPGRADE_ENABLED), so its
+  /// end returns the organization to the pilot; null when the plan was set by
+  /// hand. Operator-only, never shown to the organization.
   planStripeSubscriptionId String?
 
   /// Where this organization operates, driving regulatory scoping.

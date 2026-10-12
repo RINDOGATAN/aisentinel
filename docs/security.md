@@ -34,7 +34,7 @@ These tables are intentionally shared across all orgs:
 
 - `ComplianceFramework` and `ComplianceRequirement` — reference data (EU AI Act, NIST, ISO 42001)
 - `ShadowAITool` — shared catalog of 67 AI tools
-- `VendorCatalog` — shared vendor directory from Vendor.Watch
+- `VendorCatalog` — shared vendor directory from VendorWatch
 - `AIAssessmentTemplate` — system-level templates (org templates are org-scoped)
 
 ---

@@ -33,7 +33,6 @@ import { planTemplateRemoval, removeTemplateItems } from "../../services/templat
 function withoutOperatorPlanFields<T extends { planNote?: unknown; planStripeSubscriptionId?: unknown }>(
   org: T,
 ): Omit<T, "planNote" | "planStripeSubscriptionId"> {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { planNote, planStripeSubscriptionId, ...rest } = org;
   return rest;
 }

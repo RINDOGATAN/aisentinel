@@ -33,7 +33,10 @@ const DICT: Record<Locale, Record<string, string>> = { en, es };
 
 function render(locale: Locale, guide?: { open: boolean; answers: Answers }) {
   const t = (k: string) => DICT[locale][k] ?? k;
-  return renderToStaticMarkup(createElement(LandingSections, { t, locale, videos: [], initialGuide: guide }));
+  const html = renderToStaticMarkup(createElement(LandingSections, { t, locale, videos: [], initialGuide: guide }));
+  // Up to the pricing block that follows the ways (tests/landing-pricing.test.tsx covers it).
+  const marker = html.indexOf('data-testid="landing-pricing"');
+  return marker < 0 ? html : html.slice(0, html.lastIndexOf("<section", marker));
 }
 
 /** The guide's own markup. */
@@ -172,10 +175,10 @@ describe("safeguards guide, English only", () => {
     }
   });
 
-  it("says the cloud pilot is hosted in the EU and the AI provider may be outside it", () => {
+  it("names no hosting location for the cloud in English (owner, 11 Oct 2026: no EU hosting to US visitors)", () => {
     const g = text(guideOf(render("en", { open: true, answers: { loc: "any" } })));
-    expect(g).toContain("Hosted by us in the EU");
-    expect(g).toContain("external AI provider set up on the service, which may be outside the EU");
-    expect(g).not.toContain("United States");
+    expect(g).toContain("Hosted by us.");
+    expect(g).toContain("external AI provider set up on the service.");
+    expect(g).not.toMatch(/United States|\bEU\b|Frankfurt|Europe/);
   });
 });

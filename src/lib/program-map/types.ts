@@ -53,7 +53,7 @@ export interface ProgramGraphSystem {
   vendorId: string | null;
   gates: ProgramGraphGate[];
   policyLinkCount: number;
-  /** GENERATIVE_AI systems have Art. 50 relevance */
+  /** Art. 50 relevance: talks to people, generates content, emotion recognition or deepfakes */
   transparencyRelevant: boolean;
   hasTransparencyProfile: boolean;
   /** 0–100 across the system's compliance mappings; null = no mappings */

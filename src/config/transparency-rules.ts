@@ -181,6 +181,36 @@ export function suggestArt50Obligations(
   ];
 }
 
+/** The four obligation statuses a recorded transparency profile carries. */
+export interface Art50ProfileStatuses {
+  art50InteractionStatus: TransparencyObligationStatusValue;
+  art50MarkingStatus: TransparencyObligationStatusValue;
+  art50EmotionStatus: TransparencyObligationStatusValue;
+  art50DeepfakeStatus: TransparencyObligationStatusValue;
+}
+
+/**
+ * Whether Art. 50 is relevant to a system, from what it does rather than its
+ * technique alone: it talks to people, generates content, recognises emotions
+ * or produces deepfakes. A recorded profile decides (any obligation REQUIRED or
+ * IMPLEMENTED); without one, the same rules that suggest the profile's
+ * obligations (suggestArt50Obligations) decide.
+ */
+export function art50Relevant(
+  facts: TransparencyFacts,
+  profile?: Art50ProfileStatuses | null,
+): boolean {
+  if (profile) {
+    return [
+      profile.art50InteractionStatus,
+      profile.art50MarkingStatus,
+      profile.art50EmotionStatus,
+      profile.art50DeepfakeStatus,
+    ].some((status) => status !== "NOT_APPLICABLE");
+  }
+  return suggestArt50Obligations(facts).some((s) => s.suggested);
+}
+
 // ---------------------------------------------------------------------------
 // Marking deadline
 // ---------------------------------------------------------------------------

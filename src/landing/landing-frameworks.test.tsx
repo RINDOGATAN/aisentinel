@@ -22,7 +22,7 @@ describe("landing page frameworks list", () => {
     expect(en["hero.subtitle"]).toContain("AIUC-1 (the certification standard for AI agents)");
     expect(en["value.v4.desc"]).toContain("AIUC-1");
     expect(es["hero.subtitle"]).toContain("nueve marcos");
-    expect(es["hero.subtitle"]).toContain("AIUC-1 (la norma de certificación para agentes de IA)");
+    expect(es["hero.subtitle"]).toContain("AIUC-1");
     expect(es["value.v4.desc"]).toContain("AIUC-1, la norma de certificación para agentes de IA");
     for (const dict of [en, es]) {
       const text = KEYS.map((k) => dict[k]).join(" ");

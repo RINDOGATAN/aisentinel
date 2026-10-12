@@ -3219,29 +3219,29 @@
       "intro": "AI SENTINEL está diseñado para organizaciones que gestionan datos sensibles de gobernanza de IA. La seguridad está integrada en cada capa de la plataforma: desde cómo aislamos tus datos hasta cómo controlamos el acceso y protegemos tu información.",
       "isolation": {
         "title": "Aislamiento de datos",
-        "intro": "Los registros de cada organización están separados de los de todas las demás. Tus sistemas de IA, evaluaciones, políticas, incidentes y datos de proveedores nunca son accesibles para otras organizaciones.",
+        "intro": "Los registros de cada organización están separados de los de todas las demás. Antes de mostrar o modificar tus sistemas de IA, evaluaciones, políticas, incidentes o datos de proveedores, la aplicación comprueba que eres miembro de tu organización.",
         "items": [
           {
             "title": "Consultas restringidas por organización",
-            "description": "Cada consulta a la base de datos se restringe automáticamente a tu organización. No hay forma de acceder a los datos de otra organización a través de la aplicación."
+            "description": "Las consultas sobre tus registros de gobernanza se limitan a tu organización en cada controlador de solicitudes."
           },
           {
             "title": "Pertenencia verificada",
-            "description": "Antes de cualquier operación, verificamos que el usuario solicitante es un miembro activo de la organización. La pertenencia se comprueba en cada solicitud."
+            "description": "Antes de cualquier operación con los datos de tu organización, verificamos que eres miembro activo de esa organización. La pertenencia se comprueba en cada una de esas solicitudes."
           },
           {
             "title": "Protección multi-tenant",
-            "description": "Las operaciones que hacen referencia a entidades relacionadas (por ejemplo, vincular una política a un sistema de IA) verifican que ambas entidades pertenecen a tu organización."
+            "description": "Vincular una política a un sistema de IA, o un flujo de datos a un sistema, comprueba que ambos registros pertenecen a tu organización."
           },
           {
             "title": "Solo se comparten datos de referencia",
-            "description": "Únicamente se comparten entre organizaciones datos de referencia no sensibles (marcos de cumplimiento, plantillas de evaluación). Tus datos de gobernanza nunca se comparten."
+            "description": "Únicamente se comparten entre organizaciones datos de referencia (marcos de cumplimiento, plantillas de evaluación y los catálogos de proveedores y de herramientas de IA). Tus datos de gobernanza nunca se comparten."
           }
         ]
       },
       "accessControl": {
         "title": "Control de acceso",
-        "intro": "AI SENTINEL aplica control de acceso basado en roles (RBAC) en toda la plataforma. Cada acción se comprueba contra tu rol antes de llevarse a cabo.",
+        "intro": "AI SENTINEL aplica control de acceso basado en roles (RBAC) en el servidor. Cada cambio en los registros de gobernanza se comprueba contra tu rol antes de llevarse a cabo.",
         "roles": [
           "Propietario",
           "Administrador",
@@ -3250,33 +3250,33 @@
           "Lector"
         ],
         "readOnlyTitle": "Solo lectura aplicada en el servidor",
-        "readOnlyBody": "Los Lectores tienen acceso de solo lectura. Todas las operaciones de escritura se bloquean en el servidor, no solo en la interfaz, lo que impide modificaciones no autorizadas incluso mediante llamadas a la API.",
+        "readOnlyBody": "Los Lectores tienen acceso de solo lectura a los registros de gobernanza. Las escrituras en esos registros se bloquean en el servidor, no solo en la interfaz, por lo que tampoco pueden hacerse mediante llamadas a la API.",
         "elevatedTitle": "Permisos elevados",
-        "elevatedBody": "Las operaciones sensibles, como aprobar evaluaciones, publicar políticas y tomar decisiones de supervisión, requieren los roles de Responsable de IA, Administrador o Propietario."
+        "elevatedBody": "Aprobar evaluaciones, publicar versiones de políticas y registrar decisiones de supervisión requieren los roles de Responsable de IA, Administrador o Propietario."
       },
       "auth": {
         "title": "Autenticación",
-        "intro": "Admitimos métodos de autenticación estándar del sector con refuerzos adicionales para entornos de producción.",
+        "intro": "Admitimos métodos de inicio de sesión estándar, con sesiones de 12 horas y límite de intentos de inicio de sesión en el servicio en la nube.",
         "methods": [
           {
             "title": "Google OAuth",
-            "description": "SSO corporativo mediante Google con OAuth 2.0"
+            "description": "Inicio de sesión con una cuenta de Google (OAuth 2.0)"
           },
           {
             "title": "Enlace mágico",
-            "description": "Autenticación por correo sin contraseña para un inicio de sesión seguro"
+            "description": "Inicio de sesión sin contraseña mediante un enlace de un solo uso enviado por correo"
           },
           {
             "title": "SSO multiplataforma",
-            "description": "Inicio de sesión único en toda la plataforma TODO.LAW"
+            "description": "Inicio de sesión único en las aplicaciones de TODO.LAW (servicio en la nube)"
           }
         ],
         "sessionTitle": "Seguridad de las sesiones",
         "sessionItems": [
           "Las cookies HTTP-only impiden el acceso a los tokens de sesión desde el cliente",
-          "El indicador de cookie segura se aplica en producción (solo HTTPS)",
-          "Protección CSRF en todas las solicitudes autenticadas",
-          "La política de cookies SameSite previene la falsificación de solicitudes entre sitios"
+          "El indicador de cookie segura se aplica siempre que la aplicación se sirve por HTTPS",
+          "Las solicitudes de inicio de sesión llevan un token CSRF",
+          "Las cookies de sesión SameSite=Lax limitan la falsificación de solicitudes entre sitios"
         ]
       },
       "validation": {
@@ -3285,7 +3285,7 @@
         "items": [
           {
             "title": "Validación de esquemas",
-            "description": "Cada entrada de la API se valida contra un esquema estricto. Los datos no válidos se rechazan antes de llegar a la base de datos."
+            "description": "Cada entrada de la aplicación (tRPC) se valida contra un esquema estricto, y los endpoints de integración comprueban sus campos en el código. Los datos no válidos se rechazan antes de llegar a la base de datos."
           },
           {
             "title": "Consultas parametrizadas",
@@ -3299,7 +3299,7 @@
       },
       "audit": {
         "title": "Registro de auditoría",
-        "intro": "Cada operación de creación, actualización o borrado, y cada operación de negocio significativa, se registra en un registro de auditoría inmutable. Esto respalda los requisitos de cumplimiento y proporciona un historial completo de las actividades de gobernanza.",
+        "intro": "Los cambios en los registros de gobernanza y las decisiones clave se anotan en un registro de auditoría. Esto respalda los requisitos de cumplimiento y deja constancia de las actividades de gobernanza.",
         "whatWeLogTitle": "Qué registramos",
         "logItems": [
           "Cambios en el ciclo de vida de los sistemas de IA",
@@ -3307,15 +3307,15 @@
           "Envíos y aprobaciones de evaluaciones",
           "Decisiones de supervisión",
           "Cambios y publicaciones de políticas",
-          "Acciones de gestión de incidentes",
+          "Creación de incidentes y cambios de estado",
           "Cambios de miembros de la organización"
         ],
         "retentionTitle": "Conservación",
-        "retentionBody": "Los registros de auditoría se conservan aunque se elimine el usuario o la organización asociados. Esto asegura que tu historial de cumplimiento permanezca intacto independientemente de los cambios de personal."
+        "retentionBody": "Los registros de auditoría se conservan cuando un miembro deja la organización. Cuando se elimina una organización, sus registros se eliminan con ella, incluido su historial de auditoría; se conserva una entrada que deja constancia de la eliminación."
       },
       "transport": {
         "title": "Transporte e infraestructura",
-        "intro": "Tus datos están protegidos en tránsito y en reposo mediante medidas de seguridad estándar del sector.",
+        "intro": "Tus datos se cifran en tránsito con TLS, y en reposo mediante el cifrado de almacenamiento de los proveedores de alojamiento y de base de datos.",
         "items": [
           {
             "title": "HTTPS en todas partes",
@@ -3335,15 +3335,15 @@
           },
           {
             "title": "Dónde se guardan los datos",
-            "description": "En la nube de TODO.LAW, los datos se guardan en la Unión Europea (Fráncfort). Si un administrador activa las funciones de IA, el texto que se usa va al proveedor de IA configurado en el servicio, que puede estar fuera de la UE. En una instancia gestionada o en tu propio hardware, los datos se quedan allí."
+            "description": "En la nube de TODO.LAW, los datos se guardan en la Unión Europea (Fráncfort). Si un administrador activa las funciones de IA, el texto que se usa va al proveedor de IA configurado en el servicio, que puede estar fuera de la UE. En una instancia gestionada o en tu propio hardware, los datos se quedan allí, salvo que conectes un proveedor de IA externo."
           }
         ]
       },
       "api": {
         "title": "Seguridad de la API",
-        "intro": "Todos los endpoints de la API requieren autenticación. Las integraciones externas utilizan verificación de firmas y autenticación basada en tokens.",
+        "intro": "Cada endpoint que lee o modifica datos de una organización requiere autenticación. Las integraciones externas utilizan verificación de firmas y autenticación mediante claves.",
         "endpointTitle": "Protección de endpoints",
-        "endpointBody": "Cada endpoint de la API de gobernanza requiere una sesión autenticada con pertenencia verificada a la organización. Las solicitudes no autenticadas se rechazan.",
+        "endpointBody": "Cada endpoint de gobernanza que usa la aplicación requiere una sesión autenticada con pertenencia verificada a la organización. Las solicitudes no autenticadas se rechazan.",
         "webhookTitle": "Verificación de webhooks",
         "webhookBody": "Las solicitudes de integración entrantes se autentican con una clave de API, y los webhooks utilizan verificación de firmas criptográficas. Las solicitudes no verificadas se descartan antes de procesarse."
       },
@@ -3359,11 +3359,11 @@
           },
           {
             "category": "Inyección",
-            "description": "Consultas parametrizadas, validación estricta de entradas, sin SQL en bruto"
+            "description": "Consultas parametrizadas, validación estricta de entradas; las pocas consultas SQL vinculan cada valor"
           },
           {
             "category": "Autenticación",
-            "description": "OAuth estándar del sector, sesiones seguras, protección CSRF"
+            "description": "OAuth estándar, sesiones cortas, cookies SameSite, límite de intentos de inicio de sesión"
           },
           {
             "category": "Integridad de los datos",
@@ -3375,7 +3375,7 @@
           },
           {
             "category": "Registro y monitorización",
-            "description": "Registro de auditoría completo de todas las operaciones de gobernanza"
+            "description": "Registro de auditoría de los cambios en los registros de gobernanza y de las decisiones clave"
           }
         ]
       },

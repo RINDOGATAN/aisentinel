@@ -412,6 +412,13 @@ export default function AISystemDetailPage() {
     { organizationId, id },
     { enabled: !!organization?.id && !!id }
   );
+  // A link that names a tab lands on it: the tabs sit below the overview, so
+  // scroll there once the system has loaded.
+  const systemLoaded = !!system;
+  useEffect(() => {
+    if (!systemLoaded || !requestedTab || !LINKABLE_TABS.has(requestedTab)) return;
+    document.getElementById("system-tabs")?.scrollIntoView({ block: "start" });
+  }, [systemLoaded, requestedTab]);
 
   const { data: scorecard } = trpc.compliance.getSystemScorecard.useQuery(
     { organizationId, aiSystemId: id },

@@ -10,6 +10,7 @@
  */
 
 import { z } from "zod";
+import { editConfirmation, keepSystemAfterEdit } from "@/server/services/provenance/edit-stamp";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { TRPCError } from "@trpc/server";
 import { chatComplete } from "../../services/ai/llm-door";
@@ -101,10 +102,10 @@ export const transparencyRouter = createTRPCRouter({
         notes: input.notes ?? null,
         reviewedBy: ctx.session.user.id,
         reviewedAt: new Date(),
-        // A human editing an artifact IS confirming it; provenance keeps its
-        // historical origin (where the row came from, not who vouches for it).
-        confirmedBy: ctx.session.user.id,
-        confirmedAt: new Date(),
+        // An approver's edit confirms the profile; anyone else's edit clears
+        // the stamp until an approver confirms it
+        // (services/provenance/edit-stamp.ts). Provenance keeps its origin.
+        ...editConfirmation(ctx.membership.role, ctx.session.user.id),
       };
 
       const profile = await ctx.prisma.transparencyProfile.upsert({
@@ -115,6 +116,12 @@ export const transparencyRouter = createTRPCRouter({
           ...data,
         },
         update: data,
+      });
+      await keepSystemAfterEdit(ctx.prisma, {
+        role: ctx.membership.role,
+        aiSystemId: input.aiSystemId,
+        organizationId: ctx.organization.id,
+        userId: ctx.session.user.id,
       });
 
       await ctx.prisma.auditLog.create({

@@ -16,6 +16,7 @@ import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { createPortalSession } from "@/lib/stripe";
 import { features } from "@/config/features";
+import { BILLING_FORBIDDEN_MESSAGE, canManageBilling } from "@/lib/billing-roles";
 
 export async function POST(request: NextRequest) {
   if (!features.stripeEnabled || !features.selfServiceUpgrade) {
@@ -54,6 +55,11 @@ export async function POST(request: NextRequest) {
         { error: "Not authorized to manage billing for this organization" },
         { status: 403 }
       );
+    }
+
+    // Buying and managing the subscription is for owners and admins.
+    if (!canManageBilling(membership.role)) {
+      return NextResponse.json({ error: BILLING_FORBIDDEN_MESSAGE }, { status: 403 });
     }
 
     // Get the Stripe customer ID for this organization

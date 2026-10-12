@@ -4,8 +4,8 @@
 /**
  * The safeguards guide's level table (owner's mockup, 10 Oct 2026): every answer row and
  * every level-to-way row, in both markets. Ported from the storefront's
- * src/content/safeguards.test.ts; the AI wording checks follow this product (the record
- * details an AI draft uses, not "the selected text").
+ * src/content/safeguards.test.ts; the copy itself is shared word for word (see
+ * safeguards.canonical.test.ts).
  */
 import { describe, it, expect } from "vitest";
 import { COPY, LADDER, QUESTIONS, WAY_CARD, levelOf, meets, optionsFor, pickWay, recommend, requirementsOf, type Answers, type Locale } from "./safeguards";
@@ -19,7 +19,7 @@ const ROWS: [keyof Answers, string, number][] = [
   ["loc", "any", 0],
   ["loc", "servers", 2],
   ["data", "test", 0],
-  ["data", "real", 1],
+  ["data", "real", 0],
   ["data", "special", 1],
   ["ai", "none", 0],
   ["ai", "ext", 0],
@@ -35,13 +35,11 @@ const ROWS: [keyof Answers, string, number][] = [
 
 describe.each(LOCALES)("level table (%s)", (locale) => {
   it.each(ROWS)("%s = %s sets level %i", (q, v, level) => {
-    // Spanish: real data goes to the cloud with the Plan nube UE (level 0).
-    const expected = locale === "es" && q === "data" && v === "real" ? 0 : level;
-    expect(levelOf({ [q]: v }, locale)).toBe(expected);
+    expect(levelOf({ [q]: v }, locale)).toBe(level);
   });
 
   it("takes the highest level any answer asks for", () => {
-    expect(levelOf({ data: "real", ai: "ext" }, locale)).toBe(locale === "es" ? 0 : 1);
+    expect(levelOf({ data: "real", ai: "ext" }, locale)).toBe(0);
     expect(levelOf({ data: "real", ai: "key" }, locale)).toBe(1);
     expect(levelOf({ data: "special", ai: "ext" }, locale)).toBe(1);
     expect(levelOf({ data: "real", cert: "yes" }, locale)).toBe(2);
@@ -55,7 +53,7 @@ describe.each(LOCALES)("level table (%s)", (locale) => {
 
   it("level 0 leads to the cloud and level 1 to managed", () => {
     expect(pickWay({ loc: "any" }, locale)).toBe("cloud");
-    expect(pickWay({ data: "real" }, locale)).toBe(locale === "es" ? "cloud" : "managed");
+    expect(pickWay({ data: "real" }, locale)).toBe("cloud");
     expect(pickWay({ ai: "key" }, locale)).toBe("managed");
     expect(pickWay({ iso: "yes" }, locale)).toBe("managed");
   });
@@ -85,35 +83,30 @@ describe.each(LOCALES)("level table (%s)", (locale) => {
   });
 });
 
-describe("real data in Spain: the Plan nube UE", () => {
+describe("real client data: the cloud in both markets", () => {
   it("real data sets level 0 (cloud), special categories stay at level 1 (managed)", () => {
-    expect(levelOf({ data: "real" }, "es")).toBe(0);
-    expect(pickWay({ data: "real" }, "es")).toBe("cloud");
-    expect(levelOf({ data: "special" }, "es")).toBe(1);
-    expect(pickWay({ data: "special" }, "es")).toBe("managed");
-    // English is unchanged.
-    expect(levelOf({ data: "real" }, "en")).toBe(1);
-    expect(pickWay({ data: "real" }, "en")).toBe("managed");
+    for (const l of LOCALES) {
+      expect(levelOf({ data: "real" }, l)).toBe(0);
+      expect(pickWay({ data: "real" }, l)).toBe("cloud");
+      expect(levelOf({ data: "special" }, l)).toBe(1);
+      expect(pickWay({ data: "special" }, l)).toBe("managed");
+    }
   });
 
-  it("the cloud meets real data with the plan's note, and special categories stay unmet", () => {
-    expect(meets("cloud", "data:real", "es")).toBe(true);
-    expect(meets("cloud", "data:special", "es")).toBe(false);
-    expect(meets("cloud", "data:real", "en")).toBe(false);
-    expect(meets("cloud", "data:real")).toBe(false);
-    expect(COPY.es.notes["data:real"].cloud).toBe("Con el Plan nube UE.");
-    expect(COPY.es.notes["data:special"].cloud).toBe("Elige la instancia gestionada.");
-    expect(recommend({ data: "real" }, "es")!.checks).toEqual([{ key: "data:real", met: true }]);
-    expect(recommend({ data: "special" }, "es")!.checks).toEqual([{ key: "data:special", met: true }]);
-    expect(recommend({ data: "special" }, "es")!.down).toEqual({ way: "cloud", missing: ["data:special"] });
+  it("the cloud meets real data with the sub-processors note, and special categories stay unmet", () => {
+    for (const l of LOCALES) {
+      expect(meets("cloud", "data:real", l)).toBe(true);
+      expect(meets("cloud", "data:special", l)).toBe(false);
+      expect(recommend({ data: "real" }, l)!.checks).toEqual([{ key: "data:real", met: true }]);
+      expect(recommend({ data: "special" }, l)!.down).toEqual({ way: "cloud", missing: ["data:special"] });
+    }
+    expect(COPY.en.notes["data:real"].cloud).toBe("Accepted: all our sub-processors have the necessary safeguards and certifications.");
+    expect(COPY.es.notes["data:real"].cloud).toBe("Se admiten: todos nuestros subencargados cuentan con las certificaciones y garantías necesarias.");
   });
 
-  it("the Spanish cloud result carries the owner's text,", () => {
-    const ai = "los datos del registro que usa cada borrador de IA";
-    expect(COPY.es.summaries.cloud).toBe(
-      "Lo alojamos nosotros, con los datos en la UE (Fráncfort). Puedes probarlo con el piloto gratuito y con límites, solo con datos de prueba, o contratar el Plan nube UE para datos reales. Es un servicio compartido (los registros de cada organización están separados). Si activas las funciones de IA, " + ai + " van al proveedor de IA externo configurado en el servicio, que puede estar fuera de la UE.",
-    );
-    expect(COPY.en.summaries.cloud).not.toMatch(/€|Plan nube/);
+  it("question 1's first answer is the shared wording", () => {
+    expect(COPY.en.questions.loc.options.any).toBe("We could use a SaaS, provided that all sub-processors have the necessary safeguards and certifications");
+    expect(COPY.es.questions.loc.options.any).toBe("Pueden estar en nube siempre y cuando todos los subencargados cuenten con las certificaciones y garantías necesarias");
   });
 });
 
@@ -191,27 +184,28 @@ describe("copy rules", () => {
     expect(es).not.toMatch(/\busted(es)?\b|vosotros|\bvuestr/i);
   });
 
-  it("managed is hosted in Asturias with open-weight models on the instance; the cloud states EU, pilot, shared, and never a lack of certification", () => {
+  it("managed is hosted in Asturias with open-weight models on the instance; the cloud states shared, free start and real data, and never a lack of certification", () => {
     expect(COPY.en.summaries.managed).toBe(
-      "An isolated instance we run for your organization alone, hosted in Asturias, Spain. Your records stay on that instance. AI features stay off until you turn them on, and can use open-weight models hosted on the instance itself, so the record details do not leave it, or your own provider key.",
+      "An isolated instance we run for your organization alone, hosted in Asturias, Spain. Your records stay on that instance. AI features stay off until you turn them on, and can use open-weight models hosted on the instance itself, so the text does not leave it, or your own provider key.",
     );
     expect(COPY.es.summaries.managed).toBe(
-      "Una instancia aislada que operamos nosotros, solo para tu organización, alojada en Asturias (España). Tus registros se quedan en esa instancia. Las funciones de IA están desactivadas hasta que las activas, y pueden usar modelos de pesos abiertos alojados en la propia instancia, de modo que los datos del registro no salen de ella, o la clave de tu propio proveedor.",
+      "Una instancia aislada que operamos nosotros, solo para tu organización, alojada en Asturias (España). Tus registros se quedan en esa instancia. Las funciones de IA están desactivadas hasta que las activas, y pueden usar modelos de pesos abiertos alojados en la propia instancia, de modo que el texto no sale de ella, o la clave de tu propio proveedor.",
     );
-    // AI Sentinel sends record details to a draft, never "the selected text".
+    // The AI features send the details of the record being drafted, never "the selected text".
     for (const l of LOCALES) expect(all(l)).not.toMatch(/selected text|texto seleccionado/);
     // No unqualified "your data stays" where AI could send text out.
     for (const l of LOCALES) expect(all(l)).not.toMatch(/Your data stays on (that instance|your servers|your hardware)|Tus datos se quedan/);
-    expect(COPY.en.summaries.cloud).toMatch(/capped pilot[\s\S]*test records[\s\S]*shared/);
-    expect(COPY.es.summaries.cloud).toMatch(/piloto[\s\S]*con límites[\s\S]*datos de prueba[\s\S]*Plan nube UE[\s\S]*datos reales[\s\S]*compartido/);
+    expect(COPY.en.summaries.cloud).toMatch(/shared service[\s\S]*start free[\s\S]*real client data/);
+    expect(COPY.es.summaries.cloud).toMatch(/servicio compartido[\s\S]*empezar gratis[\s\S]*datos reales/);
+    for (const l of LOCALES) expect(all(l)).not.toMatch(/not for real client data|solo con datos de prueba|solo para registros de prueba/i);
     // "We always have an answer": no line saying we lack a certification.
     for (const l of LOCALES) expect(all(l)).not.toMatch(/no (service level or )?independent certification|no independent certification today|sin certificación independiente|no tenemos certificación independiente/);
   });
 
   it("leaves the classifier sentence out of the panel", () => {
     for (const l of LOCALES) expect(COPY[l].whyP).not.toMatch(/classifier|clasificador/i);
-    expect(COPY.en.whyP).toMatch(/On the managed instance or on your own servers, AI features/);
-    expect(COPY.es.whyP).toMatch(/En la instancia gestionada o si lo instalas en tus servidores, las funciones de IA pueden usar modelos de pesos abiertos/);
+    expect(COPY.en.whyP).toMatch(/On a managed instance or on your own servers, AI features/);
+    expect(COPY.es.whyP).toMatch(/En una instancia gestionada o en tus propios servidores, las funciones de IA pueden usar modelos de pesos abiertos/);
     expect(COPY.en.whyP).not.toMatch(/the Box/);
     expect(COPY.es.whyP).not.toMatch(/Box/);
   });
@@ -220,15 +214,15 @@ describe("copy rules", () => {
     expect(all("en")).not.toMatch(/organisation|licence|colour|programme|centre/);
   });
 
-  it("keeps ISO 27001 as the example in question 6; names Asturias only for managed and the EU for the cloud", () => {
+  it("keeps ISO 27001 as the example in question 6; names Asturias only for managed and no location for the cloud", () => {
     expect(COPY.en.questions.cert.label).toMatch(/for example ISO 27001/);
     expect(COPY.es.questions.cert.label).toMatch(/por ejemplo, ISO 27001/);
-    // The cloud is hosted in the EU (Frankfurt); the one place named is the managed instance's Asturias. The cloud is never said to be in the United States.
-    for (const l of LOCALES) expect(all(l)).not.toMatch(/United States|Estados Unidos|EE\. ?UU|Frankfurt/);
+    // The one place named is the managed instance's Asturias; the copy names no location for the cloud.
+    for (const l of LOCALES) expect(all(l)).not.toMatch(/United States|Estados Unidos|EE\. ?UU|Frankfurt|Fráncfort/);
     // English names no hosting location for the cloud.
-    expect(COPY.en.summaries.cloud).toMatch(/^Hosted by us\. /);
+    expect(COPY.en.summaries.cloud).toMatch(/^Hosted by us, on a shared service/);
     expect(all("en")).not.toMatch(/\bEU\b|Europe/);
-    expect(COPY.es.summaries.cloud).toMatch(/en la UE[\s\S]*puede estar fuera de la UE/);
+    expect(COPY.es.summaries.cloud).toMatch(/puede estar fuera de la UE\.$/);
     for (const l of LOCALES) {
       const { managed, ...rest } = COPY[l].summaries;
       expect(managed).toMatch(/Asturias/);
@@ -258,7 +252,7 @@ describe("way names come from this landing's boxes", () => {
 
 describe("the Spanish own-hardware result", () => {
   it("offers our on-site or remote assistance, with no six-week engagement, training or price", () => {
-    expect((COPY.es.summaries.deploy ?? "").startsWith("La suite instalada en tus propios servidores, con nuestra asistencia presencial o remota. ")).toBe(true);
+    expect((COPY.es.summaries.deploy ?? "").startsWith("Instalado en tus propios servidores, con nuestra asistencia presencial o remota. ")).toBe(true);
     expect(COPY.es.summaries.deploy).toMatch(/dentro de tu perímetro/);
     const all = JSON.stringify(COPY.es);
     expect(all).not.toMatch(/semanas|formamos|\bformad[oa]|\bformación|manual de operación|15\.000/);

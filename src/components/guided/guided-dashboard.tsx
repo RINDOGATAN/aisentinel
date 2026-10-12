@@ -99,13 +99,17 @@ export function Chip({
 
 export function GuidedDashboard() {
   const td = useTranslations("dashboard");
+  const tg = useTranslations("guided");
   const { organization } = useOrganization();
   const { steps: statuses } = useProgramPathQuery();
   const { overview: ready, limited } = useProgrammeOverview();
 
   return (
     <div className="space-y-4 sm:space-y-6" data-testid="guided-dashboard">
-      <PageHeader title={organization?.name || "AI Governance"} description={td("subtitle")} />
+      <PageHeader
+        title={tg("overview")}
+        description={organization?.name ? td("subtitleOrg", { org: organization.name }) : td("subtitle")}
+      />
 
       {organization && <FirstRunCard />}
 
@@ -336,7 +340,7 @@ function PackDownload({ overview, organizationId }: { overview: ProgrammeOvervie
 
 function DocumentRow({ row }: { row: RegisterRow }) {
   const t = useTranslations("documentRegister");
-  const { organization } = useOrganization();
+  const { organization, canWrite } = useOrganization();
   const { download, isPending } = useExportDownload();
   const { entry, doc } = row;
   const status = doc.status;
@@ -354,7 +358,7 @@ function DocumentRow({ row }: { row: RegisterRow }) {
   const downloads = Object.entries(entry.downloads ?? {}) as ["pdf" | "csv", string][];
 
   let actions: React.ReactNode = null;
-  if (status.state === "needsInput") {
+  if (status.state === "needsInput" && canWrite) {
     const label = t.has(`inputAction.${status.input}`) ? t(`inputAction.${status.input}`) : t("inputAction.default");
     actions = (
       <Link href={INPUTS[status.input].href} data-testid={`doc-input-${entry.id}`}>

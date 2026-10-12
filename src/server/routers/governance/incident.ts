@@ -74,9 +74,12 @@ export const incidentRouter = createTRPCRouter({
         throw new TRPCError({ code: "NOT_FOUND", message: "Incident not found" });
       }
 
-      // Timeline entries store the user id of whoever made them; the screen shows a
-      // name instead. Only members of this organization are looked up.
-      const performerIds = [...new Set((incident.timeline ?? []).map((e) => e.performedBy))];
+      // Timeline entries and the incident itself store the user id of whoever
+      // made them; the screen shows a name instead. Only members of this
+      // organization are looked up.
+      const performerIds = [
+        ...new Set([...(incident.timeline ?? []).map((e) => e.performedBy), incident.reportedBy].filter(Boolean)),
+      ];
       const members = performerIds.length
         ? await ctx.prisma.organizationMember.findMany({
             where: { organizationId: ctx.organization.id, userId: { in: performerIds } },
@@ -105,6 +108,16 @@ export const incidentRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       await assertPilotRoom(ctx.prisma, ctx.organization.id, "incidents", pilotLocale(ctx.getCookie));
+      // A linked AI system must be one of this organization's.
+      if (input.aiSystemId) {
+        const system = await ctx.prisma.aISystem.findFirst({
+          where: { id: input.aiSystemId, organizationId: ctx.organization.id },
+          select: { id: true },
+        });
+        if (!system) {
+          throw new TRPCError({ code: "NOT_FOUND", message: "AI system not found" });
+        }
+      }
       const incident = await ctx.prisma.aIIncident.create({
         data: {
           organizationId: ctx.organization.id,

@@ -62,7 +62,7 @@ const videoText = LANDING_VIDEOS.en.flatMap((v) => [
 describe("English landing page", () => {
   it("passes the shared sections for both languages", () => {
     const page = read("src/landing/LandingPage.tsx");
-    expect(page).toContain("<LandingSections t={t} locale={locale} />");
+    expect(page).toContain("<LandingSections t={t} locale={locale} currency={currency} />");
     expect(page).not.toContain('locale === "es" ? <');
   });
 
@@ -185,13 +185,14 @@ describe("English sections", () => {
     expect(html.match(/<article class="[^"]*paper-card/g)).toHaveLength(3);
   });
 
-  it("play five videos only on request, muted, with a poster, two formats and English captions", () => {
+  it("play five videos only on request, with sound, with a poster, two formats and English captions", () => {
     const videos = html.match(/<video[\s\S]*?<\/video>/g) ?? [];
     expect(videos).toHaveLength(5);
     for (const v of videos) {
       expect(v).not.toMatch(/autoplay/i);
       expect(v).toMatch(/preload="none"/);
-      expect(v).toMatch(/muted/);
+      // Narrated: started by the visitor, so it plays with sound.
+      expect(v).not.toMatch(/\smuted(=|\s|>)/);
       expect(v).toMatch(/playsinline/i);
       expect(v).toMatch(/controls/);
       expect(v).toMatch(/poster="\/videos\/en\/[^"]+\.png"/);

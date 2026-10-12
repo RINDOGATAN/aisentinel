@@ -17,7 +17,7 @@ import { use, useState } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { Bot, ExternalLink, Loader2 } from "lucide-react";
+import { Bot, ChevronDown, ExternalLink, Loader2 } from "lucide-react";
 import { PageHeader } from "@/components/governance/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -47,7 +47,8 @@ import { ReadinessBadge, StateBadge, TallyLine } from "@/components/governance/a
 import { ProgressBar } from "@/components/guided/progress-ring";
 import { AIUC1_FRAMEWORK } from "@/config/aiuc1-requirements";
 import { aiuc1Capabilities, aiuc1Paraphrase, aiuc1Title } from "@/config/aiuc1-requirements-es";
-import { AIUC1_TEST_RESULTS, retestDue, type Aiuc1TestResult } from "@/config/aiuc1-evidence";
+import { AIUC1_TEST_RESULTS, firstDomainToOpen, retestDue, type Aiuc1TestResult } from "@/config/aiuc1-evidence";
+import { formatDateIn } from "@/lib/use-format-date";
 
 const DECISION_ROLES = ["OWNER", "ADMIN", "AI_OFFICER"];
 
@@ -89,6 +90,9 @@ export default function AgentTestingDetailPage({ params }: { params: Promise<{ i
   const [performedBy, setPerformedBy] = useState("");
   const [testedOn, setTestedOn] = useState(todayValue);
   const [reason, setReason] = useState("");
+  // Folded or open, per domain, once the person has chosen; until then only
+  // the first domain with something untested is open (firstDomainToOpen).
+  const [shown, setShown] = useState<Record<string, boolean>>({});
 
   const open = (next: DialogState) => {
     setMethod("");
@@ -129,8 +133,11 @@ export default function AgentTestingDetailPage({ params }: { params: Promise<{ i
     );
   }
 
+  const firstOpen = firstDomainToOpen(data.domains);
+  const isShown = (code: string) => shown[code] ?? code === firstOpen;
+  const showDomain = (code: string, value: boolean) => setShown((s) => ({ ...s, [code]: value }));
   const person = (userId: string) => data.people[userId] ?? t("formerMember");
-  const day = (d: Date | string) => new Date(d).toLocaleDateString(locale);
+  const day = (d: Date | string) => formatDateIn(locale, d);
   const pending = recordTest.isPending || acceptPartial.isPending || setApplicability.isPending;
   const minText = 10;
 
@@ -234,6 +241,7 @@ export default function AgentTestingDetailPage({ params }: { params: Promise<{ i
               <li key={d.code} className="space-y-1 text-sm">
                 <a
                   href={`#domain-${d.code}`}
+                  onClick={() => showDomain(d.code, true)}
                   className="block rounded outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <TallyLine code={d.code} tally={d} />
@@ -245,184 +253,205 @@ export default function AgentTestingDetailPage({ params }: { params: Promise<{ i
         </CardContent>
       </Card>
 
-      {/* The six domains. */}
+      {/* The six domains, folded behind their counts except the first one
+          with something untested. */}
       {data.domains.map((d) => (
         <section key={d.code} id={`domain-${d.code}`} aria-labelledby={`domain-${d.code}-title`} className="scroll-mt-20">
           <Card>
-            <CardHeader className="pb-2">
-              <CardTitle id={`domain-${d.code}-title`} className="text-base">
-                {d.code}. {t(`domains.${d.code}`)}
-              </CardTitle>
-              <p className="text-xs text-muted-foreground">{t(`domainAbout.${d.code}`)}</p>
+            <CardHeader className={isShown(d.code) ? "pb-2" : undefined}>
+              <button
+                type="button"
+                aria-expanded={isShown(d.code)}
+                aria-controls={`domain-${d.code}-list`}
+                onClick={() => showDomain(d.code, !isShown(d.code))}
+                data-testid={`domain-toggle-${d.code}`}
+                className="flex w-full items-start justify-between gap-3 rounded text-left outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <span id={`domain-${d.code}-title`} className="min-w-0 text-sm sm:text-base">
+                  <TallyLine code={d.code} tally={d} />
+                </span>
+                <span className="flex shrink-0 items-center gap-1 text-xs font-medium text-primary">
+                  {isShown(d.code) ? t("hideDomain") : t("showDomain")}
+                  <ChevronDown
+                    className={`w-4 h-4 motion-safe:transition-transform ${isShown(d.code) ? "rotate-180" : ""}`}
+                    aria-hidden="true"
+                  />
+                </span>
+              </button>
+              {isShown(d.code) && (
+                <p className="text-xs text-muted-foreground">{t(`domainAbout.${d.code}`)}</p>
+              )}
             </CardHeader>
-            <CardContent className="p-0">
-              <ul className="divide-y divide-border">
-                {d.requirements.map((r) => {
-                  const latest = r.latest;
-                  const canAccept =
-                    canDecide && latest?.result === "PARTIAL" && !r.acceptance && r.applicable;
-                  return (
-                    <li key={r.code} className="px-4 py-3 space-y-2">
-                      <div className="flex flex-wrap items-start gap-2">
-                        <span className="min-w-0 flex-1 break-words text-sm">
-                          <span className="font-mono text-xs text-muted-foreground">{r.code}</span>{" "}
-                          <span className="font-medium">{aiuc1Title(r, lang)}</span>
-                        </span>
-                        <StateBadge state={r.state} accepted={!!r.acceptance} />
-                      </div>
-
-                      <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                        {r.application === "supplemental" && (
-                          <Badge variant="outline" className="text-[10px]">{t("supplemental")}</Badge>
-                        )}
-                        <span>{t("capabilities", { list: aiuc1Capabilities(r.capabilities, lang) })}</span>
-                        <a
-                          href={`${AIUC1_FRAMEWORK.sourceUrl}${r.path}`}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="inline-flex min-h-6 items-center gap-1 text-primary hover:underline"
-                        >
-                          {t("readStandard")}
-                          <ExternalLink className="size-3" aria-hidden="true" />
-                          <span className="sr-only">{t("newTab")}</span>
-                        </a>
-                      </div>
-
-                      <p className="text-xs text-muted-foreground">{aiuc1Paraphrase(r, lang)}</p>
-
-                      {r.reasonMissing && <p className="text-xs">{t("reasonMissing")}</p>}
-                      {r.notApplicableReason && (
-                        <p className="text-xs">
-                          <span className="font-medium">{t("notApplicableReason")}:</span> {r.notApplicableReason}
-                        </p>
-                      )}
-
-                      {latest && (
-                        <div className="rounded-md border border-border p-2 text-xs space-y-1">
-                          <p className="font-medium">
-                            {t("latestLine", {
-                              result: t(`result.${latest.result}`),
-                              date: day(latest.testedAt),
-                              person: person(latest.recordedBy),
-                            })}
-                          </p>
-                          {r.state === "pass" && (
-                            <p className="text-muted-foreground">
-                              {t("retestBy", { date: day(retestDue(new Date(latest.testedAt))) })}
-                            </p>
-                          )}
-                          <p className="break-words">
-                            <span className="text-muted-foreground">{t("field.method")}:</span> {latest.method}
-                          </p>
-                          {latest.observed && (
-                            <p className="break-words">
-                              <span className="text-muted-foreground">{t("field.observed")}:</span> {latest.observed}
-                            </p>
-                          )}
-                          {latest.evidenceRef && (
-                            <p className="break-all">
-                              <span className="text-muted-foreground">{t("field.evidenceRef")}:</span>{" "}
-                              {/^https?:\/\//i.test(latest.evidenceRef) ? (
-                                <a href={latest.evidenceRef} target="_blank" rel="noreferrer" className="text-primary hover:underline">
-                                  {latest.evidenceRef}
-                                </a>
-                              ) : (
-                                latest.evidenceRef
-                              )}
-                            </p>
-                          )}
-                          {latest.performedBy && (
-                            <p className="break-words">
-                              <span className="text-muted-foreground">{t("field.performedBy")}:</span> {latest.performedBy}
-                            </p>
-                          )}
-                          {r.acceptance && (
-                            <p className="break-words">
-                              {t("acceptedLine", {
-                                person: person(r.acceptance.acceptedBy),
-                                date: day(r.acceptance.acceptedAt),
-                              })}{" "}
-                              {r.acceptance.reason}
-                            </p>
-                          )}
+            {isShown(d.code) && (
+              <CardContent className="p-0" id={`domain-${d.code}-list`}>
+                <ul className="divide-y divide-border">
+                  {d.requirements.map((r) => {
+                    const latest = r.latest;
+                    const canAccept =
+                      canDecide && latest?.result === "PARTIAL" && !r.acceptance && r.applicable;
+                    return (
+                      <li key={r.code} className="px-4 py-3 space-y-2">
+                        <div className="flex flex-wrap items-start gap-2">
+                          <span className="min-w-0 flex-1 break-words text-sm">
+                            <span className="font-mono text-xs text-muted-foreground">{r.code}</span>{" "}
+                            <span className="font-medium">{aiuc1Title(r, lang)}</span>
+                          </span>
+                          <StateBadge state={r.state} accepted={!!r.acceptance} />
                         </div>
-                      )}
 
-                      {(r.tests.length > 1 || r.otherEvidence.length > 0) && (
-                        <details className="text-xs">
-                          <summary className="cursor-pointer text-primary min-h-6">
-                            {t("history", { count: r.tests.length - 1 + r.otherEvidence.length })}
-                          </summary>
-                          <ul className="mt-1 space-y-1 pl-4 list-disc">
-                            {r.tests.slice(1).map((x) => (
-                              <li key={x.id} className="break-words">
-                                {day(x.testedAt)} · {t(`result.${x.result}`)} · {x.method}
-                              </li>
-                            ))}
-                            {r.otherEvidence.map((e) => (
-                              <li key={e.id} className="break-words">
-                                {day(e.addedAt)} · {e.url ? (
-                                  <a href={e.url} target="_blank" rel="noreferrer" className="text-primary hover:underline">
-                                    {e.title}
+                        <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                          {r.application === "supplemental" && (
+                            <Badge variant="outline" className="text-[10px]">{t("supplemental")}</Badge>
+                          )}
+                          <span>{t("capabilities", { list: aiuc1Capabilities(r.capabilities, lang) })}</span>
+                          <a
+                            href={`${AIUC1_FRAMEWORK.sourceUrl}${r.path}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex min-h-6 items-center gap-1 text-primary hover:underline"
+                          >
+                            {t("readStandard")}
+                            <ExternalLink className="size-3" aria-hidden="true" />
+                            <span className="sr-only">{t("newTab")}</span>
+                          </a>
+                        </div>
+
+                        <p className="text-xs text-muted-foreground">{aiuc1Paraphrase(r, lang)}</p>
+
+                        {r.reasonMissing && <p className="text-xs">{t("reasonMissing")}</p>}
+                        {r.notApplicableReason && (
+                          <p className="text-xs">
+                            <span className="font-medium">{t("notApplicableReason")}:</span> {r.notApplicableReason}
+                          </p>
+                        )}
+
+                        {latest && (
+                          <div className="rounded-md border border-border p-2 text-xs space-y-1">
+                            <p className="font-medium">
+                              {t("latestLine", {
+                                result: t(`result.${latest.result}`),
+                                date: day(latest.testedAt),
+                                person: person(latest.recordedBy),
+                              })}
+                            </p>
+                            {r.state === "pass" && (
+                              <p className="text-muted-foreground">
+                                {t("retestBy", { date: day(retestDue(new Date(latest.testedAt))) })}
+                              </p>
+                            )}
+                            <p className="break-words">
+                              <span className="text-muted-foreground">{t("field.method")}:</span> {latest.method}
+                            </p>
+                            {latest.observed && (
+                              <p className="break-words">
+                                <span className="text-muted-foreground">{t("field.observed")}:</span> {latest.observed}
+                              </p>
+                            )}
+                            {latest.evidenceRef && (
+                              <p className="break-all">
+                                <span className="text-muted-foreground">{t("field.evidenceRef")}:</span>{" "}
+                                {/^https?:\/\//i.test(latest.evidenceRef) ? (
+                                  <a href={latest.evidenceRef} target="_blank" rel="noreferrer" className="text-primary hover:underline">
+                                    {latest.evidenceRef}
                                   </a>
                                 ) : (
-                                  e.title
+                                  latest.evidenceRef
                                 )}
-                              </li>
-                            ))}
-                          </ul>
-                        </details>
-                      )}
+                              </p>
+                            )}
+                            {latest.performedBy && (
+                              <p className="break-words">
+                                <span className="text-muted-foreground">{t("field.performedBy")}:</span> {latest.performedBy}
+                              </p>
+                            )}
+                            {r.acceptance && (
+                              <p className="break-words">
+                                {t("acceptedLine", {
+                                  person: person(r.acceptance.acceptedBy),
+                                  date: day(r.acceptance.acceptedAt),
+                                })}{" "}
+                                {r.acceptance.reason}
+                              </p>
+                            )}
+                          </div>
+                        )}
 
-                      {data.isAgent && data.seeded && (canWrite || canDecide) && (
-                        <div className="flex flex-wrap gap-2">
-                          {canWrite && r.applicable && (
-                            <Button size="sm" variant="outline" onClick={() => open({ kind: "test", code: r.code, title: aiuc1Title(r, lang) })}>
-                              {t("recordTest")}
-                            </Button>
-                          )}
-                          {canAccept && latest && (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => open({ kind: "accept", code: r.code, title: aiuc1Title(r, lang), testId: latest.id })}
-                            >
-                              {t("acceptPartial")}
-                            </Button>
-                          )}
-                          {canDecide && r.state !== "not-applicable" && (
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => open({ kind: "notApplicable", code: r.code, title: aiuc1Title(r, lang) })}
-                            >
-                              {t("markNotApplicable")}
-                            </Button>
-                          )}
-                          {canDecide && r.state === "not-applicable" && (
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              disabled={pending}
-                              onClick={() =>
-                                setApplicability.mutate({
-                                  organizationId: orgId,
-                                  aiSystemId: id,
-                                  code: r.code,
-                                  applicable: true,
-                                })
-                              }
-                            >
-                              {t("applicableAgain")}
-                            </Button>
-                          )}
-                        </div>
-                      )}
-                    </li>
-                  );
-                })}
-              </ul>
-            </CardContent>
+                        {(r.tests.length > 1 || r.otherEvidence.length > 0) && (
+                          <details className="text-xs">
+                            <summary className="cursor-pointer text-primary min-h-6">
+                              {t("history", { count: r.tests.length - 1 + r.otherEvidence.length })}
+                            </summary>
+                            <ul className="mt-1 space-y-1 pl-4 list-disc">
+                              {r.tests.slice(1).map((x) => (
+                                <li key={x.id} className="break-words">
+                                  {day(x.testedAt)} · {t(`result.${x.result}`)} · {x.method}
+                                </li>
+                              ))}
+                              {r.otherEvidence.map((e) => (
+                                <li key={e.id} className="break-words">
+                                  {day(e.addedAt)} · {e.url ? (
+                                    <a href={e.url} target="_blank" rel="noreferrer" className="text-primary hover:underline">
+                                      {e.title}
+                                    </a>
+                                  ) : (
+                                    e.title
+                                  )}
+                                </li>
+                              ))}
+                            </ul>
+                          </details>
+                        )}
+
+                        {data.isAgent && data.seeded && (canWrite || canDecide) && (
+                          <div className="flex flex-wrap gap-2">
+                            {canWrite && r.applicable && (
+                              <Button size="sm" variant="outline" onClick={() => open({ kind: "test", code: r.code, title: aiuc1Title(r, lang) })}>
+                                {t("recordTest")}
+                              </Button>
+                            )}
+                            {canAccept && latest && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => open({ kind: "accept", code: r.code, title: aiuc1Title(r, lang), testId: latest.id })}
+                              >
+                                {t("acceptPartial")}
+                              </Button>
+                            )}
+                            {canDecide && r.state !== "not-applicable" && (
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => open({ kind: "notApplicable", code: r.code, title: aiuc1Title(r, lang) })}
+                              >
+                                {t("markNotApplicable")}
+                              </Button>
+                            )}
+                            {canDecide && r.state === "not-applicable" && (
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                disabled={pending}
+                                onClick={() =>
+                                  setApplicability.mutate({
+                                    organizationId: orgId,
+                                    aiSystemId: id,
+                                    code: r.code,
+                                    applicable: true,
+                                  })
+                                }
+                              >
+                                {t("applicableAgain")}
+                              </Button>
+                            )}
+                          </div>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </CardContent>
+            )}
           </Card>
         </section>
       ))}

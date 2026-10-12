@@ -21,6 +21,7 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import {
+  ASSERTED_MAPPING_WHERE,
   getConfirmationCounts,
   UNCONFIRMED_WHERE,
 } from "../../services/provenance/summary";
@@ -28,6 +29,8 @@ import { computeConfirmationSummary } from "@/lib/provenance/state";
 import { requirementLabel } from "@/config/framework-display";
 import { resolveContentLocale } from "@/config/lawfirm-ai-toolkit";
 import { ARTIFACT_CLASSES, type ArtifactClass } from "@/lib/provenance/types";
+// Confirming is an approval, not an edit; the same list governs the edit stamp.
+import { APPROVER_ROLES } from "@/server/services/provenance/edit-stamp";
 
 /** The five models that carry provenance columns. */
 const CONFIRMABLE_ENTITIES = [
@@ -41,8 +44,6 @@ type ConfirmableEntity = (typeof CONFIRMABLE_ENTITIES)[number];
 
 const entityEnum = z.enum(CONFIRMABLE_ENTITIES);
 
-/** Confirming is an approval, not an edit. */
-const APPROVER_ROLES = ["OWNER", "ADMIN", "AI_OFFICER"];
 
 /** Bulk confirm is capped so one request can never fan out unbounded. */
 const MAX_ITEMS = 200;
@@ -134,7 +135,9 @@ export const provenanceRouter = createTRPCRouter({
           : [],
         wants("ComplianceMapping")
           ? ctx.prisma.complianceMapping.findMany({
-              where: { ...base, ...systemScope },
+              // Only mappings that assert a status, as the meter counts them: an
+              // empty NOT_ASSESSED slot asserts nothing a person could vouch for.
+              where: { ...base, ...systemScope, ...ASSERTED_MAPPING_WHERE },
               select: {
                 id: true,
                 status: true,
@@ -219,7 +222,7 @@ export const provenanceRouter = createTRPCRouter({
           provenance: m.provenance,
           sourceRef: m.sourceRef ?? m.evidence?.slice(0, 160) ?? null,
           at: m.updatedAt,
-          href: `/governance/compliance?systemId=${m.aiSystemId}`,
+          href: `/governance/ai-registry/${m.aiSystemId}?tab=evidence`,
         })),
         ...gates.map((g) => ({
           entityType: "OversightGate" as const,

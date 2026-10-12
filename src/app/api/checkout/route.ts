@@ -13,8 +13,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { createCheckoutSession, createCustomer } from "@/lib/stripe";
+import { createCheckoutSession, createCustomer, getCustomer } from "@/lib/stripe";
+import { COUNTRY_HEADER, requestCurrency, type Currency } from "@/lib/currency";
 import { features } from "@/config/features";
+import { BILLING_FORBIDDEN_MESSAGE, canManageBilling } from "@/lib/billing-roles";
 
 export async function POST(request: NextRequest) {
   if (!features.stripeEnabled || !features.selfServiceUpgrade) {
@@ -60,6 +62,11 @@ export async function POST(request: NextRequest) {
         { error: "Not authorized to purchase for this organization" },
         { status: 403 }
       );
+    }
+
+    // Buying and managing the subscription is for owners and admins.
+    if (!canManageBilling(membership.role)) {
+      return NextResponse.json({ error: BILLING_FORBIDDEN_MESSAGE }, { status: 403 });
     }
 
     // Look up all requested skill packages (IDs may be DB id or skillId)
@@ -174,12 +181,16 @@ export async function POST(request: NextRequest) {
       stripeCustomerId = stripeCustomer.id;
     }
 
-    // Determine currency from geo-IP (US → USD, else EUR)
-    const country = request.headers.get("x-vercel-ip-country") || "";
-    const isUSD = country === "US";
+    // The currency the page showed (src/lib/currency.ts: the language and
+    // the geo header, the same rule the middleware records for the client),
+    // unless the Stripe customer is already billed in a currency.
+    const currency =
+      (await storedBillingCurrency(stripeCustomerId)) ??
+      requestCurrency(request.headers.get("cookie"), request.headers.get(COUNTRY_HEADER));
+    const isUSD = currency === "USD";
     const usdPriceId = process.env.STRIPE_PRICE_ID_USD;
 
-    // Build line items (use USD price for US visitors if available)
+    // Build line items (the USD price when the currency is USD and one is configured)
     const lineItems = skillPackages.map((pkg) => ({
       priceId: isUSD && usdPriceId ? usdPriceId : (pkg.stripePriceId || defaultPriceId!),
       skillPackageId: pkg.id,
@@ -208,5 +219,18 @@ export async function POST(request: NextRequest) {
       { error: `Failed to create checkout session: ${message}` },
       { status: 500 }
     );
+  }
+}
+
+/** The currency a Stripe customer is already billed in, if any (Stripe keeps one per customer). */
+async function storedBillingCurrency(stripeCustomerId: string | null | undefined): Promise<Currency | null> {
+  if (!stripeCustomerId) return null;
+  try {
+    const customer = await getCustomer(stripeCustomerId);
+    if ("deleted" in customer && customer.deleted) return null;
+    const stored = (customer as { currency?: string | null }).currency?.toUpperCase();
+    return stored === "USD" || stored === "EUR" ? stored : null;
+  } catch {
+    return null;
   }
 }

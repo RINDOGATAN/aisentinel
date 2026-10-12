@@ -14,6 +14,7 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
+import { assertOwnedAiSystem } from "../../services/authz/owned";
 import { assertNotOnHold } from "../../services/legal-hold";
 import {
   BANDS,
@@ -176,6 +177,9 @@ export const sensitiveDataRouter = createTRPCRouter({
       });
       if (!existing) {
         throw new TRPCError({ code: "NOT_FOUND", message: "Analysis not found" });
+      }
+      if (typeof data.aiSystemId === "string") {
+        await assertOwnedAiSystem(ctx.prisma, ctx.organization.id, data.aiSystemId);
       }
 
       const factors = (data.factors ?? existing.factors) as Factors;

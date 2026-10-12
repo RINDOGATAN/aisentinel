@@ -213,11 +213,13 @@ test("a new user's first session, end to end", async ({ page }, testInfo) => {
     expect((await download).suggestedFilename()).toMatch(/\.pdf$/);
   });
 
-  await step(page, watch, "the compliance page offers AIUC-1 beside the other frameworks", async () => {
+  await step(page, watch, "the system's evidence tab offers AIUC-1 beside the other frameworks", async () => {
+    // The evidence step lists the systems; each opens its own page on the Evidence tab.
     await page.goto("/governance/compliance");
-    await choose(page, "Select AI System...", systemName);
+    await page.getByRole("link", { name: new RegExp(systemName) }).click();
+    await page.waitForURL(/\/governance\/ai-registry\/[^/]+\?tab=evidence$/);
     await page.getByRole("tab", { name: /^AIUC-1 \(57\)$/ }).click();
-    const panel = page.getByRole("tabpanel");
+    const panel = page.getByRole("tabpanel").last();
     await expect(panel.getByText("Data & Privacy", { exact: true })).toBeVisible();
     await expect(panel.getByText("Society", { exact: true })).toBeVisible();
   });

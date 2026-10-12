@@ -46,7 +46,7 @@ export const QUESTION_HELP: Record<string, QuestionHelp> = {
       "\"CV-Screen v2.1 ranks job applicants against a role's requirements to produce a shortlist for recruiters.\"",
       "«CV-Screen v2.1 ordena a los candidatos según los requisitos del puesto para generar una preselección para los reclutadores.»",
     ),
-    reference: L("EU AI Act Art. 27(1)(a)", "Reglamento de IA de la UE, art. 27.1.a"),
+    reference: L("EU AI Act Art. 27(1)(a)", "RIA, art. 27.1.a"),
   },
   fria1_2: {
     meaning: L(
@@ -57,7 +57,7 @@ export const QUESTION_HELP: Record<string, QuestionHelp> = {
       "\"Recruiters receive the shortlist and decide who to interview; the system does not reject anyone on its own.\"",
       "«Los reclutadores reciben la preselección y deciden a quién entrevistar; el sistema no descarta a nadie por sí solo.»",
     ),
-    reference: L("EU AI Act Art. 27(1)(a)", "Reglamento de IA de la UE, art. 27.1.a"),
+    reference: L("EU AI Act Art. 27(1)(a)", "RIA, art. 27.1.a"),
   },
   fria1_3: {
     meaning: L(
@@ -68,7 +68,7 @@ export const QUESTION_HELP: Record<string, QuestionHelp> = {
       "\"In continuous use through each hiring campaign, roughly forty campaigns a year.\"",
       "«En uso continuo durante cada campaña de contratación, unas cuarenta campañas al año.»",
     ),
-    reference: L("EU AI Act Art. 27(1)(b)", "Reglamento de IA de la UE, art. 27.1.b"),
+    reference: L("EU AI Act Art. 27(1)(b)", "RIA, art. 27.1.b"),
   },
   fria1_4: {
     meaning: L(
@@ -79,7 +79,7 @@ export const QUESTION_HELP: Record<string, QuestionHelp> = {
       "\"Used by the recruitment team across our offices in Spain and France.\"",
       "«Lo utiliza el equipo de selección en nuestras oficinas de España y Francia.»",
     ),
-    reference: L("EU AI Act Art. 27(1)(a)", "Reglamento de IA de la UE, art. 27.1.a"),
+    reference: L("EU AI Act Art. 27(1)(a)", "RIA, art. 27.1.a"),
   },
   fria2_1: {
     meaning: L(
@@ -90,7 +90,7 @@ export const QUESTION_HELP: Record<string, QuestionHelp> = {
       "\"Job applicants, the recruiters who use the shortlist, and the hiring managers who rely on it.\"",
       "«Los candidatos, los reclutadores que usan la preselección y los responsables de contratación que se apoyan en ella.»",
     ),
-    reference: L("EU AI Act Art. 27(1)(c)", "Reglamento de IA de la UE, art. 27.1.c"),
+    reference: L("EU AI Act Art. 27(1)(c)", "RIA, art. 27.1.c"),
   },
   fria2_2: {
     meaning: L(
@@ -101,7 +101,7 @@ export const QUESTION_HELP: Record<string, QuestionHelp> = {
       "\"Applicants with disabilities may be disadvantaged if the model reads career gaps as a negative signal.\"",
       "«Los candidatos con discapacidad pueden verse perjudicados si el modelo interpreta las interrupciones en la carrera como una señal negativa.»",
     ),
-    reference: L("EU AI Act Art. 27(1)(c)", "Reglamento de IA de la UE, art. 27.1.c"),
+    reference: L("EU AI Act Art. 27(1)(c)", "RIA, art. 27.1.c"),
   },
   fria2_3: {
     meaning: L(
@@ -112,7 +112,7 @@ export const QUESTION_HELP: Record<string, QuestionHelp> = {
       "\"About 8,000 applicants a year across all campaigns.\"",
       "«Unos 8.000 candidatos al año en todas las campañas.»",
     ),
-    reference: L("EU AI Act Art. 27(1)(c)", "Reglamento de IA de la UE, art. 27.1.c"),
+    reference: L("EU AI Act Art. 27(1)(c)", "RIA, art. 27.1.c"),
   },
   fria2_4: {
     meaning: L(
@@ -123,7 +123,7 @@ export const QUESTION_HELP: Record<string, QuestionHelp> = {
       "\"The works council reviewed the tool and its concerns are recorded in the minutes of 12 March.\"",
       "«El comité de empresa revisó la herramienta y sus observaciones constan en el acta del 12 de marzo.»",
     ),
-    reference: L("EU AI Act Art. 27(1)(c)", "Reglamento de IA de la UE, art. 27.1.c"),
+    reference: L("EU AI Act Art. 27(1)(c)", "RIA, art. 27.1.c"),
   },
   fria3_1: {
     meaning: L(
@@ -200,7 +200,7 @@ export const QUESTION_HELP: Record<string, QuestionHelp> = {
       "\"A trained recruiter reviews every shortlist and can add or remove candidates before anyone is contacted.\"",
       "«Un reclutador formado revisa cada preselección y puede añadir o quitar candidatos antes de contactar con nadie.»",
     ),
-    reference: L("EU AI Act Arts. 14 and 27(1)(e)", "Reglamento de IA de la UE, arts. 14 y 27.1.e"),
+    reference: L("EU AI Act Arts. 14 and 27(1)(e)", "RIA, arts. 14 y 27.1.e"),
   },
   fria4_2: {
     meaning: L(
@@ -211,7 +211,7 @@ export const QUESTION_HELP: Record<string, QuestionHelp> = {
       "\"Sensitive attributes are excluded, outputs are tested for disparate impact each quarter, and each score carries its main reasons.\"",
       "«Se excluyen los atributos sensibles, los resultados se prueban trimestralmente en busca de impacto desigual y cada puntuación indica sus motivos principales.»",
     ),
-    reference: L("EU AI Act Arts. 9, 10 and 15", "Reglamento de IA de la UE, arts. 9, 10 y 15"),
+    reference: L("EU AI Act Arts. 9, 10 and 15", "RIA, arts. 9, 10 y 15"),
   },
   fria4_3: {
     meaning: L(
@@ -222,7 +222,7 @@ export const QUESTION_HELP: Record<string, QuestionHelp> = {
       "\"Recruiters are trained on the tool's limits, an oversight group reviews outcomes quarterly, and concerns escalate to the AI officer.\"",
       "«Los reclutadores reciben formación sobre los límites de la herramienta, un grupo de supervisión revisa los resultados cada trimestre y las incidencias se elevan al responsable de IA.»",
     ),
-    reference: L("EU AI Act Art. 27(1)(e)", "Reglamento de IA de la UE, art. 27.1.e"),
+    reference: L("EU AI Act Art. 27(1)(e)", "RIA, art. 27.1.e"),
   },
   fria4_4: {
     meaning: L(
@@ -233,7 +233,7 @@ export const QUESTION_HELP: Record<string, QuestionHelp> = {
       "\"A rejected applicant can request a human review through a named contact and receives a reasoned reply.\"",
       "«Un candidato rechazado puede solicitar una revisión humana a través de un contacto designado y recibe una respuesta motivada.»",
     ),
-    reference: L("EU AI Act Art. 27(1)(f); Art. 47 EU Charter", "Reglamento de IA de la UE, art. 27.1.f; art. 47 de la Carta de la UE"),
+    reference: L("EU AI Act Art. 27(1)(f); Art. 47 EU Charter", "RIA, art. 27.1.f; art. 47 de la Carta de la UE"),
   },
   fria5_1: {
     meaning: L(
@@ -244,7 +244,7 @@ export const QUESTION_HELP: Record<string, QuestionHelp> = {
       "\"With human review and quarterly bias testing in place, the residual risks are acceptable and monitored.\"",
       "«Con la revisión humana y las pruebas de sesgo trimestrales, los riesgos residuales son aceptables y se vigilan.»",
     ),
-    reference: L("EU AI Act Art. 27(1)(d)", "Reglamento de IA de la UE, art. 27.1.d"),
+    reference: L("EU AI Act Art. 27(1)(d)", "RIA, art. 27.1.d"),
   },
   fria5_2: {
     meaning: L(
@@ -255,7 +255,7 @@ export const QUESTION_HELP: Record<string, QuestionHelp> = {
       "\"A small risk of indirect bias remains where career gaps correlate with protected groups; it is watched in the quarterly test.\"",
       "«Queda un pequeño riesgo de sesgo indirecto cuando las interrupciones de carrera se correlacionan con grupos protegidos; se vigila en la prueba trimestral.»",
     ),
-    reference: L("EU AI Act Art. 9(2)", "Reglamento de IA de la UE, art. 9.2"),
+    reference: L("EU AI Act Art. 9(2)", "RIA, art. 9.2"),
   },
   fria5_3: {
     meaning: L(
@@ -266,7 +266,7 @@ export const QUESTION_HELP: Record<string, QuestionHelp> = {
       "\"Add an annual external audit of the model's outcomes and widen the test to intersectional groups.\"",
       "«Añadir una auditoría externa anual de los resultados del modelo y ampliar la prueba a grupos interseccionales.»",
     ),
-    reference: L("EU AI Act Art. 9", "Reglamento de IA de la UE, art. 9"),
+    reference: L("EU AI Act Art. 9", "RIA, art. 9"),
   },
   fria5_4: {
     meaning: L(
@@ -277,7 +277,7 @@ export const QUESTION_HELP: Record<string, QuestionHelp> = {
       "\"Notified through the national authority's template on 3 April; reference number recorded in the file.\"",
       "«Notificado mediante el modelo de la autoridad nacional el 3 de abril; el número de referencia consta en el expediente.»",
     ),
-    reference: L("EU AI Act Art. 27(3)", "Reglamento de IA de la UE, art. 27.3"),
+    reference: L("EU AI Act Art. 27(3)", "RIA, art. 27.3"),
   },
 };
 

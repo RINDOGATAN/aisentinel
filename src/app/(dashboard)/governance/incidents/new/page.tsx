@@ -24,6 +24,7 @@ import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { StatusNote } from "@/components/ui/status-note";
 import { useTranslations } from "next-intl";
+import { useSubmitLock } from "@/lib/use-submit-lock";
 
 type AIIncidentType = "HALLUCINATION" | "BIAS_DISCRIMINATION" | "MODEL_DRIFT" | "ADVERSARIAL_ATTACK" | "PROMPT_INJECTION" | "UNAUTHORIZED_ACCESS" | "SAFETY_FAILURE" | "PERFORMANCE_DEGRADATION" | "DATA_POISONING" | "PRIVACY_VIOLATION" | "OTHER";
 type AIIncidentSeverity = "CRITICAL" | "HIGH" | "MEDIUM" | "LOW";
@@ -119,10 +120,13 @@ export default function NewIncidentPage() {
     },
   });
 
+  const lock = useSubmitLock();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!organization?.id || !formData.title || !formData.description || !formData.type || !formData.severity) return;
 
+    // One record per submission, even for two submits in the same instant.
+    if (!lock.acquire()) return;
     setIsSubmitting(true);
 
     createIncident.mutate({
@@ -134,7 +138,7 @@ export default function NewIncidentPage() {
       aiSystemId: formData.aiSystemId || undefined,
       notificationRequired: formData.notificationRequired,
       dpoCentralIncidentId: formData.dpoCentralIncidentId || undefined,
-    });
+    }, { onSettled: lock.release });
   };
 
   return (
@@ -169,6 +173,7 @@ export default function NewIncidentPage() {
               <Label htmlFor="title">{t("titleLabel")} *</Label>
               <Input
                 id="title"
+                maxLength={300}
                 placeholder={t("titlePlaceholder")}
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}

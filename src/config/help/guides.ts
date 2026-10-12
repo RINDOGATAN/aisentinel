@@ -52,7 +52,7 @@ export const GUIDES: Guide[] = [
     title: L("What is my role?", "¿Cuál es mi papel?"),
     lead: L(
       "The EU AI Act gives you duties according to the role you play around an AI system. Most organizations are deployers; some are also providers. The same organization can hold more than one role, even for the same system.",
-      "El Reglamento de IA de la UE te asigna obligaciones según el papel que desempeñes en relación con un sistema de IA. La mayoría de las organizaciones son responsables del despliegue; algunas son además proveedores. Una misma organización puede tener más de un papel, incluso respecto al mismo sistema.",
+      "El RIA te asigna obligaciones según el papel que desempeñes en relación con un sistema de IA. La mayoría de las organizaciones son responsables del despliegue; algunas son además proveedores. Una misma organización puede tener más de un papel, incluso respecto al mismo sistema.",
     ),
     sections: [
       {
@@ -126,7 +126,7 @@ export const GUIDES: Guide[] = [
     title: L("What is high risk?", "¿Qué es el alto riesgo?"),
     lead: L(
       "The EU AI Act sorts AI uses into four tiers: prohibited, high, limited and minimal. High risk is the tier that carries the substantial duties, and it is defined by what the system is used for, not by how advanced it is. A simple system in a high-risk area is high risk; a sophisticated one in a harmless area is not.",
-      "El Reglamento de IA de la UE ordena los usos de la IA en cuatro niveles: prohibido, alto, limitado y mínimo. El alto riesgo es el nivel que conlleva las obligaciones sustanciales, y se define por para qué se usa el sistema, no por lo avanzado que sea. Un sistema sencillo en un área de alto riesgo es de alto riesgo; uno sofisticado en un área inocua no lo es.",
+      "El RIA ordena los usos de la IA en cuatro niveles: prohibido, alto, limitado y mínimo. El alto riesgo es el nivel que conlleva las obligaciones sustanciales, y se define por para qué se usa el sistema, no por lo avanzado que sea. Un sistema sencillo en un área de alto riesgo es de alto riesgo; uno sofisticado en un área inocua no lo es.",
     ),
     sections: [
       {
@@ -174,7 +174,7 @@ export const GUIDES: Guide[] = [
     title: L("Which rules apply to me?", "¿Qué normas me aplican?"),
     lead: L(
       "More than one body of law can reach the same AI system at once: the EU AI Act, the GDPR, and AI or data acts from individual US states. Which apply depends on where you operate and what the system does. AI Sentinel works this out for you, but it can only do so from facts you give it.",
-      "Más de un cuerpo normativo puede alcanzar a la vez al mismo sistema de IA: el Reglamento de IA de la UE, el RGPD y leyes de IA o de datos de distintos estados de EE. UU. Cuáles aplican depende de dónde operas y de qué hace el sistema. AI Sentinel lo determina por ti, pero solo a partir de los datos que le facilites.",
+      "Más de un cuerpo normativo puede alcanzar a la vez al mismo sistema de IA: el RIA, el RGPD y leyes de IA o de datos de distintos estados de EE. UU. Cuáles aplican depende de dónde operas y de qué hace el sistema. AI Sentinel lo determina por ti, pero solo a partir de los datos que le facilites.",
     ),
     sections: [
       {
@@ -188,7 +188,7 @@ export const GUIDES: Guide[] = [
         heading: L("The one-question-set promise", "La promesa de un único conjunto de preguntas"),
         intro: L(
           "You answer one question set, not one per law. AI Sentinel drafts to the strictest regime that applies and produces the documents each regime expects, reusing an answer across regimes where the legal test is the same and recording the reasoning. So a single assessment can satisfy the EU AI Act, the GDPR and a US state act together, without you answering the same thing three times.",
-          "Respondes un único conjunto de preguntas, no uno por ley. AI Sentinel redacta según el régimen más estricto que aplique y produce los documentos que espera cada régimen, reutilizando una respuesta entre regímenes cuando la prueba legal es la misma y registrando el razonamiento. Así, una sola evaluación puede satisfacer a la vez el Reglamento de IA de la UE, el RGPD y una ley estatal de EE. UU., sin que respondas lo mismo tres veces.",
+          "Respondes un único conjunto de preguntas, no uno por ley. AI Sentinel redacta según el régimen más estricto que aplique y produce los documentos que espera cada régimen, reutilizando una respuesta entre regímenes cuando la prueba legal es la misma y registrando el razonamiento. Así, una sola evaluación puede satisfacer a la vez el RIA, el RGPD y una ley estatal de EE. UU., sin que respondas lo mismo tres veces.",
         ),
       },
       {

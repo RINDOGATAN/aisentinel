@@ -127,7 +127,7 @@ export default function VendorDetailPage() {
   // Systems available to link (loaded when the dialog opens; already-linked
   // systems are filtered out client-side below).
   const { data: allSystems } = trpc.aiSystem.list.useQuery(
-    { organizationId: organization?.id ?? "", limit: 50 },
+    { organizationId: organization?.id ?? "", limit: 100 },
     { enabled: linkSystemOpen && !!organization?.id }
   );
 

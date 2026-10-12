@@ -35,6 +35,7 @@ import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { features } from "@/config/features";
+import { useFormatDate } from "@/lib/use-format-date";
 
 type Posture = "off" | "local_gateway" | "cloud_eu" | "cloud_us";
 
@@ -54,6 +55,7 @@ interface AiPostureCardProps {
 
 export function AiPostureCard({ organizationId, isAdmin }: AiPostureCardProps) {
   const t = useTranslations("ai");
+  const { formatDate: fmtDate } = useFormatDate();
   const utils = trpc.useUtils();
 
   const { data: status } = trpc.ai.getStatus.useQuery(
@@ -157,7 +159,7 @@ export function AiPostureCard({ organizationId, isAdmin }: AiPostureCardProps) {
           <p className="text-xs text-muted-foreground">
             {t("postureCard.acknowledgedBy", {
               name: status.acknowledgedBy.name || status.acknowledgedBy.email || "—",
-              date: new Date(status.acknowledgedAt).toLocaleDateString(),
+              date: fmtDate(status.acknowledgedAt),
             })}
           </p>
         )}

@@ -152,11 +152,12 @@
   },
   "dashboard": {
     "title": "AI Governance",
-    "subtitle": "Executive Dashboard"
+    "subtitle": "The executive dashboard: the whole program at a glance",
+    "subtitleOrg": "{org}: the executive dashboard, the whole program at a glance"
   },
   "aiRegistry": {
-    "title": "AI Registry",
-    "subtitle": "Inventory of all AI systems, models, and agents",
+    "title": "Your AI systems",
+    "subtitle": "The AI registry: every system, model and agent",
     "registerAiSystem": "Register AI System",
     "searchPlaceholder": "Search AI systems...",
     "emptyTitle": "No AI systems found",
@@ -339,7 +340,8 @@
     "toastDataSourceAdded": "Data source added",
     "toastDataSourceUpdated": "Data source updated",
     "toastDataSourceDeleted": "Data source deleted",
-    "tabAdmt": "California ADMT"
+    "tabAdmt": "California ADMT",
+    "tabEvidence": "Evidence"
   },
   "transparency": {
     "title": "Art. 50 Transparency Obligations",
@@ -374,8 +376,8 @@
     "toastError": "Could not save the transparency profile"
   },
   "riskClassification": {
-    "title": "Risk Classification",
-    "subtitle": "EU AI Act four-tier risk classification for your AI systems",
+    "title": "Risk level",
+    "subtitle": "Risk classification: the EU AI Act's four tiers for your AI systems",
     "unclassified": "Unclassified",
     "searchPlaceholder": "Search AI systems...",
     "currentClassification": "Current Classification",
@@ -420,8 +422,8 @@
   },
   "quickstart": {
     "backToDashboard": "Dashboard",
-    "title": "AI Governance Quick Start",
-    "subtitle": "Bootstrap your AI governance program in minutes",
+    "title": "Quick start",
+    "subtitle": "The AI governance quick start: set up your program in minutes",
     "programNameLabel": "Name this program",
     "programNamePlaceholder": "Your organization's AI governance program",
     "programNameHelp": "Prefilled with your organization's name. This appears on the result screen and on the program PDF. You can change it.",
@@ -449,7 +451,7 @@
     "buildAiGovernanceProgram": "Build AI Governance Program",
     "successTitle": "AI Governance Program Created!",
     "successDescription": "Your AI governance program is set up. Everything created is listed below, each as a link you can open.",
-    "choosePathDescription": "Choose how to bootstrap your AI governance program. You can combine these options.",
+    "choosePathDescription": "Choose how to set up your AI governance program. You can combine these options.",
     "chipAiSystems": "AI Systems",
     "chipRiskClassifications": "Risk Classifications",
     "chipOversightGates": "Oversight Gates",
@@ -468,18 +470,18 @@
     "lawFirmPolicyPack": "Law Firm Policy Pack",
     "chipVendors": "Vendors",
     "viewProgram": "View your AI Governance Program",
-    "statPolicyLinks": "policy links",
-    "statTransparencyProfiles": "Art. 50 profiles",
+    "statPolicyLinks": "{count, plural, one {# policy link} other {# policy links}}",
+    "statTransparencyProfiles": "{count, plural, one {# Art. 50 profile} other {# Art. 50 profiles}}",
     "statComplianceBaselined": "Requirements pre-assessed",
     "handoffMapCaption": "Your governance map: every AI system, its risk tier, controls and vendors.",
     "downloadProgramPdf": "Download your AI Governance Program (PDF)",
     "handoffConfirmPrompt": "{count} requirements were auto-assessed from the artifacts just created and are waiting for your confirmation.",
-    "statVendors": "vendors",
-    "statSystems": "AI systems",
-    "statRiskClassifications": "risk classifications",
-    "statOversightGates": "oversight gates",
-    "statComplianceMappings": "compliance requirements",
-    "statPolicies": "policies",
+    "statVendors": "{count, plural, one {# vendor} other {# vendors}}",
+    "statSystems": "{count, plural, one {# AI system} other {# AI systems}}",
+    "statRiskClassifications": "{count, plural, one {# risk classification} other {# risk classifications}}",
+    "statOversightGates": "{count, plural, one {# oversight gate} other {# oversight gates}}",
+    "statComplianceMappings": "{count, plural, one {# compliance requirement} other {# compliance requirements}}",
+    "statPolicies": "{count, plural, one {# policy} other {# policies}}",
     "popularVendors": "Common AI vendors: pick the ones your organization uses, or search the full catalog above.",
     "vendorsSelected": "{count, plural, one {# selected} other {# selected}}",
     "toastNothingNew": "Everything already exists: nothing new to create.",
@@ -524,8 +526,8 @@
     "statThreatScenarios": "{count} threat scenarios"
   },
   "assessments": {
-    "title": "Assessments",
-    "description": "FRIA, conformity, and risk assessments for AI systems",
+    "title": "Impact assessments",
+    "description": "Assessments: FRIA, conformity and risk assessments for AI systems",
     "newAssessment": "New Assessment",
     "searchPlaceholder": "Search assessments...",
     "statsTotal": "Total",
@@ -614,8 +616,8 @@
     "forSystem": "for <link>{name}</link>"
   },
   "oversight": {
-    "title": "Human Oversight",
-    "description": "Approval gates, decision logging & Art. 14 compliance",
+    "title": "Human oversight",
+    "description": "Oversight gates: approvals, decision logging and Art. 14 compliance",
     "createGate": "Create Gate",
     "searchPlaceholder": "Search oversight gates...",
     "statsPending": "Pending",
@@ -709,8 +711,8 @@
     "decidedBy": "Decided by: {name}"
   },
   "compliance": {
-    "title": "Compliance",
-    "description": "Map AI system compliance against regulatory frameworks",
+    "title": "Evidence",
+    "description": "Compliance: each AI system mapped against its regulatory frameworks, with the evidence for each requirement",
     "exportCsv": "Export CSV",
     "selectSystemPlaceholder": "Select AI System...",
     "selectSystemPrompt": "Select an AI system above to view its compliance matrix.",
@@ -740,11 +742,24 @@
     "evidenceCount": "Evidence ({count})",
     "linkedAcrossFrameworks": "Linked across frameworks ({count})",
     "alsoApplyToEquivalent": "Also apply to {count} equivalent requirements across frameworks",
-    "downloadPdf": "Download as PDF"
+    "downloadPdf": "Download as PDF",
+    "listIntro": "Each AI system keeps its requirements, their status and their evidence on its own page. Open a system to work on them.",
+    "searchSystems": "Search systems by name",
+    "noSystemsFound": "No system has that name.",
+    "notClassified": "No risk level yet",
+    "openEvidence": "Open its evidence",
+    "loadMore": "Show more",
+    "matrixIntro": "The requirements that apply to this system, framework by framework: set each status and attach its evidence.",
+    "noFrameworkForSystem": "No framework has a requirement for this system yet. Give it a risk level, and say where you work in Settings, so its requirements appear here.",
+    "frameworksNotShown": "{count, plural, one {Not shown: # framework with no requirement for this system, such as the law of a place you have not declared.} other {Not shown: # frameworks with no requirement for this system, such as the laws of places you have not declared.}}",
+    "frameworksNotShownLink": "Where you work is set in Settings.",
+    "statusSaved": "Status saved: {status}.",
+    "undo": "Undo",
+    "saveNotes": "Save notes"
   },
   "incidents": {
-    "title": "AI Incidents",
-    "description": "Track AI-specific failures, severity, timeline & Art. 73 notifications",
+    "title": "Incidents",
+    "description": "AI incidents: failures, severity, timeline and Art. 73 notifications",
     "reportIncident": "Report Incident",
     "searchPlaceholder": "Search incidents...",
     "statsTotal": "Total Incidents",
@@ -764,7 +779,8 @@
     "typePerformanceDegradation": "Performance Degradation",
     "typeDataPoisoning": "Data Poisoning",
     "typePrivacyViolation": "Privacy Violation",
-    "typeOther": "Other"
+    "typeOther": "Other",
+    "tabAll": "All ({count})"
   },
   "incidentsNew": {
     "title": "Report Incident",
@@ -884,8 +900,8 @@
     "labelLastUpdated": "Last Updated"
   },
   "vendors": {
-    "title": "Vendor Risk",
-    "subtitle": "Manage third-party AI vendor risk and assessments",
+    "title": "Vendors",
+    "subtitle": "Vendor risk: your third-party AI vendors and their assessments",
     "addVendor": "Add Vendor",
     "statsTotalVendors": "Total Vendors",
     "statsCriticalRisk": "Critical Risk",
@@ -1064,8 +1080,8 @@
     "placeholderFindings": "Document initial findings, observations, or scope..."
   },
   "policies": {
-    "title": "Policies",
-    "subtitle": "AI governance policies and standards",
+    "title": "AI policy",
+    "subtitle": "Policies: the AI governance policies and standards of your organization",
     "createPolicy": "Create Policy",
     "statsTotal": "Total",
     "statsDraft": "Draft",
@@ -1190,8 +1206,8 @@
     "archiving": "Archiving..."
   },
   "shadowAi": {
-    "title": "Shadow AI Discovery",
-    "subtitle": "Discover and manage unauthorized AI tool usage",
+    "title": "Unapproved AI tools",
+    "subtitle": "Shadow AI discovery: find and manage the AI tools people use without approval",
     "premiumBadge": "Premium",
     "enableShadowAi": "Enable Shadow AI Discovery",
     "reportAiTool": "Report AI Tool",
@@ -1333,8 +1349,8 @@
     }
   },
   "vendorCatalog": {
-    "title": "AI Vendor Catalog",
-    "subtitle": "Browse AI vendors from the VendorWatch database",
+    "title": "Vendor catalog",
+    "subtitle": "The AI vendor catalog: AI vendors from the VendorWatch database",
     "premiumBadge": "Premium",
     "enableCatalog": "Enable AI Vendor Catalog",
     "statsTotalVendors": "Total Vendors",
@@ -1417,7 +1433,7 @@
   },
   "settings": {
     "title": "Settings",
-    "subtitle": "Manage your account preferences",
+    "subtitle": "Your organization: where it operates, its screening answers, its members and its AI settings",
     "templateItemsTitle": "Template items",
     "templateItemsLead": "Systems, vendors and starter assessments a template created for you. Removing them clears only the ones nobody has edited; anything you have changed is kept.",
     "templateItemsCount": "{remove} will be removed. {keep} you have edited will be kept.",
@@ -1446,10 +1462,11 @@
     "orgNameLabel": "Organization name",
     "orgNamePlaceholder": "e.g. Acme Industries",
     "orgSlugLabel": "URL identifier",
-    "orgSlugHint": "Lowercase letters, numbers and hyphens.",
+    "orgSlugHint": "Filled in from the name. An internal identifier: lowercase letters, numbers and hyphens.",
     "orgDomainLabel": "Email domain (optional)",
     "orgDomainPlaceholder": "acme.com",
-    "orgCreated": "Organization created: opening its quickstart"
+    "orgCreated": "Organization created: opening its quickstart",
+    "moreOptions": "More options"
   },
   "experts": {
     "deploymentCtaTitle": "Run AI Sentinel on your own hardware",
@@ -1462,7 +1479,15 @@
     "contactDescription": "Contact us to enable this feature for your organization.",
     "contactUs": "Contact Us",
     "enableFeature": "Enable Feature",
-    "redirecting": "Redirecting to payment..."
+    "redirecting": "Redirecting to payment...",
+    "addToOrganization": "Add {name} to your organization.",
+    "includedSelfHosted": "{name} is included in your self-hosted deployment. It is already available to your organization.",
+    "activateOnSkills": "{name} is a premium feature. Activate the license file you received on the Skills page to enable it for your organization.",
+    "close": "Close",
+    "goToSkills": "Go to the Skills page",
+    "enableMany": "{count, plural, one {Enable # feature} other {Enable # features}}",
+    "manyIncludedSelfHosted": "These features are included in your self-hosted deployment.",
+    "manyActivateOnSkills": "Activate the license files you received on the Skills page to enable these features."
   },
   "skills": {
     "title": "Skills",
@@ -1807,7 +1832,7 @@
       "also": {
         "quickstart": {
           "title": "Quick Start wizard",
-          "description": "Bootstrap a program from an industry template, or import an existing vendor portfolio."
+          "description": "Set up a program from an industry template, or import an existing vendor portfolio."
         },
         "aiPosture": {
           "title": "AI posture",
@@ -3218,29 +3243,29 @@
       "intro": "AI SENTINEL is built for organizations that manage sensitive AI governance data. Security is embedded in every layer of the platform: from how we isolate your data to how we control access and protect your information.",
       "isolation": {
         "title": "Data Isolation",
-        "intro": "Every organization's records are kept apart from every other organization's. Your AI systems, assessments, policies, incidents, and vendor data are never accessible to other organizations.",
+        "intro": "Every organization's records are kept apart from every other organization's. Before the application shows or changes your AI systems, assessments, policies, incidents or vendor data, it checks that you are a member of your organization.",
         "items": [
           {
             "title": "Organization-Scoped Queries",
-            "description": "Every database query is automatically scoped to your organization. There is no way to access another organization's data through the application."
+            "description": "Queries for your governance records are filtered by your organization in each request handler."
           },
           {
             "title": "Verified Membership",
-            "description": "Before any operation, we verify that the requesting user is an active member of the organization. Membership is checked on every single request."
+            "description": "Before any operation on your organization's data, we verify that you are an active member of that organization. Membership is checked on every such request."
           },
           {
             "title": "Cross-Tenant Protection",
-            "description": "Operations that reference related entities (e.g., linking a policy to an AI system) verify that both entities belong to your organization."
+            "description": "Linking a policy to an AI system, or a data flow to a system, checks that both records belong to your organization."
           },
           {
             "title": "Shared Reference Data Only",
-            "description": "Only non-sensitive reference data (compliance frameworks, assessment templates) is shared across organizations. Your governance data is never shared."
+            "description": "Only reference data (compliance frameworks, assessment templates, and the vendor and AI tool catalogs) is shared across organizations. Your governance data is never shared."
           }
         ]
       },
       "accessControl": {
         "title": "Access Control",
-        "intro": "AI SENTINEL enforces role-based access control (RBAC) across the entire platform. Every action is checked against your role before it is executed.",
+        "intro": "AI SENTINEL enforces role-based access control (RBAC) on the server. Each change to governance records is checked against your role before it is carried out.",
         "roles": [
           "Owner",
           "Admin",
@@ -3249,33 +3274,33 @@
           "Viewer"
         ],
         "readOnlyTitle": "Read-Only Enforcement",
-        "readOnlyBody": "Viewers have read-only access. All write operations are blocked at the server level, not just the UI: preventing unauthorized modifications even through API calls.",
+        "readOnlyBody": "Viewers have read-only access to governance records. Writes to those records are blocked at the server level, not just in the interface, so they cannot be made through API calls either.",
         "elevatedTitle": "Elevated Permissions",
-        "elevatedBody": "Sensitive operations like approving assessments, publishing policies, and making oversight decisions require AI Officer, Admin, or Owner roles."
+        "elevatedBody": "Approving assessments, publishing policy versions and recording oversight decisions require the AI Officer, Admin or Owner role."
       },
       "auth": {
         "title": "Authentication",
-        "intro": "We support industry-standard authentication methods with additional hardening for production environments.",
+        "intro": "We support standard sign-in methods, with 12-hour sessions and rate-limited sign-in on the hosted service.",
         "methods": [
           {
             "title": "Google OAuth",
-            "description": "Enterprise SSO via Google with OAuth 2.0"
+            "description": "Sign in with a Google account (OAuth 2.0)"
           },
           {
             "title": "Magic Link",
-            "description": "Passwordless email authentication for secure sign-in"
+            "description": "Passwordless sign-in through a single-use link sent by email"
           },
           {
             "title": "Cross-Platform SSO",
-            "description": "Single sign-on across the TODO.LAW platform"
+            "description": "Single sign-on across the TODO.LAW apps (hosted service)"
           }
         ],
         "sessionTitle": "Session Security",
         "sessionItems": [
           "HTTP-only cookies prevent client-side access to session tokens",
-          "Secure cookie flag enforced in production (HTTPS only)",
-          "CSRF protection on all authenticated requests",
-          "SameSite cookie policy prevents cross-site request forgery"
+          "Secure cookie flag whenever the app is served over HTTPS",
+          "Sign-in requests carry a CSRF token",
+          "SameSite=Lax session cookies limit cross-site request forgery"
         ]
       },
       "validation": {
@@ -3284,7 +3309,7 @@
         "items": [
           {
             "title": "Schema Validation",
-            "description": "Every API input is validated against a strict schema. Invalid data is rejected before it reaches the database."
+            "description": "Every application (tRPC) input is validated against a strict schema, and integration endpoints check their fields in code. Invalid data is rejected before it reaches the database."
           },
           {
             "title": "Parameterized Queries",
@@ -3298,7 +3323,7 @@
       },
       "audit": {
         "title": "Audit Trail",
-        "intro": "Every create, update, delete, and significant business operation is logged to an immutable audit trail. This supports compliance requirements and provides a complete record of governance activities.",
+        "intro": "Changes to governance records and key decisions are logged to an audit trail. This supports compliance requirements and gives a record of governance activities.",
         "whatWeLogTitle": "What We Log",
         "logItems": [
           "AI system lifecycle changes",
@@ -3306,15 +3331,15 @@
           "Assessment submissions and approvals",
           "Oversight decisions",
           "Policy changes and publications",
-          "Incident management actions",
+          "Incident creation and status changes",
           "Organization membership changes"
         ],
         "retentionTitle": "Retention",
-        "retentionBody": "Audit records are preserved even if the associated user or organization is deleted. This ensures your compliance history remains intact regardless of personnel changes."
+        "retentionBody": "Audit records are kept when a member leaves the organization. When an organization is deleted, its records are deleted with it, including its audit history; one entry recording the deletion is kept."
       },
       "transport": {
         "title": "Transport & Infrastructure",
-        "intro": "Your data is protected in transit and at rest through industry-standard security measures.",
+        "intro": "Your data is encrypted in transit with TLS, and at rest by the hosting and database providers' storage encryption.",
         "items": [
           {
             "title": "HTTPS Everywhere",
@@ -3334,15 +3359,15 @@
           },
           {
             "title": "Where the data is stored",
-            "description": "On the TODO.LAW cloud, if an admin turns AI features on, the text they use goes to the AI provider set up on the service. On a managed instance or on your own hardware, the data stays there."
+            "description": "On the TODO.LAW cloud, if an admin turns AI features on, the text they use goes to the AI provider set up on the service. On a managed instance or on your own hardware, the data stays there, unless you connect an external AI provider."
           }
         ]
       },
       "api": {
         "title": "API Security",
-        "intro": "All API endpoints require authentication. External integrations use signature verification and token-based authentication.",
+        "intro": "Every endpoint that reads or changes organization data requires authentication. External integrations use signature verification and key-based authentication.",
         "endpointTitle": "Endpoint Protection",
-        "endpointBody": "Every governance API endpoint requires an authenticated session with verified organization membership. Unauthenticated requests are rejected.",
+        "endpointBody": "Every governance endpoint used by the application requires an authenticated session with verified organization membership. Unauthenticated requests are rejected.",
         "webhookTitle": "Webhook Verification",
         "webhookBody": "Inbound integration requests are authenticated with an API key, and webhooks use cryptographic signature verification. Unverified requests are discarded before processing."
       },
@@ -3358,11 +3383,11 @@
           },
           {
             "category": "Injection",
-            "description": "Parameterized queries, strict input validation, no raw SQL"
+            "description": "Parameterized queries, strict input validation; the few SQL queries bind every value"
           },
           {
             "category": "Authentication",
-            "description": "Industry-standard OAuth, secure sessions, CSRF protection"
+            "description": "Standard OAuth, short sessions, SameSite cookies, rate-limited sign-in"
           },
           {
             "category": "Data Integrity",
@@ -3374,7 +3399,7 @@
           },
           {
             "category": "Logging & Monitoring",
-            "description": "Comprehensive audit trail for all governance operations"
+            "description": "Audit trail for changes to governance records and key decisions"
           }
         ]
       },
@@ -4029,8 +4054,8 @@
   },
   "program": {
     "page": {
-      "title": "AI Governance Program",
-      "subtitle": "The living picture of how your organization governs AI: map, maturity, and the road ahead.",
+      "title": "Program map",
+      "subtitle": "The AI governance program: the living picture of how your organization governs AI, with its map, maturity and the road ahead.",
       "exportPdf": "Export PDF",
       "mapTitle": "Governance Map",
       "mapSubtitle": "Every AI system, its risk tier, controls, and the vendors behind them: gaps included.",
@@ -4038,8 +4063,8 @@
       "scorecardSubtitle": "Maturity across eight dimensions, mapped to the NIST AI RMF functions.",
       "nistTitle": "NIST AI RMF profile: current vs target",
       "dimensionsTitle": "Maturity dimensions",
-      "planTitle": "Next 90 days",
-      "planSubtitle": "Actions derived from your program's actual gaps, ordered by severity.",
+      "planTitle": "30/60/90-day plan",
+      "planSubtitle": "Two stages of the program path in each thirty days, and under each the actions your program's gaps call for, most urgent first.",
       "rolloutTitle": "Recommended rollout by tool category",
       "rolloutSubtitle": "How to employ each class of tool in the coming quarter.",
       "dutiesTitle": "Professional duties coverage",
@@ -4050,7 +4075,9 @@
       "historyLink": "History",
       "historyFootnote": "A snapshot is captured automatically each time the program PDF is exported. Scores are computed by the maturity model version recorded in each snapshot.",
       "exportPack": "Download program pack (ZIP)",
-      "download": "Download"
+      "download": "Download",
+      "draftsExcluded": "{count, plural, one {# drafted item is left out of these figures until a person confirms it.} other {# drafted items are left out of these figures until a person confirms them.}}",
+      "draftsExcludedLink": "Review and confirm"
     },
     "tiles": {
       "overall": "Overall maturity",
@@ -4224,7 +4251,7 @@
     },
     "plan": {
       "eyebrow": "Action Plan",
-      "title": "The next 90 days",
+      "title": "The 30/60/90-day plan",
       "bucket": {
         "1-30": "Days 1 to 30",
         "31-60": "Days 31 to 60",
@@ -4336,8 +4363,8 @@
       "TransparencyProfile": "Art. 50 profile"
     },
     "queue": {
-      "title": "Review queue",
-      "subtitle": "Auto-assessed items waiting for a person to take ownership.",
+      "title": "Check what was drafted",
+      "subtitle": "The review queue: auto-assessed items waiting for a person to take ownership.",
       "empty": "Nothing to confirm: every artifact has been reviewed.",
       "filterAll": "All types",
       "selectAll": "Select all",
@@ -4449,10 +4476,13 @@
     }
   },
   "obligations": {
-    "title": "Obligations calendar",
-    "subtitle": "Regulatory deadlines plotted against your own AI inventory.",
+    "title": "Where you work and your rules",
+    "subtitle": "The obligations calendar: regulatory deadlines plotted against your own AI inventory.",
     "ariaLabel": "Regulatory obligations timeline",
     "assumedJurisdictions": "Showing obligations for: {jurisdictions}",
+    "changePlaces": "Change in Settings",
+    "screeningMissing": "Some of these dates depend on a few answers about your organization. Until the short screening in Settings is answered, they show as \"Scope not yet determined\".",
+    "answerScreening": "Answer the screening",
     "jurisdictionsUndeclared": "You haven't told us where you operate, so US obligations show as undetermined rather than out of scope.",
     "declareJurisdictions": "Declare your operating jurisdictions",
     "empty": "No regulatory milestones match your current setup.",
@@ -4988,7 +5018,30 @@
     "showing": "Showing {count} of {total} entries",
     "since": "Trail starts {date}",
     "actorRemoved": "Account removed",
-    "noDetail": "No detail recorded"
+    "noDetail": "No detail recorded",
+    "actionLabels": {
+      "CREATE": "Created",
+      "UPDATE": "Updated",
+      "DELETE": "Deleted",
+      "CREATE_FROM_TEMPLATE": "Created from a template",
+      "COMPLETE": "Completed",
+      "ACTIVATE": "Activated",
+      "DEACTIVATE": "Deactivated",
+      "UNCONFIRM": "Marked unconfirmed",
+      "CONFIRM": "Confirmed",
+      "SUBMIT": "Submitted",
+      "APPROVE": "Approved",
+      "PUBLISH": "Published",
+      "PLACE_LEGAL_HOLD": "Legal hold placed",
+      "RELEASE_LEGAL_HOLD": "Legal hold released",
+      "PILOT_REMINDER_SENT": "Pilot reminder sent",
+      "PILOT_LIMIT_REACHED": "Pilot limit reached",
+      "EXPORT_PROGRAM_PACK": "Program pack exported",
+      "EXPORT_GOVERNANCE_PROGRAM": "Program report exported",
+      "DELETE_TEMPLATE_ITEMS": "Template items deleted",
+      "DELETE_SAMPLE_DATA": "Sample data deleted",
+      "CREATE_SAMPLE_DATA": "Sample data created"
+    }
   },
   "assessmentVersions": {
     "title": "Version history",
@@ -5004,8 +5057,8 @@
     "collapse": "Close"
   },
   "sensitiveData": {
-    "title": "Sensitive data analysis",
-    "subtitle": "Decide, and record, whether a set of data should be treated as health data or another sensitive category.",
+    "title": "Sensitive data",
+    "subtitle": "Sensitive data analysis: decide, and record, whether a set of data should be treated as health data or another sensitive category.",
     "whyTitle": "Why a factor analysis",
     "whyBody": "US state laws define health data differently, and several of them turn on what the data is used for rather than what field it sits in. Five factors (source, content, use, consumer expectations, harm) give a repeatable way to reason, and the record of that reasoning is what a regulator asks to see.",
     "subjectLabel": "What are you classifying?",
@@ -5121,7 +5174,8 @@
       "AFFILIATE": "Affiliate",
       "PUBLIC_AUTHORITY": "Public authority",
       "OTHER": "Other"
-    }
+    },
+    "removeRecipient": "Remove {name}"
   },
   "legalHold": {
     "title": "Legal hold",
@@ -5149,8 +5203,8 @@
     "effect": "While a hold is in force, deleting systems, vendors, evidence, recipients, analyses, snapshots and the organization itself is refused."
   },
   "proceedings": {
-    "title": "Proceedings",
-    "subtitle": "Every inquiry, enforcement action and claim, with its deadlines, its correspondence and the factual position taken. One incident becomes several proceedings; the risk is that a position taken in one is read in another.",
+    "title": "Cases and inquiries",
+    "subtitle": "Proceedings: every inquiry, enforcement action and claim, with its deadlines, its correspondence and the factual position taken. One incident becomes several proceedings; the risk is that a position taken in one is read in another.",
     "deadlinesTitle": "Next deadlines",
     "overdueMark": "Past the limit",
     "titleLabel": "Proceeding",
@@ -5237,8 +5291,8 @@
     "marker": "Verified against the consolidated texts on 2026-09-11. Advisory: the clocks compute from what has been recorded, and the person reporting may not yet know everything."
   },
   "boardReports": {
-    "title": "Board reporting",
-    "subtitle": "What was reported, when, to whom, and what came back. Each record freezes the program figures as they stood on the day, so what the board saw can be reproduced later.",
+    "title": "Board report",
+    "subtitle": "Board reporting: what was reported, when, to whom, and what came back. Each record freezes the program figures as they stood on the day, so what the board saw can be reproduced later.",
     "record": "Record a report",
     "noneYet": "Nothing recorded yet. A claim that the board was never told starts here.",
     "cadence": "{count, plural, one {# report} other {# reports}} recorded. The last was on {last}.",
@@ -5889,7 +5943,9 @@
       "accepted": "Partial result accepted",
       "notApplicable": "Marked as not applicable",
       "applicableAgain": "The requirement applies again"
-    }
+    },
+    "showDomain": "Show",
+    "hideDomain": "Hide"
   },
   "clientTemplate": {
     "cardTitle": "Start from another client",
@@ -6198,7 +6254,23 @@
       "button": "Download ready documents",
       "includeDrafts": "Include the drafts too ({count}), marked DRAFT",
       "count": "{count, plural, one {# document in one ZIP, with an index} other {# documents in one ZIP, with an index}}",
-      "none": "No document is ready yet."
+      "none": "No document for the ZIP is ready yet."
+    }
+  },
+  "search": {
+    "label": "Search the program by name",
+    "placeholder": "Search by name",
+    "results": "Search results",
+    "noResults": "Nothing found with that name.",
+    "namesOnly": "Searches names only: AI systems, vendors, policies, assessments, oversight gates, incidents and unapproved AI tools.",
+    "kinds": {
+      "system": "AI systems",
+      "vendor": "Vendors",
+      "policy": "Policies",
+      "assessment": "Assessments",
+      "gate": "Oversight gates",
+      "incident": "Incidents",
+      "shadowAi": "Unapproved AI tools"
     }
   }
 }

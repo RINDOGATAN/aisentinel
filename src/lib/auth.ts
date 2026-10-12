@@ -6,6 +6,7 @@ import EmailProvider from "next-auth/providers/email";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
+import { tokenFreeAdapter } from "@/lib/token-free-adapter";
 import { Resend } from "resend";
 import { jwtVerify } from "jose";
 import prisma from "@/lib/prisma";
@@ -55,7 +56,9 @@ export const CROSS_LOGIN_AUDIENCE = "aisentinel";
 export const CROSS_LOGIN_MAX_TOKEN_AGE = "2m";
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma) as NextAuthOptions["adapter"],
+  // OAuth tokens are never stored: sessions are JWTs and nothing reads them
+  // (src/lib/token-free-adapter.ts).
+  adapter: tokenFreeAdapter(PrismaAdapter(prisma) as NonNullable<NextAuthOptions["adapter"]>),
   providers: [
     // Local credentials provider: dev mode, and sovereign/self-hosted
     // deployments (NEXT_PUBLIC_LOCAL_AUTH_ENABLED=true).

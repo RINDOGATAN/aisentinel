@@ -97,7 +97,7 @@ export const PAGE_HELP: PageHelp[] = [
     title: L("Risk classification", "Clasificación de riesgo"),
     purpose: L(
       "Works out each system's risk tier under the EU AI Act: prohibited, high, limited or minimal. The tier decides which duties apply, so it is the fork every later obligation follows.",
-      "Determina el nivel de riesgo de cada sistema según el Reglamento de IA de la UE: prohibido, alto, limitado o mínimo. El nivel decide qué obligaciones aplican, así que es la bifurcación que sigue todo lo demás.",
+      "Determina el nivel de riesgo de cada sistema según el RIA: prohibido, alto, limitado o mínimo. El nivel decide qué obligaciones aplican, así que es la bifurcación que sigue todo lo demás.",
     ),
     firstStep: L(
       "Run the wizard for each registered system; the answers place it in a tier and record why.",
@@ -376,7 +376,7 @@ export const PAGE_HELP: PageHelp[] = [
     title: L("Skills", "Skills"),
     purpose: L(
       "Where you upload and activate a license for a premium skill package bought from the storefront. A license unlocks a feature; it never installs code, and it is tied to the buyer's email.",
-      "Donde subes y activas una licencia de un paquete de complementos premium comprado en la tienda. Una licencia desbloquea una función; nunca instala código y está vinculada al correo del comprador.",
+      "Donde subes y activas la licencia de un paquete de skills premium comprado en la tienda. Una licencia desbloquea una función; nunca instala código y está vinculada al correo del comprador.",
     ),
     firstStep: L(
       "Upload your license file to activate it; only an owner or admin can do this.",

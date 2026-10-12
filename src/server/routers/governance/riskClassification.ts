@@ -2,6 +2,7 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { z } from "zod";
+import { editConfirmation, keepSystemAfterEdit } from "@/server/services/provenance/edit-stamp";
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { screenAnnexIii } from "@/config/annex-iii-rules";
@@ -109,12 +110,18 @@ export const riskClassificationRouter = createTRPCRouter({
             annexIIICategory: input.annexIIICategory,
             classifiedBy: ctx.session.user.id,
             classifiedAt: new Date(),
-            // A human editing an artifact IS confirming it; provenance keeps
-            // its historical origin.
-            confirmedBy: ctx.session.user.id,
-            confirmedAt: new Date(),
+            // An approver's edit confirms the classification; anyone else's
+            // edit clears the stamp until an approver confirms it
+            // (services/provenance/edit-stamp.ts). Provenance keeps its origin.
+            ...editConfirmation(ctx.membership.role, ctx.session.user.id),
           },
           include: { aiSystem: true },
+        });
+        await keepSystemAfterEdit(ctx.prisma, {
+          role: ctx.membership.role,
+          aiSystemId: input.aiSystemId,
+          organizationId: ctx.organization.id,
+          userId: ctx.session.user.id,
         });
 
         // Auto-generate compliance mappings for any new applicable requirements

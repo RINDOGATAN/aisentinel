@@ -6,7 +6,8 @@
  * The pilot bar. Mounted once, by the
  * server gate in hosted-pilot-banner.tsx, and only on the hosted pilot. For
  * the whole pilot, to every member: the free window, its end date and the
- * Cloud Plan's price in the reader's currency, with a link to the landing's
+ * Cloud Plan's price in the reader's currency (euros in the EU and on a
+ * Spanish page, dollars elsewhere; src/lib/currency.ts), with a link to the landing's
  * pricing block (closable for the session); in the last PILOT_END_BAR_DAYS
  * days the stronger end wording; once read-only, that the export stays open.
  * Never for a paid organisation.
@@ -20,6 +21,7 @@ import { useSyncExternalStore } from "react";
 import { X } from "lucide-react";
 import { useOrganization } from "@/lib/organization-context";
 import { trpc } from "@/lib/trpc";
+import { useCurrency } from "@/lib/use-currency";
 import {
   PILOT_BAR_DISMISS_KEY,
   PILOT_BAR_PRICING_URL,
@@ -70,6 +72,8 @@ export interface PilotEndBarProps {
 export function PilotEndBar({ locale, state, endsAt, transition = false }: PilotEndBarProps) {
   // The trial bar may be closed for the session; the ending and read-only bars stay.
   const dismissed = useSyncExternalStore(subscribeDismissed, readDismissed, () => false);
+  // The visitor's currency; a Spanish bar is always in euros (src/lib/currency.ts).
+  const currency = useCurrency(locale);
   if (state === "hidden") return null;
   if ((state === "trial" || state === "ending") && !endsAt) return null;
   if (state === "trial" && dismissed) return null;
@@ -78,8 +82,8 @@ export function PilotEndBar({ locale, state, endsAt, transition = false }: Pilot
   const text =
     state === "trial"
       ? transition
-        ? copy.trialTransition(date)
-        : copy.trial(PILOT_EDIT_DAYS, date)
+        ? copy.trialTransition(date, currency)
+        : copy.trial(PILOT_EDIT_DAYS, date, currency)
       : state === "ending"
         ? copy.ending(date)
         : copy.readOnly;

@@ -18,17 +18,21 @@
  * Pure module: no Prisma, no React, no Next.
  */
 
-import { readLocale } from "@/lib/locale-cookie";
+import { requestLocale } from "@/lib/landing-locale";
 
 export type PdfLocale = "en" | "es";
 
 /**
- * ?locale= wins; otherwise the `locale` cookie the screens use (read from the
- * Cookie header the way next-intl reads it); otherwise English.
+ * ?locale= wins; otherwise the language the screens use: the `locale` cookie,
+ * else the browser's Accept-Language (src/lib/landing-locale.ts), else English.
  */
-export function exportLocale(param: string | null | undefined, cookieHeader: string | null | undefined): PdfLocale {
+export function exportLocale(
+  param: string | null | undefined,
+  cookieHeader: string | null | undefined,
+  acceptLanguage?: string | null,
+): PdfLocale {
   if (param === "es" || param === "en") return param;
-  return readLocale(cookieHeader);
+  return requestLocale(cookieHeader, acceptLanguage);
 }
 
 const deSnake = (key: string) => key.replace(/_/g, " ");

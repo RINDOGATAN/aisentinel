@@ -25,6 +25,7 @@ import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
 import { StatusNote } from "@/components/ui/status-note";
+import { useSubmitLock } from "@/lib/use-submit-lock";
 
 export default function NewShadowAIReportPage() {
   const t = useTranslations("shadowAiNew");
@@ -86,10 +87,13 @@ export default function NewShadowAIReportPage() {
   const toolName =
     mode === "catalog" ? selectedTool?.name ?? "" : customToolName;
 
+  const lock = useSubmitLock();
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!organization?.id || !toolName) return;
 
+    // One record per submission, even for two submits in the same instant.
+    if (!lock.acquire()) return;
     setIsSubmitting(true);
 
     createReport.mutate({
@@ -98,7 +102,7 @@ export default function NewShadowAIReportPage() {
       toolName,
       department: department || undefined,
       usageDescription: usageDescription || undefined,
-    });
+    }, { onSettled: lock.release });
   };
 
   return (

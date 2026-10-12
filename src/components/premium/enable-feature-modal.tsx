@@ -57,7 +57,7 @@ export function EnableFeatureModal({
             <div className="flex items-start justify-between">
               <CardTitle className="flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-primary" />
-                Enable {skillName}
+                {t("enableTitle", { name: skillName })}
               </CardTitle>
               <Button
                 variant="ghost"
@@ -69,25 +69,25 @@ export function EnableFeatureModal({
               </Button>
             </div>
             <CardDescription>
-              {skillDescription || `Add ${skillName} to your organization.`}
+              {skillDescription || t("addToOrganization", { name: skillName })}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
               {features.allSkillsFree
-                ? `${skillName} is included in your self-hosted deployment. It is already available to your organization.`
-                : `${skillName} is a premium feature. Activate the license file you received on the Skills page to enable it for your organization.`}
+                ? t("includedSelfHosted", { name: skillName })
+                : t("activateOnSkills", { name: skillName })}
             </p>
           </CardContent>
           <CardFooter className="flex flex-wrap justify-end gap-3">
             <Button variant="outline" onClick={onClose}>
-              Close
+              {t("close")}
             </Button>
             {!features.allSkillsFree && (
               <Button asChild>
                 <a href="/governance/skills">
                   <Package className="mr-2 h-4 w-4" />
-                  Go to Skills page
+                  {t("goToSkills")}
                 </a>
               </Button>
             )}

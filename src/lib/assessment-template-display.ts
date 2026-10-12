@@ -22,7 +22,7 @@ export const SYSTEM_TEMPLATE_ES: Record<string, Text> = {
   "system-fria-template-v2": {
     name: "Evaluación de impacto sobre los derechos fundamentales",
     description:
-      "Evaluación conforme al artículo 27 del Reglamento de IA de la UE del impacto de un sistema de alto riesgo sobre los derechos fundamentales, con respuestas estructuradas que un regulador puede leer.",
+      "Evaluación conforme al artículo 27 del RIA del impacto de un sistema de alto riesgo sobre los derechos fundamentales, con respuestas estructuradas que un regulador puede leer.",
   },
   "system-ai-risk-template-v2": {
     name: "Evaluación de riesgos de IA",
@@ -37,12 +37,12 @@ export const SYSTEM_TEMPLATE_ES: Record<string, Text> = {
   "system-conformity-template-v2": {
     name: "Evaluación de la conformidad",
     description:
-      "Evaluación de la conformidad conforme al artículo 43 del Reglamento de IA de la UE para sistemas de alto riesgo: gestión de la calidad, documentación técnica, gestión de riesgos, transparencia y la declaración, con respuestas estructuradas.",
+      "Evaluación de la conformidad conforme al artículo 43 del RIA para sistemas de alto riesgo: gestión de la calidad, documentación técnica, gestión de riesgos, transparencia y la declaración, con respuestas estructuradas.",
   },
   "system-bias-fairness-template-v2": {
     name: "Evaluación de sesgo y equidad",
     description:
-      "Evaluación estructurada de sesgo y equidad que cubre la composición de los datos, las métricas de equidad, las pruebas desagregadas y la mitigación, alineada con el artículo 10 del Reglamento de IA de la UE y el NIST AI RMF.",
+      "Evaluación estructurada de sesgo y equidad que cubre la composición de los datos, las métricas de equidad, las pruebas desagregadas y la mitigación, alineada con el artículo 10 del RIA y el NIST AI RMF.",
   },
   // v1 rows: the successor's name only.
   "system-fria-template": { name: "Evaluación de impacto sobre los derechos fundamentales" },

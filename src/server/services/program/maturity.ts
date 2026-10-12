@@ -46,6 +46,17 @@
  *   assessment) and `unconfirmed-items` (machine-drafted artifacts nobody has
  *   taken ownership of). Both snapshot inputs are optional so snapshots
  *   stored by 1.0.0 still read; absent means zero.
+ *
+ * ## 1.2.0 (2026-10-12)
+ *
+ * - The snapshot counts only what a person stands behind: risk
+ *   classifications, oversight gates, policies, transparency profiles and
+ *   compliance statuses that were drafted (quick start, template, import) and
+ *   not yet confirmed are left out of every input, so the figures rise as a
+ *   person confirms them. `provenance.unconfirmed` still counts them. The
+ *   gaps that feed the plan are computed from a second snapshot of everything
+ *   that exists (src/server/services/program/program-data.ts), so a drafted
+ *   item is asked to be confirmed, not to be created again.
  */
 
 /**
@@ -53,7 +64,7 @@
  * exported artifacts state it so a score can always be traced to the model
  * that produced it. See src/config/rule-pack-versions.ts.
  */
-export const MATURITY_MODEL_VERSION = "1.1.0";
+export const MATURITY_MODEL_VERSION = "1.2.0";
 
 // ── Snapshot input ──────────────────────────────────────────────────
 

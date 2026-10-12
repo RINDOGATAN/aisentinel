@@ -43,6 +43,7 @@ import {
   type FactorId,
   type Rating,
 } from "@/config/sensitive-data-factors";
+import { useFormatDate } from "@/lib/use-format-date";
 
 type FactorState = Record<string, { rating?: Rating; reasoning?: string }>;
 
@@ -54,6 +55,7 @@ const BAND_STYLE: Record<string, string> = {
 
 export default function SensitiveDataAnalysisPage() {
   const t = useTranslations("sensitiveData");
+  const { formatDate: fmtDate } = useFormatDate();
   const tc = useTranslations("common");
   const locale = useLocale();
   const lang = locale === "es" ? "es" : "en";
@@ -152,7 +154,7 @@ export default function SensitiveDataAnalysisPage() {
             {t(`category.${data.category}`)}
             {data.aiSystem ? ` · ${data.aiSystem.name}` : ""}
             {data.completedAt
-              ? ` · ${t("completedOn", { date: new Date(data.completedAt).toLocaleDateString() })}`
+              ? ` · ${t("completedOn", { date: fmtDate(data.completedAt) })}`
               : ""}
           </>
         }

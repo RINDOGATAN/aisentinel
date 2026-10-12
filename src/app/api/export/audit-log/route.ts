@@ -34,7 +34,7 @@ function csvCell(v: string): string {
 export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
   const organizationId = params.get("organizationId");
-  const locale = exportLocale(params.get("locale"), request.headers.get("cookie"));
+  const locale = exportLocale(params.get("locale"), request.headers.get("cookie"), request.headers.get("accept-language"));
   const words = pdfLabels(locale).audit;
 
   if (!organizationId) {

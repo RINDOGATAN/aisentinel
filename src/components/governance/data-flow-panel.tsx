@@ -65,7 +65,7 @@ export function DataFlowPanel({
 
   const [adding, setAdding] = useState(false);
   const [name, setName] = useState("");
-  const [type, setType] = useState<(typeof RECIPIENT_TYPES)[number]>("ADVERTISING_PLATFORM");
+  const [type, setType] = useState<(typeof RECIPIENT_TYPES)[number]>("OTHER");
   const [purpose, setPurpose] = useState("");
   const [contractRef, setContractRef] = useState("");
   const [retentionPeriod, setRetentionPeriod] = useState("");
@@ -96,6 +96,7 @@ export function DataFlowPanel({
       setRetentionPeriod("");
       setTransferMechanism("");
       setCategories([]);
+      setType("OTHER");
       setAdding(false);
       void invalidate();
     },
@@ -351,6 +352,7 @@ export function DataFlowPanel({
                       variant="ghost"
                       size="icon"
                       className="h-7 w-7 ml-auto text-destructive hover:text-destructive"
+                      aria-label={t("removeRecipient", { name: r.name })}
                       onClick={() => removeRecipient.mutate({ organizationId, id: r.id })}
                     >
                       <Trash2 className="w-3.5 h-3.5" />

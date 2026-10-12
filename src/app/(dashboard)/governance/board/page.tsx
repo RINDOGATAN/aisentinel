@@ -32,6 +32,7 @@ import { useOrganization } from "@/lib/organization-context";
 import { StatusNote } from "@/components/ui/status-note";
 import { PageHeader } from "@/components/governance/page-header";
 import { EmptyStep } from "@/components/guided/empty-step";
+import { useFormatDate } from "@/lib/use-format-date";
 
 const AUDIENCES = [
   "BOARD",
@@ -44,6 +45,7 @@ const AUDIENCES = [
 
 export default function BoardReportingPage() {
   const t = useTranslations("boardReports");
+  const { formatDate: fmtDate } = useFormatDate();
   const tg = useTranslations("guided");
   const { organization, canWrite } = useOrganization();
   const orgId = organization?.id ?? "";
@@ -109,13 +111,13 @@ export default function BoardReportingPage() {
                 : t("cadence", {
                     count: data.cadence.count,
                     last: data.cadence.lastReportedAt
-                      ? new Date(data.cadence.lastReportedAt).toLocaleDateString()
+                      ? fmtDate(data.cadence.lastReportedAt)
                       : "—",
                   })}
             </p>
             {data.cadence.nextDue && (
               <p className="text-xs text-muted-foreground">
-                {t("nextDue", { date: new Date(data.cadence.nextDue).toLocaleDateString() })}
+                {t("nextDue", { date: fmtDate(data.cadence.nextDue) })}
               </p>
             )}
           </CardContent>
@@ -256,7 +258,7 @@ export default function BoardReportingPage() {
                     {t(`audience.${r.audience}`)}
                   </Badge>
                   <span className="text-xs text-muted-foreground">
-                    {new Date(r.reportedAt).toLocaleDateString()}
+                    {fmtDate(r.reportedAt)}
                     {r.period ? ` · ${r.period}` : ""}
                     {r.presenter ? ` · ${r.presenter}` : ""}
                   </span>

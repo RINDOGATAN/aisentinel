@@ -95,7 +95,7 @@ describe("framework display names", () => {
       expect(frameworkShortName(code, "es"), code).not.toMatch(/_/);
       expect(frameworkShort(code, "es"), code).not.toMatch(/_/);
     }
-    expect(frameworkName("EU_AI_ACT", "EU AI Act", "es")).toBe("Reglamento Europeo de IA");
+    expect(frameworkName("EU_AI_ACT", "EU AI Act", "es")).toBe("Reglamento de Inteligencia Artificial (RIA)");
     expect(frameworkName("EU_AI_ACT", "EU AI Act", "en")).toBe("EU AI Act");
     expect(frameworkShort("EU_GDPR", "es")).toBe("RGPD");
     // An unknown code falls back to what is stored, never to another framework.

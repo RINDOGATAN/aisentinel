@@ -149,6 +149,12 @@ const StartupProductPage = ({
 
   const handleMagicLink = async (e: React.FormEvent) => {
     e.preventDefault();
+    // The field is required; a blank address never reaches the provider,
+    // whose refusal would read as "email sign-in is not available".
+    if (!emailInput.trim()) return;
+    // The product opens in the language this page was read in (it follows the
+    // locale cookie, which a first visit does not have yet).
+    writeLocaleCookie(docsLocale);
     setError("");
     setSending(true);
     try {
@@ -181,6 +187,7 @@ const StartupProductPage = ({
   };
 
   const handleGoogleSignIn = () => {
+    writeLocaleCookie(docsLocale);
     signIn("google", { callbackUrl });
   };
 
@@ -277,6 +284,8 @@ const StartupProductPage = ({
                       <form onSubmit={handleMagicLink} className="space-y-4">
                         <input
                           type="email"
+                          required
+                          autoComplete="email"
                           value={emailInput}
                           onChange={(e) => setEmailInput(e.target.value)}
                           placeholder={tAuth("emailPlaceholder")}
@@ -310,6 +319,8 @@ const StartupProductPage = ({
                       <form onSubmit={handleMagicLink} className="space-y-4">
                         <input
                           type="email"
+                          required
+                          autoComplete="email"
                           value={emailInput}
                           onChange={(e) => setEmailInput(e.target.value)}
                           placeholder={tAuth("emailPlaceholder")}

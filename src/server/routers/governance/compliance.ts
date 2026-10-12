@@ -2,6 +2,7 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { z } from "zod";
+import { editConfirmation, keepSystemAfterEdit } from "@/server/services/provenance/edit-stamp";
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure, publicProcedure } from "../../trpc";
 import { buildScopeFilter } from "@/lib/applicability-scope";
@@ -23,6 +24,9 @@ const frameworkRank = (code: string) => {
   const i = FRAMEWORK_ORDER.indexOf(code);
   return i === -1 ? FRAMEWORK_ORDER.length : i;
 };
+
+/** Roles that may rule an AIUC-1 requirement out (aiuc1.setApplicability). */
+const AIUC1_DECIDER_ROLES = ["OWNER", "ADMIN", "AI_OFFICER"] as const;
 
 export const complianceRouter = createTRPCRouter({
   listFrameworks: publicProcedure.query(async ({ ctx }) => {
@@ -270,6 +274,37 @@ export const complianceRouter = createTRPCRouter({
         throw new TRPCError({ code: "NOT_FOUND", message: "AI system not found" });
       }
 
+      // Ruling an AIUC-1 requirement out (or back in) is a decision that
+      // aiuc1.setApplicability keeps for the decider roles; the generic
+      // update must not open it to every writer.
+      if (!(AIUC1_DECIDER_ROLES as readonly string[]).includes(ctx.membership.role)) {
+        const aiuc1 = await ctx.prisma.complianceRequirement.findFirst({
+          where: { id: input.requirementId, framework: { code: "AIUC_1" } },
+          select: { id: true },
+        });
+        if (aiuc1) {
+          const current = await ctx.prisma.complianceMapping.findUnique({
+            where: {
+              aiSystemId_requirementId: {
+                aiSystemId: input.aiSystemId,
+                requirementId: input.requirementId,
+              },
+            },
+            select: { status: true },
+          });
+          if (input.status === "NOT_APPLICABLE" || current?.status === "NOT_APPLICABLE") {
+            throw new TRPCError({
+              code: "FORBIDDEN",
+              message: "Marking an AIUC-1 requirement not applicable needs an owner, admin or AI officer role.",
+            });
+          }
+        }
+      }
+
+      // An approver's edit confirms the mapping; anyone else's edit clears the
+      // stamp until an approver confirms it (services/provenance/edit-stamp.ts).
+      // Provenance keeps its historical origin.
+      const confirmation = editConfirmation(ctx.membership.role, ctx.session.user.id);
       const mapping = await ctx.prisma.complianceMapping.upsert({
         where: {
           aiSystemId_requirementId: {
@@ -282,11 +317,7 @@ export const complianceRouter = createTRPCRouter({
           notes: input.notes,
           assessedBy: ctx.session.user.id,
           assessedAt: new Date(),
-          // A human editing an artifact IS confirming it. Provenance keeps its
-          // historical origin: it records where the row came from, not who
-          // vouches for it now.
-          confirmedBy: ctx.session.user.id,
-          confirmedAt: new Date(),
+          ...confirmation,
         },
         create: {
           organizationId: ctx.organization.id,
@@ -296,10 +327,15 @@ export const complianceRouter = createTRPCRouter({
           notes: input.notes,
           assessedBy: ctx.session.user.id,
           assessedAt: new Date(),
-          confirmedBy: ctx.session.user.id,
-          confirmedAt: new Date(),
+          ...confirmation,
         },
         include: { evidenceItems: true },
+      });
+      await keepSystemAfterEdit(ctx.prisma, {
+        role: ctx.membership.role,
+        aiSystemId: input.aiSystemId,
+        organizationId: ctx.organization.id,
+        userId: ctx.session.user.id,
       });
 
       let propagatedCount = 0;
@@ -591,8 +627,11 @@ export const complianceRouter = createTRPCRouter({
       const totalNonCompliant = mappings.filter((m) => m.status === "NON_COMPLIANT").length;
       const totalNotApplicable = mappings.filter((m) => m.status === "NOT_APPLICABLE").length;
       const assessed = total - mappings.filter((m) => m.status === "NOT_ASSESSED").length - totalNotApplicable;
+      // Over every applicable requirement, as each framework's figure is: a
+      // share of the assessed ones alone read 100% with nothing compliant.
+      const applicable = total - totalNotApplicable;
       const compliancePercent =
-        assessed > 0 ? Math.round(((totalCompliant + totalPartial) / assessed) * 100) : 0;
+        applicable > 0 ? Math.round(((totalCompliant + totalPartial) / applicable) * 100) : 0;
 
       return {
         total,

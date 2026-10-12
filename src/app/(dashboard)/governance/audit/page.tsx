@@ -31,11 +31,12 @@ import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useExportDownload } from "@/components/governance/use-export-download";
 import { PageHeader } from "@/components/governance/page-header";
+import { useFormatDate } from "@/lib/use-format-date";
 
 const READER_ROLES = ["OWNER", "ADMIN", "AI_OFFICER"];
 const ALL = "ALL";
 
-/** Codes are shown as written; only the separators are made readable. */
+/** A code with no label of its own: shown as written, separators made readable. */
 function humanizeCode(code: string): string {
   return code
     .toLowerCase()
@@ -53,6 +54,11 @@ function detailOf(changes: unknown, metadata: unknown): string {
 
 export default function AuditTrailPage() {
   const t = useTranslations("audit");
+  const { formatDate: fmtDate, formatDateTime: fmtDateTime } = useFormatDate();
+  // The common actions read in the reader's language; the stored code (and
+  // the CSV export) stays as written.
+  const actionLabel = (code: string) =>
+    t.has(`actionLabels.${code}`) ? t(`actionLabels.${code}`) : humanizeCode(code);
   const { organization, userRole } = useOrganization();
   const { download, isPending: downloadPending } = useExportDownload();
   const orgId = organization?.id ?? "";
@@ -154,7 +160,7 @@ export default function AuditTrailPage() {
                 <SelectItem value={ALL}>{t("filters.all")}</SelectItem>
                 {(facets?.actions ?? []).map((a) => (
                   <SelectItem key={a.value} value={a.value}>
-                    {humanizeCode(a.value)} ({a.count})
+                    {actionLabel(a.value)} ({a.count})
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -227,7 +233,7 @@ export default function AuditTrailPage() {
         )}
         {facets?.earliest && (
           <span>
-            {t("since", { date: new Date(facets.earliest).toLocaleDateString() })}
+            {t("since", { date: fmtDate(facets.earliest) })}
           </span>
         )}
         {filtered && (
@@ -277,7 +283,7 @@ export default function AuditTrailPage() {
                     return (
                       <tr key={e.id} className="border-b last:border-0 align-top">
                         <td className="p-3 whitespace-nowrap text-xs text-muted-foreground">
-                          {new Date(e.createdAt).toLocaleString()}
+                          {fmtDateTime(e.createdAt)}
                         </td>
                         <td className="p-3">
                           {e.actorName ?? e.actorEmail ?? (
@@ -286,7 +292,7 @@ export default function AuditTrailPage() {
                             </span>
                           )}
                         </td>
-                        <td className="p-3 whitespace-nowrap">{humanizeCode(e.action)}</td>
+                        <td className="p-3 whitespace-nowrap">{actionLabel(e.action)}</td>
                         <td className="p-3 text-xs">
                           <div>{e.entityType}</div>
                           <div className="text-muted-foreground font-mono">{e.entityId}</div>

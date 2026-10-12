@@ -23,8 +23,16 @@ interface OrganizationContextType {
   isLoading: boolean;
   /** Current user's role in the selected organization */
   userRole: OrganizationRole | null;
-  /** Whether the current user can perform write operations (non-VIEWER) */
+  /**
+   * Whether the current user can perform write operations: not a VIEWER, and
+   * the organisation is not read-only (a hosted pilot past its editing window).
+   */
   canWrite: boolean;
+  /**
+   * Whether the current user can approve, decide and publish (OWNER, ADMIN,
+   * AI_OFFICER), the roles the server checks for those mutations.
+   */
+  canDecide: boolean;
   setOrganization: (org: Organization) => void;
   refetchOrganizations: () => void;
 }
@@ -43,6 +51,9 @@ export function resolveRole(
   if (!selected) return null;
   return selected.role ?? list.find((o) => o.id === selected.id)?.role ?? null;
 }
+
+/** The roles the server lets approve, decide and publish. */
+export const DECIDER_ROLES: readonly OrganizationRole[] = ["OWNER", "ADMIN", "AI_OFFICER"];
 
 const OrganizationContext = createContext<OrganizationContextType | undefined>(undefined);
 
@@ -77,7 +88,16 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
   };
 
   const userRole = resolveRole(organization, organizations);
-  const canWrite = userRole !== null && userRole !== "VIEWER";
+  // The hosted pilot's editing window: once it is over the server refuses every
+  // write (src/server/services/pilot/caps.ts), so the screens stop offering them.
+  // Off the pilot the query answers { active: false } without counting anything.
+  const { data: pilot } = trpc.pilot.status.useQuery(
+    { organizationId: organization?.id ?? "" },
+    { enabled: !!organization?.id, staleTime: 60 * 1000 },
+  );
+  const readOnly = pilot?.active === true && pilot.readOnly;
+  const canWrite = userRole !== null && userRole !== "VIEWER" && !readOnly;
+  const canDecide = canWrite && userRole !== null && DECIDER_ROLES.includes(userRole);
 
   return (
     <OrganizationContext.Provider
@@ -87,6 +107,7 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
         isLoading,
         userRole,
         canWrite,
+        canDecide,
         setOrganization,
         refetchOrganizations: refetch,
       }}

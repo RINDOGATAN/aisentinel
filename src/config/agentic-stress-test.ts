@@ -162,7 +162,7 @@ export const AGENTIC_FINDINGS: AgenticFinding[] = [
     ),
     breakage: L(
       "The agent's chain sits between the output and the effect. Without a trace linking an action back to the decision, the model version and the data behind it, neither the Colorado three-year record nor the AI Act logging duty can answer the only question that matters after the fact: why did this happen to this person?",
-      "La cadena del agente se sitúa entre el resultado y el efecto. Sin una traza que enlace la acción con la decisión, la versión del modelo y los datos que la sustentan, ni el registro trienal de Colorado ni el deber de registro del Reglamento de IA pueden responder a la única pregunta que importa después: ¿por qué le ocurrió esto a esta persona?",
+      "La cadena del agente se sitúa entre el resultado y el efecto. Sin una traza que enlace la acción con la decisión, la versión del modelo y los datos que la sustentan, ni el registro trienal de Colorado ni el deber de registro del RIA pueden responder a la única pregunta que importa después: ¿por qué le ocurrió esto a esta persona?",
     ),
     provision: L(
       "Log every agent-initiated action with the decision id, the model version, the input data reference and the authority under which the agent acted, and retain it for the longest applicable period.",

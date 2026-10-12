@@ -2,6 +2,7 @@
   "header.cta": "Sign in",
   "header.menuOpen": "Open the menu",
   "header.menuClose": "Close the menu",
+  "header.security": "Security measures",
   "hero.badge": "Get up and running in minutes",
   "hero.title.prefix": "",
   "hero.title.accent": "Future-Proof",
@@ -147,7 +148,6 @@
   "footer.privacy": "Privacy",
   "footer.terms": "Terms",
   "footer.security": "Security",
-  "footer.forLawFirms": "For law firms",
   "footer.productOf": "a TODO.LAW product",
   "en.logos.label": "Trusted by"
 }

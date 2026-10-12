@@ -23,6 +23,7 @@ import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { StatusNote } from "@/components/ui/status-note";
 import { useTranslations } from "next-intl";
+import { useSubmitLock } from "@/lib/use-submit-lock";
 
 type OversightGateType = "PRE_DEPLOYMENT" | "POST_DEPLOYMENT" | "PERIODIC_REVIEW" | "INCIDENT_TRIGGERED" | "MATERIAL_CHANGE";
 
@@ -67,7 +68,7 @@ export default function NewOversightGatePage() {
   });
 
   const { data: systemsData } = trpc.aiSystem.list.useQuery(
-    { organizationId: organization?.id ?? "", limit: 50 },
+    { organizationId: organization?.id ?? "", limit: 100 },
     { enabled: !!organization?.id }
   );
 
@@ -88,10 +89,13 @@ export default function NewOversightGatePage() {
     },
   });
 
+  const lock = useSubmitLock();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!organization?.id || !formData.aiSystemId || !formData.gateType) return;
 
+    // One record per submission, even for two submits in the same instant.
+    if (!lock.acquire()) return;
     setIsSubmitting(true);
 
     createGate.mutate({
@@ -102,7 +106,7 @@ export default function NewOversightGatePage() {
       reviewCadence: formData.reviewCadence || undefined,
       nextReviewDate: formData.nextReviewDate || undefined,
       assignedTo: formData.assignedTo || undefined,
-    });
+    }, { onSettled: lock.release });
   };
 
   return (

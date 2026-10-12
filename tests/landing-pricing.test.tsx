@@ -9,7 +9,8 @@
  *   - one row: what is offered | what it costs; "Start free" to sign-up, a
  *     small "Subscribe" link to the yearly payment link of the page's
  *     currency; one quiet line to the storefront's contact wizard;
- *   - one currency per page (English $, Spanish €), never stated as equal;
+ *   - one currency per page, never stated as equal: Spanish always €;
+ *     English € for a visitor in the EU, $ for everyone else;
  *     EU hosting named only in Spanish;
  *   - the pilot's days are the ones the caps enforce;
  *   - plain copy: no long dash; Spanish says tú.
@@ -32,7 +33,8 @@ type L = "en" | "es";
 const noop = () => {};
 const header = (locale: L) =>
   renderToStaticMarkup(createElement(StartupsHeader, { t: (k: string) => k, locale, onLocaleToggle: noop, onSignup: noop }));
-const section = (locale: L) => renderToStaticMarkup(createElement(PricingSection, { locale }));
+const section = (locale: L, currency?: "USD" | "EUR") =>
+  renderToStaticMarkup(createElement(PricingSection, { locale, currency }));
 const text = (html: string) => html.replace(/<[^>]+>/g, " ").replace(/&#x27;/g, "'").replace(/\s+/g, " ");
 const landing = (locale: L) =>
   renderToStaticMarkup(createElement(LandingSections, { t: (k: string) => k, locale, videos: [] }));
@@ -127,15 +129,36 @@ describe("pricing block", () => {
   });
 
   it("starts the pilot at sign-in and subscribes yearly with the link of the page's currency", () => {
-    expect(PLAN_PAYMENT_LINK.es).toBe("https://buy.stripe.com/fZubJ273hbnnbH56qn4sE04");
-    expect(PLAN_PAYMENT_LINK.en).toBe("https://buy.stripe.com/aFa9AU73h3UV26v7ur4sE05");
-    for (const locale of ["en", "es"] as const) {
-      const html = section(locale);
+    expect(PLAN_PAYMENT_LINK.EUR).toBe("https://buy.stripe.com/fZubJ273hbnnbH56qn4sE04");
+    expect(PLAN_PAYMENT_LINK.USD).toBe("https://buy.stripe.com/aFa9AU73h3UV26v7ur4sE05");
+    for (const [locale, visitor, shown] of [
+      ["en", "USD", "USD"],
+      ["en", "EUR", "EUR"],
+      ["es", "USD", "EUR"],
+      ["es", "EUR", "EUR"],
+    ] as const) {
+      const html = section(locale, visitor);
       expect(html).toMatch(/<a href="\/sign-in"[^>]*data-testid="pricing-start"/);
       const sub = html.match(/<a[^>]*data-testid="pricing-subscribe"[^>]*>/)?.[0] ?? "";
-      expect(sub).toContain(`href="${PLAN_PAYMENT_LINK[locale]}"`);
-      expect(sub).not.toContain(PLAN_PAYMENT_LINK[locale === "en" ? "es" : "en"]);
+      expect(sub).toContain(`href="${PLAN_PAYMENT_LINK[shown]}"`);
+      expect(sub).not.toContain(PLAN_PAYMENT_LINK[shown === "USD" ? "EUR" : "USD"]);
     }
+  });
+
+  it("English for a visitor in the EU: the same copy in euros, still no hosting region", () => {
+    const t = text(section("en", "EUR"));
+    expect(t).toContain(`Start free (${PILOT_DAYS}-day trial), then €179 a month or €1,800 a year`);
+    expect(t).toContain("DPO Central, AI Sentinel and VendorWatch on the TODO.LAW cloud");
+    expect(t).not.toMatch(/\$|\bUSD\b/);
+    expect(t).not.toMatch(/\bEU\b|Frankfurt|Europe/);
+  });
+
+  it("English for everyone else is exactly the US offer", () => {
+    expect(section("en", "USD")).toBe(section("en"));
+  });
+
+  it("Spanish is in euros whatever the visitor's currency", () => {
+    expect(section("es", "USD")).toBe(section("es", "EUR"));
   });
 
   it("sends a managed instance or own hardware to the storefront's contact wizard", () => {

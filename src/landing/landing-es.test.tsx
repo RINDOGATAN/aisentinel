@@ -88,7 +88,9 @@ describe("landing hero", () => {
     expect(EN["hero.welcome"]).toBeUndefined();
     expect(ES["hero.welcome"]).toBeUndefined();
     expect(page.match(/t\("hero\.subtitle"\)/g)).toHaveLength(1);
-    expect(ES["hero.subtitle"]).toMatch(/^Marco abierto para la gobernanza de la IA\. Inventario, /);
+    expect(ES["hero.subtitle"]).toBe(
+      "Sistema integral para la gobernanza de la IA. Inventario, clasificación de riesgo y evaluaciones vinculados a nueve marcos de trabajo, incluyendo el RIA, NIST AI RMF, ISO 42001, o AIUC-1.",
+    );
   });
 
   it("gives the sign-up card its own one-line summary in both languages", () => {
@@ -200,13 +202,14 @@ describe("Spanish sections", () => {
     }
   });
 
-  it("play videos only on request, muted, with a poster, two formats and Spanish captions", () => {
+  it("play videos only on request, with sound, with a poster, two formats and Spanish captions", () => {
     const videos = withVideos.match(/<video[\s\S]*?<\/video>/g) ?? [];
     expect(videos).toHaveLength(SAMPLE_VIDEOS.length);
     for (const v of videos) {
       expect(v).not.toMatch(/autoplay/i);
       expect(v).toMatch(/preload="none"/);
-      expect(v).toMatch(/muted/);
+      // Narrated: started by the visitor, so it plays with sound.
+      expect(v).not.toMatch(/\smuted(=|\s|>)/);
       expect(v).toMatch(/playsinline/i);
       expect(v).toMatch(/controls/);
       expect(v).toMatch(/poster="\/videos\/es\/[^"]+\.png"/);

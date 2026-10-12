@@ -25,6 +25,7 @@ import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import type { PrefillField, Suggestion } from "@/lib/system-prefill";
 import { StatusNote } from "@/components/ui/status-note";
+import { useSubmitLock } from "@/lib/use-submit-lock";
 
 type AITechnique = "MACHINE_LEARNING" | "DEEP_LEARNING" | "GENERATIVE_AI" | "AGENTIC_AI" | "NLP" | "COMPUTER_VISION" | "SPEECH_RECOGNITION" | "ROBOTICS" | "RULE_BASED" | "EXPERT_SYSTEM" | "STATISTICAL" | "OTHER";
 type AISystemRole = "PROVIDER" | "DEPLOYER" | "IMPORTER" | "DISTRIBUTOR" | "USER";
@@ -230,10 +231,13 @@ export default function NewAISystemPage() {
     },
   });
 
+  const lock = useSubmitLock();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!organization?.id || !formData.name || !formData.technique || !formData.role) return;
 
+    // One record per submission, even for two submits in the same instant.
+    if (!lock.acquire()) return;
     setIsSubmitting(true);
 
     createSystem.mutate({
@@ -249,7 +253,7 @@ export default function NewAISystemPage() {
       processesPersonalData: formData.processesPersonalData,
       vendorId: formData.vendorId || undefined,
       businessUnitId: formData.businessUnitId || undefined,
-    });
+    }, { onSettled: lock.release });
   };
 
   return (
@@ -298,6 +302,7 @@ export default function NewAISystemPage() {
                 <Label htmlFor="name">{t("systemNameLabel")} *</Label>
                 <Input
                   id="name"
+                  maxLength={200}
                   placeholder={t("systemNamePlaceholder")}
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}

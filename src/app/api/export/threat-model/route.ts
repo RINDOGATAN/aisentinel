@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
   const organizationId = params.get("organizationId");
   const id = params.get("id");
   // ?locale= wins; otherwise the same cookie the screens read, as the other exports do.
-  const locale = exportLocale(params.get("locale"), request.headers.get("cookie"));
+  const locale = exportLocale(params.get("locale"), request.headers.get("cookie"), request.headers.get("accept-language"));
 
   if (!organizationId || !id) {
     return Response.json({ error: "organizationId and id are required" }, { status: 400 });

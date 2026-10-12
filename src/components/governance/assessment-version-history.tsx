@@ -21,6 +21,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc";
+import { useFormatDate } from "@/lib/use-format-date";
 
 const REASON_KEY: Record<string, string> = {
   EDIT: "reasonEdit",
@@ -37,6 +38,7 @@ export function AssessmentVersionHistory({
   assessmentId: string;
 }) {
   const t = useTranslations("assessmentVersions");
+  const { formatDateTime: fmtDateTime } = useFormatDate();
   const [openId, setOpenId] = useState<string | null>(null);
 
   const { data: versions, isLoading } = trpc.assessment.listVersions.useQuery(
@@ -86,7 +88,7 @@ export function AssessmentVersionHistory({
                   </Badge>
                   <span className="text-sm">{t(REASON_KEY[v.reason] ?? "reasonEdit")}</span>
                   <span className="text-xs text-muted-foreground">
-                    {new Date(v.createdAt).toLocaleString()}
+                    {fmtDateTime(v.createdAt)}
                   </span>
                   {v.authorName && (
                     <span className="text-xs text-muted-foreground">· {v.authorName}</span>

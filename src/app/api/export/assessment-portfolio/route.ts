@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
   const data = await loadAssessmentPortfolioData(prisma, organizationId);
 
   const orgName = membership.organization.name;
-  const locale = exportLocale(request.nextUrl.searchParams.get("locale"), request.headers.get("cookie"));
+  const locale = exportLocale(request.nextUrl.searchParams.get("locale"), request.headers.get("cookie"), request.headers.get("accept-language"));
   const dateStr = fmtDate(new Date());
 
   await prisma.auditLog.create({

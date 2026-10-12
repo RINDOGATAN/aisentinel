@@ -22,6 +22,7 @@ import {
   LAWFIRM_POLICY_PACK,
   type Localized,
 } from "./lawfirm-ai-toolkit";
+import { formatDayIn } from "@/lib/format-date";
 
 // ── Review marker ───────────────────────────────────────────────────
 
@@ -36,8 +37,8 @@ export const PROGRAM_GUIDANCE_VERSION = "2026.08.1";
 export const PROGRAM_GUIDANCE_LAW_REVIEWED_AS_OF = "2026-08-18";
 
 export const PROGRAM_GUIDANCE_REVIEW_MARKER: Localized = {
-  en: `Law reviewed as of ${PROGRAM_GUIDANCE_LAW_REVIEWED_AS_OF}; professional-responsibility sign-off pending.`,
-  es: `Revisión jurídica a fecha de ${PROGRAM_GUIDANCE_LAW_REVIEWED_AS_OF}; pendiente de validación de responsabilidad profesional.`,
+  en: `Law reviewed as of ${formatDayIn("en", PROGRAM_GUIDANCE_LAW_REVIEWED_AS_OF)}; professional-responsibility sign-off pending.`,
+  es: `Revisión jurídica a fecha de ${formatDayIn("es", PROGRAM_GUIDANCE_LAW_REVIEWED_AS_OF)}; pendiente de validación de responsabilidad profesional.`,
 };
 
 /**
@@ -47,8 +48,8 @@ export const PROGRAM_GUIDANCE_REVIEW_MARKER: Localized = {
  * wonder what it refers to.
  */
 export const PROGRAM_GUIDANCE_REVIEW_MARKER_GENERAL: Localized = {
-  en: `Law reviewed as of ${PROGRAM_GUIDANCE_LAW_REVIEWED_AS_OF}; legal sign-off pending.`,
-  es: `Revisión jurídica a fecha de ${PROGRAM_GUIDANCE_LAW_REVIEWED_AS_OF}; pendiente de validación jurídica.`,
+  en: `Law reviewed as of ${formatDayIn("en", PROGRAM_GUIDANCE_LAW_REVIEWED_AS_OF)}; legal sign-off pending.`,
+  es: `Revisión jurídica a fecha de ${formatDayIn("es", PROGRAM_GUIDANCE_LAW_REVIEWED_AS_OF)}; pendiente de validación jurídica.`,
 };
 
 const withMarker = (l: Localized): Localized => ({
@@ -313,7 +314,7 @@ export const PROGRAM_ACTION_TEMPLATES: ActionTemplate[] = [
     },
     detail: {
       en: "Answer and approve the impact assessment drafted for each high-risk system. It covers the GDPR data protection impact assessment (Art. 35), which applies now, and prepares the fundamental rights impact assessment the EU AI Act requires of certain deployers from 2 December 2027 (Art. 27).",
-      es: "Responde y aprueba la evaluación de impacto preparada para cada sistema de alto riesgo. Cubre la evaluación de impacto relativa a la protección de datos del RGPD (art. 35), que ya es aplicable, y prepara la evaluación de impacto sobre los derechos fundamentales que el Reglamento de IA exige a determinados responsables del despliegue a partir del 2 de diciembre de 2027 (art. 27).",
+      es: "Responde y aprueba la evaluación de impacto preparada para cada sistema de alto riesgo. Cubre la evaluación de impacto relativa a la protección de datos del RGPD (art. 35), que ya es aplicable, y prepara la evaluación de impacto sobre los derechos fundamentales que el RIA exige a determinados responsables del despliegue a partir del 2 de diciembre de 2027 (art. 27).",
     },
     href: "/governance/assessments",
     effort: "L",
@@ -333,7 +334,7 @@ export const PROGRAM_ACTION_TEMPLATES: ActionTemplate[] = [
     title: { en: "Classify remaining systems", es: "Clasificar los sistemas pendientes" },
     detail: {
       en: "Give every registered system an EU AI Act risk classification so obligations and controls can attach to it.",
-      es: "Asigna a cada sistema registrado una clasificación de riesgo conforme al Reglamento de IA de la UE para que las obligaciones y controles queden vinculados.",
+      es: "Asigna a cada sistema registrado una clasificación de riesgo conforme al RIA para que las obligaciones y controles queden vinculados.",
     },
     href: "/governance/risk-classification",
     effort: "S",

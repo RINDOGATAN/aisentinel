@@ -13,6 +13,13 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, organizationProcedure } from "../trpc";
 import { getStripe, getSubscription, removeSubscriptionItem } from "@/lib/stripe";
+import { BILLING_FORBIDDEN_MESSAGE, canManageBilling } from "@/lib/billing-roles";
+
+function assertBillingRole(role: string) {
+  if (!canManageBilling(role)) {
+    throw new TRPCError({ code: "FORBIDDEN", message: BILLING_FORBIDDEN_MESSAGE });
+  }
+}
 
 function parseSkillPackageIds(metadata: Record<string, string> | null): string[] {
   if (!metadata) return [];
@@ -125,6 +132,7 @@ export const billingRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      assertBillingRole(ctx.membership.role);
       const orgId = ctx.organization.id;
 
       const customerOrg = await ctx.prisma.customerOrganization.findFirst({
@@ -201,6 +209,7 @@ export const billingRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      assertBillingRole(ctx.membership.role);
       const stripe = getStripe();
       const session = await stripe.checkout.sessions.retrieve(input.sessionId);
 

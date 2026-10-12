@@ -163,7 +163,8 @@ describe("safeguards guide, English only", () => {
     expect(text(guideOf(html))).toContain(COPY.en.questions.loc.options.office);
     const cases: [Answers, string][] = [
       [{ loc: "any" }, "1"],
-      [{ data: "real" }, "2"],
+      [{ data: "real" }, "1"],
+      [{ data: "special" }, "2"],
       [{ loc: "servers", it: "yes" }, "3"],
       [{ loc: "office", it: "no" }, "3"],
     ];
@@ -177,7 +178,7 @@ describe("safeguards guide, English only", () => {
 
   it("names no hosting location for the cloud in English", () => {
     const g = text(guideOf(render("en", { open: true, answers: { loc: "any" } })));
-    expect(g).toContain("Hosted by us.");
+    expect(g).toContain("Hosted by us, on a shared service");
     expect(g).toContain("external AI provider set up on the service.");
     expect(g).not.toMatch(/United States|\bEU\b|Frankfurt|Europe/);
   });

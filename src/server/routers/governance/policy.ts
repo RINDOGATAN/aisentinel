@@ -2,9 +2,15 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { z } from "zod";
+import { editConfirmation } from "@/server/services/provenance/edit-stamp";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { assertPilotRoom, pilotLocale } from "../../services/pilot/caps";
 import { TRPCError } from "@trpc/server";
+
+/** Roles that may approve or publish a policy (approve, publishVersion, update). */
+const POLICY_DECIDER_ROLES = ["OWNER", "ADMIN", "AI_OFFICER"] as const;
+/** Statuses that record a decision rather than a working state. */
+const DECISION_STATUSES = ["APPROVED", "PUBLISHED"] as const;
 
 export const policyRouter = createTRPCRouter({
   list: organizationProcedure
@@ -142,6 +148,20 @@ export const policyRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { id, organizationId, ...data } = input;
 
+      // APPROVED and PUBLISHED are decisions: the same roles as approve and
+      // publishVersion may set them here, nobody else. The working statuses
+      // (draft, review, archive) stay open to every writer.
+      if (
+        data.status !== undefined &&
+        (DECISION_STATUSES as readonly string[]).includes(data.status) &&
+        !(POLICY_DECIDER_ROLES as readonly string[]).includes(ctx.membership.role)
+      ) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Only owners, admins, and AI officers can approve or publish policies",
+        });
+      }
+
       const updateData: Record<string, unknown> = {};
       if (data.title !== undefined) updateData.title = data.title;
       if (data.description !== undefined) updateData.description = data.description;
@@ -154,10 +174,10 @@ export const policyRouter = createTRPCRouter({
         updateData.reviewDate = data.reviewDate ? new Date(data.reviewDate) : null;
       }
 
-      // A human editing an artifact IS confirming it; provenance keeps its
-      // historical origin (where the row came from, not who vouches for it).
-      updateData.confirmedBy = ctx.session.user.id;
-      updateData.confirmedAt = new Date();
+      // An approver's edit confirms the policy; anyone else's edit clears the
+      // stamp until an approver confirms it (services/provenance/edit-stamp.ts).
+      // Provenance keeps its historical origin.
+      Object.assign(updateData, editConfirmation(ctx.membership.role, ctx.session.user.id));
 
       const result = await ctx.prisma.aIPolicy.updateMany({
         where: { id, organizationId: ctx.organization.id },
@@ -192,7 +212,7 @@ export const policyRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       // RBAC: OWNER, ADMIN, AI_OFFICER
-      if (!["OWNER", "ADMIN", "AI_OFFICER"].includes(ctx.membership.role)) {
+      if (!(POLICY_DECIDER_ROLES as readonly string[]).includes(ctx.membership.role)) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "Only owners, admins, and AI officers can publish policy versions",
@@ -251,7 +271,7 @@ export const policyRouter = createTRPCRouter({
     .input(z.object({ organizationId: z.string(), id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       // RBAC: OWNER, ADMIN, AI_OFFICER
-      if (!["OWNER", "ADMIN", "AI_OFFICER"].includes(ctx.membership.role)) {
+      if (!(POLICY_DECIDER_ROLES as readonly string[]).includes(ctx.membership.role)) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "Only owners, admins, and AI officers can approve policies",

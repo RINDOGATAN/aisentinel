@@ -45,6 +45,7 @@ import {
   EU_AI_ACT_DATES,
   EU_AI_ACT_DATES_LAW_REVIEWED_AS_OF,
 } from "./eu-ai-act-dates";
+import { formatDayIn } from "@/lib/format-date";
 
 /**
  * Rule-pack version. Bump on any content change (milestones, dates,
@@ -55,8 +56,8 @@ export const REGULATORY_MILESTONES_VERSION = "2026.09.2";
 export const REGULATORY_MILESTONES_LAW_REVIEWED_AS_OF = "2026-08-21";
 
 export const REGULATORY_MILESTONES_REVIEW_MARKER: Localized = {
-  en: `Law reviewed as of ${REGULATORY_MILESTONES_LAW_REVIEWED_AS_OF}; legal sign-off pending.`,
-  es: `Revisión jurídica a fecha de ${REGULATORY_MILESTONES_LAW_REVIEWED_AS_OF}; pendiente de validación jurídica.`,
+  en: `Law reviewed as of ${formatDayIn("en", REGULATORY_MILESTONES_LAW_REVIEWED_AS_OF)}; legal sign-off pending.`,
+  es: `Revisión jurídica a fecha de ${formatDayIn("es", REGULATORY_MILESTONES_LAW_REVIEWED_AS_OF)}; pendiente de validación jurídica.`,
 };
 
 // ---------------------------------------------------------------------------
@@ -393,7 +394,7 @@ export const REGULATORY_MILESTONES: RegulatoryMilestone[] = [
     href: "/governance/ai-registry",
     title: {
       en: "EU AI Act transparency obligations apply",
-      es: "Se aplican las obligaciones de transparencia del Reglamento de IA de la UE",
+      es: "Se aplican las obligaciones de transparencia del RIA",
     },
     whatItMeans: {
       en: "Art. 50 has applied since 2 August 2026: people must be told when they are interacting with an AI system, synthetic content must be marked in a machine-readable format, and deepfakes and AI-generated text published to inform the public must be disclosed. Not deferred by the Digital Omnibus.",
@@ -921,7 +922,7 @@ export const REGULATORY_MILESTONES: RegulatoryMilestone[] = [
     },
     whatItMeans: {
       en: "Operative since 2 August 2026 (AB 853 moved it from 1 January 2026 to align with the EU AI Act date): covered generative AI providers with more than one million monthly users must offer a free AI-detection tool and support manifest and latent provenance disclosures. Large online platform duties follow on 1 January 2027.",
-      es: "Vigente desde el 2 de agosto de 2026 (la AB 853 la trasladó desde el 1 de enero de 2026 para alinearla con la fecha del Reglamento de IA de la UE): los proveedores de IA generativa cubiertos con más de un millón de usuarios mensuales deben ofrecer una herramienta gratuita de detección de IA y admitir divulgaciones de procedencia manifiestas y latentes. Los deberes de las grandes plataformas en línea llegan el 1 de enero de 2027.",
+      es: "Vigente desde el 2 de agosto de 2026 (la AB 853 la trasladó desde el 1 de enero de 2026 para alinearla con la fecha del RIA): los proveedores de IA generativa cubiertos con más de un millón de usuarios mensuales deben ofrecer una herramienta gratuita de detección de IA y admitir divulgaciones de procedencia manifiestas y latentes. Los deberes de las grandes plataformas en línea llegan el 1 de enero de 2027.",
     },
     orgApplies: (org) => {
       const gate = jurisdictionGate(org, "US_CA");
@@ -985,7 +986,7 @@ export const REGULATORY_MILESTONES: RegulatoryMilestone[] = [
     },
     whatItMeans: {
       en: "In force since 1 January 2026 for anyone doing business in Texas. Intent-based prohibitions on unlawful discrimination (disparate impact alone is expressly insufficient), infringement of constitutional rights, and behavioral manipulation inciting harm. Healthcare providers must disclose AI use to patients. Attorney-General enforcement with a 60-day cure period, and a safe harbor for compliance with the NIST AI RMF — which the framework you already track supports.",
-      es: "En vigor desde el 1 de enero de 2026 para quien opere en Texas. Prohibiciones basadas en la intención sobre discriminación ilícita (el impacto dispar por sí solo es expresamente insuficiente), vulneración de derechos constitucionales y manipulación conductual que incite a causar daño. Los prestadores sanitarios deben informar a los pacientes del uso de IA. Aplicación por el Fiscal General con un plazo de subsanación de 60 días y un puerto seguro por cumplir el NIST AI RMF, que este producto ya sigue.",
+      es: "En vigor desde el 1 de enero de 2026 para quien opere en Texas. Prohibiciones basadas en la intención sobre discriminación ilícita (el impacto dispar por sí solo es expresamente insuficiente), vulneración de derechos constitucionales y manipulación conductual que incite a causar daño. Los proveedores sanitarios deben informar a los pacientes del uso de IA. Aplicación por el Fiscal General con un plazo de subsanación de 60 días y un puerto seguro por cumplir el NIST AI RMF, que este producto ya sigue.",
     },
     orgApplies: (org) => jurisdictionGate(org, "US_TX") ?? "in-scope",
     undeterminedReason: () => "no-jurisdictions",

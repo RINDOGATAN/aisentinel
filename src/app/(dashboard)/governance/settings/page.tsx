@@ -16,6 +16,7 @@ import { AiPostureCard } from "@/components/ai/AiPostureCard";
 import { JurisdictionPicker } from "@/components/governance/jurisdiction-picker";
 import { CaliforniaScreeningCard } from "@/components/governance/california-screening-card";
 import { RegimeScreeningCard } from "@/components/governance/regime-screening-card";
+import { SCREENING_ANCHOR } from "@/lib/settings-anchors";
 import { ApplicabilityCard } from "@/components/governance/applicability-check";
 import { TeamCard } from "@/components/governance/team-card";
 import { DepartmentsCard } from "@/components/governance/departments-card";
@@ -151,6 +152,8 @@ export default function SettingsPage() {
       {/* California CCPA screening. Self-gating on a declared California nexus;
           it is what lets the ADMT resolver leave COVERED_BUSINESS_NOT_ASSESSED,
           so without it the whole California framework stays unreachable. */}
+      {/* Linked from the obligations step, which asks for these answers. */}
+      <div id={SCREENING_ANCHOR} className="scroll-mt-24" aria-hidden="true" />
       {organization && (
         <CaliforniaScreeningCard
           organizationId={organization.id}

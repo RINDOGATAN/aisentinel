@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025-2026 Rindogatan LLC
 
+import { formatDayIn } from "@/lib/format-date";
 import { describe, it, expect } from "vitest";
 import {
   AdmtDetermination,
@@ -124,11 +125,12 @@ describe("ADMT vocabularies", () => {
     expect(ADMT_RULES_LAW_REVIEWED_AS_OF).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(ADMT_RULES_REVIEW_MARKER.en).toContain("sign-off pending");
     expect(ADMT_RULES_REVIEW_MARKER.es).toContain("pendiente de validación");
+    // The date is written with the month as a word in each language.
     expect(ADMT_RULES_REVIEW_MARKER.en).toContain(
-      ADMT_RULES_LAW_REVIEWED_AS_OF,
+      formatDayIn("en", ADMT_RULES_LAW_REVIEWED_AS_OF),
     );
     expect(ADMT_RULES_REVIEW_MARKER.es).toContain(
-      ADMT_RULES_LAW_REVIEWED_AS_OF,
+      formatDayIn("es", ADMT_RULES_LAW_REVIEWED_AS_OF),
     );
   });
 });

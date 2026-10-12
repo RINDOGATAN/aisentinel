@@ -10,10 +10,10 @@
  * storefront's contact wizard for a managed instance or your own hardware.
  * The same block, copy and classes are on DPO Central's landing.
  *
- * One currency per visitor, by the landing's language: the Spanish page
- * shows euros only, the English page US dollars only. The two are separate
- * prices; nothing here says or implies they are the same. EU hosting is
- * named only in Spanish ("en la nube UE").
+ * One currency per page (src/lib/currency.ts): the Spanish page shows euros
+ * only; the English page shows euros to a visitor in the EU and US dollars to
+ * everyone else. The two are separate prices; nothing here says or implies
+ * they are the same. EU hosting is named only in Spanish ("en la nube UE").
  *
  * Under the price row, one small line links the plan's terms and its
  * sub-processors on the storefront (owner, 11 Oct 2026); the block says
@@ -24,16 +24,17 @@
  * are read from the value the service enforces (src/config/pilot.ts).
  */
 
-import { PILOT_EDIT_DAYS } from "@/config/pilot";
+import { CLOUD_PLAN_PRICE_EN, PILOT_EDIT_DAYS } from "@/config/pilot";
+import type { Currency } from "@/lib/currency";
 import { STOREFRONT_URL, type LandingLocale } from "./storefront";
 
 /** The block's anchor, per language; the other language's anchor also lands on it. */
 export const PRICING_ANCHOR: Record<LandingLocale, string> = { en: "pricing", es: "precios" };
 
-/** The yearly payment link, per currency (one currency per language). */
-export const PLAN_PAYMENT_LINK: Record<LandingLocale, string> = {
-  en: "https://buy.stripe.com/aFa9AU73h3UV26v7ur4sE05",
-  es: "https://buy.stripe.com/fZubJ273hbnnbH56qn4sE04",
+/** The yearly payment link, per currency (the currency the page shows). */
+export const PLAN_PAYMENT_LINK: Record<Currency, string> = {
+  USD: "https://buy.stripe.com/aFa9AU73h3UV26v7ur4sE05",
+  EUR: "https://buy.stripe.com/fZubJ273hbnnbH56qn4sE04",
 };
 
 /** The storefront's contact wizard for a managed instance or your own hardware. */
@@ -64,8 +65,8 @@ export interface PricingCopy {
   cols: [string, string];
   /** The row's left cell: what is offered. */
   offer: string;
-  /** The row's right cell: what it costs, with the pilot's days. */
-  price: (days: number) => string;
+  /** The row's right cell: what it costs, with the pilot's days, in the page's currency. */
+  price: (days: number, currency?: Currency) => string;
   start: string;
   subscribe: string;
   /** The small line under the price row: the two legal links' labels. */
@@ -80,7 +81,7 @@ export const PRICING_COPY: Record<LandingLocale, PricingCopy> = {
     heading: "Pricing",
     cols: ["Product", "Price"],
     offer: "DPO Central, AI Sentinel and VendorWatch on the TODO.LAW cloud",
-    price: (days) => `Start free (${days}-day trial), then $179 a month or $1,800 a year`,
+    price: (days, currency = "USD") => `Start free (${days}-day trial), then ${CLOUD_PLAN_PRICE_EN[currency]}`,
     start: "Start free",
     subscribe: "Subscribe",
     legal: { terms: "Terms", subprocessors: "Sub-processors" },

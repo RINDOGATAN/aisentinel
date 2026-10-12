@@ -13,7 +13,13 @@
  * under the same reference.
  */
 import type { TRPCError } from "@trpc/server";
-import { internalErrorMessage, type ErrorLocale } from "@/config/error-copy";
+import { ZodError } from "zod";
+import {
+  internalErrorMessage,
+  invalidInputMessage,
+  sessionEndedMessage,
+  type ErrorLocale,
+} from "@/config/error-copy";
 import { newErrorReference } from "@/lib/error-reference";
 
 export interface PublicErrorResult {
@@ -26,6 +32,18 @@ export function publicError(
   error: TRPCError,
   opts: { path?: string; locale: ErrorLocale; log?: (...args: unknown[]) => void },
 ): PublicErrorResult {
+  // No session: the bare code becomes a sentence with what to do.
+  if (error.code === "UNAUTHORIZED" && (!error.message || error.message === "UNAUTHORIZED")) {
+    return { message: sessionEndedMessage(opts.locale) };
+  }
+  // Refused input: the validator's raw list becomes a sentence naming the fields.
+  if (error.code === "BAD_REQUEST" && error.cause instanceof ZodError) {
+    const issues = error.cause.issues.map((i) => ({
+      path: String(i.path[i.path.length - 1] ?? ""),
+      maximum: i.code === "too_big" && typeof (i as { maximum?: unknown }).maximum === "number" ? Number((i as { maximum: number }).maximum) : undefined,
+    }));
+    return { message: invalidInputMessage(opts.locale, issues) };
+  }
   if (error.code !== "INTERNAL_SERVER_ERROR") return { message: error.message };
 
   const reference = newErrorReference();

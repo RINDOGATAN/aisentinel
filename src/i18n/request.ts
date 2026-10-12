@@ -3,11 +3,13 @@
 
 import { getRequestConfig } from "next-intl/server";
 import { headers } from "next/headers";
-import { readLocale } from "@/lib/locale-cookie";
+import { requestLocale } from "@/lib/landing-locale";
 
 export default getRequestConfig(async () => {
-  // The last `locale` value wins when the browser sends more than one.
-  const locale = readLocale((await headers()).get("cookie"));
+  // The `locale` cookie (the last value wins when the browser sends more than
+  // one), else the browser's language (src/lib/landing-locale.ts).
+  const h = await headers();
+  const locale = requestLocale(h.get("cookie"), h.get("accept-language"));
 
   return {
     locale,

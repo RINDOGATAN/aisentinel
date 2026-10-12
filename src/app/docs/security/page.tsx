@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025-2026 Rindogatan LLC
 
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { brand } from "@/config/brand";
 
 export async function generateMetadata() {
@@ -20,6 +20,9 @@ const standardsMitigated = [false, true, true, true, false, false];
 
 export default async function SecurityDocsPage() {
   const t = await getTranslations("docs.security");
+  const locale = await getLocale();
+  // The measures every TODO.LAW product shares live on one storefront page.
+  const stackUrl = locale === "es" ? "https://www.todo.law/es/seguridad" : "https://www.todo.law/security";
   const isolationItems = t.raw("isolation.items") as { title: string; description: string }[];
   const roles = t.raw("accessControl.roles") as string[];
   const authMethods = t.raw("auth.methods") as { title: string; description: string }[];
@@ -33,6 +36,11 @@ export default async function SecurityDocsPage() {
     <div className="space-y-16">
       {/* Hero */}
       <section>
+        <p className="text-sm mb-4">
+          <a href={stackUrl} className="text-primary hover:text-primary/80 transition-colors">
+            {t("stackLink")} →
+          </a>
+        </p>
         <h1 className="text-3xl sm:text-4xl font-display tracking-tight mb-4">
           {t("title")}
         </h1>

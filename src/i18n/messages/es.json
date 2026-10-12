@@ -3255,7 +3255,7 @@
           },
           {
             "title": "Protección multi-tenant",
-            "description": "Vincular una política a un sistema de IA, o un flujo de datos a un sistema, comprueba que ambos registros pertenecen a tu organización."
+            "description": "Cuando un registro remite a otro, el servidor comprueba que ese otro registro es de tu organización: una política, un flujo de datos, un punto de control de supervisión, un incidente, una evaluación, un análisis de datos sensibles o un informe de IA en la sombra vinculados a un sistema de IA; un sistema de IA o un destinatario de datos vinculados a un proveedor; y la plantilla de una evaluación, que debe ser una plantilla compartida o una de las tuyas."
           },
           {
             "title": "Solo se comparten datos de referencia",
@@ -3276,7 +3276,7 @@
         "readOnlyTitle": "Solo lectura aplicada en el servidor",
         "readOnlyBody": "Los Lectores tienen acceso de solo lectura a los registros de gobernanza. Las escrituras en esos registros se bloquean en el servidor, no solo en la interfaz, por lo que tampoco pueden hacerse mediante llamadas a la API.",
         "elevatedTitle": "Permisos elevados",
-        "elevatedBody": "Aprobar evaluaciones, publicar versiones de políticas y registrar decisiones de supervisión requieren los roles de Responsable de IA, Administrador o Propietario."
+        "elevatedBody": "Aprobar evaluaciones, aprobar o publicar una política y dar un punto de control de supervisión por superado, no superado o aplazado requieren los roles de Responsable de IA, Administrador o Propietario, sea cual sea la pantalla o la llamada a la API que haga el cambio. Las acciones de facturación quedan limitadas a Propietarios y Administradores."
       },
       "auth": {
         "title": "Autenticación",
@@ -3406,7 +3406,8 @@
       "contact": {
         "title": "Contacto de seguridad",
         "body": "Si descubres una vulnerabilidad de seguridad o tienes preguntas sobre nuestras prácticas de seguridad, escríbenos a <link>{email}</link>. Nos tomamos en serio todos los avisos y responderemos con prontitud."
-      }
+      },
+      "stackLink": "Medidas comunes a todas las herramientas de TODO.LAW"
     },
     "crossBorder": {
       "metaTitle": "Gobernanza de IA transfronteriza: una evaluación, seis regímenes | AI SENTINEL",

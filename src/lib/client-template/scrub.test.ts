@@ -52,6 +52,17 @@ describe("flagging the other pointers at the source", () => {
     expect(r.flags.every((f) => f.kind === "domain")).toBe(true);
   });
 
+  it("does not flag an ordinary word the name carries, but still catches the full name and the domain", () => {
+    const source = { name: "Counsel QA LLP", domain: "counselqa.example" };
+    expect(flagTerms(source).map((t) => t.term)).not.toContain("counsel");
+    const { scrub: s } = makeScrubber(source, TARGET);
+    const ordinary = s("Follow the outside-counsel guidelines and ask counsel before filing.");
+    expect(ordinary.flags).toEqual([]);
+    const full = s("Counsel QA LLP staff write to ai@counselqa.example.");
+    expect(full.text).toBe("Bluefield Partners staff write to ai@counselqa.example.");
+    expect(full.flags.map((f) => f.term)).toEqual(["counselqa.example"]);
+  });
+
   it("does not flag generic company words", () => {
     expect(flagTerms(SOURCE).map((t) => t.term)).not.toContain("holdings");
     expect(flagTerms(SOURCE).map((t) => t.term)).not.toContain("ltd");

@@ -13,18 +13,13 @@ import { brand } from "@/config/brand";
 import { OrganizationSetup } from "@/components/governance/organization-setup";
 import { PersonaSelector } from "@/components/governance/persona-selector";
 import { FeedbackDialog } from "@/components/FeedbackDialog";
-import { PilotDisclosureScreen } from "@/components/pilot/pilot-disclosure";
-import { trpc } from "@/lib/trpc";
 import { GuidedLayout } from "@/components/guided/guided-layout";
 
 export function DashboardShell({
   children,
-  hostedPilot = false,
   menuCollapsed = false,
 }: {
   children: React.ReactNode;
-  /** On the hosted pilot the disclosure screen comes before anything else. */
-  hostedPilot?: boolean;
   /** The left menu shows icons only (`ais_menu` cookie). */
   menuCollapsed?: boolean;
 }) {
@@ -33,23 +28,13 @@ export function DashboardShell({
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const t = useTranslations("nav");
 
-  // The hosted pilot says what it is before anything is entered. Asked only on
-  // the pilot; on the kit the query is not issued at all.
-  const disclosure = trpc.pilot.disclosure.useQuery(undefined, { enabled: hostedPilot });
-
   // Full-screen loading gate: prevent chrome from rendering before org is ready
-  if (orgLoading || userTypeLoading || (hostedPilot && disclosure.isLoading)) {
+  if (orgLoading || userTypeLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-muted-foreground text-sm">{t("loading")}</div>
       </div>
     );
-  }
-
-  // Step 0: on the hosted pilot, say what we are before they trust us with
-  // anything. Ahead of the persona question and of organization setup.
-  if (hostedPilot && disclosure.data?.required) {
-    return <PilotDisclosureScreen />;
   }
 
   // Step 1: Show persona selection if user hasn't chosen yet. A person added

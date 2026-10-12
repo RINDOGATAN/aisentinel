@@ -298,6 +298,7 @@ export default function NewAISystemPage() {
                 <Label htmlFor="name">{t("systemNameLabel")} *</Label>
                 <Input
                   id="name"
+                  maxLength={200}
                   placeholder={t("systemNamePlaceholder")}
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}

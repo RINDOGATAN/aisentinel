@@ -169,6 +169,7 @@ export default function NewIncidentPage() {
               <Label htmlFor="title">{t("titleLabel")} *</Label>
               <Input
                 id="title"
+                maxLength={300}
                 placeholder={t("titlePlaceholder")}
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}

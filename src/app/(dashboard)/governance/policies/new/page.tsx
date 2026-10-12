@@ -201,6 +201,7 @@ export default function NewPolicyPage() {
               <Label htmlFor="title">{t("labelTitle")} *</Label>
               <Input
                 id="title"
+                maxLength={300}
                 placeholder={t("placeholderTitle")}
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}

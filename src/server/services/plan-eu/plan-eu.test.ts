@@ -307,7 +307,7 @@ describe("the checkout redirect", () => {
 
 describe("the visitor's currency", () => {
   const h = (map: Record<string, string>) => ({ get: (n: string) => map[n] ?? null });
-  it("a European country gets EUR, a US country USD", () => {
+  it("an EU country gets EUR, a US country USD", () => {
     expect(visitorCurrency(h({ "x-vercel-ip-country": "ES" }))).toBe("EUR");
     expect(visitorCurrency(h({ "x-vercel-ip-country": "de" }))).toBe("EUR");
     expect(visitorCurrency(h({ "x-vercel-ip-country": "US", "accept-language": "es-ES" }))).toBe("USD");
@@ -315,6 +315,15 @@ describe("the visitor's currency", () => {
   it("without the header, Accept-Language es-ES gets EUR", () => {
     expect(visitorCurrency(h({ "accept-language": "es-ES,es;q=0.9" }))).toBe("EUR");
     expect(regionFromAcceptLanguage("es, en-GB;q=0.8")).toBe("GB");
+  });
+  it("euros only for the 27 EU states: the UK, Switzerland, the EEA outside the EU and Latin America get USD", () => {
+    for (const c of ["GB", "CH", "NO", "IS", "LI", "MX", "AR", "AD", "ME"]) {
+      expect(visitorCurrency(h({ "x-vercel-ip-country": c }))).toBe("USD");
+    }
+    for (const c of ["IE", "GR", "SE", "FR"]) {
+      expect(visitorCurrency(h({ "x-vercel-ip-country": c }))).toBe("EUR");
+    }
+    expect(visitorCurrency(h({ "accept-language": "en-GB,en;q=0.9" }))).toBe("USD");
   });
   it("with nothing at all, USD", () => {
     expect(visitorCurrency(h({}))).toBe("USD");

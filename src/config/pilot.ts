@@ -254,8 +254,9 @@ export const PILOT_DESCRIPTION: Record<PilotLocale, string> = {
 /**
  * The pilot bar on signed-in pages. For
  * the WHOLE pilot, to every member (owners, admins and members alike), a
- * slim top bar gives the end date and the Cloud Plan's price in the reader's
- * currency (English $, Spanish €), with a link to the landing's pricing
+ * slim top bar gives the end date and the Cloud Plan's price in the currency
+ * the customer will be charged (euros only in the EU, whatever the language),
+ * with a link to the landing's pricing
  * block. In the last PILOT_END_BAR_DAYS days it switches to the stronger
  * "ending" wording; once the organisation is read-only it says so and that
  * the export stays open. Never off the hosted pilot, nor for an organisation
@@ -324,11 +325,20 @@ export const PILOT_BAR_DISMISS_KEY = "pilot-bar-dismissed";
 
 /**
  * The Cloud Plan's price in English, in the visitor's currency
- * (src/lib/currency.ts). The Spanish copy is always in euros.
+ * (src/lib/currency.ts). The public Spanish landing is always in euros.
  */
 export const CLOUD_PLAN_PRICE_EN: Record<Currency, string> = {
   USD: "$179 a month or $1,800 a year",
   EUR: "€179 a month or €1,800 a year",
+};
+
+/**
+ * The Cloud Plan's price in Spanish, for the in-app bar, in the currency the
+ * customer will be charged.
+ */
+export const CLOUD_PLAN_PRICE_ES: Record<Currency, string> = {
+  USD: "179 US$ al mes o 1.800 US$ al año",
+  EUR: "179 € al mes o 1.800 € al año",
 };
 
 export const PILOT_END_BAR_COPY: Record<
@@ -356,10 +366,10 @@ export const PILOT_END_BAR_COPY: Record<
     dismiss: "Close",
   },
   es: {
-    trial: (days, date) =>
-      `Gratis durante ${days} días, hasta el ${date}. Después, exporta tu programa o sigue con el Plan nube UE: 179 € al mes o 1.800 € al año.`,
-    trialTransition: (date) =>
-      `Gratis hasta el ${date}. Después, exporta tu programa o sigue con el Plan nube UE: 179 € al mes o 1.800 € al año.`,
+    trial: (days, date, currency = "EUR") =>
+      `Gratis durante ${days} días, hasta el ${date}. Después, exporta tu programa o sigue con el Plan nube UE: ${CLOUD_PLAN_PRICE_ES[currency]}.`,
+    trialTransition: (date, currency = "EUR") =>
+      `Gratis hasta el ${date}. Después, exporta tu programa o sigue con el Plan nube UE: ${CLOUD_PLAN_PRICE_ES[currency]}.`,
     ending: (date) => `Tu piloto termina el ${date}. Pasa al plan de pago para seguir editando con todos tus registros.`,
     readOnly: "Tu piloto ha terminado: la organización está en solo lectura y puedes exportarla cuando quieras.",
     pricing: "Ver precios",

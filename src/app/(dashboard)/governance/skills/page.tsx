@@ -19,7 +19,7 @@ import { useOrganization } from "@/lib/organization-context";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { PREMIUM_KIT_PRICE_PER_YEAR, formatPrice } from "@/lib/currency";
-import { useCurrency } from "@/lib/use-currency";
+import { useChargeCurrency } from "@/components/charge-currency";
 import { features } from "@/config/features";
 import { MARKETPLACE_APP_URL, STOREFRONT_BUY } from "@/lib/marketplace";
 import { useFormatDate } from "@/lib/use-format-date";
@@ -33,7 +33,7 @@ export default function SkillsPage() {
   const t = useTranslations("skills");
   const { formatDate: fmtDate } = useFormatDate();
   const locale = useLocale();
-  const currency = useCurrency(locale);
+  const currency = useChargeCurrency();
   const { organization, userRole } = useOrganization();
   const fileRef = useRef<HTMLInputElement>(null);
   const [license, setLicense] = useState<Record<string, unknown> | null>(null);
@@ -236,7 +236,7 @@ export default function SkillsPage() {
                           features.selfServiceUpgrade &&
                           pkg.priceAmount != null && (
                             <span>
-                              {formatPrice(pkg.priceAmount / 100)}
+                              {formatPrice(pkg.priceAmount / 100, currency)}
                               {t("perMonth")}
                             </span>
                           )

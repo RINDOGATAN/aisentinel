@@ -14,7 +14,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { planCheckout } from "@/server/services/plan-eu/checkout";
-import { visitorCurrency } from "@/server/services/plan-eu/currency";
+import { inAppPlanOffer } from "@/server/services/plan-eu/offer";
 
 export const dynamic = "force-dynamic";
 
@@ -27,7 +27,8 @@ export async function GET(request: NextRequest) {
     prisma,
     user,
     org && org.length <= 100 ? org : null,
-    visitorCurrency(request.headers),
+    // The same decision as the bar's price and button (inAppPlanOffer).
+    inAppPlanOffer(request.headers).currency,
   );
   if (outcome.status === 303) {
     return NextResponse.redirect(outcome.location, 303);

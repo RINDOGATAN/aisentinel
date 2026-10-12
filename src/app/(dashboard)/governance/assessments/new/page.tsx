@@ -62,7 +62,7 @@ export default function NewAssessmentPage() {
   const [title, setTitle] = useState("");
 
   const { data: systemsData } = trpc.aiSystem.list.useQuery(
-    { organizationId: orgId, limit: 50 },
+    { organizationId: orgId, limit: 100 },
     { enabled: !!orgId }
   );
 

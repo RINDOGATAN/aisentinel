@@ -148,13 +148,16 @@ export default function CompliancePage() {
   const orgId = organization?.id ?? "";
   const searchParams = useSearchParams();
 
-  const [selectedFrameworkId, setSelectedFrameworkId] = useState("");
+  // The tab the person picked; until then the first framework, which the tab
+  // strip already shows as selected (the matrix query needs a real id).
+  const [pickedFrameworkId, setSelectedFrameworkId] = useState("");
   const [selectedSystemId, setSelectedSystemId] = useState(searchParams.get("systemId") || "");
   const [expandedReqs, setExpandedReqs] = useState<Set<string>>(new Set());
 
   const { data: frameworks } = trpc.compliance.listFrameworks.useQuery();
+  const selectedFrameworkId = pickedFrameworkId || frameworks?.[0]?.id || "";
   const { data: systems } = trpc.aiSystem.list.useQuery(
-    { organizationId: orgId, limit: 50 },
+    { organizationId: orgId, limit: 100 },
     { enabled: !!orgId }
   );
 

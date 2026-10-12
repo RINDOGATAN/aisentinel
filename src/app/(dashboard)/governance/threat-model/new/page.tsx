@@ -62,7 +62,7 @@ export default function NewThreatModelPage() {
   const [capabilities, setCapabilities] = useState<string[]>([]);
 
   const { data: systems } = trpc.aiSystem.list.useQuery(
-    { organizationId: orgId },
+    { organizationId: orgId, limit: 100 },
     { enabled: !!orgId },
   );
 

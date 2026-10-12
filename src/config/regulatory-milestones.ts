@@ -701,7 +701,7 @@ export const REGULATORY_MILESTONES: RegulatoryMilestone[] = [
     countUnit: "organization",
     href: "/governance/assessments",
     title: {
-      en: "Risk assessments for 2026–2027 activities must be complete",
+      en: "Risk assessments for 2026 and 2027 activities must be complete",
       es: "Las evaluaciones de riesgo de las actividades de 2026-2027 deben estar completas",
     },
     whatItMeans: {
@@ -760,7 +760,7 @@ export const REGULATORY_MILESTONES: RegulatoryMilestone[] = [
     countUnit: "organization",
     href: "/governance/settings",
     title: {
-      en: "Cybersecurity audit due — businesses over $100M revenue",
+      en: "Cybersecurity audit due: businesses over $100M revenue",
       es: "Vence la auditoría de ciberseguridad: empresas con ingresos superiores a 100 M$",
     },
     whatItMeans: {
@@ -790,7 +790,7 @@ export const REGULATORY_MILESTONES: RegulatoryMilestone[] = [
     countUnit: "organization",
     href: "/governance/settings",
     title: {
-      en: "Cybersecurity audit due — businesses $50M–$100M revenue",
+      en: "Cybersecurity audit due: businesses with $50M to $100M revenue",
       es: "Vence la auditoría de ciberseguridad: empresas con ingresos de 50-100 M$",
     },
     whatItMeans: {
@@ -822,7 +822,7 @@ export const REGULATORY_MILESTONES: RegulatoryMilestone[] = [
     countUnit: "organization",
     href: "/governance/settings",
     title: {
-      en: "Cybersecurity audit due — businesses under $50M revenue",
+      en: "Cybersecurity audit due: businesses under $50M revenue",
       es: "Vence la auditoría de ciberseguridad: empresas con ingresos inferiores a 50 M$",
     },
     whatItMeans: {
@@ -907,7 +907,7 @@ export const REGULATORY_MILESTONES: RegulatoryMilestone[] = [
     id: "ca-sb-942-ai-transparency",
     instrument: "ca-sb-942",
     citation:
-      "California AI Transparency Act (SB 942), as amended by AB 853 — operative 2 August 2026",
+      "California AI Transparency Act (SB 942), as amended by AB 853, operative 2 August 2026",
     provision: "SB 942 / AB 853",
     date: "2026-08-02",
     dateBasis: "fixed",
@@ -938,7 +938,7 @@ export const REGULATORY_MILESTONES: RegulatoryMilestone[] = [
     id: "ca-sb-942-platform-duties",
     instrument: "ca-sb-942",
     citation:
-      "California AI Transparency Act (SB 942) as amended by AB 853 — large online platform duties from 1 January 2027",
+      "California AI Transparency Act (SB 942) as amended by AB 853: large online platform duties from 1 January 2027",
     provision: "SB 942 / AB 853 (platforms)",
     date: "2027-01-01",
     dateBasis: "fixed",

@@ -339,6 +339,8 @@ export const PILOT_END_BAR_COPY: Record<
     ending: (date: string) => string;
     readOnly: string;
     pricing: string;
+    /** The automatic upgrade's button, for an owner or administrator only. */
+    upgrade: string;
     dismiss: string;
   }
 > = {
@@ -350,6 +352,7 @@ export const PILOT_END_BAR_COPY: Record<
     ending: (date) => `Your pilot ends on ${date}. Move to the paid plan to keep editing with all your records.`,
     readOnly: "Your pilot has ended: the organization is read-only and you can export it at any time.",
     pricing: "See pricing",
+    upgrade: "Move to the paid plan",
     dismiss: "Close",
   },
   es: {
@@ -360,6 +363,7 @@ export const PILOT_END_BAR_COPY: Record<
     ending: (date) => `Tu piloto termina el ${date}. Pasa al plan de pago para seguir editando con todos tus registros.`,
     readOnly: "Tu piloto ha terminado: la organización está en solo lectura y puedes exportarla cuando quieras.",
     pricing: "Ver precios",
+    upgrade: "Pasar al plan de pago",
     dismiss: "Cerrar",
   },
 };

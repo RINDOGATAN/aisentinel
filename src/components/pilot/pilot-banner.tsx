@@ -10,7 +10,10 @@
  * Spanish page, dollars elsewhere; src/lib/currency.ts), with a link to the landing's
  * pricing block (closable for the session); in the last PILOT_END_BAR_DAYS
  * days the stronger end wording; once read-only, that the export stays open.
- * Never for a paid organisation.
+ * Never for a paid organisation. With the automatic upgrade on (decided on
+ * the server, hosted-pilot-banner.tsx), an owner or administrator of the
+ * selected organisation also sees "Move to the paid plan", which opens
+ * GET /api/plan/checkout for that organisation; other members never see it.
  *
  * PilotEndBar draws the bar from its state and needs no app shell, so a test
  * can render it on its own; OrganizationPilotEndBar feeds it the selected
@@ -67,9 +70,11 @@ export interface PilotEndBarProps {
   endsAt: Date | string | null;
   /** A pilot begun before the window was shortened: "Free until {date}". */
   transition?: boolean;
+  /** The checkout route for "Move to the paid plan"; only for an owner or admin, with the switch on. */
+  upgradeHref?: string | null;
 }
 
-export function PilotEndBar({ locale, state, endsAt, transition = false }: PilotEndBarProps) {
+export function PilotEndBar({ locale, state, endsAt, transition = false, upgradeHref = null }: PilotEndBarProps) {
   // The trial bar may be closed for the session; the ending and read-only bars stay.
   const dismissed = useSyncExternalStore(subscribeDismissed, readDismissed, () => false);
   // The visitor's currency; a Spanish bar is always in euros (src/lib/currency.ts).
@@ -108,6 +113,18 @@ export function PilotEndBar({ locale, state, endsAt, transition = false }: Pilot
         >
           {copy.pricing}
         </a>
+        {upgradeHref && (
+          <>
+            {" "}
+            <a
+              href={upgradeHref}
+              data-testid="pilot-upgrade-link"
+              className="ml-1 inline-block rounded-full border border-primary px-2.5 py-0.5 font-medium text-primary hover:bg-primary hover:text-primary-foreground"
+            >
+              {copy.upgrade}
+            </a>
+          </>
+        )}
       </p>
       {state === "trial" && (
         <button
@@ -124,7 +141,14 @@ export function PilotEndBar({ locale, state, endsAt, transition = false }: Pilot
   );
 }
 
-export function OrganizationPilotEndBar({ locale }: { locale: PilotLocale }) {
+export function OrganizationPilotEndBar({
+  locale,
+  upgrade = false,
+}: {
+  locale: PilotLocale;
+  /** The automatic upgrade is on and a payment link is set for this visitor's currency. */
+  upgrade?: boolean;
+}) {
   const { organization } = useOrganization();
   // A paid organisation is never asked about (and its status is inactive anyway).
   const paid = isPaidPlanValue(organization?.plan);
@@ -136,5 +160,14 @@ export function OrganizationPilotEndBar({ locale }: { locale: PilotLocale }) {
   const endsAt = data?.active ? data.endsAt : null;
   const transition = data?.active ? isTransitionPilot(data.startedAt) : false;
   const state = pilotEndBarState(data ? { ...data, paid } : null);
-  return <PilotEndBar locale={locale} state={state} endsAt={endsAt} transition={transition} />;
+  const canUpgrade = upgrade && (organization.role === "OWNER" || organization.role === "ADMIN");
+  return (
+    <PilotEndBar
+      locale={locale}
+      state={state}
+      endsAt={endsAt}
+      transition={transition}
+      upgradeHref={canUpgrade ? `/api/plan/checkout?org=${encodeURIComponent(organization.id)}` : null}
+    />
+  );
 }

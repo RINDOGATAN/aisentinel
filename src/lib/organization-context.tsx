@@ -117,6 +117,11 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
   );
 }
 
+/** The context when inside the provider, else undefined (components that also render without the app shell). */
+export function useOptionalOrganization() {
+  return useContext(OrganizationContext);
+}
+
 export function useOrganization() {
   const context = useContext(OrganizationContext);
   if (context === undefined) {

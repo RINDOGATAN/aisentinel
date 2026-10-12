@@ -2,16 +2,19 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 /**
- * Setting an organisation's hosted plan (Organization.plan), by an operator
- * with scripts/set-org-plan.ts after payment is collected outside the app (an
- * invoice or a payment link), or to correct a plan by hand.
+ * Setting an organisation's hosted plan (Organization.plan). Two callers:
  *
- * Every change goes through writePlanChange: the new plan and one audit-trail
- * entry on the organisation (action PLAN_CHANGE) in a single transaction, with
- * the plan and the dates before and after. The operator's note (planNote)
- * stays on the organisation for the operator; the audit entry says only
- * whether the note changed, because the organisation's owners can read its
- * audit trail.
+ *  - the operator's script scripts/set-org-plan.ts (payment collected by an
+ *    invoice, or a correction by hand);
+ *  - the automatic upgrade after a confirmed payment
+ *    (src/server/services/plan-eu/sync.ts), behind AUTO_UPGRADE_ENABLED.
+ *
+ * Both write through writePlanChange: the new plan and one audit-trail entry
+ * on the organisation (action PLAN_CHANGE) in a single transaction, with the
+ * plan and the dates before and after. The operator's note (planNote) and the
+ * payment subscription id stay on the organisation for the operator; the
+ * audit entry says only whether the note changed, because the organisation's
+ * owners can read its audit trail.
  *
  * Only the plan and its dates change here. No record the organisation holds is
  * ever touched: returning to the pilot brings back the limits, not a deletion.
@@ -30,6 +33,7 @@ export type PlanState = {
   planStartedAt: Date | null;
   planRenewsAt: Date | null;
   planNote: string | null;
+  planStripeSubscriptionId: string | null;
 };
 
 export const PLAN_SELECT = {
@@ -40,9 +44,10 @@ export const PLAN_SELECT = {
   planStartedAt: true,
   planRenewsAt: true,
   planNote: true,
+  planStripeSubscriptionId: true,
 } as const;
 
-/** An organisation row as read with PLAN_SELECT (null is tolerated and counts as the pilot). */
+/** An organisation row as read with PLAN_SELECT (the plan column is nullable). */
 export type PlanOrgRow = Omit<PlanState, "plan"> & {
   id: string;
   slug: string;
@@ -87,6 +92,7 @@ export function planStateOf(row: PlanOrgRow): PlanState {
     planStartedAt: row.planStartedAt,
     planRenewsAt: row.planRenewsAt,
     planNote: row.planNote,
+    planStripeSubscriptionId: row.planStripeSubscriptionId,
   };
 }
 
@@ -94,8 +100,8 @@ export function planStateOf(row: PlanOrgRow): PlanState {
  * The plan state the operator's script writes:
  *  - EU_CLOUD: the start date given, else the one already recorded for a
  *    paid organisation, else now; the renewal date given, else the one
- *    already recorded;
- *  - PILOT: both dates cleared unless given;
+ *    already recorded; the payment subscription kept;
+ *  - PILOT: both dates cleared unless given, the payment subscription cleared;
  *  - the note: the one given, else the one already recorded.
  * The renewal date must fall after the start date.
  */
@@ -124,7 +130,8 @@ export function resolvePlanState(
     throw new PlanInputError("The renewal date must fall after the start date.");
   }
   const planNote = input.note !== undefined ? input.note : before.planNote;
-  return { plan: input.plan, planStartedAt, planRenewsAt, planNote };
+  const planStripeSubscriptionId = input.plan === "EU_CLOUD" ? before.planStripeSubscriptionId : null;
+  return { plan: input.plan, planStartedAt, planRenewsAt, planNote, planStripeSubscriptionId };
 }
 
 const time = (d: Date | null) => (d ? d.getTime() : null);
@@ -134,7 +141,8 @@ export function samePlanState(a: PlanState, b: PlanState): boolean {
     a.plan === b.plan &&
     time(a.planStartedAt) === time(b.planStartedAt) &&
     time(a.planRenewsAt) === time(b.planRenewsAt) &&
-    a.planNote === b.planNote
+    a.planNote === b.planNote &&
+    a.planStripeSubscriptionId === b.planStripeSubscriptionId
   );
 }
 
@@ -172,6 +180,7 @@ export async function writePlanChange(
             planRenewsAt: iso(after.planRenewsAt),
           },
           planNoteChanged: before.planNote !== after.planNote,
+          subscriptionChanged: before.planStripeSubscriptionId !== after.planStripeSubscriptionId,
         },
         metadata,
       },

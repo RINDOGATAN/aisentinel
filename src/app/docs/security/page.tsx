@@ -13,8 +13,10 @@ export async function generateMetadata() {
 }
 
 // OWASP standards rows: which entries render as "Mitigated" vs "Active".
+// Access control and security configuration stay "Active": open work remains
+// (see SECURITY.md, "Known gaps in this build").
 // Must stay aligned with the standards.items order in the message files.
-const standardsMitigated = [true, true, true, true, true, false];
+const standardsMitigated = [false, true, true, true, false, false];
 
 export default async function SecurityDocsPage() {
   const t = await getTranslations("docs.security");

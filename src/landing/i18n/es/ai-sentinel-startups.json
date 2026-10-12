@@ -2,6 +2,7 @@
   "header.cta": "Iniciar sesión",
   "header.menuOpen": "Abrir el menú",
   "header.menuClose": "Cerrar el menú",
+  "header.security": "Medidas de seguridad",
   "hero.badge": "En marcha en pocos minutos",
   "hero.title.prefix": "Gobernanza de IA ",
   "hero.title.accent": "a prueba de futuro.",
@@ -149,6 +150,5 @@
   "footer.privacy": "Privacidad",
   "footer.terms": "Condiciones",
   "footer.security": "Seguridad",
-  "footer.forLawFirms": "Para despachos",
   "footer.productOf": "un producto de TODO.LAW"
 }

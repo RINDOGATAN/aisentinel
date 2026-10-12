@@ -3219,29 +3219,29 @@
       "intro": "AI SENTINEL is built for organizations that manage sensitive AI governance data. Security is embedded in every layer of the platform: from how we isolate your data to how we control access and protect your information.",
       "isolation": {
         "title": "Data Isolation",
-        "intro": "Every organization's records are kept apart from every other organization's. Your AI systems, assessments, policies, incidents, and vendor data are never accessible to other organizations.",
+        "intro": "Every organization's records are kept apart from every other organization's. Before the application shows or changes your AI systems, assessments, policies, incidents or vendor data, it checks that you are a member of your organization.",
         "items": [
           {
             "title": "Organization-Scoped Queries",
-            "description": "Every database query is automatically scoped to your organization. There is no way to access another organization's data through the application."
+            "description": "Queries for your governance records are filtered by your organization in each request handler."
           },
           {
             "title": "Verified Membership",
-            "description": "Before any operation, we verify that the requesting user is an active member of the organization. Membership is checked on every single request."
+            "description": "Before any operation on your organization's data, we verify that you are an active member of that organization. Membership is checked on every such request."
           },
           {
             "title": "Cross-Tenant Protection",
-            "description": "Operations that reference related entities (e.g., linking a policy to an AI system) verify that both entities belong to your organization."
+            "description": "Linking a policy to an AI system, or a data flow to a system, checks that both records belong to your organization."
           },
           {
             "title": "Shared Reference Data Only",
-            "description": "Only non-sensitive reference data (compliance frameworks, assessment templates) is shared across organizations. Your governance data is never shared."
+            "description": "Only reference data (compliance frameworks, assessment templates, and the vendor and AI tool catalogs) is shared across organizations. Your governance data is never shared."
           }
         ]
       },
       "accessControl": {
         "title": "Access Control",
-        "intro": "AI SENTINEL enforces role-based access control (RBAC) across the entire platform. Every action is checked against your role before it is executed.",
+        "intro": "AI SENTINEL enforces role-based access control (RBAC) on the server. Each change to governance records is checked against your role before it is carried out.",
         "roles": [
           "Owner",
           "Admin",
@@ -3250,33 +3250,33 @@
           "Viewer"
         ],
         "readOnlyTitle": "Read-Only Enforcement",
-        "readOnlyBody": "Viewers have read-only access. All write operations are blocked at the server level, not just the UI: preventing unauthorized modifications even through API calls.",
+        "readOnlyBody": "Viewers have read-only access to governance records. Writes to those records are blocked at the server level, not just in the interface, so they cannot be made through API calls either.",
         "elevatedTitle": "Elevated Permissions",
-        "elevatedBody": "Sensitive operations like approving assessments, publishing policies, and making oversight decisions require AI Officer, Admin, or Owner roles."
+        "elevatedBody": "Approving assessments, publishing policy versions and recording oversight decisions require the AI Officer, Admin or Owner role."
       },
       "auth": {
         "title": "Authentication",
-        "intro": "We support industry-standard authentication methods with additional hardening for production environments.",
+        "intro": "We support standard sign-in methods, with 12-hour sessions and rate-limited sign-in on the hosted service.",
         "methods": [
           {
             "title": "Google OAuth",
-            "description": "Enterprise SSO via Google with OAuth 2.0"
+            "description": "Sign in with a Google account (OAuth 2.0)"
           },
           {
             "title": "Magic Link",
-            "description": "Passwordless email authentication for secure sign-in"
+            "description": "Passwordless sign-in through a single-use link sent by email"
           },
           {
             "title": "Cross-Platform SSO",
-            "description": "Single sign-on across the TODO.LAW platform"
+            "description": "Single sign-on across the TODO.LAW apps (hosted service)"
           }
         ],
         "sessionTitle": "Session Security",
         "sessionItems": [
           "HTTP-only cookies prevent client-side access to session tokens",
-          "Secure cookie flag enforced in production (HTTPS only)",
-          "CSRF protection on all authenticated requests",
-          "SameSite cookie policy prevents cross-site request forgery"
+          "Secure cookie flag whenever the app is served over HTTPS",
+          "Sign-in requests carry a CSRF token",
+          "SameSite=Lax session cookies limit cross-site request forgery"
         ]
       },
       "validation": {
@@ -3285,7 +3285,7 @@
         "items": [
           {
             "title": "Schema Validation",
-            "description": "Every API input is validated against a strict schema. Invalid data is rejected before it reaches the database."
+            "description": "Every application (tRPC) input is validated against a strict schema, and integration endpoints check their fields in code. Invalid data is rejected before it reaches the database."
           },
           {
             "title": "Parameterized Queries",
@@ -3299,7 +3299,7 @@
       },
       "audit": {
         "title": "Audit Trail",
-        "intro": "Every create, update, delete, and significant business operation is logged to an immutable audit trail. This supports compliance requirements and provides a complete record of governance activities.",
+        "intro": "Changes to governance records and key decisions are logged to an audit trail. This supports compliance requirements and gives a record of governance activities.",
         "whatWeLogTitle": "What We Log",
         "logItems": [
           "AI system lifecycle changes",
@@ -3307,15 +3307,15 @@
           "Assessment submissions and approvals",
           "Oversight decisions",
           "Policy changes and publications",
-          "Incident management actions",
+          "Incident creation and status changes",
           "Organization membership changes"
         ],
         "retentionTitle": "Retention",
-        "retentionBody": "Audit records are preserved even if the associated user or organization is deleted. This ensures your compliance history remains intact regardless of personnel changes."
+        "retentionBody": "Audit records are kept when a member leaves the organization. When an organization is deleted, its records are deleted with it, including its audit history; one entry recording the deletion is kept."
       },
       "transport": {
         "title": "Transport & Infrastructure",
-        "intro": "Your data is protected in transit and at rest through industry-standard security measures.",
+        "intro": "Your data is encrypted in transit with TLS, and at rest by the hosting and database providers' storage encryption.",
         "items": [
           {
             "title": "HTTPS Everywhere",
@@ -3335,15 +3335,15 @@
           },
           {
             "title": "Where the data is stored",
-            "description": "On the TODO.LAW cloud, if an admin turns AI features on, the text they use goes to the AI provider set up on the service. On a managed instance or on your own hardware, the data stays there."
+            "description": "On the TODO.LAW cloud, if an admin turns AI features on, the text they use goes to the AI provider set up on the service. On a managed instance or on your own hardware, the data stays there, unless you connect an external AI provider."
           }
         ]
       },
       "api": {
         "title": "API Security",
-        "intro": "All API endpoints require authentication. External integrations use signature verification and token-based authentication.",
+        "intro": "Every endpoint that reads or changes organization data requires authentication. External integrations use signature verification and key-based authentication.",
         "endpointTitle": "Endpoint Protection",
-        "endpointBody": "Every governance API endpoint requires an authenticated session with verified organization membership. Unauthenticated requests are rejected.",
+        "endpointBody": "Every governance endpoint used by the application requires an authenticated session with verified organization membership. Unauthenticated requests are rejected.",
         "webhookTitle": "Webhook Verification",
         "webhookBody": "Inbound integration requests are authenticated with an API key, and webhooks use cryptographic signature verification. Unverified requests are discarded before processing."
       },
@@ -3359,11 +3359,11 @@
           },
           {
             "category": "Injection",
-            "description": "Parameterized queries, strict input validation, no raw SQL"
+            "description": "Parameterized queries, strict input validation; the few SQL queries bind every value"
           },
           {
             "category": "Authentication",
-            "description": "Industry-standard OAuth, secure sessions, CSRF protection"
+            "description": "Standard OAuth, short sessions, SameSite cookies, rate-limited sign-in"
           },
           {
             "category": "Data Integrity",
@@ -3375,7 +3375,7 @@
           },
           {
             "category": "Logging & Monitoring",
-            "description": "Comprehensive audit trail for all governance operations"
+            "description": "Audit trail for changes to governance records and key decisions"
           }
         ]
       },

@@ -139,7 +139,7 @@ export const WASHINGTON_REQUIREMENTS: RegimeRequirementSeed[] = [
         title: { en: "Provenance must be difficult to remove or tamper with", es: "La procedencia debe ser difícil de eliminar o manipular" },
         description: {
           en: "The provenance data may be a watermark or metadata and must be difficult to remove or alter without degrading the content. Align the method with the EU AI Act Art. 50(2) marking measures so one implementation serves both.",
-          es: "Los datos de procedencia pueden ser una marca de agua o metadatos y deben ser difíciles de eliminar o alterar sin degradar el contenido. Alinea el método con las medidas de marcado del art. 50.2 del Reglamento de IA de la UE para que una sola implementación sirva para ambos.",
+          es: "Los datos de procedencia pueden ser una marca de agua o metadatos y deben ser difíciles de eliminar o alterar sin degradar el contenido. Alinea el método con las medidas de marcado del art. 50.2 del RIA para que una sola implementación sirva para ambos.",
         },
         applicabilityTags: PROV,
         sortOrder: 202,

@@ -42,7 +42,7 @@ type Locale = string;
 
 /** Full names, as the framework tabs show them. */
 const FRAMEWORK_NAMES: Record<string, { en: string; es: string }> = {
-  EU_AI_ACT: { en: "EU AI Act", es: "Reglamento Europeo de IA" },
+  EU_AI_ACT: { en: "EU AI Act", es: "Reglamento de Inteligencia Artificial (RIA)" },
   NIST_AI_RMF: { en: "NIST AI Risk Management Framework", es: "NIST AI RMF (gestión de riesgos de la IA)" },
   ISO_42001: { en: "ISO/IEC 42001", es: "ISO/IEC 42001" },
   AIUC_1: { en: "AIUC-1", es: "AIUC-1" },
@@ -71,7 +71,7 @@ const FRAMEWORK_SHORT: Record<string, { en: string; es: string }> = {
 
 /** Compact names for small cards (the system page's per-framework scores). */
 const FRAMEWORK_COMPACT: Record<string, { en: string; es: string }> = {
-  EU_AI_ACT: { en: "EU AI Act", es: "Reglamento Europeo de IA" },
+  EU_AI_ACT: { en: "EU AI Act", es: "Reglamento de Inteligencia Artificial (RIA)" },
   NIST_AI_RMF: { en: "NIST AI RMF", es: "NIST AI RMF" },
   ISO_42001: { en: "ISO/IEC 42001", es: "ISO/IEC 42001" },
   CA_CCPA_ADMT: { en: "California ADMT", es: "ADMT de California" },
@@ -84,7 +84,7 @@ const FRAMEWORK_COMPACT: Record<string, { en: string; es: string }> = {
 
 /**
  * Spanish names for chips and for the framework part of a citation: the
- * usual Spanish abbreviations (RIA for the Reglamento de IA, RGPD) where one
+ * usual Spanish abbreviations (RIA for the Reglamento de Inteligencia Artificial, RGPD) where one
  * exists, otherwise the name a Spanish reader would use.
  */
 const FRAMEWORK_CHIP_ES: Record<string, string> = {

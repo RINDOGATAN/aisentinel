@@ -56,7 +56,7 @@ export const GLOSSARY: GlossaryTerm[] = [
     label: L("provider", "proveedor"),
     meaning: L(
       "The party that develops an AI system, or has one developed, and places it on the market or puts it into service under its own name (EU AI Act Art. 3).",
-      "La parte que desarrolla un sistema de IA, o hace que se desarrolle, y lo introduce en el mercado o lo pone en servicio con su propio nombre (Reglamento de IA de la UE, art. 3).",
+      "La parte que desarrolla un sistema de IA, o hace que se desarrolle, y lo introduce en el mercado o lo pone en servicio con su propio nombre (RIA, art. 3).",
     ),
     docHref: "/docs/guides/my-role",
   },
@@ -65,7 +65,7 @@ export const GLOSSARY: GlossaryTerm[] = [
     label: L("deployer", "responsable del despliegue"),
     meaning: L(
       "The party that uses an AI system under its own authority in the course of its work, that is, the organization running it, not the one that built it (EU AI Act Art. 3).",
-      "La parte que utiliza un sistema de IA bajo su propia autoridad en el marco de su actividad, es decir, la organización que lo opera, no la que lo construyó (Reglamento de IA de la UE, art. 3).",
+      "La parte que utiliza un sistema de IA bajo su propia autoridad en el marco de su actividad, es decir, la organización que lo opera, no la que lo construyó (RIA, art. 3).",
     ),
     docHref: "/docs/guides/my-role",
   },
@@ -74,7 +74,7 @@ export const GLOSSARY: GlossaryTerm[] = [
     label: L("high risk", "alto riesgo"),
     meaning: L(
       "An AI use the EU AI Act treats as high risk because it can materially affect people's safety or rights: the areas are listed in Art. 6 and Annex III (for example recruitment, credit, essential services).",
-      "Un uso de la IA que el Reglamento de IA de la UE considera de alto riesgo porque puede afectar de forma significativa a la seguridad o los derechos de las personas: las áreas figuran en el art. 6 y el anexo III (por ejemplo, selección de personal, crédito o servicios esenciales).",
+      "Un uso de la IA que el RIA considera de alto riesgo porque puede afectar de forma significativa a la seguridad o los derechos de las personas: las áreas figuran en el art. 6 y el anexo III (por ejemplo, selección de personal, crédito o servicios esenciales).",
     ),
     docHref: "/docs/guides/high-risk",
   },
@@ -83,7 +83,7 @@ export const GLOSSARY: GlossaryTerm[] = [
     label: L("conformity assessment", "evaluación de la conformidad"),
     meaning: L(
       "The check that a high-risk AI system meets the EU AI Act's requirements before it is put into use, kept as evidence and repeated after substantial changes (EU AI Act Arts. 43 and 47).",
-      "La comprobación de que un sistema de IA de alto riesgo cumple los requisitos del Reglamento de IA de la UE antes de su puesta en uso, conservada como prueba y repetida tras cambios sustanciales (Reglamento de IA de la UE, arts. 43 y 47).",
+      "La comprobación de que un sistema de IA de alto riesgo cumple los requisitos del RIA antes de su puesta en uso, conservada como prueba y repetida tras cambios sustanciales (RIA, arts. 43 y 47).",
     ),
   },
   {
@@ -91,7 +91,7 @@ export const GLOSSARY: GlossaryTerm[] = [
     label: L("FRIA", "FRIA"),
     meaning: L(
       "A fundamental rights impact assessment: a written analysis of how a high-risk AI system could affect people's rights, required of certain deployers by EU AI Act Art. 27.",
-      "Una evaluación de impacto relativa a los derechos fundamentales: un análisis escrito de cómo un sistema de IA de alto riesgo puede afectar a los derechos de las personas, exigida a determinados responsables del despliegue por el art. 27 del Reglamento de IA de la UE.",
+      "Una evaluación de impacto relativa a los derechos fundamentales: un análisis escrito de cómo un sistema de IA de alto riesgo puede afectar a los derechos de las personas, exigida a determinados responsables del despliegue por el art. 27 del RIA.",
     ),
   },
   {
@@ -107,7 +107,7 @@ export const GLOSSARY: GlossaryTerm[] = [
     label: L("regime", "régimen"),
     meaning: L(
       "A body of AI or data law from one place, such as the EU AI Act, the GDPR, or a US state act; a system can fall under several at once, which is why the product screens each one.",
-      "Un cuerpo normativo sobre IA o datos de un lugar concreto, como el Reglamento de IA de la UE, el RGPD o una ley de un estado de EE. UU.; un sistema puede estar sujeto a varios a la vez, por lo que el producto analiza cada uno.",
+      "Un cuerpo normativo sobre IA o datos de un lugar concreto, como el RIA, el RGPD o una ley de un estado de EE. UU.; un sistema puede estar sujeto a varios a la vez, por lo que el producto analiza cada uno.",
     ),
     docHref: "/docs/cross-border",
   },
@@ -132,7 +132,7 @@ export const GLOSSARY: GlossaryTerm[] = [
     label: L("importer", "importador"),
     meaning: L(
       "A party in the EU that places on the market an AI system carrying the name of a provider established outside the EU (EU AI Act Art. 3).",
-      "Una parte de la UE que introduce en el mercado un sistema de IA que lleva el nombre de un proveedor establecido fuera de la UE (Reglamento de IA de la UE, art. 3).",
+      "Una parte de la UE que introduce en el mercado un sistema de IA que lleva el nombre de un proveedor establecido fuera de la UE (RIA, art. 3).",
     ),
     docHref: "/docs/guides/my-role",
   },
@@ -141,7 +141,7 @@ export const GLOSSARY: GlossaryTerm[] = [
     label: L("distributor", "distribuidor"),
     meaning: L(
       "A party in the supply chain, other than the provider or importer, that makes an AI system available on the market (EU AI Act Art. 3).",
-      "Una parte de la cadena de suministro, distinta del proveedor o el importador, que comercializa un sistema de IA (Reglamento de IA de la UE, art. 3).",
+      "Una parte de la cadena de suministro, distinta del proveedor o el importador, que comercializa un sistema de IA (RIA, art. 3).",
     ),
     docHref: "/docs/guides/my-role",
   },
@@ -150,7 +150,7 @@ export const GLOSSARY: GlossaryTerm[] = [
     label: L("GPAI provider", "proveedor de IA de uso general"),
     meaning: L(
       "The provider of a general-purpose AI model, such as a large language model that many applications build on, subject to its own duties under EU AI Act Arts. 53 to 55.",
-      "El proveedor de un modelo de IA de uso general, como un gran modelo de lenguaje sobre el que se construyen muchas aplicaciones, sujeto a obligaciones propias en los arts. 53 a 55 del Reglamento de IA de la UE.",
+      "El proveedor de un modelo de IA de uso general, como un gran modelo de lenguaje sobre el que se construyen muchas aplicaciones, sujeto a obligaciones propias en los arts. 53 a 55 del RIA.",
     ),
     docHref: "/docs/guides/my-role",
   },
@@ -159,7 +159,7 @@ export const GLOSSARY: GlossaryTerm[] = [
     label: L("transparency", "transparencia"),
     meaning: L(
       "Telling people plainly when they are dealing with an AI system or with AI-generated content, as EU AI Act Art. 50 requires for chatbots, deepfakes and similar.",
-      "Informar con claridad a las personas de cuándo interactúan con un sistema de IA o con contenido generado por IA, como exige el art. 50 del Reglamento de IA de la UE para chatbots, ultrafalsificaciones y similares.",
+      "Informar con claridad a las personas de cuándo interactúan con un sistema de IA o con contenido generado por IA, como exige el art. 50 del RIA para chatbots, ultrafalsificaciones y similares.",
     ),
   },
 ];

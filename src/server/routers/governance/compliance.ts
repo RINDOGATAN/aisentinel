@@ -591,8 +591,11 @@ export const complianceRouter = createTRPCRouter({
       const totalNonCompliant = mappings.filter((m) => m.status === "NON_COMPLIANT").length;
       const totalNotApplicable = mappings.filter((m) => m.status === "NOT_APPLICABLE").length;
       const assessed = total - mappings.filter((m) => m.status === "NOT_ASSESSED").length - totalNotApplicable;
+      // Over every applicable requirement, as each framework's figure is: a
+      // share of the assessed ones alone read 100% with nothing compliant.
+      const applicable = total - totalNotApplicable;
       const compliancePercent =
-        assessed > 0 ? Math.round(((totalCompliant + totalPartial) / assessed) * 100) : 0;
+        applicable > 0 ? Math.round(((totalCompliant + totalPartial) / applicable) * 100) : 0;
 
       return {
         total,

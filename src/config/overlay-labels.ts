@@ -21,8 +21,8 @@ import type { OverlayTag } from "@/config/unified-assessment";
 const L = (en: string, es: string): Localized => ({ en, es });
 
 export const OVERLAY_LABELS: Record<OverlayTag, Localized> = {
-  "eu:high-risk": L("EU AI Act (high-risk)", "Reglamento de IA de la UE (alto riesgo)"),
-  "eu:art50": L("EU AI Act Art. 50 (transparency)", "Reglamento de IA de la UE, art. 50 (transparencia)"),
+  "eu:high-risk": L("EU AI Act (high-risk)", "RIA (alto riesgo)"),
+  "eu:art50": L("EU AI Act Art. 50 (transparency)", "RIA, art. 50 (transparencia)"),
   "gdpr:core": L("GDPR", "RGPD"),
   "gdpr:adm": L("GDPR Art. 22 (automated decisions)", "RGPD, art. 22 (decisiones automatizadas)"),
   "gdpr:dpia": L("GDPR Art. 35 (impact assessment)", "RGPD, art. 35 (evaluación de impacto)"),

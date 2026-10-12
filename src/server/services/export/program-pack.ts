@@ -333,7 +333,7 @@ const NAMES = {
   },
   es: {
     instrument: {
-      "eu-ai-act": "Reglamento de IA de la UE",
+      "eu-ai-act": "RIA",
       "tx-traiga": "TRAIGA de Texas",
       "ut-aipa": "Ley de Política de IA de Utah",
       "ccpa-admt": "CCPA de California (ADMT)",
@@ -341,7 +341,7 @@ const NAMES = {
       "ccpa-cyber-audits": "CCPA de California (auditorías de ciberseguridad)",
     } as Record<string, string>,
     pack: {
-      EU_AI_ACT: "Reglamento de IA de la UE",
+      EU_AI_ACT: "RIA",
       CA_CCPA_ADMT: "CCPA de California (ADMT)",
       EU_GDPR: "RGPD",
       CO_SB_26_189: "SB 26-189 de Colorado",

@@ -6233,5 +6233,21 @@
       "count": "{count, plural, one {# documento en un ZIP, con un índice} other {# documentos en un ZIP, con un índice}}",
       "none": "Todavía no hay ningún documento listo para el ZIP."
     }
+  },
+  "search": {
+    "label": "Buscar en el programa por nombre",
+    "placeholder": "Buscar por nombre",
+    "results": "Resultados de la búsqueda",
+    "noResults": "No hay nada con ese nombre.",
+    "namesOnly": "Busca solo nombres: sistemas de IA, proveedores, políticas, evaluaciones, puntos de control, incidentes y herramientas de IA sin aprobar.",
+    "kinds": {
+      "system": "Sistemas de IA",
+      "vendor": "Proveedores",
+      "policy": "Políticas",
+      "assessment": "Evaluaciones",
+      "gate": "Puntos de control",
+      "incident": "Incidentes",
+      "shadowAi": "Herramientas de IA sin aprobar"
+    }
   }
 }

@@ -1515,6 +1515,8 @@
     "statusActive": "Activa",
     "statusLocked": "Bloqueada",
     "statusIncluded": "Incluida",
+    "statusLicenceRequired": "Licencia necesaria",
+    "licenceRequiredHint": "Activa un archivo de licencia para usarla en esta instalación.",
     "includedHint": "Incluida en tu instalación autoalojada",
     "includedHintPilot": "Abierta en el piloto alojado. En el kit, {price} al año.",
     "expires": "Caduca el {date}",

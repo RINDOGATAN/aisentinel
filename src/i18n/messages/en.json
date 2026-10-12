@@ -1515,6 +1515,8 @@
     "statusActive": "Active",
     "statusLocked": "Locked",
     "statusIncluded": "Included",
+    "statusLicenceRequired": "License required",
+    "licenceRequiredHint": "Activate a license file to use it on this deployment.",
     "includedHint": "Included in your self-hosted deployment",
     "includedHintPilot": "Open on the hosted pilot. In the kit, {price} a year.",
     "expires": "Expires {date}",

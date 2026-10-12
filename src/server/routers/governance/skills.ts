@@ -27,7 +27,7 @@ import {
   SHOWCASE_PURCHASE_URL,
   premiumShowcaseActive,
 } from "@/config/premium-showcase";
-import { checkShowcaseAccess } from "@/server/services/licensing/showcase-gate";
+import { checkShowcaseAccess, showcaseSkillId } from "@/server/services/licensing/showcase-gate";
 
 // Mirrors the LicenseFile interface (and Dealroom's schema) exactly.
 const LicenseFileSchema = z.object({
@@ -228,10 +228,13 @@ export const skillsRouter = createTRPCRouter({
           return { feature, locked: !access.allowed };
         }),
       );
+      const locked = entries.filter((e) => e.locked).map((e) => e.feature);
       return {
         active,
         purchaseUrl: SHOWCASE_PURCHASE_URL,
-        locked: entries.filter((e) => e.locked).map((e) => e.feature),
+        locked,
+        /** The skill packages behind those locks: the Skills page shows them as needing a licence. */
+        lockedSkillIds: [...new Set(locked.map(showcaseSkillId))],
       };
     }),
 });

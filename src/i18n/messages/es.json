@@ -4040,8 +4040,8 @@
       "scorecardSubtitle": "Madurez en ocho dimensiones, proyectada sobre las funciones del NIST AI RMF.",
       "nistTitle": "Perfil NIST AI RMF: actual frente a objetivo",
       "dimensionsTitle": "Dimensiones de madurez",
-      "planTitle": "Próximos 90 días",
-      "planSubtitle": "Acciones derivadas de las carencias reales de tu programa, ordenadas por gravedad.",
+      "planTitle": "Plan de 30, 60 y 90 días",
+      "planSubtitle": "Dos etapas de la ruta del programa en cada tramo de treinta días y, debajo, las acciones que piden las carencias de tu programa, de la más urgente a la menos.",
       "rolloutTitle": "Despliegue recomendado por categoría de herramienta",
       "rolloutSubtitle": "Cómo emplear cada clase de herramienta durante el próximo trimestre.",
       "dutiesTitle": "Cobertura de deberes profesionales",
@@ -4052,7 +4052,9 @@
       "historyLink": "Historial",
       "historyFootnote": "Se captura una instantánea automáticamente cada vez que se exporta el PDF del programa. Las puntuaciones se calculan con la versión del modelo de madurez registrada en cada instantánea.",
       "exportPack": "Descargar paquete del programa (ZIP)",
-      "download": "Descargar"
+      "download": "Descargar",
+      "draftsExcluded": "{count, plural, one {# elemento redactado queda fuera de estas cifras hasta que una persona lo confirme.} other {# elementos redactados quedan fuera de estas cifras hasta que una persona los confirme.}}",
+      "draftsExcludedLink": "Revisar y confirmar"
     },
     "tiles": {
       "overall": "Madurez global",
@@ -4226,7 +4228,7 @@
     },
     "plan": {
       "eyebrow": "Plan de acción",
-      "title": "Los próximos 90 días",
+      "title": "El plan de 30, 60 y 90 días",
       "bucket": {
         "1-30": "Días 1 a 30",
         "31-60": "Días 31 a 60",
@@ -5918,7 +5920,9 @@
       "accepted": "Resultado parcial aceptado",
       "notApplicable": "Marcado como no aplicable",
       "applicableAgain": "El requisito vuelve a aplicar"
-    }
+    },
+    "showDomain": "Mostrar",
+    "hideDomain": "Ocultar"
   },
   "clientTemplate": {
     "cardTitle": "Empezar a partir de otro cliente",

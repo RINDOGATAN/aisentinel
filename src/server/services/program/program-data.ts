@@ -31,7 +31,12 @@ import {
   type ContentLocale,
 } from "@/config/lawfirm-ai-toolkit";
 import { computeMarkingDeadline } from "@/config/transparency-rules";
-import { getConfirmationCounts } from "@/server/services/provenance/summary";
+import { AI_SENTINEL_PATH, PLAN_WINDOWS } from "@/components/guided/path-config";
+import {
+  getConfirmationCounts,
+  needsConfirmation,
+  UNCONFIRMED_WHERE,
+} from "@/server/services/provenance/summary";
 
 // ── Locale helpers ──────────────────────────────────────────────────
 
@@ -65,13 +70,23 @@ export const PROGRAM_SYSTEM_SELECT = {
   businessOwner: true,
   technicalOwner: true,
   purpose: true,
-  riskClassification: { select: { riskLevel: true } },
-  transparencyProfile: { select: { id: true } },
+  riskClassification: { select: { riskLevel: true, provenance: true, confirmedAt: true } },
+  transparencyProfile: { select: { id: true, provenance: true, confirmedAt: true } },
   oversightGates: {
-    select: { gateType: true, status: true, nextReviewDate: true },
+    select: { gateType: true, status: true, nextReviewDate: true, provenance: true, confirmedAt: true },
   },
   _count: { select: { policyLinks: true } },
 } as const;
+
+type ProvenanceRow = { provenance: string; confirmedAt: Date | null };
+
+/**
+ * Whether a person stands behind a row: entered by hand, or drafted and then
+ * confirmed. The scorecard counts only these, so drafted items raise it only
+ * as a person confirms them (the same rule as the review queue and the path).
+ */
+const confirmedRow = (row: ProvenanceRow): boolean =>
+  !needsConfirmation(row as Parameters<typeof needsConfirmation>[0]);
 
 type SystemRecord = {
   id: string;
@@ -84,13 +99,13 @@ type SystemRecord = {
   businessOwner: string | null;
   technicalOwner: string | null;
   purpose: string | null;
-  riskClassification: { riskLevel: string } | null;
-  transparencyProfile: { id: string } | null;
-  oversightGates: {
+  riskClassification: ({ riskLevel: string } & ProvenanceRow) | null;
+  transparencyProfile: ({ id: string } & ProvenanceRow) | null;
+  oversightGates: ({
     gateType: string;
     status: string;
     nextReviewDate: Date | null;
-  }[];
+  } & ProvenanceRow)[];
   _count: { policyLinks: number };
 };
 
@@ -123,6 +138,32 @@ function lawfirmCategoriesPresent(records: SystemRecord[]): string[] {
     (c) => c.id,
   );
 }
+
+const PLAN_BUCKETS = ["1-30", "31-60", "61-90"] as const;
+
+/**
+ * The stage of the program path (src/components/guided/path-config.ts) that
+ * each gap's action belongs to. Confirming drafted items is part of setting
+ * up: the quick start drafts them on day 1.
+ */
+export const GAP_STAGE: Record<GapId, string> = {
+  "no-systems": "setup",
+  "unconfirmed-items": "setup",
+  "draft-policies": "people",
+  "unlinked-policies": "people",
+  "untriaged-shadow-reports": "inventory",
+  "unclassified-systems": "assess",
+  "high-risk-without-assessment": "assess",
+  "unassessed-vendors": "assess",
+  "high-risk-without-gate": "controls",
+  "overdue-gates": "controls",
+  "missing-transparency-profiles": "controls",
+  "marking-overdue": "controls",
+  "unassessed-compliance": "controls",
+};
+
+/** Every stage named in GAP_STAGE exists on the path (checked by the tests). */
+export const PATH_STAGE_IDS: readonly string[] = AI_SENTINEL_PATH.stages.map((s) => s.id);
 
 const CORE_POLICY_TYPES = new Set(LAWFIRM_POLICY_PACK.map((p) => p.type));
 const ACTIVE_POLICY_STATUSES = new Set(["APPROVED", "PUBLISHED"]);
@@ -212,6 +253,7 @@ export async function getProgramScorecardData(
     policies,
     linkedSystems,
     complianceByStatus,
+    complianceUnconfirmedByStatus,
     markingRequiredRows,
     vendors,
     shadowTotal,
@@ -226,7 +268,7 @@ export async function getProgramScorecardData(
     }),
     prisma.aIPolicy.findMany({
       where: { organizationId },
-      select: { title: true, type: true, status: true },
+      select: { title: true, type: true, status: true, provenance: true, confirmedAt: true },
     }),
     prisma.aIPolicySystemLink.findMany({
       where: { policy: { organizationId } },
@@ -236,6 +278,11 @@ export async function getProgramScorecardData(
     prisma.complianceMapping.groupBy({
       by: ["status"],
       where: { organizationId },
+      _count: { _all: true },
+    }),
+    prisma.complianceMapping.groupBy({
+      by: ["status"],
+      where: { organizationId, ...UNCONFIRMED_WHERE },
       _count: { _all: true },
     }),
     prisma.transparencyProfile.findMany({
@@ -262,9 +309,20 @@ export async function getProgramScorecardData(
     getConfirmationCounts(prisma, organizationId),
   ]);
 
-  const systems = (records as SystemRecord[]).filter(
+  const allSystems = (records as SystemRecord[]).filter(
     (s) => s.status !== "RETIRED",
   );
+  // Drafted items (quick start, templates, imports) nobody has confirmed are
+  // left out of every figure below; the count is returned as draftsExcluded.
+  const systems = allSystems.map((s) => ({
+    ...s,
+    riskClassification:
+      s.riskClassification && confirmedRow(s.riskClassification) ? s.riskClassification : null,
+    transparencyProfile:
+      s.transparencyProfile && confirmedRow(s.transparencyProfile) ? s.transparencyProfile : null,
+    oversightGates: s.oversightGates.filter(confirmedRow),
+  }));
+  const confirmedPolicies = policies.filter(confirmedRow);
   const gates = systems.flatMap((s) => s.oversightGates);
   const highRisk = systems.filter(
     (s) =>
@@ -286,6 +344,14 @@ export async function getProgramScorecardData(
     if (row.status === "COMPLIANT") complianceCounts.compliant += row._count._all;
     if (row.status === "PARTIALLY_COMPLIANT")
       complianceCounts.partial += row._count._all;
+  }
+  // A drafted status counts as not assessed until a person confirms it.
+  for (const row of complianceUnconfirmedByStatus) {
+    if (row.status === "NOT_ASSESSED") continue;
+    complianceCounts.assessed -= row._count._all;
+    if (row.status === "COMPLIANT") complianceCounts.compliant -= row._count._all;
+    if (row.status === "PARTIALLY_COMPLIANT")
+      complianceCounts.partial -= row._count._all;
   }
 
   const markingOverdue = markingRequiredRows.filter(
@@ -330,13 +396,13 @@ export async function getProgramScorecardData(
     },
     policies: {
       coreTypesPresent: new Set(
-        policies
+        confirmedPolicies
           .filter((p) => CORE_POLICY_TYPES.has(p.type))
           .map((p) => p.type),
       ).size,
-      active: policies.filter((p) => ACTIVE_POLICY_STATUSES.has(p.status))
+      active: confirmedPolicies.filter((p) => ACTIVE_POLICY_STATUSES.has(p.status))
         .length,
-      total: policies.length,
+      total: confirmedPolicies.length,
       systemsLinked: linkedSystems.length,
     },
     compliance: {
@@ -377,22 +443,23 @@ export async function getProgramScorecardData(
 
   const maturity = computeMaturity(snapshot);
 
-  // 90-day plan: gaps → localized action templates, severity-bucketed.
-  // The most severe gaps present always open the plan: with no critical gap,
-  // high-severity work moves into days 1–30 rather than leaving the first
-  // month reading "nothing scheduled" on a program full of drafts.
-  const BUCKETS = ["1-30", "31-60", "61-90"] as const;
+  // The 30/60/90-day plan is the stage plan (PLAN_WINDOWS: two stages of the
+  // path in each thirty days). Each gap's action is shown under the window of
+  // the stage it belongs to (GAP_STAGE), most severe first, so the program
+  // page, the PDF and the Dashboard describe one plan.
   const RANK: Record<GapSeverity, number> = { critical: 0, high: 1, medium: 2 };
-  const shift = maturity.gaps.length > 0 ? Math.min(...maturity.gaps.map((g) => RANK[g.severity])) : 0;
-  const bucketOf = (severity: GapSeverity) => BUCKETS[Math.max(0, RANK[severity] - shift)];
-  const plan = BUCKETS.map((bucket) => ({
-    bucket,
+  const plan = PLAN_WINDOWS.map((window, index) => ({
+    bucket: PLAN_BUCKETS[index] ?? PLAN_BUCKETS[PLAN_BUCKETS.length - 1],
+    untilDay: window.untilDay,
+    stages: [...window.stages],
     items: maturity.gaps
-      .filter((gap) => bucketOf(gap.severity) === bucket)
+      .filter((gap) => window.stages.includes(GAP_STAGE[gap.id]))
+      .sort((a, b) => RANK[a.severity] - RANK[b.severity])
       .map((gap) => {
         const template = getActionTemplate(gap.id as GapId);
         return {
           gapId: gap.id,
+          stage: GAP_STAGE[gap.id],
           severity: gap.severity,
           count: gap.count,
           title: template?.title[locale] ?? gap.id,
@@ -531,6 +598,8 @@ export async function getProgramScorecardData(
     plan,
     rollout,
     duties,
+    /** Drafted items left out of the figures above until a person confirms them. */
+    draftsExcluded: snapshot.provenance?.unconfirmed ?? 0,
     reviewMarker: (isLawfirm
       ? PROGRAM_GUIDANCE_REVIEW_MARKER
       : PROGRAM_GUIDANCE_REVIEW_MARKER_GENERAL)[locale],

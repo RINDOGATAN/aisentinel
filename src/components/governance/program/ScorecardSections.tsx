@@ -21,6 +21,10 @@ import type {
   ProgramGap,
 } from "@/server/services/program/maturity";
 import type { ProgramScorecardData } from "@/server/services/program/program-data";
+import { AI_SENTINEL_PATH } from "@/components/guided/path-config";
+import { stageProgress } from "@/components/guided/path";
+import { useProgramPathQuery } from "@/components/guided/use-program-path";
+import { Chip, WORD_TONE } from "@/components/guided/guided-dashboard";
 
 // ── Headline tiles ──────────────────────────────────────────────────
 
@@ -114,12 +118,19 @@ const SEVERITY_STYLES: Record<ProgramGap["severity"], string> = {
   medium: "bg-secondary text-muted-foreground border-border",
 };
 
+/**
+ * The 30/60/90-day plan: the stage plan (two stages of the program path in
+ * each thirty days, PLAN_WINDOWS), each stage with its state from the path,
+ * and under it the actions the program's gaps call for in that window.
+ */
 export function NinetyDayPlan({
   plan,
 }: {
   plan: ProgramScorecardData["plan"];
 }) {
   const t = useTranslations("program.plan");
+  const tg = useTranslations("guided");
+  const { steps } = useProgramPathQuery();
   const bucketLabels: Record<string, string> = {
     "1-30": t("bucket1"),
     "31-60": t("bucket2"),
@@ -128,10 +139,26 @@ export function NinetyDayPlan({
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
       {plan.map((bucket) => (
-        <div key={bucket.bucket} className="space-y-2">
+        <div key={bucket.bucket} className="space-y-2" data-testid={`plan-${bucket.bucket}`}>
           <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             {bucketLabels[bucket.bucket]}
           </p>
+          <ul className="space-y-1">
+            {bucket.stages.map((stageId) => {
+              const index = AI_SENTINEL_PATH.stages.findIndex((st) => st.id === stageId);
+              const stage = AI_SENTINEL_PATH.stages[index];
+              const state = stage && steps ? stageProgress(stage, steps).state : null;
+              return (
+                <li key={stageId} className="flex items-center justify-between gap-2 text-sm">
+                  <span className="min-w-0 break-words">
+                    <span className="tabular-nums text-muted-foreground mr-1.5">{index + 1}</span>
+                    {tg(`stages.${stageId}`)}
+                  </span>
+                  {state && <Chip tone={WORD_TONE[state]}>{tg(`stageState.${state}`)}</Chip>}
+                </li>
+              );
+            })}
+          </ul>
           {bucket.items.length === 0 ? (
             <p className="text-xs text-muted-foreground/60">{t("empty")}</p>
           ) : (

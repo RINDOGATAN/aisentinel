@@ -9,6 +9,7 @@
 
 import { describe, expect, it } from "vitest";
 import {
+  firstDomainToOpen,
   AIUC1_CODES,
   acceptanceEvidenceRow,
   agentReadiness,
@@ -273,5 +274,20 @@ describe("readiness of an agent", () => {
     );
     expect(r.overall.applicable).toBe(0);
     expect(r.overall.readyForAudit).toBe(false);
+  });
+});
+
+describe("firstDomainToOpen", () => {
+  it("opens the first domain with an untested requirement", () => {
+    expect(
+      firstDomainToOpen([
+        { code: "A", tested: 8, applicable: 8 },
+        { code: "B", tested: 0, applicable: 9 },
+        { code: "C", tested: 0, applicable: 7 },
+      ]),
+    ).toBe("B");
+  });
+  it("opens none when everything applicable is tested", () => {
+    expect(firstDomainToOpen([{ code: "A", tested: 3, applicable: 3 }, { code: "B", tested: 0, applicable: 0 }])).toBeNull();
   });
 });

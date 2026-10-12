@@ -616,7 +616,7 @@
   },
   "oversight": {
     "title": "Human oversight",
-    "description": "Approval gates, decision logging & Art. 14 compliance",
+    "description": "Oversight gates: approvals, decision logging and Art. 14 compliance",
     "createGate": "Create Gate",
     "searchPlaceholder": "Search oversight gates...",
     "statsPending": "Pending",

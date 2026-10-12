@@ -616,7 +616,7 @@
   },
   "oversight": {
     "title": "Supervisión humana",
-    "description": "Puntos de control de aprobación, registro de decisiones y cumplimiento del art. 14",
+    "description": "Puntos de control de supervisión: aprobaciones, registro de decisiones y cumplimiento del art. 14",
     "createGate": "Crear control",
     "searchPlaceholder": "Buscar controles de supervisión...",
     "statsPending": "Pendientes",

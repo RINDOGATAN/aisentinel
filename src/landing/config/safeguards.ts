@@ -9,7 +9,7 @@
  *
  *   Level 0  Cloud
  *   Level 1  Managed
- *   Level 2  Your own hardware (both languages since 10 Oct 2026: the landing offers
+ *   Level 2  Your own hardware (both languages: the landing offers
  *            three ways, as the storefront home; the kit and the Box stay on the
  *            storefront's Run it your way page).
  *
@@ -23,9 +23,9 @@
  * Copy rules: no prices, no certification logos, no competitor names, no long dashes.
  * The cloud is hosted in the EU (database in Frankfurt, functions in fra1). Only the Spanish copy says so,
  * and that the external AI provider may be outside the EU: English copy names no hosting location for the
- * cloud (owner, 11 Oct 2026: no EU hosting to US visitors). The managed instance is hosted
+ * cloud. The managed instance is hosted
  * in Asturias, Spain, and can use open-weight models hosted on the instance itself, so
- * "local models only" asks for managed (level 1), not level 2 (owner, 10 Oct 2026).
+ * "local models only" asks for managed (level 1), not level 2.
  * The classifier sentence of the mockup is left out.
  */
 
@@ -150,7 +150,7 @@ export function requirementsOf(answers: Answers, locale: Locale): SafeguardKey[]
 }
 
 /**
- * Spanish market, from 10 Oct 2026: the Plan nube UE (paid cloud plan) accepts real data,
+ * Spanish copy: the Plan nube UE (paid cloud plan) accepts real data,
  * so the cloud meets "data:real" there. Special categories and professional secrecy stay
  * with the managed instance.
  */

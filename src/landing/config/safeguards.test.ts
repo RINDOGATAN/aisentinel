@@ -35,7 +35,7 @@ const ROWS: [keyof Answers, string, number][] = [
 
 describe.each(LOCALES)("level table (%s)", (locale) => {
   it.each(ROWS)("%s = %s sets level %i", (q, v, level) => {
-    // Spanish, from 10 Oct 2026: real data goes to the cloud with the Plan nube UE (level 0).
+    // Spanish: real data goes to the cloud with the Plan nube UE (level 0).
     const expected = locale === "es" && q === "data" && v === "real" ? 0 : level;
     expect(levelOf({ [q]: v }, locale)).toBe(expected);
   });
@@ -64,7 +64,7 @@ describe.each(LOCALES)("level table (%s)", (locale) => {
     expect(pickWay({ data: "special" }, locale)).toBe("managed");
   });
 
-  it("sends 'local models only' to managed, which meets it (owner, 10 Oct 2026)", () => {
+  it("sends 'local models only' to managed, which meets it", () => {
     expect(pickWay({ ai: "local" }, locale)).toBe("managed");
     expect(pickWay({ ai: "local", it: "no" }, locale)).toBe("managed");
     const r = recommend({ ai: "local" }, locale)!;
@@ -150,7 +150,7 @@ describe("level 2 in Spain: three ways only", () => {
   });
 });
 
-// Three ways in English too since 10 Oct 2026 (owner): level 2 is "Your own hardware".
+// Three ways in English too: level 2 is "Your own hardware".
 describe("level 2 in English: three ways", () => {
   it("leads to your own hardware whatever the IT answer", () => {
     for (const it of ["yes", "no", undefined]) {
@@ -204,7 +204,7 @@ describe("copy rules", () => {
     for (const l of LOCALES) expect(all(l)).not.toMatch(/Your data stays on (that instance|your servers|your hardware)|Tus datos se quedan/);
     expect(COPY.en.summaries.cloud).toMatch(/capped pilot[\s\S]*test records[\s\S]*shared/);
     expect(COPY.es.summaries.cloud).toMatch(/piloto[\s\S]*con límites[\s\S]*datos de prueba[\s\S]*Plan nube UE[\s\S]*datos reales[\s\S]*compartido/);
-    // "We always have an answer" (owner, 10 Oct 2026): no line saying we lack a certification.
+    // "We always have an answer": no line saying we lack a certification.
     for (const l of LOCALES) expect(all(l)).not.toMatch(/no (service level or )?independent certification|no independent certification today|sin certificación independiente|no tenemos certificación independiente/);
   });
 
@@ -225,7 +225,7 @@ describe("copy rules", () => {
     expect(COPY.es.questions.cert.label).toMatch(/por ejemplo, ISO 27001/);
     // The cloud is hosted in the EU (Frankfurt); the one place named is the managed instance's Asturias. The cloud is never said to be in the United States.
     for (const l of LOCALES) expect(all(l)).not.toMatch(/United States|Estados Unidos|EE\. ?UU|Frankfurt/);
-    // English names no hosting location for the cloud (owner, 11 Oct 2026: no EU hosting to US visitors).
+    // English names no hosting location for the cloud.
     expect(COPY.en.summaries.cloud).toMatch(/^Hosted by us\. /);
     expect(all("en")).not.toMatch(/\bEU\b|Europe/);
     expect(COPY.es.summaries.cloud).toMatch(/en la UE[\s\S]*puede estar fuera de la UE/);
@@ -256,7 +256,7 @@ describe("way names come from this landing's boxes", () => {
   });
 });
 
-describe("the Spanish own-hardware result (owner, 10 Oct 2026)", () => {
+describe("the Spanish own-hardware result", () => {
   it("offers our on-site or remote assistance, with no six-week engagement, training or price", () => {
     expect((COPY.es.summaries.deploy ?? "").startsWith("La suite instalada en tus propios servidores, con nuestra asistencia presencial o remota. ")).toBe(true);
     expect(COPY.es.summaries.deploy).toMatch(/dentro de tu perímetro/);

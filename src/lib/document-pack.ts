@@ -2,9 +2,8 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 /**
- * Which documents go into the program pack, and which stay out and why (the
- * clarity work carried from DPO Central, owner's decision d10, 9 October
- * 2026: one click on the dashboard's documents panel gives one ZIP of every
+ * Which documents go into the program pack, and which stay out and why (as in
+ * DPO Central: one click on the dashboard's documents panel gives one ZIP of every
  * document in the "ready" state and, as an option, the drafts too, marked as
  * drafts in their file names with their gaps on their first page).
  *

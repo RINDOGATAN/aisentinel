@@ -80,7 +80,7 @@ describe("English landing page", () => {
     expect((authEs as Record<string, string>)["emailPlaceholder"]).toBe("tu@empresa.com");
   });
 
-  it("says how fast it starts in the badge and restores the earlier hero title (owner, 11 Oct 2026)", () => {
+  it("says how fast it starts in the badge and restores the earlier hero title", () => {
     // The title before "Your entry point to an AI governance program." (#75), verbatim.
     expect(EN["hero.title.prefix"] + EN["hero.title.accent"] + EN["hero.title.suffix"]).toBe("Future-Proof AI Governance.");
     expect(EN["hero.title.accent"]).toBe("Future-Proof");
@@ -164,8 +164,8 @@ describe("English sections", () => {
     }
   });
 
-  // The Spanish wording carried over (owner, 10 Oct 2026); the kit and the Box stay on the English page.
-  // Three ways, as on the storefront home (owner, 10 Oct 2026): the kit and the Box are on the storefront's Run it your way page only.
+  // The Spanish wording carried over; the kit and the Box stay on the English page.
+  // Three ways, as on the storefront home: the kit and the Box are on the storefront's Run it your way page only.
   it("offer three ways, with the wording of the Spanish page", () => {
     const titles = [1, 2, 3].map((n) => EN[`en.ways.w${n}.title`]);
     expect(titles).toEqual(["In the TODO.LAW cloud", "Managed virtual server", "Your own hardware"]);

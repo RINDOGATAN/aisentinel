@@ -46,7 +46,7 @@ interface StartupProductPageProps {
    */
   middle?: React.ReactNode;
   /**
-   * The plain page (owner, 10 Oct 2026; Spanish first, English the same night):
+   * The plain page:
    * the cards stay still under the pointer while the page scrolls, and the
    * page closes with the button back to the sign-up card alone, without the
    * closing heading and text.
@@ -99,8 +99,8 @@ const StartupProductPage = ({
   }, []);
 
   // The video loads only after the page has loaded, and never on phones, with data
-  // saving on, or with reduced motion: the poster stands in (owner, 10 Oct 2026,
-  // the page weighed 13 MB, nearly all of it the video). Autoplay keeps its fallback.
+  // saving on, or with reduced motion: the poster stands in (with
+  // the video the page weighed 13 MB, nearly all of it the video). Autoplay keeps its fallback.
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid) return;
@@ -237,8 +237,8 @@ const StartupProductPage = ({
                     <span className="text-accent">{t("hero.title.accent")}</span>
                     {t("hero.title.suffix")}
                   </h1>
-                  {/* The product summary under the title (owner, 10 Oct 2026: the
-                      generic welcome line it replaced in PR 72 is gone); the
+                  {/* The product summary under the title (the
+                      generic welcome line it replaced is gone); the
                       sign-up card carries its own short line (hero.card). */}
                   <p className="text-lg text-white/90 leading-relaxed font-body mb-8 max-w-lg">
                     {t("hero.subtitle")}

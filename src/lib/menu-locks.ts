@@ -2,8 +2,8 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 /**
- * The lock beside a premium entry of the menu (owner's decision, 9 October
- * 2026, as the retired Classic menu had it).
+ * The lock beside a premium entry of the menu (as the retired Classic menu
+ * had it).
  *
  * The menu asks the very question the premium page asks before it draws its
  * locked screen: the page's own `checkAccess` procedure, which runs the

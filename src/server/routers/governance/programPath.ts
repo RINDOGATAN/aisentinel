@@ -17,8 +17,8 @@
  * where it is shown, from that date and the statuses (src/components/guided/plan.ts).
  *
  * `overview` (and each portfolio row) carries what the Guided dashboard, the
- * menu's document lines and All clients read (the clarity work carried from
- * DPO Central, owner's decision d10, 9 October 2026): every document of the
+ * menu's document lines and All clients read (as in
+ * DPO Central): every document of the
  * register with its state, what needs action, and the deadlines at risk.
  * Organisation-wide figures: a member limited to departments gets nothing
  * but `limited: true`, as the dashboard shows such a member no

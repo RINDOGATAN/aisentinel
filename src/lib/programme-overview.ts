@@ -3,8 +3,7 @@
 
 /**
  * How the Guided dashboard, the Guided menu and All clients read the program
- * (the clarity work carried from DPO Central, owner's decision d10, 9 October
- * 2026). Pure, and the only place these readings are made, so the
+ * (the same readings as in DPO Central). Pure, and the only place these readings are made, so the
  * dashboard's documents panel, its six area tiles, its "Next three actions",
  * the menu's state words and document lines and the All clients table can
  * never disagree:

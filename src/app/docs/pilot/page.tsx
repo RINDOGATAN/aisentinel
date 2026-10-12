@@ -5,8 +5,7 @@
  * The hosted pilot, published. The same five points a person acknowledges on
  * their first sign-in, so nobody has to remember a pop-up, plus the caps, the
  * ways on (export, a paid plan, a managed instance or your own hardware) and the
- * three hosting options in the owner's wording of 10 Oct 2026, the same as the
- * landing pages.
+ * three hosting options worded as on the landing pages.
  *
  * Every word of the disclosure is read from src/config/pilot-disclosure.ts and
  * src/config/pilot.ts. This page holds no copy of it: a page that restates the

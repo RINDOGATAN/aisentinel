@@ -2,8 +2,7 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 /**
- * The clarity walk (the work carried from DPO Central, owner's decision d10,
- * 9 October 2026), in English and in Spanish, against a local database:
+ * The clarity walk (the same work as in DPO Central), in English and in Spanish, against a local database:
  *
  *   1. one organisation: empty, after the quick start, after confirming its
  *      drafts. At each point the program figure reads the same on the

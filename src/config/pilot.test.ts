@@ -215,7 +215,7 @@ describe("what the pilot says", () => {
     }
   });
 
-  it("states only the editing terms on the sign-in screen, as DPO Central does (owner, 11 Oct 2026)", () => {
+  it("states only the editing terms on the sign-in screen, as DPO Central does", () => {
     expect(PILOT_SIGN_IN_LINE.en).toBe(
       "Free pilot: 15 days of editing from your first sign-in, then read-only with export.",
     );

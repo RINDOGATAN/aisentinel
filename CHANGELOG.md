@@ -8,7 +8,7 @@ All notable changes to AI SENTINEL are documented here. The format follows
 
 ### Changed
 
-- **The hosted pilot's editing window is 15 days, not 90** (owner, 11 Oct 2026). One constant,
+- **The hosted pilot's editing window is 15 days, not 90.** One constant,
   `PILOT_EDIT_DAYS` in `src/config/pilot.ts`; every sentence that states the window reads it.
   Transition, computed and not stored (no migration): an organisation whose first sign-in is
   before the end of 11 Oct 2026 (UTC) keeps whichever ends earlier of its original 90-day end and
@@ -174,7 +174,7 @@ All notable changes to AI SENTINEL are documented here. The format follows
 
 Seven schema changes ship with this release; the migrator applies them on the
 next boot, and the content seeds run as usual. Hosted needs its content seeds
-run after deploying (docs/RELEASING.md, section 4). The two new sellable skill
+run after deploying (docs/RELEASING.md, section 4). The two new licensed skill
 packages need matching storefront entries before their licences can activate.
 
 ## [0.4.2] - 2026-09-11
@@ -336,7 +336,7 @@ packages need matching storefront entries before their licences can activate.
   not confirmation.
 - **The GDPR, Colorado, Texas and Washington packs, the unified assessment and
   the agentic stress test are signed off** as of 8 September 2026, confirmed as
-  a body by the product owner after sampling the review console. The record says
+  a body by the reviewer after sampling the review console. The record says
   so in those words rather than implying an item-by-item reading. The EU AI Act
   and California ADMT packs keep their own review dates and remain pending.
 - Generated documents now state the sign-off status of the content they

@@ -3,7 +3,7 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 /**
- * The pilot bar (owner, 11 Oct 2026, second version). Mounted once, by the
+ * The pilot bar. Mounted once, by the
  * server gate in hosted-pilot-banner.tsx, and only on the hosted pilot. For
  * the whole pilot, to every member: the free window, its end date and the
  * Cloud Plan's price in the reader's currency, with a link to the landing's

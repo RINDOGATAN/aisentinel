@@ -75,9 +75,9 @@ export function pilotKeepGoing(locale: PilotLocale): string {
 }
 
 /**
- * Editing window, in days, from the organisation's first sign-in. Fifteen
- * since the owner's decision of 11 Oct 2026 (it was ninety); organisations
- * already in their pilot then keep the transition rule in pilotClock.
+ * Editing window, in days, from the organisation's first sign-in (it was
+ * ninety before PILOT_WINDOW_SHORTENED_AT); organisations already in their pilot
+ * then keep the transition rule in pilotClock.
  */
 export const PILOT_EDIT_DAYS = 15;
 
@@ -222,7 +222,7 @@ export function pilotExportUrl(organizationId: string): string {
 /**
  * The editing terms, word for word as the other two suite apps state them, so
  * a visitor reads the same rule wherever the pilot runs. Shown as their own
- * line under the pilot sentence on the sign-in screen and in Settings (not on the landing, owner 11 Oct 2026); the
+ * line under the pilot sentence on the sign-in screen and in Settings (not on the landing); the
  * banner keeps to the sentence so it stays one line on a desktop.
  */
 export const PILOT_TERMS: Record<PilotLocale, string> = {
@@ -231,7 +231,7 @@ export const PILOT_TERMS: Record<PilotLocale, string> = {
 };
 
 /**
- * The sign-in screen's one line (owner, 11 Oct 2026): the editing terms, no
+ * The sign-in screen's one line: the editing terms, no
  * more. The same line as DPO Central's sign-in screen.
  */
 export const PILOT_SIGN_IN_LINE: Record<PilotLocale, string> = {
@@ -246,7 +246,7 @@ export const PILOT_DESCRIPTION: Record<PilotLocale, string> = {
 };
 
 /**
- * The pilot bar on signed-in pages (owner, 11 Oct 2026, second version). For
+ * The pilot bar on signed-in pages. For
  * the WHOLE pilot, to every member (owners, admins and members alike), a
  * slim top bar gives the end date and the Cloud Plan's price in the reader's
  * currency (English $, Spanish €), with a link to the landing's pricing
@@ -302,8 +302,8 @@ export function isTransitionPilot(startedAt: Date | string | null | undefined): 
 }
 
 /**
- * Where the bar's link goes: the pricing block on this product's own landing
- * (owner, 11 Oct 2026), in the reader's language. Relative, so it stays on
+ * Where the bar's link goes: the pricing block on this product's own landing,
+ * in the reader's language. Relative, so it stays on
  * the app's own domain. The `lang` parameter makes the landing show in that
  * language and lets a signed-in person see it (src/app/page.tsx sends a
  * signed-in visitor without it to the application).

@@ -8,7 +8,7 @@ to (`src/app/docs/support/page.tsx`).
 
 Use the feedback form inside the application: the Feedback button at the top
 of every page, or Feedback in the side menu on a phone. On the hosted service
-the message reaches the owner's daily digest. On a self-hosted instance it is
+the message reaches the operator's daily digest. On a self-hosted instance it is
 stored in that instance's database for its administrator.
 
 Say what you were doing, what you expected and what happened instead, and

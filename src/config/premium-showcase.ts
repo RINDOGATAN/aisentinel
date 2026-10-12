@@ -17,7 +17,7 @@
  * `allSkillsFree` from the Stripe-off rule instead, which is how the two are
  * told apart without a second environment variable.
  *
- * **The hosted pilot switches this off.** Since 2026-09-16 the hosted service
+ * **The hosted pilot switches this off.** The hosted service
  * is a free, capped pilot where nothing is gated by an entitlement (see
  * src/config/pilot.ts); premium modules are sold only for the kit. So while
  * pilot mode is active this shop window is closed, whatever else the

@@ -124,7 +124,7 @@ describe.each(["es", "en"] as Locale[])("safeguards guide (%s)", (locale) => {
 });
 
 describe("safeguards guide, Spanish only", () => {
-  // "Tu propio hardware" is the third way's name since 10 Oct 2026 (owner), as on the storefront.
+  // "Tu propio hardware" is the third way's name, as on the storefront.
   const bad = /\bkit\b|\bBox\b|Docker|Instalador local|ejecut|\$/i;
 
   it("shows three ways, and no kit, Box, 'ejecut' or '$' anywhere, with any answer chosen", () => {
@@ -156,7 +156,7 @@ describe("safeguards guide, Spanish only", () => {
 });
 
 describe("safeguards guide, English only", () => {
-  // Three ways, as on the storefront home (owner, 10 Oct 2026); the office answer stays and leads to own hardware.
+  // Three ways, as on the storefront home; the office answer stays and leads to own hardware.
   it("shows the three ways and offers all of them", () => {
     const html = render("en", { open: true, answers: {} });
     expect(boxes(html)).toHaveLength(3);
@@ -175,7 +175,7 @@ describe("safeguards guide, English only", () => {
     }
   });
 
-  it("names no hosting location for the cloud in English (owner, 11 Oct 2026: no EU hosting to US visitors)", () => {
+  it("names no hosting location for the cloud in English", () => {
     const g = text(guideOf(render("en", { open: true, answers: { loc: "any" } })));
     expect(g).toContain("Hosted by us.");
     expect(g).toContain("external AI provider set up on the service.");

@@ -2,7 +2,7 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 /**
- * The pilot bar (owner, 11 Oct 2026, second version). On signed-in pages of
+ * The pilot bar. On signed-in pages of
  * the hosted pilot only; for the whole pilot the free window, its end date
  * and the Cloud Plan's price in the reader's currency (closable for the
  * session); "Free until {date}" for a pilot begun before the shorter window;
@@ -156,7 +156,7 @@ describe("what the bar says", () => {
     expect(render("en", "readOnly")).not.toContain("<button");
   });
 
-  it("the old pilot sentence is gone from the sign-in screen, the Settings card and the bar (owner, 11 Oct 2026)", () => {
+  it("the old pilot sentence is gone from the sign-in screen, the Settings card and the bar", () => {
     for (const file of [
       "src/app/(auth)/sign-in/sign-in-form.tsx",
       "src/components/governance/pilot-status-card.tsx",
@@ -228,7 +228,7 @@ describe("the bar shows only once a person is signed in", () => {
 
 describe("the pilot sentence elsewhere", () => {
   it("the sign-in screen and the Settings card state the editing terms, word for word", () => {
-    // The sign-in screen shows only the terms line; the old sentence is gone (owner, 11 Oct 2026).
+    // The sign-in screen shows only the terms line; the old sentence is gone.
     const signIn = readFileSync(join(process.cwd(), "src/app/(auth)/sign-in/sign-in-form.tsx"), "utf8");
     expect(signIn).toMatch(/PILOT_SIGN_IN_LINE\[\w+\]/);
     expect(signIn).not.toMatch(/PILOT_SENTENCE|PilotSentenceText/);
@@ -237,7 +237,7 @@ describe("the pilot sentence elsewhere", () => {
     expect(card).not.toMatch(/PILOT_SENTENCE|PilotSentenceText|PILOT_RUN_URL/);
   });
 
-  it("keeps the landing's sign-in box free of the pilot text, as on DPO Central (owner, 11 Oct 2026)", () => {
+  it("keeps the landing's sign-in box free of the pilot text, as on DPO Central", () => {
     for (const file of ["src/landing/LandingPage.tsx", "src/landing/components/StartupProductPage.tsx"]) {
       const source = readFileSync(join(process.cwd(), file), "utf8");
       expect(source, file).not.toMatch(/PILOT_TERMS|PILOT_SENTENCE|PilotSentenceText|pilot-signup-notice/);

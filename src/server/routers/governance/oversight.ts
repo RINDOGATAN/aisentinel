@@ -6,6 +6,11 @@ import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../.
 import { assertPilotRoom, pilotLocale } from "../../services/pilot/caps";
 import { TRPCError } from "@trpc/server";
 
+/** Roles that may decide a gate (addDecision, and the same statuses through update). */
+const GATE_DECIDER_ROLES = ["OWNER", "ADMIN", "AI_OFFICER"] as const;
+/** Gate statuses that record a decision: what addDecision sets. */
+const GATE_DECISION_STATUSES = ["PASSED", "FAILED", "DEFERRED"] as const;
+
 export const oversightRouter = createTRPCRouter({
   list: organizationProcedure
     .input(
@@ -86,6 +91,14 @@ export const oversightRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       await assertPilotRoom(ctx.prisma, ctx.organization.id, "oversightGates", pilotLocale(ctx.getCookie));
+      // The gate must be on one of this organization's AI systems.
+      const system = await ctx.prisma.aISystem.findFirst({
+        where: { id: input.aiSystemId, organizationId: ctx.organization.id },
+        select: { id: true },
+      });
+      if (!system) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "AI system not found" });
+      }
       const gate = await ctx.prisma.oversightGate.create({
         data: {
           organizationId: ctx.organization.id,
@@ -126,6 +139,20 @@ export const oversightRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const { id, organizationId, ...data } = input;
+
+      // Passing, failing or deferring a gate is a decision: the same roles as
+      // addDecision may set it here. Reopening (PENDING) and IN_REVIEW stay
+      // open to every writer.
+      if (
+        data.status !== undefined &&
+        (GATE_DECISION_STATUSES as readonly string[]).includes(data.status) &&
+        !(GATE_DECIDER_ROLES as readonly string[]).includes(ctx.membership.role)
+      ) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Only owners, admins, and AI officers can make oversight decisions",
+        });
+      }
 
       const updateData: Record<string, unknown> = {};
       if (data.status !== undefined) updateData.status = data.status;
@@ -176,7 +203,7 @@ export const oversightRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       // RBAC: OWNER, ADMIN, AI_OFFICER
-      if (!["OWNER", "ADMIN", "AI_OFFICER"].includes(ctx.membership.role)) {
+      if (!(GATE_DECIDER_ROLES as readonly string[]).includes(ctx.membership.role)) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "Only owners, admins, and AI officers can make oversight decisions",

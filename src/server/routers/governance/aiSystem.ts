@@ -32,6 +32,7 @@ import { assertPilotRoom, pilotLocale } from "@/server/services/pilot/caps";
 import { withoutTemplateCopyMark } from "@/config/client-template";
 import { markConfirmed } from "@/server/services/template-items/mark";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
+import { assertOwnedVendor } from "../../services/authz/owned";
 import { TRPCError } from "@trpc/server";
 import { chatComplete } from "../../services/ai/llm-door";
 import {
@@ -274,6 +275,7 @@ export const aiSystemRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       await assertPilotRoom(ctx.prisma, ctx.organization.id, "systems", pilotLocale(ctx.getCookie));
       await assertBusinessUnitAssignable(ctx, input.businessUnitId ?? null);
+      if (input.vendorId) await assertOwnedVendor(ctx.prisma, ctx.organization.id, input.vendorId);
       const system = await ctx.prisma.aISystem.create({
         data: {
           organizationId: ctx.organization.id,
@@ -332,6 +334,9 @@ export const aiSystemRouter = createTRPCRouter({
 
       if (input.businessUnitId !== undefined) {
         await assertBusinessUnitAssignable(ctx, input.businessUnitId);
+      }
+      if (typeof input.vendorId === "string") {
+        await assertOwnedVendor(ctx.prisma, ctx.organization.id, input.vendorId);
       }
 
       // Editing a system copied from another client's template confirms it.

@@ -15,6 +15,7 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import type { PrismaClient } from "@prisma/client";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
+import { assertOwnedVendor } from "../../services/authz/owned";
 import { assertNotOnHold } from "../../services/legal-hold";
 import {
   DATA_ROLES,
@@ -263,6 +264,9 @@ export const dataFlowRouter = createTRPCRouter({
       });
       if (!existing) {
         throw new TRPCError({ code: "NOT_FOUND", message: "Recipient not found" });
+      }
+      if (typeof input.vendorId === "string") {
+        await assertOwnedVendor(ctx.prisma, ctx.organization.id, input.vendorId);
       }
 
       const { organizationId: _org, id, ...data } = input;

@@ -16,6 +16,7 @@ import prisma from "@/lib/prisma";
 import { createCheckoutSession, createCustomer, getCustomer } from "@/lib/stripe";
 import { COUNTRY_HEADER, requestCurrency, type Currency } from "@/lib/currency";
 import { features } from "@/config/features";
+import { BILLING_FORBIDDEN_MESSAGE, canManageBilling } from "@/lib/billing-roles";
 
 export async function POST(request: NextRequest) {
   if (!features.stripeEnabled || !features.selfServiceUpgrade) {
@@ -61,6 +62,11 @@ export async function POST(request: NextRequest) {
         { error: "Not authorized to purchase for this organization" },
         { status: 403 }
       );
+    }
+
+    // Buying and managing the subscription is for owners and admins.
+    if (!canManageBilling(membership.role)) {
+      return NextResponse.json({ error: BILLING_FORBIDDEN_MESSAGE }, { status: 403 });
     }
 
     // Look up all requested skill packages (IDs may be DB id or skillId)

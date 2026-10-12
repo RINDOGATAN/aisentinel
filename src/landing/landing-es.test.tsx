@@ -88,7 +88,9 @@ describe("landing hero", () => {
     expect(EN["hero.welcome"]).toBeUndefined();
     expect(ES["hero.welcome"]).toBeUndefined();
     expect(page.match(/t\("hero\.subtitle"\)/g)).toHaveLength(1);
-    expect(ES["hero.subtitle"]).toMatch(/^Marco abierto para la gobernanza de la IA\. Inventario, /);
+    expect(ES["hero.subtitle"]).toBe(
+      "Sistema integral para la gobernanza de la IA. Inventario, clasificación de riesgo y evaluaciones vinculados a nueve marcos de trabajo, incluyendo el RIA UE, NIST AI RMF, ISO 42001, o AIUC-1.",
+    );
   });
 
   it("gives the sign-up card its own one-line summary in both languages", () => {

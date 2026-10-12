@@ -22,6 +22,8 @@ import { useOrganization } from "@/lib/organization-context";
 import { ObligationsTimeline } from "@/components/governance/obligations/ObligationsTimeline";
 import { ObligationCard } from "@/components/governance/obligations/ObligationCard";
 import { EmptyStep } from "@/components/guided/empty-step";
+import { useProgramPath } from "@/components/guided/use-program-path";
+import { SCREENING_ANCHOR } from "@/lib/settings-anchors";
 import {
   aheadCount,
   filterByJurisdiction,
@@ -38,6 +40,10 @@ export default function ObligationsPage() {
   const locale = useLocale();
   const orgId = organization?.id ?? "";
   const contentLocale = locale === "es" ? "es" : "en";
+  // The step is "started" while places are declared but the screening in
+  // Settings has no answer: say so here, with the way there.
+  const pathSteps = useProgramPath();
+  const screeningMissing = pathSteps?.obligations === "started";
 
   // Deep links from the dashboard strip and the mini-rail land on
   // #<milestoneId>. Read once at mount rather than in an effect: the first
@@ -125,15 +131,31 @@ export default function ObligationsPage() {
           </CardContent>
         </Card>
       ) : data && data.assumedJurisdictions.length > 0 ? (
-        <p className="text-xs text-muted-foreground flex items-center gap-1.5">
+        <p className="text-xs text-muted-foreground flex flex-wrap items-center gap-1.5">
           <MapPin className="w-3.5 h-3.5" />
           {t("assumedJurisdictions", {
             jurisdictions: data.assumedJurisdictions
               .map((j) => tjur(`option.${j}`))
               .join(" · "),
           })}
+          <Link href="/governance/settings" className="text-primary hover:underline">
+            {t("changePlaces")}
+          </Link>
         </p>
       ) : null}
+
+      {data?.jurisdictionsDeclared && screeningMissing && (
+        <Card className="border-warning bg-warning/10 text-foreground" data-testid="obligations-screening-prompt">
+          <CardContent className="p-4 flex flex-col sm:flex-row sm:items-center gap-3">
+            <p className="text-sm text-muted-foreground flex-1">{t("screeningMissing")}</p>
+            <Link href={`/governance/settings#${SCREENING_ANCHOR}`}>
+              <Button size="sm" variant="outline">
+                {t("answerScreening")}
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+      )}
 
       {allRows.length === 0 ? (
         // The banner above already offers the way to declare jurisdictions

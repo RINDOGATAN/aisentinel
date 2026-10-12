@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025-2026 Rindogatan LLC
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -60,7 +60,14 @@ const ANNEX_III_CATEGORIES = [
 export default function RiskClassificationPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sort, setSort] = useState<ListSort>(DEFAULT_LIST_SORT);
-  const [expandedSystem, setExpandedSystem] = useState<string | null>(null);
+  // `?system=<id>` (the system page's Reclassify link) opens that system's form.
+  const [scrolledTo, setScrolledTo] = useState(false);
+  const systemParam = useSearchParams().get("system");
+  const [expandedSystem, setExpandedSystem] = useState<string | null>(systemParam);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (systemParam) { setExpandedSystem(systemParam); setScrolledTo(false); }
+  }, [systemParam]);
   const [classifyForm, setClassifyForm] = useState<Record<string, {
     riskLevel: string;
     rationale: string;
@@ -198,6 +205,7 @@ export default function RiskClassificationPage() {
       </div>
 
       {/* Systems List */}
+      <ScrollToSystem id={scrolledTo ? null : expandedSystem} ready={!!systems} onDone={() => setScrolledTo(true)} />
       {systemsLoading && !systems ? (
         <ListPageSkeleton />
       ) : systems && systems.length > 0 ? (
@@ -208,7 +216,7 @@ export default function RiskClassificationPage() {
             const form = getFormForSystem(system.id);
 
             return (
-              <Card key={system.id}>
+              <Card key={system.id} id={`system-${system.id}`} className="scroll-mt-24">
                 <CardContent className="p-4">
                   {/* System Header Row */}
                   <div className="flex items-center justify-between gap-3">
@@ -235,14 +243,16 @@ export default function RiskClassificationPage() {
                         <Button
                           variant="ghost"
                           size="sm"
+                          aria-expanded={isExpanded}
                           onClick={() =>
                             setExpandedSystem(isExpanded ? null : system.id)
                           }
                         >
+                          {currentLevel ? t("reclassify") : t("classify")}
                           {isExpanded ? (
-                            <ChevronUp className="w-4 h-4" />
+                            <ChevronUp className="w-4 h-4 ml-1" />
                           ) : (
-                            <ChevronDown className="w-4 h-4" />
+                            <ChevronDown className="w-4 h-4 ml-1" />
                           )}
                         </Button>
                       )}
@@ -438,4 +448,14 @@ export default function RiskClassificationPage() {
       )}
     </div>
   );
+}
+
+/** Scrolls once to the system opened from `?system=`, after the list has loaded. */
+function ScrollToSystem({ id, ready, onDone }: { id: string | null; ready: boolean; onDone: () => void }) {
+  useEffect(() => {
+    if (!id || !ready) return;
+    document.getElementById(`system-${id}`)?.scrollIntoView({ block: "start" });
+    onDone();
+  }, [id, ready, onDone]);
+  return null;
 }

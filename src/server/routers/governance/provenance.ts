@@ -21,6 +21,7 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import {
+  ASSERTED_MAPPING_WHERE,
   getConfirmationCounts,
   UNCONFIRMED_WHERE,
 } from "../../services/provenance/summary";
@@ -134,7 +135,9 @@ export const provenanceRouter = createTRPCRouter({
           : [],
         wants("ComplianceMapping")
           ? ctx.prisma.complianceMapping.findMany({
-              where: { ...base, ...systemScope },
+              // Only mappings that assert a status, as the meter counts them: an
+              // empty NOT_ASSESSED slot asserts nothing a person could vouch for.
+              where: { ...base, ...systemScope, ...ASSERTED_MAPPING_WHERE },
               select: {
                 id: true,
                 status: true,

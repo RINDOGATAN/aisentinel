@@ -27,6 +27,7 @@ import {
   type SelectedSection,
 } from "@/config/unified-assessment";
 import { toCatalogFacts, vendorDueDiligenceFindings } from "./vendor-due-diligence";
+import { UNIFIED_TEMPLATE_REF } from "@/lib/unified-template";
 
 export type ContentLocale = "en" | "es";
 
@@ -88,7 +89,7 @@ export async function createUnifiedAssessmentDraft(
         args.locale === "es"
           ? `Evaluación unificada de impacto ajustada a ${scope.jurisdictions.join(", ")}. Contenido ${UNIFIED_ASSESSMENT_VERSION}; revisión jurídica a ${UNIFIED_ASSESSMENT_LAW_REVIEWED_AS_OF}; validación jurídica pendiente.`
           : `Unified impact assessment calibrated to ${scope.jurisdictions.join(", ")}. Content ${UNIFIED_ASSESSMENT_VERSION}; law reviewed ${UNIFIED_ASSESSMENT_LAW_REVIEWED_AS_OF}; legal sign-off pending.`,
-      frameworkRef: "Unified: EU AI Act Art. 27 / GDPR Art. 35 / CCPA ADMT / CO / TX / WA",
+      frameworkRef: UNIFIED_TEMPLATE_REF,
       sections: templateSections as unknown as object[],
       isSystem: false,
     },

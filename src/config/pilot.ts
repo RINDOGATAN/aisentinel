@@ -27,6 +27,8 @@
  * Pure leaf module: no Prisma, no Next, no React.
  */
 
+import type { Currency } from "@/lib/currency";
+
 export type PilotEnv = Partial<Record<string, string | undefined>>;
 
 /** The cookie domain the hosted instance scopes its session cookie to. */
@@ -316,11 +318,20 @@ export const PILOT_BAR_PRICING_URL: Record<PilotLocale, string> = {
 /** The session key that remembers a dismissed trial bar until the tab is closed. */
 export const PILOT_BAR_DISMISS_KEY = "pilot-bar-dismissed";
 
+/**
+ * The Cloud Plan's price in English, in the visitor's currency
+ * (src/lib/currency.ts). The Spanish copy is always in euros.
+ */
+export const CLOUD_PLAN_PRICE_EN: Record<Currency, string> = {
+  USD: "$179 a month or $1,800 a year",
+  EUR: "€179 a month or €1,800 a year",
+};
+
 export const PILOT_END_BAR_COPY: Record<
   PilotLocale,
   {
-    trial: (days: number, date: string) => string;
-    trialTransition: (date: string) => string;
+    trial: (days: number, date: string, currency?: Currency) => string;
+    trialTransition: (date: string, currency?: Currency) => string;
     ending: (date: string) => string;
     readOnly: string;
     pricing: string;
@@ -328,10 +339,10 @@ export const PILOT_END_BAR_COPY: Record<
   }
 > = {
   en: {
-    trial: (days, date) =>
-      `Free for ${days} days, until ${date}. Then export your program or keep going on the Cloud Plan: $179 a month or $1,800 a year.`,
-    trialTransition: (date) =>
-      `Free until ${date}. Then export your program or keep going on the Cloud Plan: $179 a month or $1,800 a year.`,
+    trial: (days, date, currency = "USD") =>
+      `Free for ${days} days, until ${date}. Then export your program or keep going on the Cloud Plan: ${CLOUD_PLAN_PRICE_EN[currency]}.`,
+    trialTransition: (date, currency = "USD") =>
+      `Free until ${date}. Then export your program or keep going on the Cloud Plan: ${CLOUD_PLAN_PRICE_EN[currency]}.`,
     ending: (date) => `Your pilot ends on ${date}. Move to the paid plan to keep editing with all your records.`,
     readOnly: "Your pilot has ended: the organization is read-only and you can export it at any time.",
     pricing: "See pricing",

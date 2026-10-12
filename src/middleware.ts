@@ -4,8 +4,11 @@
 /**
  * Middleware for geo-IP currency detection and locale defaults
  *
- * Sets a currency cookie based on the visitor's country: EUR only for a
- * visitor known to be outside the US, USD otherwise (including unknown).
+ * Records the visitor's currency in the `currency` cookie from the geo
+ * header (src/lib/currency.ts: EUR only for the 27 EU member states, USD for
+ * everyone else, including an unknown country). The value is re-evaluated on
+ * every page request and rewritten when it differs, so a cookie written under
+ * an earlier rule, or before the visitor moved, is corrected.
  * Never writes a default locale cookie (no cookie renders English). When a
  * hosted request carries more than one `locale` value, expires the host-only
  * duplicate and re-writes the domain-wide cookie (see @/lib/locale-cookie).
@@ -16,7 +19,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requestLandingLocale } from "@/lib/landing-locale";
 import { localeCleanupSetCookies } from "@/lib/locale-cookie";
-import { currencyForCountry } from "@/lib/currency";
+import { COUNTRY_HEADER, CURRENCY_COOKIE, currencyForCountry } from "@/lib/currency";
 import { retiredClassicRedirect } from "@/lib/menu-cookie";
 
 export default function middleware(request: NextRequest) {
@@ -53,10 +56,11 @@ export default function middleware(request: NextRequest) {
   } else requestHeaders.delete("x-landing-lang");
   const response = NextResponse.next({ request: { headers: requestHeaders } });
 
-  // Set currency cookie based on geo-IP: EUR only for a known non-US country
-  if (!request.cookies.has("currency")) {
-    const currency = currencyForCountry(request.headers.get("x-vercel-ip-country"));
-    response.cookies.set("currency", currency, {
+  // The visitor's currency from the geo header, re-evaluated on every page
+  // request; written only when the recorded value differs.
+  const currency = currencyForCountry(request.headers.get(COUNTRY_HEADER));
+  if (request.cookies.get(CURRENCY_COOKIE)?.value !== currency) {
+    response.cookies.set(CURRENCY_COOKIE, currency, {
       path: "/",
       maxAge: 60 * 60 * 24 * 30, // 30 days
       sameSite: "lax",

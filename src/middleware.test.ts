@@ -68,6 +68,42 @@ describe("middleware locale handling", () => {
   });
 });
 
+describe("middleware: the currency cookie", () => {
+  const currencyCookies = (country?: string, cookie?: string) => {
+    const headers = new Headers();
+    if (country) headers.set("x-vercel-ip-country", country);
+    if (cookie) headers.set("cookie", cookie);
+    const response = middleware(new NextRequest("https://aisentinel.todo.law/", { headers }));
+    return response.headers.getSetCookie().filter((c) => c.startsWith("currency="));
+  };
+
+  it.each(["DE", "ES", "IE"])("records euros for a visitor in %s", (country) => {
+    const [set] = currencyCookies(country);
+    expect(set).toMatch(/^currency=EUR;/);
+  });
+
+  it.each(["GB", "CH", "NO", "MX", "BR", "US"])("records dollars for a visitor in %s", (country) => {
+    const [set] = currencyCookies(country);
+    expect(set).toMatch(/^currency=USD;/);
+  });
+
+  it("records dollars when the country header is missing", () => {
+    expect(currencyCookies()[0]).toMatch(/^currency=USD;/);
+  });
+
+  it("corrects a cookie written under an earlier rule", () => {
+    expect(currencyCookies("GB", "currency=EUR")[0]).toMatch(/^currency=USD;/);
+    expect(currencyCookies("CH", "currency=EUR")[0]).toMatch(/^currency=USD;/);
+    expect(currencyCookies("DE", "currency=USD")[0]).toMatch(/^currency=EUR;/);
+  });
+
+  it("writes nothing when the recorded value already matches", () => {
+    expect(currencyCookies("DE", "currency=EUR")).toEqual([]);
+    expect(currencyCookies("GB", "currency=USD")).toEqual([]);
+    expect(currencyCookies(undefined, "currency=USD")).toEqual([]);
+  });
+});
+
 describe("middleware: the landing language for <html lang>", () => {
   const forwarded = (url: string, cookie?: string, acceptLanguage?: string) => {
     const headers = new Headers({ ...(cookie ? { cookie } : {}), ...(acceptLanguage ? { "accept-language": acceptLanguage } : {}) });

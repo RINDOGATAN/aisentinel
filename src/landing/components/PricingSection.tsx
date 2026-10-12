@@ -26,12 +26,18 @@ import {
   PRICING_PILOT_DAYS,
 } from "../config/pricing";
 import type { LandingLocale } from "../config/storefront";
+import { displayCurrency, type Currency } from "@/lib/currency";
 
 /** A cell: stacked on phones, a table cell from `sm`, as on the storefront home. */
 const CELL = "block sm:table-cell px-5 sm:px-6 align-top text-left";
 
-export default function PricingSection({ locale }: { locale: LandingLocale }) {
+/**
+ * `currency` is the visitor's (src/lib/currency.ts: euros in the EU, dollars
+ * elsewhere); the Spanish page shows euros whatever it is.
+ */
+export default function PricingSection({ locale, currency = "USD" }: { locale: LandingLocale; currency?: Currency }) {
   const c = PRICING_COPY[locale];
+  const shown = displayCurrency(locale, currency);
   const legal = PRICING_LEGAL_URL[locale];
   const quiet = "underline underline-offset-4 hover:text-foreground transition-colors";
   const anchor = PRICING_ANCHOR[locale];
@@ -67,7 +73,7 @@ export default function PricingSection({ locale }: { locale: LandingLocale }) {
                   {c.offer}
                 </th>
                 <td className={`${CELL} pb-5 sm:py-5 text-base md:text-lg text-muted-foreground sm:text-foreground leading-snug font-body`} data-testid="pricing-price">
-                  {c.price(PRICING_PILOT_DAYS)}
+                  {c.price(PRICING_PILOT_DAYS, shown)}
                 </td>
               </tr>
             </tbody>
@@ -86,7 +92,7 @@ export default function PricingSection({ locale }: { locale: LandingLocale }) {
               {c.start}
             </a>
             <a
-              href={PLAN_PAYMENT_LINK[locale]}
+              href={PLAN_PAYMENT_LINK[shown]}
               rel="noopener"
               className="text-sm font-medium text-muted-foreground underline underline-offset-4 hover:text-foreground transition-colors"
               data-testid="pricing-subscribe"

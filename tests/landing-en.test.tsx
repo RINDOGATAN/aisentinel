@@ -62,7 +62,7 @@ const videoText = LANDING_VIDEOS.en.flatMap((v) => [
 describe("English landing page", () => {
   it("passes the shared sections for both languages", () => {
     const page = read("src/landing/LandingPage.tsx");
-    expect(page).toContain("<LandingSections t={t} locale={locale} />");
+    expect(page).toContain("<LandingSections t={t} locale={locale} currency={currency} />");
     expect(page).not.toContain('locale === "es" ? <');
   });
 

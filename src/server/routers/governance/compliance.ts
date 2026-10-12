@@ -2,6 +2,7 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { z } from "zod";
+import { editConfirmation, keepSystemAfterEdit } from "@/server/services/provenance/edit-stamp";
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure, publicProcedure } from "../../trpc";
 import { buildScopeFilter } from "@/lib/applicability-scope";
@@ -300,6 +301,10 @@ export const complianceRouter = createTRPCRouter({
         }
       }
 
+      // An approver's edit confirms the mapping; anyone else's edit clears the
+      // stamp until an approver confirms it (services/provenance/edit-stamp.ts).
+      // Provenance keeps its historical origin.
+      const confirmation = editConfirmation(ctx.membership.role, ctx.session.user.id);
       const mapping = await ctx.prisma.complianceMapping.upsert({
         where: {
           aiSystemId_requirementId: {
@@ -312,11 +317,7 @@ export const complianceRouter = createTRPCRouter({
           notes: input.notes,
           assessedBy: ctx.session.user.id,
           assessedAt: new Date(),
-          // A human editing an artifact IS confirming it. Provenance keeps its
-          // historical origin: it records where the row came from, not who
-          // vouches for it now.
-          confirmedBy: ctx.session.user.id,
-          confirmedAt: new Date(),
+          ...confirmation,
         },
         create: {
           organizationId: ctx.organization.id,
@@ -326,10 +327,15 @@ export const complianceRouter = createTRPCRouter({
           notes: input.notes,
           assessedBy: ctx.session.user.id,
           assessedAt: new Date(),
-          confirmedBy: ctx.session.user.id,
-          confirmedAt: new Date(),
+          ...confirmation,
         },
         include: { evidenceItems: true },
+      });
+      await keepSystemAfterEdit(ctx.prisma, {
+        role: ctx.membership.role,
+        aiSystemId: input.aiSystemId,
+        organizationId: ctx.organization.id,
+        userId: ctx.session.user.id,
       });
 
       let propagatedCount = 0;

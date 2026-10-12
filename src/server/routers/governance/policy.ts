@@ -2,6 +2,7 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { z } from "zod";
+import { editConfirmation } from "@/server/services/provenance/edit-stamp";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { assertPilotRoom, pilotLocale } from "../../services/pilot/caps";
 import { TRPCError } from "@trpc/server";
@@ -173,10 +174,10 @@ export const policyRouter = createTRPCRouter({
         updateData.reviewDate = data.reviewDate ? new Date(data.reviewDate) : null;
       }
 
-      // A human editing an artifact IS confirming it; provenance keeps its
-      // historical origin (where the row came from, not who vouches for it).
-      updateData.confirmedBy = ctx.session.user.id;
-      updateData.confirmedAt = new Date();
+      // An approver's edit confirms the policy; anyone else's edit clears the
+      // stamp until an approver confirms it (services/provenance/edit-stamp.ts).
+      // Provenance keeps its historical origin.
+      Object.assign(updateData, editConfirmation(ctx.membership.role, ctx.session.user.id));
 
       const result = await ctx.prisma.aIPolicy.updateMany({
         where: { id, organizationId: ctx.organization.id },

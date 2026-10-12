@@ -3255,7 +3255,7 @@
           },
           {
             "title": "Cross-Tenant Protection",
-            "description": "Linking a policy to an AI system, or a data flow to a system, checks that both records belong to your organization."
+            "description": "When a record points to another, the server checks that the other record is your organization's: a policy, data flow, oversight gate, incident, assessment, sensitive-data analysis or shadow AI report linked to an AI system; an AI system or data recipient linked to a vendor; and an assessment's template, which must be a shared template or one of yours."
           },
           {
             "title": "Shared Reference Data Only",
@@ -3276,7 +3276,7 @@
         "readOnlyTitle": "Read-Only Enforcement",
         "readOnlyBody": "Viewers have read-only access to governance records. Writes to those records are blocked at the server level, not just in the interface, so they cannot be made through API calls either.",
         "elevatedTitle": "Elevated Permissions",
-        "elevatedBody": "Approving assessments, publishing policy versions and recording oversight decisions require the AI Officer, Admin or Owner role."
+        "elevatedBody": "Approving assessments, approving or publishing a policy, and passing, failing or deferring an oversight gate require the AI Officer, Admin or Owner role, whichever screen or API call makes the change. Billing actions are limited to Owners and Admins."
       },
       "auth": {
         "title": "Authentication",
@@ -3406,7 +3406,8 @@
       "contact": {
         "title": "Security Contact",
         "body": "If you discover a security vulnerability or have questions about our security practices, please contact us at <link>{email}</link>. We take all reports seriously and will respond promptly."
-      }
+      },
+      "stackLink": "Measures common to the whole TODO.LAW stack"
     },
     "crossBorder": {
       "metaTitle": "Cross-border AI governance: one assessment, six regimes | AI SENTINEL",

@@ -130,7 +130,8 @@ const L = {
     notACertificate:
       "Este expediente recoge las pruebas que hizo la organización y lo que decidió. No es un certificado: la certificación AIUC-1 exige una auditoría externa acreditada.",
     tally: (t: Tally) =>
-      `${t.tested} de ${t.applicable} probados, ${t.ready} cuentan (${t.pass} superados, ${t.acceptedPartial} parciales aceptados), ${t.fail} no superados, ${t.partial - t.acceptedPartial} parciales sin aceptar, ${t.retest} por repetir, ${t.notApplicable} no aplican`,
+      // Label and figure, so no word has to agree in number with the count.
+      `probados: ${t.tested} de ${t.applicable}; cuentan: ${t.ready} (superados: ${t.pass}; parciales aceptados: ${t.acceptedPartial}); no superados: ${t.fail}; parciales sin aceptar: ${t.partial - t.acceptedPartial}; por repetir: ${t.retest}; no aplican: ${t.notApplicable}`,
   },
 } as const;
 

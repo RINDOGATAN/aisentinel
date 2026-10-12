@@ -67,7 +67,7 @@ export default function NewOversightGatePage() {
   });
 
   const { data: systemsData } = trpc.aiSystem.list.useQuery(
-    { organizationId: organization?.id ?? "", limit: 50 },
+    { organizationId: organization?.id ?? "", limit: 100 },
     { enabled: !!organization?.id }
   );
 

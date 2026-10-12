@@ -93,7 +93,8 @@ export const aiSystemRouter = createTRPCRouter({
         assessment: z.enum(ASSESSMENT_FILTER_OPTIONS).optional(),
         cursor: z.string().optional(),
         sort: z.enum(LIST_SORTS).default(DEFAULT_LIST_SORT),
-        // 100: the policy and shadow-AI pages load every system into a picker.
+        // Lists page through with the cursor; pickers search by name instead
+        // (search.systems).
         limit: z.number().min(1).max(100).default(20),
       })
     )

@@ -18,6 +18,7 @@ import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { useEnumLabels } from "@/lib/enum-labels";
 import { templateDescription, templateName } from "@/lib/assessment-template-display";
+import { SystemPicker } from "@/components/governance/system-picker";
 
 const ASSESSMENT_TYPES = ["FRIA", "CONFORMITY", "AI_RISK", "BIAS_FAIRNESS", "CUSTOM"] as const;
 type AssessmentType = (typeof ASSESSMENT_TYPES)[number];
@@ -42,7 +43,7 @@ export default function NewAssessmentPage() {
   const t = useTranslations("assessmentsNew");
   const locale = useLocale();
   const tt = useTranslations("assessments");
-  const { statusLabel, techniqueLabel, assessmentTypeLabel } = useEnumLabels();
+  const { assessmentTypeLabel } = useEnumLabels();
   const tc = useTranslations("common");
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -59,14 +60,10 @@ export default function NewAssessmentPage() {
 
   const [step, setStep] = useState(1);
   const [selectedSystemId, setSelectedSystemId] = useState("");
+  const [selectedSystemName, setSelectedSystemName] = useState("");
   const [selectedTemplateId, setSelectedTemplateId] = useState("");
   const [selectedType, setSelectedType] = useState<string>(presetType ?? "");
   const [title, setTitle] = useState("");
-
-  const { data: systemsData } = trpc.aiSystem.list.useQuery(
-    { organizationId: orgId, limit: 100 },
-    { enabled: !!orgId }
-  );
 
   const { data: templates } = trpc.assessment.listTemplates.useQuery(
     { organizationId: orgId, type: presetType ?? undefined },
@@ -90,7 +87,6 @@ export default function NewAssessmentPage() {
     },
   });
 
-  const systems = systemsData?.items ?? [];
   const entitled = entitledTypes ?? [];
 
   // "No choice with one option": when the type is fixed and exactly one
@@ -113,6 +109,7 @@ export default function NewAssessmentPage() {
 
   const chooseSystem = (system: { id: string; name: string }) => {
     setSelectedSystemId(system.id);
+    setSelectedSystemName(system.name);
     if (soleTemplate) {
       setSelectedTemplateId(soleTemplate.id);
       setSelectedType(soleTemplate.type);
@@ -165,22 +162,22 @@ export default function NewAssessmentPage() {
             <CardTitle>{t("step1Title")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {systems.length === 0 ? (
-              <p className="text-muted-foreground">{t("step1Empty")} <Link href="/governance/ai-registry/new" className="text-primary hover:underline">{t("step1EmptyLink")}</Link>.</p>
-            ) : (
-              systems.map((system) => (
-                <button
-                  key={system.id}
-                  onClick={() => chooseSystem(system)}
-                  className={`w-full text-left p-4 rounded-lg border transition-colors ${
-                    selectedSystemId === system.id ? "border-primary bg-primary/10" : "border-border hover:border-muted-foreground"
-                  }`}
-                >
-                  <div className="font-medium">{system.name}</div>
-                  <div className="text-sm text-muted-foreground">{statusLabel(system.status)} &middot; {techniqueLabel(system.technique)}</div>
-                </button>
-              ))
-            )}
+            <SystemPicker
+              ariaLabel={t("step1Title")}
+              value={selectedSystemId}
+              onChange={(system) => {
+                if (system) chooseSystem(system);
+              }}
+              empty={
+                <p className="text-muted-foreground">
+                  {t("step1Empty")}{" "}
+                  <Link href="/governance/ai-registry/new" className="text-primary hover:underline">
+                    {t("step1EmptyLink")}
+                  </Link>
+                  .
+                </p>
+              }
+            />
           </CardContent>
         </Card>
       )}
@@ -212,7 +209,7 @@ export default function NewAssessmentPage() {
                     if (!isEntitled) return;
                     setSelectedTemplateId(template.id);
                     setSelectedType(template.type);
-                    setTitle(`${templateName(template, locale)}: ${systems.find(s => s.id === selectedSystemId)?.name ?? ""}`);
+                    setTitle(`${templateName(template, locale)}: ${selectedSystemName}`);
                     setStep(3);
                   }}
                   disabled={!isEntitled}

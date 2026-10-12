@@ -6274,5 +6274,12 @@
       "incident": "Incidentes",
       "shadowAi": "Herramientas de IA sin aprobar"
     }
+  },
+  "systemPicker": {
+    "placeholder": "Busca sistemas de IA por nombre",
+    "results": "Sistemas de IA",
+    "noResults": "Ningún sistema de IA con ese nombre.",
+    "more": "Se muestran los primeros {count}. Escribe un nombre para encontrar los demás.",
+    "clear": "Quitar la selección"
   }
 }

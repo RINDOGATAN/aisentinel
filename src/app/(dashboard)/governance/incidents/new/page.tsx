@@ -23,6 +23,7 @@ import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { StatusNote } from "@/components/ui/status-note";
+import { SystemPicker } from "@/components/governance/system-picker";
 import { useTranslations } from "next-intl";
 import { useSubmitLock } from "@/lib/use-submit-lock";
 
@@ -93,19 +94,6 @@ export default function NewIncidentPage() {
   });
 
   const utils = trpc.useUtils();
-
-  const { data: systemsPages } = trpc.aiSystem.list.useInfiniteQuery(
-    {
-      organizationId: organization?.id ?? "",
-      limit: 50,
-    },
-    {
-      enabled: !!organization?.id,
-      getNextPageParam: (lastPage) => lastPage.nextCursor,
-    }
-  );
-
-  const aiSystems = systemsPages?.pages.flatMap((p) => p.items) ?? [];
 
   const createIncident = trpc.incident.create.useMutation({
     onSuccess: (data) => {
@@ -237,21 +225,12 @@ export default function NewIncidentPage() {
             {/* AI System */}
             <div className="space-y-2">
               <Label htmlFor="aiSystem">{t("aiSystemLabel")}</Label>
-              <Select
+              <SystemPicker
+                id="aiSystem"
                 value={formData.aiSystemId}
-                onValueChange={(value) => setFormData({ ...formData, aiSystemId: value })}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder={t("aiSystemPlaceholder")} />
-                </SelectTrigger>
-                <SelectContent>
-                  {aiSystems.map((system) => (
-                    <SelectItem key={system.id} value={system.id}>
-                      {system.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                onChange={(system) => setFormData({ ...formData, aiSystemId: system?.id ?? "" })}
+                clearable
+              />
               <p className="text-xs text-muted-foreground">
                 {t("aiSystemHint")}
               </p>

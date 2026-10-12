@@ -51,8 +51,10 @@ describe("list limits the pages ask for", () => {
       })),
   );
 
+  // The system pickers search by name (SystemPicker, search.systems) and no
+  // longer pass a literal limit, so fewer calls remain than before.
   it("finds the calls it is meant to check", () => {
-    expect(calls.length).toBeGreaterThanOrEqual(15);
+    expect(calls.length).toBeGreaterThanOrEqual(8);
   });
 
   it("are all accepted by the procedure's input rule", () => {

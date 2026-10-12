@@ -6274,5 +6274,12 @@
       "incident": "Incidents",
       "shadowAi": "Unapproved AI tools"
     }
+  },
+  "systemPicker": {
+    "placeholder": "Search AI systems by name",
+    "results": "AI systems",
+    "noResults": "No AI system with that name.",
+    "more": "Showing the first {count}. Type a name to find the others.",
+    "clear": "Clear the selection"
   }
 }

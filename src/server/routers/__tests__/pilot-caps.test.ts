@@ -6,7 +6,8 @@
  * write middleware (src/server/trpc.ts) against an in-memory fake, so what
  * is proven is the wiring and not only the service:
  *
- *   - organization.create refuses a second organization for the account;
+ *   - organization.create refuses a second organization for the account, and
+ *     opens none without the data processing agreement, which it records;
  *   - every orgWriteProcedure refuses once the organization is read-only,
  *     except organization.delete, which is the way out;
  *   - aiSystem.create refuses at the records ceiling and writes nothing;
@@ -137,6 +138,7 @@ import { createInnerTRPCContext } from "@/server/trpc";
 import { organizationRouter } from "@/server/routers/governance/organization";
 import { aiSystemRouter } from "@/server/routers/governance/aiSystem";
 import { PILOT_CEILINGS } from "@/config/pilot";
+import { PILOT_DPA, PILOT_DPA_ACTION } from "@/config/pilot-dpa";
 
 const session = {
   user: { id: "user-a", email: "user-a@example.test", name: "user-a" },
@@ -180,9 +182,37 @@ describe("hosted pilot caps through the routers", () => {
     H.reset({ signedInDaysAgo: 1, systemCount: 0 });
     H.members.length = 0;
     const caller = organizationRouter.createCaller(ctx());
-    const org = await caller.create({ name: "First", slug: "first" });
+    const org = await caller.create({ name: "First", slug: "first", acceptDpa: true });
     expect(org.id).toBeTruthy();
     expect(H.members).toHaveLength(1);
+  });
+
+  it("the data processing agreement: no organization is opened without it", async () => {
+    H.reset({ signedInDaysAgo: 1, systemCount: 0 });
+    H.members.length = 0;
+    const caller = organizationRouter.createCaller(ctx());
+    await expect(caller.create({ name: "First", slug: "first" })).rejects.toMatchObject({
+      code: "BAD_REQUEST",
+      message: expect.stringContaining("data processing agreement"),
+    });
+    await expect(caller.create({ name: "First", slug: "first", acceptDpa: false })).rejects.toMatchObject({
+      code: "BAD_REQUEST",
+    });
+    expect(H.organizations).toHaveLength(1);
+  });
+
+  it("the data processing agreement: the acceptance is recorded with its version, language and document", async () => {
+    H.reset({ signedInDaysAgo: 1, systemCount: 0 });
+    H.members.length = 0;
+    const caller = organizationRouter.createCaller(ctx("es"));
+    const org = await caller.create({ name: "Primera", slug: "primera", acceptDpa: true });
+    const entry = H.audit.find((r) => r.action === PILOT_DPA_ACTION) as
+      | { organizationId: string; userId: string; changes: Record<string, string> }
+      | undefined;
+    expect(entry).toBeDefined();
+    expect(entry!.organizationId).toBe(org.id);
+    expect(entry!.userId).toBe("user-a");
+    expect(entry!.changes).toEqual({ dpaVersion: "1.1", locale: "es", document: PILOT_DPA.href.es });
   });
 
   it("the editing-window switch: writes are refused with the two ways out, reads still work", async () => {
@@ -343,6 +373,8 @@ describe("on the kit the routers apply no pilot cap", () => {
     H.reset({ signedInDaysAgo: 400, systemCount: PILOT_CEILINGS.systems + 10 });
     const orgs = organizationRouter.createCaller(ctx());
     await expect(orgs.create({ name: "Second", slug: "second" })).resolves.toBeTruthy();
+    // No data processing agreement is asked for or recorded off the pilot.
+    expect(H.audit.some((r) => r.action === PILOT_DPA_ACTION)).toBe(false);
     const sys = aiSystemRouter.createCaller(ctx());
     await expect(sys.create(newSystem)).resolves.toBeTruthy();
   });

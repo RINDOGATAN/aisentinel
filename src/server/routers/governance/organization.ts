@@ -30,6 +30,8 @@ import {
   pilotLocale,
 } from "../../services/pilot/caps";
 import { planTemplateRemoval, removeTemplateItems } from "../../services/template-items/remove";
+import { hostedPilotActive } from "@/config/pilot";
+import { PILOT_DPA, PILOT_DPA_ACTION, PILOT_DPA_REQUIRED } from "@/config/pilot-dpa";
 
 /**
  * The plan fields only the operator reads: the operator's note and the payment
@@ -107,11 +109,21 @@ export const organizationRouter = createTRPCRouter({
         name: z.string().min(1).max(200),
         slug: z.string().min(2).max(50).regex(/^[a-z0-9-]+$/),
         domain: z.string().optional(),
+        // Hosted pilot: the data processing agreement (src/config/pilot-dpa.ts)
+        // is accepted when the organization is opened. Ignored off the pilot.
+        acceptDpa: z.boolean().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const lang = pilotLocale(ctx.getCookie);
       // Hosted pilot: one organisation per account. Off the pilot this allows.
-      await assertPilotOrganizationLimit(ctx.prisma, ctx.session.user.id, pilotLocale(ctx.getCookie));
+      await assertPilotOrganizationLimit(ctx.prisma, ctx.session.user.id, lang);
+
+      // Hosted pilot: no organization is opened without accepting the agreement.
+      const hosted = hostedPilotActive();
+      if (hosted && input.acceptDpa !== true) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: PILOT_DPA_REQUIRED[lang] });
+      }
 
       // Two organizations can share a name ("Acme" the client, "Acme" the
       // firm's own). The slug is only an internal handle, so a taken one gets
@@ -169,6 +181,21 @@ export const organizationRouter = createTRPCRouter({
           changes: { name: input.name, slug },
         },
       });
+
+      // The record of the acceptance: which agreement, in which language; the
+      // entry's own date and user say when and who.
+      if (hosted) {
+        await ctx.prisma.auditLog.create({
+          data: {
+            organizationId: organization.id,
+            userId: ctx.session.user.id,
+            entityType: "Organization",
+            entityId: organization.id,
+            action: PILOT_DPA_ACTION,
+            changes: { dpaVersion: PILOT_DPA.version, locale: lang, document: PILOT_DPA.href[lang] },
+          },
+        });
+      }
 
       return organization;
     }),

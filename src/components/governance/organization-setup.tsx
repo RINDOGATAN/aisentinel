@@ -4,16 +4,18 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useUserType } from "@/lib/use-user-type";
+import { PILOT_DPA, pilotDpaHref } from "@/config/pilot-dpa";
 
 export function OrganizationSetup() {
   const [name, setName] = useState("");
@@ -24,6 +26,11 @@ export function OrganizationSetup() {
   // A consultant's first organization is their first client; more are added
   // later from My clients. Same flow, words that match what they are doing.
   const { isConsultant } = useUserType();
+  // Hosted pilot: the data processing agreement is accepted when the
+  // organization is opened (src/config/pilot-dpa.ts). Never asked on the kit.
+  const hosted = !!trpc.pilot.mode.useQuery(undefined, { staleTime: Infinity }).data?.active;
+  const locale = useLocale();
+  const [acceptDpa, setAcceptDpa] = useState(false);
 
   const createOrg = trpc.organization.create.useMutation({
     onSuccess: (org) => {
@@ -49,6 +56,7 @@ export function OrganizationSetup() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
+    if (hosted && !acceptDpa) return;
 
     setIsSubmitting(true);
     try {
@@ -56,7 +64,7 @@ export function OrganizationSetup() {
       // slug (e.g. only non-Latin characters) still gets a valid one.
       const base = generateSlug(name);
       const slug = base.length >= 2 ? base.slice(0, 40) : "org";
-      await createOrg.mutateAsync({ name: name.trim(), slug });
+      await createOrg.mutateAsync({ name: name.trim(), slug, acceptDpa: hosted ? acceptDpa : undefined });
     } catch (error) {
       console.error("Failed to create organization:", error);
       toast.error(t("createFailed"));
@@ -88,7 +96,36 @@ export function OrganizationSetup() {
                 required
               />
             </div>
-            <Button type="submit" className="w-full" disabled={isSubmitting || !name.trim()}>
+            {hosted && (
+              <div className="flex items-start gap-2" data-testid="pilot-dpa-accept">
+                <Checkbox
+                  id="accept-dpa"
+                  checked={acceptDpa}
+                  onCheckedChange={(v) => setAcceptDpa(v === true)}
+                  className="mt-0.5"
+                />
+                <Label htmlFor="accept-dpa" className="text-sm font-normal leading-snug block">
+                  {t.rich("dpaAccept", {
+                    version: PILOT_DPA.version,
+                    link: (chunks) => (
+                      <a
+                        href={pilotDpaHref(locale)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline text-primary"
+                      >
+                        {chunks}
+                      </a>
+                    ),
+                  })}
+                </Label>
+              </div>
+            )}
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isSubmitting || !name.trim() || (hosted && !acceptDpa)}
+            >
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />

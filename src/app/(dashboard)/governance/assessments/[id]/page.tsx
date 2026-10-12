@@ -59,7 +59,7 @@ export default function AssessmentDetailPage() {
   const locale = useLocale();
   const utils = trpc.useUtils();
   const params = useParams();
-  const { organization } = useOrganization();
+  const { organization, canWrite, canDecide } = useOrganization();
   const orgId = organization?.id ?? "";
   const id = params.id as string;
 
@@ -117,9 +117,11 @@ export default function AssessmentDetailPage() {
 
   const template = assessment.template;
   const sections = (template?.sections as AnswerSection[]) ?? [];
-  const canEdit = ["DRAFT", "IN_PROGRESS"].includes(assessment.status);
-  const canSubmit = assessment.status === "IN_PROGRESS" || assessment.status === "DRAFT";
-  const canApprove = assessment.status === "UNDER_REVIEW";
+  // The status decides what the assessment allows; the role decides who may do it
+  // (the server refuses writes to viewers and approvals to members).
+  const canEdit = canWrite && ["DRAFT", "IN_PROGRESS"].includes(assessment.status);
+  const canSubmit = canWrite && (assessment.status === "IN_PROGRESS" || assessment.status === "DRAFT");
+  const canApprove = canDecide && assessment.status === "UNDER_REVIEW";
   const contentLocale = locale === "es" ? "es" : "en";
 
   // Progress and the completeness gate come from the one shared rule

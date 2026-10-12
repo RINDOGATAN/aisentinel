@@ -219,7 +219,7 @@ export default function AISystemDetailPage() {
   const requestedTab = useSearchParams().get("tab");
   const initialTab =
     requestedTab && LINKABLE_TABS.has(requestedTab) ? requestedTab : "models";
-  const { organization, canWrite } = useOrganization();
+  const { organization, canWrite, canDecide } = useOrganization();
   const t = useTranslations("aiRegistryDetail");
   const { formatDate } = useFormatDate();
   const locale = useLocale();
@@ -1405,12 +1405,14 @@ export default function AISystemDetailPage() {
                   {t("oversightGatesDescription")}
                 </CardDescription>
               </div>
-              <Link href="/governance/oversight/new">
-                <Button size="sm" variant="outline">
-                  <Plus className="w-4 h-4 mr-2" />
-                  {t("newGate")}
-                </Button>
-              </Link>
+              {canWrite && (
+                <Link href="/governance/oversight/new">
+                  <Button size="sm" variant="outline">
+                    <Plus className="w-4 h-4 mr-2" />
+                    {t("newGate")}
+                  </Button>
+                </Link>
+              )}
             </CardHeader>
             <CardContent>
               {system.oversightGates && system.oversightGates.length > 0 ? (
@@ -1466,12 +1468,14 @@ export default function AISystemDetailPage() {
                   <p className="text-sm mb-4">
                     {t("noOversightDescription")}
                   </p>
-                  <Link href="/governance/oversight/new">
-                    <Button variant="outline">
-                      <Plus className="w-4 h-4 mr-2" />
-                      {t("newGate")}
-                    </Button>
-                  </Link>
+                  {canWrite && (
+                    <Link href="/governance/oversight/new">
+                      <Button variant="outline">
+                        <Plus className="w-4 h-4 mr-2" />
+                        {t("newGate")}
+                      </Button>
+                    </Link>
+                  )}
                 </div>
               )}
             </CardContent>
@@ -1491,12 +1495,14 @@ export default function AISystemDetailPage() {
                   {t("linkedPoliciesDescription")}
                 </CardDescription>
               </div>
-              <Link href="/governance/policies/new">
-                <Button size="sm" variant="outline">
-                  <Plus className="w-4 h-4 mr-2" />
-                  {tc("newPolicy")}
-                </Button>
-              </Link>
+              {canWrite && (
+                <Link href="/governance/policies/new">
+                  <Button size="sm" variant="outline">
+                    <Plus className="w-4 h-4 mr-2" />
+                    {tc("newPolicy")}
+                  </Button>
+                </Link>
+              )}
             </CardHeader>
             <CardContent>
               {system.policyLinks && system.policyLinks.length > 0 ? (
@@ -1579,10 +1585,11 @@ export default function AISystemDetailPage() {
             worth recording, and hiding the tab until it is one leaves nowhere
             to record it. */}
         <TabsContent value="agent" className="mt-4">
+          {/* The agent profile is recorded by owners, admins and AI officers only (agent.upsertProfile). */}
           <AgentPanel
             organizationId={organizationId}
             aiSystemId={id}
-            canWrite={canWrite}
+            canWrite={canDecide}
           />
         </TabsContent>
 

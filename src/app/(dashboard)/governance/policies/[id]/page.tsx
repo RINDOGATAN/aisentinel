@@ -91,7 +91,7 @@ export default function PolicyDetailPage() {
   const tc = useTranslations("common");
   const params = useParams();
   const id = params.id as string;
-  const { organization, canWrite } = useOrganization();
+  const { organization, canWrite, canDecide } = useOrganization();
   const orgId = organization?.id ?? "";
 
   const [publishDialogOpen, setPublishDialogOpen] = useState(false);
@@ -303,7 +303,7 @@ export default function PolicyDetailPage() {
         actions={
           <>
             {/* Only the actions the status allows; always in this one row. */}
-            {policy.status === "DRAFT" && (
+            {policy.status === "DRAFT" && canWrite && (
               <Button variant="outline" onClick={handleSubmitForReview} disabled={updateMutation.isPending}>
                 {updateMutation.isPending ? (
                   <Loader2 className="w-4 h-4 animate-spin mr-2" />
@@ -313,7 +313,7 @@ export default function PolicyDetailPage() {
                 {t("submitForReview")}
               </Button>
             )}
-            {policy.status === "UNDER_REVIEW" && (
+            {policy.status === "UNDER_REVIEW" && canDecide && (
               <Button
                 onClick={handleApprove}
                 disabled={approveMutation.isPending}
@@ -327,7 +327,7 @@ export default function PolicyDetailPage() {
                 {t("approve")}
               </Button>
             )}
-            {policy.status === "APPROVED" && (
+            {policy.status === "APPROVED" && canDecide && (
               <Button onClick={() => setPublishDialogOpen(true)}>
                 <Upload className="w-4 h-4 mr-2" />
                 {t("publish")}
@@ -449,10 +449,12 @@ export default function PolicyDetailPage() {
                 <CardTitle>{t("policyContentTitle")}</CardTitle>
                 <CardDescription>{t("policyContentDescription")}</CardDescription>
               </div>
-              <Button variant="outline" size="sm" onClick={handleEditContent}>
-                <Edit className="w-4 h-4 mr-2" />
-                {t("editContent")}
-              </Button>
+              {canWrite && (
+                <Button variant="outline" size="sm" onClick={handleEditContent}>
+                  <Edit className="w-4 h-4 mr-2" />
+                  {t("editContent")}
+                </Button>
+              )}
             </CardHeader>
             <CardContent>
               {policy.content ? (
@@ -552,14 +554,16 @@ export default function PolicyDetailPage() {
                   {t("linkedSystemsDescription")}
                 </CardDescription>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setLinkSystemDialogOpen(true)}
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                {t("linkSystem")}
-              </Button>
+              {canWrite && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setLinkSystemDialogOpen(true)}
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  {t("linkSystem")}
+                </Button>
+              )}
             </CardHeader>
             <CardContent>
               {policy.systemLinks && policy.systemLinks.length > 0 ? (
@@ -586,15 +590,17 @@ export default function PolicyDetailPage() {
                           {statusLabel(link.aiSystem.status)}
                         </Badge>
                       </Link>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleUnlinkSystem(link.aiSystem.id)}
-                        disabled={unlinkSystemMutation.isPending}
-                        className="shrink-0 ml-2"
-                      >
-                        <Unlink className="w-4 h-4 text-muted-foreground" />
-                      </Button>
+                      {canWrite && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleUnlinkSystem(link.aiSystem.id)}
+                          disabled={unlinkSystemMutation.isPending}
+                          className="shrink-0 ml-2"
+                        >
+                          <Unlink className="w-4 h-4 text-muted-foreground" />
+                        </Button>
+                      )}
                     </div>
                   ))}
                 </div>

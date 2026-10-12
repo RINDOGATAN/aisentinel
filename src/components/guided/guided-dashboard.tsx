@@ -336,7 +336,7 @@ function PackDownload({ overview, organizationId }: { overview: ProgrammeOvervie
 
 function DocumentRow({ row }: { row: RegisterRow }) {
   const t = useTranslations("documentRegister");
-  const { organization } = useOrganization();
+  const { organization, canWrite } = useOrganization();
   const { download, isPending } = useExportDownload();
   const { entry, doc } = row;
   const status = doc.status;
@@ -354,7 +354,7 @@ function DocumentRow({ row }: { row: RegisterRow }) {
   const downloads = Object.entries(entry.downloads ?? {}) as ["pdf" | "csv", string][];
 
   let actions: React.ReactNode = null;
-  if (status.state === "needsInput") {
+  if (status.state === "needsInput" && canWrite) {
     const label = t.has(`inputAction.${status.input}`) ? t(`inputAction.${status.input}`) : t("inputAction.default");
     actions = (
       <Link href={INPUTS[status.input].href} data-testid={`doc-input-${entry.id}`}>

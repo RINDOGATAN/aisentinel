@@ -23,13 +23,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
@@ -43,9 +36,9 @@ import {
   suggestScenarios,
 } from "@/config/threat-model";
 import { CapabilityMap, LoopStrip } from "@/components/governance/threat-model-visuals";
+import { SystemPicker } from "@/components/governance/system-picker";
 import { STATUS_OUTLINE } from "@/components/ui/status-note";
 
-const NONE = "__none__";
 
 export default function NewThreatModelPage() {
   const t = useTranslations("threatModel");
@@ -58,13 +51,8 @@ export default function NewThreatModelPage() {
   const [step, setStep] = useState(0);
   const [name, setName] = useState("");
   const [summary, setSummary] = useState("");
-  const [systemId, setSystemId] = useState<string>(NONE);
+  const [systemId, setSystemId] = useState<string>("");
   const [capabilities, setCapabilities] = useState<string[]>([]);
-
-  const { data: systems } = trpc.aiSystem.list.useQuery(
-    { organizationId: orgId, limit: 100 },
-    { enabled: !!orgId },
-  );
 
   const create = trpc.threatModel.create.useMutation({
     onSuccess: (model) => {
@@ -123,20 +111,13 @@ export default function NewThreatModelPage() {
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs">{t("systemLabel")}</Label>
-              <Select value={systemId} onValueChange={setSystemId}>
-                <SelectTrigger>
-                  <SelectValue placeholder={t("systemPlaceholder")} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value={NONE}>{t("systemNone")}</SelectItem>
-                  {(Array.isArray(systems) ? systems : (systems?.items ?? [])).map((s) => (
-                    <SelectItem key={s.id} value={s.id}>
-                      {s.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Label htmlFor="threat-model-system" className="text-xs">{t("systemLabel")}</Label>
+              <SystemPicker
+                id="threat-model-system"
+                value={systemId}
+                onChange={(system) => setSystemId(system?.id ?? "")}
+                clearable
+              />
             </div>
 
             <div className="rounded-md border p-3 space-y-1.5">
@@ -276,7 +257,7 @@ export default function NewThreatModelPage() {
                   organizationId: orgId,
                   name: name.trim(),
                   systemSummary: summary || undefined,
-                  aiSystemId: systemId === NONE ? undefined : systemId,
+                  aiSystemId: systemId || undefined,
                   capabilities,
                   acceptProposed: true,
                 })

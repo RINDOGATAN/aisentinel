@@ -20,13 +20,6 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   ArrowLeft,
   ScrollText,
   Loader2,
@@ -53,6 +46,7 @@ import { useOrganization } from "@/lib/organization-context";
 import { formatRelativeTime } from "@/lib/utils";
 import { useFormatDate } from "@/lib/use-format-date";
 import { STATUS_OUTLINE } from "@/components/ui/status-note";
+import { SystemPicker } from "@/components/governance/system-picker";
 
 // Translation keys in the `common` namespace.
 const policyTypeLabelKeys: Record<string, string> = {
@@ -107,11 +101,6 @@ export default function PolicyDetailPage() {
   const { data: policy, isLoading, refetch } = trpc.policy.getById.useQuery(
     { organizationId: orgId, id },
     { enabled: !!orgId && !!id }
-  );
-
-  const { data: systemsData } = trpc.aiSystem.list.useQuery(
-    { organizationId: orgId, limit: 100 },
-    { enabled: !!orgId && linkSystemDialogOpen }
   );
 
   const updateMutation = trpc.policy.update.useMutation({
@@ -278,8 +267,6 @@ export default function PolicyDetailPage() {
       aiSystemId,
     });
   };
-
-  const systems = systemsData?.items ?? [];
 
   return (
     <div className="space-y-6">
@@ -722,22 +709,12 @@ export default function PolicyDetailPage() {
               {t("linkSystemDialogDescription")}
             </p>
             <div className="space-y-2">
-              <Label>{t("labelAiSystem")}</Label>
-              <Select
+              <Label htmlFor="policy-link-system">{t("labelAiSystem")}</Label>
+              <SystemPicker
+                id="policy-link-system"
                 value={selectedSystemId}
-                onValueChange={setSelectedSystemId}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder={t("placeholderSelectAiSystem")} />
-                </SelectTrigger>
-                <SelectContent>
-                  {systems.map((system) => (
-                    <SelectItem key={system.id} value={system.id}>
-                      {system.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                onChange={(system) => setSelectedSystemId(system?.id ?? "")}
+              />
             </div>
           </div>
           <DialogFooter>

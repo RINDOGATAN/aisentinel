@@ -195,7 +195,9 @@ test("a new user's first session, end to end", async ({ page }, testInfo) => {
 
   await step(page, watch, "create an assessment, open it and edit it", async () => {
     await page.goto("/governance/assessments/new");
-    await page.getByRole("button", { name: new RegExp(systemName) }).click();
+    // The system picker searches by name (src/components/governance/system-picker.tsx).
+    await page.getByTestId("system-picker-input").fill(systemName);
+    await page.getByRole("option", { name: new RegExp(systemName) }).click();
     await page.locator("button:not([disabled])").filter({ hasText: "AI Risk" }).first().click();
     await page.getByRole("button", { name: "Create Assessment" }).click();
     await page.waitForURL(/\/governance\/assessments\/(?!new)[^/]+$/);

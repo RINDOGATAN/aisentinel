@@ -48,6 +48,7 @@ import { formatRelativeTime, getDaysUntil } from "@/lib/utils";
 import { useFormatDate } from "@/lib/use-format-date";
 import { STATUS_OUTLINE } from "@/components/ui/status-note";
 import { PageHeader } from "@/components/governance/page-header";
+import { SystemPicker } from "@/components/governance/system-picker";
 
 const statusColors: Record<string, string> = {
   ACTIVE: STATUS_OUTLINE.good,
@@ -123,13 +124,6 @@ export default function VendorDetailPage() {
   const [linkSystemOpen, setLinkSystemOpen] = useState(false);
 
   const utils = trpc.useUtils();
-
-  // Systems available to link (loaded when the dialog opens; already-linked
-  // systems are filtered out client-side below).
-  const { data: allSystems } = trpc.aiSystem.list.useQuery(
-    { organizationId: organization?.id ?? "", limit: 100 },
-    { enabled: linkSystemOpen && !!organization?.id }
-  );
 
   const linkSystem = trpc.aiSystem.update.useMutation({
     onSuccess: () => {
@@ -584,48 +578,31 @@ export default function VendorDetailPage() {
                 <DialogTitle>{t("linkSystemTitle")}</DialogTitle>
                 <DialogDescription>{t("linkSystemDescription")}</DialogDescription>
               </DialogHeader>
-              <div className="space-y-2">
-                {(() => {
-                  const linkedIds = new Set((vendor.systems ?? []).map((s) => s.id));
-                  const candidates = (allSystems?.items ?? []).filter((s) => !linkedIds.has(s.id));
-                  if (candidates.length === 0) {
-                    return (
-                      <p className="text-sm text-muted-foreground py-4 text-center">
-                        {t("linkSystemEmpty")}{" "}
-                        <Link href="/governance/ai-registry/new" className="text-primary hover:underline">
-                          {t("linkSystemEmptyLink")}
-                        </Link>
-                      </p>
-                    );
+              {/* Systems already linked to this vendor are left out on the server. */}
+              <div className="space-y-2 min-h-72">
+                <SystemPicker
+                  ariaLabel={t("linkSystemTitle")}
+                  value={null}
+                  withoutVendorId={vendor.id}
+                  autoFocus
+                  disabled={linkSystem.isPending}
+                  onChange={(system) => {
+                    if (!system) return;
+                    linkSystem.mutate({
+                      organizationId: organization?.id ?? "",
+                      id: system.id,
+                      vendorId: vendor.id,
+                    });
+                  }}
+                  empty={
+                    <p className="text-sm text-muted-foreground py-4 text-center">
+                      {t("linkSystemEmpty")}{" "}
+                      <Link href="/governance/ai-registry/new" className="text-primary hover:underline">
+                        {t("linkSystemEmptyLink")}
+                      </Link>
+                    </p>
                   }
-                  return candidates.map((system) => (
-                    <button
-                      key={system.id}
-                      disabled={linkSystem.isPending}
-                      onClick={() =>
-                        linkSystem.mutate({
-                          organizationId: organization?.id ?? "",
-                          id: system.id,
-                          vendorId: vendor.id,
-                        })
-                      }
-                      className="w-full text-left p-3 rounded-lg border border-border hover:border-primary/50 transition-colors disabled:opacity-50"
-                    >
-                      <div className="flex items-center gap-3">
-                        <Cpu className="w-4 h-4 text-primary shrink-0" />
-                        <div className="min-w-0">
-                          <p className="font-medium text-sm truncate">{system.name}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {statusLabel(system.status)} · {techniqueLabel(system.technique)}
-                          </p>
-                        </div>
-                        {linkSystem.isPending && (
-                          <Loader2 className="w-4 h-4 animate-spin ml-auto shrink-0" />
-                        )}
-                      </div>
-                    </button>
-                  ));
-                })()}
+                />
               </div>
             </DialogContent>
           </Dialog>

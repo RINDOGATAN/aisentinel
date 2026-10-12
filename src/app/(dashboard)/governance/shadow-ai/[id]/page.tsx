@@ -52,6 +52,7 @@ import { formatRelativeTime } from "@/lib/utils";
 import { useFormatDate } from "@/lib/use-format-date";
 import { suggestTechnique } from "@/lib/ai-technique-mapping";
 import { STATUS_CHIP, STATUS_OUTLINE } from "@/components/ui/status-note";
+import { SystemPicker } from "@/components/governance/system-picker";
 import { PageHeader } from "@/components/governance/page-header";
 
 // Labels come from the `common` namespace (technique* / role* keys).
@@ -112,7 +113,7 @@ const riskIndicatorColors: Record<string, string> = {
 export default function ShadowAIDetailPage() {
   const t = useTranslations("shadowAiDetail");
   const { formatDate } = useFormatDate();
-  const { statusLabel, roleLabel } = useEnumLabels();
+  const { roleLabel } = useEnumLabels();
   const locale = useLocale();
   const tc = useTranslations("common");
   const toolCategoryLabel = (category: string) =>
@@ -142,13 +143,6 @@ export default function ShadowAIDetailPage() {
     { organizationId: organization?.id ?? "", id },
     { enabled: !!organization?.id && !!id }
   );
-
-  const { data: systemsData } = trpc.aiSystem.list.useQuery(
-    { organizationId: organization?.id ?? "", limit: 100 },
-    { enabled: !!organization?.id && registerDialogOpen }
-  );
-
-  const systems = systemsData?.items ?? [];
 
   const updateReport = trpc.shadowAi.updateReport.useMutation({
     onSuccess: () => {
@@ -608,22 +602,12 @@ export default function ShadowAIDetailPage() {
                 {t("registerLinkHint")}
               </p>
               <div className="space-y-2">
-                <Label>{t("labelAiSystem")} *</Label>
-                <Select
+                <Label htmlFor="shadow-ai-link-system">{t("labelAiSystem")} *</Label>
+                <SystemPicker
+                  id="shadow-ai-link-system"
                   value={selectedSystemId}
-                  onValueChange={setSelectedSystemId}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder={t("placeholderSelectAiSystem")} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {systems.map((system) => (
-                      <SelectItem key={system.id} value={system.id}>
-                        {system.name} ({statusLabel(system.status)})
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  onChange={(system) => setSelectedSystemId(system?.id ?? "")}
+                />
               </div>
             </TabsContent>
           </Tabs>

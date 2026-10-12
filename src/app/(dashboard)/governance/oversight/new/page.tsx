@@ -22,6 +22,7 @@ import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { StatusNote } from "@/components/ui/status-note";
+import { SystemPicker } from "@/components/governance/system-picker";
 import { useTranslations } from "next-intl";
 import { useSubmitLock } from "@/lib/use-submit-lock";
 
@@ -66,13 +67,6 @@ export default function NewOversightGatePage() {
     nextReviewDate: "",
     assignedTo: "",
   });
-
-  const { data: systemsData } = trpc.aiSystem.list.useQuery(
-    { organizationId: organization?.id ?? "", limit: 100 },
-    { enabled: !!organization?.id }
-  );
-
-  const systems = systemsData?.items ?? [];
 
   const utils = trpc.useUtils();
 
@@ -140,32 +134,22 @@ export default function NewOversightGatePage() {
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="aiSystemId">{t("aiSystemLabel")} *</Label>
-                <Select
+                <SystemPicker
+                  id="aiSystemId"
                   value={formData.aiSystemId}
-                  onValueChange={(value) => setFormData({ ...formData, aiSystemId: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder={t("aiSystemPlaceholder")} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {systems.map((system) => (
-                      <SelectItem key={system.id} value={system.id}>
-                        {system.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {systems.length === 0 && (
-                  <p className="text-xs text-muted-foreground">
-                    {t.rich("noSystemsRegistered", {
-                      link: (chunks) => (
-                        <Link href="/governance/ai-registry/new" className="text-primary hover:underline">
-                          {chunks}
-                        </Link>
-                      ),
-                    })}
-                  </p>
-                )}
+                  onChange={(system) => setFormData({ ...formData, aiSystemId: system?.id ?? "" })}
+                  empty={
+                    <p className="text-xs text-muted-foreground">
+                      {t.rich("noSystemsRegistered", {
+                        link: (chunks) => (
+                          <Link href="/governance/ai-registry/new" className="text-primary hover:underline">
+                            {chunks}
+                          </Link>
+                        ),
+                      })}
+                    </p>
+                  }
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="gateType">{t("gateTypeLabel")} *</Label>

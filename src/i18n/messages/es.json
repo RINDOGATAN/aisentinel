@@ -6279,6 +6279,13 @@
       "shadowAi": "Herramientas de IA sin aprobar"
     }
   },
+  "systemPicker": {
+    "placeholder": "Busca sistemas de IA por nombre",
+    "results": "Sistemas de IA",
+    "noResults": "Ningún sistema de IA con ese nombre.",
+    "more": "Se muestran los primeros {count}. Escribe un nombre para encontrar los demás.",
+    "clear": "Quitar la selección"
+  },
   "licenses": {
     "metaTitle": "Licencias y código fuente | AI Sentinel",
     "metaDescription": "AI Sentinel se distribuye con la licencia GNU Affero General Public License, versión 3 o posterior. El código fuente correspondiente completo está disponible.",

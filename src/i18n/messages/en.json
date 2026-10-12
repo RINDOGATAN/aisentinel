@@ -6279,6 +6279,13 @@
       "shadowAi": "Unapproved AI tools"
     }
   },
+  "systemPicker": {
+    "placeholder": "Search AI systems by name",
+    "results": "AI systems",
+    "noResults": "No AI system with that name.",
+    "more": "Showing the first {count}. Type a name to find the others.",
+    "clear": "Clear the selection"
+  },
   "licenses": {
     "metaTitle": "Licenses & source | AI Sentinel",
     "metaDescription": "AI Sentinel is licensed under the GNU Affero General Public License v3 or later. Complete corresponding source is available.",

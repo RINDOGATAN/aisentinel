@@ -22,8 +22,8 @@
  *    deleted organisation would make "it is really deleted" untrue.
  *
  * What this cannot prove without a database: that Postgres honours the
- * constraints as declared. That check belongs to the owner, on a copy; see
- * STATUS.md.
+ * constraints as declared. That check belongs to the maintainers, on a copy of
+ * the database.
  */
 
 import { describe, it, expect, beforeEach, vi } from "vitest";

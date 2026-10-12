@@ -1,10 +1,10 @@
-# AI-governance landscape, August 2026 — delta report + product strategy for AI SENTINEL
+# AI-governance landscape, August 2026 — delta report for AI SENTINEL
 
 **Retrieval date for all sources: 2026-08-05.** Companion to
 `ai-governance-landscape-2026-07.md` (retrieved 2026-07-17); this report covers the delta
 since then — including what actually happened on **2 Aug 2026**, the regime's biggest
-applicability date — plus two new research threads: the commercial platform landscape and
-the state of the art in AI compliance documentation artifacts. Method: three parallel
+applicability date — plus a new research thread: the state of the art in AI compliance
+documentation artifacts. Method: parallel
 research agents over primary sources where possible. Confidence tags as before:
 **[P]** primary source fetched · **[S]** secondary (law firm / trade press / vendor) ·
 **[U]** unconfirmed.
@@ -13,10 +13,7 @@ research agents over primary sources where possible. Confidence tags as before:
 in force 27 Jul 2026) — the citation that unblocks finalizing our seeded legal content.
 (2) **Art. 50 transparency and Commission GPAI enforcement went live 2 Aug 2026**, with
 final Commission guidelines (20 Jul) and an adequacy-blessed Transparency Code of Practice
-(~190 signatories). (3) Gartner published its **first Magic Quadrant for AI Governance
-Platforms** (Jun 2026) — and the survey shows the deep EU AI Act artifacts AI Sentinel is
-built around remain rare across the field, while sovereignty/self-host is offered by almost
-nobody. That combination defines the product strategy at the end of this report.
+(~190 signatories).
 
 ---
 
@@ -79,57 +76,7 @@ nobody. That combination defines the product strategy at the end of this report.
   Art. 11 simplified technical-documentation form for SMEs; any OJ citation of a
   harmonised standard.
 
-## 2. Platform landscape (mid-2026)
-
-- **2.1 First Gartner MQ for AI Governance Platforms (16–17 Jun 2026) [S over paywalled P].**
-  13 vendors. Leaders: IBM, ServiceNow, Truyo. Visionaries: Airia, Credo AI, ModelOp,
-  Monitaur, OneTrust. Challenger: Holistic AI. Niche: Cranium, Relyance, Saidot, SAP.
-  Market $65M (2024) → $1.4B (2030) projected. Forrester Wave Q3 2025 leaders: Credo AI,
-  IBM. Consolidation: FairNow→AuditBoard ("Optro"), Lakera→Check Point, Robust
-  Intelligence→Cisco; Zenity $125M C (3 Aug 2026).
-- **2.2 The deep EU AI Act artifacts are RARE — this is the strategic finding.** Named
-  FRIA workflows: **Modulos, Saidot only**. Annex IV tech-doc generation from connected
-  sources: **Modulos, trail** (Saidot captures; Vanta/Trustible assemble; IBM/Microsoft/
-  OneTrust/ServiceNow: nothing). Art. 50 tracking: **Modulos, Saidot only**. EU-database
-  registration tracking: **Saidot only**. Art. 4 literacy tracking: **Modulos only**.
-  Conformity + CE-marking prep: Modulos, Credo, Saidot, trail. Risk-tier classification
-  wizards, by contrast, are table stakes (IBM, Vanta, Trustible, Modulos, Credo, Dastra,
-  OneTrust, ServiceNow).
-- **2.3 Discovery: manual-only registry intake now reads as legacy.** Four architectures:
-  ML-platform connectors (OneTrust: Bedrock/SageMaker/Foundry/Databricks/Vertex, Mar 2026;
-  Credo 30 integrations; ServiceNow 30+); provider-admin-API sync (Vanta ↔ OpenAI +
-  Anthropic admin APIs); endpoint/network telemetry (Drata Sensor 4 Aug 2026 incl. local
-  models; Purview DSPM; Defender 1,000+ GenAI app catalog); and best-practice correlation
-  (SSO + OAuth grants + browser + expense mining). Workflow-first vendors targeting
-  legal/compliance buyers (Trustible, Naaia, Dastra) deliberately stay manual — AI
-  Sentinel's cohort.
-- **2.4 "AI CCM" at the compliance-automation vendors is mostly access governance.**
-  Vanta/Drata automated tests verify AI-provider accounts belong to active employees, get
-  deprovisioned, configs are sane — not model behavior. Genuine eval→evidence pipelines
-  exist only at Microsoft Foundry ↔ Credo/Saidot/Compliance Manager and IBM's factsheet
-  chain. Eval vendors are being absorbed by security vendors, not governance platforms.
-- **2.5 Agent governance was the year's universal ship.** Credo Agent Registry + Agent
-  Cards + Agent Governor; Holistic AI Guardian Agents; Saidot Agent Catalogue (autonomy
-  levels, tool-level risk, MCP connectivity); Drata AI Agent Governance (MCP proxy with
-  inline policy enforcement, 4 Aug 2026); OneTrust MCP policy enforcement; ServiceNow ↔
-  Agent 365; **Microsoft Entra Agent ID GA Apr 2026** (agents as directory objects with
-  human sponsors); Databricks Unity AI Gateway (Contextual Service Policies over models/
-  agents/MCP services); MCP donated to Linux Foundation (Dec 2025); OWASP Agentic Top 10
-  (Dec 2025). Gartner: 150K+ agents per Fortune 500 by 2028 [U, third-hand].
-- **2.6 Sovereignty is near-empty territory.** Self-host/on-prem: Naaia, Modulos (hybrid),
-  Giskard, and OSS **VerifyWise** (the most complete open-source governance platform — EU
-  AI Act templates, ISO 42001/NIST mappings, model inventory, LLM-eval module; the OSS
-  competitor to watch). None of the funded US players emphasize it.
-- **2.7 Trust centers / public AI transparency: white space.** Only Saidot ships one-click
-  transparency reports from live governance data; Warden AI's embedded bias-audit badges
-  work as a model. No one ships public AI system-card publishing. (Frontier system cards
-  themselves are unstandardized — 947 unique section names across studied cards.)
-- **2.8 Pricing/packaging:** custom-quoted platform + framework "policy packs" as add-ons;
-  Vanta/Drata AI frameworks ~$5–15K/yr add-ons; OneTrust ~$50K entry; dedicated EU
-  platforms ~€30–50K/yr [all 3P estimates]. Governance spend now 8–12 % of enterprise AI
-  budgets [3P]. Buyers split: security/GRC-led vs legal/compliance-led vs ML-platform-led.
-
-## 3. Documentation artifacts (state of the art)
+## 2. Documentation artifacts (state of the art)
 
 - **3.1 System cards are now book-length safety dossiers** organized around capability
   thresholds (Anthropic RSP/FCF determinations; OpenAI Preparedness thresholds + rolling
@@ -168,7 +115,7 @@ nobody. That combination defines the product strategy at the end of this report.
   (disclosure-with-short-notice — Microsoft cut AI-subprocessor notice to 30 days). No
   ratified private-sector AI-addendum standard (negative).
 
-## 4. Seed-content audit (delta)
+## 3. Seed-content audit (delta)
 
 | Item | Action |
 |---|---|
@@ -179,36 +126,25 @@ nobody. That combination defines the product strategy at the end of this report.
 | Spain / ES locale | PLOIA = bill in committee (121/000096); keep €35M/7 % deepfake-fine copy conditional |
 | Art. 6(5), Art. 73, FRIA template | All still draft/absent — existing "draft" annotations stay correct |
 
-## 5. Product strategy
+## 4. Build list
 
-**Positioning.** AI Sentinel's competitive set is Modulos / Saidot / trail / Naaia — the
-EU artifact-depth cohort — not the CCM players. The rare/differentiating list in §2.2 is
-nearly congruent with AI Sentinel's existing module map (FRIA, conformity, Annex IV
-drafting, cross-framework mappings), and sovereignty (AGPL, self-host, local LLM gateway,
-EN/ES) is offered by almost no one. Double down on artifact depth + deadline intelligence
-+ sovereignty; don't chase integrations or runtime enforcement.
+| # | Item |
+|---|---|
+| 1 | Finalize seeds per §3 (2026/1744 citation, final Art. 50 guidance, EN 18286, Spain status); re-seed hosted |
+| 2 | **Art. 50 transparency module**: per-system profile (chatbot / deepfake / marking / emotion-recognition), deadline ladder (2 Dec 2026 grace; the 2 Feb 2027 interop date is unsupported, see 1.4), AI-drafted marking-methods statement; Transparency-CoP signatory field via vendor.watch |
+| 3 | **Obligation timeline engine**: deterministic dated obligation schedule per system from classification/role/GPAI flags; org compliance calendar on the executive dashboard |
+| 4 | **Agent governance in the registry**: agents first-class (autonomy level, tools/MCP servers, human sponsor, kill-switch documentation, oversight-gate links); agentic vendor-catalog fields |
+| 5 | **Subprocessor supply-chain view**: vendor supply-chain tab + org-level dependency rollup from the enriched catalog (`catalogVendorSlug` links); MCC-AI / AI-CAIQ-aligned vendor-assessment template |
+| 6 | **Dual incident-deadline ladders**: Art. 3(49) type picker → Art. 73 15/10/2 vs GPAI CoP 2/5/10/15; Commission GPAI template as PDF export |
+| 7 | **FRIA v2 premium assessment skill**: APDCAT per-right 4×4 likelihood×severity + ISO 42005 Annex E structure; ships via the assessment installer |
+| 8 | Public AI transparency page / system-card publishing per org |
 
-**Prioritized build list:**
-
-| # | Priority driver | Item |
-|---|---|---|
-| 1 | Now — credibility floor | Finalize seeds per §4 (2026/1744 citation, final Art. 50 guidance, EN 18286, Spain status); re-seed hosted |
-| 2 | Live obligation, ~2 competitors | **Art. 50 transparency module**: per-system profile (chatbot / deepfake / marking / emotion-recognition), deadline ladder (2 Dec 2026 grace; the 2 Feb 2027 interop date is unsupported, see 1.4), AI-drafted marking-methods statement; Transparency-CoP signatory field via vendor.watch |
-| 3 | Post-Omnibus confusion = demand | **Obligation timeline engine**: deterministic dated obligation schedule per system from classification/role/GPAI flags; org compliance calendar on the executive dashboard |
-| 4 | 2026's universal theme | **Agent governance in the registry**: agents first-class (autonomy level, tools/MCP servers, human sponsor, kill-switch documentation, oversight-gate links); agentic vendor-catalog fields |
-| 5 | Unique data asset, already shipped | **Subprocessor supply-chain view**: vendor supply-chain tab + org-level dependency rollup from the enriched catalog (`catalogVendorSlug` links); MCC-AI / AI-CAIQ-aligned vendor-assessment template |
-| 6 | Live GPAI regime | **Dual incident-deadline ladders**: Art. 3(49) type picker → Art. 73 15/10/2 vs GPAI CoP 2/5/10/15; Commission GPAI template as PDF export |
-| 7 | No official template = open field | **FRIA v2 premium assessment skill**: APDCAT per-right 4×4 likelihood×severity + ISO 42005 Annex E structure; ships via the assessment installer |
-| 8 | White space, most speculative | Public AI transparency page / system-card publishing per org |
-
-**Deliberately not pursuing:** runtime MCP/guardrail enforcement, integration-heavy
-continuous monitoring, eval harnesses — different buyer, different moat.
+**Out of scope:** runtime MCP/guardrail enforcement, integration-heavy
+continuous monitoring, eval harnesses (out of scope for this application).
 
 **Catalog-field pipeline for vendor.watch** (cross-app contract, coordinate there):
 Transparency-CoP signatory (Section 1/2) · GPAI CoP signatory · training-data summary
 status (template/prose/none) · AI BOM availability (CycloneDX/SPDX) · agentic capabilities.
 
 **Caveats:** (i) Art. 50 transitional sub-dates are [S] — verify against the 2026/1744
-text before seeding; (ii) Gartner MQ detail is from secondary write-ups of a paywalled
-report; (iii) pricing figures are third-party estimates; (iv) items tagged [U] must not
-appear in product copy.
+text before seeding; (ii) items tagged [U] must not appear in product copy.

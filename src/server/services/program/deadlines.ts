@@ -2,9 +2,8 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 /**
- * The deadlines at risk the Guided dashboard and All clients show (the
- * clarity work carried from DPO Central, owner's decision d10, 9 October
- * 2026):
+ * The deadlines at risk the Guided dashboard and All clients show (as in
+ * DPO Central):
  *
  * - `incidentReport`  the statutory clock of each open incident with nothing
  *                     sent yet (src/config/incident-deadlines.ts), the

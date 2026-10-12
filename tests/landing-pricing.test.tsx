@@ -2,7 +2,7 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 /**
- * The landing's pricing block, third version (owner, 11 Oct 2026):
+ * The landing's pricing block, third version:
  *   - one simple block in BOTH languages, right after the hosting block;
  *   - the header carries "Pricing" / "Precios" to the block's anchor, the
  *     last link before the language switch (the phone menu has it too);
@@ -150,7 +150,7 @@ describe("pricing block", () => {
   });
 });
 
-describe("hero (owner, 11 Oct 2026)", () => {
+describe("hero", () => {
   const page = readFileSync(path.resolve(__dirname, "../src/landing/components/StartupProductPage.tsx"), "utf8");
   const title = (d: Record<string, string>) => d["hero.title.prefix"] + d["hero.title.accent"] + d["hero.title.suffix"];
 

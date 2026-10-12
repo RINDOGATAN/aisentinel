@@ -81,7 +81,7 @@ describe("landing header and footer", () => {
 });
 
 describe("landing hero", () => {
-  // The generic welcome line is gone (owner, 10 Oct 2026): the product summary is back under the title.
+  // The generic welcome line is gone: the product summary is back under the title.
   it("shows the product summary, not a welcome line, under the title", () => {
     const page = read("src/landing/components/StartupProductPage.tsx");
     expect(page).not.toContain("hero.welcome");
@@ -161,10 +161,10 @@ describe("Spanish sections", () => {
 
   it("offer exactly the three ways sold in Spain: TODO.LAW cloud, managed virtual server, your own hardware", () => {
     expect(asShipped.match(/<article class="paper-card/g)).toHaveLength(3);
-    // The owner's heading for the section, as the eyebrow (English: "Guarantees and hosting").
+    // The section's heading, as the eyebrow (English: "Guarantees and hosting").
     expect(ES["es.ways.label"]).toBe("Garantías y alojamiento");
     expect(EN["en.ways.label"]).toBe("Guarantees and hosting");
-    // The owner's wording (10 Oct 2026), the same as DPO Central's landing.
+    // The same wording as DPO Central's landing.
     expect(ES["es.ways.heading.prefix"] + ES["es.ways.heading.accent"]).toBe("Adaptado a tus necesidades");
     expect(ES["es.ways.w1.title"]).toBe("En la nube de TODO.LAW");
     expect(ES["es.ways.w1.desc"]).toMatch(/sencilla exportación/);

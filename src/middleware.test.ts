@@ -79,7 +79,7 @@ describe("middleware: the landing language for <html lang>", () => {
     expect(forwarded("http://localhost:3003/?lang=en", "locale=es")).toBe("en");
   });
 
-  // Since 10 Oct 2026 the landing always gets a decided language: then the cookie, then Accept-Language.
+  // The landing always gets a decided language: then the cookie, then Accept-Language.
   it("decides the landing language without ?lang= from the cookie, then the browser", () => {
     expect(forwarded("http://localhost:3003/")).toBe("en");
     expect(forwarded("http://localhost:3003/?lang=fr")).toBe("en");

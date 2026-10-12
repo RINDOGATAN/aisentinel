@@ -199,9 +199,8 @@ export function stageProgress<C>(stage: PathStage<C>, statuses: PathStatuses): S
 }
 
 /**
- * The one state word a stage carries in the menu and on its dashboard tile
- * (owner's decision d6, 9 October 2026): done, to confirm, in progress, not
- * started, or "action" when something in the stage waits for a person
+ * The one state word a stage carries in the menu and on its dashboard tile:
+ * done, to confirm, in progress, not started, or "action" when something in the stage waits for a person
  * (`attention`: the ids of such stages, from "Needs action"). A stage whose
  * steps all have no page yet stays "coming".
  */
@@ -225,8 +224,7 @@ export function overallProgress<C>(config: PathConfig<C>, statuses: PathStatuses
 }
 
 /**
- * THE programme figure ("2 of 10 steps confirmed"), owner's decision d3,
- * 9 October 2026. Computed here and only here: the dashboard, the menu, All
+ * THE programme figure ("2 of 10 steps confirmed"). Computed here and only here: the dashboard, the menu, All
  * clients and the Reports page all read it through this function, so they
  * can never show different numbers.
  *

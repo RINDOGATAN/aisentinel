@@ -2,7 +2,7 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 /**
- * The lock beside a premium menu entry (owner's decision, 9 October 2026):
+ * The lock beside a premium menu entry:
  * shown only where the page itself would show its locked state, which is a
  * deployment that enforces licenses, for an organization without one. Never
  * on the hosted pilot, never where every skill is free.

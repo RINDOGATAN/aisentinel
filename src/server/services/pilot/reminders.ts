@@ -3,8 +3,7 @@
 
 /**
  * Pilot-ending reminders, run once a day by /api/cron/pilot-reminders
- * (approved by the owner on 11 Oct 2026; the wording is his to review before
- * the switch goes on).
+ * (off until its feature switch is set).
  *
  * Two e-mails per organisation on the hosted pilot, to its owners and
  * administrators only (not every member):
@@ -21,7 +20,7 @@
  * UTC in the English one.
  *
  * Language: the app keeps no language setting per person or organisation,
- * so Spanish for an organisation in the euro market (it declares the EU or
+ * so Spanish for an organisation in the EU or EEA (it declares the EU or
  * the EEA and no US jurisdiction), else English.
  *
  * The paid plan: an organisation whose row carries plan = EU_CLOUD (set by an

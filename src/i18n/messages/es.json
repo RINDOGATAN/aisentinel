@@ -1459,10 +1459,11 @@
     "orgNameLabel": "Nombre de la organización",
     "orgNamePlaceholder": "p. ej. Industrias Acme",
     "orgSlugLabel": "Identificador de URL",
-    "orgSlugHint": "Minúsculas, números y guiones.",
+    "orgSlugHint": "Se rellena a partir del nombre. Es un identificador interno: minúsculas, números y guiones.",
     "orgDomainLabel": "Dominio de correo (opcional)",
     "orgDomainPlaceholder": "acme.com",
-    "orgCreated": "Organización creada: abriendo su asistente inicial"
+    "orgCreated": "Organización creada: abriendo su asistente inicial",
+    "moreOptions": "Más opciones"
   },
   "experts": {
     "deploymentCtaTitle": "Instala AI Sentinel en tu propio hardware",
@@ -1475,7 +1476,15 @@
     "contactDescription": "Contacta con nosotros para activar esta funcionalidad en tu organización.",
     "contactUs": "Contacta con nosotros",
     "enableFeature": "Activar funcionalidad",
-    "redirecting": "Redirigiendo al pago..."
+    "redirecting": "Redirigiendo al pago...",
+    "addToOrganization": "Añade {name} a tu organización.",
+    "includedSelfHosted": "Tu instalación autoalojada ya incluye {name} y tu organización ya tiene acceso.",
+    "activateOnSkills": "{name} es una funcionalidad premium. Activa en la página de Skills el archivo de licencia que recibiste para habilitarla en tu organización.",
+    "close": "Cerrar",
+    "goToSkills": "Ir a la página de Skills",
+    "enableMany": "{count, plural, one {Activar # funcionalidad} other {Activar # funcionalidades}}",
+    "manyIncludedSelfHosted": "Estas funcionalidades están incluidas en tu instalación autoalojada.",
+    "manyActivateOnSkills": "Activa en la página de Skills los archivos de licencia que recibiste para habilitar estas funcionalidades."
   },
   "skills": {
     "title": "Skills",

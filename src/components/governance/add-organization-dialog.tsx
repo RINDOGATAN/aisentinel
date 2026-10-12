@@ -6,12 +6,16 @@
  * Add an organisation (organization.create; the creator becomes OWNER), then
  * switch into it and open its quick start. Opened from All clients
  * (/governance/portfolio), where the switcher's "Add a client" also lands.
+ *
+ * The name is the one field shown. The URL identifier is filled from it and,
+ * with the email domain, waits under "More options"; the server makes the
+ * identifier unique (src/lib/unique-slug.ts).
  */
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Loader2 } from "lucide-react";
+import { ChevronDown, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -38,6 +42,12 @@ export function slugify(name: string): string {
     .slice(0, 50);
 }
 
+/** The identifier used when the person has not typed one: from the name, or "client" when the name has no Latin letters or digits. */
+export function slugFromName(name: string): string {
+  const slug = slugify(name);
+  return slug.length >= 2 ? slug : "client";
+}
+
 export function AddOrganizationDialog({
   open,
   onOpenChange,
@@ -55,6 +65,7 @@ export function AddOrganizationDialog({
   const utils = trpc.useUtils();
   const { setOrganization } = useOrganization();
   const [orgForm, setOrgForm] = useState({ name: "", slug: "", domain: "", slugTouched: false });
+  const [moreOpen, setMoreOpen] = useState(false);
 
   const createOrg = trpc.organization.create.useMutation({
     onSuccess: (org) => {
@@ -62,6 +73,7 @@ export function AddOrganizationDialog({
       void utils.programPath.portfolio.invalidate();
       onCreated();
       setOrgForm({ name: "", slug: "", domain: "", slugTouched: false });
+      setMoreOpen(false);
       // Switch into the new organization and start its onboarding.
       // The creator is the owner (organization.create).
       setOrganization({ id: org.id, name: org.name, slug: org.slug, role: "OWNER" });
@@ -70,7 +82,11 @@ export function AddOrganizationDialog({
     onError: (e) => toast.error(e.message),
   });
 
-  const slugValid = /^[a-z0-9-]{2,50}$/.test(orgForm.slug);
+  const slug = orgForm.slugTouched ? orgForm.slug : slugFromName(orgForm.name);
+  const slugValid = /^[a-z0-9-]{2,50}$/.test(slug);
+  // A typed identifier that cannot be used keeps the options open, so the
+  // reason the button is disabled stays on screen.
+  const showMore = moreOpen || (orgForm.slugTouched && !slugValid);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -86,35 +102,43 @@ export function AddOrganizationDialog({
               id="org-name"
               value={orgForm.name}
               placeholder={t("orgNamePlaceholder")}
-              onChange={(e) =>
-                setOrgForm((prev) => ({
-                  ...prev,
-                  name: e.target.value,
-                  slug: prev.slugTouched ? prev.slug : slugify(e.target.value),
-                }))
-              }
+              onChange={(e) => setOrgForm((prev) => ({ ...prev, name: e.target.value }))}
             />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="org-slug">{t("orgSlugLabel")} *</Label>
-            <Input
-              id="org-slug"
-              value={orgForm.slug}
-              onChange={(e) =>
-                setOrgForm((prev) => ({ ...prev, slug: e.target.value, slugTouched: true }))
-              }
-            />
-            <p className="text-xs text-muted-foreground">{t("orgSlugHint")}</p>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="org-domain">{t("orgDomainLabel")}</Label>
-            <Input
-              id="org-domain"
-              value={orgForm.domain}
-              placeholder={t("orgDomainPlaceholder")}
-              onChange={(e) => setOrgForm((prev) => ({ ...prev, domain: e.target.value }))}
-            />
-          </div>
+          <button
+            type="button"
+            aria-expanded={showMore}
+            aria-controls="org-more-options"
+            onClick={() => setMoreOpen((v) => !v)}
+            className="flex items-center gap-1 text-sm text-primary underline-offset-4 hover:underline"
+          >
+            {t("moreOptions")}
+            <ChevronDown className={`w-4 h-4 motion-safe:transition-transform ${showMore ? "rotate-180" : ""}`} aria-hidden="true" />
+          </button>
+          {showMore && (
+            <div id="org-more-options" className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="org-slug">{t("orgSlugLabel")}</Label>
+                <Input
+                  id="org-slug"
+                  value={slug}
+                  onChange={(e) =>
+                    setOrgForm((prev) => ({ ...prev, slug: e.target.value, slugTouched: true }))
+                  }
+                />
+                <p className="text-xs text-muted-foreground">{t("orgSlugHint")}</p>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="org-domain">{t("orgDomainLabel")}</Label>
+                <Input
+                  id="org-domain"
+                  value={orgForm.domain}
+                  placeholder={t("orgDomainPlaceholder")}
+                  onChange={(e) => setOrgForm((prev) => ({ ...prev, domain: e.target.value }))}
+                />
+              </div>
+            </div>
+          )}
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
@@ -125,7 +149,7 @@ export function AddOrganizationDialog({
             onClick={() =>
               createOrg.mutate({
                 name: orgForm.name.trim(),
-                slug: orgForm.slug,
+                slug,
                 domain: orgForm.domain.trim() || undefined,
               })
             }

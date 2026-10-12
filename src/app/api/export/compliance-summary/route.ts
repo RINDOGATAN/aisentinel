@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
   const organizationId = request.nextUrl.searchParams.get("organizationId");
   const aiSystemId = request.nextUrl.searchParams.get("aiSystemId");
   const frameworkId = request.nextUrl.searchParams.get("frameworkId");
-  const locale = exportLocale(request.nextUrl.searchParams.get("locale"), request.headers.get("cookie"));
+  const locale = exportLocale(request.nextUrl.searchParams.get("locale"), request.headers.get("cookie"), request.headers.get("accept-language"));
 
   if (!organizationId) {
     return Response.json({ error: "organizationId is required" }, { status: 400 });

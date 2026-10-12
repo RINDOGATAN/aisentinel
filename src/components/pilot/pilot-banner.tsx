@@ -73,7 +73,7 @@ export function PilotEndBar({ locale, state, endsAt, transition = false }: Pilot
   // The trial bar may be closed for the session; the ending and read-only bars stay.
   const dismissed = useSyncExternalStore(subscribeDismissed, readDismissed, () => false);
   // The visitor's currency; a Spanish bar is always in euros (src/lib/currency.ts).
-  const currency = useCurrency();
+  const currency = useCurrency(locale);
   if (state === "hidden") return null;
   if ((state === "trial" || state === "ending") && !endsAt) return null;
   if (state === "trial" && dismissed) return null;

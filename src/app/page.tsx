@@ -11,6 +11,7 @@ import { brand } from "@/config/brand";
 import { OG_IMAGES, SEO, TWITTER_IMAGES } from "@/config/seo";
 import { requestLandingLocale } from "@/lib/landing-locale";
 import type { Locale } from "@/lib/locale-cookie";
+import { COUNTRY_HEADER, currencyForCountry } from "@/lib/currency";
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
@@ -70,5 +71,8 @@ export default async function HomePage({ searchParams }: { searchParams: SearchP
   }
 
   // Rendered in its language on the server, so the first paint is never in the other one.
-  return <LandingPage initialLocale={await pageLocale(searchParams)} />;
+  // The visitor's currency from the geo header (euros only in the EU), the
+  // same rule the middleware records in the cookie and checkout charges.
+  const currency = currencyForCountry((await headers()).get(COUNTRY_HEADER));
+  return <LandingPage initialLocale={await pageLocale(searchParams)} currency={currency} />;
 }

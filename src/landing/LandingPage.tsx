@@ -14,6 +14,7 @@ import authEn from "./i18n/en/startups-auth.json";
 import authEs from "./i18n/es/startups-auth.json";
 import { localeCookieValues, normalizeLocaleCookie, writeLocaleCookie } from "@/lib/locale-cookie";
 import { SEO } from "@/config/seo";
+import type { Currency } from "@/lib/currency";
 
 /**
  * The language in the browser, by the server's rule (src/lib/landing-locale.ts):
@@ -31,7 +32,17 @@ function detectLocale(rendered: "en" | "es"): "en" | "es" {
   return localeCookieValues(document.cookie).length > 0 ? fromCookie : rendered;
 }
 
-export default function LandingPage({ initialLocale = "en" }: { initialLocale?: "en" | "es" }) {
+/**
+ * `currency` is the visitor's, decided on the server from the geo header
+ * (src/lib/currency.ts); the pricing block shows euros on the Spanish page whatever it is.
+ */
+export default function LandingPage({
+  initialLocale = "en",
+  currency = "USD",
+}: {
+  initialLocale?: "en" | "es";
+  currency?: Currency;
+}) {
   // The server decided the language (src/app/page.tsx), so the first paint is already in it.
   const [locale, setLocale] = useState<"en" | "es">(initialLocale);
 
@@ -128,7 +139,7 @@ export default function LandingPage({ initialLocale = "en" }: { initialLocale?: 
         heroVideo="/hero-sentinel-bg-720.mp4"
         heroPoster="/hero-sentinel-poster.jpg"
         callbackUrl="/governance"
-        middle={<LandingSections t={t} locale={locale} />}
+        middle={<LandingSections t={t} locale={locale} currency={currency} />}
         plain
         docsLocale={locale}
       />

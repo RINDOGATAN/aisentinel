@@ -50,6 +50,7 @@ import { brand } from "@/config/brand";
 import { LANDING_VIDEOS, type LandingLocale, type LandingVideo } from "../config/landing-videos";
 import CustomerLogos from "./CustomerLogos";
 import PricingSection from "./PricingSection";
+import type { Currency } from "@/lib/currency";
 import SafeguardsGuide, { wayBoxId } from "./SafeguardsGuide";
 import { WAY_CARD, recommend, type Answers, type QuestionId } from "../config/safeguards";
 
@@ -451,9 +452,11 @@ interface LandingSectionsProps {
   videos?: readonly LandingVideo[];
   /** For tests; the page starts with the guide closed and nothing answered. */
   initialGuide?: GuideState;
+  /** The visitor's currency, decided on the server from the geo header (src/lib/currency.ts). */
+  currency?: Currency;
 }
 
-export default function LandingSections({ t, locale, videos = LANDING_VIDEOS[locale], initialGuide }: LandingSectionsProps) {
+export default function LandingSections({ t, locale, videos = LANDING_VIDEOS[locale], initialGuide, currency = "USD" }: LandingSectionsProps) {
   const setup = SETUP[locale];
   return (
     <>
@@ -462,7 +465,7 @@ export default function LandingSections({ t, locale, videos = LANDING_VIDEOS[loc
       <Stages t={t} p={locale} />
       {/* Keyed by language: the toggle starts the guide afresh, as the ways change. */}
       <Ways key={locale} t={t} p={locale} setup={setup} initialGuide={initialGuide} />
-      <PricingSection locale={locale} />
+      <PricingSection locale={locale} currency={currency} />
       {setup.logos && <CustomerLogos label={t(`${locale}.logos.label`)} />}
     </>
   );

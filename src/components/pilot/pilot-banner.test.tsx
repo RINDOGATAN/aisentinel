@@ -116,6 +116,17 @@ describe("what the bar says", () => {
     expect(Object.keys(PILOT_END_BAR_COPY)).toEqual(["en", "es"]);
   });
 
+  it("states the English price in euros for a visitor in the EU, dollars otherwise; Spanish always in euros", () => {
+    const en = PILOT_END_BAR_COPY.en;
+    const es = PILOT_END_BAR_COPY.es;
+    expect(en.trial(15, "26 October 2026", "EUR")).toBe(
+      "Free for 15 days, until 26 October 2026. Then export your program or keep going on the Cloud Plan: €179 a month or €1,800 a year.",
+    );
+    expect(en.trialTransition("26 October 2026", "EUR")).toContain("Cloud Plan: €179 a month or €1,800 a year.");
+    expect(en.trial(15, "26 October 2026", "USD")).toBe(en.trial(15, "26 October 2026"));
+    expect(es.trial(15, "26 de octubre de 2026", "USD")).toBe(es.trial(15, "26 de octubre de 2026", "EUR"));
+  });
+
   it("gives the end date and the pricing link in the last five days", () => {
     const en = render("en", "ending");
     expect(en).toContain('data-testid="pilot-end-bar"');

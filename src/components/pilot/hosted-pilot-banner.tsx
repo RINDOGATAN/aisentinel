@@ -11,20 +11,18 @@
  *
  * "Move to the paid plan" is offered only when the automatic upgrade is on
  * (AUTO_UPGRADE_ENABLED and PLAN_SYNC_SECRET) and a payment link is set for
- * the visitor's currency, decided here from the request headers. Neither the
- * secret nor the link reaches the browser.
+ * the charge currency. The layout decides both from the request headers with
+ * inAppPlanOffer (src/server/services/plan-eu/offer.ts), the same decision
+ * that sets the currency of the bar's price, and passes `upgrade`. Neither
+ * the secret nor the link reaches the browser.
  */
 
-import { headers } from "next/headers";
 import { getLocale } from "next-intl/server";
 import { hostedPilotActive, type PilotLocale } from "@/config/pilot";
-import { autoUpgradeActive, planCloudLink } from "@/server/services/plan-eu/config";
-import { visitorCurrency } from "@/server/services/plan-eu/currency";
 import { OrganizationPilotEndBar } from "./pilot-banner";
 
-export async function HostedPilotBanner() {
+export async function HostedPilotBanner({ upgrade = false }: { upgrade?: boolean }) {
   if (!hostedPilotActive()) return null;
   const locale: PilotLocale = (await getLocale()) === "es" ? "es" : "en";
-  const upgrade = autoUpgradeActive() && planCloudLink(visitorCurrency(await headers())) !== null;
   return <OrganizationPilotEndBar locale={locale} upgrade={upgrade} />;
 }

@@ -16,6 +16,7 @@ import {
 import { useTranslations } from "next-intl";
 import { features } from "@/config/features";
 import { formatPrice } from "@/lib/currency";
+import { useChargeCurrency } from "@/components/charge-currency";
 
 interface EnableFeatureModalProps {
   open: boolean;
@@ -35,6 +36,8 @@ export function EnableFeatureModal({
   skillDescription,
 }: EnableFeatureModalProps) {
   const t = useTranslations("premium");
+  // The currency the customer will be charged (src/components/charge-currency.tsx).
+  const currency = useChargeCurrency();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [fallbackContact, setFallbackContact] = useState(false);
@@ -162,7 +165,7 @@ export function EnableFeatureModal({
         <CardContent className="space-y-4">
           <div className="rounded-lg bg-muted p-4">
             <p className="text-sm font-medium">
-              {formatPrice(9)}/month, cancel anytime
+              {formatPrice(9, currency)}/month, cancel anytime
             </p>
           </div>
 

@@ -24,6 +24,8 @@ import {
   pilotEndBarState,
 } from "@/config/pilot";
 import { PilotEndBar } from "./pilot-banner";
+import { ChargeCurrencyProvider } from "@/components/charge-currency";
+import type { Currency } from "@/lib/currency";
 
 const DAY = 24 * 60 * 60 * 1000;
 const NOW = new Date("2026-10-20T12:00:00Z");
@@ -61,9 +63,18 @@ describe("when the bar shows", () => {
 });
 
 describe("what the bar says", () => {
-  const render = (locale: "en" | "es", state: "hidden" | "trial" | "ending" | "readOnly", transition = false) =>
+  // The signed-in layout provides the charge currency; here an EU request
+  // for the Spanish bar and a US request for the English one, unless given.
+  const render = (
+    locale: "en" | "es",
+    state: "hidden" | "trial" | "ending" | "readOnly",
+    transition = false,
+    currency: Currency = locale === "es" ? "EUR" : "USD",
+  ) =>
     renderToStaticMarkup(
-      <PilotEndBar locale={locale} state={state} endsAt={new Date("2026-10-26T09:00:00Z")} transition={transition} />,
+      <ChargeCurrencyProvider currency={currency}>
+        <PilotEndBar locale={locale} state={state} endsAt={new Date("2026-10-26T09:00:00Z")} transition={transition} />
+      </ChargeCurrencyProvider>,
     );
   const text = (html: string) => html.replace(/<[^>]+>/g, "");
 
@@ -116,7 +127,7 @@ describe("what the bar says", () => {
     expect(Object.keys(PILOT_END_BAR_COPY)).toEqual(["en", "es"]);
   });
 
-  it("states the English price in euros for a visitor in the EU, dollars otherwise; Spanish always in euros", () => {
+  it("states the price in the charge currency, whatever the language", () => {
     const en = PILOT_END_BAR_COPY.en;
     const es = PILOT_END_BAR_COPY.es;
     expect(en.trial(15, "26 October 2026", "EUR")).toBe(
@@ -124,7 +135,14 @@ describe("what the bar says", () => {
     );
     expect(en.trialTransition("26 October 2026", "EUR")).toContain("Cloud Plan: €179 a month or €1,800 a year.");
     expect(en.trial(15, "26 October 2026", "USD")).toBe(en.trial(15, "26 October 2026"));
-    expect(es.trial(15, "26 de octubre de 2026", "USD")).toBe(es.trial(15, "26 de octubre de 2026", "EUR"));
+    expect(es.trial(15, "26 de octubre de 2026", "USD")).toContain("Plan nube UE: 179 US$ al mes o 1.800 US$ al año.");
+    expect(es.trial(15, "26 de octubre de 2026", "EUR")).toContain("Plan nube UE: 179 € al mes o 1.800 € al año.");
+    expect(es.trialTransition("26 de octubre de 2026", "USD")).toContain("179 US$ al mes o 1.800 US$ al año.");
+    // The Spanish bar outside the EU and the English bar in the EU.
+    expect(text(render("es", "trial", false, "USD"))).toContain("179 US$ al mes o 1.800 US$ al año");
+    expect(text(render("es", "trial", false, "USD"))).not.toMatch(/€/);
+    expect(text(render("en", "trial", false, "EUR"))).toContain("€179 a month or €1,800 a year");
+    expect(text(render("en", "trial", false, "EUR"))).not.toMatch(/\$/);
   });
 
   it("gives the end date and the pricing link in the last five days", () => {

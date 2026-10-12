@@ -13,6 +13,7 @@
 import type { PrismaClient } from "@prisma/client";
 import type { PathCounts } from "@/components/guided/path-config";
 import { UNCONFIRMED_WHERE } from "@/server/services/provenance/summary";
+import { COUNTED_INCIDENT } from "@/server/services/incident/counted";
 import { loadAgentTestingCounts } from "@/server/services/aiuc1/readiness";
 import {
   CLIENT_TEMPLATE_REF,
@@ -123,7 +124,7 @@ export async function loadPathCounts(
     prisma.aISystem.count({
       where: { ...org, processesPersonalData: true, sensitiveDataAssessments: { some: {} } },
     }),
-    prisma.aIIncident.count({ where: org }),
+    prisma.aIIncident.count({ where: { ...org, ...COUNTED_INCIDENT } }),
     prisma.regulatoryProceeding.count({ where: org }),
     prisma.regulatoryProceeding.count({ where: { ...org, ...OPEN_PROCEEDING } }),
     loadUnconfirmed(prisma, organizationId),

@@ -26,6 +26,16 @@ describe("system incident timeline entries", () => {
     });
   });
 
+  it("reads the reason given when an incident is marked recorded in error", () => {
+    expect(parseSystemTimelineEntry("Recorded in error", "Duplicate of an earlier report")).toEqual({
+      kind: "recordedInError",
+      reason: "Duplicate of an earlier report",
+    });
+    expect(
+      parseSystemTimelineEntry("Status changed to RECORDED_IN_ERROR", "Status updated from REPORTED to RECORDED_IN_ERROR"),
+    ).toEqual({ kind: "status", from: "REPORTED", to: "RECORDED_IN_ERROR" });
+  });
+
   it("leaves an entry a person typed alone", () => {
     expect(parseSystemTimelineEntry("Called the vendor", "They are looking into it")).toBeNull();
     expect(parseSystemTimelineEntry("Incident reported", "by phone")).toBeNull();

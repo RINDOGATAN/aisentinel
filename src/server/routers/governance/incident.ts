@@ -9,6 +9,18 @@ import {
   computeIncidentDeadlines,
   suggestsPersonalDataBreach,
 } from "@/config/incident-deadlines";
+import { canDeleteRecords } from "../../services/authz/delete-roles";
+import { COUNTED_INCIDENT, RECORDED_IN_ERROR } from "../../services/incident/counted";
+
+/** Refuses a change to an incident marked recorded in error: that status is final. */
+function assertNotRecordedInError(status: string) {
+  if (status === RECORDED_IN_ERROR) {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "This incident was marked as recorded in error and can no longer be changed.",
+    });
+  }
+}
 
 export const incidentRouter = createTRPCRouter({
   list: organizationProcedure
@@ -18,7 +30,7 @@ export const incidentRouter = createTRPCRouter({
         search: z.string().optional(),
         type: z.enum(["HALLUCINATION", "BIAS_DISCRIMINATION", "MODEL_DRIFT", "ADVERSARIAL_ATTACK", "PROMPT_INJECTION", "UNAUTHORIZED_ACCESS", "SAFETY_FAILURE", "PERFORMANCE_DEGRADATION", "DATA_POISONING", "PRIVACY_VIOLATION", "OTHER"]).optional(),
         severity: z.enum(["CRITICAL", "HIGH", "MEDIUM", "LOW"]).optional(),
-        status: z.enum(["REPORTED", "INVESTIGATING", "MITIGATING", "RESOLVED", "CLOSED"]).optional(),
+        status: z.enum(["REPORTED", "INVESTIGATING", "MITIGATING", "RESOLVED", "CLOSED", "RECORDED_IN_ERROR"]).optional(),
         cursor: z.string().optional(),
         limit: z.number().min(1).max(50).default(20),
       })
@@ -178,6 +190,7 @@ export const incidentRouter = createTRPCRouter({
       if (!existing) {
         throw new TRPCError({ code: "NOT_FOUND", message: "Incident not found" });
       }
+      assertNotRecordedInError(existing.status);
 
       const { id, organizationId, ...data } = input;
       const updateData: Record<string, unknown> = {};
@@ -389,15 +402,87 @@ export const incidentRouter = createTRPCRouter({
       });
     }),
 
+  /**
+   * Mark an incident as entered by mistake. Owners and admins only. Nothing is
+   * deleted, so the legal-hold guard does not apply: the incident and its
+   * timeline stay on record, with the reason, and the status leaves it out of
+   * counts, statutory deadlines and reports. The status is final.
+   */
+  markRecordedInError: orgWriteProcedure
+    .input(
+      z.object({
+        organizationId: z.string(),
+        id: z.string(),
+        reason: z.string().trim().min(1).max(2000),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (!canDeleteRecords(ctx.membership.role)) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Only owners and admins can mark an incident as recorded in error.",
+        });
+      }
+
+      const existing = await ctx.prisma.aIIncident.findFirst({
+        where: { id: input.id, organizationId: ctx.organization.id },
+        select: { id: true, status: true },
+      });
+      if (!existing) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Incident not found" });
+      }
+      assertNotRecordedInError(existing.status);
+      const previousStatus = existing.status;
+
+      await ctx.prisma.aIIncident.updateMany({
+        where: { id: input.id, organizationId: ctx.organization.id },
+        data: { status: RECORDED_IN_ERROR },
+      });
+
+      // The status line in the same form as every status change (read back by
+      // src/lib/incident-timeline.ts), then the reason as given.
+      await ctx.prisma.aIIncidentTimeline.create({
+        data: {
+          incidentId: input.id,
+          organizationId: ctx.organization.id,
+          action: `Status changed to ${RECORDED_IN_ERROR}`,
+          description: `Status updated from ${previousStatus} to ${RECORDED_IN_ERROR}`,
+          performedBy: ctx.session.user.id,
+        },
+      });
+      await ctx.prisma.aIIncidentTimeline.create({
+        data: {
+          incidentId: input.id,
+          organizationId: ctx.organization.id,
+          action: "Recorded in error",
+          description: input.reason,
+          performedBy: ctx.session.user.id,
+        },
+      });
+
+      await ctx.prisma.auditLog.create({
+        data: {
+          organizationId: ctx.organization.id,
+          userId: ctx.session.user.id,
+          entityType: "AIIncident",
+          entityId: input.id,
+          action: RECORDED_IN_ERROR,
+          changes: { previousStatus, reason: input.reason },
+        },
+      });
+
+      return { ok: true };
+    }),
+
   getStats: organizationProcedure
     .input(z.object({ organizationId: z.string() }))
     .query(async ({ ctx }) => {
       const [total, critical, open, resolved] = await Promise.all([
         ctx.prisma.aIIncident.count({
-          where: { organizationId: ctx.organization.id },
+          where: { organizationId: ctx.organization.id, ...COUNTED_INCIDENT },
         }),
         ctx.prisma.aIIncident.count({
-          where: { organizationId: ctx.organization.id, severity: "CRITICAL" },
+          where: { organizationId: ctx.organization.id, severity: "CRITICAL", ...COUNTED_INCIDENT },
         }),
         ctx.prisma.aIIncident.count({
           where: {
@@ -436,11 +521,12 @@ export const incidentRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const existing = await ctx.prisma.aIIncident.findFirst({
         where: { id: input.id, organizationId: ctx.organization.id },
-        select: { id: true },
+        select: { id: true, status: true },
       });
       if (!existing) {
         throw new TRPCError({ code: "NOT_FOUND", message: "Incident not found" });
       }
+      assertNotRecordedInError(existing.status);
 
       const { organizationId: _org, id, ...data } = input;
 
@@ -476,6 +562,7 @@ export const incidentRouter = createTRPCRouter({
         select: {
           id: true,
           type: true,
+          status: true,
           reportedAt: true,
           awareAt: true,
           deathOccurred: true,
@@ -503,7 +590,8 @@ export const incidentRouter = createTRPCRouter({
             ? "DEPLOYER"
             : "OTHER";
 
-      const deadlines = computeIncidentDeadlines({
+      // An incident recorded in error starts no statutory clock.
+      const deadlines = incident.status === RECORDED_IN_ERROR ? [] : computeIncidentDeadlines({
         awareAt: incident.awareAt ?? incident.reportedAt,
         role,
         euHighRisk: incident.aiSystem?.riskClassification?.riskLevel === "HIGH",

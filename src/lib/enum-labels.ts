@@ -46,6 +46,7 @@ export function useEnumLabels() {
         MITIGATING: tc("statusMitigating"),
         RESOLVED: tc("statusResolved"),
         CLOSED: tc("statusClosed"),
+        RECORDED_IN_ERROR: tc("statusRecordedInError"),
         PUBLISHED: tc("statusPublished"),
         ARCHIVED: tc("statusArchived"),
       },

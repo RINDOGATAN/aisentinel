@@ -134,6 +134,7 @@ const incidentStatusColors: Record<string, string> = {
   MITIGATING: STATUS_OUTLINE.warning,
   RESOLVED: STATUS_OUTLINE.good,
   CLOSED: "border-muted-foreground/50 text-muted-foreground/50",
+  RECORDED_IN_ERROR: "border-dashed border-muted-foreground/50 text-muted-foreground/50 line-through",
 };
 
 const policyStatusColors: Record<string, string> = {
@@ -350,6 +351,7 @@ export default function AISystemDetailPage() {
       MITIGATING: tc("statusMitigating"),
       RESOLVED: tc("statusResolved"),
       CLOSED: tc("statusClosed"),
+      RECORDED_IN_ERROR: tc("statusRecordedInError"),
       PUBLISHED: tc("statusPublished"),
       ARCHIVED: tc("statusArchived"),
     };

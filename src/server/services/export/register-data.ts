@@ -5,6 +5,7 @@
 
 import type { PrismaClient } from "@prisma/client";
 import type { AISystemExportData } from "@/server/services/export/ai-system-register";
+import { COUNTED_INCIDENT } from "@/server/services/incident/counted";
 
 export async function loadRegisterExportData(
   prisma: PrismaClient,
@@ -20,7 +21,7 @@ export async function loadRegisterExportData(
           models: true,
           dataSources: true,
           assessments: true,
-          incidents: true,
+          incidents: { where: COUNTED_INCIDENT },
           complianceMappings: true,
         },
       },

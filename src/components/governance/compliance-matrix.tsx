@@ -144,12 +144,21 @@ function exportComplianceCSV(
   URL.revokeObjectURL(url);
 }
 
-/** The frameworks that hold at least one requirement mapped to the system, in their usual order. */
+/**
+ * The frameworks with at least one requirement for the system, in their usual
+ * order: one already mapped to it, or one in scope for it (the counts scoped
+ * by the system's ADMT and regime rules). A state framework of a place the
+ * organization has not declared scopes to zero and is left out.
+ */
 export function frameworksWithRequirements<F extends { id: string }>(
   all: readonly F[],
   mapped: readonly { frameworkId: string }[],
+  inScope: readonly { frameworkId: string; count: number }[],
 ): F[] {
-  const ids = new Set(mapped.map((m) => m.frameworkId));
+  const ids = new Set([
+    ...mapped.map((m) => m.frameworkId),
+    ...inScope.filter((c) => c.count > 0).map((c) => c.frameworkId),
+  ]);
   return all.filter((f) => ids.has(f.id));
 }
 
@@ -175,19 +184,6 @@ export function ComplianceMatrix({ aiSystemId }: { aiSystemId: string }) {
     { organizationId: orgId, aiSystemId: selectedSystemId },
     { enabled: !!orgId && !!selectedSystemId }
   );
-  const frameworks = useMemo(
-    () =>
-      allFrameworks && systemScorecard
-        ? frameworksWithRequirements(allFrameworks, systemScorecard.frameworks)
-        : undefined,
-    [allFrameworks, systemScorecard],
-  );
-  const hiddenFrameworks = allFrameworks && frameworks ? allFrameworks.length - frameworks.length : 0;
-  const selectedFrameworkId =
-    (pickedFrameworkId && frameworks?.some((f) => f.id === pickedFrameworkId) ? pickedFrameworkId : "") ||
-    frameworks?.[0]?.id ||
-    "";
-
   // California ADMT applicability is decided by the rules layer, per system.
   // Its tags both filter the matrix and drive the scope banner; without them
   // the tab would list every seeded requirement for every system regardless of
@@ -197,9 +193,6 @@ export function ComplianceMatrix({ aiSystemId }: { aiSystemId: string }) {
     { enabled: !!orgId && !!selectedSystemId }
   );
 
-  const selectedFramework = frameworks?.find((f) => f.id === selectedFrameworkId)
-    ?? frameworks?.[0];
-  const isAdmtFramework = selectedFramework?.code === "CA_CCPA_ADMT";
 
   // Only three of the seven states are answers; the rest mean nobody has
   // decided yet. An undetermined scope must not be scoped down to nothing —
@@ -238,6 +231,23 @@ export function ComplianceMatrix({ aiSystemId }: { aiSystemId: string }) {
     },
     { enabled: !!orgId }
   );
+
+  const frameworks = useMemo(
+    () =>
+      allFrameworks && systemScorecard && frameworkCounts
+        ? frameworksWithRequirements(allFrameworks, systemScorecard.frameworks, frameworkCounts)
+        : undefined,
+    [allFrameworks, systemScorecard, frameworkCounts],
+  );
+  const hiddenFrameworks = allFrameworks && frameworks ? allFrameworks.length - frameworks.length : 0;
+  const selectedFrameworkId =
+    (pickedFrameworkId && frameworks?.some((f) => f.id === pickedFrameworkId) ? pickedFrameworkId : "") ||
+    frameworks?.[0]?.id ||
+    "";
+
+  const selectedFramework = frameworks?.find((f) => f.id === selectedFrameworkId)
+    ?? frameworks?.[0];
+  const isAdmtFramework = selectedFramework?.code === "CA_CCPA_ADMT";
 
   const { data: matrix, refetch: refetchMatrix } = trpc.compliance.getMatrix.useQuery(
     {

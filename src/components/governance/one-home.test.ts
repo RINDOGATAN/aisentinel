@@ -14,13 +14,24 @@ import { frameworksWithRequirements } from "./compliance-matrix";
 const read = (p: string) => readFileSync(p, "utf8");
 
 describe("frameworksWithRequirements", () => {
-  it("keeps only the frameworks mapped to the system, in their order", () => {
+  it("keeps the frameworks mapped to the system, in their order", () => {
     const all = [{ id: "eu" }, { id: "nist" }, { id: "co" }, { id: "iso" }];
-    expect(frameworksWithRequirements(all, [{ frameworkId: "iso" }, { frameworkId: "eu" }])).toEqual([
+    expect(frameworksWithRequirements(all, [{ frameworkId: "iso" }, { frameworkId: "eu" }], [])).toEqual([
       { id: "eu" },
       { id: "iso" },
     ]);
-    expect(frameworksWithRequirements(all, [])).toEqual([]);
+    expect(frameworksWithRequirements(all, [], [])).toEqual([]);
+  });
+
+  it("adds the frameworks in scope for the system and leaves out a place not declared", () => {
+    const all = [{ id: "eu" }, { id: "nist" }, { id: "co" }, { id: "iso" }];
+    const counts = [
+      { frameworkId: "eu", count: 83 },
+      { frameworkId: "nist", count: 23 },
+      { frameworkId: "co", count: 0 },
+      { frameworkId: "iso", count: 33 },
+    ];
+    expect(frameworksWithRequirements(all, [], counts).map((f) => f.id)).toEqual(["eu", "nist", "iso"]);
   });
 });
 

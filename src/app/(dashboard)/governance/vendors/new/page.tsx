@@ -27,6 +27,7 @@ import { useOrganization } from "@/lib/organization-context";
 import { useDebounce } from "@/hooks/use-debounce";
 import { suggestTechniqueFromCapabilities } from "@/lib/ai-technique-mapping";
 import { StatusNote } from "@/components/ui/status-note";
+import { useSubmitLock } from "@/lib/use-submit-lock";
 
 type VendorRiskLevel = "CRITICAL" | "HIGH" | "MEDIUM" | "LOW";
 type VendorStatus = "ACTIVE" | "UNDER_REVIEW" | "APPROVED" | "SUSPENDED" | "TERMINATED";
@@ -264,10 +265,13 @@ function NewVendorForm() {
     },
   });
 
+  const lock = useSubmitLock();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!organization?.id || !formData.name) return;
 
+    // One record per submission, even for two submits in the same instant.
+    if (!lock.acquire()) return;
     setIsSubmitting(true);
 
     const vendorFields = {
@@ -294,9 +298,9 @@ function NewVendorForm() {
         systemRole: systemData.systemRole || undefined,
         systemTechnique: systemData.systemTechnique || undefined,
         systemPurpose: systemData.systemPurpose || undefined,
-      });
+      }, { onSettled: lock.release });
     } else {
-      createVendor.mutate(vendorFields);
+      createVendor.mutate(vendorFields, { onSettled: lock.release });
     }
   };
 

@@ -10,7 +10,7 @@
  * Evidence tab); the evidence step lists the systems and links there.
  */
 
-import { useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
@@ -63,7 +63,6 @@ import {
   Download,
   Link2,
 } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
 import { useLocale, useTranslations } from "next-intl";
 import { frameworkName, frameworkShort, requirementCode, requirementDescription, requirementTitle } from "@/config/framework-display";
 import type { AdmtScopeState } from "@/config/admt-rules";
@@ -264,20 +263,38 @@ export function ComplianceMatrix({ aiSystemId }: { aiSystemId: string }) {
     { enabled: !!orgId && !!selectedSystemId && !!selectedFrameworkId }
   );
 
-  // Every mutation surfaces its outcome: a silent failure here reads as the
-  // form "stalling", because the save button hides itself on click.
+  // Every save surfaces its outcome: a silent failure reads as the form
+  // "stalling". A status is saved on click, and its confirmation offers to
+  // put the previous status back; notes keep their Save button.
   const updateMapping = trpc.compliance.updateMapping.useMutation({
-    onSuccess: (data) => {
-      toast.success(
-        data.propagatedCount > 0
-          ? t("mappingSavedPropagated", { count: data.propagatedCount })
-          : t("mappingSaved"),
-      );
-      // Propagation to linked requirements is reflected by the matrix refetch.
-      refetchMatrix();
-    },
+    // Propagation to linked requirements is reflected by the matrix refetch.
+    onSuccess: () => refetchMatrix(),
     onError: (err) => toast.error(err.message),
   });
+  const saveMapping: SaveMapping = (data, undoStatus, onFailed) =>
+    updateMapping.mutate(data, {
+      onError: () => onFailed?.(),
+      onSuccess: (res) => {
+        const message =
+          res.propagatedCount > 0
+            ? t("mappingSavedPropagated", { count: res.propagatedCount })
+            : undoStatus !== undefined
+              ? t("statusSaved", { status: t(statusOptionKeys[data.status].labelKey) })
+              : t("mappingSaved");
+        toast.success(
+          message,
+          undoStatus !== undefined && undoStatus !== data.status
+            ? {
+                action: {
+                  label: t("undo"),
+                  onClick: () =>
+                    saveMapping({ ...data, status: undoStatus, notes: undefined, propagateToLinked: false }),
+                },
+              }
+            : undefined,
+        );
+      },
+    });
 
   const addEvidence = trpc.compliance.addEvidence.useMutation({
     onSuccess: () => {
@@ -408,7 +425,7 @@ export function ComplianceMatrix({ aiSystemId }: { aiSystemId: string }) {
                             mapping={req.mapping}
                             orgId={orgId}
                             systemId={selectedSystemId}
-                            onUpdate={(data) => updateMapping.mutate(data)}
+                            onUpdate={saveMapping}
                             onAddEvidence={(data) => addEvidence.mutate(data)}
                             onRemoveEvidence={(data) => removeEvidence.mutate(data)}
                             isUpdatePending={updateMapping.isPending}
@@ -434,7 +451,7 @@ export function ComplianceMatrix({ aiSystemId }: { aiSystemId: string }) {
                                 mapping={child.mapping}
                                 orgId={orgId}
                                 systemId={selectedSystemId}
-                                onUpdate={(data) => updateMapping.mutate(data)}
+                                onUpdate={saveMapping}
                                 onAddEvidence={(data) => addEvidence.mutate(data)}
                                 onRemoveEvidence={(data) => removeEvidence.mutate(data)}
                                 isUpdatePending={updateMapping.isPending}
@@ -467,6 +484,12 @@ export function ComplianceMatrix({ aiSystemId }: { aiSystemId: string }) {
 }
 
 type StatusValue = "COMPLIANT" | "PARTIALLY_COMPLIANT" | "NON_COMPLIANT" | "NOT_APPLICABLE" | "NOT_ASSESSED";
+type MappingUpdate = { organizationId: string; aiSystemId: string; requirementId: string; status: StatusValue; notes?: string; propagateToLinked?: boolean };
+/**
+ * Save a mapping. With `undoStatus`, the confirmation offers to put that status
+ * back; `onFailed` runs when the save is refused.
+ */
+type SaveMapping = (data: MappingUpdate, undoStatus?: StatusValue, onFailed?: () => void) => void;
 type EvidenceTypeValue = "POLICY" | "DOCUMENT" | "TEST_RESULT" | "MONITORING" | "AUDIT" | "TRAINING" | "APPROVAL" | "OTHER";
 
 function RequirementRow({
@@ -485,7 +508,7 @@ function RequirementRow({
   mapping: MappingData | null;
   orgId: string;
   systemId: string;
-  onUpdate: (data: { organizationId: string; aiSystemId: string; requirementId: string; status: StatusValue; notes?: string; propagateToLinked?: boolean }) => void;
+  onUpdate: SaveMapping;
   onAddEvidence: (data: { organizationId: string; aiSystemId: string; requirementId: string; type: EvidenceTypeValue; title: string; url?: string; description?: string }) => void;
   onRemoveEvidence: (data: { organizationId: string; evidenceId: string }) => void;
   isUpdatePending: boolean;
@@ -496,11 +519,23 @@ function RequirementRow({
   const t = useTranslations("compliance");
   const locale = useLocale();
   const tc = useTranslations("common");
-  const [status, setStatus] = useState(mapping?.status ?? "NOT_ASSESSED");
+  const savedStatus = (mapping?.status ?? "NOT_ASSESSED") as StatusValue;
+  const [status, setStatus] = useState<StatusValue>(savedStatus);
   const [notes, setNotes] = useState(mapping?.notes ?? "");
-  const [dirty, setDirty] = useState(false);
+  const [notesDirty, setNotesDirty] = useState(false);
   const [showAddDialog, setShowAddDialog] = useState(false);
-  const [propagate, setPropagate] = useState(true);
+  // An undo, or another tab's save, arrives through the refetched mapping.
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setStatus(savedStatus);
+  }, [savedStatus]);
+
+  const base = { organizationId: orgId, aiSystemId: systemId, requirementId: reqId };
+  const pickStatus = (value: StatusValue) => {
+    if (value === status || isUpdatePending) return;
+    setStatus(value);
+    onUpdate({ ...base, status: value }, savedStatus, () => setStatus(savedStatus));
+  };
 
   const { data: crossMappings } = trpc.compliance.getCrossMappedRequirements.useQuery(
     { organizationId: orgId, requirementId: reqId },
@@ -548,7 +583,7 @@ function RequirementRow({
               key={value}
               disabled={!canWrite}
               aria-pressed={status === value}
-              onClick={() => { setStatus(value); setDirty(true); }}
+              onClick={() => pickStatus(value as StatusValue)}
               className={`px-3 py-1 text-xs rounded-full border transition-colors ${
                 status === value ? opt.color + " border-current" : "border-border text-muted-foreground hover:text-foreground"
               }`}
@@ -635,7 +670,7 @@ function RequirementRow({
       <Textarea
         placeholder={t("notesPlaceholder")}
         value={notes}
-        onChange={(e) => { setNotes(e.target.value); setDirty(true); }}
+        onChange={(e) => { setNotes(e.target.value); setNotesDirty(true); }}
         readOnly={!canWrite}
         rows={1}
         className="text-sm"
@@ -667,40 +702,40 @@ function RequirementRow({
         </div>
       )}
 
-      {/* Save (status + notes) */}
-      {dirty && (
-        <div className="space-y-2">
-          {crossMappings && crossMappings.filter((cm) => cm.relationship === "equivalent").length > 0 &&
-            (status === "COMPLIANT" || status === "PARTIALLY_COMPLIANT") && (
-              <label className="flex items-center gap-2 text-xs text-muted-foreground">
-                <Checkbox
-                  checked={propagate}
-                  onCheckedChange={(v) => setPropagate(!!v)}
-                />
-                {t("alsoApplyToEquivalent", {
-                  count: crossMappings.filter((cm) => cm.relationship === "equivalent").length,
-                })}
-              </label>
-            )}
+      {/* The status was saved on click. Applying it to the equivalent
+          requirements of other frameworks is a separate, explicit step. */}
+      {canWrite &&
+        status === savedStatus &&
+        (status === "COMPLIANT" || status === "PARTIALLY_COMPLIANT") &&
+        crossMappings &&
+        crossMappings.filter((cm) => cm.relationship === "equivalent").length > 0 && (
           <Button
+            variant="ghost"
             size="sm"
-            onClick={() => {
-              onUpdate({
-                organizationId: orgId,
-                aiSystemId: systemId,
-                requirementId: reqId,
-                status: status as StatusValue,
-                notes,
-                propagateToLinked: propagate,
-              });
-              setDirty(false);
-            }}
+            className="h-7 px-2 text-xs"
             disabled={isUpdatePending}
+            onClick={() => onUpdate({ ...base, status, propagateToLinked: true })}
           >
-            {isUpdatePending ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <Save className="w-3 h-3 mr-1" />}
-            {tc("save")}
+            <Link2 className="w-3 h-3 mr-1" />
+            {t("alsoApplyToEquivalent", {
+              count: crossMappings.filter((cm) => cm.relationship === "equivalent").length,
+            })}
           </Button>
-        </div>
+        )}
+
+      {/* Save (notes) */}
+      {notesDirty && (
+        <Button
+          size="sm"
+          onClick={() => {
+            onUpdate({ ...base, status, notes });
+            setNotesDirty(false);
+          }}
+          disabled={isUpdatePending}
+        >
+          {isUpdatePending ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <Save className="w-3 h-3 mr-1" />}
+          {t("saveNotes")}
+        </Button>
       )}
 
       {/* Add Evidence Dialog */}

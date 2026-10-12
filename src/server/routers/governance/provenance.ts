@@ -29,6 +29,8 @@ import { computeConfirmationSummary } from "@/lib/provenance/state";
 import { requirementLabel } from "@/config/framework-display";
 import { resolveContentLocale } from "@/config/lawfirm-ai-toolkit";
 import { ARTIFACT_CLASSES, type ArtifactClass } from "@/lib/provenance/types";
+// Confirming is an approval, not an edit; the same list governs the edit stamp.
+import { APPROVER_ROLES } from "@/server/services/provenance/edit-stamp";
 
 /** The five models that carry provenance columns. */
 const CONFIRMABLE_ENTITIES = [
@@ -42,8 +44,6 @@ type ConfirmableEntity = (typeof CONFIRMABLE_ENTITIES)[number];
 
 const entityEnum = z.enum(CONFIRMABLE_ENTITIES);
 
-/** Confirming is an approval, not an edit. */
-const APPROVER_ROLES = ["OWNER", "ADMIN", "AI_OFFICER"];
 
 /** Bulk confirm is capped so one request can never fan out unbounded. */
 const MAX_ITEMS = 200;

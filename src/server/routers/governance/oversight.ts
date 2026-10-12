@@ -2,6 +2,7 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { z } from "zod";
+import { editConfirmation, keepSystemAfterEdit } from "@/server/services/provenance/edit-stamp";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { assertPilotRoom, pilotLocale } from "../../services/pilot/caps";
 import { TRPCError } from "@trpc/server";
@@ -163,10 +164,10 @@ export const oversightRouter = createTRPCRouter({
       }
       if (data.assignedTo !== undefined) updateData.assignedTo = data.assignedTo;
 
-      // A human editing an artifact IS confirming it; provenance keeps its
-      // historical origin (where the row came from, not who vouches for it).
-      updateData.confirmedBy = ctx.session.user.id;
-      updateData.confirmedAt = new Date();
+      // An approver's edit confirms the gate; anyone else's edit clears the
+      // stamp until an approver confirms it (services/provenance/edit-stamp.ts).
+      // Provenance keeps its historical origin.
+      Object.assign(updateData, editConfirmation(ctx.membership.role, ctx.session.user.id));
 
       const result = await ctx.prisma.oversightGate.updateMany({
         where: { id, organizationId: ctx.organization.id },
@@ -188,7 +189,14 @@ export const oversightRouter = createTRPCRouter({
         },
       });
 
-      return ctx.prisma.oversightGate.findFirst({ where: { id, organizationId: ctx.organization.id } });
+      const gate = await ctx.prisma.oversightGate.findFirst({ where: { id, organizationId: ctx.organization.id } });
+      await keepSystemAfterEdit(ctx.prisma, {
+        role: ctx.membership.role,
+        aiSystemId: gate?.aiSystemId,
+        organizationId: ctx.organization.id,
+        userId: ctx.session.user.id,
+      });
+      return gate;
     }),
 
   addDecision: orgWriteProcedure

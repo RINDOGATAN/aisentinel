@@ -108,9 +108,9 @@ describe("what the public copy says about the hosted pilot", () => {
   it("the docs and lock strings tie the price to the kit, in both languages", () => {
     const enNotice = (en as { docs: { premiumNotice: Record<string, string> } }).docs.premiumNotice;
     const esNotice = (es as { docs: { premiumNotice: Record<string, string> } }).docs.premiumNotice;
-    expect(enNotice.hosted).toMatch(/hosted pilot/);
+    expect(enNotice.hosted).toMatch(/TODO.LAW cloud.*free pilot.*paid plan/);
     expect(enNotice.selfHosted).toMatch(/your own hardware/);
-    expect(esNotice.hosted).toMatch(/piloto alojado/);
+    expect(esNotice.hosted).toMatch(/nube de TODO.LAW.*piloto gratuito.*plan de pago/);
     expect(esNotice.selfHosted).toMatch(/tu propio hardware/);
     expect((en as { premiumShowcase: { lockedHint: string } }).premiumShowcase.lockedHint).toMatch(/kit/);
     expect((es as { premiumShowcase: { lockedHint: string } }).premiumShowcase.lockedHint).toMatch(/kit/);

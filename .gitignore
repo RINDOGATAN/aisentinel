@@ -19,7 +19,8 @@
 *.pem
 
 # Local tool state
-.claude/
+.claude/*
+!.claude/CLAUDE.md
 
 # Debug
 npm-debug.log*

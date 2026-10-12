@@ -17,6 +17,7 @@ const baseRow: ProgramSystemRow = {
   riskLevel: "LIMITED",
   gates: [{ gateType: "PRE_DEPLOYMENT", status: "PENDING", nextReviewDate: null }],
   policyLinkCount: 0,
+  transparencyRelevant: true,
   hasTransparencyProfile: false,
 };
 
@@ -100,11 +101,11 @@ describe("buildProgramGraph", () => {
     expect(graph.systems[0].gates[1].overdue).toBe(false); // PASSED never overdue
   });
 
-  it("marks GENERATIVE_AI as transparency-relevant, others not", () => {
+  it("passes the caller's Art. 50 relevance through, whatever the technique", () => {
     const graph = build({
       systems: [
         baseRow,
-        { ...baseRow, id: "sys-3", metadata: null, technique: "SPEECH_RECOGNITION" },
+        { ...baseRow, id: "sys-3", metadata: null, technique: "SPEECH_RECOGNITION", transparencyRelevant: false },
       ],
     });
     expect(graph.systems.find((s) => s.id === "sys-1")!.transparencyRelevant).toBe(true);

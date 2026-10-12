@@ -105,7 +105,7 @@ export interface ProgramSnapshot {
     totalMappings: number;
   };
   transparency: {
-    /** Art. 50-relevant systems (GENERATIVE_AI) */
+    /** Art. 50-relevant systems (art50Relevant: talks to people, generates content, emotion recognition, deepfakes) */
     relevantSystems: number;
     withProfile: number;
     markingOverdue: number;

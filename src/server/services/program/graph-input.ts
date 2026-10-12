@@ -42,6 +42,8 @@ export interface ProgramSystemRow {
   riskLevel: string | null;
   gates: Array<{ gateType: string; status: string; nextReviewDate: Date | null }>;
   policyLinkCount: number;
+  /** Art. 50 relevance (src/config/transparency-rules.ts, art50Relevant), decided by the caller. */
+  transparencyRelevant: boolean;
   hasTransparencyProfile: boolean;
 }
 
@@ -156,7 +158,7 @@ export function buildProgramGraph(input: BuildProgramGraphInput): ProgramGraph {
           g.nextReviewDate.getTime() < now.getTime(),
       })),
       policyLinkCount: row.policyLinkCount,
-      transparencyRelevant: row.technique === "GENERATIVE_AI",
+      transparencyRelevant: row.transparencyRelevant,
       hasTransparencyProfile: row.hasTransparencyProfile,
       complianceAssessedPct:
         compliance && compliance.total > 0

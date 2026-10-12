@@ -24,6 +24,9 @@ const frameworkRank = (code: string) => {
   return i === -1 ? FRAMEWORK_ORDER.length : i;
 };
 
+/** Roles that may rule an AIUC-1 requirement out (aiuc1.setApplicability). */
+const AIUC1_DECIDER_ROLES = ["OWNER", "ADMIN", "AI_OFFICER"] as const;
+
 export const complianceRouter = createTRPCRouter({
   listFrameworks: publicProcedure.query(async ({ ctx }) => {
     const frameworks = await ctx.prisma.complianceFramework.findMany({
@@ -268,6 +271,33 @@ export const complianceRouter = createTRPCRouter({
       });
       if (!ownedSystem) {
         throw new TRPCError({ code: "NOT_FOUND", message: "AI system not found" });
+      }
+
+      // Ruling an AIUC-1 requirement out (or back in) is a decision that
+      // aiuc1.setApplicability keeps for the decider roles; the generic
+      // update must not open it to every writer.
+      if (!(AIUC1_DECIDER_ROLES as readonly string[]).includes(ctx.membership.role)) {
+        const aiuc1 = await ctx.prisma.complianceRequirement.findFirst({
+          where: { id: input.requirementId, framework: { code: "AIUC_1" } },
+          select: { id: true },
+        });
+        if (aiuc1) {
+          const current = await ctx.prisma.complianceMapping.findUnique({
+            where: {
+              aiSystemId_requirementId: {
+                aiSystemId: input.aiSystemId,
+                requirementId: input.requirementId,
+              },
+            },
+            select: { status: true },
+          });
+          if (input.status === "NOT_APPLICABLE" || current?.status === "NOT_APPLICABLE") {
+            throw new TRPCError({
+              code: "FORBIDDEN",
+              message: "Marking an AIUC-1 requirement not applicable needs an owner, admin or AI officer role.",
+            });
+          }
+        }
       }
 
       const mapping = await ctx.prisma.complianceMapping.upsert({

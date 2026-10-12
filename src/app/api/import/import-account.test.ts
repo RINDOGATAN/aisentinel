@@ -69,6 +69,7 @@ vi.mock("@/lib/prisma", () => ({ default: H.db, prisma: H.db }));
 
 import { POST as importSystems } from "@/app/api/import/dpc-ai-systems/route";
 import { POST as importVendors } from "@/app/api/import/portfolio-vendors/route";
+import { POST as checkAccount } from "@/app/api/import/check-account/route";
 import { __resetRateLimitStore } from "@/lib/rate-limit";
 
 const KEY = "test-import-key";
@@ -199,5 +200,41 @@ describe("import routes: who may write, and where", () => {
     );
     expect(res.status).toBe(401);
     expect(H.systems).toHaveLength(0);
+  });
+});
+
+describe("check-account answers through the same resolver", () => {
+  it("naming an organisation the account does not belong to returns none", async () => {
+    const res = await checkAccount(
+      post("check-account", { userEmail: "member@a.example", organizationId: "org-b" }),
+    );
+    await expect(res.json()).resolves.toEqual({
+      hasAccount: true,
+      hasOrg: false,
+      orgId: null,
+      orgName: null,
+    });
+  });
+
+  it("the named organisation is the one returned", async () => {
+    const res = await checkAccount(
+      post("check-account", { userEmail: "two@a.example", organizationId: "org-b" }),
+    );
+    await expect(res.json()).resolves.toMatchObject({ hasOrg: true, orgId: "org-b", orgName: "Org B" });
+  });
+
+  it("with none named, the oldest membership is returned, as before", async () => {
+    const res = await checkAccount(post("check-account", { userEmail: "two@a.example" }));
+    await expect(res.json()).resolves.toMatchObject({ hasOrg: true, orgId: "org-a" });
+  });
+
+  it("an unknown address has no account", async () => {
+    const res = await checkAccount(post("check-account", { userEmail: "nobody@a.example" }));
+    await expect(res.json()).resolves.toMatchObject({ hasAccount: false, hasOrg: false, orgId: null });
+  });
+
+  it("the shared key is still required", async () => {
+    const res = await checkAccount(post("check-account", { userEmail: "member@a.example" }, "wrong-key"));
+    expect(res.status).toBe(401);
   });
 });

@@ -3,6 +3,7 @@
 
 import { z } from "zod";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
+import { assertOwnedAiSystem } from "../../services/authz/owned";
 import { TRPCError } from "@trpc/server";
 import { hasShadowAiAccess } from "@/server/services/licensing/entitlement";
 import { assertPilotRoom, pilotLocale } from "@/server/services/pilot/caps";
@@ -218,6 +219,10 @@ export const shadowAiRouter = createTRPCRouter({
             message: "registeredSystemId is required when registering a tool",
           });
         }
+      }
+
+      if (typeof input.registeredSystemId === "string") {
+        await assertOwnedAiSystem(ctx.prisma, ctx.organization.id, input.registeredSystemId);
       }
 
       const updateData: Record<string, unknown> = {};

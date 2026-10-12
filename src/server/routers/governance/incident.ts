@@ -108,6 +108,16 @@ export const incidentRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       await assertPilotRoom(ctx.prisma, ctx.organization.id, "incidents", pilotLocale(ctx.getCookie));
+      // A linked AI system must be one of this organization's.
+      if (input.aiSystemId) {
+        const system = await ctx.prisma.aISystem.findFirst({
+          where: { id: input.aiSystemId, organizationId: ctx.organization.id },
+          select: { id: true },
+        });
+        if (!system) {
+          throw new TRPCError({ code: "NOT_FOUND", message: "AI system not found" });
+        }
+      }
       const incident = await ctx.prisma.aIIncident.create({
         data: {
           organizationId: ctx.organization.id,

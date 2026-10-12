@@ -132,6 +132,28 @@ export const assessmentRouter = createTRPCRouter({
         });
       }
 
+      // The AI system must be this organization's, and the template a system
+      // template or one of this organization's (the listTemplates rule).
+      const [system, template] = await Promise.all([
+        ctx.prisma.aISystem.findFirst({
+          where: { id: input.aiSystemId, organizationId: ctx.organization.id },
+          select: { id: true },
+        }),
+        ctx.prisma.aIAssessmentTemplate.findFirst({
+          where: {
+            id: input.templateId,
+            OR: [{ isSystem: true }, { organizationId: ctx.organization.id }],
+          },
+          select: { id: true },
+        }),
+      ]);
+      if (!system) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "AI system not found" });
+      }
+      if (!template) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Template not found" });
+      }
+
       const assessment = await ctx.prisma.aIAssessment.create({
         data: {
           organizationId: ctx.organization.id,

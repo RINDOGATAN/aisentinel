@@ -6,6 +6,11 @@ import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../.
 import { assertPilotRoom, pilotLocale } from "../../services/pilot/caps";
 import { TRPCError } from "@trpc/server";
 
+/** Roles that may approve or publish a policy (approve, publishVersion, update). */
+const POLICY_DECIDER_ROLES = ["OWNER", "ADMIN", "AI_OFFICER"] as const;
+/** Statuses that record a decision rather than a working state. */
+const DECISION_STATUSES = ["APPROVED", "PUBLISHED"] as const;
+
 export const policyRouter = createTRPCRouter({
   list: organizationProcedure
     .input(
@@ -142,6 +147,20 @@ export const policyRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { id, organizationId, ...data } = input;
 
+      // APPROVED and PUBLISHED are decisions: the same roles as approve and
+      // publishVersion may set them here, nobody else. The working statuses
+      // (draft, review, archive) stay open to every writer.
+      if (
+        data.status !== undefined &&
+        (DECISION_STATUSES as readonly string[]).includes(data.status) &&
+        !(POLICY_DECIDER_ROLES as readonly string[]).includes(ctx.membership.role)
+      ) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Only owners, admins, and AI officers can approve or publish policies",
+        });
+      }
+
       const updateData: Record<string, unknown> = {};
       if (data.title !== undefined) updateData.title = data.title;
       if (data.description !== undefined) updateData.description = data.description;
@@ -192,7 +211,7 @@ export const policyRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       // RBAC: OWNER, ADMIN, AI_OFFICER
-      if (!["OWNER", "ADMIN", "AI_OFFICER"].includes(ctx.membership.role)) {
+      if (!(POLICY_DECIDER_ROLES as readonly string[]).includes(ctx.membership.role)) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "Only owners, admins, and AI officers can publish policy versions",
@@ -251,7 +270,7 @@ export const policyRouter = createTRPCRouter({
     .input(z.object({ organizationId: z.string(), id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       // RBAC: OWNER, ADMIN, AI_OFFICER
-      if (!["OWNER", "ADMIN", "AI_OFFICER"].includes(ctx.membership.role)) {
+      if (!(POLICY_DECIDER_ROLES as readonly string[]).includes(ctx.membership.role)) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "Only owners, admins, and AI officers can approve policies",

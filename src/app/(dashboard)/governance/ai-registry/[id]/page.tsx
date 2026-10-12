@@ -779,7 +779,7 @@ export default function AISystemDetailPage() {
                   {tc("requirementsAcrossFrameworks", { total: scorecard.total, count: scorecard.frameworks.length })}
                 </CardDescription>
               </div>
-              <Link href="/governance/compliance" className="self-start">
+              <Link href={`/governance/compliance?systemId=${id}`} className="self-start">
                 <Button variant="outline" size="sm">
                   {t("viewMatrix")}
                   <ChevronRight className="w-4 h-4 ml-1" />

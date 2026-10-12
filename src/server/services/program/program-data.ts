@@ -30,7 +30,11 @@ import {
   LAWFIRM_TOOL_CATEGORIES,
   type ContentLocale,
 } from "@/config/lawfirm-ai-toolkit";
-import { computeMarkingDeadline } from "@/config/transparency-rules";
+import {
+  art50Relevant,
+  computeMarkingDeadline,
+  type Art50ProfileStatuses,
+} from "@/config/transparency-rules";
 import { AI_SENTINEL_PATH, PLAN_WINDOWS } from "@/components/guided/path-config";
 import {
   getConfirmationCounts,
@@ -70,8 +74,20 @@ export const PROGRAM_SYSTEM_SELECT = {
   businessOwner: true,
   technicalOwner: true,
   purpose: true,
+  description: true,
+  role: true,
   riskClassification: { select: { riskLevel: true, provenance: true, confirmedAt: true } },
-  transparencyProfile: { select: { id: true, provenance: true, confirmedAt: true } },
+  transparencyProfile: {
+    select: {
+      id: true,
+      provenance: true,
+      confirmedAt: true,
+      art50InteractionStatus: true,
+      art50MarkingStatus: true,
+      art50EmotionStatus: true,
+      art50DeepfakeStatus: true,
+    },
+  },
   oversightGates: {
     select: { gateType: true, status: true, nextReviewDate: true, provenance: true, confirmedAt: true },
   },
@@ -99,8 +115,10 @@ type SystemRecord = {
   businessOwner: string | null;
   technicalOwner: string | null;
   purpose: string | null;
+  description: string | null;
+  role: string;
   riskClassification: ({ riskLevel: string } & ProvenanceRow) | null;
-  transparencyProfile: ({ id: string } & ProvenanceRow) | null;
+  transparencyProfile: ({ id: string } & Art50ProfileStatuses & ProvenanceRow) | null;
   oversightGates: ({
     gateType: string;
     status: string;
@@ -108,6 +126,21 @@ type SystemRecord = {
   } & ProvenanceRow)[];
   _count: { policyLinks: number };
 };
+
+/** Art. 50 relevance of a system, from what it does (see art50Relevant). */
+function systemArt50Relevant(r: SystemRecord): boolean {
+  return art50Relevant(
+    {
+      name: r.name,
+      description: r.description,
+      purpose: r.purpose,
+      technique: r.technique,
+      processesPersonalData: r.processesPersonalData,
+      role: r.role,
+    },
+    r.transparencyProfile,
+  );
+}
 
 function toProgramRows(records: SystemRecord[]): ProgramSystemRow[] {
   return records.map((r) => ({
@@ -121,6 +154,7 @@ function toProgramRows(records: SystemRecord[]): ProgramSystemRow[] {
     riskLevel: r.riskClassification?.riskLevel ?? null,
     gates: r.oversightGates,
     policyLinkCount: r._count.policyLinks,
+    transparencyRelevant: systemArt50Relevant(r),
     hasTransparencyProfile: r.transparencyProfile !== null,
   }));
 }
@@ -312,6 +346,9 @@ export async function getProgramScorecardData(
   const allSystems = (records as SystemRecord[]).filter(
     (s) => s.status !== "RETIRED",
   );
+  // Art. 50 relevance read from every row as recorded, drafts included, so
+  // the relevant count does not move when a drafted profile is left out.
+  const art50ById = new Map(allSystems.map((s) => [s.id, systemArt50Relevant(s)]));
   // Two readings of the same rows. The figures (scores, tiles, maturity)
   // count only what a person stands behind: drafted items (quick start,
   // templates, imports) nobody has confirmed are left out, and their number
@@ -339,7 +376,7 @@ export async function getProgramScorecardData(
       ...highRisk.map((s) => s.id),
       ...systemsWithGate.map((s) => s.id),
     ]);
-    const relevant = systems.filter((s) => s.technique === "GENERATIVE_AI");
+    const relevant = systems.filter((s) => art50ById.get(s.id));
 
     const complianceCounts = { assessed: 0, compliant: 0, partial: 0, total: 0 };
     for (const row of complianceByStatus) {

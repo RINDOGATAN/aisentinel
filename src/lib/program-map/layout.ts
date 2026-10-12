@@ -117,6 +117,10 @@ export function deriveGlyphs(system: ProgramGraphSystem): GlyphSpec[] {
     const anyBad = system.gates.some((g) => g.overdue || g.status === "FAILED");
     const allPassed = system.gates.every((g) => g.status === "PASSED");
     push("gate", anyBad ? "alert" : allPassed ? "ok" : "warn");
+  } else if (system.riskLevel === "HIGH" || system.riskLevel === "UNACCEPTABLE") {
+    // Human oversight is required for these tiers: no gate at all is a
+    // missing-but-required control, shown red like an overdue one.
+    push("gate", "alert");
   }
   // Policy glyph always renders: absence of links is a visible gap.
   push("policy", system.policyLinkCount > 0 ? "present" : "missing");

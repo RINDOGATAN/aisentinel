@@ -12,6 +12,7 @@ import { describe, it, expect } from "vitest";
 import {
   ART50_APPLICABLE_FROM,
   ART50_MARKING_GRACE_DEADLINE,
+  art50Relevant,
   computeMarkingDeadline,
   suggestArt50Obligations,
   type Art50ObligationId,
@@ -175,5 +176,28 @@ describe("computeMarkingDeadline", () => {
       now: after,
     });
     expect(d?.overdue).toBe(false);
+  });
+});
+
+describe("art50Relevant", () => {
+  const NA = {
+    art50InteractionStatus: "NOT_APPLICABLE",
+    art50MarkingStatus: "NOT_APPLICABLE",
+    art50EmotionStatus: "NOT_APPLICABLE",
+    art50DeepfakeStatus: "NOT_APPLICABLE",
+  } as const;
+
+  it("follows what the system does, not only its technique", () => {
+    expect(art50Relevant({ name: "Customer support chatbot", technique: "NLP" })).toBe(true);
+    expect(art50Relevant({ name: "Draft writer", technique: "GENERATIVE_AI" })).toBe(true);
+    expect(art50Relevant({ name: "Inventory ledger", technique: "MACHINE_LEARNING" })).toBe(false);
+  });
+
+  it("a recorded profile decides", () => {
+    expect(art50Relevant({ name: "Customer support chatbot", technique: "NLP" }, NA)).toBe(false);
+    expect(
+      art50Relevant({ name: "Inventory ledger", technique: "MACHINE_LEARNING" }, { ...NA, art50InteractionStatus: "REQUIRED" }),
+    ).toBe(true);
+    expect(art50Relevant({ name: "Inventory ledger" }, { ...NA, art50MarkingStatus: "IMPLEMENTED" })).toBe(true);
   });
 });

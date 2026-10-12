@@ -70,11 +70,11 @@ const COPY: Record<
     hostingIntro: "Three hosting options, with different safeguards and levels of control.",
     hosting: [
       {
-        title: "In the TODO.LAW cloud",
+        title: "TODO.LAW cloud",
         body: "You use it in the browser, on desktop or mobile. Nothing to install, and you can take your program elsewhere whenever you like with a simple export.",
       },
       {
-        title: "Managed virtual server",
+        title: "Managed instance",
         body: "An isolated instance we run for you from Asturias, Spain, with open LLMs available and a tailored SLA.",
       },
       {
@@ -111,7 +111,7 @@ const COPY: Record<
         body: "Lo usas desde el navegador, en el ordenador o en el móvil. No instalas nada y puedes llevarte tu programa a otro sitio cuando quieras, mediante una sencilla exportación. Los datos se guardan en la Unión Europea (Fráncfort).",
       },
       {
-        title: "Servidor virtual gestionado",
+        title: "Instancia gestionada",
         body: "Una instancia aislada que operamos nosotros desde Asturias, con disponibilidad de LLM abiertos y SLA a medida.",
       },
       {

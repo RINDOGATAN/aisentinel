@@ -8,7 +8,7 @@
  * safeguards.canonical.test.ts).
  */
 import { describe, it, expect } from "vitest";
-import { COPY, LADDER, QUESTIONS, WAY_CARD, levelOf, meets, optionsFor, pickWay, recommend, requirementsOf, type Answers, type Locale } from "./safeguards";
+import { COPY, HOSTING, LADDER, QUESTIONS, WAY_CARD, WAY_NAMES, hostingLine, levelOf, meets, optionsFor, pickWay, recommend, requirementsOf, type Answers, type Locale } from "./safeguards";
 import en from "../i18n/en/ai-sentinel-startups.json";
 import es from "../i18n/es/ai-sentinel-startups.json";
 
@@ -256,5 +256,19 @@ describe("the Spanish own-hardware result", () => {
     expect(COPY.es.summaries.deploy).toMatch(/dentro de tu perímetro/);
     const all = JSON.stringify(COPY.es);
     expect(all).not.toMatch(/semanas|formamos|\bformad[oa]|\bformación|manual de operación|15\.000/);
+  });
+});
+
+describe("the cloud's hosting line and the way names", () => {
+  it("names EU hosting in Spanish and to EU visitors only, never to other visitors", () => {
+    expect(hostingLine(HOSTING, "es", false)).toContain("UE (Fráncfort)");
+    expect(hostingLine(HOSTING, "en", true)).toContain("EU (Frankfurt)");
+    expect(hostingLine(HOSTING, "en", false)).toBeNull();
+  });
+
+  it("names each way as its box on this landing does", () => {
+    const dict: Record<Locale, Record<string, string>> = { en, es };
+    for (const p of ["en", "es"] as Locale[])
+      for (const w of LADDER[p]) expect(dict[p][`${p}.ways.w${WAY_CARD[p][w]}.title`]).toBe(WAY_NAMES[p][w]);
   });
 });

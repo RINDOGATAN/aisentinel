@@ -152,8 +152,18 @@ describe("deriveGlyphs", () => {
       gates: [{ gateType: "PRE_DEPLOYMENT", status: "PENDING", overdue: true }],
     });
     expect(overdue.find((g) => g.kind === "gate")!.state).toBe("alert");
-    const none = deriveGlyphs({ ...base, gates: [] });
+    const none = deriveGlyphs({ ...base, riskLevel: "LIMITED", gates: [] });
     expect(none.some((g) => g.kind === "gate")).toBe(false);
+  });
+
+  it("a high-risk or prohibited system with no gate shows a red gate marker", () => {
+    for (const riskLevel of ["HIGH", "UNACCEPTABLE"] as const) {
+      const glyphs = deriveGlyphs({ ...base, riskLevel, gates: [] });
+      expect(glyphs.find((g) => g.kind === "gate")!.state).toBe("alert");
+    }
+    for (const riskLevel of ["LIMITED", "MINIMAL", null] as const) {
+      expect(deriveGlyphs({ ...base, riskLevel, gates: [] }).some((g) => g.kind === "gate")).toBe(false);
+    }
   });
 
   it("transparency glyph only for relevant systems; alert when profile missing", () => {

@@ -61,7 +61,7 @@ export const AUTONOMY_HELP: Record<AgentAutonomyValue, Localized> = {
   },
   NONE: {
     en: "The ordinary case the regimes were written for: the system scores, ranks or drafts, and a person decides what happens next.",
-    es: "El caso ordinario para el que se escribieron los regímenes: el sistema puntúa, ordena o redacta, y una persona decide qué ocurre después.",
+    es: "El caso ordinario para el que se han escrito los regímenes: el sistema puntúa, ordena o redacta, y una persona decide qué ocurre después.",
   },
   SUGGESTS: {
     en: "The system proposes, but nothing reaches the person affected until someone acts on it. The decision boundary is still the human step.",

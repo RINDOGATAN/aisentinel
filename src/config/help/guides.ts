@@ -84,7 +84,7 @@ export const GUIDES: Guide[] = [
             term: L("Importer", "Importador"),
             body: L(
               "Placed in the EU, it puts on the market an AI system that carries the name of a provider established outside the EU (Art. 3), and must check the provider did its part.",
-              "Establecido en la UE, introduce en el mercado un sistema de IA que lleva el nombre de un proveedor establecido fuera de la UE (art. 3), y debe comprobar que el proveedor cumplió su parte.",
+              "Establecido en la UE, introduce en el mercado un sistema de IA que lleva el nombre de un proveedor establecido fuera de la UE (art. 3), y debe comprobar que el proveedor ha cumplido su parte.",
             ),
             example: L(
               "An EU reseller of an AI product made by a company in another country.",

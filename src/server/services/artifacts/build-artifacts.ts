@@ -503,7 +503,7 @@ function inputsSection(input: ArtifactInput, sections: readonly SelectedSection[
   const blocks: Block[] = [
     paragraph(
       es
-        ? `De las ${total} preguntas que este sistema activa, ${answered.length} tienen respuesta registrada y ${missing} no. Abajo están las respuestas tal como se guardaron; las que faltan aparecen como apartados abiertos en el cuerpo del documento y en «Qué queda abierto».`
+        ? `De las ${total} preguntas que este sistema activa, ${answered.length} tienen respuesta registrada y ${missing} no. Abajo están las respuestas tal como se han guardado; las que faltan aparecen como apartados abiertos en el cuerpo del documento y en «Qué queda abierto».`
         : `Of the ${total} questions this system triggers, ${answered.length} have a recorded answer and ${missing} do not. Below are the answers as they were recorded; the missing ones appear as open items in the body of the document and in "What remains open".`,
     ),
   ];
@@ -818,7 +818,7 @@ const NOTICE_ADDENDA: AddendumSpec[] = [
       },
       {
         en: "You may opt out of that use, or, where we rely on the human-appeal exception, ask a designated reviewer with authority to change the decision to review it. You may also ask for access to information about how the technology reached its output about you.",
-        es: "Puedes oponerte a ese uso o, cuando nos amparemos en la excepción de recurso humano, solicitar que una persona revisora designada con autoridad para cambiar la decisión la revise. También puedes solicitar acceso a la información sobre cómo la tecnología llegó a su resultado.",
+        es: "Puedes oponerte a ese uso o, cuando nos amparemos en la excepción de recurso humano, solicitar que una persona revisora designada con autoridad para cambiar la decisión la revise. También puedes solicitar acceso a la información sobre cómo la tecnología ha llegado a su resultado.",
       },
     ],
   },
@@ -830,7 +830,7 @@ const NOTICE_ADDENDA: AddendumSpec[] = [
     statements: [
       {
         en: "Automated decision-making technology is used in this consequential decision about you. If the outcome is adverse, we will tell you the principal reasons, the categories of personal data that drove it, and how to correct inaccurate data and seek review.",
-        es: "En esta decisión con consecuencias sobre ti se utiliza tecnología de decisión automatizada. Si el resultado te es desfavorable, te informaremos de las razones principales, de las categorías de datos personales que la determinaron y de cómo corregir datos inexactos y solicitar una revisión.",
+        es: "En esta decisión con consecuencias sobre ti se utiliza tecnología de decisión automatizada. Si el resultado te es desfavorable, te informaremos de las razones principales, de las categorías de datos personales que la han determinado y de cómo corregir datos inexactos y solicitar una revisión.",
       },
     ],
   },

@@ -100,7 +100,7 @@ export const COLORADO_REQUIREMENTS: RegimeRequirementSeed[] = [
     title: { en: "Deployer: post-decision disclosure after an adverse outcome", es: "Responsable del despliegue: información posterior a una decisión desfavorable" },
     description: {
       en: "After a consequential decision adverse to the consumer in which covered ADMT was used, disclose that it was used, the principal reasons for the decision in plain language, the categories of personal data that drove it, and the consumer's rights to correct data and to seek review.",
-      es: "Tras una decisión con consecuencias desfavorable para el consumidor en la que se haya utilizado una ADMT cubierta, informa de que se utilizó, de las razones principales de la decisión en lenguaje sencillo, de las categorías de datos personales que la determinaron y de los derechos del consumidor a corregir sus datos y a solicitar una revisión.",
+      es: "Tras una decisión con consecuencias desfavorable para el consumidor en la que se haya utilizado una ADMT cubierta, informa de que se ha utilizado, de las razones principales de la decisión en lenguaje sencillo, de las categorías de datos personales que la han determinado y de los derechos del consumidor a corregir sus datos y a solicitar una revisión.",
     },
     applicabilityTags: DEP,
     sortOrder: 220,
@@ -144,7 +144,7 @@ export const COLORADO_REQUIREMENTS: RegimeRequirementSeed[] = [
     title: { en: "Enforcement and litigation posture", es: "Aplicación y situación procesal" },
     description: {
       en: "The Attorney General has exclusive enforcement authority; there is no private right of action. A federal challenge to the predecessor statute is pending and the court stayed its enforcement; reporting indicates the stay reaches SB 26-189. Treat 1 January 2027 as the statutory date and confirm the current posture with Colorado counsel.",
-      es: "La Fiscalía General tiene la competencia exclusiva de aplicación; no existe acción privada. Está pendiente un litigio federal contra la norma anterior y el tribunal suspendió su aplicación; según la información disponible, la suspensión alcanza a la SB 26-189. Considera el 1 de enero de 2027 como la fecha legal y confirma la situación actual con asesoría jurídica de Colorado.",
+      es: "La Fiscalía General tiene la competencia exclusiva de aplicación; no existe acción privada. Está pendiente un litigio federal contra la norma anterior y el tribunal ha suspendido su aplicación; según la información disponible, la suspensión alcanza a la SB 26-189. Considera el 1 de enero de 2027 como la fecha legal y confirma la situación actual con asesoría jurídica de Colorado.",
     },
     applicabilityTags: CORE,
     sortOrder: 400,

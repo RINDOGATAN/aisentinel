@@ -156,7 +156,7 @@ export const CAPABILITIES: Capability[] = [
     label: { en: "The conversation", es: "La conversación" },
     note: {
       en: "What one user said can reach the next one if the context is shared or cached.",
-      es: "Lo que dijo una persona puede llegar a la siguiente si el contexto se comparte o se almacena en caché.",
+      es: "Lo que ha dicho una persona puede llegar a la siguiente si el contexto se comparte o se almacena en caché.",
     },
   },
   {
@@ -260,7 +260,7 @@ export const CAPABILITIES: Capability[] = [
     label: { en: "Hand off to another agent", es: "Traspasar a otro agente" },
     note: {
       en: "Individually reasonable actions can combine into an outcome nobody chose.",
-      es: "Acciones razonables por separado pueden combinarse en un resultado que nadie eligió.",
+      es: "Acciones razonables por separado pueden combinarse en un resultado que nadie ha elegido.",
     },
   },
   {
@@ -523,7 +523,7 @@ export const SCENARIO_LIBRARY: LibraryScenario[] = [
         layer: "detect",
         text: {
           en: "Log which documents were retrieved for whom, and alert on retrieval from restricted collections.",
-          es: "Registra qué documentos se recuperaron y para quién, y alerta cuando se recupere de colecciones restringidas.",
+          es: "Registra qué documentos se han recuperado y para quién, y alerta cuando se recupere de colecciones restringidas.",
         },
       },
     ],
@@ -645,7 +645,7 @@ export const SCENARIO_LIBRARY: LibraryScenario[] = [
     },
     story: {
       en: "A persuasive message, or a manipulated document, leads the agent to issue a refund of four thousand rather than forty. The tool did exactly what it was asked.",
-      es: "Un mensaje convincente, o un documento manipulado, lleva al agente a emitir un reembolso de cuatro mil en lugar de cuarenta. La herramienta hizo exactamente lo que se le pidió.",
+      es: "Un mensaje convincente, o un documento manipulado, lleva al agente a emitir un reembolso de cuatro mil en lugar de cuarenta. La herramienta ha hecho exactamente lo que se le ha pedido.",
     },
     defaults: { impact: "HIGH", likelihood: "MEDIUM", blastRadius: "SIGNIFICANT" },
     controls: [
@@ -905,7 +905,7 @@ export const SCENARIO_LIBRARY: LibraryScenario[] = [
         layer: "respond",
         text: {
           en: "Give support a way to inspect and clear what was remembered about someone.",
-          es: "Da a soporte una forma de inspeccionar y borrar lo que se recordó sobre alguien.",
+          es: "Da a soporte una forma de inspeccionar y borrar lo que se ha recordado sobre alguien.",
         },
       },
     ],
@@ -926,11 +926,11 @@ export const SCENARIO_LIBRARY: LibraryScenario[] = [
     anyOf: ["decide_about_person"],
     title: {
       en: "It works exactly as designed and still treats a group worse",
-      es: "Funciona exactamente como se diseñó y aun así trata peor a un grupo",
+      es: "Funciona exactamente como se ha diseñado y aun así trata peor a un grupo",
     },
     story: {
       en: "Nobody attacked anything. The training data carried a pattern, a proxy variable stood in for a protected characteristic, and the outcomes diverge.",
-      es: "Nadie ha atacado nada. Los datos de entrenamiento traían un patrón, una variable sustitutiva ocupó el lugar de una característica protegida y los resultados divergen.",
+      es: "Nadie ha atacado nada. Los datos de entrenamiento traían un patrón, una variable sustitutiva ha ocupado el lugar de una característica protegida y los resultados divergen.",
     },
     defaults: { impact: "HIGH", likelihood: "MEDIUM", blastRadius: "SIGNIFICANT" },
     controls: [
@@ -1034,7 +1034,7 @@ export const SCENARIO_LIBRARY: LibraryScenario[] = [
     },
     story: {
       en: "There is no log of what the agent did, no baseline for what normal looks like, and the first sign of trouble is a customer complaint.",
-      es: "No hay registro de lo que hizo el agente, no hay una referencia de lo que es normal, y la primera señal de problema es una queja de un cliente.",
+      es: "No hay registro de lo que ha hecho el agente, no hay una referencia de lo que es normal, y la primera señal de problema es una queja de un cliente.",
     },
     defaults: { impact: "MEDIUM", likelihood: "HIGH", blastRadius: "SIGNIFICANT" },
     controls: [
@@ -1042,7 +1042,7 @@ export const SCENARIO_LIBRARY: LibraryScenario[] = [
         layer: "detect",
         text: {
           en: "Log every action with who asked, what was called, with which parameters and what came back.",
-          es: "Registra cada acción con quién la pidió, qué se invocó, con qué parámetros y qué se obtuvo.",
+          es: "Registra cada acción con quién la ha pedido, qué se ha invocado, con qué parámetros y qué se ha obtenido.",
         },
       },
       {
@@ -1078,11 +1078,11 @@ export const SCENARIO_LIBRARY: LibraryScenario[] = [
     anyOf: ["hand_to_agent"],
     title: {
       en: "Two sensible steps add up to something nobody approved",
-      es: "Dos pasos sensatos suman algo que nadie aprobó",
+      es: "Dos pasos sensatos suman algo que nadie ha aprobado",
     },
     story: {
       en: "One agent summarizes, another acts on the summary, and the second one never sees the caveats the first one dropped. Each step passes review on its own.",
-      es: "Un agente resume, otro actúa sobre el resumen, y el segundo nunca ve las salvedades que el primero descartó. Cada paso, por separado, pasa la revisión.",
+      es: "Un agente resume, otro actúa sobre el resumen, y el segundo nunca ve las salvedades que el primero ha descartado. Cada paso, por separado, pasa la revisión.",
     },
     defaults: { impact: "HIGH", likelihood: "MEDIUM", blastRadius: "SIGNIFICANT" },
     controls: [
@@ -1097,14 +1097,14 @@ export const SCENARIO_LIBRARY: LibraryScenario[] = [
         layer: "prevent",
         text: {
           en: "Carry provenance and confidence with the payload, so the acting agent knows what the summarizing one was unsure about.",
-          es: "Traslada la procedencia y la confianza junto con los datos, para que el agente que actúa sepa de qué no estaba seguro el que resumió.",
+          es: "Traslada la procedencia y la confianza junto con los datos, para que el agente que actúa sepa de qué no estaba seguro el que ha resumido.",
         },
       },
       {
         layer: "detect",
         text: {
           en: "Trace an outcome back through every hop, and review chains that ended in a consequential action.",
-          es: "Rastrea un resultado a través de cada salto y revisa las cadenas que terminaron en una acción con consecuencias.",
+          es: "Rastrea un resultado a través de cada salto y revisa las cadenas que han terminado en una acción con consecuencias.",
         },
       },
     ],
@@ -1129,7 +1129,7 @@ export const SCENARIO_LIBRARY: LibraryScenario[] = [
     },
     story: {
       en: "Whatever is in the context is sent to the model provider, kept for some period, and possibly used to improve a service. Nobody wrote that down.",
-      es: "Todo lo que está en el contexto se envía al proveedor del modelo, se conserva un tiempo y quizá se usa para mejorar un servicio. Nadie lo dejó por escrito.",
+      es: "Todo lo que está en el contexto se envía al proveedor del modelo, se conserva un tiempo y quizá se usa para mejorar un servicio. Nadie lo ha dejado por escrito.",
     },
     defaults: { impact: "MEDIUM", likelihood: "HIGH", blastRadius: "SIGNIFICANT" },
     controls: [

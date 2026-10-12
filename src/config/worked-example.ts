@@ -141,11 +141,11 @@ export const EXAMPLE_SYSTEMS: readonly ExampleSystem[] = [
     name: { en: "Internal meeting summarizer (sample)", es: "Resumidor de reuniones internas (muestra)" },
     description: {
       en: "An invented tool that turns the example organization's own internal meeting transcripts into summaries for the people who attended.",
-      es: "Una herramienta inventada que convierte las transcripciones de reuniones internas de la organización de ejemplo en resúmenes para quienes asistieron.",
+      es: "Una herramienta inventada que convierte las transcripciones de reuniones internas de la organización de ejemplo en resúmenes para quienes han asistido.",
     },
     purpose: {
       en: "Save the time spent writing up internal meetings. The summary goes only to the attendees, who correct it.",
-      es: "Ahorrar el tiempo de redactar actas de reuniones internas. El resumen llega solo a quienes asistieron, que lo corrigen.",
+      es: "Ahorrar el tiempo de redactar actas de reuniones internas. El resumen llega solo a quienes han asistido, que lo corrigen.",
     },
     technique: "NLP",
     role: "DEPLOYER",
@@ -158,7 +158,7 @@ export const EXAMPLE_SYSTEMS: readonly ExampleSystem[] = [
       annexIIICategory: null,
       rationale: {
         en: "Summarizes the organization's own internal records for the people who were in the room. It informs no decision about anyone and interacts with no member of the public, so neither Annex III nor Article 50 is engaged. Data protection duties still apply to the transcripts.",
-        es: "Resume registros internos de la propia organización para las personas que estuvieron en la reunión. No fundamenta ninguna decisión sobre nadie ni interactúa con el público, por lo que no entran en juego ni el anexo III ni el artículo 50. Las obligaciones de protección de datos siguen aplicándose a las transcripciones.",
+        es: "Resume registros internos de la propia organización para las personas que han estado en la reunión. No fundamenta ninguna decisión sobre nadie ni interactúa con el público, por lo que no entran en juego ni el anexo III ni el artículo 50. Las obligaciones de protección de datos siguen aplicándose a las transcripciones.",
       },
     },
   },
@@ -181,7 +181,7 @@ export const EXAMPLE_ASSESSMENT_ANSWERS: Record<string, Record<PilotLocale, stri
   },
   sys_necessity: {
     en: "Manual ordering was tried and took four working days per role, during which good applicants withdrew. A simple keyword filter was tried and rejected because it excluded career changers whose wording differed. The model is used because it orders rather than excludes: every application is still read by a person.",
-    es: "Se probó la ordenación manual y llevaba cuatro días laborables por puesto, durante los cuales se retiraban buenas candidaturas. Se probó un filtro simple por palabras clave y se descartó porque excluía a personas que cambiaban de carrera y se expresaban de otro modo. El modelo se usa porque ordena en lugar de excluir: toda candidatura la sigue leyendo una persona.",
+    es: "Se ha probado la ordenación manual y llevaba cuatro días laborables por puesto, durante los cuales se retiraban buenas candidaturas. Se ha probado un filtro simple por palabras clave y se ha descartado porque excluía a personas que cambiaban de carrera y se expresaban de otro modo. El modelo se usa porque ordena en lugar de excluir: toda candidatura la sigue leyendo una persona.",
   },
   ppl_categories: {
     en: "Applicants for junior roles, around 4,000 a year. Most are in their first five years of work.",
@@ -260,7 +260,7 @@ export const EXAMPLE_POLICY: ExamplePolicy = {
       "",
       "4. Cuando las personas interactúen con un sistema de IA, se les informa de ello con claridad en el primer intercambio.",
       "",
-      "5. Si un sistema de IA produce un resultado que perjudica a alguien o pudo hacerlo, comunícalo como incidente ese mismo día. Comunicarlo nunca se penaliza.",
+      "5. Si un sistema de IA produce un resultado que perjudica a alguien o ha podido hacerlo, comunícalo como incidente ese mismo día. Comunicarlo nunca se penaliza.",
       "",
       "Esta es una política de muestra dentro de un ejemplo. Sustitúyela por la tuya antes de confiar en ella.",
     ].join("\n"),
@@ -272,7 +272,7 @@ export const EXAMPLE_GATE = {
   gateType: "PERIODIC_REVIEW" as const,
   description: {
     en: "Quarterly review of the applicant screening model before each retraining: selection rates by sex and age band, the reviewers' log of departures from the model's order, and any complaint received through the human review route.",
-    es: "Revisión trimestral del modelo de cribado de candidaturas antes de cada reentrenamiento: tasas de selección por sexo y tramo de edad, registro de las veces que las personas revisoras se apartaron del orden del modelo y cualquier reclamación recibida por la vía de revisión humana.",
+    es: "Revisión trimestral del modelo de cribado de candidaturas antes de cada reentrenamiento: tasas de selección por sexo y tramo de edad, registro de las veces que las personas revisoras se han apartado del orden del modelo y cualquier reclamación recibida por la vía de revisión humana.",
   },
   reviewCadence: { en: "Quarterly", es: "Trimestral" },
   /** Days from creation to the first review date. */
@@ -285,16 +285,16 @@ export const EXAMPLE_INCIDENT = {
   severity: "MEDIUM" as const,
   title: {
     en: "Assistant stated a refund window that does not exist (sample)",
-    es: "El asistente indicó un plazo de devolución que no existe (muestra)",
+    es: "El asistente ha indicado un plazo de devolución que no existe (muestra)",
   },
   description: {
     en: "In this invented incident the customer assistant told several people they had 60 days to return an item, where the published term is 30. Three customers relied on it. The example organization honored the 60 days for those three, corrected the retrieval source the same day, and added the published terms to the assistant's grounding set. Recorded here to show what an incident record and its clocks look like.",
-    es: "En este incidente inventado, el asistente de clientes indicó a varias personas que disponían de 60 días para devolver un artículo, cuando el plazo publicado es de 30. Tres clientes se fiaron de esa información. La organización de ejemplo respetó los 60 días en esos tres casos, corrigió la fuente de recuperación el mismo día y añadió las condiciones publicadas al conjunto de anclaje del asistente. Se registra aquí para mostrar el aspecto de un registro de incidente y de sus plazos.",
+    es: "En este incidente inventado, el asistente de clientes ha indicado a varias personas que disponían de 60 días para devolver un artículo, cuando el plazo publicado es de 30. Tres clientes se han fiado de esa información. La organización de ejemplo ha respetado los 60 días en esos tres casos, ha corregido la fuente de recuperación el mismo día y ha añadido las condiciones publicadas al conjunto de anclaje del asistente. Se registra aquí para mostrar el aspecto de un registro de incidente y de sus plazos.",
   },
   rootCauseCategory: { en: "Ungrounded retrieval", es: "Recuperación sin anclaje" },
   impactDescription: {
     en: "Three customers were given a term the organization does not offer. No personal data was exposed and nobody was refused a refund.",
-    es: "Tres clientes recibieron una condición que la organización no ofrece. No se expuso ningún dato personal y no se denegó ninguna devolución.",
+    es: "Tres clientes han recibido una condición que la organización no ofrece. No se ha expuesto ningún dato personal y no se ha denegado ninguna devolución.",
   },
 };
 

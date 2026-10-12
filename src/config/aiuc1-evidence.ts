@@ -448,3 +448,15 @@ export const AIUC1_CODES = AIUC1_DOMAINS.flatMap((d) => d.requirements.map((r) =
   string,
   ...string[],
 ];
+
+/**
+ * The domain the agent page opens on: the first one with an applicable
+ * requirement not yet tested. The others start folded behind their counts, so
+ * the page does not open on every requirement of the standard. Null when every
+ * applicable requirement has a test.
+ */
+export function firstDomainToOpen(
+  domains: readonly { code: string; tested: number; applicable: number }[],
+): string | null {
+  return domains.find((d) => d.tested < d.applicable)?.code ?? null;
+}

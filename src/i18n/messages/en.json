@@ -4040,8 +4040,8 @@
       "scorecardSubtitle": "Maturity across eight dimensions, mapped to the NIST AI RMF functions.",
       "nistTitle": "NIST AI RMF profile: current vs target",
       "dimensionsTitle": "Maturity dimensions",
-      "planTitle": "Next 90 days",
-      "planSubtitle": "Actions derived from your program's actual gaps, ordered by severity.",
+      "planTitle": "30/60/90-day plan",
+      "planSubtitle": "Two stages of the program path in each thirty days, and under each the actions your program's gaps call for, most urgent first.",
       "rolloutTitle": "Recommended rollout by tool category",
       "rolloutSubtitle": "How to employ each class of tool in the coming quarter.",
       "dutiesTitle": "Professional duties coverage",
@@ -4052,7 +4052,9 @@
       "historyLink": "History",
       "historyFootnote": "A snapshot is captured automatically each time the program PDF is exported. Scores are computed by the maturity model version recorded in each snapshot.",
       "exportPack": "Download program pack (ZIP)",
-      "download": "Download"
+      "download": "Download",
+      "draftsExcluded": "{count, plural, one {# drafted item is left out of these figures until a person confirms it.} other {# drafted items are left out of these figures until a person confirms them.}}",
+      "draftsExcludedLink": "Review and confirm"
     },
     "tiles": {
       "overall": "Overall maturity",
@@ -4226,7 +4228,7 @@
     },
     "plan": {
       "eyebrow": "Action Plan",
-      "title": "The next 90 days",
+      "title": "The 30/60/90-day plan",
       "bucket": {
         "1-30": "Days 1 to 30",
         "31-60": "Days 31 to 60",
@@ -5918,7 +5920,9 @@
       "accepted": "Partial result accepted",
       "notApplicable": "Marked as not applicable",
       "applicableAgain": "The requirement applies again"
-    }
+    },
+    "showDomain": "Show",
+    "hideDomain": "Hide"
   },
   "clientTemplate": {
     "cardTitle": "Start from another client",

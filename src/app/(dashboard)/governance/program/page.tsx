@@ -10,6 +10,7 @@
  */
 
 import Link from "next/link";
+import { useEffect } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -49,6 +50,14 @@ export default function ProgramPage() {
       { organizationId: orgId, locale },
       { enabled: !!orgId },
     );
+
+  // The section is rendered only once the data has loaded, so the browser's
+  // own jump to #plan finds nothing; scroll there when it appears.
+  const ready = !!orgId && !graphLoading && !scorecardLoading;
+  useEffect(() => {
+    if (!ready || window.location.hash !== "#plan") return;
+    document.getElementById("plan")?.scrollIntoView({ block: "start" });
+  }, [ready]);
 
   if (!orgId || graphLoading || scorecardLoading) {
     return (
@@ -147,6 +156,14 @@ export default function ProgramPage() {
                     {t("scorecardSubtitle")}
                   </p>
                 </div>
+                {scorecard.draftsExcluded > 0 && (
+                  <p className="text-sm text-muted-foreground" data-testid="drafts-excluded">
+                    {t("draftsExcluded", { count: scorecard.draftsExcluded })}{" "}
+                    <Link href="/governance/review" className="text-primary underline-offset-4 hover:underline">
+                      {t("draftsExcludedLink")}
+                    </Link>
+                  </p>
+                )}
                 <ScorecardTiles tiles={scorecard.tiles} />
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 items-center">
                   <Card>
@@ -166,8 +183,9 @@ export default function ProgramPage() {
                 </div>
               </section>
 
-              {/* 90-day plan */}
-              <section className="space-y-3">
+              {/* The 30/60/90-day plan. "Open" on the Dashboard's documents
+                  list lands here (#plan). */}
+              <section id="plan" className="space-y-3 scroll-mt-20">
                 <div>
                   <h2 className="text-lg font-semibold">{t("planTitle")}</h2>
                   <p className="text-sm text-muted-foreground">

@@ -161,7 +161,7 @@ describe("Spanish sections", () => {
     }
   });
 
-  it("offer exactly the three ways sold in Spain: TODO.LAW cloud, managed virtual server, your own hardware", () => {
+  it("offer exactly the three ways sold in Spain: TODO.LAW cloud, managed instance, your own hardware", () => {
     expect(asShipped.match(/<article class="paper-card/g)).toHaveLength(3);
     // The section's heading, as the eyebrow (English: "Guarantees and hosting").
     expect(ES["es.ways.label"]).toBe("Garantías y alojamiento");
@@ -170,7 +170,7 @@ describe("Spanish sections", () => {
     expect(ES["es.ways.heading.prefix"] + ES["es.ways.heading.accent"]).toBe("Adaptado a tus necesidades");
     expect(ES["es.ways.w1.title"]).toBe("En la nube de TODO.LAW");
     expect(ES["es.ways.w1.desc"]).toMatch(/sencilla exportación/);
-    expect(ES["es.ways.w2.title"]).toBe("Servidor virtual gestionado");
+    expect(ES["es.ways.w2.title"]).toBe("Instancia gestionada");
     expect(ES["es.ways.w2.desc"]).toMatch(/instancia aislada que operamos nosotros desde Asturias/);
     expect(ES["es.ways.w3.title"]).toBe("Tu propio hardware");
     expect(ES["es.ways.w3.desc"]).toMatch(/no salen de tus instalaciones/);

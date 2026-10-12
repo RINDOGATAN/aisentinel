@@ -6,9 +6,10 @@
  * The safeguards guide, ported from the TODO.LAW storefront's SafeguardsWizard: a calm
  * block after the ways boxes ("Not sure which to choose?") that opens in place into six
  * questions and recommends one way. The logic, the level table and the copy live in
- * src/landing/config/safeguards.ts; the way names are this landing's own box titles
- * (`<locale>.ways.wN.title`). Spanish offers three ways (cloud, managed, deployment),
- * English all five.
+ * src/landing/config/safeguards.ts, with the way names (WAY_NAMES, the same on every site
+ * and on this landing's boxes). Three ways in both languages (cloud, managed, deployment).
+ * The cloud's result carries the hosting line (HOSTING), shown in Spanish or to visitors
+ * in the EU only.
  *
  * The state (open, answers) belongs to the ways section, which marks the recommended
  * box from it; this component only draws it. The result links to that box on the page.
@@ -17,8 +18,11 @@
 import { useId } from "react";
 import {
   COPY,
+  HOSTING,
   QUESTIONS,
   WAY_CARD,
+  WAY_NAMES,
+  hostingLine,
   optionsFor,
   recommend,
   type Answers,
@@ -36,6 +40,8 @@ export const wayBoxId = (p: Locale, n: number) => `${p}-way-${n}`;
 interface SafeguardsGuideProps {
   t: T;
   p: Locale;
+  /** True for a visitor in the EU: the hosting line may name EU hosting in English. */
+  eu?: boolean;
   open: boolean;
   answers: Answers;
   onToggle: () => void;
@@ -43,13 +49,14 @@ interface SafeguardsGuideProps {
   onReset: () => void;
 }
 
-export default function SafeguardsGuide({ t, p, open, answers, onToggle, onAnswer, onReset }: SafeguardsGuideProps) {
+export default function SafeguardsGuide({ p, eu = false, open, answers, onToggle, onAnswer, onReset }: SafeguardsGuideProps) {
   const c = COPY[p];
   const uid = useId();
   const rec = open ? recommend(answers, p) : null;
 
   const card = (w: WayId) => WAY_CARD[p][w] as number;
-  const name = (w: WayId) => t(`${p}.ways.w${card(w)}.title`);
+  const name = (w: WayId) => WAY_NAMES[p][w];
+  const hosting = hostingLine(HOSTING, p, eu);
   const headingId = `${uid}-h`;
   const panelId = `${uid}-panel`;
   const cardId = `${uid}-result`;
@@ -188,7 +195,12 @@ export default function SafeguardsGuide({ t, p, open, answers, onToggle, onAnswe
               </div>
               {rec && (
                 <>
-                  <p className="text-muted-foreground text-sm leading-relaxed mt-0 mb-4">{c.summaries[rec.way]}</p>
+                  <p className={`text-muted-foreground text-sm leading-relaxed mt-0 ${rec.way === "cloud" && hosting ? "mb-2" : "mb-4"}`}>{c.summaries[rec.way]}</p>
+                  {rec.way === "cloud" && hosting && (
+                    <p data-testid="safeguards-hosting" className="text-muted-foreground text-sm leading-relaxed mt-0 mb-4">
+                      {hosting}
+                    </p>
+                  )}
                   <p className="text-xs uppercase tracking-wider text-accent m-0 mb-2">{c.meets}</p>
                   {rec.checks.length === 0 ? (
                     <p className="text-muted-foreground text-sm mt-0 mb-4">{c.none}</p>

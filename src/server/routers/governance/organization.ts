@@ -17,6 +17,7 @@ import { JURISDICTION_IDS } from "@/config/jurisdictions";
 import { firstFreeSlug } from "@/lib/unique-slug";
 import { claimableDomain } from "@/lib/org-domain";
 import { assertNotOnHold } from "../../services/legal-hold";
+import { COUNTED_INCIDENT } from "@/server/services/incident/counted";
 import {
   assertPilotOrganizationLimit,
   assertPilotRoom,
@@ -49,7 +50,7 @@ export const organizationRouter = createTRPCRouter({
                 members: true,
                 aiSystems: true,
                 assessments: true,
-                incidents: true,
+                incidents: { where: COUNTED_INCIDENT },
               },
             },
           },
@@ -82,7 +83,7 @@ export const organizationRouter = createTRPCRouter({
             select: {
               aiSystems: true,
               assessments: true,
-              incidents: true,
+              incidents: { where: COUNTED_INCIDENT },
               complianceMappings: true,
             },
           },
@@ -595,8 +596,8 @@ export const organizationRouter = createTRPCRouter({
         ctx.prisma.riskClassification.count({ where: { organizationId: orgId, riskLevel: "LIMITED", ...rel } as Prisma.RiskClassificationWhereInput }),
         ctx.prisma.riskClassification.count({ where: { organizationId: orgId, riskLevel: "MINIMAL", ...rel } as Prisma.RiskClassificationWhereInput }),
         // Incidents
-        ctx.prisma.aIIncident.count({ where: { organizationId: orgId, ...rel } as Prisma.AIIncidentWhereInput }),
-        ctx.prisma.aIIncident.count({ where: { organizationId: orgId, severity: "CRITICAL", ...rel } as Prisma.AIIncidentWhereInput }),
+        ctx.prisma.aIIncident.count({ where: { organizationId: orgId, ...COUNTED_INCIDENT, ...rel } as Prisma.AIIncidentWhereInput }),
+        ctx.prisma.aIIncident.count({ where: { organizationId: orgId, severity: "CRITICAL", ...COUNTED_INCIDENT, ...rel } as Prisma.AIIncidentWhereInput }),
         ctx.prisma.aIIncident.count({
           where: { organizationId: orgId, status: { in: ["REPORTED", "INVESTIGATING", "MITIGATING"] }, ...rel } as Prisma.AIIncidentWhereInput,
         }),

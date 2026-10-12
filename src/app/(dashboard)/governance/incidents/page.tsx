@@ -42,6 +42,7 @@ const statusColors: Record<string, string> = {
   MITIGATING: STATUS_OUTLINE.warning,
   RESOLVED: STATUS_OUTLINE.good,
   CLOSED: "border-muted-foreground text-muted-foreground",
+  RECORDED_IN_ERROR: "border-dashed border-muted-foreground/60 text-muted-foreground line-through",
 };
 
 const typeKeys: Record<string, string> = {

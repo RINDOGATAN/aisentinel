@@ -89,6 +89,7 @@
     "statusMitigating": "Mitigando",
     "statusResolved": "Resuelto",
     "statusClosed": "Cerrado",
+    "statusRecordedInError": "Registrado por error",
     "statusPublished": "Publicado",
     "statusArchived": "Archivado",
     "severityCritical": "Crítico",
@@ -825,7 +826,8 @@
       "reportedAction": "Incidente notificado",
       "reportedDescription": "Incidente notificado: gravedad {severity}, tipo {type}",
       "statusAction": "Estado cambiado a {status}",
-      "statusDescription": "Estado actualizado de {from} a {to}"
+      "statusDescription": "Estado actualizado de {from} a {to}",
+      "recordedInErrorAction": "Registrado por error"
     },
     "tabTasks": "Tareas ({count})",
     "tabNotifications": "Notificaciones ({count})",
@@ -897,7 +899,19 @@
     "statTimelineEntries": "Entradas de la cronología",
     "statTasks": "Tareas",
     "statNotifications": "Notificaciones",
-    "labelLastUpdated": "Última actualización"
+    "labelLastUpdated": "Última actualización",
+    "recordedInError": {
+      "action": "Registrado por error",
+      "dialogTitle": "Marcar este incidente como registrado por error",
+      "dialogDescription": "Úsalo para un incidente introducido por error: un duplicado, una prueba o algo que no era un incidente. No se elimina nada. El incidente se conserva con tu motivo, queda fuera de los recuentos, los plazos legales y los informes, y ya no se puede modificar.",
+      "reasonLabel": "Motivo",
+      "reasonPlaceholder": "Por ejemplo: duplicado del incidente notificado el mismo día.",
+      "cancel": "Cancelar",
+      "confirm": "Marcar como registrado por error",
+      "done": "Incidente marcado como registrado por error.",
+      "banner": "Este incidente se marcó como registrado por error. Se conserva en el registro y queda fuera de los recuentos, los plazos legales y los informes.",
+      "bannerReason": "Motivo: {reason}"
+    }
   },
   "vendors": {
     "title": "Proveedores",

@@ -71,9 +71,13 @@ export const PILOT_KEEP_GOING: Record<PilotLocale, string> = {
   es: "Para una instancia gestionada o tu propio hardware, pide presupuesto",
 };
 
-/** The keep-going sentence, closing every message a pilot limit writes. */
+/**
+ * The keep-going sentence, closing every message a pilot limit writes. A limit
+ * message is shown as plain text in a notification, so it carries no address:
+ * the links are on the Settings card (src/components/governance/pilot-status-card.tsx).
+ */
 export function pilotKeepGoing(locale: PilotLocale): string {
-  return `${PILOT_KEEP_GOING[locale]} (${PILOT_MANAGED_URL[locale]}).`;
+  return `${PILOT_KEEP_GOING[locale]}.`;
 }
 
 /**
@@ -374,37 +378,36 @@ export function pilotEndBarDate(endsAt: Date | string, locale: PilotLocale): str
   });
 }
 
-/** The two ways out, spelled out wherever a cap stops someone. */
-function waysOut(locale: PilotLocale, exportUrl: string): string {
+/**
+ * The two ways out, spelled out wherever a cap stops someone. Named, not
+ * linked: both are buttons on the Settings card once a limit is reached.
+ */
+function waysOut(locale: PilotLocale): string {
   return locale === "es"
-    ? `Dos salidas: pasa al plan de pago (${PILOT_PRICING_URL.es}) o exporta todo lo que has creado (${exportUrl}).`
-    : `Two ways out: move to the paid plan (${PILOT_PRICING_URL.en}) or export everything you created (${exportUrl}).`;
+    ? "Dos salidas, las dos en Configuración: pasa al plan de pago o exporta todo lo que has creado (el paquete del programa)."
+    : "Two ways out, both in Settings: move to the paid plan or export everything you created (the program pack).";
 }
 
-export function pilotReadOnlyMessage(locale: PilotLocale, exportUrl: string): string {
+export function pilotReadOnlyMessage(locale: PilotLocale): string {
   const lead =
     locale === "es"
       ? "Piloto alojado: el periodo de edición de esta organización ha terminado y ahora es de solo lectura."
       : "Hosted pilot: this organization's editing window is over and it is now read-only.";
-  return `${lead} ${waysOut(locale, exportUrl)} ${pilotKeepGoing(locale)}`;
+  return `${lead} ${waysOut(locale)} ${pilotKeepGoing(locale)}`;
 }
 
-export function pilotCeilingMessage(
-  locale: PilotLocale,
-  key: PilotCeilingKey,
-  exportUrl: string,
-): string {
+export function pilotCeilingMessage(locale: PilotLocale, key: PilotCeilingKey): string {
   const max = PILOT_CEILINGS[key];
   const label = PILOT_CEILING_LABELS[key][locale];
   const lead =
     locale === "es"
       ? `Piloto alojado: esta organización ha alcanzado su límite de ${max} ${label}.`
       : `Hosted pilot: this organization has reached its ceiling of ${max} ${label}.`;
-  return `${lead} ${waysOut(locale, exportUrl)} ${pilotKeepGoing(locale)}`;
+  return `${lead} ${waysOut(locale)} ${pilotKeepGoing(locale)}`;
 }
 
 export function pilotOneOrganizationMessage(locale: PilotLocale): string {
   return locale === "es"
-    ? `Piloto alojado: una organización por cuenta. Para llevar varias organizaciones, pide una instancia gestionada (${PILOT_MANAGED_URL.es}).`
-    : `Hosted pilot: one organization per account. To run several organizations, ask for a managed instance (${PILOT_MANAGED_URL.en}).`;
+    ? `Piloto alojado: una organización por cuenta. Para llevar varias organizaciones, pide una instancia gestionada.`
+    : `Hosted pilot: one organization per account. To run several organizations, ask for a managed instance.`;
 }

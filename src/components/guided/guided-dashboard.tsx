@@ -53,6 +53,7 @@ import { INPUTS, type DocumentState } from "@/config/document-register";
 import { AI_SENTINEL_PATH, PLAN_WINDOWS, type PathCounts } from "./path-config";
 import { isCounted, isShown, type PathStatuses, type StageWord } from "./path";
 import { ProgramFigureCard } from "./program-figure";
+import { trpc } from "@/lib/trpc";
 import { planSummaryText } from "./plan-text";
 import { usePlanState, useProgramPathQuery } from "./use-program-path";
 import { useProgrammeOverview, type ProgrammeOverview } from "./use-programme-overview";
@@ -159,6 +160,12 @@ function AreasCard({ statuses, overview }: { statuses: PathStatuses | null; over
   const t = useTranslations("guided");
   const tv = useTranslations("views");
   const plan = usePlanState();
+  // On the hosted pilot the plan's day count is named (see guided-layout).
+  const { organization: org } = useOrganization();
+  const pilot = trpc.pilot.status.useQuery(
+    { organizationId: org?.id ?? "" },
+    { enabled: !!org?.id, staleTime: 60 * 1000 },
+  );
   const areas = statuses && overview ? programmeAreas(AI_SENTINEL_PATH, statuses, overview.needsAction) : null;
 
   return (
@@ -169,7 +176,7 @@ function AreasCard({ statuses, overview }: { statuses: PathStatuses | null; over
           {plan && plan.kind !== "notStarted" && (
             <p className="text-xs text-muted-foreground tabular-nums">
               <span className="sr-only">{t("plan.label")}: </span>
-              {planSummaryText(plan, t)}
+              {planSummaryText(plan, t, { labelled: !!pilot.data?.active })}
             </p>
           )}
         </div>

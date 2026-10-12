@@ -5480,8 +5480,10 @@
     "ceilingReachedBody": "Se ha alcanzado un límite. Dos salidas:",
     "paidPlan": "Pasa al plan de pago",
     "exportAll": "Exportar todo (paquete del programa)",
+    "managedQuote": "Pide una instancia gestionada",
     "afterExportBody": "Tu archivo se ha descargado. Ya puedes vaciar esta cuenta.",
-    "afterExportAction": "Vaciar la cuenta"
+    "afterExportAction": "Vaciar la cuenta",
+    "docsLink": "Cómo funciona el piloto alojado, en la documentación."
   },
   "applicability": {
     "stepTitle": "Antes de empezar: qué se te aplica",
@@ -5772,6 +5774,7 @@
       "label": "Plan de 30, 60 y 90 días",
       "column": "Plan",
       "day": "Día {day} de {total}",
+      "dayLabelled": "Plan del programa: día {day} de {total}",
       "onPlan": "Al día con el plan",
       "behind": "Retraso de {days, plural, one {# día} other {# días}} sobre el plan",
       "complete": "Plan completado",

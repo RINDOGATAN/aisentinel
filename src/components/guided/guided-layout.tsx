@@ -59,6 +59,7 @@ import { DepartmentSwitch } from "./department-switch";
 import { StepBand } from "./step-band";
 import { ProgressBar } from "./progress-ring";
 import { usePlanState, useProgramPath, useProgramPathRefresh } from "./use-program-path";
+import { trpc } from "@/lib/trpc";
 import { planDayText } from "./plan-text";
 import { useProgrammeOverview } from "./use-programme-overview";
 import { useMenuLocks } from "./use-menu-locks";
@@ -101,6 +102,12 @@ export function GuidedLayout({
   const { overview } = useProgrammeOverview();
   const plan = usePlanState();
   const { organization } = useOrganization();
+  // On the hosted pilot the banner counts the editing window's days; the plan's
+  // day count is then named, so the two are not read as one clock.
+  const pilot = trpc.pilot.status.useQuery(
+    { organizationId: organization?.id ?? "" },
+    { enabled: !!organization?.id, staleTime: 60 * 1000 },
+  );
   useProgramPathRefresh();
   // A lock beside a premium entry only where its page would show it locked.
   const locked = useMenuLocks();
@@ -122,7 +129,7 @@ export function GuidedLayout({
     clientMode: accountMode(userType) === "clients",
     t,
     overview: OVERVIEW,
-    planLine: planDayText(plan, t),
+    planLine: planDayText(plan, t, { labelled: !!pilot.data?.active }),
     // One quiet line under each step: its documents and their states.
     stepNotes: Object.fromEntries(
       Object.entries(

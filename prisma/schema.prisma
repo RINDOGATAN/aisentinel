@@ -1524,6 +1524,10 @@ enum IncidentStatus {
   MITIGATING
   RESOLVED
   CLOSED
+  /// Entered by mistake (a duplicate, a test, not an incident). Kept for the
+  /// record, never deleted, and left out of counts, statutory deadlines and
+  /// reports. Final: its status and statutory facts can no longer be changed.
+  RECORDED_IN_ERROR
 }
 
 enum TaskStatus {

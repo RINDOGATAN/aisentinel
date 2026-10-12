@@ -89,6 +89,7 @@
     "statusMitigating": "Mitigating",
     "statusResolved": "Resolved",
     "statusClosed": "Closed",
+    "statusRecordedInError": "Recorded in error",
     "statusPublished": "Published",
     "statusArchived": "Archived",
     "severityCritical": "Critical",
@@ -825,7 +826,8 @@
       "reportedAction": "Incident reported",
       "reportedDescription": "{severity} {type} incident reported",
       "statusAction": "Status changed to {status}",
-      "statusDescription": "Status updated from {from} to {to}"
+      "statusDescription": "Status updated from {from} to {to}",
+      "recordedInErrorAction": "Recorded in error"
     },
     "tabTasks": "Tasks ({count})",
     "tabNotifications": "Notifications ({count})",
@@ -897,7 +899,19 @@
     "statTimelineEntries": "Timeline Entries",
     "statTasks": "Tasks",
     "statNotifications": "Notifications",
-    "labelLastUpdated": "Last Updated"
+    "labelLastUpdated": "Last Updated",
+    "recordedInError": {
+      "action": "Recorded in error",
+      "dialogTitle": "Mark this incident as recorded in error",
+      "dialogDescription": "Use this for an incident entered by mistake: a duplicate, a test, or something that was not an incident. Nothing is deleted. The incident stays on record with your reason, is left out of counts, statutory deadlines and reports, and can no longer be changed.",
+      "reasonLabel": "Reason",
+      "reasonPlaceholder": "For example: duplicate of the incident reported on the same day.",
+      "cancel": "Cancel",
+      "confirm": "Mark as recorded in error",
+      "done": "Incident marked as recorded in error.",
+      "banner": "This incident was marked as recorded in error. It is kept for the record and left out of counts, statutory deadlines and reports.",
+      "bannerReason": "Reason: {reason}"
+    }
   },
   "vendors": {
     "title": "Vendors",

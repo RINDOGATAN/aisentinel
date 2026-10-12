@@ -121,7 +121,7 @@ const EDITS_THE_PILOT_REFUSES = [
   "oversight.create", "oversight.update", "oversight.addDecision", "oversight.delete",
   "incident.create", "incident.update", "incident.addTimelineEntry", "incident.addTask",
   "incident.updateTask", "incident.addNotification", "incident.updateNotification",
-  "incident.setStatutoryFacts",
+  "incident.setStatutoryFacts", "incident.markRecordedInError",
   "vendor.create", "vendor.createWithSystem", "vendor.update", "vendor.delete",
   "vendor.createAssessment", "vendor.updateAssessment",
   "policy.create", "policy.update", "policy.publishVersion", "policy.approve",

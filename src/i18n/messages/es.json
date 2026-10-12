@@ -752,7 +752,10 @@
     "matrixIntro": "Los requisitos que se aplican a este sistema, marco por marco: indica el estado de cada uno y adjunta sus evidencias.",
     "noFrameworkForSystem": "Todavía ningún marco tiene requisitos para este sistema. Dale un nivel de riesgo e indica dónde trabajas en Configuración para que aparezcan aquí sus requisitos.",
     "frameworksNotShown": "{count, plural, one {No se muestra: # marco sin requisitos para este sistema, como la ley de un lugar que no has declarado.} other {No se muestran: # marcos sin requisitos para este sistema, como las leyes de lugares que no has declarado.}}",
-    "frameworksNotShownLink": "Dónde trabajas se indica en Configuración."
+    "frameworksNotShownLink": "Dónde trabajas se indica en Configuración.",
+    "statusSaved": "Estado guardado: {status}.",
+    "undo": "Deshacer",
+    "saveNotes": "Guardar notas"
   },
   "incidents": {
     "title": "Incidentes",

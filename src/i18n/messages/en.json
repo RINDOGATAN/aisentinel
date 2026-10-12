@@ -752,7 +752,10 @@
     "matrixIntro": "The requirements that apply to this system, framework by framework: set each status and attach its evidence.",
     "noFrameworkForSystem": "No framework has a requirement for this system yet. Give it a risk level, and say where you work in Settings, so its requirements appear here.",
     "frameworksNotShown": "{count, plural, one {Not shown: # framework with no requirement for this system, such as the law of a place you have not declared.} other {Not shown: # frameworks with no requirement for this system, such as the laws of places you have not declared.}}",
-    "frameworksNotShownLink": "Where you work is set in Settings."
+    "frameworksNotShownLink": "Where you work is set in Settings.",
+    "statusSaved": "Status saved: {status}.",
+    "undo": "Undo",
+    "saveNotes": "Save notes"
   },
   "incidents": {
     "title": "Incidents",

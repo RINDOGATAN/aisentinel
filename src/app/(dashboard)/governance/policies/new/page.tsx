@@ -27,6 +27,7 @@ import { localizeTemplate } from "@/config/ai-governance-templates.es";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { StatusNote } from "@/components/ui/status-note";
+import { useSubmitLock } from "@/lib/use-submit-lock";
 
 type PolicyType = "AI_USAGE" | "AI_GOVERNANCE" | "AI_ETHICS" | "AI_RISK_MANAGEMENT" | "AI_DATA_GOVERNANCE" | "AI_PROCUREMENT" | "AI_INCIDENT_RESPONSE" | "AI_TRANSPARENCY" | "CUSTOM";
 
@@ -121,10 +122,13 @@ export default function NewPolicyPage() {
     },
   });
 
+  const lock = useSubmitLock();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!organization?.id || !formData.title || !formData.type) return;
 
+    // One record per submission, even for two submits in the same instant.
+    if (!lock.acquire()) return;
     setIsSubmitting(true);
 
     createPolicy.mutate({
@@ -135,7 +139,7 @@ export default function NewPolicyPage() {
       content: formData.content || undefined,
       effectiveDate: formData.effectiveDate || undefined,
       reviewDate: formData.reviewDate || undefined,
-    });
+    }, { onSettled: lock.release });
   };
 
   return (

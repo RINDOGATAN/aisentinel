@@ -2,31 +2,20 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 /**
- * The safeguards guide, ported from the TODO.LAW storefront (src/content/safeguards.ts,
- * merged there in its PR 59; owner's mockup of 10 Oct 2026): six questions, each answer
- * sets a minimum level, the guide takes the highest level any answer asks for and picks
- * one way at that level. Unanswered questions count as the lightest answer.
+ * The safeguards guide on the AI Sentinel landing: six questions, each answer sets a minimum
+ * level, the guide takes the highest level any answer asks for and picks one way at that
+ * level. Unanswered questions count as the lightest answer.
  *
- *   Level 0  Cloud
- *   Level 1  Managed
- *   Level 2  Your own hardware (both languages: the landing offers
- *            three ways, as the storefront home; the kit and the Box stay on the
- *            storefront's Run it your way page).
+ *   Level 0  In the TODO.LAW cloud
+ *   Level 1  Managed instance (Asturias, Spain; open-weight models can run on the instance)
+ *   Level 2  Your own hardware
  *
- * The logic is the storefront's, unchanged. The copy is the storefront's, with one change
- * for this product: where the storefront says "the selected text" goes to the AI
- * provider, AI Sentinel sends the details of the record an AI draft is built from
- * (src/server/services/ai/context.ts), so the copy says that. AI features are off until
- * an owner or administrator turns them on (src/server/services/ai/posture.ts requireAi;
- * routers/governance/ai.ts setPosture), and while off there is no AI call at all.
- *
+ * The questions, the tick matrix and the copy are shared word for word with the TODO.LAW
+ * storefront and the other product landings (see the CANONICAL WIZARD CONTENT note above
+ * COPY, and safeguards.canonical.test.ts). The copy is worded to be true for every product:
+ * AI features are off until an administrator turns them on, and while off there is no AI
+ * call at all; the copy names no hosting location for the cloud.
  * Copy rules: no prices, no certification logos, no competitor names, no long dashes.
- * The cloud is hosted in the EU (database in Frankfurt, functions in fra1). Only the Spanish copy says so,
- * and that the external AI provider may be outside the EU: English copy names no hosting location for the
- * cloud. The managed instance is hosted
- * in Asturias, Spain, and can use open-weight models hosted on the instance itself, so
- * "local models only" asks for managed (level 1), not level 2.
- * The classifier sentence of the mockup is left out.
  */
 
 export type Locale = "en" | "es";
@@ -50,7 +39,7 @@ export const LADDER: Record<Locale, WayId[]> = {
   en: ["cloud", "managed", "deploy"],
 };
 
-type Option = { value: string; level: Level; only?: Locale; /** A different level in one market (Spanish "real": the Plan nube UE accepts real data). */ levelIn?: Partial<Record<Locale, Level>> };
+type Option = { value: string; level: Level; only?: Locale };
 
 export const QUESTIONS: { id: QuestionId; options: Option[] }[] = [
   {
@@ -65,7 +54,7 @@ export const QUESTIONS: { id: QuestionId; options: Option[] }[] = [
     id: "data",
     options: [
       { value: "test", level: 0 },
-      { value: "real", level: 1, levelIn: { es: 0 } },
+      { value: "real", level: 0 },
       { value: "special", level: 1 },
     ],
   },
@@ -110,7 +99,7 @@ export type SafeguardKey = "loc:servers" | "loc:office" | "data:real" | "data:sp
 const MET: Record<SafeguardKey, Record<WayId, boolean>> = {
   "loc:servers": { cloud: false, managed: false, deploy: true },
   "loc:office": { cloud: false, managed: false, deploy: true },
-  "data:real": { cloud: false, managed: true, deploy: true },
+  "data:real": { cloud: true, managed: true, deploy: true },
   "data:special": { cloud: false, managed: true, deploy: true },
   "ai:none": { cloud: true, managed: true, deploy: true },
   "ai:key": { cloud: false, managed: true, deploy: true },
@@ -125,8 +114,7 @@ export function levelOf(answers: Answers, locale: Locale): Level {
   let level: Level = 0;
   for (const q of QUESTIONS) {
     const o = optionsFor(q, locale).find((x) => x.value === answers[q.id]);
-    const l = o ? (o.levelIn?.[locale] ?? o.level) : 0;
-    if (l > level) level = l;
+    if (o && o.level > level) level = o.level;
   }
   return level;
 }
@@ -149,17 +137,8 @@ export function requirementsOf(answers: Answers, locale: Locale): SafeguardKey[]
   });
 }
 
-/**
- * Spanish copy: the Plan nube UE (paid cloud plan) accepts real data,
- * so the cloud meets "data:real" there. Special categories and professional secrecy stay
- * with the managed instance.
- */
-const MET_ES: Partial<Record<SafeguardKey, Partial<Record<WayId, boolean>>>> = {
-  "data:real": { cloud: true },
-};
-
-export const meets = (way: WayId, key: SafeguardKey, locale?: Locale) =>
-  (locale === "es" ? MET_ES[key]?.[way] : undefined) ?? MET[key][way];
+/** Which ways meet a safeguard (the same in both languages; the locale keeps the shared signature). */
+export const meets = (way: WayId, key: SafeguardKey, _locale?: Locale) => MET[key][way];
 
 export type Recommendation = {
   level: Level;
@@ -188,6 +167,18 @@ export function recommend(answers: Answers, locale: Locale): Recommendation | nu
 }
 
 /* ------------------------------------------------------------------ copy */
+
+/*
+ * CANONICAL WIZARD CONTENT. The questions (QUESTIONS), the tick matrix for the three ways
+ * (MET: cloud, managed, deploy) and everything below (COPY) are identical, word for word,
+ * in four places, and must change together:
+ *   - todolaw          src/content/safeguards.ts
+ *   - dpocentral       src/landing/content/safeguards.ts
+ *   - aisentinel       src/landing/config/safeguards.ts
+ *   - deal-room        src/landing/config/safeguards.ts
+ * A test next to this file hashes the normalised content (SHA-256) and fails when it
+ * changes alone: edit all four copies, then update the hash in all four tests.
+ */
 
 type Notes = Partial<Record<WayId, string>>;
 
@@ -224,6 +215,8 @@ export type SafeguardsCopy = {
 const AI_OFF_EN = "AI is off by default; while off, no AI calls are made.";
 const AI_OFF_ES = "La IA viene desactivada; mientras lo está, no hay llamadas a una IA.";
 const PERIMETER_EN = "It sits inside your perimeter, under your own controls and certifications.";
+const SUBPROCESSORS_EN = "Accepted: all our sub-processors have the necessary safeguards and certifications.";
+const SUBPROCESSORS_ES = "Se admiten: todos nuestros subencargados cuentan con las certificaciones y garantías necesarias.";
 
 export const COPY: Record<Locale, SafeguardsCopy> = {
   en: {
@@ -237,7 +230,7 @@ export const COPY: Record<Locale, SafeguardsCopy> = {
     empty: "Answer any question to see the recommended way.",
     rec: "Recommended way",
     meets: "Which safeguards it meets",
-    none: "You have not chosen a strict safeguard: the cloud pilot is enough to try it.",
+    none: "You have not chosen a strict safeguard: the cloud is enough.",
     up: "One step stricter",
     down: "One step lighter",
     top: "This is the strictest way available.",
@@ -250,11 +243,11 @@ export const COPY: Record<Locale, SafeguardsCopy> = {
     seeResult: "See the result",
     whyH: "Why this matters",
     whyP:
-      "Many tools with built-in AI send your text to an external AI provider. Here you choose. AI features are off until an administrator turns them on, and while they are off the product makes no AI calls at all. On the managed instance or on your own servers, AI features can use open-weight models hosted there, so the text does not leave that system.",
+      "Many tools with built-in AI send your text to an external AI provider. Here you choose. AI features are off until an administrator turns them on, and while they are off the product makes no AI calls at all. On a managed instance or on your own servers, AI features can use open-weight models hosted there, so the text does not leave that system.",
     questions: {
       loc: {
         label: "Where must your data stay?",
-        options: { any: "Anywhere in the cloud: for now we only want to try it", servers: "On our own servers", office: "Inside our office" },
+        options: { any: "We could use a SaaS, provided that all sub-processors have the necessary safeguards and certifications", servers: "On our own servers", office: "Inside our office" },
       },
       data: {
         label: "What data will you keep in it?",
@@ -274,7 +267,7 @@ export const COPY: Record<Locale, SafeguardsCopy> = {
       },
       cert: {
         label: "Must your own controls and certifications (for example ISO 27001) cover the system?",
-        hint: "On your own servers, the system sits inside your perimeter, so your own controls and certifications apply.",
+        hint: "On your own servers or hardware, the system sits inside your perimeter, so your own controls and certifications apply.",
         options: { yes: "Yes", no: "No" },
       },
     },
@@ -293,22 +286,21 @@ export const COPY: Record<Locale, SafeguardsCopy> = {
     notes: {
       "loc:servers": { cloud: "Hosted by us, on a shared service.", managed: "Hosted by us, on an instance for you alone.", deploy: "Installed on your servers." },
       "loc:office": { cloud: "Hosted by us.", managed: "Hosted by us, outside your office.", deploy: "On your servers, in your office if they are there." },
-      "data:real": { cloud: "The pilot is for test records or pseudonyms only.", managed: "An instance for your organization alone.", deploy: "Your records stay on your servers." },
-      "data:special": { cloud: "The pilot is for test records or pseudonyms only.", managed: "An instance for your organization alone.", deploy: "Your records stay on your servers." },
+      "data:real": { cloud: SUBPROCESSORS_EN, managed: "An instance for your organization alone.", deploy: "Your records stay on your servers." },
+      "data:special": { cloud: "For this data, choose the managed instance.", managed: "An instance for your organization alone.", deploy: "Your records stay on your servers." },
       "ai:none": { cloud: AI_OFF_EN, managed: AI_OFF_EN, deploy: AI_OFF_EN },
       "ai:key": { cloud: "We set the AI provider for the whole service; you cannot use your own key.", managed: "The instance can be set up with your own key.", deploy: "We set up AI with your own key." },
-      "ai:local": { cloud: "With AI on, the record details each AI draft uses go to the service's external AI provider.", managed: "Open-weight models can run on the instance itself, so the record details do not leave it.", deploy: "We can set up an open-weight model on your servers, if they have the capacity." },
+      "ai:local": { cloud: "With AI on, the details of the record being drafted go to the service's external AI provider.", managed: "Open-weight models can run on the instance itself, so the text does not leave it.", deploy: "We can set up an open-weight model on your servers, if they have the capacity." },
       "iso:yes": { cloud: "A shared service: each organization's records are kept apart, but the system is shared.", managed: "An isolated instance for you alone.", deploy: "Your own installation." },
       "it:no": { cloud: "We run it.", managed: "We run it for you.", deploy: "We install it with you, with our on-site or remote help." },
-      "cert:yes": { cloud: "It works under our controls.", managed: "It works under our controls.", deploy: PERIMETER_EN },
+      "cert:yes": { cloud: "It works under our controls.", managed: "It works under our controls, on an instance for you alone.", deploy: PERIMETER_EN },
     },
     summaries: {
       cloud:
-        "Hosted by us. A free, capped pilot to try the workflows with test records. It is not for real client data, and it is shared with other organizations (each one's records kept apart). If you turn AI features on, the record details each AI draft uses go to the external AI provider set up on the service.",
-      managed:
-        "An isolated instance we run for your organization alone, hosted in Asturias, Spain. Your records stay on that instance. AI features stay off until you turn them on, and can use open-weight models hosted on the instance itself, so the record details do not leave it, or your own provider key.",
+        "Hosted by us, on a shared service: each organization's records are kept apart. You can start free and use it with real client data: all our sub-processors have the necessary safeguards and certifications. If an administrator turns AI features on, the details of the record being drafted go to the external AI provider set up on the service.",
+      managed: "An isolated instance we run for your organization alone, hosted in Asturias, Spain. Your records stay on that instance. AI features stay off until you turn them on, and can use open-weight models hosted on the instance itself, so the text does not leave it, or your own provider key.",
       deploy:
-        "The suite installed on your own servers, with our on-site or remote help. Your records stay inside your perimeter, under your own controls. For AI features, we can set up an open-weight model on your servers, if they have the capacity, or your own key.",
+        "Installed on your own servers, with our on-site or remote help. Your records stay inside your perimeter, under your own controls. For AI features, we can set up an open-weight model on your servers, if they have the capacity, or your own key.",
     },
   },
   es: {
@@ -322,7 +314,7 @@ export const COPY: Record<Locale, SafeguardsCopy> = {
     empty: "Responde a alguna pregunta para ver la modalidad recomendada.",
     rec: "Modalidad recomendada",
     meets: "Qué garantías cumple",
-    none: "No has marcado ninguna garantía estricta: el piloto en la nube basta para probar.",
+    none: "No has marcado ninguna garantía estricta: la nube basta.",
     up: "Un paso más estricto",
     down: "Un paso más ligero",
     top: "Es la modalidad más estricta disponible.",
@@ -335,11 +327,11 @@ export const COPY: Record<Locale, SafeguardsCopy> = {
     seeResult: "Ver el resultado",
     whyH: "Por qué importa",
     whyP:
-      "Muchas herramientas con IA integrada envían tu texto a un proveedor de IA externo. Aquí eliges tú. Las funciones de IA están desactivadas hasta que un administrador las activa y, mientras lo están, el producto no hace ninguna llamada a una IA. En la instancia gestionada o si lo instalas en tus servidores, las funciones de IA pueden usar modelos de pesos abiertos alojados allí mismo, de modo que el texto no sale de ese sistema.",
+      "Muchas herramientas con IA integrada envían tu texto a un proveedor de IA externo. Aquí eliges tú. Las funciones de IA están desactivadas hasta que un administrador las activa y, mientras lo están, el producto no hace ninguna llamada a una IA. En una instancia gestionada o en tus propios servidores, las funciones de IA pueden usar modelos de pesos abiertos alojados allí mismo, de modo que el texto no sale de ese sistema.",
     questions: {
       loc: {
         label: "¿Dónde deben estar tus datos?",
-        options: { any: "En cualquier nube: de momento solo queremos probar", servers: "En nuestros propios servidores o en nuestra oficina" },
+        options: { any: "Pueden estar en nube siempre y cuando todos los subencargados cuenten con las certificaciones y garantías necesarias", servers: "En nuestros propios servidores o en nuestra oficina" },
       },
       data: {
         label: "¿Qué datos vas a guardar?",
@@ -380,24 +372,23 @@ export const COPY: Record<Locale, SafeguardsCopy> = {
       "cert:yes": "Tus propios controles y certificaciones cubren el sistema",
     },
     notes: {
-      "loc:servers": { cloud: "Lo alojamos nosotros en la UE, en un servicio compartido.", managed: "Lo alojamos nosotros, en una instancia solo para ti.", deploy: "Instalado en tus servidores." },
+      "loc:servers": { cloud: "Lo alojamos nosotros, en un servicio compartido.", managed: "Lo alojamos nosotros, en una instancia solo para ti.", deploy: "Instalado en tus servidores." },
       "loc:office": {},
-      "data:real": { cloud: "Con el Plan nube UE.", managed: "Una instancia solo para tu organización.", deploy: "Tus registros se quedan en tus servidores." },
-      "data:special": { cloud: "Elige la instancia gestionada.", managed: "Una instancia solo para tu organización.", deploy: "Tus registros se quedan en tus servidores." },
+      "data:real": { cloud: SUBPROCESSORS_ES, managed: "Una instancia solo para tu organización.", deploy: "Tus registros se quedan en tus servidores." },
+      "data:special": { cloud: "Para estos datos, elige la instancia gestionada.", managed: "Una instancia solo para tu organización.", deploy: "Tus registros se quedan en tus servidores." },
       "ai:none": { cloud: AI_OFF_ES, managed: AI_OFF_ES, deploy: AI_OFF_ES },
       "ai:key": { cloud: "El proveedor de IA lo configuramos nosotros para todo el servicio; no puedes usar tu clave.", managed: "La instancia se puede configurar con tu propia clave.", deploy: "Configuramos la IA con tu propia clave." },
-      "ai:local": { cloud: "Con la IA activada, los datos del registro que usa cada borrador de IA van al proveedor de IA externo del servicio, que puede estar fuera de la UE.", managed: "Los modelos de pesos abiertos pueden funcionar en la propia instancia, de modo que los datos del registro no salen de ella.", deploy: "Podemos configurar un modelo de pesos abiertos en tus servidores, si tienen capacidad." },
+      "ai:local": { cloud: "Con la IA activada, los datos del registro que se redacta van al proveedor de IA externo del servicio, que puede estar fuera de la UE.", managed: "Los modelos de pesos abiertos pueden funcionar en la propia instancia, de modo que el texto no sale de ella.", deploy: "Podemos configurar un modelo de pesos abiertos en tus servidores, si tienen capacidad." },
       "iso:yes": { cloud: "Es un servicio compartido: los registros de cada organización están separados, pero el sistema es común.", managed: "Una instancia aislada solo para ti.", deploy: "Tu propia instalación." },
       "it:no": { cloud: "Lo mantenemos nosotros.", managed: "Lo mantenemos nosotros para ti.", deploy: "Lo instalamos contigo, con nuestra asistencia presencial o remota." },
-      "cert:yes": { cloud: "Funciona bajo nuestros controles.", managed: "Funciona bajo nuestros controles.", deploy: "Queda dentro de tu perímetro, bajo tus propios controles y certificaciones." },
+      "cert:yes": { cloud: "Funciona bajo nuestros controles.", managed: "Funciona bajo nuestros controles, en una instancia solo para ti.", deploy: "Queda dentro de tu perímetro, bajo tus propios controles y certificaciones." },
     },
     summaries: {
       cloud:
-        "Lo alojamos nosotros, con los datos en la UE (Fráncfort). Puedes probarlo con el piloto gratuito y con límites, solo con datos de prueba, o contratar el Plan nube UE para datos reales. Es un servicio compartido (los registros de cada organización están separados). Si activas las funciones de IA, los datos del registro que usa cada borrador de IA van al proveedor de IA externo configurado en el servicio, que puede estar fuera de la UE.",
-      managed:
-        "Una instancia aislada que operamos nosotros, solo para tu organización, alojada en Asturias (España). Tus registros se quedan en esa instancia. Las funciones de IA están desactivadas hasta que las activas, y pueden usar modelos de pesos abiertos alojados en la propia instancia, de modo que los datos del registro no salen de ella, o la clave de tu propio proveedor.",
+        "Lo alojamos nosotros, en un servicio compartido: los registros de cada organización están separados. Puedes empezar gratis y usarlo con datos reales de clientes: todos nuestros subencargados cuentan con las certificaciones y garantías necesarias. Si un administrador activa las funciones de IA, los datos del registro que se redacta van al proveedor de IA externo configurado en el servicio, que puede estar fuera de la UE.",
+      managed: "Una instancia aislada que operamos nosotros, solo para tu organización, alojada en Asturias (España). Tus registros se quedan en esa instancia. Las funciones de IA están desactivadas hasta que las activas, y pueden usar modelos de pesos abiertos alojados en la propia instancia, de modo que el texto no sale de ella, o la clave de tu propio proveedor.",
       deploy:
-        "La suite instalada en tus propios servidores, con nuestra asistencia presencial o remota. Los registros se quedan dentro de tu perímetro, bajo tus propios controles. Para las funciones de IA, podemos configurar un modelo de pesos abiertos alojado en tus servidores, si tienen capacidad, o tu propia clave.",
+        "Instalado en tus propios servidores, con nuestra asistencia presencial o remota. Los registros se quedan dentro de tu perímetro, bajo tus propios controles. Para las funciones de IA, podemos configurar un modelo de pesos abiertos alojado en tus servidores, si tienen capacidad, o tu propia clave.",
     },
   },
 };

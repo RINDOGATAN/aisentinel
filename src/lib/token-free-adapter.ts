@@ -18,7 +18,6 @@ type Adapter = NonNullable<NextAuthOptions["adapter"]>;
 export const STRIPPED_ACCOUNT_FIELDS = ["access_token", "refresh_token", "id_token"] as const;
 
 export function withoutStoredTokens<T extends Record<string, unknown>>(account: T): Omit<T, (typeof STRIPPED_ACCOUNT_FIELDS)[number]> {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { access_token, refresh_token, id_token, ...rest } = account;
   return rest;
 }

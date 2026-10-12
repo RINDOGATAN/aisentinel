@@ -53,7 +53,7 @@ describe("public docs follow the current offer", () => {
   });
 
   it("the pilot page states the three hosting options and the paid plan in both languages", () => {
-    for (const title of ["In the TODO.LAW cloud", "Managed virtual server", "Your own hardware", "En la nube de TODO.LAW", "Servidor virtual gestionado", "Tu propio hardware"]) {
+    for (const title of ["TODO.LAW cloud", "Managed instance", "Your own hardware", "En la nube de TODO.LAW", "Instancia gestionada", "Tu propio hardware"]) {
       expect(pilotPage).toContain(title);
     }
     // No price in the app: the prices page states it.

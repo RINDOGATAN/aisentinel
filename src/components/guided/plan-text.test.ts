@@ -43,6 +43,12 @@ describe("plan wording", () => {
     expect(planPaceText({ kind: "complete", day: 95, totalDays: 90 }, t)).toBe("Plan complete");
   });
 
+  it("names the plan when another day count is on screen (the hosted pilot)", () => {
+    expect(planDayText(running(1, 0), t, { labelled: true })).toBe("Program plan: day 1 of 90");
+    expect(planDayText(running(1, 0), tes, { labelled: true })).toBe("Plan del programa: día 1 de 90");
+    expect(planDayText({ kind: "complete", day: 95, totalDays: 90 }, t, { labelled: true })).toBe("Plan complete");
+  });
+
   it("says nothing in the menu or the card before the plan starts", () => {
     expect(planDayText({ kind: "notStarted" }, t)).toBeNull();
     expect(planPaceText(null, t)).toBeNull();

@@ -98,12 +98,10 @@ describe("import routes: the identity statement", () => {
       expect(H.reads).toEqual(["member@a.example"]);
     });
 
-    it(`${path}: without a statement, still served (phase 1), refused once required`, async () => {
-      const served = await handler(post(path, { userEmail: "member@a.example", ...extra }));
-      expect(served.status).toBe(200);
-      vi.stubEnv("IMPORT_IDENTITY_REQUIRED", "true");
+    it(`${path}: without a statement, refused before the account is read`, async () => {
       const refused = await handler(post(path, { userEmail: "member@a.example", ...extra }));
       expect(refused.status).toBe(401);
+      expect(H.reads).toHaveLength(0);
     });
   }
 

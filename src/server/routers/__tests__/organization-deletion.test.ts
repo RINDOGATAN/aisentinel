@@ -18,8 +18,9 @@
  *    afterwards every row of A is gone and every row of B is untouched. The
  *    tombstone audit entry is written BEFORE the rows go and survives with the
  *    organisation's name and slug in `changes`; the organisation's own audit
- *    history goes with it, because an audit row holding the content of a
- *    deleted organisation would make "it is really deleted" untrue.
+ *    history is kept with the personal data removed, in the same transaction
+ *    as the delete (the SQL itself is proved against Postgres in
+ *    src/server/services/audit/retain-on-delete.db.test.ts).
  *
  * What this cannot prove without a database: that Postgres honours the
  * constraints as declared. That check belongs to the maintainers, on a copy of
@@ -191,6 +192,14 @@ const H = vi.hoisted(() => {
     organizationMember,
     legalHold: { findMany: async () => [], count: async () => 0 },
   };
+  Object.assign(db, {
+    $transaction: async (fn: (tx: unknown) => Promise<unknown>) => {
+      events.push("tx-begin");
+      const out = await fn(db);
+      events.push("tx-commit");
+      return out;
+    },
+  });
 
   function reset() {
     events.length = 0;
@@ -216,6 +225,26 @@ const H = vi.hoisted(() => {
 });
 
 vi.mock("@/lib/prisma", () => ({ default: H.db, prisma: H.db }));
+// The SQL runs against Postgres in retain-on-delete.db.test.ts; here, its
+// effect in memory, recorded in the event order.
+vi.mock("@/server/services/audit/retain-on-delete", () => ({
+  retainAnonymisedTrail: async (_db: unknown, organizationId: string, tombstoneId: string) => {
+    H.events.push("audit-anonymise");
+    let count = 0;
+    for (const row of H.tables.auditLog.__rows()) {
+      if (row.organizationId !== organizationId || row.id === tombstoneId) continue;
+      Object.assign(row, {
+        userId: null,
+        ipAddress: null,
+        userAgent: null,
+        changes: { fields: Object.keys((row.changes as object) ?? {}).sort() },
+        metadata: { deletedOrganizationId: organizationId, personalDataRemoved: true },
+      });
+      count += 1;
+    }
+    return count;
+  },
+}));
 vi.mock("@/lib/auth", () => ({ authOptions: {} }));
 vi.mock("next-auth", () => ({ getServerSession: vi.fn() }));
 vi.mock("next/headers", () => ({ cookies: async () => ({ get: () => undefined }) }));
@@ -293,25 +322,33 @@ describe("organization.delete with two organisations seeded", () => {
     expect(H.orgRows.map((o) => o.id)).toEqual(["org-b"]);
   });
 
-  it("writes the tombstone to the audit trail before the rows go, and keeps only that", async () => {
+  it("writes the tombstone first, then keeps the trail without personal data, in one transaction with the delete", async () => {
+    H.tables.auditLog.__rows()[0].changes = { title: "Hiring model", notes: "Asked by a.person@example.test" };
+    H.tables.auditLog.__rows()[0].userId = "user-a";
+    H.tables.auditLog.__rows()[0].ipAddress = "192.0.2.1";
     const caller = organizationRouter.createCaller(ctxFor(sessionFor("user-a")));
     await caller.delete({ organizationId: "org-a", confirmName: "Acme Sample" });
 
-    // Written first, then the organisation's own history pruned, then the rows.
-    expect(H.events.indexOf("audit")).toBeLessThan(H.events.indexOf("delete"));
-    expect(H.events.indexOf("audit-prune")).toBeLessThan(H.events.indexOf("delete"));
+    // Tombstone, then (inside the transaction) the anonymisation and the delete.
+    expect(H.events).toEqual(["audit", "tx-begin", "audit-anonymise", "delete", "tx-commit"]);
 
     const audit = H.tables.auditLog.__rows();
     // The other organisation's history is untouched.
     expect(audit.filter((r) => r.organizationId === "org-b")).toHaveLength(1);
-    // Exactly one row survives the deleted organisation: the tombstone, now
-    // detached, carrying the name and slug so the deletion can be evidenced.
+    // The deleted organisation's trail survives, detached: the tombstone and
+    // its own history.
     const survivors = audit.filter((r) => r.organizationId === null);
-    expect(survivors).toHaveLength(1);
-    expect(survivors[0].action).toBe("DELETE");
-    expect(survivors[0].changes).toMatchObject({ name: "Acme Sample", slug: "acme-sample" });
-    // And none of the deleted organisation's content is left in the trail.
-    expect(audit.some((r) => r.id === "auditLog-a")).toBe(false);
+    expect(survivors).toHaveLength(2);
+    const tombstone = survivors.find((r) => r.action === "DELETE")!;
+    expect(tombstone.changes).toMatchObject({ name: "Acme Sample", slug: "acme-sample" });
+    const kept = survivors.find((r) => r.id === "auditLog-a")!;
+    expect(kept).toMatchObject({
+      userId: null,
+      ipAddress: null,
+      changes: { fields: ["notes", "title"] },
+      metadata: { deletedOrganizationId: "org-a", personalDataRemoved: true },
+    });
+    expect(JSON.stringify(kept)).not.toContain("a.person@example.test");
   });
 
   it("refuses a name that does not match, and deletes nothing", async () => {

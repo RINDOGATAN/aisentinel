@@ -76,7 +76,7 @@ const H = vi.hoisted(() => {
       create: async ({ data }: { data: Row }) => {
         if (auditFails.on) throw new Error("audit store down");
         // An id, because deleting an organization writes its tombstone and then
-        // prunes the rest of the trail by "everything but this row".
+        // rewrites the rest of the trail by "everything but this row".
         const row = { id: `audit-${audit.length + 1}`, createdAt: new Date(), ...data };
         audit.push(row);
         return row;
@@ -99,7 +99,12 @@ const H = vi.hoisted(() => {
     legalHold: { findMany: async () => [], count: async () => 0 },
     // No department limits in these fixtures: every member sees the whole org.
     businessUnitMember: { findMany: async () => [] },
+    // Deleting an organization keeps its trail without personal data (one raw
+    // UPDATE, proved against Postgres in retain-on-delete.db.test.ts) inside a
+    // transaction with the delete.
+    $executeRaw: async () => 0,
   };
+  Object.assign(db, { $transaction: async (fn: (tx: unknown) => Promise<unknown>) => fn(db) });
 
   /**
    * `signedInDaysAgo` is the recorded first sign-in (null: none yet). The

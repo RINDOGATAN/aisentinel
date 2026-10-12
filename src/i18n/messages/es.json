@@ -5481,7 +5481,8 @@
     "paidPlan": "Pasa al plan de pago",
     "exportAll": "Exportar todo (paquete del programa)",
     "afterExportBody": "Tu archivo se ha descargado. Ya puedes vaciar esta cuenta.",
-    "afterExportAction": "Vaciar la cuenta"
+    "afterExportAction": "Vaciar la cuenta",
+    "docsLink": "Cómo funciona el piloto alojado, en la documentación."
   },
   "applicability": {
     "stepTitle": "Antes de empezar: qué se te aplica",

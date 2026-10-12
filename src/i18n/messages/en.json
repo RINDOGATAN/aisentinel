@@ -5481,7 +5481,8 @@
     "paidPlan": "Move to the paid plan",
     "exportAll": "Export everything (program pack)",
     "afterExportBody": "Your file is downloaded. You can now empty this account.",
-    "afterExportAction": "Empty the account"
+    "afterExportAction": "Empty the account",
+    "docsLink": "How the hosted pilot works, in the documentation."
   },
   "applicability": {
     "stepTitle": "Before you start: what applies to you",

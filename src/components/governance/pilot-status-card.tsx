@@ -15,14 +15,11 @@ import { StatusMark } from "@/components/ui/status-note";
 import { Download, ExternalLink, FlaskConical, Lock } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { PILOT_CEILING_LABELS, PILOT_DESCRIPTION, PILOT_PRICING_URL, PILOT_TERMS } from "@/config/pilot";
-import { DISCLOSURE_CHROME, DISCLOSURE_DOCS_PATH } from "@/config/pilot-disclosure";
 
 export function PilotStatusCard({ organizationId }: { organizationId: string }) {
   const t = useTranslations("pilot");
   const locale = useLocale() === "es" ? "es" : "en";
   const { data } = trpc.pilot.status.useQuery({ organizationId }, { staleTime: 60 * 1000 });
-  // What the person was told, and the day they said they had read it.
-  const { data: disclosure } = trpc.pilot.disclosure.useQuery(undefined, { staleTime: 60 * 1000 });
 
   if (!data?.active) return null;
 
@@ -97,20 +94,10 @@ export function PilotStatusCard({ organizationId }: { organizationId: string }) 
           </div>
         )}
 
-        {/* The disclosure, and the date it was acknowledged. Always linked, so
-            nobody has to remember the pop-up they clicked through. */}
+        {/* How the pilot works, published in the documentation. */}
         <p className="text-xs text-muted-foreground">
-          {disclosure?.acknowledgedAt
-            ? `${DISCLOSURE_CHROME[locale].acknowledgedOn} ${new Date(
-                disclosure.acknowledgedAt,
-              ).toLocaleDateString(locale === "es" ? "es-ES" : "en-GB", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              })}. `
-            : ""}
-          <a href={DISCLOSURE_DOCS_PATH} className="underline underline-offset-2 hover:text-foreground">
-            {DISCLOSURE_CHROME[locale].docsLink}
+          <a href="/docs/pilot" className="underline underline-offset-2 hover:text-foreground">
+            {t("docsLink")}
           </a>
         </p>
       </CardContent>

@@ -122,7 +122,7 @@ export function LicenceNote({
 }) {
   const t = useTranslations("premiumShowcase");
   const locale = useLocale();
-  const currency = useCurrency();
+  const currency = useCurrency(locale);
   const { isLocked, purchaseUrl } = useShowcaseLocks(organizationId);
 
   if (!features.some(isLocked)) return null;

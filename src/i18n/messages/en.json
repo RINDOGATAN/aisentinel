@@ -1459,10 +1459,11 @@
     "orgNameLabel": "Organization name",
     "orgNamePlaceholder": "e.g. Acme Industries",
     "orgSlugLabel": "URL identifier",
-    "orgSlugHint": "Lowercase letters, numbers and hyphens.",
+    "orgSlugHint": "Filled in from the name. An internal identifier: lowercase letters, numbers and hyphens.",
     "orgDomainLabel": "Email domain (optional)",
     "orgDomainPlaceholder": "acme.com",
-    "orgCreated": "Organization created: opening its quickstart"
+    "orgCreated": "Organization created: opening its quickstart",
+    "moreOptions": "More options"
   },
   "experts": {
     "deploymentCtaTitle": "Run AI Sentinel on your own hardware",
@@ -1475,7 +1476,15 @@
     "contactDescription": "Contact us to enable this feature for your organization.",
     "contactUs": "Contact Us",
     "enableFeature": "Enable Feature",
-    "redirecting": "Redirecting to payment..."
+    "redirecting": "Redirecting to payment...",
+    "addToOrganization": "Add {name} to your organization.",
+    "includedSelfHosted": "{name} is included in your self-hosted deployment. It is already available to your organization.",
+    "activateOnSkills": "{name} is a premium feature. Activate the license file you received on the Skills page to enable it for your organization.",
+    "close": "Close",
+    "goToSkills": "Go to the Skills page",
+    "enableMany": "{count, plural, one {Enable # feature} other {Enable # features}}",
+    "manyIncludedSelfHosted": "These features are included in your self-hosted deployment.",
+    "manyActivateOnSkills": "Activate the license files you received on the Skills page to enable these features."
   },
   "skills": {
     "title": "Skills",

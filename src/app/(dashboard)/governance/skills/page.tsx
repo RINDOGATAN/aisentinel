@@ -33,7 +33,7 @@ export default function SkillsPage() {
   const t = useTranslations("skills");
   const { formatDate: fmtDate } = useFormatDate();
   const locale = useLocale();
-  const currency = useCurrency();
+  const currency = useCurrency(locale);
   const { organization, userRole } = useOrganization();
   const fileRef = useRef<HTMLInputElement>(null);
   const [license, setLicense] = useState<Record<string, unknown> | null>(null);

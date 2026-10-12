@@ -13,6 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useTranslations } from "next-intl";
 import { features } from "@/config/features";
 import { formatPrice } from "@/lib/currency";
 
@@ -29,6 +30,7 @@ export function EnableMultipleFeaturesModal({
   organizationId,
   skills,
 }: EnableMultipleFeaturesModalProps) {
+  const t = useTranslations("premium");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -51,7 +53,7 @@ export function EnableMultipleFeaturesModal({
             <div className="flex items-start justify-between">
               <CardTitle className="flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-primary" />
-                Enable {skills.length} Features
+                {t("enableMany", { count: skills.length })}
               </CardTitle>
               <Button
                 variant="ghost"
@@ -63,9 +65,7 @@ export function EnableMultipleFeaturesModal({
               </Button>
             </div>
             <CardDescription>
-              {features.allSkillsFree
-                ? "These features are included in your self-hosted deployment."
-                : "Activate the license files you received on the Skills page to enable these features."}
+              {features.allSkillsFree ? t("manyIncludedSelfHosted") : t("manyActivateOnSkills")}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -77,13 +77,13 @@ export function EnableMultipleFeaturesModal({
           </CardContent>
           <CardFooter className="flex flex-wrap justify-end gap-3">
             <Button variant="outline" onClick={onClose}>
-              Close
+              {t("close")}
             </Button>
             {!features.allSkillsFree && (
               <Button asChild>
                 <a href="/governance/skills">
                   <Package className="mr-2 h-4 w-4" />
-                  Go to Skills page
+                  {t("goToSkills")}
                 </a>
               </Button>
             )}

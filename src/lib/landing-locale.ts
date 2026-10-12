@@ -38,3 +38,17 @@ export function requestLandingLocale(
   if (values.length > 0) return values[values.length - 1] === "es" ? "es" : "en";
   return prefersSpanish(acceptLanguage) ? "es" : "en";
 }
+
+/**
+ * The product's language for a request: the `locale` cookie when the visitor
+ * chose one (the switch is the way to change it), otherwise the browser's
+ * Accept-Language, English otherwise. The same order as the landing, so a
+ * visitor who read the landing in Spanish arrives in a Spanish product. No
+ * cookie is written for this default (src/lib/locale-cookie.ts).
+ */
+export function requestLocale(
+  cookieHeader: string | null | undefined,
+  acceptLanguage: string | null | undefined,
+): Locale {
+  return requestLandingLocale(null, cookieHeader, acceptLanguage);
+}

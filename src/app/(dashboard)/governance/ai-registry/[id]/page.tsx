@@ -3,7 +3,7 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { useEffect, useState } from "react";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ComplianceMatrix } from "@/components/governance/compliance-matrix";
 import { RiskClassificationForm } from "@/components/governance/risk-classification-form";
@@ -71,6 +71,7 @@ import { TransparencyPanel } from "@/components/governance/TransparencyPanel";
 import { AdmtPanel } from "@/components/governance/AdmtPanel";
 import { TierChip } from "@/components/governance/risk-tier-badge";
 import { PageHeader } from "@/components/governance/page-header";
+import { DeleteRecordButton } from "@/components/governance/delete-record-button";
 import { UnifiedPanel } from "@/components/governance/UnifiedPanel";
 import { AgentPanel } from "@/components/governance/AgentPanel";
 import { TransparencyStatementCard } from "@/components/ai/TransparencyStatementCard";
@@ -235,8 +236,10 @@ export default function AISystemDetailPage() {
     setTab(value);
     document.getElementById("system-tabs")?.scrollIntoView({ block: "start" });
   };
-  const { organization, canWrite, canDecide } = useOrganization();
+  const { organization, canWrite, canDecide, canDelete } = useOrganization();
+  const router = useRouter();
   const t = useTranslations("aiRegistryDetail");
+  const tDelete = useTranslations("deleteRecord");
   const { formatDate } = useFormatDate();
   const locale = useLocale();
   const tc = useTranslations("common");
@@ -458,6 +461,17 @@ export default function AISystemDetailPage() {
       utils.aiSystem.getById.invalidate({ organizationId, id });
       setModelOpen(false);
       toast.success(t("toastModelUpdated"));
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  // The system's records go with it (assessments, gates, classification...),
+  // so every cached list may have changed.
+  const deleteSystem = trpc.aiSystem.delete.useMutation({
+    onSuccess: () => {
+      toast.success(tDelete("aiSystem.deleted"));
+      router.push("/governance/ai-registry");
+      void utils.invalidate();
     },
     onError: (err) => toast.error(err.message),
   });
@@ -700,10 +714,19 @@ export default function AISystemDetailPage() {
         }
         actions={
           canWrite ? (
-            <Button variant="outline" onClick={openEditDialog}>
-              <Edit className="w-4 h-4 mr-2" />
-              {tc("edit")}
-            </Button>
+            <>
+              {canDelete && (
+                <DeleteRecordButton
+                  record="aiSystem"
+                  pending={deleteSystem.isPending}
+                  onConfirm={() => deleteSystem.mutate({ organizationId, id })}
+                />
+              )}
+              <Button variant="outline" onClick={openEditDialog}>
+                <Edit className="w-4 h-4 mr-2" />
+                {tc("edit")}
+              </Button>
+            </>
           ) : undefined
         }
       />

@@ -3,7 +3,7 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { useState } from "react";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -49,6 +49,7 @@ import { useFormatDate } from "@/lib/use-format-date";
 import { STATUS_OUTLINE } from "@/components/ui/status-note";
 import { PageHeader } from "@/components/governance/page-header";
 import { SystemPicker } from "@/components/governance/system-picker";
+import { DeleteRecordButton } from "@/components/governance/delete-record-button";
 
 const statusColors: Record<string, string> = {
   ACTIVE: STATUS_OUTLINE.good,
@@ -117,7 +118,9 @@ export default function VendorDetailPage() {
   const initialTab =
     requestedTab === "assessments" || requestedTab === "supply-chain" ? requestedTab : "systems";
   const id = params.id as string;
-  const { organization, canWrite } = useOrganization();
+  const { organization, canWrite, canDelete } = useOrganization();
+  const router = useRouter();
+  const tDelete = useTranslations("deleteRecord");
   const [assessmentDialogOpen, setAssessmentDialogOpen] = useState(false);
   const [assessmentForm, setAssessmentForm] = useState({ title: "", findings: "" });
   const [isCreatingAssessment, setIsCreatingAssessment] = useState(false);
@@ -166,6 +169,15 @@ export default function VendorDetailPage() {
     onError: (error) => {
       toast.error(error.message || t("toastAssessmentUpdateError"));
     },
+  });
+
+  const deleteVendor = trpc.vendor.delete.useMutation({
+    onSuccess: () => {
+      toast.success(tDelete("vendor.deleted"));
+      router.push("/governance/vendors");
+      void utils.vendor.invalidate();
+    },
+    onError: (error) => toast.error(error.message),
   });
 
   const handleCreateAssessment = (e: React.FormEvent) => {
@@ -243,6 +255,15 @@ export default function VendorDetailPage() {
               </TierChip>
             )}
           </>
+        }
+        actions={
+          canDelete ? (
+            <DeleteRecordButton
+              record="vendor"
+              pending={deleteVendor.isPending}
+              onConfirm={() => deleteVendor.mutate({ organizationId: organization.id, id })}
+            />
+          ) : undefined
         }
       />
 

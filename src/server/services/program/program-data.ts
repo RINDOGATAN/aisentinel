@@ -312,136 +312,146 @@ export async function getProgramScorecardData(
   const allSystems = (records as SystemRecord[]).filter(
     (s) => s.status !== "RETIRED",
   );
-  // Drafted items (quick start, templates, imports) nobody has confirmed are
-  // left out of every figure below; the count is returned as draftsExcluded.
-  const systems = allSystems.map((s) => ({
-    ...s,
-    riskClassification:
-      s.riskClassification && confirmedRow(s.riskClassification) ? s.riskClassification : null,
-    transparencyProfile:
-      s.transparencyProfile && confirmedRow(s.transparencyProfile) ? s.transparencyProfile : null,
-    oversightGates: s.oversightGates.filter(confirmedRow),
-  }));
-  const confirmedPolicies = policies.filter(confirmedRow);
-  const gates = systems.flatMap((s) => s.oversightGates);
-  const highRisk = systems.filter(
-    (s) =>
-      s.riskClassification?.riskLevel === "HIGH" ||
-      s.riskClassification?.riskLevel === "UNACCEPTABLE",
-  );
-  const systemsWithGate = systems.filter((s) => s.oversightGates.length > 0);
-  const systemsNeedingGate = new Set([
-    ...highRisk.map((s) => s.id),
-    ...systemsWithGate.map((s) => s.id),
-  ]);
-  const relevant = systems.filter((s) => s.technique === "GENERATIVE_AI");
+  // Two readings of the same rows. The figures (scores, tiles, maturity)
+  // count only what a person stands behind: drafted items (quick start,
+  // templates, imports) nobody has confirmed are left out, and their number
+  // is returned as draftsExcluded. The plan's actions read everything that
+  // exists, so a drafted classification asks to be confirmed (unconfirmed-
+  // items), not to be made again.
+  const build = (excludeDrafts: boolean) => {
+    const systems = allSystems.map((s) => ({
+      ...s,
+      riskClassification:
+        s.riskClassification && (!excludeDrafts || confirmedRow(s.riskClassification)) ? s.riskClassification : null,
+      transparencyProfile:
+        s.transparencyProfile && (!excludeDrafts || confirmedRow(s.transparencyProfile)) ? s.transparencyProfile : null,
+      oversightGates: excludeDrafts ? s.oversightGates.filter(confirmedRow) : s.oversightGates,
+    }));
+    const confirmedPolicies = excludeDrafts ? policies.filter(confirmedRow) : policies;
+    const gates = systems.flatMap((s) => s.oversightGates);
+    const highRisk = systems.filter(
+      (s) =>
+        s.riskClassification?.riskLevel === "HIGH" ||
+        s.riskClassification?.riskLevel === "UNACCEPTABLE",
+    );
+    const systemsWithGate = systems.filter((s) => s.oversightGates.length > 0);
+    const systemsNeedingGate = new Set([
+      ...highRisk.map((s) => s.id),
+      ...systemsWithGate.map((s) => s.id),
+    ]);
+    const relevant = systems.filter((s) => s.technique === "GENERATIVE_AI");
 
-  const complianceCounts = { assessed: 0, compliant: 0, partial: 0, total: 0 };
-  for (const row of complianceByStatus) {
-    complianceCounts.total += row._count._all;
-    if (row.status !== "NOT_ASSESSED")
-      complianceCounts.assessed += row._count._all;
-    if (row.status === "COMPLIANT") complianceCounts.compliant += row._count._all;
-    if (row.status === "PARTIALLY_COMPLIANT")
-      complianceCounts.partial += row._count._all;
-  }
-  // A drafted status counts as not assessed until a person confirms it.
-  for (const row of complianceUnconfirmedByStatus) {
-    if (row.status === "NOT_ASSESSED") continue;
-    complianceCounts.assessed -= row._count._all;
-    if (row.status === "COMPLIANT") complianceCounts.compliant -= row._count._all;
-    if (row.status === "PARTIALLY_COMPLIANT")
-      complianceCounts.partial -= row._count._all;
-  }
+    const complianceCounts = { assessed: 0, compliant: 0, partial: 0, total: 0 };
+    for (const row of complianceByStatus) {
+      complianceCounts.total += row._count._all;
+      if (row.status !== "NOT_ASSESSED")
+        complianceCounts.assessed += row._count._all;
+      if (row.status === "COMPLIANT") complianceCounts.compliant += row._count._all;
+      if (row.status === "PARTIALLY_COMPLIANT")
+        complianceCounts.partial += row._count._all;
+    }
+    // A drafted status counts as not assessed until a person confirms it.
+    for (const row of excludeDrafts ? complianceUnconfirmedByStatus : []) {
+      if (row.status === "NOT_ASSESSED") continue;
+      complianceCounts.assessed -= row._count._all;
+      if (row.status === "COMPLIANT") complianceCounts.compliant -= row._count._all;
+      if (row.status === "PARTIALLY_COMPLIANT")
+        complianceCounts.partial -= row._count._all;
+    }
 
-  const markingOverdue = markingRequiredRows.filter(
-    (row) =>
-      computeMarkingDeadline({
-        placedOnMarketBefore2Aug2026: row.placedOnMarketBefore2Aug2026,
-        markingStatus: "REQUIRED",
-      })?.overdue,
-  ).length;
+    const markingOverdue = markingRequiredRows.filter(
+      (row) =>
+        computeMarkingDeadline({
+          placedOnMarketBefore2Aug2026: row.placedOnMarketBefore2Aug2026,
+          markingStatus: "REQUIRED",
+        })?.overdue,
+    ).length;
 
-  const snapshot: ProgramSnapshot = {
-    systems: {
-      total: systems.length,
-      deployed: systems.filter((s) => s.status === "DEPLOYED").length,
-      withOwner: systems.filter(
-        (s) => s.businessOwner !== null || s.technicalOwner !== null,
-      ).length,
-      withPurpose: systems.filter(
-        (s) => s.purpose !== null && s.purpose.trim() !== "",
-      ).length,
-      retired: (records as SystemRecord[]).length - systems.length,
-    },
-    classification: {
-      classified: systems.filter((s) => s.riskClassification !== null).length,
-      high: systems.filter((s) => s.riskClassification?.riskLevel === "HIGH")
-        .length,
-      unacceptable: systems.filter(
-        (s) => s.riskClassification?.riskLevel === "UNACCEPTABLE",
-      ).length,
-    },
-    oversight: {
-      systemsNeedingGate: systemsNeedingGate.size,
-      systemsWithGate: systemsWithGate.length,
-      gatesPassed: gates.filter((g) => g.status === "PASSED").length,
-      gatesTotal: gates.length,
-      overdue: gates.filter(
-        (g) =>
-          (g.status === "PENDING" || g.status === "IN_REVIEW") &&
-          g.nextReviewDate !== null &&
-          g.nextReviewDate.getTime() < now.getTime(),
-      ).length,
-    },
-    policies: {
-      coreTypesPresent: new Set(
-        confirmedPolicies
-          .filter((p) => CORE_POLICY_TYPES.has(p.type))
-          .map((p) => p.type),
-      ).size,
-      active: confirmedPolicies.filter((p) => ACTIVE_POLICY_STATUSES.has(p.status))
-        .length,
-      total: confirmedPolicies.length,
-      systemsLinked: linkedSystems.length,
-    },
-    compliance: {
-      assessed: complianceCounts.assessed,
-      compliant: complianceCounts.compliant,
-      partial: complianceCounts.partial,
-      totalMappings: complianceCounts.total,
-    },
-    transparency: {
-      relevantSystems: relevant.length,
-      withProfile: relevant.filter((s) => s.transparencyProfile !== null)
-        .length,
-      markingOverdue,
-    },
-    vendors: {
-      systemsWithVendor: systems.filter((s) => s.vendorId !== null).length,
-      vendorsTotal: vendors.length,
-      vendorsAssessed: vendors.filter(
-        (v) => v.riskLevel !== null || v.dueDiligenceDate !== null,
-      ).length,
-    },
-    shadowAi: { reports: shadowTotal, triaged: shadowTriaged },
-    assessments: (() => {
-      const approved = new Set(approvedAssessmentSystems.map((a) => a.aiSystemId));
-      const high = systems.filter((s) => s.riskClassification?.riskLevel === "HIGH");
-      return {
-        highRiskSystems: high.length,
-        highRiskWithApprovedAssessment: high.filter((s) => approved.has(s.id)).length,
-      };
-    })(),
-    provenance: {
-      unconfirmed: Object.values(confirmationCounts).reduce(
-        (n, c) => n + Math.max(0, c.total - c.confirmed),
-        0,
-      ),
-    },
+    const snapshot: ProgramSnapshot = {
+      systems: {
+        total: systems.length,
+        deployed: systems.filter((s) => s.status === "DEPLOYED").length,
+        withOwner: systems.filter(
+          (s) => s.businessOwner !== null || s.technicalOwner !== null,
+        ).length,
+        withPurpose: systems.filter(
+          (s) => s.purpose !== null && s.purpose.trim() !== "",
+        ).length,
+        retired: (records as SystemRecord[]).length - systems.length,
+      },
+      classification: {
+        classified: systems.filter((s) => s.riskClassification !== null).length,
+        high: systems.filter((s) => s.riskClassification?.riskLevel === "HIGH")
+          .length,
+        unacceptable: systems.filter(
+          (s) => s.riskClassification?.riskLevel === "UNACCEPTABLE",
+        ).length,
+      },
+      oversight: {
+        systemsNeedingGate: systemsNeedingGate.size,
+        systemsWithGate: systemsWithGate.length,
+        gatesPassed: gates.filter((g) => g.status === "PASSED").length,
+        gatesTotal: gates.length,
+        overdue: gates.filter(
+          (g) =>
+            (g.status === "PENDING" || g.status === "IN_REVIEW") &&
+            g.nextReviewDate !== null &&
+            g.nextReviewDate.getTime() < now.getTime(),
+        ).length,
+      },
+      policies: {
+        coreTypesPresent: new Set(
+          confirmedPolicies
+            .filter((p) => CORE_POLICY_TYPES.has(p.type))
+            .map((p) => p.type),
+        ).size,
+        active: confirmedPolicies.filter((p) => ACTIVE_POLICY_STATUSES.has(p.status))
+          .length,
+        total: confirmedPolicies.length,
+        systemsLinked: linkedSystems.length,
+      },
+      compliance: {
+        assessed: complianceCounts.assessed,
+        compliant: complianceCounts.compliant,
+        partial: complianceCounts.partial,
+        totalMappings: complianceCounts.total,
+      },
+      transparency: {
+        relevantSystems: relevant.length,
+        withProfile: relevant.filter((s) => s.transparencyProfile !== null)
+          .length,
+        markingOverdue,
+      },
+      vendors: {
+        systemsWithVendor: systems.filter((s) => s.vendorId !== null).length,
+        vendorsTotal: vendors.length,
+        vendorsAssessed: vendors.filter(
+          (v) => v.riskLevel !== null || v.dueDiligenceDate !== null,
+        ).length,
+      },
+      shadowAi: { reports: shadowTotal, triaged: shadowTriaged },
+      assessments: (() => {
+        const approved = new Set(approvedAssessmentSystems.map((a) => a.aiSystemId));
+        const high = systems.filter((s) => s.riskClassification?.riskLevel === "HIGH");
+        return {
+          highRiskSystems: high.length,
+          highRiskWithApprovedAssessment: high.filter((s) => approved.has(s.id)).length,
+        };
+      })(),
+      provenance: {
+        unconfirmed: Object.values(confirmationCounts).reduce(
+          (n, c) => n + Math.max(0, c.total - c.confirmed),
+          0,
+        ),
+      },
+    };
+    return { snapshot, gates, highRisk };
   };
+  const { snapshot, gates, highRisk } = build(true);
+  const { snapshot: existing } = build(false);
 
-  const maturity = computeMaturity(snapshot);
+  // Scores from what is confirmed; gaps (the plan's actions) from what exists.
+  const maturity = { ...computeMaturity(snapshot), gaps: computeMaturity(existing).gaps };
 
   // The 30/60/90-day plan is the stage plan (PLAN_WINDOWS: two stages of the
   // path in each thirty days). Each gap's action is shown under the window of

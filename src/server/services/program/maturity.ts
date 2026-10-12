@@ -53,7 +53,10 @@
  *   classifications, oversight gates, policies, transparency profiles and
  *   compliance statuses that were drafted (quick start, template, import) and
  *   not yet confirmed are left out of every input, so the figures rise as a
- *   person confirms them. `provenance.unconfirmed` still counts them.
+ *   person confirms them. `provenance.unconfirmed` still counts them. The
+ *   gaps that feed the plan are computed from a second snapshot of everything
+ *   that exists (src/server/services/program/program-data.ts), so a drafted
+ *   item is asked to be confirmed, not to be created again.
  */
 
 /**

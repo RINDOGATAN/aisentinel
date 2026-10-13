@@ -340,6 +340,9 @@ export default function AISystemDetailPage() {
       IN_PROGRESS: tc("statusInProgress"),
       UNDER_REVIEW: tc("statusUnderReview"),
       APPROVED: tc("statusApproved"),
+      ACTIVE: tc("statusActive"),
+      SUSPENDED: tc("statusSuspended"),
+      TERMINATED: tc("statusTerminated"),
       REJECTED: tc("statusRejected"),
       PENDING: tc("statusPending"),
       IN_REVIEW: tc("statusInReview"),
@@ -385,6 +388,10 @@ export default function AISystemDetailPage() {
       HIGH: tc("riskHigh"),
       LIMITED: tc("riskLimited"),
       MINIMAL: tc("riskMinimal"),
+      // Vendor risk levels (VendorRiskLevel) shown on the linked-vendor card.
+      CRITICAL: tc("riskCritical"),
+      MEDIUM: tc("riskMedium"),
+      LOW: tc("riskLow"),
     };
     return map[key] || key;
   };

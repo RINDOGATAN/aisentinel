@@ -88,11 +88,11 @@ export const EXAMPLE_SYSTEMS: readonly ExampleSystem[] = [
     name: { en: "Applicant screening model (sample)", es: "Modelo de cribado de candidaturas (muestra)" },
     description: {
       en: "An invented model that scores applications for junior roles and orders them for a first sift. Trained on five years of the example organization's own hiring records and retrained each quarter.",
-      es: "Un modelo inventado que puntúa las candidaturas a puestos de nivel inicial y las ordena para un primer cribado. Entrenado con cinco años de registros de contratación de la organización de ejemplo y reentrenado cada trimestre.",
+      es: "Un modelo inventado que puntúa las candidaturas a puestos de nivel inicial y las categoriza para un primer cribado. Entrenado con cinco años de registros de contratación de la organización de ejemplo y reentrenado cada trimestre.",
     },
     purpose: {
       en: "Order incoming applications so a recruiter reads the most relevant first. No application is rejected by the model alone.",
-      es: "Ordenar las candidaturas recibidas para que una persona de selección lea primero las más relevantes. Ninguna candidatura se rechaza solo por el modelo.",
+      es: "Categorizar las candidaturas recibidas para que una persona de selección lea primero las más relevantes. Ninguna candidatura se rechaza solo por el modelo.",
     },
     technique: "MACHINE_LEARNING",
     role: "DEPLOYER",
@@ -105,7 +105,7 @@ export const EXAMPLE_SYSTEMS: readonly ExampleSystem[] = [
       annexIIICategory: "employment_contracting",
       rationale: {
         en: "Used in recruitment to filter applications and rank candidates, which Annex III point 4 of the EU AI Act lists as high risk. The decision affects access to employment, and the people affected are applicants who cannot negotiate the terms on which they are assessed.",
-        es: "Se utiliza en la contratación para filtrar candidaturas y ordenar personas candidatas, un supuesto que el anexo III, punto 4, del RIA califica de alto riesgo. La decisión afecta al acceso al empleo y las personas afectadas no pueden negociar las condiciones en que se las evalúa.",
+        es: "Se utiliza en la contratación para filtrar y categorizar candidaturas, un supuesto que el anexo III, punto 4, del RIA califica de alto riesgo. La decisión afecta al acceso al empleo y las personas afectadas no pueden negociar las condiciones en que se las evalúa.",
       },
     },
     vendorKey: "example-vendor",
@@ -181,7 +181,7 @@ export const EXAMPLE_ASSESSMENT_ANSWERS: Record<string, Record<PilotLocale, stri
   },
   sys_necessity: {
     en: "Manual ordering was tried and took four working days per role, during which good applicants withdrew. A simple keyword filter was tried and rejected because it excluded career changers whose wording differed. The model is used because it orders rather than excludes: every application is still read by a person.",
-    es: "Se ha probado la ordenación manual y llevaba cuatro días laborables por puesto, durante los cuales se retiraban buenas candidaturas. Se ha probado un filtro simple por palabras clave y se ha descartado porque excluía a personas que cambiaban de carrera y se expresaban de otro modo. El modelo se usa porque ordena en lugar de excluir: toda candidatura la sigue leyendo una persona.",
+    es: "Se ha probado la categorización manual de candidaturas y llevaba cuatro días laborables por puesto, durante los cuales se retiraban buenas candidaturas. Se ha probado un filtro simple por palabras clave y se ha descartado porque excluía a personas que cambiaban de carrera y se expresaban de otro modo. El modelo se usa porque categoriza en lugar de excluir: toda candidatura la sigue leyendo una persona.",
   },
   ppl_categories: {
     en: "Applicants for junior roles, around 4,000 a year. Most are in their first five years of work.",
@@ -197,11 +197,11 @@ export const EXAMPLE_ASSESSMENT_ANSWERS: Record<string, Record<PilotLocale, stri
   },
   dec_description: {
     en: "The model orders applications for a first sift. A recruiter reads them in that order and decides who goes to interview. If the model orders an application low, the consequence for that person is that their application is read later, not that it is rejected.",
-    es: "El modelo ordena las candidaturas para un primer cribado. Una persona de selección las lee en ese orden y decide quién pasa a entrevista. Si el modelo ordena una candidatura en una posición baja, la consecuencia para esa persona es que su candidatura se lee más tarde, no que se rechace.",
+    es: "El modelo categoriza las candidaturas para un primer cribado. Una persona de selección las lee según esa categorización y decide quién pasa a entrevista. Si el modelo sitúa una candidatura en una categoría baja, la consecuencia para esa persona es que su candidatura se lee más tarde, no que se rechace.",
   },
   dec_human_role: {
     en: "The recruiter sees the application in full, the model's score, and the note that the score is an ordering aid. They also see the applications the model ordered lowest, in a separate list they are required to work through. They can interview anyone at any position and are not asked to justify departing from the order.",
-    es: "La persona de selección ve la candidatura completa, la puntuación del modelo y la advertencia de que la puntuación es solo una ayuda a la ordenación. También ve, en una lista aparte que está obligada a revisar, las candidaturas peor ordenadas. Puede convocar a entrevista a cualquier persona en cualquier posición y no se le pide justificar apartarse del orden.",
+    es: "La persona de selección ve la candidatura completa, la puntuación del modelo y la advertencia de que la puntuación es solo una ayuda a la categorización. También ve, en una lista aparte que está obligada a revisar, las candidaturas peor categorizadas. Puede convocar a entrevista a cualquier persona de cualquier categoría y no se le pide justificar apartarse de la categorización.",
   },
   risk_discrimination: {
     en: "The main risk is that the model learns the pattern of past hiring rather than the requirements of the role, and so reproduces any historic under-representation. The characteristics at stake are sex, age, ethnic origin and disability. The example organization tests selection rates by sex and age band each quarter against a four-fifths rule and records the result; ethnic origin and disability are not held, so those are tested by proxy audit on applicant surveys.",
@@ -209,11 +209,11 @@ export const EXAMPLE_ASSESSMENT_ANSWERS: Record<string, Record<PilotLocale, stri
   },
   meas_oversight: {
     en: "Two recruiters oversee every role, one of whom must be outside the hiring team. Both are trained on how the score is produced and on automation bias, and the training is repeated annually. The requirement to work through the lowest-ordered applications is the specific countermeasure to accepting the order uncritically.",
-    es: "Dos personas de selección supervisan cada puesto, y una de ellas debe ser ajena al equipo contratante. Ambas reciben formación sobre cómo se produce la puntuación y sobre el sesgo de automatización, y la formación se repite cada año. La obligación de revisar las candidaturas peor ordenadas es la contramedida concreta frente a aceptar el orden sin criterio.",
+    es: "Dos personas de selección supervisan cada puesto, y una de ellas debe ser ajena al equipo contratante. Ambas reciben formación sobre cómo se produce la puntuación y sobre el sesgo de automatización, y la formación se repite cada año. La obligación de revisar las candidaturas peor categorizadas es la contramedida concreta frente a aceptar la categorización sin criterio.",
   },
   rev_route: {
     en: "Every applicant is told, in the acknowledgment email and on the application page, that an AI system helps order applications, and is given an address at which to ask for their application to be read by a person outside the process. The route does not require a reason.",
-    es: "A cada persona candidata se le informa, en el correo de acuse de recibo y en la página de la candidatura, de que un sistema de IA ayuda a ordenar las candidaturas, y se le facilita una dirección para pedir que su candidatura la lea una persona ajena al proceso. La vía no exige alegar un motivo.",
+    es: "A cada persona candidata se le informa, en el correo de acuse de recibo y en la página de la candidatura, de que un sistema de IA ayuda a categorizar las candidaturas, y se le facilita una dirección para pedir que su candidatura la lea una persona ajena al proceso. La vía no exige alegar un motivo.",
   },
   gov_owners: {
     en: "Business owner: the head of hiring of the example organization. Technical owner: its data platform team. Accountable for this assessment: the AI officer, who signs it before the next quarterly retraining.",
@@ -272,7 +272,7 @@ export const EXAMPLE_GATE = {
   gateType: "PERIODIC_REVIEW" as const,
   description: {
     en: "Quarterly review of the applicant screening model before each retraining: selection rates by sex and age band, the reviewers' log of departures from the model's order, and any complaint received through the human review route.",
-    es: "Revisión trimestral del modelo de cribado de candidaturas antes de cada reentrenamiento: tasas de selección por sexo y tramo de edad, registro de las veces que las personas revisoras se han apartado del orden del modelo y cualquier reclamación recibida por la vía de revisión humana.",
+    es: "Revisión trimestral del modelo de cribado de candidaturas antes de cada reentrenamiento: tasas de selección por sexo y tramo de edad, registro de las veces que las personas revisoras se han apartado de la categorización del modelo y cualquier reclamación recibida por la vía de revisión humana.",
   },
   reviewCadence: { en: "Quarterly", es: "Trimestral" },
   /** Days from creation to the first review date. */

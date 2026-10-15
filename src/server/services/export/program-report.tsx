@@ -262,7 +262,7 @@ const s = StyleSheet.create({
 
 /** Column widths for the annex tables (flex units). */
 const DERIVATION_COLS = [2.4, 1, 1.2, 1.4, 0.9];
-const RULE_PACK_COLS = [2.4, 1.2, 1.4, 1.2];
+const RULE_PACK_COLS = [2.6, 1.4, 1.6];
 
 const STAGE_TONE: Record<string, SemanticTone> = {
   ADOPT: "success",
@@ -802,7 +802,6 @@ export async function renderProgramReport({
             t("methodology.colPack"),
             t("methodology.colVersion"),
             t("methodology.colReviewed"),
-            t("methodology.colSignOff"),
           ].map((label, i) => (
             <Text
               key={label}
@@ -822,9 +821,6 @@ export async function renderProgramReport({
             </Text>
             <Text style={[s.annexCell, { flex: RULE_PACK_COLS[2] }]}>
               {pack.lawReviewedAsOf}
-            </Text>
-            <Text style={[s.annexCell, { flex: RULE_PACK_COLS[3] }]}>
-              {t(`methodology.signOff.${pack.signOff}`)}
             </Text>
           </View>
         ))}

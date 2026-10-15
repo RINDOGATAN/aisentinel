@@ -37,10 +37,10 @@ export const UNIFIED_ASSESSMENT_VERSION = "2026.09.1";
 export const UNIFIED_ASSESSMENT_LAW_REVIEWED_AS_OF = "2026-09-08";
 export const UNIFIED_ASSESSMENT_REVIEW_MARKER: Localized = signoffMarker("UNIFIED_ASSESSMENT");
 
-/** Always stated alongside the marker: this is a drafting aid, not advice. */
+/** Always stated alongside the marker: this is a drafting aid. */
 export const UNIFIED_ASSESSMENT_NOT_ADVICE: Localized = {
-  en: "This template is a drafting aid, not legal advice.",
-  es: "Esta plantilla es una ayuda a la redacción, no asesoramiento jurídico.",
+  en: "This template is a drafting aid.",
+  es: "Esta plantilla es una ayuda a la redacción.",
 };
 
 /** The scope tag that gates an overlay question. `null` means always asked. */
@@ -150,7 +150,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         ),
         helpText: t(
           "Be specific about the decision: 'ranks applicants for interview' rather than 'supports recruitment'.",
-          "Sé concreto respecto de la decisión: «ordena a los candidatos para la entrevista», no «apoya la selección».",
+          "Sé concreto respecto de la decisión: «categoriza las candidaturas para la entrevista», no «apoya la selección».",
         ),
         type: "textarea",
         required: true,

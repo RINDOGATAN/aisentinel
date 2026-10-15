@@ -44,7 +44,7 @@ export const QUESTION_HELP: Record<string, QuestionHelp> = {
     ),
     example: L(
       "\"CV-Screen v2.1 ranks job applicants against a role's requirements to produce a shortlist for recruiters.\"",
-      "«CV-Screen v2.1 ordena a los candidatos según los requisitos del puesto para generar una preselección para los reclutadores.»",
+      "«CV-Screen v2.1 categoriza las candidaturas según los requisitos del puesto para generar una preselección para los reclutadores.»",
     ),
     reference: L("EU AI Act Art. 27(1)(a)", "RIA, art. 27.1.a"),
   },
@@ -154,7 +154,7 @@ export const QUESTION_HELP: Record<string, QuestionHelp> = {
     ),
     example: L(
       "\"Low risk here: the tool ranks CVs and does not moderate or shape any published content.\"",
-      "«Riesgo bajo aquí: la herramienta ordena currículums y no modera ni condiciona ningún contenido publicado.»",
+      "«Riesgo bajo aquí: la herramienta categoriza candidaturas y no modera ni condiciona ningún contenido publicado.»",
     ),
     reference: L("Art. 11 EU Charter", "Art. 11 de la Carta de la UE"),
   },

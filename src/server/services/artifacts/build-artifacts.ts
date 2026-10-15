@@ -29,7 +29,7 @@ import {
 import { runAgenticStressTest } from "@/config/agentic-stress-test";
 import { LEGAL_SIGNOFF, pendingPacks, type SignoffRecord } from "@/config/legal-signoff";
 import { overlayLabels } from "@/config/overlay-labels";
-import { citationString } from "@/config/framework-display";
+import { citationString, frameworkShortName } from "@/config/framework-display";
 import { tierShapeText, toRiskTier } from "@/config/risk-tier-palette";
 import { annexIIIText } from "@/lib/annex-iii-label";
 import type { SystemScope } from "@/server/services/scope/system-scope";
@@ -77,10 +77,19 @@ function disclaimerFor(scope: SystemScope, locale: ContentLocale): string {
       ? base + " El contenido normativo que cita cuenta con validación jurídica."
       : base + " The regulatory content it cites has been signed off.";
   }
+  if (locale === "es") {
+    // Spanish names the pack as the Spanish screens do ("Reglamento de
+    // Inteligencia Artificial (RIA)", "ADMT de California"), not by its code.
+    const esNames = pending.map((p) => {
+      const name = frameworkShortName(p, "es");
+      return name === p ? p.replace(/_/g, " ") : name;
+    });
+    const list =
+      esNames.length > 1 ? esNames.slice(0, -1).join(", ") + " y " + esNames[esNames.length - 1] : esNames[0];
+    return base + " El contenido normativo que cita está pendiente de validación jurídica en lo relativo a: " + list + ".";
+  }
   const names = pending.map((p) => p.replace(/_/g, " ")).join(", ");
-  return locale === "es"
-    ? base + " El contenido normativo de " + names + " está pendiente de validación jurídica."
-    : base + " The regulatory content it cites for " + names + " is pending legal sign-off.";
+  return base + " The regulatory content it cites for " + names + " is pending legal sign-off.";
 }
 
 export function regimeLabels(tags: readonly string[], locale: ContentLocale = "en"): string[] {

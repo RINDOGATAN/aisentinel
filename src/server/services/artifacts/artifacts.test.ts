@@ -99,6 +99,15 @@ describe("artifact assembly: gaps are first class", () => {
     expect(renderArtifactMarkdown(artifact)).toContain("law reviewed as of");
   });
 
+  it("names the pending pack in Spanish in the Spanish disclaimer", () => {
+    const es = buildAssessmentArtifact(input({ locale: "es" }));
+    expect(es.disclaimer).toContain("pendiente de validación jurídica");
+    expect(es.disclaimer).toContain("Reglamento de Inteligencia Artificial (RIA)");
+    expect(es.disclaimer).not.toMatch(/EU AI ACT|EU_AI_ACT/);
+    // English keeps the code as it has always read.
+    expect(buildAssessmentArtifact(input()).disclaimer).toContain("EU AI ACT");
+  });
+
   it("states the undetermined regimes rather than presenting the set as complete", () => {
     // Washington resolves to UNDETERMINED until its instrument questions are
     // answered: an organisation that has declared the state but nothing else.

@@ -11,6 +11,7 @@
  */
 import path from "node:path";
 import { Font } from "@react-pdf/renderer";
+import { registerPdfHyphenation } from "../pdf-hyphenation";
 
 const fontsDir = path.join(process.cwd(), "src/server/services/export/fonts");
 
@@ -30,6 +31,6 @@ export function registerReportFonts(): void {
     ],
   });
 
-  // Never hyphenate — labels and legal terms must not break mid-word.
-  Font.registerHyphenationCallback((word) => [word]);
+  // Never hyphenate: labels and legal terms must not break mid-word.
+  registerPdfHyphenation();
 }

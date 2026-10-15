@@ -373,10 +373,10 @@ export const PAGE_HELP: PageHelp[] = [
   },
   {
     route: "/governance/skills",
-    title: L("Skills", "Skills"),
+    title: L("Skills", "Habilidades"),
     purpose: L(
       "Where you upload and activate a license for a premium skill package bought from the storefront. A license unlocks a feature; it never installs code, and it is tied to the buyer's email.",
-      "Donde subes y activas la licencia de un paquete de skills premium comprado en la tienda. Una licencia desbloquea una función; nunca instala código y está vinculada al correo del comprador.",
+      "Donde subes y activas la licencia de un paquete de habilidades premium comprado en la tienda. Una licencia desbloquea una función; nunca instala código y está vinculada al correo del comprador.",
     ),
     firstStep: L(
       "Upload your license file to activate it; only an owner or admin can do this.",

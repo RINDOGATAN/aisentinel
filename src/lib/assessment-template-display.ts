@@ -20,7 +20,7 @@ type Text = { name: string; description?: string };
 
 export const SYSTEM_TEMPLATE_ES: Record<string, Text> = {
   "system-fria-template-v2": {
-    name: "Evaluación de impacto sobre los derechos fundamentales",
+    name: "Evaluación de impacto en los derechos fundamentales",
     description:
       "Evaluación conforme al artículo 27 del RIA del impacto de un sistema de alto riesgo sobre los derechos fundamentales, con respuestas estructuradas que un regulador puede leer.",
   },
@@ -45,7 +45,7 @@ export const SYSTEM_TEMPLATE_ES: Record<string, Text> = {
       "Evaluación estructurada de sesgo y equidad que cubre la composición de los datos, las métricas de equidad, las pruebas desagregadas y la mitigación, alineada con el artículo 10 del RIA y el NIST AI RMF.",
   },
   // v1 rows: the successor's name only.
-  "system-fria-template": { name: "Evaluación de impacto sobre los derechos fundamentales" },
+  "system-fria-template": { name: "Evaluación de impacto en los derechos fundamentales" },
   "system-ai-risk-template": { name: "Evaluación de riesgos de IA" },
   "system-custom-template": { name: "Evaluación personalizada" },
   "system-conformity-template": { name: "Evaluación de la conformidad" },

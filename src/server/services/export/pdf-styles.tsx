@@ -5,6 +5,11 @@ import React from "react";
 import { Page, View, Text, StyleSheet } from "@react-pdf/renderer";
 import { TIER_MARKER, TIER_SURFACES, toRiskTier } from "@/config/risk-tier-palette";
 import { pdfLabels, riskLabel, statusLabel, type PdfLocale } from "./pdf-labels";
+import { registerPdfHyphenation } from "./pdf-hyphenation";
+
+// Every report built on these styles breaks lines only between words (see
+// pdf-hyphenation.ts); registering on import covers each of them.
+registerPdfHyphenation();
 
 const PRIMARY = "#f5a623";
 const DARK = "#1a1a1a";

@@ -160,7 +160,7 @@ const friaV2: V2Template = {
   id: "system-fria-template-v2",
   supersedes: "system-fria-template",
   type: "FRIA",
-  name: L("Fundamental Rights Impact Assessment", "Evaluación de impacto sobre los derechos fundamentales"),
+  name: L("Fundamental Rights Impact Assessment", "Evaluación de impacto en los derechos fundamentales"),
   description: L(
     "EU AI Act Article 27 assessment of a high-risk system's impact on fundamental rights, with structured answers a regulator can read.",
     "Evaluación conforme al artículo 27 del RIA del impacto de un sistema de alto riesgo sobre los derechos fundamentales, con respuestas estructuradas que un regulador puede leer.",

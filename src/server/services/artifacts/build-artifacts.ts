@@ -769,7 +769,7 @@ export function buildAssessmentArtifact(input: ArtifactInput): Artifact {
     "assessment",
     locale === "es" ? "Evaluación unificada de impacto de la IA" : "Unified AI impact assessment",
     locale === "es"
-      ? "Un único expediente que responde a la evaluación de impacto sobre los derechos fundamentales del RIA, la evaluación de impacto relativa a la protección de datos del RGPD, la evaluación de riesgos de ADMT de California y los regímenes de Colorado, Texas y Washington."
+      ? "Un único expediente que responde a la evaluación de impacto en los derechos fundamentales del RIA, la evaluación de impacto relativa a la protección de datos del RGPD, la evaluación de riesgos de ADMT de California y los regímenes de Colorado, Texas y Washington."
       : "One record answering the EU AI Act fundamental rights impact assessment, the GDPR data protection impact assessment, the California ADMT risk assessment, and the Colorado, Texas and Washington regimes.",
     docSections,
   );

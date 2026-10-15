@@ -150,7 +150,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         ),
         helpText: t(
           "Be specific about the decision: 'ranks applicants for interview' rather than 'supports recruitment'.",
-          "Sé concreto respecto de la decisión: «ordena a los candidatos para la entrevista», no «apoya la selección».",
+          "Sé concreto respecto de la decisión: «categoriza las candidaturas para la entrevista», no «apoya la selección».",
         ),
         type: "textarea",
         required: true,

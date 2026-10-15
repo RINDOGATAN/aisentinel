@@ -31,6 +31,11 @@ import {
 } from "../../services/pilot/caps";
 import { planTemplateRemoval, removeTemplateItems } from "../../services/template-items/remove";
 import { hostedPilotActive } from "@/config/pilot";
+import {
+  inheritedPilotStart,
+  keepPilotStartOnAccounts,
+  keepPilotStartOnAllMembers,
+} from "../../services/pilot/account-trial";
 import { PILOT_DPA, PILOT_DPA_ACTION, PILOT_DPA_REQUIRED } from "@/config/pilot-dpa";
 
 /**
@@ -216,11 +221,17 @@ export const organizationRouter = createTRPCRouter({
         : null;
       const domain = claimableDomain(input.domain, creator?.email);
 
+      // Hosted pilot: an account that has left an organisation (deleted or
+      // removed) has used its editing window; the new organisation continues
+      // it instead of starting a new one (services/pilot/account-trial.ts).
+      const pilotFirstSignInAt = await inheritedPilotStart(ctx.prisma, ctx.session.user.id);
+
       const organization = await ctx.prisma.organization.create({
         data: {
           name: input.name,
           slug,
           domain,
+          ...(pilotFirstSignInAt ? { pilotFirstSignInAt } : {}),
           members: {
             create: {
               userId: ctx.session.user.id,
@@ -351,6 +362,9 @@ export const organizationRouter = createTRPCRouter({
         });
       }
       await assertNotOnHold(ctx.prisma, ctx.organization.id);
+      // Hosted pilot: every member keeps the organisation's window start, so
+      // a new organisation does not restart it.
+      await keepPilotStartOnAllMembers(ctx.prisma, ctx.organization);
 
       const tombstone = await ctx.prisma.auditLog.create({
         data: {
@@ -609,6 +623,8 @@ export const organizationRouter = createTRPCRouter({
         }
       }
 
+      // Hosted pilot: the account keeps the organisation's window start.
+      await keepPilotStartOnAccounts(ctx.prisma, ctx.organization, [memberToRemove.userId]);
       await ctx.prisma.organizationMember.delete({ where: { id: input.memberId } });
       await ctx.prisma.auditLog.create({
         data: {

@@ -11,7 +11,10 @@
  *   1. one organisation per account;
  *   2. edits for PILOT_EDIT_DAYS from the organisation's first sign-in after
  *      the pilot went live, after which the organisation is read-only but can
- *      still export everything (PILOT_TERMS says so in one line);
+ *      still export everything (PILOT_TERMS says so in one line). The
+ *      window is used once per account: an organisation created after the
+ *      account left another (deleted, or removed from it) continues that
+ *      window (src/server/services/pilot/account-trial.ts);
  *   3. a records ceiling per organisation (PILOT_CEILINGS).
  *
  * Premium modules are sold only for the kit (self-hosted, offline licence

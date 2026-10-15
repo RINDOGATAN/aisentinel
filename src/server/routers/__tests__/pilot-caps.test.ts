@@ -63,6 +63,13 @@ const H = vi.hoisted(() => {
         return { ...m, organization: organizations.find((o) => o.id === m.organizationId) };
       },
       count: async ({ where }: { where: Row }) => members.filter((m) => matches(m, where)).length,
+      findMany: async ({ where }: { where: Row }) => members.filter((m) => matches(m, where)),
+    },
+    // The account-level window start (services/pilot/account-trial.ts); covered in
+    // pilot-trial-per-account.test.ts, so here only enough to let the routers run.
+    user: {
+      findUnique: async () => null,
+      updateMany: async () => ({ count: 0 }),
     },
     aISystem: {
       count: async ({ where }: { where: Row }) => systems.filter((s) => matches(s, where)).length,

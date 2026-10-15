@@ -32,6 +32,13 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
+  /// Hosted pilot only: the earliest editing-window start of any organization
+  /// this account has left (deleted or removed from). A new organization the
+  /// account creates starts from it, so the window is not restarted by
+  /// recreating an organization (src/server/services/pilot/account-trial.ts).
+  /// Null when the account has never left one, and always null on the kit.
+  pilotTrialStartedAt DateTime?
+
   accounts                Account[]
   sessions                Session[]
   organizationMemberships OrganizationMember[]

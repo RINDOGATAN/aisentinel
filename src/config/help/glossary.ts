@@ -88,10 +88,10 @@ export const GLOSSARY: GlossaryTerm[] = [
   },
   {
     id: "fria",
-    label: L("FRIA", "FRIA"),
+    label: L("FRIA", "EIDF"),
     meaning: L(
       "A fundamental rights impact assessment: a written analysis of how a high-risk AI system could affect people's rights, required of certain deployers by EU AI Act Art. 27.",
-      "Una evaluación de impacto relativa a los derechos fundamentales: un análisis escrito de cómo un sistema de IA de alto riesgo puede afectar a los derechos de las personas, exigida a determinados responsables del despliegue por el art. 27 del RIA.",
+      "Una evaluación de impacto en los derechos fundamentales: un análisis escrito de cómo un sistema de IA de alto riesgo puede afectar a los derechos de las personas, exigida a determinados responsables del despliegue por el art. 27 del RIA.",
     ),
   },
   {

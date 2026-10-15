@@ -58,7 +58,7 @@
     "techniqueExpertSystem": "Sistema experto",
     "techniqueStatistical": "Estadístico",
     "techniqueOther": "Otro",
-    "assessmentTypeFria": "FRIA",
+    "assessmentTypeFria": "EIDF",
     "assessmentTypeConformity": "Conformidad",
     "assessmentTypeAiRisk": "Riesgo de IA",
     "assessmentTypeBiasFairness": "Sesgo y equidad",
@@ -201,7 +201,7 @@
     "technicalOwnerLabel": "Responsable técnico",
     "technicalOwnerPlaceholder": "p. ej., Responsable de Ingeniería ML",
     "processesPersonalDataLabel": "Este sistema trata datos personales",
-    "personalDataWarning": "Puede ser necesaria una EIPD o FRIA. Puedes vincular este sistema a los activos de datos de DPO Central tras su creación.",
+    "personalDataWarning": "Puede ser necesaria una EIPD o EIDF. Puedes vincular este sistema a los activos de datos de DPO Central tras su creación.",
     "suggestionsLead": "Esta cuenta puede rellenar {count, plural, one {un campo} other {# campos}} por ti. Cada uno indica de dónde sale el valor y nada se introduce hasta que lo aceptas.",
     "suggestionsApplyAll": "Usar todas las sugerencias",
     "suggestionOffer": "Sugerencia: {value}, {basis}.",
@@ -280,10 +280,10 @@
     "notClassifiedDescription": "Clasifica este sistema según el marco de riesgos del RIA",
     "classifyRisk": "Clasificar riesgo",
     "assessmentsTitle": "Evaluaciones",
-    "assessmentsDescription": "FRIA, conformidad y otras evaluaciones de este sistema",
+    "assessmentsDescription": "EIDF, conformidad y otras evaluaciones de este sistema",
     "newAssessment": "Nueva evaluación",
     "noAssessmentsTitle": "Aún no hay evaluaciones",
-    "noAssessmentsDescription": "Crea una FRIA u otra evaluación para este sistema de IA",
+    "noAssessmentsDescription": "Crea una EIDF u otra evaluación para este sistema de IA",
     "oversightGatesTitle": "Controles de supervisión",
     "oversightGatesDescription": "Puntos de control de supervisión humana para este sistema de IA",
     "newGate": "Nuevo control",
@@ -531,7 +531,7 @@
   },
   "assessments": {
     "title": "Evaluaciones de impacto",
-    "description": "Evaluaciones: FRIA, conformidad y evaluaciones de riesgos de sistemas de IA",
+    "description": "Evaluaciones: EIDF, conformidad y evaluaciones de riesgos de sistemas de IA",
     "newAssessment": "Nueva evaluación",
     "searchPlaceholder": "Buscar evaluaciones...",
     "statsTotal": "Total",
@@ -542,7 +542,7 @@
     "emptyTitle": "No se han encontrado evaluaciones",
     "emptySearchHint": "Prueba a ajustar los términos de búsqueda",
     "emptyHint": "Comienza creando tu primera evaluación",
-    "typeFria": "FRIA",
+    "typeFria": "EIDF",
     "typeConformity": "Conformidad",
     "typeAiRisk": "Riesgo de IA",
     "typeBiasFairness": "Sesgo y equidad",
@@ -1499,15 +1499,15 @@
     "redirecting": "Redirigiendo al pago...",
     "addToOrganization": "Añade {name} a tu organización.",
     "includedSelfHosted": "Tu instalación autoalojada ya incluye {name} y tu organización ya tiene acceso.",
-    "activateOnSkills": "{name} es una funcionalidad premium. Activa en la página de Skills el archivo de licencia que has recibido para habilitarla en tu organización.",
+    "activateOnSkills": "{name} es una funcionalidad premium. Activa en la página de Habilidades el archivo de licencia que has recibido para habilitarla en tu organización.",
     "close": "Cerrar",
-    "goToSkills": "Ir a la página de Skills",
+    "goToSkills": "Ir a la página de Habilidades",
     "enableMany": "{count, plural, one {Activar # funcionalidad} other {Activar # funcionalidades}}",
     "manyIncludedSelfHosted": "Estas funcionalidades están incluidas en tu instalación autoalojada.",
-    "manyActivateOnSkills": "Activa en la página de Skills los archivos de licencia que has recibido para habilitar estas funcionalidades."
+    "manyActivateOnSkills": "Activa en la página de Habilidades los archivos de licencia que has recibido para habilitar estas funcionalidades."
   },
   "skills": {
-    "title": "Skills",
+    "title": "Habilidades",
     "packageName": {
       "CONFORMITY": "Evaluación de la conformidad",
       "BIAS_FAIRNESS": "Evaluación de sesgo y equidad",
@@ -1516,16 +1516,16 @@
       "IMPACT_ASSESSMENT": "Documentos de evaluación de impacto",
       "PROGRAM_REPORT": "Informe y paquete del programa"
     },
-    "subtitle": "Skills premium compradas en TODO.LAW. Sube el archivo de licencia de tu correo de confirmación para activarlas en esta organización: se verifica localmente, sin conexión.",
+    "subtitle": "Habilidades premium compradas en TODO.LAW. Sube el archivo de licencia de tu correo de confirmación para activarlas en esta organización: se verifica localmente, sin conexión.",
     "activateTitle": "Activar con un archivo de licencia",
     "activateHint": "Elige el archivo .license.json que has recibido tras la compra. Solo los propietarios y administradores de la organización pueden activar.",
     "chooseFile": "Elegir archivo de licencia",
-    "activate": "Activar skill",
+    "activate": "Activar habilidad",
     "activating": "Activando...",
     "badFile": "Ese archivo no es una licencia válida. Usa el .license.json de tu correo de compra.",
     "activated": "{name} activada.",
-    "packagesTitle": "Skills disponibles",
-    "packagesNone": "No hay paquetes de skills instalados.",
+    "packagesTitle": "Habilidades disponibles",
+    "packagesNone": "No hay paquetes de habilidades instalados.",
     "getIt": "Actívala",
     "browseMarketplace": "Explorar el marketplace",
     "loading": "Cargando...",
@@ -1670,7 +1670,7 @@
     "cloneDescription": "Crea una copia editable de «{name}» propiedad de tu organización.",
     "cloneDefaultName": "{name} (copia)",
     "nameLabel": "Nombre",
-    "namePlaceholder": "p. ej. FRIA para sistemas de cara al cliente",
+    "namePlaceholder": "p. ej. EIDF para sistemas de cara al cliente",
     "typeLabel": "Tipo de evaluación",
     "descriptionLabel": "Descripción",
     "sectionTitleLabel": "Título de la sección",
@@ -1684,7 +1684,7 @@
     "systemEmptyHint": "Un administrador puede instalar los cuestionarios estándar del RIA con la orden de carga de plantillas (db:seed-templates), o crear una plantilla propia.",
     "customEmpty": "Todavía no hay plantillas propias.",
     "customEmptyHint": "Clona una plantilla del sistema o crea la tuya.",
-    "typeFria": "Evaluación de impacto en los derechos fundamentales (FRIA)",
+    "typeFria": "Evaluación de impacto en los derechos fundamentales (EIDF)",
     "typeConformity": "Evaluación de la conformidad",
     "typeAiRisk": "Evaluación de riesgos de IA",
     "typeBiasFairness": "Evaluación de sesgos y equidad",
@@ -1793,7 +1793,7 @@
         },
         "assessments": {
           "title": "Evaluaciones",
-          "description": "Evaluaciones FRIA, de conformidad, de riesgo de IA y de sesgo y equidad, con plantillas y flujos de aprobación."
+          "description": "Evaluaciones EIDF, de conformidad, de riesgo de IA y de sesgo y equidad, con plantillas y flujos de aprobación."
         },
         "oversight": {
           "title": "Supervisión humana",
@@ -1858,7 +1858,7 @@
           "description": "Elige si los asistentes de IA integrados están desactivados, usan un LLM en la nube o se enrutan a través de una pasarela local. Desactivados por defecto: ninguna llamada de IA sale de tu instancia hasta que un administrador los active."
         },
         "skills": {
-          "title": "Skills y licencias",
+          "title": "Habilidades y licencias",
           "description": "Activa archivos de licencia de TODO.LAW sin conexión. Solo para propietarios y administradores; una licencia nunca instala código, solo desbloquea un derecho de uso."
         },
         "clients": {
@@ -1880,7 +1880,7 @@
         "coreItems": [
           "Registro de IA y seguimiento del ciclo de vida",
           "Clasificación de riesgos según el RIA",
-          "Evaluaciones FRIA y de riesgo de IA",
+          "Evaluaciones EIDF y de riesgo de IA",
           "Supervisión humana y puntos de control de aprobación",
           "Gestión de incidentes de IA",
           "Mapeo de cumplimiento en nueve marcos (RIA, RGPD, NIST AI RMF, ISO/IEC 42001, AIUC-1, California, Colorado, Texas y Washington)",
@@ -2118,14 +2118,14 @@
     },
     "assessments": {
       "metaTitle": "Evaluaciones: documentación de AI SENTINEL",
-      "metaDescription": "Realiza evaluaciones FRIA, de conformidad, de riesgo de IA y de sesgo y equidad con plantillas y flujos de aprobación.",
+      "metaDescription": "Realiza evaluaciones EIDF, de conformidad, de riesgo de IA y de sesgo y equidad con plantillas y flujos de aprobación.",
       "title": "Evaluaciones",
-      "intro": "Realiza evaluaciones de impacto específicas de IA con plantillas configurables. Puntúa riesgos, documenta mitigaciones y gestiona flujos de aprobación para evaluaciones FRIA, de conformidad, de riesgo de IA y de sesgo y equidad.",
+      "intro": "Realiza evaluaciones de impacto específicas de IA con plantillas configurables. Puntúa riesgos, documenta mitigaciones y gestiona flujos de aprobación para evaluaciones EIDF, de conformidad, de riesgo de IA y de sesgo y equidad.",
       "templatesTitle": "Plantillas de evaluación",
       "premiumBadge": "Premium",
       "templates": {
         "fria": {
-          "label": "Evaluación de impacto sobre los derechos fundamentales",
+          "label": "Evaluación de impacto en los derechos fundamentales",
           "description": "Obligatoria según el art. 27 para IA de alto riesgo desplegada por organismos públicos o determinadas entidades privadas."
         },
         "aiRisk": {
@@ -2179,7 +2179,7 @@
         {
           "role": "Responsable de IA",
           "title": "Selecciona la plantilla",
-          "description": "Elige entre las plantillas FRIA, Riesgo de IA, Conformidad, Sesgo y Equidad o Personalizada."
+          "description": "Elige entre las plantillas EIDF, Riesgo de IA, Conformidad, Sesgo y Equidad o Personalizada."
         },
         {
           "role": "Responsable de IA",
@@ -3441,7 +3441,7 @@
       "regimes": [
         {
           "name": "Reglamento de Inteligencia Artificial (RIA)",
-          "detail": "Reglamento (UE) 2024/1689. Clasificación de riesgo, cribado del anexo III, evaluación de impacto sobre los derechos fundamentales del art. 27, transparencia del art. 50, documentación técnica del anexo IV y calendario de obligaciones.",
+          "detail": "Reglamento (UE) 2024/1689. Clasificación de riesgo, cribado del anexo III, evaluación de impacto en los derechos fundamentales del art. 27, transparencia del art. 50, documentación técnica del anexo IV y calendario de obligaciones.",
           "count": "83 requisitos"
         },
         {
@@ -3493,7 +3493,7 @@
       "artifacts": [
         {
           "name": "Evaluación de impacto unificada",
-          "description": "Un único expediente que responde a la evaluación de impacto sobre los derechos fundamentales del RIA, a la evaluación de impacto relativa a la protección de datos del RGPD, a la evaluación de riesgos de California y a los regímenes estatales."
+          "description": "Un único expediente que responde a la evaluación de impacto en los derechos fundamentales del RIA, a la evaluación de impacto relativa a la protección de datos del RGPD, a la evaluación de riesgos de California y a los regímenes estatales."
         },
         {
           "name": "Aviso de IA multijurisdiccional",
@@ -5744,7 +5744,7 @@
       "incomplete": "Registros incompletos",
       "program": "Mapa del programa",
       "vendorCatalog": "Catálogo de proveedores",
-      "skills": "Skills",
+      "skills": "Habilidades",
       "billing": "Facturación",
       "help": "Ayuda y documentación",
       "settings": "Configuración"

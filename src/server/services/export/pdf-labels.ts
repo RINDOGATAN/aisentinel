@@ -87,7 +87,7 @@ const ROLE_ES: Record<string, string> = {
 };
 
 const ASSESSMENT_TYPE_ES: Record<string, string> = {
-  FRIA: "Evaluación de impacto relativa a los derechos fundamentales",
+  FRIA: "EIDF",
   CONFORMITY: "Conformidad",
   AI_RISK: "Riesgo de IA",
   BIAS_FAIRNESS: "Sesgo y equidad",

@@ -314,7 +314,7 @@ export const PROGRAM_ACTION_TEMPLATES: ActionTemplate[] = [
     },
     detail: {
       en: "Answer and approve the impact assessment drafted for each high-risk system. It covers the GDPR data protection impact assessment (Art. 35), which applies now, and prepares the fundamental rights impact assessment the EU AI Act requires of certain deployers from 2 December 2027 (Art. 27).",
-      es: "Responde y aprueba la evaluación de impacto preparada para cada sistema de alto riesgo. Cubre la evaluación de impacto relativa a la protección de datos del RGPD (art. 35), que ya es aplicable, y prepara la evaluación de impacto sobre los derechos fundamentales que el RIA exige a determinados responsables del despliegue a partir del 2 de diciembre de 2027 (art. 27).",
+      es: "Responde y aprueba la evaluación de impacto preparada para cada sistema de alto riesgo. Cubre la evaluación de impacto relativa a la protección de datos del RGPD (art. 35), que ya es aplicable, y prepara la evaluación de impacto en los derechos fundamentales que el RIA exige a determinados responsables del despliegue a partir del 2 de diciembre de 2027 (art. 27).",
     },
     href: "/governance/assessments",
     effort: "L",

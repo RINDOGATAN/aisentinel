@@ -724,7 +724,7 @@ export const LAWFIRM_TOOLS: LawFirmTool[] = [
     categoryId: "DMS_KNOWLEDGE",
     description: {
       en: "Self-hostable, open-source AI-native legal suite: a deterministic harness of skills and knowledge bases for compliance, transactions, AI governance, and research — one-script deployment on the firm's own computer, no matter data leaves the premises.",
-      es: "Suite jurídica de IA nativa, de código abierto y autoalojable: un armazón determinista de skills y bases de conocimiento para cumplimiento, transacciones, gobernanza de IA e investigación; despliegue con un solo script en el ordenador del propio despacho, sin que los datos de los asuntos salgan de sus instalaciones.",
+      es: "Suite jurídica de IA nativa, de código abierto y autoalojable: un armazón determinista de habilidades y bases de conocimiento para cumplimiento, transacciones, gobernanza de IA e investigación; despliegue con un solo script en el ordenador del propio despacho, sin que los datos de los asuntos salgan de sus instalaciones.",
     },
     overrides: {
       riskLevel: "MINIMAL",
@@ -732,7 +732,7 @@ export const LAWFIRM_TOOLS: LawFirmTool[] = [
       // marker and rides the next content sign-off round.
       riskRationale: {
         en: "Minimal risk as deployed: the suite runs on the firm's own hardware with no external data egress, its workflows are predominantly deterministic (auditable skills and versioned knowledge bases rather than free-form generation), no client data is used to train third-party models, and outputs remain subject to the firm's standard professional review. Transparency obligations under EU AI Act Art. 50 are correspondingly limited; the firm remains a private deployer outside Annex III 8(a).\n\nLaw reviewed as of 2026-08-18; professional-responsibility sign-off pending for this entry.",
-        es: "Riesgo mínimo tal como se despliega: la suite funciona en el hardware del propio despacho sin salida de datos al exterior, sus flujos de trabajo son predominantemente deterministas (skills auditables y bases de conocimiento versionadas en lugar de generación libre), no se utilizan datos de clientes para entrenar modelos de terceros y los resultados siguen sujetos a la revisión profesional habitual del despacho. Las obligaciones de transparencia del art. 50 del RIA son, en consecuencia, limitadas; el despacho sigue siendo un responsable del despliegue privado fuera del Anexo III 8 a).\n\nRevisión jurídica a fecha de 2026-08-18; pendiente de validación de responsabilidad profesional para esta entrada.",
+        es: "Riesgo mínimo tal como se despliega: la suite funciona en el hardware del propio despacho sin salida de datos al exterior, sus flujos de trabajo son predominantemente deterministas (habilidades auditables y bases de conocimiento versionadas en lugar de generación libre), no se utilizan datos de clientes para entrenar modelos de terceros y los resultados siguen sujetos a la revisión profesional habitual del despacho. Las obligaciones de transparencia del art. 50 del RIA son, en consecuencia, limitadas; el despacho sigue siendo un responsable del despliegue privado fuera del Anexo III 8 a).\n\nRevisión jurídica a fecha de 2026-08-18; pendiente de validación de responsabilidad profesional para esta entrada.",
       },
     },
   },

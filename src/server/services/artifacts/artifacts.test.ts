@@ -99,6 +99,15 @@ describe("artifact assembly: gaps are first class", () => {
     expect(renderArtifactMarkdown(artifact)).toContain("law reviewed as of");
   });
 
+  it("names the declared jurisdictions in the reader's language, not by code", () => {
+    const scope = buildSystemScope(baseSystem(), baseOrg({ operatingJurisdictions: ["EU", "US_CA"] }));
+    const es = renderArtifactMarkdown(buildNoticeArtifact(input({ scope, locale: "es" })));
+    expect(es).toContain("declaradas por la organización: Unión Europea, California.");
+    const en = renderArtifactMarkdown(buildAssessmentArtifact(input({ scope })));
+    expect(en).toContain("| Declared jurisdictions | European Union, California |");
+    expect(es + en).not.toContain("US_CA");
+  });
+
   it("names the pending pack in Spanish in the Spanish disclaimer", () => {
     const es = buildAssessmentArtifact(input({ locale: "es" }));
     expect(es.disclaimer).toContain("pendiente de validación jurídica");

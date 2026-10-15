@@ -30,6 +30,8 @@ import { runAgenticStressTest } from "@/config/agentic-stress-test";
 import { LEGAL_SIGNOFF, pendingPacks, type SignoffRecord } from "@/config/legal-signoff";
 import { overlayLabels } from "@/config/overlay-labels";
 import { citationString, frameworkShortName } from "@/config/framework-display";
+import enMessages from "@/i18n/messages/en.json";
+import esMessages from "@/i18n/messages/es.json";
 import { tierShapeText, toRiskTier } from "@/config/risk-tier-palette";
 import { annexIIIText } from "@/lib/annex-iii-label";
 import type { SystemScope } from "@/server/services/scope/system-scope";
@@ -90,6 +92,20 @@ function disclaimerFor(scope: SystemScope, locale: ContentLocale): string {
   }
   const names = pending.map((p) => p.replace(/_/g, " ")).join(", ");
   return base + " The regulatory content it cites for " + names + " is pending legal sign-off.";
+}
+
+/**
+ * Declared jurisdictions as the settings screen names them, in the reader's
+ * language ("Unión Europea, California"), from the shared message files. An id
+ * with no label falls back to the id rather than disappearing.
+ */
+const JURISDICTION_LABELS: Record<ContentLocale, Record<string, string>> = {
+  en: enMessages.jurisdictions.option,
+  es: esMessages.jurisdictions.option,
+};
+
+export function jurisdictionNames(ids: readonly string[], locale: ContentLocale): string {
+  return ids.map((id) => JURISDICTION_LABELS[locale]?.[id] ?? id).join(", ");
 }
 
 export function regimeLabels(tags: readonly string[], locale: ContentLocale = "en"): string[] {
@@ -372,7 +388,7 @@ function identificationSection(input: ArtifactInput): ArtifactSection {
         [
           es ? "Jurisdicciones declaradas" : "Declared jurisdictions",
           scope.jurisdictions.length > 0
-            ? scope.jurisdictions.join(", ")
+            ? jurisdictionNames(scope.jurisdictions, locale)
             : es
               ? "Ninguna declarada"
               : "None declared",
@@ -689,8 +705,8 @@ function scopeSection(input: ArtifactInput): ArtifactSection {
   const blocks: Block[] = [
     paragraph(
       locale === "es"
-        ? `Este documento se ha calibrado para las jurisdicciones declaradas por la organización: ${scope.jurisdictions.join(", ") || "ninguna declarada"}.`
-        : `This document was calibrated to the jurisdictions the organization has declared: ${scope.jurisdictions.join(", ") || "none declared"}.`,
+        ? `Este documento se ha calibrado para las jurisdicciones declaradas por la organización: ${jurisdictionNames(scope.jurisdictions, "es") || "ninguna declarada"}.`
+        : `This document was calibrated to the jurisdictions the organization has declared: ${jurisdictionNames(scope.jurisdictions, "en") || "none declared"}.`,
     ),
     table(
       locale === "es" ? ["Régimen", "Situación"] : ["Regime", "Status"],

@@ -131,7 +131,7 @@ export function AISystemRegisterReport({
       {systems.map((sys) => (
         <ContentPage key={sys.id} title={r.title} orgName={orgName} date={date} locale={locale}>
           <AccentSectionHeader title={sys.name} description={sys.purpose || undefined} />
-          <View style={s.row}>
+          <View style={[s.row, { marginBottom: 8 }]}>
             <StatusBadge status={sys.status} locale={locale} />
             <Text style={{ marginHorizontal: 6 }}> </Text>
             <RiskBadge level={sys.riskLevel} locale={locale} />

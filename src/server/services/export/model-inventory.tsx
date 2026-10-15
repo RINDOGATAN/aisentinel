@@ -144,7 +144,9 @@ export function ModelInventoryReport({
                 : `${m.aiSystemName}: ${m.provider || inv.unknownProvider}`
             }
           />
-          <RiskBadge level={m.riskLevel} locale={locale} />
+          <View style={{ marginBottom: 8 }}>
+            <RiskBadge level={m.riskLevel} locale={locale} />
+          </View>
           <MetadataBlock
             items={[
               { label: l.provider, value: m.provider },

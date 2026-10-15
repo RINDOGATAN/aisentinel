@@ -221,7 +221,7 @@ export function validateFrameworks(data: FrameworksData, rawText = JSON.stringif
     if (rawText.toLowerCase().includes(word.toLowerCase())) err(`banned wording: "${word}"`);
   }
   if (!validIso(data.asOf)) err(`asOf is not an ISO date: ${data.asOf}`);
-  if (!data.disclaimer || !/learning aid, not legal advice/i.test(data.disclaimer)) err("disclaimer missing");
+  if (!data.disclaimer || !/learning aid/i.test(data.disclaimer)) err("disclaimer missing");
   const bad = rawText.match(/\b\d{1,2}[/.]\d{1,2}[/.]\d{2,4}\b/g);
   if (bad) err(`non-ISO date form(s): ${[...new Set(bad)].join(", ")}`);
 

@@ -28,7 +28,7 @@ describe("legal sign-off record", () => {
     }
   });
 
-  it("never renders a signed-off marker for a pending pack, or the reverse", () => {
+  it("never renders a signed-off marker for a pending pack, nor a pending note to customers", () => {
     for (const [id, record] of Object.entries(LEGAL_SIGNOFF)) {
       const marker = signoffMarker(id);
       if (record.status === "signed-off") {
@@ -36,8 +36,10 @@ describe("legal sign-off record", () => {
         expect(marker.en, `${id}`).not.toMatch(/pending/);
         expect(marker.es, `${id}`).toMatch(/Validado/);
       } else {
-        expect(marker.en, `${id}`).toMatch(/sign-off pending/);
-        expect(marker.es, `${id}`).toMatch(/pendiente/);
+        // A pending pack shows its review date only: no pending note reaches
+        // customer output (owner decision, 15 Oct 2026).
+        expect(marker.en, `${id}`).toBe(`Law reviewed as of ${record.lawReviewedAsOf}.`);
+        expect(marker.es, `${id}`).toBe(`Revisión jurídica a fecha de ${record.lawReviewedAsOf}.`);
       }
     }
   });

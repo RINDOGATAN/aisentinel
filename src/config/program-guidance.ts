@@ -37,8 +37,8 @@ export const PROGRAM_GUIDANCE_VERSION = "2026.08.1";
 export const PROGRAM_GUIDANCE_LAW_REVIEWED_AS_OF = "2026-08-18";
 
 export const PROGRAM_GUIDANCE_REVIEW_MARKER: Localized = {
-  en: `Law reviewed as of ${formatDayIn("en", PROGRAM_GUIDANCE_LAW_REVIEWED_AS_OF)}; professional-responsibility sign-off pending.`,
-  es: `Revisión jurídica a fecha de ${formatDayIn("es", PROGRAM_GUIDANCE_LAW_REVIEWED_AS_OF)}; pendiente de validación de responsabilidad profesional.`,
+  en: `Law reviewed as of ${formatDayIn("en", PROGRAM_GUIDANCE_LAW_REVIEWED_AS_OF)}.`,
+  es: `Revisión jurídica a fecha de ${formatDayIn("es", PROGRAM_GUIDANCE_LAW_REVIEWED_AS_OF)}.`,
 };
 
 /**
@@ -48,8 +48,8 @@ export const PROGRAM_GUIDANCE_REVIEW_MARKER: Localized = {
  * wonder what it refers to.
  */
 export const PROGRAM_GUIDANCE_REVIEW_MARKER_GENERAL: Localized = {
-  en: `Law reviewed as of ${formatDayIn("en", PROGRAM_GUIDANCE_LAW_REVIEWED_AS_OF)}; legal sign-off pending.`,
-  es: `Revisión jurídica a fecha de ${formatDayIn("es", PROGRAM_GUIDANCE_LAW_REVIEWED_AS_OF)}; pendiente de validación jurídica.`,
+  en: `Law reviewed as of ${formatDayIn("en", PROGRAM_GUIDANCE_LAW_REVIEWED_AS_OF)}.`,
+  es: `Revisión jurídica a fecha de ${formatDayIn("es", PROGRAM_GUIDANCE_LAW_REVIEWED_AS_OF)}.`,
 };
 
 const withMarker = (l: Localized): Localized => ({

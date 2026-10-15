@@ -120,11 +120,11 @@ describe("ADMT vocabularies", () => {
     }
   });
 
-  it("carries a pending California sign-off marker in both locales", () => {
+  it("carries a review-date marker with no pending note in both locales", () => {
     expect(ADMT_RULES_VERSION).toMatch(/^\d{4}\.\d{2}\.\d+$/);
     expect(ADMT_RULES_LAW_REVIEWED_AS_OF).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-    expect(ADMT_RULES_REVIEW_MARKER.en).toContain("sign-off pending");
-    expect(ADMT_RULES_REVIEW_MARKER.es).toContain("pendiente de validación");
+    expect(ADMT_RULES_REVIEW_MARKER.en).not.toMatch(/pending|sign-off/i);
+    expect(ADMT_RULES_REVIEW_MARKER.es).not.toMatch(/pendiente|validación/i);
     // The date is written with the month as a word in each language.
     expect(ADMT_RULES_REVIEW_MARKER.en).toContain(
       formatDayIn("en", ADMT_RULES_LAW_REVIEWED_AS_OF),

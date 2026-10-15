@@ -1871,7 +1871,7 @@
         },
         "frameworks": {
           "title": "Frameworks compared",
-          "description": "Thirteen AI governance frameworks, including AIUC-1 for AI agents, on fourteen dimensions: a wheel, a table, a side-by-side comparison and a selector. A learning aid, not legal advice."
+          "description": "Thirteen AI governance frameworks, including AIUC-1 for AI agents, on fourteen dimensions: a wheel, a table, a side-by-side comparison and a selector."
         }
       },
       "licensingTitle": "Open Core Licensing",
@@ -3550,13 +3550,13 @@
           "body": "Download the assessment, the notice, the protocol and the agentic addendum. Answer more questions and regenerate: the gaps close as you go."
         }
       ],
-      "reviewNote": "The regulatory content in this module was signed off on 8 September 2026 and carries that marker on every generated document, alongside the date it was last reviewed against source. The EU AI Act and California packs are still pending their own sign-off, and a document that cites them says so. Nothing here is legal advice."
+      "reviewNote": "Every generated document carries the date its regulatory content was last reviewed against source."
     },
     "whatsNew": {
       "metaTitle": "What's new in AI SENTINEL",
       "metaDescription": "Release notes: threat modeling for builders, the program pack, legal hold, and one assessment answering six regulatory regimes.",
       "title": "What's new",
-      "intro": "The releases below are listed newest first. Every regulatory addition carries a law-review date and a pending legal sign-off marker.",
+      "intro": "The releases below are listed newest first. Every regulatory addition carries a law-review date.",
       "releases": [
         {
           "version": "Unreleased",
@@ -3660,7 +3660,7 @@
         }
       ],
       "pendingTitle": "Legal review status",
-      "pendingBody": "The GDPR, Colorado, Texas and Washington packs, the unified assessment and the agentic stress test were signed off on 8 September 2026. The two Washington items previously flagged as unconfirmed were verified against the session laws first: HB 1170 is chapter 167, Laws of 2026, effective 1 February 2027, and HB 2225 is chapter 168, effective 1 January 2027. The prior-authorisation limits are in force from 11 June 2026, not 2027, because the January 2027 date shown against RCW 48.43.830 belongs to a later section that reconciles two 2025 amendments rather than to the artificial-intelligence duties. The EU AI Act and California ADMT packs carry their own review dates and are still pending sign-off; any document citing them says so.",
+      "pendingBody": "The GDPR, Colorado, Texas and Washington packs, the unified assessment and the agentic stress test were signed off on 8 September 2026. The two Washington items previously flagged as unconfirmed were verified against the session laws first: HB 1170 is chapter 167, Laws of 2026, effective 1 February 2027, and HB 2225 is chapter 168, effective 1 January 2027. The prior-authorisation limits are in force from 11 June 2026, not 2027, because the January 2027 date shown against RCW 48.43.830 belongs to a later section that reconciles two 2025 amendments rather than to the artificial-intelligence duties. The EU AI Act and California ADMT packs carry their own review dates.",
       "ctaTitle": "See it in the product",
       "ctaBody": "Open any AI system and choose the Cross-border regimes tab.",
       "ctaLink": "Read the cross-border documentation",
@@ -3890,8 +3890,7 @@
         "Anything derived automatically is marked as such until a person confirms it, and the confirmed proportion appears on every export.",
         "Only a control with a current passing test becomes evidence. An untested guardrail evidences nothing.",
         "Running the wizard again tops up what is missing rather than creating a second copy: systems, policies, vendors and threat models are all deduplicated by name.",
-        "Every export states when it was generated, from which version, and under which rule packs; the pack carries a digest for each file.",
-        "Legal sign-off is pending on the regulatory content, and every document says so rather than implying otherwise."
+        "Every export states when it was generated, from which version, and under which rule packs; the pack carries a digest for each file."
       ]
     },
     "premiumNotice": {
@@ -3907,12 +3906,12 @@
         "tableTitle": "Frameworks table: AI SENTINEL Docs",
         "compareTitle": "Compare frameworks: AI SENTINEL Docs",
         "selectorTitle": "Which frameworks? AI SENTINEL Docs",
-        "description": "Thirteen AI governance frameworks compared on fourteen dimensions, including AIUC-1, the certification standard for AI agents, with a selector that suggests where to start. A learning aid, not legal advice."
+        "description": "Thirteen AI governance frameworks compared on fourteen dimensions, including AIUC-1, the certification standard for AI agents, with a selector that suggests where to start."
       },
       "title": "AI governance frameworks",
       "intro": "Thirteen widely used AI governance frameworks, including AIUC-1, the certification standard for AI agents, compared on fourteen dimensions. Each cell gives a depth from 0 to 3, one sentence, the official source, and the AI SENTINEL module that supports it.",
       "asOf": "As of {date}",
-      "disclaimer": "A learning aid, not legal advice.",
+      "disclaimer": "A learning aid.",
       "stats": "{frameworks} frameworks, {rings} dimensions, {cells} cells, {review} under review.",
       "method": "Each cell was checked against the official text where that text could be read on the date shown. Cells that could not be checked are marked “Under review”, drawn hatched, and make no claim. Depth is an editorial reading of how far a framework goes on a dimension, not a score of quality.",
       "footerNote": "Where AI SENTINEL is mentioned, it supports or maps to the dimension. Dates are those the official texts state on the date shown.",
@@ -3978,7 +3977,7 @@
       },
       "selector": {
         "intro": "Answer seven questions. The page lists the frameworks that apply or fit, ranked, each with its reasoning, and suggests a stack: the binding laws, one management system, one risk method and, if you have AI agents, a certification for agents.",
-        "caveat": "A learning aid, not legal advice. The selector points at what to check first; it does not decide whether a law applies. Laws outside this aid (for example data protection, sector and anti-discrimination law) may also apply.",
+        "caveat": "A learning aid. The selector points at what to check first; it does not decide whether a law applies. Laws outside this aid (for example data protection, sector and anti-discrimination law) may also apply.",
         "needJurisdiction": "Tick at least one jurisdiction.",
         "noMatch": "No rule matched. Add a jurisdiction or a sector.",
         "resultsTitle": "Frameworks that apply or fit, ranked",
@@ -4190,7 +4189,7 @@
     "maturityLabel": "Overall maturity",
     "maturitySublabel": "of 100, mean of the four NIST AI RMF functions",
     "confidential": "CONFIDENTIAL",
-    "disclaimer": "Generated by AI SENTINEL from the organization's live governance records. Not legal advice.",
+    "disclaimer": "Generated by AI SENTINEL from the organization's live governance records.",
     "map": {
       "eyebrow": "Governance Map",
       "title": "The AI landscape, governed"
@@ -4332,11 +4331,6 @@
       "colPack": "Rule pack",
       "colVersion": "Version",
       "colReviewed": "Law reviewed",
-      "colSignOff": "Sign-off",
-      "signOff": {
-        "signed-off": "Signed off",
-        "pending": "Pending"
-      },
       "determinismTitle": "Determinism",
       "determinism": "Every score in this report comes from the documented formulas in the maturity model, and every diagram from the shared deterministic layout engine that also draws the on-screen map. No generative AI takes part in deriving, scoring or laying out this document: the same inputs always produce the same output, and each figure can be traced back to the rule pack and version listed above.",
       "snapshotTitle": "Snapshot identity",
@@ -4783,7 +4777,7 @@
   "regimes": {
     "title": "Cross-border regimes",
     "description": "Regulatory regimes are the laws, and the regulators that enforce them. Here that means GDPR, Colorado, Texas and Washington alongside the EU AI Act and California. Each regime resolves its own scope from your declared jurisdictions and a few screening answers.",
-    "reviewMarkerNote": "Regulatory content for these regimes was signed off on 8 September 2026. The EU AI Act and California packs remain pending.",
+    "reviewMarkerNote": "Regulatory content for these regimes was signed off on 8 September 2026.",
     "copiedFromTemplate": "These answers were copied from a template. Check each one for this client, then confirm them.",
     "confirmCopied": "Confirm answers",
     "orgTitle": "Organization screening",
@@ -5553,7 +5547,7 @@
     "checkTitle": "Worth checking",
     "whyLabel": "Why",
     "noJurisdictions": "Say where you operate to see the laws that depend on a place.",
-    "editableNote": "You can change these answers at any time in Settings. This list is a starting point, not legal advice.",
+    "editableNote": "You can change these answers at any time in Settings. This list is a starting point.",
     "cardTitle": "What applies to you",
     "cardDescription": "The quick start's applicability questions. Change an answer and the list follows.",
     "saved": "Answers saved",

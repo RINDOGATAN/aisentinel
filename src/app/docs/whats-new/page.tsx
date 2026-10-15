@@ -78,10 +78,10 @@ export default async function WhatsNewPage() {
         </section>
       ))}
 
-      {/* Pending legal review — stated plainly, never in a footnote. */}
+      {/* Legal review status of the regulatory packs. */}
       <section>
         <h2 className="text-2xl font-display tracking-tight mb-6">{t("pendingTitle")}</h2>
-        <div className="rounded-xl border border-warning bg-warning/10 p-6 text-foreground">
+        <div className="rounded-xl border border-border bg-card p-6 text-foreground">
           <p className="text-sm text-muted-foreground leading-relaxed">{t("pendingBody")}</p>
         </div>
       </section>

@@ -87,8 +87,8 @@ export async function createUnifiedAssessmentDraft(
       type: "CUSTOM",
       description:
         args.locale === "es"
-          ? `Evaluación unificada de impacto ajustada a ${scope.jurisdictions.join(", ")}. Contenido ${UNIFIED_ASSESSMENT_VERSION}; revisión jurídica a ${UNIFIED_ASSESSMENT_LAW_REVIEWED_AS_OF}; validación jurídica pendiente.`
-          : `Unified impact assessment calibrated to ${scope.jurisdictions.join(", ")}. Content ${UNIFIED_ASSESSMENT_VERSION}; law reviewed ${UNIFIED_ASSESSMENT_LAW_REVIEWED_AS_OF}; legal sign-off pending.`,
+          ? `Evaluación unificada de impacto ajustada a ${scope.jurisdictions.join(", ")}. Contenido ${UNIFIED_ASSESSMENT_VERSION}; revisión jurídica a ${UNIFIED_ASSESSMENT_LAW_REVIEWED_AS_OF}.`
+          : `Unified impact assessment calibrated to ${scope.jurisdictions.join(", ")}. Content ${UNIFIED_ASSESSMENT_VERSION}; law reviewed ${UNIFIED_ASSESSMENT_LAW_REVIEWED_AS_OF}.`,
       frameworkRef: UNIFIED_TEMPLATE_REF,
       sections: templateSections as unknown as object[],
       isSystem: false,

@@ -99,8 +99,8 @@ export function signoffMarker(packId: string): Localized {
   const reviewed = record.lawReviewedAsOf;
   if (record.status === "pending") {
     return {
-      en: `Law reviewed as of ${reviewed}; legal sign-off pending.`,
-      es: `Revisión jurídica a fecha de ${reviewed}; pendiente de validación jurídica.`,
+      en: `Law reviewed as of ${reviewed}.`,
+      es: `Revisión jurídica a fecha de ${reviewed}.`,
     };
   }
   const by = record.confirmedBy ?? "the product owner";

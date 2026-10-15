@@ -1871,7 +1871,7 @@
         },
         "frameworks": {
           "title": "Marcos comparados",
-          "description": "Trece marcos de gobernanza de la IA, entre ellos AIUC-1 para agentes de IA, en catorce dimensiones: una rueda, una tabla, una comparación y un selector. Material de aprendizaje, no asesoramiento jurídico."
+          "description": "Trece marcos de gobernanza de la IA, entre ellos AIUC-1 para agentes de IA, en catorce dimensiones: una rueda, una tabla, una comparación y un selector."
         }
       },
       "licensingTitle": "Licencias Open Core",
@@ -3550,13 +3550,13 @@
           "body": "Descarga la evaluación, el aviso, el protocolo y el anexo agéntico. Responde a más preguntas y vuelve a generarlos: las lagunas se van cerrando."
         }
       ],
-      "reviewNote": "El contenido normativo de este módulo se validó el 8 de septiembre de 2026 y lleva esa marca en cada documento generado, junto con la fecha de la última revisión frente a la fuente. Los paquetes del RIA y de California siguen pendientes de su propia validación, y todo documento que los cite lo indica. Nada de esto es asesoramiento jurídico."
+      "reviewNote": "Cada documento generado indica la fecha en que su contenido normativo se ha revisado por última vez frente a la fuente."
     },
     "whatsNew": {
       "metaTitle": "Novedades de AI SENTINEL",
       "metaDescription": "Notas de versión: modelado de amenazas para quien construye IA, el paquete del programa, la retención legal y una evaluación que responde a seis regímenes normativos.",
       "title": "Novedades",
-      "intro": "Las versiones se enumeran de la más reciente a la más antigua. Toda incorporación normativa lleva una fecha de revisión jurídica y una marca de validación pendiente.",
+      "intro": "Las versiones se enumeran de la más reciente a la más antigua. Toda incorporación normativa lleva una fecha de revisión jurídica.",
       "releases": [
         {
           "version": "Sin publicar",
@@ -3660,7 +3660,7 @@
         }
       ],
       "pendingTitle": "Situación de la revisión jurídica",
-      "pendingBody": "Los paquetes del RGPD, Colorado, Texas y Washington, la evaluación unificada y la prueba de esfuerzo agéntica se validaron el 8 de septiembre de 2026. Antes se verificaron con las leyes de sesión los dos aspectos de Washington señalados como no confirmados: la HB 1170 es el capítulo 167 de las Leyes de 2026, en vigor el 1 de febrero de 2027, y la HB 2225 es el capítulo 168, en vigor el 1 de enero de 2027. Los límites a la autorización previa están en vigor desde el 11 de junio de 2026, no desde 2027, porque la fecha de enero de 2027 que figura junto al RCW 48.43.830 corresponde a una sección posterior que concilia dos modificaciones de 2025 y no a los deberes sobre inteligencia artificial. Los paquetes del RIA y de la ADMT de California llevan sus propias fechas de revisión y siguen pendientes de validación; todo documento que los cite lo indica.",
+      "pendingBody": "Los paquetes del RGPD, Colorado, Texas y Washington, la evaluación unificada y la prueba de esfuerzo agéntica se validaron el 8 de septiembre de 2026. Antes se verificaron con las leyes de sesión los dos aspectos de Washington señalados como no confirmados: la HB 1170 es el capítulo 167 de las Leyes de 2026, en vigor el 1 de febrero de 2027, y la HB 2225 es el capítulo 168, en vigor el 1 de enero de 2027. Los límites a la autorización previa están en vigor desde el 11 de junio de 2026, no desde 2027, porque la fecha de enero de 2027 que figura junto al RCW 48.43.830 corresponde a una sección posterior que concilia dos modificaciones de 2025 y no a los deberes sobre inteligencia artificial. Los paquetes del RIA y de la ADMT de California llevan sus propias fechas de revisión.",
       "ctaTitle": "Véalo en el producto",
       "ctaBody": "Abre cualquier sistema de IA y elige la pestaña Regímenes transfronterizos.",
       "ctaLink": "Leer la documentación transfronteriza",
@@ -3890,8 +3890,7 @@
         "Todo lo derivado automáticamente figura como tal hasta que una persona lo confirma, y la proporción confirmada aparece en cada exportación.",
         "Solo un control con una prueba superada y vigente se convierte en evidencia. Una barrera sin probar no acredita nada.",
         "Volver a usar el asistente completa lo que falta en lugar de crear una segunda copia: sistemas, políticas, proveedores y modelos de amenazas se deduplican por nombre.",
-        "Cada exportación indica cuándo se generó, con qué versión y con qué paquetes de reglas; el paquete incluye una huella por fichero.",
-        "La validación jurídica del contenido normativo sigue pendiente, y cada documento lo dice en lugar de dar a entender lo contrario."
+        "Cada exportación indica cuándo se generó, con qué versión y con qué paquetes de reglas; el paquete incluye una huella por fichero."
       ]
     },
     "premiumNotice": {
@@ -3907,12 +3906,12 @@
         "tableTitle": "Tabla de marcos: documentación de AI SENTINEL",
         "compareTitle": "Comparar marcos: documentación de AI SENTINEL",
         "selectorTitle": "¿Qué marcos? Documentación de AI SENTINEL",
-        "description": "Trece marcos de gobernanza de la IA comparados en catorce dimensiones, entre ellos AIUC-1, la norma de certificación para agentes de IA, con un selector que sugiere por dónde empezar. Material de aprendizaje, no asesoramiento jurídico."
+        "description": "Trece marcos de gobernanza de la IA comparados en catorce dimensiones, entre ellos AIUC-1, la norma de certificación para agentes de IA, con un selector que sugiere por dónde empezar."
       },
       "title": "Marcos de gobernanza de la IA",
       "intro": "Trece marcos de gobernanza de la IA muy utilizados, entre ellos AIUC-1, la norma de certificación para agentes de IA, comparados en catorce dimensiones. Cada celda indica una profundidad de 0 a 3, una frase, la fuente oficial y el módulo de AI SENTINEL que le da soporte.",
       "asOf": "Actualizado a {date}",
-      "disclaimer": "Material de aprendizaje, no asesoramiento jurídico.",
+      "disclaimer": "Material de aprendizaje.",
       "stats": "{frameworks} marcos, {rings} dimensiones, {cells} celdas, {review} en revisión.",
       "method": "Cada celda se contrastó con el texto oficial cuando ese texto pudo consultarse en la fecha indicada. Las celdas que no pudieron contrastarse se marcan «En revisión», se dibujan rayadas y no afirman nada. La profundidad es una lectura editorial de hasta dónde llega un marco en una dimensión, no una nota de calidad.",
       "footerNote": "Cuando se menciona AI SENTINEL, da soporte a la dimensión o la mapea. Las fechas son las que indican los textos oficiales en la fecha mostrada.",
@@ -3978,7 +3977,7 @@
       },
       "selector": {
         "intro": "Responde a siete preguntas. La página muestra los marcos que se aplican o encajan, ordenados y cada uno con su razonamiento, y sugiere una combinación: las leyes vinculantes, un sistema de gestión, un método de riesgos y, si tienes agentes de IA, una certificación para agentes.",
-        "caveat": "Material de aprendizaje, no asesoramiento jurídico. El selector indica qué revisar primero; no decide si una ley se aplica. También pueden aplicarse leyes que no recoge esta guía (por ejemplo, de protección de datos, sectoriales o contra la discriminación).",
+        "caveat": "Material de aprendizaje. El selector indica qué revisar primero; no decide si una ley se aplica. También pueden aplicarse leyes que no recoge esta guía (por ejemplo, de protección de datos, sectoriales o contra la discriminación).",
         "needJurisdiction": "Marca al menos una jurisdicción.",
         "noMatch": "Ninguna regla coincide. Añade una jurisdicción o un sector.",
         "resultsTitle": "Marcos que se aplican o encajan, por orden",
@@ -4190,7 +4189,7 @@
     "maturityLabel": "Madurez global",
     "maturitySublabel": "sobre 100, media de las cuatro funciones del NIST AI RMF",
     "confidential": "CONFIDENCIAL",
-    "disclaimer": "Generado por AI SENTINEL a partir de los registros de gobernanza de la organización. No constituye asesoramiento jurídico.",
+    "disclaimer": "Generado por AI SENTINEL a partir de los registros de gobernanza de la organización.",
     "map": {
       "eyebrow": "Mapa de gobernanza",
       "title": "El panorama de IA, gobernado"
@@ -4332,11 +4331,6 @@
       "colPack": "Paquete de reglas",
       "colVersion": "Versión",
       "colReviewed": "Revisión jurídica",
-      "colSignOff": "Validación",
-      "signOff": {
-        "signed-off": "Validado",
-        "pending": "Pendiente"
-      },
       "determinismTitle": "Determinismo",
       "determinism": "Todas las puntuaciones de este informe proceden de las fórmulas documentadas en el modelo de madurez, y todos los diagramas del mismo motor de composición determinista que dibuja el mapa en pantalla. Ninguna IA generativa interviene en la derivación, la puntuación ni la composición de este documento: las mismas entradas producen siempre el mismo resultado, y cada cifra puede rastrearse hasta el paquete de reglas y la versión indicados más arriba.",
       "snapshotTitle": "Identidad de la instantánea",
@@ -4783,7 +4777,7 @@
   "regimes": {
     "title": "Regímenes transfronterizos",
     "description": "Los regímenes regulatorios son las leyes, y los reguladores que las hacen cumplir. Aquí eso significa el RGPD, Colorado, Texas y Washington junto al RIA y California. Cada régimen resuelve su propio ámbito a partir de las jurisdicciones declaradas y de unas pocas respuestas de cribado.",
-    "reviewMarkerNote": "El contenido normativo de estos regímenes se validó el 8 de septiembre de 2026. Los paquetes del RIA y de California siguen pendientes.",
+    "reviewMarkerNote": "El contenido normativo de estos regímenes se validó el 8 de septiembre de 2026.",
     "copiedFromTemplate": "Estas respuestas se han copiado de una plantilla. Revisa cada una para este cliente y después confírmalas.",
     "confirmCopied": "Confirmar respuestas",
     "orgTitle": "Cribado de la organización",
@@ -5553,7 +5547,7 @@
     "checkTitle": "Conviene comprobarlo",
     "whyLabel": "Por qué",
     "noJurisdictions": "Indica dónde operas para ver las leyes que dependen del lugar.",
-    "editableNote": "Puedes cambiar estas respuestas cuando quieras en Configuración. Esta lista es un punto de partida, no asesoramiento jurídico.",
+    "editableNote": "Puedes cambiar estas respuestas cuando quieras en Configuración. Esta lista es un punto de partida.",
     "cardTitle": "Qué se te aplica",
     "cardDescription": "Las preguntas de aplicabilidad del inicio rápido. Cambia una respuesta y la lista se actualiza.",
     "saved": "Respuestas guardadas",

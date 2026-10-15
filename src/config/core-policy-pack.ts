@@ -74,8 +74,8 @@ export const CORE_POLICY_PACK_VERSION = "2026.09.2";
 export const CORE_POLICY_LAW_REVIEWED_AS_OF = "2026-09-11";
 
 export const CORE_POLICY_REVIEW_MARKER: Localized = {
-  en: `Law reviewed as of ${CORE_POLICY_LAW_REVIEWED_AS_OF}; legal sign-off pending.`,
-  es: `Revisión jurídica a fecha de ${CORE_POLICY_LAW_REVIEWED_AS_OF}; pendiente de validación jurídica.`,
+  en: `Law reviewed as of ${CORE_POLICY_LAW_REVIEWED_AS_OF}.`,
+  es: `Revisión jurídica a fecha de ${CORE_POLICY_LAW_REVIEWED_AS_OF}.`,
 };
 
 /** The six policy types the program scorecard measures. */

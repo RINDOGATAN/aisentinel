@@ -17,12 +17,14 @@ import { ADMT_APPLICABILITY_TAGS } from "./admt-rules";
 const all = flattenAdmtRequirements();
 
 describe("ADMT requirement content", () => {
-  it("carries a version and a PENDING California sign-off marker", () => {
+  it("carries a version and a review-date marker with no pending note", () => {
     expect(ADMT_REQUIREMENTS_VERSION).toMatch(/^\d{4}\.\d{2}\.\d+$/);
     expect(ADMT_REQUIREMENTS_LAW_REVIEWED_AS_OF).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-    // The pack is not signed off; the marker must say so in both languages.
-    expect(ADMT_REQUIREMENTS_REVIEW_MARKER.en).toContain("sign-off pending");
-    expect(ADMT_REQUIREMENTS_REVIEW_MARKER.es).toContain("pendiente");
+    // Customer output states the review date only, never a pending note.
+    expect(ADMT_REQUIREMENTS_REVIEW_MARKER.en).toMatch(/^Law reviewed as of .+\.$/);
+    expect(ADMT_REQUIREMENTS_REVIEW_MARKER.en).not.toMatch(/pending|sign-off/i);
+    expect(ADMT_REQUIREMENTS_REVIEW_MARKER.es).toMatch(/^Revisión jurídica a fecha de .+\.$/);
+    expect(ADMT_REQUIREMENTS_REVIEW_MARKER.es).not.toMatch(/pendiente|validación/i);
     expect(ADMT_FRAMEWORK.code).toBe("CA_CCPA_ADMT");
   });
 

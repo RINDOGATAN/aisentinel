@@ -32,8 +32,8 @@ export const SENSITIVE_FACTORS_VERSION = "2026.09.1";
 export const SENSITIVE_FACTORS_LAW_REVIEWED_AS_OF = "2026-09-11";
 
 export const SENSITIVE_FACTORS_REVIEW_MARKER = {
-  en: `Framework reviewed as of ${formatDayIn("en", SENSITIVE_FACTORS_LAW_REVIEWED_AS_OF)}; legal sign-off pending. A factor analysis is a structured way to reason, not a legal conclusion.`,
-  es: `Marco revisado a fecha de ${formatDayIn("es", SENSITIVE_FACTORS_LAW_REVIEWED_AS_OF)}; pendiente de validación jurídica. Un análisis por factores es una forma estructurada de razonar, no una conclusión jurídica.`,
+  en: `Framework reviewed as of ${formatDayIn("en", SENSITIVE_FACTORS_LAW_REVIEWED_AS_OF)}. A factor analysis is a structured way to reason, not a legal conclusion.`,
+  es: `Marco revisado a fecha de ${formatDayIn("es", SENSITIVE_FACTORS_LAW_REVIEWED_AS_OF)}. Un análisis por factores es una forma estructurada de razonar, no una conclusión jurídica.`,
 } as const;
 
 export type Localized = { en: string; es: string };

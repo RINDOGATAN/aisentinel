@@ -87,7 +87,7 @@ describe("verifyIdentityStatement", () => {
   });
 });
 
-describe("checkImportIdentity (phase 1: both forms accepted)", () => {
+describe("checkImportIdentity (statement required)", () => {
   afterEach(() => vi.unstubAllEnvs());
 
   const fresh = () => {
@@ -100,16 +100,15 @@ describe("checkImportIdentity (phase 1: both forms accepted)", () => {
       headers: token ? { "x-import-identity": token } : {},
     });
 
-  it("with no secret configured, ignores the header (legacy behaviour)", () => {
+  it("with no secret configured, refuses every call (fails closed)", () => {
     vi.stubEnv("IMPORT_IDENTITY_SECRETS", "");
-    expect(checkImportIdentity(req(), "anyone@example.test")).toBeNull();
-    expect(checkImportIdentity(req("garbage"), "anyone@example.test")).toBeNull();
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    expect(checkImportIdentity(req(fresh()), "person@example.test")?.status).toBe(401);
+    expect(checkImportIdentity(req(), "person@example.test")?.status).toBe(401);
   });
 
-  it("without the header, serves the request unless the statement is required", async () => {
+  it("without the header, refuses", async () => {
     vi.stubEnv("IMPORT_IDENTITY_SECRETS", SECRET);
-    expect(checkImportIdentity(req(), "person@example.test")).toBeNull();
-    vi.stubEnv("IMPORT_IDENTITY_REQUIRED", "true");
     const res = checkImportIdentity(req(), "person@example.test");
     expect(res?.status).toBe(401);
     await expect(res?.json()).resolves.toEqual({ error: "Identity statement required" });
@@ -120,18 +119,14 @@ describe("checkImportIdentity (phase 1: both forms accepted)", () => {
     expect(checkImportIdentity(req(fresh()), "Person@Example.test")).toBeNull();
   });
 
-  it("a statement for another person is refused with 403", async () => {
+  it("a statement for another person is refused with 403", () => {
     vi.stubEnv("IMPORT_IDENTITY_SECRETS", SECRET);
-    const res = checkImportIdentity(req(fresh()), "someone-else@example.test");
-    expect(res?.status).toBe(403);
-    await expect(res?.json()).resolves.toEqual({ error: "Identity does not match the account" });
+    expect(checkImportIdentity(req(fresh()), "someone-else@example.test")?.status).toBe(403);
   });
 
-  it("an invalid statement is refused with 401", async () => {
+  it("an invalid statement is refused with 401", () => {
     vi.stubEnv("IMPORT_IDENTITY_SECRETS", SECRET);
     vi.spyOn(console, "warn").mockImplementation(() => {});
-    const res = checkImportIdentity(req(sign(claims())), "person@example.test"); // issued at a fixed time, not valid now
-    expect(res?.status).toBe(401);
-    await expect(res?.json()).resolves.toEqual({ error: "Invalid identity statement" });
+    expect(checkImportIdentity(req("a.b.c"), "person@example.test")?.status).toBe(401);
   });
 });

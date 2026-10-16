@@ -17,10 +17,9 @@
  * signed with a secret listed in IMPORT_IDENTITY_SECRETS (comma-separated, so
  * a secret can be rotated). This module verifies it with node:crypto only.
  *
- * Rollout (compatible): while no secret is configured the header is ignored;
- * with a secret configured a header that is present must verify and must name
- * the account the body names; a request without the header is still served,
- * unless IMPORT_IDENTITY_REQUIRED=true.
+ * Every call must carry a statement that verifies and names the account the
+ * body names. Without a configured secret, every call is refused (fails
+ * closed), the same as an unset import key.
  */
 
 import { createHmac, timingSafeEqual } from "node:crypto";
@@ -100,8 +99,6 @@ function configuredSecrets(): string[] {
     .filter(Boolean);
 }
 
-let notedUnconfigured = false;
-
 function refuse(status: 401 | 403, error: string): Response {
   return NextResponse.json({ error }, { status });
 }
@@ -116,20 +113,10 @@ export function checkImportIdentity(request: Request, accountEmail: string): Res
   const token = request.headers.get(IMPORT_IDENTITY_HEADER);
 
   if (secrets.length === 0) {
-    if (!notedUnconfigured) {
-      notedUnconfigured = true;
-      logger.info("Import identity verification is not configured (IMPORT_IDENTITY_SECRETS unset)");
-    }
-    return null;
+    logger.error("Import identity verification is not configured (IMPORT_IDENTITY_SECRETS unset); refusing");
+    return refuse(401, "Identity statement required");
   }
-
-  if (!token) {
-    // Legacy path, kept until every caller sends the statement.
-    if (process.env.IMPORT_IDENTITY_REQUIRED === "true") {
-      return refuse(401, "Identity statement required");
-    }
-    return null;
-  }
+  if (!token) return refuse(401, "Identity statement required");
 
   const result = verifyIdentityStatement(token, secrets, {
     audience: IMPORT_IDENTITY_AUDIENCE,

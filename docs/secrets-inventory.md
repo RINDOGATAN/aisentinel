@@ -56,8 +56,7 @@ reads "unknown" until the operator starts a rotation log; that gap is itself an 
 | `VENDORWATCH_CATALOG_API_KEY` | S | Hosted; Kit (optional); operator shell for `db:sync-vendor-catalog` | Outbound pull of the vendor.watch catalogue | Issuer (vendor.watch operator), then updated here | unknown |
 | `VENDORWATCH_CATALOG_API_URL` | C | Hosted; Kit (optional) | Catalogue endpoint | n/a | n/a |
 | `VW_IMPORT_API_KEYS` | S | Hosted; Kit (optional) | Inbound pushes to `/api/import/*` from vendor.watch and DPO Central: create AI systems and vendors in an organisation | Hosted operator and install operator, in step with the sending app | unknown |
-| `IMPORT_IDENTITY_SECRETS` | S | Hosted; Kit (optional) | Verifies the signed statement of the signed-in person (`x-import-identity`) on `/api/import/*` (`src/lib/import-identity.ts`); comma-separated for rotation; unset = statement ignored | Hosted operator and install operator, in step with each sending app | unknown |
-| `IMPORT_IDENTITY_REQUIRED` | C | Hosted; Kit (optional) | `true` refuses `/api/import/*` calls without the statement | n/a | n/a |
+| `IMPORT_IDENTITY_SECRETS` | S | Hosted; Kit (optional) | Verifies the signed statement of the signed-in person (`x-import-identity`) on `/api/import/*` (`src/lib/import-identity.ts`); comma-separated for rotation; unset = every import call refused | Hosted operator and install operator, in step with each sending app | unknown |
 | `SKILL_SIGNING_PUBLIC_KEY` | C | Hosted; Kit | Public key that verifies offline skill licences. Public, but replacing it lets a forged licence verify, so treat changes as sensitive | Storefront key owner; only on a storefront key change | n/a |
 | `AISENTINEL_INSTANCE_ID` | C | Kit (optional) | Stable instance identity for licence activation limits | n/a | n/a |
 | `LLM_GATEWAY_URL`, `LLM_MODEL_ALIAS` (and the `_LOCAL`, `_EU`, `_US` variants) | C | Hosted; Kit (optional) | Which AI engine drafting calls go to | n/a | n/a |

@@ -52,6 +52,6 @@ npm run build           # production build
 
 ## License
 
-AGPL-3.0-or-later. Copyright (C) 2026 RINDOGATAN Inc. See [LICENSE](LICENSE).
+AGPL-3.0-or-later. Copyright (C) 2026 RINDOGATAN LLC See [LICENSE](LICENSE).
 
 Under AGPL section 13, anyone who runs a modified version of this software as a network service must offer the corresponding source to its users. The app renders a "Source code (AGPL-3.0)" link in its footer for this purpose; white-label deployments can point it at their own fork via `NEXT_PUBLIC_SOURCE_URL`. Third-party acknowledgments are in [NOTICES.md](NOTICES.md).

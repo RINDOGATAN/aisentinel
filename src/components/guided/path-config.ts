@@ -80,12 +80,17 @@ export interface PathCounts {
   systemsWithOwner: number;
   systemsProcessingPersonalData: number;
   shadowReports: number;
-  /** Shadow AI reports still in DISCOVERED: nobody has looked at them. */
+  /**
+   * AI tool reports still to review: reported or under review, with no
+   * decision yet (src/lib/ai-tool-triage.ts, STILL_TO_REVIEW).
+   */
   shadowReportsUntriaged: number;
   vendors: number;
   /** Vendors with at least one completed due-diligence assessment. */
   vendorsAssessed: number;
   vendorAssessments: number;
+  /** Systems the organisation provides (role PROVIDER): it builds AI. */
+  providerSystems: number;
 
   classified: number;
   /** Risk classifications drafted (quick start, template, import) that nobody has confirmed. */
@@ -173,6 +178,7 @@ export const EMPTY_PATH_COUNTS: PathCounts = {
   vendors: 0,
   vendorsAssessed: 0,
   vendorAssessments: 0,
+  providerSystems: 0,
   classified: 0,
   classificationsUnconfirmed: 0,
   highRisk: 0,
@@ -322,7 +328,7 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
           id: "shadowAi",
           href: "/governance/shadow-ai",
           icon: Search,
-          rule: "Done when at least one shadow AI report exists and none is left untriaged. Started when reports exist and some are untriaged.",
+          rule: "Done when at least one AI tool is recorded and none is still to review (reported or under review, with no decision to approve or prohibit it). Started while some are still to review.",
           status: (c) =>
             c.shadowReports > 0 && c.shadowReportsUntriaged === 0
               ? "done"
@@ -424,15 +430,6 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
           ],
         },
         {
-          id: "threatModel",
-          href: "/governance/threat-model",
-          icon: Crosshair,
-          rule: "Done when at least one threat model is past draft. Started when a draft exists.",
-          status: (c) =>
-            c.threatModelsActive > 0 ? "done" : c.threatModels > 0 ? "started" : "todo",
-          checks: (c) => [check("threatModelActive", c.threatModelsActive > 0, "/governance/threat-model")],
-        },
-        {
           id: "vendorDueDiligence",
           // The vendor list opened on its due-diligence view: each vendor's
           // review state, each card opening the vendor's assessments tab.
@@ -451,6 +448,18 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
               total: c.vendors,
             }),
           ],
+        },
+        // Shown only to organisations that build AI, so it sits after the
+        // steps every organisation has: hiding it moves no other number.
+        {
+          id: "threatModel",
+          href: "/governance/threat-model",
+          icon: Crosshair,
+          rule: "Shown to organisations that build AI (a system with the provider role) and to any organisation that already has a threat model. Done when at least one threat model is past draft. Started when a draft exists.",
+          shownWhen: (c) => c.providerSystems > 0 || c.threatModels > 0,
+          status: (c) =>
+            c.threatModelsActive > 0 ? "done" : c.threatModels > 0 ? "started" : "todo",
+          checks: (c) => [check("threatModelActive", c.threatModelsActive > 0, "/governance/threat-model")],
         },
         // Last in the stage on purpose: it is hidden for most organisations,
         // and the numbers of the steps before it must not move.

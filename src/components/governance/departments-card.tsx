@@ -37,6 +37,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { trpc } from "@/lib/trpc";
+import { useUnsavedChangesWarning } from "@/lib/use-unsaved-changes";
 
 const NONE = "__none__";
 
@@ -67,6 +68,8 @@ export function DepartmentsCard({ organizationId }: { organizationId: string }) 
   const [ownerId, setOwnerId] = useState<string>(NONE);
   const [editing, setEditing] = useState<Department | null>(null);
   const [deleting, setDeleting] = useState<Department | null>(null);
+  // A department name typed but not added yet is lost on leaving.
+  useUnsavedChangesWarning(name.trim() !== "");
 
   const create = trpc.businessUnit.create.useMutation({
     onSuccess: () => {
@@ -328,6 +331,7 @@ function EditDepartmentDialog({
   const [name, setName] = useState(department.name);
   const [parentId, setParentId] = useState<string>(department.parentId ?? NONE);
   const [ownerId, setOwnerId] = useState<string>(department.ownerId ?? NONE);
+  useUnsavedChangesWarning(name.trim() !== department.name);
 
   const update = trpc.businessUnit.update.useMutation({
     onSuccess: () => {

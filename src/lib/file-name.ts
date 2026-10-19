@@ -16,6 +16,7 @@ export const EXPORT_FILE_PREFIX = {
   program: { en: "AI-Governance-Program", es: "Programa-de-gobernanza-de-IA" },
   aiuc1: { en: "AIUC-1-evidence", es: "Evidencias-AIUC-1" },
   threatModel: { en: "Threat-model", es: "Modelo-de-amenazas" },
+  policy: { en: "Policy", es: "Politica" },
   unified: {
     assessment: { en: "unified-impact-assessment", es: "evaluacion-unificada-de-impacto" },
     notice: { en: "multi-jurisdictional-ai-notice", es: "aviso-multijurisdiccional-de-ia" },

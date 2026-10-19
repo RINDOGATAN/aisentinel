@@ -60,15 +60,17 @@ export function PolicyTypeSelect({
     <div className="space-y-1.5">
       <Select value={value} onValueChange={(v) => onChange(v as PolicyTypeValue)}>
         <SelectTrigger id={id} className="w-full max-w-full">
-          <SelectValue placeholder={t("typePlaceholder")}>{value ? typeLabel(value) : undefined}</SelectValue>
+          <SelectValue placeholder={t("typePlaceholder")} />
         </SelectTrigger>
         <SelectContent className="max-w-[min(36rem,calc(100vw-2rem))]">
           {POLICY_TYPES.map((type) => (
-            <SelectItem key={type} value={type} className="items-start py-2">
-              <span className="flex flex-col items-start gap-0.5 whitespace-normal">
-                <span className="font-medium">{typeLabel(type)}</span>
-                <span className="text-xs text-muted-foreground">{t(`typeDefinition.${type}`)}</span>
-              </span>
+            <SelectItem
+              key={type}
+              value={type}
+              description={t(`typeDefinition.${type}`)}
+              className="items-start py-2"
+            >
+              {typeLabel(type)}
             </SelectItem>
           ))}
         </SelectContent>

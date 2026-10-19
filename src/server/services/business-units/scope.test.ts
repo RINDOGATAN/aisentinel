@@ -50,3 +50,52 @@ describe("business unit scope", () => {
     });
   });
 });
+
+describe("roles that always see the whole organization", () => {
+  it("exempts owners and admins only", async () => {
+    const { isScopeExemptRole } = await import("./scope");
+    expect(["OWNER", "ADMIN", "AI_OFFICER", "MEMBER", "VIEWER"].filter(isScopeExemptRole)).toEqual([
+      "OWNER",
+      "ADMIN",
+    ]);
+  });
+
+  it("ignores a stored limit for an owner or admin without reading it", async () => {
+    const { loadBusinessUnitScope } = await import("./scope");
+    let reads = 0;
+    const prisma = {
+      businessUnitMember: {
+        findMany: async () => {
+          reads++;
+          return [{ businessUnitId: "hr" }];
+        },
+      },
+    } as never;
+    expect(await loadBusinessUnitScope(prisma, { id: "m1", role: "OWNER" })).toEqual({ all: true });
+    expect(await loadBusinessUnitScope(prisma, { id: "m2", role: "ADMIN" })).toEqual({ all: true });
+    expect(reads).toBe(0);
+    expect(await loadBusinessUnitScope(prisma, { id: "m3", role: "MEMBER" })).toEqual({
+      all: false,
+      businessUnitIds: ["hr"],
+    });
+  });
+});
+
+describe("the department of a new system", () => {
+  it("keeps what a whole-organization member asked for, or none", async () => {
+    const { businessUnitForNewSystem } = await import("./scope");
+    expect(businessUnitForNewSystem({ all: true }, "hr")).toBe("hr");
+    expect(businessUnitForNewSystem({ all: true }, null)).toBeNull();
+    expect(businessUnitForNewSystem({ all: true }, undefined)).toBeNull();
+  });
+
+  it("places a limited member's system inside their scope", async () => {
+    const { businessUnitForNewSystem, defaultBusinessUnitId } = await import("./scope");
+    const scope = { all: false as const, businessUnitIds: ["it", "hr"] };
+    expect(businessUnitForNewSystem(scope, "hr")).toBe("hr");
+    expect(businessUnitForNewSystem(scope, null)).toBe("it");
+    expect(businessUnitForNewSystem(scope, "legal")).toBe("it");
+    expect(defaultBusinessUnitId(scope)).toBe("it");
+    expect(defaultBusinessUnitId({ all: true })).toBeNull();
+  });
+});

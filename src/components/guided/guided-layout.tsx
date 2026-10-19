@@ -56,6 +56,7 @@ import { currentStepId, nextStep, overallProgress } from "./path";
 import { PathMenu } from "./path-menu";
 import { GlobalSearch } from "./global-search";
 import { DepartmentSwitch } from "./department-switch";
+import { ScopeNotice } from "@/components/governance/scope-notice";
 import { StepBand } from "./step-band";
 import { SettingsStepBand } from "./settings-step-band";
 import { GetHelpLink } from "./get-help-link";
@@ -282,6 +283,7 @@ export function GuidedLayout({
                 <SettingsStepBand />
               </div>
             )}
+            <ScopeNotice />
             {children}
           </main>
           {footer}

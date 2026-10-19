@@ -281,7 +281,8 @@
       "preview": "La redacción",
       "use": "Pasar al campo",
       "replaces": "Sustituye lo que contiene el campo. Después puedes editarlo."
-    }
+    },
+    "ownerPickHint": "Elige a una persona del equipo o escribe el nombre de alguien de fuera."
   },
   "aiRegistryDetail": {
     "notFound": "Sistema de IA no encontrado",
@@ -5252,14 +5253,44 @@
     "title": "Equipo",
     "description": "Quién trabaja en la gobernanza de la IA de esta organización y con qué rol. Los propietarios, administradores y responsables de IA pueden aprobar; los miembros documentan; los lectores consultan.",
     "emailPlaceholder": "colega@ejemplo.com",
-    "inviteLabel": "Añade a un colega por correo",
-    "add": "Añadir",
-    "addHint": "La persona debe haber iniciado sesión en AI SENTINEL una vez con este correo. Solo los propietarios pueden conceder el rol de propietario o cambiar roles.",
+    "inviteLabel": "Invita a un colega por correo",
+    "add": "Enviar invitación",
+    "addHint": "Recibe un correo con un enlace para unirse. El enlace sirve una sola vez, durante 7 días y solo para esta dirección. Puedes dar un rol hasta el tuyo.",
     "added": "Miembro añadido.",
     "updated": "Rol actualizado.",
     "removed": "Miembro eliminado.",
     "remove": "Eliminar miembro",
-    "notFound": "Todavía no hay ninguna cuenta con ese correo. Pide a tu colega que inicie sesión una vez y después añádelo aquí."
+    "notFound": "Todavía no hay ninguna cuenta con ese correo. Pide a tu colega que inicie sesión una vez y después añádelo aquí.",
+    "roleLabel": "Rol",
+    "rolesLink": "Qué puede hacer cada rol",
+    "roleHelp": {
+      "OWNER": "Todo, incluido cambiar roles y eliminar la organización.",
+      "ADMIN": "Aprobar, gestionar el equipo y eliminar registros.",
+      "AI_OFFICER": "Crear, editar y aprobar (evaluaciones, políticas y decisiones de supervisión).",
+      "MEMBER": "Crear y editar registros.",
+      "VIEWER": "Solo lectura."
+    },
+    "departmentsLabel": "Departamentos",
+    "invited": "Invitación enviada a {email}.",
+    "notSent": "Desde aquí no se ha podido enviar el correo. Copia el enlace y envíaselo tú a {email}. Solo sirve para esa dirección.",
+    "copy": "Copiar enlace",
+    "copied": "Enlace copiado.",
+    "pendingTitle": "Invitaciones aún no aceptadas",
+    "pendingChip": "Invitación enviada",
+    "expiredChip": "Caducada",
+    "expires": "Caduca el {date}",
+    "resend": "Volver a enviar",
+    "resent": "Invitación enviada de nuevo.",
+    "withdraw": "Retirar la invitación",
+    "withdrawn": "Invitación retirada.",
+    "alreadyMember": "Esta persona ya es miembro de la organización.",
+    "inviteEmail": {
+      "subject": "{inviter} te ha invitado a {organization} en {app}",
+      "lead": "{inviter} te ha invitado a unirte a {organization} en {app} como {role}. Inicia sesión con esta dirección de correo para aceptar.",
+      "button": "Aceptar la invitación",
+      "expiry": "El enlace sirve una sola vez y caduca el {date}.",
+      "ignore": "Si no esperabas esta invitación, puedes ignorar este correo."
+    }
   },
   "deleteOrganization": {
     "title": "Eliminar esta organización",
@@ -6193,6 +6224,14 @@
       "incidentPolicyApproved": "aprueba una política de respuesta a incidentes",
       "nothingToConfirm": "confirma cada elemento en borrador",
       "boardReport": "crea un informe al consejo"
+    },
+    "panel": {
+      "failed": "No se ha podido cargar este panel.",
+      "retry": "Reintentar",
+      "noFigure": "Aún no hay pasos que contar.",
+      "noAreas": "Aún no hay nada que mostrar aquí.",
+      "noDocuments": "Aún no se puede preparar ningún documento.",
+      "limited": "Las cifras del programa abarcan toda la organización, por eso solo se muestran a quien ve toda la organización. Lo que requiere acción en tus departamentos aparece en Tareas pendientes."
     }
   },
   "agentTesting": {
@@ -6467,6 +6506,10 @@
       "subtitle": "Sistemas a los que les falta un campo obligatorio del registro, con lo que falta.",
       "empty": "El registro de todos los sistemas está completo.",
       "missingCount": "{count, plural, one {falta # campo} other {faltan # campos}}"
+    },
+    "scopeNotice": {
+      "line": "Solo ves: {departments}",
+      "hint": "No ves los sistemas de IA de otros departamentos, y lo que registras se guarda en tu departamento. Un propietario o administrador puede cambiarlo en Configuración."
     }
   },
   "registration": {
@@ -6480,7 +6523,7 @@
   },
   "departments": {
     "title": "Departamentos",
-    "description": "Agrupa los sistemas por departamento, asigna un responsable a cada uno y limita a un miembro a uno o varios departamentos.",
+    "description": "Agrupa los sistemas por departamento y asigna a cada uno un responsable y, si quieres, un responsable suplente. Usa un departamento superior para mostrar la jerarquía (un nivel).",
     "empty": "Aún no hay departamentos.",
     "counts": "{systems, plural, one {# sistema} other {# sistemas}} · {members, plural, one {# miembro} other {# miembros}}",
     "ownedBy": "Responsable: {name}",
@@ -6503,12 +6546,23 @@
     "name": "Nombre",
     "save": "Guardar",
     "access": {
-      "title": "Acceso de los miembros",
-      "description": "Limita a un miembro a uno o varios departamentos. Si no seleccionas ninguno, ve toda la organización.",
+      "title": "Asignar departamentos",
+      "description": "Elige los departamentos en los que trabaja cada persona. Así solo ve los sistemas de IA de esos departamentos, y lo que registra se guarda en ellos. Si no eliges ninguno, ve toda la organización. Los propietarios y administradores siempre ven toda la organización, y nadie cambia su propio acceso.",
       "wholeOrg": "Toda la organización",
       "limited": "Limitado a {count, plural, one {# departamento} other {# departamentos}}",
-      "saved": "Acceso actualizado"
-    }
+      "saved": "Acceso actualizado",
+      "choose": "Departamentos de {name}",
+      "selected": "{count, plural, one {# departamento} other {# departamentos}}",
+      "selfLocked": "No puedes cambiar tu propio acceso.",
+      "roleLocked": "Los propietarios y administradores siempre ven toda la organización.",
+      "done": "Hecho"
+    },
+    "deputy": "Responsable suplente",
+    "noDeputy": "Sin responsable suplente",
+    "deputyBy": "Suplente: {name}",
+    "invitedName": "{name} (aún no se ha unido)",
+    "sameOwner": "El responsable suplente debe ser una persona distinta del responsable.",
+    "pendingShort": "aún no se ha unido"
   },
   "documentRegister": {
     "title": "Documentos que puedes generar hoy",
@@ -6820,6 +6874,26 @@
       "AI_INCIDENT_RESPONSE": "Respuesta a incidentes",
       "AI_TRANSPARENCY": "Transparencia",
       "CUSTOM": "Personalizada"
+    }
+  },
+  "invite": {
+    "title": "Invitación",
+    "lead": "Te han invitado a unirte a {organization} como {role}.",
+    "accept": "Aceptar y abrir",
+    "accepted": "Te has unido a {organization}.",
+    "loading": "Comprobando la invitación",
+    "otherAccount": "Esta invitación se ha enviado a otra dirección de correo. Inicia sesión con esa dirección para aceptarla.",
+    "switchAccount": "Iniciar sesión con otra cuenta",
+    "expired": "Esta invitación ha caducado. Pide a quien te ha invitado que te la vuelva a enviar.",
+    "used": "Esta invitación ya se ha usado o se ha retirado.",
+    "invalid": "Este enlace de invitación no es válido.",
+    "toDashboard": "Ir al panel",
+    "errors": {
+      "invalid": "Este enlace de invitación no es válido.",
+      "used": "Esta invitación ya se ha usado o se ha retirado.",
+      "expired": "Esta invitación ha caducado. Pide una nueva.",
+      "otherAddress": "Esta invitación se ha enviado a otra dirección de correo.",
+      "inviterGone": "Esta invitación ya no es válida. Pide una nueva."
     }
   }
 }

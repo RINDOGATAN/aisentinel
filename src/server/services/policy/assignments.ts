@@ -15,6 +15,10 @@
 
 import { TRPCError } from "@trpc/server";
 import type { PrismaClient } from "@prisma/client";
+import {
+  businessUnitForNewSystem,
+  type BusinessUnitScope,
+} from "@/server/services/business-units/scope";
 
 type Db = Pick<PrismaClient, "organizationMember" | "businessUnit">;
 
@@ -28,13 +32,26 @@ export interface PolicyAssignmentInput {
  * Check the member and the department belong to the organization, and return
  * the values to store. A chosen member's current name replaces a blank
  * ownerName. Fields left undefined are left out (no change).
+ *
+ * With the writer's department scope: a member limited to departments can
+ * only assign a policy to one of their own departments, and a policy they
+ * create without one is placed in their first department (the same rule as
+ * for the AI systems they create).
  */
 export async function validatePolicyAssignment(
   db: Db,
   organizationId: string,
   input: PolicyAssignmentInput,
+  options: { scope?: BusinessUnitScope; creating?: boolean } = {},
 ): Promise<{ ownerMemberId?: string | null; ownerName?: string | null; departmentId?: string | null }> {
   const out: { ownerMemberId?: string | null; ownerName?: string | null; departmentId?: string | null } = {};
+  const scope = options.scope ?? { all: true };
+  if (!scope.all && input.departmentId && !scope.businessUnitIds.includes(input.departmentId)) {
+    throw new TRPCError({ code: "FORBIDDEN", message: "You cannot assign a policy to a department outside yours." });
+  }
+  if (options.creating && !scope.all && !input.departmentId) {
+    input = { ...input, departmentId: businessUnitForNewSystem(scope, null) };
+  }
 
   if (input.ownerMemberId !== undefined) {
     if (input.ownerMemberId) {
@@ -67,6 +84,11 @@ export async function validatePolicyAssignment(
   }
 
   return out;
+}
+
+/** The department a copied or template policy keeps: inside a limited writer's own departments. */
+export function departmentForNewPolicy(scope: BusinessUnitScope, wanted: string | null | undefined): string | null {
+  return businessUnitForNewSystem(scope, wanted);
 }
 
 export interface ResolvedAssignment {

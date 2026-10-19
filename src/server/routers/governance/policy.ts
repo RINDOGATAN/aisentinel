@@ -16,7 +16,12 @@ import {
   isSubstantiveEdit,
   reviewDateAfter,
 } from "@/lib/policy-meta";
-import { resolvePolicyAssignments, validatePolicyAssignment } from "../../services/policy/assignments";
+import {
+  departmentForNewPolicy,
+  resolvePolicyAssignments,
+  validatePolicyAssignment,
+} from "../../services/policy/assignments";
+import { loadBusinessUnitScope } from "../../services/business-units/scope";
 import { importPolicyText, IMPORT_MAX_BYTES, PolicyImportError } from "../../services/policy/import-text";
 import { assertAiRateLimit, postureLane, recordGeneration, requireAi } from "../../services/ai/posture";
 import { chatComplete } from "../../services/ai/llm-door";
@@ -185,21 +190,39 @@ export const policyRouter = createTRPCRouter({
   assignmentOptions: organizationProcedure
     .input(z.object({ organizationId: z.string() }))
     .query(async ({ ctx }) => {
-      const [members, departments] = await Promise.all([
+      const scope = await loadBusinessUnitScope(ctx.prisma, ctx.membership);
+      const [members, departments, invitations] = await Promise.all([
         ctx.prisma.organizationMember.findMany({
           where: { organizationId: ctx.organization.id },
           orderBy: { joinedAt: "asc" },
           select: { id: true, user: { select: { name: true, email: true } } },
         }),
         ctx.prisma.businessUnit.findMany({
-          where: { organizationId: ctx.organization.id },
+          // A department-limited writer can only choose their own departments.
+          where: {
+            organizationId: ctx.organization.id,
+            ...(scope.all ? {} : { id: { in: scope.businessUnitIds } }),
+          },
           orderBy: { name: "asc" },
           select: { id: true, name: true, parentId: true },
+        }),
+        // Colleagues invited who have not joined yet: named by address until
+        // they accept, then linked to their membership.
+        ctx.prisma.organizationInvitation.findMany({
+          where: {
+            organizationId: ctx.organization.id,
+            acceptedAt: null,
+            revokedAt: null,
+            expiresAt: { gt: new Date() },
+          },
+          orderBy: { createdAt: "asc" },
+          select: { id: true, email: true },
         }),
       ]);
       return {
         members: members.map((m) => ({ id: m.id, name: m.user.name || m.user.email || m.id })),
         departments,
+        invitations,
       };
     }),
 
@@ -223,7 +246,11 @@ export const policyRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       await assertPilotRoom(ctx.prisma, ctx.organization.id, "policies", pilotLocale(ctx.getCookie));
-      const assignment = await validatePolicyAssignment(ctx.prisma, ctx.organization.id, input);
+      const scope = await loadBusinessUnitScope(ctx.prisma, ctx.membership);
+      const assignment = await validatePolicyAssignment(ctx.prisma, ctx.organization.id, input, {
+        scope,
+        creating: true,
+      });
       // A text started from a template is marked as such; when the person
       // changed it before saving, it already counts as worked on.
       const template = input.templateId
@@ -294,6 +321,8 @@ export const policyRouter = createTRPCRouter({
           status: "DRAFT",
           provenance: "AUTO_TEMPLATE",
           sourceRef: `library:${template.id}`,
+          // A department-limited writer's draft is placed in their department.
+          departmentId: departmentForNewPolicy(await loadBusinessUnitScope(ctx.prisma, ctx.membership), null),
         },
       });
 
@@ -335,7 +364,10 @@ export const policyRouter = createTRPCRouter({
           reviewIntervalMonths: source.reviewIntervalMonths,
           ownerMemberId: source.ownerMemberId,
           ownerName: source.ownerName,
-          departmentId: source.departmentId,
+          departmentId: departmentForNewPolicy(
+            await loadBusinessUnitScope(ctx.prisma, ctx.membership),
+            source.departmentId,
+          ),
           sourceRef: `duplicate:${source.id}`,
         },
       });
@@ -474,7 +506,13 @@ export const policyRouter = createTRPCRouter({
       if (data.reviewIntervalMonths !== undefined) updateData.reviewIntervalMonths = data.reviewIntervalMonths;
       Object.assign(
         updateData,
-        await validatePolicyAssignment(ctx.prisma, ctx.organization.id, { ownerMemberId, ownerName, departmentId }),
+        await validatePolicyAssignment(
+          ctx.prisma,
+          ctx.organization.id,
+          { ownerMemberId, ownerName, departmentId },
+          // The department scope matters only when a department is being set.
+          departmentId ? { scope: await loadBusinessUnitScope(ctx.prisma, ctx.membership) } : {},
+        ),
       );
 
       // An approver's edit confirms the policy; anyone else's edit clears the

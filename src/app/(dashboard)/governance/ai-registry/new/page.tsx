@@ -26,6 +26,7 @@ import { useOrganization } from "@/lib/organization-context";
 import type { PrefillField, Suggestion } from "@/lib/system-prefill";
 import { StatusNote } from "@/components/ui/status-note";
 import { useSubmitLock } from "@/lib/use-submit-lock";
+import { OwnerInput } from "@/components/governance/owner-input";
 import { RoleDecider } from "@/components/governance/role-decider";
 import { IntendedPurposeBuilder } from "@/components/governance/intended-purpose-builder";
 
@@ -500,11 +501,12 @@ export default function NewAISystemPage() {
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="businessOwner">{t("businessOwnerLabel")}</Label>
-                <Input
+                <OwnerInput
+                  organizationId={organization?.id}
                   id="businessOwner"
                   placeholder={t("businessOwnerPlaceholder")}
                   value={formData.businessOwner}
-                  onChange={(e) => edit("businessOwner", e.target.value)}
+                  onChange={(v) => edit("businessOwner", v)}
                 />
                 <SuggestionLine
                   field="businessOwner"
@@ -515,11 +517,12 @@ export default function NewAISystemPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="technicalOwner">{t("technicalOwnerLabel")}</Label>
-                <Input
+                <OwnerInput
+                  organizationId={organization?.id}
                   id="technicalOwner"
                   placeholder={t("technicalOwnerPlaceholder")}
                   value={formData.technicalOwner}
-                  onChange={(e) => edit("technicalOwner", e.target.value)}
+                  onChange={(v) => edit("technicalOwner", v)}
                 />
                 <SuggestionLine
                   field="technicalOwner"
@@ -528,6 +531,7 @@ export default function NewAISystemPage() {
                   onApply={apply}
                 />
               </div>
+              <p className="text-xs text-muted-foreground md:col-span-2">{t("ownerPickHint")}</p>
             </div>
 
             {/* Personal Data */}

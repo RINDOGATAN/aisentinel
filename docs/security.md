@@ -59,7 +59,7 @@ Certain sensitive operations require `OWNER`, `ADMIN`, or `AI_OFFICER` roles:
 
 | Operation | Minimum Role | Location |
 |-----------|-------------|----------|
-| Add org member | ADMIN | `organization.ts:addMember` |
+| Invite org member (role up to the inviter's) | ADMIN | `team.ts:invite` |
 | Update member role | OWNER | `organization.ts:updateMember` |
 | Remove org member | ADMIN | `organization.ts:removeMember` |
 | Make oversight decisions | AI_OFFICER | `oversight.ts:addDecision` |

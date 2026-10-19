@@ -30,15 +30,48 @@ export function businessUnitScopeWhere(
   return { businessUnitId: { in: scope.businessUnitIds } };
 }
 
+/// Roles that always see the whole organization. A department limit stored for
+/// one of them (before limits on these roles were refused) is ignored, so an
+/// owner or admin can never be locked out of records they manage.
+export const SCOPE_EXEMPT_ROLES: readonly string[] = ["OWNER", "ADMIN"];
+
+export function isScopeExemptRole(role: string): boolean {
+  return SCOPE_EXEMPT_ROLES.includes(role);
+}
+
+/// The department a limited member's new record is placed in, so that what
+/// they create stays inside what they can see. Null for a whole-organization
+/// member (the record keeps whatever department was asked for, or none).
+export function defaultBusinessUnitId(scope: BusinessUnitScope): string | null {
+  if (scope.all) return null;
+  return scope.businessUnitIds[0] ?? null;
+}
+
+/// The department a new system is stored with. A whole-organization member
+/// keeps what they asked for (or none). A limited member keeps a department
+/// inside their scope and otherwise gets their first department: a system
+/// they create outside their own scope would vanish from their view.
+export function businessUnitForNewSystem(
+  scope: BusinessUnitScope,
+  requested: string | null | undefined,
+): string | null {
+  if (scope.all) return requested ?? null;
+  if (requested && scope.businessUnitIds.includes(requested)) return requested;
+  return defaultBusinessUnitId(scope);
+}
+
 /// Load the department scope for one organization member. Returns `{ all: true }`
-/// when the member has no department assignment (the default and common case).
+/// when the member has no department assignment (the default and common case)
+/// and always for owners and admins.
 export async function loadBusinessUnitScope(
   prisma: PrismaClient,
-  memberId: string,
+  member: { id: string; role: string },
 ): Promise<BusinessUnitScope> {
+  if (isScopeExemptRole(member.role)) return { all: true };
   const rows = await prisma.businessUnitMember.findMany({
-    where: { memberId },
+    where: { memberId: member.id },
     select: { businessUnitId: true },
+    orderBy: { createdAt: "asc" },
   });
   if (rows.length === 0) return { all: true };
   return { all: false, businessUnitIds: rows.map((r) => r.businessUnitId) };

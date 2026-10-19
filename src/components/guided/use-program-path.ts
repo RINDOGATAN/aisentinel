@@ -41,9 +41,12 @@ export function useProgramPathQuery(): {
   /** Day 1 of the 30/60/90-day plan (ISO), null before it starts. */
   planStart: string | null;
   refreshing: boolean;
+  /** The last read failed and nothing is held: the caller says so instead of loading forever. */
+  failed: boolean;
+  retry: () => void;
 } {
   const { organization } = useOrganization();
-  const { data, isFetching } = trpc.programPath.status.useQuery(
+  const { data, isFetching, isError, refetch } = trpc.programPath.status.useQuery(
     { organizationId: organization?.id ?? "" },
     { enabled: !!organization?.id, staleTime: STALE_MS, refetchOnWindowFocus: false },
   );
@@ -53,6 +56,8 @@ export function useProgramPathQuery(): {
     screeningQuestionsOpen: data?.screeningQuestionsOpen ?? 0,
     planStart: data?.planStart ?? null,
     refreshing: isFetching,
+    failed: isError && !data,
+    retry: () => void refetch(),
   };
 }
 

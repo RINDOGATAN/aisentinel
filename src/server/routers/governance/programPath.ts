@@ -70,11 +70,11 @@ const LIMITED: ProgrammeOverviewData = {
 async function loadOverview(
   prisma: PrismaClient,
   organizationId: string,
-  membershipId: string,
+  membership: { id: string; role: string },
   locale: "en" | "es",
   counts?: PathCounts,
 ): Promise<ProgrammeOverviewData> {
-  const scope = await loadBusinessUnitScope(prisma, membershipId);
+  const scope = await loadBusinessUnitScope(prisma, membership);
   if (!scope.all) return LIMITED;
   const [facts, needsAction, deadlines] = await Promise.all([
     loadDocumentFacts(prisma, organizationId, counts),
@@ -114,7 +114,7 @@ export const programPathRouter = createTRPCRouter({
   overview: organizationProcedure
     .input(z.object({ organizationId: z.string(), locale: localeInput }))
     .query(({ ctx, input }) =>
-      loadOverview(ctx.prisma, ctx.organization.id, ctx.membership.id, input.locale),
+      loadOverview(ctx.prisma, ctx.organization.id, ctx.membership, input.locale),
     ),
 
   portfolio: protectedProcedure
@@ -166,7 +166,7 @@ export const programPathRouter = createTRPCRouter({
                 where: { organizationId: orgId, status: "PENDING" },
               }),
               // What the client's own dashboard reads, so a row never disagrees with it.
-              loadOverview(ctx.prisma, orgId, m.id, locale, counts),
+              loadOverview(ctx.prisma, orgId, m, locale, counts),
             ]);
             const steps = evaluatePath(AI_SENTINEL_PATH, counts);
             const planStart = await loadPlanStart(ctx.prisma, orgId, steps.quickstart === "done");

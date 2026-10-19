@@ -88,6 +88,7 @@ export interface PolicyAssignmentValue {
 
 const NONE = "__none__";
 const OUTSIDE = "__outside__";
+const INVITED = "invited:";
 
 export function PolicyAssignmentFields({
   organizationId,
@@ -101,15 +102,22 @@ export function PolicyAssignmentFields({
   idPrefix?: string;
 }) {
   const t = useTranslations("policyFields");
+  const td = useTranslations("departments");
   const { data } = trpc.policy.assignmentOptions.useQuery(
     { organizationId },
     { enabled: !!organizationId, staleTime: 60 * 1000 },
   );
   const members = data?.members ?? [];
   const departments = data?.departments ?? [];
+  const invitations = data?.invitations ?? [];
+  // A colleague invited who has not joined yet is named by address; the
+  // policy is linked to them when they accept.
+  const invited = !value.ownerMemberId
+    ? invitations.find((i) => i.email.toLowerCase() === value.ownerName.trim().toLowerCase())
+    : undefined;
   // "Someone outside the team" stays chosen while the name is still empty.
   const [outsideChosen, setOutsideChosen] = useState(!value.ownerMemberId && !!value.ownerName);
-  const ownerMode = value.ownerMemberId || (outsideChosen ? OUTSIDE : NONE);
+  const ownerMode = value.ownerMemberId || (invited ? `${INVITED}${invited.id}` : outsideChosen ? OUTSIDE : NONE);
 
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -120,7 +128,10 @@ export function PolicyAssignmentFields({
           onValueChange={(v) => {
             setOutsideChosen(v === OUTSIDE);
             if (v === NONE || v === OUTSIDE) onChange({ ...value, ownerMemberId: "", ownerName: "" });
-            else {
+            else if (v.startsWith(INVITED)) {
+              const inv = invitations.find((x) => `${INVITED}${x.id}` === v);
+              onChange({ ...value, ownerMemberId: "", ownerName: inv?.email ?? "" });
+            } else {
               const m = members.find((x) => x.id === v);
               onChange({ ...value, ownerMemberId: v, ownerName: m?.name ?? "" });
             }
@@ -134,6 +145,11 @@ export function PolicyAssignmentFields({
             {members.map((m) => (
               <SelectItem key={m.id} value={m.id}>
                 {m.name}
+              </SelectItem>
+            ))}
+            {invitations.map((i) => (
+              <SelectItem key={i.id} value={`${INVITED}${i.id}`}>
+                {td("invitedName", { name: i.email })}
               </SelectItem>
             ))}
             <SelectItem value={OUTSIDE}>{t("ownerOutside")}</SelectItem>

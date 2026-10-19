@@ -31,7 +31,14 @@ export interface ImportResult {
 
 export async function importInventoryRows(
   prisma: PrismaClient,
-  args: { organizationId: string; userId: string; rows: ImportRow[]; fileName?: string },
+  args: {
+    organizationId: string;
+    userId: string;
+    rows: ImportRow[];
+    fileName?: string;
+    /** The department new systems are placed in (a department-limited importer's own). */
+    businessUnitId?: string | null;
+  },
 ): Promise<ImportResult> {
   const { organizationId, userId } = args;
   const result: ImportResult = {
@@ -111,6 +118,7 @@ export async function importInventoryRows(
         technicalOwner: row.technicalOwner,
         processesPersonalData: row.processesPersonalData ?? false,
         vendorId,
+        ...(args.businessUnitId ? { businessUnitId: args.businessUnitId } : {}),
         metadata: {
           source: "spreadsheet-import",
           // The column was empty or unreadable: record that we do not know,

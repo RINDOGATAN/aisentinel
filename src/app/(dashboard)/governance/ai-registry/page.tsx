@@ -52,6 +52,7 @@ import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
 import { formatRelativeTime } from "@/lib/utils";
 import { STATUS_OUTLINE } from "@/components/ui/status-note";
 import { systemReference } from "@/lib/system-reference";
+import { useViewDepartment } from "@/lib/use-view-department";
 
 const statusColors: Record<string, string> = {
   DRAFT: "border-muted-foreground text-muted-foreground",
@@ -121,10 +122,11 @@ export default function AIRegistryPage() {
 
   // In the transparency view the stage tabs are hidden, so stage never narrows it.
   const stageFilter = transparencyView ? undefined : filters.stage;
+  // A department chosen in the filter bar wins; otherwise the menu's "Viewing" choice.
+  const viewDept = useViewDepartment(organization?.id);
+  const businessUnitFilter = filters.businessUnitId ?? viewDept;
   const departmentFilter =
-    filters.businessUnitId && filters.businessUnitId !== "unassigned"
-      ? filters.businessUnitId
-      : undefined;
+    businessUnitFilter && businessUnitFilter !== "unassigned" ? businessUnitFilter : undefined;
 
   const { data: statsData } = trpc.aiSystem.getStats.useQuery(
     { organizationId: organization?.id ?? "", businessUnitId: departmentFilter },
@@ -143,7 +145,7 @@ export default function AIRegistryPage() {
       search: debouncedSearch || undefined,
       stage: stageFilter,
       owner: filters.owner,
-      businessUnitId: filters.businessUnitId,
+      businessUnitId: businessUnitFilter,
       region: filters.region,
       registration: filters.registration,
       risk: filters.risk,

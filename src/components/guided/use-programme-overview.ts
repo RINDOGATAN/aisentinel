@@ -39,14 +39,21 @@ export function useProgrammeOverview(): {
   overview: ProgrammeOverview | null;
   limited: boolean;
   refreshing: boolean;
+  /** The last read failed and nothing is held. */
+  failed: boolean;
+  retry: () => void;
 } {
   const { organization } = useOrganization();
   const locale = useLocale() === "es" ? "es" : "en";
-  const { data, isFetching } = trpc.programPath.overview.useQuery(
+  const { data, isFetching, isError, refetch } = trpc.programPath.overview.useQuery(
     { organizationId: organization?.id ?? "", locale },
     { enabled: !!organization?.id, staleTime: STALE_MS, refetchOnWindowFocus: false },
   );
-  if (!data || data.limited) return { overview: null, limited: !!data?.limited, refreshing: isFetching };
+  const failed = isError && !data;
+  const retry = () => void refetch();
+  if (!data || data.limited) {
+    return { overview: null, limited: !!data?.limited, refreshing: isFetching, failed, retry };
+  }
   return {
     overview: {
       documents: data.documents,
@@ -56,5 +63,7 @@ export function useProgrammeOverview(): {
     },
     limited: false,
     refreshing: isFetching,
+    failed,
+    retry,
   };
 }

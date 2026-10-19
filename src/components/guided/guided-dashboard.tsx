@@ -58,6 +58,7 @@ import { planSummaryText } from "./plan-text";
 import { usePlanState, useProgramPathQuery } from "./use-program-path";
 import { useProgrammeOverview, type ProgrammeOverview } from "./use-programme-overview";
 import { documentName, documentStateText, gapsText } from "./document-words";
+import { PanelEmpty, PanelFailed, panelPhase } from "./panel-state";
 
 const DOC_TONE: Record<DocumentState, StatusKey | null> = {
   ready: "good",
@@ -102,8 +103,19 @@ export function GuidedDashboard() {
   const td = useTranslations("dashboard");
   const tg = useTranslations("guided");
   const { organization } = useOrganization();
-  const { steps: statuses } = useProgramPathQuery();
-  const { overview: ready, limited } = useProgrammeOverview();
+  const path = useProgramPathQuery();
+  const programme = useProgrammeOverview();
+  const statuses = path.steps;
+  const { overview: ready, limited } = programme;
+  // What each panel says when its reading failed: one retry asks both again.
+  const load: PanelLoad = {
+    pathFailed: path.failed,
+    overviewFailed: programme.failed,
+    retry: () => {
+      if (path.failed) path.retry();
+      if (programme.failed) programme.retry();
+    },
+  };
 
   return (
     <div className="space-y-4 sm:space-y-6" data-testid="guided-dashboard">
@@ -120,17 +132,24 @@ export function GuidedDashboard() {
       ) : (
         <>
           <ProgramFigureCard />
-          <AreasCard statuses={statuses} overview={ready} />
-          <DocumentsPanel overview={ready} />
+          <AreasCard statuses={statuses} overview={ready} load={load} />
+          <DocumentsPanel overview={ready} load={load} />
           <div className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-2">
-            <NextActionsCard statuses={statuses} overview={ready} />
-            <DeadlinesCard overview={ready} />
+            <NextActionsCard statuses={statuses} overview={ready} load={load} />
+            <DeadlinesCard overview={ready} load={load} />
           </div>
-          <MissingCard statuses={statuses} overview={ready} />
+          <MissingCard statuses={statuses} overview={ready} load={load} />
         </>
       )}
     </div>
   );
+}
+
+/** Whether the two readings behind the panels failed, and how to ask again. */
+interface PanelLoad {
+  pathFailed: boolean;
+  overviewFailed: boolean;
+  retry: () => void;
 }
 
 function CardSkeleton({ rows = 3 }: { rows?: number }) {
@@ -156,7 +175,15 @@ function areaHref(area: Area<PathCounts>): string | null {
   return null;
 }
 
-function AreasCard({ statuses, overview }: { statuses: PathStatuses | null; overview: ProgrammeOverview | null }) {
+function AreasCard({
+  statuses,
+  overview,
+  load,
+}: {
+  statuses: PathStatuses | null;
+  overview: ProgrammeOverview | null;
+  load: PanelLoad;
+}) {
   const t = useTranslations("guided");
   const tv = useTranslations("views");
   const plan = usePlanState();
@@ -167,9 +194,14 @@ function AreasCard({ statuses, overview }: { statuses: PathStatuses | null; over
     { enabled: !!org?.id, staleTime: 60 * 1000 },
   );
   const areas = statuses && overview ? programmeAreas(AI_SENTINEL_PATH, statuses, overview.needsAction) : null;
+  const phase = panelPhase({
+    failed: load.pathFailed || load.overviewFailed,
+    loaded: !!areas,
+    empty: areas?.length === 0,
+  });
 
   return (
-    <Card data-testid="area-tiles" aria-busy={!areas}>
+    <Card data-testid="area-tiles" aria-busy={phase === "loading"}>
       <CardHeader className="p-4 sm:p-6 pb-2 sm:pb-3">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
           <CardTitle className="text-base sm:text-lg">{t("areas.title")}</CardTitle>
@@ -182,8 +214,12 @@ function AreasCard({ statuses, overview }: { statuses: PathStatuses | null; over
         </div>
       </CardHeader>
       <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
-        {!areas ? (
+        {phase === "failed" ? (
+          <PanelFailed onRetry={load.retry} />
+        ) : !areas ? (
           <CardSkeleton rows={2} />
+        ) : phase === "empty" ? (
+          <PanelEmpty>{t("panel.noAreas")}</PanelEmpty>
         ) : (
           <ul className="grid gap-2 sm:gap-3 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
             {areas.map((area) => {
@@ -237,13 +273,19 @@ function AreasCard({ statuses, overview }: { statuses: PathStatuses | null; over
 // Documents you can produce today
 // ---------------------------------------------------------------------------
 
-function DocumentsPanel({ overview }: { overview: ProgrammeOverview | null }) {
+function DocumentsPanel({ overview, load }: { overview: ProgrammeOverview | null; load: PanelLoad }) {
   const t = useTranslations("documentRegister");
+  const tg = useTranslations("guided");
   const { organization } = useOrganization();
   const rows = overview ? panelRows(overview.documents) : null;
+  const phase = panelPhase({
+    failed: load.overviewFailed,
+    loaded: !!rows,
+    empty: !!rows && rows.produced.length === 0 && rows.notYet.length === 0,
+  });
 
   return (
-    <Card data-testid="documents-panel" aria-busy={!rows}>
+    <Card data-testid="documents-panel" aria-busy={phase === "loading"}>
       <CardHeader className="p-4 sm:p-6 pb-2 sm:pb-3 flex flex-col md:flex-row md:items-start md:justify-between gap-3 space-y-0">
         <div className="min-w-0 flex flex-col gap-1.5">
           <CardTitle className="text-base sm:text-lg flex items-center gap-2">
@@ -255,8 +297,12 @@ function DocumentsPanel({ overview }: { overview: ProgrammeOverview | null }) {
         {overview && organization && <PackDownload overview={overview} organizationId={organization.id} />}
       </CardHeader>
       <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
-        {!rows ? (
+        {phase === "failed" ? (
+          <PanelFailed onRetry={load.retry} />
+        ) : !rows ? (
           <CardSkeleton rows={4} />
+        ) : phase === "empty" ? (
+          <PanelEmpty>{tg("panel.noDocuments")}</PanelEmpty>
         ) : (
           <>
             {organization && (
@@ -439,19 +485,34 @@ function DocumentRow({ row }: { row: RegisterRow }) {
 // Next three actions
 // ---------------------------------------------------------------------------
 
-function NextActionsCard({ statuses, overview }: { statuses: PathStatuses | null; overview: ProgrammeOverview | null }) {
+function NextActionsCard({
+  statuses,
+  overview,
+  load,
+}: {
+  statuses: PathStatuses | null;
+  overview: ProgrammeOverview | null;
+  load: PanelLoad;
+}) {
   const t = useTranslations("guided");
   const tv = useTranslations("views");
   const actions = statuses && overview ? nextActions(AI_SENTINEL_PATH, statuses, overview.needsAction) : null;
   const waiting = overview ? needsActionTotal(overview.needsAction) : 0;
+  const phase = panelPhase({
+    failed: load.pathFailed || load.overviewFailed,
+    loaded: !!actions,
+    empty: actions?.length === 0,
+  });
 
   return (
-    <Card data-testid="next-actions" aria-busy={!actions}>
+    <Card data-testid="next-actions" aria-busy={phase === "loading"}>
       <CardHeader className="p-4 sm:p-6 pb-2 sm:pb-3">
         <CardTitle className="text-base sm:text-lg">{t("nextActions.title")}</CardTitle>
       </CardHeader>
       <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0 flex flex-col gap-3">
-        {!actions ? (
+        {phase === "failed" ? (
+          <PanelFailed onRetry={load.retry} />
+        ) : !actions ? (
           <CardSkeleton rows={3} />
         ) : actions.length === 0 ? (
           <p className="text-sm text-muted-foreground">{t("nextActions.empty")}</p>
@@ -537,7 +598,7 @@ export function formatDeadlineDate(at: Date, locale: string): string {
   return new Intl.DateTimeFormat(locale, { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" }).format(at);
 }
 
-function DeadlinesCard({ overview }: { overview: ProgrammeOverview | null }) {
+function DeadlinesCard({ overview, load }: { overview: ProgrammeOverview | null; load: PanelLoad }) {
   const t = useTranslations("guided");
   const locale = useLocale();
   const { planStart } = useProgramPathQuery();
@@ -549,12 +610,14 @@ function DeadlinesCard({ overview }: { overview: ProgrammeOverview | null }) {
   const milestone = planMilestone(PLAN_WINDOWS, planStart, plan);
 
   return (
-    <Card data-testid="deadlines" aria-busy={!overview}>
+    <Card data-testid="deadlines" aria-busy={!overview && !load.overviewFailed}>
       <CardHeader className="p-4 sm:p-6 pb-2 sm:pb-3">
         <CardTitle className="text-base sm:text-lg">{t("deadlines.title")}</CardTitle>
       </CardHeader>
       <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
-        {!overview ? (
+        {!overview && load.overviewFailed ? (
+          <PanelFailed onRetry={load.retry} />
+        ) : !overview ? (
           <CardSkeleton rows={2} />
         ) : overview.deadlines.length === 0 && !milestone ? (
           <p className="text-sm text-muted-foreground">{t("deadlines.empty")}</p>
@@ -605,10 +668,28 @@ function DeadlinesCard({ overview }: { overview: ProgrammeOverview | null }) {
 // What is missing
 // ---------------------------------------------------------------------------
 
-function MissingCard({ statuses, overview }: { statuses: PathStatuses | null; overview: ProgrammeOverview | null }) {
+function MissingCard({
+  statuses,
+  overview,
+  load,
+}: {
+  statuses: PathStatuses | null;
+  overview: ProgrammeOverview | null;
+  load: PanelLoad;
+}) {
   const t = useTranslations("guided");
   const td = useTranslations("documentRegister");
-  if (!statuses || !overview) return null;
+  if (!statuses || !overview) {
+    const failed = (!statuses && load.pathFailed) || (!overview && load.overviewFailed);
+    return (
+      <Card data-testid="missing" aria-busy={!failed}>
+        <CardContent className="p-4 sm:p-6 flex flex-col gap-1">
+          <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">{td("missing.title")}</p>
+          {failed ? <PanelFailed onRetry={load.retry} /> : <Skeleton className="h-5 w-2/3" />}
+        </CardContent>
+      </Card>
+    );
+  }
   const notStarted = AI_SENTINEL_PATH.stages.flatMap((stage) =>
     stage.steps.filter((s) => isCounted(s) && isShown(s, statuses) && statuses[s.id] === "todo"),
   );
@@ -639,12 +720,13 @@ function MissingCard({ statuses, overview }: { statuses: PathStatuses | null; ov
 
 function LimitedCard() {
   const tv = useTranslations("views");
+  const tg = useTranslations("guided");
   return (
-    <Card>
+    <Card data-testid="limited-card">
       <CardContent className="p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-3">
         <div className="min-w-0 flex-1">
           <p className="font-medium">{tv("needsAction.title")}</p>
-          <p className="text-sm text-muted-foreground">{tv("needsAction.subtitle")}</p>
+          <p className="text-sm text-muted-foreground">{tg("panel.limited")}</p>
         </div>
         <Link href="/governance/needs-action" className="shrink-0">
           <Button size="sm" variant="outline" className="gap-1.5">

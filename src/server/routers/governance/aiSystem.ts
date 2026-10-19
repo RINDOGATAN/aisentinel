@@ -24,7 +24,9 @@ import {
 } from "@/lib/system-views";
 import { JURISDICTION_IDS, type JurisdictionId } from "@/config/jurisdictions";
 import {
+  businessUnitForNewSystem,
   businessUnitScopeWhere,
+  defaultBusinessUnitId,
   loadBusinessUnitScope,
 } from "@/server/services/business-units/scope";
 import { createStarterArtifacts } from "@/server/services/program/starter-artifacts";
@@ -52,13 +54,23 @@ import {
 /**
  * A department a system is assigned to must belong to the same organization, and
  * a department-limited member may only assign to a department in their own scope.
- * Clearing the department (null) is always allowed for anyone who can write.
+ * Clearing the department (null) is allowed for a whole-organization member; a
+ * limited member cannot clear it, because the system would then leave their view.
  */
 async function assertBusinessUnitAssignable(
-  ctx: { prisma: PrismaClient; organization: { id: string }; membership: { id: string } },
+  ctx: { prisma: PrismaClient; organization: { id: string }; membership: { id: string; role: string } },
   businessUnitId: string | null,
 ) {
-  if (!businessUnitId) return;
+  const scope = await loadBusinessUnitScope(ctx.prisma, ctx.membership);
+  if (!businessUnitId) {
+    if (!scope.all) {
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: "You cannot move a system outside your departments.",
+      });
+    }
+    return;
+  }
   const unit = await ctx.prisma.businessUnit.findFirst({
     where: { id: businessUnitId, organizationId: ctx.organization.id },
     select: { id: true },
@@ -66,7 +78,6 @@ async function assertBusinessUnitAssignable(
   if (!unit) {
     throw new TRPCError({ code: "BAD_REQUEST", message: "Unknown department." });
   }
-  const scope = await loadBusinessUnitScope(ctx.prisma, ctx.membership.id);
   if (!scope.all && !scope.businessUnitIds.includes(businessUnitId)) {
     throw new TRPCError({
       code: "FORBIDDEN",
@@ -117,7 +128,7 @@ export const aiSystemRouter = createTRPCRouter({
 
       // The org guard, then the member's department scope, then the requested
       // filters — every one AND-ed, and every one narrowing only.
-      const scope = await loadBusinessUnitScope(ctx.prisma, ctx.membership.id);
+      const scope = await loadBusinessUnitScope(ctx.prisma, ctx.membership);
       const scopeWhere = businessUnitScopeWhere(scope);
       const and: Prisma.AISystemWhereInput[] = [];
       if (scopeWhere) and.push(scopeWhere);
@@ -156,7 +167,7 @@ export const aiSystemRouter = createTRPCRouter({
       // A department-limited member may only open a system in their department;
       // the scope is folded into the lookup so a foreign id resolves to nothing
       // rather than to another department's record.
-      const scope = await loadBusinessUnitScope(ctx.prisma, ctx.membership.id);
+      const scope = await loadBusinessUnitScope(ctx.prisma, ctx.membership);
       const scopeWhere = businessUnitScopeWhere(scope) ?? {};
       const system = await ctx.prisma.aISystem.findFirst({
         where: { id: input.id, organizationId: ctx.organization.id, ...scopeWhere },
@@ -231,6 +242,7 @@ export const aiSystemRouter = createTRPCRouter({
         userId: ctx.session.user.id,
         rows: input.rows,
         fileName: input.fileName,
+        businessUnitId: defaultBusinessUnitId(await loadBusinessUnitScope(ctx.prisma, ctx.membership)),
       });
       // High-risk rows get the same starting drafts the wizard creates.
       let starterAssessments = 0;
@@ -276,7 +288,11 @@ export const aiSystemRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       await assertPilotRoom(ctx.prisma, ctx.organization.id, "systems", pilotLocale(ctx.getCookie));
-      await assertBusinessUnitAssignable(ctx, input.businessUnitId ?? null);
+      // A limited member's system is placed in their department, so it stays
+      // in their own view; anyone else keeps the department they chose.
+      if (input.businessUnitId) await assertBusinessUnitAssignable(ctx, input.businessUnitId);
+      const scope = await loadBusinessUnitScope(ctx.prisma, ctx.membership);
+      const businessUnitId = businessUnitForNewSystem(scope, input.businessUnitId);
       if (input.vendorId) await assertOwnedVendor(ctx.prisma, ctx.organization.id, input.vendorId);
       const system = await ctx.prisma.aISystem.create({
         data: {
@@ -293,7 +309,7 @@ export const aiSystemRouter = createTRPCRouter({
           dpoCentralVendorId: input.dpoCentralVendorId,
           dpoCentralAssetIds: input.dpoCentralAssetIds ?? [],
           vendorId: input.vendorId || undefined,
-          businessUnitId: input.businessUnitId ?? undefined,
+          businessUnitId: businessUnitId ?? undefined,
         },
       });
 
@@ -341,15 +357,23 @@ export const aiSystemRouter = createTRPCRouter({
         await assertOwnedVendor(ctx.prisma, ctx.organization.id, input.vendorId);
       }
 
+      // A department-limited member edits only systems in their departments,
+      // exactly as they can only open those.
+      const scopeWhere =
+        businessUnitScopeWhere(await loadBusinessUnitScope(ctx.prisma, ctx.membership)) ?? {};
+
       // Editing a system copied from another client's template confirms it.
       const current = await ctx.prisma.aISystem.findFirst({
-        where: { id, organizationId: ctx.organization.id },
+        where: { id, organizationId: ctx.organization.id, ...scopeWhere },
         select: { metadata: true },
       });
-      const confirmedMetadata = withoutTemplateCopyMark(current?.metadata);
+      if (!current) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "AI system not found" });
+      }
+      const confirmedMetadata = withoutTemplateCopyMark(current.metadata);
 
       const system = await ctx.prisma.aISystem.updateMany({
-        where: { id, organizationId: ctx.organization.id },
+        where: { id, organizationId: ctx.organization.id, ...scopeWhere },
         data: (confirmedMetadata ? { ...data, metadata: confirmedMetadata } : data) as never,
       });
 
@@ -424,7 +448,7 @@ export const aiSystemRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       // The tiles above the registry count what this member can see: the org
       // guard, their department scope, and any department they have chosen.
-      const scope = await loadBusinessUnitScope(ctx.prisma, ctx.membership.id);
+      const scope = await loadBusinessUnitScope(ctx.prisma, ctx.membership);
       const scopeWhere = businessUnitScopeWhere(scope);
       const and: Prisma.AISystemWhereInput[] = [];
       if (scopeWhere) and.push(scopeWhere);

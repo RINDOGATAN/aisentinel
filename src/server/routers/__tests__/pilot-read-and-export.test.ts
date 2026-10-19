@@ -136,6 +136,7 @@ const EDITS_THE_PILOT_REFUSES = [
   "unified.createAssessment", "unified.applyToRegister",
   "agent.upsertProfile",
   "skills.activateOffline", "skills.deactivate",
+  "team.invite", "team.resend", "team.revoke",
   "ai.setPosture",
   "sensitiveData.create", "sensitiveData.update", "sensitiveData.complete", "sensitiveData.delete",
   "dataFlow.setSystemFlowFacts", "dataFlow.setSourceFacts", "dataFlow.addRecipient",

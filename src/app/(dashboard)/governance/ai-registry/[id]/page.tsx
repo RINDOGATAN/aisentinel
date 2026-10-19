@@ -80,6 +80,7 @@ import { SystemThreatModelCard } from "@/components/governance/system-threat-mod
 import { STATUS_CHIP, STATUS_OUTLINE } from "@/components/ui/status-note";
 import { templateName } from "@/lib/assessment-template-display";
 import { annexIIILabel } from "@/lib/annex-iii-label";
+import { OwnerInput } from "@/components/governance/owner-input";
 
 const statusColors: Record<string, string> = {
   DRAFT: "border-muted-foreground text-muted-foreground",
@@ -1828,18 +1829,20 @@ export default function AISystemDetailPage() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="edit-business-owner">{t("editBusinessOwnerLabel")}</Label>
-                <Input
+                <OwnerInput
+                  organizationId={organization?.id}
                   id="edit-business-owner"
                   value={editForm.businessOwner}
-                  onChange={(e) => setEditForm((f) => ({ ...f, businessOwner: e.target.value }))}
+                  onChange={(v) => setEditForm((f) => ({ ...f, businessOwner: v }))}
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="edit-technical-owner">{t("editTechnicalOwnerLabel")}</Label>
-                <Input
+                <OwnerInput
+                  organizationId={organization?.id}
                   id="edit-technical-owner"
                   value={editForm.technicalOwner}
-                  onChange={(e) => setEditForm((f) => ({ ...f, technicalOwner: e.target.value }))}
+                  onChange={(v) => setEditForm((f) => ({ ...f, technicalOwner: v }))}
                 />
               </div>
             </div>

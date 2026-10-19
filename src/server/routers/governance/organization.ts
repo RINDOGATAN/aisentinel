@@ -649,7 +649,7 @@ export const organizationRouter = createTRPCRouter({
       // switch. Counts drawn from a system are narrowed through the system
       // relation; organization-wide facts that do not hang off a system (recent
       // activity, imported vendors) stay org-wide.
-      const scope = await loadBusinessUnitScope(ctx.prisma, ctx.membership.id);
+      const scope = await loadBusinessUnitScope(ctx.prisma, ctx.membership);
       const sysWhere = systemScopeWhere(scope, input.businessUnitId);
       const sys = (extra: Prisma.AISystemWhereInput = {}): Prisma.AISystemWhereInput => ({
         organizationId: orgId,

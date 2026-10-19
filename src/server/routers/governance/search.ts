@@ -70,7 +70,7 @@ export const searchRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }): Promise<{ items: SystemPick[]; more: boolean }> => {
-      const scope = await loadBusinessUnitScope(ctx.prisma, ctx.membership.id);
+      const scope = await loadBusinessUnitScope(ctx.prisma, ctx.membership);
       const and: Prisma.AISystemWhereInput[] = [];
       const dept = businessUnitScopeWhere(scope);
       if (dept) and.push(dept);
@@ -97,7 +97,7 @@ export const searchRouter = createTRPCRouter({
   system: organizationProcedure
     .input(z.object({ organizationId: z.string(), id: z.string().max(100) }))
     .query(async ({ ctx, input }): Promise<SystemPick | null> => {
-      const scope = await loadBusinessUnitScope(ctx.prisma, ctx.membership.id);
+      const scope = await loadBusinessUnitScope(ctx.prisma, ctx.membership);
       const dept = businessUnitScopeWhere(scope) ?? {};
       return ctx.prisma.aISystem.findFirst({
         where: { id: input.id, organizationId: ctx.organization.id, ...dept },
@@ -117,7 +117,7 @@ export const searchRouter = createTRPCRouter({
       const contains = { contains: input.q, mode: "insensitive" as const };
       const take = SEARCH_PER_KIND;
 
-      const scope = await loadBusinessUnitScope(ctx.prisma, ctx.membership.id);
+      const scope = await loadBusinessUnitScope(ctx.prisma, ctx.membership);
       const dept = businessUnitScopeWhere(scope);
       const systemScope: Prisma.AISystemWhereInput = dept ?? {};
       const linked = dept ? { aiSystem: dept } : {};

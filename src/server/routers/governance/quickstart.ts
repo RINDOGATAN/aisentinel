@@ -2,6 +2,10 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { z } from "zod";
+import {
+  defaultBusinessUnitId,
+  loadBusinessUnitScope,
+} from "@/server/services/business-units/scope";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { TRPCError } from "@trpc/server";
 import { VendorStatus } from "@prisma/client";
@@ -411,6 +415,11 @@ export const quickstartRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const orgId = ctx.organization.id;
       const userId = ctx.session.user.id;
+      // A department-limited member's systems land in their department, so
+      // the wizard's results stay in their own view.
+      const newSystemUnitId = defaultBusinessUnitId(
+        await loadBusinessUnitScope(ctx.prisma, ctx.membership),
+      );
       const skipSystems = new Set(input.skipSystemNames);
       const skipPolicies = new Set(input.skipPolicyTitles);
 
@@ -598,6 +607,7 @@ export const quickstartRouter = createTRPCRouter({
             const system = await tx.aISystem.create({
               data: {
                 organizationId: orgId,
+                ...(newSystemUnitId ? { businessUnitId: newSystemUnitId } : {}),
                 name: systemName,
                 description: vendorSystemDescription(catalogVendor.name, mapping, contentLocale),
                 technique: mapping.system.technique,
@@ -709,6 +719,7 @@ export const quickstartRouter = createTRPCRouter({
               const system = await tx.aISystem.create({
                 data: {
                   organizationId: orgId,
+                  ...(newSystemUnitId ? { businessUnitId: newSystemUnitId } : {}),
                   name: templateSystem.name,
                   description: templateSystem.description,
                   technique: templateSystem.technique,
@@ -869,6 +880,7 @@ export const quickstartRouter = createTRPCRouter({
             const system = await tx.aISystem.create({
               data: {
                 organizationId: orgId,
+                ...(newSystemUnitId ? { businessUnitId: newSystemUnitId } : {}),
                 name: tool.name,
                 description: tool.description[contentLocale],
                 technique: governance.technique,

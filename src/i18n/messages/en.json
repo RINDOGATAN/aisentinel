@@ -224,7 +224,8 @@
     "registering": "Registering...",
     "registerSystem": "Register System",
     "toastSuccess": "AI system registered successfully",
-    "toastError": "Failed to register AI system"
+    "toastError": "Failed to register AI system",
+    "ownerPickHint": "Pick a person from the team, or type a name for someone outside it."
   },
   "aiRegistryDetail": {
     "notFound": "AI system not found",
@@ -4991,14 +4992,44 @@
     "title": "Team",
     "description": "Who works on this organization's AI governance, and with which role. Owners, admins and AI officers can approve; members document; viewers read.",
     "emailPlaceholder": "colleague@example.com",
-    "inviteLabel": "Add a colleague by email",
-    "add": "Add",
-    "addHint": "The person must have signed in to AI SENTINEL once with this email. Only owners can grant the owner role or change roles.",
+    "inviteLabel": "Invite a colleague by email",
+    "add": "Send invitation",
+    "addHint": "They receive an email with a link to join. The link works once, for 7 days, and only for this address. You can give a role up to your own.",
     "added": "Member added.",
     "updated": "Role updated.",
     "removed": "Member removed.",
     "remove": "Remove member",
-    "notFound": "No account uses that email yet. Ask your colleague to sign in once, then add them here."
+    "notFound": "No account uses that email yet. Ask your colleague to sign in once, then add them here.",
+    "roleLabel": "Role",
+    "rolesLink": "What each role can do",
+    "roleHelp": {
+      "OWNER": "Everything, including changing roles and deleting the organization.",
+      "ADMIN": "Approve, manage the team and delete records.",
+      "AI_OFFICER": "Create, edit and approve (assessments, policies, oversight decisions).",
+      "MEMBER": "Create and edit records.",
+      "VIEWER": "Read only."
+    },
+    "departmentsLabel": "Departments",
+    "invited": "Invitation sent to {email}.",
+    "notSent": "No email could be sent from here. Copy the link and send it to {email} yourself. It works only for that address.",
+    "copy": "Copy link",
+    "copied": "Link copied.",
+    "pendingTitle": "Invitations not yet accepted",
+    "pendingChip": "Invited",
+    "expiredChip": "Expired",
+    "expires": "Expires on {date}",
+    "resend": "Send again",
+    "resent": "Invitation sent again.",
+    "withdraw": "Withdraw invitation",
+    "withdrawn": "Invitation withdrawn.",
+    "alreadyMember": "This person is already a member of the organization.",
+    "inviteEmail": {
+      "subject": "{inviter} has invited you to {organization} on {app}",
+      "lead": "{inviter} has invited you to join {organization} on {app} as {role}. Sign in with this email address to accept.",
+      "button": "Accept the invitation",
+      "expiry": "The link works once and expires on {date}.",
+      "ignore": "If you were not expecting this invitation, you can ignore this email."
+    }
   },
   "deleteOrganization": {
     "title": "Delete this organization",
@@ -5855,6 +5886,14 @@
       "plan": "Plan: day {day} milestone",
       "overdue": "overdue since {date}",
       "empty": "No deadline in the next 30 days."
+    },
+    "panel": {
+      "failed": "This panel could not be loaded.",
+      "retry": "Try again",
+      "noFigure": "There are no steps to count yet.",
+      "noAreas": "There is nothing to show here yet.",
+      "noDocuments": "No documents can be produced yet.",
+      "limited": "The program figures cover the whole organization, so they are shown only to people who see the whole organization. What needs action in your departments is listed under Needs action."
     }
   },
   "agentTesting": {
@@ -6129,6 +6168,10 @@
       "subtitle": "Systems missing a required registration field, with what is missing.",
       "empty": "Every system's registration is complete.",
       "missingCount": "{count, plural, one {# field missing} other {# fields missing}}"
+    },
+    "scopeNotice": {
+      "line": "You see only: {departments}",
+      "hint": "AI systems in other departments are not shown to you, and what you register is placed in your department. An owner or admin can change this in Settings."
     }
   },
   "registration": {
@@ -6142,7 +6185,7 @@
   },
   "departments": {
     "title": "Departments",
-    "description": "Group systems by department, give each an owner, and limit a member to one or more departments.",
+    "description": "Group systems by department and give each an owner and, if you wish, a deputy owner. Use a parent department to show the hierarchy (one level).",
     "empty": "No departments yet.",
     "counts": "{systems, plural, one {# system} other {# systems}} · {members, plural, one {# member} other {# members}}",
     "ownedBy": "Owner: {name}",
@@ -6165,12 +6208,23 @@
     "name": "Name",
     "save": "Save",
     "access": {
-      "title": "Member access",
-      "description": "Limit a member to one or more departments. With none selected, they see the whole organization.",
+      "title": "Assign departments",
+      "description": "Choose the departments each person works in. They then see only the AI systems of those departments, and what they register is placed there. With none chosen, they see the whole organization. Owners and admins always see the whole organization, and nobody changes their own access.",
       "wholeOrg": "Whole organization",
       "limited": "Limited to {count, plural, one {# department} other {# departments}}",
-      "saved": "Access updated"
-    }
+      "saved": "Access updated",
+      "choose": "Departments for {name}",
+      "selected": "{count, plural, one {# department} other {# departments}}",
+      "selfLocked": "You cannot change your own access.",
+      "roleLocked": "Owners and admins always see the whole organization.",
+      "done": "Done"
+    },
+    "deputy": "Deputy owner",
+    "noDeputy": "No deputy owner",
+    "deputyBy": "Deputy: {name}",
+    "invitedName": "{name} (not joined yet)",
+    "sameOwner": "The deputy owner must be a different person from the owner.",
+    "pendingShort": "not joined yet"
   },
   "documentRegister": {
     "title": "Documents you can produce today",
@@ -6344,6 +6398,26 @@
       "title": "Delete this oversight gate",
       "warning": "Delete this oversight gate? The decisions recorded on it are deleted with it. This cannot be undone.",
       "deleted": "Oversight gate deleted."
+    }
+  },
+  "invite": {
+    "title": "Invitation",
+    "lead": "You have been invited to join {organization} as {role}.",
+    "accept": "Accept and open",
+    "accepted": "You have joined {organization}.",
+    "loading": "Checking the invitation",
+    "otherAccount": "This invitation was sent to another email address. Sign in with that address to accept it.",
+    "switchAccount": "Sign in with another account",
+    "expired": "This invitation has expired. Ask the person who invited you to send it again.",
+    "used": "This invitation has already been used or withdrawn.",
+    "invalid": "This invitation link is not valid.",
+    "toDashboard": "Go to the dashboard",
+    "errors": {
+      "invalid": "This invitation link is not valid.",
+      "used": "This invitation has already been used or withdrawn.",
+      "expired": "This invitation has expired. Ask for a new one.",
+      "otherAddress": "This invitation was sent to another email address.",
+      "inviterGone": "This invitation is no longer valid. Ask for a new one."
     }
   }
 }

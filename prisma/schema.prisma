@@ -200,6 +200,7 @@ model Organization {
   jurisdictionsReviewedAt DateTime?
 
   members                  OrganizationMember[]
+  invitations              OrganizationInvitation[]
   aiSystems                AISystem[]
   aiModels                 AIModel[]
   aiSystemDataSources      AISystemDataSource[]
@@ -259,10 +260,43 @@ model OrganizationMember {
   organization       Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   user               User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   ownedBusinessUnits BusinessUnit[]       @relation("BusinessUnitOwner")
+  deputyBusinessUnits BusinessUnit[]      @relation("BusinessUnitDeputy")
   businessUnitScopes BusinessUnitMember[]
 
   @@unique([organizationId, userId])
   @@map("organization_members")
+}
+
+/// An invitation to join an organization, sent by e-mail to a person who may
+/// not have an account yet. It carries the role and the departments the person
+/// will have. Only a hash of the link's secret is stored; the link is spent
+/// once (acceptedAt), can be withdrawn (revokedAt) and lapses at expiresAt.
+model OrganizationInvitation {
+  id               String           @id @default(cuid())
+  organizationId   String
+  /// Lower-cased address the invitation was sent to; only that account can accept it.
+  email            String
+  role             OrganizationRole @default(MEMBER)
+  /// Departments the person will be limited to; empty means the whole organization.
+  businessUnitIds  String[]         @default([])
+  /// SHA-256 of the secret in the e-mailed link (hex). The secret itself is never stored.
+  tokenHash        String           @unique
+  /// The user who sent it (kept as an id so removing that user keeps the record).
+  invitedById      String?
+  expiresAt        DateTime
+  acceptedAt       DateTime?
+  acceptedMemberId String?
+  revokedAt        DateTime?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  organization        Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  ownedBusinessUnits  BusinessUnit[] @relation("BusinessUnitOwnerInvitation")
+  deputyBusinessUnits BusinessUnit[] @relation("BusinessUnitDeputyInvitation")
+
+  @@index([organizationId])
+  @@index([email])
+  @@map("organization_invitations")
 }
 
 // ============================================================
@@ -283,6 +317,12 @@ model BusinessUnit {
   parentId       String?
   /// The member who owns this department, if named. SetNull on delete.
   ownerId        String?
+  /// A person invited but not yet joined, named as owner. Moved to ownerId
+  /// when the invitation is accepted. SetNull on delete.
+  ownerInvitationId  String?
+  /// A second, deputy owner: a member, or a pending invitee until they join.
+  deputyOwnerId      String?
+  deputyInvitationId String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
@@ -290,6 +330,9 @@ model BusinessUnit {
   parent       BusinessUnit?        @relation("BusinessUnitParent", fields: [parentId], references: [id], onDelete: SetNull)
   children     BusinessUnit[]       @relation("BusinessUnitParent")
   owner        OrganizationMember?  @relation("BusinessUnitOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  ownerInvitation  OrganizationInvitation? @relation("BusinessUnitOwnerInvitation", fields: [ownerInvitationId], references: [id], onDelete: SetNull)
+  deputyOwner      OrganizationMember?     @relation("BusinessUnitDeputy", fields: [deputyOwnerId], references: [id], onDelete: SetNull)
+  deputyInvitation OrganizationInvitation? @relation("BusinessUnitDeputyInvitation", fields: [deputyInvitationId], references: [id], onDelete: SetNull)
   aiSystems    AISystem[]
   members      BusinessUnitMember[]
 

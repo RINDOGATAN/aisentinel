@@ -2,6 +2,10 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { z } from "zod";
+import {
+  defaultBusinessUnitId,
+  loadBusinessUnitScope,
+} from "@/server/services/business-units/scope";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { TRPCError } from "@trpc/server";
 import { assertNotOnHold } from "../../services/legal-hold";
@@ -204,6 +208,9 @@ export const vendorRouter = createTRPCRouter({
           system = await tx.aISystem.create({
             data: {
               organizationId: ctx.organization.id,
+              // A department-limited member's system stays in their own view.
+              businessUnitId:
+                defaultBusinessUnitId(await loadBusinessUnitScope(ctx.prisma, ctx.membership)) ?? undefined,
               name: input.systemName,
               technique: (input.systemTechnique || "OTHER") as never,
               role: (input.systemRole || "DEPLOYER") as never,

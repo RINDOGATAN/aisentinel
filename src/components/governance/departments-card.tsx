@@ -3,10 +3,15 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 /**
- * Departments (business units): create them, give each an owner and an optional
- * parent (one level of nesting), and limit a member to one or more of them. A
- * member with no department limit sees the whole organization, exactly as before
- * departments existed.
+ * Departments (business units): create them, give each an owner, a deputy
+ * owner and an optional parent (one level of nesting, drawn as a tree), and
+ * assign people to one or more of them. A member with no department assigned
+ * sees the whole organization, exactly as before departments existed. Owners
+ * and admins always see the whole organization, and nobody changes their own
+ * access (both enforced by the businessUnit router).
+ *
+ * An owner or deputy can be a member or a colleague invited who has not
+ * joined yet; the invitation's ownership passes to them when they accept.
  *
  * Managing departments is an OWNER/ADMIN/AI_OFFICER action, enforced server-side
  * in the businessUnit router; the card is only shown to those roles.
@@ -20,7 +25,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import {
   Select,
@@ -37,19 +41,48 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { trpc } from "@/lib/trpc";
+import { departmentTree } from "@/lib/department-tree";
+import { DepartmentMultiSelect } from "./department-multi-select";
 
 const NONE = "__none__";
+
+/** A person who can own a department, as a Select value: "m:<memberId>" or "i:<invitationId>". */
+type Person = { kind: "member" | "invitation"; id: string; name: string; email: string };
+const personValue = (kind: "member" | "invitation", id: string | null) =>
+  id ? `${kind === "member" ? "m" : "i"}:${id}` : null;
+
+/** The owner pair for a Select value (exported for tests). */
+export function ownerFields(value: string, which: "owner" | "deputy") {
+  const memberKey = which === "owner" ? "ownerId" : "deputyOwnerId";
+  const inviteKey = which === "owner" ? "ownerInvitationId" : "deputyInvitationId";
+  if (value.startsWith("m:")) return { [memberKey]: value.slice(2), [inviteKey]: null };
+  if (value.startsWith("i:")) return { [memberKey]: null, [inviteKey]: value.slice(2) };
+  return { [memberKey]: null, [inviteKey]: null };
+}
 
 type Department = {
   id: string;
   name: string;
   parentId: string | null;
   ownerId: string | null;
+  ownerInvitationId: string | null;
   ownerName: string | null;
+  ownerPending: boolean;
+  deputyOwnerId: string | null;
+  deputyInvitationId: string | null;
+  deputyName: string | null;
+  deputyPending: boolean;
   systemCount: number;
   memberCount: number;
 };
-type Member = { id: string; role: string; name: string | null; email: string; businessUnitIds: string[] };
+type Member = {
+  id: string;
+  role: string;
+  name: string | null;
+  email: string;
+  businessUnitIds: string[];
+  locked: "self" | "role" | null;
+};
 
 export function DepartmentsCard({ organizationId }: { organizationId: string }) {
   const t = useTranslations("departments");
@@ -57,6 +90,8 @@ export function DepartmentsCard({ organizationId }: { organizationId: string }) 
   const { data } = trpc.businessUnit.manage.useQuery({ organizationId });
   const departments = (data?.departments ?? []) as Department[];
   const members = (data?.members ?? []) as Member[];
+  const { data: peopleData } = trpc.team.people.useQuery({ organizationId });
+  const people = (peopleData ?? []) as Person[];
   const refresh = () => {
     void utils.businessUnit.manage.invalidate({ organizationId });
     void utils.businessUnit.listForScope.invalidate({ organizationId });
@@ -64,7 +99,7 @@ export function DepartmentsCard({ organizationId }: { organizationId: string }) 
 
   const [name, setName] = useState("");
   const [parentId, setParentId] = useState<string>(NONE);
-  const [ownerId, setOwnerId] = useState<string>(NONE);
+  const [owner, setOwner] = useState<string>(NONE);
   const [editing, setEditing] = useState<Department | null>(null);
   const [deleting, setDeleting] = useState<Department | null>(null);
 
@@ -73,7 +108,7 @@ export function DepartmentsCard({ organizationId }: { organizationId: string }) 
       toast.success(t("created"));
       setName("");
       setParentId(NONE);
-      setOwnerId(NONE);
+      setOwner(NONE);
       refresh();
     },
     onError: (e) => toast.error(e.message),
@@ -88,7 +123,6 @@ export function DepartmentsCard({ organizationId }: { organizationId: string }) 
 
   // Only top-level departments can be a parent (one level of nesting).
   const parents = departments.filter((d) => d.parentId === null);
-  const memberName = (m: Member) => m.name ?? m.email;
 
   return (
     <Card>
@@ -105,21 +139,19 @@ export function DepartmentsCard({ organizationId }: { organizationId: string }) 
           {departments.length === 0 && (
             <p className="text-sm text-muted-foreground">{t("empty")}</p>
           )}
-          {departments.map((d) => (
-            <div key={d.id} className="flex flex-wrap items-center gap-3 p-2 rounded border border-border">
+          {departmentTree(departments).map(({ department: d, depth }) => (
+            <div
+              key={d.id}
+              data-testid="department-row"
+              data-depth={depth}
+              className={`flex flex-wrap items-center gap-3 p-2 rounded border border-border ${depth === 1 ? "ml-4 sm:ml-6 border-l-2 border-l-primary/40" : ""}`}
+            >
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium truncate">
-                  {d.name}
-                  {d.parentId && (
-                    <span className="text-muted-foreground font-normal">
-                      {" "}
-                      · {departments.find((p) => p.id === d.parentId)?.name}
-                    </span>
-                  )}
-                </p>
-                <p className="text-xs text-muted-foreground truncate">
+                <p className="text-sm font-medium break-words">{d.name}</p>
+                <p className="text-xs text-muted-foreground break-words">
                   {t("counts", { systems: d.systemCount, members: d.memberCount })}
-                  {d.ownerName ? ` · ${t("ownedBy", { name: d.ownerName })}` : ""}
+                  {d.ownerName ? ` · ${t("ownedBy", { name: d.ownerName })}${d.ownerPending ? ` (${t("pendingShort")})` : ""}` : ""}
+                  {d.deputyName ? ` · ${t("deputyBy", { name: d.deputyName })}${d.deputyPending ? ` (${t("pendingShort")})` : ""}` : ""}
                 </p>
               </div>
               <Button variant="ghost" size="icon" aria-label={t("edit")} onClick={() => setEditing(d)}>
@@ -164,19 +196,14 @@ export function DepartmentsCard({ organizationId }: { organizationId: string }) 
                 ))}
               </SelectContent>
             </Select>
-            <Select value={ownerId} onValueChange={setOwnerId}>
-              <SelectTrigger className="sm:w-44" aria-label={t("owner")}>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={NONE}>{t("noOwner")}</SelectItem>
-                {members.map((m) => (
-                  <SelectItem key={m.id} value={m.id}>
-                    {memberName(m)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <PersonSelect
+              people={people}
+              value={owner}
+              onChange={setOwner}
+              noneLabel={t("noOwner")}
+              ariaLabel={t("owner")}
+              className="sm:w-44"
+            />
             <Button
               disabled={!name.trim() || create.isPending}
               onClick={() =>
@@ -184,7 +211,7 @@ export function DepartmentsCard({ organizationId }: { organizationId: string }) 
                   organizationId,
                   name: name.trim(),
                   parentId: parentId === NONE ? null : parentId,
-                  ownerId: ownerId === NONE ? null : ownerId,
+                  ...ownerFields(owner, "owner"),
                 })
               }
             >
@@ -237,7 +264,7 @@ export function DepartmentsCard({ organizationId }: { organizationId: string }) 
           organizationId={organizationId}
           department={editing}
           parents={parents.filter((p) => p.id !== editing.id)}
-          members={members}
+          people={people}
           onClose={() => setEditing(null)}
           onSaved={() => {
             setEditing(null);
@@ -269,43 +296,81 @@ function MemberAccess({
     onError: (e) => toast.error(e.message),
   });
 
-  const toggle = (member: Member, departmentId: string, checked: boolean) => {
-    const next = checked
-      ? [...member.businessUnitIds, departmentId]
-      : member.businessUnitIds.filter((id) => id !== departmentId);
-    setScope.mutate({ organizationId, memberId: member.id, businessUnitIds: next });
-  };
-
   return (
     <div className="space-y-3">
       <div>
         <p className="text-sm font-medium">{t("access.title")}</p>
-        <p className="text-xs text-muted-foreground">{t("access.description")}</p>
+        <p className="text-sm text-muted-foreground">{t("access.description")}</p>
       </div>
-      {members.map((m) => (
-        <div key={m.id} className="rounded border border-border p-2">
-          <p className="text-sm font-medium truncate">{m.name ?? m.email}</p>
-          <p className="text-xs text-muted-foreground mb-2">
-            {m.businessUnitIds.length === 0 ? t("access.wholeOrg") : t("access.limited", { count: m.businessUnitIds.length })}
-          </p>
-          <div className="flex flex-wrap gap-x-4 gap-y-1.5">
-            {departments.map((d) => {
-              const id = `bu-${m.id}-${d.id}`;
-              return (
-                <label key={d.id} htmlFor={id} className="flex items-center gap-1.5 text-sm">
-                  <Checkbox
-                    id={id}
-                    checked={m.businessUnitIds.includes(d.id)}
-                    onCheckedChange={(v) => toggle(m, d.id, v === true)}
-                  />
-                  {d.name}
-                </label>
-              );
-            })}
+      {members.map((m) => {
+        const label = m.name ?? m.email;
+        return (
+          <div
+            key={m.id}
+            className="flex flex-col sm:flex-row sm:items-center gap-2 rounded border border-border p-2"
+            data-testid="member-access"
+          >
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-medium truncate">{label}</p>
+              {m.locked && (
+                <p className="text-xs text-muted-foreground">
+                  {m.locked === "self" ? t("access.selfLocked") : t("access.roleLocked")}
+                </p>
+              )}
+            </div>
+            <DepartmentMultiSelect
+              departments={departments}
+              value={m.businessUnitIds}
+              disabled={!!m.locked || setScope.isPending}
+              onChange={(next) => setScope.mutate({ organizationId, memberId: m.id, businessUnitIds: next })}
+              ariaLabel={t("access.choose", { name: label })}
+              className="sm:w-56"
+            />
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
+  );
+}
+
+/** Owner or deputy: a member, or a colleague invited who has not joined yet. */
+function PersonSelect({
+  people,
+  value,
+  onChange,
+  noneLabel,
+  ariaLabel,
+  className,
+  exclude,
+}: {
+  people: Person[];
+  value: string;
+  onChange: (value: string) => void;
+  noneLabel: string;
+  ariaLabel: string;
+  className?: string;
+  exclude?: string;
+}) {
+  const t = useTranslations("departments");
+  return (
+    <Select value={value} onValueChange={onChange}>
+      <SelectTrigger className={className} aria-label={ariaLabel}>
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value={NONE}>{noneLabel}</SelectItem>
+        {people
+          .filter((p) => personValue(p.kind, p.id) !== exclude)
+          .map((p) => {
+            const v = personValue(p.kind, p.id)!;
+            return (
+              <SelectItem key={v} value={v}>
+                {p.kind === "invitation" ? t("invitedName", { name: p.name }) : p.name}
+              </SelectItem>
+            );
+          })}
+      </SelectContent>
+    </Select>
   );
 }
 
@@ -313,21 +378,29 @@ function EditDepartmentDialog({
   organizationId,
   department,
   parents,
-  members,
+  people,
   onClose,
   onSaved,
 }: {
   organizationId: string;
   department: Department;
   parents: Department[];
-  members: Member[];
+  people: Person[];
   onClose: () => void;
   onSaved: () => void;
 }) {
   const t = useTranslations("departments");
   const [name, setName] = useState(department.name);
   const [parentId, setParentId] = useState<string>(department.parentId ?? NONE);
-  const [ownerId, setOwnerId] = useState<string>(department.ownerId ?? NONE);
+  const [owner, setOwner] = useState<string>(
+    personValue("member", department.ownerId) ?? personValue("invitation", department.ownerInvitationId) ?? NONE,
+  );
+  const [deputy, setDeputy] = useState<string>(
+    personValue("member", department.deputyOwnerId) ??
+      personValue("invitation", department.deputyInvitationId) ??
+      NONE,
+  );
+  const sameAsOwner = owner !== NONE && owner === deputy;
 
   const update = trpc.businessUnit.update.useMutation({
     onSuccess: () => {
@@ -371,19 +444,27 @@ function EditDepartmentDialog({
           </div>
           <div className="space-y-1">
             <Label>{t("owner")}</Label>
-            <Select value={ownerId} onValueChange={setOwnerId}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={NONE}>{t("noOwner")}</SelectItem>
-                {members.map((m) => (
-                  <SelectItem key={m.id} value={m.id}>
-                    {m.name ?? m.email}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <PersonSelect
+              people={people}
+              value={owner}
+              onChange={setOwner}
+              noneLabel={t("noOwner")}
+              ariaLabel={t("owner")}
+              className="w-full"
+            />
+          </div>
+          <div className="space-y-1">
+            <Label>{t("deputy")}</Label>
+            <PersonSelect
+              people={people}
+              value={deputy}
+              onChange={setDeputy}
+              noneLabel={t("noDeputy")}
+              ariaLabel={t("deputy")}
+              className="w-full"
+              exclude={owner === NONE ? undefined : owner}
+            />
+            {sameAsOwner && <p className="text-xs text-destructive">{t("sameOwner")}</p>}
           </div>
         </div>
         <DialogFooter>
@@ -391,14 +472,15 @@ function EditDepartmentDialog({
             {t("cancel")}
           </Button>
           <Button
-            disabled={!name.trim() || update.isPending}
+            disabled={!name.trim() || update.isPending || sameAsOwner}
             onClick={() =>
               update.mutate({
                 organizationId,
                 id: department.id,
                 name: name.trim(),
                 parentId: parentId === NONE ? null : parentId,
-                ownerId: ownerId === NONE ? null : ownerId,
+                ...ownerFields(owner, "owner"),
+                ...ownerFields(deputy, "deputy"),
               })
             }
           >

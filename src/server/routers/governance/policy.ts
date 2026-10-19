@@ -153,7 +153,29 @@ export const policyRouter = createTRPCRouter({
       }
 
       const assignment = (await resolvePolicyAssignments(ctx.prisma, ctx.organization.id, [policy])).get(policy.id)!;
-      return { ...policy, ...assignment, organizationName: ctx.organization.name };
+
+      // People are shown by name (else e-mail), never by id; only members of
+      // this organization are looked up.
+      const userIds = [
+        ...new Set([policy.createdBy, policy.approvedBy, ...policy.versions.map((v) => v.createdBy)].filter((x): x is string => !!x)),
+      ];
+      const people = userIds.length
+        ? await ctx.prisma.organizationMember.findMany({
+            where: { organizationId: ctx.organization.id, userId: { in: userIds } },
+            select: { userId: true, user: { select: { name: true, email: true } } },
+          })
+        : [];
+      const nameOf = new Map(people.map((p) => [p.userId, p.user.name || p.user.email || null]));
+      const personName = (id: string | null) => (id ? nameOf.get(id) ?? null : null);
+
+      return {
+        ...policy,
+        ...assignment,
+        organizationName: ctx.organization.name,
+        createdByName: personName(policy.createdBy),
+        approvedByName: personName(policy.approvedBy),
+        versions: policy.versions.map((v) => ({ ...v, createdByName: personName(v.createdBy) })),
+      };
     }),
 
   /**

@@ -1408,7 +1408,10 @@
     "intervalHint": "El Reglamento de IA de la UE no fija un plazo de revisión para las políticas internas de IA. Elige el que convenga a la organización: al publicar una versión, la siguiente fecha de revisión se calcula con él.",
     "suggestLead": "La asistencia de IA puede sugerir cambios. No cambia nada hasta que tú edites el texto.",
     "suggestionsTitle": "Cambios sugeridos",
-    "suggestionsHint": "De la asistencia de IA. Comprueba cada uno y aplica solo lo que convenga a la organización."
+    "suggestionsHint": "De la asistencia de IA. Comprueba cada uno y aplica solo lo que convenga a la organización.",
+    "labelApprovedBy": "Aprobada por",
+    "labelCreatedBy": "Creada por",
+    "unknown": "Antiguo miembro"
   },
   "shadowAi": {
     "title": "Herramientas de IA en uso",
@@ -6799,7 +6802,7 @@
     "systems": "Sistemas de IA a los que se aplica",
     "notSet": "Sin indicar",
     "noContent": "Todavía no hay texto.",
-    "draftNotice": "Borrador: no aprobado y sin vigor.",
+    "draftNotice": "Borrador: no aprobado ni en vigor.",
     "statusLabel": {
       "DRAFT": "Borrador",
       "UNDER_REVIEW": "En revisión",

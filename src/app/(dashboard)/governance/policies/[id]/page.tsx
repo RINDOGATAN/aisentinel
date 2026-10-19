@@ -592,6 +592,16 @@ export default function PolicyDetailPage() {
                 <p className="text-sm text-muted-foreground">{t("labelApprovedAt")}</p>
                 <p className="font-medium text-sm">{policy.approvedAt ? formatDate(policy.approvedAt) : t("notYetApproved")}</p>
               </div>
+              <div>
+                <p className="text-sm text-muted-foreground">{t("labelApprovedBy")}</p>
+                <p className="font-medium text-sm">
+                  {policy.approvedBy ? policy.approvedByName ?? t("unknown") : t("notYetApproved")}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">{t("labelCreatedBy")}</p>
+                <p className="font-medium text-sm">{policy.createdByName ?? t("unknown")}</p>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -720,10 +730,10 @@ export default function PolicyDetailPage() {
                             )}
                           </div>
                           <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                            {version.createdBy && (
+                            {version.createdByName && (
                               <span className="flex items-center gap-1">
                                 <User className="w-3 h-3" />
-                                {version.createdBy}
+                                {version.createdByName}
                               </span>
                             )}
                             <span className="flex items-center gap-1">

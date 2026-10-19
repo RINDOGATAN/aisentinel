@@ -51,6 +51,7 @@ import { useDebounce } from "@/hooks/use-debounce";
 import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
 import { formatRelativeTime } from "@/lib/utils";
 import { STATUS_OUTLINE } from "@/components/ui/status-note";
+import { systemReference } from "@/lib/system-reference";
 
 const statusColors: Record<string, string> = {
   DRAFT: "border-muted-foreground text-muted-foreground",
@@ -223,6 +224,14 @@ export default function AIRegistryPage() {
         />
       ) : (
       <>
+      {/* What a system is, as against a tool people use. */}
+      <p className="text-sm">
+        {t("systemVsTool")}{" "}
+        <Link href="/governance/shadow-ai" className="text-primary underline hover:no-underline">
+          {t("toolsLink")}
+        </Link>
+      </p>
+
       {/* Stats Grid */}
       <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
         <Card>
@@ -367,6 +376,8 @@ export default function AIRegistryPage() {
                             <span>{t("countDataSources", { count: system._count?.dataSources ?? 0 })}</span>
                           </div>
                           <p className="text-xs text-muted-foreground mt-2">
+                            {t("reference", { reference: systemReference(system.id) })}
+                            {" · "}
                             {tc("updatedWhen", { when: formatRelativeTime(system.updatedAt, locale) })}
                           </p>
                         </CardContent>

@@ -172,7 +172,10 @@
     "countDataSources": "{count} data sources",
     "exportRegisterPdf": "AI system register (PDF)",
     "exportModelInventoryPdf": "Model inventory (PDF)",
-    "registerShort": "Register"
+    "registerShort": "Register",
+    "systemVsTool": "An AI system is AI the organisation builds or runs as part of a process. An AI tool is a ready-made product people use, such as a chat assistant or a document converter: record those under AI tools in use.",
+    "reference": "Reference {reference}",
+    "toolsLink": "Go to AI tools in use"
   },
   "aiRegistryNew": {
     "title": "Register AI System",
@@ -187,7 +190,7 @@
     "descriptionPlaceholder": "Describe what this AI system does, its capabilities, and intended use...",
     "roleLabel": "Organization Role",
     "rolePlaceholder": "Select role",
-    "roleHelp": "Your organization's role under the EU AI Act",
+    "roleHelp": "Provider: the organisation develops the system, or has it developed, and offers it or puts it into use under its own name or trademark (Art. 3(3)). Deployer: the organisation uses a system under its own authority (Art. 3(4)). One organisation can be both.",
     "statusLabel": "Lifecycle Status",
     "statusPlaceholder": "Select status",
     "vendorLabel": "Vendor",
@@ -195,14 +198,14 @@
     "vendorHelp": "Link this system to a vendor from your vendor registry",
     "purposeLabel": "Intended Purpose",
     "purposePlaceholder": "Describe the intended purpose and use cases for this AI system...",
-    "purposeHelp": "Required for high-risk systems under the EU AI Act (Art. 13)",
+    "purposeHelp": "The use the system is intended for, including the specific context and conditions of use (Art. 3(12)). The Act sets no required wording, and nothing in this product rejects an entry. For a high-risk system, the EU database asks for a description of the intended purpose (Annex VIII): make it specific and consistent with the instructions for use.",
     "businessOwnerLabel": "Business Owner",
     "businessOwnerPlaceholder": "e.g., Product Team Lead",
     "technicalOwnerLabel": "Technical Owner",
     "technicalOwnerPlaceholder": "e.g., ML Engineering Lead",
     "processesPersonalDataLabel": "This system processes personal data",
     "personalDataWarning": "A DPIA or FRIA may be required. You can link this system to DPO Central data assets after creation.",
-    "suggestionsLead": "This account can fill in {count, plural, one {one field} other {# fields}} for you. Each one says where the value comes from, and nothing is entered until you take it.",
+    "suggestionsLead": "We can fill in {count, plural, one {one field} other {# fields}} from what the registry already holds. Each shows its source. Review and take each one.",
     "suggestionsApplyAll": "Use every suggestion",
     "suggestionOffer": "Suggested: {value}, {basis}.",
     "suggestionApplied": "Taken from a suggestion, {basis}. Edit it freely.",
@@ -224,7 +227,59 @@
     "registering": "Registering...",
     "registerSystem": "Register System",
     "toastSuccess": "AI system registered successfully",
-    "toastError": "Failed to register AI system"
+    "toastError": "Failed to register AI system",
+    "roleDecide": {
+      "open": "Help me decide",
+      "close": "Close",
+      "q": {
+        "developed": "Did the organisation develop this system, or have it developed for it?",
+        "ownName": "Does the organisation offer it to others, or put it into use itself, under its own name or trademark (paid or free)?",
+        "usesIt": "Does the organisation use it in its own work, under its own authority?"
+      },
+      "outcome": {
+        "incomplete": "Answer the three questions to see a suggestion.",
+        "provider": "Suggested: provider.",
+        "providerAndDeployer": "Suggested: provider. The organisation also uses the system, so the deployer duties apply as well.",
+        "deployer": "Suggested: deployer.",
+        "neither": "Neither role fits these answers. The organisation may be an importer or a distributor (Art. 3(6) and 3(7)), or outside the supply chain of this system."
+      },
+      "note": "A deployer that puts its name or trademark on a high-risk system, makes a substantial modification to it, or changes its intended purpose so that it becomes high-risk, takes on the provider's duties (Art. 25(1)).",
+      "use": "Use this role"
+    },
+    "purposeBuilder": {
+      "open": "Write it with five questions",
+      "close": "Close the questions",
+      "what": {
+        "label": "What does it do?",
+        "placeholder": "Ranks incoming job applications against the requirements of the role"
+      },
+      "who": {
+        "label": "Who uses it?",
+        "placeholder": "The recruitment team"
+      },
+      "where": {
+        "label": "Where, and in what context?",
+        "placeholder": "Hiring for office roles in Spain and Portugal"
+      },
+      "decisions": {
+        "label": "Which decisions does it support?",
+        "placeholder": "Which candidates are invited to an interview; a recruiter takes the decision"
+      },
+      "notFor": {
+        "label": "What must it not be used for?",
+        "placeholder": "Final hiring decisions, or assessing current employees"
+      },
+      "frame": {
+        "who": "Used by: {value}",
+        "where": "Context of use: {value}",
+        "decisions": "Decisions it supports: {value}",
+        "notFor": "It must not be used for: {value}"
+      },
+      "example": "Example: Ranks incoming job applications against the requirements of the role. Used by: the recruitment team. Context of use: hiring for office roles in Spain and Portugal. Decisions it supports: which candidates are invited to an interview; a recruiter takes the decision. It must not be used for: final hiring decisions, or assessing current employees.",
+      "preview": "The statement",
+      "use": "Put this in the field",
+      "replaces": "This replaces what the field holds. You can edit it afterwards."
+    }
   },
   "aiRegistryDetail": {
     "notFound": "AI system not found",
@@ -320,13 +375,13 @@
     "modelProviderLabel": "Provider",
     "modelProviderPlaceholder": "e.g. OpenAI, Anthropic",
     "modelTypeLabel": "Model Type",
-    "modelTypePlaceholder": "e.g. LLM, Classifier",
+    "modelTypePlaceholder": "Select a type",
     "modelVersionLabel": "Version",
     "modelVersionPlaceholder": "e.g. 1.0, 2024-03",
     "modelTrainingDataLabel": "Training Data Summary",
-    "modelTrainingDataPlaceholder": "Describe the training data used...",
+    "modelTrainingDataPlaceholder": "Where the data came from, the period it covers, known gaps",
     "modelLimitationsLabel": "Known Limitations",
-    "modelLimitationsPlaceholder": "Describe any known limitations...",
+    "modelLimitationsPlaceholder": "Where it performs worse, what it should not be used for",
     "addDataSourceDialogTitle": "Add Data Source",
     "editDataSourceDialogTitle": "Edit Data Source",
     "addDataSourceDialogDescription": "Add a new data source to this AI system.",
@@ -345,7 +400,36 @@
     "toastDataSourceUpdated": "Data source updated",
     "toastDataSourceDeleted": "Data source deleted",
     "tabAdmt": "California ADMT",
-    "tabEvidence": "Evidence"
+    "tabEvidence": "Evidence",
+    "reference": "Reference {reference}",
+    "checklist": {
+      "title": "Registration: {done} of {total}",
+      "required": "Required: {done} of {total}",
+      "hint": "The required items make the registration complete. The recommended items describe how the system is built and what data it uses.",
+      "complete": "Every required item is in place.",
+      "requiredLabel": "Required",
+      "laterLabel": "Required, set in the risk-level step",
+      "recommendedLabel": "Recommended",
+      "fill": "Fill in",
+      "item": {
+        "description": "Description",
+        "purpose": "Intended purpose",
+        "businessOwner": "Business owner",
+        "technicalOwner": "Technical owner",
+        "riskClassification": "Risk level",
+        "models": "Models and components",
+        "dataSources": "Data sources",
+        "dataFlow": "Data flow (who receives the data)"
+      }
+    },
+    "components": {
+      "title": "AI tools used as components",
+      "hint": "Approved AI tools added to this system from the AI tools in use page."
+    },
+    "modelTypeOtherLabel": "Describe the type",
+    "modelTypeOtherPlaceholder": "e.g. graph neural network",
+    "modelTrainingDataHelp": "Where the data came from, the period it covers, how it was selected and cleaned, and its known gaps (groups, places or cases it under-represents). For a model supplied by a vendor, say what the vendor states.",
+    "modelLimitationsHelp": "Where the model performs worse or should not be used: inputs, languages or groups it handles poorly, error rates you know of, and conditions it was not tested in."
   },
   "transparency": {
     "title": "Art. 50 Transparency Obligations",
@@ -387,10 +471,10 @@
     "currentClassification": "Current Classification",
     "riskLevelLabel": "Risk Level",
     "riskLevelPlaceholder": "Select risk level",
-    "riskDescriptionUnacceptable": "Prohibited AI practices (Art. 5): social scoring, real-time biometric identification, manipulation.",
-    "riskDescriptionHigh": "High-risk AI systems (Art. 6, Annex III): biometrics, critical infrastructure, education, employment, law enforcement.",
-    "riskDescriptionLimited": "Limited risk requiring transparency obligations (Art. 50): chatbots, deepfakes, emotion recognition.",
-    "riskDescriptionMinimal": "Minimal risk with no specific regulatory obligations beyond voluntary codes of conduct.",
+    "riskDescriptionUnacceptable": "Unacceptable: a practice prohibited by Art. 5, such as social scoring or manipulation that causes significant harm. It may not be used.",
+    "riskDescriptionHigh": "High: a system used in an area listed in Annex III (unless the Art. 6(3) exception applies), or a safety component of a product under Annex I (Art. 6). It carries the most duties.",
+    "riskDescriptionLimited": "Limited: not high-risk, but subject to the transparency duties of Art. 50, such as telling people they are dealing with AI or marking generated content.",
+    "riskDescriptionMinimal": "Minimal: none of the above. The Act sets no specific duties for the system itself; AI literacy (Art. 4) still applies to the organisation.",
     "annexIIICategoryLabel": "Annex III Category",
     "annexIIICategoryPlaceholder": "Select category (optional)",
     "rationaleLabel": "Rationale",
@@ -422,6 +506,20 @@
       "HIGH": "high risk",
       "LIMITED": "limited risk",
       "MINIMAL": "minimal risk"
+    },
+    "levelsTitle": "The four risk levels",
+    "levelsNote": "\"Limited\" and \"minimal\" are common shorthand, not terms of the Act.",
+    "toClassifyTitle": "Still without a risk level ({count})",
+    "toClassifyHint": "Open each one with Classify and record its level.",
+    "classifiedTitle": "Classified ({count})",
+    "allClassified": "Every system has a risk level.",
+    "suggestion": {
+      "use": "Use the suggested level"
+    },
+    "reasons": {
+      "title": "Standard reasons",
+      "hint": "Pick the reasons that fit. Each one adds its sentence to the rationale, which you can edit.",
+      "added": "Added"
     }
   },
   "quickstart": {
@@ -955,7 +1053,8 @@
     "systemsCount": "{count, plural, one {# system} other {# systems}}",
     "assessmentsCount": "{count, plural, one {# assessment} other {# assessments}}",
     "contractExpiresInDays": "Contract expires in {count, plural, one {# day} other {# days}}",
-    "catalogSkillDescription": "Search AI vendors from the VendorWatch database and auto-fill your local vendor records with compliance data."
+    "catalogSkillDescription": "Search AI vendors from the VendorWatch database and auto-fill your local vendor records with compliance data.",
+    "definition": "A vendor is a company that supplies AI the organisation uses. When an AI tool is approved, its maker becomes a vendor."
   },
   "vendorsNew": {
     "title": "Add Vendor",
@@ -1223,20 +1322,20 @@
     "archiving": "Archiving..."
   },
   "shadowAi": {
-    "title": "Unapproved AI tools",
-    "subtitle": "Shadow AI discovery: find and manage the AI tools people use without approval",
+    "title": "AI tools in use",
+    "subtitle": "Shadow AI: the AI tools people in the organisation use, from reports and reviews. Decide on each one and register the approved ones.",
     "premiumBadge": "Premium",
     "enableShadowAi": "Enable Shadow AI Discovery",
     "reportAiTool": "Report AI Tool",
     "statsTotalReports": "Total Reports",
-    "statsDiscovered": "Discovered",
+    "statsDiscovered": "Reported",
     "statsUnderReview": "Under Review",
     "statsProhibited": "Prohibited",
     "searchPlaceholder": "Search reports...",
     "emptyTitle": "No reports found",
     "emptySearchHint": "Try adjusting your search terms",
     "emptyHint": "Start by reporting an AI tool in use",
-    "statusDiscovered": "Discovered",
+    "statusDiscovered": "Reported",
     "statusUnderReview": "Under Review",
     "statusApproved": "Approved",
     "statusProhibited": "Prohibited",
@@ -1245,7 +1344,51 @@
     "gateTitle": "Shadow AI discovery",
     "gateBody": "Record the AI tools people use without approval, whether reported by staff or found in a review. Each one is matched against a catalog of common AI tools, triaged (under review, approved or prohibited), and approved tools can be registered in the AI inventory in one step.",
     "gateSkillDescription": "Record unapproved AI tools, match them against a catalog of common AI tools, triage them and register the approved ones in the inventory.",
-    "tabAll": "All ({count})"
+    "tabAll": "All ({count})",
+    "definition": "An AI tool is a ready-made product people use, such as a chat assistant or a document converter. An AI system is AI the organisation builds or runs as part of a process. A tool becomes a system when the organisation builds it into a process or decides to govern it as one: register it as a new system, or add it to an existing system as a component.",
+    "noDetection": "This page does not detect anything by itself. Each record comes from a colleague's report or from a review you carry out, and is matched to a catalogue of common AI tools.",
+    "howToFind": {
+      "title": "How to find AI tools in use",
+      "survey": "Ask colleagues: send the short survey below.",
+      "expenses": "Expense and card records: look for subscriptions to AI products.",
+      "sso": "Single sign-on and identity logs: look for sign-ins to AI services.",
+      "extensions": "Browser extensions and installed software: look for AI assistants and plug-ins."
+    },
+    "survey": {
+      "title": "Survey for colleagues",
+      "text": "Which AI tools do you use for work? Please list each one, including free tools and personal accounts.\n1. The name of the tool (for example a chat assistant, a transcription or translation service, a writing or coding assistant).\n2. What you use it for.\n3. What information you put into it (for example client data, personal data, internal documents).\n4. Whether you use a work account, a personal account or no account.\n5. How often you use it.",
+      "copy": "Copy the survey",
+      "copied": "Survey copied."
+    },
+    "stages": {
+      "title": "How a tool moves",
+      "reported": {
+        "label": "Reported",
+        "text": "Someone has recorded that the tool is in use."
+      },
+      "underReview": {
+        "label": "Under review",
+        "text": "A person checks what it does, what data it receives and who supplies it."
+      },
+      "decided": {
+        "label": "Approved or prohibited",
+        "text": "The organisation decides whether people may use it."
+      },
+      "registered": {
+        "label": "Registered",
+        "text": "An approved tool is added to the AI inventory, as a new system or as a component of an existing one."
+      }
+    },
+    "tabToReview": "To review ({count})",
+    "tabApproved": "Approved ({count})",
+    "tabProhibited": "Prohibited ({count})",
+    "tabRegistered": "Registered ({count})",
+    "statsToReview": "Still to review",
+    "statsApproved": "Approved",
+    "statsRegistered": "Registered",
+    "reportedWhen": "Reported {when}",
+    "emptyTab": "No AI tool in this tab.",
+    "systemsLink": "Go to the AI systems"
   },
   "shadowAiNew": {
     "title": "Report AI Tool",
@@ -1287,27 +1430,27 @@
   },
   "shadowAiDetail": {
     "notFound": "Report not found",
-    "backToShadowAi": "Back to Shadow AI",
+    "backToShadowAi": "Back to AI tools in use",
     "startReview": "Start Review",
     "approve": "Approve",
     "prohibit": "Prohibit",
-    "registerAsAiSystem": "Register as AI System",
+    "registerAsAiSystem": "Register in the AI inventory",
     "approvedCtaTitle": "This tool has been approved",
-    "approvedCtaDescription": "Register it as an AI System to start governance tracking",
+    "approvedCtaDescription": "Register it as a new AI system, or add it to an existing system as a component.",
     "overviewTitle": "Overview",
     "labelUsageDescription": "Usage Description",
     "labelDepartment": "Department",
     "labelReportedBy": "Reported By",
-    "registeredSystemTitle": "Registered AI System",
+    "registeredSystemTitle": "Registered in",
     "toolInfoTitle": "Tool Info",
-    "registerDialogTitle": "Register as AI System",
-    "registerTabCreateNew": "Create New",
-    "registerTabLinkExisting": "Link Existing",
+    "registerDialogTitle": "Register in the AI inventory",
+    "registerTabCreateNew": "Register as a new system",
+    "registerTabLinkExisting": "Add to an existing system as a component",
     "toastReportUpdated": "Report updated",
     "toastReportUpdateError": "Failed to update report",
     "toastSystemCreatedAndRegistered": "System created and report registered",
     "toastRegisterError": "Failed to register",
-    "statusDiscovered": "Discovered",
+    "statusDiscovered": "Reported",
     "statusUnderReview": "Under Review",
     "statusApproved": "Approved",
     "statusProhibited": "Prohibited",
@@ -1322,7 +1465,7 @@
     "unknown": "Unknown",
     "labelReported": "Reported",
     "labelLastUpdated": "Last Updated",
-    "systemId": "ID: {id}",
+    "systemId": "Reference {id}",
     "labelVendor": "Vendor",
     "labelCategory": "Category",
     "labelWebsite": "Website",
@@ -1344,7 +1487,7 @@
     "placeholderVendorName": "e.g., OpenAI",
     "labelVendorWebsite": "Vendor Website",
     "placeholderVendorWebsite": "e.g., https://openai.com",
-    "registerLinkHint": "Link this shadow AI tool to an existing AI system in your registry.",
+    "registerLinkHint": "The tool becomes a component of the system you choose. It is listed on that system's page, and the system keeps its own reference number.",
     "labelAiSystem": "AI System",
     "placeholderSelectAiSystem": "Select an AI system",
     "registering": "Registering...",
@@ -1363,7 +1506,8 @@
       "TRANSCRIPTION_DICTATION": "Transcription and dictation",
       "VIDEO_AUDIO": "Video and audio",
       "WRITING_PRODUCTIVITY": "Writing and productivity"
-    }
+    },
+    "selectedSystemReference": "Reference of the chosen system: {reference}"
   },
   "vendorCatalog": {
     "title": "Vendor catalog",
@@ -1634,7 +1778,7 @@
     },
     "annexIv": {
       "title": "Annex IV technical documentation",
-      "description": "Draft the Annex IV technical-documentation skeleton from this system's registry facts. Gaps are marked for the owner to complete.",
+      "description": "The technical file the EU AI Act asks providers of high-risk systems to keep (Art. 11 and Annex IV). This drafts it from the record.",
       "copy": "Copy markdown",
       "copied": "Annex IV draft copied to the clipboard",
       "disclaimer": "A working draft from registry facts: the system owner must complete and review it before any use."
@@ -5347,7 +5491,7 @@
     "title": "Threat model",
     "subtitle": "Start from the system you are building, not from a framework. Say what it can see and do, and the things that could go wrong come with their controls and a test for each.",
     "start": "Start a threat model",
-    "loopHint": "Thirty minutes with the people who built it will tell you more than a seventy-question assessment.",
+    "loopHint": "About thirty minutes in a meeting with the people who built the system will tell you more than a seventy-question assessment.",
     "loop": {
       "map": "Map",
       "imagine": "Imagine",
@@ -5361,13 +5505,13 @@
     "scenarioCount": "{count} scenarios",
     "noControls": "No controls yet",
     "provenOf": "{proven}/{total} controls tested and passing",
-    "newTitle": "A thirty-minute threat model",
-    "newSubtitle": "Three screens. Nothing to write from scratch.",
+    "newTitle": "New threat model",
+    "newSubtitle": "Three screens, nothing to write from scratch. About thirty minutes in a meeting with the people who built the system.",
     "nameLabel": "What are you building?",
     "namePlaceholder": "Customer support agent, internal document assistant, coding agent",
     "summaryLabel": "In two lines, what does it do?",
     "summaryPlaceholder": "Reads customer records and order history, answers questions, and can issue refunds.",
-    "systemLabel": "Link it to a registered AI system",
+    "systemLabel": "Which AI system is this for?",
     "systemPlaceholder": "Optional",
     "systemNone": "Not linked",
     "sessionTitle": "Questions to ask the people who built it",
@@ -5472,8 +5616,10 @@
       "not-passing": "last test failed, was partial, or has gone stale"
     },
     "systemCardHint": "What could go wrong with this system, and whether the controls hold.",
-    "systemCardNone": "No threat model for this system yet. Thirty minutes with the people who built it is enough for the first draft.",
-    "systemCardOpen": "Open the threat model"
+    "systemCardNone": "No threat model for this system yet. About thirty minutes in a meeting with the people who built the system is enough for the first draft.",
+    "systemCardOpen": "Open the threat model",
+    "purpose": "A threat model lists what could go wrong with a system, with the controls and tests that answer each risk. The EU AI Act does not name it, but it supports the accuracy, robustness and cybersecurity duties for high-risk systems (Art. 15) and the work towards AIUC-1 and ISO/IEC 42001. It matters most to organisations that build AI.",
+    "systemHint": "Pick the system first: the name below is filled in from it. Leave it empty for something not registered yet."
   },
   "premiumShowcase": {
     "lockedHint": "Part of a premium module, sold for the kit at {price} a year. Activate a license to use it.",
@@ -5653,9 +5799,9 @@
         "do": "Register each AI system your organization uses and name who owns it."
       },
       "shadowAi": {
-        "label": "Unapproved AI tools",
-        "why": "Record the AI tools people already use without approval, then decide on each one.",
-        "do": "List the AI tools people use without approval, then decide on each one."
+        "label": "AI tools in use",
+        "why": "Record the AI tools people already use, then decide on each one.",
+        "do": "List the AI tools people use and decide on each one still to review."
       },
       "vendors": {
         "label": "Vendors",
@@ -5680,7 +5826,7 @@
       "vendorDueDiligence": {
         "label": "Vendor checks",
         "why": "Each vendor needs a completed review.",
-        "do": "Check each vendor: open it and complete its review."
+        "do": "Check each vendor: open it and answer its review (agreement, data location, certifications). About twenty minutes each."
       },
       "agentTesting": {
         "label": "Test your AI agents (AIUC-1)",
@@ -5772,7 +5918,7 @@
     },
     "views": {
       "dueDiligence": "Vendor checks",
-      "dueDiligenceHint": "Each vendor and its review. Open a vendor to complete its review.",
+      "dueDiligenceHint": "Each vendor and its review. The review asks about the agreement (a data processing agreement that covers AI use), where data is stored and processed, certifications, use of the organisation's data for training, retention, incident notice and subprocessors. What the vendor catalogue already states is filled in for you to confirm. Allow about twenty minutes per vendor, with the contract at hand.",
       "reviewed": "Review completed",
       "notReviewed": "Review to do",
       "transparency": "Telling people it is AI",
@@ -6284,7 +6430,7 @@
     "placeholder": "Search by name",
     "results": "Search results",
     "noResults": "Nothing found with that name.",
-    "namesOnly": "Searches names only: AI systems, vendors, policies, assessments, oversight gates, incidents and unapproved AI tools.",
+    "namesOnly": "Searches names only: AI systems, vendors, policies, assessments, oversight gates, incidents and AI tools in use.",
     "kinds": {
       "system": "AI systems",
       "vendor": "Vendors",
@@ -6292,7 +6438,7 @@
       "assessment": "Assessments",
       "gate": "Oversight gates",
       "incident": "Incidents",
-      "shadowAi": "Unapproved AI tools"
+      "shadowAi": "AI tools in use"
     }
   },
   "systemPicker": {

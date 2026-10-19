@@ -10,7 +10,8 @@
  * each step in the path config, not here.
  */
 
-import type { PrismaClient } from "@prisma/client";
+import type { PrismaClient, ShadowAIStatus } from "@prisma/client";
+import { STILL_TO_REVIEW } from "@/lib/ai-tool-triage";
 import type { PathCounts } from "@/components/guided/path-config";
 import { UNCONFIRMED_WHERE } from "@/server/services/provenance/summary";
 import { COUNTED_INCIDENT } from "@/server/services/incident/counted";
@@ -51,6 +52,10 @@ export async function loadPathCounts(
   ]);
   // Handled here too, so a failure while the counts below are awaited is not left unobserved.
   copied.catch(() => undefined);
+  // Systems the organisation provides (it builds them): the threat-model step
+  // is shown to these organisations. Kept apart for the same reason as above.
+  const providerSystemsCount = prisma.aISystem.count({ where: { ...org, role: "PROVIDER" } });
+  providerSystemsCount.catch(() => undefined);
 
   const [
     organization,
@@ -101,7 +106,10 @@ export async function loadPathCounts(
     prisma.aISystem.count({ where: { ...org, businessOwner: { not: null }, NOT: { businessOwner: "" } } }),
     prisma.aISystem.count({ where: { ...org, processesPersonalData: true } }),
     prisma.shadowAIReport.count({ where: org }),
-    prisma.shadowAIReport.count({ where: { ...org, status: "DISCOVERED" } }),
+    // Still to review: reported or under review, with no decision yet.
+    prisma.shadowAIReport.count({
+      where: { ...org, status: { in: [...STILL_TO_REVIEW] as ShadowAIStatus[] } },
+    }),
     prisma.aIVendor.count({ where: org }),
     prisma.aIVendor.count({ where: { ...org, assessments: { some: { status: "COMPLETED" } } } }),
     prisma.aIVendorAssessment.count({ where: org }),
@@ -135,6 +143,7 @@ export async function loadPathCounts(
     loadAgentTestingCounts(prisma, organizationId),
   ]);
   const [copiedSystemsPending, copiedVendorsPending, copiedGatesPending] = await copied;
+  const providerSystems = await providerSystemsCount;
 
   const settings = settingsObject(organization?.settings);
   const quickstart = settingsObject(settings.quickstart);
@@ -157,6 +166,7 @@ export async function loadPathCounts(
     vendors,
     vendorsAssessed,
     vendorAssessments,
+    providerSystems,
     classified,
     highRisk,
     highRiskAssessed,

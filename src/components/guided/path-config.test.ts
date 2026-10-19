@@ -57,6 +57,7 @@ const COMPLETE: PathCounts = {
   vendors: 2,
   vendorsAssessed: 2,
   vendorAssessments: 2,
+  providerSystems: 1,
   classified: 4,
   classificationsUnconfirmed: 0,
   highRisk: 1,
@@ -344,9 +345,10 @@ describe("the done rules", () => {
     expect(statusOf("systems", { systems: 3, systemsWithOwner: 3 })).toBe("done");
   });
 
-  it("shadow AI: untriaged reports keep it open", () => {
+  it("AI tools in use: tools still to review keep it open", () => {
     expect(statusOf("shadowAi", { shadowReports: 2, shadowReportsUntriaged: 1 })).toBe("started");
     expect(statusOf("shadowAi", { shadowReports: 2 })).toBe("done");
+    expect(statusOf("shadowAi", {})).toBe("todo");
   });
 
   it("vendors: one recorded vendor", () => {
@@ -374,6 +376,13 @@ describe("the done rules", () => {
   it("threat model: past draft", () => {
     expect(statusOf("threatModel", { threatModels: 1 })).toBe("started");
     expect(statusOf("threatModel", { threatModels: 1, threatModelsActive: 1 })).toBe("done");
+    expect(statusOf("threatModel", { providerSystems: 1 })).toBe("todo");
+  });
+
+  it("threat model: shown to organisations that build AI, or that already have one", () => {
+    expect(statusOf("threatModel", { systems: 3 })).toBe("hidden");
+    expect(statusOf("threatModel", { systems: 3, providerSystems: 1 })).toBe("todo");
+    expect(statusOf("threatModel", { systems: 3, threatModels: 1 })).toBe("started");
   });
 
   it("vendor due diligence: every vendor assessed", () => {
@@ -404,8 +413,10 @@ describe("the done rules", () => {
     const assess = PATH.stages.find((s) => s.id === "assess")!;
     expect(assess.steps.at(-1)?.id).toBe("agentTesting");
     expect(step("agentTesting").shownWhen).toBeTypeOf("function");
-    // Only this step is conditional: every other step shows for everyone.
-    expect(steps.filter((s) => s.shownWhen).map((s) => s.id)).toEqual(["agentTesting"]);
+    // Only these steps are conditional, and they close the stage: every other
+    // step shows for everyone.
+    expect(steps.filter((s) => s.shownWhen).map((s) => s.id)).toEqual(["threatModel", "agentTesting"]);
+    expect(assess.steps.slice(-2).map((s) => s.id)).toEqual(["threatModel", "agentTesting"]);
   });
 
   it("a hidden step is not counted, not offered next, and not in the 'Next step' walk", () => {
@@ -418,11 +429,23 @@ describe("the done rules", () => {
     const agentWaiting = evaluatePath(PATH, { ...COMPLETE, agentsReadyForAudit: 1 });
     expect(stageProgress(assess, agentWaiting)).toEqual({ done: 4, total: 5, state: "started" });
     expect(nextStep(PATH, agentWaiting)?.step.id).toBe("agentTesting");
-    // The walk: from vendor checks straight to oversight when hidden, through it when shown.
-    expect(stepAndFollowing(PATH, "vendorDueDiligence", noAgent)?.following?.step.id).toBe("oversight");
-    expect(stepAndFollowing(PATH, "vendorDueDiligence", agentWaiting)?.following?.step.id).toBe(
+    // The walk: from the threat model straight to oversight when agent testing
+    // is hidden, through it when shown.
+    expect(stepAndFollowing(PATH, "threatModel", noAgent)?.following?.step.id).toBe("oversight");
+    expect(stepAndFollowing(PATH, "threatModel", agentWaiting)?.following?.step.id).toBe(
       "agentTesting",
     );
+    // An organisation that builds no AI and has no threat model: vendor checks
+    // lead straight to oversight.
+    const noBuilder = evaluatePath(PATH, {
+      ...COMPLETE,
+      providerSystems: 0,
+      threatModels: 0,
+      threatModelsActive: 0,
+      agents: 0,
+    });
+    expect(noBuilder.threatModel).toBe("hidden");
+    expect(stepAndFollowing(PATH, "vendorDueDiligence", noBuilder)?.following?.step.id).toBe("oversight");
     // Reached by its address with no agent, the page still has its band.
     expect(stepAndFollowing(PATH, "agentTesting", noAgent)?.current.number).toBe("4.5");
     // While the statuses load, a conditional step is not shown.
@@ -532,7 +555,7 @@ describe("progress and the next step", () => {
     // Each counted step done moves it by the same share, rounded to a whole number.
     // With an agent in the inventory, so that every counted step is shown.
     for (let n = 1; n <= counted.length; n++) {
-      const statuses: PathStatuses = evaluatePath(PATH, { ...EMPTY_PATH_COUNTS, agents: 1 });
+      const statuses: PathStatuses = evaluatePath(PATH, { ...EMPTY_PATH_COUNTS, agents: 1, providerSystems: 1 });
       for (const s of counted.slice(0, n)) statuses[s.id] = "done";
       expect(overallPercent(PATH, statuses), `${n} done`).toBe(Math.round((n / counted.length) * 100));
     }
@@ -556,7 +579,8 @@ describe("the 'Next step' band", () => {
     const number = (id: string) => walk.find((e) => e.step.id === id)?.number;
     expect(number("quickstart")).toBe("1.1");
     expect(number("systems")).toBe("3.1");
-    expect(number("vendorDueDiligence")).toBe("4.4");
+    expect(number("vendorDueDiligence")).toBe("4.3");
+    expect(number("threatModel")).toBe("4.4");
     expect(number("board")).toBe("6.4");
   });
 

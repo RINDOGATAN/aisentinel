@@ -52,6 +52,18 @@ export default function NewThreatModelPage() {
   const [name, setName] = useState("");
   const [summary, setSummary] = useState("");
   const [systemId, setSystemId] = useState<string>("");
+  // The name follows the chosen system until the person types their own.
+  const [prefilledName, setPrefilledName] = useState("");
+  const chooseSystem = (system: { id: string; name: string } | null) => {
+    setSystemId(system?.id ?? "");
+    if (system && (name.trim() === "" || name === prefilledName)) {
+      setName(system.name);
+      setPrefilledName(system.name);
+    } else if (!system && name === prefilledName) {
+      setName("");
+      setPrefilledName("");
+    }
+  };
   const [capabilities, setCapabilities] = useState<string[]>([]);
 
   const create = trpc.threatModel.create.useMutation({
@@ -79,6 +91,7 @@ export default function NewThreatModelPage() {
           {t("newTitle")}
         </h1>
         <p className="text-sm text-muted-foreground mt-1">{t("newSubtitle")}</p>
+        <p className="text-sm mt-2">{t("purpose")}</p>
       </div>
 
       <LoopStrip steps={steps} active={step === 0 ? 0 : step === 1 ? 0 : 1} />
@@ -87,8 +100,20 @@ export default function NewThreatModelPage() {
       {step === 0 && (
         <Card>
           <CardContent className="p-4 space-y-4">
+            {/* The system first: a threat model is about one system, and its
+                name comes from it. */}
             <div className="space-y-1.5">
-              <Label className="text-xs" htmlFor="tm-name">
+              <Label htmlFor="threat-model-system">{t("systemLabel")}</Label>
+              <SystemPicker
+                id="threat-model-system"
+                value={systemId}
+                onChange={chooseSystem}
+                clearable
+              />
+              <p className="text-sm text-muted-foreground">{t("systemHint")}</p>
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="tm-name">
                 {t("nameLabel")}
               </Label>
               <Input
@@ -99,7 +124,7 @@ export default function NewThreatModelPage() {
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs" htmlFor="tm-summary">
+              <Label htmlFor="tm-summary">
                 {t("summaryLabel")}
               </Label>
               <Textarea
@@ -108,15 +133,6 @@ export default function NewThreatModelPage() {
                 value={summary}
                 onChange={(e) => setSummary(e.target.value)}
                 placeholder={t("summaryPlaceholder")}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="threat-model-system" className="text-xs">{t("systemLabel")}</Label>
-              <SystemPicker
-                id="threat-model-system"
-                value={systemId}
-                onChange={(system) => setSystemId(system?.id ?? "")}
-                clearable
               />
             </div>
 

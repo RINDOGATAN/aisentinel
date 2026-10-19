@@ -22,6 +22,7 @@ import { RiskScreeningPanel } from "@/components/ai/RiskScreeningPanel";
 import { TierMarker } from "@/components/governance/risk-tier-badge";
 import { annexIIILabel } from "@/lib/annex-iii-label";
 import { trpc } from "@/lib/trpc";
+import { addReason, reasonsFor } from "@/config/classification-reasons";
 
 const ANNEX_III_CATEGORIES = [
   "biometrics",
@@ -99,6 +100,27 @@ export function RiskClassificationForm({
 
   return (
     <div className="space-y-4" data-testid="risk-classification-form">
+      {/* The rule screening's suggestion first, where it is seen. */}
+      {/* Deterministic Annex III screening + optional AI-drafted
+          rationale (grounded in the rule hits; Insert fills the
+          editable rationale field — the user picks the level). */}
+      <RiskScreeningPanel
+        organizationId={organizationId}
+        aiSystemId={aiSystemId}
+        chosenLevel={form.riskLevel}
+        chosenCategory={form.annexIIICategory}
+        onInsertRationale={(content) =>
+          update({ rationale: content })
+        }
+        onUseSuggestion={(level, category) =>
+          update({
+            riskLevel: level,
+            annexIIICategory:
+              (level === "HIGH" || level === "UNACCEPTABLE") && category ? category : form.annexIIICategory,
+          })
+        }
+      />
+
       <div className="space-y-2">
         <Label>{t("riskLevelLabel")} *</Label>
         <Select
@@ -177,6 +199,32 @@ export function RiskClassificationForm({
       )}
 
       <div className="space-y-2">
+        {/* Standard reasons for the chosen level: each adds its sentence. */}
+        {form.riskLevel && reasonsFor(form.riskLevel).length > 0 && (
+          <div className="rounded-md border border-border p-3 space-y-2" data-testid="standard-reasons">
+            <p className="text-sm font-medium">{t("reasons.title")}</p>
+            <p className="text-sm text-muted-foreground">{t("reasons.hint")}</p>
+            <ul className="space-y-1.5">
+              {reasonsFor(form.riskLevel).map((reason) => {
+                const sentence = locale === "es" ? reason.es : reason.en;
+                const added = form.rationale.includes(sentence);
+                return (
+                  <li key={reason.id}>
+                    <button
+                      type="button"
+                      disabled={added}
+                      onClick={() => update({ rationale: addReason(form.rationale, sentence) })}
+                      className="w-full text-left text-sm rounded-md border border-border px-3 py-2 hover:border-primary disabled:opacity-60 disabled:hover:border-border"
+                    >
+                      {added && <span className="font-medium">{t("reasons.added")}: </span>}
+                      {sentence}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        )}
         <Label>{t("rationaleLabel")} *</Label>
         <Textarea
           placeholder={t("rationalePlaceholder")}
@@ -187,19 +235,6 @@ export function RiskClassificationForm({
           }
         />
       </div>
-
-      {/* Deterministic Annex III screening + optional AI-drafted
-          rationale (grounded in the rule hits; Insert fills the
-          editable rationale field — the user picks the level). */}
-      <RiskScreeningPanel
-        organizationId={organizationId}
-        aiSystemId={aiSystemId}
-        chosenLevel={form.riskLevel}
-        chosenCategory={form.annexIIICategory}
-        onInsertRationale={(content) =>
-          update({ rationale: content })
-        }
-      />
 
       <div className="flex justify-end gap-2">
         <Button

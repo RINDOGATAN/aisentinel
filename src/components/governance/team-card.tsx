@@ -33,6 +33,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { trpc } from "@/lib/trpc";
+import { useUnsavedChangesWarning } from "@/lib/use-unsaved-changes";
 import { blockedEmailMessage, isBlockedAccountEmail } from "@/lib/email-policy";
 import { departmentNames } from "@/lib/department-tree";
 import { DepartmentMultiSelect } from "./department-multi-select";
@@ -76,6 +77,8 @@ export function TeamCard({
   const [refused, setRefused] = useState(false);
   // The link to pass on by hand when no e-mail could be sent.
   const [manualLink, setManualLink] = useState<{ email: string; link: string } | null>(null);
+  // An address typed but not added yet is lost on leaving: warn first.
+  useUnsavedChangesWarning(email.trim() !== "");
 
   const isOwner = currentRole === "OWNER";
   const canManage = currentRole === "OWNER" || currentRole === "ADMIN";

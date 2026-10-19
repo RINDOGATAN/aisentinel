@@ -41,6 +41,24 @@ export type StepStatus = "done" | "toConfirm" | "started" | "todo" | "coming" | 
  */
 export type StageState = "todo" | "started" | "toConfirm" | "done" | "coming";
 
+/**
+ * One condition of a step's "done" rule, for the tick list on the band and in
+ * the menu ("Done when ...", then what is met and what is left). Derived from
+ * the same counts as the rule, next to it in the config, so the list and the
+ * status cannot disagree: a step is done exactly when every check is met
+ * (path-config.test.ts asserts it for every step).
+ */
+export interface StepCheck {
+  /** i18n key under `checks.<id>`. */
+  id: string;
+  met: boolean;
+  /** "2 of 3", for a check over several records. */
+  done?: number;
+  total?: number;
+  /** Where to act on it ("Finish this step"); the step's own page when absent. */
+  href?: string;
+}
+
 export interface PathStep<C> {
   /** Stable id; also the i18n key under `steps.<id>`. */
   id: string;
@@ -57,6 +75,8 @@ export interface PathStep<C> {
   rule: string;
   /** The rule itself. Never called for a step that is coming or hidden. */
   status?: (counts: C) => Exclude<StepStatus, "coming" | "hidden">;
+  /** The rule's conditions, met or not (see `StepCheck`). */
+  checks?: (counts: C) => StepCheck[];
   /**
    * Only for some organisations (testing AI agents, when the inventory holds
    * an agent): the step exists for this organisation only while this rule
@@ -137,6 +157,21 @@ export function evaluatePath<C>(config: PathConfig<C>, counts: C): PathStatuses 
           : step.shownWhen && !step.shownWhen(counts)
             ? "hidden"
             : step.status(counts);
+    }
+  }
+  return out;
+}
+
+export type PathChecks = Record<string, StepCheck[]>;
+
+/** Every shown step's checks for one organisation's counts. */
+export function evaluateChecks<C>(config: PathConfig<C>, counts: C): PathChecks {
+  const out: PathChecks = {};
+  for (const stage of config.stages) {
+    for (const step of stage.steps) {
+      if (step.coming || !step.checks) continue;
+      if (step.shownWhen && !step.shownWhen(counts)) continue;
+      out[step.id] = step.checks(counts);
     }
   }
   return out;

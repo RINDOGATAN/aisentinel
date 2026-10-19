@@ -29,13 +29,15 @@ export interface ProgrammeOverview {
   deadlines: RecordDeadline[];
   /** Drafted items waiting for a person to confirm them (the review queue). */
   drafts: number;
+  /** Needs action and the deadlines are one department's (the "Viewing" switch). */
+  departmentScoped: boolean;
 }
 
 /**
  * Null while loading, and for a member limited to departments (`limited`
  * true: the figures are the whole organisation's, so none are shown).
  */
-export function useProgrammeOverview(): {
+export function useProgrammeOverview(businessUnitId?: string): {
   overview: ProgrammeOverview | null;
   limited: boolean;
   refreshing: boolean;
@@ -46,7 +48,7 @@ export function useProgrammeOverview(): {
   const { organization } = useOrganization();
   const locale = useLocale() === "es" ? "es" : "en";
   const { data, isFetching, isError, refetch } = trpc.programPath.overview.useQuery(
-    { organizationId: organization?.id ?? "", locale },
+    { organizationId: organization?.id ?? "", locale, ...(businessUnitId ? { businessUnitId } : {}) },
     { enabled: !!organization?.id, staleTime: STALE_MS, refetchOnWindowFocus: false },
   );
   const failed = isError && !data;
@@ -60,6 +62,7 @@ export function useProgrammeOverview(): {
       needsAction: data.needsAction,
       deadlines: data.deadlines,
       drafts: data.drafts,
+      departmentScoped: data.departmentScoped,
     },
     limited: false,
     refreshing: isFetching,

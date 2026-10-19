@@ -6,10 +6,11 @@ import { useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { PageHeader } from "@/components/governance/page-header";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { RecordCard, RecordGrid, RecordTable } from "@/components/governance/record-list";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
@@ -322,8 +323,7 @@ export default function PoliciesPage() {
           ) : policies.length > 0 ? (
             <>
               {view === "table" ? (
-                <div className="overflow-x-auto border border-border rounded-md">
-                  <table className="w-full text-sm">
+                <RecordTable>
                     <thead className="bg-muted/50 text-left text-xs text-muted-foreground">
                       <tr>
                         <th scope="col" className="px-3 py-2 font-medium">{t("colTitle")}</th>
@@ -364,46 +364,41 @@ export default function PoliciesPage() {
                         </tr>
                       ))}
                     </tbody>
-                  </table>
-                </div>
+                </RecordTable>
               ) : (
-                <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
+                <RecordGrid>
                   {policies.map((policy) => (
-                    <Link key={policy.id} href={`/governance/policies/${policy.id}`}>
-                      <Card className="hover:border-primary/50 transition-colors cursor-pointer h-full">
-                        <CardHeader className="pb-3 p-4 sm:p-6 sm:pb-3">
-                          <div className="flex gap-1.5 flex-wrap">
+                    <RecordCard
+                      key={policy.id}
+                      href={`/governance/policies/${policy.id}`}
+                      icon={ScrollText}
+                      heading={[policyReference(policy.number), `v${policy.currentVersion}`].filter(Boolean).join(" · ")}
+                      title={policy.title}
+                      description={policy.description}
+                      badges={
+                        <>
+                          <Badge variant="outline" className={`text-xs ${statusColors[policy.status] || ""}`}>
+                            {statusLabel(policy.status)}
+                          </Badge>
+                          {templateMark(policy)}
+                        </>
+                      }
+                      tags={
+                        <>
+                          <Badge variant="outline" className="text-xs">
+                            {typeLabel(policy.type)}
+                          </Badge>
+                          {(policy._count?.systemLinks ?? 0) > 0 && (
                             <Badge variant="outline" className="text-xs">
-                              {typeLabel(policy.type)}
+                              <Link2 className="w-3 h-3 mr-1" />
+                              {t("systemsCount", { count: policy._count.systemLinks })}
                             </Badge>
-                            <Badge variant="outline" className={`text-xs ${statusColors[policy.status] || ""}`}>
-                              {statusLabel(policy.status)}
-                            </Badge>
-                            {templateMark(policy)}
-                          </div>
-                          <CardTitle className="mt-3 text-base sm:text-lg line-clamp-1">{policy.title}</CardTitle>
-                          {policy.description && (
-                            <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">{policy.description}</p>
                           )}
-                        </CardHeader>
-                        <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0 space-y-2">
-                          <div className="flex flex-wrap gap-1.5">
-                            {policyReference(policy.number) && (
-                              <Badge variant="outline" className="text-xs">
-                                {policyReference(policy.number)}
-                              </Badge>
-                            )}
-                            <Badge variant="outline" className="text-xs">
-                              v{policy.currentVersion}
-                            </Badge>
-                            {(policy._count?.systemLinks ?? 0) > 0 && (
-                              <Badge variant="outline" className="text-xs">
-                                <Link2 className="w-3 h-3 mr-1" />
-                                {t("systemsCount", { count: policy._count.systemLinks })}
-                              </Badge>
-                            )}
-                          </div>
-                          <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
+                        </>
+                      }
+                      details={
+                        policy.ownerName || policy.departmentName || policy.reviewDate ? (
+                          <div className="flex flex-wrap gap-3">
                             {policy.ownerName && (
                               <span className="flex items-center gap-1">
                                 <User className="w-3 h-3" />
@@ -423,14 +418,12 @@ export default function PoliciesPage() {
                               </span>
                             )}
                           </div>
-                          <p className="text-xs text-muted-foreground">
-                            {tc("updatedWhen", { when: formatRelativeTime(policy.updatedAt, locale) })}
-                          </p>
-                        </CardContent>
-                      </Card>
-                    </Link>
+                        ) : undefined
+                      }
+                      footer={tc("updatedWhen", { when: formatRelativeTime(policy.updatedAt, locale) })}
+                    />
                   ))}
-                </div>
+                </RecordGrid>
               )}
               {hasNextPage && (
                 <div className="flex justify-center mt-4">

@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { RecordCard, RecordGrid } from "@/components/governance/record-list";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Building2,
@@ -333,56 +334,44 @@ export default function VendorRiskPage() {
             <ListPageSkeleton />
           ) : vendors.length > 0 ? (
             <>
-              <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
+              <RecordGrid>
                 {vendors.map((vendor) => {
                   const daysUntilExpiry = getDaysUntil(vendor.contractExpiryDate);
                   const isExpiringSoon = daysUntilExpiry !== null && daysUntilExpiry >= 0 && daysUntilExpiry <= 90;
-
                   return (
-                    <Link key={vendor.id} href={`/governance/vendors/${vendor.id}`}>
-                      <Card className="hover:border-primary/50 transition-colors cursor-pointer h-full">
-                        <CardHeader className="pb-3 p-4 sm:p-6 sm:pb-3">
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-primary/10 flex items-center justify-center shrink-0">
-                              <Building2 className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-                            </div>
-                            <div className="flex gap-1.5 flex-wrap justify-end">
-                              <Badge
-                                variant="outline"
-                                className={`text-xs ${statusColors[vendor.status] || ""}`}
-                              >
-                                {statusLabelKeys[vendor.status] ? t(statusLabelKeys[vendor.status]) : vendor.status}
-                              </Badge>
-                              {vendor.riskLevel && (
-                                <RiskTierBadge level={vendor.riskLevel} className="text-xs" />
+                    <RecordCard
+                      key={vendor.id}
+                      href={`/governance/vendors/${vendor.id}`}
+                      icon={Building2}
+                      title={vendor.name}
+                      description={vendor.description}
+                      badges={
+                        <>
+                          <Badge variant="outline" className={`text-xs ${statusColors[vendor.status] || ""}`}>
+                            {statusLabelKeys[vendor.status] ? t(statusLabelKeys[vendor.status]) : vendor.status}
+                          </Badge>
+                          {vendor.riskLevel && <RiskTierBadge level={vendor.riskLevel} className="text-xs" />}
+                        </>
+                      }
+                      details={
+                        <>
+                          {(vendor.contactName || vendor.contactEmail) && (
+                            <div className="flex flex-wrap gap-2">
+                              {vendor.contactName && (
+                                <span className="flex items-center gap-1">
+                                  <User className="w-3 h-3" />
+                                  {vendor.contactName}
+                                </span>
+                              )}
+                              {vendor.contactEmail && (
+                                <span className="flex items-center gap-1 break-all">
+                                  <Mail className="w-3 h-3 shrink-0" />
+                                  {vendor.contactEmail}
+                                </span>
                               )}
                             </div>
-                          </div>
-                          <CardTitle className="mt-3 text-base sm:text-lg line-clamp-1">
-                            {vendor.name}
-                          </CardTitle>
-                          {vendor.description && (
-                            <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">
-                              {vendor.description}
-                            </p>
                           )}
-                        </CardHeader>
-                        <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
-                          <div className="flex flex-wrap gap-2 mb-3 text-xs text-muted-foreground">
-                            {vendor.contactName && (
-                              <span className="flex items-center gap-1">
-                                <User className="w-3 h-3" />
-                                {vendor.contactName}
-                              </span>
-                            )}
-                            {vendor.contactEmail && (
-                              <span className="flex items-center gap-1">
-                                <Mail className="w-3 h-3" />
-                                {vendor.contactEmail}
-                              </span>
-                            )}
-                          </div>
-                          <div className="flex justify-between text-xs text-muted-foreground">
+                          <div className="flex justify-between gap-2">
                             <span className="flex items-center gap-1">
                               <Cpu className="w-3 h-3" />
                               {t("systemsCount", { count: vendor._count?.systems ?? 0 })}
@@ -393,20 +382,18 @@ export default function VendorRiskPage() {
                             </span>
                           </div>
                           {isExpiringSoon && (
-                            <div className="flex items-center gap-1 mt-2 text-xs text-foreground [&>svg]:text-warning">
+                            <div className="flex items-center gap-1 text-foreground [&>svg]:text-warning">
                               <AlertTriangle className="w-3 h-3" />
                               {t("contractExpiresInDays", { count: daysUntilExpiry })}
                             </div>
                           )}
-                          <p className="text-xs text-muted-foreground mt-2">
-                            {tc("updatedWhen", { when: formatRelativeTime(vendor.updatedAt, locale) })}
-                          </p>
-                        </CardContent>
-                      </Card>
-                    </Link>
+                        </>
+                      }
+                      footer={tc("updatedWhen", { when: formatRelativeTime(vendor.updatedAt, locale) })}
+                    />
                   );
                 })}
-              </div>
+              </RecordGrid>
               {hasNextPage && (
                 <div className="flex justify-center mt-4">
                   <Button

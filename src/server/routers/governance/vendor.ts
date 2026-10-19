@@ -18,6 +18,7 @@ import {
   summarizeSupplyChain,
   computeSharedSubprocessors,
 } from "@/lib/supply-chain";
+import { nextSystemNumber } from "../../services/ai-system/number";
 
 export const vendorRouter = createTRPCRouter({
   list: organizationProcedure
@@ -208,6 +209,7 @@ export const vendorRouter = createTRPCRouter({
           system = await tx.aISystem.create({
             data: {
               organizationId: ctx.organization.id,
+              number: await nextSystemNumber(tx, ctx.organization.id),
               // A department-limited member's system stays in their own view.
               businessUnitId:
                 defaultBusinessUnitId(await loadBusinessUnitScope(ctx.prisma, ctx.membership)) ?? undefined,

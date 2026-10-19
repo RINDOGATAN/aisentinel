@@ -5,10 +5,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import { PageHeader } from "@/components/governance/page-header";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { RecordCard, RecordGrid } from "@/components/governance/record-list";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Search,
@@ -305,7 +306,7 @@ export default function ShadowAIPage() {
             <ListPageSkeleton />
           ) : reports.length > 0 ? (
             <>
-              <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
+              <RecordGrid>
                 {reports.map((report) => {
                   const StatusIcon =
                     report.status === "DISCOVERED"
@@ -317,62 +318,31 @@ export default function ShadowAIPage() {
                           : report.status === "PROHIBITED"
                             ? XCircle
                             : Cpu;
-
                   return (
-                    <Link
+                    <RecordCard
                       key={report.id}
                       href={`/governance/shadow-ai/${report.id}`}
-                    >
-                      {/* The same card as systems and policies: icon and
-                          badges on top, the name as the card's title. */}
-                      <Card className="hover:border-primary/50 transition-colors cursor-pointer h-full">
-                        <CardHeader className="pb-3 p-4 sm:p-6 sm:pb-3">
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-primary/10 flex items-center justify-center shrink-0">
-                              <StatusIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-                            </div>
-                            <div className="flex gap-1.5 flex-wrap justify-end">
-                              <Badge
-                                variant="outline"
-                                className={`text-xs ${statusColors[report.status] || ""}`}
-                              >
-                                {statusKey[report.status] ? t(statusKey[report.status]) : report.status}
-                              </Badge>
-                            </div>
-                          </div>
-                          <CardTitle className="mt-3 text-base sm:text-lg line-clamp-1">
-                            {report.toolName}
-                          </CardTitle>
-                          {report.usageDescription && (
-                            <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">
-                              {report.usageDescription}
-                            </p>
-                          )}
-                        </CardHeader>
-                        <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
-                          {(report.tool?.category || report.department) && (
-                            <div className="flex flex-wrap gap-1.5 mb-3">
-                              {report.tool?.category && (
-                                <Badge variant="outline" className="text-xs">
-                                  {toolCategoryLabel(report.tool.category)}
-                                </Badge>
-                              )}
-                              {report.department && (
-                                <Badge variant="outline" className="text-xs">
-                                  {report.department}
-                                </Badge>
-                              )}
-                            </div>
-                          )}
-                          <p className="text-xs text-muted-foreground">
-                            {t("reportedWhen", { when: formatRelativeTime(report.createdAt, locale) })}
-                          </p>
-                        </CardContent>
-                      </Card>
-                    </Link>
+                      icon={StatusIcon}
+                      heading={report.tool?.category ? toolCategoryLabel(report.tool.category) : undefined}
+                      title={report.toolName}
+                      description={report.usageDescription}
+                      badges={
+                        <Badge variant="outline" className={`text-xs ${statusColors[report.status] || ""}`}>
+                          {statusKey[report.status] ? t(statusKey[report.status]) : report.status}
+                        </Badge>
+                      }
+                      tags={
+                        report.department ? (
+                          <Badge variant="outline" className="text-xs">
+                            {report.department}
+                          </Badge>
+                        ) : undefined
+                      }
+                      footer={t("reportedWhen", { when: formatRelativeTime(report.createdAt, locale) })}
+                    />
                   );
                 })}
-              </div>
+              </RecordGrid>
               {hasNextPage && (
                 <div className="flex justify-center mt-4">
                   <Button

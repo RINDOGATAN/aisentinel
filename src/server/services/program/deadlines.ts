@@ -19,7 +19,7 @@
  * and a link only; no content leaves the database.
  */
 
-import type { PrismaClient } from "@prisma/client";
+import type { Prisma, PrismaClient } from "@prisma/client";
 import { computeIncidentDeadlines } from "@/config/incident-deadlines";
 import { getObligationsData } from "@/server/services/obligations/obligations-data";
 import type { RecordDeadline } from "@/lib/programme-overview";
@@ -34,7 +34,14 @@ export async function loadDeadlines(
   organizationId: string,
   locale: "en" | "es",
   now: Date = new Date(),
+  /**
+   * One department's view (the menu's "Viewing" switch): only the deadlines
+   * of records tied to that department's systems. The obligation dates are
+   * the whole organization's, so a department view leaves them out.
+   */
+  systemWhere?: Prisma.AISystemWhereInput,
 ): Promise<RecordDeadline[]> {
+  const rel = systemWhere ? { aiSystem: { is: systemWhere } } : {};
   const horizon = new Date(now.getTime() + HORIZON_DAYS * DAY_MS);
 
   const [organization, incidents, threatModels, obligations] = await Promise.all([
@@ -48,7 +55,8 @@ export async function loadDeadlines(
         status: { in: [...OPEN_INCIDENT] },
         // Nothing sent yet: once a notification is sent the clock has been met.
         notifications: { none: { sentAt: { not: null } } },
-      },
+        ...rel,
+      } as Prisma.AIIncidentWhereInput,
       orderBy: { reportedAt: "desc" },
       take: 20,
       select: {
@@ -65,12 +73,17 @@ export async function loadDeadlines(
       },
     }),
     prisma.threatModel.findMany({
-      where: { organizationId, status: { not: "ARCHIVED" }, nextReviewDue: { lt: horizon } },
+      where: {
+        organizationId,
+        status: { not: "ARCHIVED" },
+        nextReviewDue: { lt: horizon },
+        ...rel,
+      } as Prisma.ThreatModelWhereInput,
       orderBy: { nextReviewDue: "asc" },
       take: 3,
       select: { id: true, name: true, nextReviewDue: true },
     }),
-    getObligationsData(prisma, organizationId, locale, now),
+    systemWhere ? null : getObligationsData(prisma, organizationId, locale, now),
   ]);
 
   const jurisdictions = (organization?.operatingJurisdictions ?? []) as string[];
@@ -118,7 +131,7 @@ export async function loadDeadlines(
 
   // Obligations that touch this organisation: in scope for a system, or for
   // the organisation as a whole. An undetermined scope is not a deadline yet.
-  for (const row of obligations.rows) {
+  for (const row of obligations?.rows ?? []) {
     const touches =
       row.inScope.length > 0 || (row.countUnit === "organization" && row.applicability === "applies");
     if (!touches) continue;

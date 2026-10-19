@@ -127,6 +127,7 @@ export default function ShadowAIDetailPage() {
   const [registerDialogOpen, setRegisterDialogOpen] = useState(false);
   const [registerTab, setRegisterTab] = useState<string>("create");
   const [selectedSystemId, setSelectedSystemId] = useState("");
+  const [selectedSystemNumber, setSelectedSystemNumber] = useState<number | null>(null);
   // Create new system state
   const [newSystemData, setNewSystemData] = useState({
     systemName: "",
@@ -401,9 +402,11 @@ export default function ShadowAIDetailPage() {
                     {report.registeredSystem && (
                       <p className="text-sm font-medium truncate">{report.registeredSystem.name}</p>
                     )}
-                    <p className="text-xs text-muted-foreground truncate">
-                      {t("systemId", { id: systemReference(report.registeredSystemId) })}
-                    </p>
+                    {systemReference(report.registeredSystem?.number) && (
+                      <p className="text-xs text-muted-foreground truncate">
+                        {t("systemId", { id: systemReference(report.registeredSystem?.number) ?? "" })}
+                      </p>
+                    )}
                   </div>
                   <Link
                     href={`/governance/ai-registry/${report.registeredSystemId}`}
@@ -626,11 +629,14 @@ export default function ShadowAIDetailPage() {
                 <SystemPicker
                   id="shadow-ai-link-system"
                   value={selectedSystemId}
-                  onChange={(system) => setSelectedSystemId(system?.id ?? "")}
+                  onChange={(system) => {
+                    setSelectedSystemId(system?.id ?? "");
+                    setSelectedSystemNumber(system?.number ?? null);
+                  }}
                 />
-                {selectedSystemId && (
+                {selectedSystemId && systemReference(selectedSystemNumber) && (
                   <p className="text-sm text-muted-foreground">
-                    {t("selectedSystemReference", { reference: systemReference(selectedSystemId) })}
+                    {t("selectedSystemReference", { reference: systemReference(selectedSystemNumber) ?? "" })}
                   </p>
                 )}
               </div>

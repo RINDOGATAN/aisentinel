@@ -47,6 +47,7 @@ import {
   localizeCorePolicy,
 } from "../../../config/core-policy-pack";
 import { nextPolicyNumber } from "../../services/policy/number";
+import { nextSystemNumber } from "../../services/ai-system/number";
 
 // ============================================================
 // HELPERS
@@ -608,6 +609,7 @@ export const quickstartRouter = createTRPCRouter({
             const system = await tx.aISystem.create({
               data: {
                 organizationId: orgId,
+                number: await nextSystemNumber(tx, orgId),
                 ...(newSystemUnitId ? { businessUnitId: newSystemUnitId } : {}),
                 name: systemName,
                 description: vendorSystemDescription(catalogVendor.name, mapping, contentLocale),
@@ -720,6 +722,7 @@ export const quickstartRouter = createTRPCRouter({
               const system = await tx.aISystem.create({
                 data: {
                   organizationId: orgId,
+                  number: await nextSystemNumber(tx, orgId),
                   ...(newSystemUnitId ? { businessUnitId: newSystemUnitId } : {}),
                   name: templateSystem.name,
                   description: templateSystem.description,
@@ -882,6 +885,7 @@ export const quickstartRouter = createTRPCRouter({
             const system = await tx.aISystem.create({
               data: {
                 organizationId: orgId,
+                number: await nextSystemNumber(tx, orgId),
                 ...(newSystemUnitId ? { businessUnitId: newSystemUnitId } : {}),
                 name: tool.name,
                 description: tool.description[contentLocale],

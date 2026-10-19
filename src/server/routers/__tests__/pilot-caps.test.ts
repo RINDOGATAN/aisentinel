@@ -74,6 +74,8 @@ const H = vi.hoisted(() => {
     aISystem: {
       count: async ({ where }: { where: Row }) => systems.filter((s) => matches(s, where)).length,
       findMany: async ({ where }: { where: Row }) => systems.filter((s) => matches(s, where)),
+      // The highest system number in use (src/server/services/ai-system/number.ts).
+      findFirst: async () => null,
       create: async ({ data }: { data: Row }) => {
         const row = { id: `sys-${systems.length + 1}`, ...data };
         systems.push(row);

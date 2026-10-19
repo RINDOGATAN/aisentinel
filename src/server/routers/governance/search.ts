@@ -37,6 +37,8 @@ export interface SystemPick {
   id: string;
   name: string;
   status: string;
+  /** The running number behind "AIS-001"; null until it is assigned. */
+  number: number | null;
 }
 
 export type SearchKind = "system" | "vendor" | "policy" | "assessment" | "gate" | "incident" | "shadowAi";
@@ -50,7 +52,7 @@ export interface SearchHit {
   href: string;
 }
 
-const SYSTEM_PICK_SELECT = { id: true, name: true, status: true } as const;
+const SYSTEM_PICK_SELECT = { id: true, name: true, status: true, number: true } as const;
 
 export const searchRouter = createTRPCRouter({
   /**

@@ -138,6 +138,11 @@ describe("areas and next actions", () => {
     expect(actions[1]).toMatchObject({ kind: "needsAction", item: { kind: "review-queue" } });
     expect(actions.every((a) => a.kind === "needsAction" || !a.toConfirm)).toBe(true);
   });
+  it("for one department's view lists only what is waiting there, never the organization's path steps", () => {
+    const actions = nextActions(AI_SENTINEL_PATH, null, [incident]);
+    expect(actions).toEqual([{ kind: "needsAction", item: incident }]);
+    expect(nextActions(AI_SENTINEL_PATH, null, [])).toEqual([]);
+  });
 });
 
 describe("deadlines and the All clients order", () => {

@@ -36,6 +36,7 @@ import { PageHeader } from "@/components/governance/page-header";
 import { LicenceNote, useShowcaseLocks } from "@/components/governance/premium-deliverable";
 import { useExportDownload } from "@/components/governance/use-export-download";
 import { useOrganization } from "@/lib/organization-context";
+import { useViewDepartment } from "@/lib/use-view-department";
 import { cn } from "@/lib/utils";
 import { useNow } from "@/lib/use-now";
 import { needsActionTotal } from "@/lib/needs-action";
@@ -106,7 +107,10 @@ export function GuidedDashboard() {
   const tg = useTranslations("guided");
   const { organization } = useOrganization();
   const path = useProgramPathQuery();
-  const programme = useProgrammeOverview();
+  // An owner or admin who chose one department under "Viewing" sees that
+  // department's work, as the systems list does (src/lib/use-view-department.ts).
+  const viewDept = useViewDepartment(organization?.id);
+  const programme = useProgrammeOverview(viewDept);
   const statuses = path.steps;
   const { overview: ready, limited } = programme;
   // What each panel says when its reading failed: one retry asks both again.
@@ -131,6 +135,14 @@ export function GuidedDashboard() {
       {/* The organisation's own figures: not for a member limited to departments. */}
       {limited ? (
         <LimitedCard />
+      ) : viewDept ? (
+        <>
+          <DepartmentCard departmentId={viewDept} />
+          <div className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-2">
+            <NextActionsCard statuses={statuses} overview={ready} load={load} department />
+            <DeadlinesCard overview={ready} load={load} department />
+          </div>
+        </>
       ) : (
         <>
           <ProgramFigureCard />
@@ -507,17 +519,28 @@ function NextActionsCard({
   statuses,
   overview,
   load,
+  department = false,
 }: {
   statuses: PathStatuses | null;
   overview: ProgrammeOverview | null;
   load: PanelLoad;
+  /** One department's view: only what is waiting there, no path steps (they are the whole organization's). */
+  department?: boolean;
 }) {
   const t = useTranslations("guided");
   const tv = useTranslations("views");
-  const actions = statuses && overview ? nextActions(AI_SENTINEL_PATH, statuses, overview.needsAction) : null;
+  // Until the department's answer arrives, the whole organization's is not shown under its name.
+  const overviewFits = !!overview && overview.departmentScoped === department;
+  const actions = !overviewFits
+    ? null
+    : department
+      ? nextActions(AI_SENTINEL_PATH, null, overview!.needsAction)
+      : statuses
+        ? nextActions(AI_SENTINEL_PATH, statuses, overview!.needsAction)
+        : null;
   const waiting = overview ? needsActionTotal(overview.needsAction) : 0;
   const phase = panelPhase({
-    failed: load.pathFailed || load.overviewFailed,
+    failed: (load.pathFailed && !department) || load.overviewFailed,
     loaded: !!actions,
     empty: actions?.length === 0,
   });
@@ -533,7 +556,9 @@ function NextActionsCard({
         ) : !actions ? (
           <CardSkeleton rows={3} />
         ) : actions.length === 0 ? (
-          <p className="text-sm text-muted-foreground">{t("nextActions.empty")}</p>
+          <p className="text-sm text-muted-foreground">
+            {department ? t("department.nothingWaiting") : t("nextActions.empty")}
+          </p>
         ) : (
           <ol className="flex flex-col gap-3">
             {actions.map((action, index) => (
@@ -616,7 +641,17 @@ export function formatDeadlineDate(at: Date, locale: string): string {
   return new Intl.DateTimeFormat(locale, { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" }).format(at);
 }
 
-function DeadlinesCard({ overview, load }: { overview: ProgrammeOverview | null; load: PanelLoad }) {
+function DeadlinesCard({
+  overview: given,
+  load,
+  department = false,
+}: {
+  overview: ProgrammeOverview | null;
+  load: PanelLoad;
+  /** One department's view: its records' dates only, without the plan's milestone. */
+  department?: boolean;
+}) {
+  const overview = given && given.departmentScoped === department ? given : null;
   const t = useTranslations("guided");
   const locale = useLocale();
   const { planStart } = useProgramPathQuery();
@@ -625,7 +660,7 @@ function DeadlinesCard({ overview, load }: { overview: ProgrammeOverview | null;
   const now = useNow()?.getTime() ?? null;
 
   // The plan's next milestone (day 30, 60 or 90), while the plan runs.
-  const milestone = planMilestone(PLAN_WINDOWS, planStart, plan);
+  const milestone = department ? null : planMilestone(PLAN_WINDOWS, planStart, plan);
 
   return (
     <Card data-testid="deadlines" aria-busy={!overview && !load.overviewFailed}>
@@ -752,6 +787,28 @@ function LimitedCard() {
             {tv("needsAction.title")}
           </Button>
         </Link>
+      </CardContent>
+    </Card>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// One department chosen under "Viewing"
+// ---------------------------------------------------------------------------
+
+function DepartmentCard({ departmentId }: { departmentId: string }) {
+  const tg = useTranslations("guided");
+  const { organization } = useOrganization();
+  const { data } = trpc.businessUnit.listForScope.useQuery(
+    { organizationId: organization?.id ?? "" },
+    { enabled: !!organization?.id, staleTime: 60_000 },
+  );
+  const name = data?.departments.find((d) => d.id === departmentId)?.name ?? "";
+  return (
+    <Card data-testid="department-card">
+      <CardContent className="p-4 sm:p-6 flex flex-col gap-1">
+        <p className="font-medium break-words">{tg("department.title", { name })}</p>
+        <p className="text-sm text-muted-foreground">{tg("department.body")}</p>
       </CardContent>
     </Card>
   );

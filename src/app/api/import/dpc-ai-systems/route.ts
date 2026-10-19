@@ -22,6 +22,7 @@ import { checkImportIdentity } from "@/lib/import-identity";
 import { resolveImportAccount } from "@/lib/import-account";
 import { pilotRemaining } from "@/server/services/pilot/caps";
 import { mapRole, mapTechnique } from "@/lib/dpc-import-mapping";
+import { nextSystemNumber } from "@/server/services/ai-system/number";
 
 interface DPCSystemPayload {
   name: string;
@@ -125,6 +126,7 @@ export async function POST(request: Request) {
       const created = await prisma.aISystem.create({
         data: {
           organizationId: orgId,
+          number: await nextSystemNumber(prisma, orgId),
           name: s.name,
           description: s.description ?? null,
           purpose: s.purpose ?? null,

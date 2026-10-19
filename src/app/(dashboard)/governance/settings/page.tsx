@@ -26,6 +26,7 @@ import { PilotStatusCard } from "@/components/governance/pilot-status-card";
 import { SampleDataCard } from "@/components/governance/worked-example-card";
 import { TemplateItemsCard } from "@/components/governance/template-items-card";
 import type { JurisdictionId } from "@/config/jurisdictions";
+import { StepMarked } from "@/components/guided/settings-step-band";
 
 const personaIcons = {
   BUSINESS_USER: Building2,
@@ -135,18 +136,22 @@ export default function SettingsPage() {
 
       {/* Operating jurisdictions — drives which regulatory regimes apply */}
       {organization && (
-        <JurisdictionCard
-          organizationId={organization.id}
-          canWrite={canWrite}
-          tj={tj}
-          tc={tc}
-        />
+        <StepMarked check="placesDeclared">
+          <JurisdictionCard
+            organizationId={organization.id}
+            canWrite={canWrite}
+            tj={tj}
+            tc={tc}
+          />
+        </StepMarked>
       )}
 
       {/* The quick start's applicability check, editable here at any time:
           which laws and frameworks apply, and why. */}
       {organization && (
-        <ApplicabilityCard organizationId={organization.id} canWrite={canWrite} />
+        <StepMarked check="screeningApplicability">
+          <ApplicabilityCard organizationId={organization.id} canWrite={canWrite} />
+        </StepMarked>
       )}
 
       {/* California CCPA screening. Self-gating on a declared California nexus;
@@ -155,10 +160,12 @@ export default function SettingsPage() {
       {/* Linked from the obligations step, which asks for these answers. */}
       <div id={SCREENING_ANCHOR} className="scroll-mt-24" aria-hidden="true" />
       {organization && (
-        <CaliforniaScreeningCard
-          organizationId={organization.id}
-          canWrite={canWrite}
-        />
+        <StepMarked check="screeningCalifornia">
+          <CaliforniaScreeningCard
+            organizationId={organization.id}
+            canWrite={canWrite}
+          />
+        </StepMarked>
       )}
 
       {/* Cross-border regime screening: GDPR, Colorado, Texas and Washington.
@@ -166,7 +173,9 @@ export default function SettingsPage() {
           so a purely European organization is never asked about Washington
           health carriers. */}
       {organization && (
-        <RegimeScreeningCard organizationId={organization.id} canWrite={canWrite} />
+        <StepMarked check="screeningRegimes">
+          <RegimeScreeningCard organizationId={organization.id} canWrite={canWrite} />
+        </StepMarked>
       )}
 
       {/* Per-organization AI posture (off by default — no AI calls until enabled) */}

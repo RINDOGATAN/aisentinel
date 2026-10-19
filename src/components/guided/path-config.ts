@@ -49,7 +49,8 @@ import {
   Rocket,
   FileCheck2,
 } from "lucide-react";
-import type { PathConfig } from "./path";
+import type { PathConfig, StepCheck } from "./path";
+import type { ObligationScreening } from "@/config/obligation-screenings";
 import type { PlanWindow } from "./plan";
 
 /** What the rules read. Counts only: nothing here names a record. */
@@ -58,8 +59,15 @@ export interface PathCounts {
   quickstartCompleted: boolean;
   /** Operating jurisdictions declared for the organisation. */
   jurisdictions: number;
-  /** At least one answer in the cross-border regime screening. */
-  regimeScreeningAnswered: boolean;
+  /**
+   * The screenings that decide which laws apply, as shown to this
+   * organisation (src/config/obligation-screenings.ts), and those of them not
+   * yet answered. Ids, not records.
+   */
+  screeningsShown: ObligationScreening[];
+  screeningsOpen: ObligationScreening[];
+  /** Questions left across the open screenings ("Answer 3 questions"). */
+  screeningQuestionsOpen: number;
 
   policies: number;
   /** An acceptable-use (AI_USAGE) policy that is approved or published. */
@@ -149,7 +157,10 @@ export function copiedPending(c: PathCounts): number {
 export const EMPTY_PATH_COUNTS: PathCounts = {
   quickstartCompleted: false,
   jurisdictions: 0,
-  regimeScreeningAnswered: false,
+  // Nothing answered yet: the applicability check, shown to everyone, is open.
+  screeningsShown: ["applicability"],
+  screeningsOpen: ["applicability"],
+  screeningQuestionsOpen: 0,
   policies: 0,
   acceptableUsePolicyApproved: false,
   incidentPolicyApproved: false,
@@ -196,6 +207,27 @@ export const EMPTY_PATH_COUNTS: PathCounts = {
   copiedObligationsPending: false,
 };
 
+/** A check, with its "n of m" when it runs over several records. */
+function check(
+  id: string,
+  met: boolean,
+  href?: string,
+  progress?: { done: number; total: number },
+): StepCheck {
+  return { id, met, ...(href ? { href } : {}), ...(progress ?? {}) };
+}
+
+/** Where step 1.2's questions sit on the step page itself. */
+export const OBLIGATIONS_PLACES_HREF = "/governance/obligations#places";
+export const OBLIGATIONS_QUESTIONS_HREF = "/governance/obligations#questions";
+const REVIEW_HREF = "/governance/review";
+
+const SCREENING_CHECK: Record<ObligationScreening, string> = {
+  applicability: "screeningApplicability",
+  california: "screeningCalifornia",
+  regimes: "screeningRegimes",
+};
+
 export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
   stages: [
     {
@@ -214,6 +246,16 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
               : c.systems + c.vendors + c.policies > 0
                 ? "started"
                 : "todo",
+          checks: (c) => [
+            check(
+              "quickstartRun",
+              c.quickstartCompleted || (c.systems > 0 && c.vendors > 0 && c.policies > 0),
+              "/governance/quickstart",
+            ),
+            ...(!c.quickstartCompleted && copiedPending(c) > 0
+              ? [check("copiedReviewed", false)]
+              : []),
+          ],
         },
         // Round 3: "Frameworks and scope" was merged into this step. It led to
         // the compliance matrix, which is also the evidence step (5.3), and
@@ -222,13 +264,22 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
           id: "obligations",
           href: "/governance/obligations",
           icon: CalendarClock,
-          rule: "Done when jurisdictions are declared and the regime screening in Settings has at least one answer, and neither was copied from another client's template without being saved again here. Started when jurisdictions are declared.",
+          rule: "Done when places are declared and every screening shown to the organisation is answered (src/config/obligation-screenings.ts: the applicability check always; the California screening where California is declared; the Texas and Washington questions where those are declared), and none of it was copied from another client's template without being saved again here. Started when places are declared.",
           status: (c) =>
-            c.jurisdictions > 0 && c.regimeScreeningAnswered && !c.copiedObligationsPending
+            c.jurisdictions > 0 && c.screeningsOpen.length === 0 && !c.copiedObligationsPending
               ? "done"
               : c.jurisdictions > 0
                 ? "started"
                 : "todo",
+          checks: (c) => [
+            check("placesDeclared", c.jurisdictions > 0, OBLIGATIONS_PLACES_HREF),
+            ...c.screeningsShown.map((id) =>
+              check(SCREENING_CHECK[id], !c.screeningsOpen.includes(id), OBLIGATIONS_QUESTIONS_HREF),
+            ),
+            ...(c.copiedObligationsPending
+              ? [check("copiedObligations", false, OBLIGATIONS_QUESTIONS_HREF)]
+              : []),
+          ],
         },
       ],
     },
@@ -243,6 +294,7 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
           rule: "Done when an acceptable-use policy is approved or published. Started when any policy exists.",
           status: (c) =>
             c.acceptableUsePolicyApproved ? "done" : c.policies > 0 ? "started" : "todo",
+          checks: (c) => [check("acceptableUseApproved", c.acceptableUsePolicyApproved, "/governance/policies")],
         },
         {
           id: "prohibited",
@@ -264,18 +316,8 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
       id: "inventory",
       icon: Brain,
       steps: [
-        {
-          id: "systems",
-          href: "/governance/ai-registry",
-          icon: Brain,
-          rule: "Done when at least one system is registered, every system has a business owner, and no system copied from another client's template is waiting for review. Started when a system is registered.",
-          status: (c) =>
-            c.systems > 0 && c.systemsWithOwner >= c.systems && c.copiedSystemsPending === 0
-              ? "done"
-              : c.systems > 0
-                ? "started"
-                : "todo",
-        },
+        // AI tools in use come first: finding what people already use is how
+        // the AI systems to register are found.
         {
           id: "shadowAi",
           href: "/governance/shadow-ai",
@@ -287,6 +329,33 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
               : c.shadowReports > 0
                 ? "started"
                 : "todo",
+          checks: (c) => [
+            check("shadowReported", c.shadowReports > 0, "/governance/shadow-ai/new"),
+            check("shadowTriaged", c.shadowReports > 0 && c.shadowReportsUntriaged === 0, "/governance/shadow-ai", {
+              done: c.shadowReports - c.shadowReportsUntriaged,
+              total: c.shadowReports,
+            }),
+          ],
+        },
+        {
+          id: "systems",
+          href: "/governance/ai-registry",
+          icon: Brain,
+          rule: "Done when at least one system is registered, every system has a business owner, and no system copied from another client's template is waiting for review. Started when a system is registered.",
+          status: (c) =>
+            c.systems > 0 && c.systemsWithOwner >= c.systems && c.copiedSystemsPending === 0
+              ? "done"
+              : c.systems > 0
+                ? "started"
+                : "todo",
+          checks: (c) => [
+            check("systemRegistered", c.systems > 0, "/governance/ai-registry/new"),
+            check("systemsOwned", c.systems > 0 && c.systemsWithOwner >= c.systems, "/governance/ai-registry", {
+              done: Math.min(c.systemsWithOwner, c.systems),
+              total: c.systems,
+            }),
+            ...(c.copiedSystemsPending > 0 ? [check("copiedSystems", false)] : []),
+          ],
         },
         {
           id: "vendors",
@@ -299,6 +368,10 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
               : c.vendors > 0
                 ? "started"
                 : "todo",
+          checks: (c) => [
+            check("vendorRecorded", c.vendors > 0, "/governance/vendor-catalog"),
+            ...(c.copiedVendorsPending > 0 ? [check("copiedVendors", false)] : []),
+          ],
         },
       ],
     },
@@ -319,6 +392,13 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
               : c.classified > 0
                 ? "started"
                 : "todo",
+          checks: (c) => [
+            check("systemsClassified", c.systems > 0 && c.classified >= c.systems, "/governance/risk-classification", {
+              done: Math.min(c.classified, c.systems),
+              total: c.systems,
+            }),
+            ...(c.classificationsUnconfirmed > 0 ? [check("classificationsConfirmed", false, REVIEW_HREF)] : []),
+          ],
         },
         {
           id: "assessments",
@@ -331,6 +411,17 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
               : c.assessments > 0
                 ? "started"
                 : "todo",
+          checks: (c) => [
+            check("assessmentApproved", c.assessmentsApproved > 0, "/governance/assessments"),
+            ...(c.highRisk > 0
+              ? [
+                  check("highRiskAssessed", c.highRiskAssessed >= c.highRisk, "/governance/assessments", {
+                    done: Math.min(c.highRiskAssessed, c.highRisk),
+                    total: c.highRisk,
+                  }),
+                ]
+              : []),
+          ],
         },
         {
           id: "threatModel",
@@ -339,6 +430,7 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
           rule: "Done when at least one threat model is past draft. Started when a draft exists.",
           status: (c) =>
             c.threatModelsActive > 0 ? "done" : c.threatModels > 0 ? "started" : "todo",
+          checks: (c) => [check("threatModelActive", c.threatModelsActive > 0, "/governance/threat-model")],
         },
         {
           id: "vendorDueDiligence",
@@ -353,6 +445,12 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
               : c.vendorAssessments > 0
                 ? "started"
                 : "todo",
+          checks: (c) => [
+            check("vendorsAssessed", c.vendors > 0 && c.vendorsAssessed >= c.vendors, "/governance/vendors?view=due-diligence", {
+              done: Math.min(c.vendorsAssessed, c.vendors),
+              total: c.vendors,
+            }),
+          ],
         },
         // Last in the stage on purpose: it is hidden for most organisations,
         // and the numbers of the steps before it must not move.
@@ -368,6 +466,12 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
               : c.agentsStartedTesting > 0
                 ? "started"
                 : "todo",
+          checks: (c) => [
+            check("agentsReady", c.agents > 0 && c.agentsReadyForAudit >= c.agents, "/governance/agent-testing", {
+              done: Math.min(c.agentsReadyForAudit, c.agents),
+              total: c.agents,
+            }),
+          ],
         },
       ],
     },
@@ -386,6 +490,16 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
             if (met) return c.gatesUnconfirmed > 0 ? "toConfirm" : "done";
             return c.oversightGates > 0 ? "started" : "todo";
           },
+          checks: (c) => [
+            c.highRisk > 0
+              ? check("highRiskGated", c.highRiskWithGate >= c.highRisk, "/governance/oversight", {
+                  done: Math.min(c.highRiskWithGate, c.highRisk),
+                  total: c.highRisk,
+                })
+              : check("gateExists", c.oversightGates > 0, "/governance/oversight/new"),
+            ...(c.gatesUnconfirmed > 0 ? [check("gatesConfirmed", false, REVIEW_HREF)] : []),
+            ...(c.copiedGatesPending > 0 ? [check("copiedGates", false, REVIEW_HREF)] : []),
+          ],
         },
         {
           id: "transparency",
@@ -402,6 +516,13 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
               : c.transparencyProfiles > 0
                 ? "started"
                 : "todo",
+          checks: (c) => [
+            check("systemsProfiled", c.systems > 0 && c.transparencyProfiles >= c.systems, "/governance/ai-registry?view=transparency", {
+              done: Math.min(c.transparencyProfiles, c.systems),
+              total: c.systems,
+            }),
+            ...(c.transparencyUnconfirmed > 0 ? [check("profilesConfirmed", false, REVIEW_HREF)] : []),
+          ],
         },
         {
           id: "evidence",
@@ -414,6 +535,13 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
               : c.evidence > 0 || (c.mappings > 0 && c.mappingsNotAssessed < c.mappings)
                 ? "started"
                 : "todo",
+          checks: (c) => [
+            check("mappingsAssessed", c.mappings > 0 && c.mappingsNotAssessed === 0, "/governance/compliance", {
+              done: c.mappings - c.mappingsNotAssessed,
+              total: c.mappings,
+            }),
+            check("evidenceAttached", c.evidence > 0, "/governance/compliance"),
+          ],
         },
         {
           id: "sensitiveData",
@@ -427,6 +555,22 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
               : c.sensitiveAssessments > 0
                 ? "started"
                 : "todo",
+          checks: (c) => [
+            check("sensitiveAssessed", c.sensitiveAssessments > 0, "/governance/sensitive-data"),
+            ...(c.systemsProcessingPersonalData > 0
+              ? [
+                  check(
+                    "personalDataAssessed",
+                    c.personalDataSystemsAssessed >= c.systemsProcessingPersonalData,
+                    "/governance/sensitive-data",
+                    {
+                      done: Math.min(c.personalDataSystemsAssessed, c.systemsProcessingPersonalData),
+                      total: c.systemsProcessingPersonalData,
+                    },
+                  ),
+                ]
+              : []),
+          ],
         },
       ],
     },
@@ -445,6 +589,7 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
               : c.incidentPolicies > 0 || c.incidents > 0
                 ? "started"
                 : "todo",
+          checks: (c) => [check("incidentPolicyApproved", c.incidentPolicyApproved, "/governance/policies")],
         },
         {
           id: "proceedings",
@@ -462,6 +607,12 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
           rule: "Done when nothing auto-derived is waiting for a person to confirm it. Started while items wait. Not started while the program holds nothing to confirm.",
           status: (c) =>
             c.unconfirmed > 0 ? "started" : c.confirmable > 0 ? "done" : "todo",
+          checks: (c) => [
+            check("nothingToConfirm", c.unconfirmed === 0 && c.confirmable > 0, REVIEW_HREF, {
+              done: Math.max(0, c.confirmable - c.unconfirmed),
+              total: c.confirmable,
+            }),
+          ],
         },
         {
           id: "board",
@@ -469,6 +620,7 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
           icon: Landmark,
           rule: "Done when at least one board report exists.",
           status: (c) => (c.boardReports > 0 ? "done" : "todo"),
+          checks: (c) => [check("boardReport", c.boardReports > 0, "/governance/board")],
         },
         {
           id: "audit",

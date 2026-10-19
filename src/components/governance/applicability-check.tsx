@@ -244,9 +244,15 @@ export function ApplicabilityResult({
 export function ApplicabilityCard({
   organizationId,
   canWrite,
+  showResult = true,
+  idPrefix = "applicability-settings",
 }: {
   organizationId: string;
   canWrite: boolean;
+  /** False on step 1.2's page, which shows the result in its own panel. */
+  showResult?: boolean;
+  /** Keeps radio names apart when the card appears on another page. */
+  idPrefix?: string;
 }) {
   const t = useTranslations("applicability");
   const tc = useTranslations("common");
@@ -283,8 +289,9 @@ export function ApplicabilityCard({
           answers={answers}
           onChange={setEdits}
           disabled={!canWrite || save.isPending}
-          idPrefix="applicability-settings"
+          idPrefix={idPrefix}
         />
+        {showResult && (
         <div className="rounded-lg border border-border p-4">
           <ApplicabilityResult
             jurisdictions={
@@ -293,6 +300,7 @@ export function ApplicabilityCard({
             answers={answers}
           />
         </div>
+        )}
         {canWrite && (
           <div className="flex justify-end">
             <Button

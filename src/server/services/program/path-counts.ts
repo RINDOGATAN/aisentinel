@@ -14,6 +14,7 @@ import type { PrismaClient } from "@prisma/client";
 import type { PathCounts } from "@/components/guided/path-config";
 import { UNCONFIRMED_WHERE } from "@/server/services/provenance/summary";
 import { COUNTED_INCIDENT } from "@/server/services/incident/counted";
+import { obligationScreenings } from "@/config/obligation-screenings";
 import { loadAgentTestingCounts } from "@/server/services/aiuc1/readiness";
 import {
   CLIENT_TEMPLATE_REF,
@@ -138,13 +139,19 @@ export async function loadPathCounts(
 
   const settings = settingsObject(organization?.settings);
   const quickstart = settingsObject(settings.quickstart);
-  const regimes = settingsObject(settings.regimes);
+  const screenings = obligationScreenings(
+    (organization?.operatingJurisdictions ?? []) as string[],
+    settings,
+  );
 
   return {
     quickstartCompleted: typeof quickstart.completedAt === "string",
     jurisdictions: organization?.operatingJurisdictions.length ?? 0,
-    // Unanswered questions are stored as NOT_ASSESSED; only YES or NO is an answer.
-    regimeScreeningAnswered: Object.values(regimes).some((v) => v === "YES" || v === "NO"),
+    // The screenings this organisation is shown, and those still open
+    // (src/config/obligation-screenings.ts): step 1.2's rule.
+    screeningsShown: screenings.shown,
+    screeningsOpen: screenings.open,
+    screeningQuestionsOpen: screenings.openQuestions,
     policies,
     acceptableUsePolicyApproved: acceptableUseApproved > 0,
     incidentPolicyApproved: incidentPoliciesApproved > 0,

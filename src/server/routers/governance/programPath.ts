@@ -28,7 +28,7 @@
 import { z } from "zod";
 import { createTRPCRouter, organizationProcedure, protectedProcedure } from "../../trpc";
 import { AI_SENTINEL_PATH, type PathCounts } from "@/components/guided/path-config";
-import { evaluatePath } from "@/components/guided/path";
+import { evaluateChecks, evaluatePath } from "@/components/guided/path";
 import { loadPathCounts } from "@/server/services/program/path-counts";
 import { loadPlanStart } from "@/server/services/program/plan-start";
 import { loadDocumentFacts } from "@/server/services/program/document-facts";
@@ -101,7 +101,14 @@ export const programPathRouter = createTRPCRouter({
         ctx.organization.id,
         steps.quickstart === "done",
       );
-      return { steps, planStart: planStart?.toISOString() ?? null };
+      return {
+        steps,
+        // What each step's rule needs, met or not: the band's tick list.
+        checks: evaluateChecks(AI_SENTINEL_PATH, counts),
+        // Step 1.2's questions still to answer ("Answer 3 questions").
+        screeningQuestionsOpen: counts.screeningQuestionsOpen,
+        planStart: planStart?.toISOString() ?? null,
+      };
     }),
 
   overview: organizationProcedure

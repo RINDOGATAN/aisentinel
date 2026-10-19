@@ -18,7 +18,7 @@ import { usePathname } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
-import type { PathStatuses } from "./path";
+import type { PathChecks, PathStatuses } from "./path";
 import { AI_SENTINEL_PATH, PLAN_WINDOWS } from "./path-config";
 import { planState, type PlanState } from "./plan";
 
@@ -34,6 +34,10 @@ export function useProgramPath(): PathStatuses | null {
  */
 export function useProgramPathQuery(): {
   steps: PathStatuses | null;
+  /** Each step's checks (path.ts, StepCheck); null while loading. */
+  checks: PathChecks | null;
+  /** Step 1.2's screening questions still to answer. */
+  screeningQuestionsOpen: number;
   /** Day 1 of the 30/60/90-day plan (ISO), null before it starts. */
   planStart: string | null;
   refreshing: boolean;
@@ -48,6 +52,8 @@ export function useProgramPathQuery(): {
   );
   return {
     steps: data?.steps ?? null,
+    checks: data?.checks ?? null,
+    screeningQuestionsOpen: data?.screeningQuestionsOpen ?? 0,
     planStart: data?.planStart ?? null,
     refreshing: isFetching,
     failed: isError && !data,

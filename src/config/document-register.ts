@@ -193,12 +193,12 @@ export const DOCUMENT_REGISTER: readonly DocumentEntry[] = [
     formats: ["md", "ics"],
     packed: true,
     needs: "At least one declared jurisdiction (where the organization operates).",
-    rule: "Needs a jurisdiction when none is declared. Draft while the regime screening has no answer or the places were copied from another client and not saved again here; ready otherwise.",
+    rule: "Needs a jurisdiction when none is declared. Draft while a screening shown to the organisation is unanswered (src/config/obligation-screenings.ts) or the places were copied from another client and not saved again here; ready otherwise.",
     evaluate: (f) =>
       f.jurisdictions === 0
         ? needs("jurisdiction")
         : draftOrReady([
-            { key: "screeningUnanswered", count: f.regimeScreeningAnswered ? 0 : 1 },
+            { key: "screeningUnanswered", count: f.screeningsOpen.length },
             { key: "toConfirm", count: f.copiedObligationsPending ? 1 : 0 },
           ]),
   },

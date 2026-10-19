@@ -58,6 +58,8 @@ import { GlobalSearch } from "./global-search";
 import { DepartmentSwitch } from "./department-switch";
 import { ScopeNotice } from "@/components/governance/scope-notice";
 import { StepBand } from "./step-band";
+import { SettingsStepBand } from "./settings-step-band";
+import { GetHelpLink } from "./get-help-link";
 import { ProgressBar } from "./progress-ring";
 import { usePlanState, useProgramPath, useProgramPathRefresh } from "./use-program-path";
 import { trpc } from "@/lib/trpc";
@@ -165,6 +167,7 @@ export function GuidedLayout({
             <GlobalSearch />
           </div>
           <div className="flex shrink-0 items-center gap-1 sm:gap-2">
+            <GetHelpLink />
             <PageHelpButton />
             <Button
               variant="ghost"
@@ -274,6 +277,12 @@ export function GuidedLayout({
               stepId={stepId}
               statuses={statuses}
             />
+            {/* Settings holds an editable copy of step 1.2's questions: say so there. */}
+            {pathname === SETTINGS_HREF && (
+              <div className="mb-4 sm:mb-6">
+                <SettingsStepBand />
+              </div>
+            )}
             <ScopeNotice />
             {children}
           </main>
@@ -283,6 +292,8 @@ export function GuidedLayout({
     </div>
   );
 }
+
+const SETTINGS_HREF = "/governance/settings";
 
 /**
  * Top of the menu: the organisation. In client mode, the client's name opens

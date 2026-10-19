@@ -57,3 +57,19 @@ describe("dashboard panel phases", () => {
     expect(panelPhase({ failed: true, loaded: true, empty: false })).toBe("ready");
   });
 });
+
+describe("the menu's Viewing switch as a view filter", async () => {
+  const { viewDepartment } = await import("@/lib/use-view-department");
+  const data = { departments: [{ id: "hr" }, { id: "it" }], myBusinessUnitIds: null };
+
+  it("filters by the chosen department for a whole-organization viewer", () => {
+    expect(viewDepartment("hr", data)).toBe("hr");
+    expect(viewDepartment(null, data)).toBeUndefined();
+  });
+
+  it("ignores a choice that names no department, and any choice for a limited member", () => {
+    expect(viewDepartment("gone", data)).toBeUndefined();
+    expect(viewDepartment("hr", { ...data, myBusinessUnitIds: ["hr"] })).toBeUndefined();
+    expect(viewDepartment("hr", undefined)).toBeUndefined();
+  });
+});

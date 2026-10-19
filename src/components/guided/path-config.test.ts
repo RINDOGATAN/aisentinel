@@ -13,6 +13,7 @@ import en from "@/i18n/messages/en.json";
 import es from "@/i18n/messages/es.json";
 import { AI_SENTINEL_PATH, EMPTY_PATH_COUNTS, type PathCounts } from "./path-config";
 import {
+  evaluateChecks,
   currentLibraryId,
   currentStepId,
   evaluatePath,
@@ -44,7 +45,9 @@ const statusOf = (id: string, over: Partial<PathCounts>) =>
 const COMPLETE: PathCounts = {
   quickstartCompleted: true,
   jurisdictions: 2,
-  regimeScreeningAnswered: true,
+  screeningsShown: ["applicability"],
+  screeningsOpen: [],
+  screeningQuestionsOpen: 0,
   policies: 6,
   acceptableUsePolicyApproved: true,
   incidentPolicyApproved: true,
@@ -57,6 +60,7 @@ const COMPLETE: PathCounts = {
   vendors: 2,
   vendorsAssessed: 2,
   vendorAssessments: 2,
+  providerSystems: 1,
   classified: 4,
   classificationsUnconfirmed: 0,
   highRisk: 1,
@@ -133,7 +137,7 @@ describe("a programme copied from another client's template", () => {
     expect(statusOf("oversight", { oversightGates: 2, copiedGatesPending: 2 })).toBe("started");
     expect(statusOf("oversight", { oversightGates: 2, copiedGatesPending: 0 })).toBe("done");
     expect(
-      statusOf("obligations", { jurisdictions: 1, regimeScreeningAnswered: true, copiedObligationsPending: true }),
+      statusOf("obligations", { jurisdictions: 1, screeningsOpen: [], copiedObligationsPending: true }),
     ).toBe("started");
     expect(
       statusOf("systems", { systems: 2, systemsWithOwner: 2, copiedSystemsPending: 1 }),
@@ -329,9 +333,9 @@ describe("the done rules", () => {
 
   it("obligations: a declared jurisdiction starts it, a screening answer finishes it", () => {
     expect(statusOf("obligations", { jurisdictions: 1 })).toBe("started");
-    expect(statusOf("obligations", { jurisdictions: 1, regimeScreeningAnswered: true })).toBe("done");
+    expect(statusOf("obligations", { jurisdictions: 1, screeningsOpen: [] })).toBe("done");
     // An answer with no jurisdiction declared proves nothing about scope.
-    expect(statusOf("obligations", { regimeScreeningAnswered: true })).toBe("todo");
+    expect(statusOf("obligations", { screeningsOpen: [] })).toBe("todo");
   });
 
   it("policies: an approved acceptable-use policy, not just any policy", () => {
@@ -344,9 +348,10 @@ describe("the done rules", () => {
     expect(statusOf("systems", { systems: 3, systemsWithOwner: 3 })).toBe("done");
   });
 
-  it("shadow AI: untriaged reports keep it open", () => {
+  it("AI tools in use: tools still to review keep it open", () => {
     expect(statusOf("shadowAi", { shadowReports: 2, shadowReportsUntriaged: 1 })).toBe("started");
     expect(statusOf("shadowAi", { shadowReports: 2 })).toBe("done");
+    expect(statusOf("shadowAi", {})).toBe("todo");
   });
 
   it("vendors: one recorded vendor", () => {
@@ -374,6 +379,13 @@ describe("the done rules", () => {
   it("threat model: past draft", () => {
     expect(statusOf("threatModel", { threatModels: 1 })).toBe("started");
     expect(statusOf("threatModel", { threatModels: 1, threatModelsActive: 1 })).toBe("done");
+    expect(statusOf("threatModel", { providerSystems: 1 })).toBe("todo");
+  });
+
+  it("threat model: shown to organisations that build AI, or that already have one", () => {
+    expect(statusOf("threatModel", { systems: 3 })).toBe("hidden");
+    expect(statusOf("threatModel", { systems: 3, providerSystems: 1 })).toBe("todo");
+    expect(statusOf("threatModel", { systems: 3, threatModels: 1 })).toBe("started");
   });
 
   it("vendor due diligence: every vendor assessed", () => {
@@ -404,8 +416,10 @@ describe("the done rules", () => {
     const assess = PATH.stages.find((s) => s.id === "assess")!;
     expect(assess.steps.at(-1)?.id).toBe("agentTesting");
     expect(step("agentTesting").shownWhen).toBeTypeOf("function");
-    // Only this step is conditional: every other step shows for everyone.
-    expect(steps.filter((s) => s.shownWhen).map((s) => s.id)).toEqual(["agentTesting"]);
+    // Only these steps are conditional, and they close the stage: every other
+    // step shows for everyone.
+    expect(steps.filter((s) => s.shownWhen).map((s) => s.id)).toEqual(["threatModel", "agentTesting"]);
+    expect(assess.steps.slice(-2).map((s) => s.id)).toEqual(["threatModel", "agentTesting"]);
   });
 
   it("a hidden step is not counted, not offered next, and not in the 'Next step' walk", () => {
@@ -418,11 +432,23 @@ describe("the done rules", () => {
     const agentWaiting = evaluatePath(PATH, { ...COMPLETE, agentsReadyForAudit: 1 });
     expect(stageProgress(assess, agentWaiting)).toEqual({ done: 4, total: 5, state: "started" });
     expect(nextStep(PATH, agentWaiting)?.step.id).toBe("agentTesting");
-    // The walk: from vendor checks straight to oversight when hidden, through it when shown.
-    expect(stepAndFollowing(PATH, "vendorDueDiligence", noAgent)?.following?.step.id).toBe("oversight");
-    expect(stepAndFollowing(PATH, "vendorDueDiligence", agentWaiting)?.following?.step.id).toBe(
+    // The walk: from the threat model straight to oversight when agent testing
+    // is hidden, through it when shown.
+    expect(stepAndFollowing(PATH, "threatModel", noAgent)?.following?.step.id).toBe("oversight");
+    expect(stepAndFollowing(PATH, "threatModel", agentWaiting)?.following?.step.id).toBe(
       "agentTesting",
     );
+    // An organisation that builds no AI and has no threat model: vendor checks
+    // lead straight to oversight.
+    const noBuilder = evaluatePath(PATH, {
+      ...COMPLETE,
+      providerSystems: 0,
+      threatModels: 0,
+      threatModelsActive: 0,
+      agents: 0,
+    });
+    expect(noBuilder.threatModel).toBe("hidden");
+    expect(stepAndFollowing(PATH, "vendorDueDiligence", noBuilder)?.following?.step.id).toBe("oversight");
     // Reached by its address with no agent, the page still has its band.
     expect(stepAndFollowing(PATH, "agentTesting", noAgent)?.current.number).toBe("4.5");
     // While the statuses load, a conditional step is not shown.
@@ -504,12 +530,13 @@ describe("progress and the next step", () => {
       quickstartCompleted: true,
       jurisdictions: 1,
       mappings: 1,
-      regimeScreeningAnswered: true,
+      screeningsOpen: [],
       policies: 1,
       acceptableUsePolicyApproved: true,
     });
     const next = nextStep(PATH, afterSetup);
-    expect(next?.step.id).toBe("systems");
+    // Stage 3 opens with the AI tools in use: finding them is how the systems are found.
+    expect(next?.step.id).toBe("shadowAi");
     expect(next?.stageIndex).toBe(2);
 
     const onlyMonitorLeft: PathStatuses = { ...evaluatePath(PATH, COMPLETE), board: "todo" };
@@ -532,7 +559,7 @@ describe("progress and the next step", () => {
     // Each counted step done moves it by the same share, rounded to a whole number.
     // With an agent in the inventory, so that every counted step is shown.
     for (let n = 1; n <= counted.length; n++) {
-      const statuses: PathStatuses = evaluatePath(PATH, { ...EMPTY_PATH_COUNTS, agents: 1 });
+      const statuses: PathStatuses = evaluatePath(PATH, { ...EMPTY_PATH_COUNTS, agents: 1, providerSystems: 1 });
       for (const s of counted.slice(0, n)) statuses[s.id] = "done";
       expect(overallPercent(PATH, statuses), `${n} done`).toBe(Math.round((n / counted.length) * 100));
     }
@@ -555,8 +582,10 @@ describe("the 'Next step' band", () => {
   it("numbers each step by its stage and its place in the stage", () => {
     const number = (id: string) => walk.find((e) => e.step.id === id)?.number;
     expect(number("quickstart")).toBe("1.1");
-    expect(number("systems")).toBe("3.1");
-    expect(number("vendorDueDiligence")).toBe("4.4");
+    expect(number("shadowAi")).toBe("3.1");
+    expect(number("systems")).toBe("3.2");
+    expect(number("vendorDueDiligence")).toBe("4.3");
+    expect(number("threatModel")).toBe("4.4");
     expect(number("board")).toBe("6.4");
   });
 
@@ -662,9 +691,79 @@ describe("the current page", () => {
   });
 
   it("opens the stage of the next step on the dashboard, and none on a library page", () => {
-    const setUp = evaluatePath(PATH, { ...EMPTY_PATH_COUNTS, quickstartCompleted: true, jurisdictions: 1, regimeScreeningAnswered: true });
+    const setUp = evaluatePath(PATH, { ...EMPTY_PATH_COUNTS, quickstartCompleted: true, jurisdictions: 1, screeningsOpen: [] });
     expect(stageOpenByDefault(PATH, null, setUp, true)?.id).toBe(nextStep(PATH, setUp)?.stage.id);
     expect(stageOpenByDefault(PATH, null, evaluatePath(PATH, COMPLETE), true)).toBeNull();
     expect(stageOpenByDefault(PATH, null, null, false)).toBeNull();
+  });
+});
+
+describe("each step's checks (the band's tick list)", () => {
+  /** A spread of organisations: empty, complete, and every count nudged one way or the other. */
+  function samples(): PathCounts[] {
+    const out: PathCounts[] = [EMPTY_PATH_COUNTS, COMPLETE];
+    const numeric = (Object.keys(COMPLETE) as (keyof PathCounts)[]).filter(
+      (k) => typeof COMPLETE[k] === "number",
+    );
+    const flags = (Object.keys(COMPLETE) as (keyof PathCounts)[]).filter(
+      (k) => typeof COMPLETE[k] === "boolean",
+    );
+    for (const base of [EMPTY_PATH_COUNTS, COMPLETE]) {
+      for (const k of numeric) {
+        for (const v of [0, 1, 2, 5]) out.push({ ...base, [k]: v });
+      }
+      for (const k of flags) out.push({ ...base, [k]: !base[k] });
+      out.push({ ...base, screeningsOpen: ["applicability"] });
+      out.push({ ...base, screeningsShown: ["applicability", "california"], screeningsOpen: ["california"] });
+    }
+    return out;
+  }
+
+  it("marks a step done exactly when every one of its checks is met", () => {
+    for (const counts of samples()) {
+      const statuses = evaluatePath(PATH, counts);
+      const checks = evaluateChecks(PATH, counts);
+      for (const [id, list] of Object.entries(checks)) {
+        expect(list.length, id).toBeGreaterThan(0);
+        expect(list.every((c) => c.met), `${id} ${JSON.stringify(counts)}`).toBe(statuses[id] === "done");
+      }
+    }
+  });
+
+  it("gives every counted step checks, and every check and rule a line in both languages", () => {
+    const checks = evaluateChecks(PATH, COMPLETE);
+    for (const st of steps.filter((s) => isCounted(s) && (!s.shownWhen || s.shownWhen(COMPLETE)))) {
+      expect(checks[st.id], st.id).toBeDefined();
+    }
+    const ids = new Set(samples().flatMap((c) => Object.values(evaluateChecks(PATH, c)).flat().map((x) => x.id)));
+    for (const id of ids) {
+      expect((en.guided.checks as Record<string, string>)[id], id).toBeTruthy();
+      expect((es.guided.checks as Record<string, string>)[id], id).toBeTruthy();
+    }
+    for (const st of steps.filter((s) => !s.coming)) {
+      const key = st.id as keyof typeof en.guided.steps;
+      expect((en.guided.steps[key] as { doneWhen?: string }).doneWhen, st.id).toBeTruthy();
+      expect((es.guided.steps[key] as { doneWhen?: string }).doneWhen, st.id).toBeTruthy();
+    }
+  });
+
+  it("points 'Finish this step' at a page of the product", () => {
+    for (const list of Object.values(evaluateChecks(PATH, EMPTY_PATH_COUNTS))) {
+      for (const c of list) {
+        if (c.href) expect(c.href.startsWith("/governance/"), c.href).toBe(true);
+      }
+    }
+  });
+
+  it("says how far a check over several records has got", () => {
+    const c = evaluateChecks(PATH, { ...COMPLETE, systemsWithOwner: 3 }).systems;
+    expect(c.find((x) => x.id === "systemsOwned")).toMatchObject({ met: false, done: 3, total: 4 });
+  });
+});
+
+describe("stage 3 order", () => {
+  it("asks for the AI tools in use before the AI systems", () => {
+    const inventory = PATH.stages.find((s) => s.id === "inventory")!;
+    expect(inventory.steps.map((s) => s.id)).toEqual(["shadowAi", "systems", "vendors"]);
   });
 });

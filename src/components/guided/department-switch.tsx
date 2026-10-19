@@ -2,10 +2,12 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025-2026 Rindogatan LLC
 
-// "For my department": a switch at the top of the menu, shown only when the
-// organization has departments. It sets the department the dashboard reads its
-// counts for. A department-limited member is offered only their own departments;
-// "Whole organization" leaves the server to narrow to whatever they may see.
+// "Viewing": a switch at the top of the menu, shown only when the organization
+// has departments and only to a person who sees the whole organization. The
+// department chosen filters the AI systems list, Needs action and Incomplete
+// (src/lib/use-view-department.ts). A member limited to departments is not
+// offered it: the server already narrows everything they see, and the notice
+// "You see only" says so.
 
 import { useTranslations } from "next-intl";
 import { Building2 } from "lucide-react";
@@ -19,6 +21,7 @@ import {
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useDepartmentScope } from "@/lib/use-department-scope";
+import { departmentTree } from "@/lib/department-tree";
 
 const ALL = "__all__";
 
@@ -32,8 +35,9 @@ export function DepartmentSwitch() {
   );
   const { departmentId, setDepartmentId } = useDepartmentScope(orgId || undefined);
 
-  const mine = data?.myBusinessUnitIds ?? null;
-  const departments = (data?.departments ?? []).filter((d) => !mine || mine.includes(d.id));
+  // Limited members are narrowed by the server; the switch is not theirs.
+  if (!data || data.myBusinessUnitIds) return null;
+  const departments = departmentTree(data.departments);
   if (departments.length === 0) return null;
 
   return (
@@ -48,9 +52,9 @@ export function DepartmentSwitch() {
         </SelectTrigger>
         <SelectContent>
           <SelectItem value={ALL}>{t("departmentSwitch.wholeOrg")}</SelectItem>
-          {departments.map((d) => (
+          {departments.map(({ department: d, depth }) => (
             <SelectItem key={d.id} value={d.id}>
-              {d.name}
+              {depth === 1 ? `· ${d.name}` : d.name}
             </SelectItem>
           ))}
         </SelectContent>

@@ -152,7 +152,9 @@
     "roleViewer": "Lector",
     "loading": "Cargando…",
     "openMenu": "Abrir menú",
-    "sourceAndLicence": "Código fuente y licencia"
+    "sourceAndLicence": "Código fuente y licencia",
+    "getHelp": "Pedir ayuda",
+    "getHelpTitle": "Ayuda de {company} (se abre en una pestaña nueva)"
   },
   "dashboard": {
     "title": "Gobernanza de IA",
@@ -172,7 +174,10 @@
     "countDataSources": "{count} fuentes de datos",
     "exportRegisterPdf": "Registro de sistemas de IA (PDF)",
     "exportModelInventoryPdf": "Inventario de modelos (PDF)",
-    "registerShort": "Registrar"
+    "registerShort": "Registrar",
+    "systemVsTool": "Un sistema de IA es IA que la organización desarrolla o utiliza dentro de un proceso. Una herramienta de IA es un producto ya hecho que usan las personas, como un asistente de chat o un conversor de documentos: anótalas en Herramientas de IA en uso.",
+    "reference": "Referencia {reference}",
+    "toolsLink": "Ir a Herramientas de IA en uso"
   },
   "aiRegistryNew": {
     "title": "Registrar sistema de IA",
@@ -187,7 +192,7 @@
     "descriptionPlaceholder": "Describe qué hace este sistema de IA, sus capacidades y uso previsto...",
     "roleLabel": "Rol de la organización",
     "rolePlaceholder": "Selecciona un rol",
-    "roleHelp": "El rol de tu organización según el RIA",
+    "roleHelp": "Proveedor: la organización desarrolla el sistema, o encarga su desarrollo, y lo ofrece o lo pone en servicio con su propio nombre o marca (art. 3, punto 3). Responsable del despliegue: la organización utiliza un sistema bajo su propia autoridad (art. 3, punto 4). Una misma organización puede ser ambas cosas.",
     "statusLabel": "Estado del ciclo de vida",
     "statusPlaceholder": "Selecciona un estado",
     "vendorLabel": "Proveedor",
@@ -195,14 +200,14 @@
     "vendorHelp": "Vincula este sistema a un proveedor de tu registro de proveedores",
     "purposeLabel": "Finalidad prevista",
     "purposePlaceholder": "Describe la finalidad prevista y los casos de uso de este sistema de IA...",
-    "purposeHelp": "Obligatorio para sistemas de alto riesgo según el RIA (art. 13)",
+    "purposeHelp": "El uso al que se destina el sistema, incluidos el contexto y las condiciones de uso concretos (art. 3, punto 12). El RIA no fija ninguna redacción obligatoria y este producto no rechaza ninguna entrada. Para un sistema de alto riesgo, la base de datos de la UE pide una descripción de la finalidad prevista (anexo VIII): hazla concreta y coherente con las instrucciones de uso.",
     "businessOwnerLabel": "Responsable de negocio",
     "businessOwnerPlaceholder": "p. ej., Responsable del Equipo de Producto",
     "technicalOwnerLabel": "Responsable técnico",
     "technicalOwnerPlaceholder": "p. ej., Responsable de Ingeniería ML",
     "processesPersonalDataLabel": "Este sistema trata datos personales",
     "personalDataWarning": "Puede ser necesaria una EIPD o EIDF. Puedes vincular este sistema a los activos de datos de DPO Central tras su creación.",
-    "suggestionsLead": "Esta cuenta puede rellenar {count, plural, one {un campo} other {# campos}} por ti. Cada uno indica de dónde sale el valor y nada se introduce hasta que lo aceptas.",
+    "suggestionsLead": "Podemos rellenar {count, plural, one {un campo} other {# campos}} con lo que ya consta en el registro. Cada uno indica su origen. Revísalos y acepta cada uno.",
     "suggestionsApplyAll": "Usar todas las sugerencias",
     "suggestionOffer": "Sugerencia: {value}, {basis}.",
     "suggestionApplied": "Tomado de una sugerencia, {basis}. Puedes editarlo sin problema.",
@@ -225,6 +230,58 @@
     "registerSystem": "Registrar sistema",
     "toastSuccess": "Sistema de IA registrado correctamente",
     "toastError": "No se ha podido registrar el sistema de IA",
+    "roleDecide": {
+      "open": "Ayúdame a decidir",
+      "close": "Cerrar",
+      "q": {
+        "developed": "¿Ha desarrollado la organización este sistema, o ha encargado su desarrollo?",
+        "ownName": "¿Lo ofrece la organización a terceros, o lo pone en servicio ella misma, con su propio nombre o marca (de pago o gratis)?",
+        "usesIt": "¿Lo utiliza la organización en su propio trabajo, bajo su propia autoridad?"
+      },
+      "outcome": {
+        "incomplete": "Responde a las tres preguntas para ver una sugerencia.",
+        "provider": "Sugerencia: proveedor.",
+        "providerAndDeployer": "Sugerencia: proveedor. La organización también utiliza el sistema, así que se aplican además las obligaciones del responsable del despliegue.",
+        "deployer": "Sugerencia: responsable del despliegue.",
+        "neither": "Ninguno de los dos roles encaja con estas respuestas. La organización puede ser importadora o distribuidora (art. 3, puntos 6 y 7) o quedar fuera de la cadena de suministro de este sistema."
+      },
+      "note": "Un responsable del despliegue que pone su nombre o marca en un sistema de alto riesgo, lo modifica de manera sustancial o cambia su finalidad prevista de modo que pase a ser de alto riesgo asume las obligaciones del proveedor (art. 25, apartado 1).",
+      "use": "Usar este rol"
+    },
+    "purposeBuilder": {
+      "open": "Redáctala con cinco preguntas",
+      "close": "Cerrar las preguntas",
+      "what": {
+        "label": "¿Qué hace?",
+        "placeholder": "Ordena las candidaturas recibidas según los requisitos del puesto"
+      },
+      "who": {
+        "label": "¿Quién lo usa?",
+        "placeholder": "El equipo de selección"
+      },
+      "where": {
+        "label": "¿Dónde y en qué contexto?",
+        "placeholder": "La contratación para puestos de oficina en España y Portugal"
+      },
+      "decisions": {
+        "label": "¿Qué decisiones apoya?",
+        "placeholder": "Qué candidaturas pasan a entrevista; la decisión la toma una persona del equipo de selección"
+      },
+      "notFor": {
+        "label": "¿Para qué no debe usarse?",
+        "placeholder": "Decisiones finales de contratación o la evaluación de la plantilla actual"
+      },
+      "frame": {
+        "who": "Quién lo usa: {value}",
+        "where": "Contexto de uso: {value}",
+        "decisions": "Decisiones que apoya: {value}",
+        "notFor": "No debe usarse para: {value}"
+      },
+      "example": "Ejemplo: Ordena las candidaturas recibidas según los requisitos del puesto. Quién lo usa: el equipo de selección. Contexto de uso: la contratación para puestos de oficina en España y Portugal. Decisiones que apoya: qué candidaturas pasan a entrevista; la decisión la toma una persona del equipo de selección. No debe usarse para: decisiones finales de contratación o la evaluación de la plantilla actual.",
+      "preview": "La redacción",
+      "use": "Pasar al campo",
+      "replaces": "Sustituye lo que contiene el campo. Después puedes editarlo."
+    },
     "ownerPickHint": "Elige a una persona del equipo o escribe el nombre de alguien de fuera."
   },
   "aiRegistryDetail": {
@@ -321,13 +378,13 @@
     "modelProviderLabel": "Proveedor",
     "modelProviderPlaceholder": "p. ej., OpenAI, Anthropic",
     "modelTypeLabel": "Tipo de modelo",
-    "modelTypePlaceholder": "p. ej., LLM, Clasificador",
+    "modelTypePlaceholder": "Selecciona un tipo",
     "modelVersionLabel": "Versión",
     "modelVersionPlaceholder": "p. ej., 1.0, 2024-03",
     "modelTrainingDataLabel": "Resumen de datos de entrenamiento",
-    "modelTrainingDataPlaceholder": "Describe los datos de entrenamiento utilizados...",
+    "modelTrainingDataPlaceholder": "De dónde proceden los datos, qué periodo cubren, lagunas conocidas",
     "modelLimitationsLabel": "Limitaciones conocidas",
-    "modelLimitationsPlaceholder": "Describe las limitaciones conocidas...",
+    "modelLimitationsPlaceholder": "Dónde funciona peor, para qué no debe usarse",
     "addDataSourceDialogTitle": "Añadir fuente de datos",
     "editDataSourceDialogTitle": "Editar fuente de datos",
     "addDataSourceDialogDescription": "Añade una nueva fuente de datos a este sistema de IA.",
@@ -346,7 +403,36 @@
     "toastDataSourceUpdated": "Fuente de datos actualizada",
     "toastDataSourceDeleted": "Fuente de datos eliminada",
     "tabAdmt": "ADMT de California",
-    "tabEvidence": "Evidencias"
+    "tabEvidence": "Evidencias",
+    "reference": "Referencia {reference}",
+    "checklist": {
+      "title": "Registro: {done} de {total}",
+      "required": "Obligatorios: {done} de {total}",
+      "hint": "Los elementos obligatorios completan el registro. Los recomendados describen cómo está construido el sistema y qué datos usa.",
+      "complete": "Están todos los elementos obligatorios.",
+      "requiredLabel": "Obligatorio",
+      "laterLabel": "Obligatorio, se fija en el paso del nivel de riesgo",
+      "recommendedLabel": "Recomendado",
+      "fill": "Rellenar",
+      "item": {
+        "description": "Descripción",
+        "purpose": "Finalidad prevista",
+        "businessOwner": "Responsable de negocio",
+        "technicalOwner": "Responsable técnico",
+        "riskClassification": "Nivel de riesgo",
+        "models": "Modelos y componentes",
+        "dataSources": "Fuentes de datos",
+        "dataFlow": "Flujo de datos (quién recibe los datos)"
+      }
+    },
+    "components": {
+      "title": "Herramientas de IA usadas como componentes",
+      "hint": "Herramientas de IA aprobadas que se han añadido a este sistema desde la página de herramientas de IA en uso."
+    },
+    "modelTypeOtherLabel": "Describe el tipo",
+    "modelTypeOtherPlaceholder": "p. ej., red neuronal de grafos",
+    "modelTrainingDataHelp": "De dónde proceden los datos, qué periodo cubren, cómo se seleccionaron y depuraron, y qué lagunas tienen (grupos, lugares o casos poco representados). Si el modelo lo suministra un proveedor, indica lo que este declara.",
+    "modelLimitationsHelp": "Dónde el modelo funciona peor o no debe usarse: entradas, idiomas o grupos que trata mal, tasas de error conocidas y condiciones en las que no se ha probado."
   },
   "transparency": {
     "title": "Obligaciones de transparencia del art. 50",
@@ -388,10 +474,10 @@
     "currentClassification": "Clasificación actual",
     "riskLevelLabel": "Nivel de riesgo",
     "riskLevelPlaceholder": "Selecciona el nivel de riesgo",
-    "riskDescriptionUnacceptable": "Prácticas de IA prohibidas (art. 5): puntuación social, identificación biométrica en tiempo real, manipulación.",
-    "riskDescriptionHigh": "Sistemas de IA de alto riesgo (art. 6, Anexo III): biometría, infraestructuras críticas, educación, empleo, fuerzas del orden.",
-    "riskDescriptionLimited": "Riesgo limitado con obligaciones de transparencia (art. 50): chatbots, deepfakes, reconocimiento de emociones.",
-    "riskDescriptionMinimal": "Riesgo mínimo sin obligaciones normativas específicas, más allá de códigos de conducta voluntarios.",
+    "riskDescriptionUnacceptable": "Inaceptable: una práctica prohibida por el art. 5, como la puntuación social o la manipulación que causa perjuicios importantes. No puede utilizarse.",
+    "riskDescriptionHigh": "Alto: un sistema que se utiliza en un ámbito del anexo III (salvo que se aplique la excepción del art. 6, apartado 3) o un componente de seguridad de un producto del anexo I (art. 6). Es el que más obligaciones conlleva.",
+    "riskDescriptionLimited": "Limitado: no es de alto riesgo, pero está sujeto a las obligaciones de transparencia del art. 50, como informar de que se trata con una IA o marcar el contenido generado.",
+    "riskDescriptionMinimal": "Mínimo: ninguno de los anteriores. El RIA no fija obligaciones específicas para el propio sistema; la alfabetización en IA (art. 4) sigue aplicándose a la organización.",
     "annexIIICategoryLabel": "Categoría del anexo III",
     "annexIIICategoryPlaceholder": "Selecciona una categoría (opcional)",
     "rationaleLabel": "Justificación",
@@ -423,6 +509,20 @@
       "HIGH": "alto riesgo",
       "LIMITED": "riesgo limitado",
       "MINIMAL": "riesgo mínimo"
+    },
+    "levelsTitle": "Los cuatro niveles de riesgo",
+    "levelsNote": "«Limitado» y «mínimo» son denominaciones habituales, no términos del RIA.",
+    "toClassifyTitle": "Todavía sin nivel de riesgo ({count})",
+    "toClassifyHint": "Abre cada uno con Clasificar y registra su nivel.",
+    "classifiedTitle": "Clasificados ({count})",
+    "allClassified": "Todos los sistemas tienen nivel de riesgo.",
+    "suggestion": {
+      "use": "Usar el nivel sugerido"
+    },
+    "reasons": {
+      "title": "Motivos habituales",
+      "hint": "Elige los motivos que encajen. Cada uno añade su frase a la justificación, que puedes editar.",
+      "added": "Añadido"
     }
   },
   "quickstart": {
@@ -528,7 +628,41 @@
     "builderStepTitle": "¿Qué puede ver y hacer tu producto?",
     "builderStepDescription": "Marca lo que sea cierto hoy. Lleva unos cuatro minutos y produce el primer borrador de tu modelo de amenazas.",
     "builderWillPropose": "De esto se derivan {count} escenarios, cada uno con controles y una prueba.",
-    "statThreatScenarios": "{count} escenarios de amenaza"
+    "statThreatScenarios": "{count} escenarios de amenaza",
+    "stepIntro": "Antes de empezar",
+    "intro": {
+      "title": "Antes de empezar: lo que te pedirá el recorrido",
+      "lead": "El programa se construye con cinco tipos de información. Nada de ello hace falta para empezar: reúne ahora lo que sea fácil y añade el resto sobre la marcha.",
+      "items": {
+        "places": {
+          "title": "Dónde opera la organización",
+          "line": "Los países y estados de EE. UU. donde ofrece productos o servicios, o tiene empleados. Deciden qué leyes se aplican."
+        },
+        "vendors": {
+          "title": "Proveedores",
+          "line": "Las empresas que suministran la IA que usa la organización, como un asistente de chat o una función de IA dentro de un programa que ya se usa."
+        },
+        "toolsInUse": {
+          "title": "Herramientas de IA en uso",
+          "line": "Productos de IA ya hechos que los compañeros usan en el trabajo, aprobados o no."
+        },
+        "systems": {
+          "title": "Sistemas de IA",
+          "line": "IA que la organización desarrolla o utiliza dentro de sus propios procesos, como un modelo que ordena candidaturas de empleo."
+        },
+        "owners": {
+          "title": "Responsables",
+          "line": "Para cada sistema, la persona que responde de él en el negocio y la que lo gestiona técnicamente."
+        }
+      },
+      "howTitle": "Cómo encontrarlos",
+      "how": {
+        "expenses": "Registros de gastos y tarjetas: las suscripciones a productos de IA muestran quién paga cada herramienta.",
+        "signIn": "Registros de inicio de sesión: el inicio de sesión único o el proveedor de identidad muestra las aplicaciones en las que entra la gente.",
+        "survey": "Una breve encuesta a los compañeros: pregunta qué herramientas de IA usan, para qué y con qué datos."
+      },
+      "begin": "Empezar"
+    }
   },
   "assessments": {
     "title": "Evaluaciones de impacto",
@@ -956,7 +1090,8 @@
     "systemsCount": "{count, plural, one {# sistema} other {# sistemas}}",
     "assessmentsCount": "{count, plural, one {# evaluación} other {# evaluaciones}}",
     "contractExpiresInDays": "El contrato vence dentro de {count, plural, one {# día} other {# días}}",
-    "catalogSkillDescription": "Busca proveedores de IA en la base de datos de VendorWatch y rellena automáticamente tus registros de proveedores con datos de cumplimiento."
+    "catalogSkillDescription": "Busca proveedores de IA en la base de datos de VendorWatch y rellena automáticamente tus registros de proveedores con datos de cumplimiento.",
+    "definition": "Un proveedor es una empresa que suministra IA que usa la organización. Cuando se aprueba una herramienta de IA, quien la fabrica pasa a ser un proveedor."
   },
   "vendorsNew": {
     "title": "Añadir proveedor",
@@ -1118,21 +1253,41 @@
     "policyTypeIncidentResponse": "Respuesta a incidentes",
     "policyTypeTransparency": "Transparencia",
     "policyTypeCustom": "Personalizada",
-    "tabAll": "Todas ({count})",
-    "tabUsage": "Uso",
-    "tabGovernance": "Gobernanza",
-    "tabEthics": "Ética",
-    "tabRiskManagement": "Gestión de riesgos",
-    "tabOther": "Otras",
     "systemsCount": "{count, plural, one {# sistema} other {# sistemas}}",
-    "effectiveOn": "En vigor desde {date}",
-    "reviewOn": "Revisión: {date}"
+    "reviewOn": "Revisión: {date}",
+    "tabPolicies": "Políticas ({count})",
+    "tabTemplates": "Plantillas",
+    "originCounts": "{written, plural, one {# redactada aquí} other {# redactadas aquí}}, {templates, plural, one {# a partir de una plantilla} other {# a partir de plantillas}}.",
+    "originToReview": "{count, plural, one {# borrador de plantilla aún no se ha revisado.} other {# borradores de plantilla aún no se han revisado.}}",
+    "templateDraftMark": "Borrador de plantilla: revísalo",
+    "templateDraftsRemove": "{count, plural, one {Quitar el borrador de plantilla sin editar} other {Quitar los # borradores de plantilla sin editar}}",
+    "templateDraftsConfirmLead": "{count, plural, one {¿Quitar # borrador que nadie ha editado? Las políticas en las que alguien ha trabajado se mantienen.} other {¿Quitar # borradores que nadie ha editado? Las políticas en las que alguien ha trabajado se mantienen.}}",
+    "templateDraftsConfirm": "{count, plural, one {Quitar # borrador} other {Quitar # borradores}}",
+    "templateDraftsRemoved": "{count, plural, =0 {No había nada que quitar} one {Se ha quitado # borrador} other {Se han quitado # borradores}}",
+    "filterType": "Tipo de política",
+    "filterAllTypes": "Todos los tipos",
+    "filterOrigin": "Origen",
+    "filterAllOrigins": "Cualquier origen",
+    "filterWritten": "Redactadas aquí",
+    "filterTemplate": "A partir de plantillas",
+    "viewLabel": "Vista",
+    "viewTable": "Tabla",
+    "viewCards": "Tarjetas",
+    "colTitle": "Política",
+    "colType": "Tipo",
+    "colStatus": "Estado",
+    "colOwner": "Responsable",
+    "colSystems": "Sistemas de IA",
+    "colReview": "Fecha de revisión",
+    "noSystems": "Ninguno vinculado",
+    "systemsMore": "{names} y {count} más",
+    "noOwner": "Sin nombrar",
+    "noReviewDate": "Sin fecha",
+    "browseTemplates": "Ver plantillas"
   },
   "policiesNew": {
     "title": "Crear política",
     "subtitle": "Define una nueva política de gobernanza de IA",
-    "formTitle": "Detalles de la política",
-    "formDescription": "Proporciona información sobre la política que se va a crear",
     "labelTitle": "Título",
     "placeholderTitle": "p. ej., Política de Uso Aceptable de IA",
     "labelPolicyType": "Tipo de política",
@@ -1152,18 +1307,28 @@
       "lawfirm": "despacho",
       "industry": "sector"
     },
-    "placeholderType": "Selecciona el tipo de política",
     "placeholderDescription": "Describe brevemente la finalidad y el alcance de esta política",
-    "placeholderContent": "Escribe aquí el texto de la política"
+    "placeholderContent": "Escribe aquí el texto de la política",
+    "browseTemplates": "Consulta la biblioteca de plantillas.",
+    "labelImport": "Importar una política existente (opcional)",
+    "importButton": "Elige un archivo de Word, PDF o texto",
+    "importChosen": "Importado: {name}",
+    "importHint": "El texto rellena el contenido de abajo para que lo compruebes. No se guarda nada hasta que crees la política.",
+    "importDone": "Texto importado. Compruébalo antes de guardar.",
+    "importTruncated": "Texto importado. El archivo era muy largo, así que solo se ha conservado la primera parte.",
+    "importError": {
+      "too_large": "El archivo ocupa más de 5 MB.",
+      "unsupported": "Usa un archivo de Word (.docx), PDF o texto.",
+      "empty": "No se ha encontrado texto en el archivo. Un PDF escaneado no tiene texto que leer.",
+      "unreadable": "No se ha podido leer el archivo."
+    },
+    "descriptionDefaultHint": "Una descripción sugerida para este tipo. Edítala para que se ajuste a la política."
   },
   "policyDetail": {
     "notFound": "Política no encontrada",
     "backToPolicies": "Volver a políticas",
-    "overviewTitle": "Resumen",
     "labelEffectiveDate": "Fecha de entrada en vigor",
     "labelReviewDate": "Fecha de revisión",
-    "labelApprovedBy": "Aprobada por",
-    "labelCreatedBy": "Creada por",
     "statisticsTitle": "Estadísticas",
     "versionsCount": "Versiones",
     "linkedSystemsCount": "Sistemas vinculados",
@@ -1202,7 +1367,6 @@
     "toastSystemUnlinkError": "No se ha podido desvincular el sistema",
     "notYetApproved": "Aún no aprobada",
     "labelApprovedAt": "Fecha de aprobación",
-    "unknown": "Desconocido",
     "labelCreatedAt": "Fecha de creación",
     "labelLastUpdated": "Última actualización",
     "emptyContentHint": "Añade contenido para definir esta política",
@@ -1221,23 +1385,50 @@
     "labelAiSystem": "Sistema de IA",
     "placeholderSelectAiSystem": "Selecciona un sistema de IA",
     "archiveDialogDescription": "Esta política tiene {count, plural, one {# sistema de IA vinculado} other {# sistemas de IA vinculados}}. Archivarla puede afectar a su cobertura de gobernanza.",
-    "archiving": "Archivando..."
+    "archiving": "Archivando...",
+    "download": "Descargar",
+    "downloadPdf": "PDF",
+    "downloadWord": "Word (.docx)",
+    "duplicate": "Duplicar",
+    "toastDuplicated": "Se ha creado una copia como nuevo borrador",
+    "backWithDrafts": "{count, plural, one {Volver a las políticas (# borrador por revisar)} other {Volver a las políticas (# borradores por revisar)}}",
+    "templateDraftTitle": "Borrador de plantilla: revísalo",
+    "templateDraftBody": "Este texto procede de una plantilla. Léelo, adáptalo a la organización y después envíalo a revisión interna. Cuenta como borrador de plantilla hasta que alguien lo edite.",
+    "editDetails": "Editar datos",
+    "detailsDialogTitle": "Datos de la política",
+    "labelReference": "Referencia",
+    "labelVersion": "Versión",
+    "labelStatus": "Estado",
+    "labelOwner": "Responsable",
+    "labelDepartment": "Departamento",
+    "labelSystems": "Sistemas de IA",
+    "labelDescription": "Descripción",
+    "labelInterval": "Revisar cada",
+    "notSet": "Sin indicar",
+    "reviewEvery": "Se revisa cada {months} meses",
+    "intervalHint": "El Reglamento de IA de la UE no fija un plazo de revisión para las políticas internas de IA. Elige el que convenga a la organización: al publicar una versión, la siguiente fecha de revisión se calcula con él.",
+    "suggestLead": "La asistencia de IA puede sugerir cambios. No cambia nada hasta que tú edites el texto.",
+    "suggestionsTitle": "Cambios sugeridos",
+    "suggestionsHint": "De la asistencia de IA. Comprueba cada uno y aplica solo lo que convenga a la organización.",
+    "labelApprovedBy": "Aprobada por",
+    "labelCreatedBy": "Creada por",
+    "unknown": "Antiguo miembro"
   },
   "shadowAi": {
-    "title": "Herramientas de IA sin aprobar",
-    "subtitle": "Detección de IA en la sombra: descubre y gestiona las herramientas de IA que se usan sin aprobación",
+    "title": "Herramientas de IA en uso",
+    "subtitle": "IA en la sombra: las herramientas de IA que se usan en la organización, a partir de notificaciones y revisiones. Decide sobre cada una y registra las aprobadas.",
     "premiumBadge": "Premium",
     "enableShadowAi": "Activar detección de IA en la sombra",
     "reportAiTool": "Notificar herramienta de IA",
     "statsTotalReports": "Total de informes",
-    "statsDiscovered": "Descubiertas",
+    "statsDiscovered": "Notificadas",
     "statsUnderReview": "En revisión",
     "statsProhibited": "Prohibidas",
     "searchPlaceholder": "Buscar informes...",
     "emptyTitle": "No se han encontrado informes",
     "emptySearchHint": "Prueba a ajustar los términos de búsqueda",
     "emptyHint": "Comienza notificando una herramienta de IA en uso",
-    "statusDiscovered": "Descubierta",
+    "statusDiscovered": "Notificada",
     "statusUnderReview": "En revisión",
     "statusApproved": "Aprobada",
     "statusProhibited": "Prohibida",
@@ -1246,7 +1437,51 @@
     "gateTitle": "Detección de IA en la sombra",
     "gateBody": "Registra las herramientas de IA que se usan sin aprobación, ya las comunique el personal o aparezcan en una revisión. Cada una se coteja con un catálogo de herramientas de IA habituales, se clasifica (en revisión, aprobada o prohibida) y las aprobadas pueden incorporarse al inventario de IA en un solo paso.",
     "gateSkillDescription": "Registra herramientas de IA no aprobadas, cotéjalas con un catálogo de herramientas habituales, clasifícalas e incorpora las aprobadas al inventario.",
-    "tabAll": "Todas ({count})"
+    "tabAll": "Todas ({count})",
+    "definition": "Una herramienta de IA es un producto ya hecho que usan las personas, como un asistente de chat o un conversor de documentos. Un sistema de IA es IA que la organización desarrolla o utiliza dentro de un proceso. Una herramienta pasa a ser un sistema cuando la organización la integra en un proceso o decide gestionarla como tal: regístrala como sistema nuevo o añádela como componente a un sistema existente.",
+    "noDetection": "Esta página no detecta nada por sí sola. Cada registro procede de la notificación de un compañero o de una revisión que haces tú, y se coteja con un catálogo de herramientas de IA habituales.",
+    "howToFind": {
+      "title": "Cómo encontrar las herramientas de IA en uso",
+      "survey": "Pregunta a tus compañeros: envía la breve encuesta de abajo.",
+      "expenses": "Gastos y tarjetas: busca suscripciones a productos de IA.",
+      "sso": "Registros del inicio de sesión único y de identidad: busca accesos a servicios de IA.",
+      "extensions": "Extensiones del navegador y programas instalados: busca asistentes y complementos de IA."
+    },
+    "survey": {
+      "title": "Encuesta para compañeros",
+      "text": "¿Qué herramientas de IA usas en el trabajo? Indica cada una, incluidas las gratuitas y las que usas con una cuenta personal.\n1. El nombre de la herramienta (por ejemplo, un asistente de chat, un servicio de transcripción o traducción, un asistente de redacción o de programación).\n2. Para qué la usas.\n3. Qué información introduces (por ejemplo, datos de clientes, datos personales, documentos internos).\n4. Si usas una cuenta del trabajo, una cuenta personal o ninguna cuenta.\n5. Con qué frecuencia la usas.",
+      "copy": "Copiar la encuesta",
+      "copied": "Encuesta copiada."
+    },
+    "stages": {
+      "title": "Cómo avanza una herramienta",
+      "reported": {
+        "label": "Notificada",
+        "text": "Alguien ha anotado que la herramienta se usa."
+      },
+      "underReview": {
+        "label": "En revisión",
+        "text": "Una persona comprueba qué hace, qué datos recibe y quién la suministra."
+      },
+      "decided": {
+        "label": "Aprobada o prohibida",
+        "text": "La organización decide si se puede usar."
+      },
+      "registered": {
+        "label": "Registrada",
+        "text": "Una herramienta aprobada se incorpora al inventario de IA, como sistema nuevo o como componente de uno existente."
+      }
+    },
+    "tabToReview": "Por revisar ({count})",
+    "tabApproved": "Aprobadas ({count})",
+    "tabProhibited": "Prohibidas ({count})",
+    "tabRegistered": "Registradas ({count})",
+    "statsToReview": "Por revisar",
+    "statsApproved": "Aprobadas",
+    "statsRegistered": "Registradas",
+    "reportedWhen": "Notificada {when}",
+    "emptyTab": "No hay ninguna herramienta de IA en esta pestaña.",
+    "systemsLink": "Ir a los sistemas de IA"
   },
   "shadowAiNew": {
     "title": "Notificar herramienta de IA",
@@ -1288,27 +1523,27 @@
   },
   "shadowAiDetail": {
     "notFound": "Informe no encontrado",
-    "backToShadowAi": "Volver a IA en la sombra",
+    "backToShadowAi": "Volver a herramientas de IA en uso",
     "startReview": "Iniciar revisión",
     "approve": "Aprobar",
     "prohibit": "Prohibir",
-    "registerAsAiSystem": "Registrar como sistema de IA",
+    "registerAsAiSystem": "Registrar en el inventario de IA",
     "approvedCtaTitle": "Esta herramienta ha sido aprobada",
-    "approvedCtaDescription": "Regístrala como sistema de IA para iniciar el seguimiento de gobernanza",
+    "approvedCtaDescription": "Regístrala como sistema de IA nuevo o añádela como componente a un sistema existente.",
     "overviewTitle": "Resumen",
     "labelUsageDescription": "Descripción del uso",
     "labelDepartment": "Departamento",
     "labelReportedBy": "Notificada por",
-    "registeredSystemTitle": "Sistema de IA registrado",
+    "registeredSystemTitle": "Registrada en",
     "toolInfoTitle": "Información de la herramienta",
-    "registerDialogTitle": "Registrar como sistema de IA",
-    "registerTabCreateNew": "Crear nuevo",
-    "registerTabLinkExisting": "Vincular existente",
+    "registerDialogTitle": "Registrar en el inventario de IA",
+    "registerTabCreateNew": "Registrar como sistema nuevo",
+    "registerTabLinkExisting": "Añadir a un sistema existente como componente",
     "toastReportUpdated": "Informe actualizado",
     "toastReportUpdateError": "No se ha podido actualizar el informe",
     "toastSystemCreatedAndRegistered": "Sistema creado e informe registrado",
     "toastRegisterError": "No se ha podido registrar",
-    "statusDiscovered": "Descubierta",
+    "statusDiscovered": "Notificada",
     "statusUnderReview": "En revisión",
     "statusApproved": "Aprobada",
     "statusProhibited": "Prohibida",
@@ -1323,7 +1558,7 @@
     "unknown": "Desconocido",
     "labelReported": "Notificada",
     "labelLastUpdated": "Última actualización",
-    "systemId": "ID: {id}",
+    "systemId": "Referencia {id}",
     "labelVendor": "Proveedor",
     "labelCategory": "Categoría",
     "labelWebsite": "Sitio web",
@@ -1345,7 +1580,7 @@
     "placeholderVendorName": "p. ej., OpenAI",
     "labelVendorWebsite": "Sitio web del proveedor",
     "placeholderVendorWebsite": "p. ej., https://openai.com",
-    "registerLinkHint": "Vincula esta herramienta de IA en la sombra a un sistema de IA existente de tu registro.",
+    "registerLinkHint": "La herramienta pasa a ser un componente del sistema que elijas. Aparece en la página de ese sistema, que conserva su propio número de referencia.",
     "labelAiSystem": "Sistema de IA",
     "placeholderSelectAiSystem": "Selecciona un sistema de IA",
     "registering": "Registrando...",
@@ -1364,7 +1599,8 @@
       "TRANSCRIPTION_DICTATION": "Transcripción y dictado",
       "VIDEO_AUDIO": "Vídeo y audio",
       "WRITING_PRODUCTIVITY": "Redacción y productividad"
-    }
+    },
+    "selectedSystemReference": "Referencia del sistema elegido: {reference}"
   },
   "vendorCatalog": {
     "title": "Catálogo de proveedores",
@@ -1451,7 +1687,7 @@
   },
   "settings": {
     "title": "Configuración",
-    "subtitle": "Tu organización: dónde opera, sus respuestas al cribado, sus miembros y sus ajustes de IA",
+    "subtitle": "La organización: dónde opera, las respuestas que deciden qué leyes se aplican, su equipo y sus ajustes de IA",
     "templateItemsTitle": "Elementos de plantilla",
     "templateItemsLead": "Sistemas, proveedores y evaluaciones iniciales que una plantilla ha creado por ti. Al quitarlos solo se eliminan los que nadie ha editado; se conserva todo lo que hayas cambiado.",
     "templateItemsCount": "Se quitarán {remove}. Se conservarán {keep} que has editado.",
@@ -1592,7 +1828,10 @@
       "provenance": "Generado con IA ({model}): revísalo antes de usarlo",
       "inserted": "Borrador insertado: revísalo y guárdalo",
       "offHint": "La asistencia de IA está desactivada en esta organización. Un administrador puede activarla en Ajustes.",
-      "notConfiguredHint": "La asistencia de IA está activada, pero todavía no hay ningún motor de IA disponible. Pide al administrador del servidor que configure un motor de IA (consulta el .env.example de la suite: la dirección de la pasarela es LLM_GATEWAY_URL)."
+      "notConfiguredHint": "La asistencia de IA está activada, pero todavía no hay ningún motor de IA disponible. Pide al administrador del servidor que configure un motor de IA (consulta el .env.example de la suite: la dirección de la pasarela es LLM_GATEWAY_URL).",
+      "suggestEdits": "Sugerir cambios",
+      "reviewInEditor": "Abrir el editor con estas sugerencias",
+      "reviewOpened": "Sugerencias mostradas encima del texto"
     },
     "posture": {
       "off": "Desactivada: sin llamadas a IA",
@@ -1637,7 +1876,7 @@
     },
     "annexIv": {
       "title": "Documentación técnica del anexo IV",
-      "description": "Redacta el esqueleto de la documentación técnica del anexo IV a partir de los datos registrados de este sistema. Las lagunas quedan marcadas para que las complete la persona responsable.",
+      "description": "El expediente técnico que el RIA exige a los proveedores de sistemas de alto riesgo (art. 11 y anexo IV). Esta opción lo redacta a partir del registro.",
       "copy": "Copiar markdown",
       "copied": "Borrador del anexo IV copiado al portapapeles",
       "disclaimer": "Un borrador de trabajo a partir de los datos del registro: la persona responsable del sistema debe completarlo y revisarlo antes de cualquier uso."
@@ -4492,12 +4731,12 @@
     }
   },
   "obligations": {
-    "title": "Dónde trabajas y tus normas",
+    "title": "Dónde opera la organización y las normas que se aplican",
     "subtitle": "El calendario de obligaciones: plazos normativos proyectados sobre tu propio inventario de IA.",
     "ariaLabel": "Cronología de obligaciones normativas",
     "assumedJurisdictions": "Mostrando obligaciones para: {jurisdictions}",
-    "changePlaces": "Cambiar en Configuración",
-    "screeningMissing": "Algunas de estas fechas dependen de unas pocas respuestas sobre tu organización. Hasta que respondas al breve cribado de Configuración, aparecen como «Alcance aún sin determinar».",
+    "changePlaces": "Cambiar los lugares",
+    "screeningMissing": "Algunas de estas fechas dependen de unas pocas respuestas sobre la organización. Hasta que se respondan, aparecen como «Alcance aún sin determinar».",
     "answerScreening": "Responder al cribado",
     "jurisdictionsUndeclared": "No nos has indicado dónde operas, así que las obligaciones de EE. UU. se muestran como no determinadas y no como fuera de alcance.",
     "declareJurisdictions": "Declara tus jurisdicciones de operación",
@@ -4571,7 +4810,27 @@
     "filterAll": "Todas las jurisdicciones",
     "filterLabel": "Jurisdicción",
     "showingCount": "{shown} de {total} hitos",
-    "nothingAhead": "No hay nada pendiente en las jurisdicciones que has declarado. Las secciones siguientes muestran lo que ya está en vigor y lo que se ha comprobado y no te alcanza."
+    "nothingAhead": "No hay nada pendiente en las jurisdicciones que has declarado. Las secciones siguientes muestran lo que ya está en vigor y lo que se ha comprobado y no te alcanza.",
+    "answerQuestions": "{count, plural, one {Responde a # pregunta} other {Responde a # preguntas}}",
+    "questions": {
+      "title": "Las preguntas que deciden qué leyes se aplican",
+      "lead": "Las respuestas de aquí son las mismas que las de Configuración: puedes cambiarlas en cualquiera de los dos sitios.",
+      "allAnswered": "Todas las preguntas tienen respuesta.",
+      "show": "Cambiar los lugares y las respuestas",
+      "hide": "Ocultar las preguntas"
+    },
+    "timelineLead": "Cada marca es un plazo legal de los lugares que has declarado. Las marcas a la izquierda de hoy ya han pasado y siguen pendientes; el resto están por llegar.",
+    "timelineLeadVertical": "Cada marca es un plazo legal de los lugares que has declarado. Las marcas por encima de hoy ya han pasado y siguen pendientes; el resto están por llegar.",
+    "singlePlace": "Has declarado un solo lugar, {place}: solo se muestran las normas que lo alcanzan.",
+    "applies": {
+      "title": "Esto se aplica a la organización",
+      "lead": "Según dónde opera la organización y las respuestas dadas. Cada línea dice por qué se aplica y su próxima fecha.",
+      "next": "Próxima fecha: {date}",
+      "inForce": "En vigor",
+      "noDate": "Sin plazo fechado en este calendario",
+      "empty": "Aún no se muestra nada como aplicable. Declara dónde opera la organización y responde a las preguntas del paso 1.2.",
+      "open": "Ver las normas y fechas"
+    }
   },
   "admt": {
     "title": "ADMT de California",
@@ -5380,7 +5639,7 @@
     "title": "Modelo de amenazas",
     "subtitle": "Empieza por el sistema que estás construyendo, no por un marco. Di lo que puede ver y hacer, y lo que podría salir mal llega con sus controles y una prueba para cada uno.",
     "start": "Empezar un modelo de amenazas",
-    "loopHint": "Media hora con quienes lo han construido dice más que una evaluación de setenta preguntas.",
+    "loopHint": "Una reunión de unos treinta minutos con quienes han construido el sistema dice más que una evaluación de setenta preguntas.",
     "loop": {
       "map": "Mapear",
       "imagine": "Imaginar",
@@ -5394,13 +5653,13 @@
     "scenarioCount": "{count} escenarios",
     "noControls": "Sin controles todavía",
     "provenOf": "{proven}/{total} controles probados y superados",
-    "newTitle": "Un modelo de amenazas en media hora",
-    "newSubtitle": "Tres pantallas. Nada que escribir desde cero.",
+    "newTitle": "Nuevo modelo de amenazas",
+    "newSubtitle": "Tres pantallas, nada que escribir desde cero. Una reunión de unos treinta minutos con quienes han construido el sistema.",
     "nameLabel": "¿Qué estás construyendo?",
     "namePlaceholder": "Agente de atención al cliente, asistente de documentos internos, agente de programación",
     "summaryLabel": "En dos líneas, ¿qué hace?",
     "summaryPlaceholder": "Lee datos de clientes y el historial de pedidos, responde preguntas y puede emitir reembolsos.",
-    "systemLabel": "Vincúlalo a un sistema de IA registrado",
+    "systemLabel": "¿Para qué sistema de IA es?",
     "systemPlaceholder": "Opcional",
     "systemNone": "Sin vincular",
     "sessionTitle": "Preguntas para quienes lo han construido",
@@ -5505,8 +5764,10 @@
       "not-passing": "la última prueba ha fallado, ha sido parcial o ha caducado"
     },
     "systemCardHint": "Qué puede salir mal con este sistema y si los controles aguantan.",
-    "systemCardNone": "Todavía no hay un modelo de amenazas para este sistema. Media hora con quienes lo han construido basta para el primer borrador.",
-    "systemCardOpen": "Abrir el modelo de amenazas"
+    "systemCardNone": "Todavía no hay un modelo de amenazas para este sistema. Una reunión de unos treinta minutos con quienes han construido el sistema basta para el primer borrador.",
+    "systemCardOpen": "Abrir el modelo de amenazas",
+    "purpose": "Un modelo de amenazas recoge lo que puede fallar en un sistema, con los controles y las pruebas que responden a cada riesgo. El RIA no lo menciona, pero ayuda a cumplir las obligaciones de precisión, solidez y ciberseguridad de los sistemas de alto riesgo (art. 15) y a avanzar en AIUC-1 e ISO/IEC 42001. Es sobre todo útil para las organizaciones que desarrollan IA.",
+    "systemHint": "Elige primero el sistema: el nombre de abajo se rellena a partir de él. Déjalo vacío si aún no está registrado."
   },
   "premiumShowcase": {
     "lockedHint": "Forma parte de un módulo premium, que se vende para el kit a {price} al año. Activa una licencia para usarlo.",
@@ -5658,17 +5919,20 @@
       "quickstart": {
         "label": "Inicio rápido",
         "why": "Fija tus jurisdicciones, aplica una plantilla sectorial e importa tus proveedores desde el catálogo, para que el resto del programa empiece ya completado.",
-        "do": "Responde a unas pocas preguntas y se rellena por ti una primera versión de tu programa."
+        "do": "Responde a unas pocas preguntas y se rellena por ti una primera versión de tu programa.",
+        "doneWhen": "el inicio rápido se ha completado una vez, o ya existen un sistema, un proveedor y una política."
       },
       "obligations": {
-        "label": "Dónde trabajas y tus normas",
-        "why": "Las normas que te aplican dependen de dónde trabajas. Indica dónde trabajas y responde al breve cribado de Configuración, para que las normas y sus fechas sean las que te aplican.",
-        "do": "Indica dónde trabajas y responde al breve cribado de Configuración. Después esta página muestra las normas que te aplican y sus fechas."
+        "label": "Dónde opera la organización y las normas que se aplican",
+        "why": "Las normas aplicables dependen de dónde opera la organización. Declara los lugares y responde a las breves preguntas de la página de este paso, para que las normas y sus fechas sean las que se aplican.",
+        "do": "Declara dónde opera la organización y responde a las preguntas de esta página. Después muestra las normas que se aplican y sus fechas.",
+        "doneWhen": "los lugares están declarados y cada cribado que se muestra para ellos tiene respuesta."
       },
       "policies": {
         "label": "Política de IA",
         "why": "Una política de uso aceptable aprobada dice a todos qué herramientas de IA pueden usar y cómo.",
-        "do": "Redacta y aprueba la política que dice qué herramientas de IA se pueden usar y cómo."
+        "do": "Redacta y aprueba la política que dice qué herramientas de IA se pueden usar y cómo.",
+        "doneWhen": "hay una política de uso aceptable aprobada o publicada."
       },
       "prohibited": {
         "label": "Revisión de usos prohibidos",
@@ -5683,87 +5947,104 @@
       "systems": {
         "label": "Tus sistemas de IA",
         "why": "Cada sistema necesita un registro y un responsable antes de poder fijar su riesgo.",
-        "do": "Registra cada sistema de IA que usa tu organización e indica quién es su responsable."
+        "do": "Registra cada sistema de IA que usa tu organización e indica quién es su responsable.",
+        "doneWhen": "hay al menos un sistema de IA registrado y cada sistema tiene un responsable de negocio."
       },
       "shadowAi": {
-        "label": "Herramientas de IA sin aprobar",
-        "why": "Registra las herramientas de IA que ya se usan sin aprobación y decide sobre cada una.",
-        "do": "Anota las herramientas de IA que se usan sin aprobación y decide sobre cada una."
+        "label": "Herramientas de IA en uso",
+        "why": "Registra las herramientas de IA que ya se usan y decide sobre cada una.",
+        "do": "Anota las herramientas de IA que se usan y decide sobre cada una de las que quedan por revisar.",
+        "doneWhen": "hay al menos una herramienta de IA en uso registrada y no queda ninguna por revisar."
       },
       "vendors": {
         "label": "Proveedores",
         "why": "La mayor parte de la IA te llega a través de proveedores. Añádelos desde el catálogo de proveedores.",
-        "do": "Añade las empresas cuya IA usas. Con el catálogo de proveedores es rápido."
+        "do": "Añade las empresas cuya IA usas. Con el catálogo de proveedores es rápido.",
+        "doneWhen": "hay al menos un proveedor registrado."
       },
       "classification": {
         "label": "Nivel de riesgo",
         "why": "El nivel de riesgo de cada sistema decide qué normas le aplican.",
-        "do": "Da a cada sistema de IA su nivel de riesgo. El nivel decide qué normas aplican."
+        "do": "Da a cada sistema de IA su nivel de riesgo. El nivel decide qué normas aplican.",
+        "doneWhen": "cada sistema tiene un nivel de riesgo confirmado por una persona."
       },
       "assessments": {
         "label": "Evaluaciones de impacto",
         "why": "Los sistemas de alto riesgo necesitan una evaluación de impacto aprobada.",
-        "do": "Evalúa cada sistema de alto riesgo y haz que se apruebe la evaluación."
+        "do": "Evalúa cada sistema de alto riesgo y haz que se apruebe la evaluación.",
+        "doneWhen": "hay al menos una evaluación aprobada y cada sistema de alto riesgo tiene una aprobada."
       },
       "threatModel": {
         "label": "Modelo de amenazas",
         "why": "Anota qué puede fallar en los sistemas que construyes y cómo se detiene y se prueba cada riesgo.",
-        "do": "Anota qué puede fallar en la IA que construyes y cómo se detiene y se prueba cada riesgo."
+        "do": "Anota qué puede fallar en la IA que construyes y cómo se detiene y se prueba cada riesgo.",
+        "doneWhen": "al menos un modelo de amenazas ha dejado de ser borrador."
       },
       "vendorDueDiligence": {
         "label": "Revisión de proveedores",
         "why": "Cada proveedor necesita una revisión completada.",
-        "do": "Revisa cada proveedor: ábrelo y completa su revisión."
+        "do": "Revisa cada proveedor: ábrelo y responde a su revisión (contrato, ubicación de los datos, certificaciones). Unos veinte minutos cada uno.",
+        "doneWhen": "cada proveedor tiene una revisión de diligencia debida completada."
       },
       "agentTesting": {
         "label": "Prueba tus agentes de IA (AIUC-1)",
         "why": "Antes de la auditoría AIUC-1, cada agente de IA necesita que cada requisito que le aplica esté probado y superado, o un resultado parcial aceptado.",
-        "do": "Prueba cada agente de IA frente a AIUC-1: anota qué has hecho y el resultado, hasta superar cada requisito que le aplica."
+        "do": "Prueba cada agente de IA frente a AIUC-1: anota qué has hecho y el resultado, hasta superar cada requisito que le aplica.",
+        "doneWhen": "cada agente de IA está preparado para la auditoría AIUC-1."
       },
       "oversight": {
         "label": "Supervisión humana",
         "why": "Los sistemas de alto riesgo necesitan una persona que pueda revisarlos, aprobarlos o detenerlos.",
-        "do": "Nombra a una persona que pueda revisar, aprobar o detener cada sistema de alto riesgo."
+        "do": "Nombra a una persona que pueda revisar, aprobar o detener cada sistema de alto riesgo.",
+        "doneWhen": "cada sistema de alto riesgo tiene una puerta de supervisión confirmada (sin sistemas de alto riesgo, basta con una puerta confirmada)."
       },
       "transparency": {
         "label": "Avisar de que es IA",
         "why": "Registra para cada sistema si hay que avisar a las personas de que tratan con IA (art. 50).",
-        "do": "Registra para cada sistema si hay que avisar a las personas de que tratan con IA. Abre un sistema para hacerlo."
+        "do": "Registra para cada sistema si hay que avisar a las personas de que tratan con IA. Abre un sistema para hacerlo.",
+        "doneWhen": "cada sistema tiene un perfil de transparencia confirmado por una persona."
       },
       "evidence": {
         "label": "Evidencias",
         "why": "Da un estado a cada requisito y adjunta la prueba que lo respalda.",
-        "do": "Elige un sistema, da un estado a cada requisito y adjunta la prueba."
+        "do": "Elige un sistema, da un estado a cada requisito y adjunta la prueba.",
+        "doneWhen": "cada requisito vinculado tiene un estado y hay al menos una evidencia adjunta."
       },
       "sensitiveData": {
         "label": "Datos sensibles",
         "why": "Clasifica los datos sensibles que usan tus sistemas, empezando por los datos personales.",
-        "do": "Revisa los datos sensibles que usan tus sistemas, empezando por los datos personales."
+        "do": "Revisa los datos sensibles que usan tus sistemas, empezando por los datos personales.",
+        "doneWhen": "existe al menos una evaluación de datos sensibles y cada sistema que trata datos personales tiene una."
       },
       "incidents": {
         "label": "Incidentes",
         "why": "Aprueba un plan de incidentes para que todos sepan qué hacer y se cumplan los plazos legales.",
-        "do": "Aprueba un plan de incidentes para que todos sepan qué hacer y se cumplan los plazos legales."
+        "do": "Aprueba un plan de incidentes para que todos sepan qué hacer y se cumplan los plazos legales.",
+        "doneWhen": "hay una política de respuesta a incidentes aprobada o publicada."
       },
       "proceedings": {
         "label": "Asuntos e investigaciones",
         "why": "Sigue una investigación o un asunto de una autoridad o de un tribunal, si lo hay.",
-        "do": "Sigue una investigación o un asunto de una autoridad o de un tribunal, si lo hay."
+        "do": "Sigue una investigación o un asunto de una autoridad o de un tribunal, si lo hay.",
+        "doneWhen": "todos los procedimientos están cerrados. Solo hace falta cuando hay alguno."
       },
       "review": {
         "label": "Revisar lo redactado",
         "why": "Lo que el producto ha redactado por ti solo cuenta cuando una persona lo confirma.",
-        "do": "Confirma o corrige lo que el producto ha redactado por ti. Cuenta cuando una persona lo confirma."
+        "do": "Confirma o corrige lo que el producto ha redactado por ti. Cuenta cuando una persona lo confirma.",
+        "doneWhen": "nada de lo redactado espera a que una persona lo confirme."
       },
       "board": {
         "label": "Informe al consejo",
         "why": "Informa al consejo del estado del programa, con cifras que se pueden reproducir.",
-        "do": "Cuenta al consejo en qué punto está el programa, con cifras que se pueden reproducir."
+        "do": "Cuenta al consejo en qué punto está el programa, con cifras que se pueden reproducir.",
+        "doneWhen": "existe al menos un informe al consejo."
       },
       "audit": {
         "label": "Registro de auditoría",
         "why": "Cada cambio queda registrado aquí por sí solo.",
-        "do": "Consulta cada cambio hecho en el programa. Queda registrado por sí solo."
+        "do": "Consulta cada cambio hecho en el programa. Queda registrado por sí solo.",
+        "doneWhen": "el producto lo lleva por sí solo, desde el primer cambio registrado."
       }
     },
     "library": {
@@ -5791,13 +6072,22 @@
       "next": "Siguiente paso",
       "finish": "Volver al panel de control",
       "stageDone": "Etapa {number} completada. Siguiente: {next}.",
-      "lastStageDone": "Etapa {number} completada. Todas las etapas están hechas."
+      "lastStageDone": "Etapa {number} completada. Todas las etapas están hechas.",
+      "doneWhen": "Se completa cuando: {rule}",
+      "leftHere": "Falta aquí: {items}.",
+      "finishStep": "Terminar este paso",
+      "continueAnyway": "Continuar de todos modos",
+      "checksLabel": "Lo que necesita este paso",
+      "checkMet": "hecho",
+      "checkOpen": "pendiente",
+      "showChecks": "Ver lo que se cumple",
+      "hideChecks": "Ocultar"
     },
     "emptyStep": {
       "board": "Todavía no hay ningún informe al consejo.",
       "boardAction": "Registrar el primer informe",
-      "obligations": "Todavía no hay normas en la lista. Indica dónde trabajas y aquí aparecerán las que te aplican.",
-      "obligationsAction": "Indicar dónde trabajas",
+      "obligations": "Todavía no hay normas en la lista. Declara arriba dónde opera la organización y aquí aparecerán las que se aplican.",
+      "obligationsAction": "Declarar los lugares",
       "vendorChecks": "Todavía no hay proveedores que revisar.",
       "vendorChecksAction": "Añadir un proveedor",
       "transparency": "Todavía no hay sistemas de IA.",
@@ -5805,7 +6095,7 @@
     },
     "views": {
       "dueDiligence": "Revisión de proveedores",
-      "dueDiligenceHint": "Cada proveedor y su revisión. Abre un proveedor para completar su revisión.",
+      "dueDiligenceHint": "Cada proveedor y su revisión. La revisión pregunta por el contrato (un contrato de encargo del tratamiento que cubra el uso de IA), dónde se almacenan y tratan los datos, las certificaciones, el uso de los datos de la organización para entrenar modelos, la conservación, el aviso de incidentes y los subencargados. Lo que ya indica el catálogo de proveedores aparece rellenado para que lo confirmes. Calcula unos veinte minutos por proveedor, con el contrato a mano.",
       "reviewed": "Revisión completada",
       "notReviewed": "Revisión pendiente",
       "transparency": "Avisar de que es IA",
@@ -5888,6 +6178,52 @@
       "plan": "Plan: hito del día {day}",
       "overdue": "vencido desde el {date}",
       "empty": "Ningún plazo en los próximos 30 días."
+    },
+    "settingsBand": {
+      "todo": "Paso {number}: responde a las preguntas marcadas abajo. Deciden qué leyes se aplican a la organización.",
+      "done": "El paso {number} está completo: los lugares están declarados y todos los cribados tienen respuesta.",
+      "back": "Volver al paso {number}",
+      "marker": "Cuenta para el paso {number}",
+      "markerDone": "Cuenta para el paso {number}: respondido"
+    },
+    "stageCount": "{word} · {done} de {total}",
+    "checks": {
+      "progress": "{label} ({done} de {total})",
+      "quickstartRun": "completa el inicio rápido hasta el final",
+      "copiedReviewed": "revisa lo copiado de otro cliente",
+      "placesDeclared": "declara dónde opera la organización",
+      "screeningApplicability": "responde a la comprobación de lo que se aplica",
+      "screeningCalifornia": "responde a la pregunta de California sobre empresa sujeta",
+      "screeningRegimes": "responde a las preguntas del cribado estatal",
+      "copiedObligations": "vuelve a guardar los lugares y las respuestas copiados de otro cliente",
+      "acceptableUseApproved": "aprueba una política de uso aceptable",
+      "shadowReported": "registra al menos una herramienta de IA en uso",
+      "shadowTriaged": "revisa cada herramienta de IA registrada",
+      "systemRegistered": "registra al menos un sistema de IA",
+      "systemsOwned": "asigna un responsable de negocio a cada sistema",
+      "copiedSystems": "revisa los sistemas copiados de otro cliente",
+      "vendorRecorded": "registra al menos un proveedor",
+      "copiedVendors": "revisa los proveedores copiados de otro cliente",
+      "systemsClassified": "asigna un nivel de riesgo a cada sistema",
+      "classificationsConfirmed": "confirma los niveles de riesgo en borrador",
+      "assessmentApproved": "aprueba al menos una evaluación",
+      "highRiskAssessed": "aprueba una evaluación para cada sistema de alto riesgo",
+      "threatModelActive": "saca un modelo de amenazas del borrador",
+      "vendorsAssessed": "completa una revisión de diligencia debida para cada proveedor",
+      "agentsReady": "prepara cada agente para la auditoría AIUC-1",
+      "highRiskGated": "establece una puerta de supervisión para cada sistema de alto riesgo",
+      "gateExists": "establece al menos una puerta de supervisión",
+      "gatesConfirmed": "confirma las puertas de supervisión en borrador",
+      "copiedGates": "confirma las puertas de supervisión copiadas de otro cliente",
+      "systemsProfiled": "asigna un perfil de transparencia a cada sistema",
+      "profilesConfirmed": "confirma los perfiles de transparencia en borrador",
+      "mappingsAssessed": "asigna un estado a cada requisito vinculado",
+      "evidenceAttached": "adjunta al menos una evidencia",
+      "sensitiveAssessed": "completa una evaluación de datos sensibles",
+      "personalDataAssessed": "evalúa cada sistema que trata datos personales",
+      "incidentPolicyApproved": "aprueba una política de respuesta a incidentes",
+      "nothingToConfirm": "confirma cada elemento en borrador",
+      "boardReport": "crea un informe al consejo"
     },
     "panel": {
       "failed": "No se ha podido cargar este panel.",
@@ -6272,7 +6608,7 @@
       "notApproved": "{count, plural, one {# sin aprobar} other {# sin aprobar}}",
       "noOwner": "{count, plural, one {# sistema sin responsable de negocio} other {# sistemas sin responsable de negocio}}",
       "unclassified": "{count, plural, one {# sistema sin clasificar} other {# sistemas sin clasificar}}",
-      "screeningUnanswered": "el cribado de regímenes aún no tiene respuesta",
+      "screeningUnanswered": "{count, plural, one {# cribado por responder} other {# cribados por responder}}",
       "inDraft": "{count, plural, one {# modelo aún en borrador} other {# modelos aún en borrador}}",
       "notReviewed": "{count, plural, one {# proveedor sin revisión completada} other {# proveedores sin revisión completada}}",
       "agentsNotReady": "{count, plural, one {# agente no preparado para la auditoría} other {# agentes no preparados para la auditoría}}",
@@ -6340,7 +6676,7 @@
     "placeholder": "Buscar por nombre",
     "results": "Resultados de la búsqueda",
     "noResults": "No hay nada con ese nombre.",
-    "namesOnly": "Busca solo nombres: sistemas de IA, proveedores, políticas, evaluaciones, puntos de control, incidentes y herramientas de IA sin aprobar.",
+    "namesOnly": "Busca solo nombres: sistemas de IA, proveedores, políticas, evaluaciones, puntos de control, incidentes y herramientas de IA en uso.",
     "kinds": {
       "system": "Sistemas de IA",
       "vendor": "Proveedores",
@@ -6348,7 +6684,7 @@
       "assessment": "Evaluaciones",
       "gate": "Puntos de control",
       "incident": "Incidentes",
-      "shadowAi": "Herramientas de IA sin aprobar"
+      "shadowAi": "Herramientas de IA en uso"
     }
   },
   "systemPicker": {
@@ -6409,6 +6745,136 @@
     "error": "No se ha guardado",
     "retry": "Volver a intentarlo",
     "leaveWarning": "Has escrito cambios que no se han guardado. ¿Quieres salir de esta página y perderlos?"
+  },
+  "policyFields": {
+    "typePlaceholder": "Selecciona el tipo de política",
+    "typeDefinition": {
+      "AI_USAGE": "Qué herramientas de IA puede usar el personal, para qué, con qué datos y con qué revisión humana.",
+      "AI_GOVERNANCE": "Quién decide sobre la IA: funciones, inventario de IA, clasificación de riesgos, aprobaciones y supervisión.",
+      "AI_ETHICS": "Los principios que debe respetar el uso de la IA, como la equidad, la dignidad humana y la rendición de cuentas.",
+      "AI_RISK_MANAGEMENT": "Cómo se identifican, evalúan, reducen y vigilan los riesgos de la IA durante la vida de cada sistema.",
+      "AI_DATA_GOVERNANCE": "Normas sobre los datos con los que se entrena, prueba, consulta y utiliza la IA: base jurídica, calidad, conservación y transferencias.",
+      "AI_PROCUREMENT": "Cómo se comprueban y contratan los productos y servicios de IA antes de comprarlos o probarlos.",
+      "AI_INCIDENT_RESPONSE": "Cómo se comunican y contienen los incidentes de IA, cómo se notifican cuando la ley lo exige y qué se aprende de ellos.",
+      "AI_TRANSPARENCY": "Cuándo y cómo se informa a las personas de que se usa IA, y cómo se marca el contenido generado por IA.",
+      "CUSTOM": "Cualquier otra política de IA que no encaje en los tipos anteriores."
+    },
+    "defaultDescription": {
+      "AI_USAGE": "Establece qué herramientas de IA puede usar el personal, con qué fines y con qué datos, y la revisión humana necesaria antes de confiar en un resultado de la IA.",
+      "AI_GOVERNANCE": "Establece quién es responsable de la IA en la organización, cómo se registran, clasifican por riesgo y aprueban los sistemas de IA, y cómo se supervisa y revisa su uso.",
+      "AI_ETHICS": "Establece los principios que aplica la organización cuando desarrolla, compra o usa IA, y cómo se plantean y resuelven las dudas.",
+      "AI_RISK_MANAGEMENT": "Establece cómo identifica, evalúa, reduce y vigila la organización los riesgos de sus sistemas de IA, y quién acepta los riesgos que quedan.",
+      "AI_DATA_GOVERNANCE": "Establece las normas sobre los datos con los que se entrenan, prueban, consultan y utilizan los sistemas de IA, incluidas la base jurídica, la calidad de los datos, la conservación y las transferencias.",
+      "AI_PROCUREMENT": "Establece las comprobaciones y las cláusulas contractuales necesarias antes de que la organización compre, licencie o pruebe un producto o servicio de IA, y cuándo se repiten.",
+      "AI_INCIDENT_RESPONSE": "Establece cómo se comunican, evalúan y contienen los incidentes de IA, cómo se notifican a las autoridades o a las personas afectadas cuando la ley lo exige y cómo se registran las lecciones aprendidas.",
+      "AI_TRANSPARENCY": "Establece cuándo y cómo informa la organización a las personas de que se usa IA, cómo se marca el contenido generado por IA y cómo se explican las decisiones en las que interviene la IA.",
+      "CUSTOM": "Establece la finalidad, el ámbito y las normas de esta política, a quién se aplica y quién es responsable de ella."
+    },
+    "ownerLabel": "Responsable",
+    "ownerPlaceholder": "Elige a una persona responsable",
+    "ownerNone": "Sin nombrar todavía",
+    "ownerOutside": "Alguien de fuera del equipo",
+    "ownerNameLabel": "Nombre de la persona responsable",
+    "ownerNamePlaceholder": "Nombre y cargo",
+    "ownerHint": "La persona que responde de la política y la mantiene al día.",
+    "departmentLabel": "Departamento",
+    "departmentNone": "Toda la organización",
+    "departmentHint": "La parte de la organización a la que pertenece la política.",
+    "departmentEmptyHint": "Aún no hay departamentos. Se añaden en Ajustes.",
+    "intervalLabel": "Revisar cada",
+    "intervalNone": "Sin intervalo fijo",
+    "intervalMonths": "{months} meses",
+    "intervalSuggested": "{months} meses (sugerido)",
+    "intervalHint": "El Reglamento de IA de la UE no fija un plazo de revisión para las políticas internas de IA. Elige el que convenga a la organización: al publicar una versión, la siguiente fecha de revisión se calcula con él.",
+    "lifecycleLead": "Ciclo de vida de la política:",
+    "lifecycleStep": {
+      "DRAFT": "Borrador",
+      "UNDER_REVIEW": "en revisión",
+      "APPROVED": "aprobada",
+      "PUBLISHED": "publicada",
+      "REVIEW": "y después revisada en su fecha de revisión"
+    },
+    "lifecycleHover": {
+      "DRAFT": "En redacción o adaptación. No está en vigor.",
+      "UNDER_REVIEW": "Enviada a revisión interna. La comprueba un propietario, un administrador o un responsable de IA.",
+      "APPROVED": "Aceptada por un propietario, un administrador o un responsable de IA. Aún no se ha emitido como versión numerada.",
+      "PUBLISHED": "Emitida como versión numerada. La versión publicada es la que está en vigor.",
+      "REVIEW": "En la fecha de revisión, comprueba la política frente a la ley y la práctica de la organización, y publica una nueva versión si algo ha cambiado."
+    }
+  },
+  "policyTemplates": {
+    "chooserTitle": "¿Qué políticas debería tener la organización?",
+    "chooserLead": "Responde a tres preguntas para ver un conjunto sugerido. Cada una se abre como borrador para adaptarlo.",
+    "qSector": "Sector",
+    "qRole": "Función según el Reglamento de IA de la UE",
+    "qAgents": "¿Usa la organización agentes de IA?",
+    "choose": "Elige",
+    "roleDeployer": "Usa IA de terceros (responsable del despliegue)",
+    "roleProvider": "Desarrolla IA y la ofrece con su propio nombre (proveedor)",
+    "roleBoth": "Ambas",
+    "roleHint": "Según el Reglamento de IA de la UE, un proveedor desarrolla un sistema de IA (o encarga su desarrollo) y lo introduce en el mercado o lo pone en servicio con su propio nombre o marca; un responsable del despliegue usa un sistema de IA bajo su propia autoridad. Muchas organizaciones son ambas cosas.",
+    "yes": "Sí",
+    "no": "No",
+    "suggestedTitle": "{count, plural, one {# política sugerida} other {# políticas sugeridas}}",
+    "reason": {
+      "baseline": "Conjunto básico",
+      "sector": "Para el sector",
+      "provider": "Para proveedores",
+      "deployer": "Para responsables del despliegue",
+      "agents": "Relevante para agentes"
+    },
+    "blankTitle": "Política de {type} (sin plantilla)",
+    "blankHint": "Ninguna plantilla de este tipo encaja con el sector. Empieza una política en blanco de este tipo.",
+    "startBlank": "Empezar en blanco",
+    "read": "Leer",
+    "use": "Usar esta plantilla",
+    "created": "Se ha creado un borrador a partir de la plantilla",
+    "alreadyInList": "Ya está en la lista",
+    "readHint": "Usar una plantilla crea un borrador entre las políticas de la organización. Adáptalo antes de enviarlo a revisión.",
+    "close": "Cerrar",
+    "group": {
+      "core": "Conjunto básico",
+      "lawfirm": "Despachos de abogados",
+      "industry": "Plantillas por sector"
+    },
+    "groupLead": {
+      "core": "Seis políticas válidas para cualquier sector, una por cada tipo principal.",
+      "lawfirm": "Políticas para despachos de abogados y asesorías jurídicas internas.",
+      "industry": "Políticas redactadas para un sector concreto."
+    }
+  },
+  "policyDoc": {
+    "reference": "Referencia",
+    "version": "Versión",
+    "status": "Estado",
+    "type": "Tipo",
+    "effectiveDate": "Fecha de entrada en vigor",
+    "reviewDate": "Fecha de revisión",
+    "approvedAt": "Aprobada el",
+    "owner": "Responsable",
+    "department": "Departamento",
+    "systems": "Sistemas de IA a los que se aplica",
+    "notSet": "Sin indicar",
+    "noContent": "Todavía no hay texto.",
+    "draftNotice": "Borrador: no aprobado ni en vigor.",
+    "statusLabel": {
+      "DRAFT": "Borrador",
+      "UNDER_REVIEW": "En revisión",
+      "APPROVED": "Aprobada",
+      "PUBLISHED": "Publicada",
+      "ARCHIVED": "Archivada"
+    },
+    "typeLabel": {
+      "AI_USAGE": "Uso de IA",
+      "AI_GOVERNANCE": "Gobernanza de IA",
+      "AI_ETHICS": "Ética de IA",
+      "AI_RISK_MANAGEMENT": "Gestión de riesgos",
+      "AI_DATA_GOVERNANCE": "Gobernanza de datos",
+      "AI_PROCUREMENT": "Contratación",
+      "AI_INCIDENT_RESPONSE": "Respuesta a incidentes",
+      "AI_TRANSPARENCY": "Transparencia",
+      "CUSTOM": "Personalizada"
+    }
   },
   "invite": {
     "title": "Invitación",

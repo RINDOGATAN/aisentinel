@@ -46,6 +46,7 @@ import {
   corePoliciesMissingFrom,
   localizeCorePolicy,
 } from "../../../config/core-policy-pack";
+import { nextPolicyNumber } from "../../services/policy/number";
 
 // ============================================================
 // HELPERS
@@ -816,6 +817,7 @@ export const quickstartRouter = createTRPCRouter({
               const policy = await tx.aIPolicy.create({
                 data: {
                   organizationId: orgId,
+                  number: await nextPolicyNumber(tx, orgId),
                   title: templatePolicy.title,
                   type: templatePolicy.type,
                   description: templatePolicy.description,
@@ -994,6 +996,7 @@ export const quickstartRouter = createTRPCRouter({
               const policy = await tx.aIPolicy.create({
                 data: {
                   organizationId: orgId,
+                  number: await nextPolicyNumber(tx, orgId),
                   title,
                   type: packPolicy.type,
                   description: packPolicy.description[contentLocale],
@@ -1069,6 +1072,7 @@ export const quickstartRouter = createTRPCRouter({
               const policy = await tx.aIPolicy.create({
                 data: {
                   organizationId: orgId,
+                  number: await nextPolicyNumber(tx, orgId),
                   title: localized.title,
                   type: localized.type,
                   description: localized.description,

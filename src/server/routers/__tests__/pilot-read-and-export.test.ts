@@ -126,6 +126,8 @@ const EDITS_THE_PILOT_REFUSES = [
   "vendor.createAssessment", "vendor.updateAssessment",
   "policy.create", "policy.update", "policy.publishVersion", "policy.approve",
   "policy.linkSystem", "policy.unlinkSystem", "policy.delete",
+  "policy.createFromTemplate", "policy.duplicate", "policy.importFile", "policy.suggestEdits",
+  "policy.removeTemplateDrafts",
   "shadowAi.createReport", "shadowAi.updateReport", "shadowAi.registerWithAutoCreate",
   "quickstart.execute",
   "program.captureSnapshot", "program.deleteSnapshot",

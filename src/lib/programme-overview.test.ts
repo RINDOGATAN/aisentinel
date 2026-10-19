@@ -45,7 +45,7 @@ const facts = (over: Partial<DocumentFacts> = {}): DocumentFacts => ({
 const AFTER_QUICKSTART: Partial<PathCounts> = {
   quickstartCompleted: true,
   jurisdictions: 1,
-  regimeScreeningAnswered: true,
+  screeningsOpen: [],
   policies: 6,
   systems: 3,
   systemsWithOwner: 3,

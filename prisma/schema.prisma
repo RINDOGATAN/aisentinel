@@ -2214,6 +2214,22 @@ model AIPolicy {
   confirmedBy String?
   confirmedAt DateTime?
 
+  /// The policy's number within the organization (1, 2, 3...), shown in its
+  /// heading and exports. Assigned on create; never reused.
+  number               Int?
+  /// The owner: a member of the organization (OrganizationMember id) and the
+  /// name shown, which is free text for a person outside the team.
+  ownerMemberId        String?
+  ownerName            String?
+  /// The department the policy belongs to (BusinessUnit id in the same organization).
+  departmentId         String?
+  /// How often the organization reviews the policy, in months. Sets the review
+  /// date when the policy is published.
+  reviewIntervalMonths Int?
+  /// First time a person changed the text, title or links after creation.
+  /// Null on a template draft means nobody has worked on it yet.
+  editedAt             DateTime?
+
   organization Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   versions     AIPolicyVersion[]
   systemLinks  AIPolicySystemLink[]

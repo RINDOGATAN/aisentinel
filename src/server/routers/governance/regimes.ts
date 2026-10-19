@@ -233,6 +233,35 @@ export const regimesRouter = createTRPCRouter({
       };
     }),
 
+  /**
+   * The organisation's screening answers alone, with no system to resolve
+   * against: the screening card reads them here, so answers saved before the
+   * first system is registered are shown as saved.
+   */
+  getOrgFacts: organizationProcedure
+    .input(z.object({ organizationId: z.string() }))
+    .query(async ({ ctx }) => {
+      const org = await ctx.prisma.organization.findFirst({
+        where: { id: ctx.organization.id },
+        select: { operatingJurisdictions: true, settings: true },
+      });
+      const facts = readOrgFacts(
+        org
+          ? {
+              operatingJurisdictions: org.operatingJurisdictions as unknown as string[],
+              settings: org.settings,
+            }
+          : null,
+      );
+      return {
+        isPublicAgency: facts.isPublicAgency,
+        isHealthCarrier: facts.isHealthCarrier,
+        isHealthcareProvider: facts.isHealthcareProvider,
+        isCoveredGenAiProvider: facts.isCoveredGenAiProvider,
+        processesConsumerHealthData: facts.processesConsumerHealthData,
+      };
+    }),
+
   /** Organisation-wide screening facts. */
   setOrgFacts: orgWriteProcedure
     .input(z.object({ organizationId: z.string() }).merge(orgFactsInput))

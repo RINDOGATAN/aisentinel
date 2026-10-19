@@ -35,6 +35,7 @@ const H = vi.hoisted(() => {
         const op = value as Record<string, unknown>;
         if ("in" in op && !(op.in as unknown[]).includes(row[key])) return false;
         if ("gt" in op && !((row[key] as Date).getTime() > (op.gt as Date).getTime())) return false;
+        if ("equals" in op && String(row[key] ?? "").toLowerCase() !== String(op.equals).toLowerCase()) return false;
       } else if ((row[key] ?? null) !== value) {
         return false;
       }
@@ -92,6 +93,7 @@ const H = vi.hoisted(() => {
     organizationInvitation: table(),
     businessUnit: table(),
     businessUnitMember: table(),
+    aIPolicy: table(),
     auditLog: table(),
     $transaction: async (fn: unknown) => (typeof fn === "function" ? fn(db) : Promise.all(fn as unknown[])),
   };
@@ -124,6 +126,7 @@ const H = vi.hoisted(() => {
       { id: "dept-hr", organizationId: "org-a", name: "HR", ownerId: null, ownerInvitationId: null },
     ]);
     db.businessUnitMember.__set([]);
+    db.aIPolicy.__set([]);
     db.auditLog.__set([]);
   }
 
@@ -255,6 +258,8 @@ describe("accepting", () => {
     const invitationId = H.db.organizationInvitation.__rows()[0].id;
     // A pending invitee named as the department's owner.
     H.db.businessUnit.__rows()[0].ownerInvitationId = invitationId;
+    // A policy whose owner was named by the invited address.
+    H.db.aIPolicy.__set([{ id: "pol-1", organizationId: "org-a", ownerMemberId: null, ownerName: "new.person@acme.test" }]);
 
     const preview = await caller("newbie").preview({ token });
     expect(preview).toMatchObject({ organizationName: "Org A", role: "AI_OFFICER", state: "pending", forThisAccount: true });
@@ -267,6 +272,7 @@ describe("accepting", () => {
       expect.objectContaining({ memberId: member!.id, businessUnitId: "dept-hr" }),
     ]);
     expect(H.db.businessUnit.__rows()[0]).toMatchObject({ ownerId: member!.id, ownerInvitationId: null });
+    expect(H.db.aIPolicy.__rows()[0]).toMatchObject({ ownerMemberId: member!.id, ownerName: null });
   });
 
   it("spends the link once", async () => {

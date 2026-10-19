@@ -47,6 +47,7 @@ import { toast } from "sonner";
 import { useTranslations, useLocale } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
+import { PathIntro } from "@/components/guided/path-intro";
 import {
   LAWFIRM_POLICY_PACK,
   LAWFIRM_TOOL_CATEGORIES,
@@ -125,6 +126,7 @@ const POPULAR_VENDORS = [
 // ============================================================
 
 type WizardStep =
+  | "intro"
   | "scope"
   | "choose"
   | "vendors"
@@ -187,8 +189,9 @@ export default function QuickstartPage() {
   // name; once edited (even to empty), their value stands.
   const [programNameEdit, setProgramNameEdit] = useState<string | null>(null);
   const programName = programNameEdit ?? organization?.name ?? "";
-  // The applicability check comes first: what applies decides what to build.
-  const [step, setStep] = useState<WizardStep>("scope");
+  // The opening screen comes first (what the path will ask for, and how to
+  // find it), then the applicability check: what applies decides what to build.
+  const [step, setStep] = useState<WizardStep>("intro");
   const [useVendors, setUseVendors] = useState(false);
   const [useIndustry, setUseIndustry] = useState(false);
   // The builder path: for a team building an AI product rather than adopting
@@ -381,6 +384,7 @@ export default function QuickstartPage() {
 
   // Ordered list of active steps; next/back navigate this array
   const stepOrder: WizardStep[] = [
+    "intro",
     "scope",
     "choose",
     ...(useVendors ? (["vendors"] as const) : []),
@@ -570,6 +574,7 @@ export default function QuickstartPage() {
       {step !== "success" && (
         <div className="flex items-center gap-2 text-sm flex-wrap">
           {[
+            { key: "intro", label: t("stepIntro") },
             { key: "scope", label: t("stepApplicability") },
             { key: "choose", label: t("stepChoosePath") },
             ...(useVendors
@@ -616,6 +621,8 @@ export default function QuickstartPage() {
       {/* ════════════════════════════════════════════════
           STEP 0: What applies to you (skippable)
           ════════════════════════════════════════════════ */}
+      {step === "intro" && <PathIntro onBegin={() => setStep("scope")} />}
+
       {step === "scope" && (
         <div className="space-y-4">
           {/* Asked first: the name for this programme, prefilled with the

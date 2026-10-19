@@ -377,6 +377,16 @@ export async function acceptInvitation(
       where: { organizationId: inv.organizationId, deputyInvitationId: inv.id },
       data: { deputyOwnerId: memberId, deputyInvitationId: null },
     });
+    // Policies whose owner was named by this address are linked to the member
+    // (the stored name is cleared so the member's own name is shown).
+    await tx.aIPolicy.updateMany({
+      where: {
+        organizationId: inv.organizationId,
+        ownerMemberId: null,
+        ownerName: { equals: inv.email, mode: "insensitive" },
+      },
+      data: { ownerMemberId: memberId, ownerName: null },
+    });
     await tx.organizationInvitation.updateMany({
       where: { id: inv.id },
       data: { acceptedMemberId: memberId },

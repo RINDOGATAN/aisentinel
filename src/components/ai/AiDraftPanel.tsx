@@ -83,6 +83,8 @@ interface AiDraftPanelProps {
   insertKey?: string;
   /** Override the after-Insert toast (i18n key in the `ai` namespace). */
   insertedKey?: string;
+  /** Override the generate button label (i18n key in the `ai` namespace). */
+  generateKey?: string;
 }
 
 export function AiDraftPanel({
@@ -93,6 +95,7 @@ export function AiDraftPanel({
   className,
   insertKey = "panel.insert",
   insertedKey = "panel.inserted",
+  generateKey = "panel.draftWithAi",
 }: AiDraftPanelProps) {
   const t = useTranslations("ai");
   const [draft, setDraft] = useState<AiDraft | null>(null);
@@ -180,7 +183,7 @@ export function AiDraftPanel({
             ) : (
               <Sparkles className="w-4 h-4 mr-2" />
             )}
-            {isGenerating ? t("panel.generating") : t("panel.draftWithAi")}
+            {isGenerating ? t("panel.generating") : t(generateKey)}
           </Button>
           {isGenerating && (
             <Button type="button" variant="ghost" size="sm" onClick={handleCancelWait}>

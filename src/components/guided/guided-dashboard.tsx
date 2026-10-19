@@ -51,8 +51,10 @@ import {
 } from "@/lib/programme-overview";
 import { INPUTS, type DocumentState } from "@/config/document-register";
 import { AI_SENTINEL_PATH, PLAN_WINDOWS, type PathCounts } from "./path-config";
-import { isCounted, isShown, type PathStatuses, type StageWord } from "./path";
+import { isCounted, isShown, stageProgress, type PathStatuses, type StageWord } from "./path";
 import { ProgramFigureCard } from "./program-figure";
+import { ProgressRing } from "./progress-ring";
+import { AppliesPanel } from "@/components/governance/obligations/applies-panel";
 import { trpc } from "@/lib/trpc";
 import { planSummaryText } from "./plan-text";
 import { usePlanState, useProgramPathQuery } from "./use-program-path";
@@ -132,6 +134,7 @@ export function GuidedDashboard() {
       ) : (
         <>
           <ProgramFigureCard />
+          {organization && <AppliesPanel organizationId={organization.id} onDashboard />}
           <AreasCard statuses={statuses} overview={ready} load={load} />
           <DocumentsPanel overview={ready} load={load} />
           <div className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-2">
@@ -230,15 +233,30 @@ function AreasCard({
                   : area.action.kind === "step"
                     ? t("areas.step", { step: t(`steps.${area.action.step.id}.label`) })
                     : t(`areas.${area.action.kind}`);
+              // Every stage carries its ring and count ("0 of 1"), however few
+              // counted steps it holds.
+              const progress = stageProgress(area.stage, statuses!);
               const body = (
                 <>
                   <span className="flex items-start justify-between gap-2">
-                    <span className="min-w-0 font-medium text-sm break-words">
-                      <span className="tabular-nums text-muted-foreground mr-1.5">{area.number}</span>
-                      {t(`stages.${area.stage.id}`)}
+                    <span className="flex min-w-0 items-center gap-2 font-medium text-sm break-words">
+                      <ProgressRing
+                        value={progress.done}
+                        total={progress.total}
+                        size={24}
+                        complete={progress.state === "done"}
+                      >
+                        {area.number}
+                      </ProgressRing>
+                      <span className="min-w-0">{t(`stages.${area.stage.id}`)}</span>
                     </span>
                     <Chip tone={WORD_TONE[area.word]}>{t(`stageState.${area.word}`)}</Chip>
                   </span>
+                  {progress.state !== "coming" && (
+                    <span className="mt-1 text-xs text-muted-foreground tabular-nums" data-testid={`area-count-${area.stage.id}`}>
+                      {t("stageProgress", { done: progress.done, total: progress.total })}
+                    </span>
+                  )}
                   <span className="mt-1.5 flex items-center gap-1 text-xs text-muted-foreground">
                     <span className="min-w-0 break-words">{actionText}</span>
                     {href && <ArrowRight className="size-3.5 shrink-0" aria-hidden="true" />}

@@ -26,24 +26,13 @@ import { useAutoSave } from "@/lib/use-auto-save";
 import { CARD_HEADER_WITH_STATUS, CardSaveStatus } from "@/components/ui/save-status";
 import { Instruction } from "@/components/ui/instruction";
 import { hasTemplateCopyMark } from "@/config/client-template";
+// Which questions are shown, and the rule of step 1.2 that reads the answers,
+// come from one place (src/config/obligation-screenings.ts).
+import { regimeQuestionsFor, type RegimeOrgQuestion } from "@/config/obligation-screenings";
 
 type Answer = "NOT_ASSESSED" | "YES" | "NO";
 
-type OrgFactKey =
-  | "isPublicAgency"
-  | "isHealthCarrier"
-  | "isHealthcareProvider"
-  | "isCoveredGenAiProvider"
-  | "processesConsumerHealthData";
-
-/** Which declared jurisdictions make a question worth asking. */
-const RELEVANT_TO: Record<OrgFactKey, string[]> = {
-  isPublicAgency: ["US_TX", "US_WA"],
-  isHealthCarrier: ["US_WA"],
-  isHealthcareProvider: ["US_TX"],
-  isCoveredGenAiProvider: ["US_WA"],
-  processesConsumerHealthData: ["US_WA"],
-};
+type OrgFactKey = RegimeOrgQuestion;
 
 const CITATIONS: Record<OrgFactKey, string> = {
   isPublicAgency: "TRAIGA § 552.051(a) · RCW 43.105",
@@ -52,14 +41,6 @@ const CITATIONS: Record<OrgFactKey, string> = {
   isCoveredGenAiProvider: "HB 1170 (2026 c 167)",
   processesConsumerHealthData: "RCW 19.373",
 };
-
-const ORDER: OrgFactKey[] = [
-  "isPublicAgency",
-  "isHealthcareProvider",
-  "isHealthCarrier",
-  "isCoveredGenAiProvider",
-  "processesConsumerHealthData",
-];
 
 export function RegimeScreeningCard({
   organizationId,
@@ -77,21 +58,15 @@ export function RegimeScreeningCard({
   const { data: org } = trpc.organization.getById.useQuery({ organizationId });
   const jurisdictions = (org?.operatingJurisdictions ?? []) as string[];
 
-  const { data: systems } = trpc.aiSystem.list.useQuery(
-    { organizationId, limit: 1 },
+  // The organisation's own answers: no system is needed to read them.
+  const { data: orgFacts } = trpc.regimes.getOrgFacts.useQuery(
+    { organizationId },
     { enabled: !!organizationId },
-  );
-  const firstSystemId = systems?.items?.[0]?.id;
-
-  // The organisation's answers live on the scope query, which needs a system
-  // to resolve against. With no systems registered there is nothing to screen.
-  const { data } = trpc.regimes.getScope.useQuery(
-    { organizationId, aiSystemId: firstSystemId ?? "" },
-    { enabled: !!organizationId && !!firstSystemId },
   );
 
   const invalidate = () => {
     void utils.regimes.getScope.invalidate();
+    void utils.regimes.getOrgFacts.invalidate();
     void utils.organization.getById.invalidate();
     void utils.programPath.status.invalidate();
     void utils.unified.getTemplate.invalidate();
@@ -116,17 +91,15 @@ export function RegimeScreeningCard({
     onError: (err) => toast.error(err.message),
   });
 
-  const relevant = ORDER.filter((key) =>
-    RELEVANT_TO[key].some((j) => jurisdictions.includes(j)),
-  );
+  const relevant = regimeQuestionsFor(jurisdictions);
   if (relevant.length === 0) return null;
 
-  const saved = (data?.orgFacts ?? {}) as Record<OrgFactKey, Answer>;
+  const saved = (orgFacts ?? {}) as Record<OrgFactKey, Answer>;
   const value = (key: OrgFactKey): Answer => edits[key] ?? saved[key] ?? "NOT_ASSESSED";
   // Answers copied from another client's template: saving them, changed or
   // not, is what confirms them for this client.
   // Only once the saved answers are loaded, so confirming never sends blanks.
-  const copied = hasTemplateCopyMark(org?.settings) && !!data;
+  const copied = hasTemplateCopyMark(org?.settings) && !!orgFacts;
   const options: Answer[] = ["YES", "NO", "NOT_ASSESSED"];
 
   return (

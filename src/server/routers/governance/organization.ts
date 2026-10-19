@@ -9,11 +9,6 @@ import {
   orgWriteProcedure,
 } from "../../trpc";
 import { TRPCError } from "@trpc/server";
-import {
-  BLOCKED_EMAIL_MESSAGE_KEY,
-  blockedEmailMessage,
-  isBlockedAccountEmail,
-} from "@/lib/email-policy";
 import { OrganizationRole, type Prisma } from "@prisma/client";
 import { loadBusinessUnitScope } from "../../services/business-units/scope";
 import { systemScopeWhere } from "../../services/views/queries";
@@ -25,7 +20,6 @@ import { assertNotOnHold } from "../../services/legal-hold";
 import { COUNTED_INCIDENT } from "@/server/services/incident/counted";
 import {
   assertPilotOrganizationLimit,
-  assertPilotRoom,
   assertPilotWritable,
   pilotLocale,
 } from "../../services/pilot/caps";
@@ -422,104 +416,6 @@ export const organizationRouter = createTRPCRouter({
         organizationId: ctx.organization.id,
         userId: ctx.session.user.id,
       });
-    }),
-
-  addMember: organizationProcedure
-    .input(
-      z.object({
-        organizationId: z.string(),
-        email: z.string().email(),
-        role: z.nativeEnum(OrganizationRole).default(OrganizationRole.MEMBER),
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
-      if (!["OWNER", "ADMIN"].includes(ctx.membership.role)) {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "You do not have permission to add members",
-        });
-      }
-      // Granting ownership is an owner's decision: an admin must not be able
-      // to create an owner (including a second account of their own).
-      if (input.role === "OWNER" && ctx.membership.role !== "OWNER") {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "Only owners can add another owner",
-        });
-      }
-
-      // This mutation predates orgWriteProcedure, so the pilot's read-only
-      // switch and the members ceiling are applied here by hand.
-      const locale = pilotLocale(ctx.getCookie);
-      assertPilotWritable(ctx.organization, locale);
-      await assertPilotRoom(ctx.prisma, ctx.organization.id, "members", locale);
-
-      // E-mail policy (src/lib/email-policy.ts): a refused address cannot be
-      // invited. BAD_REQUEST is an HTTP 400.
-      if (isBlockedAccountEmail(input.email)) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: blockedEmailMessage(locale),
-          cause: new Error(BLOCKED_EMAIL_MESSAGE_KEY),
-        });
-      }
-
-      const user = await ctx.prisma.user.findFirst({
-        where: { email: { equals: input.email.trim(), mode: "insensitive" } },
-      });
-
-      if (!user) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "No user found with this email. They must sign up first.",
-        });
-      }
-
-      const existingMembership = await ctx.prisma.organizationMember.findUnique({
-        where: {
-          organizationId_userId: {
-            organizationId: ctx.organization.id,
-            userId: user.id,
-          },
-        },
-      });
-
-      if (existingMembership) {
-        throw new TRPCError({
-          code: "CONFLICT",
-          message: "This user is already a member of the organization",
-        });
-      }
-
-      // Hosted pilot: one organisation per account applies to the invitee too,
-      // unless the organisation they join is on the paid plan.
-      await assertPilotOrganizationLimit(ctx.prisma, user.id, locale, ctx.organization);
-
-      const membership = await ctx.prisma.organizationMember.create({
-        data: {
-          organizationId: ctx.organization.id,
-          userId: user.id,
-          role: input.role,
-          invitedEmail: input.email,
-          invitedAt: new Date(),
-        },
-        include: {
-          user: { select: { id: true, name: true, email: true, image: true } },
-        },
-      });
-
-      await ctx.prisma.auditLog.create({
-        data: {
-          organizationId: ctx.organization.id,
-          userId: ctx.session.user.id,
-          entityType: "OrganizationMember",
-          entityId: membership.id,
-          action: "CREATE",
-          changes: { memberUserId: user.id, role: input.role },
-        },
-      });
-
-      return membership;
     }),
 
   updateMember: organizationProcedure

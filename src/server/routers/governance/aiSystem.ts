@@ -181,7 +181,7 @@ export const aiSystemRouter = createTRPCRouter({
             include: { policy: { select: { id: true, title: true, type: true, status: true, currentVersion: true } } },
             orderBy: { policy: { updatedAt: "desc" as const } },
           },
-          _count: { select: { complianceMappings: true } },
+          _count: { select: { complianceMappings: true, dataRecipients: true } },
         },
       });
 

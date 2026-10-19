@@ -54,10 +54,12 @@ export default function ThreatModelListPage() {
         }
       />
 
+      <p className="text-sm">{t("purpose")}</p>
+
       <Card className="border-primary/30 bg-primary/5">
         <CardContent className="p-4 space-y-2">
           <LoopStrip steps={steps} />
-          <p className="text-xs text-muted-foreground">{t("loopHint")}</p>
+          <p className="text-sm text-muted-foreground">{t("loopHint")}</p>
         </CardContent>
       </Card>
 

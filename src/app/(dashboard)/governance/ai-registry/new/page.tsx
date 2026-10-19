@@ -26,6 +26,8 @@ import { useOrganization } from "@/lib/organization-context";
 import type { PrefillField, Suggestion } from "@/lib/system-prefill";
 import { StatusNote } from "@/components/ui/status-note";
 import { useSubmitLock } from "@/lib/use-submit-lock";
+import { RoleDecider } from "@/components/governance/role-decider";
+import { IntendedPurposeBuilder } from "@/components/governance/intended-purpose-builder";
 
 type AITechnique = "MACHINE_LEARNING" | "DEEP_LEARNING" | "GENERATIVE_AI" | "AGENTIC_AI" | "NLP" | "COMPUTER_VISION" | "SPEECH_RECOGNITION" | "ROBOTICS" | "RULE_BASED" | "EXPERT_SYSTEM" | "STATISTICAL" | "OTHER";
 type AISystemRole = "PROVIDER" | "DEPLOYER" | "IMPORTER" | "DISTRIBUTOR" | "USER";
@@ -114,6 +116,7 @@ export default function NewAISystemPage() {
   const router = useRouter();
   const { organization } = useOrganization();
   const t = useTranslations("aiRegistryNew");
+  const tr = useTranslations("aiRegistry");
   const tc = useTranslations("common");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -271,6 +274,13 @@ export default function NewAISystemPage() {
             {t("subtitle")}
           </p>
         </div>
+        {/* A system is not a tool: say so before anything is typed. */}
+        <p className="text-sm">
+          {tr("systemVsTool")}{" "}
+          <Link href="/governance/shadow-ai" className="text-primary underline hover:no-underline">
+            {tr("toolsLink")}
+          </Link>
+        </p>
       </div>
 
       {/* Form */}
@@ -285,9 +295,10 @@ export default function NewAISystemPage() {
           {/* Everything this account can honestly fill in for you, with where
               each value came from. Nothing is entered until it is accepted. */}
           {suggestions.length > 0 && (
-            <div className="mb-6 rounded-md border border-primary/30 bg-primary/5 p-3 space-y-2">
-              <p className="text-xs text-muted-foreground">
-                {t("suggestionsLead", { count: suggestions.length })}
+            <div className="mb-6 rounded-md border border-primary bg-primary/5 p-4 space-y-3">
+              <p className="text-sm text-foreground flex items-start gap-2">
+                <Wand2 className="w-4 h-4 mt-0.5 text-primary shrink-0" aria-hidden />
+                <span>{t("suggestionsLead", { count: suggestions.length })}</span>
               </p>
               <Button type="button" variant="outline" size="sm" onClick={applyAll}>
                 <Wand2 className="w-3.5 h-3.5 mr-1.5" />
@@ -360,9 +371,7 @@ export default function NewAISystemPage() {
                     ))}
                   </SelectContent>
                 </Select>
-                <p className="text-xs text-muted-foreground">
-                  {t("roleHelp")}
-                </p>
+                <RoleDecider onUse={(role) => edit("role", role)} />
                 <SuggestionLine
                   field="role"
                   suggestion={suggestionFor("role")}
@@ -481,9 +490,10 @@ export default function NewAISystemPage() {
                 value={formData.purpose}
                 onChange={(e) => setFormData({ ...formData, purpose: e.target.value })}
               />
-              <p className="text-xs text-muted-foreground">
-                {t("purposeHelp")}
-              </p>
+              <IntendedPurposeBuilder
+                idPrefix="new"
+                onUse={(statement) => setFormData((prev) => ({ ...prev, purpose: statement }))}
+              />
             </div>
 
             {/* Owners */}

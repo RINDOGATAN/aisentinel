@@ -15,6 +15,7 @@
 
 import { Scale } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { Button } from "@/components/ui/button";
 import { trpc } from "@/lib/trpc";
 import { AiDraftPanel } from "@/components/ai/AiDraftPanel";
 import { useEnumLabels } from "@/lib/enum-labels";
@@ -26,6 +27,8 @@ interface RiskScreeningPanelProps {
   chosenLevel: string;
   chosenCategory?: string;
   onInsertRationale: (content: string) => void;
+  /** Takes the rule screening's suggested level (and category) into the form. */
+  onUseSuggestion?: (level: string, category?: string) => void;
 }
 
 export function RiskScreeningPanel({
@@ -34,8 +37,10 @@ export function RiskScreeningPanel({
   chosenLevel,
   chosenCategory,
   onInsertRationale,
+  onUseSuggestion,
 }: RiskScreeningPanelProps) {
   const t = useTranslations("ai");
+  const tRisk = useTranslations("riskClassification");
   const { riskLabel } = useEnumLabels();
 
   const { data: screening } = trpc.riskClassification.screen.useQuery(
@@ -56,14 +61,30 @@ export function RiskScreeningPanel({
   return (
     <div className="space-y-3">
       {/* Deterministic rule screening — works with AI off */}
-      <div className="rounded-md border border-border bg-muted/30 p-3 space-y-1.5">
-        <p className="text-xs font-medium flex items-center gap-1.5">
-          <Scale className="w-3.5 h-3.5 text-primary" />
+      <div className="rounded-md border border-primary/50 bg-primary/5 p-3 space-y-2">
+        <p className="text-sm font-medium flex items-center gap-1.5">
+          <Scale className="w-4 h-4 text-primary" />
           {t("screening.title")}
         </p>
-        <p className="text-xs">{t("screening.suggested", { level: riskLabel(screening.suggestedLevel) })}</p>
+        <div className="flex flex-wrap items-center gap-2">
+          <p className="text-sm font-medium">
+            {t("screening.suggested", { level: riskLabel(screening.suggestedLevel) })}
+          </p>
+          {onUseSuggestion && chosenLevel !== screening.suggestedLevel && (
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              onClick={() =>
+                onUseSuggestion(screening.suggestedLevel, screening.suggestedCategory ?? undefined)
+              }
+            >
+              {tRisk("suggestion.use")}
+            </Button>
+          )}
+        </div>
         {hasHits ? (
-          <ul className="text-xs text-muted-foreground space-y-0.5">
+          <ul className="text-sm text-muted-foreground space-y-0.5 list-disc pl-5">
             {screening.prohibited.map((hit) => (
               <li key={hit.ruleId}>
                 {t("screening.prohibitedHit", { article: hit.article, matched: hit.matched })}
@@ -84,7 +105,7 @@ export function RiskScreeningPanel({
             ))}
           </ul>
         ) : (
-          <p className="text-xs text-muted-foreground">{t("screening.none")}</p>
+          <p className="text-sm text-muted-foreground">{t("screening.none")}</p>
         )}
         <p className="text-[11px] text-muted-foreground/80 italic">{t("screening.disclaimer")}</p>
       </div>

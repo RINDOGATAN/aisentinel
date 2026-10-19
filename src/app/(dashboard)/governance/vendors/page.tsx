@@ -137,6 +137,9 @@ export default function VendorRiskPage() {
         }
       />
 
+      {/* What a vendor is, and where vendors come from. */}
+      <p className="text-sm">{t("definition")}</p>
+
       {dueDiligence ? (
         <DueDiligenceView
           vendors={vendors}

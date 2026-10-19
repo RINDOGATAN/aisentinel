@@ -21,6 +21,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
+import { useUnsavedChangesWarning } from "@/lib/use-unsaved-changes";
 import { useFormatDate } from "@/lib/use-format-date";
 
 const HOLD_ROLES = ["OWNER", "ADMIN", "AI_OFFICER"];
@@ -41,6 +42,8 @@ export function LegalHoldCard({
   const [reason, setReason] = useState("");
   const [releasing, setReleasing] = useState<string | null>(null);
   const [releaseReason, setReleaseReason] = useState("");
+  // A hold or a release reason typed but not placed yet is lost on leaving.
+  useUnsavedChangesWarning(matter.trim() !== "" || reason.trim() !== "" || releaseReason.trim() !== "");
 
   const { data: holds, isLoading } = trpc.legalHold.list.useQuery(
     { organizationId, includeReleased: true },

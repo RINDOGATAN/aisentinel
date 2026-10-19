@@ -4,7 +4,7 @@
 
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Building2, Briefcase, Globe, Loader2, AlertTriangle } from "lucide-react";
+import { Building2, Briefcase, Globe, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,11 @@ import { AiPostureCard } from "@/components/ai/AiPostureCard";
 import { JurisdictionPicker } from "@/components/governance/jurisdiction-picker";
 import { CaliforniaScreeningCard } from "@/components/governance/california-screening-card";
 import { RegimeScreeningCard } from "@/components/governance/regime-screening-card";
-import { SCREENING_ANCHOR } from "@/lib/settings-anchors";
+import { PILOT_ANCHOR, SCREENING_ANCHOR } from "@/lib/settings-anchors";
+import { useAutoSave } from "@/lib/use-auto-save";
+import { CARD_HEADER_WITH_STATUS, CardSaveStatus } from "@/components/ui/save-status";
+import { Instruction } from "@/components/ui/instruction";
+import { AdvancedSection } from "@/components/governance/settings-advanced";
 import { ApplicabilityCard } from "@/components/governance/applicability-check";
 import { TeamCard } from "@/components/governance/team-card";
 import { DepartmentsCard } from "@/components/governance/departments-card";
@@ -38,7 +42,6 @@ export default function SettingsPage() {
   const { organization, userRole, canWrite } = useOrganization();
   const t = useTranslations("settings");
   const tj = useTranslations("jurisdictions");
-  const tc = useTranslations("common");
 
   const Icon = userType ? personaIcons[userType as keyof typeof personaIcons] : null;
   const personaTitle = userType === "BUSINESS_USER" ? t("personaBusinessUser") : userType === "AI_GOVERNANCE_CONSULTANT" ? t("personaConsultant") : null;
@@ -52,6 +55,57 @@ export default function SettingsPage() {
     onError: (err) => toast.error(err.message),
   });
 
+  const profileCard = (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-base">{t("profileTitle")}</CardTitle>
+        <CardDescription>{t("profileDescription")}</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-2 text-sm">
+        <div className="flex justify-between gap-3">
+          <span className="text-muted-foreground">{t("labelName")}</span>
+          <span className="min-w-0 truncate">{profile?.name ?? "\u2014"}</span>
+        </div>
+        <div className="flex justify-between gap-3">
+          <span className="text-muted-foreground">{t("labelEmail")}</span>
+          <span className="min-w-0 truncate">{profile?.email ?? "\u2014"}</span>
+        </div>
+      </CardContent>
+    </Card>
+  );
+
+  const accountTypeCard = personaTitle && Icon && (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-base">{t("accountTypeTitle")}</CardTitle>
+        <CardDescription>{t("accountTypeDescription")}</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="flex flex-wrap items-center gap-4 p-3 rounded-lg border border-primary bg-primary/5">
+          <div className="p-2 rounded-lg shrink-0 bg-primary/10 text-primary">
+            <Icon className="w-5 h-5" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="font-medium text-sm">{personaTitle}</p>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-auto min-h-8 max-w-full whitespace-normal text-left"
+            disabled={setUserType.isPending}
+            onClick={() => setUserType.mutate({ userType: otherPersona })}
+          >
+            {setUserType.isPending && <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />}
+            {t("switchTo", { persona: otherPersonaTitle })}
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+
+  // The order follows the path: where the organisation operates and the
+  // answers that decide which laws apply (step 1), then the team and its
+  // departments. Everything else waits under "Advanced".
   return (
     <div className="space-y-4 sm:space-y-6 max-w-2xl">
       <div>
@@ -59,64 +113,33 @@ export default function SettingsPage() {
         <p className="text-sm text-muted-foreground mt-1">{t("subtitle")}</p>
       </div>
 
-      {/* Profile Info */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">{t("profileTitle")}</CardTitle>
-          <CardDescription>{t("profileDescription")}</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-2 text-sm">
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">{t("labelName")}</span>
-            <span>{profile?.name ?? "\u2014"}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">{t("labelEmail")}</span>
-            <span>{profile?.email ?? "\u2014"}</span>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Account type: one organization, or several client organizations */}
-      {personaTitle && Icon && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">{t("accountTypeTitle")}</CardTitle>
-            <CardDescription>
-              {t("accountTypeDescription")}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-wrap items-center gap-4 p-3 rounded-lg border border-primary bg-primary/5">
-              <div className="p-2 rounded-lg shrink-0 bg-primary/10 text-primary">
-                <Icon className="w-5 h-5" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-medium text-sm">{personaTitle}</p>
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-auto min-h-8 max-w-full whitespace-normal text-left"
-                disabled={setUserType.isPending}
-                onClick={() => setUserType.mutate({ userType: otherPersona })}
-              >
-                {setUserType.isPending && <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />}
-                {t("switchTo", { persona: otherPersonaTitle })}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+      {/* Operating jurisdictions — drives which regulatory regimes apply */}
+      {organization && (
+        <JurisdictionCard organizationId={organization.id} canWrite={canWrite} tj={tj} />
       )}
 
-      {/* Hosted pilot only: day counter, ceilings, the two ways out. Renders nothing on the kit. */}
-      {organization && <PilotStatusCard organizationId={organization.id} />}
+      {/* The quick start's applicability check, editable here at any time:
+          which laws and frameworks apply, and why. */}
+      {organization && (
+        <ApplicabilityCard organizationId={organization.id} canWrite={canWrite} />
+      )}
 
-      {/* The worked example's own removal. Renders nothing when there is none. */}
-      {organization && <SampleDataCard organizationId={organization.id} />}
+      {/* California CCPA screening. Self-gating on a declared California nexus;
+          it is what lets the ADMT resolver leave COVERED_BUSINESS_NOT_ASSESSED,
+          so without it the whole California framework stays unreachable. */}
+      {/* Linked from the obligations step, which asks for these answers. */}
+      <div id={SCREENING_ANCHOR} className="scroll-mt-24" aria-hidden="true" />
+      {organization && (
+        <CaliforniaScreeningCard organizationId={organization.id} canWrite={canWrite} />
+      )}
 
-      {/* Remove unedited template-created items. Renders nothing when there are none. */}
-      {organization && <TemplateItemsCard organizationId={organization.id} />}
+      {/* Cross-border regime screening: GDPR, Colorado, Texas and Washington.
+          Each question self-gates on a declared jurisdiction that turns on it,
+          so a purely European organization is never asked about Washington
+          health carriers. */}
+      {organization && (
+        <RegimeScreeningCard organizationId={organization.id} canWrite={canWrite} />
+      )}
 
       {/* Team: members and roles */}
       {organization && (
@@ -133,58 +156,42 @@ export default function SettingsPage() {
         <DepartmentsCard organizationId={organization.id} />
       )}
 
-      {/* Operating jurisdictions — drives which regulatory regimes apply */}
-      {organization && (
-        <JurisdictionCard
-          organizationId={organization.id}
-          canWrite={canWrite}
-          tj={tj}
-          tc={tc}
-        />
-      )}
+      <AdvancedSection title={t("advancedTitle")} description={t("advancedDescription")}>
+        {profileCard}
 
-      {/* The quick start's applicability check, editable here at any time:
-          which laws and frameworks apply, and why. */}
-      {organization && (
-        <ApplicabilityCard organizationId={organization.id} canWrite={canWrite} />
-      )}
+        {/* Account type: one organization, or several client organizations */}
+        {accountTypeCard}
 
-      {/* California CCPA screening. Self-gating on a declared California nexus;
-          it is what lets the ADMT resolver leave COVERED_BUSINESS_NOT_ASSESSED,
-          so without it the whole California framework stays unreachable. */}
-      {/* Linked from the obligations step, which asks for these answers. */}
-      <div id={SCREENING_ANCHOR} className="scroll-mt-24" aria-hidden="true" />
-      {organization && (
-        <CaliforniaScreeningCard
-          organizationId={organization.id}
-          canWrite={canWrite}
-        />
-      )}
+        {/* Hosted pilot only: day counter, ceilings, the two ways out. Renders nothing on the kit. */}
+        {organization && (
+          <div id={PILOT_ANCHOR} className="scroll-mt-24">
+            <PilotStatusCard organizationId={organization.id} />
+          </div>
+        )}
 
-      {/* Cross-border regime screening: GDPR, Colorado, Texas and Washington.
-          Each question self-gates on a declared jurisdiction that turns on it,
-          so a purely European organization is never asked about Washington
-          health carriers. */}
-      {organization && (
-        <RegimeScreeningCard organizationId={organization.id} canWrite={canWrite} />
-      )}
+        {/* The worked example's own removal. Renders nothing when there is none. */}
+        {organization && <SampleDataCard organizationId={organization.id} />}
 
-      {/* Per-organization AI posture (off by default — no AI calls until enabled) */}
-      {organization && (
-        <AiPostureCard
-          organizationId={organization.id}
-          isAdmin={userRole !== null && ["OWNER", "ADMIN"].includes(userRole)}
-        />
-      )}
+        {/* Remove unedited template-created items. Renders nothing when there are none. */}
+        {organization && <TemplateItemsCard organizationId={organization.id} />}
 
-      {/* Preservation before deletion: a hold refuses every delete in scope. */}
-      {organization && <LegalHoldCard organizationId={organization.id} userRole={userRole} />}
+        {/* Per-organization AI posture (off by default — no AI calls until enabled) */}
+        {organization && (
+          <AiPostureCard
+            organizationId={organization.id}
+            isAdmin={userRole !== null && ["OWNER", "ADMIN"].includes(userRole)}
+          />
+        )}
 
-      <DeploymentExpertCta />
-      {/* Owners only: permanent deletion */}
-      {organization && userRole === "OWNER" && (
-        <DeleteOrganizationCard organizationId={organization.id} organizationName={organization.name} />
-      )}
+        {/* Preservation before deletion: a hold refuses every delete in scope. */}
+        {organization && <LegalHoldCard organizationId={organization.id} userRole={userRole} />}
+
+        <DeploymentExpertCta />
+        {/* Owners only: permanent deletion */}
+        {organization && userRole === "OWNER" && (
+          <DeleteOrganizationCard organizationId={organization.id} organizationName={organization.name} />
+        )}
+      </AdvancedSection>
     </div>
   );
 }
@@ -193,37 +200,40 @@ export default function SettingsPage() {
  * Where the organization operates. Until this is answered, regulatory scoping
  * can only say "we can't tell yet" — so an undeclared org gets an explicit
  * prompt rather than a silently empty state.
+ *
+ * Each tick saves on its own (a quick run of ticks is sent as one request),
+ * with the "Saved" mark beside the title.
  */
 function JurisdictionCard({
   organizationId,
   canWrite,
   tj,
-  tc,
 }: {
   organizationId: string;
   canWrite: boolean;
   tj: ReturnType<typeof useTranslations>;
-  tc: ReturnType<typeof useTranslations>;
 }) {
   const utils = trpc.useUtils();
   const { data: org } = trpc.organization.getById.useQuery({ organizationId });
 
-  // Null means "untouched — show whatever the server has". Deriving rather
-  // than syncing state into an effect keeps the two from fighting after a save.
+  // Null means "untouched — show whatever the server has". The edit is kept
+  // after it saves (the server then holds the same value), so a tick made
+  // while the previous one is on its way is never shown undone.
   const [edited, setEdited] = useState<JurisdictionId[] | null>(null);
   const saved = (org?.operatingJurisdictions ?? []) as JurisdictionId[];
   const selection = edited ?? saved;
-  const dirty = edited !== null;
 
   const save = trpc.organization.setJurisdictions.useMutation({
     onSuccess: () => {
-      setEdited(null);
-      toast.success(tj("saved"));
       void utils.organization.getById.invalidate();
       void utils.organization.getDashboardStats.invalidate();
+      void utils.programPath.status.invalidate();
     },
-    onError: (err) => toast.error(err.message),
   });
+  const autosave = useAutoSave<JurisdictionId[]>(
+    (jurisdictions) => save.mutateAsync({ organizationId, jurisdictions }),
+    { delayMs: 500, onError: (err) => toast.error(err instanceof Error ? err.message : String(err)) },
+  );
 
   const declared = (org?.operatingJurisdictions?.length ?? 0) > 0;
   const reviewedAt = org?.jurisdictionsReviewedAt
@@ -231,45 +241,32 @@ function JurisdictionCard({
     : null;
 
   return (
-    <Card>
-      <CardHeader>
+    <Card data-testid="settings-jurisdictions">
+      <CardHeader className={CARD_HEADER_WITH_STATUS}>
         <CardTitle className="text-base flex items-center gap-2">
           <Globe className="w-4 h-4 text-primary" />
           {tj("title")}
         </CardTitle>
+        {canWrite && (
+          <CardSaveStatus status={autosave.status} onRetry={autosave.retry} testId="jurisdictions-save-status" />
+        )}
         <CardDescription>{tj("description")}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {!declared && (
-          <div className="flex items-start gap-2 rounded-md border border-warning bg-warning/10 p-3 text-foreground">
-            <AlertTriangle className="w-4 h-4 text-warning shrink-0 mt-0.5" />
-            <p className="text-xs text-muted-foreground">{tj("undeclaredHint")}</p>
-          </div>
-        )}
+        {!declared && <Instruction tone="attention">{tj("undeclaredHint")}</Instruction>}
 
         <JurisdictionPicker
           value={selection}
-          onChange={setEdited}
-          disabled={!canWrite || save.isPending}
+          onChange={(next) => {
+            setEdited(next);
+            autosave.push(next);
+          }}
+          disabled={!canWrite}
         />
 
-        <div className="flex items-center justify-between gap-3 flex-wrap">
-          <p className="text-xs text-muted-foreground">
-            {reviewedAt ? tj("reviewedOn", { date: reviewedAt }) : tj("neverReviewed")}
-          </p>
-          {canWrite && (
-            <Button
-              size="sm"
-              disabled={!dirty || save.isPending}
-              onClick={() =>
-                save.mutate({ organizationId, jurisdictions: selection })
-              }
-            >
-              {save.isPending && <Loader2 className="w-3 h-3 mr-2 animate-spin" />}
-              {tc("save")}
-            </Button>
-          )}
-        </div>
+        <p className="text-xs text-muted-foreground">
+          {reviewedAt ? tj("reviewedOn", { date: reviewedAt }) : tj("neverReviewed")}
+        </p>
       </CardContent>
     </Card>
   );

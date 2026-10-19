@@ -141,7 +141,7 @@ export function GlobalSearch({ className }: { className?: string }) {
         aria-label={t("label")}
         aria-controls={listId}
         maxLength={100}
-        className="h-9 w-full rounded-md border border-input bg-background pl-8 pr-8 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="h-9 w-full rounded-md border border-input bg-input-fill pl-8 pr-8 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         data-testid="global-search-input"
       />
       {waiting && showPanel && (

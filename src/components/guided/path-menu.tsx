@@ -147,6 +147,8 @@ export function PathMenu<C>({
   const currentStage = stageOfStep(config, currentStep);
   const openStage = stageOpenByDefault(config, currentStep, statuses, onOverview);
   const currentLibrary = currentStep ? null : currentLibraryId(library, pathname);
+  // The current step's rule in one plain line, as on the band.
+  const doneWhen = (id: string) => t("band.doneWhen", { rule: t(`steps.${id}.doneWhen`) });
 
   // The stage holding the current page (on the overview, the stage holding
   // the next step) is open unless it was closed on this very page; any other
@@ -291,9 +293,9 @@ export function PathMenu<C>({
           const progress = statuses && showProgress ? stageProgress(stage, statuses) : null;
           const panelId = `path-stage-${variant}-${stage.id}`;
           const holdsCurrent = stage.id === currentStage?.id;
-          // Steps with no page yet are not listed here: they are gathered in
-          // the "Not in AI Sentinel yet" group at the foot.
-          const shownSteps = stage.steps.filter((step) => isShown(step, statuses) && !step.coming);
+          // Steps with no page yet stay in their stage, greyed and labelled
+          // "Coming", so a stage never looks emptier than the path is.
+          const shownSteps = stage.steps.filter((step) => isShown(step, statuses));
           if (shownSteps.length === 0) return null;
           // Nothing to open: no chevron, and the row is plain text.
           const expandable = stageExpandable(stage, statuses);
@@ -306,6 +308,7 @@ export function PathMenu<C>({
                     status={statuses ? statuses[step.id] ?? "todo" : null}
                     showProgress={showProgress}
                     note={showProgress ? stepNotes[step.id] : undefined}
+                    rule={showProgress && step.id === currentStep && !step.coming ? doneWhen(step.id) : undefined}
                     current={step.id === currentStep}
                     lockLabel={isLocked(step.href) ? lockLabel : undefined}
                     className={itemBase}
@@ -349,7 +352,13 @@ export function PathMenu<C>({
                     // One state word per stage; the ring beside it
                     // carries the count.
                     <span data-testid={`stage-word-${stage.id}`}>
-                      {t(`stageState.${stageWord(stage, statuses!, attention)}`)}
+                      {progress.state === "coming"
+                        ? t("stageState.coming")
+                        : t("stageCount", {
+                            word: t(`stageState.${stageWord(stage, statuses!, attention)}`),
+                            done: progress.done,
+                            total: progress.total,
+                          })}
                     </span>
                   ) : (
                     <>
@@ -445,6 +454,7 @@ function StepRow<C>({
   status,
   showProgress = true,
   note,
+  rule,
   current,
   lockLabel,
   className,
@@ -461,6 +471,8 @@ function StepRow<C>({
   showProgress?: boolean;
   /** The quiet line under the label: the step's documents and their states. */
   note?: string;
+  /** The current step's rule in one plain line ("Done when: ..."). */
+  rule?: string;
   current: boolean;
   className: string;
   idle: string;
@@ -504,6 +516,14 @@ function StepRow<C>({
             data-testid={`step-docs-${step.id}`}
           >
             {note}
+          </span>
+        )}
+        {rule && (
+          <span
+            className="mt-0.5 block text-[11px] leading-snug text-muted-foreground"
+            data-testid={`step-rule-${step.id}`}
+          >
+            {rule}
           </span>
         )}
       </span>

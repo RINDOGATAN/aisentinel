@@ -152,7 +152,9 @@
     "roleViewer": "Lector",
     "loading": "Cargando…",
     "openMenu": "Abrir menú",
-    "sourceAndLicence": "Código fuente y licencia"
+    "sourceAndLicence": "Código fuente y licencia",
+    "getHelp": "Pedir ayuda",
+    "getHelpTitle": "Ayuda de {company} (se abre en una pestaña nueva)"
   },
   "dashboard": {
     "title": "Gobernanza de IA",
@@ -527,7 +529,41 @@
     "builderStepTitle": "¿Qué puede ver y hacer tu producto?",
     "builderStepDescription": "Marca lo que sea cierto hoy. Lleva unos cuatro minutos y produce el primer borrador de tu modelo de amenazas.",
     "builderWillPropose": "De esto se derivan {count} escenarios, cada uno con controles y una prueba.",
-    "statThreatScenarios": "{count} escenarios de amenaza"
+    "statThreatScenarios": "{count} escenarios de amenaza",
+    "stepIntro": "Antes de empezar",
+    "intro": {
+      "title": "Antes de empezar: lo que te pedirá el recorrido",
+      "lead": "El programa se construye con cinco tipos de información. Nada de ello hace falta para empezar: reúne ahora lo que sea fácil y añade el resto sobre la marcha.",
+      "items": {
+        "places": {
+          "title": "Dónde opera la organización",
+          "line": "Los países y estados de EE. UU. donde ofrece productos o servicios, o tiene empleados. Deciden qué leyes se aplican."
+        },
+        "vendors": {
+          "title": "Proveedores",
+          "line": "Las empresas que suministran la IA que usa la organización, como un asistente de chat o una función de IA dentro de un programa que ya se usa."
+        },
+        "toolsInUse": {
+          "title": "Herramientas de IA en uso",
+          "line": "Productos de IA ya hechos que los compañeros usan en el trabajo, aprobados o no."
+        },
+        "systems": {
+          "title": "Sistemas de IA",
+          "line": "IA que la organización desarrolla o utiliza dentro de sus propios procesos, como un modelo que ordena candidaturas de empleo."
+        },
+        "owners": {
+          "title": "Responsables",
+          "line": "Para cada sistema, la persona que responde de él en el negocio y la que lo gestiona técnicamente."
+        }
+      },
+      "howTitle": "Cómo encontrarlos",
+      "how": {
+        "expenses": "Registros de gastos y tarjetas: las suscripciones a productos de IA muestran quién paga cada herramienta.",
+        "signIn": "Registros de inicio de sesión: el inicio de sesión único o el proveedor de identidad muestra las aplicaciones en las que entra la gente.",
+        "survey": "Una breve encuesta a los compañeros: pregunta qué herramientas de IA usan, para qué y con qué datos."
+      },
+      "begin": "Empezar"
+    }
   },
   "assessments": {
     "title": "Evaluaciones de impacto",
@@ -1450,7 +1486,7 @@
   },
   "settings": {
     "title": "Configuración",
-    "subtitle": "Tu organización: dónde opera, sus respuestas al cribado, sus miembros y sus ajustes de IA",
+    "subtitle": "La organización: dónde opera, las respuestas que deciden qué leyes se aplican, su equipo y sus ajustes de IA",
     "templateItemsTitle": "Elementos de plantilla",
     "templateItemsLead": "Sistemas, proveedores y evaluaciones iniciales que una plantilla ha creado por ti. Al quitarlos solo se eliminan los que nadie ha editado; se conserva todo lo que hayas cambiado.",
     "templateItemsCount": "Se quitarán {remove}. Se conservarán {keep} que has editado.",
@@ -4491,12 +4527,12 @@
     }
   },
   "obligations": {
-    "title": "Dónde trabajas y tus normas",
+    "title": "Dónde opera la organización y las normas que se aplican",
     "subtitle": "El calendario de obligaciones: plazos normativos proyectados sobre tu propio inventario de IA.",
     "ariaLabel": "Cronología de obligaciones normativas",
     "assumedJurisdictions": "Mostrando obligaciones para: {jurisdictions}",
-    "changePlaces": "Cambiar en Configuración",
-    "screeningMissing": "Algunas de estas fechas dependen de unas pocas respuestas sobre tu organización. Hasta que respondas al breve cribado de Configuración, aparecen como «Alcance aún sin determinar».",
+    "changePlaces": "Cambiar los lugares",
+    "screeningMissing": "Algunas de estas fechas dependen de unas pocas respuestas sobre la organización. Hasta que se respondan, aparecen como «Alcance aún sin determinar».",
     "answerScreening": "Responder al cribado",
     "jurisdictionsUndeclared": "No nos has indicado dónde operas, así que las obligaciones de EE. UU. se muestran como no determinadas y no como fuera de alcance.",
     "declareJurisdictions": "Declara tus jurisdicciones de operación",
@@ -4570,7 +4606,27 @@
     "filterAll": "Todas las jurisdicciones",
     "filterLabel": "Jurisdicción",
     "showingCount": "{shown} de {total} hitos",
-    "nothingAhead": "No hay nada pendiente en las jurisdicciones que has declarado. Las secciones siguientes muestran lo que ya está en vigor y lo que se ha comprobado y no te alcanza."
+    "nothingAhead": "No hay nada pendiente en las jurisdicciones que has declarado. Las secciones siguientes muestran lo que ya está en vigor y lo que se ha comprobado y no te alcanza.",
+    "answerQuestions": "{count, plural, one {Responde a # pregunta} other {Responde a # preguntas}}",
+    "questions": {
+      "title": "Las preguntas que deciden qué leyes se aplican",
+      "lead": "Las respuestas de aquí son las mismas que las de Configuración: puedes cambiarlas en cualquiera de los dos sitios.",
+      "allAnswered": "Todas las preguntas tienen respuesta.",
+      "show": "Cambiar los lugares y las respuestas",
+      "hide": "Ocultar las preguntas"
+    },
+    "timelineLead": "Cada marca es un plazo legal de los lugares que has declarado. Las marcas a la izquierda de hoy ya han pasado y siguen pendientes; el resto están por llegar.",
+    "timelineLeadVertical": "Cada marca es un plazo legal de los lugares que has declarado. Las marcas por encima de hoy ya han pasado y siguen pendientes; el resto están por llegar.",
+    "singlePlace": "Has declarado un solo lugar, {place}: solo se muestran las normas que lo alcanzan.",
+    "applies": {
+      "title": "Esto se aplica a la organización",
+      "lead": "Según dónde opera la organización y las respuestas dadas. Cada línea dice por qué se aplica y su próxima fecha.",
+      "next": "Próxima fecha: {date}",
+      "inForce": "En vigor",
+      "noDate": "Sin plazo fechado en este calendario",
+      "empty": "Aún no se muestra nada como aplicable. Declara dónde opera la organización y responde a las preguntas del paso 1.2.",
+      "open": "Ver las normas y fechas"
+    }
   },
   "admt": {
     "title": "ADMT de California",
@@ -5627,17 +5683,20 @@
       "quickstart": {
         "label": "Inicio rápido",
         "why": "Fija tus jurisdicciones, aplica una plantilla sectorial e importa tus proveedores desde el catálogo, para que el resto del programa empiece ya completado.",
-        "do": "Responde a unas pocas preguntas y se rellena por ti una primera versión de tu programa."
+        "do": "Responde a unas pocas preguntas y se rellena por ti una primera versión de tu programa.",
+        "doneWhen": "el inicio rápido se ha completado una vez, o ya existen un sistema, un proveedor y una política."
       },
       "obligations": {
-        "label": "Dónde trabajas y tus normas",
-        "why": "Las normas que te aplican dependen de dónde trabajas. Indica dónde trabajas y responde al breve cribado de Configuración, para que las normas y sus fechas sean las que te aplican.",
-        "do": "Indica dónde trabajas y responde al breve cribado de Configuración. Después esta página muestra las normas que te aplican y sus fechas."
+        "label": "Dónde opera la organización y las normas que se aplican",
+        "why": "Las normas aplicables dependen de dónde opera la organización. Declara los lugares y responde a las breves preguntas de la página de este paso, para que las normas y sus fechas sean las que se aplican.",
+        "do": "Declara dónde opera la organización y responde a las preguntas de esta página. Después muestra las normas que se aplican y sus fechas.",
+        "doneWhen": "los lugares están declarados y cada cribado que se muestra para ellos tiene respuesta."
       },
       "policies": {
         "label": "Política de IA",
         "why": "Una política de uso aceptable aprobada dice a todos qué herramientas de IA pueden usar y cómo.",
-        "do": "Redacta y aprueba la política que dice qué herramientas de IA se pueden usar y cómo."
+        "do": "Redacta y aprueba la política que dice qué herramientas de IA se pueden usar y cómo.",
+        "doneWhen": "hay una política de uso aceptable aprobada o publicada."
       },
       "prohibited": {
         "label": "Revisión de usos prohibidos",
@@ -5652,87 +5711,104 @@
       "systems": {
         "label": "Tus sistemas de IA",
         "why": "Cada sistema necesita un registro y un responsable antes de poder fijar su riesgo.",
-        "do": "Registra cada sistema de IA que usa tu organización e indica quién es su responsable."
+        "do": "Registra cada sistema de IA que usa tu organización e indica quién es su responsable.",
+        "doneWhen": "hay al menos un sistema de IA registrado y cada sistema tiene un responsable de negocio."
       },
       "shadowAi": {
         "label": "Herramientas de IA sin aprobar",
         "why": "Registra las herramientas de IA que ya se usan sin aprobación y decide sobre cada una.",
-        "do": "Anota las herramientas de IA que se usan sin aprobación y decide sobre cada una."
+        "do": "Anota las herramientas de IA que se usan sin aprobación y decide sobre cada una.",
+        "doneWhen": "hay al menos una herramienta de IA en uso registrada y se han revisado todas."
       },
       "vendors": {
         "label": "Proveedores",
         "why": "La mayor parte de la IA te llega a través de proveedores. Añádelos desde el catálogo de proveedores.",
-        "do": "Añade las empresas cuya IA usas. Con el catálogo de proveedores es rápido."
+        "do": "Añade las empresas cuya IA usas. Con el catálogo de proveedores es rápido.",
+        "doneWhen": "hay al menos un proveedor registrado."
       },
       "classification": {
         "label": "Nivel de riesgo",
         "why": "El nivel de riesgo de cada sistema decide qué normas le aplican.",
-        "do": "Da a cada sistema de IA su nivel de riesgo. El nivel decide qué normas aplican."
+        "do": "Da a cada sistema de IA su nivel de riesgo. El nivel decide qué normas aplican.",
+        "doneWhen": "cada sistema tiene un nivel de riesgo confirmado por una persona."
       },
       "assessments": {
         "label": "Evaluaciones de impacto",
         "why": "Los sistemas de alto riesgo necesitan una evaluación de impacto aprobada.",
-        "do": "Evalúa cada sistema de alto riesgo y haz que se apruebe la evaluación."
+        "do": "Evalúa cada sistema de alto riesgo y haz que se apruebe la evaluación.",
+        "doneWhen": "hay al menos una evaluación aprobada y cada sistema de alto riesgo tiene una aprobada."
       },
       "threatModel": {
         "label": "Modelo de amenazas",
         "why": "Anota qué puede fallar en los sistemas que construyes y cómo se detiene y se prueba cada riesgo.",
-        "do": "Anota qué puede fallar en la IA que construyes y cómo se detiene y se prueba cada riesgo."
+        "do": "Anota qué puede fallar en la IA que construyes y cómo se detiene y se prueba cada riesgo.",
+        "doneWhen": "al menos un modelo de amenazas ha dejado de ser borrador."
       },
       "vendorDueDiligence": {
         "label": "Revisión de proveedores",
         "why": "Cada proveedor necesita una revisión completada.",
-        "do": "Revisa cada proveedor: ábrelo y completa su revisión."
+        "do": "Revisa cada proveedor: ábrelo y completa su revisión.",
+        "doneWhen": "cada proveedor tiene una revisión de diligencia debida completada."
       },
       "agentTesting": {
         "label": "Prueba tus agentes de IA (AIUC-1)",
         "why": "Antes de la auditoría AIUC-1, cada agente de IA necesita que cada requisito que le aplica esté probado y superado, o un resultado parcial aceptado.",
-        "do": "Prueba cada agente de IA frente a AIUC-1: anota qué has hecho y el resultado, hasta superar cada requisito que le aplica."
+        "do": "Prueba cada agente de IA frente a AIUC-1: anota qué has hecho y el resultado, hasta superar cada requisito que le aplica.",
+        "doneWhen": "cada agente de IA está preparado para la auditoría AIUC-1."
       },
       "oversight": {
         "label": "Supervisión humana",
         "why": "Los sistemas de alto riesgo necesitan una persona que pueda revisarlos, aprobarlos o detenerlos.",
-        "do": "Nombra a una persona que pueda revisar, aprobar o detener cada sistema de alto riesgo."
+        "do": "Nombra a una persona que pueda revisar, aprobar o detener cada sistema de alto riesgo.",
+        "doneWhen": "cada sistema de alto riesgo tiene una puerta de supervisión confirmada (sin sistemas de alto riesgo, basta con una puerta confirmada)."
       },
       "transparency": {
         "label": "Avisar de que es IA",
         "why": "Registra para cada sistema si hay que avisar a las personas de que tratan con IA (art. 50).",
-        "do": "Registra para cada sistema si hay que avisar a las personas de que tratan con IA. Abre un sistema para hacerlo."
+        "do": "Registra para cada sistema si hay que avisar a las personas de que tratan con IA. Abre un sistema para hacerlo.",
+        "doneWhen": "cada sistema tiene un perfil de transparencia confirmado por una persona."
       },
       "evidence": {
         "label": "Evidencias",
         "why": "Da un estado a cada requisito y adjunta la prueba que lo respalda.",
-        "do": "Elige un sistema, da un estado a cada requisito y adjunta la prueba."
+        "do": "Elige un sistema, da un estado a cada requisito y adjunta la prueba.",
+        "doneWhen": "cada requisito vinculado tiene un estado y hay al menos una evidencia adjunta."
       },
       "sensitiveData": {
         "label": "Datos sensibles",
         "why": "Clasifica los datos sensibles que usan tus sistemas, empezando por los datos personales.",
-        "do": "Revisa los datos sensibles que usan tus sistemas, empezando por los datos personales."
+        "do": "Revisa los datos sensibles que usan tus sistemas, empezando por los datos personales.",
+        "doneWhen": "existe al menos una evaluación de datos sensibles y cada sistema que trata datos personales tiene una."
       },
       "incidents": {
         "label": "Incidentes",
         "why": "Aprueba un plan de incidentes para que todos sepan qué hacer y se cumplan los plazos legales.",
-        "do": "Aprueba un plan de incidentes para que todos sepan qué hacer y se cumplan los plazos legales."
+        "do": "Aprueba un plan de incidentes para que todos sepan qué hacer y se cumplan los plazos legales.",
+        "doneWhen": "hay una política de respuesta a incidentes aprobada o publicada."
       },
       "proceedings": {
         "label": "Asuntos e investigaciones",
         "why": "Sigue una investigación o un asunto de una autoridad o de un tribunal, si lo hay.",
-        "do": "Sigue una investigación o un asunto de una autoridad o de un tribunal, si lo hay."
+        "do": "Sigue una investigación o un asunto de una autoridad o de un tribunal, si lo hay.",
+        "doneWhen": "todos los procedimientos están cerrados. Solo hace falta cuando hay alguno."
       },
       "review": {
         "label": "Revisar lo redactado",
         "why": "Lo que el producto ha redactado por ti solo cuenta cuando una persona lo confirma.",
-        "do": "Confirma o corrige lo que el producto ha redactado por ti. Cuenta cuando una persona lo confirma."
+        "do": "Confirma o corrige lo que el producto ha redactado por ti. Cuenta cuando una persona lo confirma.",
+        "doneWhen": "nada de lo redactado espera a que una persona lo confirme."
       },
       "board": {
         "label": "Informe al consejo",
         "why": "Informa al consejo del estado del programa, con cifras que se pueden reproducir.",
-        "do": "Cuenta al consejo en qué punto está el programa, con cifras que se pueden reproducir."
+        "do": "Cuenta al consejo en qué punto está el programa, con cifras que se pueden reproducir.",
+        "doneWhen": "existe al menos un informe al consejo."
       },
       "audit": {
         "label": "Registro de auditoría",
         "why": "Cada cambio queda registrado aquí por sí solo.",
-        "do": "Consulta cada cambio hecho en el programa. Queda registrado por sí solo."
+        "do": "Consulta cada cambio hecho en el programa. Queda registrado por sí solo.",
+        "doneWhen": "el producto lo lleva por sí solo, desde el primer cambio registrado."
       }
     },
     "library": {
@@ -5760,13 +5836,22 @@
       "next": "Siguiente paso",
       "finish": "Volver al panel de control",
       "stageDone": "Etapa {number} completada. Siguiente: {next}.",
-      "lastStageDone": "Etapa {number} completada. Todas las etapas están hechas."
+      "lastStageDone": "Etapa {number} completada. Todas las etapas están hechas.",
+      "doneWhen": "Se completa cuando: {rule}",
+      "leftHere": "Falta aquí: {items}.",
+      "finishStep": "Terminar este paso",
+      "continueAnyway": "Continuar de todos modos",
+      "checksLabel": "Lo que necesita este paso",
+      "checkMet": "hecho",
+      "checkOpen": "pendiente",
+      "showChecks": "Ver lo que se cumple",
+      "hideChecks": "Ocultar"
     },
     "emptyStep": {
       "board": "Todavía no hay ningún informe al consejo.",
       "boardAction": "Registrar el primer informe",
-      "obligations": "Todavía no hay normas en la lista. Indica dónde trabajas y aquí aparecerán las que te aplican.",
-      "obligationsAction": "Indicar dónde trabajas",
+      "obligations": "Todavía no hay normas en la lista. Declara arriba dónde opera la organización y aquí aparecerán las que se aplican.",
+      "obligationsAction": "Declarar los lugares",
       "vendorChecks": "Todavía no hay proveedores que revisar.",
       "vendorChecksAction": "Añadir un proveedor",
       "transparency": "Todavía no hay sistemas de IA.",
@@ -5857,6 +5942,52 @@
       "plan": "Plan: hito del día {day}",
       "overdue": "vencido desde el {date}",
       "empty": "Ningún plazo en los próximos 30 días."
+    },
+    "settingsBand": {
+      "todo": "Paso {number}: responde a las preguntas marcadas abajo. Deciden qué leyes se aplican a la organización.",
+      "done": "El paso {number} está completo: los lugares están declarados y todos los cribados tienen respuesta.",
+      "back": "Volver al paso {number}",
+      "marker": "Cuenta para el paso {number}",
+      "markerDone": "Cuenta para el paso {number}: respondido"
+    },
+    "stageCount": "{word} · {done} de {total}",
+    "checks": {
+      "progress": "{label} ({done} de {total})",
+      "quickstartRun": "completa el inicio rápido hasta el final",
+      "copiedReviewed": "revisa lo copiado de otro cliente",
+      "placesDeclared": "declara dónde opera la organización",
+      "screeningApplicability": "responde a la comprobación de lo que se aplica",
+      "screeningCalifornia": "responde a la pregunta de California sobre empresa sujeta",
+      "screeningRegimes": "responde a las preguntas del cribado estatal",
+      "copiedObligations": "vuelve a guardar los lugares y las respuestas copiados de otro cliente",
+      "acceptableUseApproved": "aprueba una política de uso aceptable",
+      "shadowReported": "registra al menos una herramienta de IA en uso",
+      "shadowTriaged": "revisa cada herramienta de IA registrada",
+      "systemRegistered": "registra al menos un sistema de IA",
+      "systemsOwned": "asigna un responsable de negocio a cada sistema",
+      "copiedSystems": "revisa los sistemas copiados de otro cliente",
+      "vendorRecorded": "registra al menos un proveedor",
+      "copiedVendors": "revisa los proveedores copiados de otro cliente",
+      "systemsClassified": "asigna un nivel de riesgo a cada sistema",
+      "classificationsConfirmed": "confirma los niveles de riesgo en borrador",
+      "assessmentApproved": "aprueba al menos una evaluación",
+      "highRiskAssessed": "aprueba una evaluación para cada sistema de alto riesgo",
+      "threatModelActive": "saca un modelo de amenazas del borrador",
+      "vendorsAssessed": "completa una revisión de diligencia debida para cada proveedor",
+      "agentsReady": "prepara cada agente para la auditoría AIUC-1",
+      "highRiskGated": "establece una puerta de supervisión para cada sistema de alto riesgo",
+      "gateExists": "establece al menos una puerta de supervisión",
+      "gatesConfirmed": "confirma las puertas de supervisión en borrador",
+      "copiedGates": "confirma las puertas de supervisión copiadas de otro cliente",
+      "systemsProfiled": "asigna un perfil de transparencia a cada sistema",
+      "profilesConfirmed": "confirma los perfiles de transparencia en borrador",
+      "mappingsAssessed": "asigna un estado a cada requisito vinculado",
+      "evidenceAttached": "adjunta al menos una evidencia",
+      "sensitiveAssessed": "completa una evaluación de datos sensibles",
+      "personalDataAssessed": "evalúa cada sistema que trata datos personales",
+      "incidentPolicyApproved": "aprueba una política de respuesta a incidentes",
+      "nothingToConfirm": "confirma cada elemento en borrador",
+      "boardReport": "crea un informe al consejo"
     }
   },
   "agentTesting": {
@@ -6218,7 +6349,7 @@
       "notApproved": "{count, plural, one {# sin aprobar} other {# sin aprobar}}",
       "noOwner": "{count, plural, one {# sistema sin responsable de negocio} other {# sistemas sin responsable de negocio}}",
       "unclassified": "{count, plural, one {# sistema sin clasificar} other {# sistemas sin clasificar}}",
-      "screeningUnanswered": "el cribado de regímenes aún no tiene respuesta",
+      "screeningUnanswered": "{count, plural, one {# cribado por responder} other {# cribados por responder}}",
       "inDraft": "{count, plural, one {# modelo aún en borrador} other {# modelos aún en borrador}}",
       "notReviewed": "{count, plural, one {# proveedor sin revisión completada} other {# proveedores sin revisión completada}}",
       "agentsNotReady": "{count, plural, one {# agente no preparado para la auditoría} other {# agentes no preparados para la auditoría}}",

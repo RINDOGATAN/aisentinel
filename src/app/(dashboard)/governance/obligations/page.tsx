@@ -16,14 +16,18 @@ import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, CalendarClock, Sparkles, MapPin } from "lucide-react";
+import { Loader2, CalendarClock, Sparkles, MapPin, ChevronDown, CheckCircle2 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { ObligationsTimeline } from "@/components/governance/obligations/ObligationsTimeline";
 import { ObligationCard } from "@/components/governance/obligations/ObligationCard";
 import { EmptyStep } from "@/components/guided/empty-step";
-import { useProgramPath } from "@/components/guided/use-program-path";
-import { SCREENING_ANCHOR } from "@/lib/settings-anchors";
+import { useProgramPathQuery } from "@/components/guided/use-program-path";
+import { PlacesCard } from "@/components/governance/places-card";
+import { ApplicabilityCard } from "@/components/governance/applicability-check";
+import { CaliforniaScreeningCard } from "@/components/governance/california-screening-card";
+import { RegimeScreeningCard } from "@/components/governance/regime-screening-card";
+import { AppliesPanel } from "@/components/governance/obligations/applies-panel";
 import {
   aheadCount,
   filterByJurisdiction,
@@ -32,18 +36,23 @@ import {
   timelineRows,
 } from "@/lib/obligations-grouping";
 
+/** Where step 1.2's questions sit on this page (the band and the menu link here). */
+const PLACES_ANCHOR = "places";
+const QUESTIONS_ANCHOR = "questions";
+
 export default function ObligationsPage() {
-  const { organization } = useOrganization();
+  const { organization, canWrite } = useOrganization();
   const t = useTranslations("obligations");
   const tjur = useTranslations("jurisdictions");
   const tg = useTranslations("guided");
   const locale = useLocale();
   const orgId = organization?.id ?? "";
   const contentLocale = locale === "es" ? "es" : "en";
-  // The step is "started" while places are declared but the screening in
-  // Settings has no answer: say so here, with the way there.
-  const pathSteps = useProgramPath();
+  // The step is "started" while places are declared but a screening shown
+  // to the organisation is unanswered: say so here, with the way to answer.
+  const { steps: pathSteps, screeningQuestionsOpen } = useProgramPathQuery();
   const screeningMissing = pathSteps?.obligations === "started";
+  const stepDone = pathSteps?.obligations === "done";
 
   // Deep links from the dashboard strip and the mini-rail land on
   // #<milestoneId>. Read once at mount rather than in an effect: the first
@@ -53,6 +62,17 @@ export default function ObligationsPage() {
       ? null
       : window.location.hash.replace("#", "") || null,
   );
+
+  // Step 1.2's questions: open until the step is done, then folded behind
+  // "Change the places and answers". A link to them opens them.
+  const [questionsOpen, setQuestionsOpen] = useState<boolean | null>(() =>
+    selectedId === PLACES_ANCHOR || selectedId === QUESTIONS_ANCHOR ? true : null,
+  );
+  // Folded or not is decided by the state the page opened with, so the
+  // questions do not fold away under the cursor when the last one is saved.
+  const [openedDone, setOpenedDone] = useState<boolean | null>(null);
+  if (pathSteps && openedDone === null) setOpenedDone(stepDone);
+  const showQuestions = questionsOpen ?? !openedDone;
 
   const [jurisdictionFilter, setJurisdictionFilter] = useState<string | null>(null);
   // The dashboard's "duties already apply to you" line lands on #group-past,
@@ -114,6 +134,66 @@ export default function ObligationsPage() {
         <p className="text-sm text-muted-foreground mt-1">{t("subtitle")}</p>
       </div>
 
+      {/* Step 1.2 is done here: the places and the screening questions,
+          the same answers as in Settings. */}
+      {pathSteps && (
+        <section aria-labelledby="step-questions-title" className="space-y-3">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <div className="min-w-0">
+              <h2 id="step-questions-title" className="text-base font-semibold">
+                {t("questions.title")}
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                {stepDone ? (
+                  <span className="inline-flex items-center gap-1.5">
+                    <CheckCircle2 className="size-4 shrink-0 text-primary" aria-hidden="true" />
+                    {t("questions.allAnswered")}
+                  </span>
+                ) : (
+                  t("questions.lead")
+                )}
+              </p>
+            </div>
+            {stepDone && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="self-start sm:self-auto"
+                aria-expanded={showQuestions}
+                aria-controls="step-questions"
+                onClick={() => setQuestionsOpen(!showQuestions)}
+              >
+                {showQuestions ? t("questions.hide") : t("questions.show")}
+                <ChevronDown
+                  className={["w-4 h-4 ml-1.5 motion-safe:transition-transform", showQuestions ? "rotate-180" : ""].join(" ")}
+                  aria-hidden="true"
+                />
+              </Button>
+            )}
+          </div>
+          {showQuestions && orgId && (
+            <div id="step-questions" className="space-y-4">
+              <div id={PLACES_ANCHOR} className="scroll-mt-24">
+                <PlacesCard organizationId={orgId} canWrite={canWrite} />
+              </div>
+              <div id={QUESTIONS_ANCHOR} className="scroll-mt-24 space-y-4">
+                <ApplicabilityCard
+                  organizationId={orgId}
+                  canWrite={canWrite}
+                  showResult={false}
+                  idPrefix="applicability-step"
+                />
+                <CaliforniaScreeningCard organizationId={orgId} canWrite={canWrite} />
+                <RegimeScreeningCard organizationId={orgId} canWrite={canWrite} />
+              </div>
+            </div>
+          )}
+        </section>
+      )}
+
+      {/* The highlight of the step: what applies, why, and when. */}
+      {orgId && <AppliesPanel organizationId={orgId} />}
+
       {/* Scope banner: declared jurisdictions, or an honest admission that we
           cannot scope US obligations until someone answers. */}
       {data && !data.jurisdictionsDeclared ? (
@@ -123,11 +203,11 @@ export default function ObligationsPage() {
             <p className="text-sm text-muted-foreground flex-1">
               {t("jurisdictionsUndeclared")}
             </p>
-            <Link href="/governance/settings">
-              <Button size="sm" variant="outline">
+            <a href={`#${PLACES_ANCHOR}`} onClick={() => setQuestionsOpen(true)}>
+              <Button size="sm">
                 {t("declareJurisdictions")}
               </Button>
-            </Link>
+            </a>
           </CardContent>
         </Card>
       ) : data && data.assumedJurisdictions.length > 0 ? (
@@ -138,9 +218,13 @@ export default function ObligationsPage() {
               .map((j) => tjur(`option.${j}`))
               .join(" · "),
           })}
-          <Link href="/governance/settings" className="text-primary hover:underline">
+          <a
+            href={`#${PLACES_ANCHOR}`}
+            onClick={() => setQuestionsOpen(true)}
+            className="text-primary underline underline-offset-2 hover:text-primary/80"
+          >
             {t("changePlaces")}
-          </Link>
+          </a>
         </p>
       ) : null}
 
@@ -148,11 +232,13 @@ export default function ObligationsPage() {
         <Card className="border-warning bg-warning/10 text-foreground" data-testid="obligations-screening-prompt">
           <CardContent className="p-4 flex flex-col sm:flex-row sm:items-center gap-3">
             <p className="text-sm text-muted-foreground flex-1">{t("screeningMissing")}</p>
-            <Link href={`/governance/settings#${SCREENING_ANCHOR}`}>
-              <Button size="sm" variant="outline">
-                {t("answerScreening")}
+            <a href={`#${QUESTIONS_ANCHOR}`} onClick={() => setQuestionsOpen(true)}>
+              <Button size="sm">
+                {screeningQuestionsOpen > 0
+                  ? t("answerQuestions", { count: screeningQuestionsOpen })
+                  : t("answerScreening")}
               </Button>
-            </Link>
+            </a>
           </CardContent>
         </Card>
       )}
@@ -163,12 +249,12 @@ export default function ObligationsPage() {
         <EmptyStep
           action={
             data?.jurisdictionsDeclared && (
-              <Link href="/governance/settings">
+              <a href={`#${PLACES_ANCHOR}`} onClick={() => setQuestionsOpen(true)}>
                 <Button>
                   <MapPin className="w-4 h-4 mr-2" />
                   {tg("emptyStep.obligationsAction")}
                 </Button>
-              </Link>
+              </a>
             )
           }
         >
@@ -185,6 +271,19 @@ export default function ObligationsPage() {
           {/* The timeline plots only what is ahead and reaches this
               organisation. Spending the horizontal room on a passed date, or
               on a rule that does not apply, buys the reader nothing. */}
+          {plotted.length > 0 && (
+            <div className="space-y-1">
+              <p className="text-sm text-muted-foreground" data-testid="timeline-lead">
+                <span className="hidden md:inline">{t("timelineLead")}</span>
+                <span className="md:hidden">{t("timelineLeadVertical")}</span>
+              </p>
+              {data?.jurisdictionsDeclared && data.assumedJurisdictions.length === 1 && (
+                <p className="text-sm text-muted-foreground">
+                  {t("singlePlace", { place: tjur(`option.${data.assumedJurisdictions[0]}`) })}
+                </p>
+              )}
+            </div>
+          )}
           {plotted.length > 0 && (
             <ObligationsTimeline
               rows={plotted}

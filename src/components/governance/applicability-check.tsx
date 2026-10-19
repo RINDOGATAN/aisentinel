@@ -246,9 +246,15 @@ export function ApplicabilityResult({
 export function ApplicabilityCard({
   organizationId,
   canWrite,
+  showResult = true,
+  idPrefix = "applicability-settings",
 }: {
   organizationId: string;
   canWrite: boolean;
+  /** False on step 1.2's page, which shows the result in its own panel. */
+  showResult?: boolean;
+  /** Keeps radio names apart when the card appears on another page. */
+  idPrefix?: string;
 }) {
   const t = useTranslations("applicability");
   const utils = trpc.useUtils();
@@ -295,16 +301,18 @@ export function ApplicabilityCard({
             autosave.push(next);
           }}
           disabled={!canWrite}
-          idPrefix="applicability-settings"
+          idPrefix={idPrefix}
         />
-        <div className="rounded-lg border border-border p-4">
-          <ApplicabilityResult
-            jurisdictions={
-              (org?.operatingJurisdictions as JurisdictionId[] | undefined) ?? data.jurisdictions
-            }
-            answers={answers}
-          />
-        </div>
+        {showResult && (
+          <div className="rounded-lg border border-border p-4">
+            <ApplicabilityResult
+              jurisdictions={
+                (org?.operatingJurisdictions as JurisdictionId[] | undefined) ?? data.jurisdictions
+              }
+              answers={answers}
+            />
+          </div>
+        )}
       </CardContent>
     </Card>
   );

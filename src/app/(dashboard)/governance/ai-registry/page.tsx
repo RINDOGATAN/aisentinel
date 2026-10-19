@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { PageHeader } from "@/components/governance/page-header";
 import { EmptyStep } from "@/components/guided/empty-step";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -52,6 +52,7 @@ import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
 import { formatRelativeTime } from "@/lib/utils";
 import { STATUS_OUTLINE } from "@/components/ui/status-note";
 import { systemReference } from "@/lib/system-reference";
+import { RecordCard, RecordGrid } from "@/components/governance/record-list";
 import { useViewDepartment } from "@/lib/use-view-department";
 
 const statusColors: Record<string, string> = {
@@ -320,74 +321,57 @@ export default function AIRegistryPage() {
             <ListPageSkeleton />
           ) : systems.length > 0 ? (
             <>
-              <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
+              <RecordGrid>
                 {systems.map((system) => {
-                  const Icon = techniqueIcons[system.technique] || Cpu;
                   const riskLevel = system.riskClassification?.riskLevel;
-
                   return (
-                    <Link key={system.id} href={`/governance/ai-registry/${system.id}`}>
-                      <Card className="hover:border-primary/50 transition-colors cursor-pointer h-full">
-                        <CardHeader className="pb-3 p-4 sm:p-6 sm:pb-3">
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-primary/10 flex items-center justify-center shrink-0">
-                              <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-                            </div>
-                            <div className="flex gap-1.5 flex-wrap justify-end">
-                              {/* A record the worked example created says so
-                                  wherever it appears, so nobody mistakes an
-                                  invented system for one of their own. */}
-                              {sampleSystemIds.has(system.id) && <SampleBadge />}
-                              {!sampleSystemIds.has(system.id) && <TemplateBadge metadata={system.metadata} />}
-                              <Badge
-                                variant="outline"
-                                className={`text-xs ${statusColors[system.status] || ""}`}
-                              >
-                                {statusLabel(system.status)}
-                              </Badge>
-                              {riskLevel && (
-                                <RiskTierBadge level={riskLevel} className="text-xs" />
-                              )}
-                            </div>
-                          </div>
-                          <CardTitle className="mt-3 text-base sm:text-lg line-clamp-1">
-                            {system.name}
-                          </CardTitle>
-                          {system.description && (
-                            <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">
-                              {system.description}
-                            </p>
+                    <RecordCard
+                      key={system.id}
+                      href={`/governance/ai-registry/${system.id}`}
+                      icon={techniqueIcons[system.technique] || Cpu}
+                      heading={systemReference(system.number)}
+                      title={system.name}
+                      description={system.description}
+                      badges={
+                        <>
+                          {/* A record the worked example created says so
+                              wherever it appears, so nobody mistakes an
+                              invented system for one of their own. */}
+                          {sampleSystemIds.has(system.id) && <SampleBadge />}
+                          {!sampleSystemIds.has(system.id) && <TemplateBadge metadata={system.metadata} />}
+                          <Badge variant="outline" className={`text-xs ${statusColors[system.status] || ""}`}>
+                            {statusLabel(system.status)}
+                          </Badge>
+                          {riskLevel && <RiskTierBadge level={riskLevel} className="text-xs" />}
+                        </>
+                      }
+                      tags={
+                        <>
+                          <Badge variant="outline" className="text-xs">
+                            {techniqueLabelKeys[system.technique] ? tc(techniqueLabelKeys[system.technique]) : system.technique}
+                          </Badge>
+                          <Badge variant="outline" className="text-xs">
+                            {/* The role's long name ("según el RIA") is in the filter above. */}
+                            {system.role === "PROVIDER" ? tc("roleProviderShort") : roleLabel(system.role)}
+                          </Badge>
+                          {system.businessUnit && (
+                            <Badge variant="outline" className="text-xs">
+                              {system.businessUnit.name}
+                            </Badge>
                           )}
-                        </CardHeader>
-                        <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
-                          <div className="flex flex-wrap gap-1.5 mb-3">
-                            <Badge variant="outline" className="text-xs">
-                              {techniqueLabelKeys[system.technique] ? tc(techniqueLabelKeys[system.technique]) : system.technique}
-                            </Badge>
-                            <Badge variant="outline" className="text-xs">
-                              {roleLabel(system.role)}
-                            </Badge>
-                            {system.businessUnit && (
-                              <Badge variant="outline" className="text-xs">
-                                {system.businessUnit.name}
-                              </Badge>
-                            )}
-                          </div>
-                          <div className="flex justify-between text-xs text-muted-foreground">
-                            <span>{t("countModels", { count: system._count?.models ?? 0 })}</span>
-                            <span>{t("countDataSources", { count: system._count?.dataSources ?? 0 })}</span>
-                          </div>
-                          <p className="text-xs text-muted-foreground mt-2">
-                            {t("reference", { reference: systemReference(system.id) })}
-                            {" · "}
-                            {tc("updatedWhen", { when: formatRelativeTime(system.updatedAt, locale) })}
-                          </p>
-                        </CardContent>
-                      </Card>
-                    </Link>
+                        </>
+                      }
+                      details={
+                        <div className="flex justify-between gap-2">
+                          <span>{t("countModels", { count: system._count?.models ?? 0 })}</span>
+                          <span>{t("countDataSources", { count: system._count?.dataSources ?? 0 })}</span>
+                        </div>
+                      }
+                      footer={tc("updatedWhen", { when: formatRelativeTime(system.updatedAt, locale) })}
+                    />
                   );
                 })}
-              </div>
+              </RecordGrid>
               {hasNextPage && (
                 <div className="flex justify-center mt-4">
                   <Button

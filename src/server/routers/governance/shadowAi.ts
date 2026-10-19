@@ -12,6 +12,7 @@ import { TRPCError } from "@trpc/server";
 import { hasShadowAiAccess } from "@/server/services/licensing/entitlement";
 import { assertPilotRoom, pilotLocale } from "@/server/services/pilot/caps";
 import type { ShadowAIStatus } from "@prisma/client";
+import { nextSystemNumber } from "../../services/ai-system/number";
 
 const STATUS_VALUES = ["DISCOVERED", "UNDER_REVIEW", "APPROVED", "PROHIBITED", "REGISTERED"] as const;
 
@@ -152,7 +153,7 @@ export const shadowAiRouter = createTRPCRouter({
       const registeredSystem = report.registeredSystemId
         ? await ctx.prisma.aISystem.findFirst({
             where: { id: report.registeredSystemId, organizationId: ctx.organization.id },
-            select: { id: true, name: true },
+            select: { id: true, name: true, number: true },
           })
         : null;
 
@@ -363,6 +364,7 @@ export const shadowAiRouter = createTRPCRouter({
         const system = await tx.aISystem.create({
           data: {
             organizationId: ctx.organization.id,
+            number: await nextSystemNumber(tx, ctx.organization.id),
             // A department-limited member's system stays in their own view.
             businessUnitId:
               defaultBusinessUnitId(await loadBusinessUnitScope(ctx.prisma, ctx.membership)) ?? undefined,

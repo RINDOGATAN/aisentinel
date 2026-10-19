@@ -38,15 +38,15 @@ export interface DocumentFacts extends PathCounts {
   policiesUnconfirmed: number;
   /** Systems with at least one approved assessment. */
   systemsWithApprovedAssessment: number;
-  /** AI models recorded on the organisation's systems. */
+  /** AI models recorded on the organization's systems. */
   models: number;
   /** Sensitive-data analyses not yet completed. */
   sensitiveOpen: number;
-  /** AI assistance is switched on for the organisation and an engine is configured. */
+  /** AI assistance is switched on for the organization and an engine is configured. */
   aiAssistOn: boolean;
   /**
    * Finished deliverables behind the licence on this deployment and not held
-   * by this organisation (src/config/premium-showcase.ts). Never on the
+   * by this organization (src/config/premium-showcase.ts). Never on the
    * self-hosted kit or the hosted pilot.
    */
   impactAssessmentLocked: boolean;
@@ -116,8 +116,8 @@ export interface DocumentEntry {
   /** The page where the document is produced. Null for a document not in AI Sentinel yet. */
   href: string | null;
   /**
-   * The organisation-wide downloads, by format, when there are any (the
-   * organisation id is added where they are used). Documents produced per
+   * The organization-wide downloads, by format, when there are any (the
+   * organization id is added where they are used). Documents produced per
    * record (one system, one agent, one framework) have none: the panel opens
    * their page.
    */
@@ -129,7 +129,7 @@ export interface DocumentEntry {
   needs: string;
   /** The state rule in plain words. */
   rule: string;
-  /** Only for some organisations: left out of the register while this is false. */
+  /** Only for some organizations: left out of the register while this is false. */
   appliesWhen?: (facts: DocumentFacts) => boolean;
   /** The rule itself. Absent for a document not in AI Sentinel yet. */
   evaluate?: (facts: DocumentFacts) => DocumentStatus;
@@ -193,7 +193,7 @@ export const DOCUMENT_REGISTER: readonly DocumentEntry[] = [
     formats: ["md", "ics"],
     packed: true,
     needs: "At least one declared jurisdiction (where the organization operates).",
-    rule: "Needs a jurisdiction when none is declared. Draft while a screening shown to the organisation is unanswered (src/config/obligation-screenings.ts) or the places were copied from another client and not saved again here; ready otherwise.",
+    rule: "Needs a jurisdiction when none is declared. Draft while a screening shown to the organization is unanswered (src/config/obligation-screenings.ts) or the places were copied from another client and not saved again here; ready otherwise.",
     evaluate: (f) =>
       f.jurisdictions === 0
         ? needs("jurisdiction")
@@ -483,7 +483,7 @@ export const DOCUMENT_REGISTER: readonly DocumentEntry[] = [
     href: null,
     formats: [],
     packed: false,
-    needs: "An organisation-wide screen of prohibited practices (Art. 5); today the check runs per system inside risk classification.",
+    needs: "An organization-wide screen of prohibited practices (Art. 5); today the check runs per system inside risk classification.",
     rule: "Not in AI Sentinel yet.",
   },
   {
@@ -506,7 +506,7 @@ export const DOCUMENT_REGISTER: readonly DocumentEntry[] = [
   },
 ];
 
-/** The register for this organisation: a document that does not concern it is left out. */
+/** The register for this organization: a document that does not concern it is left out. */
 export function registerFor(facts: DocumentFacts): DocumentEntry[] {
   return DOCUMENT_REGISTER.filter((d) => !d.appliesWhen || d.appliesWhen(facts));
 }
@@ -522,7 +522,7 @@ export interface EvaluatedDocument {
   status: DocumentStatus;
 }
 
-/** Every document that concerns this organisation, with its state, in register order. */
+/** Every document that concerns this organization, with its state, in register order. */
 export function evaluateRegister(facts: DocumentFacts): EvaluatedDocument[] {
   return registerFor(facts).map((entry) => ({ id: entry.id, status: documentStatus(entry, facts) }));
 }

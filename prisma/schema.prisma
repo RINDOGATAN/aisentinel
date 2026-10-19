@@ -442,6 +442,9 @@ enum DataSourceType {
 model AISystem {
   id                    String             @id @default(cuid())
   organizationId        String
+  /// The system's number within the organization (1, 2, 3...), shown as
+  /// "AIS-001". Assigned on create, never reused (src/server/services/ai-system/number.ts).
+  number                Int?
   name                  String
   description           String?            @db.Text
   technique             AITechnique

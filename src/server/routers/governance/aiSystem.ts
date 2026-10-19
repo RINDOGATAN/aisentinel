@@ -50,6 +50,7 @@ import {
   buildAnnexIvSystemPrompt,
   buildAnnexIvUserPrompt,
 } from "../../services/ai/prompts/annex-iv";
+import { fillMissingSystemNumbers, nextSystemNumber } from "../../services/ai-system/number";
 
 /**
  * A department a system is assigned to must belong to the same organization, and
@@ -138,6 +139,8 @@ export const aiSystemRouter = createTRPCRouter({
         ...(and.length ? { AND: and } : {}),
       };
 
+      // Rows from a seed or an older release get their number on first read.
+      await fillMissingSystemNumbers(ctx.prisma, ctx.organization.id);
       const items = await ctx.prisma.aISystem.findMany({
         where,
         take: input.limit + 1,
@@ -169,6 +172,7 @@ export const aiSystemRouter = createTRPCRouter({
       // rather than to another department's record.
       const scope = await loadBusinessUnitScope(ctx.prisma, ctx.membership);
       const scopeWhere = businessUnitScopeWhere(scope) ?? {};
+      await fillMissingSystemNumbers(ctx.prisma, ctx.organization.id);
       const system = await ctx.prisma.aISystem.findFirst({
         where: { id: input.id, organizationId: ctx.organization.id, ...scopeWhere },
         include: {
@@ -297,6 +301,7 @@ export const aiSystemRouter = createTRPCRouter({
       const system = await ctx.prisma.aISystem.create({
         data: {
           organizationId: ctx.organization.id,
+          number: await nextSystemNumber(ctx.prisma, ctx.organization.id),
           name: input.name,
           description: input.description,
           technique: input.technique,

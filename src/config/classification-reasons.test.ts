@@ -11,6 +11,13 @@ describe("standard classification reasons", () => {
     }
   });
 
+  it("offers the Art. 6(3) exception under both the limited and the minimal level", () => {
+    for (const level of ["LIMITED", "MINIMAL"]) {
+      expect(reasonsFor(level).map((r) => r.id), level).toContain("art6-3-exception");
+    }
+    expect(reasonsFor("HIGH").map((r) => r.id)).not.toContain("art6-3-exception");
+  });
+
   it("cites an article of the Act in every reason, in both languages", () => {
     for (const r of CLASSIFICATION_REASONS) {
       expect(r.en, r.id).toMatch(/Art\. \d/);

@@ -719,9 +719,11 @@ export default function AISystemDetailPage() {
         title={system.name}
         meta={
           <>
-            <Badge variant="outline" className="font-mono">
-              {t("reference", { reference: systemReference(system.id) })}
-            </Badge>
+            {systemReference(system.number) && (
+              <Badge variant="outline" className="font-mono">
+                {t("reference", { reference: systemReference(system.number) ?? "" })}
+              </Badge>
+            )}
             {sampleSystemIds.has(system.id) ? (
               <SampleBadge />
             ) : (

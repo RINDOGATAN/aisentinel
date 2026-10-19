@@ -19,6 +19,7 @@
 import type { AIRiskLevel, PrismaClient } from "@prisma/client";
 import type { ImportRow } from "@/lib/inventory-import";
 import { attachRegimeMappings } from "@/server/services/scope/attach-regimes";
+import { nextSystemNumber } from "@/server/services/ai-system/number";
 
 export interface ImportResult {
   created: number;
@@ -108,6 +109,7 @@ export async function importInventoryRows(
     const system = await prisma.aISystem.create({
       data: {
         organizationId,
+        number: await nextSystemNumber(prisma, organizationId),
         name: row.name,
         description: row.description,
         purpose: row.purpose,

@@ -1614,7 +1614,9 @@
     "personaBusinessUser": "Para mi organización",
     "personaConsultant": "Para organizaciones cliente",
     "switchTo": "Cambiar a: {persona}",
-    "switched": "Tipo de cuenta actualizado."
+    "switched": "Tipo de cuenta actualizado.",
+    "advancedTitle": "Avanzado",
+    "advancedDescription": "Perfil, tipo de cuenta, piloto alojado, datos de ejemplo, elementos de plantilla, ajustes de IA, suspensión por litigio y eliminación."
   },
   "clients": {
     "addOrganization": "Añadir organización",
@@ -6491,5 +6493,13 @@
       "warning": "¿Eliminar este control de supervisión? Se eliminan con él las decisiones registradas. No se puede deshacer.",
       "deleted": "Control de supervisión eliminado."
     }
+  },
+  "autosave": {
+    "idle": "Se guarda al elegir",
+    "saving": "Guardando",
+    "saved": "Guardado",
+    "error": "No se ha guardado",
+    "retry": "Volver a intentarlo",
+    "leaveWarning": "Has escrito cambios que no se han guardado. ¿Quieres salir de esta página y perderlos?"
   }
 }

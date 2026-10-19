@@ -25,6 +25,7 @@
   --color-chart-1: var(--chart-1);
   --color-ring: var(--ring);
   --color-input: var(--input);
+  --color-input-fill: var(--input-fill);
   --color-border: var(--border);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
@@ -95,7 +96,14 @@
   --info: #8ab6d6;
   --info-foreground: #1a1a1a;
   --border: #383838;
-  --input: #2e2e2e;
+  /* Form controls. --input is the edge of every text field, select, tick box
+     and outline button: at least 3:1 against the page, a card, the muted
+     surface and the field's own fill (WCAG 1.4.11). --input-fill is the inside
+     of an empty field, so it reads as a box before anything is typed; body and
+     placeholder text both reach 4.5:1 on it. src/app/control-contrast.test.ts
+     reads these values from this file and fails if they drift. */
+  --input: #858585;
+  --input-fill: #303030;
   --ring: #f5a623;
   --chart-1: #f5a623;
   --chart-2: #f7b84d;
@@ -145,7 +153,8 @@
   --info: #8ab6d6;
   --info-foreground: #1a1a1a;
   --border: #383838;
-  --input: #2e2e2e;
+  --input: #858585;
+  --input-fill: #303030;
   --ring: #f5a623;
   --chart-1: #f5a623;
   --chart-2: #f7b84d;
@@ -221,7 +230,7 @@
     box-shadow: var(--shadow-hover);
   }
   .input-brutal {
-    @apply bg-card border border-border text-foreground px-4 py-3 rounded-lg;
+    @apply bg-input-fill border border-input text-foreground px-4 py-3 rounded-lg;
     @apply focus:border-primary focus:outline-none;
   }
   .tab-brutal {

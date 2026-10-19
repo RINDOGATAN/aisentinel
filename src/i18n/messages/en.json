@@ -1614,7 +1614,9 @@
     "personaBusinessUser": "For my organization",
     "personaConsultant": "For client organizations",
     "switchTo": "Switch to: {persona}",
-    "switched": "Account type updated."
+    "switched": "Account type updated.",
+    "advancedTitle": "Advanced",
+    "advancedDescription": "Profile, account type, the hosted pilot, sample data, template items, AI settings, legal hold and deletion."
   },
   "clients": {
     "addOrganization": "Add organization",
@@ -6491,5 +6493,13 @@
       "warning": "Delete this oversight gate? The decisions recorded on it are deleted with it. This cannot be undone.",
       "deleted": "Oversight gate deleted."
     }
+  },
+  "autosave": {
+    "idle": "Saves as you choose",
+    "saving": "Saving",
+    "saved": "Saved",
+    "error": "Not saved",
+    "retry": "Try again",
+    "leaveWarning": "You have typed changes that are not saved. Leave this page and lose them?"
   }
 }

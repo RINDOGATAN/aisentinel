@@ -28,6 +28,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { trpc } from "@/lib/trpc";
+import { useUnsavedChangesWarning } from "@/lib/use-unsaved-changes";
 import { blockedEmailMessage, isBlockedAccountEmail } from "@/lib/email-policy";
 
 const ROLES = ["OWNER", "ADMIN", "AI_OFFICER", "MEMBER", "VIEWER"] as const;
@@ -57,6 +58,8 @@ export function TeamCard({
   const locale = useLocale();
   // Set when the e-mail policy refuses the address; shown under the field.
   const [refused, setRefused] = useState(false);
+  // An address typed but not added yet is lost on leaving: warn first.
+  useUnsavedChangesWarning(email.trim() !== "");
 
   const isOwner = currentRole === "OWNER";
   const canManage = currentRole === "OWNER" || currentRole === "ADMIN";

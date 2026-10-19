@@ -21,6 +21,9 @@ AGPL-3.0-or-later (see [LICENSE](LICENSE)).
 | [lucide-react](https://lucide.dev) | Icon set | ISC |
 | [next-intl](https://next-intl.dev) | Internationalization (EN/ES) | MIT |
 | [@react-pdf/renderer](https://react-pdf.org) | PDF report generation | MIT |
+| [docx](https://github.com/dolanmiu/docx) | Word (.docx) policy download | MIT |
+| [mammoth](https://github.com/mwilliamson/mammoth.js) | Text from an imported Word policy | BSD-2-Clause |
+| [unpdf](https://github.com/unjs/unpdf) | Text from an imported PDF policy | MIT |
 | [Tailwind CSS](https://tailwindcss.com) + @tailwindcss/postcss | Styling | MIT |
 | [TanStack Query](https://tanstack.com/query) | Client data fetching | MIT |
 | [Zod](https://zod.dev) | Schema validation | MIT |

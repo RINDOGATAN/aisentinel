@@ -36,6 +36,7 @@ import {
   type TemplateLocale,
 } from "@/config/client-template";
 import { makeScrubber, type ScrubFlag, type Scrubber } from "@/lib/client-template/scrub";
+import { nextPolicyNumber } from "@/server/services/policy/number";
 
 type Db = PrismaClient | Prisma.TransactionClient;
 
@@ -452,6 +453,7 @@ export async function applyClientTemplate(
     const policy = await db.aIPolicy.create({
       data: {
         organizationId,
+        number: await nextPolicyNumber(db, organizationId),
         title: p.title,
         type: p.type,
         description: p.description,

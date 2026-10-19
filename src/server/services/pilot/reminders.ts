@@ -41,6 +41,7 @@ import type { PrismaClient } from "@prisma/client";
 import { brand } from "@/config/brand";
 import { logger } from "@/lib/logger";
 import { mailFrom } from "@/lib/mail-from";
+import { PILOT_ANCHOR } from "@/lib/settings-anchors";
 import { isPaidPlan } from "@/server/services/pilot/caps";
 import {
   hostedPilotActive,
@@ -180,7 +181,7 @@ export interface PilotReminderMailer {
 
 /** Where the export is: the Settings page, whose pilot card lists it. */
 function settingsUrl(): string {
-  return `${brand.siteUrl.replace(/\/$/, "")}/governance/settings`;
+  return `${brand.siteUrl.replace(/\/$/, "")}/governance/settings#${PILOT_ANCHOR}`;
 }
 
 /** The parts of one reminder, before layout. */

@@ -15,10 +15,12 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { AlertTriangle, Globe, Loader2 } from "lucide-react";
+import { Globe } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { CARD_HEADER_WITH_STATUS, CardSaveStatus } from "@/components/ui/save-status";
+import { Instruction } from "@/components/ui/instruction";
 import { trpc } from "@/lib/trpc";
+import { useAutoSave } from "@/lib/use-auto-save";
 import { JurisdictionPicker } from "@/components/governance/jurisdiction-picker";
 import type { JurisdictionId } from "@/config/jurisdictions";
 
@@ -30,61 +32,55 @@ export function PlacesCard({
   canWrite: boolean;
 }) {
   const tj = useTranslations("jurisdictions");
-  const tc = useTranslations("common");
   const utils = trpc.useUtils();
   const { data: org } = trpc.organization.getById.useQuery({ organizationId });
 
-  // Null means "untouched: show what the server has". Derived rather than
-  // synced into an effect, so the two never fight after a save.
+  // Null means "untouched: show what the server has". The edit is kept after
+  // it saves, so a tick made while the previous one is on its way is never
+  // shown undone. Each tick saves on its own, as in Settings.
   const [edited, setEdited] = useState<JurisdictionId[] | null>(null);
   const saved = (org?.operatingJurisdictions ?? []) as JurisdictionId[];
   const selection = edited ?? saved;
-  const dirty = edited !== null;
 
   const save = trpc.organization.setJurisdictions.useMutation({
     onSuccess: () => {
-      setEdited(null);
-      toast.success(tj("saved"));
       void utils.organization.getById.invalidate();
       void utils.organization.getDashboardStats.invalidate();
+      void utils.programPath.status.invalidate();
       void utils.obligations.getObligations.invalidate();
       void utils.regimes.getApplicability.invalidate();
       void utils.admt.getOrgScope.invalidate();
     },
-    onError: (err) => toast.error(err.message),
   });
+  const autosave = useAutoSave<JurisdictionId[]>(
+    (jurisdictions) => save.mutateAsync({ organizationId, jurisdictions }),
+    { delayMs: 500, onError: (err) => toast.error(err instanceof Error ? err.message : String(err)) },
+  );
 
   const declared = saved.length > 0;
 
   return (
-    <Card>
-      <CardHeader>
+    <Card data-testid="step-jurisdictions">
+      <CardHeader className={CARD_HEADER_WITH_STATUS}>
         <CardTitle className="text-base flex items-center gap-2">
           <Globe className="w-4 h-4 text-primary" aria-hidden="true" />
           {tj("title")}
         </CardTitle>
+        {canWrite && (
+          <CardSaveStatus status={autosave.status} onRetry={autosave.retry} testId="step-jurisdictions-save-status" />
+        )}
         <CardDescription>{tj("description")}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {org && !declared && (
-          <div className="flex items-start gap-2 rounded-md border border-warning bg-warning/10 p-3 text-foreground">
-            <AlertTriangle className="w-4 h-4 text-warning shrink-0 mt-0.5" aria-hidden="true" />
-            <p className="text-xs text-muted-foreground">{tj("undeclaredHint")}</p>
-          </div>
-        )}
-        <JurisdictionPicker value={selection} onChange={setEdited} disabled={!canWrite || save.isPending} />
-        {canWrite && (
-          <div className="flex justify-end">
-            <Button
-              size="sm"
-              disabled={!dirty || save.isPending}
-              onClick={() => save.mutate({ organizationId, jurisdictions: selection })}
-            >
-              {save.isPending && <Loader2 className="w-3 h-3 mr-2 animate-spin" />}
-              {tc("save")}
-            </Button>
-          </div>
-        )}
+        {org && !declared && <Instruction tone="attention">{tj("undeclaredHint")}</Instruction>}
+        <JurisdictionPicker
+          value={selection}
+          onChange={(next) => {
+            setEdited(next);
+            autosave.push(next);
+          }}
+          disabled={!canWrite}
+        />
       </CardContent>
     </Card>
   );

@@ -125,7 +125,7 @@ test("a new user's first session, end to end", async ({ page }, testInfo) => {
   });
 
   await step(page, watch, "the first-run screens: persona, then the organisation", async () => {
-    await expect(page.getByText("How will you use AI SENTINEL?")).toBeVisible();
+    await expect(page.getByText("Who will AI SENTINEL be used for?")).toBeVisible();
     await page.getByRole("button", { name: "Continue" }).click();
     await page.locator("#org-name").fill(`Smoke firm ${run}`);
     await page.getByRole("button", { name: "Create organization and continue" }).click();

@@ -15,7 +15,7 @@ import type { PathCounts } from "@/components/guided/path-config";
 import { features } from "@/config/features";
 import { UNCONFIRMED_WHERE } from "@/server/services/provenance/summary";
 import { isAIConfigured } from "@/server/services/ai/llm-door";
-import { postureLane } from "@/server/services/ai/posture";
+import { isAiBlockedForUsJurisdiction, postureLane } from "@/server/services/ai/posture";
 import { checkShowcaseAccess } from "@/server/services/licensing/showcase-gate";
 import { loadPathCounts } from "./path-counts";
 
@@ -51,6 +51,7 @@ export async function loadDocumentFacts(
   ]);
 
   const posture = aiSettings?.posture ?? "off";
+  const aiUsBlocked = posture !== "off" && (await isAiBlockedForUsJurisdiction(prisma, organizationId));
   return {
     ...counts,
     policiesApproved,
@@ -58,7 +59,8 @@ export async function loadDocumentFacts(
     systemsWithApprovedAssessment,
     models,
     sensitiveOpen,
-    aiAssistOn: features.aiAssistEnabled && posture !== "off" && isAIConfigured(postureLane(posture)),
+    aiAssistOn:
+      features.aiAssistEnabled && posture !== "off" && !aiUsBlocked && isAIConfigured(postureLane(posture)),
     impactAssessmentLocked: !impactAccess.allowed,
     programReportLocked: !reportAccess.allowed,
   };

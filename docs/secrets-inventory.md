@@ -61,6 +61,7 @@ reads "unknown" until the operator starts a rotation log; that gap is itself an 
 | `SKILL_SIGNING_PUBLIC_KEY` | C | Hosted; Kit | Public key that verifies offline skill licences. Public, but replacing it lets a forged licence verify, so treat changes as sensitive | Storefront key owner; only on a storefront key change | n/a |
 | `AISENTINEL_INSTANCE_ID` | C | Kit (optional) | Stable instance identity for licence activation limits | n/a | n/a |
 | `LLM_GATEWAY_URL`, `LLM_MODEL_ALIAS` (and the `_LOCAL`, `_EU`, `_US` variants) | C | Hosted; Kit (optional) | Which AI engine drafting calls go to | n/a | n/a |
+| `AI_ALLOW_US_JURISDICTIONS` | C | Hosted; Kit (optional) | `true` lifts the rule that makes AI unavailable to organizations declaring a US state; set it only where the engine's terms cover US state privacy laws | n/a | n/a |
 | `LLM_GATEWAY_KEY` (and the `_LOCAL`, `_EU`, `_US` variants) | S | Hosted; Kit (optional) | Spend on the configured AI gateway | Issuer (gateway operator) | unknown |
 | `ANTHROPIC_API_KEY` | S | Hosted; Kit (optional) | Spend on the Anthropic account when no gateway is set | Issuer (provider console) | unknown |
 | `BACKUP_PASSPHRASE` | S | Kit | Decrypts every backup taken by `deploy/sovereign/backup.sh`; losing it loses the backups | Install operator (rotation needs a fresh backup) | unknown |

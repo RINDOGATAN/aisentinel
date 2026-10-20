@@ -102,7 +102,7 @@ export function AiPostureCard({ organizationId, isAdmin }: AiPostureCardProps) {
           <Select
             value={posture}
             onValueChange={(v) => setSelected(v as Posture)}
-            disabled={!isAdmin || setPostureMutation.isPending}
+            disabled={!isAdmin || setPostureMutation.isPending || status.usJurisdictionBlocked}
           >
             <SelectTrigger>
               <SelectValue />
@@ -118,6 +118,9 @@ export function AiPostureCard({ organizationId, isAdmin }: AiPostureCardProps) {
               ))}
             </SelectContent>
           </Select>
+          {status.usJurisdictionBlocked && (
+            <p className="text-xs text-muted-foreground">{t("errors.ai_us_jurisdiction")}</p>
+          )}
           <p className="text-xs text-muted-foreground">
             {status.configured
               ? t("postureCard.engineConfigured", { provider: status.providerName ?? "—" })
@@ -164,7 +167,7 @@ export function AiPostureCard({ organizationId, isAdmin }: AiPostureCardProps) {
           </p>
         )}
 
-        {isAdmin && dirty && (
+        {isAdmin && dirty && !status.usJurisdictionBlocked && (
           <>
             <div className="flex items-start gap-2">
               <Checkbox

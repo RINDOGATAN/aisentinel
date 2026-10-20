@@ -222,7 +222,7 @@ describe("hosted pilot caps through the routers", () => {
     expect(entry).toBeDefined();
     expect(entry!.organizationId).toBe(org.id);
     expect(entry!.userId).toBe("user-a");
-    expect(entry!.changes).toEqual({ dpaVersion: "1.1", locale: "es", document: PILOT_DPA.href.es });
+    expect(entry!.changes).toEqual({ dpaVersion: "1.3", locale: "es", document: PILOT_DPA.href.es });
   });
 
   it("the editing-window switch: writes are refused with the two ways out, reads still work", async () => {

@@ -148,7 +148,7 @@ import { createInnerTRPCContext } from "@/server/trpc";
 import { organizationRouter } from "@/server/routers/governance/organization";
 import { aiSystemRouter } from "@/server/routers/governance/aiSystem";
 import { PILOT_CEILINGS } from "@/config/pilot";
-import { PILOT_DPA, PILOT_DPA_ACTION } from "@/config/pilot-dpa";
+import { PILOT_DPA, PILOT_DPA_ACTION, isAcceptedDpaVersion } from "@/config/pilot-dpa";
 
 const session = {
   user: { id: "user-a", email: "user-a@example.test", name: "user-a" },
@@ -422,12 +422,40 @@ describe("hosted pilot: the data processing agreement for organizations opened b
     await expect(member.getDpaStatus({ organizationId: "org-a" })).resolves.toEqual({ required: false, canAccept: false });
   });
 
-  it("the data processing agreement: an earlier version on record asks again; off the pilot nothing is asked", async () => {
+  it("the data processing agreement: a version before the minimum on record asks again; off the pilot nothing is asked", async () => {
     H.reset({ signedInDaysAgo: 1, systemCount: 0 });
     H.audit.push({ id: "old", organizationId: "org-a", action: PILOT_DPA_ACTION, changes: { dpaVersion: "1.0" } });
     const owner = organizationRouter.createCaller(ctx());
     await expect(owner.getDpaStatus({ organizationId: "org-a" })).resolves.toMatchObject({ required: true });
     vi.stubEnv("NEXT_PUBLIC_HOSTED_PILOT", "false");
     await expect(owner.getDpaStatus({ organizationId: "org-a" })).resolves.toEqual({ required: false, canAccept: false });
+  });
+
+  it.each(["1.1", "1.2"])("the data processing agreement: an acceptance of %s stays valid after a new version", async (v) => {
+    H.reset({ signedInDaysAgo: 1, systemCount: 0 });
+    H.audit.push({ id: "earlier", organizationId: "org-a", action: PILOT_DPA_ACTION, changes: { dpaVersion: v } });
+    const owner = organizationRouter.createCaller(ctx());
+    await expect(owner.getDpaStatus({ organizationId: "org-a" })).resolves.toMatchObject({ required: false });
+    await owner.acceptDpa({ organizationId: "org-a", accept: true });
+    expect(H.audit.filter((r) => r.action === PILOT_DPA_ACTION)).toHaveLength(1);
+  });
+
+  it("the data processing agreement: a new acceptance records 1.3", async () => {
+    H.reset({ signedInDaysAgo: 1, systemCount: 0 });
+    const owner = organizationRouter.createCaller(ctx());
+    await expect(owner.getDpaStatus({ organizationId: "org-a" })).resolves.toMatchObject({ required: true });
+    await owner.acceptDpa({ organizationId: "org-a", accept: true });
+    const entries = H.audit.filter((r) => r.action === PILOT_DPA_ACTION);
+    expect((entries[0].changes as Record<string, string>).dpaVersion).toBe("1.3");
+  });
+
+  it("the data processing agreement: versions are read numerically, malformed entries ignored", () => {
+    expect(isAcceptedDpaVersion("1.1")).toBe(true);
+    expect(isAcceptedDpaVersion("1.10")).toBe(true);
+    expect(isAcceptedDpaVersion("2.0")).toBe(true);
+    expect(isAcceptedDpaVersion("1.0")).toBe(false);
+    expect(isAcceptedDpaVersion(undefined)).toBe(false);
+    expect(isAcceptedDpaVersion("v1.2")).toBe(false);
+    expect(isAcceptedDpaVersion(1.2)).toBe(false);
   });
 });

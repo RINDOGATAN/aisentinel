@@ -30,7 +30,7 @@ import {
   keepPilotStartOnAccounts,
   keepPilotStartOnAllMembers,
 } from "../../services/pilot/account-trial";
-import { PILOT_DPA, PILOT_DPA_ACTION, PILOT_DPA_REQUIRED } from "@/config/pilot-dpa";
+import { PILOT_DPA, PILOT_DPA_ACTION, PILOT_DPA_REQUIRED, isAcceptedDpaVersion } from "@/config/pilot-dpa";
 
 /**
  * The plan fields only the operator reads: the operator's note and the payment
@@ -44,7 +44,7 @@ function withoutOperatorPlanFields<T extends { planNote?: unknown; planStripeSub
   return rest;
 }
 
-/** Whether the organization has an acceptance of the current agreement on record. */
+/** Whether the organization has a still-valid acceptance of the agreement on record (see PILOT_DPA.minimumAccepted). */
 async function hasAcceptedCurrentDpa(
   db: { auditLog: { findMany: (args: { where: { organizationId: string; action: string }; select: { changes: true } }) => Promise<Array<{ changes: unknown }>> } },
   organizationId: string
@@ -54,7 +54,7 @@ async function hasAcceptedCurrentDpa(
     select: { changes: true },
   });
   return entries.some(
-    (e) => (e.changes as { dpaVersion?: unknown } | null)?.dpaVersion === PILOT_DPA.version
+    (e) => isAcceptedDpaVersion((e.changes as { dpaVersion?: unknown } | null)?.dpaVersion)
   );
 }
 

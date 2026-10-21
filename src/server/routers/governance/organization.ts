@@ -24,6 +24,7 @@ import {
   pilotLocale,
 } from "../../services/pilot/caps";
 import { planTemplateRemoval, removeTemplateItems } from "../../services/template-items/remove";
+import { retainAnonymisedTrail } from "@/server/services/audit/retain-on-delete";
 import { hostedPilotActive } from "@/config/pilot";
 import {
   inheritedPilotStart,
@@ -332,13 +333,13 @@ export const organizationRouter = createTRPCRouter({
    * to chase. `organization-deletion.test.ts` reads the schema and fails on any
    * model that carries an organizationId without the cascade.
    *
-   * What survives is one row: the tombstone audit entry, written BEFORE the
-   * rows go and detached by the SET NULL on audit_logs, carrying the
-   * organization's id, name and slug so the deletion itself can be evidenced.
-   * The organization's own audit history goes with it. An audit trail still
-   * holding the field-level content of a deleted organization would make "it is
-   * really deleted" untrue, which matters most on the hosted pilot, where the
-   * promise is the reason someone tries the product at all.
+   * What survives is the audit trail, detached by the SET NULL on audit_logs
+   * so no tenant can read it: the tombstone entry, written BEFORE the rows go,
+   * carrying the organization's id, name and slug so the deletion itself can be
+   * evidenced; and the organization's own history with the personal data
+   * removed (who, from where, and the changed values; see
+   * services/audit/retain-on-delete.ts). A governance trail is evidence of what
+   * was decided and when, so it outlives the organization.
    */
   delete: orgWriteProcedure
     // The hosted pilot's read-only switch never closes this door: it is the
@@ -370,12 +371,13 @@ export const organizationRouter = createTRPCRouter({
           changes: { name: ctx.organization.name, slug: ctx.organization.slug },
         },
       });
-      // Everything else this organization wrote to the trail goes too: those
-      // rows hold its content, and SET NULL would otherwise leave them behind.
-      await ctx.prisma.auditLog.deleteMany({
-        where: { organizationId: ctx.organization.id, id: { not: tombstone.id } },
+      // The organisation's trail is kept with the personal data removed
+      // (services/audit/retain-on-delete.ts); the SET NULL on audit_logs then
+      // detaches it, so no tenant can read it.
+      await ctx.prisma.$transaction(async (tx) => {
+        await retainAnonymisedTrail(tx, ctx.organization.id, tombstone.id);
+        await tx.organization.delete({ where: { id: ctx.organization.id } });
       });
-      await ctx.prisma.organization.delete({ where: { id: ctx.organization.id } });
       return { deleted: true };
     }),
 

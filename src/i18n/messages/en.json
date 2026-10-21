@@ -1425,7 +1425,7 @@
     "title": "AI tools in use",
     "subtitle": "Shadow AI: the AI tools people in the organization use, from reports and reviews. Decide on each one and register the approved ones.",
     "premiumBadge": "Premium",
-    "enableShadowAi": "Enable Shadow AI Discovery",
+    "enableShadowAi": "Enable AI tools in use",
     "reportAiTool": "Report AI Tool",
     "statsTotalReports": "Total Reports",
     "statsDiscovered": "Reported",
@@ -1441,7 +1441,7 @@
     "statusProhibited": "Prohibited",
     "statusRegistered": "Registered",
     "gateSubtitle": "Find and triage the AI tools people use without approval.",
-    "gateTitle": "Shadow AI discovery",
+    "gateTitle": "AI tools in use",
     "gateBody": "Record the AI tools people use without approval, whether reported by staff or found in a review. Each one is matched against a catalog of common AI tools, triaged (under review, approved or prohibited), and approved tools can be registered in the AI inventory in one step.",
     "gateSkillDescription": "Record unapproved AI tools, match them against a catalog of common AI tools, triage them and register the approved ones in the inventory.",
     "tabAll": "All ({count})",
@@ -1781,8 +1781,8 @@
     "packageName": {
       "CONFORMITY": "Conformity Assessment",
       "BIAS_FAIRNESS": "Bias & Fairness Assessment",
-      "SHADOW_AI": "Shadow AI Discovery",
-      "VENDOR_CATALOG": "AI Vendor Catalog",
+      "SHADOW_AI": "AI tools in use",
+      "VENDOR_CATALOG": "Vendor catalog",
       "IMPACT_ASSESSMENT": "Impact assessment documents",
       "PROGRAM_REPORT": "Program report and pack"
     },
@@ -1974,7 +1974,7 @@
         "guideMyRole": "What is the organization's role?",
         "guideHighRisk": "What is high risk?",
         "guideWhichRules": "Which rules apply to me?",
-        "aiRegistry": "AI Registry",
+        "aiRegistry": "The organization's AI systems",
         "riskClassification": "Risk Classification",
         "assessments": "Assessments",
         "oversight": "Human Oversight",
@@ -1983,8 +1983,8 @@
         "compliance": "Compliance",
         "vendors": "Vendor Risk",
         "policies": "Policy Management",
-        "shadowAi": "Shadow AI Discovery",
-        "vendorCatalog": "AI Vendor Catalog",
+        "shadowAi": "AI tools in use",
+        "vendorCatalog": "Vendor catalog",
         "conformity": "Conformity Assessment",
         "biasFairness": "Bias & Fairness",
         "roles": "Roles & Permissions",
@@ -2058,7 +2058,7 @@
       "modulesTitle": "Modules",
       "modules": {
         "aiRegistry": {
-          "title": "AI Registry",
+          "title": "The organization's AI systems",
           "description": "Inventory all AI systems, models, and agents with lifecycle tracking and role assignment."
         },
         "riskClassification": {
@@ -2104,11 +2104,11 @@
       },
       "premiumModules": {
         "shadowAi": {
-          "title": "Shadow AI Discovery",
-          "description": "Discover unauthorized AI tools adopted by employees, against a catalog of {count} known tools. Self-reporting portal, triage workflow, and promotion to formal governance."
+          "title": "AI tools in use",
+          "description": "Record the AI tools people in the organization use, against a catalog of {count} known tools: a self-reporting portal, a triage workflow, and promotion to the organization's AI systems."
         },
         "vendorCatalog": {
-          "title": "AI Vendor Catalog",
+          "title": "Vendor catalog",
           "description": "Catalog of {count} AI vendors with risk profiles, compliance certifications, and governance metadata."
         },
         "conformity": {
@@ -2166,7 +2166,7 @@
         "premiumTitle": "Premium",
         "commercialConformity": "Conformity Assessment template (Art. 43)",
         "commercialBiasFairness": "Bias & Fairness Assessment",
-        "commercialShadowAi": "Shadow AI Discovery ({count}-tool catalog)",
+        "commercialShadowAi": "AI tools in use ({count}-tool catalog)",
         "commercialVendorCatalog": "AI Vendor Catalog (vendor.watch integration)",
         "commercialDeliverables": "Finished deliverables: the impact assessment document, the program report and the program pack"
       },
@@ -2175,9 +2175,9 @@
       "badgePremium": "Premium"
     },
     "aiRegistry": {
-      "metaTitle": "AI Registry: AI SENTINEL Docs",
+      "metaTitle": "The organization's AI systems: AI SENTINEL Docs",
       "metaDescription": "Register and manage all AI systems, models, and agents with lifecycle tracking.",
-      "title": "AI Registry",
+      "title": "The organization's AI systems",
       "intro": "The central inventory of all AI systems within the organization. Every other module (risk classification, assessments, oversight, incidents) references back to an AI system record. Build a complete picture of the organization's AI landscape.",
       "lifecycleTitle": "System Lifecycle",
       "lifecycleIntro": "Every AI system progresses through a defined lifecycle. Status transitions are tracked with timestamps for audit purposes.",
@@ -2678,7 +2678,7 @@
       "intro": "Article 50 of the EU AI Act imposes transparency duties that cut across risk tiers: even a minimal-risk chatbot owes a disclosure. AI SENTINEL tracks the four Art. 50 obligations per AI system, splits them by who actually owes them, and counts down the one deadline that has a transitional period.",
       "applicabilityTitle": "When it applies",
       "applicabilityBody1": "Art. 50 has applied since <strong>2 August 2026</strong> (Art. 113, second paragraph). Art. 111(4), inserted by Regulation (EU) 2026/1744 (the Digital Omnibus on AI, OJ L of 24 July 2026), gives providers of generative systems placed on the market <em>before</em> that date until <strong>2 December 2026</strong> to comply with the machine-readable marking duty in Art. 50(2).",
-      "applicabilityBody2": "That grace period is the reason the AI Registry asks whether a system was placed on the market before 2 August 2026. Answer it accurately: it is the only input that moves the marking deadline, and the dashboard's “marking overdue” counter is derived from it.",
+      "applicabilityBody2": "That grace period is the reason the registration of an AI system asks whether it was placed on the market before 2 August 2026. Answer it accurately: it is the only input that moves the marking deadline, and the dashboard's “marking overdue” counter is derived from it.",
       "obligationsTitle": "The four obligations",
       "obligationsIntro": "Two are owed by the provider and two by the deployer. A single organization often holds both roles, but recording them separately is what lets you answer a regulator asking which hat you were wearing.",
       "obligations": [
@@ -3079,10 +3079,10 @@
       ]
     },
     "shadowAi": {
-      "metaTitle": "Shadow AI Discovery: AI SENTINEL Docs",
-      "metaDescription": "Discover unauthorized AI tools in the organization. Self-reporting portal, triage workflow, and promotion to formal governance.",
+      "metaTitle": "AI tools in use: AI SENTINEL Docs",
+      "metaDescription": "Record the AI tools people in the organization use: a self-reporting portal, a triage workflow, and promotion to the organization's AI systems.",
       "premiumBadge": "Premium",
-      "title": "Shadow AI Discovery",
+      "title": "AI tools in use",
       "intro": "Shadow AI refers to AI tools adopted by employees without the knowledge or approval of the organization. Research suggests that around 60% of employees use unapproved AI tools at work: from ChatGPT and Copilot to image generators and AI-powered analytics. Organizations cannot govern AI systems they do not know about.",
       "whatTitle": "What is Shadow AI?",
       "whatP1": "Shadow AI is the AI equivalent of Shadow IT: the use of AI-powered tools, services, and applications by employees without explicit organizational authorization. Unlike formally procured vendors that go through risk assessment and contract review, shadow AI tools enter the organization through individual adoption: an engineer installs a code assistant, a lawyer uses ChatGPT for contract review, a marketing team signs up for an AI copywriting tool.",

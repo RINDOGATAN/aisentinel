@@ -137,8 +137,8 @@ export default async function RootLayout({
                 "Cross-Framework Compliance Propagation",
                 "Human Oversight Gates",
                 "AI Incident Management",
-                "Shadow AI Discovery",
-                "AI Vendor Catalog",
+                "AI tools in use",
+                "Vendor catalog",
                 "Policy Management",
               ],
               author: {

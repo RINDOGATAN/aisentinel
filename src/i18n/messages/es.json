@@ -1425,7 +1425,7 @@
     "title": "Herramientas de IA en uso",
     "subtitle": "IA en la sombra: las herramientas de IA que se usan en la organización, a partir de notificaciones y revisiones. Decide sobre cada una y registra las aprobadas.",
     "premiumBadge": "Premium",
-    "enableShadowAi": "Activar detección de IA en la sombra",
+    "enableShadowAi": "Activar Herramientas de IA en uso",
     "reportAiTool": "Notificar herramienta de IA",
     "statsTotalReports": "Total de informes",
     "statsDiscovered": "Notificadas",
@@ -1441,7 +1441,7 @@
     "statusProhibited": "Prohibida",
     "statusRegistered": "Registrada",
     "gateSubtitle": "Detecta y clasifica las herramientas de IA que se usan sin aprobación.",
-    "gateTitle": "Detección de IA en la sombra",
+    "gateTitle": "Herramientas de IA en uso",
     "gateBody": "Registra las herramientas de IA que se usan sin aprobación, ya las comunique el personal o aparezcan en una revisión. Cada una se coteja con un catálogo de herramientas de IA habituales, se clasifica (en revisión, aprobada o prohibida) y las aprobadas pueden incorporarse al inventario de IA en un solo paso.",
     "gateSkillDescription": "Registra herramientas de IA no aprobadas, cotéjalas con un catálogo de herramientas habituales, clasifícalas e incorpora las aprobadas al inventario.",
     "tabAll": "Todas ({count})",
@@ -1781,8 +1781,8 @@
     "packageName": {
       "CONFORMITY": "Evaluación de la conformidad",
       "BIAS_FAIRNESS": "Evaluación de sesgo y equidad",
-      "SHADOW_AI": "Detección de IA en la sombra",
-      "VENDOR_CATALOG": "Catálogo de proveedores de IA",
+      "SHADOW_AI": "Herramientas de IA en uso",
+      "VENDOR_CATALOG": "Catálogo de proveedores",
       "IMPACT_ASSESSMENT": "Documentos de evaluación de impacto",
       "PROGRAM_REPORT": "Informe y paquete del programa"
     },
@@ -1974,7 +1974,7 @@
         "guideMyRole": "¿Cuál es el papel de la organización?",
         "guideHighRisk": "¿Qué es el alto riesgo?",
         "guideWhichRules": "¿Qué normas me aplican?",
-        "aiRegistry": "Registro de IA",
+        "aiRegistry": "Los sistemas de IA de la organización",
         "riskClassification": "Clasificación de riesgos",
         "assessments": "Evaluaciones",
         "oversight": "Supervisión humana",
@@ -1983,8 +1983,8 @@
         "compliance": "Cumplimiento",
         "vendors": "Riesgo de proveedores",
         "policies": "Gestión de políticas",
-        "shadowAi": "Detección de IA en la sombra",
-        "vendorCatalog": "Catálogo de proveedores de IA",
+        "shadowAi": "Herramientas de IA en uso",
+        "vendorCatalog": "Catálogo de proveedores",
         "conformity": "Evaluación de conformidad",
         "biasFairness": "Sesgo y equidad",
         "roles": "Roles y permisos",
@@ -2058,7 +2058,7 @@
       "modulesTitle": "Módulos",
       "modules": {
         "aiRegistry": {
-          "title": "Registro de IA",
+          "title": "Los sistemas de IA de la organización",
           "description": "Inventaría todos los sistemas, modelos y agentes de IA con seguimiento del ciclo de vida y asignación de roles."
         },
         "riskClassification": {
@@ -2104,11 +2104,11 @@
       },
       "premiumModules": {
         "shadowAi": {
-          "title": "Detección de IA en la sombra",
-          "description": "Descubre herramientas de IA no autorizadas adoptadas por los empleados, contrastando con un catálogo de {count} herramientas conocidas. Portal de auto-declaración, flujo de triaje y promoción a la gobernanza formal."
+          "title": "Herramientas de IA en uso",
+          "description": "Registra las herramientas de IA que se usan en la organización, contrastándolas con un catálogo de {count} herramientas conocidas: un portal de autonotificación, un flujo de triaje y el paso a los sistemas de IA de la organización."
         },
         "vendorCatalog": {
-          "title": "Catálogo de proveedores de IA",
+          "title": "Catálogo de proveedores",
           "description": "Catálogo de {count} proveedores de IA con perfiles de riesgo, certificaciones de cumplimiento y metadatos de gobernanza."
         },
         "conformity": {
@@ -2166,7 +2166,7 @@
         "premiumTitle": "Premium",
         "commercialConformity": "Plantilla de evaluación de conformidad (art. 43)",
         "commercialBiasFairness": "Evaluación de sesgo y equidad",
-        "commercialShadowAi": "Detección de IA en la sombra (catálogo de {count} herramientas)",
+        "commercialShadowAi": "Herramientas de IA en uso (catálogo de {count} herramientas)",
         "commercialVendorCatalog": "Catálogo de proveedores de IA (integración con vendor.watch)",
         "commercialDeliverables": "Entregables finales: el documento de evaluación de impacto, el informe del programa y el paquete del programa"
       },
@@ -2175,9 +2175,9 @@
       "badgePremium": "Premium"
     },
     "aiRegistry": {
-      "metaTitle": "Registro de IA: documentación de AI SENTINEL",
+      "metaTitle": "Los sistemas de IA de la organización: documentación de AI SENTINEL",
       "metaDescription": "Registra y gestiona todos los sistemas de IA, modelos y agentes con seguimiento del ciclo de vida.",
-      "title": "Registro de IA",
+      "title": "Los sistemas de IA de la organización",
       "intro": "El inventario central de todos los sistemas de IA de la organización. Todos los demás módulos (clasificación de riesgos, evaluaciones, supervisión, incidentes) hacen referencia a una ficha de sistema de IA. Construye una imagen completa del panorama de IA de la organización.",
       "lifecycleTitle": "Ciclo de vida del sistema",
       "lifecycleIntro": "Cada sistema de IA avanza por un ciclo de vida definido. Las transiciones de estado se registran con marcas de tiempo a efectos de auditoría.",
@@ -2678,7 +2678,7 @@
       "intro": "El artículo 50 del RIA impone deberes de transparencia que atraviesan los niveles de riesgo: incluso un chatbot de riesgo mínimo debe informar. AI SENTINEL registra las cuatro obligaciones del art. 50 por sistema de IA, las separa según quién las debe realmente y cuenta atrás el único plazo que tiene período transitorio.",
       "applicabilityTitle": "Cuándo se aplica",
       "applicabilityBody1": "El art. 50 se aplica desde el <strong>2 de agosto de 2026</strong> (art. 113, párrafo segundo). El art. 111(4), introducido por el Reglamento (UE) 2026/1744 (el Ómnibus Digital sobre IA, DO L de 24 de julio de 2026), da a los proveedores de sistemas generativos introducidos en el mercado <em>antes</em> de esa fecha hasta el <strong>2 de diciembre de 2026</strong> para cumplir la obligación de marcado legible por máquina del art. 50(2).",
-      "applicabilityBody2": "Ese período de gracia es el motivo por el que el Registro de IA pregunta si un sistema se introdujo en el mercado antes del 2 de agosto de 2026. Respóndelo con precisión: es el único dato que modifica el plazo de marcado, y el contador de «marcado vencido» del panel se deriva de él.",
+      "applicabilityBody2": "Ese período de gracia es el motivo por el que el registro de un sistema de IA pregunta si se introdujo en el mercado antes del 2 de agosto de 2026. Respóndelo con precisión: es el único dato que modifica el plazo de marcado, y el contador de «marcado vencido» del panel se deriva de él.",
       "obligationsTitle": "Las cuatro obligaciones",
       "obligationsIntro": "Dos corresponden al proveedor y dos al responsable del despliegue. Una misma organización suele desempeñar ambos papeles, pero registrarlas por separado es lo que te permite responder a un regulador que pregunte en calidad de qué actuabas.",
       "obligations": [
@@ -3079,10 +3079,10 @@
       ]
     },
     "shadowAi": {
-      "metaTitle": "Detección de IA en la sombra: documentación de AI SENTINEL",
-      "metaDescription": "Descubre las herramientas de IA no autorizadas en la organización. Portal de autonotificación, flujo de triaje y promoción a la gobernanza formal.",
+      "metaTitle": "Herramientas de IA en uso: documentación de AI SENTINEL",
+      "metaDescription": "Registra las herramientas de IA que se usan en la organización: un portal de autonotificación, un flujo de triaje y el paso a los sistemas de IA de la organización.",
       "premiumBadge": "Premium",
-      "title": "Detección de IA en la sombra",
+      "title": "Herramientas de IA en uso",
       "intro": "La IA en la sombra son las herramientas de IA adoptadas por los empleados sin el conocimiento o la aprobación de la organización. Los estudios sugieren que en torno al 60% de los empleados utiliza herramientas de IA no aprobadas en el trabajo: desde ChatGPT y Copilot hasta generadores de imágenes y analítica basada en IA. Las organizaciones no pueden gobernar sistemas de IA que desconocen.",
       "whatTitle": "¿Qué es la IA en la sombra?",
       "whatP1": "La IA en la sombra es el equivalente en IA del Shadow IT: el uso de herramientas, servicios y aplicaciones basados en IA por parte de los empleados sin autorización organizativa explícita. A diferencia de los proveedores contratados formalmente, que pasan por evaluación de riesgos y revisión contractual, las herramientas de IA en la sombra entran en la organización por adopción individual: un ingeniero instala un asistente de código, un abogado usa ChatGPT para revisar contratos, un equipo de marketing se suscribe a una herramienta de redacción con IA.",

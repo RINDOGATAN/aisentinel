@@ -79,7 +79,7 @@ export const PAGE_HELP: PageHelp[] = [
   },
   {
     route: "/governance/ai-registry",
-    title: L("AI registry", "Registro de IA"),
+    title: L("The organization's AI systems", "Los sistemas de IA de la organización"),
     purpose: L(
       "The inventory of every AI system your organization builds or uses. A complete inventory is the starting point for every other duty, because you cannot govern what you have not written down.",
       "El inventario de todos los sistemas de IA que tu organización construye o utiliza. Un inventario completo es el punto de partida de cualquier otra obligación, porque no se puede gobernar lo que no se ha registrado.",
@@ -94,7 +94,7 @@ export const PAGE_HELP: PageHelp[] = [
   },
   {
     route: "/governance/risk-classification",
-    title: L("Risk classification", "Clasificación de riesgo"),
+    title: L("Risk level", "Nivel de riesgo"),
     purpose: L(
       "Works out each system's risk tier under the EU AI Act: prohibited, high, limited or minimal. The tier decides which duties apply, so it is the fork every later obligation follows.",
       "Determina el nivel de riesgo de cada sistema según el RIA: prohibido, alto, limitado o mínimo. El nivel decide qué obligaciones aplican, así que es la bifurcación que sigue todo lo demás.",
@@ -112,7 +112,7 @@ export const PAGE_HELP: PageHelp[] = [
   },
   {
     route: "/governance/assessments",
-    title: L("Assessments", "Evaluaciones"),
+    title: L("Impact assessments", "Evaluaciones de impacto"),
     purpose: L(
       "Where you carry out and keep the assessments a system needs: impact, conformity, fundamental rights and bias. Each finished assessment becomes evidence you can show a regulator.",
       "Donde realizas y conservas las evaluaciones que necesita un sistema: de impacto, de conformidad, de derechos fundamentales y de sesgo. Cada evaluación terminada se convierte en una prueba que puedes mostrar a un organismo.",
@@ -127,7 +127,7 @@ export const PAGE_HELP: PageHelp[] = [
   },
   {
     route: "/governance/oversight",
-    title: L("Oversight gates", "Puntos de control"),
+    title: L("Human oversight", "Supervisión humana"),
     purpose: L(
       "Records the points where a named person must review and decide before a system acts on its own. Human oversight is a duty for high-risk systems, and this is where you show it is real.",
       "Registra los puntos en los que una persona designada debe revisar y decidir antes de que un sistema actúe por sí solo. La supervisión humana es una obligación para los sistemas de alto riesgo, y aquí demuestras que existe.",
@@ -205,7 +205,7 @@ export const PAGE_HELP: PageHelp[] = [
   },
   {
     route: "/governance/policies",
-    title: L("Policies", "Políticas"),
+    title: L("AI policy", "Política de IA"),
     purpose: L(
       "Your organization's written rules for building and using AI: acceptable use, incident response and the rest. Policies are how a duty becomes something staff can actually follow.",
       "Las reglas escritas de tu organización para construir y usar IA: uso aceptable, respuesta ante incidentes y demás. Las políticas son la forma en que una obligación se convierte en algo que el personal puede cumplir.",
@@ -220,7 +220,7 @@ export const PAGE_HELP: PageHelp[] = [
   },
   {
     route: "/governance/shadow-ai",
-    title: L("Shadow AI", "IA en la sombra"),
+    title: L("AI tools in use", "Herramientas de IA en uso"),
     purpose: L(
       "Finds and records the AI tools people are using without them being on the registry. What you do not know about you cannot govern, so bringing shadow tools into the light comes first.",
       "Encuentra y registra las herramientas de IA que se usan sin estar en el registro. No se puede gobernar lo que se desconoce, así que sacar a la luz las herramientas en la sombra es lo primero.",
@@ -230,7 +230,7 @@ export const PAGE_HELP: PageHelp[] = [
       "Clasifica cada herramienta descubierta: decide si registrarla, permitirla o bloquearla.",
     ),
     terms: ["stakeholder"],
-    docs: [DOC("/docs/shadow-ai", "Shadow AI discovery", "Descubrimiento de IA en la sombra")],
+    docs: [DOC("/docs/shadow-ai", "AI tools in use", "Herramientas de IA en uso")],
     official: [],
   },
   {
@@ -253,7 +253,7 @@ export const PAGE_HELP: PageHelp[] = [
   },
   {
     route: "/governance/proceedings",
-    title: L("Proceedings", "Procedimientos"),
+    title: L("Cases and inquiries", "Asuntos e investigaciones"),
     purpose: L(
       "Tracks any formal matter opened against or about a system, such as a regulator's inquiry, with its own clock. It keeps a live matter and its deadlines separate from the incident log.",
       "Hace seguimiento de cualquier asunto formal abierto contra un sistema o sobre él, como una investigación de un organismo, con su propio plazo. Mantiene un asunto en curso y sus plazos separados del registro de incidentes.",
@@ -268,7 +268,7 @@ export const PAGE_HELP: PageHelp[] = [
   },
   {
     route: "/governance/board",
-    title: L("Board reporting", "Informes al consejo"),
+    title: L("Board report", "Informe al consejo"),
     purpose: L(
       "Produces a report for senior management or the board, capturing a snapshot of the program so the figures can be reproduced later. Governance the board never sees is governance it cannot back.",
       "Genera un informe para la dirección o el consejo, con una instantánea del programa para que las cifras puedan reproducirse después. Una gobernanza que el consejo nunca ve es una gobernanza que no puede respaldar.",
@@ -343,7 +343,7 @@ export const PAGE_HELP: PageHelp[] = [
   },
   {
     route: "/governance/review",
-    title: L("Review queue", "Cola de revisión"),
+    title: L("Check what was drafted", "Revisar lo redactado"),
     purpose: L(
       "Everything the product derived for you and marked as needing a person's confirmation, in one queue. Anything auto-derived stays marked until a human agrees, so the program is never falsely complete.",
       "Todo lo que el producto ha derivado por ti y ha marcado como pendiente de confirmación, en una sola cola. Lo derivado automáticamente sigue marcado hasta que una persona lo acepta, para que el programa nunca parezca completo por error.",

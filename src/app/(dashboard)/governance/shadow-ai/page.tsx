@@ -60,6 +60,7 @@ const statusKey: Record<string, string> = {
 
 export default function ShadowAIPage() {
   const t = useTranslations("shadowAi");
+  const tSkills = useTranslations("skills");
   const tNew = useTranslations("shadowAiNew");
   const toolCategoryLabel = (category: string) =>
     tNew.has(`toolCategory.${category}`)
@@ -174,7 +175,7 @@ export default function ShadowAIPage() {
             onClose={() => setShowModal(false)}
             organizationId={organization.id}
             skillPackageId="com.todolaw.aisentinel.shadow-ai"
-            skillName="Shadow AI Discovery"
+            skillName={tSkills("packageName.SHADOW_AI")}
             skillDescription={t("gateSkillDescription")}
           />
         )}

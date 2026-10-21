@@ -20,7 +20,7 @@ async function assertShadowAiAccess(organizationId: string) {
   if (!(await hasShadowAiAccess(organizationId)))
     throw new TRPCError({
       code: "FORBIDDEN",
-      message: "Shadow AI Discovery requires a premium license",
+      message: "AI tools in use requires a premium license",
     });
 }
 

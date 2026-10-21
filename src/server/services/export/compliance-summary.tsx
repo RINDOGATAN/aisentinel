@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025-2026 Rindogatan LLC
 
+import { compliancePercent as computeCompliancePercent } from "@/lib/compliance-percent";
 import React from "react";
 import { Document, View, Text } from "@react-pdf/renderer";
 import {
@@ -57,8 +58,8 @@ export function ComplianceSummaryReport({ data, locale = "en" }: { data: Complia
   const partial = byStatus["PARTIALLY_COMPLIANT"] || 0;
   const nonCompliant = byStatus["NON_COMPLIANT"] || 0;
   const notAssessed = byStatus["NOT_ASSESSED"] || 0;
-  const assessed = total - notAssessed;
-  const compliancePercent = assessed > 0 ? Math.round((compliant / assessed) * 100) : 0;
+  // The same formula as the screens (src/lib/compliance-percent.ts).
+  const compliancePercent = computeCompliancePercent({ compliant, partial, nonCompliant, notAssessed });
 
   return (
     <Document language={locale}>

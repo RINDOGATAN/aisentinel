@@ -72,7 +72,8 @@ export interface DocumentGap {
     | "personalDataUnassessed"
     | "withoutApprovedAssessment"
     | "aiDraft"
-    | "noRecords";
+    | "noRecords"
+    | "riskLevelToConfirm";
   count: number;
 }
 
@@ -358,10 +359,12 @@ export const DOCUMENT_REGISTER: readonly DocumentEntry[] = [
     formats: ["md"],
     packed: true,
     needs: "A declared jurisdiction and a system.",
-    rule: "Needs a jurisdiction, then a system. Draft while a high-risk system has no oversight gate or a drafted gate waits to be confirmed; ready otherwise.",
+    rule: "Needs a jurisdiction, then a system. Draft while a system is unclassified or its risk level is a draft to confirm (the protocol relies on which systems are high-risk), or a high-risk system has no oversight gate or a drafted gate waits to be confirmed; ready otherwise.",
     evaluate: (f) =>
       perSystemInputs(f) ??
       draftOrReady([
+        { key: "unclassified", count: atLeast0(f.systems - f.classified) },
+        { key: "riskLevelToConfirm", count: f.classificationsUnconfirmed },
         { key: "noGate", count: atLeast0(f.highRisk - f.highRiskWithGate) },
         { key: "toConfirm", count: f.gatesUnconfirmed },
       ]),

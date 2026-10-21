@@ -355,6 +355,8 @@ export default function PolicyDetailPage() {
   const reference = policyReference(policy.number);
   const templateDraft = isUnreviewedTemplateDraft(policy);
   const draftsToReview = stats?.draft ?? 0;
+  // The way back says what waits there.
+  const backLabel = draftsToReview > 0 ? t("backWithDrafts", { count: draftsToReview }) : tc("backToPolicies");
 
   const handleLinkSystem = () => {
     if (!selectedSystemId) return;
@@ -376,7 +378,7 @@ export default function PolicyDetailPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        back={{ href: "/governance/policies", label: tc("back") }}
+        back={{ href: "/governance/policies", label: backLabel }}
         icon={ScrollText}
         title={policy.title}
         meta={
@@ -509,15 +511,6 @@ export default function PolicyDetailPage() {
           </>
         }
       />
-
-      {/* The way back, with what is waiting there */}
-      <Link
-        href="/governance/policies"
-        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary"
-      >
-        <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" />
-        {draftsToReview > 0 ? t("backWithDrafts", { count: draftsToReview }) : t("backToPolicies")}
-      </Link>
 
       <PolicyLifecycle status={policy.status} />
 

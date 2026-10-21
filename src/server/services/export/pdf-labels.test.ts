@@ -42,7 +42,7 @@ describe("export labels", () => {
     expect(en.portfolio.coverTitle).toBe("AI risk assessment portfolio");
     expect(en.inventory.title).toBe("AI model inventory");
     expect(en.compliance.coverTitle("EU AI Act")).toBe("EU AI Act compliance summary");
-    expect(en.compliance.progress(40)).toBe("Compliance progress (40% of assessed)");
+    expect(en.compliance.progress(40)).toBe("Compliance progress: 40% of the applicable requirements (partial counts as half)");
     expect(en.audit.header[0]).toBe("Timestamp (UTC)");
     expect(statusLabel("PARTIALLY_COMPLIANT", "en")).toBe("PARTIALLY COMPLIANT");
     expect(riskLabel("HIGH", "en")).toBe("HIGH");

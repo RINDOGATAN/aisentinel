@@ -147,7 +147,7 @@ export default function SensitiveDataAnalysisPage() {
   return (
     <div className="space-y-6 max-w-3xl">
       <PageHeader
-        back={{ href: "/governance/sensitive-data", label: tc("back") }}
+        back={{ href: "/governance/sensitive-data", label: tc("backToSensitiveData") }}
         title={data.subject}
         description={
           <>

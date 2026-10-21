@@ -44,15 +44,19 @@ function QuestionRow({
   onChange,
   disabled,
   idPrefix,
+  unsurePicked = false,
 }: {
   question: ApplicabilityQuestion;
   value: ApplicabilityAnswer;
   onChange: (answer: ApplicabilityAnswer) => void;
   disabled?: boolean;
   idPrefix: string;
+  /** "Not sure yet" was picked on this screen. Stored, it is the same as no answer, so it only looks chosen once picked. */
+  unsurePicked?: boolean;
 }) {
   const t = useTranslations("applicability");
   const name = `${idPrefix}-${question}`;
+  const shows = (option: ApplicabilityAnswer) => value === option && (option !== "UNSURE" || unsurePicked);
   return (
     <fieldset className="space-y-1.5" disabled={disabled}>
       <legend className="text-sm">{t(`questions.${question}.label`)}</legend>
@@ -66,7 +70,7 @@ function QuestionRow({
               type="radio"
               name={name}
               value={option}
-              checked={value === option}
+              checked={shows(option)}
               onChange={() => onChange(option)}
               className="peer sr-only"
             />
@@ -75,7 +79,7 @@ function QuestionRow({
                 "inline-flex min-h-11 sm:min-h-8 items-center rounded-md border px-3 text-xs motion-safe:transition-colors",
                 "peer-focus-visible:ring-2 peer-focus-visible:ring-ring peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-background",
                 "peer-disabled:opacity-50 peer-disabled:cursor-not-allowed",
-                value === option
+                shows(option)
                   ? "border-primary bg-primary/10 text-primary font-medium"
                   : "border-input text-foreground hover:border-primary/60",
               )}
@@ -102,8 +106,17 @@ export function ApplicabilityQuestions({
   idPrefix?: string;
 }) {
   const t = useTranslations("applicability");
-  const set = (q: ApplicabilityQuestion) => (a: ApplicabilityAnswer) =>
+  // An unanswered question is stored as "Not sure yet"; it looks chosen only after someone picks it here.
+  const [unsurePicked, setUnsurePicked] = useState<ReadonlySet<ApplicabilityQuestion>>(new Set());
+  const set = (q: ApplicabilityQuestion) => (a: ApplicabilityAnswer) => {
+    setUnsurePicked((prev) => {
+      const next = new Set(prev);
+      if (a === "UNSURE") next.add(q);
+      else next.delete(q);
+      return next;
+    });
     onChange({ ...answers, [q]: a });
+  };
   const others = APPLICABILITY_QUESTIONS.filter((q) => !ROLE_QUESTIONS.includes(q));
   return (
     <div className="space-y-5">
@@ -117,6 +130,7 @@ export function ApplicabilityQuestions({
             onChange={set(q)}
             disabled={disabled}
             idPrefix={idPrefix}
+            unsurePicked={unsurePicked.has(q)}
           />
         ))}
       </div>
@@ -129,6 +143,7 @@ export function ApplicabilityQuestions({
             onChange={set(q)}
             disabled={disabled}
             idPrefix={idPrefix}
+            unsurePicked={unsurePicked.has(q)}
           />
         ))}
       </div>

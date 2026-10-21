@@ -743,12 +743,13 @@ export default function QuickstartPage() {
                 <div className="flex items-center justify-between">
                   <Building2 className="w-8 h-8 text-primary" />
                   <div className="flex items-center gap-2">
-                    <Badge
-                      variant="outline"
-                      className={STATUS_OUTLINE.good}
-                    >
-                      {features.allSkillsFree ? tc("free") : `5 ${tc("free")}`}
-                    </Badge>
+                    {/* No price badge: every path is free on the hosted pilot. Where the catalog
+                        import has a limit, say what it is. */}
+                    {!features.allSkillsFree && (
+                      <Badge variant="outline" className={STATUS_OUTLINE.good}>
+                        {t("vendorImportLimit", { count: 5 })}
+                      </Badge>
+                    )}
                     {useVendors && (
                       <CheckCircle2 className="w-5 h-5 text-primary" />
                     )}
@@ -783,12 +784,6 @@ export default function QuickstartPage() {
                 <div className="flex items-center justify-between">
                   <Sparkles className="w-8 h-8 text-primary" />
                   <div className="flex items-center gap-2">
-                    <Badge
-                      variant="outline"
-                      className={STATUS_OUTLINE.good}
-                    >
-                      {tc("free")}
-                    </Badge>
                     {useIndustry && (
                       <CheckCircle2 className="w-5 h-5 text-primary" />
                     )}
@@ -822,9 +817,6 @@ export default function QuickstartPage() {
                 <div className="flex items-center justify-between">
                   <Crosshair className="w-8 h-8 text-primary" />
                   <div className="flex items-center gap-2">
-                    <Badge variant="outline" className={STATUS_OUTLINE.good}>
-                      {tc("free")}
-                    </Badge>
                     {useBuilder && <CheckCircle2 className="w-5 h-5 text-primary" />}
                   </div>
                 </div>
@@ -859,9 +851,6 @@ export default function QuickstartPage() {
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <Copy className="w-8 h-8 text-primary" aria-hidden="true" />
-                    <Badge variant="outline" className={STATUS_OUTLINE.good}>
-                      {tc("free")}
-                    </Badge>
                   </div>
                   <CardTitle className="text-lg">{tct("cardTitle")}</CardTitle>
                   <CardDescription>{tct("cardDescription")}</CardDescription>

@@ -232,7 +232,7 @@ export default function VendorDetailPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        back={{ href: "/governance/vendors", label: tc("back") }}
+        back={{ href: "/governance/vendors", label: tc("backToVendors") }}
         icon={Building2}
         title={vendor.name}
         meta={

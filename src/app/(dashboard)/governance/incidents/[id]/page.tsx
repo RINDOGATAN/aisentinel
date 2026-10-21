@@ -304,7 +304,7 @@ export default function IncidentDetailPage() {
     <div className="space-y-6">
       {/* Header */}
       <PageHeader
-        back={{ href: "/governance/incidents", label: tc("back") }}
+        back={{ href: "/governance/incidents", label: tc("backToIncidents") }}
         icon={AlertTriangle}
         title={incident.title}
         meta={

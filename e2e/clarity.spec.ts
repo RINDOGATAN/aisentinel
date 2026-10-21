@@ -223,18 +223,19 @@ for (const locale of ["en", "es"] as const) {
     await noSidewaysScroll(page);
     await shot(page, `${locale}-2-quickstart-clients`);
 
-    // The pack: ready documents only, then with the drafts.
+    // The pack right after the quick start: every packed document still rests on drafted risk
+    // levels (the human review protocol included), so there is nothing ready to download yet;
+    // with the drafts, the pack holds them, marked.
     await page.goto("/governance");
     await expect(page.getByTestId("documents-panel")).toHaveAttribute("aria-busy", "false");
-    const readyOnly = await downloadPack(page, `${locale}-pack-ready`);
-    expect(readyOnly[0]).toBe(locale === "es" ? "00-LEEME.md" : "00-README.md");
-    expect(readyOnly.at(-1)).toBe(locale === "es" ? "99-MANIFIESTO.txt" : "99-MANIFEST.txt");
+    await expect(page.getByTestId("doc-humanReviewProtocol")).toHaveAttribute("data-state", "draft");
+    await expect(page.getByTestId("pack-button")).toBeDisabled();
     const mark = locale === "es" ? "BORRADOR-" : "DRAFT-";
-    expect(readyOnly.some((n) => n.includes(mark))).toBe(false);
     await page.getByTestId("pack-drafts").click();
     const withDrafts = await downloadPack(page, `${locale}-pack-drafts`);
+    expect(withDrafts[0]).toBe(locale === "es" ? "00-LEEME.md" : "00-README.md");
+    expect(withDrafts.at(-1)).toBe(locale === "es" ? "99-MANIFIESTO.txt" : "99-MANIFEST.txt");
     expect(withDrafts.some((n) => n.includes(mark))).toBe(true);
-    expect(withDrafts.length).toBeGreaterThan(readyOnly.length);
 
     // 3. After confirming the drafts
     await confirmEverything(page, locale);
@@ -243,6 +244,12 @@ for (const locale of ["en", "es"] as const) {
     expect(readFigure(confirmed, locale).total).toBe(readFigure(afterStart, locale).total);
     expect(await menuFigure(page, locale, `${locale}-3-confirmed`)).toBe(confirmed);
     await expect(page.getByTestId("doc-riskClassification")).toHaveAttribute("data-state", "ready");
+    // Now the ready documents download on their own, with no draft among them.
+    await expect(page.getByTestId("documents-panel")).toHaveAttribute("aria-busy", "false");
+    const readyOnly = await downloadPack(page, `${locale}-pack-ready`);
+    expect(readyOnly[0]).toBe(locale === "es" ? "00-LEEME.md" : "00-README.md");
+    expect(readyOnly.at(-1)).toBe(locale === "es" ? "99-MANIFIESTO.txt" : "99-MANIFEST.txt");
+    expect(readyOnly.some((n) => n.includes(mark))).toBe(false);
     await noSidewaysScroll(page);
     await shot(page, `${locale}-3-confirmed-dashboard`);
     await page.goto("/governance/program");

@@ -192,7 +192,7 @@ export default function OversightGateDetailPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        back={{ href: "/governance/oversight", label: tc("back") }}
+        back={{ href: "/governance/oversight", label: tc("backToOversight") }}
         icon={Eye}
         title={
           <>

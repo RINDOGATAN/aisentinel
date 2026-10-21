@@ -107,6 +107,13 @@ const H = vi.hoisted(() => {
     businessUnitMember: { findMany: async () => [] },
   };
 
+  // Deleting an organization keeps its trail without personal data (one raw UPDATE, proved
+  // against Postgres in retain-on-delete.db.test.ts) inside a transaction with the delete.
+  Object.assign(db, {
+    $executeRaw: async () => 0,
+    $transaction: async (fn: (tx: unknown) => Promise<unknown>) => fn(db),
+  });
+
   /** One read-only organisation (window started `startedDaysAgo`), owned by user-a. */
   function reset(startedDaysAgo: number) {
     organizations.length = 0;

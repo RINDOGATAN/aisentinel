@@ -28,10 +28,11 @@ import type { PrismaClient } from "@prisma/client";
 const prismaMock = {
   organizationAiSettings: { findUnique: vi.fn() },
   aiGeneration: { count: vi.fn(), create: vi.fn(), updateMany: vi.fn() },
+  organization: { findUnique: vi.fn() },
 };
 const prisma = prismaMock as unknown as Pick<
   PrismaClient,
-  "organizationAiSettings" | "aiGeneration"
+  "organizationAiSettings" | "aiGeneration" | "organization"
 > &
   typeof prismaMock;
 
@@ -50,6 +51,7 @@ const AI_ENV_KEYS = [
   "LLM_GATEWAY_URL_US",
   "LLM_GATEWAY_KEY_US",
   "LLM_MODEL_ALIAS_US",
+  "AI_ALLOW_US_JURISDICTIONS",
 ] as const;
 
 function configureEngine() {
@@ -60,6 +62,8 @@ function configureEngine() {
 beforeEach(() => {
   vi.clearAllMocks();
   for (const key of AI_ENV_KEYS) vi.stubEnv(key, "");
+  // No declared jurisdictions unless a test says otherwise.
+  prismaMock.organization.findUnique.mockResolvedValue({ operatingJurisdictions: [] });
 });
 
 afterEach(() => {

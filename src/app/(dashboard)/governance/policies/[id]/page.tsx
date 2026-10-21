@@ -150,7 +150,7 @@ export default function PolicyDetailPage() {
     { organizationId: orgId },
     { enabled: features.aiAssistEnabled && !!orgId, staleTime: 60_000 }
   );
-  const aiOn = !!aiStatus && aiStatus.posture !== "off" && aiStatus.configured;
+  const aiOn = !!aiStatus && aiStatus.active;
 
   const duplicateMutation = trpc.policy.duplicate.useMutation({
     onSuccess: (copy) => {

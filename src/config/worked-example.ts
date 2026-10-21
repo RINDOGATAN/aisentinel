@@ -353,3 +353,49 @@ export const WORKED_EXAMPLE_CHROME: Record<
     badge: "Muestra",
   },
 };
+
+/**
+ * What the sample-data card calls each kind of record it counts, singular and
+ * plural, so the line reads "3 AI systems", never the database model name.
+ * Keyed by the model names of SAMPLE_ENTITY_TYPES
+ * (src/server/services/sample/worked-example.ts).
+ */
+export const SAMPLE_COUNT_LABELS: Record<PilotLocale, Record<string, readonly [string, string]>> = {
+  en: {
+    AIVendor: ["vendor", "vendors"],
+    AISystem: ["AI system", "AI systems"],
+    RiskClassification: ["risk classification", "risk classifications"],
+    AIPolicy: ["policy", "policies"],
+    OversightGate: ["oversight review", "oversight reviews"],
+    AIIncident: ["incident", "incidents"],
+    AIAssessmentTemplate: ["assessment template", "assessment templates"],
+    AIAssessment: ["impact assessment", "impact assessments"],
+  },
+  es: {
+    AIVendor: ["proveedor", "proveedores"],
+    AISystem: ["sistema de IA", "sistemas de IA"],
+    RiskClassification: ["clasificación de riesgo", "clasificaciones de riesgo"],
+    AIPolicy: ["política", "políticas"],
+    OversightGate: ["revisión de supervisión", "revisiones de supervisión"],
+    AIIncident: ["incidente", "incidentes"],
+    AIAssessmentTemplate: ["plantilla de evaluación", "plantillas de evaluación"],
+    AIAssessment: ["evaluación de impacto", "evaluaciones de impacto"],
+  },
+};
+
+/** The counts line of the sample-data card, in the reader's language. */
+export function formatSampleCounts(
+  counts: Partial<Record<string, number>>,
+  locale: PilotLocale,
+): string {
+  const labels = SAMPLE_COUNT_LABELS[locale];
+  return Object.entries(counts)
+    .filter(([type, count]) => type !== "Organization" && (count ?? 0) > 0)
+    .map(([type, count]) => {
+      const label = labels[type];
+      if (!label) return null;
+      return `${count} ${count === 1 ? label[0] : label[1]}`;
+    })
+    .filter((part): part is string => part !== null)
+    .join(" · ");
+}

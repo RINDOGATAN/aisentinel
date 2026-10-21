@@ -33,6 +33,7 @@ import { STATUS_CHIP } from "@/components/ui/status-note";
 
 export default function VendorCatalogPage() {
   const t = useTranslations("vendorCatalog");
+  const tSkills = useTranslations("skills");
   const tc = useTranslations("common");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
@@ -117,7 +118,7 @@ export default function VendorCatalogPage() {
             onClose={() => setShowModal(false)}
             organizationId={organization.id}
             skillPackageId="com.todolaw.aisentinel.vendor-catalog"
-            skillName="AI Vendor Catalog"
+            skillName={tSkills("packageName.VENDOR_CATALOG")}
             skillDescription={t("gateSkillDescription")}
           />
         )}

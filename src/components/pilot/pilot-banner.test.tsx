@@ -135,7 +135,8 @@ describe("what the bar says", () => {
     );
     expect(en.trialTransition("26 October 2026", "EUR")).toContain("Cloud Plan: €179 a month or €1,800 a year.");
     expect(en.trial(15, "26 October 2026", "USD")).toBe(en.trial(15, "26 October 2026"));
-    expect(es.trial(15, "26 de octubre de 2026", "USD")).toContain("Plan nube UE: 179 US$ al mes o 1.800 US$ al año.");
+    expect(es.trial(15, "26 de octubre de 2026", "USD")).toContain("sigue con el Cloud Plan: 179 US$ al mes o 1.800 US$ al año.");
+    expect(es.trial(15, "26 de octubre de 2026", "USD")).not.toContain("Plan nube UE");
     expect(es.trial(15, "26 de octubre de 2026", "EUR")).toContain("Plan nube UE: 179 € al mes o 1.800 € al año.");
     expect(es.trialTransition("26 de octubre de 2026", "USD")).toContain("179 US$ al mes o 1.800 US$ al año.");
     // The Spanish bar outside the EU and the English bar in the EU.

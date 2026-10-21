@@ -90,7 +90,7 @@ export function FeedbackDialog({ open, onOpenChange }: FeedbackDialogProps) {
                   type="submit"
                   disabled={!message.trim() || submit.isPending}
                 >
-                  {submit.isPending ? "Sending..." : "Send Feedback"}
+                  {submit.isPending ? "Sending..." : "Send feedback"}
                 </Button>
               </div>
             </form>

@@ -100,7 +100,7 @@ const COPY: Record<
       "El piloto alojado admite una organización por cuenta. Si necesitas llevar varias organizaciones, elige una instancia gestionada o tu propio hardware.",
     waysOutTitle: "Cuando llegues a un límite",
     waysOut:
-      "El Plan nube UE elimina los límites y conserva tus registros; una instancia gestionada o tu propio hardware se ofrecen bajo presupuesto. También puedes exportar todo lo que has creado como paquete del programa cuando quieras.",
+      "El plan de pago (el Plan nube UE, en euros, o el Cloud Plan, en dólares) elimina los límites y conserva tus registros; una instancia gestionada o tu propio hardware se ofrecen bajo presupuesto. También puedes exportar todo lo que has creado como paquete del programa cuando quieras.",
     pricingLink: "Consulta los planes y precios",
     pricingUrl: "https://www.todo.law/es/precios",
     hostingTitle: "Tres modalidades de alojamiento",

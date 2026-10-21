@@ -60,7 +60,7 @@ describe("public docs follow the current offer", () => {
     expect(pilotPage).not.toMatch(/\d\s?€|€\s?\d/);
     expect(pilotPage).toContain("https://www.todo.law/es/precios");
     expect(pilotPage).toContain("The Cloud Plan lifts the limits");
-    expect(pilotPage).toContain("El Plan nube UE elimina los límites");
+    expect(pilotPage).toContain("El plan de pago (el Plan nube UE, en euros, o el Cloud Plan, en dólares) elimina los límites");
     expect(pilotPage).not.toMatch(/\$\s?\d/);
   });
 

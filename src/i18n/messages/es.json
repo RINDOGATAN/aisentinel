@@ -540,7 +540,7 @@
     "stepIndustryTemplate": "Plantilla sectorial",
     "stepReviewBuild": "Revisar y crear",
     "vendorImportTitle": "Importar desde el catálogo de proveedores de IA",
-    "vendorImportDescription": "Selecciona los proveedores de IA que utilizas y genera automáticamente sistemas de IA, clasificaciones de riesgo y controles de supervisión a partir de sus perfiles conocidos.",
+    "vendorImportDescription": "Selecciona los proveedores de IA que utiliza la organización y genera automáticamente sistemas de IA, clasificaciones de riesgo y controles de supervisión a partir de sus perfiles conocidos.",
     "industryTemplateTitle": "Partir de una plantilla sectorial",
     "industryTemplateDescription": "Selecciona el sector y obtén un programa de gobernanza de IA predefinido con sistemas de IA habituales, clasificaciones de riesgo y políticas.",
     "selectVendorsTitle": "Seleccionar proveedores de IA",
@@ -619,7 +619,7 @@
       "industryTemplate": "Plantilla sectorial: {name}"
     },
     "legalIndustryName": "Sector jurídico",
-    "legalIndustryDescription": "Despachos de abogados y asesorías jurídicas: elige las herramientas de IA que usas (investigación jurídica, redacción, revisión contractual, e-discovery, traducción) y obtén el paquete de políticas para despachos.",
+    "legalIndustryDescription": "Despachos de abogados y asesorías jurídicas: elige las herramientas de IA que usa el despacho (investigación jurídica, redacción, revisión contractual, e-discovery, traducción) y obtén el paquete de políticas para despachos.",
     "legalIndustryTools": "{count} herramientas para elegir",
     "builderTitle": "Construcción de un producto de IA",
     "builderDescription": "Para el equipo que escribe el código. Di qué puede ver y hacer el producto y obtén lo que podría salir mal, con controles y una prueba para cada cosa.",
@@ -1425,7 +1425,7 @@
     "title": "Herramientas de IA en uso",
     "subtitle": "IA en la sombra: las herramientas de IA que se usan en la organización, a partir de notificaciones y revisiones. Decide sobre cada una y registra las aprobadas.",
     "premiumBadge": "Premium",
-    "enableShadowAi": "Activar detección de IA en la sombra",
+    "enableShadowAi": "Activar Herramientas de IA en uso",
     "reportAiTool": "Notificar herramienta de IA",
     "statsTotalReports": "Total de informes",
     "statsDiscovered": "Notificadas",
@@ -1441,7 +1441,7 @@
     "statusProhibited": "Prohibida",
     "statusRegistered": "Registrada",
     "gateSubtitle": "Detecta y clasifica las herramientas de IA que se usan sin aprobación.",
-    "gateTitle": "Detección de IA en la sombra",
+    "gateTitle": "Herramientas de IA en uso",
     "gateBody": "Registra las herramientas de IA que se usan sin aprobación, ya las comunique el personal o aparezcan en una revisión. Cada una se coteja con un catálogo de herramientas de IA habituales, se clasifica (en revisión, aprobada o prohibida) y las aprobadas pueden incorporarse al inventario de IA en un solo paso.",
     "gateSkillDescription": "Registra herramientas de IA no aprobadas, cotéjalas con un catálogo de herramientas habituales, clasifícalas e incorpora las aprobadas al inventario.",
     "tabAll": "Todas ({count})",
@@ -1690,7 +1690,31 @@
     "badgeActive": "Activa",
     "badgeComingSoon": "Próximamente",
     "enable": "Activar",
-    "pricePerMonth": "{price}/mes"
+    "pricePerMonth": "{price}/mes",
+    "renews": "Se renueva el {date}",
+    "included": "Incluida",
+    "cancel": "Cancelar",
+    "selectRow": "Seleccionar {name}",
+    "activating": "Activando las funcionalidades premium…",
+    "paymentSuccess": "Hemos recibido el pago. Las funcionalidades premium ya están activas.",
+    "paymentError": "Hemos recibido el pago, pero no hemos podido activar las funcionalidades automáticamente. Recarga la página o escribe a <link>{email}</link>.",
+    "selectedSummary": "{count, plural, one {# funcionalidad seleccionada} other {# funcionalidades seleccionadas}}: {price}/mes",
+    "enableSelected": "Activar las seleccionadas ({count})",
+    "cancelConfirm": "¿Cancelar <strong>{name}</strong>? El acceso termina en ese momento y recibes un abono proporcional.",
+    "keepFeature": "Mantenerla",
+    "confirmCancel": "Confirmar la cancelación",
+    "planName": {
+      "free": "Gratuito",
+      "premium": "Premium"
+    },
+    "packageDescription": {
+      "CONFORMITY": "Plantilla de evaluación de la conformidad de los anexos VI y VII del RIA para sistemas de IA de alto riesgo.",
+      "BIAS_FAIRNESS": "Evaluación de sesgo y equidad de los sistemas de IA: paridad demográfica, igualdad de oportunidades y efecto desigual.",
+      "SHADOW_AI": "Registra las herramientas de IA que se usan en la organización, con un portal de autonotificación, un flujo de triaje y las normas de la organización sobre herramientas de IA.",
+      "VENDOR_CATALOG": "Catálogo de proveedores de IA revisados, con distintivos de cumplimiento, enlaces a sus centros de confianza y relleno automático al añadir proveedores.",
+      "IMPACT_ASSESSMENT": "Genera el documento de evaluación de impacto a partir de las respuestas dadas: un documento por sistema, limitado a los regímenes que se aplican, con los puntos abiertos señalados y no ocultos.",
+      "PROGRAM_REPORT": "El informe del programa listo para el consejo y el paquete completo del programa: políticas, registro, calendario de obligaciones, documentos por sistema y el manifiesto de integridad, en una sola descarga."
+    }
   },
   "settings": {
     "title": "Configuración",
@@ -1757,8 +1781,8 @@
     "packageName": {
       "CONFORMITY": "Evaluación de la conformidad",
       "BIAS_FAIRNESS": "Evaluación de sesgo y equidad",
-      "SHADOW_AI": "Detección de IA en la sombra",
-      "VENDOR_CATALOG": "Catálogo de proveedores de IA",
+      "SHADOW_AI": "Herramientas de IA en uso",
+      "VENDOR_CATALOG": "Catálogo de proveedores",
       "IMPACT_ASSESSMENT": "Documentos de evaluación de impacto",
       "PROGRAM_REPORT": "Informe y paquete del programa"
     },
@@ -1950,7 +1974,7 @@
         "guideMyRole": "¿Cuál es el papel de la organización?",
         "guideHighRisk": "¿Qué es el alto riesgo?",
         "guideWhichRules": "¿Qué normas me aplican?",
-        "aiRegistry": "Registro de IA",
+        "aiRegistry": "Los sistemas de IA de la organización",
         "riskClassification": "Clasificación de riesgos",
         "assessments": "Evaluaciones",
         "oversight": "Supervisión humana",
@@ -1959,8 +1983,8 @@
         "compliance": "Cumplimiento",
         "vendors": "Riesgo de proveedores",
         "policies": "Gestión de políticas",
-        "shadowAi": "Detección de IA en la sombra",
-        "vendorCatalog": "Catálogo de proveedores de IA",
+        "shadowAi": "Herramientas de IA en uso",
+        "vendorCatalog": "Catálogo de proveedores",
         "conformity": "Evaluación de conformidad",
         "biasFairness": "Sesgo y equidad",
         "roles": "Roles y permisos",
@@ -2034,7 +2058,7 @@
       "modulesTitle": "Módulos",
       "modules": {
         "aiRegistry": {
-          "title": "Registro de IA",
+          "title": "Los sistemas de IA de la organización",
           "description": "Inventaría todos los sistemas, modelos y agentes de IA con seguimiento del ciclo de vida y asignación de roles."
         },
         "riskClassification": {
@@ -2080,11 +2104,11 @@
       },
       "premiumModules": {
         "shadowAi": {
-          "title": "Detección de IA en la sombra",
-          "description": "Descubre herramientas de IA no autorizadas adoptadas por los empleados, contrastando con un catálogo de {count} herramientas conocidas. Portal de auto-declaración, flujo de triaje y promoción a la gobernanza formal."
+          "title": "Herramientas de IA en uso",
+          "description": "Registra las herramientas de IA que se usan en la organización, contrastándolas con un catálogo de {count} herramientas conocidas: un portal de autonotificación, un flujo de triaje y el paso a los sistemas de IA de la organización."
         },
         "vendorCatalog": {
-          "title": "Catálogo de proveedores de IA",
+          "title": "Catálogo de proveedores",
           "description": "Catálogo de {count} proveedores de IA con perfiles de riesgo, certificaciones de cumplimiento y metadatos de gobernanza."
         },
         "conformity": {
@@ -2124,7 +2148,7 @@
           "description": "Trece marcos de gobernanza de la IA, entre ellos AIUC-1 para agentes de IA, en catorce dimensiones: una rueda, una tabla, una comparación y un selector."
         }
       },
-      "licensingTitle": "Licencias Open Core",
+      "licensingTitle": "Licencias open core",
       "licensing": {
         "coreTitle": "Núcleo",
         "coreItems": [
@@ -2142,7 +2166,7 @@
         "premiumTitle": "Premium",
         "commercialConformity": "Plantilla de evaluación de conformidad (art. 43)",
         "commercialBiasFairness": "Evaluación de sesgo y equidad",
-        "commercialShadowAi": "Detección de IA en la sombra (catálogo de {count} herramientas)",
+        "commercialShadowAi": "Herramientas de IA en uso (catálogo de {count} herramientas)",
         "commercialVendorCatalog": "Catálogo de proveedores de IA (integración con vendor.watch)",
         "commercialDeliverables": "Entregables finales: el documento de evaluación de impacto, el informe del programa y el paquete del programa"
       },
@@ -2151,9 +2175,9 @@
       "badgePremium": "Premium"
     },
     "aiRegistry": {
-      "metaTitle": "Registro de IA: documentación de AI SENTINEL",
+      "metaTitle": "Los sistemas de IA de la organización: documentación de AI SENTINEL",
       "metaDescription": "Registra y gestiona todos los sistemas de IA, modelos y agentes con seguimiento del ciclo de vida.",
-      "title": "Registro de IA",
+      "title": "Los sistemas de IA de la organización",
       "intro": "El inventario central de todos los sistemas de IA de la organización. Todos los demás módulos (clasificación de riesgos, evaluaciones, supervisión, incidentes) hacen referencia a una ficha de sistema de IA. Construye una imagen completa del panorama de IA de la organización.",
       "lifecycleTitle": "Ciclo de vida del sistema",
       "lifecycleIntro": "Cada sistema de IA avanza por un ciclo de vida definido. Las transiciones de estado se registran con marcas de tiempo a efectos de auditoría.",
@@ -2654,7 +2678,7 @@
       "intro": "El artículo 50 del RIA impone deberes de transparencia que atraviesan los niveles de riesgo: incluso un chatbot de riesgo mínimo debe informar. AI SENTINEL registra las cuatro obligaciones del art. 50 por sistema de IA, las separa según quién las debe realmente y cuenta atrás el único plazo que tiene período transitorio.",
       "applicabilityTitle": "Cuándo se aplica",
       "applicabilityBody1": "El art. 50 se aplica desde el <strong>2 de agosto de 2026</strong> (art. 113, párrafo segundo). El art. 111(4), introducido por el Reglamento (UE) 2026/1744 (el Ómnibus Digital sobre IA, DO L de 24 de julio de 2026), da a los proveedores de sistemas generativos introducidos en el mercado <em>antes</em> de esa fecha hasta el <strong>2 de diciembre de 2026</strong> para cumplir la obligación de marcado legible por máquina del art. 50(2).",
-      "applicabilityBody2": "Ese período de gracia es el motivo por el que el Registro de IA pregunta si un sistema se introdujo en el mercado antes del 2 de agosto de 2026. Respóndelo con precisión: es el único dato que modifica el plazo de marcado, y el contador de «marcado vencido» del panel se deriva de él.",
+      "applicabilityBody2": "Ese período de gracia es el motivo por el que el registro de un sistema de IA pregunta si se introdujo en el mercado antes del 2 de agosto de 2026. Respóndelo con precisión: es el único dato que modifica el plazo de marcado, y el contador de «marcado vencido» del panel se deriva de él.",
       "obligationsTitle": "Las cuatro obligaciones",
       "obligationsIntro": "Dos corresponden al proveedor y dos al responsable del despliegue. Una misma organización suele desempeñar ambos papeles, pero registrarlas por separado es lo que te permite responder a un regulador que pregunte en calidad de qué actuabas.",
       "obligations": [
@@ -3055,10 +3079,10 @@
       ]
     },
     "shadowAi": {
-      "metaTitle": "Detección de IA en la sombra: documentación de AI SENTINEL",
-      "metaDescription": "Descubre las herramientas de IA no autorizadas en la organización. Portal de autonotificación, flujo de triaje y promoción a la gobernanza formal.",
+      "metaTitle": "Herramientas de IA en uso: documentación de AI SENTINEL",
+      "metaDescription": "Registra las herramientas de IA que se usan en la organización: un portal de autonotificación, un flujo de triaje y el paso a los sistemas de IA de la organización.",
       "premiumBadge": "Premium",
-      "title": "Detección de IA en la sombra",
+      "title": "Herramientas de IA en uso",
       "intro": "La IA en la sombra son las herramientas de IA adoptadas por los empleados sin el conocimiento o la aprobación de la organización. Los estudios sugieren que en torno al 60% de los empleados utiliza herramientas de IA no aprobadas en el trabajo: desde ChatGPT y Copilot hasta generadores de imágenes y analítica basada en IA. Las organizaciones no pueden gobernar sistemas de IA que desconocen.",
       "whatTitle": "¿Qué es la IA en la sombra?",
       "whatP1": "La IA en la sombra es el equivalente en IA del Shadow IT: el uso de herramientas, servicios y aplicaciones basados en IA por parte de los empleados sin autorización organizativa explícita. A diferencia de los proveedores contratados formalmente, que pasan por evaluación de riesgos y revisión contractual, las herramientas de IA en la sombra entran en la organización por adopción individual: un ingeniero instala un asistente de código, un abogado usa ChatGPT para revisar contratos, un equipo de marketing se suscribe a una herramienta de redacción con IA.",
@@ -3915,7 +3939,7 @@
       "ctaBody": "Abre cualquier sistema de IA y elige la pestaña Regímenes transfronterizos.",
       "ctaLink": "Leer la documentación transfronteriza",
       "offerTitle": "Módulos premium",
-      "offerBody": "Cada cuenta empieza con un piloto gratuito en la nube de TODO.LAW, con todos los módulos abiertos, también los premium. El Plan nube UE elimina los límites y conserva tus registros (consulta la página de precios); una instancia gestionada o tu propio hardware se ofrecen bajo presupuesto. En tu propio hardware, los módulos premium se activan con un archivo de licencia sin conexión."
+      "offerBody": "Cada cuenta empieza con un piloto gratuito en la nube de TODO.LAW, con todos los módulos abiertos, también los premium. El plan de pago (el Plan nube UE, en euros, o el Cloud Plan, en dólares) elimina los límites y conserva tus registros (consulta la página de precios); una instancia gestionada o tu propio hardware se ofrecen bajo presupuesto. En tu propio hardware, los módulos premium se activan con un archivo de licencia sin conexión."
     },
     "threatModel": {
       "metaTitle": "Modelado de amenazas para quien construye",
@@ -4670,7 +4694,7 @@
     "deleteFailed": "No se ha podido eliminar la instantánea",
     "delete": "Eliminar",
     "deleteConfirm": "¿Eliminar esta instantánea? El registro de lo que se informó en ese momento se pierde de forma permanente.",
-    "empty": "Aún no hay instantáneas. Se captura una automáticamente cada vez que exportas el informe del programa.",
+    "empty": "Aún no hay instantáneas. Se captura una automáticamente cada vez que se exporta el informe del programa.",
     "columnDate": "Capturada",
     "columnLabel": "Etiqueta",
     "columnReason": "Origen",
@@ -4811,7 +4835,7 @@
     "groupFuture": "Futuro",
     "groupPast": "Ya en vigor",
     "groupPastHint": "Fechas ya pasadas. Te siguen obligando; están aquí para que la lista de lo que viene se lea con claridad.",
-    "groupNotApplicable": "Comprobado, no te alcanza",
+    "groupNotApplicable": "Comprobado, no alcanza a la organización",
     "groupNotApplicableHint": "Evaluado frente a las jurisdicciones declaradas y descartado. Se conserva para que se vea qué se ha tenido en cuenta.",
     "showGroup": "Mostrar {count}",
     "hideGroup": "Ocultar",
@@ -4837,7 +4861,8 @@
       "inForce": "En vigor",
       "noDate": "Sin plazo fechado en este calendario",
       "empty": "Aún no se muestra nada como aplicable. Declara dónde opera la organización y responde a las preguntas del paso 1.2.",
-      "open": "Ver las normas y fechas"
+      "open": "Ver las normas y fechas",
+      "emptyHere": "Aún no se muestra nada como aplicable. Declara dónde opera la organización y responde a las preguntas de arriba."
     }
   },
   "admt": {
@@ -5008,7 +5033,7 @@
     },
     "screening": {
       "title": "Evaluación preliminar CCPA (California)",
-      "description": "Cinco respuestas que determinan qué obligaciones de California te alcanzan. Lo que dejes sin responder permanece visiblemente sin responder: el silencio nunca se interpreta como «no».",
+      "description": "Cinco respuestas que determinan qué obligaciones de California alcanzan a la organización. Lo que quede sin responder permanece visiblemente sin responder: el silencio nunca se interpreta como «no».",
       "saved": "Evaluación de California guardada",
       "auditIntro": "Las tres siguientes determinan la auditoría de ciberseguridad del artículo 9 conforme al § 7120(b). El tramo de ingresos por sí solo nunca genera la obligación: únicamente selecciona el calendario escalonado cuando esta ya existe.",
       "answer": {
@@ -5806,7 +5831,7 @@
   },
   "applicability": {
     "stepTitle": "Antes de empezar: qué se aplica a la organización",
-    "stepLead": "Unas pocas preguntas sencillas deciden qué leyes y marcos se te aplican, y los activan. Responde lo que sepas. «Todavía no lo sé» es una respuesta válida.",
+    "stepLead": "Unas pocas preguntas sencillas deciden qué leyes y marcos se aplican a la organización, y los activan. Responde lo que sepas. «Todavía no lo sé» es una respuesta válida.",
     "skip": "Todavía no lo sé, omitir por ahora",
     "roleTitle": "El papel de la organización con la IA",
     "questions": {
@@ -5816,7 +5841,7 @@
       },
       "usesAi": {
         "label": "¿Usa la organización sistemas de IA en su propio trabajo (como responsable del despliegue)?",
-        "hint": "Por ejemplo, asistentes de chat, herramientas de redacción o IA incluida en software que compras."
+        "hint": "Por ejemplo, asistentes de chat, herramientas de redacción o IA incluida en software que compra la organización."
       },
       "generalPurposeModel": {
         "label": "¿Vende u ofrece la organización un modelo de IA de uso general?",
@@ -5887,7 +5912,16 @@
       "thresholds": "Primero deciden los umbrales de tamaño de la CCPA; los pregunta la evaluación de California en Configuración.",
       "screeningDecides": "Qué normas se aplican depende de las preguntas de evaluación en Configuración."
     },
-    "answerScreening": "Responde a la evaluación en Configuración para añadir sus requisitos."
+    "answerScreening": "Responde a la evaluación en Configuración para añadir sus requisitos.",
+    "reasonsHere": {
+      "thresholds": "Primero deciden los umbrales de tamaño de la CCPA; los pregunta la evaluación de California que aparece más arriba.",
+      "screeningDecides": "Qué normas se aplican depende de las preguntas de evaluación que aparecen más arriba."
+    },
+    "reasonsBelow": {
+      "thresholds": "Primero deciden los umbrales de tamaño de la CCPA; los pregunta la evaluación de California que aparece más abajo.",
+      "screeningDecides": "Qué normas se aplican depende de las preguntas de evaluación que aparecen más abajo."
+    },
+    "answerScreeningBelow": "Responde a la evaluación que aparece más abajo para añadir sus requisitos."
   },
   "guided": {
     "navLabel": "Ruta del programa",
@@ -5984,8 +6018,8 @@
       },
       "threatModel": {
         "label": "Modelo de amenazas",
-        "why": "Anota qué puede fallar en los sistemas que construyes y cómo se detiene y se prueba cada riesgo.",
-        "do": "Anota qué puede fallar en la IA que construyes y cómo se detiene y se prueba cada riesgo.",
+        "why": "Anota qué puede fallar en los sistemas que construye la organización y cómo se detiene y se prueba cada riesgo.",
+        "do": "Anota qué puede fallar en la IA que construye la organización y cómo se detiene y se prueba cada riesgo.",
         "doneWhen": "al menos un modelo de amenazas ha dejado de ser borrador."
       },
       "vendorDueDiligence": {
@@ -6004,7 +6038,7 @@
         "label": "Supervisión humana",
         "why": "Los sistemas de alto riesgo necesitan una persona que pueda revisarlos, aprobarlos o detenerlos.",
         "do": "Nombra a una persona que pueda revisar, aprobar o detener cada sistema de alto riesgo.",
-        "doneWhen": "cada sistema de alto riesgo tiene una puerta de supervisión confirmada (sin sistemas de alto riesgo, basta con una puerta confirmada)."
+        "doneWhen": "cada sistema de alto riesgo tiene un control de supervisión confirmado (sin sistemas de alto riesgo, basta con un control confirmado)."
       },
       "transparency": {
         "label": "Avisar de que es IA",
@@ -6219,10 +6253,10 @@
       "threatModelActive": "saca un modelo de amenazas del borrador",
       "vendorsAssessed": "completa una revisión de diligencia debida para cada proveedor",
       "agentsReady": "prepara cada agente para la auditoría AIUC-1",
-      "highRiskGated": "establece una puerta de supervisión para cada sistema de alto riesgo",
-      "gateExists": "establece al menos una puerta de supervisión",
-      "gatesConfirmed": "confirma las puertas de supervisión en borrador",
-      "copiedGates": "confirma las puertas de supervisión copiadas de otro cliente",
+      "highRiskGated": "establece un control de supervisión para cada sistema de alto riesgo",
+      "gateExists": "establece al menos un control de supervisión",
+      "gatesConfirmed": "confirma los controles de supervisión en borrador",
+      "copiedGates": "confirma los controles de supervisión copiados de otro cliente",
       "systemsProfiled": "asigna un perfil de transparencia a cada sistema",
       "profilesConfirmed": "confirma los perfiles de transparencia en borrador",
       "mappingsAssessed": "asigna un estado a cada requisito vinculado",
@@ -6249,7 +6283,7 @@
   },
   "agentTesting": {
     "title": "Prueba los agentes de IA de la organización (AIUC-1)",
-    "subtitle": "AIUC-1 es la norma de certificación para agentes de IA. Anota cada prueba que hagas a un agente y mira cuánto le falta para la auditoría.",
+    "subtitle": "AIUC-1 es la norma de certificación para agentes de IA. Anota cada prueba que se haga a un agente y mira cuánto le falta para la auditoría.",
     "howItWorks": "En cada requisito, anota qué has hecho (con detalle suficiente para repetirlo), el resultado, qué has observado y dónde están las pruebas. Las pruebas se conservan: una prueba nueva se suma al registro, nunca sustituye a otra.",
     "readyRule": "Un agente está listo para la auditoría cuando cada requisito que le aplica tiene un resultado superado de los últimos tres meses, o un resultado parcial que una persona ha aceptado.",
     "readyExplained": "Cada requisito que aplica tiene un resultado superado vigente o un resultado parcial aceptado. La auditoría la hace un tercero acreditado.",
@@ -6501,14 +6535,14 @@
       "deptNote": "Se muestra un solo departamento. La cola de confirmación es de toda la organización y no aparece aquí.",
       "kind": {
         "assessment-review": "Evaluaciones por revisar",
-        "oversight-gate": "Puertas de supervisión por decidir",
+        "oversight-gate": "Controles de supervisión por decidir",
         "overdue-retest": "Repeticiones de prueba vencidas",
         "incident-open": "Incidentes abiertos",
         "review-queue": "Elementos por confirmar"
       },
       "hint": {
         "assessment-review": "Enviadas a revisión interna y a la espera de una decisión.",
-        "oversight-gate": "Una puerta está pendiente de una decisión.",
+        "oversight-gate": "Un control está pendiente de una decisión.",
         "overdue-retest": "La revisión o repetición de prueba de un modelo de amenazas está vencida.",
         "incident-open": "Hay un incidente abierto y aún sin resolver.",
         "review-queue": "Elementos redactados automáticamente que nadie ha confirmado todavía."
@@ -6625,7 +6659,7 @@
       "inDraft": "{count, plural, one {# modelo aún en borrador} other {# modelos aún en borrador}}",
       "notReviewed": "{count, plural, one {# proveedor sin revisión completada} other {# proveedores sin revisión completada}}",
       "agentsNotReady": "{count, plural, one {# agente no preparado para la auditoría} other {# agentes no preparados para la auditoría}}",
-      "noGate": "{count, plural, one {# sistema de alto riesgo sin puerta de supervisión} other {# sistemas de alto riesgo sin puerta de supervisión}}",
+      "noGate": "{count, plural, one {# sistema de alto riesgo sin control de supervisión} other {# sistemas de alto riesgo sin control de supervisión}}",
       "noProfile": "{count, plural, one {# sistema sin perfil de transparencia} other {# sistemas sin perfil de transparencia}}",
       "notAssessed": "{count, plural, one {# requisito sin estado} other {# requisitos sin estado}}",
       "noEvidence": "aún no hay evidencias adjuntas",
@@ -6718,7 +6752,7 @@
     "sourceOnRequest": "Conforme a la sección 13 de la AGPL-3.0, a quienes interactúan con este programa a través de una red se les ofrece, sin coste, el código fuente correspondiente completo de la versión en servicio aquí. El repositorio público del código se está terminando; hasta que se publique, solicita el código fuente correspondiente escribiendo a <mail>{email}</mail> y te lo facilitaremos.",
     "runningCommit": "Versión en servicio (commit): <code>{commit}</code>",
     "premiumTitle": "Skills premium",
-    "premium": "Las Skills premium opcionales y los complementos comerciales tienen una licencia aparte de Rindogatan LLC y no están cubiertos por la AGPL. Consulta los detalles en el repositorio del código fuente.",
+    "premium": "Las Skills premium opcionales y los complementos comerciales tienen una licencia aparte de RINDOGATAN LLC y no están cubiertos por la AGPL. Consulta los detalles en el repositorio del código fuente.",
     "back": "Volver a AI Sentinel"
   },
   "deleteRecord": {

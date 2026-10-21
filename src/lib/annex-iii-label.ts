@@ -44,13 +44,13 @@ export const ANNEX_III_FREE_TEXT_EN: Readonly<Record<string, string>> = {
 export const ANNEX_III_FORM_LABELS: Readonly<Record<"en" | "es", Record<(typeof ANNEX_III_FORM_KEYS)[number], string>>> = {
   en: {
     biometrics: "Biometrics",
-    critical_infrastructure: "Critical Infrastructure",
-    education: "Education & Vocational Training",
-    employment: "Employment & Workers Management",
-    essential_services: "Essential Private/Public Services",
-    law_enforcement: "Law Enforcement",
-    migration: "Migration, Asylum & Border Control",
-    justice: "Administration of Justice",
+    critical_infrastructure: "Critical infrastructure",
+    education: "Education & vocational training",
+    employment: "Employment & workers management",
+    essential_services: "Essential private/public services",
+    law_enforcement: "Law enforcement",
+    migration: "Migration, asylum & border control",
+    justice: "Administration of justice",
   },
   es: {
     biometrics: "Biometría",

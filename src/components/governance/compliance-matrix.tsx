@@ -115,7 +115,7 @@ function exportComplianceCSV(
     children?: Array<{ code: string; title: string; mapping: MappingData | null }>;
   }>
 ) {
-  const rows: string[][] = [["Code", "Title", "Status", "Notes", "Evidence Count"]];
+  const rows: string[][] = [["Code", "Title", "Status", "Notes", "Evidence count"]];
 
   for (const req of matrixData) {
     const status = req.mapping?.status ?? "NOT_ASSESSED";

@@ -22,7 +22,7 @@ export const vendorCatalogRouter = createTRPCRouter({
       if (!hasAccess) {
         throw new TRPCError({
           code: "FORBIDDEN",
-          message: "AI Vendor Catalog requires a premium subscription",
+          message: "The vendor catalog requires a premium subscription",
         });
       }
 
@@ -55,7 +55,7 @@ export const vendorCatalogRouter = createTRPCRouter({
       if (!hasAccess) {
         throw new TRPCError({
           code: "FORBIDDEN",
-          message: "AI Vendor Catalog requires a premium subscription",
+          message: "The vendor catalog requires a premium subscription",
         });
       }
 
@@ -86,7 +86,7 @@ export const vendorCatalogRouter = createTRPCRouter({
       if (!hasAccess) {
         throw new TRPCError({
           code: "FORBIDDEN",
-          message: "AI Vendor Catalog requires a premium subscription",
+          message: "The vendor catalog requires a premium subscription",
         });
       }
 
@@ -144,7 +144,7 @@ export const vendorCatalogRouter = createTRPCRouter({
       if (!hasAccess) {
         throw new TRPCError({
           code: "FORBIDDEN",
-          message: "AI Vendor Catalog requires a premium subscription",
+          message: "The vendor catalog requires a premium subscription",
         });
       }
 

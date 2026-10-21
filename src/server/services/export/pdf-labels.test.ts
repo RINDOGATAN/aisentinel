@@ -37,12 +37,12 @@ describe("export labels", () => {
     expect(strings(es).map(([k]) => k)).toEqual(strings(en).map(([k]) => k));
   });
 
-  it("keep the English wording the files printed before", () => {
-    expect(en.register.title).toBe("AI System Register");
-    expect(en.portfolio.coverTitle).toBe("AI Risk Assessment Portfolio");
-    expect(en.inventory.title).toBe("AI Model Inventory");
-    expect(en.compliance.coverTitle("EU AI Act")).toBe("EU AI Act Compliance Summary");
-    expect(en.compliance.progress(40)).toBe("Compliance Progress (40% of assessed)");
+  it("keep the English wording, in sentence case", () => {
+    expect(en.register.title).toBe("AI system register");
+    expect(en.portfolio.coverTitle).toBe("AI risk assessment portfolio");
+    expect(en.inventory.title).toBe("AI model inventory");
+    expect(en.compliance.coverTitle("EU AI Act")).toBe("EU AI Act compliance summary");
+    expect(en.compliance.progress(40)).toBe("Compliance progress (40% of assessed)");
     expect(en.audit.header[0]).toBe("Timestamp (UTC)");
     expect(statusLabel("PARTIALLY_COMPLIANT", "en")).toBe("PARTIALLY COMPLIANT");
     expect(riskLabel("HIGH", "en")).toBe("HIGH");

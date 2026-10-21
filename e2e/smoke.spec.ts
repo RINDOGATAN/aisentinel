@@ -147,7 +147,7 @@ test("a new user's first session, end to end", async ({ page }, testInfo) => {
     await page.locator("#name").fill(systemName);
     await choose(page, "Select technique", "Generative AI");
     await choose(page, "Select role", "Deployer");
-    await page.getByRole("button", { name: "Register System" }).click();
+    await page.getByRole("button", { name: "Register system" }).click();
     await page.waitForURL(/\/governance\/ai-registry\/(?!new)[^/]+$/);
     await expect(page.getByRole("heading", { name: systemName }).first()).toBeVisible();
   });
@@ -155,27 +155,27 @@ test("a new user's first session, end to end", async ({ page }, testInfo) => {
   await step(page, watch, "edit the AI system", async () => {
     await page.getByRole("button", { name: "Edit", exact: true }).first().click();
     await page.locator("#edit-description").fill("Edited by the smoke walk.");
-    await page.getByRole("button", { name: "Save Changes" }).click();
+    await page.getByRole("button", { name: "Save changes" }).click();
     await expect(page.getByRole("dialog")).toBeHidden();
   });
 
   await step(page, watch, "create a vendor and open it", async () => {
     await page.goto("/governance/vendors/new");
     await page.locator("#name").fill(`Smoke vendor ${run}`);
-    await page.getByRole("button", { name: "Add Vendor" }).click();
+    await page.getByRole("button", { name: "Add vendor" }).click();
     await page.waitForURL(/\/governance\/vendors\/(?!new)[^/]+$/);
   });
 
   await step(page, watch, "create a policy, open it and edit it", async () => {
     await page.goto("/governance/policies/new");
     await page.locator("#title").fill(`Smoke policy ${run}`);
-    await choose(page, "Select policy type", "AI Usage");
-    await page.getByRole("button", { name: "Create Policy" }).click();
+    await choose(page, "Select policy type", "AI usage");
+    await page.getByRole("button", { name: "Create policy" }).click();
     await page.waitForURL(/\/governance\/policies\/(?!new)[^/]+$/);
-    await page.getByRole("button", { name: "Edit Content" }).click();
+    await page.getByRole("button", { name: "Edit content" }).click();
     const dialog = page.getByRole("dialog");
     await dialog.locator("textarea").first().fill("Edited by the smoke walk.");
-    await dialog.getByRole("button", { name: "Save Changes" }).click();
+    await dialog.getByRole("button", { name: "Save changes" }).click();
     await expect(dialog).toBeHidden();
   });
 
@@ -185,11 +185,11 @@ test("a new user's first session, end to end", async ({ page }, testInfo) => {
     await page.locator("#description").fill("Reported by the smoke walk.");
     await choose(page, "Select incident type", "Hallucination");
     await choose(page, "Select severity", "High");
-    await page.getByRole("button", { name: "Report Incident" }).click();
+    await page.getByRole("button", { name: "Report incident" }).click();
     await page.waitForURL(/\/governance\/incidents\/(?!new)[^/]+$/);
-    await page.getByRole("tab", { name: "Root Cause" }).click();
+    await page.getByRole("tab", { name: "Root cause" }).click();
     await page.locator("#rootCauseDescription").fill("Found by the smoke walk.");
-    await page.getByRole("button", { name: "Save Root Cause" }).click();
+    await page.getByRole("button", { name: "Save root cause" }).click();
     await expect(page.locator("#rootCauseDescription")).toHaveValue("Found by the smoke walk.");
   });
 
@@ -198,8 +198,8 @@ test("a new user's first session, end to end", async ({ page }, testInfo) => {
     // The system picker searches by name (src/components/governance/system-picker.tsx).
     await page.getByTestId("system-picker-input").fill(systemName);
     await page.getByRole("option", { name: new RegExp(systemName) }).click();
-    await page.locator("button:not([disabled])").filter({ hasText: "AI Risk" }).first().click();
-    await page.getByRole("button", { name: "Create Assessment" }).click();
+    await page.locator("button:not([disabled])").filter({ hasText: "AI risk" }).first().click();
+    await page.getByRole("button", { name: "Create assessment" }).click();
     await page.waitForURL(/\/governance\/assessments\/(?!new)[^/]+$/);
     const field = page.locator("main textarea").first();
     await field.fill("Answered by the smoke walk.");

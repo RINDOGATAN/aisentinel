@@ -149,10 +149,13 @@ const SCREENING_GATED: ReadonlySet<ApplicabilityItem["id"]> = new Set([
 function ItemLine({
   item,
   screeningLink,
+  screeningBelow = false,
 }: {
   item: ApplicabilityItem;
   /** Where the screening is, when it is still to answer; null hides the line. */
   screeningLink: { href: string; newTab: boolean } | null;
+  /** The California screening is further down the same page (Settings). */
+  screeningBelow?: boolean;
 }) {
   const t = useTranslations("applicability");
   const Icon = item.state === "applies" ? CheckCircle2 : CircleHelp;
@@ -169,7 +172,9 @@ function ItemLine({
         <span className="block text-sm font-medium">{t(`items.${item.id}`)}</span>
         <span className="block text-xs text-muted-foreground">
           <span className="sr-only">{t("whyLabel")}: </span>
-          {item.reasons.map((r) => t(`reasons.${r}`)).join(" ")}
+          {item.reasons
+            .map((r) => (screeningBelow && t.has(`reasonsBelow.${r}`) ? t(`reasonsBelow.${r}`) : t(`reasons.${r}`)))
+            .join(" ")}
         </span>
         {screeningLink && SCREENING_GATED.has(item.id) && (
           <a
@@ -177,7 +182,7 @@ function ItemLine({
             {...(screeningLink.newTab ? { target: "_blank", rel: "noopener noreferrer" } : {})}
             className="block text-xs text-primary underline underline-offset-2 hover:text-primary/80"
           >
-            {t("answerScreening")}
+            {t(screeningBelow ? "answerScreeningBelow" : "answerScreening")}
           </a>
         )}
       </span>
@@ -189,11 +194,14 @@ export function ApplicabilityResult({
   jurisdictions,
   answers,
   screeningInNewTab = false,
+  screeningBelow = false,
 }: {
   jurisdictions: readonly JurisdictionId[];
   answers: ApplicabilityAnswers;
   /** Open the screening link in a new tab (the quick start keeps its place). */
   screeningInNewTab?: boolean;
+  /** The California screening is further down the same page (Settings): the lines say "below". */
+  screeningBelow?: boolean;
 }) {
   const t = useTranslations("applicability");
   // The obligations step is "done" once the screening has an answer; until
@@ -202,7 +210,9 @@ export function ApplicabilityResult({
   const screeningLink =
     pathSteps?.obligations === "done"
       ? null
-      : { href: `/governance/settings#${SCREENING_ANCHOR}`, newTab: screeningInNewTab };
+      : screeningBelow
+        ? { href: `#${SCREENING_ANCHOR}`, newTab: false }
+        : { href: `/governance/settings#${SCREENING_ANCHOR}`, newTab: screeningInNewTab };
   const items = evaluateApplicability(jurisdictions, answers);
   const applies = items.filter((i) => i.state === "applies");
   const check = items.filter((i) => i.state === "check");
@@ -217,7 +227,7 @@ export function ApplicabilityResult({
         {applies.length > 0 ? (
           <ul className="space-y-2.5">
             {applies.map((item) => (
-              <ItemLine key={item.id} item={item} screeningLink={screeningLink} />
+              <ItemLine key={item.id} item={item} screeningLink={screeningLink} screeningBelow={screeningBelow} />
             ))}
           </ul>
         ) : (
@@ -229,7 +239,7 @@ export function ApplicabilityResult({
           <h3 className="text-sm font-semibold">{t("checkTitle")}</h3>
           <ul className="space-y-2.5">
             {check.map((item) => (
-              <ItemLine key={item.id} item={item} screeningLink={screeningLink} />
+              <ItemLine key={item.id} item={item} screeningLink={screeningLink} screeningBelow={screeningBelow} />
             ))}
           </ul>
         </div>
@@ -310,6 +320,7 @@ export function ApplicabilityCard({
                 (org?.operatingJurisdictions as JurisdictionId[] | undefined) ?? data.jurisdictions
               }
               answers={answers}
+              screeningBelow
             />
           </div>
         )}

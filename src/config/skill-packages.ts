@@ -11,6 +11,6 @@ export const SKILL_PACKAGE_IDS: Record<string, string> = {
 export const SKILL_DISPLAY_NAMES: Record<string, string> = {
   CONFORMITY: "Conformity Assessment (Art. 43)",
   BIAS_FAIRNESS: "Bias & Fairness Assessment",
-  SHADOW_AI: "Shadow AI Discovery",
-  VENDOR_CATALOG: "AI Vendor Catalog",
+  SHADOW_AI: "AI tools in use",
+  VENDOR_CATALOG: "Vendor catalog",
 };

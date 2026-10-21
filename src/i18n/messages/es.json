@@ -1690,7 +1690,31 @@
     "badgeActive": "Activa",
     "badgeComingSoon": "Próximamente",
     "enable": "Activar",
-    "pricePerMonth": "{price}/mes"
+    "pricePerMonth": "{price}/mes",
+    "renews": "Se renueva el {date}",
+    "included": "Incluida",
+    "cancel": "Cancelar",
+    "selectRow": "Seleccionar {name}",
+    "activating": "Activando las funcionalidades premium…",
+    "paymentSuccess": "Hemos recibido el pago. Las funcionalidades premium ya están activas.",
+    "paymentError": "Hemos recibido el pago, pero no hemos podido activar las funcionalidades automáticamente. Recarga la página o escribe a <link>{email}</link>.",
+    "selectedSummary": "{count, plural, one {# funcionalidad seleccionada} other {# funcionalidades seleccionadas}}: {price}/mes",
+    "enableSelected": "Activar las seleccionadas ({count})",
+    "cancelConfirm": "¿Cancelar <strong>{name}</strong>? El acceso termina en ese momento y recibes un abono proporcional.",
+    "keepFeature": "Mantenerla",
+    "confirmCancel": "Confirmar la cancelación",
+    "planName": {
+      "free": "Gratuito",
+      "premium": "Premium"
+    },
+    "packageDescription": {
+      "CONFORMITY": "Plantilla de evaluación de la conformidad de los anexos VI y VII del RIA para sistemas de IA de alto riesgo.",
+      "BIAS_FAIRNESS": "Evaluación de sesgo y equidad de los sistemas de IA: paridad demográfica, igualdad de oportunidades y efecto desigual.",
+      "SHADOW_AI": "Registra las herramientas de IA que se usan en la organización, con un portal de autonotificación, un flujo de triaje y las normas de la organización sobre herramientas de IA.",
+      "VENDOR_CATALOG": "Catálogo de proveedores de IA revisados, con distintivos de cumplimiento, enlaces a sus centros de confianza y relleno automático al añadir proveedores.",
+      "IMPACT_ASSESSMENT": "Genera el documento de evaluación de impacto a partir de las respuestas dadas: un documento por sistema, limitado a los regímenes que se aplican, con los puntos abiertos señalados y no ocultos.",
+      "PROGRAM_REPORT": "El informe del programa listo para el consejo y el paquete completo del programa: políticas, registro, calendario de obligaciones, documentos por sistema y el manifiesto de integridad, en una sola descarga."
+    }
   },
   "settings": {
     "title": "Configuración",
@@ -3915,7 +3939,7 @@
       "ctaBody": "Abre cualquier sistema de IA y elige la pestaña Regímenes transfronterizos.",
       "ctaLink": "Leer la documentación transfronteriza",
       "offerTitle": "Módulos premium",
-      "offerBody": "Cada cuenta empieza con un piloto gratuito en la nube de TODO.LAW, con todos los módulos abiertos, también los premium. El Plan nube UE elimina los límites y conserva tus registros (consulta la página de precios); una instancia gestionada o tu propio hardware se ofrecen bajo presupuesto. En tu propio hardware, los módulos premium se activan con un archivo de licencia sin conexión."
+      "offerBody": "Cada cuenta empieza con un piloto gratuito en la nube de TODO.LAW, con todos los módulos abiertos, también los premium. El plan de pago (el Plan nube UE, en euros, o el Cloud Plan, en dólares) elimina los límites y conserva tus registros (consulta la página de precios); una instancia gestionada o tu propio hardware se ofrecen bajo presupuesto. En tu propio hardware, los módulos premium se activan con un archivo de licencia sin conexión."
     },
     "threatModel": {
       "metaTitle": "Modelado de amenazas para quien construye",

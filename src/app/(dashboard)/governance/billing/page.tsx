@@ -20,8 +20,14 @@ import { formatPrice } from "@/lib/currency";
 import { useChargeCurrency } from "@/components/charge-currency";
 import { useFormatDate } from "@/lib/use-format-date";
 
+/** "com.todolaw.aisentinel.shadow-ai" -> "SHADOW_AI", the key of the package's name and description. */
+function packageKey(skillId: string): string {
+  return (skillId.split(".").pop() ?? skillId).toUpperCase().replace(/-/g, "_");
+}
+
 export default function BillingPage() {
   const t = useTranslations("billing");
+  const tSkills = useTranslations("skills");
   // The currency the customer will be charged (src/components/charge-currency.tsx).
   const currency = useChargeCurrency();
   const { formatDate: fmtDate } = useFormatDate();
@@ -127,8 +133,14 @@ export default function BillingPage() {
     return {
       id: pkg.id,
       skillId: pkg.skillId,
-      name: pkg.name,
-      description: pkg.description,
+      // The menu names and descriptions in the reader's language; the stored text only for a package
+      // the messages do not know.
+      name: tSkills.has(`packageName.${packageKey(pkg.skillId)}`)
+        ? tSkills(`packageName.${packageKey(pkg.skillId)}`)
+        : pkg.name,
+      description: t.has(`packageDescription.${packageKey(pkg.skillId)}`)
+        ? t(`packageDescription.${packageKey(pkg.skillId)}`)
+        : pkg.description,
       priceAmount: pkg.priceAmount,
       purchasable: !!pkg.stripePriceId,
       isActive,
@@ -185,7 +197,7 @@ export default function BillingPage() {
         <Card className="border-primary/30 bg-primary/5">
           <CardContent className="pt-6 flex items-center gap-3">
             <Loader2 className="h-5 w-5 animate-spin text-primary" />
-            <p className="text-sm">Activating your premium features...</p>
+            <p className="text-sm">{t("activating")}</p>
           </CardContent>
         </Card>
       )}
@@ -193,9 +205,7 @@ export default function BillingPage() {
         <Card className="border-[#66b280]/30 bg-[#66b280]/5">
           <CardContent className="pt-6 flex items-center gap-3">
             <CheckCircle2 className="h-5 w-5 text-[#66b280]" />
-            <p className="text-sm">
-              Payment successful! Your premium features are now active.
-            </p>
+            <p className="text-sm">{t("paymentSuccess")}</p>
           </CardContent>
         </Card>
       )}
@@ -203,15 +213,14 @@ export default function BillingPage() {
         <Card className="border-destructive bg-destructive/10 text-foreground">
           <CardContent className="pt-6">
             <p className="text-sm">
-              We received your payment but couldn&apos;t activate the features
-              automatically. Please refresh the page or contact{" "}
-              <a
-                href={`mailto:${brand.supportEmail}`}
-                className="text-primary underline"
-              >
-                {brand.supportEmail}
-              </a>
-              .
+              {t.rich("paymentError", {
+                email: brand.supportEmail,
+                link: (chunks) => (
+                  <a href={`mailto:${brand.supportEmail}`} className="text-primary underline">
+                    {chunks}
+                  </a>
+                ),
+              })}
             </p>
           </CardContent>
         </Card>
@@ -235,7 +244,7 @@ export default function BillingPage() {
           <Card>
             <CardContent className="pt-6">
               <p className="text-sm text-muted-foreground">{t("summaryPlan")}</p>
-              <p className="text-2xl font-bold capitalize">{status?.plan ?? "free"}</p>
+              <p className="text-2xl font-bold capitalize">{t(`planName.${status?.plan ?? "free"}`)}</p>
             </CardContent>
           </Card>
         </div>
@@ -262,7 +271,7 @@ export default function BillingPage() {
                 <Checkbox
                   checked={selectedIds.has(row.id)}
                   onCheckedChange={() => toggleSelect(row.id)}
-                  aria-label={`Select ${row.name}`}
+                  aria-label={t("selectRow", { name: row.name })}
                 />
               )}
 
@@ -288,11 +297,11 @@ export default function BillingPage() {
                   <>
                     {row.renewsAt ? (
                       <span className="text-xs text-muted-foreground">
-                        Renews {row.renewsAt}
+                        {t("renews", { date: row.renewsAt })}
                       </span>
                     ) : row.licenseType === "PERPETUAL" ? (
                       <Badge variant="secondary" className="text-xs">
-                        Included
+                        {t("included")}
                       </Badge>
                     ) : null}
                     {features.selfServiceUpgrade &&
@@ -309,7 +318,7 @@ export default function BillingPage() {
                             })
                           }
                         >
-                          Cancel
+                          {t("cancel")}
                         </Button>
                       )}
                   </>
@@ -317,11 +326,11 @@ export default function BillingPage() {
                   <>
                     {features.stripeEnabled ? (
                       <span className="text-sm text-muted-foreground">
-                        {formatPrice((row.priceAmount ?? 900) / 100, currency)}/mo
+                        {t("pricePerMonth", { price: formatPrice((row.priceAmount ?? 900) / 100, currency) })}
                       </span>
                     ) : (
                       <Badge variant="secondary" className="text-xs">
-                        Included
+                        {t("included")}
                       </Badge>
                     )}
                     {features.selfServiceUpgrade && row.purchasable ? (
@@ -349,11 +358,13 @@ export default function BillingPage() {
           {features.selfServiceUpgrade && selectedIds.size > 0 && (
             <div className="flex items-center justify-between rounded-lg border border-primary/30 bg-primary/5 p-3 mt-4">
               <p className="text-sm text-muted-foreground">
-                {selectedIds.size} feature{selectedIds.size !== 1 ? "s" : ""} selected
-                &mdash; {formatPrice(selectedIds.size * 9, currency)}/month
+                {t("selectedSummary", {
+                  count: selectedIds.size,
+                  price: formatPrice(selectedIds.size * 9, currency),
+                })}
               </p>
               <Button size="sm" onClick={handleEnableSelected}>
-                Enable Selected ({selectedIds.size})
+                {t("enableSelected", { count: selectedIds.size })}
               </Button>
             </div>
           )}
@@ -365,8 +376,10 @@ export default function BillingPage() {
         <Card className="border-destructive">
           <CardContent className="pt-6">
             <p className="text-sm">
-              Cancel <span className="font-semibold">{cancelSkill.name}</span>?
-              You&apos;ll lose access immediately and receive a prorated credit.
+              {t.rich("cancelConfirm", {
+                name: cancelSkill.name,
+                strong: (chunks) => <span className="font-semibold">{chunks}</span>,
+              })}
             </p>
             <div className="mt-4 flex gap-2">
               <Button
@@ -375,7 +388,7 @@ export default function BillingPage() {
                 onClick={() => setCancelSkill(null)}
                 disabled={cancelFeature.isPending}
               >
-                Keep Feature
+                {t("keepFeature")}
               </Button>
               <Button
                 variant="destructive"
@@ -391,7 +404,7 @@ export default function BillingPage() {
                 {cancelFeature.isPending ? (
                   <Loader2 className="h-4 w-4 animate-spin mr-1" />
                 ) : null}
-                Confirm Cancellation
+                {t("confirmCancel")}
               </Button>
             </div>
           </CardContent>

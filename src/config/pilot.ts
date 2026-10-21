@@ -344,6 +344,15 @@ export const CLOUD_PLAN_PRICE_ES: Record<Currency, string> = {
   EUR: "179 € al mes o 1.800 € al año",
 };
 
+/**
+ * The plan's Spanish name follows the charge currency, as on the storefront: the EU Cloud Plan
+ * ("Plan nube UE") is sold in euros; the plan sold in US dollars keeps its name, "Cloud Plan".
+ */
+export const CLOUD_PLAN_NAME_ES: Record<Currency, string> = {
+  USD: "Cloud Plan",
+  EUR: "Plan nube UE",
+};
+
 export const PILOT_END_BAR_COPY: Record<
   PilotLocale,
   {
@@ -370,9 +379,9 @@ export const PILOT_END_BAR_COPY: Record<
   },
   es: {
     trial: (days, date, currency = "EUR") =>
-      `Gratis durante ${days} días, hasta el ${date}. Después, exporta tu programa o sigue con el Plan nube UE: ${CLOUD_PLAN_PRICE_ES[currency]}.`,
+      `Gratis durante ${days} días, hasta el ${date}. Después, exporta tu programa o sigue con el ${CLOUD_PLAN_NAME_ES[currency]}: ${CLOUD_PLAN_PRICE_ES[currency]}.`,
     trialTransition: (date, currency = "EUR") =>
-      `Gratis hasta el ${date}. Después, exporta tu programa o sigue con el Plan nube UE: ${CLOUD_PLAN_PRICE_ES[currency]}.`,
+      `Gratis hasta el ${date}. Después, exporta tu programa o sigue con el ${CLOUD_PLAN_NAME_ES[currency]}: ${CLOUD_PLAN_PRICE_ES[currency]}.`,
     ending: (date) => `Tu piloto termina el ${date}. Pasa al plan de pago para seguir editando con todos tus registros.`,
     readOnly: "Tu piloto ha terminado: la organización está en solo lectura y puedes exportarla cuando quieras.",
     pricing: "Ver precios",

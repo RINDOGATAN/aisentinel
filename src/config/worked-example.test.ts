@@ -22,7 +22,10 @@ import {
   WORKED_EXAMPLE_CHROME,
   WORKED_EXAMPLE_JURISDICTIONS,
   WORKED_EXAMPLE_VERSION,
+  SAMPLE_COUNT_LABELS,
+  formatSampleCounts,
 } from "./worked-example";
+import { SAMPLE_ENTITY_TYPES } from "@/server/services/sample/worked-example";
 import { allUnifiedQuestions } from "./unified-assessment";
 import { JURISDICTIONS } from "./jurisdictions";
 
@@ -197,6 +200,25 @@ describe("the Spanish is Castilian and addresses the reader as tú", () => {
       expect(c.jurisdictionNote).toMatch(locale === "es" ? /Unión Europea/ : /European Union/);
       expect(c.jurisdictionNote).toMatch(locale === "es" ? /restablece/ : /puts back/);
       expect(c.markedNote).toMatch(locale === "es" ? /datos de muestra/ : /sample data/);
+    }
+  });
+});
+
+describe("sample-data counts line", () => {
+  it("names each kind of record in the reader's language, never the model name", () => {
+    const counts = { AIVendor: 1, AISystem: 3, RiskClassification: 3, AIPolicy: 1, OversightGate: 1, AIIncident: 1, AIAssessmentTemplate: 1, AIAssessment: 1 };
+    const en = formatSampleCounts(counts, "en");
+    const es = formatSampleCounts(counts, "es");
+    expect(en).toBe("1 vendor · 3 AI systems · 3 risk classifications · 1 policy · 1 oversight review · 1 incident · 1 assessment template · 1 impact assessment");
+    expect(es).toContain("3 sistemas de IA");
+    expect(es).toContain("1 proveedor");
+    for (const line of [en, es]) expect(line).not.toMatch(/AIVendor|AISystem|RiskClassification|AIPolicy|OversightGate|AIIncident|AIAssessment/);
+  });
+
+  it("has a label for every model the example writes to", () => {
+    for (const type of SAMPLE_ENTITY_TYPES.filter((t) => t !== "Organization")) {
+      expect(SAMPLE_COUNT_LABELS.en[type]).toBeDefined();
+      expect(SAMPLE_COUNT_LABELS.es[type]).toBeDefined();
     }
   });
 });

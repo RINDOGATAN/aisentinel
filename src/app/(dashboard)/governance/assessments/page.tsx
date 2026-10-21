@@ -51,12 +51,13 @@ const assessmentTypeColors: Record<string, string> = {
   CUSTOM: "border-muted-foreground text-muted-foreground",
 };
 
+/** The badge on one assessment: singular labels, apart from the plural counters. */
 const statusKeys: Record<string, string> = {
-  DRAFT: "statsDraft",
-  IN_PROGRESS: "statsInProgress",
-  UNDER_REVIEW: "statsUnderReview",
-  APPROVED: "statsApproved",
-  REJECTED: "Rejected",
+  DRAFT: "badgeDraft",
+  IN_PROGRESS: "badgeInProgress",
+  UNDER_REVIEW: "badgeUnderReview",
+  APPROVED: "badgeApproved",
+  REJECTED: "badgeRejected",
 };
 
 const statusColors: Record<string, string> = {

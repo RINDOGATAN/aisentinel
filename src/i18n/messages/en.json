@@ -134,6 +134,7 @@
     "partial": "partial",
     "nonCompliant": "non-compliant",
     "notAssessed": "not assessed",
+    "notApplicable": "not applicable",
     "updatedWhen": "Updated {when}",
     "roleProviderShort": "Provider"
   },
@@ -287,7 +288,7 @@
   },
   "aiRegistryDetail": {
     "notFound": "AI system not found",
-    "backToRegistry": "Back to Registry",
+    "backToRegistry": "Back to the AI systems",
     "overview": "Overview",
     "intendedPurpose": "Intended Purpose",
     "technique": "Technique",
@@ -675,6 +676,11 @@
     "statsInProgress": "In Progress",
     "statsUnderReview": "Under Review",
     "statsApproved": "Approved",
+    "badgeDraft": "Draft",
+    "badgeInProgress": "In progress",
+    "badgeUnderReview": "Under review",
+    "badgeApproved": "Approved",
+    "badgeRejected": "Rejected",
     "emptyTitle": "No assessments found",
     "emptySearchHint": "Try different search terms",
     "emptyHint": "Start by creating the organization's first assessment",
@@ -6902,5 +6908,13 @@
       "otherAddress": "This invitation was sent to another email address.",
       "inviterGone": "This invitation is no longer valid. Ask for a new one."
     }
+  },
+  "notFound": {
+    "pageTitle": "Page not found",
+    "code": "Error 404",
+    "title": "This page could not be found",
+    "body": "The address may be mistyped, or the page may have moved. The organization's records are not affected.",
+    "dashboard": "Go to the dashboard",
+    "home": "Go to the home page"
   }
 }

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025-2026 Rindogatan LLC
 
+import { compliancePercent as computeCompliancePercent } from "@/lib/compliance-percent";
 import { z } from "zod";
 import { editConfirmation, keepSystemAfterEdit } from "@/server/services/provenance/edit-stamp";
 import { TRPCError } from "@trpc/server";
@@ -630,8 +631,12 @@ export const complianceRouter = createTRPCRouter({
       // Over every applicable requirement, as each framework's figure is: a
       // share of the assessed ones alone read 100% with nothing compliant.
       const applicable = total - totalNotApplicable;
-      const compliancePercent =
-        applicable > 0 ? Math.round(((totalCompliant + totalPartial) / applicable) * 100) : 0;
+      const compliancePercent = computeCompliancePercent({
+        compliant: totalCompliant,
+        partial: totalPartial,
+        nonCompliant: totalNonCompliant,
+        notAssessed: applicable - totalCompliant - totalPartial - totalNonCompliant,
+      });
 
       return {
         total,

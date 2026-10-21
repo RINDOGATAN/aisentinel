@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025-2026 Rindogatan LLC
 
+import { compliancePercent } from "@/lib/compliance-percent";
 import { useEffect, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -958,11 +959,7 @@ export default function AISystemDetailPage() {
             {/* Per-framework breakdown */}
             <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-3">
               {scorecard.frameworks.map((fw) => {
-                const applicable = fw.compliant + fw.partial + fw.nonCompliant + fw.notAssessed;
-                const fwPercent =
-                  applicable > 0
-                    ? Math.round(((fw.compliant + fw.partial) / applicable) * 100)
-                    : 0;
+                const fwPercent = compliancePercent(fw);
                 return (
                   <div key={fw.frameworkId} className="rounded-xl border border-border p-3 sm:p-4 space-y-2 sm:space-y-3">
                     <div className="flex items-center justify-between">

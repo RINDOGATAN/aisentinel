@@ -664,7 +664,8 @@
         "survey": "Una breve encuesta a los compañeros: pregunta qué herramientas de IA usan, para qué y con qué datos."
       },
       "begin": "Empezar"
-    }
+    },
+    "vendorImportLimit": "Hasta {count} proveedores"
   },
   "assessments": {
     "title": "Evaluaciones de impacto",
@@ -6234,7 +6235,7 @@
       "quickstartRun": "completa el inicio rápido hasta el final",
       "copiedReviewed": "revisa lo copiado de otro cliente",
       "placesDeclared": "declara dónde opera la organización",
-      "screeningApplicability": "responde a la comprobación de lo que se aplica",
+      "screeningApplicability": "responde sí o no al menos a una de estas preguntas",
       "screeningCalifornia": "responde a la pregunta de California sobre empresa sujeta",
       "screeningRegimes": "responde a las preguntas del cribado estatal",
       "copiedObligations": "vuelve a guardar los lugares y las respuestas copiados de otro cliente",
@@ -6667,7 +6668,8 @@
       "personalDataUnassessed": "{count, plural, one {# sistema con datos personales y sin análisis} other {# sistemas con datos personales y sin análisis}}",
       "withoutApprovedAssessment": "{count, plural, one {# sistema sin evaluación aprobada} other {# sistemas sin evaluación aprobada}}",
       "aiDraft": "redactado por IA a petición, para revisar antes de usarlo",
-      "noRecords": "aún no hay nada registrado"
+      "noRecords": "aún no hay nada registrado",
+      "riskLevelToConfirm": "{count, plural, one {# nivel de riesgo aún en borrador, por confirmar} other {# niveles de riesgo aún en borrador, por confirmar}}"
     },
     "readyLine": "El contenido es real y está confirmado.",
     "format": {

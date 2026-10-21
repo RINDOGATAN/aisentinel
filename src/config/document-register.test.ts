@@ -148,11 +148,26 @@ describe("the four states", () => {
       policiesUnconfirmed: 3,
     });
     expect(s.riskClassification).toEqual({ state: "draft", gaps: [{ key: "toConfirm", count: 2 }] });
-    expect(s.humanReviewProtocol).toEqual({ state: "draft", gaps: [{ key: "toConfirm", count: 1 }] });
+    // The protocol relies on which systems are high-risk: a drafted risk level keeps it a draft too.
+    expect(s.humanReviewProtocol).toEqual({
+      state: "draft",
+      gaps: [
+        { key: "riskLevelToConfirm", count: 2 },
+        { key: "toConfirm", count: 1 },
+      ],
+    });
     expect(s.notice).toEqual({ state: "draft", gaps: [{ key: "toConfirm", count: 2 }] });
     expect(s.policies).toEqual({ state: "draft", gaps: [{ key: "toConfirm", count: 3 }] });
     expect(s.programReport).toEqual({ state: "draft", gaps: [{ key: "toConfirm", count: 5 }] });
     expect(s.boardReport).toEqual({ state: "draft", gaps: [{ key: "toConfirm", count: 5 }] });
+  });
+
+  it("keeps the human review protocol a draft while risk levels are drafts, even with no high-risk system", () => {
+    const s = stateOf({ ...COMPLETE, highRisk: 0, highRiskWithGate: 0, gatesUnconfirmed: 0, classificationsUnconfirmed: 3 });
+    expect(s.humanReviewProtocol).toEqual({ state: "draft", gaps: [{ key: "riskLevelToConfirm", count: 3 }] });
+    expect(stateOf({ ...COMPLETE, highRisk: 0, highRiskWithGate: 0, gatesUnconfirmed: 0 }).humanReviewProtocol).toEqual({
+      state: "ready",
+    });
   });
 
   it("names each gap with its count", () => {

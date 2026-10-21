@@ -63,7 +63,7 @@ describe("the step band", () => {
   it("sends 'Finish this step' to where the first open condition is met", () => {
     const html = band("obligations", { ...EMPTY_PATH_COUNTS, jurisdictions: 1 });
     expect(html).toContain('href="/governance/obligations#questions"');
-    expect(html).toContain("Answer the applicability check");
+    expect(html).toContain("Answer at least one of these questions yes or no");
   });
 
   it("leaves out 'Finish this step' where it would lead to the page already open", () => {

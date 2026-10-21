@@ -664,7 +664,8 @@
         "survey": "A short survey of colleagues: ask which AI tools they use, for what, and with what data."
       },
       "begin": "Begin"
-    }
+    },
+    "vendorImportLimit": "Up to {count} vendors"
   },
   "assessments": {
     "title": "Impact assessments",
@@ -6234,7 +6235,7 @@
       "quickstartRun": "run the quick start to the end",
       "copiedReviewed": "review what was copied from another client",
       "placesDeclared": "declare where the organization operates",
-      "screeningApplicability": "answer the applicability check",
+      "screeningApplicability": "answer at least one of these questions yes or no",
       "screeningCalifornia": "answer the California covered-business question",
       "screeningRegimes": "answer the state screening questions",
       "copiedObligations": "save again the places and answers copied from another client",
@@ -6667,7 +6668,8 @@
       "personalDataUnassessed": "{count, plural, one {# system with personal data and no analysis} other {# systems with personal data and no analysis}}",
       "withoutApprovedAssessment": "{count, plural, one {# system without an approved assessment} other {# systems without an approved assessment}}",
       "aiDraft": "drafted by AI on request, to review before use",
-      "noRecords": "nothing recorded yet"
+      "noRecords": "nothing recorded yet",
+      "riskLevelToConfirm": "{count, plural, one {# risk level still a draft to confirm} other {# risk levels still drafts to confirm}}"
     },
     "readyLine": "Content is real and confirmed.",
     "format": {

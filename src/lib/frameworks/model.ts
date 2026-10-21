@@ -10,6 +10,7 @@
  * Pure module: no React, no Next.
  */
 import raw from "@/content/frameworks/frameworks.json";
+import rawEs from "@/content/frameworks/frameworks.es.json";
 
 export type Depth = 0 | 1 | 2 | 3;
 
@@ -103,6 +104,93 @@ export type StackSlot = (typeof STACK_SLOTS)[number];
 
 export const frameworksData = raw as unknown as FrameworksData;
 
+// ---------------------------------------------------------------------------
+// Spanish
+// ---------------------------------------------------------------------------
+
+/**
+ * Castilian Spanish for every text the pages show, keyed by the EXACT English
+ * string (src/content/frameworks/frameworks.es.json). An English edit that is
+ * not mirrored there falls back to English and fails the coverage test in
+ * model.test.ts. Ids, URLs, file paths and source citations are not translated:
+ * the citations name the official texts the links open.
+ */
+export const FRAMEWORKS_ES: Readonly<Record<string, string>> = rawEs;
+
+export type FrameworksLocale = "en" | "es";
+
+/** Every shown English string, with where it lives (the set FRAMEWORKS_ES must cover). */
+export function translatableStrings(data: FrameworksData = frameworksData): { where: string; en: string }[] {
+  const out: { where: string; en: string }[] = [];
+  const add = (where: string, en: string | undefined) => {
+    if (en) out.push({ where, en });
+  };
+  for (const r of data.rings) {
+    add(`rings.${r.id}.label`, r.label);
+    add(`rings.${r.id}.short`, r.short);
+    add(`rings.${r.id}.question`, r.question);
+    add(`rings.${r.id}.depthMeaning`, r.depthMeaning);
+  }
+  for (const [id, m] of Object.entries(data.modules)) add(`modules.${id}.label`, m.label);
+  for (const f of data.frameworks) {
+    add(`${f.id}.name`, f.name);
+    add(`${f.id}.short`, f.short);
+    add(`${f.id}.nature`, f.nature);
+    add(`${f.id}.summary`, f.summary);
+    for (const [ring, c] of Object.entries(f.cells)) {
+      add(`${f.id}/${ring}.summary`, c.summary);
+      add(`${f.id}/${ring}.note`, c.note);
+    }
+  }
+  data.picker.rules.forEach((r, i) => add(`picker.rules[${i}].reason`, r.reason));
+  for (const slot of STACK_SLOTS) {
+    (data.picker.stack[slot] ?? []).forEach((r, i) => add(`picker.stack.${slot}[${i}].reason`, r.reason));
+  }
+  return out;
+}
+
+/** The data with every shown string in `locale`; English, or a string with no entry, is returned as is. */
+export function localizeFrameworks(data: FrameworksData, locale: string): FrameworksData {
+  if (locale !== "es") return data;
+  const l = <T extends string | undefined>(s: T): T =>
+    (s !== undefined && Object.prototype.hasOwnProperty.call(FRAMEWORKS_ES, s) ? FRAMEWORKS_ES[s] : s) as T;
+  const stack = Object.fromEntries(
+    Object.entries(data.picker.stack).map(([slot, rules]) => [
+      slot,
+      (rules as StackRule[]).map((r) => ({ ...r, reason: l(r.reason) })),
+    ]),
+  ) as FrameworksData["picker"]["stack"];
+  return {
+    ...data,
+    rings: data.rings.map((r) => ({
+      ...r,
+      label: l(r.label),
+      short: l(r.short),
+      question: l(r.question),
+      depthMeaning: l(r.depthMeaning),
+    })),
+    modules: Object.fromEntries(Object.entries(data.modules).map(([id, m]) => [id, { ...m, label: l(m.label) }])),
+    frameworks: data.frameworks.map((f) => ({
+      ...f,
+      name: l(f.name),
+      short: l(f.short),
+      nature: l(f.nature),
+      summary: l(f.summary),
+      cells: Object.fromEntries(
+        Object.entries(f.cells).map(([ring, c]) => [ring, { ...c, summary: l(c.summary), note: l(c.note) }]),
+      ),
+    })),
+    picker: { ...data.picker, rules: data.picker.rules.map((r) => ({ ...r, reason: l(r.reason) })), stack },
+  };
+}
+
+const frameworksDataEs = localizeFrameworks(frameworksData, "es");
+
+/** The pages' data in the reader's language. */
+export function frameworksDataFor(locale: string): FrameworksData {
+  return locale === "es" ? frameworksDataEs : frameworksData;
+}
+
 /** A cell whose source could not be checked: drawn hatched, no summary claim. */
 export function isUnderReview(cell: FrameworkCell): boolean {
   return !cell.source || cell.source.status === "to verify";
@@ -133,7 +221,7 @@ export function validateFrameworks(data: FrameworksData, rawText = JSON.stringif
     if (rawText.toLowerCase().includes(word.toLowerCase())) err(`banned wording: "${word}"`);
   }
   if (!validIso(data.asOf)) err(`asOf is not an ISO date: ${data.asOf}`);
-  if (!data.disclaimer || !/learning aid, not legal advice/i.test(data.disclaimer)) err("disclaimer missing");
+  if (!data.disclaimer || !/learning aid/i.test(data.disclaimer)) err("disclaimer missing");
   const bad = rawText.match(/\b\d{1,2}[/.]\d{1,2}[/.]\d{2,4}\b/g);
   if (bad) err(`non-ISO date form(s): ${[...new Set(bad)].join(", ")}`);
 

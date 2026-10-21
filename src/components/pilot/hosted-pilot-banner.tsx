@@ -8,14 +8,21 @@
  * application once a person has signed in, and on no public page (landing,
  * documentation, product pages, sign-in) and no page of the kit. Whether it
  * shows anything depends on the organisation's clock (pilot-banner.tsx).
+ *
+ * "Move to the paid plan" is offered only when the automatic upgrade is on
+ * (AUTO_UPGRADE_ENABLED and PLAN_SYNC_SECRET) and a payment link is set for
+ * the charge currency. The layout decides both from the request headers with
+ * inAppPlanOffer (src/server/services/plan-eu/offer.ts), the same decision
+ * that sets the currency of the bar's price, and passes `upgrade`. Neither
+ * the secret nor the link reaches the browser.
  */
 
 import { getLocale } from "next-intl/server";
 import { hostedPilotActive, type PilotLocale } from "@/config/pilot";
 import { OrganizationPilotEndBar } from "./pilot-banner";
 
-export async function HostedPilotBanner() {
+export async function HostedPilotBanner({ upgrade = false }: { upgrade?: boolean }) {
   if (!hostedPilotActive()) return null;
   const locale: PilotLocale = (await getLocale()) === "es" ? "es" : "en";
-  return <OrganizationPilotEndBar locale={locale} />;
+  return <OrganizationPilotEndBar locale={locale} upgrade={upgrade} />;
 }

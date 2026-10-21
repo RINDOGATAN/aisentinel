@@ -78,6 +78,9 @@
     "statusInProgress": "In Progress",
     "statusUnderReview": "Under Review",
     "statusApproved": "Approved",
+    "statusActive": "Active",
+    "statusSuspended": "Suspended",
+    "statusTerminated": "Terminated",
     "statusRejected": "Rejected",
     "statusPending": "Pending",
     "statusInReview": "In Review",
@@ -89,6 +92,7 @@
     "statusMitigating": "Mitigating",
     "statusResolved": "Resolved",
     "statusClosed": "Closed",
+    "statusRecordedInError": "Recorded in error",
     "statusPublished": "Published",
     "statusArchived": "Archived",
     "severityCritical": "Critical",
@@ -130,7 +134,9 @@
     "partial": "partial",
     "nonCompliant": "non-compliant",
     "notAssessed": "not assessed",
-    "updatedWhen": "Updated {when}"
+    "notApplicable": "not applicable",
+    "updatedWhen": "Updated {when}",
+    "roleProviderShort": "Provider"
   },
   "nav": {
     "billing": "Billing",
@@ -148,7 +154,9 @@
     "roleViewer": "Viewer",
     "loading": "Loading…",
     "openMenu": "Open menu",
-    "sourceAndLicence": "Source & license"
+    "sourceAndLicence": "Source & license",
+    "getHelp": "Get help",
+    "getHelpTitle": "Help from {company} (opens in a new tab)"
   },
   "dashboard": {
     "title": "AI Governance",
@@ -156,19 +164,22 @@
     "subtitleOrg": "{org}: the executive dashboard, the whole program at a glance"
   },
   "aiRegistry": {
-    "title": "Your AI systems",
+    "title": "The organization's AI systems",
     "subtitle": "The AI registry: every system, model and agent",
     "registerAiSystem": "Register AI System",
     "searchPlaceholder": "Search AI systems...",
     "emptyTitle": "No AI systems found",
-    "emptySearchHint": "Try adjusting your search terms",
-    "emptyDefaultHint": "Start by registering your first AI system",
+    "emptySearchHint": "Try different search terms",
+    "emptyDefaultHint": "Start by registering the organization's first AI system",
     "statsTotalSystems": "Total Systems",
     "countModels": "{count} models",
     "countDataSources": "{count} data sources",
     "exportRegisterPdf": "AI system register (PDF)",
     "exportModelInventoryPdf": "Model inventory (PDF)",
-    "registerShort": "Register"
+    "registerShort": "Register",
+    "systemVsTool": "An AI system is AI the organization builds or runs as part of a process. An AI tool is a ready-made product people use, such as a chat assistant or a document converter: record those under AI tools in use.",
+    "reference": "Reference {reference}",
+    "toolsLink": "Go to AI tools in use"
   },
   "aiRegistryNew": {
     "title": "Register AI System",
@@ -183,31 +194,31 @@
     "descriptionPlaceholder": "Describe what this AI system does, its capabilities, and intended use...",
     "roleLabel": "Organization Role",
     "rolePlaceholder": "Select role",
-    "roleHelp": "Your organization's role under the EU AI Act",
+    "roleHelp": "Provider: the organization develops the system, or has it developed, and offers it or puts it into use under its own name or trademark (Art. 3(3)). Deployer: the organization uses a system under its own authority (Art. 3(4)). One organization can be both.",
     "statusLabel": "Lifecycle Status",
     "statusPlaceholder": "Select status",
     "vendorLabel": "Vendor",
     "vendorPlaceholder": "Select vendor (optional)",
-    "vendorHelp": "Link this system to a vendor from your vendor registry",
+    "vendorHelp": "Link this system to a vendor in the organization's vendor register",
     "purposeLabel": "Intended Purpose",
     "purposePlaceholder": "Describe the intended purpose and use cases for this AI system...",
-    "purposeHelp": "Required for high-risk systems under the EU AI Act (Art. 13)",
+    "purposeHelp": "The use the system is intended for, including the specific context and conditions of use (Art. 3(12)). The Act sets no required wording, and nothing in this product rejects an entry. For a high-risk system, the EU database asks for a description of the intended purpose (Annex VIII): make it specific and consistent with the instructions for use.",
     "businessOwnerLabel": "Business Owner",
     "businessOwnerPlaceholder": "e.g., Product Team Lead",
     "technicalOwnerLabel": "Technical Owner",
     "technicalOwnerPlaceholder": "e.g., ML Engineering Lead",
     "processesPersonalDataLabel": "This system processes personal data",
     "personalDataWarning": "A DPIA or FRIA may be required. You can link this system to DPO Central data assets after creation.",
-    "suggestionsLead": "This account can fill in {count, plural, one {one field} other {# fields}} for you. Each one says where the value comes from, and nothing is entered until you take it.",
+    "suggestionsLead": "We can fill in {count, plural, one {one field} other {# fields}} from what the registry already holds. Each shows its source. Review and take each one.",
     "suggestionsApplyAll": "Use every suggestion",
     "suggestionOffer": "Suggested: {value}, {basis}.",
     "suggestionApplied": "Taken from a suggestion, {basis}. Edit it freely.",
     "suggestionUse": "Use this",
     "suggestionBasis": {
       "you-are-registering-it": "because you are registering this system",
-      "most-of-your-systems": "because most of your systems name it",
+      "most-of-your-systems": "because most of the organization's systems name it",
       "this-vendor-supplies-it": "because {subject} supplies this system",
-      "every-system-so-far": "because every system in your registry so far does"
+      "every-system-so-far": "because every system in the registry so far does"
     },
     "vendorEmptyPlaceholder": "No vendors yet. Type a name to add one",
     "vendorAddPlaceholder": "Not in the list? Type a name to add it",
@@ -220,11 +231,64 @@
     "registering": "Registering...",
     "registerSystem": "Register System",
     "toastSuccess": "AI system registered successfully",
-    "toastError": "Failed to register AI system"
+    "toastError": "Failed to register AI system",
+    "roleDecide": {
+      "open": "Help me decide",
+      "close": "Close",
+      "q": {
+        "developed": "Did the organization develop this system, or have it developed for it?",
+        "ownName": "Does the organization offer it to others, or put it into use itself, under its own name or trademark (paid or free)?",
+        "usesIt": "Does the organization use it in its own work, under its own authority?"
+      },
+      "outcome": {
+        "incomplete": "Answer the three questions to see a suggestion.",
+        "provider": "Suggested: provider.",
+        "providerAndDeployer": "Suggested: provider. The organization also uses the system, so the deployer duties apply as well.",
+        "deployer": "Suggested: deployer.",
+        "neither": "Neither role fits these answers. The organization may be an importer or a distributor (Art. 3(6) and 3(7)), or outside the supply chain of this system."
+      },
+      "note": "A deployer that puts its name or trademark on a high-risk system, makes a substantial modification to it, or changes its intended purpose so that it becomes high-risk, takes on the provider's duties (Art. 25(1)).",
+      "use": "Use this role"
+    },
+    "purposeBuilder": {
+      "open": "Write it with five questions",
+      "close": "Close the questions",
+      "what": {
+        "label": "What does it do?",
+        "placeholder": "Ranks incoming job applications against the requirements of the role"
+      },
+      "who": {
+        "label": "Who uses it?",
+        "placeholder": "The recruitment team"
+      },
+      "where": {
+        "label": "Where, and in what context?",
+        "placeholder": "Hiring for office roles in Spain and Portugal"
+      },
+      "decisions": {
+        "label": "Which decisions does it support?",
+        "placeholder": "Which candidates are invited to an interview; a recruiter takes the decision"
+      },
+      "notFor": {
+        "label": "What must it not be used for?",
+        "placeholder": "Final hiring decisions, or assessing current employees"
+      },
+      "frame": {
+        "who": "Used by: {value}",
+        "where": "Context of use: {value}",
+        "decisions": "Decisions it supports: {value}",
+        "notFor": "It must not be used for: {value}"
+      },
+      "example": "Example: Ranks incoming job applications against the requirements of the role. Used by: the recruitment team. Context of use: hiring for office roles in Spain and Portugal. Decisions it supports: which candidates are invited to an interview; a recruiter takes the decision. It must not be used for: final hiring decisions, or assessing current employees.",
+      "preview": "The statement",
+      "use": "Put this in the field",
+      "replaces": "This replaces what the field holds. You can edit it afterwards."
+    },
+    "ownerPickHint": "Pick a person from the team, or type a name for someone outside it."
   },
   "aiRegistryDetail": {
     "notFound": "AI system not found",
-    "backToRegistry": "Back to Registry",
+    "backToRegistry": "Back to the AI systems",
     "overview": "Overview",
     "intendedPurpose": "Intended Purpose",
     "technique": "Technique",
@@ -316,13 +380,13 @@
     "modelProviderLabel": "Provider",
     "modelProviderPlaceholder": "e.g. OpenAI, Anthropic",
     "modelTypeLabel": "Model Type",
-    "modelTypePlaceholder": "e.g. LLM, Classifier",
+    "modelTypePlaceholder": "Select a type",
     "modelVersionLabel": "Version",
     "modelVersionPlaceholder": "e.g. 1.0, 2024-03",
     "modelTrainingDataLabel": "Training Data Summary",
-    "modelTrainingDataPlaceholder": "Describe the training data used...",
+    "modelTrainingDataPlaceholder": "Where the data came from, the period it covers, known gaps",
     "modelLimitationsLabel": "Known Limitations",
-    "modelLimitationsPlaceholder": "Describe any known limitations...",
+    "modelLimitationsPlaceholder": "Where it performs worse, what it should not be used for",
     "addDataSourceDialogTitle": "Add Data Source",
     "editDataSourceDialogTitle": "Edit Data Source",
     "addDataSourceDialogDescription": "Add a new data source to this AI system.",
@@ -341,7 +405,36 @@
     "toastDataSourceUpdated": "Data source updated",
     "toastDataSourceDeleted": "Data source deleted",
     "tabAdmt": "California ADMT",
-    "tabEvidence": "Evidence"
+    "tabEvidence": "Evidence",
+    "reference": "Reference {reference}",
+    "checklist": {
+      "title": "Registration: {done} of {total}",
+      "required": "Required: {done} of {total}",
+      "hint": "The required items make the registration complete. The recommended items describe how the system is built and what data it uses.",
+      "complete": "Every required item is in place.",
+      "requiredLabel": "Required",
+      "laterLabel": "Required, set in the risk-level step",
+      "recommendedLabel": "Recommended",
+      "fill": "Fill in",
+      "item": {
+        "description": "Description",
+        "purpose": "Intended purpose",
+        "businessOwner": "Business owner",
+        "technicalOwner": "Technical owner",
+        "riskClassification": "Risk level",
+        "models": "Models and components",
+        "dataSources": "Data sources",
+        "dataFlow": "Data flow (who receives the data)"
+      }
+    },
+    "components": {
+      "title": "AI tools used as components",
+      "hint": "Approved AI tools added to this system from the AI tools in use page."
+    },
+    "modelTypeOtherLabel": "Describe the type",
+    "modelTypeOtherPlaceholder": "e.g. graph neural network",
+    "modelTrainingDataHelp": "Where the data came from, the period it covers, how it was selected and cleaned, and its known gaps (groups, places or cases it under-represents). For a model supplied by a vendor, say what the vendor states.",
+    "modelLimitationsHelp": "Where the model performs worse or should not be used: inputs, languages or groups it handles poorly, error rates you know of, and conditions it was not tested in."
   },
   "transparency": {
     "title": "Art. 50 Transparency Obligations",
@@ -377,16 +470,16 @@
   },
   "riskClassification": {
     "title": "Risk level",
-    "subtitle": "Risk classification: the EU AI Act's four tiers for your AI systems",
+    "subtitle": "Risk classification: the EU AI Act's four tiers for the organization's AI systems",
     "unclassified": "Unclassified",
     "searchPlaceholder": "Search AI systems...",
     "currentClassification": "Current Classification",
     "riskLevelLabel": "Risk Level",
     "riskLevelPlaceholder": "Select risk level",
-    "riskDescriptionUnacceptable": "Prohibited AI practices (Art. 5): social scoring, real-time biometric identification, manipulation.",
-    "riskDescriptionHigh": "High-risk AI systems (Art. 6, Annex III): biometrics, critical infrastructure, education, employment, law enforcement.",
-    "riskDescriptionLimited": "Limited risk requiring transparency obligations (Art. 50): chatbots, deepfakes, emotion recognition.",
-    "riskDescriptionMinimal": "Minimal risk with no specific regulatory obligations beyond voluntary codes of conduct.",
+    "riskDescriptionUnacceptable": "Unacceptable: a practice prohibited by Art. 5, such as social scoring or manipulation that causes significant harm. It may not be used.",
+    "riskDescriptionHigh": "High: a system used in an area listed in Annex III (unless the Art. 6(3) exception applies), or a safety component of a product under Annex I (Art. 6). It carries the most duties.",
+    "riskDescriptionLimited": "Limited: not high-risk, but subject to the transparency duties of Art. 50, such as telling people they are dealing with AI or marking generated content.",
+    "riskDescriptionMinimal": "Minimal: none of the above. The Act sets no specific duties for the system itself; AI literacy (Art. 4) still applies to the organization.",
     "annexIIICategoryLabel": "Annex III Category",
     "annexIIICategoryPlaceholder": "Select category (optional)",
     "rationaleLabel": "Rationale",
@@ -396,7 +489,7 @@
     "classify": "Classify",
     "viewCompliance": "View Compliance",
     "emptyTitle": "No AI systems found",
-    "emptySearchHint": "Try adjusting your search terms",
+    "emptySearchHint": "Try different search terms",
     "emptyDefaultHint": "Register AI systems first to classify their risk levels",
     "registerAiSystem": "Register AI System",
     "toastClassified": "{name} classified as {level}{count, plural, =0 {} one {: # compliance requirement initialized} other {: # compliance requirements initialized}}",
@@ -418,15 +511,29 @@
       "HIGH": "high risk",
       "LIMITED": "limited risk",
       "MINIMAL": "minimal risk"
+    },
+    "levelsTitle": "The four risk levels",
+    "levelsNote": "\"Limited\" and \"minimal\" are common shorthand, not terms of the Act.",
+    "toClassifyTitle": "Still without a risk level ({count})",
+    "toClassifyHint": "Open each one with Classify and record its level.",
+    "classifiedTitle": "Classified ({count})",
+    "allClassified": "Every system has a risk level.",
+    "suggestion": {
+      "use": "Use the suggested level"
+    },
+    "reasons": {
+      "title": "Standard reasons",
+      "hint": "Pick the reasons that fit. Each one adds its sentence to the rationale, which you can edit.",
+      "added": "Added"
     }
   },
   "quickstart": {
     "backToDashboard": "Dashboard",
     "title": "Quick start",
-    "subtitle": "The AI governance quick start: set up your program in minutes",
+    "subtitle": "The AI governance quick start: set up the organization's program in minutes",
     "programNameLabel": "Name this program",
-    "programNamePlaceholder": "Your organization's AI governance program",
-    "programNameHelp": "Prefilled with your organization's name. This appears on the result screen and on the program PDF. You can change it.",
+    "programNamePlaceholder": "The organization's AI governance program",
+    "programNameHelp": "Prefilled with the organization's name. This appears on the result screen and on the program PDF. You can change it.",
     "stepApplicability": "What applies",
     "stepChoosePath": "Choose Path",
     "stepSelectVendors": "Select Vendors",
@@ -435,31 +542,31 @@
     "vendorImportTitle": "Import from AI Vendor Catalog",
     "vendorImportDescription": "Select AI vendors you use and auto-generate AI systems, risk classifications, and oversight gates from their known profiles.",
     "industryTemplateTitle": "Start from Industry Template",
-    "industryTemplateDescription": "Pick your industry and get a pre-built AI governance program with common AI systems, risk classifications, and policies.",
+    "industryTemplateDescription": "Pick the industry and get a pre-built AI governance program with common AI systems, risk classifications, and policies.",
     "selectVendorsTitle": "Select AI Vendors",
-    "selectVendorsDescription": "Search the vendor catalog and select the AI tools your organization uses.",
+    "selectVendorsDescription": "Search the vendor catalog and select the AI tools the organization uses.",
     "searchVendorsPlaceholder": "Search AI vendors (e.g. OpenAI, Anthropic, AWS...)",
     "noVendorsFound": "No vendors found for \"{query}\"",
     "selectIndustryTemplateTitle": "Select Industry Template",
-    "selectIndustryTemplateDescription": "Choose your industry for a pre-built AI governance program.",
+    "selectIndustryTemplateDescription": "Choose the organization's industry for a pre-built AI governance program.",
     "templatePreview": "Template Preview",
     "reviewTitle": "Review & Build",
-    "reviewDescription": "Review what will be created and build your AI governance program.",
+    "reviewDescription": "Review what will be created and build the AI governance program.",
     "willCreateLead": "This will create:",
     "willCreateNamesNote": "The names are listed below. Uncheck anything you do not want.",
     "building": "Building...",
     "buildAiGovernanceProgram": "Build AI Governance Program",
     "successTitle": "AI Governance Program Created!",
-    "successDescription": "Your AI governance program is set up. Everything created is listed below, each as a link you can open.",
-    "choosePathDescription": "Choose how to set up your AI governance program. You can combine these options.",
+    "successDescription": "The AI governance program is set up. Everything created is listed below, each as a link you can open.",
+    "choosePathDescription": "Choose how to set up the AI governance program. You can combine these options.",
     "chipAiSystems": "AI Systems",
     "chipRiskClassifications": "Risk Classifications",
     "chipOversightGates": "Oversight Gates",
     "chipPolicies": "Policies",
     "stepLawFirmTools": "Law Firm Tools",
     "lawFirmTitle": "Law Firm Program",
-    "lawFirmDescription": "Pick the AI tools your firm uses and generate a complete governance program: registered systems, risk classifications, oversight gates, and a law-firm policy pack.",
-    "selectLawFirmToolsTitle": "Select the AI tools your firm uses",
+    "lawFirmDescription": "Pick the AI tools the firm uses and generate a complete governance program: registered systems, risk classifications, oversight gates, and a law-firm policy pack.",
+    "selectLawFirmToolsTitle": "Select the AI tools the firm uses",
     "selectLawFirmToolsDescription": "Grouped by category: from general assistants to legal research, contract review, and e-discovery. Each selection becomes a governed AI system.",
     "selectAtLeastOneTool": "Select at least one tool",
     "toolsSelected": "{count} selected",
@@ -469,20 +576,20 @@
     "lawFirmReviewTitle": "Law Firm Toolkit",
     "lawFirmPolicyPack": "Law Firm Policy Pack",
     "chipVendors": "Vendors",
-    "viewProgram": "View your AI Governance Program",
+    "viewProgram": "View the AI Governance Program",
     "statPolicyLinks": "{count, plural, one {# policy link} other {# policy links}}",
     "statTransparencyProfiles": "{count, plural, one {# Art. 50 profile} other {# Art. 50 profiles}}",
     "statComplianceBaselined": "Requirements pre-assessed",
-    "handoffMapCaption": "Your governance map: every AI system, its risk tier, controls and vendors.",
-    "downloadProgramPdf": "Download your AI Governance Program (PDF)",
-    "handoffConfirmPrompt": "{count} requirements were auto-assessed from the artifacts just created and are waiting for your confirmation.",
+    "handoffMapCaption": "The governance map: every AI system, its risk tier, controls and vendors.",
+    "downloadProgramPdf": "Download the AI Governance Program (PDF)",
+    "handoffConfirmPrompt": "{count} requirements were auto-assessed from the artifacts just created and are waiting for confirmation.",
     "statVendors": "{count, plural, one {# vendor} other {# vendors}}",
     "statSystems": "{count, plural, one {# AI system} other {# AI systems}}",
     "statRiskClassifications": "{count, plural, one {# risk classification} other {# risk classifications}}",
     "statOversightGates": "{count, plural, one {# oversight gate} other {# oversight gates}}",
     "statComplianceMappings": "{count, plural, one {# compliance requirement} other {# compliance requirements}}",
     "statPolicies": "{count, plural, one {# policy} other {# policies}}",
-    "popularVendors": "Common AI vendors: pick the ones your organization uses, or search the full catalog above.",
+    "popularVendors": "Common AI vendors: pick the ones the organization uses, or search the full catalog above.",
     "vendorsSelected": "{count, plural, one {# selected} other {# selected}}",
     "toastNothingNew": "Everything already exists: nothing new to create.",
     "toastCreated": "Created {summary}",
@@ -494,8 +601,8 @@
     "selectIndustryTemplate": "Select an industry template.",
     "statStarterAssessments": "{count, plural, one {# impact assessment drafted} other {# impact assessments drafted}}",
     "statStarterVendorReviews": "{count, plural, one {# vendor review drafted} other {# vendor reviews drafted}}",
-    "corePoliciesTitle": "Core policies added to complete your set",
-    "corePoliciesDescription": "Your program needs six core AI policies. These drafts cover the ones your choices above do not, in your language. Review and approve them in Policies.",
+    "corePoliciesTitle": "Core policies added to complete the set",
+    "corePoliciesDescription": "The program needs six core AI policies. These drafts cover the ones the choices above do not, in the selected language. Review and approve them in Policies.",
     "handoffConfirmLink": "Open the review queue",
     "downloadProgramPack": "Download the full program pack (ZIP)",
     "label": {
@@ -514,16 +621,50 @@
     "legalIndustryName": "Legal",
     "legalIndustryDescription": "Law firms and in-house legal teams: pick the AI tools you use (legal research, drafting, contract review, e-discovery, translation) and get the law-firm policy pack.",
     "legalIndustryTools": "{count} tools to choose from",
-    "builderTitle": "I am building an AI product",
-    "builderDescription": "For the team writing the code. Say what your product can see and do, and get the things that could go wrong, with controls and a test for each.",
+    "builderTitle": "Building an AI product",
+    "builderDescription": "For the team writing the code. Say what the product can see and do, and get the things that could go wrong, with controls and a test for each.",
     "chipScenarios": "Threat scenarios",
     "chipControls": "Controls",
     "chipTests": "Tests to run",
     "stepBuilder": "What you are building",
-    "builderStepTitle": "What can your product see and do?",
-    "builderStepDescription": "Tick what is true today. This takes about four minutes and produces the first draft of your threat model.",
+    "builderStepTitle": "What can the product see and do?",
+    "builderStepDescription": "Tick what is true today. This takes about four minutes and produces the first draft of the threat model.",
     "builderWillPropose": "{count} scenarios follow from this, each with controls and a test.",
-    "statThreatScenarios": "{count} threat scenarios"
+    "statThreatScenarios": "{count} threat scenarios",
+    "stepIntro": "Before you begin",
+    "intro": {
+      "title": "Before starting: what the path will ask for",
+      "lead": "The program is built from five kinds of information. None of it is needed to start: gather what is easy now and add the rest as you go.",
+      "items": {
+        "places": {
+          "title": "Where the organization operates",
+          "line": "The countries and US states where it offers products or services, or employs people. They decide which laws apply."
+        },
+        "vendors": {
+          "title": "Vendors",
+          "line": "The companies that supply the AI the organization uses, such as a chat assistant or an AI feature inside software already in use."
+        },
+        "toolsInUse": {
+          "title": "AI tools in use",
+          "line": "Ready-made AI products that colleagues use at work, approved or not."
+        },
+        "systems": {
+          "title": "AI systems",
+          "line": "AI the organization builds or runs inside its own processes, such as a model that sorts job applications."
+        },
+        "owners": {
+          "title": "Owners",
+          "line": "For each system, the person accountable for it in the business and the person who runs it technically."
+        }
+      },
+      "howTitle": "How to find these",
+      "how": {
+        "expenses": "Expense and card records: subscriptions to AI products show who pays for which tool.",
+        "signIn": "Sign-in logs: the single sign-on or identity provider lists the applications people sign in to.",
+        "survey": "A short survey of colleagues: ask which AI tools they use, for what, and with what data."
+      },
+      "begin": "Begin"
+    }
   },
   "assessments": {
     "title": "Impact assessments",
@@ -535,9 +676,14 @@
     "statsInProgress": "In Progress",
     "statsUnderReview": "Under Review",
     "statsApproved": "Approved",
+    "badgeDraft": "Draft",
+    "badgeInProgress": "In progress",
+    "badgeUnderReview": "Under review",
+    "badgeApproved": "Approved",
+    "badgeRejected": "Rejected",
     "emptyTitle": "No assessments found",
-    "emptySearchHint": "Try adjusting your search terms",
-    "emptyHint": "Start by creating your first assessment",
+    "emptySearchHint": "Try different search terms",
+    "emptyHint": "Start by creating the organization's first assessment",
     "typeFria": "FRIA",
     "typeConformity": "Conformity",
     "typeAiRisk": "AI Risk",
@@ -547,7 +693,7 @@
     "typeDescConformity": "The check a provider of a high-risk AI system must pass before placing it on the EU market.",
     "typeDescAiRisk": "A general risk assessment of an AI system: what could go wrong, how likely it is, and what reduces it.",
     "typeDescBiasFairness": "An examination of whether the system treats groups of people unequally, and what is done about it.",
-    "typeDescCustom": "A blank assessment you shape with your own questions.",
+    "typeDescCustom": "A blank assessment, shaped with the organization's own questions.",
     "templatesButton": "Templates",
     "tabAll": "All ({count})",
     "templateLabel": "Template: {name}"
@@ -576,13 +722,13 @@
     "notFound": "Assessment not found.",
     "saveButton": "Save",
     "submitForReview": "Send for internal review",
-    "submitRecipients": "When you send this, your organization's reviewers (owners, admins and AI officers) can approve or reject it.",
+    "submitRecipients": "When you send this, the organization's reviewers (owners, admins and AI officers) can approve or reject it.",
     "andMoreMissing": "and {count} more",
-    "awaitingReview": "This assessment is awaiting your review.",
+    "awaitingReview": "This assessment is awaiting review.",
     "approve": "Approve",
     "reject": "Reject",
     "selectPlaceholder": "Select an option...",
-    "textareaPlaceholder": "Enter your response...",
+    "textareaPlaceholder": "Enter the response...",
     "noteLabel": "Note (optional)",
     "notePlaceholder": "Add any detail...",
     "yes": "Yes",
@@ -625,8 +771,8 @@
     "statsPassed": "Passed",
     "statsOverdue": "Overdue",
     "emptyTitle": "No oversight gates found",
-    "emptySearchHint": "Try adjusting your search terms",
-    "emptyHint": "Start by creating your first oversight gate",
+    "emptySearchHint": "Try different search terms",
+    "emptyHint": "Start by creating the organization's first oversight gate",
     "gateTypePreDeployment": "Pre-Deployment",
     "gateTypePostDeployment": "Post-Deployment",
     "gateTypePeriodicReview": "Periodic Review",
@@ -750,9 +896,9 @@
     "openEvidence": "Open its evidence",
     "loadMore": "Show more",
     "matrixIntro": "The requirements that apply to this system, framework by framework: set each status and attach its evidence.",
-    "noFrameworkForSystem": "No framework has a requirement for this system yet. Give it a risk level, and say where you work in Settings, so its requirements appear here.",
+    "noFrameworkForSystem": "No framework has a requirement for this system yet. Give it a risk level, and say where the organization operates in Settings, so its requirements appear here.",
     "frameworksNotShown": "{count, plural, one {Not shown: # framework with no requirement for this system, such as the law of a place you have not declared.} other {Not shown: # frameworks with no requirement for this system, such as the laws of places you have not declared.}}",
-    "frameworksNotShownLink": "Where you work is set in Settings.",
+    "frameworksNotShownLink": "Where the organization operates is set in Settings.",
     "statusSaved": "Status saved: {status}.",
     "undo": "Undo",
     "saveNotes": "Save notes"
@@ -767,7 +913,7 @@
     "statsOpen": "Open",
     "statsResolved": "Resolved",
     "emptyTitle": "No incidents found",
-    "emptySearchHint": "Try adjusting your search terms",
+    "emptySearchHint": "Try different search terms",
     "emptyHint": "No AI incidents have been reported yet",
     "typeHallucination": "Hallucination",
     "typeBias": "Bias/Discrimination",
@@ -825,7 +971,8 @@
       "reportedAction": "Incident reported",
       "reportedDescription": "{severity} {type} incident reported",
       "statusAction": "Status changed to {status}",
-      "statusDescription": "Status updated from {from} to {to}"
+      "statusDescription": "Status updated from {from} to {to}",
+      "recordedInErrorAction": "Recorded in error"
     },
     "tabTasks": "Tasks ({count})",
     "tabNotifications": "Notifications ({count})",
@@ -897,11 +1044,23 @@
     "statTimelineEntries": "Timeline Entries",
     "statTasks": "Tasks",
     "statNotifications": "Notifications",
-    "labelLastUpdated": "Last Updated"
+    "labelLastUpdated": "Last Updated",
+    "recordedInError": {
+      "action": "Recorded in error",
+      "dialogTitle": "Mark this incident as recorded in error",
+      "dialogDescription": "Use this for an incident entered by mistake: a duplicate, a test, or something that was not an incident. Nothing is deleted. The incident stays on record with the reason given, is left out of counts, statutory deadlines and reports, and can no longer be changed.",
+      "reasonLabel": "Reason",
+      "reasonPlaceholder": "For example: duplicate of the incident reported on the same day.",
+      "cancel": "Cancel",
+      "confirm": "Mark as recorded in error",
+      "done": "Incident marked as recorded in error.",
+      "banner": "This incident was marked as recorded in error. It is kept for the record and left out of counts, statutory deadlines and reports.",
+      "bannerReason": "Reason: {reason}"
+    }
   },
   "vendors": {
     "title": "Vendors",
-    "subtitle": "Vendor risk: your third-party AI vendors and their assessments",
+    "subtitle": "Vendor risk: the organization's third-party AI vendors and their assessments",
     "addVendor": "Add Vendor",
     "statsTotalVendors": "Total Vendors",
     "statsCriticalRisk": "Critical Risk",
@@ -913,13 +1072,13 @@
     "addFromCatalog": "Add from Catalog",
     "enableCatalog": "Enable",
     "emptyTitle": "No vendors found",
-    "emptySearchHint": "Try adjusting your search terms",
-    "emptyHint": "Start by adding your first AI vendor",
+    "emptySearchHint": "Try different search terms",
+    "emptyHint": "Start by adding the organization's first AI vendor",
     "sharedTitle": "Shared subprocessors",
-    "sharedSubtitle": "Providers that sit beneath more than one of your vendors. A failure there reaches several systems at once.",
-    "sharedDependents": "{count} of your vendors",
-    "sharedNone": "No subprocessor is shared by two or more of your vendors yet.",
-    "sharedNoData": "Link your vendors to catalog entries to see their supply chain.",
+    "sharedSubtitle": "Providers that sit beneath more than one of the organization's vendors. A failure there reaches several systems at once.",
+    "sharedDependents": "{count} of the organization's vendors",
+    "sharedNone": "No subprocessor is shared by two or more of the organization's vendors yet.",
+    "sharedNoData": "Link the vendors to catalog entries to see their supply chain.",
     "sharedFootnote": "{withChain} of {linked} catalog-linked vendors publish a subprocessor list.",
     "statusActive": "Active",
     "statusUnderReview": "Under Review",
@@ -938,7 +1097,8 @@
     "systemsCount": "{count, plural, one {# system} other {# systems}}",
     "assessmentsCount": "{count, plural, one {# assessment} other {# assessments}}",
     "contractExpiresInDays": "Contract expires in {count, plural, one {# day} other {# days}}",
-    "catalogSkillDescription": "Search AI vendors from the VendorWatch database and auto-fill your local vendor records with compliance data."
+    "catalogSkillDescription": "Search AI vendors from the VendorWatch database and auto-fill the organization's vendor records with compliance data.",
+    "definition": "A vendor is a company that supplies AI the organization uses. When an AI tool is approved, its maker becomes a vendor."
   },
   "vendorsNew": {
     "title": "Add Vendor",
@@ -994,7 +1154,7 @@
     "dpoCentralVendorIdHelp": "Optional. Link this vendor to a record in DPO Central for privacy management integration.",
     "placeholderSystemName": "e.g., OpenAI GPT-4 Integration",
     "placeholderSelectRole": "Select role",
-    "organizationRoleHelp": "Your org's role under the EU AI Act",
+    "organizationRoleHelp": "The organization's role under the EU AI Act",
     "placeholderSelectTechnique": "Select technique",
     "placeholderIntendedPurpose": "Describe the intended purpose of the AI system...",
     "placeholderNotes": "Additional notes about this vendor relationship..."
@@ -1041,14 +1201,14 @@
     "supplyChainEmpty": "The catalog has no subprocessor list on record for this vendor.",
     "supplyChainStatTotal": "Subprocessors",
     "supplyChainStatLinked": "In catalog",
-    "supplyChainStatGoverned": "Already your vendors",
+    "supplyChainStatGoverned": "Already the organization's vendors",
     "supplyChainStatLocations": "Locations",
     "supplyChainColName": "Subprocessor",
     "supplyChainColPurpose": "Purpose",
     "supplyChainColLocation": "Location",
-    "supplyChainColStatus": "Your governance",
-    "supplyChainGoverned": "Your vendor",
-    "supplyChainNotGoverned": "Not in your vendors",
+    "supplyChainColStatus": "In the organization",
+    "supplyChainGoverned": "A vendor of the organization",
+    "supplyChainNotGoverned": "Not among the organization's vendors",
     "supplyChainOpenCatalog": "Open catalog entry",
     "supplyChainViewSource": "View source",
     "supplyChainShowAll": "Show all {count}",
@@ -1081,7 +1241,7 @@
   },
   "policies": {
     "title": "AI policy",
-    "subtitle": "Policies: the AI governance policies and standards of your organization",
+    "subtitle": "Policies: the AI governance policies and standards of the organization",
     "createPolicy": "Create Policy",
     "statsTotal": "Total",
     "statsDraft": "Draft",
@@ -1089,8 +1249,8 @@
     "statsReviewDue": "Review Due",
     "searchPlaceholder": "Search policies...",
     "emptyTitle": "No policies found",
-    "emptySearchHint": "Try adjusting your search terms",
-    "emptyHint": "Start by creating your first policy",
+    "emptySearchHint": "Try different search terms",
+    "emptyHint": "Start by creating the organization's first policy",
     "policyTypeAiUsage": "AI Usage",
     "policyTypeAiGovernance": "AI Governance",
     "policyTypeAiEthics": "AI Ethics",
@@ -1100,21 +1260,41 @@
     "policyTypeIncidentResponse": "Incident Response",
     "policyTypeTransparency": "Transparency",
     "policyTypeCustom": "Custom",
-    "tabAll": "All ({count})",
-    "tabUsage": "Usage",
-    "tabGovernance": "Governance",
-    "tabEthics": "Ethics",
-    "tabRiskManagement": "Risk Mgmt",
-    "tabOther": "Other",
     "systemsCount": "{count, plural, one {# system} other {# systems}}",
-    "effectiveOn": "Effective {date}",
-    "reviewOn": "Review {date}"
+    "reviewOn": "Review {date}",
+    "tabPolicies": "Policies ({count})",
+    "tabTemplates": "Templates",
+    "originCounts": "{written, plural, one {# written here} other {# written here}}, {templates, plural, one {# from a template} other {# from templates}}.",
+    "originToReview": "{count, plural, one {# template draft has not been reviewed yet.} other {# template drafts have not been reviewed yet.}}",
+    "templateDraftMark": "Draft from template: review",
+    "templateDraftsRemove": "{count, plural, one {Remove the unedited template draft} other {Remove the # unedited template drafts}}",
+    "templateDraftsConfirmLead": "{count, plural, one {Remove # draft nobody has edited? Policies someone has worked on stay.} other {Remove # drafts nobody has edited? Policies someone has worked on stay.}}",
+    "templateDraftsConfirm": "{count, plural, one {Remove # draft} other {Remove # drafts}}",
+    "templateDraftsRemoved": "{count, plural, =0 {Nothing to remove} one {# draft removed} other {# drafts removed}}",
+    "filterType": "Policy type",
+    "filterAllTypes": "All types",
+    "filterOrigin": "Origin",
+    "filterAllOrigins": "Any origin",
+    "filterWritten": "Written here",
+    "filterTemplate": "From templates",
+    "viewLabel": "View",
+    "viewTable": "Table",
+    "viewCards": "Cards",
+    "colTitle": "Policy",
+    "colType": "Type",
+    "colStatus": "Status",
+    "colOwner": "Owner",
+    "colSystems": "AI systems",
+    "colReview": "Review date",
+    "noSystems": "None linked",
+    "systemsMore": "{names} and {count} more",
+    "noOwner": "Not named",
+    "noReviewDate": "Not set",
+    "browseTemplates": "Browse templates"
   },
   "policiesNew": {
     "title": "Create Policy",
     "subtitle": "Define a new AI governance policy",
-    "formTitle": "Policy Details",
-    "formDescription": "Provide information about the policy being created",
     "labelTitle": "Title",
     "placeholderTitle": "e.g., Acceptable AI Use Policy",
     "labelPolicyType": "Policy Type",
@@ -1134,18 +1314,28 @@
       "lawfirm": "law firm",
       "industry": "industry"
     },
-    "placeholderType": "Select policy type",
     "placeholderDescription": "Briefly describe the purpose and scope of this policy",
-    "placeholderContent": "Write the policy text here"
+    "placeholderContent": "Write the policy text here",
+    "browseTemplates": "Browse the template library.",
+    "labelImport": "Import an existing policy (optional)",
+    "importButton": "Choose a Word, PDF or text file",
+    "importChosen": "Imported: {name}",
+    "importHint": "The text fills the content below for you to check. Nothing is saved until you create the policy.",
+    "importDone": "Text imported. Check it before you save.",
+    "importTruncated": "Text imported. The file was very long, so only the first part was kept.",
+    "importError": {
+      "too_large": "The file is larger than 5 MB.",
+      "unsupported": "Use a Word (.docx), PDF or text file.",
+      "empty": "No text was found in the file. A scanned PDF has no text to read.",
+      "unreadable": "The file could not be read."
+    },
+    "descriptionDefaultHint": "A suggested description for this type. Edit it to fit the policy."
   },
   "policyDetail": {
     "notFound": "Policy not found",
     "backToPolicies": "Back to Policies",
-    "overviewTitle": "Overview",
     "labelEffectiveDate": "Effective Date",
     "labelReviewDate": "Review Date",
-    "labelApprovedBy": "Approved By",
-    "labelCreatedBy": "Created By",
     "statisticsTitle": "Statistics",
     "versionsCount": "Versions",
     "linkedSystemsCount": "Linked Systems",
@@ -1184,7 +1374,6 @@
     "toastSystemUnlinkError": "Failed to unlink system",
     "notYetApproved": "Not yet approved",
     "labelApprovedAt": "Approved At",
-    "unknown": "Unknown",
     "labelCreatedAt": "Created At",
     "labelLastUpdated": "Last Updated",
     "emptyContentHint": "Add content to define this policy",
@@ -1196,30 +1385,57 @@
     "emptyLinkedSystemsHint": "Link AI systems that are governed by this policy",
     "publishDialogDescription": "Publishing will create version v{version} of this policy.",
     "placeholderChangeNotes": "Describe what changed in this version...",
-    "placeholderPolicyContent": "Write your policy content here...",
+    "placeholderPolicyContent": "Write the policy content here...",
     "contentLabel": "Policy content",
     "contentHelp": "The full text of the policy. Saving creates a new draft version you can publish later.",
     "linkSystemDialogDescription": "Select an AI system to link to this policy.",
     "labelAiSystem": "AI System",
     "placeholderSelectAiSystem": "Select an AI system",
     "archiveDialogDescription": "This policy has {count, plural, one {# linked AI system} other {# linked AI systems}}. Archiving it may affect their governance coverage.",
-    "archiving": "Archiving..."
+    "archiving": "Archiving...",
+    "download": "Download",
+    "downloadPdf": "PDF",
+    "downloadWord": "Word (.docx)",
+    "duplicate": "Duplicate",
+    "toastDuplicated": "Copy created as a new draft",
+    "backWithDrafts": "{count, plural, one {Back to policies (# draft to review)} other {Back to policies (# drafts to review)}}",
+    "templateDraftTitle": "Draft from template: review",
+    "templateDraftBody": "This text comes from a template. Read it, adapt it to the organization, then send it for internal review. It counts as a template draft until someone edits it.",
+    "editDetails": "Edit details",
+    "detailsDialogTitle": "Policy details",
+    "labelReference": "Reference",
+    "labelVersion": "Version",
+    "labelStatus": "Status",
+    "labelOwner": "Owner",
+    "labelDepartment": "Department",
+    "labelSystems": "AI systems",
+    "labelDescription": "Description",
+    "labelInterval": "Review every",
+    "notSet": "Not set",
+    "reviewEvery": "Reviewed every {months} months",
+    "intervalHint": "The EU AI Act sets no fixed review period for internal AI policies. Choose one that suits the organization: publishing a version sets the next review date from it.",
+    "suggestLead": "The AI assist can suggest edits. Nothing changes until you edit the text yourself.",
+    "suggestionsTitle": "Suggested edits",
+    "suggestionsHint": "From the AI assist. Check each one and apply only what is right for the organization.",
+    "labelApprovedBy": "Approved by",
+    "labelCreatedBy": "Created by",
+    "unknown": "Former member"
   },
   "shadowAi": {
-    "title": "Unapproved AI tools",
-    "subtitle": "Shadow AI discovery: find and manage the AI tools people use without approval",
+    "title": "AI tools in use",
+    "subtitle": "Shadow AI: the AI tools people in the organization use, from reports and reviews. Decide on each one and register the approved ones.",
     "premiumBadge": "Premium",
     "enableShadowAi": "Enable Shadow AI Discovery",
     "reportAiTool": "Report AI Tool",
     "statsTotalReports": "Total Reports",
-    "statsDiscovered": "Discovered",
+    "statsDiscovered": "Reported",
     "statsUnderReview": "Under Review",
     "statsProhibited": "Prohibited",
     "searchPlaceholder": "Search reports...",
     "emptyTitle": "No reports found",
-    "emptySearchHint": "Try adjusting your search terms",
+    "emptySearchHint": "Try different search terms",
     "emptyHint": "Start by reporting an AI tool in use",
-    "statusDiscovered": "Discovered",
+    "statusDiscovered": "Reported",
     "statusUnderReview": "Under Review",
     "statusApproved": "Approved",
     "statusProhibited": "Prohibited",
@@ -1228,11 +1444,55 @@
     "gateTitle": "Shadow AI discovery",
     "gateBody": "Record the AI tools people use without approval, whether reported by staff or found in a review. Each one is matched against a catalog of common AI tools, triaged (under review, approved or prohibited), and approved tools can be registered in the AI inventory in one step.",
     "gateSkillDescription": "Record unapproved AI tools, match them against a catalog of common AI tools, triage them and register the approved ones in the inventory.",
-    "tabAll": "All ({count})"
+    "tabAll": "All ({count})",
+    "definition": "An AI tool is a ready-made product people use, such as a chat assistant or a document converter. An AI system is AI the organization builds or runs as part of a process. A tool becomes a system when the organization builds it into a process or decides to govern it as one: register it as a new system, or add it to an existing system as a component.",
+    "noDetection": "This page does not detect anything by itself. Each record comes from a colleague's report or from a review you carry out, and is matched to a catalog of common AI tools.",
+    "howToFind": {
+      "title": "How to find AI tools in use",
+      "survey": "Ask colleagues: send the short survey below.",
+      "expenses": "Expense and card records: look for subscriptions to AI products.",
+      "sso": "Single sign-on and identity logs: look for sign-ins to AI services.",
+      "extensions": "Browser extensions and installed software: look for AI assistants and plug-ins."
+    },
+    "survey": {
+      "title": "Survey for colleagues",
+      "text": "Which AI tools do you use for work? Please list each one, including free tools and personal accounts.\n1. The name of the tool (for example a chat assistant, a transcription or translation service, a writing or coding assistant).\n2. What you use it for.\n3. What information you put into it (for example client data, personal data, internal documents).\n4. Whether you use a work account, a personal account or no account.\n5. How often you use it.",
+      "copy": "Copy the survey",
+      "copied": "Survey copied."
+    },
+    "stages": {
+      "title": "How a tool moves",
+      "reported": {
+        "label": "Reported",
+        "text": "Someone has recorded that the tool is in use."
+      },
+      "underReview": {
+        "label": "Under review",
+        "text": "A person checks what it does, what data it receives and who supplies it."
+      },
+      "decided": {
+        "label": "Approved or prohibited",
+        "text": "The organization decides whether people may use it."
+      },
+      "registered": {
+        "label": "Registered",
+        "text": "An approved tool is added to the AI inventory, as a new system or as a component of an existing one."
+      }
+    },
+    "tabToReview": "To review ({count})",
+    "tabApproved": "Approved ({count})",
+    "tabProhibited": "Prohibited ({count})",
+    "tabRegistered": "Registered ({count})",
+    "statsToReview": "Still to review",
+    "statsApproved": "Approved",
+    "statsRegistered": "Registered",
+    "reportedWhen": "Reported {when}",
+    "emptyTab": "No AI tool in this tab.",
+    "systemsLink": "Go to the AI systems"
   },
   "shadowAiNew": {
     "title": "Report AI Tool",
-    "subtitle": "Report an AI tool being used in your organization",
+    "subtitle": "Report an AI tool being used in the organization",
     "searchCatalog": "Search Catalog",
     "enterCustomTool": "Enter Custom Tool",
     "catalogSearchPlaceholder": "Search AI tools (e.g., ChatGPT, Copilot, Midjourney)...",
@@ -1270,27 +1530,27 @@
   },
   "shadowAiDetail": {
     "notFound": "Report not found",
-    "backToShadowAi": "Back to Shadow AI",
+    "backToShadowAi": "Back to AI tools in use",
     "startReview": "Start Review",
     "approve": "Approve",
     "prohibit": "Prohibit",
-    "registerAsAiSystem": "Register as AI System",
+    "registerAsAiSystem": "Register in the AI inventory",
     "approvedCtaTitle": "This tool has been approved",
-    "approvedCtaDescription": "Register it as an AI System to start governance tracking",
+    "approvedCtaDescription": "Register it as a new AI system, or add it to an existing system as a component.",
     "overviewTitle": "Overview",
     "labelUsageDescription": "Usage Description",
     "labelDepartment": "Department",
     "labelReportedBy": "Reported By",
-    "registeredSystemTitle": "Registered AI System",
+    "registeredSystemTitle": "Registered in",
     "toolInfoTitle": "Tool Info",
-    "registerDialogTitle": "Register as AI System",
-    "registerTabCreateNew": "Create New",
-    "registerTabLinkExisting": "Link Existing",
+    "registerDialogTitle": "Register in the AI inventory",
+    "registerTabCreateNew": "Register as a new system",
+    "registerTabLinkExisting": "Add to an existing system as a component",
     "toastReportUpdated": "Report updated",
     "toastReportUpdateError": "Failed to update report",
     "toastSystemCreatedAndRegistered": "System created and report registered",
     "toastRegisterError": "Failed to register",
-    "statusDiscovered": "Discovered",
+    "statusDiscovered": "Reported",
     "statusUnderReview": "Under Review",
     "statusApproved": "Approved",
     "statusProhibited": "Prohibited",
@@ -1305,7 +1565,7 @@
     "unknown": "Unknown",
     "labelReported": "Reported",
     "labelLastUpdated": "Last Updated",
-    "systemId": "ID: {id}",
+    "systemId": "Reference {id}",
     "labelVendor": "Vendor",
     "labelCategory": "Category",
     "labelWebsite": "Website",
@@ -1327,7 +1587,7 @@
     "placeholderVendorName": "e.g., OpenAI",
     "labelVendorWebsite": "Vendor Website",
     "placeholderVendorWebsite": "e.g., https://openai.com",
-    "registerLinkHint": "Link this shadow AI tool to an existing AI system in your registry.",
+    "registerLinkHint": "The tool becomes a component of the system you choose. It is listed on that system's page, and the system keeps its own reference number.",
     "labelAiSystem": "AI System",
     "placeholderSelectAiSystem": "Select an AI system",
     "registering": "Registering...",
@@ -1346,7 +1606,8 @@
       "TRANSCRIPTION_DICTATION": "Transcription and dictation",
       "VIDEO_AUDIO": "Video and audio",
       "WRITING_PRODUCTIVITY": "Writing and productivity"
-    }
+    },
+    "selectedSystemReference": "Reference of the chosen system: {reference}"
   },
   "vendorCatalog": {
     "title": "Vendor catalog",
@@ -1359,15 +1620,15 @@
     "statsEuAiActCompliant": "EU AI Act Compliant",
     "searchPlaceholder": "Search vendors...",
     "emptyTitle": "No vendors found",
-    "emptySearchHint": "Try adjusting your search terms",
+    "emptySearchHint": "Try different search terms",
     "gateTitle": "AI vendor catalog",
-    "gateBody": "A catalog of about 880 AI vendors with the compliance information they publish: certifications, data locations, data processing agreements and AI capabilities. Entries come from public sources: confirm each one with the vendor as part of your due diligence.",
+    "gateBody": "A catalog of about 880 AI vendors with the compliance information they publish: certifications, data locations, data processing agreements and AI capabilities. Entries come from public sources: confirm each one with the vendor as part of the organization's due diligence.",
     "gateSkillDescription": "Browse about 880 AI vendors with their published certifications, data locations, data processing agreements and AI capabilities."
   },
   "vendorCatalogDetail": {
     "notFound": "Vendor not found in catalog",
     "backToCatalog": "Back to Catalog",
-    "addToMyVendors": "Add to My Vendors",
+    "addToMyVendors": "Add to the organization's vendors",
     "descriptionTitle": "Description",
     "complianceTitle": "Compliance",
     "certificationsTitle": "Certifications",
@@ -1376,7 +1637,7 @@
     "aiGovernanceTitle": "AI Governance",
     "dataProcessingTitle": "Data Processing",
     "externalLinksTitle": "External Links",
-    "yourOrganizationTitle": "Your Organization",
+    "yourOrganizationTitle": "The organization",
     "supplyChainTitle": "Supply chain",
     "supplyChainSubtitle": "Subprocessors this vendor lists, as published on its own subprocessor page or derived from its documents.",
     "supplyChainLinked": "{count} of {total} are catalog vendors",
@@ -1387,9 +1648,9 @@
     "supplyChainInCatalog": "In catalog",
     "dependentsTitle": "Used as a subprocessor by",
     "dependentsSubtitle": "Catalog vendors that list {name} in their own supply chain.",
-    "dependentsYours": "In your vendors",
+    "dependentsYours": "Among the organization's vendors",
     "dependentsNone": "No catalog vendor lists {name} as a subprocessor.",
-    "dependentsYourVendorsTitle": "Your vendors that depend on {name}",
+    "dependentsYourVendorsTitle": "The organization's vendors that depend on {name}",
     "governanceExplainability": "Explainability",
     "governanceBiasMonitoring": "Bias Monitoring",
     "governanceModelCards": "Model Cards",
@@ -1421,7 +1682,7 @@
   },
   "billing": {
     "title": "Billing",
-    "subtitle": "Manage your premium add-on features",
+    "subtitle": "Manage the organization's premium add-on features",
     "summaryActiveFeatures": "Active Features",
     "summaryMonthlyTotal": "Monthly Total",
     "summaryPlan": "Plan",
@@ -1433,7 +1694,7 @@
   },
   "settings": {
     "title": "Settings",
-    "subtitle": "Your organization: where it operates, its screening answers, its members and its AI settings",
+    "subtitle": "The organization: where it operates, the answers that decide which laws apply, its team and its AI settings",
     "templateItemsTitle": "Template items",
     "templateItemsLead": "Systems, vendors and starter assessments a template created for you. Removing them clears only the ones nobody has edited; anything you have changed is kept.",
     "templateItemsCount": "{remove} will be removed. {keep} you have edited will be kept.",
@@ -1450,15 +1711,17 @@
     "labelEmail": "Email",
     "accountTypeTitle": "Account Type",
     "accountTypeDescription": "Decides whether you start with one organization or run several client organizations. You can switch at any time.",
-    "personaBusinessUser": "For my organization",
+    "personaBusinessUser": "For the organization itself",
     "personaConsultant": "For client organizations",
     "switchTo": "Switch to: {persona}",
-    "switched": "Account type updated."
+    "switched": "Account type updated.",
+    "advancedTitle": "Advanced",
+    "advancedDescription": "Profile, account type, the hosted pilot, sample data, template items, AI settings, legal hold and deletion."
   },
   "clients": {
     "addOrganization": "Add organization",
     "addOrgTitle": "Add a managed organization",
-    "addOrgDescription": "Creates a new organization with you as its owner. You can switch between your organizations from this page.",
+    "addOrgDescription": "Creates a new organization with you as its owner. You can switch between organizations from this page.",
     "orgNameLabel": "Organization name",
     "orgNamePlaceholder": "e.g. Acme Industries",
     "orgSlugLabel": "URL identifier",
@@ -1469,24 +1732,24 @@
     "moreOptions": "More options"
   },
   "experts": {
-    "deploymentCtaTitle": "Run AI Sentinel on your own hardware",
-    "deploymentCtaDescription": "TODO.LAW engineers deploy and maintain it on your infrastructure: including fully offline.",
+    "deploymentCtaTitle": "Run AI Sentinel on the organization's own hardware",
+    "deploymentCtaDescription": "TODO.LAW engineers deploy and maintain it on the organization's infrastructure: including fully offline.",
     "deploymentCtaButton": "Talk to us",
     "dismiss": "Dismiss"
   },
   "premium": {
     "enableTitle": "Enable {name}",
-    "contactDescription": "Contact us to enable this feature for your organization.",
+    "contactDescription": "Contact us to enable this feature for the organization.",
     "contactUs": "Contact Us",
     "enableFeature": "Enable Feature",
     "redirecting": "Redirecting to payment...",
-    "addToOrganization": "Add {name} to your organization.",
-    "includedSelfHosted": "{name} is included in your self-hosted deployment. It is already available to your organization.",
-    "activateOnSkills": "{name} is a premium feature. Activate the license file you received on the Skills page to enable it for your organization.",
+    "addToOrganization": "Add {name} to the organization.",
+    "includedSelfHosted": "{name} is included in this self-hosted deployment. It is already available to the organization.",
+    "activateOnSkills": "{name} is a premium feature. Activate the license file you received on the Skills page to enable it for the organization.",
     "close": "Close",
     "goToSkills": "Go to the Skills page",
     "enableMany": "{count, plural, one {Enable # feature} other {Enable # features}}",
-    "manyIncludedSelfHosted": "These features are included in your self-hosted deployment.",
+    "manyIncludedSelfHosted": "These features are included in this self-hosted deployment.",
     "manyActivateOnSkills": "Activate the license files you received on the Skills page to enable these features."
   },
   "skills": {
@@ -1515,7 +1778,9 @@
     "statusActive": "Active",
     "statusLocked": "Locked",
     "statusIncluded": "Included",
-    "includedHint": "Included in your self-hosted deployment",
+    "statusLicenceRequired": "License required",
+    "licenceRequiredHint": "Activate a license file to use it on this deployment.",
+    "includedHint": "Included in this self-hosted deployment",
     "includedHintPilot": "Open on the hosted pilot. In the kit, {price} a year.",
     "expires": "Expires {date}",
     "perpetual": "Perpetual license",
@@ -1570,7 +1835,10 @@
       "provenance": "AI-generated with {model}: review before use",
       "inserted": "Draft inserted: review it and save",
       "offHint": "AI assistance is off for this organization. An administrator can enable it in Settings.",
-      "notConfiguredHint": "AI assistance is enabled, but no AI engine is available yet. Ask your server administrator to configure an AI engine (see the suite's .env.example: the gateway address is LLM_GATEWAY_URL)."
+      "notConfiguredHint": "AI assistance is enabled, but no AI engine is available yet. Ask the server administrator to configure an AI engine (see the suite's .env.example: the gateway address is LLM_GATEWAY_URL).",
+      "suggestEdits": "Suggest edits",
+      "reviewInEditor": "Open the editor with these",
+      "reviewOpened": "Suggestions shown above the text"
     },
     "posture": {
       "off": "Off: no AI calls",
@@ -1611,11 +1879,11 @@
       "transparencyHit": "Transparency obligation: {article} (matched “{matched}”)",
       "carveOutHit": "Carve-out applied: {article}: financial-fraud detection is not high-risk on its own",
       "none": "No prohibited, high-risk, or transparency rules matched the registered facts.",
-      "disclaimer": "Deterministic keyword screening of the registered facts: a triage aid, not a legal determination. The classification decision is yours."
+      "disclaimer": "Deterministic keyword screening of the registered facts: a triage aid, not a legal determination. The classification decision rests with the organization."
     },
     "annexIv": {
       "title": "Annex IV technical documentation",
-      "description": "Draft the Annex IV technical-documentation skeleton from this system's registry facts. Gaps are marked for the owner to complete.",
+      "description": "The technical file the EU AI Act asks providers of high-risk systems to keep (Art. 11 and Annex IV). This drafts it from the record.",
       "copy": "Copy markdown",
       "copied": "Annex IV draft copied to the clipboard",
       "disclaimer": "A working draft from registry facts: the system owner must complete and review it before any use."
@@ -1629,14 +1897,15 @@
     },
     "errors": {
       "ai_off": "AI assistance is off for this organization. An administrator can enable it in Settings.",
-      "ai_not_configured": "No AI engine is available yet. Ask your server administrator to configure one (see the suite's .env.example: LLM_GATEWAY_URL).",
+      "ai_not_configured": "No AI engine is available yet. Ask the server administrator to configure one (see the suite's .env.example: LLM_GATEWAY_URL).",
       "ai_rate_limited": "This organization has reached its hourly AI limit. Try again later.",
-      "ai_failed": "The AI engine did not return a draft. Try again."
+      "ai_failed": "The AI engine did not return a draft. Try again.",
+      "ai_us_jurisdiction": "AI features are not yet available to organizations that declare a US state."
     }
   },
   "assessmentTemplates": {
     "title": "Assessment Templates",
-    "subtitle": "Manage the questionnaires your assessments are built from",
+    "subtitle": "Manage the questionnaires the assessments are built from",
     "createButton": "Create template",
     "searchPlaceholder": "Search templates...",
     "systemTab": "System templates ({count})",
@@ -1648,7 +1917,7 @@
     "cloned": "Template cloned",
     "created": "Template created",
     "cloneTitle": "Clone template",
-    "cloneDescription": "Creates an editable copy of “{name}” owned by your organization.",
+    "cloneDescription": "Creates an editable copy of “{name}” owned by the organization.",
     "cloneDefaultName": "{name} (Copy)",
     "nameLabel": "Name",
     "namePlaceholder": "e.g. FRIA for customer-facing systems",
@@ -1660,11 +1929,11 @@
     "questionsPlaceholder": "Describe the AI system and its intended purpose.\nWho are the affected persons?\nWhat data does the system process?",
     "questionsHint": "One question per line. You can clone a system template instead for a full questionnaire.",
     "createTitle": "Create template",
-    "createDescription": "A simple starter: one section with your questions. Clone a system template for the full multi-section questionnaires.",
+    "createDescription": "A simple starter: one section with the organization's questions. Clone a system template for the full multi-section questionnaires.",
     "systemEmpty": "No system templates installed.",
     "systemEmptyHint": "An administrator can install the standard EU AI Act questionnaires by running the template seed (db:seed-templates), or create a custom template.",
     "customEmpty": "No custom templates yet.",
-    "customEmptyHint": "Clone a system template or create your own.",
+    "customEmptyHint": "Clone a system template or create a new one.",
     "typeFria": "Fundamental Rights Impact Assessment (FRIA)",
     "typeConformity": "Conformity Assessment",
     "typeAiRisk": "AI Risk Assessment",
@@ -1678,7 +1947,7 @@
       "premiumLabel": "Premium",
       "nav": {
         "gettingStarted": "Getting Started",
-        "guideMyRole": "What is my role?",
+        "guideMyRole": "What is the organization's role?",
         "guideHighRisk": "What is high risk?",
         "guideWhichRules": "Which rules apply to me?",
         "aiRegistry": "AI Registry",
@@ -1719,7 +1988,7 @@
     "home": {
       "metaTitle": "Documentation: AI SENTINEL",
       "metaDescription": "Learn how to use AI SENTINEL for AI governance, EU AI Act compliance, risk classification, and incident management.",
-      "heroIntro": "A purpose-built platform for AI governance. Manage your AI system inventory, EU AI Act compliance, risk classification, human oversight, and AI-specific incidents: all in one place.",
+      "heroIntro": "A purpose-built platform for AI governance. Manage the AI system inventory, EU AI Act compliance, risk classification, human oversight, and AI-specific incidents: all in one place.",
       "quickStartTitle": "Quick Start",
       "quickStartSteps": [
         {
@@ -1727,15 +1996,15 @@
           "description": "Sign in via email magic link or Google OAuth."
         },
         {
-          "title": "Create or join your organization",
-          "description": "Set up your organization and invite team members. Users with a matching email domain are auto-joined."
+          "title": "Create or join the organization",
+          "description": "Set up the organization and invite team members. Users with a matching email domain are auto-joined."
         },
         {
-          "title": "Register your AI systems",
-          "description": "Build your AI inventory by registering systems, models, and agents. Assign risk levels and owners."
+          "title": "Register the organization's AI systems",
+          "description": "Build the organization's AI inventory by registering systems, models, and agents. Assign risk levels and owners."
         },
         {
-          "title": "Govern your AI",
+          "title": "Govern the organization's AI",
           "description": "Run assessments, set up oversight gates, map compliance frameworks, manage vendors, and track incidents."
         }
       ],
@@ -1770,7 +2039,7 @@
         },
         "riskClassification": {
           "title": "Risk Classification",
-          "description": "EU AI Act four-tier risk classification with guided Annex III wizard and classification history."
+          "description": "EU AI Act four-tier risk classification: a rule screening suggests a level, you choose it and the Annex III category, with classification history."
         },
         "assessments": {
           "title": "Assessments",
@@ -1852,7 +2121,7 @@
         },
         "frameworks": {
           "title": "Frameworks compared",
-          "description": "Thirteen AI governance frameworks, including AIUC-1 for AI agents, on fourteen dimensions: a wheel, a table, a side-by-side comparison and a selector. A learning aid, not legal advice."
+          "description": "Thirteen AI governance frameworks, including AIUC-1 for AI agents, on fourteen dimensions: a wheel, a table, a side-by-side comparison and a selector."
         }
       },
       "licensingTitle": "Open Core Licensing",
@@ -1885,7 +2154,7 @@
       "metaTitle": "AI Registry: AI SENTINEL Docs",
       "metaDescription": "Register and manage all AI systems, models, and agents with lifecycle tracking.",
       "title": "AI Registry",
-      "intro": "The central inventory of all AI systems within your organization. Every other module (risk classification, assessments, oversight, incidents) references back to an AI system record. Build a complete picture of your AI landscape.",
+      "intro": "The central inventory of all AI systems within the organization. Every other module (risk classification, assessments, oversight, incidents) references back to an AI system record. Build a complete picture of the organization's AI landscape.",
       "lifecycleTitle": "System Lifecycle",
       "lifecycleIntro": "Every AI system progresses through a defined lifecycle. Status transitions are tracked with timestamps for audit purposes.",
       "lifecycle": [
@@ -2010,9 +2279,9 @@
     },
     "riskClassification": {
       "metaTitle": "Risk Classification: AI SENTINEL Docs",
-      "metaDescription": "EU AI Act four-tier risk classification with guided Annex III wizard.",
+      "metaDescription": "EU AI Act four-tier risk classification: a rule screening suggests a level from the system's facts, and you decide.",
       "title": "Risk Classification",
-      "intro": "Classify your AI systems using the EU AI Act four-tier risk framework. The guided wizard walks you through Annex III categories to determine the correct risk level, with full classification history for audit purposes.",
+      "intro": "Classify the organization's AI systems using the EU AI Act four-tier risk framework. The classification form shows a rule screening of the system's registered facts (prohibited practices, Annex III areas, transparency duties) with a suggested level; you choose the level and, for high risk, the Annex III category. Every classification is kept in the history for audit purposes.",
       "tiersTitle": "Risk Tiers",
       "tiersIntro": "The EU AI Act defines four risk levels. Each level carries different compliance obligations, from outright prohibition to minimal transparency requirements.",
       "tiers": {
@@ -2039,7 +2308,7 @@
       },
       "examplesLabel": "Examples:",
       "annexTitle": "Annex III Categories",
-      "annexIntro": "The classification wizard guides you through the Annex III high-risk categories. If your AI system falls into any of these areas, it is likely classified as High Risk.",
+      "annexIntro": "The classification form lists the Annex III high-risk categories. If the AI system falls into any of these areas, it is likely classified as High Risk.",
       "annexCategories": [
         "Biometrics",
         "Critical infrastructure",
@@ -2080,16 +2349,16 @@
           "description": "Navigate to the AI Registry and select the system you want to classify."
         },
         {
-          "title": "Start the classification wizard",
-          "description": "Go to AI Systems → Risk Classification and click Classify to launch the guided wizard."
+          "title": "Open the classification form",
+          "description": "Choose Classify for that system to open the risk classification form."
         },
         {
-          "title": "Answer the Annex III questions",
-          "description": "The wizard asks whether your system falls into any high-risk category. Answer honestly: the result determines compliance obligations."
+          "title": "Read the rule screening",
+          "description": "The form shows which rules matched the system's registered facts (prohibited practices, Annex III areas, transparency duties) and the level they suggest. It is a triage aid, not a legal determination."
         },
         {
-          "title": "Review the suggested risk level",
-          "description": "Based on your answers, the system suggests a risk tier. You can accept or override with justification."
+          "title": "Choose the risk level",
+          "description": "Choose the risk level, accepting the suggestion or not, and for high risk the Annex III category. The level you choose determines the compliance obligations."
         },
         {
           "title": "Document the rationale",
@@ -2455,7 +2724,7 @@
       "metaTitle": "Compliance: AI SENTINEL Docs",
       "metaDescription": "Framework mapping across nine frameworks (EU AI Act, GDPR, NIST AI RMF, ISO/IEC 42001, AIUC-1, California, Colorado, Texas and Washington) with evidence management and export.",
       "title": "Compliance",
-      "intro": "Map your AI systems against leading regulatory frameworks. Track compliance status at the requirement level, attach evidence, and export compliance packages for regulators and auditors.",
+      "intro": "Map the organization's AI systems against leading regulatory frameworks. Track compliance status at the requirement level, attach evidence, and export compliance packages for regulators and auditors.",
       "frameworksTitle": "Supported Frameworks",
       "frameworksIntro": "AI SENTINEL ships with nine pre-loaded frameworks: three that apply by risk tier (the EU AI Act, NIST AI RMF and ISO/IEC 42001), five that apply by jurisdiction (the GDPR and the California, Colorado, Texas and Washington AI rules) and one you choose: AIUC-1, the certification standard for AI agents. Each framework is broken down into articles, clauses or functions with individual compliance tracking.",
       "frameworks": {
@@ -2562,7 +2831,7 @@
         {
           "role": "AI Officer",
           "title": "Filter by applicability",
-          "description": "Use risk-level filtering to focus on requirements that apply to your system's classification (e.g., high-risk only)."
+          "description": "Use risk-level filtering to focus on requirements that apply to the system's classification (e.g., high-risk only)."
         },
         {
           "role": "AI Officer",
@@ -2576,7 +2845,7 @@
       "metaTitle": "Vendor Risk: AI SENTINEL Docs",
       "metaDescription": "Third-party AI vendor management with risk assessment, contract tracking, and due diligence.",
       "title": "Vendor Risk",
-      "intro": "Manage third-party AI vendors with risk assessment, contract lifecycle tracking, and due diligence documentation. Maintain a complete registry of every AI vendor your organization relies on.",
+      "intro": "Manage third-party AI vendors with risk assessment, contract lifecycle tracking, and due diligence documentation. Maintain a complete registry of every AI vendor the organization relies on.",
       "riskTitle": "Vendor Risk Levels",
       "riskIntro": "Each vendor is assigned a risk level based on the criticality of the AI services they provide. Risk level determines review frequency and due diligence requirements.",
       "riskLevels": {
@@ -2648,13 +2917,13 @@
       ],
       "catalogTitle": "AI Vendor Catalog",
       "catalogPremium": "Premium",
-      "catalogIntro": "The AI Vendor Catalog (powered by VendorWatch) provides a database of AI vendors. Search the catalog, view vendor profiles, and add vendors directly to your registry with auto-filled details.",
+      "catalogIntro": "The AI Vendor Catalog (powered by VendorWatch) provides a database of AI vendors. Search the catalog, view vendor profiles, and add vendors directly to the registry with auto-filled details.",
       "catalogSearchTitle": "Search & Browse",
       "catalogSearchBody": "Search by vendor name or browse by category. Each catalog entry includes a description, website, and compliance flags.",
       "catalogAutofillTitle": "Auto-fill",
       "catalogAutofillBody": "When adding a vendor from the catalog, the form is auto-filled with the vendor's details: saving time and ensuring accuracy.",
       "catalogRegisterTitle": "Register as AI System",
-      "catalogRegisterBody": "Optionally register the vendor's product as an AI system in your registry at the same time, linking the vendor and system records.",
+      "catalogRegisterBody": "Optionally register the vendor's product as an AI system in the registry at the same time, linking the vendor and system records.",
       "howTitle": "Adding a Vendor",
       "steps": [
         {
@@ -2688,7 +2957,7 @@
       "metaTitle": "Policy Management: AI SENTINEL Docs",
       "metaDescription": "AI governance policies with versioning, approval workflow, and system linking.",
       "title": "Policy Management",
-      "intro": "Author, version, and manage AI governance policies. Link policies to specific AI systems, track approval workflows, and maintain a living policy library that evolves with your organization.",
+      "intro": "Author, version, and manage AI governance policies. Link policies to specific AI systems, track approval workflows, and maintain a living policy library that evolves with the organization.",
       "typesTitle": "Policy Types",
       "typesIntro": "AI SENTINEL supports a range of policy types covering the full scope of AI governance. Each type addresses a specific governance domain.",
       "types": [
@@ -2787,7 +3056,7 @@
     },
     "shadowAi": {
       "metaTitle": "Shadow AI Discovery: AI SENTINEL Docs",
-      "metaDescription": "Discover unauthorized AI tools in your organization. Self-reporting portal, triage workflow, and promotion to formal governance.",
+      "metaDescription": "Discover unauthorized AI tools in the organization. Self-reporting portal, triage workflow, and promotion to formal governance.",
       "premiumBadge": "Premium",
       "title": "Shadow AI Discovery",
       "intro": "Shadow AI refers to AI tools adopted by employees without the knowledge or approval of the organization. Research suggests that around 60% of employees use unapproved AI tools at work: from ChatGPT and Copilot to image generators and AI-powered analytics. Organizations cannot govern AI systems they do not know about.",
@@ -2845,7 +3114,7 @@
         },
         {
           "title": "Promote to formal governance",
-          "description": "Approved shadow tools can be promoted into the AI Registry as a formal AI System (and optionally into a Vendor record) in a single step. This bridges informal discovery into your full governance program."
+          "description": "Approved shadow tools can be promoted into the AI Registry as a formal AI System (and optionally into a Vendor record) in a single step. This bridges informal discovery into the full governance program."
         }
       ],
       "statusTitle": "Status Workflow",
@@ -2877,10 +3146,10 @@
       "metaDescription": "Catalog of more than 850 AI vendors with risk profiles, compliance data, and governance metadata powered by VendorWatch.",
       "premiumBadge": "Premium",
       "title": "AI Vendor Catalog",
-      "intro": "Evaluating AI vendors from scratch is time-consuming and error-prone. The AI Vendor Catalog gives your governance team a head start with pre-populated profiles for more than 850 AI vendors: complete with risk indicators, compliance certifications, and deployment metadata.",
+      "intro": "Evaluating AI vendors from scratch is time-consuming and error-prone. The AI Vendor Catalog gives the governance team a head start with pre-populated profiles for more than 850 AI vendors: complete with risk indicators, compliance certifications, and deployment metadata.",
       "whatTitle": "What is the AI Vendor Catalog?",
       "whatP1": "The AI Vendor Catalog is a searchable, pre-populated directory of AI tool and service providers. Each vendor profile includes structured governance data: what the vendor does, where data is processed, what certifications they hold, whether they train on customer data, and their EU AI Act risk classification.",
-      "whatP2": "The catalog is powered by <vw>VendorWatch</vw>, an independent AI vendor intelligence service that continuously audits and updates vendor profiles. Data syncs automatically, so your catalog stays current without manual research.",
+      "whatP2": "The catalog is powered by <vw>VendorWatch</vw>, an independent AI vendor intelligence service that continuously audits and updates vendor profiles. Data syncs automatically, so the catalog stays current without manual research.",
       "whyTitle": "Why it matters",
       "whyItems": [
         {
@@ -2897,7 +3166,7 @@
         },
         {
           "title": "Continuous updates",
-          "description": "Vendor risk profiles change as companies update their terms, certifications expire, or data practices evolve. Automated sync ensures your catalog reflects current reality."
+          "description": "Vendor risk profiles change as companies update their terms, certifications expire, or data practices evolve. Automated sync ensures the catalog reflects current reality."
         }
       ],
       "vsTitle": "Vendor Catalog vs Vendor Risk",
@@ -2911,8 +3180,8 @@
       ],
       "vsRiskTitle": "Vendor Risk",
       "vsRiskItems": [
-        "Your organization's vendor records",
-        "Internal assessments: your team's risk evaluations",
+        "The organization's vendor records",
+        "Internal assessments: the organization's risk evaluations",
         "Full CRUD with status tracking and contract management",
         "Core question: “How risky is this vendor for us?”"
       ],
@@ -2950,7 +3219,7 @@
           "description": "Each vendor has a detailed profile page with structured governance data: risk indicators, compliance certifications, data practices, and AI model information."
         },
         {
-          "title": "Inform your decision",
+          "title": "Inform the decision",
           "description": "Use the catalog data to accelerate vendor assessments, support procurement decisions, or evaluate shadow AI tools that employees have reported."
         },
         {
@@ -2964,7 +3233,7 @@
       "metaDescription": "EU AI Act Art. 43 conformity assessment template for high-risk AI systems. Structured evaluation of technical documentation, quality management, and post-market monitoring.",
       "premiumBadge": "Premium",
       "title": "Conformity Assessment",
-      "intro": "High-risk AI systems under the EU AI Act must undergo a conformity assessment before being placed on the market. AI SENTINEL provides a structured template that walks your team through every requirement (from technical documentation to post-market monitoring) so nothing falls through the cracks.",
+      "intro": "High-risk AI systems under the EU AI Act must undergo a conformity assessment before being placed on the market. AI SENTINEL provides a structured template that walks the team through every requirement (from technical documentation to post-market monitoring) so nothing falls through the cracks.",
       "whatTitle": "What is a Conformity Assessment?",
       "whatP1": "A conformity assessment is a formal evaluation process required by Art. 43 of the EU AI Act for high-risk AI systems. It verifies that the AI system meets all applicable requirements before deployment: covering data governance, transparency, human oversight, accuracy, robustness, and cybersecurity.",
       "whatP2": "Depending on the use case, conformity assessments may be conducted internally by the provider or through a third-party notified body. In either case, the assessment must follow a structured methodology and produce documented evidence of compliance.",
@@ -3042,7 +3311,7 @@
         },
         {
           "title": "Document and maintain",
-          "description": "The completed assessment becomes part of your compliance record. Link it to the AI system's compliance mapping and revisit it when material changes occur."
+          "description": "The completed assessment becomes part of the organization's compliance record. Link it to the AI system's compliance mapping and revisit it when material changes occur."
         }
       ]
     },
@@ -3051,7 +3320,7 @@
       "metaDescription": "Structured bias and fairness evaluation for AI systems. Detect discrimination risks, assess protected attributes, and document mitigation measures.",
       "premiumBadge": "Premium",
       "title": "Bias & Fairness Assessment",
-      "intro": "AI systems can produce discriminatory outcomes: often unintentionally. The Bias & Fairness Assessment provides a structured methodology to evaluate your AI systems for bias risks, document affected protected attributes, and track mitigation measures.",
+      "intro": "AI systems can produce discriminatory outcomes: often unintentionally. The Bias & Fairness Assessment provides a structured methodology to evaluate the organization's AI systems for bias risks, document affected protected attributes, and track mitigation measures.",
       "whatTitle": "What is a Bias & Fairness Assessment?",
       "whatP1": "A bias and fairness assessment is a systematic evaluation of an AI system's potential to produce outcomes that unfairly disadvantage individuals or groups based on protected characteristics: such as race, gender, age, disability, ethnicity, or socioeconomic status.",
       "whatP2": "Under the EU AI Act, providers of high-risk AI systems must examine training data for possible biases (Art. 10) and implement measures to prevent discriminatory outcomes. The EU Charter of Fundamental Rights (Art. 21) explicitly prohibits discrimination, and AI systems that score, rank, or make decisions about people are particularly exposed to this risk.",
@@ -3140,7 +3409,7 @@
         },
         {
           "title": "Review and monitor",
-          "description": "Submit for approval, then establish ongoing monitoring. The assessment links to your AI system's record so bias findings inform risk classification and oversight decisions."
+          "description": "Submit for approval, then establish ongoing monitoring. The assessment links to the AI system's record so bias findings inform risk classification and oversight decisions."
         }
       ]
     },
@@ -3238,24 +3507,24 @@
     },
     "security": {
       "metaTitle": "Security & Trust: AI SENTINEL Docs",
-      "metaDescription": "How AI SENTINEL protects your organization's data: records kept apart, access control, input validation, an audit trail, and where the data is stored.",
+      "metaDescription": "How AI SENTINEL protects the organization's data: records kept apart, access control, input validation, an audit trail, and where the data is stored.",
       "title": "Security & Trust",
       "intro": "AI SENTINEL is built for organizations that manage sensitive AI governance data. Security is embedded in every layer of the platform: from how we isolate your data to how we control access and protect your information.",
       "isolation": {
         "title": "Data Isolation",
-        "intro": "Every organization's records are kept apart from every other organization's. Before the application shows or changes your AI systems, assessments, policies, incidents or vendor data, it checks that you are a member of your organization.",
+        "intro": "Every organization's records are kept apart from every other organization's. Before the application shows or changes the organization's AI systems, assessments, policies, incidents or vendor data, it checks that you are a member of the organization.",
         "items": [
           {
             "title": "Organization-Scoped Queries",
-            "description": "Queries for your governance records are filtered by your organization in each request handler."
+            "description": "Queries for the organization's governance records are filtered by the organization in each request handler."
           },
           {
             "title": "Verified Membership",
-            "description": "Before any operation on your organization's data, we verify that you are an active member of that organization. Membership is checked on every such request."
+            "description": "Before any operation on the organization's data, we verify that you are an active member of that organization. Membership is checked on every such request."
           },
           {
             "title": "Cross-Tenant Protection",
-            "description": "Linking a policy to an AI system, or a data flow to a system, checks that both records belong to your organization."
+            "description": "When a record points to another, the server checks that the other record is the organization's: a policy, data flow, oversight gate, incident, assessment, sensitive-data analysis or shadow AI report linked to an AI system; an AI system or data recipient linked to a vendor; and an assessment's template, which must be a shared template or one of yours."
           },
           {
             "title": "Shared Reference Data Only",
@@ -3276,7 +3545,7 @@
         "readOnlyTitle": "Read-Only Enforcement",
         "readOnlyBody": "Viewers have read-only access to governance records. Writes to those records are blocked at the server level, not just in the interface, so they cannot be made through API calls either.",
         "elevatedTitle": "Elevated Permissions",
-        "elevatedBody": "Approving assessments, publishing policy versions and recording oversight decisions require the AI Officer, Admin or Owner role."
+        "elevatedBody": "Approving assessments, approving or publishing a policy, and passing, failing or deferring an oversight gate require the AI Officer, Admin or Owner role, whichever screen or API call makes the change. Billing actions are limited to Owners and Admins."
       },
       "auth": {
         "title": "Authentication",
@@ -3406,7 +3675,8 @@
       "contact": {
         "title": "Security Contact",
         "body": "If you discover a security vulnerability or have questions about our security practices, please contact us at <link>{email}</link>. We take all reports seriously and will respond promptly."
-      }
+      },
+      "stackLink": "Measures common to the whole TODO.LAW stack"
     },
     "crossBorder": {
       "metaTitle": "Cross-border AI governance: one assessment, six regimes | AI SENTINEL",
@@ -3451,7 +3721,7 @@
         }
       ],
       "scopeTitle": "How scope is decided",
-      "scopeBody": "Each regime has its own deterministic rules module. It reads the jurisdictions your organization has declared plus a handful of screening answers, and returns one of three states.",
+      "scopeBody": "Each regime has its own deterministic rules module. It reads the jurisdictions the organization has declared plus a handful of screening answers, and returns one of three states.",
       "scopeStates": [
         {
           "name": "Applies",
@@ -3466,10 +3736,10 @@
           "description": "Nobody has answered yet. Nothing attaches, and the state is shown as an open question rather than being read as a no. An unanswered question is a visible gap, never a silent one."
         }
       ],
-      "reuseTitle": "Answers you already gave",
+      "reuseTitle": "Answers already given",
       "reuseBody": "Where two regimes ask the same legal question, the product reuses the answer rather than asking twice. A California ADMT determination that finds the technology is the sole factor in a significant decision also answers the GDPR Article 22 question, and a positive determination with a named decision domain answers the Colorado covered-technology test. The assessment records which answer it inferred from, so the reasoning stays auditable.",
-      "artifactsTitle": "What you take away",
-      "artifactsBody": "From one answered assessment the product assembles four documents. Assembly is deterministic: no model is called, so a document that cites statute is reproducible and every sentence traces to an answer. They download as Markdown so they can go straight into your own systems of record.",
+      "artifactsTitle": "What comes out",
+      "artifactsBody": "From one answered assessment the product assembles four documents. Assembly is deterministic: no model is called, so a document that cites statute is reproducible and every sentence traces to an answer. They download as Markdown so they can go straight into the organization's own systems of record.",
       "artifacts": [
         {
           "name": "Unified impact assessment",
@@ -3510,7 +3780,7 @@
       "startTitle": "Getting started",
       "startSteps": [
         {
-          "step": "Declare your jurisdictions",
+          "step": "Declare the organization's jurisdictions",
           "body": "In Settings, record where the organization operates. Nothing can resolve until this is done, and the product says so rather than guessing."
         },
         {
@@ -3530,13 +3800,13 @@
           "body": "Download the assessment, the notice, the protocol and the agentic addendum. Answer more questions and regenerate: the gaps close as you go."
         }
       ],
-      "reviewNote": "The regulatory content in this module was signed off on 8 September 2026 and carries that marker on every generated document, alongside the date it was last reviewed against source. The EU AI Act and California packs are still pending their own sign-off, and a document that cites them says so. Nothing here is legal advice."
+      "reviewNote": "Every generated document carries the date its regulatory content was last reviewed against source."
     },
     "whatsNew": {
       "metaTitle": "What's new in AI SENTINEL",
       "metaDescription": "Release notes: threat modeling for builders, the program pack, legal hold, and one assessment answering six regulatory regimes.",
       "title": "What's new",
-      "intro": "The releases below are listed newest first. Every regulatory addition carries a law-review date and a pending legal sign-off marker.",
+      "intro": "The releases below are listed newest first. Every regulatory addition carries a law-review date.",
       "releases": [
         {
           "version": "Unreleased",
@@ -3590,15 +3860,15 @@
           "items": [
             {
               "title": "Four more regulatory regimes",
-              "body": "GDPR, Colorado SB 26-189, Texas TRAIGA and Washington's five domain instruments join the EU AI Act, NIST AI RMF, ISO 42001 and California ADMT. That is 294 requirements across eight frameworks and 115 cross-framework mappings, all bilingual. Each regime resolves its own scope from your declared jurisdictions and a few screening answers, and an unanswered question stays visibly undetermined rather than quietly reading as a no."
+              "body": "GDPR, Colorado SB 26-189, Texas TRAIGA and Washington's five domain instruments join the EU AI Act, NIST AI RMF, ISO 42001 and California ADMT. That is 294 requirements across eight frameworks and 115 cross-framework mappings, all bilingual. Each regime resolves its own scope from the declared jurisdictions and a few screening answers, and an unanswered question stays visibly undetermined rather than quietly reading as a no."
             },
             {
               "title": "The unified impact assessment",
               "body": "One question set with a common core drafted to the strictest formulation among the regimes, plus overlays that appear only where a regime applies. Every question declares the requirement codes its answer evidences, so one answer stands as evidence in several compliance registers at once. Where two regimes ask the same legal question the product reuses the answer: a California ADMT sole-factor finding also answers the GDPR Article 22 question."
             },
             {
-              "title": "Three documents you can take away",
-              "body": "The unified impact assessment, a multi-jurisdictional notice built as a universal core plus one addendum per jurisdiction, and a human review and appeal protocol with a table of what each jurisdiction words differently. Assembly is deterministic, so a document that cites statute is reproducible. They download as Markdown, to go straight into your own systems of record."
+              "title": "Three documents to take away",
+              "body": "The unified impact assessment, a multi-jurisdictional notice built as a universal core plus one addendum per jurisdiction, and a human review and appeal protocol with a table of what each jurisdiction words differently. Assembly is deterministic, so a document that cites statute is reproducible. They download as Markdown, to go straight into the organization's own systems of record."
             },
             {
               "title": "Gaps are shown, not hidden",
@@ -3630,7 +3900,7 @@
             },
             {
               "title": "Jurisdictions and the regulatory calendar",
-              "body": "A jurisdiction model on the organization and per system, driving a dated obligation timeline bound to your own inventory rather than a generic list of deadlines."
+              "body": "A jurisdiction model on the organization and per system, driving a dated obligation timeline bound to the organization's own inventory rather than a generic list of deadlines."
             },
             {
               "title": "Article 50 transparency",
@@ -3640,7 +3910,7 @@
         }
       ],
       "pendingTitle": "Legal review status",
-      "pendingBody": "The GDPR, Colorado, Texas and Washington packs, the unified assessment and the agentic stress test were signed off on 8 September 2026. The two Washington items previously flagged as unconfirmed were verified against the session laws first: HB 1170 is chapter 167, Laws of 2026, effective 1 February 2027, and HB 2225 is chapter 168, effective 1 January 2027. The prior-authorisation limits are in force from 11 June 2026, not 2027, because the January 2027 date shown against RCW 48.43.830 belongs to a later section that reconciles two 2025 amendments rather than to the artificial-intelligence duties. The EU AI Act and California ADMT packs carry their own review dates and are still pending sign-off; any document citing them says so.",
+      "pendingBody": "The GDPR, Colorado, Texas and Washington packs, the unified assessment and the agentic stress test were signed off on 8 September 2026. The two Washington items previously flagged as unconfirmed were verified against the session laws first: HB 1170 is chapter 167, Laws of 2026, effective 1 February 2027, and HB 2225 is chapter 168, effective 1 January 2027. The prior-authorisation limits are in force from 11 June 2026, not 2027, because the January 2027 date shown against RCW 48.43.830 belongs to a later section that reconciles two 2025 amendments rather than to the artificial-intelligence duties. The EU AI Act and California ADMT packs carry their own review dates.",
       "ctaTitle": "See it in the product",
       "ctaBody": "Open any AI system and choose the Cross-border regimes tab.",
       "ctaLink": "Read the cross-border documentation",
@@ -3784,8 +4054,8 @@
           "You hand over"
         ],
         "inputs": [
-          "Where you operate",
-          "Your AI systems",
+          "Where the organization operates",
+          "The organization's AI systems",
           "What each can do",
           "Who receives data",
           "Answers to questions"
@@ -3870,14 +4140,13 @@
         "Anything derived automatically is marked as such until a person confirms it, and the confirmed proportion appears on every export.",
         "Only a control with a current passing test becomes evidence. An untested guardrail evidences nothing.",
         "Running the wizard again tops up what is missing rather than creating a second copy: systems, policies, vendors and threat models are all deduplicated by name.",
-        "Every export states when it was generated, from which version, and under which rule packs; the pack carries a digest for each file.",
-        "Legal sign-off is pending on the regulatory content, and every document says so rather than implying otherwise."
+        "Every export states when it was generated, from which version, and under which rule packs; the pack carries a digest for each file."
       ]
     },
     "premiumNotice": {
       "title": "How the premium modules are offered",
-      "hosted": "Open to everyone on the hosted pilot.",
-      "selfHosted": "Licensed for installations on your own hardware.",
+      "hosted": "Included on the TODO.LAW cloud, in the free pilot and on the paid plan.",
+      "selfHosted": "On a managed instance or on your own hardware, they are licensed separately.",
       "seePricing": "See pricing",
       "newTab": "(opens in a new tab)"
     },
@@ -3887,13 +4156,12 @@
         "tableTitle": "Frameworks table: AI SENTINEL Docs",
         "compareTitle": "Compare frameworks: AI SENTINEL Docs",
         "selectorTitle": "Which frameworks? AI SENTINEL Docs",
-        "description": "Thirteen AI governance frameworks compared on fourteen dimensions, including AIUC-1, the certification standard for AI agents, with a selector that suggests where to start. A learning aid, not legal advice."
+        "description": "Thirteen AI governance frameworks compared on fourteen dimensions, including AIUC-1, the certification standard for AI agents, with a selector that suggests where to start."
       },
       "title": "AI governance frameworks",
       "intro": "Thirteen widely used AI governance frameworks, including AIUC-1, the certification standard for AI agents, compared on fourteen dimensions. Each cell gives a depth from 0 to 3, one sentence, the official source, and the AI SENTINEL module that supports it.",
       "asOf": "As of {date}",
-      "disclaimer": "A learning aid, not legal advice.",
-      "contentInEnglish": "The framework content on these pages is in English.",
+      "disclaimer": "A learning aid.",
       "stats": "{frameworks} frameworks, {rings} dimensions, {cells} cells, {review} under review.",
       "method": "Each cell was checked against the official text where that text could be read on the date shown. Cells that could not be checked are marked “Under review”, drawn hatched, and make no claim. Depth is an editorial reading of how far a framework goes on a dimension, not a score of quality.",
       "footerNote": "Where AI SENTINEL is mentioned, it supports or maps to the dimension. Dates are those the official texts state on the date shown.",
@@ -3959,7 +4227,7 @@
       },
       "selector": {
         "intro": "Answer seven questions. The page lists the frameworks that apply or fit, ranked, each with its reasoning, and suggests a stack: the binding laws, one management system, one risk method and, if you have AI agents, a certification for agents.",
-        "caveat": "A learning aid, not legal advice. The selector points at what to check first; it does not decide whether a law applies. Laws outside this aid (for example data protection, sector and anti-discrimination law) may also apply.",
+        "caveat": "A learning aid. The selector points at what to check first; it does not decide whether a law applies. Laws outside this aid (for example data protection, sector and anti-discrimination law) may also apply.",
         "needJurisdiction": "Tick at least one jurisdiction.",
         "noMatch": "No rule matched. Add a jurisdiction or a sector.",
         "resultsTitle": "Frameworks that apply or fit, ranked",
@@ -4055,7 +4323,7 @@
   "program": {
     "page": {
       "title": "Program map",
-      "subtitle": "The AI governance program: the living picture of how your organization governs AI, with its map, maturity and the road ahead.",
+      "subtitle": "The AI governance program: the living picture of how the organization governs AI, with its map, maturity and the road ahead.",
       "exportPdf": "Export PDF",
       "mapTitle": "Governance Map",
       "mapSubtitle": "Every AI system, its risk tier, controls, and the vendors behind them: gaps included.",
@@ -4064,13 +4332,13 @@
       "nistTitle": "NIST AI RMF profile: current vs target",
       "dimensionsTitle": "Maturity dimensions",
       "planTitle": "30/60/90-day plan",
-      "planSubtitle": "Two stages of the program path in each thirty days, and under each the actions your program's gaps call for, most urgent first.",
+      "planSubtitle": "Two stages of the program path in each thirty days, and under each the actions the program's gaps call for, most urgent first.",
       "rolloutTitle": "Recommended rollout by tool category",
       "rolloutSubtitle": "How to employ each class of tool in the coming quarter.",
       "dutiesTitle": "Professional duties coverage",
       "dutiesSubtitle": "How the program's controls map to counsel's professional obligations.",
       "emptyTitle": "No AI systems registered yet",
-      "emptyBody": "Run the quick start to build your governance program: the map, scorecard, and action plan appear here the moment it completes.",
+      "emptyBody": "Run the quick start to build the governance program: the map, scorecard, and action plan appear here the moment it completes.",
       "emptyCta": "Open Quick Start",
       "historyLink": "History",
       "historyFootnote": "A snapshot is captured automatically each time the program PDF is exported. Scores are computed by the maturity model version recorded in each snapshot.",
@@ -4171,7 +4439,7 @@
     "maturityLabel": "Overall maturity",
     "maturitySublabel": "of 100, mean of the four NIST AI RMF functions",
     "confidential": "CONFIDENTIAL",
-    "disclaimer": "Generated by AI SENTINEL from the organization's live governance records. Not legal advice.",
+    "disclaimer": "Generated by AI SENTINEL from the organization's live governance records.",
     "map": {
       "eyebrow": "Governance Map",
       "title": "The AI landscape, governed"
@@ -4313,11 +4581,6 @@
       "colPack": "Rule pack",
       "colVersion": "Version",
       "colReviewed": "Law reviewed",
-      "colSignOff": "Sign-off",
-      "signOff": {
-        "signed-off": "Signed off",
-        "pending": "Pending"
-      },
       "determinismTitle": "Determinism",
       "determinism": "Every score in this report comes from the documented formulas in the maturity model, and every diagram from the shared deterministic layout engine that also draws the on-screen map. No generative AI takes part in deriving, scoring or laying out this document: the same inputs always produce the same output, and each figure can be traced back to the rule pack and version listed above.",
       "snapshotTitle": "Snapshot identity",
@@ -4332,7 +4595,7 @@
       "gapsOpened": "Gaps opened",
       "noPrevious": "This is the first snapshot for this organization, so there is nothing to compare it against yet. Future reports will show what changed since this one.",
       "rulePackChangesTitle": "Rule packs that changed",
-      "rulePackChangesIntro": "These rule packs moved between the two snapshots. Where a score changed, check here first: a difference may reflect a change in the rules rather than a change in your program."
+      "rulePackChangesIntro": "These rule packs moved between the two snapshots. Where a score changed, check here first: a difference may reflect a change in the rules rather than a change in the program."
     }
   },
   "provenance": {
@@ -4377,7 +4640,7 @@
     },
     "meter": {
       "title": "Assurance",
-      "headline": "{percent}% of your program is human-confirmed",
+      "headline": "{percent}% of the program is human-confirmed",
       "detail": "{confirmed} of {total} items",
       "reviewCta": "Review the rest",
       "empty": "Nothing to confirm yet"
@@ -4397,7 +4660,7 @@
   },
   "snapshots": {
     "title": "Snapshots",
-    "subtitle": "Immutable captures of your program, so any figure you shared can be explained later.",
+    "subtitle": "Immutable captures of the program, so any figure you shared can be explained later.",
     "capture": "Capture snapshot",
     "captureLabel": "Label (optional)",
     "capturePlaceholder": "e.g. Board pack, Q3",
@@ -4437,12 +4700,12 @@
   },
   "jurisdictions": {
     "title": "Operating jurisdictions",
-    "description": "Where your organization operates. This decides which regulatory regimes we apply to your AI systems.",
-    "undeclaredHint": "You haven't told us where you operate yet, so we can't say which regimes apply. Until this is set, regulatory scoping reads as \"not yet determined\" rather than \"does not apply\".",
+    "description": "Where the organization operates. This decides which regulatory regimes apply to its AI systems.",
+    "undeclaredHint": "Where the organization operates is not declared yet, so it is not yet known which regimes apply. Until this is set, regulatory scoping reads as \"not yet determined\" rather than \"does not apply\".",
     "saved": "Operating jurisdictions saved",
     "reviewedOn": "Last reviewed {date}",
     "neverReviewed": "Not reviewed yet",
-    "wizardQuestion": "Where does your organization operate?",
+    "wizardQuestion": "Where does the organization operate?",
     "wizardHint": "Optional, and you can change it later. It decides which regimes we check against: for example California's ADMT rules or the EU AI Act.",
     "notSureYet": "I'm not sure yet",
     "group": {
@@ -4476,16 +4739,16 @@
     }
   },
   "obligations": {
-    "title": "Where you work and your rules",
-    "subtitle": "The obligations calendar: regulatory deadlines plotted against your own AI inventory.",
+    "title": "Where the organization operates and the rules that apply",
+    "subtitle": "The obligations calendar: regulatory deadlines plotted against the organization's own AI inventory.",
     "ariaLabel": "Regulatory obligations timeline",
     "assumedJurisdictions": "Showing obligations for: {jurisdictions}",
-    "changePlaces": "Change in Settings",
-    "screeningMissing": "Some of these dates depend on a few answers about your organization. Until the short screening in Settings is answered, they show as \"Scope not yet determined\".",
+    "changePlaces": "Change the places",
+    "screeningMissing": "Some of these dates depend on a few answers about the organization. Until they are answered, they show as \"Scope not yet determined\".",
     "answerScreening": "Answer the screening",
-    "jurisdictionsUndeclared": "You haven't told us where you operate, so US obligations show as undetermined rather than out of scope.",
-    "declareJurisdictions": "Declare your operating jurisdictions",
-    "empty": "No regulatory milestones match your current setup.",
+    "jurisdictionsUndeclared": "Where the organization operates is not declared yet, so US obligations show as undetermined rather than out of scope.",
+    "declareJurisdictions": "Declare where the organization operates",
+    "empty": "No regulatory milestones match the current setup.",
     "phase": {
       "past": "In force",
       "imminent": "Within 90 days",
@@ -4505,13 +4768,13 @@
       "inScope": "{count, plural, one {# system} other {# systems}}",
       "inScopeWithUndetermined": "{inScope} in scope · {undetermined} undetermined",
       "undeterminedOnly": "Scope not yet determined for {count, plural, one {# system} other {# systems}}",
-      "organization": "Applies to your organization",
-      "notApplicable": "Does not apply to your inventory",
+      "organization": "Applies to the organization",
+      "notApplicable": "Does not apply to the organization's inventory",
       "satisfied": "{satisfied} of {total} evidenced",
       "outstanding": "{count} not yet evidenced"
     },
     "reason": {
-      "no-jurisdictions": "We don't know where you operate yet",
+      "no-jurisdictions": "Where the organization operates is not known yet",
       "no-admt-determination": "No automated-decision determination recorded",
       "unclassified-system": "System has no risk classification",
       "no-revenue-tier": "No revenue tier recorded",
@@ -4540,7 +4803,7 @@
     "reviewMarkerLabel": "Legal review status",
     "allMilestones": "All milestones",
     "emptyInventoryTitle": "No AI systems registered yet",
-    "emptyInventoryBody": "These deadlines are real, but until your AI systems are registered we can't tell you which of them each one touches.",
+    "emptyInventoryBody": "These deadlines are real, but until the organization's AI systems are registered it cannot be said which of them each one touches.",
     "emptyInventoryCta": "Run Quick Start",
     "groupOverdue": "Overdue",
     "groupImminent": "Next 90 days",
@@ -4549,13 +4812,33 @@
     "groupPast": "Already in force",
     "groupPastHint": "Dates that have passed. They still bind you; they are here so the list ahead stays readable.",
     "groupNotApplicable": "Checked, does not reach you",
-    "groupNotApplicableHint": "Assessed against your declared jurisdictions and found not to apply. Kept so you can see what was considered.",
+    "groupNotApplicableHint": "Assessed against the declared jurisdictions and found not to apply. Kept so it can be seen what was considered.",
     "showGroup": "Show {count}",
     "hideGroup": "Hide",
     "filterAll": "All jurisdictions",
     "filterLabel": "Jurisdiction",
     "showingCount": "{shown} of {total} milestones",
-    "nothingAhead": "Nothing ahead in your declared jurisdictions. The sections below show what has already taken effect and what was checked and found not to apply."
+    "nothingAhead": "Nothing ahead in the declared jurisdictions. The sections below show what has already taken effect and what was checked and found not to apply.",
+    "answerQuestions": "{count, plural, one {Answer # question} other {Answer # questions}}",
+    "questions": {
+      "title": "The questions that decide which laws apply",
+      "lead": "Answers given here are the same answers as in Settings: change them in either place.",
+      "allAnswered": "Every question is answered.",
+      "show": "Change the places and answers",
+      "hide": "Hide the questions"
+    },
+    "timelineLead": "Each mark is a legal deadline for the places you declared. Marks to the left of today have passed and still need action; the rest are ahead.",
+    "timelineLeadVertical": "Each mark is a legal deadline for the places you declared. Marks above today have passed and still need action; the rest are ahead.",
+    "singlePlace": "You declared one place, {place}: only the rules that reach it are shown.",
+    "applies": {
+      "title": "These apply to the organization",
+      "lead": "From where the organization operates and the answers given. Each line says why it applies and its next date.",
+      "next": "Next date: {date}",
+      "inForce": "In force",
+      "noDate": "No dated deadline in this calendar",
+      "empty": "Nothing is shown as applying yet. Declare where the organization operates and answer the questions on step 1.2.",
+      "open": "See the rules and dates"
+    }
   },
   "admt": {
     "title": "California ADMT",
@@ -4571,9 +4854,9 @@
       "ARTICLE_10_AND_11": "Notice, opt-out and access apply"
     },
     "stateDetail": {
-      "JURISDICTION_UNDECLARED": "Tell us where your organization operates and we can say whether California's ADMT rules reach this system.",
-      "JURISDICTION_CONFLICT": "This system is restricted to jurisdictions your organization has not declared. Resolve the conflict to get an answer.",
-      "OUT_OF_SCOPE_NO_CA_NEXUS": "Your declared jurisdictions do not include California, so Articles 10 and 11 do not attach to this system.",
+      "JURISDICTION_UNDECLARED": "Declare where the organization operates, and it can be said whether California's ADMT rules reach this system.",
+      "JURISDICTION_CONFLICT": "This system is restricted to jurisdictions the organization has not declared. Resolve the conflict to get an answer.",
+      "OUT_OF_SCOPE_NO_CA_NEXUS": "The declared jurisdictions do not include California, so Articles 10 and 11 do not attach to this system.",
       "COVERED_BUSINESS_NOT_ASSESSED": "Answer the CCPA business-threshold questions to complete this assessment.",
       "PROFILE_NOT_ASSESSED": "Answer the § 7001(e) questions below to determine whether this technology is ADMT.",
       "ARTICLE_10_ONLY": "Risk-assessment duties under Article 10 attach. This system does not make a significant decision, so the Article 11 notice, opt-out and access rights do not.",
@@ -4600,7 +4883,7 @@
       "optOutExceptionRelied": "An opt-out exception under § 7221(b) is relied on"
     },
     "openQuestion": {
-      "declareJurisdictions": "Declare where your organization operates",
+      "declareJurisdictions": "Declare where the organization operates",
       "answerCoveredBusiness": "Answer the CCPA business-threshold questions",
       "createProfile": "Record an ADMT determination for this system",
       "answerDetermination": "Answer whether this technology is ADMT",
@@ -4752,7 +5035,7 @@
         "help": "$26,625,000 for 2025–2026. The next CPI adjustment is due 1 January 2027 and has not been published. Asked separately from the revenue band because the under-$50M band spans both sides of this figure."
       },
       "largeProcessingVolume": {
-        "label": "Did you process the personal information of 250,000+ consumers or households, or the sensitive personal information of 50,000+ consumers, last calendar year?",
+        "label": "Did the organization process the personal information of 250,000+ consumers or households, or the sensitive personal information of 50,000+ consumers, last calendar year?",
         "help": "Combined with the previous answer, this is the second route into the Article 9 audit duty."
       },
       "revenueBand": {
@@ -4763,8 +5046,8 @@
   },
   "regimes": {
     "title": "Cross-border regimes",
-    "description": "Regulatory regimes are the laws, and the regulators that enforce them. Here that means GDPR, Colorado, Texas and Washington alongside the EU AI Act and California. Each regime resolves its own scope from your declared jurisdictions and a few screening answers.",
-    "reviewMarkerNote": "Regulatory content for these regimes was signed off on 8 September 2026. The EU AI Act and California packs remain pending.",
+    "description": "Regulatory regimes are the laws, and the regulators that enforce them. Here that means GDPR, Colorado, Texas and Washington alongside the EU AI Act and California. Each regime resolves its own scope from the declared jurisdictions and a few screening answers.",
+    "reviewMarkerNote": "Regulatory content for these regimes was signed off on 8 September 2026.",
     "copiedFromTemplate": "These answers were copied from a template. Check each one for this client, then confirm them.",
     "confirmCopied": "Confirm answers",
     "orgTitle": "Organization screening",
@@ -4905,7 +5188,7 @@
     "fieldDownstream": "Which agents or systems receive its output?",
     "fieldDownstreamHelp": "Anything that acts further on what this system produces.",
     "fieldTools": "Tools and services it may call",
-    "fieldToolsHelp": "One per line. An agent reaches further than the system's own contract does, so this is the list that has to sit inside your processing agreement.",
+    "fieldToolsHelp": "One per line. An agent reaches further than the system's own contract does, so this is the list that has to sit inside the organization's processing agreement.",
     "fieldSponsor": "Who is accountable for what it does?",
     "fieldSponsorHelp": "A named role or person, not a team.",
     "fieldKillSwitch": "Who can stop it, and how quickly?",
@@ -4920,9 +5203,9 @@
     "reviewedBy": "Recorded by {name} on {date}"
   },
   "onboarding": {
-    "personaTitle": "How will you use AI SENTINEL?",
+    "personaTitle": "Who will AI SENTINEL be used for?",
     "personaSubtitle": "This sets the right starting point. You can change it later in Settings.",
-    "personaOwnTitle": "For my organization",
+    "personaOwnTitle": "For the organization itself",
     "personaOwnDescription": "I run AI governance inside one organization: in-house counsel, compliance, a data protection officer or an AI lead.",
     "personaClientsTitle": "For client organizations",
     "personaClientsDescription": "I set up and run AI governance for clients: a law firm, a consultancy, or another adviser.",
@@ -4930,19 +5213,24 @@
     "settingUp": "Setting up…",
     "genericError": "Something went wrong. Please try again.",
     "welcomeTitle": "Welcome to AI SENTINEL",
-    "orgDescription": "Name your organization. A short wizard then builds your AI governance program.",
+    "orgDescription": "Name the organization. A short wizard then builds its AI governance program.",
     "orgNameLabel": "Organization name",
     "orgNamePlaceholder": "e.g. Acme Payments",
     "createAndContinue": "Create organization and continue",
+    "dpaAccept": "I accept the <link>data processing agreement</link>",
+    "dpaStepTitle": "Data processing agreement",
+    "dpaStepBody": "Before you continue, accept the data processing agreement for {name} on behalf of the organization. You only need to do this once.",
+    "dpaStepContinue": "Accept and continue",
+    "dpaPendingNote": "An owner or admin of this organization needs to accept the <link>data processing agreement</link> (version {version}).",
     "creating": "Creating…",
     "createFailed": "The organization could not be created. Please try again.",
-    "orgDescriptionClient": "Name your first client organization. A short wizard then builds its AI governance program; add more clients later from My clients.",
+    "orgDescriptionClient": "Name the first client organization. A short wizard then builds its AI governance program; add more clients later from the client list.",
     "orgNameLabelClient": "Client organization name"
   },
   "inventoryImport": {
     "button": "Import spreadsheet",
-    "title": "Import your AI inventory",
-    "description": "Upload a CSV export of your inventory spreadsheet. You will see what will be created before anything is saved.",
+    "title": "Import the organization's AI inventory",
+    "description": "Upload a CSV export of the inventory spreadsheet. You will see what will be created before anything is saved.",
     "chooseFile": "Choose a CSV file",
     "downloadTemplate": "Download a template",
     "formatHint": "Columns are recognized in English or Spanish: name (required), vendor, purpose, technique, role, status, risk level, personal data, owners, description. Commas or semicolons both work. A risk level is imported only when the sheet states one; otherwise the system stays unclassified for you to classify.",
@@ -4973,14 +5261,44 @@
     "title": "Team",
     "description": "Who works on this organization's AI governance, and with which role. Owners, admins and AI officers can approve; members document; viewers read.",
     "emailPlaceholder": "colleague@example.com",
-    "inviteLabel": "Add a colleague by email",
-    "add": "Add",
-    "addHint": "The person must have signed in to AI SENTINEL once with this email. Only owners can grant the owner role or change roles.",
+    "inviteLabel": "Invite a colleague by email",
+    "add": "Send invitation",
+    "addHint": "They receive an email with a link to join. The link works once, for 7 days, and only for this address. You can give a role up to your own.",
     "added": "Member added.",
     "updated": "Role updated.",
     "removed": "Member removed.",
     "remove": "Remove member",
-    "notFound": "No account uses that email yet. Ask your colleague to sign in once, then add them here."
+    "notFound": "No account uses that email yet. Ask the person to sign in once, then add them here.",
+    "roleLabel": "Role",
+    "rolesLink": "What each role can do",
+    "roleHelp": {
+      "OWNER": "Everything, including changing roles and deleting the organization.",
+      "ADMIN": "Approve, manage the team and delete records.",
+      "AI_OFFICER": "Create, edit and approve (assessments, policies, oversight decisions).",
+      "MEMBER": "Create and edit records.",
+      "VIEWER": "Read only."
+    },
+    "departmentsLabel": "Departments",
+    "invited": "Invitation sent to {email}.",
+    "notSent": "No email could be sent from here. Copy the link and send it to {email} yourself. It works only for that address.",
+    "copy": "Copy link",
+    "copied": "Link copied.",
+    "pendingTitle": "Invitations not yet accepted",
+    "pendingChip": "Invited",
+    "expiredChip": "Expired",
+    "expires": "Expires on {date}",
+    "resend": "Send again",
+    "resent": "Invitation sent again.",
+    "withdraw": "Withdraw invitation",
+    "withdrawn": "Invitation withdrawn.",
+    "alreadyMember": "This person is already a member of the organization.",
+    "inviteEmail": {
+      "subject": "{inviter} has invited you to {organization} on {app}",
+      "lead": "{inviter} has invited you to join {organization} on {app} as {role}. Sign in with this email address to accept.",
+      "button": "Accept the invitation",
+      "expiry": "The link works once and expires on {date}.",
+      "ignore": "If you were not expecting this invitation, you can ignore this email."
+    }
   },
   "deleteOrganization": {
     "title": "Delete this organization",
@@ -5061,7 +5379,7 @@
     "subtitle": "Sensitive data analysis: decide, and record, whether a set of data should be treated as health data or another sensitive category.",
     "whyTitle": "Why a factor analysis",
     "whyBody": "US state laws define health data differently, and several of them turn on what the data is used for rather than what field it sits in. Five factors (source, content, use, consumer expectations, harm) give a repeatable way to reason, and the record of that reasoning is what a regulator asks to see.",
-    "subjectLabel": "What are you classifying?",
+    "subjectLabel": "What is being classified?",
     "subjectPlaceholder": "Audience segment, data feed, page group, field",
     "categoryLabel": "Category",
     "newAnalysis": "Start analysis",
@@ -5119,7 +5437,7 @@
     "title": "Data flow",
     "tabLabel": "Data flow",
     "rolesTitle": "Roles and retention",
-    "rolesDescription": "The data-protection role decides which duties attach; the transaction role is how your industry describes the same position. Retention is stated the way it appears in your notice and contracts.",
+    "rolesDescription": "The data-protection role decides which duties attach; the transaction role is how the industry describes the same position. Retention is stated the way it appears in the organization's notice and contracts.",
     "dataRole": "Data protection role",
     "transactionRole": "Role in the transaction",
     "transactionRolePlaceholder": "Publisher, advertiser, platform, data provider",
@@ -5138,12 +5456,12 @@
     "addRecipient": "Add recipient",
     "noRecipients": "No recipients recorded. A system that discloses nothing is unusual; record that it discloses nothing rather than leaving it blank.",
     "gaps": "{contracts, plural, one {# recipient} other {# recipients}} with no contract recorded, {retention} with no retention.",
-    "sensitiveLeaves": "Sensitive data reaches a recipient outside your control: {categories}. In most US states that is a sale or a share unless an exemption applies.",
+    "sensitiveLeaves": "Sensitive data reaches a recipient outside the organization's control: {categories}. In most US states that is a sale or a share unless an exemption applies.",
     "beyondControl": "Outside our control",
     "recipientName": "Recipient",
     "recipientTypeLabel": "Type",
     "purpose": "Purpose of the disclosure",
-    "purposePlaceholder": "Why they receive it, in your own words",
+    "purposePlaceholder": "Why they receive it, in plain words",
     "contract": "Contract",
     "contractPlaceholder": "DPA, service provider terms, SCCs",
     "transfer": "Transfer safeguard",
@@ -5327,9 +5645,9 @@
   },
   "threatModel": {
     "title": "Threat model",
-    "subtitle": "Start from the system you are building, not from a framework. Say what it can see and do, and the things that could go wrong come with their controls and a test for each.",
+    "subtitle": "Start from the system being built, not from a framework. Say what it can see and do, and the things that could go wrong come with their controls and a test for each.",
     "start": "Start a threat model",
-    "loopHint": "Thirty minutes with the people who built it will tell you more than a seventy-question assessment.",
+    "loopHint": "About thirty minutes in a meeting with the people who built the system will tell you more than a seventy-question assessment.",
     "loop": {
       "map": "Map",
       "imagine": "Imagine",
@@ -5343,13 +5661,13 @@
     "scenarioCount": "{count} scenarios",
     "noControls": "No controls yet",
     "provenOf": "{proven}/{total} controls tested and passing",
-    "newTitle": "A thirty-minute threat model",
-    "newSubtitle": "Three screens. Nothing to write from scratch.",
-    "nameLabel": "What are you building?",
+    "newTitle": "New threat model",
+    "newSubtitle": "Three screens, nothing to write from scratch. About thirty minutes in a meeting with the people who built the system.",
+    "nameLabel": "What is being built?",
     "namePlaceholder": "Customer support agent, internal document assistant, coding agent",
     "summaryLabel": "In two lines, what does it do?",
     "summaryPlaceholder": "Reads customer records and order history, answers questions, and can issue refunds.",
-    "systemLabel": "Link it to a registered AI system",
+    "systemLabel": "Which AI system is this for?",
     "systemPlaceholder": "Optional",
     "systemNone": "Not linked",
     "sessionTitle": "Questions to ask the people who built it",
@@ -5360,7 +5678,7 @@
     "willPropose": "{count} scenarios follow from this.",
     "seeScenarios": "See the scenarios",
     "proposedTitle": "{count} things that could go wrong",
-    "proposedHint": "Each comes with controls and a test. Remove what does not apply to you once they are saved.",
+    "proposedHint": "Each comes with controls and a test. Remove what does not apply once they are saved.",
     "bringsControls": "Brings {count} controls and a test.",
     "createWith": "Create with {count} scenarios",
     "created": "Threat model created with {count} scenarios.",
@@ -5454,8 +5772,10 @@
       "not-passing": "last test failed, was partial, or has gone stale"
     },
     "systemCardHint": "What could go wrong with this system, and whether the controls hold.",
-    "systemCardNone": "No threat model for this system yet. Thirty minutes with the people who built it is enough for the first draft.",
-    "systemCardOpen": "Open the threat model"
+    "systemCardNone": "No threat model for this system yet. About thirty minutes in a meeting with the people who built the system is enough for the first draft.",
+    "systemCardOpen": "Open the threat model",
+    "purpose": "A threat model lists what could go wrong with a system, with the controls and tests that answer each risk. The EU AI Act does not name it, but it supports the accuracy, robustness and cybersecurity duties for high-risk systems (Art. 15) and the work towards AIUC-1 and ISO/IEC 42001. It matters most to organizations that build AI.",
+    "systemHint": "Pick the system first: the name below is filled in from it. Leave it empty for something not registered yet."
   },
   "premiumShowcase": {
     "lockedHint": "Part of a premium module, sold for the kit at {price} a year. Activate a license to use it.",
@@ -5479,41 +5799,43 @@
     "ceilingReachedBody": "A ceiling has been reached. Two ways out:",
     "paidPlan": "Move to the paid plan",
     "exportAll": "Export everything (program pack)",
-    "afterExportBody": "Your file is downloaded. You can now empty this account.",
-    "afterExportAction": "Empty the account"
+    "managedQuote": "Ask for a managed instance",
+    "afterExportBody": "The file is downloaded. You can now empty this account.",
+    "afterExportAction": "Empty the account",
+    "docsLink": "How the hosted pilot works, in the documentation."
   },
   "applicability": {
-    "stepTitle": "Before you start: what applies to you",
+    "stepTitle": "Before starting: what applies to the organization",
     "stepLead": "A few plain questions decide which laws and frameworks apply to you, and switch them on. Answer what you can. \"Not sure yet\" is a fair answer.",
     "skip": "I'm not sure yet, skip this for now",
-    "roleTitle": "Your role with AI",
+    "roleTitle": "The organization's role with AI",
     "questions": {
       "buildsForOthers": {
-        "label": "Do you build AI systems that others use (as a provider)?",
-        "hint": "For example, a product with AI features that you sell or give to customers."
+        "label": "Does the organization build AI systems that others use (as a provider)?",
+        "hint": "For example, a product with AI features that the organization sells or gives to customers."
       },
       "usesAi": {
-        "label": "Do you use AI systems in your own work (as a deployer)?",
+        "label": "Does the organization use AI systems in its own work (as a deployer)?",
         "hint": "For example, chat assistants, writing tools, or AI inside software you buy."
       },
       "generalPurposeModel": {
-        "label": "Do you sell or offer a general-purpose AI model?",
+        "label": "Does the organization sell or offer a general-purpose AI model?",
         "hint": "A model that others build on, such as a large language model offered through an API."
       },
       "meetsPeople": {
-        "label": "Does any of your AI talk to people or produce content they see?",
+        "label": "Does any of the organization's AI talk to people or produce content they see?",
         "hint": "Chatbots, voice assistants, and generated text, images, audio or video."
       },
       "decidesAboutPeople": {
-        "label": "Does any of your AI help decide about people?",
+        "label": "Does any of the organization's AI help decide about people?",
         "hint": "In employment, credit, housing, education, health, insurance or essential services."
       },
       "usesAgents": {
-        "label": "Do you use AI agents that act on their own?",
+        "label": "Does the organization use AI agents that act on their own?",
         "hint": "Systems that take actions, such as sending messages or changing records, without a person approving each one."
       },
       "wantsCertification": {
-        "label": "Do you want a management system that can be certified?",
+        "label": "Does the organization want a management system that can be certified?",
         "hint": "ISO/IEC 42001 is the certifiable standard for an AI management system."
       }
     },
@@ -5522,13 +5844,13 @@
       "NO": "No",
       "UNSURE": "Not sure yet"
     },
-    "appliesTitle": "These apply to you",
-    "appliesEmpty": "Nothing yet. Answer a question, or say where you operate, to see what applies.",
+    "appliesTitle": "These apply to the organization",
+    "appliesEmpty": "Nothing yet. Answer a question, or say where the organization operates, to see what applies.",
     "checkTitle": "Worth checking",
     "whyLabel": "Why",
-    "noJurisdictions": "Say where you operate to see the laws that depend on a place.",
-    "editableNote": "You can change these answers at any time in Settings. This list is a starting point, not legal advice.",
-    "cardTitle": "What applies to you",
+    "noJurisdictions": "Say where the organization operates to see the laws that depend on a place.",
+    "editableNote": "You can change these answers at any time in Settings. This list is a starting point.",
+    "cardTitle": "What applies to the organization",
     "cardDescription": "The quick start's applicability questions. Change an answer and the list follows.",
     "saved": "Answers saved",
     "items": {
@@ -5545,26 +5867,27 @@
       "iso42001": "ISO/IEC 42001 AI management system"
     },
     "reasons": {
-      "operatesEu": "You operate in the EU.",
-      "operatesEea": "You operate in the EEA; the Act reaches it once the EEA Agreement takes it in.",
-      "operatesEuropeUk": "You operate in the EU, the EEA or the UK.",
-      "operatesCalifornia": "You operate in California.",
-      "operatesColorado": "You operate in Colorado.",
-      "operatesTexas": "You operate in Texas.",
-      "operatesWashington": "You operate in Washington.",
-      "provider": "You build AI for others (provider).",
+      "operatesEu": "The organization operates in the EU.",
+      "operatesEea": "The organization operates in the EEA; the Act reaches it once the EEA Agreement takes it in.",
+      "operatesEuropeUk": "The organization operates in the EU, the EEA or the UK.",
+      "operatesCalifornia": "The organization operates in California.",
+      "operatesColorado": "The organization operates in Colorado.",
+      "operatesTexas": "The organization operates in Texas.",
+      "operatesWashington": "The organization operates in Washington.",
+      "provider": "The organization builds AI for others (provider).",
       "deployer": "You use AI (deployer).",
       "generalPurpose": "You offer a general-purpose AI model.",
-      "meetsPeople": "Your AI talks to people or produces content they see.",
-      "decidesAboutPeople": "Your AI helps decide about people in an area the law lists.",
-      "personalData": "It applies wherever your AI uses personal data.",
+      "meetsPeople": "The organization's AI talks to people or produces content they see.",
+      "decidesAboutPeople": "The organization's AI helps decide about people in an area the law lists.",
+      "personalData": "It applies wherever the organization's AI uses personal data.",
       "usesAgents": "You use AI agents that act on their own.",
       "wantsCertification": "You want a management system that can be certified.",
-      "roleUnsure": "Your role with AI is not settled yet.",
+      "roleUnsure": "The organization's role with AI is not settled yet.",
       "answerUnsure": "You answered \"Not sure yet\".",
       "thresholds": "The CCPA size thresholds decide first; the California screening in Settings asks them.",
       "screeningDecides": "Which rules apply depends on the screening questions in Settings."
-    }
+    },
+    "answerScreening": "Answer the screening in Settings to add its requirements."
   },
   "guided": {
     "navLabel": "Program path",
@@ -5603,18 +5926,21 @@
     "steps": {
       "quickstart": {
         "label": "Quick start",
-        "why": "It sets your jurisdictions, applies an industry template and imports your vendors from the catalog, so the rest of the program starts filled in.",
-        "do": "Answer a few questions, and a first version of your program is filled in for you."
+        "why": "It sets the jurisdictions, applies an industry template and imports the vendors from the catalog, so the rest of the program starts filled in.",
+        "do": "Answer a few questions, and a first version of the program is filled in.",
+        "doneWhen": "the quick start has been run to the end once, or a system, a vendor and a policy already exist."
       },
       "obligations": {
-        "label": "Where you work and your rules",
-        "why": "The rules that apply depend on where you work. Declare where you work and answer the short screening in Settings, so the rules and their dates are the ones that apply to you.",
-        "do": "Say where you work and answer the short screening in Settings. Then this page lists the rules that apply and their dates."
+        "label": "Where the organization operates and the rules that apply",
+        "why": "The rules that apply depend on where the organization operates. Declare the places and answer the short questions on this step's page, so the rules and their dates are the ones that apply.",
+        "do": "Declare where the organization operates and answer the questions on this page. Then it lists the rules that apply and their dates.",
+        "doneWhen": "the places are declared and every screening shown for them is answered."
       },
       "policies": {
         "label": "AI policy",
         "why": "An approved acceptable-use policy tells everyone which AI tools they may use, and how.",
-        "do": "Write and approve the policy that says which AI tools people may use, and how."
+        "do": "Write and approve the policy that says which AI tools people may use, and how.",
+        "doneWhen": "an acceptable-use policy is approved or published."
       },
       "prohibited": {
         "label": "Banned uses check",
@@ -5627,89 +5953,106 @@
         "do": "Record the AI training given to the people who use or oversee AI."
       },
       "systems": {
-        "label": "Your AI systems",
+        "label": "The organization's AI systems",
         "why": "Every system needs a record and an owner before its risk can be set.",
-        "do": "Register each AI system your organization uses and name who owns it."
+        "do": "Register each AI system the organization uses and name who owns it.",
+        "doneWhen": "at least one AI system is registered and every system has a business owner."
       },
       "shadowAi": {
-        "label": "Unapproved AI tools",
-        "why": "Record the AI tools people already use without approval, then decide on each one.",
-        "do": "List the AI tools people use without approval, then decide on each one."
+        "label": "AI tools in use",
+        "why": "Record the AI tools people already use, then decide on each one.",
+        "do": "List the AI tools people use and decide on each one still to review.",
+        "doneWhen": "at least one AI tool in use is recorded and none is still to review."
       },
       "vendors": {
         "label": "Vendors",
-        "why": "Most AI reaches you through vendors. Add them from the vendor catalog.",
-        "do": "Add the companies whose AI you use. The vendor catalog makes it quick."
+        "why": "Most AI reaches the organization through vendors. Add them from the vendor catalog.",
+        "do": "Add the companies whose AI the organization uses. The vendor catalog makes it quick.",
+        "doneWhen": "at least one vendor is recorded."
       },
       "classification": {
         "label": "Risk level",
         "why": "The risk level of each system decides which rules apply to it.",
-        "do": "Give each AI system its risk level. The level decides which rules apply."
+        "do": "Give each AI system its risk level. The level decides which rules apply.",
+        "doneWhen": "every system has a risk level confirmed by a person."
       },
       "assessments": {
         "label": "Impact assessments",
         "why": "High-risk systems need an approved impact assessment.",
-        "do": "Assess each high-risk system and have the assessment approved."
+        "do": "Assess each high-risk system and have the assessment approved.",
+        "doneWhen": "at least one assessment is approved and every high-risk system has an approved one."
       },
       "threatModel": {
         "label": "Threat model",
         "why": "Write down what could go wrong with the systems you build, and how each risk is stopped and tested.",
-        "do": "Write down what could go wrong with the AI you build, and how each risk is stopped and tested."
+        "do": "Write down what could go wrong with the AI you build, and how each risk is stopped and tested.",
+        "doneWhen": "at least one threat model is past draft."
       },
       "vendorDueDiligence": {
         "label": "Vendor checks",
         "why": "Each vendor needs a completed review.",
-        "do": "Check each vendor: open it and complete its review."
+        "do": "Check each vendor: open it and answer its review (agreement, data location, certifications). About twenty minutes each.",
+        "doneWhen": "every vendor has a completed due-diligence review."
       },
       "agentTesting": {
-        "label": "Test your AI agents (AIUC-1)",
+        "label": "Test the organization's AI agents (AIUC-1)",
         "why": "Before the AIUC-1 audit, each AI agent needs every requirement that applies to it tested and passed, or a partial result accepted.",
-        "do": "Test each AI agent against AIUC-1: record what you did and the result, until every requirement that applies has passed."
+        "do": "Test each AI agent against AIUC-1: record what you did and the result, until every requirement that applies has passed.",
+        "doneWhen": "every AI agent is ready for the AIUC-1 audit."
       },
       "oversight": {
         "label": "Human oversight",
         "why": "High-risk systems need a person who can review, approve or stop them.",
-        "do": "Name a person who can review, approve or stop each high-risk system."
+        "do": "Name a person who can review, approve or stop each high-risk system.",
+        "doneWhen": "every high-risk system has a confirmed oversight gate (with no high-risk system, at least one confirmed gate exists)."
       },
       "transparency": {
         "label": "Telling people it is AI",
         "why": "Record for each system whether people must be told they are dealing with AI (Art. 50).",
-        "do": "For each system, record whether people must be told they are dealing with AI. Open a system to do it."
+        "do": "For each system, record whether people must be told they are dealing with AI. Open a system to do it.",
+        "doneWhen": "every system has a transparency profile confirmed by a person."
       },
       "evidence": {
         "label": "Evidence",
         "why": "Give each requirement a status and attach the proof that supports it.",
-        "do": "Choose a system, give each requirement a status and attach the proof."
+        "do": "Choose a system, give each requirement a status and attach the proof.",
+        "doneWhen": "every mapped requirement has a status and at least one piece of evidence is attached."
       },
       "sensitiveData": {
         "label": "Sensitive data",
-        "why": "Classify the sensitive data your systems use, starting with personal data.",
-        "do": "Check the sensitive data your systems use, starting with personal data."
+        "why": "Classify the sensitive data the organization's systems use, starting with personal data.",
+        "do": "Check the sensitive data the organization's systems use, starting with personal data.",
+        "doneWhen": "at least one sensitive-data assessment exists and every system that processes personal data has one."
       },
       "incidents": {
         "label": "Incidents",
         "why": "Approve an incident plan so everyone knows what to do and the legal deadlines are met.",
-        "do": "Approve an incident plan so everyone knows what to do and the legal deadlines are met."
+        "do": "Approve an incident plan so everyone knows what to do and the legal deadlines are met.",
+        "doneWhen": "an incident-response policy is approved or published."
       },
       "proceedings": {
         "label": "Cases and inquiries",
         "why": "Track an inquiry or a case from an authority or a court, if there is one.",
-        "do": "Track an inquiry or a case from an authority or a court, if there is one."
+        "do": "Track an inquiry or a case from an authority or a court, if there is one.",
+        "doneWhen": "every proceeding is closed. Needed only when there is one."
       },
       "review": {
         "label": "Check what was drafted",
         "why": "What the product drafted for you counts only once a person confirms it.",
-        "do": "Confirm or correct what the product drafted for you. It counts once a person confirms it."
+        "do": "Confirm or correct what the product drafted for you. It counts once a person confirms it.",
+        "doneWhen": "nothing drafted is waiting for a person to confirm it."
       },
       "board": {
         "label": "Board report",
-        "why": "Report the state of the program to your board, with figures that can be reproduced.",
-        "do": "Tell your board where the program stands, with figures that can be reproduced."
+        "why": "Report the state of the program to the board, with figures that can be reproduced.",
+        "do": "Tell the board where the program stands, with figures that can be reproduced.",
+        "doneWhen": "at least one board report exists."
       },
       "audit": {
         "label": "Audit trail",
         "why": "Every change is recorded here on its own.",
-        "do": "See every change made in the program. It is recorded on its own."
+        "do": "See every change made in the program. It is recorded on its own.",
+        "doneWhen": "the product keeps it on its own, from the first recorded change."
       }
     },
     "library": {
@@ -5731,19 +6074,28 @@
     "phoneBar": "Stage {number} of {total} · {stage}",
     "phoneBarDone": "Every stage is done",
     "phoneBarOpen": "Open the program path",
-    "overallLabel": "Your program",
+    "overallLabel": "The organization's program",
     "band": {
       "step": "Step {number}",
       "next": "Next step",
       "finish": "Back to the dashboard",
       "stageDone": "Stage {number} complete. Next: {next}.",
-      "lastStageDone": "Stage {number} complete. Every stage is done."
+      "lastStageDone": "Stage {number} complete. Every stage is done.",
+      "doneWhen": "Done when: {rule}",
+      "leftHere": "Left here: {items}.",
+      "finishStep": "Finish this step",
+      "continueAnyway": "Continue anyway",
+      "checksLabel": "What this step needs",
+      "checkMet": "done",
+      "checkOpen": "still to do",
+      "showChecks": "Show what is met",
+      "hideChecks": "Hide"
     },
     "emptyStep": {
       "board": "No board report yet.",
       "boardAction": "Record the first report",
-      "obligations": "No rules listed yet. Say where you work, and the rules that apply appear here.",
-      "obligationsAction": "Say where you work",
+      "obligations": "No rules listed yet. Declare where the organization operates above, and the rules that apply appear here.",
+      "obligationsAction": "Declare the places",
       "vendorChecks": "No vendors to check yet.",
       "vendorChecksAction": "Add a vendor",
       "transparency": "No AI systems yet.",
@@ -5751,7 +6103,7 @@
     },
     "views": {
       "dueDiligence": "Vendor checks",
-      "dueDiligenceHint": "Each vendor and its review. Open a vendor to complete its review.",
+      "dueDiligenceHint": "Each vendor and its review. The review asks about the agreement (a data processing agreement that covers AI use), where data is stored and processed, certifications, use of the organization's data for training, retention, incident notice and subprocessors. What the vendor catalog already states is filled in for you to confirm. Allow about twenty minutes per vendor, with the contract at hand.",
       "reviewed": "Review completed",
       "notReviewed": "Review to do",
       "transparency": "Telling people it is AI",
@@ -5771,6 +6123,7 @@
       "label": "30/60/90-day plan",
       "column": "Plan",
       "day": "Day {day} of {total}",
+      "dayLabelled": "Program plan: day {day} of {total}",
       "onPlan": "On plan",
       "behind": "Behind plan by {days, plural, one {# day} other {# days}}",
       "complete": "Plan complete",
@@ -5797,7 +6150,7 @@
       },
       "docsReady": "{ready} of {total} ready",
       "noDeadline": "None",
-      "limited": "Limited to your departments: the organization-wide figures are not shown.",
+      "limited": "Limited to the departments you can see: the organization-wide figures are not shown.",
       "sortNote": "Sorted by the nearest deadline, the soonest first; clients with no deadline follow, by name."
     },
     "figure": {
@@ -5833,17 +6186,76 @@
       "plan": "Plan: day {day} milestone",
       "overdue": "overdue since {date}",
       "empty": "No deadline in the next 30 days."
+    },
+    "settingsBand": {
+      "todo": "Step {number}: answer the questions marked below. They decide which laws apply to the organization.",
+      "done": "Step {number} is complete: the places are declared and every screening is answered.",
+      "back": "Back to step {number}",
+      "marker": "Counts for step {number}",
+      "markerDone": "Counts for step {number}: answered"
+    },
+    "stageCount": "{word} · {done} of {total}",
+    "checks": {
+      "progress": "{label} ({done} of {total})",
+      "quickstartRun": "run the quick start to the end",
+      "copiedReviewed": "review what was copied from another client",
+      "placesDeclared": "declare where the organization operates",
+      "screeningApplicability": "answer the applicability check",
+      "screeningCalifornia": "answer the California covered-business question",
+      "screeningRegimes": "answer the state screening questions",
+      "copiedObligations": "save again the places and answers copied from another client",
+      "acceptableUseApproved": "approve an acceptable-use policy",
+      "shadowReported": "record at least one AI tool in use",
+      "shadowTriaged": "review every AI tool recorded",
+      "systemRegistered": "register at least one AI system",
+      "systemsOwned": "give every system a business owner",
+      "copiedSystems": "review the systems copied from another client",
+      "vendorRecorded": "record at least one vendor",
+      "copiedVendors": "review the vendors copied from another client",
+      "systemsClassified": "give every system a risk level",
+      "classificationsConfirmed": "confirm the drafted risk levels",
+      "assessmentApproved": "approve at least one assessment",
+      "highRiskAssessed": "approve an assessment for every high-risk system",
+      "threatModelActive": "take a threat model past draft",
+      "vendorsAssessed": "complete a due-diligence review for every vendor",
+      "agentsReady": "make every agent ready for the AIUC-1 audit",
+      "highRiskGated": "set an oversight gate for every high-risk system",
+      "gateExists": "set at least one oversight gate",
+      "gatesConfirmed": "confirm the drafted oversight gates",
+      "copiedGates": "confirm the oversight gates copied from another client",
+      "systemsProfiled": "give every system a transparency profile",
+      "profilesConfirmed": "confirm the drafted transparency profiles",
+      "mappingsAssessed": "give every mapped requirement a status",
+      "evidenceAttached": "attach at least one piece of evidence",
+      "sensitiveAssessed": "complete a sensitive-data assessment",
+      "personalDataAssessed": "assess every system that processes personal data",
+      "incidentPolicyApproved": "approve an incident-response policy",
+      "nothingToConfirm": "confirm every drafted item",
+      "boardReport": "create a board report"
+    },
+    "panel": {
+      "failed": "This panel could not be loaded.",
+      "retry": "Try again",
+      "noFigure": "There are no steps to count yet.",
+      "noAreas": "There is nothing to show here yet.",
+      "noDocuments": "No documents can be produced yet.",
+      "limited": "The program figures cover the whole organization, so they are shown only to people who see the whole organization. What needs action in the departments you can see is listed under Needs action."
+    },
+    "department": {
+      "title": "Viewing one department: {name}",
+      "body": "What needs action and the deadlines below are this department's. The program figures, areas and documents cover the whole organization: choose \"Whole organization\" under Viewing to see them.",
+      "nothingWaiting": "Nothing is waiting in this department."
     }
   },
   "agentTesting": {
-    "title": "Test your AI agents (AIUC-1)",
+    "title": "Test the organization's AI agents (AIUC-1)",
     "subtitle": "AIUC-1 is the certification standard for AI agents. Record each test you run against an agent, and see how close it is to the audit.",
     "howItWorks": "For each requirement, record what you did (concretely enough to repeat), the result, what you observed and where the evidence lives. Tests are kept: a new test adds to the record, it never replaces one.",
     "readyRule": "An agent is ready for the audit when every requirement that applies to it has a pass from the last three months, or a partial result a person has accepted.",
     "readyExplained": "Every requirement that applies has a current pass or an accepted partial result. The audit itself is done by an accredited third party.",
-    "notSeeded": "The AIUC-1 requirements are not loaded on this instance yet, so tests cannot be recorded. Your administrator loads them with the framework seed.",
+    "notSeeded": "The AIUC-1 requirements are not loaded on this instance yet, so tests cannot be recorded. The administrator loads them with the framework seed.",
     "loading": "Loading",
-    "emptyTitle": "No AI agent in your inventory yet.",
+    "emptyTitle": "No AI agent in the inventory yet.",
     "emptyBody": "A system counts as an agent when its technique is \"Agentic AI\", or when its agent profile says it acts (with approval or on its own). Set either on the system's page in the AI registry.",
     "openRegistry": "Open the AI registry",
     "openForAgent": "Test this agent against AIUC-1",
@@ -5901,7 +6313,7 @@
     "acceptPartial": "Accept this partial result",
     "markNotApplicable": "Not applicable",
     "applicableAgain": "It applies after all",
-    "notACertificate": "This page records the tests your organization ran and what it decided. It is not a certificate: AIUC-1 certification needs an accredited third-party audit.",
+    "notACertificate": "This page records the tests the organization ran and what it decided. It is not a certificate: AIUC-1 certification needs an accredited third-party audit.",
     "formerMember": "a former member",
     "result": {
       "PASS": "Pass",
@@ -5973,7 +6385,7 @@
       },
       "assessmentTemplates": {
         "label": "Assessment templates",
-        "hint": "Your own questionnaires and their custom questions."
+        "hint": "The organization's own questionnaires and their custom questions."
       },
       "aiSystems": {
         "label": "AI systems",
@@ -6020,7 +6432,7 @@
     "firstStep": "Do this first",
     "terms": "Terms on this page",
     "guides": "Short guides",
-    "guideRole": "What is my role?",
+    "guideRole": "What is the organization's role?",
     "guideHighRisk": "What is high risk?",
     "guideRules": "Which rules apply to me?",
     "learnMore": "Learn more",
@@ -6036,7 +6448,7 @@
     "firstRun": {
       "title": "One minute on how this works",
       "intro": "AI Sentinel turns AI law into a program you can run. In short:",
-      "step1": "List your AI systems, so nothing is governed in the dark.",
+      "step1": "List the organization's AI systems, so nothing is governed in the dark.",
       "step2": "Classify each one and assess the ones that carry risk.",
       "step3": "Put the controls and evidence in place, and keep watch.",
       "crossBorder": "Answer one question set, drafted to the strictest regime that applies, and get the documents each regime expects.",
@@ -6107,6 +6519,10 @@
       "subtitle": "Systems missing a required registration field, with what is missing.",
       "empty": "Every system's registration is complete.",
       "missingCount": "{count, plural, one {# field missing} other {# fields missing}}"
+    },
+    "scopeNotice": {
+      "line": "You see only: {departments}",
+      "hint": "AI systems in other departments are not shown to you, and what you register is placed in your department. An owner or admin can change this in Settings."
     }
   },
   "registration": {
@@ -6120,7 +6536,7 @@
   },
   "departments": {
     "title": "Departments",
-    "description": "Group systems by department, give each an owner, and limit a member to one or more departments.",
+    "description": "Group systems by department and give each an owner and, if you wish, a deputy owner. Use a parent department to show the hierarchy (one level).",
     "empty": "No departments yet.",
     "counts": "{systems, plural, one {# system} other {# systems}} · {members, plural, one {# member} other {# members}}",
     "ownedBy": "Owner: {name}",
@@ -6143,15 +6559,26 @@
     "name": "Name",
     "save": "Save",
     "access": {
-      "title": "Member access",
-      "description": "Limit a member to one or more departments. With none selected, they see the whole organization.",
+      "title": "Assign departments",
+      "description": "Choose the departments each person works in. They then see only the AI systems of those departments, and what they register is placed there. With none chosen, they see the whole organization. Owners and admins always see the whole organization, and nobody changes their own access.",
       "wholeOrg": "Whole organization",
       "limited": "Limited to {count, plural, one {# department} other {# departments}}",
-      "saved": "Access updated"
-    }
+      "saved": "Access updated",
+      "choose": "Departments for {name}",
+      "selected": "{count, plural, one {# department} other {# departments}}",
+      "selfLocked": "You cannot change your own access.",
+      "roleLocked": "Owners and admins always see the whole organization.",
+      "done": "Done"
+    },
+    "deputy": "Deputy owner",
+    "noDeputy": "No deputy owner",
+    "deputyBy": "Deputy: {name}",
+    "invitedName": "{name} (not joined yet)",
+    "sameOwner": "The deputy owner must be a different person from the owner.",
+    "pendingShort": "not joined yet"
   },
   "documentRegister": {
-    "title": "Documents you can produce today",
+    "title": "Documents that can be produced today",
     "subtitle": "Every document AI SENTINEL can produce, with its state and what it still needs.",
     "state": {
       "ready": "ready",
@@ -6168,7 +6595,7 @@
     "needs": "needs: {input}",
     "inputs": {
       "quickstart": "the quick start",
-      "jurisdiction": "where you operate",
+      "jurisdiction": "where the organization operates",
       "policy": "a policy",
       "system": "an AI system",
       "model": "a model recorded on a system",
@@ -6194,7 +6621,7 @@
       "notApproved": "{count, plural, one {# not approved yet} other {# not approved yet}}",
       "noOwner": "{count, plural, one {# system without a business owner} other {# systems without a business owner}}",
       "unclassified": "{count, plural, one {# system not classified} other {# systems not classified}}",
-      "screeningUnanswered": "the regime screening has no answer yet",
+      "screeningUnanswered": "{count, plural, one {# screening still to answer} other {# screenings still to answer}}",
       "inDraft": "{count, plural, one {# model still in draft} other {# models still in draft}}",
       "notReviewed": "{count, plural, one {# vendor without a completed review} other {# vendors without a completed review}}",
       "agentsNotReady": "{count, plural, one {# agent not ready for the audit} other {# agents not ready for the audit}}",
@@ -6262,7 +6689,7 @@
     "placeholder": "Search by name",
     "results": "Search results",
     "noResults": "Nothing found with that name.",
-    "namesOnly": "Searches names only: AI systems, vendors, policies, assessments, oversight gates, incidents and unapproved AI tools.",
+    "namesOnly": "Searches names only: AI systems, vendors, policies, assessments, oversight gates, incidents and AI tools in use.",
     "kinds": {
       "system": "AI systems",
       "vendor": "Vendors",
@@ -6270,7 +6697,224 @@
       "assessment": "Assessments",
       "gate": "Oversight gates",
       "incident": "Incidents",
-      "shadowAi": "Unapproved AI tools"
+      "shadowAi": "AI tools in use"
     }
+  },
+  "systemPicker": {
+    "placeholder": "Search AI systems by name",
+    "results": "AI systems",
+    "noResults": "No AI system with that name.",
+    "more": "Showing the first {count}. Type a name to find the others.",
+    "clear": "Clear the selection"
+  },
+  "licenses": {
+    "metaTitle": "Licenses & source | AI Sentinel",
+    "metaDescription": "AI Sentinel is licensed under the GNU Affero General Public License v3 or later. Complete corresponding source is available.",
+    "title": "Licenses & source",
+    "license": "Licensed under the GNU Affero General Public License, version 3 or later (AGPL-3.0-or-later). A copy of the license ships with the source as the <code>LICENSE</code> file.",
+    "warranty": "This program comes with ABSOLUTELY NO WARRANTY.",
+    "sourceTitle": "Complete corresponding source code",
+    "sourcePublic": "Under AGPL-3.0 section 13, users interacting with this program over a network are offered the complete corresponding source code of the version running here:",
+    "sourceOnRequest": "Under AGPL-3.0 section 13, users interacting with this program over a network are offered the complete corresponding source code of the version running here, at no charge. The public source repository is being finalized; until it is published, request the corresponding source by emailing <mail>{email}</mail> and we will provide it.",
+    "runningCommit": "Running commit: <code>{commit}</code>",
+    "premiumTitle": "Premium skills",
+    "premium": "Optional premium skills and commercial add-ons are separately licensed by Rindogatan LLC and are not covered by the AGPL. See the source repository for details.",
+    "back": "Back to AI Sentinel"
+  },
+  "deleteRecord": {
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "confirm": "Yes, delete",
+    "aiSystem": {
+      "title": "Delete this AI system",
+      "warning": "Delete this AI system? Its assessments, oversight gates, risk classification and the other records kept on the system are deleted with it. Incidents stay, without the link. This cannot be undone.",
+      "deleted": "AI system deleted."
+    },
+    "vendor": {
+      "title": "Delete this vendor",
+      "warning": "Delete this vendor? Its vendor assessments are deleted with it. This cannot be undone.",
+      "deleted": "Vendor deleted."
+    },
+    "assessment": {
+      "title": "Delete this draft assessment",
+      "warning": "Delete this draft assessment? Its answers and saved versions are lost. This cannot be undone.",
+      "deleted": "Assessment deleted."
+    },
+    "policy": {
+      "title": "Delete this policy",
+      "warning": "Delete this policy? Its versions and its links to AI systems are deleted with it. This cannot be undone.",
+      "deleted": "Policy deleted."
+    },
+    "gate": {
+      "title": "Delete this oversight gate",
+      "warning": "Delete this oversight gate? The decisions recorded on it are deleted with it. This cannot be undone.",
+      "deleted": "Oversight gate deleted."
+    }
+  },
+  "autosave": {
+    "idle": "Saves as you choose",
+    "saving": "Saving",
+    "saved": "Saved",
+    "error": "Not saved",
+    "retry": "Try again",
+    "leaveWarning": "You have typed changes that are not saved. Leave this page and lose them?"
+  },
+  "policyFields": {
+    "typePlaceholder": "Select policy type",
+    "typeDefinition": {
+      "AI_USAGE": "Which AI tools staff may use, for what, with which data and with what human review.",
+      "AI_GOVERNANCE": "Who decides on AI: roles, the AI inventory, risk classification, approvals and oversight.",
+      "AI_ETHICS": "The principles AI use must respect, such as fairness, human dignity and accountability.",
+      "AI_RISK_MANAGEMENT": "How AI risks are identified, assessed, reduced and monitored during each system's life.",
+      "AI_DATA_GOVERNANCE": "Rules for the data used to train, test, prompt and run AI: lawful basis, quality, retention and transfers.",
+      "AI_PROCUREMENT": "How AI products and services are checked and contracted before they are bought or trialled.",
+      "AI_INCIDENT_RESPONSE": "How AI incidents are reported, contained, notified where the law requires, and learned from.",
+      "AI_TRANSPARENCY": "When and how people are told that AI is used, and how AI-generated content is marked.",
+      "CUSTOM": "Any other AI policy that does not fit the types above."
+    },
+    "defaultDescription": {
+      "AI_USAGE": "Sets out which AI tools staff may use, for which purposes and with which data, and the human review required before AI output is relied on.",
+      "AI_GOVERNANCE": "Sets out who is responsible for AI in the organization, how AI systems are recorded, classified by risk and approved, and how their use is overseen and reviewed.",
+      "AI_ETHICS": "Sets out the principles the organization applies when it develops, buys or uses AI, and how concerns are raised and decided.",
+      "AI_RISK_MANAGEMENT": "Sets out how the organization identifies, assesses, reduces and monitors the risks of its AI systems, and who accepts the risks that remain.",
+      "AI_DATA_GOVERNANCE": "Sets out the rules for the data used to train, test, prompt and operate AI systems, including lawful basis, data quality, retention and transfers.",
+      "AI_PROCUREMENT": "Sets out the checks and contract terms required before the organization buys, licenses or trials an AI product or service, and when they are repeated.",
+      "AI_INCIDENT_RESPONSE": "Sets out how AI incidents are reported, assessed and contained, how they are notified to authorities or affected people where the law requires, and how lessons are recorded.",
+      "AI_TRANSPARENCY": "Sets out when and how the organization tells people that AI is used, how AI-generated content is marked, and how decisions involving AI are explained.",
+      "CUSTOM": "Sets out the purpose, scope and rules of this policy, who it applies to and who is responsible for it."
+    },
+    "ownerLabel": "Owner",
+    "ownerPlaceholder": "Choose an owner",
+    "ownerNone": "Not named yet",
+    "ownerOutside": "Someone outside the team",
+    "ownerNameLabel": "Owner's name",
+    "ownerNamePlaceholder": "Name and role",
+    "ownerHint": "The person who answers for the policy and keeps it up to date.",
+    "departmentLabel": "Department",
+    "departmentNone": "Whole organization",
+    "departmentHint": "The part of the organization the policy belongs to.",
+    "departmentEmptyHint": "No departments yet. They are added in Settings.",
+    "intervalLabel": "Review every",
+    "intervalNone": "No fixed interval",
+    "intervalMonths": "{months} months",
+    "intervalSuggested": "{months} months (suggested)",
+    "intervalHint": "The EU AI Act sets no fixed review period for internal AI policies. Choose one that suits the organization: publishing a version sets the next review date from it.",
+    "lifecycleLead": "Policy life cycle:",
+    "lifecycleStep": {
+      "DRAFT": "Draft",
+      "UNDER_REVIEW": "in review",
+      "APPROVED": "approved",
+      "PUBLISHED": "published",
+      "REVIEW": "then reviewed on its review date"
+    },
+    "lifecycleHover": {
+      "DRAFT": "Being written or adapted. Not in force.",
+      "UNDER_REVIEW": "Sent for internal review. An owner, admin or AI officer checks it.",
+      "APPROVED": "Accepted by an owner, admin or AI officer. Not yet issued as a numbered version.",
+      "PUBLISHED": "Issued as a numbered version. The published version is the one in force.",
+      "REVIEW": "On the review date, check the policy against the law and the organization's practice, and publish a new version if anything has changed."
+    }
+  },
+  "policyTemplates": {
+    "chooserTitle": "Which policies should the organization have?",
+    "chooserLead": "Answer three questions to see a suggested set. Each one opens as a draft to adapt.",
+    "qSector": "Sector",
+    "qRole": "Role under the EU AI Act",
+    "qAgents": "Does the organization use AI agents?",
+    "choose": "Choose",
+    "roleDeployer": "Uses AI made by others (deployer)",
+    "roleProvider": "Develops AI and offers it under its own name (provider)",
+    "roleBoth": "Both",
+    "roleHint": "Under the EU AI Act, a provider develops an AI system (or has one developed) and places it on the market or puts it into service under its own name or trademark; a deployer uses an AI system under its authority. Many organizations are both.",
+    "yes": "Yes",
+    "no": "No",
+    "suggestedTitle": "{count, plural, one {# suggested policy} other {# suggested policies}}",
+    "reason": {
+      "baseline": "Core set",
+      "sector": "For the sector",
+      "provider": "For providers",
+      "deployer": "For deployers",
+      "agents": "Relevant to agents"
+    },
+    "blankTitle": "{type} policy (no template)",
+    "blankHint": "No template of this type fits the sector. Start a blank policy of this type.",
+    "startBlank": "Start blank",
+    "read": "Read",
+    "use": "Use this template",
+    "created": "Draft created from the template",
+    "alreadyInList": "Already in the list",
+    "readHint": "Using a template creates a draft among the organization's policies. Adapt it before sending it for review.",
+    "close": "Close",
+    "group": {
+      "core": "Core set",
+      "lawfirm": "Law firms",
+      "industry": "Sector templates"
+    },
+    "groupLead": {
+      "core": "Six sector-neutral policies, one for each main policy type.",
+      "lawfirm": "Policies for law firms and in-house legal teams.",
+      "industry": "Policies written for a particular sector."
+    }
+  },
+  "policyDoc": {
+    "reference": "Reference",
+    "version": "Version",
+    "status": "Status",
+    "type": "Type",
+    "effectiveDate": "Effective date",
+    "reviewDate": "Review date",
+    "approvedAt": "Approved on",
+    "owner": "Owner",
+    "department": "Department",
+    "systems": "AI systems covered",
+    "notSet": "Not set",
+    "noContent": "No text yet.",
+    "draftNotice": "Draft: not approved and not in force.",
+    "statusLabel": {
+      "DRAFT": "Draft",
+      "UNDER_REVIEW": "In review",
+      "APPROVED": "Approved",
+      "PUBLISHED": "Published",
+      "ARCHIVED": "Archived"
+    },
+    "typeLabel": {
+      "AI_USAGE": "AI usage",
+      "AI_GOVERNANCE": "AI governance",
+      "AI_ETHICS": "AI ethics",
+      "AI_RISK_MANAGEMENT": "Risk management",
+      "AI_DATA_GOVERNANCE": "Data governance",
+      "AI_PROCUREMENT": "Procurement",
+      "AI_INCIDENT_RESPONSE": "Incident response",
+      "AI_TRANSPARENCY": "Transparency",
+      "CUSTOM": "Custom"
+    }
+  },
+  "invite": {
+    "title": "Invitation",
+    "lead": "You have been invited to join {organization} as {role}.",
+    "accept": "Accept and open",
+    "accepted": "You have joined {organization}.",
+    "loading": "Checking the invitation",
+    "otherAccount": "This invitation was sent to another email address. Sign in with that address to accept it.",
+    "switchAccount": "Sign in with another account",
+    "expired": "This invitation has expired. Ask the person who invited you to send it again.",
+    "used": "This invitation has already been used or withdrawn.",
+    "invalid": "This invitation link is not valid.",
+    "toDashboard": "Go to the dashboard",
+    "errors": {
+      "invalid": "This invitation link is not valid.",
+      "used": "This invitation has already been used or withdrawn.",
+      "expired": "This invitation has expired. Ask for a new one.",
+      "otherAddress": "This invitation was sent to another email address.",
+      "inviterGone": "This invitation is no longer valid. Ask for a new one."
+    }
+  },
+  "notFound": {
+    "pageTitle": "Page not found",
+    "code": "Error 404",
+    "title": "This page could not be found",
+    "body": "The address may be mistyped, or the page may have moved. The organization's records are not affected.",
+    "dashboard": "Go to the dashboard",
+    "home": "Go to the home page"
   }
 }

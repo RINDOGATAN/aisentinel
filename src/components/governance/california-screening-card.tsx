@@ -21,11 +21,12 @@
 
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Loader2, ScrollText } from "lucide-react";
+import { ScrollText } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
+import { useAutoSave } from "@/lib/use-auto-save";
+import { CARD_HEADER_WITH_STATUS, CardSaveStatus } from "@/components/ui/save-status";
 
 type Screening = "NOT_ASSESSED" | "YES" | "NO";
 type RevenueBand =
@@ -50,22 +51,26 @@ export function CaliforniaScreeningCard({
   canWrite: boolean;
 }) {
   const t = useTranslations("admt");
-  const tc = useTranslations("common");
   const utils = trpc.useUtils();
   const [edits, setEdits] = useState<Partial<FormState>>({});
 
   const { data, isLoading } = trpc.admt.getOrgScope.useQuery({ organizationId });
 
+  // Each answer saves as it is chosen. The edits stay as an overlay after
+  // saving (the server then holds the same values), so an answer picked while
+  // the previous one is on its way is never shown undone.
   const save = trpc.admt.setOrgFacts.useMutation({
     onSuccess: () => {
-      setEdits({});
-      toast.success(t("screening.saved"));
       void utils.admt.getOrgScope.invalidate();
       void utils.admt.getScope.invalidate();
       void utils.compliance.getFrameworkCounts.invalidate();
+      void utils.programPath.status.invalidate();
     },
-    onError: (err) => toast.error(err.message),
   });
+  const autosave = useAutoSave<FormState>(
+    (value) => save.mutateAsync({ organizationId, ...value }),
+    { onError: (err) => toast.error(err instanceof Error ? err.message : String(err)) },
+  );
 
   if (isLoading || !data) return null;
 
@@ -84,10 +89,12 @@ export function CaliforniaScreeningCard({
     largeProcessingVolume: data.largeProcessingVolume as Screening,
   };
   const value: FormState = { ...saved, ...edits };
-  const dirty = Object.keys(edits).length > 0;
 
-  const set = <K extends keyof FormState>(key: K, v: FormState[K]) =>
-    setEdits((prev) => ({ ...prev, [key]: v }));
+  const set = <K extends keyof FormState>(key: K, v: FormState[K]) => {
+    const next = { ...edits, [key]: v };
+    setEdits(next);
+    autosave.push({ ...saved, ...next });
+  };
 
   const TRI: Screening[] = ["YES", "NO", "NOT_ASSESSED"];
   const BANDS: RevenueBand[] = [
@@ -114,13 +121,14 @@ export function CaliforniaScreeningCard({
           <button
             key={opt}
             type="button"
-            disabled={!canWrite || save.isPending}
+            disabled={!canWrite}
+            aria-pressed={current === opt}
             onClick={() => onPick(opt)}
             className={[
               "rounded-md border px-2.5 py-1 text-xs transition-colors disabled:opacity-50",
               current === opt
                 ? "border-primary bg-primary/10 text-primary font-medium"
-                : "border-border text-muted-foreground hover:border-primary/40",
+                : "border-input text-foreground hover:border-primary/60",
             ].join(" ")}
           >
             {labelFor(opt)}
@@ -156,11 +164,14 @@ export function CaliforniaScreeningCard({
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className={CARD_HEADER_WITH_STATUS}>
         <CardTitle className="text-base flex items-center gap-2">
           <ScrollText className="w-4 h-4 text-primary" />
           {t("screening.title")}
         </CardTitle>
+        {canWrite && (
+          <CardSaveStatus status={autosave.status} onRetry={autosave.retry} testId="california-save-status" />
+        )}
         <CardDescription>{t("screening.description")}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-5">
@@ -175,19 +186,6 @@ export function CaliforniaScreeningCard({
           {question("largeProcessingVolume", "§ 7120(b)(2)", TRI, triLabel)}
           {question("revenueBand", "§ 7121(a)", BANDS, bandLabel)}
         </div>
-
-        {canWrite && (
-          <div className="flex justify-end">
-            <Button
-              size="sm"
-              disabled={!dirty || save.isPending}
-              onClick={() => save.mutate({ organizationId, ...value })}
-            >
-              {save.isPending && <Loader2 className="w-3 h-3 mr-2 animate-spin" />}
-              {tc("save")}
-            </Button>
-          </div>
-        )}
       </CardContent>
     </Card>
   );

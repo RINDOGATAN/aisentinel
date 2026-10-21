@@ -112,9 +112,9 @@ const L = {
     reasonMissing: "Marcado como no aplicable sin motivo, así que sigue contando como aplicable.",
     optional: "Complementario en la norma (opcional)",
     latest: "Última prueba",
-    method: "Qué se hizo",
+    method: "Qué se ha hecho",
     result: "Resultado",
-    observed: "Qué se observó",
+    observed: "Qué se ha observado",
     evidence: "Dónde están las pruebas",
     performedBy: "Realizada por",
     recordedBy: "Registrada por",
@@ -128,7 +128,7 @@ const L = {
     none: "Nada registrado.",
     source: "Los títulos de los requisitos son los de la propia norma; el texto de cada requisito está publicado en",
     notACertificate:
-      "Este expediente recoge las pruebas que hizo la organización y lo que decidió. No es un certificado: la certificación AIUC-1 exige una auditoría externa acreditada.",
+      "Este expediente recoge las pruebas que ha hecho la organización y lo que ha decidido. No es un certificado: la certificación AIUC-1 exige una auditoría externa acreditada.",
     tally: (t: Tally) =>
       // Label and figure, so no word has to agree in number with the count.
       `probados: ${t.tested} de ${t.applicable}; cuentan: ${t.ready} (superados: ${t.pass}; parciales aceptados: ${t.acceptedPartial}); no superados: ${t.fail}; parciales sin aceptar: ${t.partial - t.acceptedPartial}; por repetir: ${t.retest}; no aplican: ${t.notApplicable}`,

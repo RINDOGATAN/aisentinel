@@ -2,118 +2,98 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2025-2026 Rindogatan LLC
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useMemo, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ArrowLeft, FileUp, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useLocale, useTranslations } from "next-intl";
-import { CORE_POLICY_PACK, localizeCorePolicy } from "@/config/core-policy-pack";
-import { LAWFIRM_POLICY_PACK } from "@/config/lawfirm-ai-toolkit";
-import { AI_GOVERNANCE_TEMPLATES } from "@/config/ai-governance-templates";
-import { localizeTemplate } from "@/config/ai-governance-templates.es";
+import { policyLibrary } from "@/config/policy-library";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { StatusNote } from "@/components/ui/status-note";
 import { useSubmitLock } from "@/lib/use-submit-lock";
+import {
+  DEFAULT_REVIEW_INTERVAL,
+  POLICY_TYPES,
+  reviewDateAfter,
+  type PolicyTypeValue,
+} from "@/lib/policy-meta";
+import {
+  PolicyAssignmentFields,
+  PolicyLifecycle,
+  PolicyTypeSelect,
+  ReviewIntervalSelect,
+  assignmentPayload,
+  type PolicyAssignmentValue,
+} from "@/components/governance/policy/policy-fields";
 
-type PolicyType = "AI_USAGE" | "AI_GOVERNANCE" | "AI_ETHICS" | "AI_RISK_MANAGEMENT" | "AI_DATA_GOVERNANCE" | "AI_PROCUREMENT" | "AI_INCIDENT_RESPONSE" | "AI_TRANSPARENCY" | "CUSTOM";
+const IMPORT_ACCEPT = ".docx,.pdf,.txt,.md,application/pdf,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+const IMPORT_MAX_BYTES = 5 * 1024 * 1024;
 
-const policyTypes = [
-  { value: "AI_USAGE", labelKey: "policyTypeAiUsage" },
-  { value: "AI_GOVERNANCE", labelKey: "policyTypeAiGovernance" },
-  { value: "AI_ETHICS", labelKey: "policyTypeAiEthics" },
-  { value: "AI_RISK_MANAGEMENT", labelKey: "policyTypeRiskManagement" },
-  { value: "AI_DATA_GOVERNANCE", labelKey: "policyTypeDataGovernance" },
-  { value: "AI_PROCUREMENT", labelKey: "policyTypeProcurement" },
-  { value: "AI_INCIDENT_RESPONSE", labelKey: "policyTypeIncidentResponse" },
-  { value: "AI_TRANSPARENCY", labelKey: "policyTypeTransparency" },
-  { value: "CUSTOM", labelKey: "policyTypeCustom" },
-] as const;
-
-interface PolicyTemplateOption {
-  id: string;
-  group: "core" | "lawfirm" | "industry";
-  title: string;
-  type: PolicyType;
-  description: string;
-  content: string;
-}
-
-/**
- * Every policy text the product ships, as starting points, in the reader's
- * language: the sector-neutral core pack, the law-firm pack and the industry
- * templates' policies.
- */
-function policyTemplateOptions(locale: "en" | "es"): PolicyTemplateOption[] {
-  return [
-    ...CORE_POLICY_PACK.map((p) => ({ id: p.id, group: "core" as const, ...localizeCorePolicy(p, locale), type: p.type as PolicyType })),
-    ...LAWFIRM_POLICY_PACK.map((p) => ({
-      id: p.id,
-      group: "lawfirm" as const,
-      title: p.title[locale],
-      type: p.type as PolicyType,
-      description: p.description[locale],
-      content: p.content[locale],
-    })),
-    ...AI_GOVERNANCE_TEMPLATES.map((source) => localizeTemplate(source, locale)).flatMap((tpl) =>
-      tpl.policies.map((p, i) => ({
-        id: `${tpl.id}-${i}`,
-        group: "industry" as const,
-        title: p.title,
-        type: p.type as PolicyType,
-        description: p.description,
-        content: p.content,
-      })),
-    ),
-  ];
+function toBase64(buffer: ArrayBuffer): string {
+  const bytes = new Uint8Array(buffer);
+  let binary = "";
+  for (let i = 0; i < bytes.length; i += 0x8000) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+  }
+  return btoa(binary);
 }
 
 export default function NewPolicyPage() {
   const t = useTranslations("policiesNew");
-  const tp = useTranslations("policies");
+  const tf = useTranslations("policyFields");
   const tc = useTranslations("common");
   const locale = useLocale() === "es" ? "es" : "en";
-  const templates = policyTemplateOptions(locale);
+  const templates = useMemo(() => policyLibrary(locale), [locale]);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { organization } = useOrganization();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const fileInput = useRef<HTMLInputElement>(null);
+  const [importedFrom, setImportedFrom] = useState<string | null>(null);
+  const [templateId, setTemplateId] = useState<string | null>(null);
+
+  const startType = searchParams.get("type");
+  const initialType = (POLICY_TYPES as readonly string[]).includes(startType ?? "") ? (startType as PolicyTypeValue) : "";
+  const defaultDescription = (type: PolicyTypeValue | "") => (type ? tf(`defaultDescription.${type}`) : "");
 
   const [formData, setFormData] = useState<{
     title: string;
-    type: PolicyType | "";
+    type: PolicyTypeValue | "";
     description: string;
     content: string;
     effectiveDate: string;
     reviewDate: string;
+    reviewIntervalMonths: number | null;
   }>({
     title: "",
-    type: "",
-    description: "",
+    type: initialType,
+    description: defaultDescription(initialType),
     content: "",
     effectiveDate: "",
     reviewDate: "",
+    reviewIntervalMonths: DEFAULT_REVIEW_INTERVAL,
   });
+  const [assignment, setAssignment] = useState<PolicyAssignmentValue>({ ownerMemberId: "", ownerName: "", departmentId: "" });
+  // The review date follows the interval until a person types a date of their own.
+  const [reviewDateTouched, setReviewDateTouched] = useState(false);
+
+  const suggestedReviewDate = (effective: string, months: number | null) =>
+    months ? reviewDateAfter(effective ? new Date(`${effective}T00:00:00Z`) : new Date(), months) : "";
 
   const utils = trpc.useUtils();
 
   const createPolicy = trpc.policy.create.useMutation({
     onSuccess: (data) => {
       toast.success(t("toastSuccess"));
-      utils.policy.list.invalidate();
-      utils.policy.getStats.invalidate();
+      void utils.policy.invalidate();
       router.push(`/governance/policies/${data.id}`);
     },
     onError: (error) => {
@@ -121,6 +101,40 @@ export default function NewPolicyPage() {
       setIsSubmitting(false);
     },
   });
+
+  const importFile = trpc.policy.importFile.useMutation({
+    onSuccess: (res, vars) => {
+      setImportedFrom(vars.fileName);
+      setTemplateId(null);
+      setFormData((prev) => ({ ...prev, title: prev.title || res.title, content: res.content }));
+      toast.success(res.truncated ? t("importTruncated") : t("importDone"));
+    },
+    onError: (err) => {
+      const code = err.message.startsWith("import_") ? err.message.slice(7) : "unreadable";
+      toast.error(t(`importError.${["too_large", "unsupported", "empty", "unreadable"].includes(code) ? code : "unreadable"}`));
+    },
+  });
+
+  const onImportChosen = async (file: File | undefined) => {
+    if (!file || !organization?.id) return;
+    if (file.size > IMPORT_MAX_BYTES) {
+      toast.error(t("importError.too_large"));
+      return;
+    }
+    const dataBase64 = toBase64(await file.arrayBuffer());
+    importFile.mutate({ organizationId: organization.id, fileName: file.name, dataBase64 });
+  };
+
+  const setType = (type: PolicyTypeValue) =>
+    setFormData((prev) => ({
+      ...prev,
+      type,
+      // The description follows the type while it is empty or still the previous type's default.
+      description:
+        !prev.description.trim() || prev.description === defaultDescription(prev.type)
+          ? defaultDescription(type)
+          : prev.description,
+    }));
 
   const lock = useSubmitLock();
   const handleSubmit = async (e: React.FormEvent) => {
@@ -131,73 +145,119 @@ export default function NewPolicyPage() {
     if (!lock.acquire()) return;
     setIsSubmitting(true);
 
-    createPolicy.mutate({
-      organizationId: organization.id,
-      title: formData.title,
-      type: formData.type as PolicyType,
-      description: formData.description || undefined,
-      content: formData.content || undefined,
-      effectiveDate: formData.effectiveDate || undefined,
-      reviewDate: formData.reviewDate || undefined,
-    }, { onSettled: lock.release });
+    const reviewDate = reviewDateTouched
+      ? formData.reviewDate
+      : formData.reviewDate || suggestedReviewDate(formData.effectiveDate, formData.reviewIntervalMonths);
+
+    createPolicy.mutate(
+      {
+        organizationId: organization.id,
+        title: formData.title,
+        type: formData.type as PolicyTypeValue,
+        description: formData.description || undefined,
+        content: formData.content || undefined,
+        effectiveDate: formData.effectiveDate || undefined,
+        reviewDate: reviewDate || undefined,
+        reviewIntervalMonths: formData.reviewIntervalMonths,
+        importedFrom: importedFrom ?? undefined,
+        templateId: templateId ?? undefined,
+        ...assignmentPayload(assignment),
+      },
+      { onSettled: lock.release },
+    );
   };
+
+  const shownReviewDate = reviewDateTouched
+    ? formData.reviewDate
+    : formData.reviewDate || suggestedReviewDate(formData.effectiveDate, formData.reviewIntervalMonths);
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="space-y-2">
         <Link href="/governance/policies">
-          <Button variant="ghost" size="icon" className="-ml-2">
+          <Button variant="ghost" size="icon" className="-ml-2" title={tc("back")}>
             <ArrowLeft className="w-4 h-4" />
           </Button>
         </Link>
         <div>
           <h1 className="text-xl sm:text-2xl font-semibold">{t("title")}</h1>
-          <p className="text-sm text-muted-foreground">
-            {t("subtitle")}
-          </p>
+          <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
         </div>
+        <PolicyLifecycle status="DRAFT" />
       </div>
 
       {/* Form */}
       <Card>
-        <CardHeader>
-          <CardTitle>{t("formTitle")}</CardTitle>
-          <CardDescription>
-            {t("formDescription")}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+        <CardContent className="pt-6">
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Start from a shipped policy text (optional) */}
-            <div className="space-y-2">
-              <Label>{t("labelTemplate")}</Label>
-              <Select
-                onValueChange={(id) => {
-                  const tpl = templates.find((x) => x.id === id);
-                  if (!tpl) return;
-                  setFormData((prev) => ({
-                    ...prev,
-                    title: tpl.title,
-                    type: tpl.type,
-                    description: tpl.description,
-                    content: tpl.content,
-                  }));
-                }}
-              >
-                <SelectTrigger className="w-full max-w-full">
-                  <SelectValue placeholder={t("placeholderTemplate")} />
-                </SelectTrigger>
-                <SelectContent>
-                  {templates.map((tpl) => (
-                    <SelectItem key={tpl.id} value={tpl.id}>
-                      {tpl.title}
-                      <span className="text-muted-foreground"> · {t(`templateGroup.${tpl.group}`)}</span>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <p className="text-xs text-muted-foreground">{t("templateHint")}</p>
+            {/* Start from a shipped policy text, or import one (both optional) */}
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="policy-template">{t("labelTemplate")}</Label>
+                <Select
+                  onValueChange={(id) => {
+                    const tpl = templates.find((x) => x.id === id);
+                    if (!tpl) return;
+                    setImportedFrom(null);
+                    setTemplateId(tpl.id);
+                    setFormData((prev) => ({
+                      ...prev,
+                      title: tpl.title,
+                      type: tpl.type,
+                      description: tpl.description,
+                      content: tpl.content,
+                    }));
+                  }}
+                >
+                  <SelectTrigger id="policy-template" className="w-full max-w-full">
+                    <SelectValue placeholder={t("placeholderTemplate")} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {templates.map((tpl) => (
+                      <SelectItem key={tpl.id} value={tpl.id}>
+                        {tpl.title}
+                        <span className="text-muted-foreground"> · {t(`templateGroup.${tpl.group}`)}</span>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground">
+                  {t("templateHint")}{" "}
+                  <Link href="/governance/policies?tab=templates" className="underline underline-offset-2 hover:text-primary">
+                    {t("browseTemplates")}
+                  </Link>
+                </p>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="policy-import">{t("labelImport")}</Label>
+                <input
+                  ref={fileInput}
+                  id="policy-import"
+                  type="file"
+                  accept={IMPORT_ACCEPT}
+                  className="sr-only"
+                  onChange={(e) => {
+                    void onImportChosen(e.target.files?.[0]);
+                    e.target.value = "";
+                  }}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full justify-start"
+                  disabled={importFile.isPending}
+                  onClick={() => fileInput.current?.click()}
+                >
+                  {importFile.isPending ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <FileUp className="w-4 h-4 mr-2" />
+                  )}
+                  {importedFrom ? t("importChosen", { name: importedFrom }) : t("importButton")}
+                </Button>
+                <p className="text-xs text-muted-foreground">{t("importHint")}</p>
+              </div>
             </div>
 
             {/* Title */}
@@ -213,24 +273,10 @@ export default function NewPolicyPage() {
               />
             </div>
 
-            {/* Type */}
+            {/* Type, with a definition under each choice */}
             <div className="space-y-2">
               <Label htmlFor="type">{t("labelPolicyType")} *</Label>
-              <Select
-                value={formData.type}
-                onValueChange={(value) => setFormData({ ...formData, type: value as PolicyType })}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder={t("placeholderType")} />
-                </SelectTrigger>
-                <SelectContent>
-                  {policyTypes.map((pt) => (
-                    <SelectItem key={pt.value} value={pt.value}>
-                      {tp(pt.labelKey)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <PolicyTypeSelect id="type" value={formData.type} onChange={setType} />
             </div>
 
             {/* Description */}
@@ -243,7 +289,15 @@ export default function NewPolicyPage() {
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               />
+              {formData.type && formData.description === defaultDescription(formData.type) && (
+                <p className="text-xs text-muted-foreground">{t("descriptionDefaultHint")}</p>
+              )}
             </div>
+
+            {/* Owner and department */}
+            {organization?.id && (
+              <PolicyAssignmentFields organizationId={organization.id} value={assignment} onChange={setAssignment} />
+            )}
 
             {/* Content */}
             <div className="space-y-2">
@@ -251,14 +305,14 @@ export default function NewPolicyPage() {
               <Textarea
                 id="content"
                 placeholder={t("placeholderContent")}
-                rows={8}
+                rows={10}
                 value={formData.content}
                 onChange={(e) => setFormData({ ...formData, content: e.target.value })}
               />
             </div>
 
-            {/* Dates */}
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {/* Dates and review interval */}
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               <div className="space-y-2">
                 <Label htmlFor="effectiveDate">{t("labelEffectiveDate")}</Label>
                 <Input
@@ -269,20 +323,32 @@ export default function NewPolicyPage() {
                 />
               </div>
               <div className="space-y-2">
+                <Label htmlFor="reviewInterval">{tf("intervalLabel")}</Label>
+                <ReviewIntervalSelect
+                  id="reviewInterval"
+                  value={formData.reviewIntervalMonths}
+                  onChange={(months) => setFormData({ ...formData, reviewIntervalMonths: months })}
+                />
+              </div>
+              <div className="space-y-2">
                 <Label htmlFor="reviewDate">{t("labelReviewDate")}</Label>
                 <Input
                   id="reviewDate"
                   type="date"
-                  value={formData.reviewDate}
-                  onChange={(e) => setFormData({ ...formData, reviewDate: e.target.value })}
+                  value={shownReviewDate}
+                  onChange={(e) => {
+                    setReviewDateTouched(true);
+                    setFormData({ ...formData, reviewDate: e.target.value });
+                  }}
                 />
               </div>
             </div>
+            <p className="text-xs text-muted-foreground -mt-3">{tf("intervalHint")}</p>
 
             {/* Error */}
             {createPolicy.error && (
               <StatusNote status="danger">
-                Error: {createPolicy.error.message}
+                {createPolicy.error.message}
               </StatusNote>
             )}
 
@@ -293,10 +359,7 @@ export default function NewPolicyPage() {
                   {tc("cancel")}
                 </Button>
               </Link>
-              <Button
-                type="submit"
-                disabled={isSubmitting || !formData.title || !formData.type}
-              >
+              <Button type="submit" disabled={isSubmitting || !formData.title || !formData.type}>
                 {isSubmitting ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />

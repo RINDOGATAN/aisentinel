@@ -45,7 +45,7 @@ const facts = (over: Partial<DocumentFacts> = {}): DocumentFacts => ({
 const AFTER_QUICKSTART: Partial<PathCounts> = {
   quickstartCompleted: true,
   jurisdictions: 1,
-  regimeScreeningAnswered: true,
+  screeningsOpen: [],
   policies: 6,
   systems: 3,
   systemsWithOwner: 3,
@@ -137,6 +137,11 @@ describe("areas and next actions", () => {
     expect(actions[0]).toMatchObject({ kind: "needsAction", item: { kind: "incident-open" } });
     expect(actions[1]).toMatchObject({ kind: "needsAction", item: { kind: "review-queue" } });
     expect(actions.every((a) => a.kind === "needsAction" || !a.toConfirm)).toBe(true);
+  });
+  it("for one department's view lists only what is waiting there, never the organization's path steps", () => {
+    const actions = nextActions(AI_SENTINEL_PATH, null, [incident]);
+    expect(actions).toEqual([{ kind: "needsAction", item: incident }]);
+    expect(nextActions(AI_SENTINEL_PATH, null, [])).toEqual([]);
   });
 });
 

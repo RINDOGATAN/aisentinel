@@ -23,13 +23,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
@@ -43,9 +36,9 @@ import {
   suggestScenarios,
 } from "@/config/threat-model";
 import { CapabilityMap, LoopStrip } from "@/components/governance/threat-model-visuals";
+import { SystemPicker } from "@/components/governance/system-picker";
 import { STATUS_OUTLINE } from "@/components/ui/status-note";
 
-const NONE = "__none__";
 
 export default function NewThreatModelPage() {
   const t = useTranslations("threatModel");
@@ -58,13 +51,20 @@ export default function NewThreatModelPage() {
   const [step, setStep] = useState(0);
   const [name, setName] = useState("");
   const [summary, setSummary] = useState("");
-  const [systemId, setSystemId] = useState<string>(NONE);
+  const [systemId, setSystemId] = useState<string>("");
+  // The name follows the chosen system until the person types their own.
+  const [prefilledName, setPrefilledName] = useState("");
+  const chooseSystem = (system: { id: string; name: string } | null) => {
+    setSystemId(system?.id ?? "");
+    if (system && (name.trim() === "" || name === prefilledName)) {
+      setName(system.name);
+      setPrefilledName(system.name);
+    } else if (!system && name === prefilledName) {
+      setName("");
+      setPrefilledName("");
+    }
+  };
   const [capabilities, setCapabilities] = useState<string[]>([]);
-
-  const { data: systems } = trpc.aiSystem.list.useQuery(
-    { organizationId: orgId, limit: 100 },
-    { enabled: !!orgId },
-  );
 
   const create = trpc.threatModel.create.useMutation({
     onSuccess: (model) => {
@@ -91,6 +91,7 @@ export default function NewThreatModelPage() {
           {t("newTitle")}
         </h1>
         <p className="text-sm text-muted-foreground mt-1">{t("newSubtitle")}</p>
+        <p className="text-sm mt-2">{t("purpose")}</p>
       </div>
 
       <LoopStrip steps={steps} active={step === 0 ? 0 : step === 1 ? 0 : 1} />
@@ -99,8 +100,20 @@ export default function NewThreatModelPage() {
       {step === 0 && (
         <Card>
           <CardContent className="p-4 space-y-4">
+            {/* The system first: a threat model is about one system, and its
+                name comes from it. */}
             <div className="space-y-1.5">
-              <Label className="text-xs" htmlFor="tm-name">
+              <Label htmlFor="threat-model-system">{t("systemLabel")}</Label>
+              <SystemPicker
+                id="threat-model-system"
+                value={systemId}
+                onChange={chooseSystem}
+                clearable
+              />
+              <p className="text-sm text-muted-foreground">{t("systemHint")}</p>
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="tm-name">
                 {t("nameLabel")}
               </Label>
               <Input
@@ -111,7 +124,7 @@ export default function NewThreatModelPage() {
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs" htmlFor="tm-summary">
+              <Label htmlFor="tm-summary">
                 {t("summaryLabel")}
               </Label>
               <Textarea
@@ -121,22 +134,6 @@ export default function NewThreatModelPage() {
                 onChange={(e) => setSummary(e.target.value)}
                 placeholder={t("summaryPlaceholder")}
               />
-            </div>
-            <div className="space-y-1.5">
-              <Label className="text-xs">{t("systemLabel")}</Label>
-              <Select value={systemId} onValueChange={setSystemId}>
-                <SelectTrigger>
-                  <SelectValue placeholder={t("systemPlaceholder")} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value={NONE}>{t("systemNone")}</SelectItem>
-                  {(Array.isArray(systems) ? systems : (systems?.items ?? [])).map((s) => (
-                    <SelectItem key={s.id} value={s.id}>
-                      {s.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
             </div>
 
             <div className="rounded-md border p-3 space-y-1.5">
@@ -276,7 +273,7 @@ export default function NewThreatModelPage() {
                   organizationId: orgId,
                   name: name.trim(),
                   systemSummary: summary || undefined,
-                  aiSystemId: systemId === NONE ? undefined : systemId,
+                  aiSystemId: systemId || undefined,
                   capabilities,
                   acceptProposed: true,
                 })

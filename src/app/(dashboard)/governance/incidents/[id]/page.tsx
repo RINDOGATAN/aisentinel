@@ -16,6 +16,7 @@ import { IncidentDeadlinesCard } from "@/components/governance/incident-deadline
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -34,6 +35,7 @@ import {
   Calendar,
   Send,
   Save,
+  Ban,
 } from "lucide-react";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
@@ -47,6 +49,7 @@ import { STATUS_CHIP, STATUS_OUTLINE } from "@/components/ui/status-note";
 import { PageHeader } from "@/components/governance/page-header";
 
 type AIIncidentStatus = "REPORTED" | "INVESTIGATING" | "MITIGATING" | "RESOLVED" | "CLOSED";
+const RECORDED_IN_ERROR = "RECORDED_IN_ERROR";
 type AINotificationStatus = "PENDING" | "SENT" | "ACKNOWLEDGED";
 type AITaskStatus = "PENDING" | "IN_PROGRESS" | "COMPLETED";
 
@@ -63,6 +66,7 @@ const statusColors: Record<string, string> = {
   MITIGATING: STATUS_OUTLINE.warning,
   RESOLVED: STATUS_OUTLINE.good,
   CLOSED: "border-muted-foreground text-muted-foreground",
+  RECORDED_IN_ERROR: "border-dashed border-muted-foreground/60 text-muted-foreground line-through",
 };
 
 const typeKeys: Record<string, string> = {
@@ -106,6 +110,9 @@ export default function IncidentDetailPage() {
     const sys = locale === "es" ? parseSystemTimelineEntry(entry.action, entry.description) : null;
     if (!sys) return { action: entry.action, description: entry.description };
     const lower = (x: string) => x.toLocaleLowerCase("es");
+    if (sys.kind === "recordedInError") {
+      return { action: t("timelineSystem.recordedInErrorAction"), description: sys.reason };
+    }
     if (sys.kind === "reported") {
       return {
         action: t("timelineSystem.reportedAction"),
@@ -132,9 +139,11 @@ export default function IncidentDetailPage() {
         : statusLabel(status);
   const params = useParams();
   const id = params.id as string;
-  const { organization, canWrite } = useOrganization();
+  const { organization, canWrite, canDelete } = useOrganization();
 
   // Dialog states
+  const [showInErrorDialog, setShowInErrorDialog] = useState(false);
+  const [inErrorReason, setInErrorReason] = useState("");
   const [showTimelineDialog, setShowTimelineDialog] = useState(false);
   const [showTaskDialog, setShowTaskDialog] = useState(false);
   const [showNotificationDialog, setShowNotificationDialog] = useState(false);
@@ -188,6 +197,19 @@ export default function IncidentDetailPage() {
     onError: (error) => {
       toast.error(error.message || t("toastIncidentUpdateError"));
     },
+  });
+
+  // Recorded in error: the incident stays, every count and clock drops it.
+  const markRecordedInError = trpc.incident.markRecordedInError.useMutation({
+    onSuccess: () => {
+      toast.success(t("recordedInError.done"));
+      setShowInErrorDialog(false);
+      setInErrorReason("");
+      void utils.incident.invalidate();
+      void utils.organization.invalidate();
+      void utils.programPath.invalidate();
+    },
+    onError: (error) => toast.error(error.message),
   });
 
   const addTimelineEntry = trpc.incident.addTimelineEntry.useMutation({
@@ -273,6 +295,10 @@ export default function IncidentDetailPage() {
   }
 
   const nextStatuses = statusTransitions[incident.status] ?? [];
+  const inError = incident.status === RECORDED_IN_ERROR;
+  // Owners and admins (the roles that may delete records) may mark it.
+  const canMarkInError = canDelete && !inError;
+  const inErrorReasonGiven = incident.timeline?.find((e) => e.action === "Recorded in error")?.description;
 
   return (
     <div className="space-y-6">
@@ -297,8 +323,14 @@ export default function IncidentDetailPage() {
           </>
         }
         actions={
-          nextStatuses.length > 0 ? (
+          nextStatuses.length > 0 || canMarkInError ? (
             <>
+              {canMarkInError && (
+                <Button variant="outline" onClick={() => setShowInErrorDialog(true)} data-testid="recorded-in-error">
+                  <Ban className="w-4 h-4 mr-2" />
+                  {t("recordedInError.action")}
+                </Button>
+              )}
               {/* Status transitions: only those the current status allows. */}
               {nextStatuses.map((nextStatus) => (
                 <Button
@@ -324,12 +356,59 @@ export default function IncidentDetailPage() {
         }
       />
 
-      {/* What the law requires, and by when. Computed, not typed in. */}
-      <IncidentDeadlinesCard
-        organizationId={organization?.id ?? ""}
-        incidentId={id}
-        canWrite={canWrite}
-      />
+      <Dialog open={showInErrorDialog} onOpenChange={(open) => !markRecordedInError.isPending && setShowInErrorDialog(open)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("recordedInError.dialogTitle")}</DialogTitle>
+            <DialogDescription>{t("recordedInError.dialogDescription")}</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2">
+            <Label htmlFor="in-error-reason">{t("recordedInError.reasonLabel")}</Label>
+            <Textarea
+              id="in-error-reason"
+              value={inErrorReason}
+              maxLength={2000}
+              placeholder={t("recordedInError.reasonPlaceholder")}
+              onChange={(e) => setInErrorReason(e.target.value)}
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" disabled={markRecordedInError.isPending} onClick={() => setShowInErrorDialog(false)}>
+              {t("recordedInError.cancel")}
+            </Button>
+            <Button
+              variant="destructive"
+              disabled={markRecordedInError.isPending || inErrorReason.trim().length === 0}
+              onClick={() =>
+                markRecordedInError.mutate({ organizationId: organization?.id ?? "", id, reason: inErrorReason.trim() })
+              }
+              data-testid="recorded-in-error-confirm"
+            >
+              {markRecordedInError.isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+              {t("recordedInError.confirm")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {inError ? (
+        <Card className="border-dashed">
+          <CardContent className="p-4 flex items-start gap-2 text-muted-foreground">
+            <Ban className="w-5 h-5 shrink-0 mt-0.5" />
+            <div className="text-sm space-y-1">
+              <p>{t("recordedInError.banner")}</p>
+              {inErrorReasonGiven && <p>{t("recordedInError.bannerReason", { reason: inErrorReasonGiven })}</p>}
+            </div>
+          </CardContent>
+        </Card>
+      ) : (
+        /* What the law requires, and by when. Computed, not typed in. */
+        <IncidentDeadlinesCard
+          organizationId={organization?.id ?? ""}
+          incidentId={id}
+          canWrite={canWrite}
+        />
+      )}
 
       {/* Overview Grid */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -713,7 +792,8 @@ export default function IncidentDetailPage() {
                   onChange={(e) => setImpactDescription(e.target.value)}
                 />
               </div>
-              <div className="flex justify-end">
+              {/* An incident recorded in error can no longer be changed. */}
+              {!inError && <div className="flex justify-end">
                 <Button
                   onClick={() =>
                     updateIncident.mutate({
@@ -733,7 +813,7 @@ export default function IncidentDetailPage() {
                   )}
                   {t("saveRootCause")}
                 </Button>
-              </div>
+              </div>}
             </CardContent>
           </Card>
         </TabsContent>

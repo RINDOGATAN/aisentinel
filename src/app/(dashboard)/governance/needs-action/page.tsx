@@ -29,6 +29,7 @@ import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
 import type { NeedsActionKind } from "@/lib/needs-action";
+import { useViewDepartment } from "@/lib/use-view-department";
 
 const ICON: Record<NeedsActionKind, React.ElementType> = {
   "assessment-review": ClipboardCheck,
@@ -42,7 +43,9 @@ export default function NeedsActionPage() {
   const t = useTranslations("views");
   const { organization } = useOrganization();
   const orgId = organization?.id ?? "";
-  const dept = useSearchParams().get("dept") ?? undefined;
+  // A department in the address wins; otherwise the menu's "Viewing" choice.
+  const viewDept = useViewDepartment(orgId || undefined);
+  const dept = useSearchParams().get("dept") ?? viewDept;
 
   const { data, isLoading } = trpc.views.needsAction.useQuery(
     { organizationId: orgId, businessUnitId: dept },

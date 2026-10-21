@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import {
   Dialog,
   DialogContent,
@@ -52,7 +52,9 @@ import { formatRelativeTime } from "@/lib/utils";
 import { useFormatDate } from "@/lib/use-format-date";
 import { suggestTechnique } from "@/lib/ai-technique-mapping";
 import { STATUS_CHIP, STATUS_OUTLINE } from "@/components/ui/status-note";
+import { SystemPicker } from "@/components/governance/system-picker";
 import { PageHeader } from "@/components/governance/page-header";
+import { systemReference } from "@/lib/system-reference";
 
 // Labels come from the `common` namespace (technique* / role* keys).
 const aiTechniques = [
@@ -112,7 +114,7 @@ const riskIndicatorColors: Record<string, string> = {
 export default function ShadowAIDetailPage() {
   const t = useTranslations("shadowAiDetail");
   const { formatDate } = useFormatDate();
-  const { statusLabel, roleLabel } = useEnumLabels();
+  const { roleLabel } = useEnumLabels();
   const locale = useLocale();
   const tc = useTranslations("common");
   const toolCategoryLabel = (category: string) =>
@@ -125,6 +127,7 @@ export default function ShadowAIDetailPage() {
   const [registerDialogOpen, setRegisterDialogOpen] = useState(false);
   const [registerTab, setRegisterTab] = useState<string>("create");
   const [selectedSystemId, setSelectedSystemId] = useState("");
+  const [selectedSystemNumber, setSelectedSystemNumber] = useState<number | null>(null);
   // Create new system state
   const [newSystemData, setNewSystemData] = useState({
     systemName: "",
@@ -142,13 +145,6 @@ export default function ShadowAIDetailPage() {
     { organizationId: organization?.id ?? "", id },
     { enabled: !!organization?.id && !!id }
   );
-
-  const { data: systemsData } = trpc.aiSystem.list.useQuery(
-    { organizationId: organization?.id ?? "", limit: 100 },
-    { enabled: !!organization?.id && registerDialogOpen }
-  );
-
-  const systems = systemsData?.items ?? [];
 
   const updateReport = trpc.shadowAi.updateReport.useMutation({
     onSuccess: () => {
@@ -402,10 +398,15 @@ export default function ShadowAIDetailPage() {
                 <div className="flex items-center gap-3 p-3 bg-muted/50">
                   <Cpu className="w-4 h-4 text-primary" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium">{t("registeredSystemTitle")}</p>
-                    <p className="text-xs text-muted-foreground truncate">
-                      {t("systemId", { id: report.registeredSystemId })}
-                    </p>
+                    <p className="text-sm text-muted-foreground">{t("registeredSystemTitle")}</p>
+                    {report.registeredSystem && (
+                      <p className="text-sm font-medium truncate">{report.registeredSystem.name}</p>
+                    )}
+                    {systemReference(report.registeredSystem?.number) && (
+                      <p className="text-xs text-muted-foreground truncate">
+                        {t("systemId", { id: systemReference(report.registeredSystem?.number) ?? "" })}
+                      </p>
+                    )}
                   </div>
                   <Link
                     href={`/governance/ai-registry/${report.registeredSystemId}`}
@@ -502,10 +503,26 @@ export default function ShadowAIDetailPage() {
             <DialogTitle>{t("registerDialogTitle")}</DialogTitle>
           </DialogHeader>
           <Tabs value={registerTab} onValueChange={setRegisterTab}>
-            <TabsList className="w-full overflow-x-auto">
-              <TabsTrigger value="create" className="flex-1">{t("registerTabCreateNew")}</TabsTrigger>
-              <TabsTrigger value="existing" className="flex-1">{t("registerTabLinkExisting")}</TabsTrigger>
-            </TabsList>
+            {/* Two ways in. The labels are long, so they are two buttons that
+                wrap, one per line on a phone, rather than a tab strip. */}
+            <div className="grid w-full grid-cols-1 sm:grid-cols-2 gap-2" role="radiogroup" aria-label={t("registerDialogTitle")}>
+              {(["create", "existing"] as const).map((value) => (
+                <button
+                  key={value}
+                  type="button"
+                  role="radio"
+                  aria-checked={registerTab === value}
+                  onClick={() => setRegisterTab(value)}
+                  className={`rounded-md border px-3 py-2 text-sm text-left transition-colors ${
+                    registerTab === value
+                      ? "border-primary bg-primary/10 text-foreground font-medium"
+                      : "border-border text-muted-foreground hover:border-primary/50"
+                  }`}
+                >
+                  {value === "create" ? t("registerTabCreateNew") : t("registerTabLinkExisting")}
+                </button>
+              ))}
+            </div>
 
             {/* Create New Tab */}
             <TabsContent value="create" className="space-y-4 mt-4">
@@ -608,22 +625,20 @@ export default function ShadowAIDetailPage() {
                 {t("registerLinkHint")}
               </p>
               <div className="space-y-2">
-                <Label>{t("labelAiSystem")} *</Label>
-                <Select
+                <Label htmlFor="shadow-ai-link-system">{t("labelAiSystem")} *</Label>
+                <SystemPicker
+                  id="shadow-ai-link-system"
                   value={selectedSystemId}
-                  onValueChange={setSelectedSystemId}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder={t("placeholderSelectAiSystem")} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {systems.map((system) => (
-                      <SelectItem key={system.id} value={system.id}>
-                        {system.name} ({statusLabel(system.status)})
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  onChange={(system) => {
+                    setSelectedSystemId(system?.id ?? "");
+                    setSelectedSystemNumber(system?.number ?? null);
+                  }}
+                />
+                {selectedSystemId && systemReference(selectedSystemNumber) && (
+                  <p className="text-sm text-muted-foreground">
+                    {t("selectedSystemReference", { reference: systemReference(selectedSystemNumber) ?? "" })}
+                  </p>
+                )}
               </div>
             </TabsContent>
           </Tabs>

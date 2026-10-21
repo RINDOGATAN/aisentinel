@@ -168,7 +168,7 @@ describe("English sections", () => {
   // Three ways, as on the storefront home: the kit and the Box are on the storefront's Run it your way page only.
   it("offer three ways, with the wording of the Spanish page", () => {
     const titles = [1, 2, 3].map((n) => EN[`en.ways.w${n}.title`]);
-    expect(titles).toEqual(["In the TODO.LAW cloud", "Managed virtual server", "Your own hardware"]);
+    expect(titles).toEqual(["TODO.LAW cloud", "Managed instance", "Your own hardware"]);
     expect(EN["en.ways.w4.title"]).toBeUndefined();
     for (const t of titles) expect(html).toContain(t);
     expect(EN["en.ways.label"]).toBe("Guarantees and hosting");

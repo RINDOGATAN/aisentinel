@@ -28,13 +28,13 @@
 import { z } from "zod";
 import { createTRPCRouter, organizationProcedure, protectedProcedure } from "../../trpc";
 import { AI_SENTINEL_PATH, type PathCounts } from "@/components/guided/path-config";
-import { evaluatePath } from "@/components/guided/path";
+import { evaluateChecks, evaluatePath } from "@/components/guided/path";
 import { loadPathCounts } from "@/server/services/program/path-counts";
 import { loadPlanStart } from "@/server/services/program/plan-start";
 import { loadDocumentFacts } from "@/server/services/program/document-facts";
 import { loadDeadlines } from "@/server/services/program/deadlines";
 import { loadBusinessUnitScope } from "@/server/services/business-units/scope";
-import { collectNeedsAction } from "@/server/services/views/queries";
+import { collectNeedsAction, systemScopeWhere } from "@/server/services/views/queries";
 import { evaluateRegister, type EvaluatedDocument } from "@/config/document-register";
 import type { NeedsActionItem } from "@/lib/needs-action";
 import type { RecordDeadline } from "@/lib/programme-overview";
@@ -51,6 +51,12 @@ const localeInput = z.enum(["en", "es"]).default("en");
 
 export interface ProgrammeOverviewData {
   limited: boolean;
+  /**
+   * Narrowed to one department chosen with the "Viewing" switch: what needs
+   * action and the deadlines are that department's; the documents and the
+   * drafts stay the whole organization's.
+   */
+  departmentScoped: boolean;
   documents: EvaluatedDocument[];
   needsAction: NeedsActionItem[];
   deadlines: RecordDeadline[];
@@ -60,6 +66,7 @@ export interface ProgrammeOverviewData {
 
 const LIMITED: ProgrammeOverviewData = {
   limited: true,
+  departmentScoped: false,
   documents: [],
   needsAction: [],
   deadlines: [],
@@ -70,19 +77,24 @@ const LIMITED: ProgrammeOverviewData = {
 async function loadOverview(
   prisma: PrismaClient,
   organizationId: string,
-  membershipId: string,
+  membership: { id: string; role: string },
   locale: "en" | "es",
   counts?: PathCounts,
+  businessUnitId?: string,
 ): Promise<ProgrammeOverviewData> {
-  const scope = await loadBusinessUnitScope(prisma, membershipId);
+  const scope = await loadBusinessUnitScope(prisma, membership);
   if (!scope.all) return LIMITED;
+  // Only a person who sees the whole organization reaches here, so the
+  // department is a view filter on top of the full scope, never a widening.
+  const systemWhere = systemScopeWhere(scope, businessUnitId);
   const [facts, needsAction, deadlines] = await Promise.all([
     loadDocumentFacts(prisma, organizationId, counts),
-    collectNeedsAction(prisma, organizationId, scope),
-    loadDeadlines(prisma, organizationId, locale),
+    collectNeedsAction(prisma, organizationId, scope, businessUnitId),
+    loadDeadlines(prisma, organizationId, locale, new Date(), systemWhere),
   ]);
   return {
     limited: false,
+    departmentScoped: systemWhere !== undefined,
     documents: evaluateRegister(facts),
     needsAction: needsAction.items,
     deadlines,
@@ -101,13 +113,27 @@ export const programPathRouter = createTRPCRouter({
         ctx.organization.id,
         steps.quickstart === "done",
       );
-      return { steps, planStart: planStart?.toISOString() ?? null };
+      return {
+        steps,
+        // What each step's rule needs, met or not: the band's tick list.
+        checks: evaluateChecks(AI_SENTINEL_PATH, counts),
+        // Step 1.2's questions still to answer ("Answer 3 questions").
+        screeningQuestionsOpen: counts.screeningQuestionsOpen,
+        planStart: planStart?.toISOString() ?? null,
+      };
     }),
 
   overview: organizationProcedure
-    .input(z.object({ organizationId: z.string(), locale: localeInput }))
+    .input(
+      z.object({
+        organizationId: z.string(),
+        locale: localeInput,
+        /** The department chosen with the "Viewing" switch, if any. */
+        businessUnitId: z.string().max(100).optional(),
+      }),
+    )
     .query(({ ctx, input }) =>
-      loadOverview(ctx.prisma, ctx.organization.id, ctx.membership.id, input.locale),
+      loadOverview(ctx.prisma, ctx.organization.id, ctx.membership, input.locale, undefined, input.businessUnitId),
     ),
 
   portfolio: protectedProcedure
@@ -159,7 +185,7 @@ export const programPathRouter = createTRPCRouter({
                 where: { organizationId: orgId, status: "PENDING" },
               }),
               // What the client's own dashboard reads, so a row never disagrees with it.
-              loadOverview(ctx.prisma, orgId, m.id, locale, counts),
+              loadOverview(ctx.prisma, orgId, m, locale, counts),
             ]);
             const steps = evaluatePath(AI_SENTINEL_PATH, counts);
             const planStart = await loadPlanStart(ctx.prisma, orgId, steps.quickstart === "done");

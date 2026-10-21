@@ -145,7 +145,7 @@ export const PAGE_HELP: PageHelp[] = [
     title: L("Incidents", "Incidentes"),
     purpose: L(
       "The log of things that went wrong with an AI system, with the clock each law puts on reporting them. A serious incident with a high-risk system must be reported within tight deadlines.",
-      "El registro de lo que salió mal con un sistema de IA, con el plazo que cada ley marca para notificarlo. Un incidente grave con un sistema de alto riesgo debe notificarse en plazos ajustados.",
+      "El registro de lo que ha salido mal con un sistema de IA, con el plazo que cada ley marca para notificarlo. Un incidente grave con un sistema de alto riesgo debe notificarse en plazos ajustados.",
     ),
     firstStep: L(
       "Record an incident as soon as it is known; the timeline and reporting deadlines start from that.",
@@ -331,7 +331,7 @@ export const PAGE_HELP: PageHelp[] = [
     title: L("Audit trail", "Registro de auditoría"),
     purpose: L(
       "The record of who changed what and when across the program, which the product keeps on its own. It is the account you rely on when someone asks how a decision was reached.",
-      "El registro de quién cambió qué y cuándo en todo el programa, que el producto mantiene por sí solo. Es la cuenta en la que te apoyas cuando alguien pregunta cómo se llegó a una decisión.",
+      "El registro de quién cambió qué y cuándo en todo el programa, que el producto mantiene por sí solo. Es la cuenta en la que te apoyas cuando alguien pregunta cómo se ha llegado a una decisión.",
     ),
     firstStep: L(
       "Read the trail to see recent changes; export it to CSV when you need to keep or share it.",
@@ -373,10 +373,10 @@ export const PAGE_HELP: PageHelp[] = [
   },
   {
     route: "/governance/skills",
-    title: L("Skills", "Skills"),
+    title: L("Skills", "Habilidades"),
     purpose: L(
       "Where you upload and activate a license for a premium skill package bought from the storefront. A license unlocks a feature; it never installs code, and it is tied to the buyer's email.",
-      "Donde subes y activas la licencia de un paquete de skills premium comprado en la tienda. Una licencia desbloquea una función; nunca instala código y está vinculada al correo del comprador.",
+      "Donde subes y activas la licencia de un paquete de habilidades premium comprado en la tienda. Una licencia desbloquea una función; nunca instala código y está vinculada al correo del comprador.",
     ),
     firstStep: L(
       "Upload your license file to activate it; only an owner or admin can do this.",

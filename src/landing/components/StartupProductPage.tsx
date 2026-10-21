@@ -6,6 +6,11 @@ import { signIn } from "next-auth/react";
 import { ArrowRight, BookOpen, Check, Loader2 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { writeLocaleCookie } from "@/lib/locale-cookie";
+import {
+  BLOCKED_EMAIL_MESSAGE_KEY,
+  blockedEmailMessage,
+  isBlockedAccountEmail,
+} from "@/lib/email-policy";
 
 export interface Feature {
   id: string;
@@ -85,6 +90,8 @@ const StartupProductPage = ({
   const [emailInput, setEmailInput] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
+  // Set when the address is refused by the e-mail policy; shown under the field.
+  const [emailRefused, setEmailRefused] = useState(false);
   const emailProviderRef = useRef<string | null>(null);
 
   // Detect which email-type provider is registered (v4 "email" vs v5 "resend")
@@ -128,7 +135,7 @@ const StartupProductPage = ({
     return () => window.removeEventListener("load", start);
   }, [heroVideo]);
 
-  const sendMagicLink = async (email: string): Promise<boolean> => {
+  const sendMagicLink = async (email: string): Promise<boolean | "refused"> => {
     const providerId = emailProviderRef.current;
     if (!providerId) return false;
     const csrfRes = await fetch("/api/auth/csrf");
@@ -138,6 +145,13 @@ const StartupProductPage = ({
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({ csrfToken, email, callbackUrl, json: "true" }),
     });
+    if (res.status === 400) {
+      const data = await res.json().catch(() => null);
+      if (data?.error === BLOCKED_EMAIL_MESSAGE_KEY) {
+        setEmailRefused(true);
+        return "refused";
+      }
+    }
     const ct = res.headers.get("content-type") || "";
     if (ct.includes("application/json")) {
       const data = await res.json();
@@ -152,6 +166,11 @@ const StartupProductPage = ({
     // The field is required; a blank address never reaches the provider,
     // whose refusal would read as "email sign-in is not available".
     if (!emailInput.trim()) return;
+    setEmailRefused(false);
+    if (isBlockedAccountEmail(emailInput)) {
+      setEmailRefused(true);
+      return;
+    }
     // The product opens in the language this page was read in (it follows the
     // locale cookie, which a first visit does not have yet).
     writeLocaleCookie(docsLocale);
@@ -159,7 +178,9 @@ const StartupProductPage = ({
     setSending(true);
     try {
       const ok = await sendMagicLink(emailInput);
-      if (ok) {
+      if (ok === "refused") {
+        // Refused by the server: the message is already under the field.
+      } else if (ok) {
         setCardMode("sent");
       } else {
         setError(tAuth("error.emailUnavailable"));
@@ -287,10 +308,15 @@ const StartupProductPage = ({
                           required
                           autoComplete="email"
                           value={emailInput}
-                          onChange={(e) => setEmailInput(e.target.value)}
+                          onChange={(e) => { setEmailInput(e.target.value); setEmailRefused(false); }}
                           placeholder={tAuth("emailPlaceholder")}
                           className="w-full px-4 py-3 bg-secondary/80 border border-border rounded-xl text-sm font-body text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent/50 transition-all"
                         />
+                        {emailRefused && (
+                          <p data-testid="email-not-accepted" className="text-sm text-red-400 font-body">
+                            {blockedEmailMessage(docsLocale)}
+                          </p>
+                        )}
                         <button
                           type="submit"
                           disabled={sending}
@@ -322,10 +348,15 @@ const StartupProductPage = ({
                           required
                           autoComplete="email"
                           value={emailInput}
-                          onChange={(e) => setEmailInput(e.target.value)}
+                          onChange={(e) => { setEmailInput(e.target.value); setEmailRefused(false); }}
                           placeholder={tAuth("emailPlaceholder")}
                           className="w-full px-4 py-3 bg-secondary/80 border border-border rounded-xl text-sm font-body text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent/50 transition-all"
                         />
+                        {emailRefused && (
+                          <p data-testid="email-not-accepted" className="text-sm text-red-400 font-body">
+                            {blockedEmailMessage(docsLocale)}
+                          </p>
+                        )}
                         <button
                           type="submit"
                           disabled={sending}

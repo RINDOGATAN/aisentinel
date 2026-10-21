@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { trpc } from "@/lib/trpc";
 import { PREMIUM_KIT_PRICE_PER_YEAR, formatPrice } from "@/lib/currency";
-import { useCurrency } from "@/lib/use-currency";
+import { useChargeCurrency } from "@/components/charge-currency";
 import type { ShowcaseFeature } from "@/config/premium-showcase";
 import { useExportDownload } from "@/components/governance/use-export-download";
 
@@ -122,7 +122,7 @@ export function LicenceNote({
 }) {
   const t = useTranslations("premiumShowcase");
   const locale = useLocale();
-  const currency = useCurrency(locale);
+  const currency = useChargeCurrency();
   const { isLocked, purchaseUrl } = useShowcaseLocks(organizationId);
 
   if (!features.some(isLocked)) return null;

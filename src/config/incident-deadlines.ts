@@ -106,7 +106,7 @@ export function computeIncidentDeadlines(facts: IncidentFacts): ComputedDeadline
         }
       : {
           en: "The market surveillance authority of the Member State where the incident occurred",
-          es: "La autoridad de vigilancia del mercado del Estado miembro en el que se produjo el incidente",
+          es: "La autoridad de vigilancia del mercado del Estado miembro en el que se haya producido el incidente",
         };
 
     if (facts.widespreadOrCriticalInfrastructure) {

@@ -22,6 +22,7 @@ import { programFigure, type PathStatuses, type ProgramFigure } from "./path";
 import { ProgressBar } from "./progress-ring";
 import { useProgramPathQuery } from "./use-program-path";
 import { useProgrammeOverview } from "./use-programme-overview";
+import { PanelEmpty, PanelFailed, panelPhase } from "./panel-state";
 
 /** The figure for statuses already in hand (All clients has one set per client). */
 export function figureFor(statuses: PathStatuses | null | undefined): ProgramFigure | null {
@@ -29,10 +30,17 @@ export function figureFor(statuses: PathStatuses | null | undefined): ProgramFig
 }
 
 /** The current organisation's figure and its drafts; null while loading. */
-export function useProgramFigure(): { figure: ProgramFigure | null; drafts: number | null } {
-  const { steps } = useProgramPathQuery();
+export function useProgramFigure(): {
+  figure: ProgramFigure | null;
+  drafts: number | null;
+  /** The path was read (even if it holds no counted step). */
+  loaded: boolean;
+  failed: boolean;
+  retry: () => void;
+} {
+  const { steps, failed, retry } = useProgramPathQuery();
   const { overview } = useProgrammeOverview();
-  return { figure: figureFor(steps), drafts: overview?.drafts ?? null };
+  return { figure: figureFor(steps), drafts: overview?.drafts ?? null, loaded: steps !== null, failed, retry };
 }
 
 /** "2 of 17 steps confirmed": the same words wherever the figure is shown. */
@@ -69,12 +77,17 @@ export function ProgramFigureParts({ figure, className }: { figure: ProgramFigur
  */
 export function ProgramFigureCard() {
   const t = useTranslations("guided");
-  const { figure, drafts } = useProgramFigure();
+  const { figure, drafts, loaded, failed, retry } = useProgramFigure();
+  const phase = panelPhase({ failed, loaded, empty: !figure });
 
   return (
-    <Card aria-busy={!figure} data-testid="program-figure-card">
+    <Card aria-busy={phase === "loading"} data-testid="program-figure-card">
       <CardContent className="p-4 sm:p-6 flex flex-col gap-3">
-        {!figure ? (
+        {phase === "failed" ? (
+          <PanelFailed onRetry={retry} />
+        ) : phase === "empty" ? (
+          <PanelEmpty>{t("panel.noFigure")}</PanelEmpty>
+        ) : !figure ? (
           <div className="flex flex-col gap-2" aria-label={t("loading")}>
             <Skeleton className="h-3 w-24" />
             <Skeleton className="h-6 w-2/3 max-w-xs" />

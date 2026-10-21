@@ -73,7 +73,7 @@ export const GUIDES: Guide[] = [
             term: L("Deployer", "Responsable del despliegue"),
             body: L(
               "Uses an AI system under its own authority in the course of its work (Art. 3). Deployers must use the system as instructed, keep human oversight, and, for some high-risk uses, carry out a fundamental rights impact assessment.",
-              "Utiliza un sistema de IA bajo su propia autoridad en el marco de su actividad (art. 3). Los responsables del despliegue deben usar el sistema conforme a las instrucciones, mantener la supervisión humana y, para ciertos usos de alto riesgo, realizar una evaluación de impacto sobre los derechos fundamentales.",
+              "Utiliza un sistema de IA bajo su propia autoridad en el marco de su actividad (art. 3). Los responsables del despliegue deben usar el sistema conforme a las instrucciones, mantener la supervisión humana y, para ciertos usos de alto riesgo, realizar una evaluación de impacto en los derechos fundamentales.",
             ),
             example: L(
               "An employer that runs that CV-screening tool to shortlist candidates.",
@@ -84,7 +84,7 @@ export const GUIDES: Guide[] = [
             term: L("Importer", "Importador"),
             body: L(
               "Placed in the EU, it puts on the market an AI system that carries the name of a provider established outside the EU (Art. 3), and must check the provider did its part.",
-              "Establecido en la UE, introduce en el mercado un sistema de IA que lleva el nombre de un proveedor establecido fuera de la UE (art. 3), y debe comprobar que el proveedor cumplió su parte.",
+              "Establecido en la UE, introduce en el mercado un sistema de IA que lleva el nombre de un proveedor establecido fuera de la UE (art. 3), y debe comprobar que el proveedor ha cumplido su parte.",
             ),
             example: L(
               "An EU reseller of an AI product made by a company in another country.",
@@ -159,7 +159,7 @@ export const GUIDES: Guide[] = [
         heading: L("What follows if you are high risk", "Qué se deriva de ser de alto riesgo"),
         intro: L(
           "A high-risk system draws the substantial duties: risk management, data governance, technical documentation, record-keeping, transparency to deployers, human oversight, and accuracy, robustness and cybersecurity. Providers carry out a conformity assessment; certain deployers carry out a fundamental rights impact assessment. AI Sentinel raises exactly these once a system is classified high risk.",
-          "Un sistema de alto riesgo atrae las obligaciones sustanciales: gestión de riesgos, gobernanza de datos, documentación técnica, conservación de registros, transparencia hacia los responsables del despliegue, supervisión humana y exactitud, solidez y ciberseguridad. Los proveedores realizan una evaluación de la conformidad; determinados responsables del despliegue realizan una evaluación de impacto sobre los derechos fundamentales. AI Sentinel plantea justamente estas obligaciones en cuanto un sistema se clasifica como de alto riesgo.",
+          "Un sistema de alto riesgo atrae las obligaciones sustanciales: gestión de riesgos, gobernanza de datos, documentación técnica, conservación de registros, transparencia hacia los responsables del despliegue, supervisión humana y exactitud, solidez y ciberseguridad. Los proveedores realizan una evaluación de la conformidad; determinados responsables del despliegue realizan una evaluación de impacto en los derechos fundamentales. AI Sentinel plantea justamente estas obligaciones en cuanto un sistema se clasifica como de alto riesgo.",
         ),
       },
     ],

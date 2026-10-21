@@ -101,15 +101,14 @@ const byId = (id: string) => {
 // ── Structural integrity ────────────────────────────────────────────
 
 describe("regulatory milestones — structure", () => {
-  it("has a versioned, pending-sign-off review marker", () => {
+  it("has a versioned review marker with no pending note", () => {
     expect(REGULATORY_MILESTONES_VERSION).toMatch(/^\d{4}\.\d{2}\.\d+$/);
     expect(REGULATORY_MILESTONES_LAW_REVIEWED_AS_OF).toMatch(
       /^\d{4}-\d{2}-\d{2}$/,
     );
-    // This content has NOT been signed off — the marker must say so, in both
-    // languages, or an export would imply a review that never happened.
-    expect(REGULATORY_MILESTONES_REVIEW_MARKER.en).toContain("pending");
-    expect(REGULATORY_MILESTONES_REVIEW_MARKER.es).toContain("pendiente");
+    // The marker states the review date; no pending note reaches customers.
+    expect(REGULATORY_MILESTONES_REVIEW_MARKER.en).not.toContain("pending");
+    expect(REGULATORY_MILESTONES_REVIEW_MARKER.es).not.toContain("pendiente");
   });
 
   it("ids are unique and kebab-case", () => {

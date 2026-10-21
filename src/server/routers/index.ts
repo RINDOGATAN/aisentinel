@@ -41,6 +41,7 @@ import { pilotRouter } from "./pilot";
 import { sampleRouter } from "./governance/sample";
 import { diagnosticsRouter } from "./diagnostics";
 import { businessUnitRouter } from "./governance/businessUnit";
+import { teamRouter } from "./governance/team";
 import { savedViewRouter } from "./governance/savedView";
 import { viewsRouter } from "./governance/views";
 import { searchRouter } from "./governance/search";
@@ -85,6 +86,7 @@ export const appRouter = createTRPCRouter({
   aiuc1: aiuc1Router,
   diagnostics: diagnosticsRouter,
   businessUnit: businessUnitRouter,
+  team: teamRouter,
   savedView: savedViewRouter,
   search: searchRouter,
   views: viewsRouter,

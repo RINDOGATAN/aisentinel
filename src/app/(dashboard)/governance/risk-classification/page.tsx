@@ -20,6 +20,15 @@ import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
 import { SortControl } from "@/components/governance/sort-control";
 import { DEFAULT_LIST_SORT, type ListSort } from "@/lib/list-sort";
 import { RiskTierBadge, TierMarker } from "@/components/governance/risk-tier-badge";
+import { groupForClassification } from "@/lib/classification-groups";
+
+const LEVELS = ["UNACCEPTABLE", "HIGH", "LIMITED", "MINIMAL"] as const;
+const LEVEL_DEFINITION_KEY: Record<(typeof LEVELS)[number], string> = {
+  UNACCEPTABLE: "riskDescriptionUnacceptable",
+  HIGH: "riskDescriptionHigh",
+  LIMITED: "riskDescriptionLimited",
+  MINIMAL: "riskDescriptionMinimal",
+};
 
 /** Annex III points 1 to 8; labels come from riskClassification.annexIII.<value>. */
 
@@ -59,6 +68,48 @@ export default function RiskClassificationPage() {
   );
 
   const riskStats = stats ?? { unacceptable: 0, high: 0, limited: 0, minimal: 0, unclassified: 0 };
+  // The page opens on the work left: systems with no risk level first.
+  const groups = groupForClassification(systems ?? []);
+
+  const systemCard = (system: NonNullable<typeof systems>[number]) => {
+    const currentLevel = system.riskClassification?.riskLevel;
+    return (
+      <Card key={system.id} id={`system-${system.id}`} className="scroll-mt-24">
+        <CardContent className="p-4">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-9 h-9 bg-primary/10 flex items-center justify-center shrink-0">
+                <Cpu className="w-4 h-4 text-primary" />
+              </div>
+              <div className="min-w-0">
+                <Link
+                  href={`/governance/ai-registry/${system.id}`}
+                  className="font-medium text-sm hover:text-primary truncate block"
+                >
+                  {system.name}
+                </Link>
+                <p className="text-xs text-muted-foreground">
+                  {techniqueLabel(system.technique)} &middot; {statusLabel(system.status)}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <RiskTierBadge level={currentLevel} className="text-xs" />
+              {/* The form behind it classifies (orgWriteProcedure): writers only. */}
+              {canWrite && (
+                <Link href={classifyHref(system.id)}>
+                  <Button variant={currentLevel ? "ghost" : "default"} size="sm">
+                    {currentLevel ? t("reclassify") : t("classify")}
+                    <ChevronRight className="w-4 h-4 ml-1" aria-hidden="true" />
+                  </Button>
+                </Link>
+              )}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -70,6 +121,22 @@ export default function RiskClassificationPage() {
         </p>
         <KeyTerms ids={["high-risk", "bias", "stakeholder"]} className="mt-2" />
       </div>
+
+      {/* The four levels in one line each, before any list. */}
+      <Card>
+        <CardContent className="p-4 space-y-2">
+          <p className="text-sm font-medium">{t("levelsTitle")}</p>
+          <ul className="space-y-1.5">
+            {LEVELS.map((level) => (
+              <li key={level} className="flex items-start gap-2 text-sm">
+                <TierMarker level={level} />
+                <span>{t(LEVEL_DEFINITION_KEY[level])}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="text-sm text-muted-foreground">{t("levelsNote")}</p>
+        </CardContent>
+      </Card>
 
       {/* Stats Bar */}
       <div className="grid gap-3 grid-cols-2 sm:grid-cols-5">
@@ -112,49 +179,28 @@ export default function RiskClassificationPage() {
       {systemsLoading && !systems ? (
         <ListPageSkeleton />
       ) : systems && systems.length > 0 ? (
-        <div className="space-y-3">
-          {systems.map((system) => {
-            const currentLevel = system.riskClassification?.riskLevel;
-
-            return (
-              <Card key={system.id} id={`system-${system.id}`} className="scroll-mt-24">
-                <CardContent className="p-4">
-                  {/* System Header Row */}
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-9 h-9 bg-primary/10 flex items-center justify-center shrink-0">
-                        <Cpu className="w-4 h-4 text-primary" />
-                      </div>
-                      <div className="min-w-0">
-                        <Link
-                          href={`/governance/ai-registry/${system.id}`}
-                          className="font-medium text-sm hover:text-primary truncate block"
-                        >
-                          {system.name}
-                        </Link>
-                        <p className="text-xs text-muted-foreground">
-                          {techniqueLabel(system.technique)} &middot; {statusLabel(system.status)}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <RiskTierBadge level={currentLevel} className="text-xs" />
-                      {/* The form behind it classifies (orgWriteProcedure): writers only. */}
-                      {canWrite && (
-                        <Link href={classifyHref(system.id)}>
-                          <Button variant="ghost" size="sm">
-                            {currentLevel ? t("reclassify") : t("classify")}
-                            <ChevronRight className="w-4 h-4 ml-1" aria-hidden="true" />
-                          </Button>
-                        </Link>
-                      )}
-                    </div>
-                  </div>
-
-                </CardContent>
-              </Card>
-            );
-          })}
+        <div className="space-y-6">
+          {groups.toClassify.length > 0 ? (
+            <section className="space-y-3" aria-labelledby="to-classify-title">
+              <div>
+                <h2 id="to-classify-title" className="text-base font-semibold">
+                  {t("toClassifyTitle", { count: groups.toClassify.length })}
+                </h2>
+                <p className="text-sm text-muted-foreground">{t("toClassifyHint")}</p>
+              </div>
+              {groups.toClassify.map(systemCard)}
+            </section>
+          ) : (
+            <p className="text-sm text-muted-foreground">{t("allClassified")}</p>
+          )}
+          {groups.classified.length > 0 && (
+            <section className="space-y-3" aria-labelledby="classified-title">
+              <h2 id="classified-title" className="text-base font-semibold">
+                {t("classifiedTitle", { count: groups.classified.length })}
+              </h2>
+              {groups.classified.map(systemCard)}
+            </section>
+          )}
         </div>
       ) : (
         <Card>

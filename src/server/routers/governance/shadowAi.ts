@@ -2,12 +2,19 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { z } from "zod";
+import {
+  defaultBusinessUnitId,
+  loadBusinessUnitScope,
+} from "@/server/services/business-units/scope";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { assertOwnedAiSystem } from "../../services/authz/owned";
 import { TRPCError } from "@trpc/server";
 import { hasShadowAiAccess } from "@/server/services/licensing/entitlement";
 import { assertPilotRoom, pilotLocale } from "@/server/services/pilot/caps";
 import type { ShadowAIStatus } from "@prisma/client";
+import { nextSystemNumber } from "../../services/ai-system/number";
+
+const STATUS_VALUES = ["DISCOVERED", "UNDER_REVIEW", "APPROVED", "PROHIBITED", "REGISTERED"] as const;
 
 async function assertShadowAiAccess(organizationId: string) {
   if (!(await hasShadowAiAccess(organizationId)))
@@ -91,7 +98,9 @@ export const shadowAiRouter = createTRPCRouter({
       z.object({
         organizationId: z.string(),
         search: z.string().optional(),
-        status: z.enum(["DISCOVERED", "UNDER_REVIEW", "APPROVED", "PROHIBITED", "REGISTERED"]).optional(),
+        status: z.enum(STATUS_VALUES).optional(),
+        /** Several statuses at once: one tab of the page ("to review" holds two). */
+        statuses: z.array(z.enum(STATUS_VALUES)).min(1).max(5).optional(),
         cursor: z.string().optional(),
         limit: z.number().min(1).max(50).default(20),
       })
@@ -105,6 +114,7 @@ export const shadowAiRouter = createTRPCRouter({
           toolName: { contains: input.search, mode: "insensitive" as const },
         }),
         ...(input.status && { status: input.status as ShadowAIStatus }),
+        ...(input.statuses && { status: { in: input.statuses as ShadowAIStatus[] } }),
       };
 
       const items = await ctx.prisma.shadowAIReport.findMany({
@@ -138,7 +148,37 @@ export const shadowAiRouter = createTRPCRouter({
         throw new TRPCError({ code: "NOT_FOUND", message: "Report not found" });
       }
 
-      return report;
+      // The system it was registered in or added to, by name, so the page can
+      // show what it belongs to rather than a bare id.
+      const registeredSystem = report.registeredSystemId
+        ? await ctx.prisma.aISystem.findFirst({
+            where: { id: report.registeredSystemId, organizationId: ctx.organization.id },
+            select: { id: true, name: true, number: true },
+          })
+        : null;
+
+      return { ...report, registeredSystem };
+    }),
+
+  /** The AI tools registered in, or added as components to, one system. */
+  listForSystem: organizationProcedure
+    .input(z.object({ organizationId: z.string(), aiSystemId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      if (!(await hasShadowAiAccess(ctx.organization.id))) return [];
+      return ctx.prisma.shadowAIReport.findMany({
+        where: {
+          organizationId: ctx.organization.id,
+          registeredSystemId: input.aiSystemId,
+          status: "REGISTERED",
+        },
+        orderBy: { updatedAt: "desc" },
+        select: {
+          id: true,
+          toolName: true,
+          department: true,
+          tool: { select: { vendor: true, category: true } },
+        },
+      });
     }),
 
   createReport: orgWriteProcedure
@@ -186,7 +226,7 @@ export const shadowAiRouter = createTRPCRouter({
       z.object({
         organizationId: z.string(),
         id: z.string(),
-        status: z.enum(["DISCOVERED", "UNDER_REVIEW", "APPROVED", "PROHIBITED", "REGISTERED"]).optional(),
+        status: z.enum(STATUS_VALUES).optional(),
         department: z.string().nullable().optional(),
         usageDescription: z.string().nullable().optional(),
         registeredSystemId: z.string().nullable().optional(),
@@ -324,6 +364,10 @@ export const shadowAiRouter = createTRPCRouter({
         const system = await tx.aISystem.create({
           data: {
             organizationId: ctx.organization.id,
+            number: await nextSystemNumber(tx, ctx.organization.id),
+            // A department-limited member's system stays in their own view.
+            businessUnitId:
+              defaultBusinessUnitId(await loadBusinessUnitScope(ctx.prisma, ctx.membership)) ?? undefined,
             name: input.systemName,
             technique: input.systemTechnique as never,
             role: input.systemRole as never,
@@ -398,6 +442,8 @@ export const shadowAiRouter = createTRPCRouter({
           }),
         ]);
 
-      return { total, discovered, underReview, approved, prohibited, registered };
+      // Still to review: reported or under review, waiting for a decision.
+      const toReview = discovered + underReview;
+      return { total, discovered, underReview, approved, prohibited, registered, toReview };
     }),
 });

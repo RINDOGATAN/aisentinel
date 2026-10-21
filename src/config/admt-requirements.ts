@@ -57,14 +57,14 @@ export const ADMT_REQUIREMENTS_VERSION = "2026.08.2";
 export const ADMT_REQUIREMENTS_LAW_REVIEWED_AS_OF = "2026-08-21";
 
 export const ADMT_REQUIREMENTS_REVIEW_MARKER: Localized = {
-  en: `Law reviewed as of ${formatDayIn("en", ADMT_REQUIREMENTS_LAW_REVIEWED_AS_OF)}; California legal sign-off pending.`,
-  es: `Revisión jurídica a fecha de ${formatDayIn("es", ADMT_REQUIREMENTS_LAW_REVIEWED_AS_OF)}; pendiente de validación jurídica en California.`,
+  en: `Law reviewed as of ${formatDayIn("en", ADMT_REQUIREMENTS_LAW_REVIEWED_AS_OF)}.`,
+  es: `Revisión jurídica a fecha de ${formatDayIn("es", ADMT_REQUIREMENTS_LAW_REVIEWED_AS_OF)}.`,
 };
 
 export const ADMT_FRAMEWORK = {
   code: "CA_CCPA_ADMT",
-  name: "California CCPA — ADMT, Risk Assessments & Cybersecurity Audits",
-  version: "11 CCR §§ 7001–7222 (OAL-approved 22 Sept 2025; effective 1 Jan 2026)",
+  name: "California CCPA: ADMT, Risk Assessments & Cybersecurity Audits",
+  version: "11 CCR §§ 7001-7222 (OAL-approved 22 Sept 2025; effective 1 Jan 2026)",
   description:
     "California Consumer Privacy Act regulations on automated decisionmaking technology (Article 11), risk assessments (Article 10) and cybersecurity audits (Article 9), as approved by the Office of Administrative Law on 22 September 2025.",
 } as const;
@@ -364,7 +364,7 @@ const clusterB: AdmtRequirementSeed[] = [
         slug: "7220-d",
         code: "§ 7220(d)",
         title: {
-          en: "Permitted redactions — a redaction right, not an exemption",
+          en: "Permitted redactions: a redaction right, not an exemption",
           es: "Supresiones permitidas: derecho de supresión, no exención",
         },
         description: {
@@ -423,7 +423,7 @@ const clusterC: AdmtRequirementSeed[] = [
         slug: "7221-b-1",
         code: "§ 7221(b)(1)",
         title: {
-          en: "Exception 1 — human appeal",
+          en: "Exception 1: human appeal",
           es: "Excepción 1: apelación humana",
         },
         description: {
@@ -437,7 +437,7 @@ const clusterC: AdmtRequirementSeed[] = [
         slug: "7221-b-2",
         code: "§ 7221(b)(2)",
         title: {
-          en: "Exception 2 — admission, acceptance or hiring assessment",
+          en: "Exception 2: admission, acceptance or hiring assessment",
           es: "Excepción 2: evaluación de admisión, aceptación o contratación",
         },
         description: {
@@ -451,7 +451,7 @@ const clusterC: AdmtRequirementSeed[] = [
         slug: "7221-b-3",
         code: "§ 7221(b)(3)",
         title: {
-          en: "Exception 3 — work allocation or compensation",
+          en: "Exception 3: work allocation or compensation",
           es: "Excepción 3: asignación de trabajo o retribución",
         },
         description: {
@@ -537,7 +537,7 @@ const clusterC: AdmtRequirementSeed[] = [
         },
         description: {
           en: "The business may deny an opt-out only on a good-faith, reasonable and documented belief that the request is fraudulent, and must inform the requester of the denial and explain why.",
-          es: "La empresa solo puede denegar una exclusión sobre la base de una convicción de buena fe, razonable y documentada de que la solicitud es fraudulenta, y debe informar de la denegación a quien la presentó y explicar sus motivos.",
+          es: "La empresa solo puede denegar una exclusión sobre la base de una convicción de buena fe, razonable y documentada de que la solicitud es fraudulenta, y debe informar de la denegación a quien la ha presentado y explicar sus motivos.",
         },
         applicabilityTags: ART11,
         sortOrder: 10,
@@ -674,7 +674,7 @@ const clusterD: AdmtRequirementSeed[] = [
         title: { en: "Specific purpose", es: "Finalidad específica" },
         description: {
           en: "A plain-language explanation of the specific purpose for which the business used the ADMT with respect to this consumer. Generic phrasing such as 'to improve our services' is expressly insufficient.",
-          es: "Una explicación en lenguaje sencillo de la finalidad específica para la que la empresa utilizó la ADMT respecto de ese consumidor. Formulaciones genéricas como «para mejorar nuestros servicios» son expresamente insuficientes.",
+          es: "Una explicación en lenguaje sencillo de la finalidad específica para la que la empresa ha utilizado la ADMT respecto de ese consumidor. Formulaciones genéricas como «para mejorar nuestros servicios» son expresamente insuficientes.",
         },
         applicabilityTags: ART11,
         sortOrder: 1,
@@ -688,7 +688,7 @@ const clusterD: AdmtRequirementSeed[] = [
         },
         description: {
           en: "Information about the logic of the ADMT sufficient to enable the consumer to understand how it processed their personal information to generate an output, which may include the parameters that generated the output as well as the specific output with respect to that consumer. This tracks the GDPR formula on meaningful information about the logic involved (Arts. 13(2)(f), 14(2)(g), 15(1)(h)) and adds parameters explicitly.",
-          es: "Información sobre la lógica de la ADMT suficiente para que el consumidor comprenda cómo trató sus datos personales para generar un resultado, lo que puede incluir los parámetros que generaron el resultado y el resultado concreto respecto de ese consumidor. Sigue la fórmula del RGPD sobre información significativa acerca de la lógica aplicada (arts. 13(2)(f), 14(2)(g) y 15(1)(h)) y añade expresamente los parámetros.",
+          es: "Información sobre la lógica de la ADMT suficiente para que el consumidor comprenda cómo ha tratado sus datos personales para generar un resultado, lo que puede incluir los parámetros que han generado el resultado y el resultado concreto respecto de ese consumidor. Sigue la fórmula del RGPD sobre información significativa acerca de la lógica aplicada (arts. 13(2)(f), 14(2)(g) y 15(1)(h)) y añade expresamente los parámetros.",
         },
         applicabilityTags: ART11,
         sortOrder: 2,
@@ -702,7 +702,7 @@ const clusterD: AdmtRequirementSeed[] = [
         },
         description: {
           en: "The outcome of the decisionmaking process, including whether the ADMT output was the sole factor; if not, what the other factors were; and, where a human participated but did not satisfy § 7001(e)(1), what that person's role was.",
-          es: "El resultado del proceso decisorio, precisando si el resultado de la ADMT fue el factor único; en caso contrario, cuáles fueron los demás factores; y, cuando intervino una persona que no cumplía el § 7001(e)(1), cuál fue su papel.",
+          es: "El resultado del proceso decisorio, precisando si el resultado de la ADMT ha sido el factor único; en caso contrario, cuáles han sido los demás factores; y, cuando ha intervenido una persona que no cumplía el § 7001(e)(1), cuál ha sido su papel.",
         },
         applicabilityTags: ART11,
         sortOrder: 3,
@@ -772,7 +772,7 @@ const clusterD: AdmtRequirementSeed[] = [
         },
         description: {
           en: "The business must verify the consumer under Article 5 before responding to a request to access ADMT, and must inform the requester where the request cannot be verified. This is the deliberate opposite of § 7221(f), which forbids REQUIRING a verifiable consumer request for an opt-out — though the business may still ask for the information needed to identify the consumer.",
-          es: "La empresa debe verificar la identidad del consumidor conforme al artículo 5 antes de responder a una solicitud de acceso a la ADMT, e informar a quien la presentó cuando no sea posible verificarla. Es lo contrario, deliberadamente, del § 7221(f), que prohíbe EXIGIR una solicitud verificable del consumidor para la exclusión, si bien la empresa sí puede pedir la información necesaria para identificarlo.",
+          es: "La empresa debe verificar la identidad del consumidor conforme al artículo 5 antes de responder a una solicitud de acceso a la ADMT, e informar a quien la ha presentado cuando no sea posible verificarla. Es lo contrario, deliberadamente, del § 7221(f), que prohíbe EXIGIR una solicitud verificable del consumidor para la exclusión, si bien la empresa sí puede pedir la información necesaria para identificarlo.",
         },
         applicabilityTags: ART11,
         sortOrder: 8,
@@ -950,7 +950,7 @@ const clusterF: AdmtRequirementSeed[] = [
         slug: "7150-b-1",
         code: "§ 7150(b)(1)",
         title: {
-          en: "Trigger — selling or sharing personal information",
+          en: "Trigger: selling or sharing personal information",
           es: "Supuesto: venta o comunicación de datos personales",
         },
         description: {
@@ -968,7 +968,7 @@ const clusterF: AdmtRequirementSeed[] = [
         slug: "7150-b-2",
         code: "§ 7150(b)(2)",
         title: {
-          en: "Trigger — processing sensitive personal information",
+          en: "Trigger: processing sensitive personal information",
           es: "Supuesto: tratamiento de datos personales sensibles",
         },
         description: {
@@ -986,7 +986,7 @@ const clusterF: AdmtRequirementSeed[] = [
         slug: "7150-b-3",
         code: "§ 7150(b)(3)",
         title: {
-          en: "Trigger — ADMT for a significant decision",
+          en: "Trigger: ADMT for a significant decision",
           es: "Supuesto: ADMT para una decisión significativa",
         },
         description: {
@@ -1004,7 +1004,7 @@ const clusterF: AdmtRequirementSeed[] = [
         slug: "7150-b-4",
         code: "§ 7150(b)(4)",
         title: {
-          en: "Trigger — work or educational profiling",
+          en: "Trigger: work or educational profiling",
           es: "Supuesto: elaboración de perfiles laborales o educativos",
         },
         description: {
@@ -1022,7 +1022,7 @@ const clusterF: AdmtRequirementSeed[] = [
         slug: "7150-b-5",
         code: "§ 7150(b)(5)",
         title: {
-          en: "Trigger — sensitive-location profiling",
+          en: "Trigger: sensitive-location profiling",
           es: "Supuesto: elaboración de perfiles en ubicaciones sensibles",
         },
         description: {
@@ -1040,7 +1040,7 @@ const clusterF: AdmtRequirementSeed[] = [
         slug: "7150-b-6",
         code: "§ 7150(b)(6)",
         title: {
-          en: "Trigger — training ADMT or biometric technology",
+          en: "Trigger: training ADMT or biometric technology",
           es: "Supuesto: entrenamiento de ADMT o de tecnología biométrica",
         },
         description: {
@@ -1195,7 +1195,7 @@ const clusterF: AdmtRequirementSeed[] = [
         title: { en: "Contributor log", es: "Registro de intervinientes" },
         description: {
           en: "Document the individuals who provided information for the assessment, excluding legal counsel giving legal advice.",
-          es: "Documenta las personas que aportaron información para la evaluación, excluidos los letrados que presten asesoramiento jurídico.",
+          es: "Documenta las personas que han aportado información para la evaluación, excluidos los letrados que presten asesoramiento jurídico.",
         },
         applicabilityTags: ART10,
         sortOrder: 9,
@@ -1209,7 +1209,7 @@ const clusterF: AdmtRequirementSeed[] = [
         },
         description: {
           en: "Document the date the assessment was reviewed and approved, together with the names and positions of the individuals who reviewed or approved it — except legal counsel who provided legal advice, who need not be named. An approver must have authority to participate in deciding whether the business will initiate the processing. Nothing generated automatically can satisfy this row.",
-          es: "Documenta la fecha de revisión y aprobación de la evaluación, junto con los nombres y cargos de quienes la revisaron o aprobaron, salvo los de la asesoría jurídica que haya prestado asesoramiento legal, a la que no es necesario identificar. Quien apruebe debe tener autoridad para participar en la decisión de que la empresa inicie el tratamiento. Ningún elemento generado automáticamente puede satisfacer este requisito.",
+          es: "Documenta la fecha de revisión y aprobación de la evaluación, junto con los nombres y cargos de quienes la han revisado o aprobado, salvo los de la asesoría jurídica que haya prestado asesoramiento legal, a la que no es necesario identificar. Quien apruebe debe tener autoridad para participar en la decisión de que la empresa inicie el tratamiento. Ningún elemento generado automáticamente puede satisfacer este requisito.",
         },
         applicabilityTags: ART10,
         sortOrder: 10,
@@ -1399,7 +1399,7 @@ const clusterG: AdmtRequirementSeed[] = [
         },
         description: {
           en: "The report must describe the information system; identify the policies, criteria and specific evidence relied on and justify the findings; identify the components assessed and explain their effectiveness; IDENTIFY AND DESCRIBE IN DETAIL the status of any gaps or weaknesses; DOCUMENT THE REMEDIATION PLAN INCLUDING ITS TIMEFRAME; identify corrections or amendments to prior reports; name up to three qualified individuals responsible for the program; give the auditor's name, affiliation and qualifications; carry a signed, dated certification by the highest-ranking auditor attesting to independence, objective and impartial judgment, and that they did not rely primarily on management assertions; and include a sample or description of any consumer breach notifications under Civ. Code § 1798.82(a) and any regulator notifications, with dates, details and remediation.",
-          es: "El informe debe describir el sistema de información; identificar las políticas, criterios y pruebas concretas en que se basa y justificar las conclusiones; identificar los componentes evaluados y explicar su eficacia; IDENTIFICAR Y DESCRIBIR DETALLADAMENTE el estado de las deficiencias o debilidades; DOCUMENTAR EL PLAN DE SUBSANACIÓN Y SU CALENDARIO; identificar correcciones o modificaciones de informes anteriores; designar hasta tres personas cualificadas responsables del programa; indicar el nombre, la vinculación y la cualificación del auditor; incorporar una certificación firmada y fechada por el auditor de mayor rango que acredite su independencia, su juicio objetivo e imparcial y que no se basó principalmente en manifestaciones de la dirección; e incluir una muestra o descripción de las notificaciones de brecha a consumidores conforme al Civ. Code § 1798.82(a) y de las notificaciones a autoridades, con fechas, detalles y subsanación.",
+          es: "El informe debe describir el sistema de información; identificar las políticas, criterios y pruebas concretas en que se basa y justificar las conclusiones; identificar los componentes evaluados y explicar su eficacia; IDENTIFICAR Y DESCRIBIR DETALLADAMENTE el estado de las deficiencias o debilidades; DOCUMENTAR EL PLAN DE SUBSANACIÓN Y SU CALENDARIO; identificar correcciones o modificaciones de informes anteriores; designar hasta tres personas cualificadas responsables del programa; indicar el nombre, la vinculación y la cualificación del auditor; incorporar una certificación firmada y fechada por el auditor de mayor rango que acredite su independencia, su juicio objetivo e imparcial y que no se ha basado principalmente en manifestaciones de la dirección; e incluir una muestra o descripción de las notificaciones de brecha a consumidores conforme al Civ. Code § 1798.82(a) y de las notificaciones a autoridades, con fechas, detalles y subsanación.",
         },
         applicabilityTags: ART9_ORG,
         sortOrder: 2,
@@ -1408,7 +1408,7 @@ const clusterG: AdmtRequirementSeed[] = [
         slug: "7123-f",
         code: "§ 7123(f)",
         title: {
-          en: "Reuse of an existing audit — NIST CSF 2.0 named",
+          en: "Reuse of an existing audit: NIST CSF 2.0 named",
           es: "Reutilización de una auditoría existente: se cita el NIST CSF 2.0",
         },
         description: {
@@ -1429,7 +1429,7 @@ const clusterG: AdmtRequirementSeed[] = [
     },
     description: {
       en: "For each year an audit is required, submit a written certification to the Agency via cppa.ca.gov by 1 April following the audit year, signed by a member of the executive management team who is directly responsible, sufficiently knowledgeable and authorized. It must include the business name and contact, a statement that the audit was completed, the period covered by month and year, the verbatim electronically signed attestation under penalty of perjury — which includes an affirmative statement that the business has not made any attempt to influence the auditor's decisions or assessments — and the submitter's name, title and date.",
-      es: "Por cada ejercicio en que se exija auditoría, presenta a la Agencia a través de cppa.ca.gov, antes del 1 de abril siguiente al año auditado, una certificación escrita firmada por un miembro del equipo directivo directamente responsable, con conocimiento suficiente y debidamente autorizado. Deberá incluir la denominación y el contacto de la empresa, la manifestación de que la auditoría se completó, el periodo cubierto expresado en mes y año, la declaración literal firmada electrónicamente bajo pena de perjurio (que incorpora la afirmación expresa de que la empresa no ha intentado influir en las decisiones o valoraciones del auditor) y el nombre, cargo y fecha de quien la presenta.",
+      es: "Por cada ejercicio en que se exija auditoría, presenta a la Agencia a través de cppa.ca.gov, antes del 1 de abril siguiente al año auditado, una certificación escrita firmada por un miembro del equipo directivo directamente responsable, con conocimiento suficiente y debidamente autorizado. Deberá incluir la denominación y el contacto de la empresa, la manifestación de que la auditoría se ha completado, el periodo cubierto expresado en mes y año, la declaración literal firmada electrónicamente bajo pena de perjurio (que incorpora la afirmación expresa de que la empresa no ha intentado influir en las decisiones o valoraciones del auditor) y el nombre, cargo y fecha de quien la presenta.",
     },
     applicabilityTags: ART9_ORG,
     sortOrder: 7124,

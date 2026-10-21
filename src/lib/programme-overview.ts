@@ -211,7 +211,8 @@ export type NextAction =
  */
 export function nextActions<C>(
   config: PathConfig<C>,
-  statuses: PathStatuses,
+  /** Null for one department's view: only what is waiting, no path steps (they are the whole organization's). */
+  statuses: PathStatuses | null,
   needsAction: readonly NeedsActionItem[],
   limit = 3,
 ): NextAction[] {
@@ -221,6 +222,7 @@ export function nextActions<C>(
   );
   for (const item of waiting) out.push({ kind: "needsAction", item });
   const confirmListed = waiting.some((item) => item.kind === "review-queue");
+  if (!statuses) return out.slice(0, limit);
   for (const [stageIndex, stage] of config.stages.entries()) {
     for (const step of stage.steps) {
       if (!isCounted(step) || !isShown(step, statuses) || !step.href) continue;

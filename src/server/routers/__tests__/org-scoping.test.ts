@@ -238,9 +238,11 @@ describe("aiSystem router org-scoping", () => {
     expect(row?.name).toBe("B System");
   });
 
-  it("no-op: user-a deleting org-b's system removes nothing", async () => {
+  it("NOT_FOUND: user-a deleting org-b's system removes nothing", async () => {
     const caller = aiSystemRouter.createCaller(ctxFor(userA));
-    await caller.delete({ organizationId: "org-a", id: "sys-b" });
+    await expect(caller.delete({ organizationId: "org-a", id: "sys-b" })).rejects.toMatchObject({
+      code: "NOT_FOUND",
+    });
     expect(H.db.aISystem.__rows().some((r) => r.id === "sys-b")).toBe(true);
   });
 
@@ -310,9 +312,11 @@ describe("vendor router org-scoping", () => {
     expect(row?.name).toBe("B Vendor");
   });
 
-  it("no-op: user-a deleting org-b's vendor removes nothing", async () => {
+  it("NOT_FOUND: user-a deleting org-b's vendor removes nothing", async () => {
     const caller = vendorRouter.createCaller(ctxFor(userA));
-    await caller.delete({ organizationId: "org-a", id: "ven-b" });
+    await expect(caller.delete({ organizationId: "org-a", id: "ven-b" })).rejects.toMatchObject({
+      code: "NOT_FOUND",
+    });
     expect(H.db.aIVendor.__rows().some((r) => r.id === "ven-b")).toBe(true);
   });
 

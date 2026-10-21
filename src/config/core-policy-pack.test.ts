@@ -85,12 +85,12 @@ describe("core policy pack: localisation", () => {
     }
   });
 
-  it("the marker states the review date and that legal sign-off is pending", () => {
+  it("the marker states the review date and no pending note", () => {
     expect(CORE_POLICY_REVIEW_MARKER.en).toBe(
-      "Law reviewed as of 2026-09-11; legal sign-off pending.",
+      "Law reviewed as of 2026-09-11.",
     );
     expect(CORE_POLICY_REVIEW_MARKER.es).toBe(
-      "Revisión jurídica a fecha de 2026-09-11; pendiente de validación jurídica.",
+      "Revisión jurídica a fecha de 2026-09-11.",
     );
   });
 

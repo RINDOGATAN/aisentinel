@@ -27,10 +27,13 @@ import {
   type UnifiedQuestion,
 } from "@/config/unified-assessment";
 import { runAgenticStressTest } from "@/config/agentic-stress-test";
-import { LEGAL_SIGNOFF, pendingPacks, type SignoffRecord } from "@/config/legal-signoff";
+import { LEGAL_SIGNOFF, type SignoffRecord } from "@/config/legal-signoff";
 import { overlayLabels } from "@/config/overlay-labels";
 import { citationString } from "@/config/framework-display";
+import enMessages from "@/i18n/messages/en.json";
+import esMessages from "@/i18n/messages/es.json";
 import { tierShapeText, toRiskTier } from "@/config/risk-tier-palette";
+import { annexIIIText } from "@/lib/annex-iii-label";
 import type { SystemScope } from "@/server/services/scope/system-scope";
 import {
   collectGaps,
@@ -46,8 +49,8 @@ import {
 export type ContentLocale = "en" | "es";
 
 const DISCLAIMER_BASE: Record<ContentLocale, string> = {
-  en: "This document was assembled from the AI registry and the answers recorded in the unified impact assessment. It is a drafting aid, not legal advice. Review every section before it leaves the organization.",
-  es: "Este documento se ha compuesto a partir del registro de IA y de las respuestas recogidas en la evaluación de impacto unificada. Es una ayuda a la redacción, no asesoramiento jurídico. Revisa cada apartado antes de que salga de la organización.",
+  en: "This document was assembled from the AI registry and the answers recorded in the unified impact assessment. It is a drafting aid. Review every section before it leaves the organization.",
+  es: "Este documento se ha compuesto a partir del registro de IA y de las respuestas recogidas en la evaluación de impacto unificada. Es una ayuda a la redacción. Revisa cada apartado antes de que salga de la organización.",
 };
 
 /** Which content packs a document for this system actually draws on. */
@@ -62,24 +65,23 @@ function citedPacks(scope: SystemScope): string[] {
   return [...packs];
 }
 
+/** The note on the cover, in every page footer and in the closing section. */
+function disclaimerFor(locale: ContentLocale): string {
+  return DISCLAIMER_BASE[locale];
+}
+
 /**
- * The disclaimer names the sign-off status of the content this particular
- * document cites, rather than asserting one status for everything. A document
- * citing only signed-off packs should not carry a pending warning, and one
- * that cites a pending pack must say which.
+ * Declared jurisdictions as the settings screen names them, in the reader's
+ * language ("Unión Europea, California"), from the shared message files. An id
+ * with no label falls back to the id rather than disappearing.
  */
-function disclaimerFor(scope: SystemScope, locale: ContentLocale): string {
-  const pending = pendingPacks(citedPacks(scope));
-  const base = DISCLAIMER_BASE[locale];
-  if (pending.length === 0) {
-    return locale === "es"
-      ? base + " El contenido normativo que cita cuenta con validación jurídica."
-      : base + " The regulatory content it cites has been signed off.";
-  }
-  const names = pending.map((p) => p.replace(/_/g, " ")).join(", ");
-  return locale === "es"
-    ? base + " El contenido normativo de " + names + " está pendiente de validación jurídica."
-    : base + " The regulatory content it cites for " + names + " is pending legal sign-off.";
+const JURISDICTION_LABELS: Record<ContentLocale, Record<string, string>> = {
+  en: enMessages.jurisdictions.option,
+  es: esMessages.jurisdictions.option,
+};
+
+export function jurisdictionNames(ids: readonly string[], locale: ContentLocale): string {
+  return ids.map((id) => JURISDICTION_LABELS[locale]?.[id] ?? id).join(", ");
 }
 
 export function regimeLabels(tags: readonly string[], locale: ContentLocale = "en"): string[] {
@@ -309,7 +311,7 @@ function header(input: ArtifactInput, kind: Artifact["kind"], title: string, sub
     riskTierShape: tierShapeText(input.scope.riskLevel),
     contentVersion: UNIFIED_ASSESSMENT_VERSION,
     lawReviewedAsOf: UNIFIED_ASSESSMENT_LAW_REVIEWED_AS_OF,
-    disclaimer: disclaimerFor(input.scope, input.locale),
+    disclaimer: disclaimerFor(input.locale),
     regimes: regimeLabels(input.scope.overlayTags, input.locale),
     sections,
     gaps: collectGaps(sections),
@@ -362,7 +364,7 @@ function identificationSection(input: ArtifactInput): ArtifactSection {
         [
           es ? "Jurisdicciones declaradas" : "Declared jurisdictions",
           scope.jurisdictions.length > 0
-            ? scope.jurisdictions.join(", ")
+            ? jurisdictionNames(scope.jurisdictions, locale)
             : es
               ? "Ninguna declarada"
               : "None declared",
@@ -407,7 +409,7 @@ function methodSection(input: ArtifactInput): ArtifactSection {
   const { locale } = input;
   const es = locale === "es";
   const who = preparedByLabel(input, locale);
-  // The content packs this document actually cites, with the sign-off record of
+  // The content packs this document actually cites, with the review date of
   // each. Only the packs it cites: a table of everything the product ships
   // tells the reader nothing about the document in their hands.
   const packs = citedPacks(input.scope).map((id) => ({
@@ -451,25 +453,14 @@ function methodSection(input: ArtifactInput): ArtifactSection {
     blocks.push(
       paragraph(
         es
-          ? "Contenido normativo que este documento cita, con la fecha de revisión y la situación de validación jurídica de cada parte:"
-          : "The regulatory content this document cites, with the review date and legal sign-off status of each part:",
+          ? "Contenido normativo que este documento cita, con la fecha de revisión de cada parte:"
+          : "The regulatory content this document cites, with the review date of each part:",
       ),
       table(
-        es ? ["Contenido", "Derecho revisado", "Validación"] : ["Content", "Law reviewed", "Sign-off"],
+        es ? ["Contenido", "Derecho revisado"] : ["Content", "Law reviewed"],
         packs.map((p) => [
           p.id.replace(/_/g, " "),
           p.signoff?.lawReviewedAsOf ?? (es ? "No consta" : "Not recorded"),
-          p.signoff === undefined
-            ? es
-              ? "No consta"
-              : "Not recorded"
-            : p.signoff.status === "pending"
-              ? es
-                ? "Pendiente"
-                : "Pending"
-              : es
-                ? "Validado"
-                : "Signed off",
         ]),
       ),
     );
@@ -502,7 +493,7 @@ function inputsSection(input: ArtifactInput, sections: readonly SelectedSection[
   const blocks: Block[] = [
     paragraph(
       es
-        ? `De las ${total} preguntas que este sistema activa, ${answered.length} tienen respuesta registrada y ${missing} no. Abajo están las respuestas tal como se guardaron; las que faltan aparecen como apartados abiertos en el cuerpo del documento y en «Qué queda abierto».`
+        ? `De las ${total} preguntas que este sistema activa, ${answered.length} tienen respuesta registrada y ${missing} no. Abajo están las respuestas tal como se han guardado; las que faltan aparecen como apartados abiertos en el cuerpo del documento y en «Qué queda abierto».`
         : `Of the ${total} questions this system triggers, ${answered.length} have a recorded answer and ${missing} do not. Below are the answers as they were recorded; the missing ones appear as open items in the body of the document and in "What remains open".`,
     ),
   ];
@@ -555,7 +546,11 @@ function findingsSection(input: ArtifactInput): ArtifactSection {
           ? [
               [
                 es ? "Categoría del anexo III" : "Annex III category",
-                scope.annexIiiCategory ?? (es ? "Ninguna determinada" : "None determined"),
+                scope.annexIiiCategory
+                  ? annexIIIText(scope.annexIiiCategory, locale)
+                  : es
+                    ? "Ninguna determinada"
+                    : "None determined",
                 "EU AI ACT Annex III",
               ],
               [
@@ -659,11 +654,11 @@ function notAdviceSection(input: ArtifactInput): ArtifactSection {
   return {
     heading: es ? "Qué no es este documento" : "What this document is not",
     blocks: [
-      paragraph(disclaimerFor(input.scope, input.locale)),
+      paragraph(disclaimerFor(input.locale)),
       paragraph(
         es
-          ? "No es asesoramiento jurídico y no crea una relación profesional con nadie. No es una declaración de conformidad ni la certificación de un tercero. Es la evaluación de la propia organización, compuesta a partir de lo que su registro contiene, y necesita el criterio de una persona cualificada antes de que se actúe conforme a él."
-          : "It is not legal advice and it creates no professional relationship with anyone. It is not a declaration of conformity and it is not a third party's certification. It is the organization's own assessment, assembled from what its registry holds, and it needs the judgment of a qualified person before anyone acts on it.",
+          ? "No crea una relación profesional con nadie. No es una declaración de conformidad ni la certificación de un tercero. Es la evaluación de la propia organización, compuesta a partir de lo que su registro contiene, y necesita el criterio de una persona cualificada antes de que se actúe conforme a él."
+          : "It creates no professional relationship with anyone. It is not a declaration of conformity and it is not a third party's certification. It is the organization's own assessment, assembled from what its registry holds, and it needs the judgment of a qualified person before anyone acts on it.",
       ),
     ],
   };
@@ -675,8 +670,8 @@ function scopeSection(input: ArtifactInput): ArtifactSection {
   const blocks: Block[] = [
     paragraph(
       locale === "es"
-        ? `Este documento se ha calibrado para las jurisdicciones declaradas por la organización: ${scope.jurisdictions.join(", ") || "ninguna declarada"}.`
-        : `This document was calibrated to the jurisdictions the organization has declared: ${scope.jurisdictions.join(", ") || "none declared"}.`,
+        ? `Este documento se ha calibrado para las jurisdicciones declaradas por la organización: ${jurisdictionNames(scope.jurisdictions, "es") || "ninguna declarada"}.`
+        : `This document was calibrated to the jurisdictions the organization has declared: ${jurisdictionNames(scope.jurisdictions, "en") || "none declared"}.`,
     ),
     table(
       locale === "es" ? ["Régimen", "Situación"] : ["Regime", "Status"],
@@ -764,7 +759,7 @@ export function buildAssessmentArtifact(input: ArtifactInput): Artifact {
     "assessment",
     locale === "es" ? "Evaluación unificada de impacto de la IA" : "Unified AI impact assessment",
     locale === "es"
-      ? "Un único expediente que responde a la evaluación de impacto sobre los derechos fundamentales del RIA, la evaluación de impacto relativa a la protección de datos del RGPD, la evaluación de riesgos de ADMT de California y los regímenes de Colorado, Texas y Washington."
+      ? "Un único expediente que responde a la evaluación de impacto en los derechos fundamentales del RIA, la evaluación de impacto relativa a la protección de datos del RGPD, la evaluación de riesgos de ADMT de California y los regímenes de Colorado, Texas y Washington."
       : "One record answering the EU AI Act fundamental rights impact assessment, the GDPR data protection impact assessment, the California ADMT risk assessment, and the Colorado, Texas and Washington regimes.",
     docSections,
   );
@@ -813,7 +808,7 @@ const NOTICE_ADDENDA: AddendumSpec[] = [
       },
       {
         en: "You may opt out of that use, or, where we rely on the human-appeal exception, ask a designated reviewer with authority to change the decision to review it. You may also ask for access to information about how the technology reached its output about you.",
-        es: "Puedes oponerte a ese uso o, cuando nos amparemos en la excepción de recurso humano, solicitar que una persona revisora designada con autoridad para cambiar la decisión la revise. También puedes solicitar acceso a la información sobre cómo la tecnología llegó a su resultado.",
+        es: "Puedes oponerte a ese uso o, cuando nos amparemos en la excepción de recurso humano, solicitar que una persona revisora designada con autoridad para cambiar la decisión la revise. También puedes solicitar acceso a la información sobre cómo la tecnología ha llegado a su resultado.",
       },
     ],
   },
@@ -825,7 +820,7 @@ const NOTICE_ADDENDA: AddendumSpec[] = [
     statements: [
       {
         en: "Automated decision-making technology is used in this consequential decision about you. If the outcome is adverse, we will tell you the principal reasons, the categories of personal data that drove it, and how to correct inaccurate data and seek review.",
-        es: "En esta decisión con consecuencias sobre ti se utiliza tecnología de decisión automatizada. Si el resultado te es desfavorable, te informaremos de las razones principales, de las categorías de datos personales que la determinaron y de cómo corregir datos inexactos y solicitar una revisión.",
+        es: "En esta decisión con consecuencias sobre ti se utiliza tecnología de decisión automatizada. Si el resultado te es desfavorable, te informaremos de las razones principales, de las categorías de datos personales que la han determinado y de cómo corregir datos inexactos y solicitar una revisión.",
       },
     ],
   },

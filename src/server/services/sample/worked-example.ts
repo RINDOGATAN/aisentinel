@@ -33,6 +33,8 @@ import {
 } from "@/config/worked-example";
 import { createUnifiedAssessmentDraft } from "@/server/services/program/starter-artifacts";
 import type { PilotLocale } from "@/config/pilot";
+import { nextPolicyNumber } from "@/server/services/policy/number";
+import { nextSystemNumber } from "@/server/services/ai-system/number";
 
 /** Every model the example writes to, in creation order. */
 export const SAMPLE_ENTITY_TYPES = [
@@ -215,6 +217,7 @@ export async function createWorkedExample(
     const system = await prisma.aISystem.create({
       data: {
         organizationId,
+        number: await nextSystemNumber(prisma, organizationId),
         name: spec.name[locale],
         description: spec.description[locale],
         purpose: spec.purpose[locale],
@@ -252,6 +255,7 @@ export async function createWorkedExample(
   const policy = await prisma.aIPolicy.create({
     data: {
       organizationId,
+      number: await nextPolicyNumber(prisma, organizationId),
       title: EXAMPLE_POLICY.title[locale],
       type: EXAMPLE_POLICY.type,
       description: EXAMPLE_POLICY.description[locale],

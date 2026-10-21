@@ -65,7 +65,7 @@ export const GLOSSARY: GlossaryTerm[] = [
     label: L("deployer", "responsable del despliegue"),
     meaning: L(
       "The party that uses an AI system under its own authority in the course of its work, that is, the organization running it, not the one that built it (EU AI Act Art. 3).",
-      "La parte que utiliza un sistema de IA bajo su propia autoridad en el marco de su actividad, es decir, la organización que lo opera, no la que lo construyó (RIA, art. 3).",
+      "La parte que utiliza un sistema de IA bajo su propia autoridad en el marco de su actividad, es decir, la organización que lo opera, no la que lo ha construido (RIA, art. 3).",
     ),
     docHref: "/docs/guides/my-role",
   },
@@ -88,10 +88,10 @@ export const GLOSSARY: GlossaryTerm[] = [
   },
   {
     id: "fria",
-    label: L("FRIA", "FRIA"),
+    label: L("FRIA", "EIDF"),
     meaning: L(
       "A fundamental rights impact assessment: a written analysis of how a high-risk AI system could affect people's rights, required of certain deployers by EU AI Act Art. 27.",
-      "Una evaluación de impacto relativa a los derechos fundamentales: un análisis escrito de cómo un sistema de IA de alto riesgo puede afectar a los derechos de las personas, exigida a determinados responsables del despliegue por el art. 27 del RIA.",
+      "Una evaluación de impacto en los derechos fundamentales: un análisis escrito de cómo un sistema de IA de alto riesgo puede afectar a los derechos de las personas, exigida a determinados responsables del despliegue por el art. 27 del RIA.",
     ),
   },
   {

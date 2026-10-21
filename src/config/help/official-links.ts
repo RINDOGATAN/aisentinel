@@ -49,7 +49,7 @@ export const OFFICIAL_LINKS = {
   euArt10: euArticle("art_10", "EU AI Act Art. 10: data and data governance", "RIA, art. 10: datos y gobernanza de datos"),
   euArt14: euArticle("art_14", "EU AI Act Art. 14: human oversight", "RIA, art. 14: supervisión humana"),
   euArt26: euArticle("art_26", "EU AI Act Art. 26: obligations of deployers", "RIA, art. 26: obligaciones de los responsables del despliegue"),
-  euArt27: euArticle("art_27", "EU AI Act Art. 27: fundamental rights impact assessment", "RIA, art. 27: evaluación de impacto sobre los derechos fundamentales"),
+  euArt27: euArticle("art_27", "EU AI Act Art. 27: fundamental rights impact assessment", "RIA, art. 27: evaluación de impacto en los derechos fundamentales"),
   euArt43: euArticle("art_43", "EU AI Act Art. 43: conformity assessment", "RIA, art. 43: evaluación de la conformidad"),
   euArt50: euArticle("art_50", "EU AI Act Art. 50: transparency obligations", "RIA, art. 50: obligaciones de transparencia"),
   euArt72: euArticle("art_72", "EU AI Act Art. 72: post-market monitoring", "RIA, art. 72: vigilancia poscomercialización"),

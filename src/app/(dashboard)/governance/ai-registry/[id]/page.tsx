@@ -3,7 +3,7 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { useEffect, useState } from "react";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ComplianceMatrix } from "@/components/governance/compliance-matrix";
 import { RiskClassificationForm } from "@/components/governance/risk-classification-form";
@@ -58,6 +58,8 @@ import {
   ScrollText,
   Eye,
   Gavel,
+  Circle,
+  Wrench,
 } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { frameworkShort, frameworkShortName, requirementCode, requirementTitle } from "@/config/framework-display";
@@ -71,6 +73,7 @@ import { TransparencyPanel } from "@/components/governance/TransparencyPanel";
 import { AdmtPanel } from "@/components/governance/AdmtPanel";
 import { TierChip } from "@/components/governance/risk-tier-badge";
 import { PageHeader } from "@/components/governance/page-header";
+import { DeleteRecordButton } from "@/components/governance/delete-record-button";
 import { UnifiedPanel } from "@/components/governance/UnifiedPanel";
 import { AgentPanel } from "@/components/governance/AgentPanel";
 import { TransparencyStatementCard } from "@/components/ai/TransparencyStatementCard";
@@ -79,6 +82,12 @@ import { SystemThreatModelCard } from "@/components/governance/system-threat-mod
 import { STATUS_CHIP, STATUS_OUTLINE } from "@/components/ui/status-note";
 import { templateName } from "@/lib/assessment-template-display";
 import { annexIIILabel } from "@/lib/annex-iii-label";
+import { OwnerInput } from "@/components/governance/owner-input";
+import { systemReference } from "@/lib/system-reference";
+import { registrationChecklist, type ChecklistTarget } from "@/lib/registration-checklist";
+import { MODEL_TYPE_KEYS, MODEL_TYPE_LABELS, modelTypeChoice, modelTypeLabel } from "@/config/model-types";
+import { RoleDecider } from "@/components/governance/role-decider";
+import { IntendedPurposeBuilder } from "@/components/governance/intended-purpose-builder";
 
 const statusColors: Record<string, string> = {
   DRAFT: "border-muted-foreground text-muted-foreground",
@@ -133,6 +142,7 @@ const incidentStatusColors: Record<string, string> = {
   MITIGATING: STATUS_OUTLINE.warning,
   RESOLVED: STATUS_OUTLINE.good,
   CLOSED: "border-muted-foreground/50 text-muted-foreground/50",
+  RECORDED_IN_ERROR: "border-dashed border-muted-foreground/50 text-muted-foreground/50 line-through",
 };
 
 const policyStatusColors: Record<string, string> = {
@@ -235,8 +245,10 @@ export default function AISystemDetailPage() {
     setTab(value);
     document.getElementById("system-tabs")?.scrollIntoView({ block: "start" });
   };
-  const { organization, canWrite, canDecide } = useOrganization();
+  const { organization, canWrite, canDecide, canDelete } = useOrganization();
+  const router = useRouter();
   const t = useTranslations("aiRegistryDetail");
+  const tDelete = useTranslations("deleteRecord");
   const { formatDate } = useFormatDate();
   const locale = useLocale();
   const tc = useTranslations("common");
@@ -336,6 +348,9 @@ export default function AISystemDetailPage() {
       IN_PROGRESS: tc("statusInProgress"),
       UNDER_REVIEW: tc("statusUnderReview"),
       APPROVED: tc("statusApproved"),
+      ACTIVE: tc("statusActive"),
+      SUSPENDED: tc("statusSuspended"),
+      TERMINATED: tc("statusTerminated"),
       REJECTED: tc("statusRejected"),
       PENDING: tc("statusPending"),
       IN_REVIEW: tc("statusInReview"),
@@ -347,6 +362,7 @@ export default function AISystemDetailPage() {
       MITIGATING: tc("statusMitigating"),
       RESOLVED: tc("statusResolved"),
       CLOSED: tc("statusClosed"),
+      RECORDED_IN_ERROR: tc("statusRecordedInError"),
       PUBLISHED: tc("statusPublished"),
       ARCHIVED: tc("statusArchived"),
     };
@@ -380,6 +396,10 @@ export default function AISystemDetailPage() {
       HIGH: tc("riskHigh"),
       LIMITED: tc("riskLimited"),
       MINIMAL: tc("riskMinimal"),
+      // Vendor risk levels (VendorRiskLevel) shown on the linked-vendor card.
+      CRITICAL: tc("riskCritical"),
+      MEDIUM: tc("riskMedium"),
+      LOW: tc("riskLow"),
     };
     return map[key] || key;
   };
@@ -425,6 +445,12 @@ export default function AISystemDetailPage() {
     { enabled: !!organization?.id && !!id }
   );
 
+  // Approved AI tools added to this system as components (AI tools in use).
+  const { data: toolComponents } = trpc.shadowAi.listForSystem.useQuery(
+    { organizationId, aiSystemId: id },
+    { enabled: !!organization?.id && !!id }
+  );
+
   const { data: vendorData } = trpc.vendor.list.useQuery(
     { organizationId, limit: 100 },
     { enabled: !!organization?.id && editOpen }
@@ -458,6 +484,17 @@ export default function AISystemDetailPage() {
       utils.aiSystem.getById.invalidate({ organizationId, id });
       setModelOpen(false);
       toast.success(t("toastModelUpdated"));
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  // The system's records go with it (assessments, gates, classification...),
+  // so every cached list may have changed.
+  const deleteSystem = trpc.aiSystem.delete.useMutation({
+    onSuccess: () => {
+      toast.success(tDelete("aiSystem.deleted"));
+      router.push("/governance/ai-registry");
+      void utils.invalidate();
     },
     onError: (err) => toast.error(err.message),
   });
@@ -520,6 +557,17 @@ export default function AISystemDetailPage() {
   }
 
   const riskLevel = system.riskClassification?.riskLevel;
+  const lang = locale === "es" ? "es" : "en";
+  const checklist = registrationChecklist({
+    description: system.description,
+    purpose: system.purpose,
+    businessOwner: system.businessOwner,
+    technicalOwner: system.technicalOwner,
+    hasRiskClassification: !!system.riskClassification,
+    models: system.models?.length ?? 0,
+    dataSources: system.dataSources?.length ?? 0,
+    dataRecipients: system._count?.dataRecipients ?? 0,
+  });
   // Deep links into DPO Central; hidden entirely when brand.dpoCentralUrl is
   // unset (white-label / sovereign posture).
   // Systems imported from DPO Central carry the originating DPO system id in
@@ -548,6 +596,16 @@ export default function AISystemDetailPage() {
       businessUnitId: system.businessUnit?.id ?? null,
     });
     setEditOpen(true);
+  };
+
+  /** A missing checklist item opens the place where it is filled in. */
+  const fillChecklistItem = (target: ChecklistTarget) => {
+    if (target === "edit") {
+      openEditDialog();
+      return;
+    }
+    if (target === "risk") setClassifyOpen(true);
+    openTab(target);
   };
 
   const submitEdit = () => {
@@ -661,6 +719,11 @@ export default function AISystemDetailPage() {
         title={system.name}
         meta={
           <>
+            {systemReference(system.number) && (
+              <Badge variant="outline" className="font-mono">
+                {t("reference", { reference: systemReference(system.number) ?? "" })}
+              </Badge>
+            )}
             {sampleSystemIds.has(system.id) ? (
               <SampleBadge />
             ) : (
@@ -700,13 +763,77 @@ export default function AISystemDetailPage() {
         }
         actions={
           canWrite ? (
-            <Button variant="outline" onClick={openEditDialog}>
-              <Edit className="w-4 h-4 mr-2" />
-              {tc("edit")}
-            </Button>
+            <>
+              {canDelete && (
+                <DeleteRecordButton
+                  record="aiSystem"
+                  pending={deleteSystem.isPending}
+                  onConfirm={() => deleteSystem.mutate({ organizationId, id })}
+                />
+              )}
+              <Button variant="outline" onClick={openEditDialog}>
+                <Edit className="w-4 h-4 mr-2" />
+                {tc("edit")}
+              </Button>
+            </>
           ) : undefined
         }
       />
+
+      {/* What a complete registration needs, at the top: each missing item
+          opens the place where it is filled in. */}
+      <Card data-testid="registration-checklist">
+        <CardHeader className="pb-3">
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
+            <CardTitle className="text-base">
+              {t("checklist.title", { done: checklist.done, total: checklist.total })}
+            </CardTitle>
+            <span className="text-sm text-muted-foreground">
+              {checklist.complete
+                ? t("checklist.complete")
+                : t("checklist.required", { done: checklist.requiredDone, total: checklist.requiredTotal })}
+            </span>
+          </div>
+          <CardDescription>{t("checklist.hint")}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ul className="grid gap-2 grid-cols-1 sm:grid-cols-2">
+            {checklist.items.map((item) => (
+              <li key={item.id} className="flex items-start justify-between gap-2 text-sm">
+                <span className="flex items-start gap-2 min-w-0">
+                  {item.done ? (
+                    <CheckCircle2 className="w-4 h-4 mt-0.5 text-success shrink-0" aria-hidden />
+                  ) : (
+                    <Circle className="w-4 h-4 mt-0.5 text-muted-foreground shrink-0" aria-hidden />
+                  )}
+                  <span className="flex flex-col min-w-0">
+                    <span className={item.done ? "" : "font-medium"}>
+                      {t(`checklist.item.${item.id}`)}
+                      <span className="sr-only">{item.done ? `: ${tc("yes")}` : `: ${tc("no")}`}</span>
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {item.later
+                        ? t("checklist.laterLabel")
+                        : item.required
+                          ? t("checklist.requiredLabel")
+                          : t("checklist.recommendedLabel")}
+                    </span>
+                  </span>
+                </span>
+                {!item.done && canWrite && (
+                  <button
+                    type="button"
+                    className="text-primary underline hover:no-underline shrink-0"
+                    onClick={() => fillChecklistItem(item.target)}
+                  >
+                    {t("checklist.fill")}
+                  </button>
+                )}
+              </li>
+            ))}
+          </ul>
+        </CardContent>
+      </Card>
 
       {/* Overview Grid */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -821,6 +948,9 @@ export default function AISystemDetailPage() {
                   <span>{scorecard.totalPartial} {tc("partial")}</span>
                   <span>{scorecard.totalNonCompliant} {tc("nonCompliant")}</span>
                   <span>{scorecard.total - scorecard.assessed - scorecard.totalNotApplicable} {tc("notAssessed")}</span>
+                  {scorecard.totalNotApplicable > 0 && (
+                    <span>{scorecard.totalNotApplicable} {tc("notApplicable")}</span>
+                  )}
                 </div>
               </div>
             </div>
@@ -1029,6 +1159,36 @@ export default function AISystemDetailPage() {
         </Card>
       )}
 
+      {/* AI tools added to this system as components */}
+      {toolComponents && toolComponents.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Wrench className="w-4 h-4" />
+              {t("components.title")}
+            </CardTitle>
+            <CardDescription>{t("components.hint")}</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {toolComponents.map((tool) => (
+              <Link key={tool.id} href={`/governance/shadow-ai/${tool.id}`}>
+                <div className="flex items-center justify-between gap-3 p-3 bg-muted/50 hover:bg-muted/80 transition-colors">
+                  <div className="min-w-0">
+                    <p className="font-medium text-sm truncate">{tool.toolName}</p>
+                    {(tool.tool?.vendor || tool.department) && (
+                      <p className="text-xs text-muted-foreground truncate">
+                        {[tool.tool?.vendor, tool.department].filter(Boolean).join(" · ")}
+                      </p>
+                    )}
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
+                </div>
+              </Link>
+            ))}
+          </CardContent>
+        </Card>
+      )}
+
       {/* Tabs */}
       {/* `?tab=transparency` (from the path's transparency view) opens on that tab. */}
       <Tabs value={tab} onValueChange={setTab} id="system-tabs" className="scroll-mt-20">
@@ -1110,7 +1270,7 @@ export default function AISystemDetailPage() {
                                 <span>v{model.version}</span>
                               </>
                             )}
-                            {model.modelType && <span>{model.modelType}</span>}
+                            {model.modelType && <span>{modelTypeLabel(model.modelType, lang)}</span>}
                           </div>
                         </div>
                       </div>
@@ -1715,7 +1875,10 @@ export default function AISystemDetailPage() {
       </Tabs>
 
       {/* Optional AI assist: Annex IV technical-documentation draft */}
-      <AnnexIvCard organizationId={organizationId} aiSystemId={id} canWrite={canWrite} />
+      {/* Annex IV is the technical file of a high-risk system: shown only for one. */}
+      {riskLevel === "HIGH" && (
+        <AnnexIvCard organizationId={organizationId} aiSystemId={id} canWrite={canWrite} />
+      )}
 
       {/* ========== DIALOGS ========== */}
 
@@ -1784,30 +1947,37 @@ export default function AISystemDetailPage() {
                 </Select>
               </div>
             </div>
+            <RoleDecider onUse={(role) => setEditForm((f) => ({ ...f, role }))} />
             <div className="space-y-2">
               <Label htmlFor="edit-purpose">{t("editPurposeLabel")}</Label>
               <Textarea
                 id="edit-purpose"
                 value={editForm.purpose}
                 onChange={(e) => setEditForm((f) => ({ ...f, purpose: e.target.value }))}
-                rows={2}
+                rows={3}
+              />
+              <IntendedPurposeBuilder
+                idPrefix="edit"
+                onUse={(statement) => setEditForm((f) => ({ ...f, purpose: statement }))}
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="edit-business-owner">{t("editBusinessOwnerLabel")}</Label>
-                <Input
+                <OwnerInput
+                  organizationId={organization?.id}
                   id="edit-business-owner"
                   value={editForm.businessOwner}
-                  onChange={(e) => setEditForm((f) => ({ ...f, businessOwner: e.target.value }))}
+                  onChange={(v) => setEditForm((f) => ({ ...f, businessOwner: v }))}
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="edit-technical-owner">{t("editTechnicalOwnerLabel")}</Label>
-                <Input
+                <OwnerInput
+                  organizationId={organization?.id}
                   id="edit-technical-owner"
                   value={editForm.technicalOwner}
-                  onChange={(e) => setEditForm((f) => ({ ...f, technicalOwner: e.target.value }))}
+                  onChange={(v) => setEditForm((f) => ({ ...f, technicalOwner: v }))}
                 />
               </div>
             </div>
@@ -1910,14 +2080,37 @@ export default function AISystemDetailPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="model-type">{t("modelTypeLabel")}</Label>
-                <Input
-                  id="model-type"
-                  value={modelForm.modelType}
-                  onChange={(e) => setModelForm((f) => ({ ...f, modelType: e.target.value }))}
-                  placeholder={t("modelTypePlaceholder")}
-                />
+                <Select
+                  value={modelTypeChoice(modelForm.modelType)}
+                  onValueChange={(val) => setModelForm((f) => ({ ...f, modelType: val }))}
+                >
+                  <SelectTrigger id="model-type" className="w-full">
+                    <SelectValue placeholder={t("modelTypePlaceholder")} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {MODEL_TYPE_KEYS.map((key) => (
+                      <SelectItem key={key} value={key}>
+                        {MODEL_TYPE_LABELS[key][lang]}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
+            {/* "Other" keeps a free description: the column stays free text. */}
+            {modelTypeChoice(modelForm.modelType) === "OTHER" && (
+              <div className="space-y-2">
+                <Label htmlFor="model-type-other">{t("modelTypeOtherLabel")}</Label>
+                <Input
+                  id="model-type-other"
+                  value={modelForm.modelType === "OTHER" ? "" : modelForm.modelType}
+                  onChange={(e) =>
+                    setModelForm((f) => ({ ...f, modelType: e.target.value.trim() ? e.target.value : "OTHER" }))
+                  }
+                  placeholder={t("modelTypeOtherPlaceholder")}
+                />
+              </div>
+            )}
             <div className="space-y-2">
               <Label htmlFor="model-version">{t("modelVersionLabel")}</Label>
               <Input
@@ -1933,9 +2126,13 @@ export default function AISystemDetailPage() {
                 id="model-training"
                 value={modelForm.trainingDataSummary}
                 onChange={(e) => setModelForm((f) => ({ ...f, trainingDataSummary: e.target.value }))}
-                rows={2}
+                rows={3}
                 placeholder={t("modelTrainingDataPlaceholder")}
+                aria-describedby="model-training-help"
               />
+              <p id="model-training-help" className="text-sm text-muted-foreground">
+                {t("modelTrainingDataHelp")}
+              </p>
             </div>
             <div className="space-y-2">
               <Label htmlFor="model-limitations">{t("modelLimitationsLabel")}</Label>
@@ -1943,9 +2140,13 @@ export default function AISystemDetailPage() {
                 id="model-limitations"
                 value={modelForm.knownLimitations}
                 onChange={(e) => setModelForm((f) => ({ ...f, knownLimitations: e.target.value }))}
-                rows={2}
+                rows={3}
                 placeholder={t("modelLimitationsPlaceholder")}
+                aria-describedby="model-limitations-help"
               />
+              <p id="model-limitations-help" className="text-sm text-muted-foreground">
+                {t("modelLimitationsHelp")}
+              </p>
             </div>
           </div>
           <DialogFooter>

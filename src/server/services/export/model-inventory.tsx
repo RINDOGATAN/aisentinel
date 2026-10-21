@@ -9,6 +9,7 @@ import {
   s, fmtDate,
 } from "./pdf-styles";
 import { pdfLabels, riskLabel, statusLabel, type PdfLocale } from "./pdf-labels";
+import { modelTypeLabel } from "@/config/model-types";
 
 export interface ModelExportData {
   id: string;
@@ -24,7 +25,7 @@ export interface ModelExportData {
 }
 
 export function ModelInventoryReport({
-  models,
+  models: rawModels,
   orgName,
   locale = "en",
 }: {
@@ -33,6 +34,11 @@ export function ModelInventoryReport({
   locale?: PdfLocale;
 }) {
   const date = fmtDate(new Date());
+  // A model type chosen from the list is stored as a key: print its label.
+  const models = rawModels.map((m) => ({
+    ...m,
+    modelType: m.modelType ? modelTypeLabel(m.modelType, locale === "es" ? "es" : "en") : null,
+  }));
   const l = pdfLabels(locale);
   const inv = l.inventory;
 
@@ -144,7 +150,9 @@ export function ModelInventoryReport({
                 : `${m.aiSystemName}: ${m.provider || inv.unknownProvider}`
             }
           />
-          <RiskBadge level={m.riskLevel} locale={locale} />
+          <View style={{ marginBottom: 8 }}>
+            <RiskBadge level={m.riskLevel} locale={locale} />
+          </View>
           <MetadataBlock
             items={[
               { label: l.provider, value: m.provider },

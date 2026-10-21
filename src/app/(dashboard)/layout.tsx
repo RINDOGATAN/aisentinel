@@ -7,8 +7,9 @@ import { MENU_COOKIE, parseMenuCollapsed } from "@/lib/menu-cookie";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { DashboardShell } from "@/components/dashboard-shell";
-import { hostedPilotActive } from "@/config/pilot";
 import { HostedPilotBanner } from "@/components/pilot/hosted-pilot-banner";
+import { ChargeCurrencyProvider } from "@/components/charge-currency";
+import { inAppPlanOffer } from "@/server/services/plan-eu/offer";
 
 export default async function DashboardLayout({
   children,
@@ -35,12 +36,17 @@ export default async function DashboardLayout({
   const cookieStore = await cookies();
   const menuCollapsed = parseMenuCollapsed(cookieStore.get(MENU_COOKIE)?.value);
 
+  // One decision from the request headers: the currency the customer will
+  // be charged, which every in-app price hint shows, and whether "Move to
+  // the paid plan" is offered (a payment link set for that same currency).
+  const offer = inAppPlanOffer(await headers());
+
   return (
-    <>
-      <HostedPilotBanner />
-      <DashboardShell hostedPilot={hostedPilotActive()} menuCollapsed={menuCollapsed}>
+    <ChargeCurrencyProvider currency={offer.currency}>
+      <HostedPilotBanner upgrade={offer.link !== null} />
+      <DashboardShell menuCollapsed={menuCollapsed}>
         {children}
       </DashboardShell>
-    </>
+    </ChargeCurrencyProvider>
   );
 }

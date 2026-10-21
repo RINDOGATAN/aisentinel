@@ -60,7 +60,6 @@ import {
   buildProtocolArtifact,
 } from "@/server/services/artifacts/build-artifacts";
 import { renderArtifactMarkdown } from "@/server/services/artifacts/render-markdown";
-import { pendingPacks } from "@/config/legal-signoff";
 import {
   SENSITIVE_FACTORS,
   SENSITIVE_FACTORS_REVIEW_MARKER,
@@ -115,8 +114,6 @@ const L = {
     status: "Status of this pack",
     assurance: "{pct}% of the auto-generated items have been confirmed by a person ({confirmed} of {total}).",
     drafts: "Policies, impact assessments and vendor reviews are drafts until approved. Their status is stated in each document.",
-    pending: "Legal sign-off is still pending for: {packs}. Content from these packs is a considered first draft, not legal advice.",
-    allSignedOff: "Every regulatory pack cited has been signed off.",
     noJurisdictions: "No operating jurisdictions are declared, so the per-system cross-border documents were not generated. Declare them in Settings and export again.",
     noPolicies: "No policies yet.",
     policyMeta: "Type: {type} · Status: {status} · Version: {version}",
@@ -208,25 +205,23 @@ const L = {
     generated: "Generado",
     contents: "Contenido",
     items: {
-      program: "El informe del programa: mapa de gobernanza, cuadro de madurez, plan de 90 días y la instantánea a partir de la que se generó.",
+      program: "El informe del programa: mapa de gobernanza, cuadro de madurez, plan de 90 días y la instantánea a partir de la que se ha generado.",
       register: "El registro de sistemas de IA, con nivel de riesgo, proveedor y responsables.",
       policies: "Un documento por política, con su estado. Los borradores figuran como borradores.",
       obligations: "Las obligaciones con fecha para las jurisdicciones declaradas, como documento y como archivo de calendario (.ics) para Outlook o Google Calendar.",
       systems: "Por sistema: la evaluación de impacto unificada, el aviso multijurisdiccional y el protocolo de revisión humana (y el anexo agéntico cuando procede). Las preguntas sin responder figuran como puntos abiertos, nunca como silencio.",
       vendors: "Las revisiones de diligencia debida de cada proveedor de IA: lo que se sabe y lo que sigue abierto.",
       inventory: "El inventario de IA como hoja de cálculo, en el formato que admite la importación.",
-      sensitive: "Los análisis por factores: cómo decidió la organización si un conjunto de datos es dato de salud u otra categoría sensible, con el razonamiento de cada factor, la banda, la decisión y el responsable.",
+      sensitive: "Los análisis por factores: cómo ha decidido la organización si un conjunto de datos es dato de salud u otra categoría sensible, con el razonamiento de cada factor, la banda, la decisión y el responsable.",
       threats: "Los modelos de amenazas: qué puede ver y hacer cada sistema, qué podría salir mal, los controles de cada escenario y si esos controles se han probado.",
-      assessmentPortfolio: "Todas las evaluaciones con su tipo, su estado y quién las revisó y aprobó.",
+      assessmentPortfolio: "Todas las evaluaciones con su tipo, su estado y quién las ha revisado y aprobado.",
       modelInventory: "Los modelos de IA registrados en cada sistema, con proveedor, versión y limitaciones conocidas.",
-      aiuc1: "Por agente de IA: las evidencias AIUC-1, requisito por requisito, con cada prueba y quién la registró.",
-      manifest: "El manifiesto de integridad: una huella SHA-256 de cada fichero anterior, la versión de la aplicación que los generó y la versión y la fecha de revisión jurídica de cada paquete de reglas vigente en ese momento.",
+      aiuc1: "Por agente de IA: las evidencias AIUC-1, requisito por requisito, con cada prueba y quién la ha registrado.",
+      manifest: "El manifiesto de integridad: una huella SHA-256 de cada fichero anterior, la versión de la aplicación que los ha generado y la versión y la fecha de revisión jurídica de cada paquete de reglas vigente en ese momento.",
     },
     status: "Estado de este paquete",
     assurance: "El {pct}% de los elementos generados automáticamente ha sido confirmado por una persona ({confirmed} de {total}).",
     drafts: "Las políticas, las evaluaciones de impacto y las revisiones de proveedores son borradores hasta su aprobación. Cada documento indica su estado.",
-    pending: "Sigue pendiente la validación jurídica de: {packs}. El contenido de estos paquetes es un primer borrador razonado, no asesoramiento jurídico.",
-    allSignedOff: "Todos los paquetes normativos citados cuentan con validación jurídica.",
     noJurisdictions: "No hay jurisdicciones de actividad declaradas, por lo que no se han generado los documentos transfronterizos por sistema. Decláralas en Configuración y vuelve a exportar.",
     noPolicies: "Todavía no hay políticas.",
     policyMeta: "Tipo: {type} · Estado: {status} · Versión: {version}",
@@ -311,14 +306,6 @@ const NAMES = {
       "ccpa-risk-assessments": "California CCPA (risk assessments)",
       "ccpa-cyber-audits": "California CCPA (cybersecurity audits)",
     } as Record<string, string>,
-    pack: {
-      EU_AI_ACT: "EU AI Act",
-      CA_CCPA_ADMT: "California CCPA (ADMT)",
-      EU_GDPR: "GDPR",
-      CO_SB_26_189: "Colorado SB 26-189",
-      TX_TRAIGA: "Texas TRAIGA",
-      WA_AI_RULES: "Washington AI rules",
-    } as Record<string, string>,
     policyType: {
       AI_USAGE: "AI use", AI_GOVERNANCE: "AI governance", AI_ETHICS: "AI ethics",
       AI_RISK_MANAGEMENT: "Risk management", AI_DATA_GOVERNANCE: "Data governance",
@@ -339,14 +326,6 @@ const NAMES = {
       "ccpa-admt": "CCPA de California (ADMT)",
       "ccpa-risk-assessments": "CCPA de California (evaluaciones de riesgos)",
       "ccpa-cyber-audits": "CCPA de California (auditorías de ciberseguridad)",
-    } as Record<string, string>,
-    pack: {
-      EU_AI_ACT: "RIA",
-      CA_CCPA_ADMT: "CCPA de California (ADMT)",
-      EU_GDPR: "RGPD",
-      CO_SB_26_189: "SB 26-189 de Colorado",
-      TX_TRAIGA: "TRAIGA de Texas",
-      WA_AI_RULES: "normas de IA de Washington",
     } as Record<string, string>,
     policyType: {
       AI_USAGE: "Uso de la IA", AI_GOVERNANCE: "Gobernanza de la IA", AI_ETHICS: "Ética de la IA",
@@ -906,7 +885,6 @@ export async function buildProgramPack(
     return l.reasons[item.reason === "needsInput" ? "empty" : item.reason];
   };
   const confirmation = await getConfirmationSummary(prisma, organizationId);
-  const pending = pendingPacks(["EU_AI_ACT", "CA_CCPA_ADMT", "EU_GDPR", "CO_SB_26_189", "TX_TRAIGA", "WA_AI_RULES"]);
   const describe: [string, string, string][] = [
     ["programReport", l.program, l.items.program],
     ["systemRegister", l.register, l.items.register],
@@ -959,10 +937,6 @@ export async function buildProgramPack(
       : "",
     "",
     l.drafts,
-    "",
-    pending.length > 0
-      ? fill(l.pending, { packs: pending.map((id) => n.pack[id] ?? id).join(", ") })
-      : l.allSignedOff,
     "",
     fill(l.index.manifestNote, { file: l.manifest }),
     "",

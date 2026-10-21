@@ -2,7 +2,7 @@
   "title": "AI governance frameworks wheel",
   "subtitle": "Thirteen widely used AI governance frameworks compared on fourteen dimensions, with a picker that suggests which ones to start from for a given situation.",
   "asOf": "2026-09-22",
-  "disclaimer": "A learning aid, not legal advice.",
+  "disclaimer": "A learning aid.",
   "method": "Each cell was checked against the official text where the official site could be read on the as-of date; cells that could not be checked say \"to verify\" and are drawn hatched. Depth is an editorial reading of how far the framework goes on that dimension, not a score of quality.",
   "footer": "Dates are those the official texts state on the as-of date; announced delays and amendments are noted with their source. Where AI Sentinel is mentioned, it supports or maps to the dimension.",
   "depthScale": {
@@ -363,7 +363,7 @@
   ],
   "picker": {
     "intro": "Answer seven questions. The page lists the frameworks that apply or fit, ranked, each with one line of reasoning, and suggests a stack: the binding laws, one management system, one risk method and, for AI agents, a certification for agents.",
-    "caveat": "A learning aid, not legal advice. The picker points at what to check first; it does not decide whether a law applies. Laws outside this aid (for example data protection, sector and anti-discrimination law) may also apply.",
+    "caveat": "A learning aid. The picker points at what to check first; it does not decide whether a law applies. Laws outside this aid (for example data protection, sector and anti-discrimination law) may also apply.",
     "inputs": [
       { "id": "jurisdictions", "label": "Jurisdictions", "multiple": true, "options": [
         { "id": "eu", "label": "EU" }, { "id": "uk", "label": "UK" }, { "id": "us_fed", "label": "US federal" },

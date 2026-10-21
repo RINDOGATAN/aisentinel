@@ -2,11 +2,11 @@
 
 Cross-border AI governance registry for organizations that deploy or provide AI systems. Register AI systems, classify risk under the EU AI Act (Reg. (EU) 2024/1689), run FRIA and conformity assessments, manage human oversight gates, incidents, vendors and policies. Bilingual EN/ES.
 
-**One assessment, six regimes.** Compliance is mapped across nine frameworks: EU AI Act, GDPR (the AI-relevant articles), NIST AI RMF, ISO/IEC 42001, AIUC-1 (the certification standard for AI agents, chosen per system rather than attached by risk tier), the California CCPA ADMT regulations, Colorado SB 26-189, Texas TRAIGA and Washington's domain instruments. A single unified impact assessment answers all of them, built as a common core drafted to the strictest formulation among the regimes plus overlays that appear only where a regime applies. From it the product generates a multi-jurisdictional AI notice, a human review and appeal protocol, and an agentic addendum that stress-tests all three against a handoff to an autonomous agent. Regulatory content carries a law-review date and a pending legal sign-off marker.
+**One assessment, six regimes.** Compliance is mapped across nine frameworks: EU AI Act, GDPR (the AI-relevant articles), NIST AI RMF, ISO/IEC 42001, AIUC-1 (the certification standard for AI agents, chosen per system rather than attached by risk tier), the California CCPA ADMT regulations, Colorado SB 26-189, Texas TRAIGA and Washington's domain instruments. A single unified impact assessment answers all of them, built as a common core drafted to the strictest formulation among the regimes plus overlays that appear only where a regime applies. From it the product generates a multi-jurisdictional AI notice, a human review and appeal protocol, and an agentic addendum that stress-tests all three against a handoff to an autonomous agent. Regulatory content carries a law-review date.
 
 One codebase, two postures:
 
-- **Hosted pilot**: the cloud instance at [aisentinel.todo.law](https://aisentinel.todo.law) is a free, capped pilot, and it says so on every page; for real data, a paid plan or a managed instance. Every module is open to every organisation; nothing there is sold. The caps: one organisation per account, edits for 15 days from the organisation's first sign-in (then read-only, with every export still available), and a records ceiling per organisation (25 AI systems, 50 vendors, 50 assessments, among others; see `src/config/pilot.ts`). For real client data, [run your own instance](https://www.todo.law/run).
+- **Hosted pilot**: the cloud instance at [aisentinel.todo.law](https://aisentinel.todo.law) is a free, capped pilot, and it says so on every page. You can start free and use it with real client data: all our sub-processors have the necessary safeguards and certifications. Every module is open to every organisation; nothing there is sold. The caps: one organisation per account, edits for 15 days from the organisation's first sign-in (then read-only, with every export still available), and a records ceiling per organisation (25 AI systems, 50 vendors, 50 assessments, among others; see `src/config/pilot.ts`). To lift the caps: the Cloud Plan, a managed instance or [your own instance](https://www.todo.law/run).
 - **Kit (self-hosted)**: the same app on your own hardware via Docker Compose, with no caps. Premium modules are sold only for the kit: $60 a year each, activated offline with a licence file. See [deploy/sovereign/README.md](deploy/sovereign/README.md).
 
 ## Stack
@@ -52,6 +52,6 @@ npm run build           # production build
 
 ## License
 
-AGPL-3.0-or-later. Copyright (C) 2026 RINDOGATAN Inc. See [LICENSE](LICENSE).
+AGPL-3.0-or-later. Copyright (C) 2026 RINDOGATAN LLC See [LICENSE](LICENSE).
 
 Under AGPL section 13, anyone who runs a modified version of this software as a network service must offer the corresponding source to its users. The app renders a "Source code (AGPL-3.0)" link in its footer for this purpose; white-label deployments can point it at their own fork via `NEXT_PUBLIC_SOURCE_URL`. Third-party acknowledgments are in [NOTICES.md](NOTICES.md).

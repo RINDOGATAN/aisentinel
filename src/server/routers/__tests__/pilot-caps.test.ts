@@ -6,7 +6,8 @@
  * write middleware (src/server/trpc.ts) against an in-memory fake, so what
  * is proven is the wiring and not only the service:
  *
- *   - organization.create refuses a second organization for the account;
+ *   - organization.create refuses a second organization for the account, and
+ *     opens none without the data processing agreement, which it records;
  *   - every orgWriteProcedure refuses once the organization is read-only,
  *     except organization.delete, which is the way out;
  *   - aiSystem.create refuses at the records ceiling and writes nothing;
@@ -62,10 +63,19 @@ const H = vi.hoisted(() => {
         return { ...m, organization: organizations.find((o) => o.id === m.organizationId) };
       },
       count: async ({ where }: { where: Row }) => members.filter((m) => matches(m, where)).length,
+      findMany: async ({ where }: { where: Row }) => members.filter((m) => matches(m, where)),
+    },
+    // The account-level window start (services/pilot/account-trial.ts); covered in
+    // pilot-trial-per-account.test.ts, so here only enough to let the routers run.
+    user: {
+      findUnique: async () => null,
+      updateMany: async () => ({ count: 0 }),
     },
     aISystem: {
       count: async ({ where }: { where: Row }) => systems.filter((s) => matches(s, where)).length,
       findMany: async ({ where }: { where: Row }) => systems.filter((s) => matches(s, where)),
+      // The highest system number in use (src/server/services/ai-system/number.ts).
+      findFirst: async () => null,
       create: async ({ data }: { data: Row }) => {
         const row = { id: `sys-${systems.length + 1}`, ...data };
         systems.push(row);
@@ -95,6 +105,7 @@ const H = vi.hoisted(() => {
         );
       },
       deleteMany: async () => ({ count: 0 }),
+      findMany: async ({ where }: { where: Row }) => audit.filter((r) => matches(r, where)),
     },
     legalHold: { findMany: async () => [], count: async () => 0 },
     // No department limits in these fixtures: every member sees the whole org.
@@ -141,7 +152,8 @@ vi.mock("next/headers", () => ({ cookies: async () => ({ get: () => undefined })
 import { createInnerTRPCContext } from "@/server/trpc";
 import { organizationRouter } from "@/server/routers/governance/organization";
 import { aiSystemRouter } from "@/server/routers/governance/aiSystem";
-import { PILOT_CEILINGS, PILOT_PRICING_URL } from "@/config/pilot";
+import { PILOT_CEILINGS } from "@/config/pilot";
+import { PILOT_DPA, PILOT_DPA_ACTION, isAcceptedDpaVersion } from "@/config/pilot-dpa";
 
 const session = {
   user: { id: "user-a", email: "user-a@example.test", name: "user-a" },
@@ -185,9 +197,37 @@ describe("hosted pilot caps through the routers", () => {
     H.reset({ signedInDaysAgo: 1, systemCount: 0 });
     H.members.length = 0;
     const caller = organizationRouter.createCaller(ctx());
-    const org = await caller.create({ name: "First", slug: "first" });
+    const org = await caller.create({ name: "First", slug: "first", acceptDpa: true });
     expect(org.id).toBeTruthy();
     expect(H.members).toHaveLength(1);
+  });
+
+  it("the data processing agreement: no organization is opened without it", async () => {
+    H.reset({ signedInDaysAgo: 1, systemCount: 0 });
+    H.members.length = 0;
+    const caller = organizationRouter.createCaller(ctx());
+    await expect(caller.create({ name: "First", slug: "first" })).rejects.toMatchObject({
+      code: "BAD_REQUEST",
+      message: expect.stringContaining("data processing agreement"),
+    });
+    await expect(caller.create({ name: "First", slug: "first", acceptDpa: false })).rejects.toMatchObject({
+      code: "BAD_REQUEST",
+    });
+    expect(H.organizations).toHaveLength(1);
+  });
+
+  it("the data processing agreement: the acceptance is recorded with its version, language and document", async () => {
+    H.reset({ signedInDaysAgo: 1, systemCount: 0 });
+    H.members.length = 0;
+    const caller = organizationRouter.createCaller(ctx("es"));
+    const org = await caller.create({ name: "Primera", slug: "primera", acceptDpa: true });
+    const entry = H.audit.find((r) => r.action === PILOT_DPA_ACTION) as
+      | { organizationId: string; userId: string; changes: Record<string, string> }
+      | undefined;
+    expect(entry).toBeDefined();
+    expect(entry!.organizationId).toBe(org.id);
+    expect(entry!.userId).toBe("user-a");
+    expect(entry!.changes).toEqual({ dpaVersion: "1.3", locale: "es", document: PILOT_DPA.href.es });
   });
 
   it("the editing-window switch: writes are refused with the two ways out, reads still work", async () => {
@@ -195,10 +235,10 @@ describe("hosted pilot caps through the routers", () => {
     const caller = aiSystemRouter.createCaller(ctx("es"));
     await expect(caller.create(newSystem)).rejects.toMatchObject({
       code: "FORBIDDEN",
-      message: expect.stringContaining(PILOT_PRICING_URL.es),
+      message: expect.stringContaining("pasa al plan de pago"),
     });
     await expect(caller.create(newSystem)).rejects.toMatchObject({
-      message: expect.stringContaining("/api/export/program-pack?organizationId=org-a"),
+      message: expect.stringContaining("paquete del programa"),
     });
     await expect(caller.create(newSystem)).rejects.toMatchObject({
       message: expect.stringContaining("solo lectura"),
@@ -245,7 +285,7 @@ describe("hosted pilot caps through the routers", () => {
 /** The PILOT_LIMIT_REACHED rows written so far. */
 const limitRows = () => H.audit.filter((r) => r.action === "PILOT_LIMIT_REACHED");
 
-describe("a pilot limit becomes a lead: the refusal carries the link and is counted", () => {
+describe("a pilot limit: the refusal carries the keep-going sentence and is counted", () => {
   beforeEach(() => {
     vi.stubEnv("VERCEL_ENV", "production");
     vi.stubEnv("NEXT_PUBLIC_HOSTED_PILOT", "");
@@ -257,14 +297,17 @@ describe("a pilot limit becomes a lead: the refusal carries the link and is coun
   });
 
   it.each([
-    ["en", "For a managed instance or your own hardware, ask for a quote (https://www.todo.law/contact/managed)."],
-    ["es", "Para una instancia gestionada o tu propio hardware, pide presupuesto (https://www.todo.law/es/contact/managed)."],
-  ])("the ceiling's refusal carries the one keep-going link (%s)", async (locale, link) => {
+    ["en", "For a managed instance or your own hardware, ask for a quote."],
+    ["es", "Para una instancia gestionada o tu propio hardware, pide presupuesto."],
+  ])("the ceiling's refusal carries the keep-going sentence, with no address (%s)", async (locale, link) => {
     H.reset({ signedInDaysAgo: 1, systemCount: PILOT_CEILINGS.systems });
     const caller = aiSystemRouter.createCaller(ctx(locale));
     await expect(caller.create(newSystem)).rejects.toMatchObject({
       code: "FORBIDDEN",
       message: expect.stringContaining(link),
+    });
+    await expect(caller.create(newSystem)).rejects.toMatchObject({
+      message: expect.not.stringMatching(/https?:\/\/|\/api\//),
     });
   });
 
@@ -296,7 +339,7 @@ describe("a pilot limit becomes a lead: the refusal carries the link and is coun
     await expect(caller.create(newSystem)).rejects.toBeTruthy();
     H.organizations[0].pilotFirstSignInAt = new Date(Date.now() - 91 * 24 * 60 * 60 * 1000);
     await expect(caller.create(newSystem)).rejects.toMatchObject({
-      message: expect.stringContaining("For a managed instance or your own hardware, ask for a quote (https://www.todo.law/contact/managed)."),
+      message: expect.stringContaining("For a managed instance or your own hardware, ask for a quote."),
     });
     await expect(caller.create(newSystem)).rejects.toBeTruthy();
     expect(limitRows().map((r) => r.metadata)).toEqual([{ limit: "systems" }, { limit: "editing_days" }]);
@@ -345,7 +388,79 @@ describe("on the kit the routers apply no pilot cap", () => {
     H.reset({ signedInDaysAgo: 400, systemCount: PILOT_CEILINGS.systems + 10 });
     const orgs = organizationRouter.createCaller(ctx());
     await expect(orgs.create({ name: "Second", slug: "second" })).resolves.toBeTruthy();
+    // No data processing agreement is asked for or recorded off the pilot.
+    expect(H.audit.some((r) => r.action === PILOT_DPA_ACTION)).toBe(false);
     const sys = aiSystemRouter.createCaller(ctx());
     await expect(sys.create(newSystem)).resolves.toBeTruthy();
+  });
+});
+
+describe("hosted pilot: the data processing agreement for organizations opened before it was asked", () => {
+  beforeEach(() => {
+    vi.stubEnv("VERCEL_ENV", "production");
+    vi.stubEnv("NEXT_PUBLIC_HOSTED_PILOT", "");
+    vi.useFakeTimers({ now: new Date("2027-03-01T12:00:00.000Z"), toFake: ["Date"] });
+  });
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.unstubAllEnvs();
+  });
+
+  it("the data processing agreement: an organization opened before it was asked is asked once", async () => {
+    // Read-only by now: accepting changes no program record, so it stays open.
+    H.reset({ signedInDaysAgo: 400, systemCount: 0 });
+    H.members.push({ organizationId: "org-a", userId: "user-b", role: "MEMBER" });
+    const owner = organizationRouter.createCaller(ctx());
+    const member = organizationRouter.createCaller(
+      createInnerTRPCContext({ session: { ...session, user: { ...session.user, id: "user-b" } } as Session, getCookie: () => undefined }),
+    );
+    await expect(owner.getDpaStatus({ organizationId: "org-a" })).resolves.toEqual({ required: true, canAccept: true });
+    await expect(member.getDpaStatus({ organizationId: "org-a" })).resolves.toEqual({ required: true, canAccept: false });
+    await expect(member.acceptDpa({ organizationId: "org-a", accept: true })).rejects.toMatchObject({ code: "FORBIDDEN" });
+
+    await owner.acceptDpa({ organizationId: "org-a", accept: true });
+    await owner.acceptDpa({ organizationId: "org-a", accept: true });
+    const entries = H.audit.filter((r) => r.action === PILOT_DPA_ACTION);
+    expect(entries).toHaveLength(1);
+    expect(entries[0].userId).toBe("user-a");
+    expect((entries[0].changes as Record<string, string>).dpaVersion).toBe(PILOT_DPA.version);
+    await expect(member.getDpaStatus({ organizationId: "org-a" })).resolves.toEqual({ required: false, canAccept: false });
+  });
+
+  it("the data processing agreement: a version before the minimum on record asks again; off the pilot nothing is asked", async () => {
+    H.reset({ signedInDaysAgo: 1, systemCount: 0 });
+    H.audit.push({ id: "old", organizationId: "org-a", action: PILOT_DPA_ACTION, changes: { dpaVersion: "1.0" } });
+    const owner = organizationRouter.createCaller(ctx());
+    await expect(owner.getDpaStatus({ organizationId: "org-a" })).resolves.toMatchObject({ required: true });
+    vi.stubEnv("NEXT_PUBLIC_HOSTED_PILOT", "false");
+    await expect(owner.getDpaStatus({ organizationId: "org-a" })).resolves.toEqual({ required: false, canAccept: false });
+  });
+
+  it.each(["1.1", "1.2"])("the data processing agreement: an acceptance of %s stays valid after a new version", async (v) => {
+    H.reset({ signedInDaysAgo: 1, systemCount: 0 });
+    H.audit.push({ id: "earlier", organizationId: "org-a", action: PILOT_DPA_ACTION, changes: { dpaVersion: v } });
+    const owner = organizationRouter.createCaller(ctx());
+    await expect(owner.getDpaStatus({ organizationId: "org-a" })).resolves.toMatchObject({ required: false });
+    await owner.acceptDpa({ organizationId: "org-a", accept: true });
+    expect(H.audit.filter((r) => r.action === PILOT_DPA_ACTION)).toHaveLength(1);
+  });
+
+  it("the data processing agreement: a new acceptance records 1.3", async () => {
+    H.reset({ signedInDaysAgo: 1, systemCount: 0 });
+    const owner = organizationRouter.createCaller(ctx());
+    await expect(owner.getDpaStatus({ organizationId: "org-a" })).resolves.toMatchObject({ required: true });
+    await owner.acceptDpa({ organizationId: "org-a", accept: true });
+    const entries = H.audit.filter((r) => r.action === PILOT_DPA_ACTION);
+    expect((entries[0].changes as Record<string, string>).dpaVersion).toBe("1.3");
+  });
+
+  it("the data processing agreement: versions are read numerically, malformed entries ignored", () => {
+    expect(isAcceptedDpaVersion("1.1")).toBe(true);
+    expect(isAcceptedDpaVersion("1.10")).toBe(true);
+    expect(isAcceptedDpaVersion("2.0")).toBe(true);
+    expect(isAcceptedDpaVersion("1.0")).toBe(false);
+    expect(isAcceptedDpaVersion(undefined)).toBe(false);
+    expect(isAcceptedDpaVersion("v1.2")).toBe(false);
+    expect(isAcceptedDpaVersion(1.2)).toBe(false);
   });
 });

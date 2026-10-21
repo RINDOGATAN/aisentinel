@@ -3,9 +3,9 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { ExternalLink } from "lucide-react";
-import { frameworksData, isUnderReview } from "@/lib/frameworks/model";
+import { frameworksDataFor, isUnderReview } from "@/lib/frameworks/model";
 import { docsPagesForModules } from "@/lib/frameworks/doc-links";
 import Link from "next/link";
 import { DepthChip, UnderReviewTag } from "./depth";
@@ -14,7 +14,8 @@ const MAX = 3;
 
 export function FrameworksCompare({ initial = [] }: { initial?: string[] }) {
   const t = useTranslations("docs.frameworks");
-  const { frameworks: F, rings: R } = frameworksData;
+  const data = frameworksDataFor(useLocale());
+  const { frameworks: F, rings: R } = data;
   const known = new Set(F.map((f) => f.id));
   const [picked, setPicked] = useState<string[]>(() => initial.filter((id) => known.has(id)).slice(0, MAX));
 
@@ -102,7 +103,7 @@ export function FrameworksCompare({ initial = [] }: { initial?: string[] }) {
                               <div className="text-xs">
                                 {docs.map((d) => (
                                   <Link key={d.href} href={d.href} className="mr-3 text-primary hover:underline">
-                                    {t("detail.relatedDocs")}: {frameworksData.modules[d.module]?.label}
+                                    {t("detail.relatedDocs")}: {data.modules[d.module]?.label}
                                   </Link>
                                 ))}
                               </div>

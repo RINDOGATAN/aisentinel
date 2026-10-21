@@ -37,10 +37,10 @@ export const UNIFIED_ASSESSMENT_VERSION = "2026.09.1";
 export const UNIFIED_ASSESSMENT_LAW_REVIEWED_AS_OF = "2026-09-08";
 export const UNIFIED_ASSESSMENT_REVIEW_MARKER: Localized = signoffMarker("UNIFIED_ASSESSMENT");
 
-/** Always stated alongside the marker: this is a drafting aid, not advice. */
+/** Always stated alongside the marker: this is a drafting aid. */
 export const UNIFIED_ASSESSMENT_NOT_ADVICE: Localized = {
-  en: "This template is a drafting aid, not legal advice.",
-  es: "Esta plantilla es una ayuda a la redacción, no asesoramiento jurídico.",
+  en: "This template is a drafting aid.",
+  es: "Esta plantilla es una ayuda a la redacción.",
 };
 
 /** The scope tag that gates an overlay question. `null` means always asked. */
@@ -150,7 +150,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         ),
         helpText: t(
           "Be specific about the decision: 'ranks applicants for interview' rather than 'supports recruitment'.",
-          "Sé concreto respecto de la decisión: «ordena a los candidatos para la entrevista», no «apoya la selección».",
+          "Sé concreto respecto de la decisión: «categoriza las candidaturas para la entrevista», no «apoya la selección».",
         ),
         type: "textarea",
         required: true,
@@ -184,7 +184,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         id: "sys_necessity",
         text: t(
           "Why is an AI system necessary and proportionate here, and what less intrusive alternative did you consider?",
-          "¿Por qué es necesario y proporcionado un sistema de IA en este caso y qué alternativa menos intrusiva se valoró?",
+          "¿Por qué es necesario y proporcionado un sistema de IA en este caso y qué alternativa menos intrusiva se ha valorado?",
         ),
         helpText: t(
           "The GDPR requires an assessment of necessity and proportionality. Recording the alternative you rejected, and why, is the strongest form of that answer.",
@@ -247,7 +247,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         id: "ppl_consultation",
         text: t(
           "Whose views did you seek on this processing, or why was consultation not appropriate?",
-          "¿A quién consultaste sobre este tratamiento, o por qué no procedía la consulta?",
+          "¿A quién has consultado sobre este tratamiento, o por qué no procedía la consulta?",
         ),
         helpText: t(
           "GDPR Art. 35(9). Works councils, unions, patient representatives and affected communities are the usual answers.",
@@ -319,7 +319,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         id: "data_health_inference",
         text: t(
           "Does the system derive or extrapolate health data from non-health information, and how was consent obtained?",
-          "¿El sistema deriva o extrapola datos de salud a partir de información no sanitaria, y cómo se obtuvo el consentimiento?",
+          "¿El sistema deriva o extrapola datos de salud a partir de información no sanitaria, y cómo se ha obtenido el consentimiento?",
         ),
         helpText: t(
           "Washington's My Health My Data Act catches algorithmic health inference expressly, and requires opt-in consent for a specified purpose.",
@@ -351,7 +351,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         id: "data_quality",
         text: t(
           "How are training, validation and testing data governed for relevance, representativeness and errors, and what bias examination was carried out?",
-          "¿Cómo se gobiernan los datos de entrenamiento, validación y prueba en cuanto a pertinencia, representatividad y errores, y qué examen de sesgos se realizó?",
+          "¿Cómo se gobiernan los datos de entrenamiento, validación y prueba en cuanto a pertinencia, representatividad y errores, y qué examen de sesgos se ha realizado?",
         ),
         type: "textarea",
         required: true,
@@ -898,7 +898,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         ),
         helpText: t(
           "Colorado requires at least three years. Logs of automated recommendations and the human determinations that followed are the evidence that the review protocol was real.",
-          "Colorado exige al menos tres años. Los registros de recomendaciones automatizadas y de las determinaciones humanas posteriores son la prueba de que el protocolo de revisión fue real.",
+          "Colorado exige al menos tres años. Los registros de recomendaciones automatizadas y de las determinaciones humanas posteriores son la prueba de que el protocolo de revisión ha sido real.",
         ),
         type: "textarea",
         required: true,
@@ -974,7 +974,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
     title: t("10. Agentic layer", "10. Capa agéntica"),
     intro: t(
       "Asked when the system hands off to an autonomous downstream agent. Every regime above was written for a system that produces an output a person then uses. An agent that acts on the output breaks that assumption, and each artifact needs an addendum.",
-      "Se pregunta cuando el sistema delega en un agente autónomo posterior. Todos los regímenes anteriores se escribieron pensando en un sistema que produce un resultado que después usa una persona. Un agente que actúa sobre ese resultado rompe esa premisa, y cada documento necesita un anexo.",
+      "Se pregunta cuando el sistema delega en un agente autónomo posterior. Todos los regímenes anteriores se han escrito pensando en un sistema que produce un resultado que después usa una persona. Un agente que actúa sobre ese resultado rompe esa premisa, y cada documento necesita un anexo.",
     ),
     questions: [
       {
@@ -1031,7 +1031,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         id: "agt_traceability",
         text: t(
           "How is an agent-initiated action traced back to the decision, the model version and the data that produced it?",
-          "¿Cómo se rastrea una acción iniciada por el agente hasta la decisión, la versión del modelo y los datos que la produjeron?",
+          "¿Cómo se rastrea una acción iniciada por el agente hasta la decisión, la versión del modelo y los datos que la han producido?",
         ),
         type: "textarea",
         required: true,

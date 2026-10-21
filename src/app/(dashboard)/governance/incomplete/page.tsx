@@ -18,13 +18,16 @@ import { Badge } from "@/components/ui/badge";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { ListPageSkeleton } from "@/components/skeletons/list-page-skeleton";
+import { useViewDepartment } from "@/lib/use-view-department";
 
 export default function IncompletePage() {
   const t = useTranslations("views");
   const tr = useTranslations("registration");
   const { organization } = useOrganization();
   const orgId = organization?.id ?? "";
-  const dept = useSearchParams().get("dept") ?? undefined;
+  // A department in the address wins; otherwise the menu's "Viewing" choice.
+  const viewDept = useViewDepartment(orgId || undefined);
+  const dept = useSearchParams().get("dept") ?? viewDept;
 
   const { data, isLoading } = trpc.views.incomplete.useQuery(
     { organizationId: orgId, businessUnitId: dept },

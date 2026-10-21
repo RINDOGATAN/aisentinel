@@ -19,6 +19,7 @@
 import type { AIRiskLevel, PrismaClient } from "@prisma/client";
 import type { ImportRow } from "@/lib/inventory-import";
 import { attachRegimeMappings } from "@/server/services/scope/attach-regimes";
+import { nextSystemNumber } from "@/server/services/ai-system/number";
 
 export interface ImportResult {
   created: number;
@@ -31,7 +32,14 @@ export interface ImportResult {
 
 export async function importInventoryRows(
   prisma: PrismaClient,
-  args: { organizationId: string; userId: string; rows: ImportRow[]; fileName?: string },
+  args: {
+    organizationId: string;
+    userId: string;
+    rows: ImportRow[];
+    fileName?: string;
+    /** The department new systems are placed in (a department-limited importer's own). */
+    businessUnitId?: string | null;
+  },
 ): Promise<ImportResult> {
   const { organizationId, userId } = args;
   const result: ImportResult = {
@@ -101,6 +109,7 @@ export async function importInventoryRows(
     const system = await prisma.aISystem.create({
       data: {
         organizationId,
+        number: await nextSystemNumber(prisma, organizationId),
         name: row.name,
         description: row.description,
         purpose: row.purpose,
@@ -111,6 +120,7 @@ export async function importInventoryRows(
         technicalOwner: row.technicalOwner,
         processesPersonalData: row.processesPersonalData ?? false,
         vendorId,
+        ...(args.businessUnitId ? { businessUnitId: args.businessUnitId } : {}),
         metadata: {
           source: "spreadsheet-import",
           // The column was empty or unreadable: record that we do not know,

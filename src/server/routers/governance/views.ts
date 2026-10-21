@@ -18,14 +18,14 @@ export const viewsRouter = createTRPCRouter({
   needsAction: organizationProcedure
     .input(z.object({ organizationId: z.string(), businessUnitId: z.string().optional() }))
     .query(async ({ ctx, input }) => {
-      const scope = await loadBusinessUnitScope(ctx.prisma, ctx.membership.id);
+      const scope = await loadBusinessUnitScope(ctx.prisma, ctx.membership);
       return collectNeedsAction(ctx.prisma, ctx.organization.id, scope, input.businessUnitId);
     }),
 
   incomplete: organizationProcedure
     .input(z.object({ organizationId: z.string(), businessUnitId: z.string().optional() }))
     .query(async ({ ctx, input }) => {
-      const scope = await loadBusinessUnitScope(ctx.prisma, ctx.membership.id);
+      const scope = await loadBusinessUnitScope(ctx.prisma, ctx.membership);
       const systems = await collectIncompleteSystems(
         ctx.prisma,
         ctx.organization.id,

@@ -88,16 +88,48 @@ describe("artifact assembly: gaps are first class", () => {
 
   it("always carries the disclaimer, the version and the review date", () => {
     const artifact = buildAssessmentArtifact(input());
-    expect(artifact.disclaimer).toContain("not legal advice");
-    // The disclaimer states the status of the content this document cites.
-    // A system in EU scope cites GDPR and the EU AI Act; the latter is still
-    // pending, so the document must say so rather than claim a clean bill.
-    expect(artifact.disclaimer).toContain("pending legal sign-off");
-    expect(artifact.disclaimer).toContain("EU AI ACT");
+    expect(artifact.disclaimer).toContain("drafting aid");
     expect(artifact.contentVersion).toMatch(/^\d{4}\.\d{2}\.\d+$/);
     expect(artifact.lawReviewedAsOf).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(renderArtifactMarkdown(artifact)).toContain("law reviewed as of");
   });
+
+  it("names the declared jurisdictions in the reader's language, not by code", () => {
+    const scope = buildSystemScope(baseSystem(), baseOrg({ operatingJurisdictions: ["EU", "US_CA"] }));
+    const es = renderArtifactMarkdown(buildNoticeArtifact(input({ scope, locale: "es" })));
+    expect(es).toContain("declaradas por la organización: Unión Europea, California.");
+    const en = renderArtifactMarkdown(buildAssessmentArtifact(input({ scope })));
+    expect(en).toContain("| Declared jurisdictions | European Union, California |");
+    expect(es + en).not.toContain("US_CA");
+  });
+
+  // Owner decision, 15 Oct 2026: the cover, the page footers and the Markdown
+  // export carry no "pending legal validation" note and no "not legal advice"
+  // phrase, in either language, in any of the four documents. The scope cites
+  // the EU AI Act, whose pack is still pending, so a regression would show.
+  const agenticEuScope = () =>
+    buildSystemScope(
+      baseSystem({ metadata: { regimeFacts: { handsOffToAutonomousAgent: "YES" } } }),
+      baseOrg({ operatingJurisdictions: ["EU", "US_CA"] }),
+    );
+  const builders = {
+    assessment: buildAssessmentArtifact,
+    notice: buildNoticeArtifact,
+    protocol: buildProtocolArtifact,
+    addendum: buildAgenticAddendumArtifact,
+  };
+  const PENDING_OR_NOT_ADVICE =
+    /pending legal|sign-off|pendiente de validaci|validación jurídica|not legal advice|asesoramiento jurídico/i;
+  for (const [name, build] of Object.entries(builders)) {
+    for (const locale of ["en", "es"] as const) {
+      it(`${name} (${locale}): no pending-validation or not-legal-advice note anywhere`, () => {
+        const artifact = build(input({ scope: agenticEuScope(), locale }));
+        expect(artifact.disclaimer).not.toMatch(PENDING_OR_NOT_ADVICE);
+        expect(artifact.disclaimer).toContain(locale === "es" ? "ayuda a la redacción" : "drafting aid");
+        expect(renderArtifactMarkdown(artifact)).not.toMatch(PENDING_OR_NOT_ADVICE);
+      });
+    }
+  }
 
   it("states the undetermined regimes rather than presenting the set as complete", () => {
     // Washington resolves to UNDETERMINED until its instrument questions are

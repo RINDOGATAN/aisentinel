@@ -6,6 +6,8 @@ import { editConfirmation, keepSystemAfterEdit } from "@/server/services/provena
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { assertPilotRoom, pilotLocale } from "../../services/pilot/caps";
 import { TRPCError } from "@trpc/server";
+import { assertNotOnHold } from "../../services/legal-hold";
+import { assertCanDeleteRecords } from "../../services/authz/delete-roles";
 
 /** Roles that may decide a gate (addDecision, and the same statuses through update). */
 const GATE_DECIDER_ROLES = ["OWNER", "ADMIN", "AI_OFFICER"] as const;
@@ -285,6 +287,43 @@ export const oversightRouter = createTRPCRouter({
       });
 
       return decision;
+    }),
+
+  /**
+   * Owners and admins only. The gate's recorded decisions go with it. A hold
+   * on the gate's system, or on the whole organisation, refuses this.
+   */
+  delete: orgWriteProcedure
+    .input(z.object({ organizationId: z.string(), id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      assertCanDeleteRecords(ctx.membership.role);
+
+      const existing = await ctx.prisma.oversightGate.findFirst({
+        where: { id: input.id, organizationId: ctx.organization.id },
+        select: { id: true, gateType: true, status: true, aiSystemId: true },
+      });
+      if (!existing) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Oversight gate not found" });
+      }
+
+      await assertNotOnHold(ctx.prisma, ctx.organization.id, { aiSystemId: existing.aiSystemId });
+
+      await ctx.prisma.oversightGate.deleteMany({
+        where: { id: input.id, organizationId: ctx.organization.id },
+      });
+
+      await ctx.prisma.auditLog.create({
+        data: {
+          organizationId: ctx.organization.id,
+          userId: ctx.session.user.id,
+          entityType: "OversightGate",
+          entityId: input.id,
+          action: "DELETE",
+          changes: { gateType: existing.gateType, status: existing.status, aiSystemId: existing.aiSystemId },
+        },
+      });
+
+      return { deleted: true };
     }),
 
   getStats: organizationProcedure

@@ -11,7 +11,10 @@
  *   1. one organisation per account;
  *   2. edits for PILOT_EDIT_DAYS from the organisation's first sign-in after
  *      the pilot went live, after which the organisation is read-only but can
- *      still export everything (PILOT_TERMS says so in one line);
+ *      still export everything (PILOT_TERMS says so in one line). The
+ *      window is used once per account: an organisation created after the
+ *      account left another (deleted, or removed from it) continues that
+ *      window (src/server/services/pilot/account-trial.ts);
  *   3. a records ceiling per organisation (PILOT_CEILINGS).
  *
  * Premium modules are sold only for the kit (self-hosted, offline licence
@@ -71,9 +74,13 @@ export const PILOT_KEEP_GOING: Record<PilotLocale, string> = {
   es: "Para una instancia gestionada o tu propio hardware, pide presupuesto",
 };
 
-/** The keep-going sentence, closing every message a pilot limit writes. */
+/**
+ * The keep-going sentence, closing every message a pilot limit writes. A limit
+ * message is shown as plain text in a notification, so it carries no address:
+ * the links are on the Settings card (src/components/governance/pilot-status-card.tsx).
+ */
 export function pilotKeepGoing(locale: PilotLocale): string {
-  return `${PILOT_KEEP_GOING[locale]} (${PILOT_MANAGED_URL[locale]}).`;
+  return `${PILOT_KEEP_GOING[locale]}.`;
 }
 
 /**
@@ -250,8 +257,9 @@ export const PILOT_DESCRIPTION: Record<PilotLocale, string> = {
 /**
  * The pilot bar on signed-in pages. For
  * the WHOLE pilot, to every member (owners, admins and members alike), a
- * slim top bar gives the end date and the Cloud Plan's price in the reader's
- * currency (English $, Spanish €), with a link to the landing's pricing
+ * slim top bar gives the end date and the Cloud Plan's price in the currency
+ * the customer will be charged (euros only in the EU, whatever the language),
+ * with a link to the landing's pricing
  * block. In the last PILOT_END_BAR_DAYS days it switches to the stronger
  * "ending" wording; once the organisation is read-only it says so and that
  * the export stays open. Never off the hosted pilot, nor for an organisation
@@ -320,11 +328,20 @@ export const PILOT_BAR_DISMISS_KEY = "pilot-bar-dismissed";
 
 /**
  * The Cloud Plan's price in English, in the visitor's currency
- * (src/lib/currency.ts). The Spanish copy is always in euros.
+ * (src/lib/currency.ts). The public Spanish landing is always in euros.
  */
 export const CLOUD_PLAN_PRICE_EN: Record<Currency, string> = {
   USD: "$179 a month or $1,800 a year",
   EUR: "€179 a month or €1,800 a year",
+};
+
+/**
+ * The Cloud Plan's price in Spanish, for the in-app bar, in the currency the
+ * customer will be charged.
+ */
+export const CLOUD_PLAN_PRICE_ES: Record<Currency, string> = {
+  USD: "179 US$ al mes o 1.800 US$ al año",
+  EUR: "179 € al mes o 1.800 € al año",
 };
 
 export const PILOT_END_BAR_COPY: Record<
@@ -335,6 +352,8 @@ export const PILOT_END_BAR_COPY: Record<
     ending: (date: string) => string;
     readOnly: string;
     pricing: string;
+    /** The automatic upgrade's button, for an owner or administrator only. */
+    upgrade: string;
     dismiss: string;
   }
 > = {
@@ -346,16 +365,18 @@ export const PILOT_END_BAR_COPY: Record<
     ending: (date) => `Your pilot ends on ${date}. Move to the paid plan to keep editing with all your records.`,
     readOnly: "Your pilot has ended: the organization is read-only and you can export it at any time.",
     pricing: "See pricing",
+    upgrade: "Move to the paid plan",
     dismiss: "Close",
   },
   es: {
-    trial: (days, date) =>
-      `Gratis durante ${days} días, hasta el ${date}. Después, exporta tu programa o sigue con el Plan nube UE: 179 € al mes o 1.800 € al año.`,
-    trialTransition: (date) =>
-      `Gratis hasta el ${date}. Después, exporta tu programa o sigue con el Plan nube UE: 179 € al mes o 1.800 € al año.`,
+    trial: (days, date, currency = "EUR") =>
+      `Gratis durante ${days} días, hasta el ${date}. Después, exporta tu programa o sigue con el Plan nube UE: ${CLOUD_PLAN_PRICE_ES[currency]}.`,
+    trialTransition: (date, currency = "EUR") =>
+      `Gratis hasta el ${date}. Después, exporta tu programa o sigue con el Plan nube UE: ${CLOUD_PLAN_PRICE_ES[currency]}.`,
     ending: (date) => `Tu piloto termina el ${date}. Pasa al plan de pago para seguir editando con todos tus registros.`,
     readOnly: "Tu piloto ha terminado: la organización está en solo lectura y puedes exportarla cuando quieras.",
     pricing: "Ver precios",
+    upgrade: "Pasar al plan de pago",
     dismiss: "Cerrar",
   },
 };
@@ -370,37 +391,36 @@ export function pilotEndBarDate(endsAt: Date | string, locale: PilotLocale): str
   });
 }
 
-/** The two ways out, spelled out wherever a cap stops someone. */
-function waysOut(locale: PilotLocale, exportUrl: string): string {
+/**
+ * The two ways out, spelled out wherever a cap stops someone. Named, not
+ * linked: both are buttons on the Settings card once a limit is reached.
+ */
+function waysOut(locale: PilotLocale): string {
   return locale === "es"
-    ? `Dos salidas: pasa al plan de pago (${PILOT_PRICING_URL.es}) o exporta todo lo que has creado (${exportUrl}).`
-    : `Two ways out: move to the paid plan (${PILOT_PRICING_URL.en}) or export everything you created (${exportUrl}).`;
+    ? "Dos salidas, las dos en Configuración: pasa al plan de pago o exporta todo lo que has creado (el paquete del programa)."
+    : "Two ways out, both in Settings: move to the paid plan or export everything you created (the program pack).";
 }
 
-export function pilotReadOnlyMessage(locale: PilotLocale, exportUrl: string): string {
+export function pilotReadOnlyMessage(locale: PilotLocale): string {
   const lead =
     locale === "es"
       ? "Piloto alojado: el periodo de edición de esta organización ha terminado y ahora es de solo lectura."
       : "Hosted pilot: this organization's editing window is over and it is now read-only.";
-  return `${lead} ${waysOut(locale, exportUrl)} ${pilotKeepGoing(locale)}`;
+  return `${lead} ${waysOut(locale)} ${pilotKeepGoing(locale)}`;
 }
 
-export function pilotCeilingMessage(
-  locale: PilotLocale,
-  key: PilotCeilingKey,
-  exportUrl: string,
-): string {
+export function pilotCeilingMessage(locale: PilotLocale, key: PilotCeilingKey): string {
   const max = PILOT_CEILINGS[key];
   const label = PILOT_CEILING_LABELS[key][locale];
   const lead =
     locale === "es"
       ? `Piloto alojado: esta organización ha alcanzado su límite de ${max} ${label}.`
       : `Hosted pilot: this organization has reached its ceiling of ${max} ${label}.`;
-  return `${lead} ${waysOut(locale, exportUrl)} ${pilotKeepGoing(locale)}`;
+  return `${lead} ${waysOut(locale)} ${pilotKeepGoing(locale)}`;
 }
 
 export function pilotOneOrganizationMessage(locale: PilotLocale): string {
   return locale === "es"
-    ? `Piloto alojado: una organización por cuenta. Para llevar varias organizaciones, pide una instancia gestionada (${PILOT_MANAGED_URL.es}).`
-    : `Hosted pilot: one organization per account. To run several organizations, ask for a managed instance (${PILOT_MANAGED_URL.en}).`;
+    ? `Piloto alojado: una organización por cuenta. Para llevar varias organizaciones, pide una instancia gestionada.`
+    : `Hosted pilot: one organization per account. To run several organizations, ask for a managed instance.`;
 }

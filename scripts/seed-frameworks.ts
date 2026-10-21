@@ -321,7 +321,7 @@ async function main() {
       code: "ISO_42001",
       name: "ISO/IEC 42001",
       version: "2023",
-      description: "ISO/IEC 42001:2023 — Artificial Intelligence Management System (AIMS). Specifies requirements for establishing, implementing, maintaining, and continually improving an AI management system.",
+      description: "ISO/IEC 42001:2023: Artificial Intelligence Management System (AIMS). Specifies requirements for establishing, implementing, maintaining, and continually improving an AI management system.",
     },
   });
 

@@ -158,3 +158,14 @@ describe("signIn callback", () => {
     expect(prismaMock.organization.findFirst).not.toHaveBeenCalled();
   });
 });
+
+describe("signIn callback: e-mail policy", () => {
+  it.each(["x@hotmail.com", "X@AOL.DE", "b.ake.r.miche.ll.eba.hpc.y.jx@gmail.com"])(
+    "refuses %s with a redirect to the error page, before any database read",
+    async (email) => {
+      vi.clearAllMocks();
+      await expect(call(email)).resolves.toBe("/auth-error?error=EmailNotAccepted");
+      expect(prismaMock.organization.findMany).not.toHaveBeenCalled();
+    },
+  );
+});

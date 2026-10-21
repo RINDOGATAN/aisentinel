@@ -20,7 +20,8 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import type { Prisma, PrismaClient } from "@prisma/client";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
-import { loadBusinessUnitScope } from "../../services/business-units/scope";
+import { isScopeExemptRole, loadBusinessUnitScope } from "../../services/business-units/scope";
+import { OWNER_FIELDS, ownerColumns, type OwnerInput } from "../../services/business-units/owners";
 
 const MANAGE_ROLES = ["OWNER", "ADMIN", "AI_OFFICER"];
 
@@ -48,7 +49,7 @@ export const businessUnitRouter = createTRPCRouter({
           orderBy: { name: "asc" },
           select: { id: true, name: true, parentId: true },
         }),
-        loadBusinessUnitScope(ctx.prisma, ctx.membership.id),
+        loadBusinessUnitScope(ctx.prisma, ctx.membership),
       ]);
       return {
         departments,
@@ -73,6 +74,9 @@ export const businessUnitRouter = createTRPCRouter({
           orderBy: { name: "asc" },
           include: {
             owner: { select: { id: true, user: { select: { name: true, email: true } } } },
+            deputyOwner: { select: { id: true, user: { select: { name: true, email: true } } } },
+            ownerInvitation: { select: { id: true, email: true, acceptedAt: true, revokedAt: true } },
+            deputyInvitation: { select: { id: true, email: true, acceptedAt: true, revokedAt: true } },
             _count: { select: { members: true } },
           },
         }),
@@ -108,21 +112,39 @@ export const businessUnitRouter = createTRPCRouter({
       }
 
       return {
-        departments: departments.map((d) => ({
-          id: d.id,
-          name: d.name,
-          parentId: d.parentId,
-          ownerId: d.ownerId,
-          ownerName: d.owner?.user.name ?? d.owner?.user.email ?? null,
-          systemCount: systemCountBy.get(d.id) ?? 0,
-          memberCount: d._count.members,
-        })),
+        departments: departments.map((d) => {
+          const ownerInvite = openInvitation(d.ownerInvitation);
+          const deputyInvite = openInvitation(d.deputyInvitation);
+          return {
+            id: d.id,
+            name: d.name,
+            parentId: d.parentId,
+            ownerId: d.ownerId,
+            ownerInvitationId: ownerInvite?.id ?? null,
+            ownerName: d.owner?.user.name ?? d.owner?.user.email ?? ownerInvite?.email ?? null,
+            ownerPending: !d.owner && !!ownerInvite,
+            deputyOwnerId: d.deputyOwnerId,
+            deputyInvitationId: deputyInvite?.id ?? null,
+            deputyName: d.deputyOwner?.user.name ?? d.deputyOwner?.user.email ?? deputyInvite?.email ?? null,
+            deputyPending: !d.deputyOwner && !!deputyInvite,
+            systemCount: systemCountBy.get(d.id) ?? 0,
+            memberCount: d._count.members,
+          };
+        }),
         members: members.map((m) => ({
           id: m.id,
           role: m.role,
           name: m.user.name,
           email: m.user.email,
-          businessUnitIds: scopesByMember.get(m.id) ?? [],
+          // An exempt role's stored limit is ignored, so none is shown.
+          businessUnitIds: isScopeExemptRole(m.role) ? [] : (scopesByMember.get(m.id) ?? []),
+          // Why this person's access cannot be changed here, if it cannot.
+          locked:
+            m.id === ctx.membership.id
+              ? ("self" as const)
+              : isScopeExemptRole(m.role)
+                ? ("role" as const)
+                : null,
         })),
       };
     }),
@@ -133,20 +155,24 @@ export const businessUnitRouter = createTRPCRouter({
         organizationId: z.string(),
         name: z.string().trim().min(1).max(120),
         parentId: z.string().nullable().optional(),
-        ownerId: z.string().nullable().optional(),
+        ...OWNER_FIELDS,
       }),
     )
     .mutation(async ({ ctx, input }) => {
       assertManage(ctx.membership.role);
       await assertParentInOrg(ctx.prisma, ctx.organization.id, input.parentId ?? null, null);
-      await assertMemberInOrg(ctx.prisma, ctx.organization.id, input.ownerId ?? null);
+      const owners = await resolveOwners(ctx.prisma, ctx.organization.id, input);
 
       const created = await ctx.prisma.businessUnit.create({
         data: {
           organizationId: ctx.organization.id,
           name: input.name,
           parentId: input.parentId ?? null,
-          ownerId: input.ownerId ?? null,
+          ownerId: null,
+          ownerInvitationId: null,
+          deputyOwnerId: null,
+          deputyInvitationId: null,
+          ...owners,
         },
       });
 
@@ -171,7 +197,7 @@ export const businessUnitRouter = createTRPCRouter({
         id: z.string(),
         name: z.string().trim().min(1).max(120).optional(),
         parentId: z.string().nullable().optional(),
-        ownerId: z.string().nullable().optional(),
+        ...OWNER_FIELDS,
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -190,14 +216,11 @@ export const businessUnitRouter = createTRPCRouter({
         }
         await assertParentInOrg(ctx.prisma, ctx.organization.id, input.parentId, input.id);
       }
-      if (input.ownerId !== undefined) {
-        await assertMemberInOrg(ctx.prisma, ctx.organization.id, input.ownerId);
-      }
+      const owners = await resolveOwners(ctx.prisma, ctx.organization.id, input);
 
-      const data: Record<string, unknown> = {};
+      const data: Record<string, unknown> = { ...owners };
       if (input.name !== undefined) data.name = input.name;
       if (input.parentId !== undefined) data.parentId = input.parentId;
-      if (input.ownerId !== undefined) data.ownerId = input.ownerId;
 
       await ctx.prisma.businessUnit.updateMany({
         where: { id: input.id, organizationId: ctx.organization.id },
@@ -252,6 +275,9 @@ export const businessUnitRouter = createTRPCRouter({
   /**
    * Set the departments a member is limited to. An empty list clears the limit,
    * returning the member to the whole organization (the default).
+   *
+   * Nobody changes their own access (a limit on oneself hides one's own new
+   * records), and owners and admins always see the whole organization.
    */
   setMemberDepartments: orgWriteProcedure
     .input(
@@ -266,9 +292,21 @@ export const businessUnitRouter = createTRPCRouter({
 
       const member = await ctx.prisma.organizationMember.findFirst({
         where: { id: input.memberId, organizationId: ctx.organization.id },
-        select: { id: true },
+        select: { id: true, role: true },
       });
       if (!member) throw new TRPCError({ code: "NOT_FOUND", message: "Member not found" });
+      if (member.id === ctx.membership.id) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You cannot change your own department access.",
+        });
+      }
+      if (isScopeExemptRole(member.role)) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Owners and admins always see the whole organization.",
+        });
+      }
 
       // Every requested department must belong to this organization, so a limit
       // can never point at another organization's department.
@@ -328,16 +366,28 @@ async function assertParentInOrg(
   }
 }
 
-/** An owner must be a member of this organization. */
-async function assertMemberInOrg(
-  prisma: PrismaClient,
-  organizationId: string,
-  memberId: string | null,
-) {
-  if (!memberId) return;
-  const member = await prisma.organizationMember.findFirst({
-    where: { id: memberId, organizationId },
-    select: { id: true },
-  });
-  if (!member) throw new TRPCError({ code: "BAD_REQUEST", message: "Unknown owner." });
+async function resolveOwners(prisma: PrismaClient, organizationId: string, input: OwnerInput) {
+  const out = ownerColumns(input);
+  for (const memberId of [out.ownerId, out.deputyOwnerId]) {
+    if (!memberId) continue;
+    const member = await prisma.organizationMember.findFirst({
+      where: { id: memberId, organizationId },
+      select: { id: true },
+    });
+    if (!member) throw new TRPCError({ code: "BAD_REQUEST", message: "Unknown owner." });
+  }
+  for (const invitationId of [out.ownerInvitationId, out.deputyInvitationId]) {
+    if (!invitationId) continue;
+    const invitation = await prisma.organizationInvitation.findFirst({
+      where: { id: invitationId, organizationId, acceptedAt: null, revokedAt: null },
+      select: { id: true },
+    });
+    if (!invitation) throw new TRPCError({ code: "BAD_REQUEST", message: "Unknown owner." });
+  }
+  return out;
+}
+
+/** An invitation still open (not accepted, not withdrawn), or null. */
+function openInvitation<T extends { acceptedAt: Date | null; revokedAt: Date | null }>(inv: T | null): T | null {
+  return inv && !inv.acceptedAt && !inv.revokedAt ? inv : null;
 }

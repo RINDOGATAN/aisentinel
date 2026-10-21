@@ -22,25 +22,17 @@ import { Globe2, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
+import { useAutoSave } from "@/lib/use-auto-save";
+import { CARD_HEADER_WITH_STATUS, CardSaveStatus } from "@/components/ui/save-status";
+import { Instruction } from "@/components/ui/instruction";
 import { hasTemplateCopyMark } from "@/config/client-template";
+// Which questions are shown, and the rule of step 1.2 that reads the answers,
+// come from one place (src/config/obligation-screenings.ts).
+import { regimeQuestionsFor, type RegimeOrgQuestion } from "@/config/obligation-screenings";
 
 type Answer = "NOT_ASSESSED" | "YES" | "NO";
 
-type OrgFactKey =
-  | "isPublicAgency"
-  | "isHealthCarrier"
-  | "isHealthcareProvider"
-  | "isCoveredGenAiProvider"
-  | "processesConsumerHealthData";
-
-/** Which declared jurisdictions make a question worth asking. */
-const RELEVANT_TO: Record<OrgFactKey, string[]> = {
-  isPublicAgency: ["US_TX", "US_WA"],
-  isHealthCarrier: ["US_WA"],
-  isHealthcareProvider: ["US_TX"],
-  isCoveredGenAiProvider: ["US_WA"],
-  processesConsumerHealthData: ["US_WA"],
-};
+type OrgFactKey = RegimeOrgQuestion;
 
 const CITATIONS: Record<OrgFactKey, string> = {
   isPublicAgency: "TRAIGA § 552.051(a) · RCW 43.105",
@@ -50,14 +42,6 @@ const CITATIONS: Record<OrgFactKey, string> = {
   processesConsumerHealthData: "RCW 19.373",
 };
 
-const ORDER: OrgFactKey[] = [
-  "isPublicAgency",
-  "isHealthcareProvider",
-  "isHealthCarrier",
-  "isCoveredGenAiProvider",
-  "processesConsumerHealthData",
-];
-
 export function RegimeScreeningCard({
   organizationId,
   canWrite,
@@ -66,7 +50,6 @@ export function RegimeScreeningCard({
   canWrite: boolean;
 }) {
   const t = useTranslations("regimes");
-  const tc = useTranslations("common");
   const utils = trpc.useUtils();
   const [edits, setEdits] = useState<Partial<Record<OrgFactKey, Answer>>>({});
 
@@ -75,53 +58,60 @@ export function RegimeScreeningCard({
   const { data: org } = trpc.organization.getById.useQuery({ organizationId });
   const jurisdictions = (org?.operatingJurisdictions ?? []) as string[];
 
-  const { data: systems } = trpc.aiSystem.list.useQuery(
-    { organizationId, limit: 1 },
+  // The organisation's own answers: no system is needed to read them.
+  const { data: orgFacts } = trpc.regimes.getOrgFacts.useQuery(
+    { organizationId },
     { enabled: !!organizationId },
   );
-  const firstSystemId = systems?.items?.[0]?.id;
 
-  // The organisation's answers live on the scope query, which needs a system
-  // to resolve against. With no systems registered there is nothing to screen.
-  const { data } = trpc.regimes.getScope.useQuery(
-    { organizationId, aiSystemId: firstSystemId ?? "" },
-    { enabled: !!organizationId && !!firstSystemId },
+  const invalidate = () => {
+    void utils.regimes.getScope.invalidate();
+    void utils.regimes.getOrgFacts.invalidate();
+    void utils.organization.getById.invalidate();
+    void utils.programPath.status.invalidate();
+    void utils.unified.getTemplate.invalidate();
+    void utils.compliance.getFrameworkCounts.invalidate();
+  };
+
+  // Each answer saves as it is chosen, and only the answers changed here are
+  // sent: the server merges them into what it holds, so an answer this card
+  // has not loaded yet is never overwritten.
+  const save = trpc.regimes.setOrgFacts.useMutation({ onSuccess: invalidate });
+  const autosave = useAutoSave<Partial<Record<OrgFactKey, Answer>>>(
+    (facts) => save.mutateAsync({ organizationId, ...facts }),
+    { onError: (err) => toast.error(err instanceof Error ? err.message : String(err)) },
   );
 
-  const save = trpc.regimes.setOrgFacts.useMutation({
+  // The explicit confirmation of answers copied from another client's template.
+  const confirm = trpc.regimes.setOrgFacts.useMutation({
     onSuccess: () => {
-      setEdits({});
       toast.success(t("saved"));
-      void utils.regimes.getScope.invalidate();
-      void utils.organization.getById.invalidate();
-      void utils.programPath.status.invalidate();
-      void utils.unified.getTemplate.invalidate();
-      void utils.compliance.getFrameworkCounts.invalidate();
+      invalidate();
     },
     onError: (err) => toast.error(err.message),
   });
 
-  const relevant = ORDER.filter((key) =>
-    RELEVANT_TO[key].some((j) => jurisdictions.includes(j)),
-  );
+  const relevant = regimeQuestionsFor(jurisdictions);
   if (relevant.length === 0) return null;
 
-  const saved = (data?.orgFacts ?? {}) as Record<OrgFactKey, Answer>;
+  const saved = (orgFacts ?? {}) as Record<OrgFactKey, Answer>;
   const value = (key: OrgFactKey): Answer => edits[key] ?? saved[key] ?? "NOT_ASSESSED";
-  const dirty = Object.keys(edits).length > 0;
   // Answers copied from another client's template: saving them, changed or
   // not, is what confirms them for this client.
   // Only once the saved answers are loaded, so confirming never sends blanks.
-  const copied = hasTemplateCopyMark(org?.settings) && !!data;
+  const copied = hasTemplateCopyMark(org?.settings) && !!orgFacts;
   const options: Answer[] = ["YES", "NO", "NOT_ASSESSED"];
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className={CARD_HEADER_WITH_STATUS}>
         <CardTitle className="text-base flex items-center gap-2">
           <Globe2 className="w-4 h-4 text-primary" />
           {t("orgTitle")}
         </CardTitle>
+        {canWrite && (
+          <CardSaveStatus status={autosave.status} onRetry={autosave.retry} testId="regime-save-status" />
+        )}
         <CardDescription>{t("orgDescription")}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-5">
@@ -137,13 +127,18 @@ export function RegimeScreeningCard({
                 <button
                   key={opt}
                   type="button"
-                  disabled={!canWrite || save.isPending}
-                  onClick={() => setEdits((prev) => ({ ...prev, [key]: opt }))}
+                  disabled={!canWrite}
+                  aria-pressed={value(key) === opt}
+                  onClick={() => {
+                    const next = { ...edits, [key]: opt };
+                    setEdits(next);
+                    autosave.push(next);
+                  }}
                   className={[
                     "rounded-md border px-2.5 py-1 text-xs transition-colors disabled:opacity-50",
                     value(key) === opt
                       ? "border-primary bg-primary/10 text-primary font-medium"
-                      : "border-border text-muted-foreground hover:border-primary/40",
+                      : "border-input text-foreground hover:border-primary/60",
                   ].join(" ")}
                 >
                   {t(`answer.${opt}`)}
@@ -156,24 +151,24 @@ export function RegimeScreeningCard({
           {t("reviewMarkerNote")}
         </p>
         {copied && (
-          <p className="text-xs text-foreground" role="status">
+          <Instruction tone="box" role="status">
             {t("copiedFromTemplate")}
-          </p>
+          </Instruction>
         )}
-        {canWrite && (
+        {canWrite && copied && (
           <div className="flex justify-end">
             <Button
               size="sm"
-              disabled={(!dirty && !copied) || save.isPending}
+              disabled={confirm.isPending}
               onClick={() =>
-                save.mutate({
+                confirm.mutate({
                   organizationId,
                   ...Object.fromEntries(relevant.map((k) => [k, value(k)])),
                 })
               }
             >
-              {save.isPending && <Loader2 className="w-3 h-3 mr-2 animate-spin" />}
-              {copied && !dirty ? t("confirmCopied") : tc("save")}
+              {confirm.isPending && <Loader2 className="w-3 h-3 mr-2 animate-spin" />}
+              {t("confirmCopied")}
             </Button>
           </div>
         )}

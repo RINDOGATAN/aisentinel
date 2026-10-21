@@ -5,8 +5,8 @@
 import { useId, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
-import { frameworksData, isUnderReview } from "@/lib/frameworks/model";
+import { useLocale, useTranslations } from "next-intl";
+import { frameworksDataFor, isUnderReview } from "@/lib/frameworks/model";
 import { isCellDimmed, toggleHighlight } from "@/lib/frameworks/highlight";
 import { CellDetail, type CellRef } from "./cell-detail";
 import { DEPTH_FILL, DepthChip } from "./depth";
@@ -46,7 +46,7 @@ export function FrameworksWheel() {
   const t = useTranslations("docs.frameworks");
   const router = useRouter();
   const hatchId = `hatch-${useId().replace(/:/g, "")}`;
-  const { frameworks: F, rings: R } = frameworksData;
+  const { frameworks: F, rings: R } = frameworksDataFor(useLocale());
   const n = F.length;
   const step = (R1 - R0) / R.length;
 

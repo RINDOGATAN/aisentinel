@@ -33,13 +33,16 @@ describe("export integrity", () => {
     expect(new Date(stamp.generatedAt).toString()).not.toBe("Invalid Date");
   });
 
-  it("says in both languages how many packs still lack sign-off", async () => {
+  it("counts the rule packs without a pending-sign-off note, in both languages", async () => {
     const stamp = await exportStamp();
-    const pending = stamp.rulePacks.filter((p) => p.signOff !== "signed-off").length;
-    expect(stampLines(stamp, "en").join(" ")).toContain(`${pending} pending legal sign-off`);
-    expect(stampLines(stamp, "es").join(" ")).toContain(
-      `${pending} pendientes de validación jurídica`,
-    );
+    const en = stampLines(stamp, "en").join(" ");
+    const es = stampLines(stamp, "es").join(" ");
+    expect(en).toContain(`Rule packs: ${stamp.rulePacks.length}`);
+    expect(es).toContain(`Paquetes de reglas: ${stamp.rulePacks.length}`);
+    expect(en).not.toMatch(/pending|sign-off/i);
+    expect(es).not.toMatch(/pendiente|validación/i);
+    const manifest = renderManifest(stamp, [], "en") + renderManifest(stamp, [], "es");
+    expect(manifest).not.toMatch(/Sign-off|Validación|pending|signed-off/);
   });
 
   it("lists every file with its digest in the manifest", async () => {

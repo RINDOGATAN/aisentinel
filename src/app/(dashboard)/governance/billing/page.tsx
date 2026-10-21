@@ -17,10 +17,13 @@ import { useTranslations } from "next-intl";
 import { features } from "@/config/features";
 import { brand } from "@/config/brand";
 import { formatPrice } from "@/lib/currency";
+import { useChargeCurrency } from "@/components/charge-currency";
 import { useFormatDate } from "@/lib/use-format-date";
 
 export default function BillingPage() {
   const t = useTranslations("billing");
+  // The currency the customer will be charged (src/components/charge-currency.tsx).
+  const currency = useChargeCurrency();
   const { formatDate: fmtDate } = useFormatDate();
   const { organization } = useOrganization();
   const [enableSkill, setEnableSkill] = useState<{
@@ -226,7 +229,7 @@ export default function BillingPage() {
           <Card>
             <CardContent className="pt-6">
               <p className="text-sm text-muted-foreground">{t("summaryMonthlyTotal")}</p>
-              <p className="text-2xl font-bold">{formatPrice(monthlyTotal)}</p>
+              <p className="text-2xl font-bold">{formatPrice(monthlyTotal, currency)}</p>
             </CardContent>
           </Card>
           <Card>
@@ -314,7 +317,7 @@ export default function BillingPage() {
                   <>
                     {features.stripeEnabled ? (
                       <span className="text-sm text-muted-foreground">
-                        {formatPrice((row.priceAmount ?? 900) / 100)}/mo
+                        {formatPrice((row.priceAmount ?? 900) / 100, currency)}/mo
                       </span>
                     ) : (
                       <Badge variant="secondary" className="text-xs">
@@ -347,7 +350,7 @@ export default function BillingPage() {
             <div className="flex items-center justify-between rounded-lg border border-primary/30 bg-primary/5 p-3 mt-4">
               <p className="text-sm text-muted-foreground">
                 {selectedIds.size} feature{selectedIds.size !== 1 ? "s" : ""} selected
-                &mdash; {formatPrice(selectedIds.size * 9)}/month
+                &mdash; {formatPrice(selectedIds.size * 9, currency)}/month
               </p>
               <Button size="sm" onClick={handleEnableSelected}>
                 Enable Selected ({selectedIds.size})

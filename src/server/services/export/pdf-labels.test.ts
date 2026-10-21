@@ -58,7 +58,7 @@ describe("export labels", () => {
     expect(roleLabel("DEPLOYER", "es")).toBe("Responsable del despliegue");
     expect(statusLabel("NOT_ASSESSED", "es")).toBe("Sin evaluar");
     expect(riskLabel("UNCLASSIFIED", "es")).toBe("Sin clasificar");
-    expect(assessmentTypeLabel("FRIA", "es")).toBe("Evaluación de impacto relativa a los derechos fundamentales");
+    expect(assessmentTypeLabel("FRIA", "es")).toBe("EIDF");
     for (const [key, value] of strings(es)) {
       expect(value, key).not.toMatch(/[–—]|--/);
       expect(value, key).not.toMatch(/\busted\b|\bejecut(ar|a|an|ando|ado)\b/i);

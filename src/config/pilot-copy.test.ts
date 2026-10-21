@@ -26,8 +26,8 @@ const PUBLIC_TEXT: Record<string, string> = {
 
 /**
  * The banner once said the pilot had "no security certification", and later "no
- * contractual safeguards". Now it says what to choose for real
- * data instead, and every repeat of it (README, llms files, docs pages, strings) follows. The versioned disclosure
+ * contractual safeguards", then what to choose for real data. The hosted pilot now accepts
+ * real client data, and every repeat of it (README, llms files, docs pages, strings) says so. The versioned disclosure
  * is the one place that speaks of certifications: it is a fact a person
  * acknowledges, not the banner, and it changes only with a new version.
  */
@@ -75,8 +75,10 @@ describe("the old banner phrase", () => {
     expect("For real data, choose a paid plan or a managed instance.").not.toMatch(OLD_PHRASE);
   });
 
-  it.each(Object.keys(PUBLIC_TEXT))("%s says what the banner says instead", (file) => {
-    expect(PUBLIC_TEXT[file]).toMatch(/a paid plan or a managed instance/);
+  it.each(Object.keys(PUBLIC_TEXT))("%s says the hosted pilot accepts real client data", (file) => {
+    expect(PUBLIC_TEXT[file]).toMatch(/real client data/);
+    expect(PUBLIC_TEXT[file]).toMatch(/all our sub-processors have the necessary safeguards and certifications/);
+    expect(PUBLIC_TEXT[file]).not.toMatch(/for real (client )?data, (choose )?a paid plan/i);
   });
 });
 
@@ -106,9 +108,9 @@ describe("what the public copy says about the hosted pilot", () => {
   it("the docs and lock strings tie the price to the kit, in both languages", () => {
     const enNotice = (en as { docs: { premiumNotice: Record<string, string> } }).docs.premiumNotice;
     const esNotice = (es as { docs: { premiumNotice: Record<string, string> } }).docs.premiumNotice;
-    expect(enNotice.hosted).toMatch(/hosted pilot/);
+    expect(enNotice.hosted).toMatch(/TODO.LAW cloud.*free pilot.*paid plan/);
     expect(enNotice.selfHosted).toMatch(/your own hardware/);
-    expect(esNotice.hosted).toMatch(/piloto alojado/);
+    expect(esNotice.hosted).toMatch(/nube de TODO.LAW.*piloto gratuito.*plan de pago/);
     expect(esNotice.selfHosted).toMatch(/tu propio hardware/);
     expect((en as { premiumShowcase: { lockedHint: string } }).premiumShowcase.lockedHint).toMatch(/kit/);
     expect((es as { premiumShowcase: { lockedHint: string } }).premiumShowcase.lockedHint).toMatch(/kit/);

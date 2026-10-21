@@ -65,7 +65,9 @@ const s = StyleSheet.create({
   coverFacts: { marginTop: tokens.space[7] },
   coverFactRow: { flexDirection: "row", marginBottom: 3 },
   coverFactLabel: {
-    width: 150,
+    // Wide enough for the longest label on one line ("Derecho revisado a
+    // fecha de" in letter-spaced capitals).
+    width: 185,
     fontSize: tokens.typography.size.caption,
     color: tokens.color.text.muted,
     textTransform: "uppercase",

@@ -130,10 +130,13 @@ describe("who, when and on what method", () => {
     expect(md).toContain(artifact.lawReviewedAsOf);
   });
 
-  it("lists the regulatory content it cites with the sign-off status of each part", () => {
+  it("lists the regulatory content it cites with the review date of each part, and no sign-off status", () => {
     const md = renderArtifactMarkdown(build("en"));
-    expect(md).toMatch(/\| Content \| Law reviewed \| Sign-off \|/);
-    expect(md).toMatch(/Pending|Signed off/);
+    expect(md).toMatch(/\| Content \| Law reviewed \|\n/);
+    expect(md).not.toMatch(/Sign-off|Pending|Signed off/);
+    const es = renderArtifactMarkdown(build("es"));
+    expect(es).toMatch(/\| Contenido \| Derecho revisado \|\n/);
+    expect(es).not.toMatch(/Validación|Pendiente|Validado/);
     // Only what this document cites: an EU system's table names the EU packs
     // and not, say, Texas.
     expect(md).toContain("UNIFIED ASSESSMENT");
@@ -278,7 +281,7 @@ describe("what remains open, and what the document is not", () => {
     }
   });
 
-  it.each(LOCALES)("%s: closes by saying it is not legal advice and not a certification", (locale) => {
+  it.each(LOCALES)("%s: closes by saying it is not a certification, with no not-legal-advice phrase", (locale) => {
     const artifact = build(locale);
     const last = artifact.sections[artifact.sections.length - 1];
     const text = last.blocks
@@ -286,10 +289,12 @@ describe("what remains open, and what the document is not", () => {
       .map((b) => (b.kind === "paragraph" ? b.text : ""))
       .join(" ");
     if (locale === "es") {
-      expect(text).toContain("No es asesoramiento jurídico");
+      expect(text).not.toContain("asesoramiento jurídico");
+      expect(text).toContain("No crea una relación profesional con nadie");
       expect(text).toContain("ni la certificación de un tercero");
     } else {
-      expect(text).toContain("not legal advice");
+      expect(text).not.toContain("legal advice");
+      expect(text).toContain("It creates no professional relationship with anyone");
       expect(text).toContain("not a third party's certification");
     }
   });

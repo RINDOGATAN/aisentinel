@@ -149,7 +149,7 @@ export const AI_GOVERNANCE_TEMPLATES: AIGovernanceTemplate[] = [
         processesPersonalData: true,
         riskLevel: "HIGH",
         riskRationale: "AI system intended for use in healthcare that directly influences clinical decisions affecting patient health and safety. High-risk via EU AI Act Art. 6(1): clinical decision support is typically software as a medical device under the MDR (Reg. (EU) 2017/745, Rule 11 — usually Class IIa or higher), i.e. a product covered by Annex I Union harmonisation legislation subject to third-party conformity assessment. Not an Annex III listing.",
-        annexIIICategory: "Art. 6(1) / Annex I (MDR) route — not Annex III",
+        annexIIICategory: "Art. 6(1) / Annex I (MDR) route, not Annex III",
         gateType: "PRE_DEPLOYMENT",
       },
       {
@@ -161,7 +161,7 @@ export const AI_GOVERNANCE_TEMPLATES: AIGovernanceTemplate[] = [
         processesPersonalData: true,
         riskLevel: "HIGH",
         riskRationale: "AI system processing sensitive health data and directly influencing diagnostic decisions. As medical-device software under the MDR (Reg. (EU) 2017/745), it is high-risk via EU AI Act Art. 6(1)/Annex I — the medical-device route, not Annex III. Requires rigorous validation and human oversight.",
-        annexIIICategory: "Art. 6(1) / Annex I (MDR) route — not Annex III",
+        annexIIICategory: "Art. 6(1) / Annex I (MDR) route, not Annex III",
         gateType: "PRE_DEPLOYMENT",
       },
       {
@@ -185,7 +185,7 @@ export const AI_GOVERNANCE_TEMPLATES: AIGovernanceTemplate[] = [
         processesPersonalData: true,
         riskLevel: "HIGH",
         riskRationale: "Safety-critical AI system where errors could lead to adverse drug events. Directly impacts patient safety through medication-related decisions. As clinical software under the MDR, it is high-risk via EU AI Act Art. 6(1)/Annex I (medical-device route), not Annex III.",
-        annexIIICategory: "Art. 6(1) / Annex I (MDR) route — not Annex III",
+        annexIIICategory: "Art. 6(1) / Annex I (MDR) route, not Annex III",
         gateType: "PRE_DEPLOYMENT",
       },
     ],

@@ -14,6 +14,7 @@ import { Loader2 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useUserType } from "@/lib/use-user-type";
+import { DpaAcceptCheckbox } from "@/components/pilot/dpa-accept";
 
 export function OrganizationSetup() {
   const [name, setName] = useState("");
@@ -24,6 +25,10 @@ export function OrganizationSetup() {
   // A consultant's first organization is their first client; more are added
   // later from My clients. Same flow, words that match what they are doing.
   const { isConsultant } = useUserType();
+  // Hosted pilot: the data processing agreement is accepted when the
+  // organization is opened (src/config/pilot-dpa.ts). Never asked on the kit.
+  const hosted = !!trpc.pilot.mode.useQuery(undefined, { staleTime: Infinity }).data?.active;
+  const [acceptDpa, setAcceptDpa] = useState(false);
 
   const createOrg = trpc.organization.create.useMutation({
     onSuccess: (org) => {
@@ -49,6 +54,7 @@ export function OrganizationSetup() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
+    if (hosted && !acceptDpa) return;
 
     setIsSubmitting(true);
     try {
@@ -56,7 +62,7 @@ export function OrganizationSetup() {
       // slug (e.g. only non-Latin characters) still gets a valid one.
       const base = generateSlug(name);
       const slug = base.length >= 2 ? base.slice(0, 40) : "org";
-      await createOrg.mutateAsync({ name: name.trim(), slug });
+      await createOrg.mutateAsync({ name: name.trim(), slug, acceptDpa: hosted ? acceptDpa : undefined });
     } catch (error) {
       console.error("Failed to create organization:", error);
       toast.error(t("createFailed"));
@@ -88,7 +94,14 @@ export function OrganizationSetup() {
                 required
               />
             </div>
-            <Button type="submit" className="w-full" disabled={isSubmitting || !name.trim()}>
+            {hosted && (
+              <DpaAcceptCheckbox id="accept-dpa" checked={acceptDpa} onCheckedChange={setAcceptDpa} />
+            )}
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isSubmitting || !name.trim() || (hosted && !acceptDpa)}
+            >
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />

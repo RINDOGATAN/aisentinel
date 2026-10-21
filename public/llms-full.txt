@@ -4,7 +4,7 @@
 
 AI SENTINEL by TODO.LAW is an open-core AI governance platform for organizations managing AI systems under the EU AI Act, NIST AI RMF, ISO 42001 and AIUC-1, the certification standard for AI agents, among nine frameworks. It provides a complete toolkit for AI system inventory, risk classification, compliance mapping, human oversight, incident management, and policy governance.
 
-Hosted pilot: https://aisentinel.todo.law (free and capped; every module open; for real data, a paid plan or a managed instance)
+Hosted pilot: https://aisentinel.todo.law (free and capped; every module open; real client data accepted: all our sub-processors have the necessary safeguards and certifications)
 Paid plans and managed instances: https://www.todo.law/run
 Documentation: https://aisentinel.todo.law/docs
 License: AGPL-3.0 (core) + proprietary premium modules for self-hosted installations
@@ -33,7 +33,7 @@ Maintain a comprehensive inventory of all AI systems, models, and agents across 
 ### Risk Classification
 URL: https://aisentinel.todo.law/docs/risk-classification
 
-Classify AI systems according to the EU AI Act's four-tier risk framework. Includes an Annex III high-risk category wizard and maintains a full classification history with audit trail.
+Classify AI systems according to the EU AI Act's four-tier risk framework. A rule screening of the registered facts suggests a level; you choose the level and the Annex III category. Maintains a full classification history with audit trail.
 
 **Risk tiers:**
 - **Unacceptable Risk**: Prohibited AI practices (social scoring, real-time biometric identification in public spaces, manipulation of vulnerable groups, emotion recognition in workplace/education)
@@ -135,7 +135,7 @@ Create, version, and manage AI governance policies with approval workflows and s
 
 ## Premium Modules ($60 a year each, self-hosted)
 
-On the hosted pilot every module, these included, is open to every organisation at no charge. The hosted service is a free, capped pilot: one organisation per account, edits for 15 days from the organisation's first sign-in (then read-only, with every export still available), and a records ceiling per organisation (25 AI systems, 50 vendors, 50 assessments, 25 incidents, 25 policies, 50 oversight gates, 10 threat models, 50 shadow AI reports, 10 proceedings, 10 board reports, 5 members). For real data, choose a paid plan or a managed instance (https://www.todo.law/run).
+On the hosted pilot every module, these included, is open to every organisation at no charge. The hosted service is a free, capped pilot: one organisation per account, edits for 15 days from the organisation's first sign-in (then read-only, with every export still available), and a records ceiling per organisation (25 AI systems, 50 vendors, 50 assessments, 25 incidents, 25 policies, 50 oversight gates, 10 threat models, 50 shadow AI reports, 10 proceedings, 10 board reports, 5 members). You can start free and use it with real client data: all our sub-processors have the necessary safeguards and certifications. To lift the caps: a paid plan, a managed instance or your own hardware (https://www.todo.law/run).
 
 Premium modules are sold only for self-hosted installations: $60 a year each, on the TODO.LAW marketplace (https://todo.law/marketplace), and activated offline in the app with a licence file.
 

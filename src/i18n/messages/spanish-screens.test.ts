@@ -124,3 +124,36 @@ describe("no hard-coded English or raw values on the recorded screens", () => {
     }
   });
 });
+
+/**
+ * Castilian uses the present perfect for recent or undated actions ("No se ha
+ * podido", "que has recibido", "Se ha guardado"); the simple past reads as
+ * Latin American. It stays only where the sentence states a finished time
+ * ("venció el 1 de enero de 2027"), so this list holds forms that are never
+ * dated in this product.
+ */
+const SIMPLE_PAST =
+  /(?<!\p{L})(no se pudo|no se pudieron|no pudo leerse|no pudieron leerse|se (?:guardó|envió|eliminó|copió|copiaron|marcó|evaluaron)|(?:recibiste|descargaste|registraste|enviaste|hiciste|observaste|respondiste|consultaste|comunicaste|documentaste|pediste|facilitaste|guardaste|declaraste|confirmaste|creaste|elegiste|marcaste))(?!\p{L})/iu;
+
+describe("tense", () => {
+  const bundles: Array<[string, unknown]> = [
+    ["src/i18n/messages/es.json", es],
+    ...["src/landing/i18n/es/ai-sentinel-startups.json", "src/landing/i18n/es/startups-auth.json", "src/content/frameworks/frameworks.es.json"].map(
+      (rel) => [rel, JSON.parse(read(rel))] as [string, unknown]
+    ),
+  ];
+
+  for (const [name, bundle] of bundles) {
+    it(`${name} uses the present perfect for recent actions`, () => {
+      expect(strings(bundle).filter(([, t]) => SIMPLE_PAST.test(t)).map(([k, t]) => `${k}: ${t}`)).toEqual([]);
+    });
+  }
+
+  it("the rule catches what it is meant to catch", () => {
+    expect(SIMPLE_PAST.test("No se pudo guardar")).toBe(true);
+    expect(SIMPLE_PAST.test("el archivo que recibiste")).toBe(true);
+    expect(SIMPLE_PAST.test("No se ha podido guardar")).toBe(false);
+    expect(SIMPLE_PAST.test("el archivo que has recibido")).toBe(false);
+    expect(SIMPLE_PAST.test("el plazo venció el 1 de enero de 2027")).toBe(false);
+  });
+});

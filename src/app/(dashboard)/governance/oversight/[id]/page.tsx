@@ -3,7 +3,7 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -51,6 +51,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { useEnumLabels } from "@/lib/enum-labels";
 import { STATUS_CHIP, STATUS_OUTLINE } from "@/components/ui/status-note";
 import { PageHeader } from "@/components/governance/page-header";
+import { DeleteRecordButton } from "@/components/governance/delete-record-button";
 
 const gateTypeKeys: Record<string, string> = {
   PRE_DEPLOYMENT: "gateTypePreDeployment",
@@ -96,7 +97,9 @@ export default function OversightGateDetailPage() {
   const { statusLabel } = useEnumLabels();
   const params = useParams();
   const id = params.id as string;
-  const { organization, canWrite, canDecide } = useOrganization();
+  const { organization, canWrite, canDecide, canDelete } = useOrganization();
+  const router = useRouter();
+  const tDelete = useTranslations("deleteRecord");
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [decisionForm, setDecisionForm] = useState({
@@ -124,6 +127,16 @@ export default function OversightGateDetailPage() {
     onError: (error) => {
       toast.error(error.message || t("toastError"));
     },
+  });
+
+  const deleteMutation = trpc.oversight.delete.useMutation({
+    onSuccess: () => {
+      toast.success(tDelete("gate.deleted"));
+      router.push("/governance/oversight");
+      void utils.oversight.invalidate();
+      void utils.aiSystem.getById.invalidate();
+    },
+    onError: (error) => toast.error(error.message),
   });
 
   const reopenMutation = trpc.oversight.update.useMutation({
@@ -202,6 +215,13 @@ export default function OversightGateDetailPage() {
         }
         actions={
           <>
+          {canDelete && (
+            <DeleteRecordButton
+              record="gate"
+              pending={deleteMutation.isPending}
+              onConfirm={() => deleteMutation.mutate({ organizationId: organization!.id, id })}
+            />
+          )}
           {(gate.status === "PASSED" || gate.status === "FAILED") && canWrite && (
             <Button
               variant="outline"

@@ -30,6 +30,17 @@ import { hasShadowAiAccess } from "@/server/services/licensing/entitlement";
 /** Most results per kind of record. */
 export const SEARCH_PER_KIND = 5;
 
+/** Most systems a picker shows at once; typing narrows the rest. */
+export const SYSTEM_PICK_LIMIT = 20;
+
+export interface SystemPick {
+  id: string;
+  name: string;
+  status: string;
+  /** The running number behind "AIS-001"; null until it is assigned. */
+  number: number | null;
+}
+
 export type SearchKind = "system" | "vendor" | "policy" | "assessment" | "gate" | "incident" | "shadowAi";
 
 export interface SearchHit {
@@ -41,7 +52,61 @@ export interface SearchHit {
   href: string;
 }
 
+const SYSTEM_PICK_SELECT = { id: true, name: true, status: true, number: true } as const;
+
 export const searchRouter = createTRPCRouter({
+  /**
+   * The system pickers (SystemPicker): AI systems by name across the whole
+   * organization, not a first page of it. Same scope as `names`: the caller's
+   * organization and, for a member limited to departments, those departments'
+   * systems. An empty query lists the first systems by name. `more` says that
+   * further systems match and typing would narrow them.
+   */
+  systems: organizationProcedure
+    .input(
+      z.object({
+        organizationId: z.string(),
+        q: z.string().trim().max(100).default(""),
+        /** Leaves out the systems already linked to this vendor. */
+        withoutVendorId: z.string().max(100).optional(),
+      })
+    )
+    .query(async ({ ctx, input }): Promise<{ items: SystemPick[]; more: boolean }> => {
+      const scope = await loadBusinessUnitScope(ctx.prisma, ctx.membership);
+      const and: Prisma.AISystemWhereInput[] = [];
+      const dept = businessUnitScopeWhere(scope);
+      if (dept) and.push(dept);
+      if (input.q) and.push({ name: { contains: input.q, mode: "insensitive" } });
+      // A system with no vendor is a candidate too: NOT (vendorId = x) alone
+      // would drop it, since the comparison with NULL is not true.
+      if (input.withoutVendorId) {
+        and.push({ OR: [{ vendorId: null }, { vendorId: { not: input.withoutVendorId } }] });
+      }
+      const rows = await ctx.prisma.aISystem.findMany({
+        where: { organizationId: ctx.organization.id, ...(and.length ? { AND: and } : {}) },
+        select: SYSTEM_PICK_SELECT,
+        orderBy: [{ name: "asc" }, { id: "asc" }],
+        take: SYSTEM_PICK_LIMIT + 1,
+      });
+      return { items: rows.slice(0, SYSTEM_PICK_LIMIT), more: rows.length > SYSTEM_PICK_LIMIT };
+    }),
+
+  /**
+   * One system by id for a picker that starts with a selection (an id from
+   * the address), so its name shows before any search. Null when the id is
+   * not a system the caller may see.
+   */
+  system: organizationProcedure
+    .input(z.object({ organizationId: z.string(), id: z.string().max(100) }))
+    .query(async ({ ctx, input }): Promise<SystemPick | null> => {
+      const scope = await loadBusinessUnitScope(ctx.prisma, ctx.membership);
+      const dept = businessUnitScopeWhere(scope) ?? {};
+      return ctx.prisma.aISystem.findFirst({
+        where: { id: input.id, organizationId: ctx.organization.id, ...dept },
+        select: SYSTEM_PICK_SELECT,
+      });
+    }),
+
   names: organizationProcedure
     .input(
       z.object({
@@ -54,7 +119,7 @@ export const searchRouter = createTRPCRouter({
       const contains = { contains: input.q, mode: "insensitive" as const };
       const take = SEARCH_PER_KIND;
 
-      const scope = await loadBusinessUnitScope(ctx.prisma, ctx.membership.id);
+      const scope = await loadBusinessUnitScope(ctx.prisma, ctx.membership);
       const dept = businessUnitScopeWhere(scope);
       const systemScope: Prisma.AISystemWhereInput = dept ?? {};
       const linked = dept ? { aiSystem: dept } : {};

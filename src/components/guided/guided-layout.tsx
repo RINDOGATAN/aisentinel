@@ -56,9 +56,13 @@ import { currentStepId, nextStep, overallProgress } from "./path";
 import { PathMenu } from "./path-menu";
 import { GlobalSearch } from "./global-search";
 import { DepartmentSwitch } from "./department-switch";
+import { ScopeNotice } from "@/components/governance/scope-notice";
 import { StepBand } from "./step-band";
+import { SettingsStepBand } from "./settings-step-band";
+import { GetHelpLink } from "./get-help-link";
 import { ProgressBar } from "./progress-ring";
 import { usePlanState, useProgramPath, useProgramPathRefresh } from "./use-program-path";
+import { trpc } from "@/lib/trpc";
 import { planDayText } from "./plan-text";
 import { useProgrammeOverview } from "./use-programme-overview";
 import { useMenuLocks } from "./use-menu-locks";
@@ -101,6 +105,12 @@ export function GuidedLayout({
   const { overview } = useProgrammeOverview();
   const plan = usePlanState();
   const { organization } = useOrganization();
+  // On the hosted pilot the banner counts the editing window's days; the plan's
+  // day count is then named, so the two are not read as one clock.
+  const pilot = trpc.pilot.status.useQuery(
+    { organizationId: organization?.id ?? "" },
+    { enabled: !!organization?.id, staleTime: 60 * 1000 },
+  );
   useProgramPathRefresh();
   // A lock beside a premium entry only where its page would show it locked.
   const locked = useMenuLocks();
@@ -122,7 +132,7 @@ export function GuidedLayout({
     clientMode: accountMode(userType) === "clients",
     t,
     overview: OVERVIEW,
-    planLine: planDayText(plan, t),
+    planLine: planDayText(plan, t, { labelled: !!pilot.data?.active }),
     // One quiet line under each step: its documents and their states.
     stepNotes: Object.fromEntries(
       Object.entries(
@@ -157,6 +167,7 @@ export function GuidedLayout({
             <GlobalSearch />
           </div>
           <div className="flex shrink-0 items-center gap-1 sm:gap-2">
+            <GetHelpLink />
             <PageHelpButton />
             <Button
               variant="ghost"
@@ -266,6 +277,13 @@ export function GuidedLayout({
               stepId={stepId}
               statuses={statuses}
             />
+            {/* Settings holds an editable copy of step 1.2's questions: say so there. */}
+            {pathname === SETTINGS_HREF && (
+              <div className="mb-4 sm:mb-6">
+                <SettingsStepBand />
+              </div>
+            )}
+            <ScopeNotice />
             {children}
           </main>
           {footer}
@@ -274,6 +292,8 @@ export function GuidedLayout({
     </div>
   );
 }
+
+const SETTINGS_HREF = "/governance/settings";
 
 /**
  * Top of the menu: the organisation. In client mode, the client's name opens

@@ -724,15 +724,15 @@ export const LAWFIRM_TOOLS: LawFirmTool[] = [
     categoryId: "DMS_KNOWLEDGE",
     description: {
       en: "Self-hostable, open-source AI-native legal suite: a deterministic harness of skills and knowledge bases for compliance, transactions, AI governance, and research — one-script deployment on the firm's own computer, no matter data leaves the premises.",
-      es: "Suite jurídica de IA nativa, de código abierto y autoalojable: un armazón determinista de skills y bases de conocimiento para cumplimiento, transacciones, gobernanza de IA e investigación; despliegue con un solo script en el ordenador del propio despacho, sin que los datos de los asuntos salgan de sus instalaciones.",
+      es: "Suite jurídica de IA nativa, de código abierto y autoalojable: un armazón determinista de habilidades y bases de conocimiento para cumplimiento, transacciones, gobernanza de IA e investigación; despliegue con un solo script en el ordenador del propio despacho, sin que los datos de los asuntos salgan de sus instalaciones.",
     },
     overrides: {
       riskLevel: "MINIMAL",
       // Added after the 2026-08-18 pack sign-off — carries its own PENDING
       // marker and rides the next content sign-off round.
       riskRationale: {
-        en: "Minimal risk as deployed: the suite runs on the firm's own hardware with no external data egress, its workflows are predominantly deterministic (auditable skills and versioned knowledge bases rather than free-form generation), no client data is used to train third-party models, and outputs remain subject to the firm's standard professional review. Transparency obligations under EU AI Act Art. 50 are correspondingly limited; the firm remains a private deployer outside Annex III 8(a).\n\nLaw reviewed as of 2026-08-18; professional-responsibility sign-off pending for this entry.",
-        es: "Riesgo mínimo tal como se despliega: la suite funciona en el hardware del propio despacho sin salida de datos al exterior, sus flujos de trabajo son predominantemente deterministas (skills auditables y bases de conocimiento versionadas en lugar de generación libre), no se utilizan datos de clientes para entrenar modelos de terceros y los resultados siguen sujetos a la revisión profesional habitual del despacho. Las obligaciones de transparencia del art. 50 del RIA son, en consecuencia, limitadas; el despacho sigue siendo un responsable del despliegue privado fuera del Anexo III 8 a).\n\nRevisión jurídica a fecha de 2026-08-18; pendiente de validación de responsabilidad profesional para esta entrada.",
+        en: "Minimal risk as deployed: the suite runs on the firm's own hardware with no external data egress, its workflows are predominantly deterministic (auditable skills and versioned knowledge bases rather than free-form generation), no client data is used to train third-party models, and outputs remain subject to the firm's standard professional review. Transparency obligations under EU AI Act Art. 50 are correspondingly limited; the firm remains a private deployer outside Annex III 8(a).\n\nLaw reviewed as of 2026-08-18.",
+        es: "Riesgo mínimo tal como se despliega: la suite funciona en el hardware del propio despacho sin salida de datos al exterior, sus flujos de trabajo son predominantemente deterministas (habilidades auditables y bases de conocimiento versionadas en lugar de generación libre), no se utilizan datos de clientes para entrenar modelos de terceros y los resultados siguen sujetos a la revisión profesional habitual del despacho. Las obligaciones de transparencia del art. 50 del RIA son, en consecuencia, limitadas; el despacho sigue siendo un responsable del despliegue privado fuera del Anexo III 8 a).\n\nRevisión jurídica a fecha de 2026-08-18.",
       },
     },
   },
@@ -746,8 +746,8 @@ export const LAWFIRM_POLICY_PACK: LawFirmPolicy[] = [
   {
     id: "lf-ai-use",
     title: {
-      en: "AI Use Policy — Law Firm",
-      es: "Política de uso de IA — Despacho de abogados",
+      en: "AI Use Policy: Law Firm",
+      es: "Política de uso de IA: despacho de abogados",
     },
     type: "AI_USAGE",
     description: {
@@ -756,7 +756,7 @@ export const LAWFIRM_POLICY_PACK: LawFirmPolicy[] = [
     },
     content: withMarker({
       en: "This policy governs the use of artificial intelligence tools by all lawyers, trainees, and staff of the firm. Only tools listed in the firm's approved-tool register may be used for client work. The register records each tool's approved configuration, permitted data categories, and the partner or committee that approved it. Any tool not on the register is prohibited for matter-related work until reviewed and approved.\n\nUse of personal accounts for matter data is prohibited. Client documents, matter facts, client identities, and privileged communications must never be entered into consumer AI accounts or free tiers. Firm-approved tools must be accessed exclusively through firm-provisioned accounts configured so that inputs are not used for model training.\n\nThe firm designates an AI Officer responsible for maintaining the register, reviewing new tools, coordinating training, and monitoring compliance. All personnel must complete AI-awareness training before receiving access to approved generative AI tools, covering capabilities, limitations, confidentiality risks, and this policy's requirements.\n\nUse of approved tools is logged where the platform permits, and logs form part of the firm's audit trail. Suspected breaches of this policy — including entry of client data into unapproved tools — must be reported to the AI Officer immediately and are handled under the AI Incident Response Policy.",
-      es: "Esta política regula el uso de herramientas de inteligencia artificial por todos los abogados, juristas en formación y personal del despacho. Solo las herramientas incluidas en el registro de herramientas aprobadas del despacho pueden utilizarse para trabajo de clientes. El registro recoge la configuración aprobada de cada herramienta, las categorías de datos permitidas y el socio o comité que la aprobó. Toda herramienta que no figure en el registro queda prohibida para trabajo relacionado con asuntos hasta su revisión y aprobación.\n\nQueda prohibido el uso de cuentas personales para datos de asuntos. Los documentos de clientes, los hechos de los asuntos, las identidades de los clientes y las comunicaciones amparadas por el secreto profesional no deben introducirse nunca en cuentas de IA de consumo ni en versiones gratuitas. Las herramientas aprobadas deben utilizarse exclusivamente a través de cuentas proporcionadas por el despacho, configuradas de modo que los datos introducidos no se utilicen para entrenar modelos.\n\nEl despacho designa un Responsable de IA encargado de mantener el registro, revisar nuevas herramientas, coordinar la formación y supervisar el cumplimiento. Todo el personal debe completar una formación de concienciación sobre IA antes de recibir acceso a las herramientas de IA generativa aprobadas, que cubra capacidades, limitaciones, riesgos de confidencialidad y los requisitos de esta política.\n\nEl uso de las herramientas aprobadas se registra cuando la plataforma lo permite, y los registros forman parte del registro de auditoría del despacho. Las sospechas de incumplimiento de esta política —incluida la introducción de datos de clientes en herramientas no aprobadas— deben comunicarse de inmediato al Responsable de IA y se gestionan conforme a la Política de respuesta a incidentes de IA.",
+      es: "Esta política regula el uso de herramientas de inteligencia artificial por todos los abogados, juristas en formación y personal del despacho. Solo las herramientas incluidas en el registro de herramientas aprobadas del despacho pueden utilizarse para trabajo de clientes. El registro recoge la configuración aprobada de cada herramienta, las categorías de datos permitidas y el socio o comité que la ha aprobado. Toda herramienta que no figure en el registro queda prohibida para trabajo relacionado con asuntos hasta su revisión y aprobación.\n\nQueda prohibido el uso de cuentas personales para datos de asuntos. Los documentos de clientes, los hechos de los asuntos, las identidades de los clientes y las comunicaciones amparadas por el secreto profesional no deben introducirse nunca en cuentas de IA de consumo ni en versiones gratuitas. Las herramientas aprobadas deben utilizarse exclusivamente a través de cuentas proporcionadas por el despacho, configuradas de modo que los datos introducidos no se utilicen para entrenar modelos.\n\nEl despacho designa un Responsable de IA encargado de mantener el registro, revisar nuevas herramientas, coordinar la formación y supervisar el cumplimiento. Todo el personal debe completar una formación de concienciación sobre IA antes de recibir acceso a las herramientas de IA generativa aprobadas, que cubra capacidades, limitaciones, riesgos de confidencialidad y los requisitos de esta política.\n\nEl uso de las herramientas aprobadas se registra cuando la plataforma lo permite, y los registros forman parte del registro de auditoría del despacho. Las sospechas de incumplimiento de esta política —incluida la introducción de datos de clientes en herramientas no aprobadas— deben comunicarse de inmediato al Responsable de IA y se gestionan conforme a la Política de respuesta a incidentes de IA.",
     }),
   },
   {
@@ -826,8 +826,8 @@ export const LAWFIRM_POLICY_PACK: LawFirmPolicy[] = [
   {
     id: "lf-incident",
     title: {
-      en: "AI Incident Response — Legal Practice",
-      es: "Respuesta a incidentes de IA — Ejercicio de la abogacía",
+      en: "AI Incident Response: Legal Practice",
+      es: "Respuesta a incidentes de IA: ejercicio de la abogacía",
     },
     type: "AI_INCIDENT_RESPONSE",
     description: {

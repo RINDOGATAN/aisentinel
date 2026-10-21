@@ -2,11 +2,18 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { z } from "zod";
+import {
+  defaultBusinessUnitId,
+  loadBusinessUnitScope,
+} from "@/server/services/business-units/scope";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { TRPCError } from "@trpc/server";
 import { VendorStatus } from "@prisma/client";
 import {
   findAIMappingForCategory,
+  vendorSystemDescription,
+  vendorSystemName,
+  vendorSystemNames,
   type VendorAIMapping,
 } from "../../../config/vendor-ai-mappings";
 import {
@@ -20,6 +27,7 @@ import {
   getLawFirmCategory,
   getToolGovernance,
   resolveContentLocale,
+  type ContentLocale,
 } from "../../../config/lawfirm-ai-toolkit";
 import { hasVendorCatalogAccess } from "../../services/licensing/entitlement";
 import {
@@ -38,6 +46,8 @@ import {
   corePoliciesMissingFrom,
   localizeCorePolicy,
 } from "../../../config/core-policy-pack";
+import { nextPolicyNumber } from "../../services/policy/number";
+import { nextSystemNumber } from "../../services/ai-system/number";
 
 // ============================================================
 // HELPERS
@@ -63,6 +73,7 @@ function buildVendorPreview(
     subcategory?: string | null;
   },
   mapping: VendorAIMapping,
+  locale: ContentLocale,
 ): VendorPreviewItem {
   return {
     vendorName: catalogVendor.name,
@@ -70,10 +81,10 @@ function buildVendorPreview(
     category: catalogVendor.subcategory
       ? `${catalogVendor.category} > ${catalogVendor.subcategory}`
       : catalogVendor.category,
-    systemName: `${catalogVendor.name} ${mapping.system.nameSuffix}`,
+    systemName: vendorSystemName(catalogVendor.name, mapping, locale),
     technique: mapping.system.technique,
     riskLevel: mapping.riskLevel,
-    riskRationale: mapping.riskRationale,
+    riskRationale: mapping.riskRationale[locale],
     requiresOversightGate: mapping.requiresOversightGate,
     gateType: mapping.gateType,
   };
@@ -159,10 +170,11 @@ export const quickstartRouter = createTRPCRouter({
       });
       const existingVendorNames = existingVendors.map((v) => v.name);
 
+      const locale = resolveContentLocale(ctx.getCookie);
       const previews: VendorPreviewItem[] = [];
       for (const vendor of catalogVendors) {
         const mapping = findAIMappingForCategory(vendor.category, vendor.subcategory);
-        previews.push(buildVendorPreview(vendor, mapping));
+        previews.push(buildVendorPreview(vendor, mapping, locale));
       }
 
       const newPreviews = previews.filter(
@@ -405,6 +417,11 @@ export const quickstartRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const orgId = ctx.organization.id;
       const userId = ctx.session.user.id;
+      // A department-limited member's systems land in their department, so
+      // the wizard's results stay in their own view.
+      const newSystemUnitId = defaultBusinessUnitId(
+        await loadBusinessUnitScope(ctx.prisma, ctx.membership),
+      );
       const skipSystems = new Set(input.skipSystemNames);
       const skipPolicies = new Set(input.skipPolicyTitles);
 
@@ -552,8 +569,13 @@ export const quickstartRouter = createTRPCRouter({
 
             // Skip check runs BEFORE the vendor create: unchecking a system in
             // the review step skips the whole import, never leaving an orphan vendor.
-            const systemName = `${catalogVendor.name} ${mapping.system.nameSuffix}`;
-            if (existingSystemNames.has(systemName) || skipSystems.has(systemName)) continue;
+            // The name is said in the requester's language; an existing system under
+            // either language's name counts as already there.
+            const systemName = vendorSystemName(catalogVendor.name, mapping, contentLocale);
+            if (
+              vendorSystemNames(catalogVendor.name, mapping).some((n) => existingSystemNames.has(n)) ||
+              skipSystems.has(systemName)
+            ) continue;
 
             // Create AIVendor
             const vendor = await tx.aIVendor.create({
@@ -587,12 +609,14 @@ export const quickstartRouter = createTRPCRouter({
             const system = await tx.aISystem.create({
               data: {
                 organizationId: orgId,
+                number: await nextSystemNumber(tx, orgId),
+                ...(newSystemUnitId ? { businessUnitId: newSystemUnitId } : {}),
                 name: systemName,
-                description: `AI system deployed from ${catalogVendor.name}. ${mapping.system.purpose}`,
+                description: vendorSystemDescription(catalogVendor.name, mapping, contentLocale),
                 technique: mapping.system.technique,
                 role: mapping.system.role,
                 status: "DRAFT",
-                purpose: mapping.system.purpose,
+                purpose: mapping.system.purpose[contentLocale],
                 processesPersonalData: mapping.system.processesPersonalData,
                 vendorId: vendor.id,
                 metadata: { source: "quickstart" },
@@ -616,7 +640,7 @@ export const quickstartRouter = createTRPCRouter({
                 organizationId: orgId,
                 aiSystemId: system.id,
                 riskLevel: mapping.riskLevel,
-                rationale: mapping.riskRationale,
+                rationale: mapping.riskRationale[contentLocale],
                 annexIIICategory: mapping.annexIIICategory,
                 classifiedBy: userId,
                 provenance: "AUTO_TEMPLATE",
@@ -698,6 +722,8 @@ export const quickstartRouter = createTRPCRouter({
               const system = await tx.aISystem.create({
                 data: {
                   organizationId: orgId,
+                  number: await nextSystemNumber(tx, orgId),
+                  ...(newSystemUnitId ? { businessUnitId: newSystemUnitId } : {}),
                   name: templateSystem.name,
                   description: templateSystem.description,
                   technique: templateSystem.technique,
@@ -794,6 +820,7 @@ export const quickstartRouter = createTRPCRouter({
               const policy = await tx.aIPolicy.create({
                 data: {
                   organizationId: orgId,
+                  number: await nextPolicyNumber(tx, orgId),
                   title: templatePolicy.title,
                   type: templatePolicy.type,
                   description: templatePolicy.description,
@@ -858,6 +885,8 @@ export const quickstartRouter = createTRPCRouter({
             const system = await tx.aISystem.create({
               data: {
                 organizationId: orgId,
+                number: await nextSystemNumber(tx, orgId),
+                ...(newSystemUnitId ? { businessUnitId: newSystemUnitId } : {}),
                 name: tool.name,
                 description: tool.description[contentLocale],
                 technique: governance.technique,
@@ -971,6 +1000,7 @@ export const quickstartRouter = createTRPCRouter({
               const policy = await tx.aIPolicy.create({
                 data: {
                   organizationId: orgId,
+                  number: await nextPolicyNumber(tx, orgId),
                   title,
                   type: packPolicy.type,
                   description: packPolicy.description[contentLocale],
@@ -1046,6 +1076,7 @@ export const quickstartRouter = createTRPCRouter({
               const policy = await tx.aIPolicy.create({
                 data: {
                   organizationId: orgId,
+                  number: await nextPolicyNumber(tx, orgId),
                   title: localized.title,
                   type: localized.type,
                   description: localized.description,

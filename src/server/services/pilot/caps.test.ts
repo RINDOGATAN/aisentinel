@@ -67,7 +67,7 @@ describe("on the hosted pilot", () => {
       assertPilotOrganizationLimit({ organizationMember: { count: async () => 1 } }, "u1", "en"),
     );
     expect(message).toContain("one organization per account");
-    expect(message).toContain(PILOT_MANAGED_URL.en);
+    expect(message).not.toContain(PILOT_MANAGED_URL.en);
   });
 
   it("allows edits for fifteen days and then makes the organization read-only", async () => {
@@ -76,8 +76,9 @@ describe("on the hosted pilot", () => {
       assertPilotWritable(ORG, "en", new Date(START.getTime() + 15 * DAY)),
     );
     expect(message).toContain("read-only");
-    expect(message).toContain(PILOT_PRICING_URL.en);
-    expect(message).toContain("/api/export/program-pack?organizationId=org-1");
+    expect(message).toContain("move to the paid plan or export everything you created (the program pack)");
+    expect(message).not.toContain(PILOT_PRICING_URL.en);
+    expect(message).not.toContain("/api/export/");
   });
 
   it("never makes an organization read-only before its first sign-in is recorded", async () => {
@@ -116,8 +117,9 @@ describe("on the hosted pilot", () => {
     const atCap = fakeDb({ aISystem: PILOT_CEILINGS.systems });
     const message = await forbidden(() => assertPilotRoom(atCap, "org-1", "systems", "en"));
     expect(message).toContain(`ceiling of ${PILOT_CEILINGS.systems} AI systems`);
-    expect(message).toContain(PILOT_PRICING_URL.en);
-    expect(message).toContain("/api/export/program-pack?organizationId=org-1");
+    expect(message).toContain("Two ways out, both in Settings");
+    expect(message).not.toContain(PILOT_PRICING_URL.en);
+    expect(message).not.toContain("/api/export/");
 
     const oneBelow = fakeDb({ aISystem: PILOT_CEILINGS.systems - 1 });
     await expect(assertPilotRoom(oneBelow, "org-1", "systems", "en")).resolves.toBeUndefined();

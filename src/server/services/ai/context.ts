@@ -12,6 +12,7 @@
  * AGPL-3.0 License - Part of the open-source core
  */
 
+import { modelTypeLabel } from "@/config/model-types";
 import { TRPCError } from "@trpc/server";
 import { parseSubprocessors } from "@/lib/supply-chain";
 import type { PrismaClient } from "@prisma/client";
@@ -61,7 +62,7 @@ export async function buildSystemContext(
     models: system.models.map((m) => ({
       name: m.name,
       provider: m.provider,
-      modelType: m.modelType,
+      modelType: m.modelType ? modelTypeLabel(m.modelType) : null,
       version: m.version,
       trainingDataSummary: m.trainingDataSummary,
       knownLimitations: m.knownLimitations,

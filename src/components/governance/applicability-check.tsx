@@ -16,10 +16,14 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { CheckCircle2, CircleHelp, ListChecks, Loader2 } from "lucide-react";
+import { CheckCircle2, CircleHelp, ListChecks } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { CARD_HEADER_WITH_STATUS, CardSaveStatus } from "@/components/ui/save-status";
+import { Instruction } from "@/components/ui/instruction";
+import { useAutoSave } from "@/lib/use-auto-save";
 import { trpc } from "@/lib/trpc";
+import { SCREENING_ANCHOR } from "@/lib/settings-anchors";
+import { useProgramPath } from "@/components/guided/use-program-path";
 import { cn } from "@/lib/utils";
 import {
   APPLICABILITY_QUESTIONS,
@@ -73,7 +77,7 @@ function QuestionRow({
                 "peer-disabled:opacity-50 peer-disabled:cursor-not-allowed",
                 value === option
                   ? "border-primary bg-primary/10 text-primary font-medium"
-                  : "border-border text-muted-foreground hover:border-primary/40",
+                  : "border-input text-foreground hover:border-primary/60",
               )}
             >
               {t(`answer.${option}`)}
@@ -132,7 +136,24 @@ export function ApplicabilityQuestions({
   );
 }
 
-function ItemLine({ item }: { item: ApplicabilityItem }) {
+/**
+ * The laws whose requirements reach the register only once the screening in
+ * Settings is answered (an unanswered question never adds obligations).
+ */
+const SCREENING_GATED: ReadonlySet<ApplicabilityItem["id"]> = new Set([
+  "colorado",
+  "californiaAdmt",
+  "washington",
+]);
+
+function ItemLine({
+  item,
+  screeningLink,
+}: {
+  item: ApplicabilityItem;
+  /** Where the screening is, when it is still to answer; null hides the line. */
+  screeningLink: { href: string; newTab: boolean } | null;
+}) {
   const t = useTranslations("applicability");
   const Icon = item.state === "applies" ? CheckCircle2 : CircleHelp;
   return (
@@ -150,6 +171,15 @@ function ItemLine({ item }: { item: ApplicabilityItem }) {
           <span className="sr-only">{t("whyLabel")}: </span>
           {item.reasons.map((r) => t(`reasons.${r}`)).join(" ")}
         </span>
+        {screeningLink && SCREENING_GATED.has(item.id) && (
+          <a
+            href={screeningLink.href}
+            {...(screeningLink.newTab ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+            className="block text-xs text-primary underline underline-offset-2 hover:text-primary/80"
+          >
+            {t("answerScreening")}
+          </a>
+        )}
       </span>
     </li>
   );
@@ -158,11 +188,21 @@ function ItemLine({ item }: { item: ApplicabilityItem }) {
 export function ApplicabilityResult({
   jurisdictions,
   answers,
+  screeningInNewTab = false,
 }: {
   jurisdictions: readonly JurisdictionId[];
   answers: ApplicabilityAnswers;
+  /** Open the screening link in a new tab (the quick start keeps its place). */
+  screeningInNewTab?: boolean;
 }) {
   const t = useTranslations("applicability");
+  // The obligations step is "done" once the screening has an answer; until
+  // then the laws it gates say where to answer it.
+  const pathSteps = useProgramPath();
+  const screeningLink =
+    pathSteps?.obligations === "done"
+      ? null
+      : { href: `/governance/settings#${SCREENING_ANCHOR}`, newTab: screeningInNewTab };
   const items = evaluateApplicability(jurisdictions, answers);
   const applies = items.filter((i) => i.state === "applies");
   const check = items.filter((i) => i.state === "check");
@@ -177,11 +217,11 @@ export function ApplicabilityResult({
         {applies.length > 0 ? (
           <ul className="space-y-2.5">
             {applies.map((item) => (
-              <ItemLine key={item.id} item={item} />
+              <ItemLine key={item.id} item={item} screeningLink={screeningLink} />
             ))}
           </ul>
         ) : (
-          <p className="text-xs text-muted-foreground">{t("appliesEmpty")}</p>
+          <Instruction>{t("appliesEmpty")}</Instruction>
         )}
       </div>
       {check.length > 0 && (
@@ -189,13 +229,13 @@ export function ApplicabilityResult({
           <h3 className="text-sm font-semibold">{t("checkTitle")}</h3>
           <ul className="space-y-2.5">
             {check.map((item) => (
-              <ItemLine key={item.id} item={item} />
+              <ItemLine key={item.id} item={item} screeningLink={screeningLink} />
             ))}
           </ul>
         </div>
       )}
       {jurisdictions.length === 0 && (
-        <p className="text-xs text-muted-foreground">{t("noJurisdictions")}</p>
+        <Instruction>{t("noJurisdictions")}</Instruction>
       )}
       <p className="text-xs text-muted-foreground border-t border-border pt-3">{t("editableNote")}</p>
     </div>
@@ -206,12 +246,17 @@ export function ApplicabilityResult({
 export function ApplicabilityCard({
   organizationId,
   canWrite,
+  showResult = true,
+  idPrefix = "applicability-settings",
 }: {
   organizationId: string;
   canWrite: boolean;
+  /** False on step 1.2's page, which shows the result in its own panel. */
+  showResult?: boolean;
+  /** Keeps radio names apart when the card appears on another page. */
+  idPrefix?: string;
 }) {
   const t = useTranslations("applicability");
-  const tc = useTranslations("common");
   const utils = trpc.useUtils();
   const { data } = trpc.regimes.getApplicability.useQuery({ organizationId });
   // The jurisdictions from the organisation itself, so a change saved in the
@@ -219,52 +264,53 @@ export function ApplicabilityCard({
   const { data: org } = trpc.organization.getById.useQuery({ organizationId });
   const [edits, setEdits] = useState<ApplicabilityAnswers | null>(null);
 
+  // Each answer saves as it is chosen. The edits stay as an overlay after
+  // saving (the server then holds the same answers), so an answer picked
+  // while the previous one is on its way is never shown undone.
   const save = trpc.regimes.setApplicability.useMutation({
     onSuccess: () => {
-      setEdits(null);
-      toast.success(t("saved"));
       void utils.regimes.getApplicability.invalidate();
+      void utils.programPath.status.invalidate();
     },
-    onError: (err) => toast.error(err.message),
   });
+  const autosave = useAutoSave<ApplicabilityAnswers>(
+    (answers) => save.mutateAsync({ organizationId, answers }),
+    { onError: (err) => toast.error(err instanceof Error ? err.message : String(err)) },
+  );
 
   if (!data) return null;
   const answers = edits ?? data.answers;
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className={CARD_HEADER_WITH_STATUS}>
         <CardTitle className="text-base flex items-center gap-2">
           <ListChecks className="w-4 h-4 text-primary" aria-hidden="true" />
           {t("cardTitle")}
         </CardTitle>
+        {canWrite && (
+          <CardSaveStatus status={autosave.status} onRetry={autosave.retry} testId="applicability-save-status" />
+        )}
         <CardDescription>{t("cardDescription")}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <ApplicabilityQuestions
           answers={answers}
-          onChange={setEdits}
-          disabled={!canWrite || save.isPending}
-          idPrefix="applicability-settings"
+          onChange={(next) => {
+            setEdits(next);
+            autosave.push(next);
+          }}
+          disabled={!canWrite}
+          idPrefix={idPrefix}
         />
-        <div className="rounded-lg border border-border p-4">
-          <ApplicabilityResult
-            jurisdictions={
-              (org?.operatingJurisdictions as JurisdictionId[] | undefined) ?? data.jurisdictions
-            }
-            answers={answers}
-          />
-        </div>
-        {canWrite && (
-          <div className="flex justify-end">
-            <Button
-              size="sm"
-              disabled={!edits || save.isPending}
-              onClick={() => edits && save.mutate({ organizationId, answers: edits })}
-            >
-              {save.isPending && <Loader2 className="w-3 h-3 mr-2 animate-spin" />}
-              {tc("save")}
-            </Button>
+        {showResult && (
+          <div className="rounded-lg border border-border p-4">
+            <ApplicabilityResult
+              jurisdictions={
+                (org?.operatingJurisdictions as JurisdictionId[] | undefined) ?? data.jurisdictions
+              }
+              answers={answers}
+            />
           </div>
         )}
       </CardContent>

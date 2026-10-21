@@ -17,22 +17,46 @@ import { JURISDICTION_IDS } from "@/config/jurisdictions";
 import { firstFreeSlug } from "@/lib/unique-slug";
 import { claimableDomain } from "@/lib/org-domain";
 import { assertNotOnHold } from "../../services/legal-hold";
+import { COUNTED_INCIDENT } from "@/server/services/incident/counted";
 import {
   assertPilotOrganizationLimit,
-  assertPilotRoom,
   assertPilotWritable,
   pilotLocale,
 } from "../../services/pilot/caps";
 import { planTemplateRemoval, removeTemplateItems } from "../../services/template-items/remove";
 import { retainAnonymisedTrail } from "@/server/services/audit/retain-on-delete";
+import { hostedPilotActive } from "@/config/pilot";
+import {
+  inheritedPilotStart,
+  keepPilotStartOnAccounts,
+  keepPilotStartOnAllMembers,
+} from "../../services/pilot/account-trial";
+import { PILOT_DPA, PILOT_DPA_ACTION, PILOT_DPA_REQUIRED, isAcceptedDpaVersion } from "@/config/pilot-dpa";
 
 /**
- * The plan field only the operator reads: the operator's note (an invoice id).
- * The plan itself and its dates go to the screens; the note never does.
+ * The plan fields only the operator reads: the operator's note and the payment
+ * subscription behind an automatic upgrade. The plan itself and its dates go
+ * to the screens; these two never do.
  */
-function withoutOperatorPlanFields<T extends { planNote?: unknown }>(org: T): Omit<T, "planNote"> {
-  const { planNote, ...rest } = org;
+function withoutOperatorPlanFields<T extends { planNote?: unknown; planStripeSubscriptionId?: unknown }>(
+  org: T,
+): Omit<T, "planNote" | "planStripeSubscriptionId"> {
+  const { planNote, planStripeSubscriptionId, ...rest } = org;
   return rest;
+}
+
+/** Whether the organization has a still-valid acceptance of the agreement on record (see PILOT_DPA.minimumAccepted). */
+async function hasAcceptedCurrentDpa(
+  db: { auditLog: { findMany: (args: { where: { organizationId: string; action: string }; select: { changes: true } }) => Promise<Array<{ changes: unknown }>> } },
+  organizationId: string
+): Promise<boolean> {
+  const entries = await db.auditLog.findMany({
+    where: { organizationId, action: PILOT_DPA_ACTION },
+    select: { changes: true },
+  });
+  return entries.some(
+    (e) => isAcceptedDpaVersion((e.changes as { dpaVersion?: unknown } | null)?.dpaVersion)
+  );
 }
 
 export const organizationRouter = createTRPCRouter({
@@ -47,7 +71,7 @@ export const organizationRouter = createTRPCRouter({
                 members: true,
                 aiSystems: true,
                 assessments: true,
-                incidents: true,
+                incidents: { where: COUNTED_INCIDENT },
               },
             },
           },
@@ -80,7 +104,7 @@ export const organizationRouter = createTRPCRouter({
             select: {
               aiSystems: true,
               assessments: true,
-              incidents: true,
+              incidents: { where: COUNTED_INCIDENT },
               complianceMappings: true,
             },
           },
@@ -93,17 +117,73 @@ export const organizationRouter = createTRPCRouter({
       };
     }),
 
+  // Hosted pilot: whether this organization still has to accept the current
+  // data processing agreement (src/config/pilot-dpa.ts). Organizations opened
+  // before acceptance was asked at opening have no entry for it and are asked
+  // once, at the next sign-in. An owner or admin accepts on behalf of the
+  // organization; other members only see a note. Never asked off the pilot.
+  getDpaStatus: organizationProcedure
+    .input(z.object({ organizationId: z.string() }))
+    .query(async ({ ctx }) => {
+      if (!hostedPilotActive()) return { required: false, canAccept: false };
+      const accepted = await hasAcceptedCurrentDpa(ctx.prisma, ctx.organization.id);
+      return {
+        required: !accepted,
+        canAccept: ctx.membership.role === "OWNER" || ctx.membership.role === "ADMIN",
+      };
+    }),
+
+  // Hosted pilot: an owner or admin accepts the current agreement for an
+  // organization with no acceptance of it on record. Recorded as the same
+  // audit-log entry as at opening. Accepting twice records nothing new. Not a
+  // write procedure: it changes no program record, so it stays open once the
+  // pilot is read-only.
+  acceptDpa: organizationProcedure
+    .input(z.object({ organizationId: z.string(), accept: z.literal(true) }))
+    .mutation(async ({ ctx }) => {
+      if (!["OWNER", "ADMIN"].includes(ctx.membership.role)) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Only an owner or admin can accept the data processing agreement",
+        });
+      }
+      if (!hostedPilotActive()) return { accepted: false };
+      if (await hasAcceptedCurrentDpa(ctx.prisma, ctx.organization.id)) return { accepted: true };
+      const lang = pilotLocale(ctx.getCookie);
+      await ctx.prisma.auditLog.create({
+        data: {
+          organizationId: ctx.organization.id,
+          userId: ctx.session.user.id,
+          entityType: "Organization",
+          entityId: ctx.organization.id,
+          action: PILOT_DPA_ACTION,
+          changes: { dpaVersion: PILOT_DPA.version, locale: lang, document: PILOT_DPA.href[lang] },
+        },
+      });
+      return { accepted: true };
+    }),
+
   create: protectedProcedure
     .input(
       z.object({
         name: z.string().min(1).max(200),
         slug: z.string().min(2).max(50).regex(/^[a-z0-9-]+$/),
         domain: z.string().optional(),
+        // Hosted pilot: the data processing agreement (src/config/pilot-dpa.ts)
+        // is accepted when the organization is opened. Ignored off the pilot.
+        acceptDpa: z.boolean().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const lang = pilotLocale(ctx.getCookie);
       // Hosted pilot: one organisation per account. Off the pilot this allows.
-      await assertPilotOrganizationLimit(ctx.prisma, ctx.session.user.id, pilotLocale(ctx.getCookie));
+      await assertPilotOrganizationLimit(ctx.prisma, ctx.session.user.id, lang);
+
+      // Hosted pilot: no organization is opened without accepting the agreement.
+      const hosted = hostedPilotActive();
+      if (hosted && input.acceptDpa !== true) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: PILOT_DPA_REQUIRED[lang] });
+      }
 
       // Two organizations can share a name ("Acme" the client, "Acme" the
       // firm's own). The slug is only an internal handle, so a taken one gets
@@ -136,11 +216,17 @@ export const organizationRouter = createTRPCRouter({
         : null;
       const domain = claimableDomain(input.domain, creator?.email);
 
+      // Hosted pilot: an account that has left an organisation (deleted or
+      // removed) has used its editing window; the new organisation continues
+      // it instead of starting a new one (services/pilot/account-trial.ts).
+      const pilotFirstSignInAt = await inheritedPilotStart(ctx.prisma, ctx.session.user.id);
+
       const organization = await ctx.prisma.organization.create({
         data: {
           name: input.name,
           slug,
           domain,
+          ...(pilotFirstSignInAt ? { pilotFirstSignInAt } : {}),
           members: {
             create: {
               userId: ctx.session.user.id,
@@ -161,6 +247,21 @@ export const organizationRouter = createTRPCRouter({
           changes: { name: input.name, slug },
         },
       });
+
+      // The record of the acceptance: which agreement, in which language; the
+      // entry's own date and user say when and who.
+      if (hosted) {
+        await ctx.prisma.auditLog.create({
+          data: {
+            organizationId: organization.id,
+            userId: ctx.session.user.id,
+            entityType: "Organization",
+            entityId: organization.id,
+            action: PILOT_DPA_ACTION,
+            changes: { dpaVersion: PILOT_DPA.version, locale: lang, document: PILOT_DPA.href[lang] },
+          },
+        });
+      }
 
       return organization;
     }),
@@ -256,6 +357,9 @@ export const organizationRouter = createTRPCRouter({
         });
       }
       await assertNotOnHold(ctx.prisma, ctx.organization.id);
+      // Hosted pilot: every member keeps the organisation's window start, so
+      // a new organisation does not restart it.
+      await keepPilotStartOnAllMembers(ctx.prisma, ctx.organization);
 
       const tombstone = await ctx.prisma.auditLog.create({
         data: {
@@ -314,94 +418,6 @@ export const organizationRouter = createTRPCRouter({
         organizationId: ctx.organization.id,
         userId: ctx.session.user.id,
       });
-    }),
-
-  addMember: organizationProcedure
-    .input(
-      z.object({
-        organizationId: z.string(),
-        email: z.string().email(),
-        role: z.nativeEnum(OrganizationRole).default(OrganizationRole.MEMBER),
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
-      if (!["OWNER", "ADMIN"].includes(ctx.membership.role)) {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "You do not have permission to add members",
-        });
-      }
-      // Granting ownership is an owner's decision: an admin must not be able
-      // to create an owner (including a second account of their own).
-      if (input.role === "OWNER" && ctx.membership.role !== "OWNER") {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "Only owners can add another owner",
-        });
-      }
-
-      // This mutation predates orgWriteProcedure, so the pilot's read-only
-      // switch and the members ceiling are applied here by hand.
-      const locale = pilotLocale(ctx.getCookie);
-      assertPilotWritable(ctx.organization, locale);
-      await assertPilotRoom(ctx.prisma, ctx.organization.id, "members", locale);
-
-      const user = await ctx.prisma.user.findFirst({
-        where: { email: { equals: input.email.trim(), mode: "insensitive" } },
-      });
-
-      if (!user) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "No user found with this email. They must sign up first.",
-        });
-      }
-
-      const existingMembership = await ctx.prisma.organizationMember.findUnique({
-        where: {
-          organizationId_userId: {
-            organizationId: ctx.organization.id,
-            userId: user.id,
-          },
-        },
-      });
-
-      if (existingMembership) {
-        throw new TRPCError({
-          code: "CONFLICT",
-          message: "This user is already a member of the organization",
-        });
-      }
-
-      // Hosted pilot: one organisation per account applies to the invitee too,
-      // unless the organisation they join is on the paid plan.
-      await assertPilotOrganizationLimit(ctx.prisma, user.id, locale, ctx.organization);
-
-      const membership = await ctx.prisma.organizationMember.create({
-        data: {
-          organizationId: ctx.organization.id,
-          userId: user.id,
-          role: input.role,
-          invitedEmail: input.email,
-          invitedAt: new Date(),
-        },
-        include: {
-          user: { select: { id: true, name: true, email: true, image: true } },
-        },
-      });
-
-      await ctx.prisma.auditLog.create({
-        data: {
-          organizationId: ctx.organization.id,
-          userId: ctx.session.user.id,
-          entityType: "OrganizationMember",
-          entityId: membership.id,
-          action: "CREATE",
-          changes: { memberUserId: user.id, role: input.role },
-        },
-      });
-
-      return membership;
     }),
 
   updateMember: organizationProcedure
@@ -505,6 +521,8 @@ export const organizationRouter = createTRPCRouter({
         }
       }
 
+      // Hosted pilot: the account keeps the organisation's window start.
+      await keepPilotStartOnAccounts(ctx.prisma, ctx.organization, [memberToRemove.userId]);
       await ctx.prisma.organizationMember.delete({ where: { id: input.memberId } });
       await ctx.prisma.auditLog.create({
         data: {
@@ -529,7 +547,7 @@ export const organizationRouter = createTRPCRouter({
       // switch. Counts drawn from a system are narrowed through the system
       // relation; organization-wide facts that do not hang off a system (recent
       // activity, imported vendors) stay org-wide.
-      const scope = await loadBusinessUnitScope(ctx.prisma, ctx.membership.id);
+      const scope = await loadBusinessUnitScope(ctx.prisma, ctx.membership);
       const sysWhere = systemScopeWhere(scope, input.businessUnitId);
       const sys = (extra: Prisma.AISystemWhereInput = {}): Prisma.AISystemWhereInput => ({
         organizationId: orgId,
@@ -594,8 +612,8 @@ export const organizationRouter = createTRPCRouter({
         ctx.prisma.riskClassification.count({ where: { organizationId: orgId, riskLevel: "LIMITED", ...rel } as Prisma.RiskClassificationWhereInput }),
         ctx.prisma.riskClassification.count({ where: { organizationId: orgId, riskLevel: "MINIMAL", ...rel } as Prisma.RiskClassificationWhereInput }),
         // Incidents
-        ctx.prisma.aIIncident.count({ where: { organizationId: orgId, ...rel } as Prisma.AIIncidentWhereInput }),
-        ctx.prisma.aIIncident.count({ where: { organizationId: orgId, severity: "CRITICAL", ...rel } as Prisma.AIIncidentWhereInput }),
+        ctx.prisma.aIIncident.count({ where: { organizationId: orgId, ...COUNTED_INCIDENT, ...rel } as Prisma.AIIncidentWhereInput }),
+        ctx.prisma.aIIncident.count({ where: { organizationId: orgId, severity: "CRITICAL", ...COUNTED_INCIDENT, ...rel } as Prisma.AIIncidentWhereInput }),
         ctx.prisma.aIIncident.count({
           where: { organizationId: orgId, status: { in: ["REPORTED", "INVESTIGATING", "MITIGATING"] }, ...rel } as Prisma.AIIncidentWhereInput,
         }),

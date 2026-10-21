@@ -160,7 +160,7 @@ const friaV2: V2Template = {
   id: "system-fria-template-v2",
   supersedes: "system-fria-template",
   type: "FRIA",
-  name: L("Fundamental Rights Impact Assessment", "Evaluación de impacto sobre los derechos fundamentales"),
+  name: L("Fundamental Rights Impact Assessment", "Evaluación de impacto en los derechos fundamentales"),
   description: L(
     "EU AI Act Article 27 assessment of a high-risk system's impact on fundamental rights, with structured answers a regulator can read.",
     "Evaluación conforme al artículo 27 del RIA del impacto de un sistema de alto riesgo sobre los derechos fundamentales, con respuestas estructuradas que un regulador puede leer.",
@@ -285,7 +285,7 @@ const friaV2: V2Template = {
           required: true,
           text: L(
             "Were affected persons or their representatives consulted?",
-            "¿Se consultó a las personas afectadas o a sus representantes?",
+            "¿Se ha consultado a las personas afectadas o a sus representantes?",
           ),
           followUp: {
             when: "yes",
@@ -295,7 +295,7 @@ const friaV2: V2Template = {
               required: true,
               text: L(
                 "Describe how they were consulted.",
-                "Describe cómo se les consultó.",
+                "Describe cómo se les ha consultado.",
               ),
             },
           },
@@ -1094,7 +1094,7 @@ const conformityV2: V2Template = {
           options: [
             opt("conforms", "Conforms to all applicable requirements", "Conforme con todos los requisitos aplicables"),
             opt("minor", "Conforms with minor observations", "Conforme con observaciones menores"),
-            opt("not_conform", "Does not conform — corrective actions required", "No conforme: se requieren acciones correctivas"),
+            opt("not_conform", "Does not conform: corrective actions required", "No conforme: se requieren acciones correctivas"),
           ],
         },
         {
@@ -1104,8 +1104,8 @@ const conformityV2: V2Template = {
           allowNote: true,
           text: L("Which conformity assessment pathway is being followed?", "¿Qué vía de evaluación de la conformidad se sigue?"),
           options: [
-            opt("annex_vi", "Annex VI — internal control (self-assessment)", "Anexo VI: control interno (autoevaluación)"),
-            opt("annex_vii", "Annex VII — assessment by notified body", "Anexo VII: evaluación por organismo notificado"),
+            opt("annex_vi", "Annex VI: internal control (self-assessment)", "Anexo VI: control interno (autoevaluación)"),
+            opt("annex_vii", "Annex VII: assessment by notified body", "Anexo VII: evaluación por organismo notificado"),
           ],
           help: H(
             L(
@@ -1113,7 +1113,7 @@ const conformityV2: V2Template = {
               "El anexo VI es autoevaluación; el anexo VII implica a un organismo notificado. Cuál aplica depende del sistema y de las normas armonizadas utilizadas.",
             ),
             L(
-              "\"Annex VI — internal control, since harmonised standards are applied in full.\"",
+              "\"Annex VI: internal control, since harmonised standards are applied in full.\"",
               "«Anexo VI: control interno, ya que se aplican íntegramente las normas armonizadas.»",
             ),
             L("EU AI Act Art. 43", "RIA, art. 43"),
@@ -1339,7 +1339,7 @@ const biasFairnessV2: V2Template = {
           id: "bf4_3",
           type: "text",
           required: true,
-          text: L("What disparities were identified between groups?", "¿Qué disparidades se identificaron entre los grupos?"),
+          text: L("What disparities were identified between groups?", "¿Qué disparidades se han identificado entre los grupos?"),
         },
         {
           id: "bf4_4",
@@ -1360,7 +1360,7 @@ const biasFairnessV2: V2Template = {
             ),
             L(
               "\"Full: tested race, gender and their combination.\"",
-              "«Completo: se probaron raza, género y su combinación.»",
+              "«Completo: se han probado raza, género y su combinación.»",
             ),
           ),
         },
@@ -1430,10 +1430,10 @@ const biasFairnessV2: V2Template = {
           allowNote: true,
           text: L("What is the overall fairness determination?", "¿Cuál es la determinación general de equidad?"),
           options: [
-            opt("fair", "Fair — meets all fairness criteria", "Equitativo: cumple todos los criterios de equidad"),
-            opt("conditionally_fair", "Conditionally fair — acceptable with monitoring", "Equitativo con condiciones: aceptable con vigilancia"),
-            opt("unfair", "Unfair — significant bias requiring remediation", "No equitativo: sesgo significativo que exige corrección"),
-            opt("inconclusive", "Inconclusive — insufficient data", "No concluyente: datos insuficientes"),
+            opt("fair", "Fair: meets all fairness criteria", "Equitativo: cumple todos los criterios de equidad"),
+            opt("conditionally_fair", "Conditionally fair: acceptable with monitoring", "Equitativo con condiciones: aceptable con vigilancia"),
+            opt("unfair", "Unfair: significant bias requiring remediation", "No equitativo: sesgo significativo que exige corrección"),
+            opt("inconclusive", "Inconclusive: insufficient data", "No concluyente: datos insuficientes"),
           ],
         },
         {

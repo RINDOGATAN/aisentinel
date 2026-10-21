@@ -3,11 +3,12 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/governance/page-header";
+import { DeleteRecordButton } from "@/components/governance/delete-record-button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -19,13 +20,6 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   ArrowLeft,
   ScrollText,
@@ -44,6 +38,11 @@ import {
   FileText,
   Calendar,
   User,
+  Copy,
+  Download,
+  ChevronDown,
+  Building2,
+  Pencil,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations, useLocale } from "next-intl";
@@ -53,6 +52,26 @@ import { useOrganization } from "@/lib/organization-context";
 import { formatRelativeTime } from "@/lib/utils";
 import { useFormatDate } from "@/lib/use-format-date";
 import { STATUS_OUTLINE } from "@/components/ui/status-note";
+import { SystemPicker } from "@/components/governance/system-picker";
+import { Input } from "@/components/ui/input";
+import { StatusNote } from "@/components/ui/status-note";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useExportDownload } from "@/components/governance/use-export-download";
+import { AiDraftPanel } from "@/components/ai/AiDraftPanel";
+import { features } from "@/config/features";
+import { isUnreviewedTemplateDraft, policyReference } from "@/lib/policy-meta";
+import {
+  PolicyAssignmentFields,
+  PolicyLifecycle,
+  ReviewIntervalSelect,
+  assignmentPayload,
+  type PolicyAssignmentValue,
+} from "@/components/governance/policy/policy-fields";
 
 // Translation keys in the `common` namespace.
 const policyTypeLabelKeys: Record<string, string> = {
@@ -91,7 +110,9 @@ export default function PolicyDetailPage() {
   const tc = useTranslations("common");
   const params = useParams();
   const id = params.id as string;
-  const { organization, canWrite, canDecide } = useOrganization();
+  const { organization, canWrite, canDecide, canDelete } = useOrganization();
+  const router = useRouter();
+  const tDelete = useTranslations("deleteRecord");
   const orgId = organization?.id ?? "";
 
   const [publishDialogOpen, setPublishDialogOpen] = useState(false);
@@ -101,6 +122,22 @@ export default function PolicyDetailPage() {
   const [linkSystemDialogOpen, setLinkSystemDialogOpen] = useState(false);
   const [selectedSystemId, setSelectedSystemId] = useState("");
   const [archiveConfirmOpen, setArchiveConfirmOpen] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [details, setDetails] = useState<{
+    assignment: PolicyAssignmentValue;
+    reviewIntervalMonths: number | null;
+    effectiveDate: string;
+    reviewDate: string;
+    description: string;
+  }>({
+    assignment: { ownerMemberId: "", ownerName: "", departmentId: "" },
+    reviewIntervalMonths: null,
+    effectiveDate: "",
+    reviewDate: "",
+    description: "",
+  });
+  const [suggestions, setSuggestions] = useState<string | null>(null);
+  const { download, isPending: downloadPending } = useExportDownload();
 
   const utils = trpc.useUtils();
 
@@ -108,11 +145,22 @@ export default function PolicyDetailPage() {
     { organizationId: orgId, id },
     { enabled: !!orgId && !!id }
   );
-
-  const { data: systemsData } = trpc.aiSystem.list.useQuery(
-    { organizationId: orgId, limit: 100 },
-    { enabled: !!orgId && linkSystemDialogOpen }
+  const { data: stats } = trpc.policy.getStats.useQuery({ organizationId: orgId }, { enabled: !!orgId });
+  const { data: aiStatus } = trpc.ai.getStatus.useQuery(
+    { organizationId: orgId },
+    { enabled: features.aiAssistEnabled && !!orgId, staleTime: 60_000 }
   );
+  const aiOn = !!aiStatus && aiStatus.active;
+
+  const duplicateMutation = trpc.policy.duplicate.useMutation({
+    onSuccess: (copy) => {
+      toast.success(t("toastDuplicated"));
+      void utils.policy.invalidate();
+      router.push(`/governance/policies/${copy.id}`);
+    },
+    onError: (error) => toast.error(error.message),
+  });
+  const suggestEdits = trpc.policy.suggestEdits.useMutation();
 
   const updateMutation = trpc.policy.update.useMutation({
     onSuccess: () => {
@@ -124,6 +172,15 @@ export default function PolicyDetailPage() {
     onError: (error) => {
       toast.error(error.message || t("toastPolicyUpdateError"));
     },
+  });
+
+  const deleteMutation = trpc.policy.delete.useMutation({
+    onSuccess: () => {
+      toast.success(tDelete("policy.deleted"));
+      router.push("/governance/policies");
+      void utils.policy.invalidate();
+    },
+    onError: (error) => toast.error(error.message),
   });
 
   const approveMutation = trpc.policy.approve.useMutation({
@@ -260,7 +317,44 @@ export default function PolicyDetailPage() {
       content: editedContent,
     });
     setEditContentDialogOpen(false);
+    setSuggestions(null);
   };
+
+  const openDetails = () => {
+    setDetails({
+      assignment: {
+        ownerMemberId: policy.ownerMemberId ?? "",
+        ownerName: policy.ownerName ?? "",
+        departmentId: policy.departmentId ?? "",
+      },
+      reviewIntervalMonths: policy.reviewIntervalMonths ?? null,
+      effectiveDate: policy.effectiveDate ? new Date(policy.effectiveDate).toISOString().slice(0, 10) : "",
+      reviewDate: policy.reviewDate ? new Date(policy.reviewDate).toISOString().slice(0, 10) : "",
+      description: policy.description ?? "",
+    });
+    setDetailsOpen(true);
+  };
+
+  const handleSaveDetails = () => {
+    updateMutation.mutate(
+      {
+        organizationId: orgId,
+        id: policy.id,
+        ...assignmentPayload(details.assignment),
+        reviewIntervalMonths: details.reviewIntervalMonths,
+        effectiveDate: details.effectiveDate || null,
+        reviewDate: details.reviewDate || null,
+        ...(details.description !== (policy.description ?? "") && { description: details.description || null }),
+      },
+      { onSuccess: () => setDetailsOpen(false) },
+    );
+  };
+
+  const exportHref = (format: "pdf" | "docx") =>
+    `/api/export/policy?organizationId=${encodeURIComponent(orgId)}&id=${encodeURIComponent(policy.id)}&format=${format}`;
+  const reference = policyReference(policy.number);
+  const templateDraft = isUnreviewedTemplateDraft(policy);
+  const draftsToReview = stats?.draft ?? 0;
 
   const handleLinkSystem = () => {
     if (!selectedSystemId) return;
@@ -279,8 +373,6 @@ export default function PolicyDetailPage() {
     });
   };
 
-  const systems = systemsData?.items ?? [];
-
   return (
     <div className="space-y-6">
       <PageHeader
@@ -298,11 +390,62 @@ export default function PolicyDetailPage() {
             <Badge variant="outline" className="text-xs">
               v{policy.currentVersion}
             </Badge>
+            {reference && (
+              <Badge variant="outline" className="text-xs">
+                {reference}
+              </Badge>
+            )}
           </>
         }
         actions={
           <>
             {/* Only the actions the status allows; always in this one row. */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" title={t("download")} aria-label={t("download")} disabled={downloadPending(exportHref("pdf")) || downloadPending(exportHref("docx"))}>
+                  {downloadPending(exportHref("pdf")) || downloadPending(exportHref("docx")) ? (
+                    <Loader2 className="w-4 h-4 sm:mr-1.5 animate-spin" aria-hidden="true" />
+                  ) : (
+                    <Download className="w-4 h-4 sm:mr-1.5" aria-hidden="true" />
+                  )}
+                  <span className="hidden sm:inline">{t("download")}</span>
+                  <ChevronDown className="hidden sm:inline w-4 h-4 ml-1 opacity-70" aria-hidden="true" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => void download(exportHref("pdf"))}>
+                  <FileText className="w-4 h-4 mr-2" aria-hidden="true" />
+                  {t("downloadPdf")}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => void download(exportHref("docx"))}>
+                  <FileText className="w-4 h-4 mr-2" aria-hidden="true" />
+                  {t("downloadWord")}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            {canWrite && (
+              <Button
+                variant="outline"
+                title={t("duplicate")}
+                aria-label={t("duplicate")}
+                disabled={duplicateMutation.isPending}
+                onClick={() => duplicateMutation.mutate({ organizationId: orgId, id: policy.id })}
+              >
+                {duplicateMutation.isPending ? (
+                  <Loader2 className="w-4 h-4 sm:mr-1.5 animate-spin" aria-hidden="true" />
+                ) : (
+                  <Copy className="w-4 h-4 sm:mr-1.5" aria-hidden="true" />
+                )}
+                <span className="hidden sm:inline">{t("duplicate")}</span>
+              </Button>
+            )}
+            {canDelete && (
+              <DeleteRecordButton
+                record="policy"
+                pending={deleteMutation.isPending}
+                onConfirm={() => deleteMutation.mutate({ organizationId: orgId, id })}
+              />
+            )}
             {policy.status === "DRAFT" && canWrite && (
               <Button variant="outline" onClick={handleSubmitForReview} disabled={updateMutation.isPending}>
                 {updateMutation.isPending ? (
@@ -367,11 +510,39 @@ export default function PolicyDetailPage() {
         }
       />
 
-      {/* Overview Grid */}
+      {/* The way back, with what is waiting there */}
+      <Link
+        href="/governance/policies"
+        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary"
+      >
+        <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" />
+        {draftsToReview > 0 ? t("backWithDrafts", { count: draftsToReview }) : t("backToPolicies")}
+      </Link>
+
+      <PolicyLifecycle status={policy.status} />
+
+      {templateDraft && (
+        <StatusNote status="warning" title={t("templateDraftTitle")}>
+          {t("templateDraftBody")}
+        </StatusNote>
+      )}
+
+      {/* Overview: the document heading, as on the PDF and Word downloads */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         <Card className="md:col-span-2">
-          <CardHeader>
-            <CardTitle>{t("overviewTitle")}</CardTitle>
+          <CardHeader className="flex flex-row items-start justify-between gap-2">
+            <div className="min-w-0">
+              <p className="text-xs uppercase tracking-wider text-muted-foreground" data-testid="policy-org-heading">
+                {policy.organizationName}
+              </p>
+              <CardTitle className="mt-1">{policy.title}</CardTitle>
+            </div>
+            {canWrite && (
+              <Button variant="outline" size="sm" onClick={openDetails}>
+                <Pencil className="w-4 h-4 mr-2" />
+                {t("editDetails")}
+              </Button>
+            )}
           </CardHeader>
           <CardContent className="space-y-4">
             {policy.description && (
@@ -379,28 +550,57 @@ export default function PolicyDetailPage() {
             )}
             <div className="grid gap-4 grid-cols-2 md:grid-cols-3">
               <div>
+                <p className="text-sm text-muted-foreground">{t("labelReference")}</p>
+                <p className="font-medium text-sm">{reference ?? t("notSet")}</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">{t("labelVersion")}</p>
+                <p className="font-medium text-sm">v{policy.currentVersion}</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">{t("labelStatus")}</p>
+                <p className="font-medium text-sm">{statusLabel(policy.status)}</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground flex items-center gap-1"><User className="w-3.5 h-3.5" aria-hidden="true" />{t("labelOwner")}</p>
+                <p className="font-medium text-sm">{policy.ownerName ?? t("notSet")}</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground flex items-center gap-1"><Building2 className="w-3.5 h-3.5" aria-hidden="true" />{t("labelDepartment")}</p>
+                <p className="font-medium text-sm">{policy.departmentName ?? t("notSet")}</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground flex items-center gap-1"><Cpu className="w-3.5 h-3.5" aria-hidden="true" />{t("labelSystems")}</p>
+                <p className="font-medium text-sm">
+                  {policy.systemLinks.length > 0
+                    ? policy.systemLinks.map((l) => l.aiSystem.name).join(", ")
+                    : t("notSet")}
+                </p>
+              </div>
+              <div>
                 <p className="text-sm text-muted-foreground">{t("labelEffectiveDate")}</p>
                 <p className="font-medium text-sm">{formatDate(policy.effectiveDate)}</p>
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">{t("labelReviewDate")}</p>
                 <p className="font-medium text-sm">{formatDate(policy.reviewDate)}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">{t("labelApprovedBy")}</p>
-                <p className="font-medium text-sm">{policy.approvedBy || t("notYetApproved")}</p>
+                {policy.reviewIntervalMonths && (
+                  <p className="text-xs text-muted-foreground">{t("reviewEvery", { months: policy.reviewIntervalMonths })}</p>
+                )}
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">{t("labelApprovedAt")}</p>
-                <p className="font-medium text-sm">{formatDate(policy.approvedAt)}</p>
+                <p className="font-medium text-sm">{policy.approvedAt ? formatDate(policy.approvedAt) : t("notYetApproved")}</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">{t("labelApprovedBy")}</p>
+                <p className="font-medium text-sm">
+                  {policy.approvedBy ? policy.approvedByName ?? t("unknown") : t("notYetApproved")}
+                </p>
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">{t("labelCreatedBy")}</p>
-                <p className="font-medium text-sm">{policy.createdBy || t("unknown")}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">{t("labelCreatedAt")}</p>
-                <p className="font-medium text-sm">{formatDate(policy.createdAt)}</p>
+                <p className="font-medium text-sm">{policy.createdByName ?? t("unknown")}</p>
               </div>
             </div>
           </CardContent>
@@ -418,6 +618,10 @@ export default function PolicyDetailPage() {
             <div>
               <p className="text-3xl font-bold text-primary">{policy.systemLinks?.length ?? 0}</p>
               <p className="text-sm text-muted-foreground">{t("linkedSystemsCount")}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">{t("labelCreatedAt")}</p>
+              <p className="font-medium text-sm">{formatDate(policy.createdAt)}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">{t("labelLastUpdated")}</p>
@@ -456,7 +660,23 @@ export default function PolicyDetailPage() {
                 </Button>
               )}
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-4">
+              {aiOn && canWrite && policy.content && (
+                <div className="space-y-1">
+                  <p className="text-sm">{t("suggestLead")}</p>
+                  <AiDraftPanel
+                    organizationId={orgId}
+                    onGenerate={() => suggestEdits.mutateAsync({ organizationId: orgId, id: policy.id })}
+                    onInsert={(content) => {
+                      setSuggestions(content);
+                      handleEditContent();
+                    }}
+                    generateKey="panel.suggestEdits"
+                    insertKey="panel.reviewInEditor"
+                    insertedKey="panel.reviewOpened"
+                  />
+                </div>
+              )}
               {policy.content ? (
                 <div className="bg-muted/50 p-4 rounded-md">
                   <div className="whitespace-pre-wrap text-sm text-foreground">
@@ -510,10 +730,10 @@ export default function PolicyDetailPage() {
                             )}
                           </div>
                           <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                            {version.createdBy && (
+                            {version.createdByName && (
                               <span className="flex items-center gap-1">
                                 <User className="w-3 h-3" />
-                                {version.createdBy}
+                                {version.createdByName}
                               </span>
                             )}
                             <span className="flex items-center gap-1">
@@ -676,6 +896,15 @@ export default function PolicyDetailPage() {
           <DialogHeader>
             <DialogTitle>{t("editContentDialogTitle")}</DialogTitle>
           </DialogHeader>
+          {suggestions && (
+            <div className="space-y-1">
+              <p className="text-sm font-medium">{t("suggestionsTitle")}</p>
+              <div className="max-h-48 overflow-y-auto rounded-md bg-muted/50 p-3 text-sm whitespace-pre-wrap">
+                {suggestions}
+              </div>
+              <p className="text-xs text-muted-foreground">{t("suggestionsHint")}</p>
+            </div>
+          )}
           <div className="space-y-1.5">
             <Label htmlFor="policy-content">{t("contentLabel")}</Label>
             <Textarea
@@ -711,6 +940,76 @@ export default function PolicyDetailPage() {
         </DialogContent>
       </Dialog>
 
+      {/* Details Dialog: owner, department, dates, review interval */}
+      <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>{t("detailsDialogTitle")}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="details-description">{t("labelDescription")}</Label>
+              <Textarea
+                id="details-description"
+                rows={3}
+                value={details.description}
+                onChange={(e) => setDetails({ ...details, description: e.target.value })}
+              />
+            </div>
+            <PolicyAssignmentFields
+              organizationId={orgId}
+              idPrefix="details"
+              value={details.assignment}
+              onChange={(assignment) => setDetails({ ...details, assignment })}
+            />
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+              <div className="space-y-1.5">
+                <Label htmlFor="details-effective">{t("labelEffectiveDate")}</Label>
+                <Input
+                  id="details-effective"
+                  type="date"
+                  value={details.effectiveDate}
+                  onChange={(e) => setDetails({ ...details, effectiveDate: e.target.value })}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="details-interval">{t("labelInterval")}</Label>
+                <ReviewIntervalSelect
+                  id="details-interval"
+                  value={details.reviewIntervalMonths}
+                  onChange={(months) => setDetails({ ...details, reviewIntervalMonths: months })}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="details-review">{t("labelReviewDate")}</Label>
+                <Input
+                  id="details-review"
+                  type="date"
+                  value={details.reviewDate}
+                  onChange={(e) => setDetails({ ...details, reviewDate: e.target.value })}
+                />
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground">{t("intervalHint")}</p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDetailsOpen(false)}>
+              {tc("cancel")}
+            </Button>
+            <Button onClick={handleSaveDetails} disabled={updateMutation.isPending}>
+              {updateMutation.isPending ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  {tc("saving")}
+                </>
+              ) : (
+                tc("saveChanges")
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Link System Dialog */}
       <Dialog open={linkSystemDialogOpen} onOpenChange={setLinkSystemDialogOpen}>
         <DialogContent>
@@ -722,22 +1021,12 @@ export default function PolicyDetailPage() {
               {t("linkSystemDialogDescription")}
             </p>
             <div className="space-y-2">
-              <Label>{t("labelAiSystem")}</Label>
-              <Select
+              <Label htmlFor="policy-link-system">{t("labelAiSystem")}</Label>
+              <SystemPicker
+                id="policy-link-system"
                 value={selectedSystemId}
-                onValueChange={setSelectedSystemId}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder={t("placeholderSelectAiSystem")} />
-                </SelectTrigger>
-                <SelectContent>
-                  {systems.map((system) => (
-                    <SelectItem key={system.id} value={system.id}>
-                      {system.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                onChange={(system) => setSelectedSystemId(system?.id ?? "")}
+              />
             </div>
           </div>
           <DialogFooter>

@@ -2,27 +2,18 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 /**
- * The hosted pilot, published. The same five points a person acknowledges on
- * their first sign-in, so nobody has to remember a pop-up, plus the caps, the
- * ways on (export, a paid plan, a managed instance or your own hardware) and the
- * three hosting options worded as on the landing pages.
- *
- * Every word of the disclosure is read from src/config/pilot-disclosure.ts and
- * src/config/pilot.ts. This page holds no copy of it: a page that restates the
- * disclosure in its own words is a page that will one day contradict it.
+ * The hosted pilot, published: the caps, the ways on (export, a paid plan, a
+ * managed instance or your own hardware) and the three hosting options worded
+ * as on the landing pages. The pilot's own terms are read from
+ * src/config/pilot.ts, so this page and the screens say the same thing.
  */
 
 import { getLocale } from "next-intl/server";
-import { DisclosureList } from "@/components/pilot/pilot-disclosure";
-import {
-  DISCLOSURE_CHROME,
-  DISCLOSURE_REVIEWED_AS_OF,
-  DISCLOSURE_VERSION,
-} from "@/config/pilot-disclosure";
 import {
   PILOT_CEILING_KEYS,
   PILOT_CEILING_LABELS,
   PILOT_CEILINGS,
+  PILOT_DESCRIPTION,
   PILOT_EDIT_DAYS,
   PILOT_SIGN_IN_LINE,
   PILOT_TERMS,
@@ -32,7 +23,7 @@ import {
 export async function generateMetadata() {
   const locale: PilotLocale = (await getLocale()) === "es" ? "es" : "en";
   return {
-    title: DISCLOSURE_CHROME[locale].title,
+    title: COPY[locale].title,
     description: PILOT_SIGN_IN_LINE[locale],
   };
 }
@@ -40,6 +31,7 @@ export async function generateMetadata() {
 const COPY: Record<
   PilotLocale,
   {
+    title: string;
     capsTitle: string;
     capsIntro: string;
     editingTitle: string;
@@ -57,10 +49,10 @@ const COPY: Record<
     hostingUrl: string;
     leavingTitle: string;
     leaving: string;
-    versionLine: (version: string, reviewed: string) => string;
   }
 > = {
   en: {
+    title: "The hosted pilot",
     capsTitle: "The limits of the pilot",
     capsIntro:
       "Nobody pays for a module on the hosted pilot. Instead it has three limits, and they are the same for every account.",
@@ -71,18 +63,18 @@ const COPY: Record<
       "The hosted pilot holds one organization per account. To carry several organizations, choose a managed instance or your own hardware.",
     waysOutTitle: "When you reach a limit",
     waysOut:
-      "The pilot is for trying the tool with test records. The Cloud Plan lifts the limits and keeps your records; a managed instance or your own hardware is on quotation. You can also export everything you created as a program pack at any time.",
+      "The Cloud Plan lifts the limits and keeps your records; a managed instance or your own hardware is on quotation. You can also export everything you created as a program pack at any time.",
     pricingLink: "See the plans and prices",
     pricingUrl: "https://www.todo.law/pricing",
     hostingTitle: "Three hosting options",
     hostingIntro: "Three hosting options, with different safeguards and levels of control.",
     hosting: [
       {
-        title: "In the TODO.LAW cloud",
+        title: "TODO.LAW cloud",
         body: "You use it in the browser, on desktop or mobile. Nothing to install, and you can take your program elsewhere whenever you like with a simple export.",
       },
       {
-        title: "Managed virtual server",
+        title: "Managed instance",
         body: "An isolated instance we run for you from Asturias, Spain, with open LLMs available and a tailored SLA.",
       },
       {
@@ -95,9 +87,9 @@ const COPY: Record<
     leavingTitle: "Taking your program elsewhere",
     leaving:
       "Your program is yours. Export it in full as a program pack from Settings whenever you like. If you move to an enterprise governance platform, we help you with the migration.",
-    versionLine: (version, reviewed) => `Disclosure version ${version}, reviewed ${reviewed}.`,
   },
   es: {
+    title: "El piloto alojado",
     capsTitle: "Los límites del piloto",
     capsIntro:
       "En el piloto alojado nadie paga por un módulo. En su lugar tiene tres límites, iguales para todas las cuentas.",
@@ -108,7 +100,7 @@ const COPY: Record<
       "El piloto alojado admite una organización por cuenta. Si necesitas llevar varias organizaciones, elige una instancia gestionada o tu propio hardware.",
     waysOutTitle: "Cuando llegues a un límite",
     waysOut:
-      "El piloto sirve para probar la herramienta con registros de prueba. El Plan nube UE elimina los límites y conserva tus registros; una instancia gestionada o tu propio hardware se ofrecen bajo presupuesto. También puedes exportar todo lo que has creado como paquete del programa cuando quieras.",
+      "El Plan nube UE elimina los límites y conserva tus registros; una instancia gestionada o tu propio hardware se ofrecen bajo presupuesto. También puedes exportar todo lo que has creado como paquete del programa cuando quieras.",
     pricingLink: "Consulta los planes y precios",
     pricingUrl: "https://www.todo.law/es/precios",
     hostingTitle: "Tres modalidades de alojamiento",
@@ -119,7 +111,7 @@ const COPY: Record<
         body: "Lo usas desde el navegador, en el ordenador o en el móvil. No instalas nada y puedes llevarte tu programa a otro sitio cuando quieras, mediante una sencilla exportación. Los datos se guardan en la Unión Europea (Fráncfort).",
       },
       {
-        title: "Servidor virtual gestionado",
+        title: "Instancia gestionada",
         body: "Una instancia aislada que operamos nosotros desde Asturias, con disponibilidad de LLM abiertos y SLA a medida.",
       },
       {
@@ -132,29 +124,18 @@ const COPY: Record<
     leavingTitle: "Llevarte tu programa a otro sitio",
     leaving:
       "Tu programa es tuyo. Expórtalo completo como paquete del programa desde Configuración cuando quieras. Si pasas a una plataforma de gobernanza empresarial, te ayudamos con la migración.",
-    versionLine: (version, reviewed) => `Versión ${version} del aviso, revisada el ${reviewed}.`,
   },
 };
 
 export default async function PilotDocsPage() {
   const locale: PilotLocale = (await getLocale()) === "es" ? "es" : "en";
-  const chrome = DISCLOSURE_CHROME[locale];
   const copy = COPY[locale];
 
   return (
     <div className="space-y-16">
       <section>
-        <h1 className="text-3xl sm:text-4xl font-display tracking-tight mb-4">{chrome.title}</h1>
-        <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl">{chrome.lead}</p>
-      </section>
-
-      <section>
-        <div className="rounded-xl border border-border bg-card p-6 max-w-3xl">
-          <DisclosureList locale={locale} />
-        </div>
-        <p className="text-xs text-muted-foreground mt-3">
-          {copy.versionLine(DISCLOSURE_VERSION, DISCLOSURE_REVIEWED_AS_OF)}
-        </p>
+        <h1 className="text-3xl sm:text-4xl font-display tracking-tight mb-4">{copy.title}</h1>
+        <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl">{PILOT_DESCRIPTION[locale]}</p>
       </section>
 
       <section>

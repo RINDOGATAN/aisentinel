@@ -5,6 +5,11 @@ import React from "react";
 import { Page, View, Text, StyleSheet } from "@react-pdf/renderer";
 import { TIER_MARKER, TIER_SURFACES, toRiskTier } from "@/config/risk-tier-palette";
 import { pdfLabels, riskLabel, statusLabel, type PdfLocale } from "./pdf-labels";
+import { registerPdfHyphenation } from "./pdf-hyphenation";
+
+// Every report built on these styles breaks lines only between words (see
+// pdf-hyphenation.ts); registering on import covers each of them.
+registerPdfHyphenation();
 
 const PRIMARY = "#f5a623";
 const DARK = "#1a1a1a";
@@ -127,7 +132,9 @@ export const s = StyleSheet.create({
   metaRow: { flexDirection: "row", marginBottom: 4 },
   metaLabel: { fontSize: 9, fontFamily: "Helvetica-Bold", color: MUTED, width: 140 },
   metaValue: { fontSize: 9, color: DARK, flex: 1 },
-  badge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 3, fontSize: 7, fontFamily: "Helvetica-Bold" },
+  // alignSelf keeps a badge as wide as its text when its parent is a column
+  // (the default stretch would draw it across the full page width).
+  badge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 3, fontSize: 7, fontFamily: "Helvetica-Bold", alignSelf: "flex-start" },
   tierBadge: { flexDirection: "row", alignItems: "center" },
   tierDot: { width: 5, height: 5, borderRadius: 2.5, marginRight: 4 },
   card: { borderWidth: 1, borderColor: BORDER, borderRadius: 4, padding: 12, marginBottom: 12 },

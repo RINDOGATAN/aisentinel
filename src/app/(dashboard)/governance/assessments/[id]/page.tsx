@@ -3,7 +3,7 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 import { useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import {
@@ -42,6 +42,7 @@ import {
 import { AssessmentVersionHistory } from "@/components/governance/assessment-version-history";
 import { STATUS_CHIP, STATUS_OUTLINE } from "@/components/ui/status-note";
 import { PageHeader } from "@/components/governance/page-header";
+import { DeleteRecordButton } from "@/components/governance/delete-record-button";
 
 const statusColors: Record<string, string> = {
   DRAFT: "bg-gray-500/20 text-gray-400",
@@ -59,7 +60,9 @@ export default function AssessmentDetailPage() {
   const locale = useLocale();
   const utils = trpc.useUtils();
   const params = useParams();
-  const { organization, canWrite, canDecide } = useOrganization();
+  const { organization, canWrite, canDecide, canDelete } = useOrganization();
+  const router = useRouter();
+  const tDelete = useTranslations("deleteRecord");
   const orgId = organization?.id ?? "";
   const id = params.id as string;
 
@@ -84,6 +87,15 @@ export default function AssessmentDetailPage() {
   const submitMutation = trpc.assessment.submit.useMutation({ onSuccess: () => refetch(), onError });
   const approveMutation = trpc.assessment.processApproval.useMutation({ onSuccess: () => refetch(), onError });
   const generateDraft = trpc.assessment.generateAiDraft.useMutation();
+  const deleteMutation = trpc.assessment.delete.useMutation({
+    onSuccess: () => {
+      toast.success(tDelete("assessment.deleted"));
+      router.push("/governance/assessments");
+      void utils.assessment.invalidate();
+      void utils.aiSystem.getById.invalidate();
+    },
+    onError,
+  });
 
   // What answering this would do to the compliance register.
   const { data: registerPlan } = trpc.unified.previewRegisterUpdate.useQuery(
@@ -122,6 +134,8 @@ export default function AssessmentDetailPage() {
   const canEdit = canWrite && ["DRAFT", "IN_PROGRESS"].includes(assessment.status);
   const canSubmit = canWrite && (assessment.status === "IN_PROGRESS" || assessment.status === "DRAFT");
   const canApprove = canDecide && assessment.status === "UNDER_REVIEW";
+  // Only an assessment nobody has submitted can be deleted (owners and admins).
+  const canDeleteDraft = canDelete && ["DRAFT", "IN_PROGRESS"].includes(assessment.status) && !assessment.submittedAt;
   const contentLocale = locale === "es" ? "es" : "en";
 
   // Progress and the completeness gate come from the one shared rule
@@ -238,8 +252,15 @@ export default function AssessmentDetailPage() {
           </>
         }
         actions={
-          canEdit || canSubmit ? (
+          canEdit || canSubmit || canDeleteDraft ? (
             <>
+              {canDeleteDraft && (
+                <DeleteRecordButton
+                  record="assessment"
+                  pending={deleteMutation.isPending}
+                  onConfirm={() => deleteMutation.mutate({ organizationId: orgId, id })}
+                />
+              )}
               {canSubmit && (
                 <Button
                   variant="outline"

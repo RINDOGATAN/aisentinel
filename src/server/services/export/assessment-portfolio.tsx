@@ -124,7 +124,9 @@ export function AssessmentPortfolioReport({
       {assessments.map((a) => (
         <ContentPage key={a.id} title={p.title} orgName={orgName} date={date} locale={locale}>
           <AccentSectionHeader title={a.title} />
-          <StatusBadge status={a.status} locale={locale} />
+          <View style={{ marginBottom: 8 }}>
+            <StatusBadge status={a.status} locale={locale} />
+          </View>
           <MetadataBlock
             items={[
               { label: l.aiSystem, value: a.aiSystemName },

@@ -107,12 +107,12 @@ const L = {
     noTests: "Sin pruebas registradas. Un control sin prueba es una afirmación, no un control.",
     noControls: "Todavía no hay controles registrados.",
     decision: "Decisión",
-    method: "Qué se hizo",
+    method: "Qué se ha hecho",
     evidence: "Evidencia",
     counts:
       "{scenarios} escenarios, {actNow} que requieren actuar ya. {controls} controles, de los cuales {proven} tienen una prueba superada y vigente.",
     untestedWarning:
-      "{untested} controles nunca se han probado, o su última prueba falló o ha caducado. Son las líneas por las que preguntará primero quien lea esto.",
+      "{untested} controles nunca se han probado, o su última prueba ha fallado o ha caducado. Son las líneas por las que preguntará primero quien lea esto.",
     allTested: "Todos los controles tienen una prueba superada y vigente.",
     method_note: "Método: se mapean las capacidades, de ellas se derivan los escenarios, cada escenario lleva controles en las capas de prevenir, limitar, detectar, responder y asegurar, y cada control lleva la prueba que demuestra si funciona. Paquete de reglas {version}.",
     reviewed: "Última revisión",

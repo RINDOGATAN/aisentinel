@@ -36,6 +36,7 @@ import { useTranslations } from "next-intl";
 import { trpc } from "@/lib/trpc";
 import { features } from "@/config/features";
 import { useFormatDate } from "@/lib/use-format-date";
+import { isPickerDisabled, isPostureSelectable, showPostureSave } from "@/lib/ai-posture-picker";
 
 type Posture = "off" | "local_gateway" | "cloud_eu" | "cloud_us";
 
@@ -87,6 +88,13 @@ export function AiPostureCard({ organizationId, isAdmin }: AiPostureCardProps) {
   // value), not the one already saved — each posture may have its own engine.
   const selectedLaneStatus = posture === "off" ? null : status.lanes[posture];
   const showNotConfiguredWarning = posture !== "off" && !selectedLaneStatus?.configured;
+  const pickerState = {
+    isAdmin,
+    pending: setPostureMutation.isPending,
+    usJurisdictionBlocked: status.usJurisdictionBlocked,
+    posture,
+    dirty,
+  };
 
   return (
     <Card>
@@ -102,7 +110,7 @@ export function AiPostureCard({ organizationId, isAdmin }: AiPostureCardProps) {
           <Select
             value={posture}
             onValueChange={(v) => setSelected(v as Posture)}
-            disabled={!isAdmin || setPostureMutation.isPending}
+            disabled={isPickerDisabled(pickerState)}
           >
             <SelectTrigger>
               <SelectValue />
@@ -112,12 +120,15 @@ export function AiPostureCard({ organizationId, isAdmin }: AiPostureCardProps) {
                 ? OFFERED_POSTURES
                 : [...OFFERED_POSTURES, posture]
               ).map((p) => (
-                <SelectItem key={p} value={p}>
+                <SelectItem key={p} value={p} disabled={!isPostureSelectable(p, status.usJurisdictionBlocked)}>
                   {t(`posture.${p}`)}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
+          {status.usJurisdictionBlocked && (
+            <p className="text-xs text-muted-foreground">{t("errors.ai_us_jurisdiction")}</p>
+          )}
           <p className="text-xs text-muted-foreground">
             {status.configured
               ? t("postureCard.engineConfigured", { provider: status.providerName ?? "—" })
@@ -164,7 +175,7 @@ export function AiPostureCard({ organizationId, isAdmin }: AiPostureCardProps) {
           </p>
         )}
 
-        {isAdmin && dirty && (
+        {showPostureSave(pickerState) && (
           <>
             <div className="flex items-start gap-2">
               <Checkbox

@@ -334,7 +334,7 @@ describe("the e-mail", () => {
       expect(mail.html).not.toContain("<script>");
       expect(mail.html).toContain("Acme &lt;script&gt;");
       expect(mail.text).toContain("https://example.test/invite/abc");
-      expect(mail.text).toContain(locale === "es" ? "Responsable de IA" : "AI Officer");
+      expect(mail.text).toContain(locale === "es" ? "Responsable de IA" : "AI officer");
       expect(mail.text).toContain("2026");
       expect(`${mail.subject}${mail.text}`).not.toMatch(/—|--/);
     }

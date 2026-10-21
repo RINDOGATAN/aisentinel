@@ -540,7 +540,7 @@
     "stepIndustryTemplate": "Industry template",
     "stepReviewBuild": "Review & build",
     "vendorImportTitle": "Import from AI vendor catalog",
-    "vendorImportDescription": "Select AI vendors you use and auto-generate AI systems, risk classifications, and oversight gates from their known profiles.",
+    "vendorImportDescription": "Select the AI vendors the organization uses and auto-generate AI systems, risk classifications, and oversight gates from their known profiles.",
     "industryTemplateTitle": "Start from industry template",
     "industryTemplateDescription": "Pick the industry and get a pre-built AI governance program with common AI systems, risk classifications, and policies.",
     "selectVendorsTitle": "Select AI vendors",
@@ -619,7 +619,7 @@
       "industryTemplate": "Industry template: {name}"
     },
     "legalIndustryName": "Legal",
-    "legalIndustryDescription": "Law firms and in-house legal teams: pick the AI tools you use (legal research, drafting, contract review, e-discovery, translation) and get the law-firm policy pack.",
+    "legalIndustryDescription": "Law firms and in-house legal teams: pick the AI tools the firm uses (legal research, drafting, contract review, e-discovery, translation) and get the law-firm policy pack.",
     "legalIndustryTools": "{count} tools to choose from",
     "builderTitle": "Building an AI product",
     "builderDescription": "For the team writing the code. Say what the product can see and do, and get the things that could go wrong, with controls and a test for each.",
@@ -4694,7 +4694,7 @@
     "deleteFailed": "Could not delete the snapshot",
     "delete": "Delete",
     "deleteConfirm": "Delete this snapshot? The record of what was reported at that moment is lost permanently.",
-    "empty": "No snapshots yet. One is captured automatically each time you export the program report.",
+    "empty": "No snapshots yet. One is captured automatically each time the program report is exported.",
     "columnDate": "Captured",
     "columnLabel": "Label",
     "columnReason": "Source",
@@ -4835,7 +4835,7 @@
     "groupFuture": "Future",
     "groupPast": "Already in force",
     "groupPastHint": "Dates that have passed. They still bind you; they are here so the list ahead stays readable.",
-    "groupNotApplicable": "Checked, does not reach you",
+    "groupNotApplicable": "Checked, does not reach the organization",
     "groupNotApplicableHint": "Assessed against the declared jurisdictions and found not to apply. Kept so it can be seen what was considered.",
     "showGroup": "Show {count}",
     "hideGroup": "Hide",
@@ -4861,7 +4861,8 @@
       "inForce": "In force",
       "noDate": "No dated deadline in this calendar",
       "empty": "Nothing is shown as applying yet. Declare where the organization operates and answer the questions on step 1.2.",
-      "open": "See the rules and dates"
+      "open": "See the rules and dates",
+      "emptyHere": "Nothing is shown as applying yet. Declare where the organization operates and answer the questions above."
     }
   },
   "admt": {
@@ -5032,7 +5033,7 @@
     },
     "screening": {
       "title": "California CCPA screening",
-      "description": "Five answers that decide which California duties reach you. Anything you leave unanswered stays visibly unanswered: we never read silence as “no”.",
+      "description": "Five answers that decide which California duties reach the organization. Anything left unanswered stays visibly unanswered: we never read silence as “no”.",
       "saved": "California screening saved",
       "auditIntro": "The next three decide the Article 9 cybersecurity audit under § 7120(b). Revenue band alone never puts you in scope: it only selects the phase-in tier once you already are.",
       "answer": {
@@ -5830,7 +5831,7 @@
   },
   "applicability": {
     "stepTitle": "Before starting: what applies to the organization",
-    "stepLead": "A few plain questions decide which laws and frameworks apply to you, and switch them on. Answer what you can. \"Not sure yet\" is a fair answer.",
+    "stepLead": "A few plain questions decide which laws and frameworks apply to the organization, and switch them on. Answer what you can. \"Not sure yet\" is a fair answer.",
     "skip": "I'm not sure yet, skip this for now",
     "roleTitle": "The organization's role with AI",
     "questions": {
@@ -5840,7 +5841,7 @@
       },
       "usesAi": {
         "label": "Does the organization use AI systems in its own work (as a deployer)?",
-        "hint": "For example, chat assistants, writing tools, or AI inside software you buy."
+        "hint": "For example, chat assistants, writing tools, or AI inside software the organization buys."
       },
       "generalPurposeModel": {
         "label": "Does the organization sell or offer a general-purpose AI model?",
@@ -5911,7 +5912,16 @@
       "thresholds": "The CCPA size thresholds decide first; the California screening in Settings asks them.",
       "screeningDecides": "Which rules apply depends on the screening questions in Settings."
     },
-    "answerScreening": "Answer the screening in Settings to add its requirements."
+    "answerScreening": "Answer the screening in Settings to add its requirements.",
+    "reasonsHere": {
+      "thresholds": "The CCPA size thresholds decide first; the California screening above asks them.",
+      "screeningDecides": "Which rules apply depends on the screening questions above."
+    },
+    "reasonsBelow": {
+      "thresholds": "The CCPA size thresholds decide first; the California screening below asks them.",
+      "screeningDecides": "Which rules apply depends on the screening questions below."
+    },
+    "answerScreeningBelow": "Answer the screening below to add its requirements."
   },
   "guided": {
     "navLabel": "Program path",
@@ -6008,8 +6018,8 @@
       },
       "threatModel": {
         "label": "Threat model",
-        "why": "Write down what could go wrong with the systems you build, and how each risk is stopped and tested.",
-        "do": "Write down what could go wrong with the AI you build, and how each risk is stopped and tested.",
+        "why": "Write down what could go wrong with the systems the organization builds, and how each risk is stopped and tested.",
+        "do": "Write down what could go wrong with the AI the organization builds, and how each risk is stopped and tested.",
         "doneWhen": "at least one threat model is past draft."
       },
       "vendorDueDiligence": {
@@ -6273,7 +6283,7 @@
   },
   "agentTesting": {
     "title": "Test the organization's AI agents (AIUC-1)",
-    "subtitle": "AIUC-1 is the certification standard for AI agents. Record each test you run against an agent, and see how close it is to the audit.",
+    "subtitle": "AIUC-1 is the certification standard for AI agents. Record each test run against an agent, and see how close it is to the audit.",
     "howItWorks": "For each requirement, record what you did (concretely enough to repeat), the result, what you observed and where the evidence lives. Tests are kept: a new test adds to the record, it never replaces one.",
     "readyRule": "An agent is ready for the audit when every requirement that applies to it has a pass from the last three months, or a partial result a person has accepted.",
     "readyExplained": "Every requirement that applies has a current pass or an accepted partial result. The audit itself is done by an accredited third party.",
@@ -6742,7 +6752,7 @@
     "sourceOnRequest": "Under AGPL-3.0 section 13, users interacting with this program over a network are offered the complete corresponding source code of the version running here, at no charge. The public source repository is being finalized; until it is published, request the corresponding source by emailing <mail>{email}</mail> and we will provide it.",
     "runningCommit": "Running commit: <code>{commit}</code>",
     "premiumTitle": "Premium skills",
-    "premium": "Optional premium skills and commercial add-ons are separately licensed by Rindogatan LLC and are not covered by the AGPL. See the source repository for details.",
+    "premium": "Optional premium skills and commercial add-ons are separately licensed by RINDOGATAN LLC and are not covered by the AGPL. See the source repository for details.",
     "back": "Back to AI Sentinel"
   },
   "deleteRecord": {

@@ -135,7 +135,7 @@ function DashboardFooter() {
               the "Source & licence" link below leads to /licenses, which carries
               the Corresponding Source offer to network users. */}
           <p className="text-[11px] text-muted-foreground/80">
-            AI Sentinel &middot; AGPL-3.0 &middot; &copy; Rindogatan LLC &middot;{" "}
+            AI Sentinel &middot; AGPL-3.0 &middot; &copy; RINDOGATAN LLC &middot;{" "}
             <Link href="/licenses" className="underline underline-offset-2 hover:text-foreground transition-colors">
               {t("sourceAndLicence")}
             </Link>

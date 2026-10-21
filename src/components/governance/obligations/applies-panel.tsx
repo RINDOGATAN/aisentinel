@@ -85,7 +85,7 @@ export function AppliesPanel({
         </div>
 
         {lines.length === 0 ? (
-          <p className="text-sm text-muted-foreground">{t("applies.empty")}</p>
+          <p className="text-sm text-muted-foreground">{t(onDashboard ? "applies.empty" : "applies.emptyHere")}</p>
         ) : (
           <ul className="grid grid-cols-1 gap-2 sm:gap-3 sm:grid-cols-2">
             {lines.map(({ item, date }) => (
@@ -99,7 +99,10 @@ export function AppliesPanel({
                   <span className="block text-sm font-semibold">{ta(`items.${item.id}`)}</span>
                   <span className="mt-0.5 block text-sm text-muted-foreground">
                     <span className="sr-only">{ta("whyLabel")}: </span>
-                    {item.reasons.map((r) => ta(`reasons.${r}`)).join(" ")}
+                    {item.reasons
+                      // On step 1.2 itself, a reason that points to the screening says where it is on the page.
+                      .map((r) => (!onDashboard && ta.has(`reasonsHere.${r}`) ? ta(`reasonsHere.${r}`) : ta(`reasons.${r}`)))
+                      .join(" ")}
                   </span>
                   <span className="mt-1 block text-xs font-medium text-foreground tabular-nums">
                     {dateText(date)}

@@ -183,7 +183,7 @@ export default function AgentTestingDetailPage({ params }: { params: Promise<{ i
   return (
     <div className="space-y-4 sm:space-y-6 max-w-4xl">
       <PageHeader
-        back={{ href: "/governance/agent-testing", label: tc("back") }}
+        back={{ href: "/governance/agent-testing", label: tc("backToAgentTesting") }}
         icon={Bot}
         title={data.agent.name}
         description={

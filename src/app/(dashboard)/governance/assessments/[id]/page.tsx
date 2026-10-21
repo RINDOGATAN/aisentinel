@@ -233,7 +233,7 @@ export default function AssessmentDetailPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        back={{ href: "/governance/assessments", label: tc("back") }}
+        back={{ href: "/governance/assessments", label: tc("backToAssessments") }}
         title={assessment.title}
         meta={
           <>

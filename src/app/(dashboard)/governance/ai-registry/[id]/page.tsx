@@ -715,7 +715,7 @@ export default function AISystemDetailPage() {
     <div className="space-y-6">
       {/* Header */}
       <PageHeader
-        back={{ href: "/governance/ai-registry", label: tc("back") }}
+        back={{ href: "/governance/ai-registry", label: tc("backToAiSystems") }}
         icon={Cpu}
         title={system.name}
         meta={

@@ -122,7 +122,7 @@ export default function VendorCatalogDetailPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        back={{ href: "/governance/vendor-catalog", label: tc("back") }}
+        back={{ href: "/governance/vendor-catalog", label: tc("backToVendorCatalog") }}
         title={
           <span className="inline-flex items-center gap-2">
             {entry.name}

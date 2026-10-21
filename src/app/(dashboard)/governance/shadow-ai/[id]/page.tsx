@@ -286,7 +286,7 @@ export default function ShadowAIDetailPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        back={{ href: "/governance/shadow-ai", label: tc("back") }}
+        back={{ href: "/governance/shadow-ai", label: tc("backToShadowAi") }}
         icon={Search}
         title={report.toolName}
         meta={

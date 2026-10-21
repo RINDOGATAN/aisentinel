@@ -197,7 +197,7 @@ export default function ThreatModelDetailPage() {
   return (
     <div className="space-y-6 max-w-4xl">
       <PageHeader
-        back={{ href: "/governance/threat-model", label: tc("back") }}
+        back={{ href: "/governance/threat-model", label: tc("backToThreatModel") }}
         title={data.name}
         description={
           <>

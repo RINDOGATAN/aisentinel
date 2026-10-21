@@ -136,7 +136,19 @@
     "notAssessed": "not assessed",
     "notApplicable": "not applicable",
     "updatedWhen": "Updated {when}",
-    "roleProviderShort": "Provider"
+    "roleProviderShort": "Provider",
+    "backToAiSystems": "Back to the organization's AI systems",
+    "backToVendors": "Back to vendors",
+    "backToShadowAi": "Back to AI tools in use",
+    "backToOversight": "Back to human oversight",
+    "backToVendorCatalog": "Back to the vendor catalog",
+    "backToPolicies": "Back to policies",
+    "backToIncidents": "Back to incidents",
+    "backToAssessments": "Back to impact assessments",
+    "backToAgentTesting": "Back to agent tests",
+    "backToProceedings": "Back to cases and inquiries",
+    "backToSensitiveData": "Back to sensitive data",
+    "backToThreatModel": "Back to threat models"
   },
   "nav": {
     "billing": "Billing",

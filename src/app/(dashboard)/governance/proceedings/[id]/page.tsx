@@ -118,7 +118,7 @@ export default function ProceedingDetailPage() {
   return (
     <div className="space-y-6 max-w-3xl">
       <PageHeader
-        back={{ href: "/governance/proceedings", label: tc("back") }}
+        back={{ href: "/governance/proceedings", label: tc("backToProceedings") }}
         title={data.title}
         description={
           <>

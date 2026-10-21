@@ -134,6 +134,7 @@
     "partial": "parcial",
     "nonCompliant": "no conforme",
     "notAssessed": "sin evaluar",
+    "notApplicable": "no aplicable",
     "updatedWhen": "Actualizado {when}",
     "roleProviderShort": "Proveedor"
   },
@@ -287,7 +288,7 @@
   },
   "aiRegistryDetail": {
     "notFound": "Sistema de IA no encontrado",
-    "backToRegistry": "Volver al registro",
+    "backToRegistry": "Volver a los sistemas de IA",
     "overview": "Resumen",
     "intendedPurpose": "Finalidad prevista",
     "technique": "Técnica",
@@ -675,6 +676,11 @@
     "statsInProgress": "En curso",
     "statsUnderReview": "En revisión",
     "statsApproved": "Aprobadas",
+    "badgeDraft": "Borrador",
+    "badgeInProgress": "En curso",
+    "badgeUnderReview": "En revisión",
+    "badgeApproved": "Aprobada",
+    "badgeRejected": "Rechazada",
     "emptyTitle": "No se han encontrado evaluaciones",
     "emptySearchHint": "Prueba a ajustar los términos de búsqueda",
     "emptyHint": "Comienza creando la primera evaluación de la organización",
@@ -6902,5 +6908,13 @@
       "otherAddress": "Esta invitación se ha enviado a otra dirección de correo.",
       "inviterGone": "Esta invitación ya no es válida. Pide una nueva."
     }
+  },
+  "notFound": {
+    "pageTitle": "Página no encontrada",
+    "code": "Error 404",
+    "title": "No se ha encontrado esta página",
+    "body": "Puede que la dirección esté mal escrita o que la página se haya movido. Los registros de la organización no se ven afectados.",
+    "dashboard": "Ir al panel de control",
+    "home": "Ir a la página de inicio"
   }
 }

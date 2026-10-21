@@ -948,6 +948,9 @@ export default function AISystemDetailPage() {
                   <span>{scorecard.totalPartial} {tc("partial")}</span>
                   <span>{scorecard.totalNonCompliant} {tc("nonCompliant")}</span>
                   <span>{scorecard.total - scorecard.assessed - scorecard.totalNotApplicable} {tc("notAssessed")}</span>
+                  {scorecard.totalNotApplicable > 0 && (
+                    <span>{scorecard.totalNotApplicable} {tc("notApplicable")}</span>
+                  )}
                 </div>
               </div>
             </div>

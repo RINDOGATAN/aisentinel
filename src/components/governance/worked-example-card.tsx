@@ -28,7 +28,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
-import { WORKED_EXAMPLE_CHROME } from "@/config/worked-example";
+import { WORKED_EXAMPLE_CHROME, formatSampleCounts } from "@/config/worked-example";
 import type { PilotLocale } from "@/config/pilot";
 import { templateOrigin } from "@/lib/template-provenance";
 import { localizeTemplateString } from "@/config/ai-governance-templates.es";
@@ -206,9 +206,7 @@ export function SampleDataCard({ organizationId }: { organizationId: string }) {
       </CardHeader>
       <CardContent className="space-y-3">
         <p className="text-xs text-muted-foreground tabular-nums">
-          {Object.entries(sample.counts)
-            .map(([type, count]) => `${count} ${type}`)
-            .join(" · ")}
+          {formatSampleCounts(sample.counts, locale)}
         </p>
         {canWrite && (
           <Button

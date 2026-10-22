@@ -2141,6 +2141,8 @@ model VendorCatalog {
   // AI-Specific
   aiCapabilities             String[] // ["LLM", "Computer Vision", "Speech"]
   modelHosting               String? // "Cloud", "On-Premise", "Hybrid"
+  trainingUse                String? // "no" | "opt-out" | "opt-in" | "yes" | "not-stated" (vendor statement)
+  retention                  String? // free text: retention of inputs and outputs (vendor statement)
   aiModels                   Json? // [{ name, type, source }] from Vendor.Watch
   aiTechniques               String[]
   euAiActRole                String? // "Provider", "Deployer", etc.

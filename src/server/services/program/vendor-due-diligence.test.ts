@@ -73,3 +73,45 @@ describe("vendorDueDiligenceFindings", () => {
     expect(toCatalogFacts({ ...base, subprocessors: { a: 1 } }).subprocessorCount).toBeNull();
   });
 });
+
+describe("training use and retention", () => {
+  const cases: [string, string, string][] = [
+    ["no", "no", "no"],
+    ["opt-out", "yes unless the customer opts out", "sí, salvo que el cliente lo desactive"],
+    ["opt-in", "only if the customer opts in", "solo si el cliente lo activa"],
+    ["yes", "yes", "sí"],
+  ];
+  for (const [value, en, es] of cases) {
+    it(`moves the training question to known for "${value}"`, () => {
+      const f = { ...empty, trainingUse: value };
+      const textEn = vendorDueDiligenceFindings(f, "en");
+      expect(textEn).toContain(`- Use of customer data to train models (vendor's statement): ${en}`);
+      expect(textEn).not.toContain("used to train or improve");
+      const textEs = vendorDueDiligenceFindings(f, "es");
+      expect(textEs).toContain(`- Uso de los datos del cliente para entrenar modelos (según el proveedor): ${es}`);
+      expect(textEs).not.toContain("para entrenar o mejorar");
+    });
+  }
+
+  it("keeps the training question when not stated, null or absent", () => {
+    for (const trainingUse of ["not-stated", null, undefined]) {
+      const text = vendorDueDiligenceFindings({ ...empty, trainingUse }, "en");
+      expect(text).toContain("used to train or improve");
+      expect(text).not.toContain("Use of customer data to train models");
+    }
+  });
+
+  it("moves the retention question to known in both languages", () => {
+    const f = { ...empty, retention: "30 days" };
+    expect(vendorDueDiligenceFindings(f, "en")).toContain("- Retention of inputs and outputs (vendor's statement): 30 days");
+    expect(vendorDueDiligenceFindings(f, "en")).not.toContain("How long are inputs");
+    expect(vendorDueDiligenceFindings(f, "es")).toContain("- Conservación de entradas y resultados (según el proveedor): 30 days");
+    expect(vendorDueDiligenceFindings(f, "es")).not.toContain("¿Durante cuánto tiempo");
+  });
+
+  it("keeps the retention question when null or blank", () => {
+    for (const retention of [null, undefined, "  "]) {
+      expect(vendorDueDiligenceFindings({ ...empty, retention }, "en")).toContain("How long are inputs");
+    }
+  });
+});

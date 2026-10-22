@@ -8,6 +8,9 @@
 
 import type { VendorWatchVendor } from "./vendor-watch-types";
 
+export const TRAINING_USE_VALUES = ["no", "opt-out", "opt-in", "yes", "not-stated"] as const;
+export type TrainingUse = (typeof TRAINING_USE_VALUES)[number];
+
 export function mapVendorToUpsert(v: VendorWatchVendor) {
   return {
     name: v.name,
@@ -61,5 +64,14 @@ export function mapVendorToUpsert(v: VendorWatchVendor) {
     supportsDsars: v.supportsDsars,
     hasDesignatedDpo: v.hasDesignatedDpo,
     hasRecentBreach: v.hasRecentBreach,
+    // A snapshot without these keys leaves the stored columns as they are
+    // (undefined is omitted by Prisma); a present key is written, null clears.
+    trainingUse:
+      v.trainingUse === undefined
+        ? undefined
+        : (TRAINING_USE_VALUES as readonly string[]).includes(v.trainingUse as string)
+          ? v.trainingUse
+          : null,
+    retention: v.retention,
   };
 }

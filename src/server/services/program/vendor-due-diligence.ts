@@ -34,6 +34,8 @@ export interface CatalogFacts {
   dataProcessingTransparency: string | null;
   hasRecentBreach: boolean | null;
   subprocessorCount: number | null;
+  trainingUse?: string | null;
+  retention?: string | null;
 }
 
 const L = {
@@ -57,6 +59,14 @@ const L = {
     subprocessors: "Subprocessors listed in the catalog",
     yes: "yes",
     no: "no",
+    training: "Use of customer data to train models (vendor's statement)",
+    trainingValues: {
+      no: "no",
+      "opt-out": "yes unless the customer opts out",
+      "opt-in": "only if the customer opts in",
+      yes: "yes",
+    },
+    retentionStated: "Retention of inputs and outputs (vendor's statement)",
     qTraining: "Is the organization's data used to train or improve the vendor's models, and can that be switched off by contract?",
     qRetention: "How long are inputs and outputs retained, and where?",
     qCerts: "Which security and AI management certifications does the vendor hold, with their scope and date?",
@@ -88,6 +98,14 @@ const L = {
     subprocessors: "Subencargados indicados en el catálogo",
     yes: "sí",
     no: "no",
+    training: "Uso de los datos del cliente para entrenar modelos (según el proveedor)",
+    trainingValues: {
+      no: "no",
+      "opt-out": "sí, salvo que el cliente lo desactive",
+      "opt-in": "solo si el cliente lo activa",
+      yes: "sí",
+    },
+    retentionStated: "Conservación de entradas y resultados (según el proveedor)",
     qTraining: "¿Se usan los datos de la organización para entrenar o mejorar los modelos del proveedor, y puede impedirse por contrato?",
     qRetention: "¿Durante cuánto tiempo y dónde se conservan las entradas y los resultados?",
     qCerts: "¿Qué certificaciones de seguridad y de gestión de la IA tiene el proveedor, con su alcance y fecha?",
@@ -106,7 +124,15 @@ const yn = (v: boolean, l: (typeof L)[DdLocale]) => (v ? l.yes : l.no);
 export function vendorDueDiligenceFindings(c: CatalogFacts, locale: DdLocale): string {
   const l = L[locale];
   const known: string[] = [];
-  const open: string[] = [l.qTraining, l.qRetention];
+  const open: string[] = [];
+
+  const trainingText = c.trainingUse
+    ? (l.trainingValues as Record<string, string>)[c.trainingUse]
+    : undefined;
+  if (trainingText) known.push(`${l.training}: ${trainingText}`);
+  else open.push(l.qTraining);
+  if (c.retention && c.retention.trim()) known.push(`${l.retentionStated}: ${c.retention.trim()}`);
+  else open.push(l.qRetention);
 
   if (c.certifications.length > 0) known.push(`${l.certifications}: ${c.certifications.join(", ")}`);
   else open.push(l.qCerts);
@@ -167,6 +193,8 @@ export function toCatalogFacts(row: {
   dataProcessingTransparency: string | null;
   hasRecentBreach: boolean | null;
   subprocessors: unknown;
+  trainingUse?: string | null;
+  retention?: string | null;
 }): CatalogFacts {
   const subs = Array.isArray(row.subprocessors) ? row.subprocessors.length : null;
   return { ...row, subprocessorCount: subs };

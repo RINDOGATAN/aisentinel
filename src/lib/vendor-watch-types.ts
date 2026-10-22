@@ -62,6 +62,9 @@ export interface VendorWatchVendor {
   supportsDsars: boolean | null;
   hasDesignatedDpo: boolean | null;
   hasRecentBreach: boolean | null;
+  // Optional: older snapshots do not carry these keys.
+  trainingUse?: string | null;
+  retention?: string | null;
 }
 
 export interface VendorWatchSyncResponse {

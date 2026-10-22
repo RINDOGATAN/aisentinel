@@ -85,6 +85,10 @@ export default function VendorCatalogDetailPage() {
   }
 
   const linkedVendorCount = entry._count?.vendors ?? 0;
+  const trainingLabel =
+    entry.trainingUse && ["no", "opt-out", "opt-in", "yes"].includes(entry.trainingUse)
+      ? t(`trainingUse_${entry.trainingUse.replace("-", "_")}`)
+      : null;
   const aiModels = (entry.aiModels as CatalogAIModel[] | null) ?? [];
   const subprocessors = parseSubprocessors(entry.subprocessors);
   const supplyChain = summarizeSupplyChain(subprocessors);
@@ -257,7 +261,7 @@ export default function VendorCatalogDetailPage() {
           </Card>
 
           {/* AI Capabilities */}
-          {(entry.aiCapabilities.length > 0 || entry.modelHosting) && (
+          {(entry.aiCapabilities.length > 0 || entry.modelHosting || trainingLabel || entry.retention) && (
             <Card>
               <CardHeader>
                 <CardTitle>{t("aiCapabilitiesTitle")}</CardTitle>
@@ -278,6 +282,20 @@ export default function VendorCatalogDetailPage() {
                     <Server className="w-4 h-4 text-muted-foreground" />
                     <span className="text-muted-foreground">{t("labelModelHosting")}</span>
                     <span className="font-medium">{entry.modelHosting}</span>
+                  </div>
+                )}
+                {trainingLabel && (
+                  <div className="flex items-center gap-2 text-sm">
+                    <Brain className="w-4 h-4 text-muted-foreground" />
+                    <span className="text-muted-foreground">{t("labelTrainingUse")}</span>
+                    <span className="font-medium">{trainingLabel}</span>
+                  </div>
+                )}
+                {entry.retention && (
+                  <div className="flex items-start gap-2 text-sm">
+                    <Server className="w-4 h-4 mt-0.5 text-muted-foreground" />
+                    <span className="text-muted-foreground">{t("labelRetention")}</span>
+                    <span className="font-medium">{entry.retention}</span>
                   </div>
                 )}
               </CardContent>

@@ -73,9 +73,25 @@ export interface PilotEndBarProps {
   transition?: boolean;
   /** The checkout route for "Move to the paid plan"; only for an owner or admin, with the switch on. */
   upgradeHref?: string | null;
+  /**
+   * The checkout route for paying monthly, when the monthly link is set. With
+   * it, the bar offers two links (monthly, yearly) instead of the single
+   * "Move to the paid plan"; `upgradeHref` is then the yearly one.
+   */
+  upgradeMonthlyHref?: string | null;
 }
 
-export function PilotEndBar({ locale, state, endsAt, transition = false, upgradeHref = null }: PilotEndBarProps) {
+const UPGRADE_LINK =
+  "ml-1 inline-block rounded-full border border-primary px-2.5 py-0.5 font-medium text-primary hover:bg-primary hover:text-primary-foreground";
+
+export function PilotEndBar({
+  locale,
+  state,
+  endsAt,
+  transition = false,
+  upgradeHref = null,
+  upgradeMonthlyHref = null,
+}: PilotEndBarProps) {
   // The trial bar may be closed for the session; the ending and read-only bars stay.
   const dismissed = useSyncExternalStore(subscribeDismissed, readDismissed, () => false);
   // The currency the customer will be charged, from the same decision as the
@@ -115,14 +131,21 @@ export function PilotEndBar({ locale, state, endsAt, transition = false, upgrade
         >
           {copy.pricing}
         </a>
-        {upgradeHref && (
+        {upgradeHref && upgradeMonthlyHref && (
           <>
             {" "}
-            <a
-              href={upgradeHref}
-              data-testid="pilot-upgrade-link"
-              className="ml-1 inline-block rounded-full border border-primary px-2.5 py-0.5 font-medium text-primary hover:bg-primary hover:text-primary-foreground"
-            >
+            <a href={upgradeMonthlyHref} data-testid="pilot-upgrade-monthly-link" className={UPGRADE_LINK}>
+              {copy.upgradeMonthly}
+            </a>{" "}
+            <a href={upgradeHref} data-testid="pilot-upgrade-link" className={UPGRADE_LINK}>
+              {copy.upgradeYearly}
+            </a>
+          </>
+        )}
+        {upgradeHref && !upgradeMonthlyHref && (
+          <>
+            {" "}
+            <a href={upgradeHref} data-testid="pilot-upgrade-link" className={UPGRADE_LINK}>
               {copy.upgrade}
             </a>
           </>
@@ -146,10 +169,13 @@ export function PilotEndBar({ locale, state, endsAt, transition = false, upgrade
 export function OrganizationPilotEndBar({
   locale,
   upgrade = false,
+  upgradeMonthly = false,
 }: {
   locale: PilotLocale;
   /** The automatic upgrade is on and a payment link is set for this visitor's currency. */
   upgrade?: boolean;
+  /** The monthly payment link is set as well. */
+  upgradeMonthly?: boolean;
 }) {
   const { organization } = useOrganization();
   // A paid organisation is never asked about (and its status is inactive anyway).
@@ -170,6 +196,11 @@ export function OrganizationPilotEndBar({
       endsAt={endsAt}
       transition={transition}
       upgradeHref={canUpgrade ? `/api/plan/checkout?org=${encodeURIComponent(organization.id)}` : null}
+      upgradeMonthlyHref={
+        canUpgrade && upgradeMonthly
+          ? `/api/plan/checkout?org=${encodeURIComponent(organization.id)}&interval=month`
+          : null
+      }
     />
   );
 }

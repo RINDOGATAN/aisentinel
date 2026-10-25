@@ -6,7 +6,8 @@
  * customer will be charged (visitorCurrency: euros only for the 27 EU member
  * states, US dollars everywhere else, whatever the interface language) and
  * the payment link "Move to the paid plan" uses for that currency (null when
- * the automatic upgrade is off or the link is not set).
+ * the automatic upgrade is off or the link is not set), and the monthly link
+ * beside it when that one is set too.
  *
  * The signed-in layout hands `currency` to every in-app price hint
  * (ChargeCurrencyProvider) and shows the button from `link`; the checkout
@@ -20,6 +21,8 @@ import { visitorCurrency, type Currency } from "./currency";
 export interface InAppPlanOffer {
   currency: Currency;
   link: string | null;
+  /** The monthly payment link, offered only beside the yearly one. */
+  monthlyLink: string | null;
 }
 
 export function inAppPlanOffer(
@@ -27,5 +30,6 @@ export function inAppPlanOffer(
   env: PlanEuEnv = process.env,
 ): InAppPlanOffer {
   const currency = visitorCurrency(headers);
-  return { currency, link: autoUpgradeActive(env) ? planCloudLink(currency, env) : null };
+  const link = autoUpgradeActive(env) ? planCloudLink(currency, env, "year") : null;
+  return { currency, link, monthlyLink: link ? planCloudLink(currency, env, "month") : null };
 }

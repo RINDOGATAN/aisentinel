@@ -363,6 +363,9 @@ export const PILOT_END_BAR_COPY: Record<
     pricing: string;
     /** The automatic upgrade's button, for an owner or administrator only. */
     upgrade: string;
+    /** The two links shown instead of `upgrade` once the monthly link is set. */
+    upgradeMonthly: string;
+    upgradeYearly: string;
     dismiss: string;
   }
 > = {
@@ -375,6 +378,8 @@ export const PILOT_END_BAR_COPY: Record<
     readOnly: "Your pilot has ended: the organization is read-only and you can export it at any time.",
     pricing: "See pricing",
     upgrade: "Move to the paid plan",
+    upgradeMonthly: "Pay monthly",
+    upgradeYearly: "Pay yearly",
     dismiss: "Close",
   },
   es: {
@@ -386,6 +391,8 @@ export const PILOT_END_BAR_COPY: Record<
     readOnly: "Tu piloto ha terminado: la organización está en solo lectura y puedes exportarla cuando quieras.",
     pricing: "Ver precios",
     upgrade: "Pasar al plan de pago",
+    upgradeMonthly: "Pago mensual",
+    upgradeYearly: "Pago anual",
     dismiss: "Cerrar",
   },
 };

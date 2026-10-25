@@ -43,7 +43,7 @@ export default async function DashboardLayout({
 
   return (
     <ChargeCurrencyProvider currency={offer.currency}>
-      <HostedPilotBanner upgrade={offer.link !== null} />
+      <HostedPilotBanner upgrade={offer.link !== null} upgradeMonthly={offer.monthlyLink !== null} />
       <DashboardShell menuCollapsed={menuCollapsed}>
         {children}
       </DashboardShell>

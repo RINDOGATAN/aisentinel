@@ -227,7 +227,7 @@ describe("hosted pilot caps through the routers", () => {
     expect(entry).toBeDefined();
     expect(entry!.organizationId).toBe(org.id);
     expect(entry!.userId).toBe("user-a");
-    expect(entry!.changes).toEqual({ dpaVersion: "1.3", locale: "es", document: PILOT_DPA.href.es });
+    expect(entry!.changes).toEqual({ dpaVersion: "1.5", locale: "es", document: PILOT_DPA.href.es });
   });
 
   it("the editing-window switch: writes are refused with the two ways out, reads still work", async () => {
@@ -451,7 +451,7 @@ describe("hosted pilot: the data processing agreement for organizations opened b
     await expect(owner.getDpaStatus({ organizationId: "org-a" })).resolves.toMatchObject({ required: true });
     await owner.acceptDpa({ organizationId: "org-a", accept: true });
     const entries = H.audit.filter((r) => r.action === PILOT_DPA_ACTION);
-    expect((entries[0].changes as Record<string, string>).dpaVersion).toBe("1.3");
+    expect((entries[0].changes as Record<string, string>).dpaVersion).toBe("1.5");
   });
 
   it("the data processing agreement: versions are read numerically, malformed entries ignored", () => {

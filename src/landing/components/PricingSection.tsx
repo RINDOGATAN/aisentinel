@@ -20,6 +20,7 @@
 
 import { Fragment } from "react";
 import {
+  PLAN_MONTHLY_PAYMENT_LINK,
   PLAN_PAYMENT_LINK,
   PRICING_ANCHOR,
   PRICING_CONTACT_URL,
@@ -42,6 +43,10 @@ export default function PricingSection({ locale, currency = "USD" }: { locale: L
   const c = PRICING_COPY[locale];
   const shown = displayCurrency(locale, currency);
   const quiet = "underline underline-offset-4 hover:text-foreground transition-colors";
+  const subscribeClass =
+    "text-sm font-medium text-muted-foreground underline underline-offset-4 hover:text-foreground transition-colors";
+  // Monthly only where its link is set (src/landing/config/pricing.ts).
+  const monthly = PLAN_MONTHLY_PAYMENT_LINK[shown];
   const anchor = PRICING_ANCHOR[locale];
   const other = PRICING_ANCHOR[locale === "en" ? "es" : "en"];
   return (
@@ -94,14 +99,20 @@ export default function PricingSection({ locale, currency = "USD" }: { locale: L
             <a href="/sign-in" className="btn-primary" data-testid="pricing-start" onClick={() => writeLocaleCookie(locale)}>
               {c.start}
             </a>
-            <a
-              href={PLAN_PAYMENT_LINK[shown]}
-              rel="noopener"
-              className="text-sm font-medium text-muted-foreground underline underline-offset-4 hover:text-foreground transition-colors"
-              data-testid="pricing-subscribe"
-            >
-              {c.subscribe}
-            </a>
+            {monthly ? (
+              <>
+                <a href={monthly} rel="noopener" className={subscribeClass} data-testid="pricing-subscribe-monthly">
+                  {c.subscribeMonthly}
+                </a>
+                <a href={PLAN_PAYMENT_LINK[shown]} rel="noopener" className={subscribeClass} data-testid="pricing-subscribe">
+                  {c.subscribeYearly}
+                </a>
+              </>
+            ) : (
+              <a href={PLAN_PAYMENT_LINK[shown]} rel="noopener" className={subscribeClass} data-testid="pricing-subscribe">
+                {c.subscribe}
+              </a>
+            )}
           </div>
         </div>
 

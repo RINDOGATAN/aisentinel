@@ -3,7 +3,8 @@
 
 /**
  * Where "Move to the paid plan" sends the browser: the plan's payment link for
- * the visitor's currency (currency.ts), carrying a signed reference to the organisation and the person's e-mail.
+ * the visitor's currency (currency.ts) and the interval asked for (yearly by
+ * default, monthly when its link is set), carrying a signed reference to the organisation and the person's e-mail.
  * Only on the hosted pilot, only when the automatic upgrade is on, only for
  * an owner or administrator, and only for an organisation not already paid.
  */
@@ -13,6 +14,7 @@ import { hostedPilotActive } from "@/config/pilot";
 import { isPaidPlan } from "@/server/services/pilot/caps";
 import {
   PLAN_REF_APP,
+  type PlanInterval,
   autoUpgradeActive,
   planCloudLink,
   planSyncSecret,
@@ -35,9 +37,12 @@ export async function planCheckout(
   organizationId: string | null,
   currency: Currency,
   env: PlanEuEnv = process.env,
+  interval: PlanInterval = "year",
 ): Promise<CheckoutOutcome> {
   const secret = planSyncSecret(env);
-  const link = planCloudLink(currency, env);
+  // Monthly only beside the yearly link of the same currency.
+  const link =
+    interval === "month" && !planCloudLink(currency, env, "year") ? null : planCloudLink(currency, env, interval);
   if (!autoUpgradeActive(env) || !secret || !hostedPilotActive(env) || !link) {
     return { status: 404, error: "Not found" };
   }

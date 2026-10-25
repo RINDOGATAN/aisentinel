@@ -51,13 +51,36 @@ export function autoUpgradeActive(env: PlanEuEnv = process.env): boolean {
   return autoUpgradeSwitchOn(env) && planSyncSecret(env) !== null;
 }
 
+/** How often the plan is paid: yearly (the default) or monthly. */
+export type PlanInterval = "year" | "month";
+
+/** Reads the checkout's `interval` parameter: absent means yearly; anything unknown is null. */
+export function parsePlanInterval(value: string | null | undefined): PlanInterval | null {
+  if (value === null || value === undefined || value === "" || value === "year") return "year";
+  return value === "month" ? "month" : null;
+}
+
 /**
- * The plan's payment link for a currency, from the environment only:
- * PLAN_CLOUD_EUR_LINK (the EUR plan) and PLAN_CLOUD_USD_LINK (the USD plan).
- * Null when unset (or not an https link): the button is then hidden and the
- * checkout route answers 404 for that currency.
+ * The plan's payment link for a currency and interval, from the environment
+ * only. Yearly: PLAN_CLOUD_EUR_LINK (the EUR plan) and PLAN_CLOUD_USD_LINK
+ * (the USD plan). Monthly: NEXT_PUBLIC_PLAN_CLOUD_EUR_MONTHLY_LINK and
+ * NEXT_PUBLIC_PLAN_CLOUD_USD_MONTHLY_LINK (public: the landing's pricing block
+ * shows the same links). Null when unset (or not an https link): the button is
+ * then hidden and the checkout route answers 404 for that currency and interval.
  */
-export function planCloudLink(currency: Currency, env: PlanEuEnv = process.env): string | null {
-  const v = (currency === "EUR" ? env.PLAN_CLOUD_EUR_LINK : env.PLAN_CLOUD_USD_LINK)?.trim();
+export function planCloudLink(
+  currency: Currency,
+  env: PlanEuEnv = process.env,
+  interval: PlanInterval = "year",
+): string | null {
+  const raw =
+    interval === "month"
+      ? currency === "EUR"
+        ? env.NEXT_PUBLIC_PLAN_CLOUD_EUR_MONTHLY_LINK
+        : env.NEXT_PUBLIC_PLAN_CLOUD_USD_MONTHLY_LINK
+      : currency === "EUR"
+        ? env.PLAN_CLOUD_EUR_LINK
+        : env.PLAN_CLOUD_USD_LINK;
+  const v = raw?.trim();
   return v && v.startsWith("https://") ? v : null;
 }

@@ -40,8 +40,8 @@ vi.mock("@/lib/trpc", () => ({
 import { PILOT_END_BAR_COPY } from "@/config/pilot";
 import { OrganizationPilotEndBar } from "./pilot-banner";
 
-const render = (locale: "en" | "es", upgrade: boolean) =>
-  renderToStaticMarkup(<OrganizationPilotEndBar locale={locale} upgrade={upgrade} />);
+const render = (locale: "en" | "es", upgrade: boolean, upgradeMonthly = false) =>
+  renderToStaticMarkup(<OrganizationPilotEndBar locale={locale} upgrade={upgrade} upgradeMonthly={upgradeMonthly} />);
 
 const pilotOrg = (role: string, plan = "PILOT") => ({ id: "org1", name: "Org", slug: "org", plan, role });
 
@@ -77,5 +77,29 @@ describe("pilot bar: move to the paid plan", () => {
   it("states no price", () => {
     expect(PILOT_END_BAR_COPY.en.upgrade).not.toMatch(/\d|€|\$/);
     expect(PILOT_END_BAR_COPY.es.upgrade).not.toMatch(/\d|€|\$/);
+  });
+});
+
+describe("pilot bar: monthly and yearly", () => {
+  it("offers two links, monthly then yearly, once the monthly link is set", () => {
+    selected.org = pilotOrg("OWNER");
+    const html = render("en", true, true);
+    expect(html).toContain('href="/api/plan/checkout?org=org1&amp;interval=month"');
+    expect(html).toContain('data-testid="pilot-upgrade-monthly-link"');
+    expect(html).toContain('href="/api/plan/checkout?org=org1"');
+    expect(html.indexOf("Pay monthly")).toBeGreaterThan(-1);
+    expect(html.indexOf("Pay monthly")).toBeLessThan(html.indexOf("Pay yearly"));
+    expect(html).not.toContain("Move to the paid plan");
+    const es = render("es", true, true);
+    expect(es).toContain("Pago mensual");
+    expect(es).toContain("Pago anual");
+  });
+
+  it("keeps the single link while monthly is not set, and shows neither to other roles", () => {
+    selected.org = pilotOrg("OWNER");
+    expect(render("en", true, false)).toContain("Move to the paid plan");
+    expect(render("en", true, false)).not.toContain("pilot-upgrade-monthly-link");
+    selected.org = pilotOrg("MEMBER");
+    expect(render("en", true, true)).not.toContain("pilot-upgrade");
   });
 });

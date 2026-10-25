@@ -12,6 +12,8 @@ import { signSyncBody, applySyncInstruction, parseSyncBody, type SyncDb } from "
 import { makePlanReference, parsePlanReference } from "./reference";
 import { planCheckout, type CheckoutDb } from "./checkout";
 import { visitorCurrency, regionFromAcceptLanguage } from "./currency";
+import { inAppPlanOffer } from "./offer";
+import { parsePlanInterval } from "./config";
 
 const SECRET = "test-secret-0123456789abcdef";
 const ON = { AUTO_UPGRADE_ENABLED: "true", PLAN_SYNC_SECRET: SECRET };
@@ -302,6 +304,61 @@ describe("the checkout redirect", () => {
       const ref = url.searchParams.get("client_reference_id")!;
       expect(parsePlanReference(SECRET, "ais", ref)).toEqual({ kind: "valid", organizationId: "o1" });
     }
+  });
+});
+
+describe("the checkout redirect: paying monthly", () => {
+  const HOSTED = { VERCEL_ENV: "production" };
+  const YEARLY = {
+    PLAN_CLOUD_EUR_LINK: "https://pay.example.test/eur",
+    PLAN_CLOUD_USD_LINK: "https://pay.example.test/usd",
+  };
+  const MONTHLY = {
+    NEXT_PUBLIC_PLAN_CLOUD_EUR_MONTHLY_LINK: "https://pay.example.test/eur-monthly",
+    NEXT_PUBLIC_PLAN_CLOUD_USD_MONTHLY_LINK: "https://pay.example.test/usd-monthly",
+  };
+  const user = { id: "u1", email: "owner@example.test" };
+  const db = {
+    organizationMember: {
+      findMany: async () => [{ organizationId: "o1", role: "OWNER", organization: { plan: "PILOT" } }],
+    },
+  } as unknown as CheckoutDb;
+  const base = (out: object) => {
+    const url = new URL((out as { location: string }).location);
+    return `${url.origin}${url.pathname}`;
+  };
+
+  it("is a 404 for monthly while its link is not set; yearly is unchanged", async () => {
+    const env = { ...ON, ...HOSTED, ...YEARLY };
+    expect((await planCheckout(db, user, "o1", "EUR", env, "month")).status).toBe(404);
+    expect(base(await planCheckout(db, user, "o1", "EUR", env))).toBe(YEARLY.PLAN_CLOUD_EUR_LINK);
+  });
+
+  it("sends monthly to the monthly link of the visitor's currency, with the signed reference", async () => {
+    const env = { ...ON, ...HOSTED, ...YEARLY, ...MONTHLY };
+    const out = await planCheckout(db, user, "o1", "EUR", env, "month");
+    expect(out.status).toBe(303);
+    expect(base(out)).toBe(MONTHLY.NEXT_PUBLIC_PLAN_CLOUD_EUR_MONTHLY_LINK);
+    const ref = new URL((out as { location: string }).location).searchParams.get("client_reference_id")!;
+    expect(parsePlanReference(SECRET, "ais", ref)).toEqual({ kind: "valid", organizationId: "o1" });
+    expect(base(await planCheckout(db, user, "o1", "USD", env, "month"))).toBe(
+      MONTHLY.NEXT_PUBLIC_PLAN_CLOUD_USD_MONTHLY_LINK,
+    );
+  });
+
+  it("never offers monthly without the yearly link of the same currency", async () => {
+    const env = { ...ON, ...HOSTED, ...MONTHLY };
+    expect((await planCheckout(db, user, "o1", "EUR", env, "month")).status).toBe(404);
+    const h = { get: (n: string) => (n === "x-vercel-ip-country" ? "ES" : null) };
+    expect(inAppPlanOffer(h, env).monthlyLink).toBeNull();
+    expect(inAppPlanOffer(h, { ...env, ...YEARLY }).monthlyLink).toBe(MONTHLY.NEXT_PUBLIC_PLAN_CLOUD_EUR_MONTHLY_LINK);
+  });
+
+  it("reads the interval parameter: absent or year is yearly, month is monthly, anything else is refused", () => {
+    expect(parsePlanInterval(null)).toBe("year");
+    expect(parsePlanInterval("year")).toBe("year");
+    expect(parsePlanInterval("month")).toBe("month");
+    expect(parsePlanInterval("weekly")).toBeNull();
   });
 });
 

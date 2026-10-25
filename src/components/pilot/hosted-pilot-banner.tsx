@@ -13,7 +13,8 @@
  * (AUTO_UPGRADE_ENABLED and PLAN_SYNC_SECRET) and a payment link is set for
  * the charge currency. The layout decides both from the request headers with
  * inAppPlanOffer (src/server/services/plan-eu/offer.ts), the same decision
- * that sets the currency of the bar's price, and passes `upgrade`. Neither
+ * that sets the currency of the bar's price, and passes `upgrade` (and
+ * `upgradeMonthly` when the monthly link is set as well). Neither
  * the secret nor the link reaches the browser.
  */
 
@@ -21,8 +22,14 @@ import { getLocale } from "next-intl/server";
 import { hostedPilotActive, type PilotLocale } from "@/config/pilot";
 import { OrganizationPilotEndBar } from "./pilot-banner";
 
-export async function HostedPilotBanner({ upgrade = false }: { upgrade?: boolean }) {
+export async function HostedPilotBanner({
+  upgrade = false,
+  upgradeMonthly = false,
+}: {
+  upgrade?: boolean;
+  upgradeMonthly?: boolean;
+}) {
   if (!hostedPilotActive()) return null;
   const locale: PilotLocale = (await getLocale()) === "es" ? "es" : "en";
-  return <OrganizationPilotEndBar locale={locale} upgrade={upgrade} />;
+  return <OrganizationPilotEndBar locale={locale} upgrade={upgrade} upgradeMonthly={upgrade && upgradeMonthly} />;
 }

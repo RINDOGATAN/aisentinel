@@ -12,6 +12,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 
 const selected = vi.hoisted(() => ({
   org: null as null | { id: string; name: string; slug: string; plan?: string; role?: string },
+  suite: false,
 }));
 
 vi.mock("@/lib/organization-context", () => ({
@@ -29,6 +30,7 @@ vi.mock("@/lib/trpc", () => ({
                 endsAt: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
                 readOnly: false,
                 startedAt: new Date(),
+                suite: selected.suite,
               }
             : undefined,
         }),
@@ -101,5 +103,31 @@ describe("pilot bar: monthly and yearly", () => {
     expect(render("en", true, false)).not.toContain("pilot-upgrade-monthly-link");
     selected.org = pilotOrg("MEMBER");
     expect(render("en", true, true)).not.toContain("pilot-upgrade");
+  });
+});
+
+describe("pilot bar: a pilot shared with DPO Central", () => {
+  it("keeps the same short links and adds no suite sentence, in both languages", () => {
+    selected.org = pilotOrg("OWNER");
+    selected.suite = true;
+    try {
+      const shared = render("en", true, true);
+      selected.suite = false;
+      const alone = render("en", true, true);
+      selected.suite = true;
+      expect(shared).toBe(alone);
+      expect(shared).toContain("Pay monthly");
+      expect(shared).toContain("Pay yearly");
+      expect(shared).not.toContain("pilot-suite-line");
+      expect(shared).not.toContain("One plan");
+      expect(render("en", true)).toContain("Move to the paid plan");
+      const es = render("es", true, true);
+      expect(es).toContain("Pago mensual");
+      expect(es).toContain("Pago anual");
+      expect(es).not.toContain("Un plan para los dos");
+      expect(render("es", true)).toContain("Pasar al plan de pago");
+    } finally {
+      selected.suite = false;
+    }
   });
 });

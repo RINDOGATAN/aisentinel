@@ -79,8 +79,6 @@ export interface PilotEndBarProps {
    * "Move to the paid plan"; `upgradeHref` is then the yearly one.
    */
   upgradeMonthlyHref?: string | null;
-  /** The owner also has DPO Central: one sentence says one plan covers the suite. */
-  suite?: boolean;
 }
 
 const UPGRADE_LINK =
@@ -93,7 +91,6 @@ export function PilotEndBar({
   transition = false,
   upgradeHref = null,
   upgradeMonthlyHref = null,
-  suite = false,
 }: PilotEndBarProps) {
   // The trial bar may be closed for the session; the ending and read-only bars stay.
   const dismissed = useSyncExternalStore(subscribeDismissed, readDismissed, () => false);
@@ -126,11 +123,6 @@ export function PilotEndBar({
         className={`max-w-[1600px] mx-auto min-w-0 py-1.5 text-center break-words ${state === "trial" ? "px-10" : "px-4 sm:px-6"}`}
       >
         {text}{" "}
-        {suite && (
-          <>
-            <span data-testid="pilot-suite-line">{copy.suite}</span>{" "}
-          </>
-        )}
         <a
           href={PILOT_BAR_PRICING_URL[locale]}
           target="_blank"
@@ -143,10 +135,10 @@ export function PilotEndBar({
           <>
             {" "}
             <a href={upgradeMonthlyHref} data-testid="pilot-upgrade-monthly-link" className={UPGRADE_LINK}>
-              {suite ? copy.suiteUpgradeMonthly : copy.upgradeMonthly}
+              {copy.upgradeMonthly}
             </a>{" "}
             <a href={upgradeHref} data-testid="pilot-upgrade-link" className={UPGRADE_LINK}>
-              {suite ? copy.suiteUpgradeYearly : copy.upgradeYearly}
+              {copy.upgradeYearly}
             </a>
           </>
         )}
@@ -154,7 +146,7 @@ export function PilotEndBar({
           <>
             {" "}
             <a href={upgradeHref} data-testid="pilot-upgrade-link" className={UPGRADE_LINK}>
-              {suite ? copy.suiteUpgrade : copy.upgrade}
+              {copy.upgrade}
             </a>
           </>
         )}
@@ -209,7 +201,6 @@ export function OrganizationPilotEndBar({
           ? `/api/plan/checkout?org=${encodeURIComponent(organization.id)}&interval=month`
           : null
       }
-      suite={!!(data && (data as { suite?: boolean }).suite)}
     />
   );
 }

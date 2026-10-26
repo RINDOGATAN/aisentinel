@@ -162,13 +162,20 @@ export function StepBand({
           ))}
       </div>
 
-      {/* The step's rule in one plain line, then what is met and what is left. */}
-      {celebrate === null && checks.length > 0 && (
+      {/* The step's rule in one plain line, then what is met and what is left.
+          An optional step has no tick list, but still says what completes it
+          and that it never counts toward the program figure. */}
+      {celebrate === null && (checks.length > 0 || current.step.optional) && (
         <>
           <p className="text-xs text-muted-foreground" data-testid="step-band-rule">
             {t("band.doneWhen", { rule: t(`steps.${current.step.id}.doneWhen`) })}
           </p>
-          {status !== "done" && (
+          {current.step.optional && (
+            <p className="text-xs text-muted-foreground" data-testid="step-band-optional">
+              {t(`band.optional.${current.step.id}`)}
+            </p>
+          )}
+          {status !== "done" && checks.length > 0 && (
             <ul className="flex flex-wrap gap-x-4 gap-y-1 text-xs" aria-label={t("band.checksLabel")}>
               {checks.map((c) => (
                 <li key={c.id} className="flex items-center gap-1.5" data-met={c.met ? "true" : "false"}>

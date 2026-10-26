@@ -450,7 +450,7 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
           id: "threatModel",
           href: "/governance/threat-model",
           icon: Crosshair,
-          rule: "Shown to organisations that build AI (a system with the provider role) and to any organisation that already has a threat model. Done when at least one threat model is past draft. Started when a draft exists.",
+          rule: "Shown to organisations that build AI (a system with the provider role) and to any organisation that already has a threat model. Done when at least one threat model is past draft (marking a draft model as reviewed on its page takes it out of draft, threatModel.update). Started when a draft exists.",
           shownWhen: (c) => c.providerSystems > 0 || c.threatModels > 0,
           status: (c) =>
             c.threatModelsActive > 0 ? "done" : c.threatModels > 0 ? "started" : "todo",

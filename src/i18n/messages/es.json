@@ -6070,7 +6070,7 @@
         "label": "Modelo de amenazas",
         "why": "Anota qué puede fallar en los sistemas que construye la organización y cómo se detiene y se prueba cada riesgo.",
         "do": "Anota qué puede fallar en la IA que construye la organización y cómo se detiene y se prueba cada riesgo.",
-        "doneWhen": "al menos un modelo de amenazas ha dejado de ser borrador."
+        "doneWhen": "al menos un modelo de amenazas se ha marcado como revisado («Marcar como revisado», al pie de la página del modelo)."
       },
       "vendorDueDiligence": {
         "label": "Revisión de proveedores",
@@ -6173,7 +6173,12 @@
       "checkMet": "hecho",
       "checkOpen": "pendiente",
       "showChecks": "Ver lo que se cumple",
-      "hideChecks": "Ocultar"
+      "hideChecks": "Ocultar",
+      "optionalTag": "Opcional",
+      "optional": {
+        "proceedings": "Opcional: este paso nunca cuenta en la cifra del programa. Úsalo solo cuando una autoridad o un tribunal abra una investigación o un asunto.",
+        "audit": "Opcional: este paso nunca cuenta en la cifra del programa. El producto lleva el registro de auditoría por sí solo."
+      }
     },
     "emptyStep": {
       "board": "Todavía no hay ningún informe al consejo.",
@@ -6288,7 +6293,7 @@
       "classificationsConfirmed": "confirma los niveles de riesgo en borrador",
       "assessmentApproved": "aprueba al menos una evaluación",
       "highRiskAssessed": "aprueba una evaluación para cada sistema de alto riesgo",
-      "threatModelActive": "saca un modelo de amenazas del borrador",
+      "threatModelActive": "marca un modelo de amenazas como revisado",
       "vendorsAssessed": "completa una revisión de diligencia debida para cada proveedor",
       "agentsReady": "prepara cada agente para la auditoría AIUC-1",
       "highRiskGated": "establece un control de supervisión para cada sistema de alto riesgo",

@@ -38,6 +38,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { BrandMark } from "@/components/brand-mark";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { PageHelpButton } from "@/components/help/page-help-button";
 import { useOrganization } from "@/lib/organization-context";
@@ -68,8 +69,6 @@ import { stepNoteText } from "./document-words";
 import { attentionStages, notYetEntries, stepDocumentRows } from "@/lib/programme-overview";
 
 const OVERVIEW = { href: "/governance", icon: LayoutDashboard };
-
-const BRAND_STYLE = { fontFamily: "var(--font-jost), 'Jost', sans-serif", fontWeight: 600 } as const;
 
 const ROLE_KEYS = {
   OWNER: "roleOwner",
@@ -158,8 +157,11 @@ export function GuidedLayout({
               <Menu className="w-5 h-5" />
               <span className="sr-only">{tn("openMenu")}</span>
             </Button>
-            <Link href="/governance" className="flex shrink-0 items-center">
-              <span className="text-lg tracking-tight" style={BRAND_STYLE}>AI SENTINEL</span>
+            <Link href="/governance" className="flex shrink-0 items-center gap-2">
+              {/* The logo mark alone under `sm`, so the help, language and
+                  account controls stay on the bar at 360 px; the name returns
+                  once there is room. */}
+              <BrandMark nameClassName="hidden sm:inline" />
             </Link>
           </div>
           <div className="flex min-w-0 flex-1 justify-end sm:justify-center">
@@ -190,7 +192,7 @@ export function GuidedLayout({
         <SheetContent side="left" className="w-[300px] sm:w-[340px] overflow-y-auto">
           <SheetHeader>
             <SheetTitle className="flex items-center gap-2">
-              <span className="text-lg tracking-tight" style={BRAND_STYLE}>AI SENTINEL</span>
+              <BrandMark />
             </SheetTitle>
           </SheetHeader>
           <div className="px-3 pb-6 flex flex-col gap-4">

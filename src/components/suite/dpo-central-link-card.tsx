@@ -36,19 +36,41 @@ export function dpoCentralLinkUrl(base: string, organizationId: string, returnTo
   return url.toString();
 }
 
+/**
+ * Whether the dashboard shows the offer: an owner or administrator, no link
+ * yet (a removed one counts as a choice made), DPO Central knows the person,
+ * and nobody has set it aside for this organisation.
+ */
+export function showDashboardOffer(
+  data: { link: unknown; canManage: boolean; dpcFound?: boolean; offerDismissed?: boolean } | undefined,
+): boolean {
+  return !!data && !data.link && data.canManage && data.dpcFound === true && data.offerDismissed !== true;
+}
+
 export function DpoCentralLinkCard({
   organizationId,
   returnPath = "/governance/quickstart",
+  placement = "page",
 }: {
   organizationId: string;
   returnPath?: string;
+  /** "dashboard": only the offer, only for a person DPO Central knows, with a way to set it aside. */
+  placement?: "page" | "dashboard";
 }) {
+  const onDashboard = placement === "dashboard";
   const t = useTranslations("suiteLink");
   const tc = useTranslations("common");
   const { formatDate } = useFormatDate();
   const utils = trpc.useUtils();
   const [confirmOpen, setConfirmOpen] = useState(false);
-  const { data } = trpc.suiteLink.get.useQuery({ organizationId }, { enabled: !!organizationId });
+  const { data } = trpc.suiteLink.get.useQuery(
+    { organizationId, ...(onDashboard ? { peer: true } : {}) },
+    { enabled: !!organizationId },
+  );
+  const dismiss = trpc.suiteLink.dismissOffer.useMutation({
+    onSuccess: () => void utils.suiteLink.get.invalidate(),
+    onError: (err) => toast.error(err.message),
+  });
   const unlink = trpc.suiteLink.unlink.useMutation({
     onSuccess: () => {
       toast.success(t("unlinked"));
@@ -59,6 +81,7 @@ export function DpoCentralLinkCard({
   });
 
   if (!data || !brand.dpoCentralUrl) return null;
+  if (onDashboard && !showDashboardOffer(data)) return null;
   const link = data.link;
   const startHref = () =>
     dpoCentralLinkUrl(
@@ -84,9 +107,22 @@ export function DpoCentralLinkCard({
             <p className="text-sm text-muted-foreground">{t("startBody")}</p>
           )}
           <p className="text-xs text-muted-foreground">{t("startNote")}</p>
-          <Button asChild size="sm">
-            <a href={startHref()}>{link ? t("relinkButton") : t("startButton")}</a>
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button asChild size="sm">
+              <a href={startHref()}>{link ? t("relinkButton") : t("startButton")}</a>
+            </Button>
+            {onDashboard && (
+              <Button
+                size="sm"
+                variant="ghost"
+                disabled={dismiss.isPending}
+                onClick={() => dismiss.mutate({ organizationId })}
+                data-testid="dpc-link-offer-dismiss"
+              >
+                {t("notNow")}
+              </Button>
+            )}
+          </div>
         </CardContent>
       </Card>
     );

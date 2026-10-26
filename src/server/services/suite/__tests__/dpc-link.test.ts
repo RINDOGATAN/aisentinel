@@ -179,3 +179,13 @@ describe("sync round", () => {
     expect(round.presentAisSystemIds).toEqual(["own-1"]);
   });
 });
+
+describe("the dashboard's offer", () => {
+  it("remembers that it was set aside, keeping the other settings", async () => {
+    const { readOfferDismissedAt, withOfferDismissed } = await import("../dpc-link");
+    expect(readOfferDismissedAt(null)).toBeNull();
+    const next = withOfferDismissed({ regimes: { a: 1 } }, "2026-10-26T10:00:00.000Z") as Record<string, unknown>;
+    expect(next.regimes).toEqual({ a: 1 });
+    expect(readOfferDismissedAt(next)).toBe("2026-10-26T10:00:00.000Z");
+  });
+});

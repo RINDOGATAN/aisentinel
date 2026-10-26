@@ -274,3 +274,42 @@ describe("the pilot sentence elsewhere", () => {
     }
   });
 });
+
+describe("during a pilot shared with DPO Central", () => {
+  const render = (locale: "en" | "es", suite: boolean, monthly = true) =>
+    renderToStaticMarkup(
+      <ChargeCurrencyProvider currency={locale === "es" ? "EUR" : "USD"}>
+        <PilotEndBar
+          locale={locale}
+          state="trial"
+          endsAt={new Date("2026-10-26T09:00:00Z")}
+          upgradeHref="/api/plan/checkout?org=o1"
+          upgradeMonthlyHref={monthly ? "/api/plan/checkout?org=o1&interval=month" : null}
+          suite={suite}
+        />
+      </ChargeCurrencyProvider>,
+    );
+  const text = (html: string) => html.replace(/<[^>]+>/g, "");
+
+  it("words the payment links as the one plan for both products, with the suite sentence", () => {
+    const en = text(render("en", true));
+    expect(en).toContain("Your Cloud Plan covers DPO Central, AI Sentinel and VendorWatch. One plan, one payment.");
+    expect(en).toContain("One plan for both, monthly");
+    expect(en).toContain("One plan for both, yearly");
+    expect(en).not.toContain("Pay monthly");
+    expect(en).not.toContain("Pay yearly");
+    const es = text(render("es", true));
+    expect(es).toContain("Un plan para los dos, mensual");
+    expect(es).toContain("Un plan para los dos, anual");
+    expect(es).not.toContain("Pago mensual");
+    expect(text(render("en", true, false))).toContain("Move both to the Cloud Plan");
+    expect(text(render("es", true, false))).toContain("Pasar los dos al plan de pago");
+    expect(en + es).not.toMatch(/[—–]/);
+  });
+
+  it("keeps the usual wording without DPO Central", () => {
+    const en = text(render("en", false));
+    expect(en).toContain("Pay monthly");
+    expect(en).not.toContain("for both");
+  });
+});

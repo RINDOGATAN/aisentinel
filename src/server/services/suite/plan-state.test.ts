@@ -14,12 +14,14 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
 const fakeDb = vi.hoisted(() => ({ organization: { findMany: vi.fn() }, user: { findFirst: vi.fn() } }));
 vi.mock("@/lib/prisma", () => ({ default: fakeDb, prisma: fakeDb }));
-vi.mock("@/lib/logger", () => ({ logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() } }));
+const fakeLogger = vi.hoisted(() => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn() }));
+vi.mock("@/lib/logger", () => ({ logger: fakeLogger }));
 
 import { NOT_FOUND, parseSuiteState, signSuiteRequest, verifySuiteSignature } from "@/lib/suite-plan-state";
 import {
   clearSuiteCache,
   localPlanStateForEmail,
+  peerKnowsPerson,
   peerPlanState,
   peerUrl,
   suiteForRequest,
@@ -185,6 +187,92 @@ describe("applying DPO Central's state here", () => {
       suite: false,
       preferredPilotStart: null,
     });
+  });
+});
+
+describe("one pilot window across the suite", () => {
+  const owner = { id: "u1", email: "owner@firm.es" };
+  const pilotAnswer = { version: 1, found: true, paid: false, pilotStartedAt: "2026-10-20T00:00:00Z" };
+
+  it("an organisation with its own start takes DPO Central's, with one audit entry", async () => {
+    const { db, writes, audits } = applyDb();
+    const o = { id: "o1", plan: "PILOT", pilotFirstSignInAt: new Date("2026-10-25T08:00:00Z") as Date | null };
+    const res = await suiteForRequest(db, o, "OWNER", owner, { env: HOSTED, fetch: okFetch(pilotAnswer), now: () => T0 });
+    expect(res.suite).toBe(true);
+    expect(o.pilotFirstSignInAt?.toISOString()).toBe("2026-10-20T00:00:00.000Z");
+    expect(writes[0]).toMatchObject({
+      where: { id: "o1", plan: { not: "EU_CLOUD" } },
+      data: { pilotFirstSignInAt: new Date("2026-10-20T00:00:00Z") },
+    });
+    expect(audits[0]).toMatchObject({
+      action: "PILOT_CLOCK_CHANGE",
+      changes: {
+        before: { pilotFirstSignInAt: "2026-10-25T08:00:00.000Z" },
+        after: { pilotFirstSignInAt: "2026-10-20T00:00:00.000Z" },
+      },
+      metadata: { source: "suite-peer" },
+    });
+  });
+
+  it("writes nothing when the windows already match, for a paid organisation, or without a start on DPO Central", async () => {
+    const same = applyDb();
+    await suiteForRequest(
+      same.db,
+      { id: "o1", plan: "PILOT", pilotFirstSignInAt: new Date("2026-10-20T00:00:00Z") },
+      "OWNER",
+      owner,
+      { env: HOSTED, fetch: okFetch(pilotAnswer), now: () => T0 },
+    );
+    expect(same.writes).toHaveLength(0);
+    clearSuiteCache();
+    const paid = applyDb();
+    await suiteForRequest(
+      paid.db,
+      { id: "o1", plan: "EU_CLOUD", pilotFirstSignInAt: new Date("2026-10-25T00:00:00Z") },
+      "OWNER",
+      owner,
+      { env: HOSTED, fetch: okFetch(pilotAnswer), now: () => T0 },
+    );
+    expect(paid.writes).toHaveLength(0);
+    clearSuiteCache();
+    const noStart = applyDb();
+    await suiteForRequest(
+      noStart.db,
+      { id: "o1", plan: "PILOT", pilotFirstSignInAt: new Date("2026-10-25T00:00:00Z") },
+      "OWNER",
+      owner,
+      { env: HOSTED, fetch: okFetch({ ...pilotAnswer, pilotStartedAt: null }), now: () => T0 },
+    );
+    expect(noStart.writes).toHaveLength(0);
+  });
+
+  it("keeps the organisation's value when another request changed it first", async () => {
+    const { db, audits } = applyDb(0);
+    const o = { id: "o1", plan: "PILOT", pilotFirstSignInAt: new Date("2026-10-25T08:00:00Z") as Date | null };
+    await suiteForRequest(db, o, "OWNER", owner, { env: HOSTED, fetch: okFetch(pilotAnswer), now: () => T0 });
+    expect(audits).toHaveLength(0);
+    expect(o.pilotFirstSignInAt?.toISOString()).toBe("2026-10-25T08:00:00.000Z");
+  });
+});
+
+describe("what is logged and the offer at entry", () => {
+  it("logs the peer's outcome without the e-mail", async () => {
+    fakeLogger.info.mockClear();
+    await peerPlanState("owner@firm.es", { env: HOSTED, fetch: okFetch({ version: 1, found: false, paid: false }), now: () => T0 });
+    expect(fakeLogger.info).toHaveBeenCalledWith("Suite plan state: peer answered", { found: false, paid: false, pilot: false });
+    expect(JSON.stringify(fakeLogger.info.mock.calls)).not.toContain("owner@firm.es");
+  });
+
+  it("knows the person only when DPO Central says found, and only on the hosted pilot", async () => {
+    expect(await peerKnowsPerson("a@b.com", { env: HOSTED, fetch: okFetch({ version: 1, found: true, paid: false }) })).toBe(true);
+    clearSuiteCache();
+    expect(await peerKnowsPerson("a@b.com", { env: HOSTED, fetch: okFetch({ version: 1, found: false, paid: false }) })).toBe(false);
+    const f = okFetch({ version: 1, found: true, paid: false });
+    expect(
+      await peerKnowsPerson("a@b.com", { env: { ...HOSTED, VERCEL_ENV: "preview", NEXT_PUBLIC_HOSTED_PILOT: "false" }, fetch: f }),
+    ).toBe(false);
+    expect(await peerKnowsPerson(null, { env: HOSTED, fetch: f })).toBe(false);
+    expect(f).not.toHaveBeenCalled();
   });
 });
 

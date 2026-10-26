@@ -135,6 +135,19 @@ export function readLink(settings: unknown): DpoCentralLink | null {
   };
 }
 
+/** When an owner or administrator set aside the dashboard's "Start from DPO Central" offer, or null. */
+export function readOfferDismissedAt(settings: unknown): string | null {
+  const v = settingsObject(settings).dpoCentralOfferDismissedAt;
+  return typeof v === "string" && v ? v : null;
+}
+
+/** The settings with the offer set aside at `at` (everything else kept). */
+export function withOfferDismissed(settings: unknown, at: string): Prisma.InputJsonValue {
+  const next = settingsObject(settings);
+  next.dpoCentralOfferDismissedAt = at;
+  return next as Prisma.InputJsonValue;
+}
+
 function withLink(settings: unknown, link: DpoCentralLink): Prisma.InputJsonValue {
   const next = settingsObject(settings);
   next.dpoCentralLink = link as unknown as Prisma.InputJsonValue;

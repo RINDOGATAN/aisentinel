@@ -32,6 +32,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { STATUS_CHIP } from "@/components/ui/status-note";
 import type { StatusKey } from "@/config/status-palette";
 import { FirstRunCard } from "@/components/help/first-run-card";
+import { DpoCentralLinkCard } from "@/components/suite/dpo-central-link-card";
 import { PageHeader } from "@/components/governance/page-header";
 import { LicenceNote, useShowcaseLocks } from "@/components/governance/premium-deliverable";
 import { useExportDownload } from "@/components/governance/use-export-download";
@@ -129,6 +130,9 @@ export function GuidedDashboard() {
       />
 
       {organization && <FirstRunCard />}
+      {/* Start from DPO Central, at entry: only for an owner or administrator
+          DPO Central knows, until linked or set aside. */}
+      {organization && <DpoCentralLinkCard organizationId={organization.id} placement="dashboard" returnPath="/governance" />}
 
       {/* The organisation's own figures: not for a member limited to departments. */}
       {limited ? (

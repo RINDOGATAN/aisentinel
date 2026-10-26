@@ -15,18 +15,17 @@
  *         and payment subscription, so the plan's end (relayed by
  *         subscription) ends it here as well; one PLAN_CHANGE audit entry,
  *         source "suite-peer";
- *       * the peer's pilot start is offered to ensurePilotFirstSignIn, which
- *         uses it only when this organisation has no start yet: a person who
- *         began the pilot on DPO Central does not get a second window here.
- *         A start already recorded is never moved, so no running pilot is
- *         shortened.
+ *       * the peer's pilot start is the window here too: offered to
+ *         ensurePilotFirstSignIn when this organisation has no start yet, and
+ *         taken over (sharePeerPilotClock) when it has its own, so the two
+ *         products show one end date and lock editing on the same day.
  *       * whether the person has the peer at all, for the pilot bar's line
  *         ("Your Cloud Plan covers DPO Central, AI Sentinel and VendorWatch").
  *
  * Fail safe: off the hosted pilot, without the shared secret, with
  * SUITE_PLAN_STATE=off, or when the peer is slow, down or answers anything
  * unexpected, nothing is read from it and everything behaves as before.
- * Nothing here ever removes a plan or ends a pilot. Answers are cached per
+ * Nothing here ever removes a plan. Answers are cached per
  * e-mail for five minutes (failures for one minute).
  */
 
@@ -169,11 +168,30 @@ export async function peerPlanState(email: string, deps: PeerDeps = {}): Promise
     });
     value = res.ok ? parseSuiteState(await res.json()) : null;
     if (!res.ok) logger.warn("Suite plan state: peer refused", { status: res.status });
+    else if (!value) logger.warn("Suite plan state: unexpected answer from the peer");
+    // No e-mail or other personal data: the outcome only.
+    else logger.info("Suite plan state: peer answered", {
+      found: value.found,
+      paid: value.paid,
+      pilot: value.pilotStartedAt !== null,
+    });
   } catch (err) {
     logger.warn("Suite plan state: peer unreachable", { error: err instanceof Error ? err.message : String(err) });
   }
   cache.set(key, { at: now(), value });
   return value;
+}
+
+/**
+ * Whether DPO Central knows this person (bills at least one organisation
+ * there), for the "Start from DPO Central" offer at entry. False off the
+ * hosted pilot, when switched off, and whenever the peer cannot answer.
+ */
+export async function peerKnowsPerson(email: string | null | undefined, deps: PeerDeps = {}): Promise<boolean> {
+  const env = deps.env ?? process.env;
+  if (!hostedPilotActive(env) || !suitePlanStateEnabled(env) || !normalizeEmail(email)) return false;
+  const peer = await peerPlanState(email!, deps);
+  return !!peer?.found;
 }
 
 // ── Applying it here ───────────────────────────────────────────────────
@@ -231,6 +249,9 @@ export async function suiteForRequest(
     const peer = await peerPlanState(user!.email!, deps);
     if (!peer || !peer.found) return NONE;
     if (peer.paid && org.plan !== PAID_PLAN) await adoptPeerPlan(db, org, peer, deps.now ?? Date.now);
+    else if (!peer.paid && peer.pilotStartedAt && org.plan !== PAID_PLAN && org.pilotFirstSignInAt) {
+      await sharePeerPilotClock(db, org, new Date(peer.pilotStartedAt));
+    }
     return { suite: true, preferredPilotStart: peer.pilotStartedAt ? new Date(peer.pilotStartedAt) : null };
   } catch (err) {
     logger.warn("Suite plan state: not applied", { error: err instanceof Error ? err.message : String(err) });
@@ -239,6 +260,42 @@ export async function suiteForRequest(
 }
 
 const iso = (d: Date | null | undefined) => (d ? new Date(d).toISOString() : null);
+
+/**
+ * One pilot window across the suite: an organisation of this person that
+ * already has its own start takes DPO Central's, so both products show the
+ * same end date and lock editing on the same day. DPO Central's start is the
+ * reference (it carries this application's start over when its own group has
+ * none, so the two converge). One PILOT_CLOCK_CHANGE audit entry, source
+ * "suite-peer". Updates `org` in place.
+ */
+async function sharePeerPilotClock(db: ApplyDb, org: SuiteOrg, peerStart: Date): Promise<void> {
+  const stamp = pilotFirstSignInStamp(peerStart);
+  const before = org.pilotFirstSignInAt ? new Date(org.pilotFirstSignInAt) : null;
+  if (!before || before.getTime() === stamp.getTime()) return;
+  const changed = await db.$transaction(async (tx) => {
+    const { count } = await tx.organization.updateMany({
+      where: { id: org.id, plan: { not: PAID_PLAN }, pilotFirstSignInAt: { not: stamp } },
+      data: { pilotFirstSignInAt: stamp },
+    });
+    if (count === 0) return false;
+    await tx.auditLog.create({
+      data: {
+        organizationId: org.id,
+        userId: null,
+        entityType: "Organization",
+        entityId: org.id,
+        action: "PILOT_CLOCK_CHANGE",
+        changes: { before: { pilotFirstSignInAt: iso(before) }, after: { pilotFirstSignInAt: iso(stamp) } },
+        metadata: { source: "suite-peer" },
+      },
+    });
+    return true;
+  });
+  if (!changed) return;
+  org.pilotFirstSignInAt = stamp;
+  logger.info("Suite plan state: pilot window shared with the peer", { organizationId: org.id });
+}
 
 async function adoptPeerPlan(db: ApplyDb, org: SuiteOrg, peer: SuitePlanState, now: () => number): Promise<void> {
   const renewsAt = peer.planRenewsAt ? new Date(peer.planRenewsAt) : null;

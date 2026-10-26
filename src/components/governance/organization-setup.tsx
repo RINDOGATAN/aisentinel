@@ -15,6 +15,9 @@ import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import { useUserType } from "@/lib/use-user-type";
 import { DpaAcceptCheckbox } from "@/components/pilot/dpa-accept";
+import { Checkbox } from "@/components/ui/checkbox";
+import { brand } from "@/config/brand";
+import { dpoCentralLinkUrl } from "@/components/suite/dpo-central-link-card";
 
 export function OrganizationSetup() {
   const [name, setName] = useState("");
@@ -29,6 +32,13 @@ export function OrganizationSetup() {
   // organization is opened (src/config/pilot-dpa.ts). Never asked on the kit.
   const hosted = !!trpc.pilot.mode.useQuery(undefined, { staleTime: Infinity }).data?.active;
   const [acceptDpa, setAcceptDpa] = useState(false);
+  // A person DPO Central already knows is offered to start from it once the
+  // organization exists (src/server/services/suite/dpc-link.ts).
+  const ts = useTranslations("suiteLink");
+  const dpcFound =
+    !!trpc.suiteLink.peerFound.useQuery(undefined, { enabled: hosted && !!brand.dpoCentralUrl, staleTime: Infinity })
+      .data?.found;
+  const [startFromDpc, setStartFromDpc] = useState(true);
 
   const createOrg = trpc.organization.create.useMutation({
     onSuccess: (org) => {
@@ -37,6 +47,14 @@ export function OrganizationSetup() {
       // list to refetch.
       setOrganization({ id: org.id, name: org.name, slug: org.slug, role: "OWNER" });
       refetchOrganizations();
+      if (dpcFound && startFromDpc && brand.dpoCentralUrl) {
+        // DPO Central makes the link (it knows the person's organizations
+        // there) and comes back to the wizard.
+        window.location.assign(
+          dpoCentralLinkUrl(brand.dpoCentralUrl, org.id, `${window.location.origin}/governance/quickstart`),
+        );
+        return;
+      }
       // A new organization has nothing in it yet: the wizard is the next
       // useful screen, not an empty dashboard.
       router.push("/governance/quickstart");
@@ -96,6 +114,22 @@ export function OrganizationSetup() {
             </div>
             {hosted && (
               <DpaAcceptCheckbox id="accept-dpa" checked={acceptDpa} onCheckedChange={setAcceptDpa} />
+            )}
+            {dpcFound && (
+              <div className="space-y-2 rounded-md border border-border p-3" data-testid="dpc-setup-offer">
+                <p className="text-sm font-semibold">{ts("startTitle")}</p>
+                <p className="text-sm text-muted-foreground">{ts("setupNote")}</p>
+                <div className="flex items-start gap-2">
+                  <Checkbox
+                    id="start-from-dpc"
+                    checked={startFromDpc}
+                    onCheckedChange={(v) => setStartFromDpc(v === true)}
+                  />
+                  <Label htmlFor="start-from-dpc" className="text-sm font-normal leading-snug">
+                    {ts("setupOption")}
+                  </Label>
+                </div>
+              </div>
             )}
             <Button
               type="submit"

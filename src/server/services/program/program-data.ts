@@ -35,7 +35,7 @@ import {
   computeMarkingDeadline,
   type Art50ProfileStatuses,
 } from "@/config/transparency-rules";
-import { AI_SENTINEL_PATH, PLAN_WINDOWS } from "@/components/guided/path-config";
+import { AI_SENTINEL_PATH } from "@/components/guided/path-config";
 import {
   getConfirmationCounts,
   needsConfirmation,
@@ -173,8 +173,6 @@ function lawfirmCategoriesPresent(records: SystemRecord[]): string[] {
   );
 }
 
-const PLAN_BUCKETS = ["1-30", "31-60", "61-90"] as const;
-
 /**
  * The stage of the program path (src/components/guided/path-config.ts) that
  * each gap's action belongs to. Confirming drafted items is part of setting
@@ -183,8 +181,8 @@ const PLAN_BUCKETS = ["1-30", "31-60", "61-90"] as const;
 export const GAP_STAGE: Record<GapId, string> = {
   "no-systems": "setup",
   "unconfirmed-items": "setup",
-  "draft-policies": "people",
-  "unlinked-policies": "people",
+  "draft-policies": "setup",
+  "unlinked-policies": "setup",
   "untriaged-shadow-reports": "inventory",
   "unclassified-systems": "assess",
   "high-risk-without-assessment": "assess",
@@ -490,17 +488,15 @@ export async function getProgramScorecardData(
   // Scores from what is confirmed; gaps (the plan's actions) from what exists.
   const maturity = { ...computeMaturity(snapshot), gaps: computeMaturity(existing).gaps };
 
-  // The 30/60/90-day plan is the stage plan (PLAN_WINDOWS: two stages of the
-  // path in each thirty days). Each gap's action is shown under the window of
-  // the stage it belongs to (GAP_STAGE), most severe first, so the program
-  // page, the PDF and the Dashboard describe one plan.
+  // The action plan follows the path's five phases: each gap's action is
+  // shown under the phase it belongs to (GAP_STAGE), most severe first, so the
+  // program page, the PDF and the Dashboard describe one plan.
   const RANK: Record<GapSeverity, number> = { critical: 0, high: 1, medium: 2 };
-  const plan = PLAN_WINDOWS.map((window, index) => ({
-    bucket: PLAN_BUCKETS[index] ?? PLAN_BUCKETS[PLAN_BUCKETS.length - 1],
-    untilDay: window.untilDay,
-    stages: [...window.stages],
+  const plan = AI_SENTINEL_PATH.stages.map((stage) => ({
+    bucket: stage.id,
+    stages: [stage.id],
     items: maturity.gaps
-      .filter((gap) => window.stages.includes(GAP_STAGE[gap.id]))
+      .filter((gap) => GAP_STAGE[gap.id] === stage.id)
       .sort((a, b) => RANK[a.severity] - RANK[b.severity])
       .map((gap) => {
         const template = getActionTemplate(gap.id as GapId);

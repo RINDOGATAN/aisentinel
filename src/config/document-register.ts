@@ -183,8 +183,8 @@ export const DOCUMENT_REGISTER: readonly DocumentEntry[] = [
     href: "/governance/program#plan",
     formats: ["screen"],
     packed: false,
-    needs: "The quick start: day 1 of the plan is the day it is first completed.",
-    rule: "Needs the quick start until it has been completed once; ready after. Shown on the program page (its plan section) and inside the program report.",
+    needs: "The quick start: the action plan by phase starts from its first run.",
+    rule: "Needs the quick start until it has been completed once; ready after. Shown on the program page (its plan section, one block per phase of the path) and inside the program report.",
     evaluate: (f) => (f.quickstartCompleted ? ready() : needs("quickstart")),
   },
   {

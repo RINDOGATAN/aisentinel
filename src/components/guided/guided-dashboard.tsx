@@ -44,21 +44,19 @@ import { packCounts } from "@/lib/document-pack";
 import {
   nextActions,
   panelRows,
-  planMilestone,
   programmeAreas,
   type Area,
   type NextAction,
   type RegisterRow,
 } from "@/lib/programme-overview";
 import { INPUTS, type DocumentState } from "@/config/document-register";
-import { AI_SENTINEL_PATH, PLAN_WINDOWS, type PathCounts } from "./path-config";
-import { isCounted, isShown, stageProgress, type PathStatuses, type StageWord } from "./path";
+import { AI_SENTINEL_PATH, type PathCounts } from "./path-config";
+import { currentPhase, isCounted, isShown, stageProgress, type PathStatuses, type StageWord } from "./path";
 import { ProgramFigureCard } from "./program-figure";
 import { ProgressRing } from "./progress-ring";
 import { AppliesPanel } from "@/components/governance/obligations/applies-panel";
 import { trpc } from "@/lib/trpc";
-import { planSummaryText } from "./plan-text";
-import { usePlanState, useProgramPathQuery } from "./use-program-path";
+import { useProgramPathQuery } from "./use-program-path";
 import { useProgrammeOverview, type ProgrammeOverview } from "./use-programme-overview";
 import { documentName, documentStateText, gapsText } from "./document-words";
 import { PanelEmpty, PanelFailed, panelPhase } from "./panel-state";
@@ -201,13 +199,14 @@ function AreasCard({
 }) {
   const t = useTranslations("guided");
   const tv = useTranslations("views");
-  const plan = usePlanState();
-  // On the hosted pilot the plan's day count is named (see guided-layout).
-  const { organization: org } = useOrganization();
-  const pilot = trpc.pilot.status.useQuery(
-    { organizationId: org?.id ?? "" },
-    { enabled: !!org?.id, staleTime: 60 * 1000 },
-  );
+  // Where the program is: the phase holding the next step (path.ts,
+  // currentPhase), the same line as under the menu's figure.
+  const current = statuses ? currentPhase(AI_SENTINEL_PATH, statuses) : null;
+  const phaseLine = !statuses
+    ? null
+    : current
+      ? t("phase.now", { number: current.number, stage: t(`stages.${current.stage.id}`) })
+      : t("phase.complete");
   const areas = statuses && overview ? programmeAreas(AI_SENTINEL_PATH, statuses, overview.needsAction) : null;
   const phase = panelPhase({
     failed: load.pathFailed || load.overviewFailed,
@@ -220,10 +219,9 @@ function AreasCard({
       <CardHeader className="p-4 sm:p-6 pb-2 sm:pb-3">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
           <CardTitle className="text-base sm:text-lg">{t("areas.title")}</CardTitle>
-          {plan && plan.kind !== "notStarted" && (
-            <p className="text-xs text-muted-foreground tabular-nums">
-              <span className="sr-only">{t("plan.label")}: </span>
-              {planSummaryText(plan, t, { labelled: !!pilot.data?.active })}
+          {phaseLine && (
+            <p className="text-xs text-muted-foreground" data-testid="area-phase-line">
+              {phaseLine}
             </p>
           )}
         </div>
@@ -648,19 +646,14 @@ function DeadlinesCard({
 }: {
   overview: ProgrammeOverview | null;
   load: PanelLoad;
-  /** One department's view: its records' dates only, without the plan's milestone. */
+  /** One department's view: its records' dates only. */
   department?: boolean;
 }) {
   const overview = given && given.departmentScoped === department ? given : null;
   const t = useTranslations("guided");
   const locale = useLocale();
-  const { planStart } = useProgramPathQuery();
-  const plan = usePlanState();
   // Read after mount: until then a date is shown without "overdue".
   const now = useNow()?.getTime() ?? null;
-
-  // The plan's next milestone (day 30, 60 or 90), while the plan runs.
-  const milestone = department ? null : planMilestone(PLAN_WINDOWS, planStart, plan);
 
   return (
     <Card data-testid="deadlines" aria-busy={!overview && !load.overviewFailed}>
@@ -672,7 +665,7 @@ function DeadlinesCard({
           <PanelFailed onRetry={load.retry} />
         ) : !overview ? (
           <CardSkeleton rows={2} />
-        ) : overview.deadlines.length === 0 && !milestone ? (
+        ) : overview.deadlines.length === 0 ? (
           <p className="text-sm text-muted-foreground">{t("deadlines.empty")}</p>
         ) : (
           <ul className="divide-y divide-border">
@@ -699,17 +692,6 @@ function DeadlinesCard({
                 </li>
               );
             })}
-            {milestone && (
-              <li
-                className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-0.5 sm:gap-3 py-2.5"
-                data-testid="deadline-plan"
-              >
-                <span className="text-sm">{t("deadlines.plan", { day: milestone.day })}</span>
-                <span className="text-xs text-muted-foreground tabular-nums">
-                  {formatDeadlineDate(milestone.at, locale)}
-                </span>
-              </li>
-            )}
           </ul>
         )}
       </CardContent>

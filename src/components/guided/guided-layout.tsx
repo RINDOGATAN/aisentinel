@@ -52,7 +52,7 @@ import { MENU_COOKIE, cookieAssignment } from "@/lib/menu-cookie";
 import { features } from "@/config/features";
 import { cn } from "@/lib/utils";
 import { AI_SENTINEL_PATH } from "./path-config";
-import { currentStepId, nextStep, overallProgress } from "./path";
+import { currentPhase, currentStepId, nextStep, numberedStageCount, overallProgress, stageNumber } from "./path";
 import { PathMenu } from "./path-menu";
 import { GlobalSearch } from "./global-search";
 import { DepartmentSwitch } from "./department-switch";
@@ -61,9 +61,7 @@ import { StepBand } from "./step-band";
 import { SettingsStepBand } from "./settings-step-band";
 import { GetHelpLink } from "./get-help-link";
 import { ProgressBar } from "./progress-ring";
-import { usePlanState, useProgramPath, useProgramPathRefresh } from "./use-program-path";
-import { trpc } from "@/lib/trpc";
-import { planDayText } from "./plan-text";
+import { useProgramPath, useProgramPathRefresh } from "./use-program-path";
 import { useProgrammeOverview } from "./use-programme-overview";
 import { useMenuLocks } from "./use-menu-locks";
 import { stepNoteText } from "./document-words";
@@ -103,14 +101,7 @@ export function GuidedLayout({
   // The document register's states and what needs action: the same answer
   // the dashboard's panel and areas read.
   const { overview } = useProgrammeOverview();
-  const plan = usePlanState();
   const { organization } = useOrganization();
-  // On the hosted pilot the banner counts the editing window's days; the plan's
-  // day count is then named, so the two are not read as one clock.
-  const pilot = trpc.pilot.status.useQuery(
-    { organizationId: organization?.id ?? "" },
-    { enabled: !!organization?.id, staleTime: 60 * 1000 },
-  );
   useProgramPathRefresh();
   // A lock beside a premium entry only where its page would show it locked.
   const locked = useMenuLocks();
@@ -132,7 +123,15 @@ export function GuidedLayout({
     clientMode: accountMode(userType) === "clients",
     t,
     overview: OVERVIEW,
-    planLine: planDayText(plan, t, { labelled: !!pilot.data?.active }),
+    // Under the figure: the phase the organisation is in, from the same path
+    // the figure counts (path.ts, currentPhase), or that every phase is done.
+    phaseLine: (() => {
+      if (!statuses) return null;
+      const phase = currentPhase(AI_SENTINEL_PATH, statuses);
+      return phase
+        ? t("phase.now", { number: phase.number, stage: t(`stages.${phase.stage.id}`) })
+        : t("phase.complete");
+    })(),
     // One quiet line under each step: its documents and their states.
     stepNotes: Object.fromEntries(
       Object.entries(
@@ -416,7 +415,7 @@ function PhoneStageBar({
   onOpen: () => void;
 }) {
   const t = useTranslations("guided");
-  const total = AI_SENTINEL_PATH.stages.length;
+  const total = numberedStageCount(AI_SENTINEL_PATH);
   const next = statuses ? nextStep(AI_SENTINEL_PATH, statuses) : null;
   const overall = statuses ? overallProgress(AI_SENTINEL_PATH, statuses) : null;
 
@@ -424,7 +423,7 @@ function PhoneStageBar({
     ? t("loading")
     : next
       ? t("phoneBar", {
-          number: next.stageIndex + 1,
+          number: stageNumber(AI_SENTINEL_PATH, next.stage.id) ?? next.stageIndex + 1,
           total,
           stage: t(`stages.${next.stage.id}`),
         })

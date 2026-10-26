@@ -2,7 +2,7 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 /**
- * Program path router: where an organisation stands on the six-stage path the
+ * Program path router: where an organisation stands on the five-phase path the
  * Guided layout shows (src/components/guided/path-config.ts).
  *
  * Read-only. `status` is one organisation, through the usual membership
@@ -11,10 +11,6 @@
  * client overview, with the two "needs attention" figures the older client
  * cards showed (open incidents, oversight gates waiting for a decision), so
  * the portfolio is the one client view.
- *
- * Both carry `planStart`, day 1 of the 30/60/90-day plan
- * (src/server/services/program/plan-start.ts); the plan's state is worked out
- * where it is shown, from that date and the statuses (src/components/guided/plan.ts).
  *
  * `overview` (and each portfolio row) carries what the Guided dashboard, the
  * menu's document lines and All clients read (as in
@@ -30,7 +26,6 @@ import { createTRPCRouter, organizationProcedure, protectedProcedure } from "../
 import { AI_SENTINEL_PATH, type PathCounts } from "@/components/guided/path-config";
 import { evaluateChecks, evaluatePath } from "@/components/guided/path";
 import { loadPathCounts } from "@/server/services/program/path-counts";
-import { loadPlanStart } from "@/server/services/program/plan-start";
 import { loadDocumentFacts } from "@/server/services/program/document-facts";
 import { loadDeadlines } from "@/server/services/program/deadlines";
 import { loadBusinessUnitScope } from "@/server/services/business-units/scope";
@@ -108,18 +103,12 @@ export const programPathRouter = createTRPCRouter({
     .query(async ({ ctx }) => {
       const counts = await loadPathCounts(ctx.prisma, ctx.organization.id);
       const steps = evaluatePath(AI_SENTINEL_PATH, counts);
-      const planStart = await loadPlanStart(
-        ctx.prisma,
-        ctx.organization.id,
-        steps.quickstart === "done",
-      );
       return {
         steps,
         // What each step's rule needs, met or not: the band's tick list.
         checks: evaluateChecks(AI_SENTINEL_PATH, counts),
         // Step 1.2's questions still to answer ("Answer 3 questions").
         screeningQuestionsOpen: counts.screeningQuestionsOpen,
-        planStart: planStart?.toISOString() ?? null,
       };
     }),
 
@@ -157,8 +146,6 @@ export const programPathRouter = createTRPCRouter({
       organizationSlug: string;
       role: string;
       steps: ReturnType<typeof evaluatePath> | null;
-      /** Day 1 of the 30/60/90-day plan (ISO), or null before it starts. */
-      planStart: string | null;
       /** The two "needs attention" figures the older client cards showed. */
       openIncidents: number | null;
       pendingGates: number | null;
@@ -188,11 +175,9 @@ export const programPathRouter = createTRPCRouter({
               loadOverview(ctx.prisma, orgId, m, locale, counts),
             ]);
             const steps = evaluatePath(AI_SENTINEL_PATH, counts);
-            const planStart = await loadPlanStart(ctx.prisma, orgId, steps.quickstart === "done");
             return {
               ...base,
               steps,
-              planStart: planStart?.toISOString() ?? null,
               openIncidents,
               pendingGates,
               ...overview,
@@ -203,7 +188,6 @@ export const programPathRouter = createTRPCRouter({
             return {
               ...base,
               steps: null,
-              planStart: null,
               openIncidents: null,
               pendingGates: null,
               ...LIMITED,

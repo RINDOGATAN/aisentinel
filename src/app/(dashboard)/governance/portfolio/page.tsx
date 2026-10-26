@@ -45,8 +45,7 @@ import type { AppRouter } from "@/server/routers";
 import { useOrganization } from "@/lib/organization-context";
 import { PORTFOLIO_HREF } from "@/lib/account-mode";
 import { cn } from "@/lib/utils";
-import { AI_SENTINEL_PATH, PLAN_WINDOWS, type PathCounts } from "@/components/guided/path-config";
-import { planState } from "@/components/guided/plan";
+import { AI_SENTINEL_PATH, type PathCounts } from "@/components/guided/path-config";
 import type { PathStatuses } from "@/components/guided/path";
 import { figureFor, ProgramFigureLine } from "@/components/guided/program-figure";
 import { formatDeadlineDate, nextActionHref } from "@/components/guided/guided-dashboard";
@@ -54,7 +53,6 @@ import {
   documentsReady,
   nearestDeadline,
   nextActions,
-  planMilestone,
   programmeAreas,
   sortByNearestDeadline,
   type Area,
@@ -78,10 +76,9 @@ interface Row {
 }
 
 /** One client's row, read the way its own dashboard reads it. */
-function toRow(client: Client, now: Date): Row {
+function toRow(client: Client): Row {
   const statuses = client.steps as PathStatuses | null;
   const open = !!statuses && !client.limited;
-  const plan = statuses ? planState(AI_SENTINEL_PATH, PLAN_WINDOWS, statuses, client.planStart, now) : null;
   return {
     client,
     name: client.organizationName,
@@ -90,7 +87,7 @@ function toRow(client: Client, now: Date): Row {
     statuses,
     areas: open ? programmeAreas(AI_SENTINEL_PATH, statuses, client.needsAction) : [],
     docs: documentsReady(client.documents),
-    deadline: open ? nearestDeadline(client.deadlines, planMilestone(PLAN_WINDOWS, client.planStart, plan)) : null,
+    deadline: open ? nearestDeadline(client.deadlines) : null,
     action: open ? (nextActions(AI_SENTINEL_PATH, statuses, client.needsAction, 1)[0] ?? null) : null,
   };
 }
@@ -121,7 +118,7 @@ export default function PortfolioPage() {
   };
 
   const now = new Date();
-  const rows = sortByNearestDeadline((clients ?? []).map((c) => toRow(c, now)), locale);
+  const rows = sortByNearestDeadline((clients ?? []).map((c) => toRow(c)), locale);
   const attentionCount = rows.filter((r) => r.areas.some((a) => a.word === "action")).length;
 
   const open = (client: Client, href = "/governance") => {
@@ -357,14 +354,6 @@ function DeadlineText({
   }
   const at = new Date(deadline.at);
   const when = formatDeadlineDate(at, locale);
-  if (deadline.kind === "plan") {
-    return (
-      <span className="flex flex-col gap-0.5" data-testid="client-deadline">
-        <span>{tg("deadlines.plan", { day: deadline.day })}</span>
-        <span className="text-xs text-muted-foreground tabular-nums">{when}</span>
-      </span>
-    );
-  }
   const overdue = at.getTime() < now.getTime();
   return (
     <span className="flex flex-col gap-0.5" data-testid="client-deadline">

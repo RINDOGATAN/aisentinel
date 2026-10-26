@@ -156,10 +156,9 @@ describe("a programme copied from another client's template", () => {
 });
 
 describe("the shape of the path", () => {
-  it("has six stages, with the quick start first", () => {
+  it("has five stages, the same shape as DPO Central's, with the quick start first", () => {
     expect(PATH.stages.map((s) => s.id)).toEqual([
       "setup",
-      "people",
       "inventory",
       "assess",
       "controls",
@@ -450,7 +449,7 @@ describe("the done rules", () => {
     expect(noBuilder.threatModel).toBe("hidden");
     expect(stepAndFollowing(PATH, "vendorDueDiligence", noBuilder)?.following?.step.id).toBe("oversight");
     // Reached by its address with no agent, the page still has its band.
-    expect(stepAndFollowing(PATH, "agentTesting", noAgent)?.current.number).toBe("4.5");
+    expect(stepAndFollowing(PATH, "agentTesting", noAgent)?.current.number).toBe("3.5");
     // While the statuses load, a conditional step is not shown.
     expect(stepSequence(PATH, null).some((e) => e.step.id === "agentTesting")).toBe(false);
   });
@@ -506,7 +505,7 @@ describe("the done rules", () => {
     expect(step("audit").optional).toBe(true);
     expect(statusOf("proceedings", { proceedings: 1, openProceedings: 1 })).toBe("started");
     expect(statusOf("proceedings", { proceedings: 1 })).toBe("done");
-    const monitor = PATH.stages[5];
+    const monitor = PATH.stages[4];
     const s = evaluatePath(PATH, { ...COMPLETE, openProceedings: 1, proceedings: 1 });
     expect(stageProgress(monitor, s)).toEqual({ done: 3, total: 3, state: "done" });
   });
@@ -515,10 +514,10 @@ describe("the done rules", () => {
 describe("progress and the next step", () => {
   it("counts a stage as done steps over counted steps", () => {
     const s = evaluatePath(PATH, { ...EMPTY_PATH_COUNTS, quickstartCompleted: true, jurisdictions: 1 });
-    expect(stageProgress(PATH.stages[0], s)).toEqual({ done: 1, total: 2, state: "started" });
-    // Two of the three people steps are coming: one counted step.
-    expect(stageProgress(PATH.stages[1], s)).toEqual({ done: 0, total: 1, state: "todo" });
-    expect(stageProgress(PATH.stages[2], s)).toEqual({ done: 0, total: 3, state: "todo" });
+    // The first stage: the quick start, the obligations and the acceptable-use
+    // policy count; the Art. 4 and Art. 5 steps are still coming.
+    expect(stageProgress(PATH.stages[0], s)).toEqual({ done: 1, total: 3, state: "started" });
+    expect(stageProgress(PATH.stages[1], s)).toEqual({ done: 0, total: 3, state: "todo" });
   });
 
   it("offers the first counted step not done, never a coming or optional one", () => {
@@ -535,33 +534,34 @@ describe("progress and the next step", () => {
       acceptableUsePolicyApproved: true,
     });
     const next = nextStep(PATH, afterSetup);
-    // Stage 3 opens with the AI tools in use: finding them is how the systems are found.
+    // Stage 2 opens with the AI tools in use: finding them is how the systems are found.
     expect(next?.step.id).toBe("shadowAi");
-    expect(next?.stageIndex).toBe(2);
+    expect(next?.stageIndex).toBe(1);
 
     const onlyMonitorLeft: PathStatuses = { ...evaluatePath(PATH, COMPLETE), board: "todo" };
     expect(nextStep(PATH, onlyMonitorLeft)?.step.id).toBe("board");
   });
 
-  it("totals progress across the path", () => {
-    const counted = steps.filter(isCounted).length;
-    expect(overallProgress(PATH, evaluatePath(PATH, COMPLETE))).toEqual({ done: counted, total: counted });
-    expect(overallProgress(PATH, evaluatePath(PATH, EMPTY_PATH_COUNTS)).done).toBe(0);
+  it("totals progress across the path, in stages", () => {
+    expect(overallProgress(PATH, evaluatePath(PATH, COMPLETE))).toEqual({ done: 5, total: 5 });
+    expect(overallProgress(PATH, evaluatePath(PATH, EMPTY_PATH_COUNTS))).toEqual({ done: 0, total: 5 });
   });
 
-  it("gives the overall percentage as done over counted steps, rounded", () => {
-    const counted = steps.filter(isCounted);
+  it("gives the overall percentage as done over counted stages, rounded", () => {
     expect(overallPercent(PATH, evaluatePath(PATH, EMPTY_PATH_COUNTS))).toBe(0);
     expect(overallPercent(PATH, evaluatePath(PATH, COMPLETE))).toBe(100);
     // Coming and optional steps never count: marking them does not move it.
     const onlyUncounted: PathStatuses = { ...evaluatePath(PATH, EMPTY_PATH_COUNTS), audit: "done", proceedings: "done" };
     expect(overallPercent(PATH, onlyUncounted)).toBe(0);
-    // Each counted step done moves it by the same share, rounded to a whole number.
+    // Each stage done moves it by the same share, rounded to a whole number.
     // With an agent in the inventory, so that every counted step is shown.
-    for (let n = 1; n <= counted.length; n++) {
+    const stages = PATH.stages;
+    for (let n = 1; n <= stages.length; n++) {
       const statuses: PathStatuses = evaluatePath(PATH, { ...EMPTY_PATH_COUNTS, agents: 1, providerSystems: 1 });
-      for (const s of counted.slice(0, n)) statuses[s.id] = "done";
-      expect(overallPercent(PATH, statuses), `${n} done`).toBe(Math.round((n / counted.length) * 100));
+      for (const stage of stages.slice(0, n)) {
+        for (const s of stage.steps.filter(isCounted)) statuses[s.id] = "done";
+      }
+      expect(overallPercent(PATH, statuses), `${n} done`).toBe(Math.round((n / stages.length) * 100));
     }
     // A step started but not done counts nothing.
     expect(overallPercent(PATH, { ...evaluatePath(PATH, EMPTY_PATH_COUNTS), systems: "started" })).toBe(0);
@@ -582,11 +582,12 @@ describe("the 'Next step' band", () => {
   it("numbers each step by its stage and its place in the stage", () => {
     const number = (id: string) => walk.find((e) => e.step.id === id)?.number;
     expect(number("quickstart")).toBe("1.1");
-    expect(number("shadowAi")).toBe("3.1");
-    expect(number("systems")).toBe("3.2");
-    expect(number("vendorDueDiligence")).toBe("4.3");
-    expect(number("threatModel")).toBe("4.4");
-    expect(number("board")).toBe("6.4");
+    expect(number("policies")).toBe("1.3");
+    expect(number("shadowAi")).toBe("2.1");
+    expect(number("systems")).toBe("2.2");
+    expect(number("vendorDueDiligence")).toBe("3.3");
+    expect(number("threatModel")).toBe("3.4");
+    expect(number("board")).toBe("5.4");
   });
 
   it("leads from each step to the next one, so one button walks the whole path", () => {
@@ -627,14 +628,14 @@ describe("the stage-complete message", () => {
   };
 
   it("announces nothing the first time, and remembers what is already done", () => {
-    const r = stageToCelebrate(PATH, withStages(["setup", "people"]), null);
+    const r = stageToCelebrate(PATH, withStages(["setup", "inventory"]), null);
     expect(r.celebrate).toBeNull();
-    expect(r.remember).toEqual(["setup", "people"]);
+    expect(r.remember).toEqual(["setup", "inventory"]);
   });
 
   it("announces a stage once, when it is first seen done", () => {
     const first = stageToCelebrate(PATH, withStages(["setup", "inventory"]), ["setup"]);
-    expect(first.celebrate).toBe(2);
+    expect(first.celebrate).toBe(1);
     const again = stageToCelebrate(PATH, withStages(["setup", "inventory"]), first.remember);
     expect(again.celebrate).toBeNull();
   });

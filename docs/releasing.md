@@ -16,7 +16,7 @@ and repository push rights can run it.
 |---|---|---|
 | Ships on | every push to `main` | a `vX.Y.Z` tag |
 | Code | Vercel builds from source | `ghcr.io/rindogatan/aisentinel` |
-| Schema | `prisma migrate deploy` in the build | migrator image, every boot |
+| Schema | `prisma migrate deploy` in the build (via `scripts/build-migrate.mjs`) | migrator image, every boot |
 | Regulatory content | **manual — see below** | migrator image, every boot |
 
 The asymmetry in the last row is the thing most easily forgotten. The content
@@ -41,7 +41,13 @@ npm run build
 npm run test -- license-crypto   # Ed25519 golden parity — see below
 ```
 
-`npm run build` starts with `prisma migrate deploy`, so it needs a reachable
+`npm run build` starts with `scripts/build-migrate.mjs`, which wakes the
+database with `SELECT 1` and then runs `prisma migrate deploy` over the direct
+(unpooled) URL. Both steps retry with backoff, for up to 7 minutes in total
+(`BUILD_MIGRATE_BUDGET_MS` overrides it), on P1001 (database asleep or
+unreachable), P1002 (timed out) and an advisory-lock timeout; any other error
+fails the build at once. Prisma's output is printed with connection strings
+and host names redacted. So the build still needs a reachable
 database. On a machine without one, build the way CI and the Dockerfile do —
 no database is contacted:
 

@@ -6,7 +6,7 @@
  * mirroring src/landing/landing-es.test.tsx:
  *
  *   - the same sections in the same order (the three tools, the videos, the
- *     six stages with the 30/60/90-day plan, the ways to host it), with
+ *     five stages, the ways to host it), with
  *     English copy of its own under `en.*`, written for law firms and
  *     consultants who run AI governance for their clients and for in-house
  *     teams at small and mid-size companies;
@@ -100,7 +100,7 @@ describe("English sections", () => {
   const html = render(allPublished);
 
   it("render the four sections in order, with every key translated", () => {
-    const order = ["Three tools", "See how it", "Six stages", "Tailored to <"].map((s) => html.indexOf(s));
+    const order = ["Three tools", "See how it", "Five stages", "Tailored to <"].map((s) => html.indexOf(s));
     expect(order.every((i) => i >= 0)).toBe(true);
     expect([...order].sort((a, b) => a - b)).toEqual(order);
     expect(html).not.toMatch(/>en\.[a-z]/);
@@ -128,12 +128,12 @@ describe("English sections", () => {
     expect(EN["hero.subtitle"]).toMatch(/California, Colorado, Texas and Washington/);
   });
 
-  it("show the six stages of the Guided path and the 30/60/90-day plan", () => {
+  it("show the five stages of the Guided path, with no day plan", () => {
     const stages = (appEn as { guided: { stages: Record<string, string> } }).guided.stages;
-    const names = ["setup", "people", "inventory", "assess", "controls", "monitor"].map((k) => stages[k]);
+    const names = ["setup", "inventory", "assess", "controls", "monitor"].map((k) => stages[k]);
     names.forEach((name, n) => expect(EN[`en.stages.s${n + 1}.title`]).toBe(name));
-    expect(html).toContain(EN["en.stages.plan.title"]);
-    for (const p of [1, 2, 3]) expect(html).toContain(EN[`en.stages.plan.p${p}.days`]);
+    expect(EN["en.stages.s6.title"]).toBeUndefined();
+    expect(EN["en.stages.plan.title"]).toBeUndefined();
   });
 
   it("show no price, certification, customer logo, comparison or EU-hosting claim", () => {
@@ -220,7 +220,7 @@ describe("English sections", () => {
     const none = render(nonePublished);
     expect(none).not.toContain("See how it");
     expect(none).not.toMatch(/<video/);
-    expect(none.indexOf("Three tools")).toBeLessThan(none.indexOf("Six stages"));
+    expect(none.indexOf("Three tools")).toBeLessThan(none.indexOf("Five stages"));
     expect(renderToStaticMarkup(createElement(Videos, { t: tEn, locale: "en", videos: nonePublished }))).toBe("");
   });
 

@@ -183,7 +183,7 @@ export default function ProgramPage() {
                 </div>
               </section>
 
-              {/* The 30/60/90-day plan. "Open" on the Dashboard's documents
+              {/* The action plan by stage. "Open" on the Dashboard's documents
                   list lands here (#plan). */}
               <section id="plan" className="space-y-3 scroll-mt-20">
                 <div>

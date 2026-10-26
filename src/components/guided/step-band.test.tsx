@@ -26,7 +26,6 @@ vi.mock("./use-program-path", () => ({
     steps: null,
     checks: state.checks,
     screeningQuestionsOpen: 0,
-    planStart: null,
     refreshing: false,
   }),
 }));
@@ -101,7 +100,7 @@ describe("the stage count and the coming steps in the menu", () => {
     return typeof value === "string" ? interpolate(value, values) : key;
   };
 
-  it("shows '0 of 1' for stage 2, and its coming steps greyed in place", () => {
+  it("shows '0 of 3' for stage 1, and its coming steps greyed in place", () => {
     const html = renderToStaticMarkup(
       <PathMenu
         config={AI_SENTINEL_PATH}
@@ -113,8 +112,8 @@ describe("the stage count and the coming steps in the menu", () => {
         overview={{ href: "/governance", icon: LayoutDashboard }}
       />,
     );
-    const people = html.slice(html.indexOf('data-testid="stage-word-people"'));
-    expect(people).toMatch(/^[^<]*>Not started · 0 of 1</);
+    const setup = html.slice(html.indexOf('data-testid="stage-word-setup"'));
+    expect(setup).toMatch(/^[^<]*>Not started · 0 of 3</);
     expect(html).toContain(en.guided.steps.prohibited.label);
     expect(html).toContain(en.guided.steps.literacy.label);
     expect(html).toContain('data-testid="step-rule-policies"');

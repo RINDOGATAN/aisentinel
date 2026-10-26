@@ -2,7 +2,7 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 /**
- * AI Sentinel's program path: six stages, each step linked to a page that
+ * AI Sentinel's program path: five stages, each step linked to a page that
  * already exists, each with its "done" rule written next to it.
  *
  * The rules read `PathCounts`, which the server fills with counts only
@@ -41,7 +41,6 @@ import {
   ShieldCheck,
   ShieldOff,
   Sparkles,
-  Users,
   ClipboardList,
   ListChecks,
   Megaphone,
@@ -51,7 +50,6 @@ import {
 } from "lucide-react";
 import type { PathConfig, StepCheck } from "./path";
 import type { ObligationScreening } from "@/config/obligation-screenings";
-import type { PlanWindow } from "./plan";
 
 /** What the rules read. Counts only: nothing here names a record. */
 export interface PathCounts {
@@ -287,12 +285,9 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
               : []),
           ],
         },
-      ],
-    },
-    {
-      id: "people",
-      icon: Users,
-      steps: [
+        // The acceptable-use policy and the people steps (Art. 4 and Art. 5)
+        // are foundations of the programme, so they sit in the first phase:
+        // five phases, the same shape as DPO Central's path.
         {
           id: "policies",
           href: "/governance/policies",
@@ -659,15 +654,3 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
     { id: "settings", href: "/governance/settings", icon: Settings },
   ],
 };
-
-/**
- * The 30/60/90-day plan over the six stages (src/components/guided/plan.ts):
- * set up and people in the first thirty days, inventory and assessment in the
- * next thirty, controls and monitoring in the last thirty. Day 1 is the day the
- * quick start was first completed (src/server/services/program/plan-start.ts).
- */
-export const PLAN_WINDOWS: readonly PlanWindow[] = [
-  { untilDay: 30, stages: ["setup", "people"] },
-  { untilDay: 60, stages: ["inventory", "assess"] },
-  { untilDay: 90, stages: ["controls", "monitor"] },
-];

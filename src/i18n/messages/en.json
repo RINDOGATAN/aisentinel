@@ -4381,8 +4381,8 @@
       "scorecardSubtitle": "Maturity across eight dimensions, mapped to the NIST AI RMF functions.",
       "nistTitle": "NIST AI RMF profile: current vs target",
       "dimensionsTitle": "Maturity dimensions",
-      "planTitle": "30/60/90-day plan",
-      "planSubtitle": "Two stages of the program path in each thirty days, and under each the actions the program's gaps call for, most urgent first.",
+      "planTitle": "Action plan by stage",
+      "planSubtitle": "The five stages of the program path and, under each, the actions the program's gaps call for, most urgent first.",
       "rolloutTitle": "Recommended rollout by tool category",
       "rolloutSubtitle": "How to employ each class of tool in the coming quarter.",
       "dutiesTitle": "Professional duties coverage",
@@ -4423,9 +4423,6 @@
       "ariaLabel": "NIST AI RMF maturity radar"
     },
     "plan": {
-      "bucket1": "Days 1 to 30",
-      "bucket2": "Days 31 to 60",
-      "bucket3": "Days 61 to 90",
       "empty": "Nothing scheduled",
       "effort": "Effort: {effort, select, S {small} M {medium} L {large} other {{effort}}}"
     },
@@ -4569,11 +4566,13 @@
     },
     "plan": {
       "eyebrow": "Action plan",
-      "title": "The 30/60/90-day plan",
+      "title": "The action plan by stage",
       "bucket": {
-        "1-30": "Days 1 to 30",
-        "31-60": "Days 31 to 60",
-        "61-90": "Days 61 to 90"
+        "setup": "Stage 1: Set up",
+        "inventory": "Stage 2: Inventory",
+        "assess": "Stage 3: Classify and assess",
+        "controls": "Stage 4: Controls and transparency",
+        "monitor": "Stage 5: Monitor and improve"
       }
     },
     "rollout": {
@@ -5977,7 +5976,6 @@
     },
     "stages": {
       "setup": "Set up",
-      "people": "Policies and people",
       "inventory": "Inventory",
       "assess": "Classify and assess",
       "controls": "Controls and transparency",
@@ -6131,10 +6129,10 @@
     "switchClient": "Switch client",
     "addOrganization": "Add organization",
     "account": "Account",
-    "phoneBar": "Stage {number} of {total} · {stage}",
+    "phoneBar": "Stage {number} of {total}, {stage}",
     "phoneBarDone": "Every stage is done",
     "phoneBarOpen": "Open the program path",
-    "overallLabel": "The organization's program",
+    "overallLabel": "Your program",
     "band": {
       "step": "Step {number}",
       "next": "Next step",
@@ -6179,17 +6177,6 @@
       "allDoneBody": "Keep the program current: confirm what changes and report to the board.",
       "allDoneButton": "Open the program map"
     },
-    "plan": {
-      "label": "30/60/90-day plan",
-      "column": "Plan",
-      "day": "Day {day} of {total}",
-      "dayLabelled": "Program plan: day {day} of {total}",
-      "onPlan": "On plan",
-      "behind": "Behind plan by {days, plural, one {# day} other {# days}}",
-      "complete": "Plan complete",
-      "remaining": "{count, plural, one {Stage left: {stages}} other {Stages left: {stages}}}",
-      "notStarted": "Starts with the quick start"
-    },
     "portfolio": {
       "title": "All clients",
       "count": "{count, plural, one {# organization you manage} other {# organizations you manage}}",
@@ -6214,7 +6201,7 @@
       "sortNote": "Sorted by the nearest deadline, the soonest first; clients with no deadline follow, by name."
     },
     "figure": {
-      "line": "{done} of {total} steps confirmed",
+      "line": "{done} of {total} stages done",
       "toConfirm": "{count} to confirm",
       "started": "{count} in progress",
       "notStarted": "{count} not started",
@@ -6243,7 +6230,6 @@
       "incidentReport": "Incident report due: {label}",
       "retest": "Threat model review due: {label}",
       "obligation": "Obligation: {label}",
-      "plan": "Plan: day {day} milestone",
       "overdue": "overdue since {date}",
       "empty": "No deadline in the next 30 days."
     },
@@ -6305,6 +6291,10 @@
       "title": "Viewing one department: {name}",
       "body": "What needs action and the deadlines below are this department's. The program figures, areas and documents cover the whole organization: choose \"Whole organization\" under Viewing to see them.",
       "nothingWaiting": "Nothing is waiting in this department."
+    },
+    "phase": {
+      "now": "Now: stage {number}, {stage}",
+      "complete": "Program complete"
     }
   },
   "agentTesting": {
@@ -6707,7 +6697,7 @@
     "open": "Open",
     "downloadLabel": "Download {name} as {format}",
     "items": {
-      "plan": "30/60/90-day plan",
+      "plan": "Action plan by stage",
       "obligationsCalendar": "Obligations calendar",
       "policies": "AI policies",
       "systemRegister": "AI system register",

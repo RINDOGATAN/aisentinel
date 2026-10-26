@@ -79,6 +79,7 @@ import { UnifiedPanel } from "@/components/governance/UnifiedPanel";
 import { AgentPanel } from "@/components/governance/AgentPanel";
 import { TransparencyStatementCard } from "@/components/ai/TransparencyStatementCard";
 import { DataFlowPanel } from "@/components/governance/data-flow-panel";
+import { DpoCentralContext } from "@/components/suite/dpo-central-context";
 import { SystemThreatModelCard } from "@/components/governance/system-threat-model-card";
 import { STATUS_CHIP, STATUS_OUTLINE } from "@/components/ui/status-note";
 import { templateName } from "@/lib/assessment-template-display";
@@ -1048,6 +1049,7 @@ export default function AISystemDetailPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
+            <DpoCentralContext metadata={system.metadata} />
             {dpcSystemId && (
               <div className="flex items-center gap-3 p-3 bg-muted/50">
                 <Cpu className="w-4 h-4 text-muted-foreground" />

@@ -26,6 +26,9 @@ import {
 } from "@/server/services/program/snapshot";
 import { diffSnapshots } from "@/lib/program-diff";
 import type { DraftNote } from "@/server/services/export/draft-gaps-page";
+import { loadPathCounts } from "@/server/services/program/path-counts";
+import { buildProgressReport } from "@/server/services/program/progress-report";
+import { AI_SENTINEL_PATH } from "@/components/guided/path-config";
 
 export async function renderProgramPdf(
   prisma: PrismaClient,
@@ -39,14 +42,18 @@ export async function renderProgramPdf(
   },
 ): Promise<{ buffer: Buffer; dateStr: string; systems: number }> {
   const { organizationId, orgName, locale, userId } = args;
-  const [graph, scorecard, confirmation] = await Promise.all([
+  const [graph, scorecard, confirmation, pathCounts] = await Promise.all([
     getProgramGraphData(prisma, organizationId, locale),
     getProgramScorecardData(prisma, organizationId, locale),
     // Feeds the annex's derivation table: how much of this report a human has
     // actually vouched for. Without it the annex says so explicitly rather
     // than implying everything is reviewed.
     getConfirmationSummary(prisma, organizationId),
+    loadPathCounts(prisma, organizationId),
   ]);
+  // Every counted step by stage and the records to date, so reports of
+  // different dates compare line by line.
+  const progress = buildProgressReport(AI_SENTINEL_PATH, pathCounts);
 
   const derivation: DerivationSummary = {
     weightedPct: confirmation.weightedPct,
@@ -125,6 +132,7 @@ export async function renderProgramPdf(
       scorecard,
       derivation,
       snapshot: snapshotContext,
+      progress,
       draftNote: args.draftNote ?? null,
     }),
   );

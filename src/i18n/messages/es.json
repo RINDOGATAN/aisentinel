@@ -4645,6 +4645,29 @@
       "noPrevious": "Esta es la primera instantánea de la organización, por lo que todavía no hay nada con lo que compararla. Los informes futuros mostrarán qué ha cambiado desde esta.",
       "rulePackChangesTitle": "Paquetes de reglas modificados",
       "rulePackChangesIntro": "Estos paquetes de reglas han cambiado entre ambas instantáneas. Si una puntuación ha variado, conviene revisarlo aquí primero: la diferencia puede deberse a un cambio en las reglas y no en el programa."
+    },
+    "progress": {
+      "eyebrow": "Progreso",
+      "title": "Progreso por fases",
+      "lead": "Cada paso que cuenta en la ruta, agrupado por fases, con su estado en la fecha de este informe. Los informes de fechas distintas pueden compararse línea a línea.",
+      "complete": "Programa completo",
+      "doneWhen": "Se completa cuando",
+      "recordsTitle": "Registros a la fecha",
+      "recordsLead": "Los registros que contiene el programa en la fecha de este informe.",
+      "records": {
+        "systems": "Sistemas de IA registrados",
+        "systemsWithOwner": "Sistemas de IA con un responsable designado",
+        "classified": "Sistemas de IA clasificados",
+        "highRisk": "Sistemas de IA de alto riesgo",
+        "highRiskAssessed": "Sistemas de IA de alto riesgo evaluados",
+        "vendors": "Proveedores de IA registrados",
+        "vendorsAssessed": "Proveedores de IA evaluados",
+        "assessmentsApproved": "Evaluaciones aprobadas",
+        "oversightGates": "Controles de supervisión humana",
+        "evidence": "Elementos de evidencia",
+        "incidents": "Incidentes de IA registrados",
+        "boardReports": "Informes al consejo registrados"
+      }
     }
   },
   "provenance": {

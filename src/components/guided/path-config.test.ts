@@ -40,6 +40,8 @@ const step = (id: string) => {
 };
 const statusOf = (id: string, over: Partial<PathCounts>) =>
   evaluatePath(PATH, { ...EMPTY_PATH_COUNTS, ...over })[id];
+const checksOf = (id: string, over: Partial<PathCounts>) =>
+  evaluateChecks(PATH, { ...EMPTY_PATH_COUNTS, ...over })[id];
 
 /** An organisation that has done everything the rules ask. */
 const COMPLETE: PathCounts = {
@@ -79,7 +81,10 @@ const COMPLETE: PathCounts = {
   transparencyUnconfirmed: 0,
   mappings: 40,
   mappingsNotAssessed: 0,
+  highRiskMappings: 12,
+  highRiskMappingsNotAssessed: 0,
   evidence: 5,
+  highRiskEvidence: 2,
   sensitiveAssessments: 2,
   personalDataSystemsAssessed: 2,
   incidents: 0,
@@ -369,10 +374,28 @@ describe("the done rules", () => {
     expect(
       statusOf("assessments", { assessments: 2, assessmentsApproved: 2, highRisk: 2, highRiskAssessed: 2 }),
     ).toBe("done");
-    // With no high-risk system, one approved assessment is enough.
-    expect(statusOf("assessments", { assessments: 1, assessmentsApproved: 1 })).toBe("done");
-    // A draft alone is not done.
-    expect(statusOf("assessments", { assessments: 1 })).toBe("started");
+    // Classification not finished: whether anything is high-risk is not known yet.
+    expect(statusOf("assessments", { systems: 3, classified: 2, assessments: 1 })).toBe("started");
+    expect(statusOf("assessments", { systems: 3, classified: 2 })).toBe("todo");
+    expect(statusOf("assessments", {})).toBe("todo");
+  });
+
+  it("assessments: with no high-risk system, nothing is in scope and the step is done", () => {
+    const counts = { ...EMPTY_PATH_COUNTS, systems: 3, classified: 3, highRisk: 0 };
+    expect(statusOf("assessments", counts)).toBe("done");
+    expect(checksOf("assessments", counts)).toEqual([{ id: "noHighRiskAssessment", met: true }]);
+    // Not yet known: the check asks for the risk levels.
+    expect(checksOf("assessments", { ...counts, classified: 1 })[0]).toMatchObject({
+      id: "systemsClassified",
+      met: false,
+      done: 1,
+      total: 3,
+    });
+    // In scope: the current rule applies.
+    expect(statusOf("assessments", { ...counts, highRisk: 1, highRiskAssessed: 0 })).toBe("todo");
+    expect(statusOf("assessments", { ...counts, highRisk: 1, highRiskAssessed: 1, assessmentsApproved: 1 })).toBe(
+      "done",
+    );
   });
 
   it("threat model: past draft", () => {
@@ -466,22 +489,62 @@ describe("the done rules", () => {
     expect(statusOf("transparency", { systems: 2, transparencyProfiles: 2 })).toBe("done");
   });
 
-  it("evidence: nothing left unassessed, and some evidence attached", () => {
-    expect(statusOf("evidence", { mappings: 10, mappingsNotAssessed: 10 })).toBe("todo");
-    expect(statusOf("evidence", { mappings: 10, mappingsNotAssessed: 4 })).toBe("started");
-    expect(statusOf("evidence", { mappings: 10, mappingsNotAssessed: 0 })).toBe("started");
-    expect(statusOf("evidence", { mappings: 10, mappingsNotAssessed: 0, evidence: 1 })).toBe("done");
+  it("evidence: only the requirements of high-risk systems count, and some evidence attached", () => {
+    const inScope = { systems: 3, classified: 3, highRisk: 1 };
+    expect(statusOf("evidence", { ...inScope, mappings: 10, mappingsNotAssessed: 10, highRiskMappings: 4, highRiskMappingsNotAssessed: 4 })).toBe("todo");
+    expect(statusOf("evidence", { ...inScope, mappings: 10, mappingsNotAssessed: 4, highRiskMappings: 4, highRiskMappingsNotAssessed: 1 })).toBe("started");
+    // Every high-risk requirement has a status, but no evidence on them yet.
+    expect(statusOf("evidence", { ...inScope, mappings: 10, mappingsNotAssessed: 6, highRiskMappings: 4, evidence: 1 })).toBe("started");
+    // Requirements of other systems left without a status do not hold the step back.
+    const done = { ...inScope, mappings: 10, mappingsNotAssessed: 6, highRiskMappings: 4, evidence: 1, highRiskEvidence: 1 };
+    expect(statusOf("evidence", done)).toBe("done");
+    expect(checksOf("evidence", { ...EMPTY_PATH_COUNTS, ...done })).toEqual([
+      { id: "mappingsAssessed", met: true, href: "/governance/compliance", done: 4, total: 4 },
+      { id: "evidenceAttached", met: true, href: "/governance/compliance" },
+    ]);
+    // A high-risk system with nothing mapped yet is not done.
+    expect(statusOf("evidence", { ...inScope, highRiskEvidence: 0 })).toBe("todo");
+  });
+
+  it("evidence: with no high-risk system, nothing is in scope and the step is done", () => {
+    const none = { ...EMPTY_PATH_COUNTS, systems: 2, classified: 2, highRisk: 0, mappings: 10, mappingsNotAssessed: 10 };
+    expect(statusOf("evidence", none)).toBe("done");
+    expect(checksOf("evidence", none)).toEqual([{ id: "noHighRiskEvidence", met: true }]);
+    // Not known until every system has a risk level.
+    expect(statusOf("evidence", { ...none, classified: 1 })).toBe("todo");
+    expect(statusOf("evidence", {})).toBe("todo");
   });
 
   it("sensitive data: every system processing personal data assessed", () => {
     expect(
       statusOf("sensitiveData", {
+        systems: 3,
         sensitiveAssessments: 1,
         systemsProcessingPersonalData: 2,
         personalDataSystemsAssessed: 1,
       }),
     ).toBe("started");
-    expect(statusOf("sensitiveData", { sensitiveAssessments: 1 })).toBe("done");
+    expect(
+      statusOf("sensitiveData", {
+        systems: 3,
+        sensitiveAssessments: 2,
+        systemsProcessingPersonalData: 2,
+        personalDataSystemsAssessed: 2,
+      }),
+    ).toBe("done");
+    expect(statusOf("sensitiveData", { systems: 3, systemsProcessingPersonalData: 2 })).toBe("todo");
+  });
+
+  it("sensitive data: with no system processing personal data, nothing is in scope and the step is done", () => {
+    const none = { ...EMPTY_PATH_COUNTS, systems: 3, systemsProcessingPersonalData: 0 };
+    expect(statusOf("sensitiveData", none)).toBe("done");
+    expect(checksOf("sensitiveData", none)).toEqual([{ id: "noPersonalData", met: true }]);
+    // No system registered: nothing is known yet.
+    expect(statusOf("sensitiveData", {})).toBe("todo");
+    expect(checksOf("sensitiveData", EMPTY_PATH_COUNTS)[0]).toMatchObject({
+      id: "systemRegistered",
+      met: false,
+    });
   });
 
   it("incidents: an approved incident-response policy", () => {

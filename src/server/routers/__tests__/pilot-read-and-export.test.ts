@@ -117,7 +117,7 @@ const EDITS_THE_PILOT_REFUSES = [
   "assessment.create", "assessment.update", "assessment.submit", "assessment.processApproval",
   "assessment.generateAiDraft", "assessment.markAiAccepted", "assessment.createTemplate",
   "assessment.cloneTemplate", "assessment.delete",
-  "compliance.updateMapping", "compliance.addEvidence", "compliance.removeEvidence",
+  "compliance.updateMapping", "compliance.addEvidence", "compliance.removeEvidence", "compliance.bulkSetStatus",
   "oversight.create", "oversight.update", "oversight.addDecision", "oversight.delete",
   "incident.create", "incident.update", "incident.addTimelineEntry", "incident.addTask",
   "incident.updateTask", "incident.addNotification", "incident.updateNotification",

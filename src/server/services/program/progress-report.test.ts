@@ -28,6 +28,19 @@ describe("program report: progress by stage", () => {
     expect(report.figure).toEqual(programFigure(AI_SENTINEL_PATH, evaluatePath(AI_SENTINEL_PATH, counts)));
   });
 
+  it("follows the path's scope rules: with nothing in scope, the step reads done in the report too", () => {
+    // Every system classified, none high-risk, none processing personal data.
+    const counts = { ...EMPTY_PATH_COUNTS, systems: 2, systemsWithOwner: 2, classified: 2 };
+    const steps = buildProgressReport(AI_SENTINEL_PATH, counts).stages.flatMap((s) => s.steps);
+    const status = (id: string) => steps.find((s) => s.id === id)?.status;
+    expect(status("assessments")).toBe("done");
+    expect(status("evidence")).toBe("done");
+    expect(status("sensitiveData")).toBe("done");
+    // In scope again: the report shows the step open.
+    const inScope = buildProgressReport(AI_SENTINEL_PATH, { ...counts, highRisk: 1 }).stages.flatMap((s) => s.steps);
+    expect(inScope.find((s) => s.id === "assessments")?.status).toBe("todo");
+  });
+
   it("names the current stage, numbered as on the screens", () => {
     const report = buildProgressReport(AI_SENTINEL_PATH, EMPTY_PATH_COUNTS);
     expect(report.current).toMatchObject({ stageId: "setup", number: 1, total: 5 });

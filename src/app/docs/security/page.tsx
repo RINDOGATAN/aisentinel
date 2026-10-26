@@ -218,6 +218,17 @@ export default async function SecurityDocsPage() {
         </div>
       </section>
 
+      {/* Backups and recovery (hosted service; the kit makes its own) */}
+      <section>
+        <h2 className="text-2xl font-display tracking-tight mb-6">{t("backups.title")}</h2>
+        <div className="space-y-4 text-muted-foreground">
+          <p>{t("backups.cloud")}</p>
+          <p>{t("backups.recovery")}</p>
+          <p>{t("backups.deletion")}</p>
+          <p>{t("backups.selfHosted")}</p>
+        </div>
+      </section>
+
       {/* Compliance Standards */}
       <section>
         <h2 className="text-2xl font-display tracking-tight mb-6">

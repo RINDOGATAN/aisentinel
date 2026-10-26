@@ -5408,7 +5408,10 @@
       "EXPORT_GOVERNANCE_PROGRAM": "Exportación del informe del programa",
       "DELETE_TEMPLATE_ITEMS": "Eliminación de elementos de plantilla",
       "DELETE_SAMPLE_DATA": "Eliminación de los datos de ejemplo",
-      "CREATE_SAMPLE_DATA": "Creación de los datos de ejemplo"
+      "CREATE_SAMPLE_DATA": "Creación de los datos de ejemplo",
+      "SUITE_LINK_CREATED": "Vinculada con DPO Central",
+      "SUITE_LINK_REFRESHED": "Vínculo con DPO Central actualizado",
+      "SUITE_LINK_REMOVED": "Desvinculada de DPO Central"
     }
   },
   "assessmentVersions": {
@@ -6967,5 +6970,35 @@
     "body": "Puede que la dirección esté mal escrita o que la página se haya movido. Los registros de la organización no se ven afectados.",
     "dashboard": "Ir al panel de control",
     "home": "Ir a la página de inicio"
+  },
+  "suiteLink": {
+    "startTitle": "Empieza desde DPO Central",
+    "startBody": "Si ya usas DPO Central, trae tus proveedores de IA, tus sistemas de IA y los datos que tratan, y empieza tu programa de gobierno de la IA desde ahí. Todo llega como borrador para que lo confirmes.",
+    "startButton": "Elige una organización de DPO Central",
+    "startNote": "Solo puede vincularlas quien sea propietario o administrador de las dos organizaciones. Puedes deshacerlo cuando quieras; lo importado se queda.",
+    "linkedTitle": "Vinculada con DPO Central",
+    "linkedBody": "Esta organización está vinculada con {name} en DPO Central desde el {date}. Los nuevos sistemas y proveedores de IA de cualquiera de los dos productos aparecen en el otro como borradores para confirmar.",
+    "linkedCounts": "Traído de DPO Central: {systems} sistemas de IA y {vendors} proveedores. Por confirmar: {toConfirm}.",
+    "lastSync": "Última sincronización: {date}",
+    "reviewDrafts": "Revisar los borradores",
+    "openDpoCentral": "Abrir en DPO Central",
+    "unlink": "Desvincular",
+    "unlinkConfirm": "¿Desvincular esta organización de DPO Central? Lo importado se queda aquí; los dos productos dejan de sincronizarse.",
+    "unlinked": "Se ha desvinculado de DPO Central.",
+    "unlinkedState": "Esta organización estuvo vinculada con {name} en DPO Central hasta el {date}.",
+    "relinkButton": "Volver a vincular",
+    "contextTitle": "Desde DPO Central",
+    "contextActivities": "Actividades de tratamiento",
+    "contextCategories": "Categorías de datos",
+    "contextSubjects": "Interesados",
+    "contextLegalBases": "Bases jurídicas",
+    "contextNone": "Nada registrado en DPO Central.",
+    "dpiaLabel": "EIPD",
+    "dpia_approved": "Aprobada en DPO Central",
+    "dpia_in_progress": "En curso en DPO Central",
+    "dpia_due": "Pendiente: las respuestas de DPO Central indican que hace falta una EIPD",
+    "dpia_none": "Ninguna en DPO Central",
+    "openDpia": "Abrir la EIPD",
+    "noteRemoved": "Este sistema ya no está en DPO Central (anotado el {date}). Aquí no se ha borrado nada."
   }
 }

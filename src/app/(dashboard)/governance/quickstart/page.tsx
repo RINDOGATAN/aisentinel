@@ -62,6 +62,7 @@ import {
 } from "@/config/threat-model";
 import { ProgramMap } from "@/components/governance/program/ProgramMap";
 import { NextStepCard } from "@/components/guided/next-step-card";
+import { DpoCentralLinkCard } from "@/components/suite/dpo-central-link-card";
 import { useExportDownload } from "@/components/governance/use-export-download";
 import { JurisdictionPicker } from "@/components/governance/jurisdiction-picker";
 import { RegimeScreeningCard } from "@/components/governance/regime-screening-card";
@@ -621,6 +622,10 @@ export default function QuickstartPage() {
       {/* ════════════════════════════════════════════════
           STEP 0: What applies to you (skippable)
           ════════════════════════════════════════════════ */}
+      {/* Start from DPO Central: offered until a link exists, then its
+          state (src/components/suite/dpo-central-link-card.tsx). */}
+      {(step === "intro" || step === "scope") && orgId && <DpoCentralLinkCard organizationId={orgId} />}
+
       {step === "intro" && <PathIntro onBegin={() => setStep("scope")} />}
 
       {step === "scope" && (

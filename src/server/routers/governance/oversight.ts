@@ -250,6 +250,16 @@ export const oversightRouter = createTRPCRouter({
         status: statusMap[input.decision],
       };
 
+      // Approving or rejecting is a decision by an approver role (the same
+      // roles as provenance.confirm): it vouches for a drafted gate, so the
+      // gate leaves the review queue. Deferring decides nothing. An earlier
+      // confirmation is kept as it was.
+      const confirms = (input.decision === "APPROVE" || input.decision === "REJECT") && !gate.confirmedAt;
+      if (confirms) {
+        updateData.confirmedBy = ctx.session.user.id;
+        updateData.confirmedAt = new Date();
+      }
+
       // Auto-advance nextReviewDate for periodic gates
       if (input.decision === "APPROVE" && gate.gateType === "PERIODIC_REVIEW" && gate.reviewCadence && gate.nextReviewDate) {
         const next = new Date(gate.nextReviewDate);
@@ -282,7 +292,7 @@ export const oversightRouter = createTRPCRouter({
           entityType: "OversightDecision",
           entityId: decision.id,
           action: input.decision,
-          changes: { gateId: input.gateId, rationale: input.rationale },
+          changes: { gateId: input.gateId, rationale: input.rationale, gateConfirmed: confirms },
         },
       });
 

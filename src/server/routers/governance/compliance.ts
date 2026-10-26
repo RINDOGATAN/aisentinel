@@ -28,6 +28,10 @@ const frameworkRank = (code: string) => {
 
 /** Roles that may rule an AIUC-1 requirement out (aiuc1.setApplicability). */
 const AIUC1_DECIDER_ROLES = ["OWNER", "ADMIN", "AI_OFFICER"] as const;
+/** Roles that may set the status of several requirements at once (compliance.bulkSetStatus). */
+const BULK_DECIDER_ROLES = AIUC1_DECIDER_ROLES;
+/** The statuses a bulk action can set: every assessed status (NOT_ASSESSED is the absence of one). */
+const BULK_STATUSES = ["NOT_APPLICABLE", "COMPLIANT", "PARTIALLY_COMPLIANT", "NON_COMPLIANT"] as const;
 
 export const complianceRouter = createTRPCRouter({
   listFrameworks: publicProcedure.query(async ({ ctx }) => {
@@ -414,6 +418,97 @@ export const complianceRouter = createTRPCRouter({
       });
 
       return { ...mapping, propagatedCount };
+    }),
+
+  /**
+   * Give several requirements of one system the same status at once: the
+   * selected ones, or every one still not assessed. A decision over many
+   * requirements, so it is kept for the approver roles (as aiuc1's
+   * not-applicable ruling and provenance.confirm are), and it confirms what it
+   * sets. One audit entry records the whole action.
+   */
+  bulkSetStatus: orgWriteProcedure
+    .input(
+      z.object({
+        organizationId: z.string(),
+        aiSystemId: z.string(),
+        requirementIds: z.array(z.string()).min(1).max(500),
+        status: z.enum(BULK_STATUSES),
+        /** Only requirements with no status yet (no mapping, or NOT_ASSESSED) are changed. */
+        onlyUnset: z.boolean().default(false),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (!(BULK_DECIDER_ROLES as readonly string[]).includes(ctx.membership.role)) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Setting the status of several requirements at once needs an owner, admin or AI officer role.",
+        });
+      }
+      const ownedSystem = await ctx.prisma.aISystem.findFirst({
+        where: { id: input.aiSystemId, organizationId: ctx.organization.id },
+        select: { id: true },
+      });
+      if (!ownedSystem) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "AI system not found" });
+      }
+
+      const requestedIds = [...new Set(input.requirementIds)];
+      // Requirements are shared reference data: keep only ids that exist.
+      const requirements = await ctx.prisma.complianceRequirement.findMany({
+        where: { id: { in: requestedIds } },
+        select: { id: true },
+      });
+      const existing = await ctx.prisma.complianceMapping.findMany({
+        where: {
+          organizationId: ctx.organization.id,
+          aiSystemId: input.aiSystemId,
+          requirementId: { in: requirements.map((r) => r.id) },
+        },
+        select: { requirementId: true, status: true },
+      });
+      const current = new Map(existing.map((m) => [m.requirementId, m.status]));
+      const targets = requirements
+        .map((r) => r.id)
+        .filter((id) => !input.onlyUnset || (current.get(id) ?? "NOT_ASSESSED") === "NOT_ASSESSED")
+        .filter((id) => current.get(id) !== input.status);
+
+      const now = new Date();
+      const confirmation = editConfirmation(ctx.membership.role, ctx.session.user.id, now);
+      for (const requirementId of targets) {
+        await ctx.prisma.complianceMapping.upsert({
+          where: { aiSystemId_requirementId: { aiSystemId: input.aiSystemId, requirementId } },
+          update: { status: input.status, assessedBy: ctx.session.user.id, assessedAt: now, ...confirmation },
+          create: {
+            organizationId: ctx.organization.id,
+            aiSystemId: input.aiSystemId,
+            requirementId,
+            status: input.status,
+            assessedBy: ctx.session.user.id,
+            assessedAt: now,
+            ...confirmation,
+          },
+        });
+      }
+
+      await ctx.prisma.auditLog.create({
+        data: {
+          organizationId: ctx.organization.id,
+          userId: ctx.session.user.id,
+          entityType: "AISystem",
+          entityId: input.aiSystemId,
+          action: "BULK_SET_REQUIREMENT_STATUS",
+          changes: {
+            status: input.status,
+            onlyUnset: input.onlyUnset,
+            requested: requestedIds.length,
+            updated: targets.length,
+            requirementIds: targets,
+          },
+        },
+      });
+
+      return { updated: targets.length };
     }),
 
   addEvidence: orgWriteProcedure

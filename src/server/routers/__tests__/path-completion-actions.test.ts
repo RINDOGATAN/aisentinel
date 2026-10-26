@@ -10,7 +10,10 @@
  *   takes it to ACTIVE. An archived model stays archived.
  * - Review step: done when no drafted item waits for confirmation. Approving
  *   or publishing a drafted policy is a decision by an approver role, so it
- *   also confirms the policy; an earlier confirmation is kept as it was.
+ *   also confirms the policy; an earlier confirmation is kept as it was. The
+ *   same holds for approving or rejecting an oversight gate.
+ * - Evidence step: the requirements of a system can be given one status at
+ *   once (approver roles), each change confirmed, one audit entry recorded.
  */
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import type { Session } from "next-auth";
@@ -20,7 +23,11 @@ const H = vi.hoisted(() => {
 
   function matches(row: Row, where: Record<string, unknown> = {}): boolean {
     for (const [key, value] of Object.entries(where)) {
-      if (value && typeof value === "object" && !Array.isArray(value)) continue;
+      if (value && typeof value === "object" && !Array.isArray(value) && !(value instanceof Date)) {
+        const ids = (value as { in?: unknown[] }).in;
+        if (ids && !ids.includes(row[key])) return false;
+        continue;
+      }
       if (row[key] !== value) return false;
     }
     return true;
@@ -54,6 +61,25 @@ const H = vi.hoisted(() => {
         hit.forEach((r) => Object.assign(r, data));
         return { count: hit.length };
       },
+      findMany: async ({ where }: { where?: Record<string, unknown> } = {}) =>
+        rows.filter((r) => matches(r, where)).map((r) => ({ ...r })),
+      // The compound unique key of a compliance mapping (aiSystemId, requirementId).
+      upsert: async ({
+        where,
+        create,
+        update,
+      }: {
+        where: { aiSystemId_requirementId: { aiSystemId: string; requirementId: string } };
+        create: Row;
+        update: Row;
+      }) => {
+        const key = where.aiSystemId_requirementId;
+        const row = rows.find((r) => r.aiSystemId === key.aiSystemId && r.requirementId === key.requirementId);
+        if (row) return Object.assign(row, update);
+        const created = { id: `gen-${rows.length + 1}`, ...create };
+        rows.push(created);
+        return created;
+      },
     };
   }
 
@@ -78,6 +104,11 @@ const H = vi.hoisted(() => {
     aIPolicy: makeTable(),
     aIPolicyVersion: makeTable(),
     auditLog: makeTable(),
+    oversightGate: makeTable(),
+    oversightDecision: makeTable(),
+    aISystem: makeTable(),
+    complianceRequirement: makeTable(),
+    complianceMapping: makeTable(),
   };
 
   const EARLIER = { confirmedBy: "earlier-approver", confirmedAt: new Date("2026-01-01") };
@@ -116,6 +147,29 @@ const H = vi.hoisted(() => {
     ]);
     db.aIPolicyVersion.__set([]);
     db.auditLog.__set([]);
+    const gate = {
+      organizationId: "org-a",
+      aiSystemId: "sys-1",
+      gateType: "PRE_DEPLOYMENT",
+      status: "PENDING",
+      reviewCadence: null,
+      nextReviewDate: null,
+      provenance: "AUTO_TEMPLATE",
+    };
+    db.oversightGate.__set([
+      { id: "gate-draft", ...gate, confirmedBy: null, confirmedAt: null },
+      { id: "gate-confirmed", ...gate, ...EARLIER },
+    ]);
+    db.oversightDecision.__set([]);
+    db.aISystem.__set([
+      { id: "sys-1", organizationId: "org-a" },
+      { id: "sys-other", organizationId: "org-b" },
+    ]);
+    db.complianceRequirement.__set([{ id: "req-1" }, { id: "req-2" }, { id: "req-3" }, { id: "req-4" }]);
+    db.complianceMapping.__set([
+      { id: "map-1", organizationId: "org-a", aiSystemId: "sys-1", requirementId: "req-1", status: "NOT_ASSESSED" },
+      { id: "map-2", organizationId: "org-a", aiSystemId: "sys-1", requirementId: "req-2", status: "COMPLIANT" },
+    ]);
   }
 
   return { db, reset, EARLIER };
@@ -136,6 +190,8 @@ vi.mock("@/server/services/pilot/first-sign-in", () => ({
 import { createInnerTRPCContext } from "@/server/trpc";
 import { threatModelRouter } from "@/server/routers/governance/threatModel";
 import { policyRouter } from "@/server/routers/governance/policy";
+import { oversightRouter } from "@/server/routers/governance/oversight";
+import { complianceRouter } from "@/server/routers/governance/compliance";
 import { AI_SENTINEL_PATH, EMPTY_PATH_COUNTS } from "@/components/guided/path-config";
 import { evaluatePath } from "@/components/guided/path";
 
@@ -220,5 +276,122 @@ describe("policy: approving or publishing a drafted policy confirms it", () => {
       policyRouter.createCaller(ctxAs("member")).approve({ organizationId: org, id: "pol-draft" }),
     ).rejects.toThrow();
     expect(policy("pol-draft").confirmedAt).toBeNull();
+  });
+});
+
+const gate = (id: string) => H.db.oversightGate.__rows().find((r) => r.id === id)!;
+const mapping = (requirementId: string) =>
+  H.db.complianceMapping.__rows().find((r) => r.aiSystemId === "sys-1" && r.requirementId === requirementId);
+
+describe("oversight: an approver's decision confirms the gate", () => {
+  for (const decision of ["APPROVE", "REJECT"] as const) {
+    it(`${decision} confirms an unconfirmed gate and the audit entry records it`, async () => {
+      await oversightRouter
+        .createCaller(ctxAs("ai_officer"))
+        .addDecision({ organizationId: org, gateId: "gate-draft", decision, rationale: "Reviewed." });
+      const row = gate("gate-draft");
+      expect(row.status).toBe(decision === "APPROVE" ? "PASSED" : "FAILED");
+      expect(row.confirmedBy).toBe("ai_officer");
+      expect(row.confirmedAt).toBeInstanceOf(Date);
+      expect(row.provenance).toBe("AUTO_TEMPLATE");
+      expect(H.db.auditLog.__rows()[0].changes).toMatchObject({ gateId: "gate-draft", gateConfirmed: true });
+    });
+  }
+
+  it("deferring decides nothing, so it confirms nothing", async () => {
+    await oversightRouter
+      .createCaller(ctxAs("admin"))
+      .addDecision({ organizationId: org, gateId: "gate-draft", decision: "DEFER", rationale: "Later." });
+    expect(gate("gate-draft").confirmedAt).toBeNull();
+    expect(H.db.auditLog.__rows()[0].changes).toMatchObject({ gateConfirmed: false });
+  });
+
+  it("keeps an earlier confirmation as it was", async () => {
+    await oversightRouter
+      .createCaller(ctxAs("owner"))
+      .addDecision({ organizationId: org, gateId: "gate-confirmed", decision: "APPROVE", rationale: "Fine." });
+    expect(gate("gate-confirmed").confirmedBy).toBe(H.EARLIER.confirmedBy);
+    expect(gate("gate-confirmed").confirmedAt).toEqual(H.EARLIER.confirmedAt);
+    expect(H.db.auditLog.__rows()[0].changes).toMatchObject({ gateConfirmed: false });
+  });
+
+  it("a member still cannot decide, so nothing is confirmed", async () => {
+    await expect(
+      oversightRouter
+        .createCaller(ctxAs("member"))
+        .addDecision({ organizationId: org, gateId: "gate-draft", decision: "APPROVE", rationale: "x" }),
+    ).rejects.toThrow();
+    expect(gate("gate-draft").confirmedAt).toBeNull();
+  });
+});
+
+describe("evidence: several requirements given one status at once", () => {
+  it("sets every requirement without a status to not applicable, confirmed, with one audit entry", async () => {
+    const res = await complianceRouter.createCaller(ctxAs("ai_officer")).bulkSetStatus({
+      organizationId: org,
+      aiSystemId: "sys-1",
+      requirementIds: ["req-1", "req-2", "req-3"],
+      status: "NOT_APPLICABLE",
+      onlyUnset: true,
+    });
+    // req-2 already has a status and is left as it was; req-3 had no mapping yet.
+    expect(res.updated).toBe(2);
+    expect(mapping("req-1")).toMatchObject({ status: "NOT_APPLICABLE", confirmedBy: "ai_officer", assessedBy: "ai_officer" });
+    expect(mapping("req-2")?.status).toBe("COMPLIANT");
+    expect(mapping("req-3")).toMatchObject({ status: "NOT_APPLICABLE", organizationId: org });
+    const audit = H.db.auditLog.__rows();
+    expect(audit).toHaveLength(1);
+    expect(audit[0]).toMatchObject({ entityType: "AISystem", entityId: "sys-1", action: "BULK_SET_REQUIREMENT_STATUS" });
+    expect(audit[0].changes).toMatchObject({ status: "NOT_APPLICABLE", updated: 2, requirementIds: ["req-1", "req-3"] });
+  });
+
+  it("sets the selected requirements to an assessed status, whatever they held", async () => {
+    const res = await complianceRouter.createCaller(ctxAs("owner")).bulkSetStatus({
+      organizationId: org,
+      aiSystemId: "sys-1",
+      requirementIds: ["req-1", "req-2", "req-unknown"],
+      status: "PARTIALLY_COMPLIANT",
+    });
+    expect(res.updated).toBe(2);
+    expect(mapping("req-1")?.status).toBe("PARTIALLY_COMPLIANT");
+    expect(mapping("req-2")?.status).toBe("PARTIALLY_COMPLIANT");
+    // An id that is no requirement is ignored.
+    expect(mapping("req-unknown")).toBeUndefined();
+  });
+
+  it("refuses a member, and changes nothing", async () => {
+    await expect(
+      complianceRouter.createCaller(ctxAs("member")).bulkSetStatus({
+        organizationId: org,
+        aiSystemId: "sys-1",
+        requirementIds: ["req-1"],
+        status: "NOT_APPLICABLE",
+      }),
+    ).rejects.toMatchObject({ code: "FORBIDDEN" });
+    expect(mapping("req-1")?.status).toBe("NOT_ASSESSED");
+    expect(H.db.auditLog.__rows()).toHaveLength(0);
+  });
+
+  it("refuses a system of another organisation", async () => {
+    await expect(
+      complianceRouter.createCaller(ctxAs("admin")).bulkSetStatus({
+        organizationId: org,
+        aiSystemId: "sys-other",
+        requirementIds: ["req-1"],
+        status: "NOT_APPLICABLE",
+      }),
+    ).rejects.toMatchObject({ code: "NOT_FOUND" });
+  });
+
+  it("cannot set NOT_ASSESSED: a bulk action only records a decision", async () => {
+    await expect(
+      complianceRouter.createCaller(ctxAs("admin")).bulkSetStatus({
+        organizationId: org,
+        aiSystemId: "sys-1",
+        requirementIds: ["req-2"],
+        status: "NOT_ASSESSED" as never,
+      }),
+    ).rejects.toThrow();
+    expect(mapping("req-2")?.status).toBe("COMPLIANT");
   });
 });

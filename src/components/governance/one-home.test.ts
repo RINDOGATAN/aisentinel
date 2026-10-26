@@ -9,7 +9,7 @@
 
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
-import { frameworksWithRequirements } from "./compliance-matrix";
+import { frameworksWithRequirements, unsetRequirementIds } from "./compliance-matrix";
 
 const read = (p: string) => readFileSync(p, "utf8");
 
@@ -32,6 +32,24 @@ describe("frameworksWithRequirements", () => {
       { frameworkId: "iso", count: 33 },
     ];
     expect(frameworksWithRequirements(all, [], counts).map((f) => f.id)).toEqual(["eu", "nist", "iso"]);
+  });
+});
+
+describe("unsetRequirementIds (the bulk action's 'all without a status')", () => {
+  it("lists parents and children with no mapping or a NOT_ASSESSED one", () => {
+    const matrix = [
+      { id: "a", mapping: null, children: [{ id: "a1", mapping: { status: "COMPLIANT" } }, { id: "a2", mapping: null }] },
+      { id: "b", mapping: { status: "NOT_ASSESSED" } },
+      { id: "c", mapping: { status: "NOT_APPLICABLE" }, children: [] },
+    ];
+    expect(unsetRequirementIds(matrix)).toEqual(["a", "a2", "b"]);
+    expect(unsetRequirementIds([])).toEqual([]);
+  });
+
+  it("is offered to the approver roles only, through the bulk endpoint", () => {
+    const src = read("src/components/governance/compliance-matrix.tsx");
+    expect(src).toContain("trpc.compliance.bulkSetStatus.useMutation");
+    expect(src).toContain("canDecide && matrix.length > 0");
   });
 });
 

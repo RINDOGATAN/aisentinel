@@ -914,7 +914,14 @@
     "frameworksNotShownLink": "Dónde opera la organización se indica en Configuración.",
     "statusSaved": "Estado guardado: {status}.",
     "undo": "Deshacer",
-    "saveNotes": "Guardar notas"
+    "saveNotes": "Guardar notas",
+    "bulkLabel": "Varios requisitos a la vez:",
+    "bulkStatusLabel": "Estado que se asigna",
+    "bulkNotApplicable": "No aplicable",
+    "bulkSelect": "Selecciona el requisito {code}",
+    "bulkApplySelected": "Asignar a los seleccionados ({count})",
+    "bulkApplyUnset": "Asignar a todos los que no tienen estado ({count})",
+    "bulkDone": "{count, plural, =0 {No hay nada que cambiar: cada requisito ya tiene este estado.} one {Se ha asignado el estado {status} a # requisito.} other {Se ha asignado el estado {status} a # requisitos.}}"
   },
   "incidents": {
     "title": "Incidentes",
@@ -5434,7 +5441,8 @@
       "CREATE_SAMPLE_DATA": "Creación de los datos de ejemplo",
       "SUITE_LINK_CREATED": "Vinculada con DPO Central",
       "SUITE_LINK_REFRESHED": "Vínculo con DPO Central actualizado",
-      "SUITE_LINK_REMOVED": "Desvinculada de DPO Central"
+      "SUITE_LINK_REMOVED": "Desvinculada de DPO Central",
+      "BULK_SET_REQUIREMENT_STATUS": "Estado asignado a varios requisitos"
     }
   },
   "assessmentVersions": {
@@ -6012,7 +6020,7 @@
         "label": "Inicio rápido",
         "why": "Fija las jurisdicciones, aplica una plantilla sectorial e importa los proveedores desde el catálogo, para que el resto del programa empiece ya completado.",
         "do": "Responde a unas pocas preguntas y se rellena una primera versión del programa.",
-        "doneWhen": "el inicio rápido se ha completado una vez, o ya existen un sistema, un proveedor y una política."
+        "doneWhen": "el inicio rápido se ha completado una vez, o ya existen un sistema, un proveedor y una política. Los datos de ejemplo nunca cuentan para ningún paso."
       },
       "obligations": {
         "label": "Dónde opera la organización y las normas que se aplican",
@@ -6040,7 +6048,7 @@
         "label": "Los sistemas de IA de la organización",
         "why": "Cada sistema necesita un registro y un responsable antes de poder fijar su riesgo.",
         "do": "Registra cada sistema de IA que usa la organización e indica quién es su responsable.",
-        "doneWhen": "hay al menos un sistema de IA registrado y cada sistema tiene un responsable de negocio."
+        "doneWhen": "hay al menos un sistema de IA registrado y cada sistema tiene un responsable de negocio. Los sistemas retirados no cuentan."
       },
       "shadowAi": {
         "label": "Herramientas de IA en uso",
@@ -6052,19 +6060,19 @@
         "label": "Proveedores",
         "why": "La mayor parte de la IA llega a la organización a través de proveedores. Añádelos desde el catálogo de proveedores.",
         "do": "Añade las empresas cuya IA usa la organización. Con el catálogo de proveedores es rápido.",
-        "doneWhen": "hay al menos un proveedor registrado."
+        "doneWhen": "hay al menos un proveedor registrado. Los proveedores finalizados no cuentan."
       },
       "classification": {
         "label": "Nivel de riesgo",
         "why": "El nivel de riesgo de cada sistema decide qué normas le aplican.",
         "do": "Da a cada sistema de IA su nivel de riesgo. El nivel decide qué normas aplican.",
-        "doneWhen": "cada sistema tiene un nivel de riesgo confirmado por una persona."
+        "doneWhen": "cada sistema tiene un nivel de riesgo confirmado por una persona. Los sistemas retirados no cuentan."
       },
       "assessments": {
         "label": "Evaluaciones de impacto",
         "why": "Los sistemas de alto riesgo necesitan una evaluación de impacto aprobada.",
         "do": "Evalúa cada sistema de alto riesgo y haz que se apruebe la evaluación.",
-        "doneWhen": "hay al menos una evaluación aprobada y cada sistema de alto riesgo tiene una aprobada."
+        "doneWhen": "cada sistema de alto riesgo tiene una evaluación de impacto aprobada. Si ningún sistema es de alto riesgo, no hace falta ninguna evaluación, y el paso queda hecho cuando cada sistema tiene su nivel de riesgo."
       },
       "threatModel": {
         "label": "Modelo de amenazas",
@@ -6076,7 +6084,7 @@
         "label": "Revisión de proveedores",
         "why": "Cada proveedor necesita una revisión completada.",
         "do": "Revisa cada proveedor: ábrelo y responde a su revisión (contrato, ubicación de los datos, certificaciones). Unos veinte minutos cada uno.",
-        "doneWhen": "cada proveedor tiene una revisión de diligencia debida completada."
+        "doneWhen": "cada proveedor tiene una revisión de diligencia debida completada. Los proveedores finalizados no cuentan."
       },
       "agentTesting": {
         "label": "Prueba los agentes de IA de la organización (AIUC-1)",
@@ -6094,19 +6102,19 @@
         "label": "Avisar de que es IA",
         "why": "Registra para cada sistema si hay que avisar a las personas de que tratan con IA (art. 50).",
         "do": "Registra para cada sistema si hay que avisar a las personas de que tratan con IA. Abre un sistema para hacerlo.",
-        "doneWhen": "cada sistema tiene un perfil de transparencia confirmado por una persona."
+        "doneWhen": "cada sistema tiene un perfil de transparencia confirmado por una persona. Los sistemas retirados no cuentan."
       },
       "evidence": {
         "label": "Evidencias",
         "why": "Da un estado a cada requisito y adjunta la prueba que lo respalda.",
-        "do": "Elige un sistema, da un estado a cada requisito y adjunta la prueba.",
-        "doneWhen": "cada requisito vinculado tiene un estado y hay al menos una evidencia adjunta."
+        "do": "Elige un sistema de alto riesgo, da un estado a cada requisito y adjunta la prueba. Puedes dar el mismo estado a varios requisitos a la vez.",
+        "doneWhen": "cada requisito de un sistema de alto riesgo tiene un estado y hay al menos una evidencia adjunta a uno de ellos. Si ningún sistema es de alto riesgo, ningún requisito necesita estado, y el paso queda hecho cuando cada sistema tiene su nivel de riesgo."
       },
       "sensitiveData": {
         "label": "Datos sensibles",
         "why": "Clasifica los datos sensibles que usan los sistemas de la organización, empezando por los datos personales.",
         "do": "Revisa los datos sensibles que usan los sistemas de la organización, empezando por los datos personales.",
-        "doneWhen": "existe al menos una evaluación de datos sensibles y cada sistema que trata datos personales tiene una."
+        "doneWhen": "cada sistema que trata datos personales tiene una evaluación de datos sensibles. Si ningún sistema trata datos personales, no hace falta ninguna evaluación, y el paso queda hecho."
       },
       "incidents": {
         "label": "Incidentes",
@@ -6302,13 +6310,16 @@
       "copiedGates": "confirma los controles de supervisión copiados de otro cliente",
       "systemsProfiled": "asigna un perfil de transparencia a cada sistema",
       "profilesConfirmed": "confirma los perfiles de transparencia en borrador",
-      "mappingsAssessed": "asigna un estado a cada requisito vinculado",
-      "evidenceAttached": "adjunta al menos una evidencia",
+      "mappingsAssessed": "asigna un estado a cada requisito de un sistema de alto riesgo",
+      "evidenceAttached": "adjunta al menos una evidencia a un sistema de alto riesgo",
       "sensitiveAssessed": "completa una evaluación de datos sensibles",
       "personalDataAssessed": "evalúa cada sistema que trata datos personales",
       "incidentPolicyApproved": "aprueba una política de respuesta a incidentes",
       "nothingToConfirm": "confirma cada elemento en borrador",
-      "boardReport": "crea un informe al consejo"
+      "boardReport": "crea un informe al consejo",
+      "noHighRiskAssessment": "ningún sistema es de alto riesgo, así que no hace falta ninguna evaluación de impacto",
+      "noHighRiskEvidence": "ningún sistema es de alto riesgo, así que ningún requisito necesita estado",
+      "noPersonalData": "ningún sistema trata datos personales, así que no hace falta ninguna evaluación"
     },
     "panel": {
       "failed": "No se ha podido cargar este panel.",

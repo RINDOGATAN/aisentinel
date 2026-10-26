@@ -914,7 +914,14 @@
     "frameworksNotShownLink": "Where the organization operates is set in Settings.",
     "statusSaved": "Status saved: {status}.",
     "undo": "Undo",
-    "saveNotes": "Save notes"
+    "saveNotes": "Save notes",
+    "bulkLabel": "Several requirements at once:",
+    "bulkStatusLabel": "Status to set",
+    "bulkNotApplicable": "Not applicable",
+    "bulkSelect": "Select requirement {code}",
+    "bulkApplySelected": "Set for the selected ({count})",
+    "bulkApplyUnset": "Set for all without a status ({count})",
+    "bulkDone": "{count, plural, =0 {Nothing to change: every requirement already has this status.} one {Status set to {status} for # requirement.} other {Status set to {status} for # requirements.}}"
   },
   "incidents": {
     "title": "Incidents",
@@ -5434,7 +5441,8 @@
       "CREATE_SAMPLE_DATA": "Sample data created",
       "SUITE_LINK_CREATED": "Linked with DPO Central",
       "SUITE_LINK_REFRESHED": "Link with DPO Central refreshed",
-      "SUITE_LINK_REMOVED": "Unlinked from DPO Central"
+      "SUITE_LINK_REMOVED": "Unlinked from DPO Central",
+      "BULK_SET_REQUIREMENT_STATUS": "Status set for several requirements"
     }
   },
   "assessmentVersions": {
@@ -6012,7 +6020,7 @@
         "label": "Quick start",
         "why": "It sets the jurisdictions, applies an industry template and imports the vendors from the catalog, so the rest of the program starts filled in.",
         "do": "Answer a few questions, and a first version of the program is filled in.",
-        "doneWhen": "the quick start has been run to the end once, or a system, a vendor and a policy already exist."
+        "doneWhen": "the quick start has been run to the end once, or a system, a vendor and a policy already exist. Records from the sample data never count toward any step."
       },
       "obligations": {
         "label": "Where the organization operates and the rules that apply",
@@ -6040,7 +6048,7 @@
         "label": "The organization's AI systems",
         "why": "Every system needs a record and an owner before its risk can be set.",
         "do": "Register each AI system the organization uses and name who owns it.",
-        "doneWhen": "at least one AI system is registered and every system has a business owner."
+        "doneWhen": "at least one AI system is registered and every system has a business owner. Retired systems are left out."
       },
       "shadowAi": {
         "label": "AI tools in use",
@@ -6052,19 +6060,19 @@
         "label": "Vendors",
         "why": "Most AI reaches the organization through vendors. Add them from the vendor catalog.",
         "do": "Add the companies whose AI the organization uses. The vendor catalog makes it quick.",
-        "doneWhen": "at least one vendor is recorded."
+        "doneWhen": "at least one vendor is recorded. Terminated vendors are left out."
       },
       "classification": {
         "label": "Risk level",
         "why": "The risk level of each system decides which rules apply to it.",
         "do": "Give each AI system its risk level. The level decides which rules apply.",
-        "doneWhen": "every system has a risk level confirmed by a person."
+        "doneWhen": "every system has a risk level confirmed by a person. Retired systems are left out."
       },
       "assessments": {
         "label": "Impact assessments",
         "why": "High-risk systems need an approved impact assessment.",
         "do": "Assess each high-risk system and have the assessment approved.",
-        "doneWhen": "at least one assessment is approved and every high-risk system has an approved one."
+        "doneWhen": "every high-risk system has an approved impact assessment. If no system is high-risk, nothing needs an assessment, and the step is done once every system has a risk level."
       },
       "threatModel": {
         "label": "Threat model",
@@ -6076,7 +6084,7 @@
         "label": "Vendor checks",
         "why": "Each vendor needs a completed review.",
         "do": "Check each vendor: open it and answer its review (agreement, data location, certifications). About twenty minutes each.",
-        "doneWhen": "every vendor has a completed due-diligence review."
+        "doneWhen": "every vendor has a completed due-diligence review. Terminated vendors are left out."
       },
       "agentTesting": {
         "label": "Test the organization's AI agents (AIUC-1)",
@@ -6094,19 +6102,19 @@
         "label": "Telling people it is AI",
         "why": "Record for each system whether people must be told they are dealing with AI (Art. 50).",
         "do": "For each system, record whether people must be told they are dealing with AI. Open a system to do it.",
-        "doneWhen": "every system has a transparency profile confirmed by a person."
+        "doneWhen": "every system has a transparency profile confirmed by a person. Retired systems are left out."
       },
       "evidence": {
         "label": "Evidence",
         "why": "Give each requirement a status and attach the proof that supports it.",
-        "do": "Choose a system, give each requirement a status and attach the proof.",
-        "doneWhen": "every mapped requirement has a status and at least one piece of evidence is attached."
+        "do": "Choose a high-risk system, give each requirement a status and attach the proof. You can give several requirements the same status at once.",
+        "doneWhen": "every requirement of a high-risk system has a status and at least one piece of evidence is attached to one of them. If no system is high-risk, nothing needs a status, and the step is done once every system has a risk level."
       },
       "sensitiveData": {
         "label": "Sensitive data",
         "why": "Classify the sensitive data the organization's systems use, starting with personal data.",
         "do": "Check the sensitive data the organization's systems use, starting with personal data.",
-        "doneWhen": "at least one sensitive-data assessment exists and every system that processes personal data has one."
+        "doneWhen": "every system that processes personal data has a sensitive-data assessment. If no system processes personal data, nothing needs an assessment, and the step is done."
       },
       "incidents": {
         "label": "Incidents",
@@ -6302,13 +6310,16 @@
       "copiedGates": "confirm the oversight gates copied from another client",
       "systemsProfiled": "give every system a transparency profile",
       "profilesConfirmed": "confirm the drafted transparency profiles",
-      "mappingsAssessed": "give every mapped requirement a status",
-      "evidenceAttached": "attach at least one piece of evidence",
+      "mappingsAssessed": "give every requirement of a high-risk system a status",
+      "evidenceAttached": "attach at least one piece of evidence to a high-risk system",
       "sensitiveAssessed": "complete a sensitive-data assessment",
       "personalDataAssessed": "assess every system that processes personal data",
       "incidentPolicyApproved": "approve an incident-response policy",
       "nothingToConfirm": "confirm every drafted item",
-      "boardReport": "create a board report"
+      "boardReport": "create a board report",
+      "noHighRiskAssessment": "no system is high-risk, so no impact assessment is needed",
+      "noHighRiskEvidence": "no system is high-risk, so no requirement needs a status",
+      "noPersonalData": "no system processes personal data, so no assessment is needed"
     },
     "panel": {
       "failed": "This panel could not be loaded.",

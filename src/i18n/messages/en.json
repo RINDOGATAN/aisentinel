@@ -5431,7 +5431,10 @@
       "EXPORT_GOVERNANCE_PROGRAM": "Program report exported",
       "DELETE_TEMPLATE_ITEMS": "Template items deleted",
       "DELETE_SAMPLE_DATA": "Sample data deleted",
-      "CREATE_SAMPLE_DATA": "Sample data created"
+      "CREATE_SAMPLE_DATA": "Sample data created",
+      "SUITE_LINK_CREATED": "Linked with DPO Central",
+      "SUITE_LINK_REFRESHED": "Link with DPO Central refreshed",
+      "SUITE_LINK_REMOVED": "Unlinked from DPO Central"
     }
   },
   "assessmentVersions": {
@@ -6990,5 +6993,35 @@
     "body": "The address may be mistyped, or the page may have moved. The organization's records are not affected.",
     "dashboard": "Go to the dashboard",
     "home": "Go to the home page"
+  },
+  "suiteLink": {
+    "startTitle": "Start from DPO Central",
+    "startBody": "If you already use DPO Central, bring in your AI vendors, your AI systems and the data they process, and start your AI governance programme from there. Everything arrives as a draft for you to confirm.",
+    "startButton": "Choose a DPO Central organisation",
+    "startNote": "Only an owner or administrator of both organisations can link them. You can undo it at any time; what has been imported stays.",
+    "linkedTitle": "Linked to DPO Central",
+    "linkedBody": "This organisation is linked to {name} in DPO Central since {date}. New AI systems and AI vendors in either product appear in the other as drafts to confirm.",
+    "linkedCounts": "Brought in from DPO Central: {systems} AI systems and {vendors} vendors. To confirm: {toConfirm}.",
+    "lastSync": "Last synchronised: {date}",
+    "reviewDrafts": "Review the drafts",
+    "openDpoCentral": "Open in DPO Central",
+    "unlink": "Unlink",
+    "unlinkConfirm": "Unlink this organisation from DPO Central? What has been imported stays here; the two stop keeping in step.",
+    "unlinked": "Unlinked from DPO Central.",
+    "unlinkedState": "This organisation was linked to {name} in DPO Central until {date}.",
+    "relinkButton": "Link again",
+    "contextTitle": "From DPO Central",
+    "contextActivities": "Processing activities",
+    "contextCategories": "Data categories",
+    "contextSubjects": "Data subjects",
+    "contextLegalBases": "Legal bases",
+    "contextNone": "None recorded in DPO Central.",
+    "dpiaLabel": "DPIA",
+    "dpia_approved": "Approved in DPO Central",
+    "dpia_in_progress": "In progress in DPO Central",
+    "dpia_due": "Due: the answers in DPO Central say a DPIA is needed",
+    "dpia_none": "None in DPO Central",
+    "openDpia": "Open the DPIA",
+    "noteRemoved": "This system is no longer in DPO Central (noted on {date}). Nothing has been deleted here."
   }
 }

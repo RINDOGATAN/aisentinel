@@ -31,6 +31,7 @@ import { SampleDataCard } from "@/components/governance/worked-example-card";
 import { TemplateItemsCard } from "@/components/governance/template-items-card";
 import type { JurisdictionId } from "@/config/jurisdictions";
 import { StepMarked } from "@/components/guided/settings-step-band";
+import { DpoCentralLinkCard } from "@/components/suite/dpo-central-link-card";
 
 const personaIcons = {
   BUSINESS_USER: Building2,
@@ -179,6 +180,9 @@ export default function SettingsPage() {
         )}
 
         {/* The worked example's own removal. Renders nothing when there is none. */}
+        {/* The link to DPO Central: offered, or its state and the way to undo it */}
+        {organization && <DpoCentralLinkCard organizationId={organization.id} returnPath="/governance/settings" />}
+
         {organization && <SampleDataCard organizationId={organization.id} />}
 
         {/* Remove unedited template-created items. Renders nothing when there are none. */}

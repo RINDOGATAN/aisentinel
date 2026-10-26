@@ -367,6 +367,8 @@ export const PILOT_END_BAR_COPY: Record<
     upgradeMonthly: string;
     upgradeYearly: string;
     dismiss: string;
+    /** When the owner also has DPO Central: one plan covers the suite. */
+    suite: string;
   }
 > = {
   en: {
@@ -381,6 +383,7 @@ export const PILOT_END_BAR_COPY: Record<
     upgradeMonthly: "Pay monthly",
     upgradeYearly: "Pay yearly",
     dismiss: "Close",
+    suite: "Your Cloud Plan covers DPO Central, AI Sentinel and VendorWatch. One plan, one payment.",
   },
   es: {
     trial: (days, date, currency = "EUR") =>
@@ -394,6 +397,7 @@ export const PILOT_END_BAR_COPY: Record<
     upgradeMonthly: "Pago mensual",
     upgradeYearly: "Pago anual",
     dismiss: "Cerrar",
+    suite: "Tu Plan nube incluye DPO Central, AI Sentinel y VendorWatch. Un solo plan y un solo pago.",
   },
 };
 

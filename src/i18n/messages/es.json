@@ -3683,6 +3683,13 @@
         "webhookTitle": "Verificación de webhooks",
         "webhookBody": "Las solicitudes de integración entrantes se autentican con una clave de API, y los webhooks utilizan verificación de firmas criptográficas. Las solicitudes no verificadas se descartan antes de procesarse."
       },
+      "backups": {
+        "title": "Copias de seguridad y recuperación",
+        "cloud": "En nuestra nube, la base de datos de cada producto se guarda en Fráncfort (UE) y se cifra en reposo con AES-256. Mantenemos un historial continuo de cambios durante 7 días, para poder recuperar la base de datos tal como estaba en cualquier momento de esa semana, y una copia diaria de toda la base de datos que conservamos 30 días, en la misma región. Solo puede acceder a estas copias nuestro personal designado, con verificación en dos pasos.",
+        "recovery": "Si algo falla, procuramos restablecer el servicio en un día hábil. Si nos lo pides, recuperamos los registros de tu organización tal como estaban en un momento anterior dentro de esos plazos, sin afectar a otros clientes, sin coste y en dos días hábiles. Probamos una recuperación cada trimestre y anotamos la fecha.",
+        "deletion": "Los datos suprimidos salen de todas las copias en un máximo de 30 días. Puedes exportarlo todo cuando quieras.",
+        "selfHosted": "En tu propio equipo, AI Sentinel incluye un script que hace copias cifradas de la base de datos; tú decides cuándo se hacen y guardas las copias."
+      },
       "standards": {
         "title": "Estándares de seguridad",
         "intro": "Los controles de seguridad de AI SENTINEL están diseñados para abordar los riesgos del OWASP Top 10 de seguridad de aplicaciones web.",

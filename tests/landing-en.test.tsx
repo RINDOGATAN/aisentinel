@@ -145,9 +145,9 @@ describe("English sections", () => {
       expect(v, k).not.toMatch(/\benterprise\b/i);
       expect(v, k).not.toMatch(/\bexecute\b/i);
     }
-    // The only images are the customer logos (draft, 11 Oct 2026), above the footer.
-    expect((html.match(/<img /g) ?? []).length).toBe((html.match(/src="\/images\/clients\//g) ?? []).length);
-    expect(html).toContain(">Trusted by</h2>");
+    // No customer logo row until written permission is on file.
+    expect(html).not.toMatch(/src="\/images\/clients\//);
+    expect(html).not.toContain(">Trusted by</h2>");
   });
 
   it("say the starting-point positioning calmly, at most twice", () => {

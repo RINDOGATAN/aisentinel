@@ -131,6 +131,19 @@ const s = StyleSheet.create({
   },
   cellBadge: { flex: 1 },
   cellBar: { flex: 1.4 },
+  progressLine: {
+    fontSize: tokens.typography.size.body,
+    color: tokens.color.text.secondary,
+    marginBottom: tokens.space[3],
+  },
+  progressStage: { marginBottom: tokens.space[3] },
+  progressStageHead: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: tokens.space[1],
+  },
+  progressStageTitle: { fontSize: tokens.typography.size.h4, fontWeight: 600 },
+  progressState: { fontSize: tokens.typography.size.caption, color: tokens.color.text.secondary },
   colHead: {
     fontSize: tokens.typography.size.micro,
     fontWeight: 600,
@@ -302,6 +315,8 @@ const NIST_MAPPING: Array<[string, string, number]> = [
  * tracking is not enabled — rendered as an explicit "not yet enabled" line
  * rather than as zeros, because a fabricated 0% is worse than no number.
  */
+import type { ProgressReport } from "@/server/services/program/progress-report";
+
 export interface DerivationSummary {
   byClass: {
     id: string;
@@ -335,6 +350,7 @@ export async function renderProgramReport({
   scorecard,
   derivation,
   snapshot,
+  progress,
   draftNote,
 }: {
   orgName: string;
@@ -343,6 +359,8 @@ export async function renderProgramReport({
   scorecard: ProgramScorecardData;
   derivation?: DerivationSummary | null;
   snapshot?: SnapshotContext | null;
+  /** Every counted step by stage and the records to date (comparable over time). */
+  progress?: ProgressReport | null;
   /** In the program pack, a draft opens on a page naming its gaps. */
   draftNote?: DraftNote | null;
 }) {
@@ -363,6 +381,26 @@ export async function renderProgramReport({
       key.split(".").pop() ?? key,
   } as unknown as Parameters<typeof createTranslator>[0]) as unknown as (
     key: string,
+  ) => string;
+
+  // A step's "done when" sentence, where the messages carry one.
+  const guidedSteps = ((messages.guided as Record<string, unknown> | undefined)?.steps ?? {}) as Record<
+    string,
+    { doneWhen?: string } | undefined
+  >;
+  const hasDoneWhen = (id: string) => typeof guidedSteps[id]?.doneWhen === "string";
+
+  // The path's own labels (stages, steps, states), the same words the screens use.
+  const tg = createTranslator({
+    locale,
+    messages,
+    namespace: "guided",
+    onError: () => undefined,
+    getMessageFallback: ({ key }: { key: string }) =>
+      key.split(".").pop() ?? key,
+  } as unknown as Parameters<typeof createTranslator>[0]) as unknown as (
+    key: string,
+    values?: Record<string, string | number>,
   ) => string;
 
   const date = scorecard.generatedAt.slice(0, 10);
@@ -586,6 +624,57 @@ export async function renderProgramReport({
           ]}
         />
       </PageFrame>
+
+      {/* ── 3b · Progress by stage ────────────────────────────── */}
+      {progress && progress.stages.length > 0 && (
+        <PageFrame
+          eyebrow={t("progress.eyebrow")}
+          orgName={orgName}
+          date={date}
+          disclaimer={disclaimer}
+        >
+          <SectionHeading title={t("progress.title")} lead={t("progress.lead")} first />
+          <Text style={s.progressLine}>
+            {tg("figure.line", { done: progress.figure.confirmed, total: progress.figure.total })}
+            {progress.current
+              ? `  ·  ${tg("stageNumber", { number: progress.current.number })}: ${tg(`stages.${progress.current.stageId}`)}`
+              : `  ·  ${t("progress.complete")}`}
+          </Text>
+          {progress.stages.map((stage) => (
+            <View key={stage.id} style={s.progressStage}>
+              <View style={s.progressStageHead} wrap={false}>
+                <Text style={s.progressStageTitle}>
+                  {stage.number !== null
+                    ? `${tg("stageNumber", { number: stage.number })}: ${tg(`stages.${stage.id}`)}`
+                    : tg(`stages.${stage.id}`)}
+                </Text>
+                <Text style={s.progressState}>{tg(`stageState.${stage.state}`)}</Text>
+              </View>
+              {stage.steps.map((step) => (
+                <View key={step.id} style={s.row} wrap={false}>
+                  <Text style={s.cellName}>{tg(`steps.${step.id}.label`)}</Text>
+                  <Text style={s.cellPlain}>
+                    {step.optional && step.status !== "done"
+                      ? tg("stepStatus.optional")
+                      : tg(`stepStatus.${step.status}`)}
+                  </Text>
+                  <Text style={[s.cellPlain, { flex: 3 }]}>
+                    {hasDoneWhen(step.id) ? `${t("progress.doneWhen")} ${tg(`steps.${step.id}.doneWhen`)}` : ""}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          ))}
+
+          <SectionHeading title={t("progress.recordsTitle")} lead={t("progress.recordsLead")} />
+          {progress.records.map((record) => (
+            <View key={record.key} style={s.row} wrap={false}>
+              <Text style={s.cellName}>{t(`progress.records.${record.key}`)}</Text>
+              <Text style={s.cellPlain}>{String(record.value)}</Text>
+            </View>
+          ))}
+        </PageFrame>
+      )}
 
       {/* ── 4 · Systems by category ───────────────────────────── */}
       <PageFrame

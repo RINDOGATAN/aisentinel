@@ -4645,6 +4645,29 @@
       "noPrevious": "This is the first snapshot for this organization, so there is nothing to compare it against yet. Future reports will show what changed since this one.",
       "rulePackChangesTitle": "Rule packs that changed",
       "rulePackChangesIntro": "These rule packs moved between the two snapshots. Where a score changed, check here first: a difference may reflect a change in the rules rather than a change in the program."
+    },
+    "progress": {
+      "eyebrow": "Progress",
+      "title": "Progress by stage",
+      "lead": "Every counted step of the path, grouped by stage, with its state on the date of this report. Reports of different dates can be compared line by line.",
+      "complete": "Program complete",
+      "doneWhen": "Done when",
+      "recordsTitle": "Records to date",
+      "recordsLead": "The records the program holds on the date of this report.",
+      "records": {
+        "systems": "AI systems recorded",
+        "systemsWithOwner": "AI systems with a named owner",
+        "classified": "AI systems classified",
+        "highRisk": "High-risk AI systems",
+        "highRiskAssessed": "High-risk AI systems assessed",
+        "vendors": "AI vendors recorded",
+        "vendorsAssessed": "AI vendors assessed",
+        "assessmentsApproved": "Assessments approved",
+        "oversightGates": "Human oversight gates",
+        "evidence": "Evidence items",
+        "incidents": "AI incidents recorded",
+        "boardReports": "Board reports recorded"
+      }
     }
   },
   "provenance": {

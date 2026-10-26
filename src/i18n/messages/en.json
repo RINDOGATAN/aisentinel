@@ -6070,7 +6070,7 @@
         "label": "Threat model",
         "why": "Write down what could go wrong with the systems the organization builds, and how each risk is stopped and tested.",
         "do": "Write down what could go wrong with the AI the organization builds, and how each risk is stopped and tested.",
-        "doneWhen": "at least one threat model is past draft."
+        "doneWhen": "at least one threat model has been marked as reviewed (Mark as reviewed, at the foot of the model's page)."
       },
       "vendorDueDiligence": {
         "label": "Vendor checks",
@@ -6173,7 +6173,12 @@
       "checkMet": "done",
       "checkOpen": "still to do",
       "showChecks": "Show what is met",
-      "hideChecks": "Hide"
+      "hideChecks": "Hide",
+      "optionalTag": "Optional",
+      "optional": {
+        "proceedings": "Optional: this step never counts toward the program figure. Use it only when an authority or a court opens an inquiry or a case.",
+        "audit": "Optional: this step never counts toward the program figure. The product keeps the audit trail on its own."
+      }
     },
     "emptyStep": {
       "board": "No board report yet.",
@@ -6288,7 +6293,7 @@
       "classificationsConfirmed": "confirm the drafted risk levels",
       "assessmentApproved": "approve at least one assessment",
       "highRiskAssessed": "approve an assessment for every high-risk system",
-      "threatModelActive": "take a threat model past draft",
+      "threatModelActive": "mark a threat model as reviewed",
       "vendorsAssessed": "complete a due-diligence review for every vendor",
       "agentsReady": "make every agent ready for the AIUC-1 audit",
       "highRiskGated": "set an oversight gate for every high-risk system",

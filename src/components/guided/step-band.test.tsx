@@ -82,6 +82,22 @@ describe("the step band", () => {
     expect(html).toContain("Done when:");
   });
 
+  it("says what completes an optional step and that it never counts", () => {
+    const html = band("proceedings", { ...EMPTY_PATH_COUNTS, auditEntries: 1 });
+    expect(html).toContain('data-testid="step-band-rule"');
+    expect(html).toContain(`Done when: ${en.guided.steps.proceedings.doneWhen}`);
+    expect(html).toContain(en.guided.band.optional.proceedings);
+    expect(html).not.toContain("data-unfinished");
+    const es_ = band("audit", { ...EMPTY_PATH_COUNTS, auditEntries: 1 }, "es");
+    expect(es_).toContain(es.guided.band.optional.audit);
+  });
+
+  it("says that the threat model step is completed by marking a model as reviewed", () => {
+    const counts = { ...EMPTY_PATH_COUNTS, providerSystems: 1, threatModels: 1 };
+    expect(band("threatModel", counts)).toContain("Left here: mark a threat model as reviewed.");
+    expect(band("threatModel", counts, "es")).toContain("Falta aquí: marca un modelo de amenazas como revisado.");
+  });
+
   it("says it in Spanish", () => {
     const html = band("policies", { ...EMPTY_PATH_COUNTS, policies: 3 }, "es");
     expect(html).toContain("Falta aquí: aprueba una política de uso aceptable.");
@@ -117,5 +133,22 @@ describe("the stage count and the coming steps in the menu", () => {
     expect(html).toContain(en.guided.steps.prohibited.label);
     expect(html).toContain(en.guided.steps.literacy.label);
     expect(html).toContain('data-testid="step-rule-policies"');
+  });
+
+  it("labels optional steps in the menu while they are not done", () => {
+    const html = renderToStaticMarkup(
+      <PathMenu
+        config={AI_SENTINEL_PATH}
+        statuses={evaluatePath(AI_SENTINEL_PATH, { ...EMPTY_PATH_COUNTS, auditEntries: 1 })}
+        pathname="/governance/incidents"
+        stripeEnabled={false}
+        variant="sidebar"
+        t={t}
+        overview={{ href: "/governance", icon: LayoutDashboard }}
+      />,
+    );
+    expect(html).toContain('data-testid="step-optional-proceedings"');
+    // The audit trail is done once anything is recorded: no label then.
+    expect(html).not.toContain('data-testid="step-optional-audit"');
   });
 });

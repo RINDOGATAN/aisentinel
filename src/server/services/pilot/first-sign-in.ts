@@ -50,10 +50,19 @@ export async function ensurePilotFirstSignIn(
   db: FirstSignInDb,
   organization: { id: string; pilotFirstSignInAt: Date | null },
   now: Date = new Date(),
+  /**
+   * The pilot start the same person already has on DPO Central
+   * (src/server/services/suite/plan-state.ts): used, when earlier than now,
+   * so the suite has one pilot window. Only read while this organisation has
+   * no start; a recorded start is never moved.
+   */
+  preferredStart: Date | null = null,
 ): Promise<Date | null> {
   if (!hostedPilotActive()) return organization.pilotFirstSignInAt;
   if (organization.pilotFirstSignInAt) return organization.pilotFirstSignInAt;
-  const stamp = pilotFirstSignInStamp(now);
+  const stamp = pilotFirstSignInStamp(
+    preferredStart && preferredStart.getTime() < now.getTime() ? preferredStart : now,
+  );
   const { count } = await db.organization.updateMany({
     where: { id: organization.id, pilotFirstSignInAt: null },
     data: { pilotFirstSignInAt: stamp },

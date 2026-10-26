@@ -12,6 +12,7 @@ import { clientIp } from "@/lib/rate-limit";
 import { PilotLimitReached, assertPilotWritable, pilotLocale } from "@/server/services/pilot/caps";
 import { recordPilotLimitReached } from "@/server/services/pilot/limit-reached";
 import { ensurePilotFirstSignIn } from "@/server/services/pilot/first-sign-in";
+import { suiteForRequest, type ApplyDb, type SuiteOrg } from "@/server/services/suite/plan-state";
 import { publicError } from "@/server/error-format";
 
 /**
@@ -141,7 +142,7 @@ export const withOrganization = t.middleware(async ({ ctx, next, getRawInput }) 
     });
   }
 
-  const organization = await withPilotFirstSignIn(ctx.prisma, membership.organization);
+  const organization = await withPilotFirstSignIn(ctx.prisma, membership.organization, membership.role, ctx.session.user);
 
   return next({
     ctx: {
@@ -160,8 +161,14 @@ export const withOrganization = t.middleware(async ({ ctx, next, getRawInput }) 
 async function withPilotFirstSignIn<O extends { id: string; pilotFirstSignInAt: Date | null }>(
   db: typeof prisma,
   organization: O,
+  role?: string | null,
+  user?: { id?: string | null; email?: string | null } | null,
 ): Promise<O> {
-  const pilotFirstSignInAt = await ensurePilotFirstSignIn(db, organization);
+  // The suite (src/server/services/suite/plan-state.ts): a paid plan or a
+  // pilot the owner already holds on DPO Central. Never throws; adopts a
+  // paid plan on `organization` in place.
+  const suite = await suiteForRequest(db as unknown as ApplyDb, organization as unknown as SuiteOrg, role, user);
+  const pilotFirstSignInAt = await ensurePilotFirstSignIn(db, organization, new Date(), suite.preferredPilotStart);
   return pilotFirstSignInAt === organization.pilotFirstSignInAt
     ? organization
     : { ...organization, pilotFirstSignInAt };
@@ -209,7 +216,7 @@ const enforceWriteAccess = t.middleware(async ({ ctx, next, meta, getRawInput })
     });
   }
 
-  const organization = await withPilotFirstSignIn(ctx.prisma, membership.organization);
+  const organization = await withPilotFirstSignIn(ctx.prisma, membership.organization, membership.role, ctx.session.user);
 
   if (!meta?.pilotReadOnlyExempt) {
     assertPilotWritable(organization, pilotLocale(ctx.getCookie));

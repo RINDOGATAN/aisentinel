@@ -4,9 +4,8 @@
 /**
  * The landing's middle, the same sections in both languages, after DPO
  * Central's landing: the three tools and how they connect, the demo videos
- * (only while a video of that language is published), the six stages of the
- * program as the Guided path implements them with the 30/60/90-day plan
- * beneath, and the ways to host it. Both pages then show the customer logos
+ * (only while a video of that language is published), the five stages of the
+ * program as the Guided path implements them, and the ways to host it. Both pages then show the customer logos
  * above the footer (only while the configured list is not empty). After the
  * ways, the pricing block (PricingSection.tsx), in both
  * languages, the one place with prices. No hosting location in the other
@@ -42,7 +41,6 @@ import {
   Server,
   ShieldCheck,
   Store,
-  Users,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useState } from "react";
@@ -279,11 +277,11 @@ export function Videos({
   );
 }
 
-/* ── c. The six stages and the 30/60/90-day plan ────────────────────── */
+/* ── c. The five stages ─────────────────────────────────────────────── */
 
-// The six stages of AI_SENTINEL_PATH (src/components/guided/path-config.ts),
+// The five stages of AI_SENTINEL_PATH (src/components/guided/path-config.ts),
 // in order, with the icons the menu uses for them.
-const STAGE_ICONS: LucideIcon[] = [Rocket, Users, Brain, ClipboardCheck, ShieldCheck, Activity];
+const STAGE_ICONS: LucideIcon[] = [Rocket, Brain, ClipboardCheck, ShieldCheck, Activity];
 
 function Stages({ t, p }: { t: T; p: LandingLocale }) {
   const k = `${p}.stages`;
@@ -296,7 +294,7 @@ function Stages({ t, p }: { t: T; p: LandingLocale }) {
           {/* the path that joins the stages */}
           <div aria-hidden="true" className="hidden lg:block absolute top-7 left-[8%] right-[8%] h-px bg-gradient-to-r from-accent/20 via-accent/70 to-accent/20" />
           <div aria-hidden="true" className="lg:hidden absolute top-7 bottom-7 left-7 w-px bg-gradient-to-b from-accent/20 via-accent/70 to-accent/20" />
-          <ol className="relative grid grid-cols-1 lg:grid-cols-6 gap-6 lg:gap-4">
+          <ol className="relative grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-4">
             {STAGE_ICONS.map((Icon, i) => {
               const n = i + 1;
               return (
@@ -320,24 +318,6 @@ function Stages({ t, p }: { t: T; p: LandingLocale }) {
           </ol>
           </div>
 
-          {/* The plan: each thirty days covers two stages (PLAN_WINDOWS). */}
-          <div className="mt-10 lg:mt-12" aria-labelledby={`${p}-plan-heading`}>
-            <h3 id={`${p}-plan-heading`} className="text-center text-base font-display mb-4">
-              {t(`${k}.plan.title`)}
-            </h3>
-            <ol className="grid grid-cols-1 lg:grid-cols-3 gap-3 lg:gap-4">
-              {[1, 2, 3].map((n) => (
-                <li
-                  key={n}
-                  className="rounded-xl border border-accent/40 bg-accent/10 px-5 py-4 flex flex-col lg:items-center lg:text-center"
-                >
-                  <span className="text-sm font-display text-accent">{t(`${k}.plan.p${n}.days`)}</span>
-                  <span className="text-sm font-body text-foreground/85">{t(`${k}.plan.p${n}.stages`)}</span>
-                </li>
-              ))}
-            </ol>
-            <p className="mt-4 text-center text-sm text-muted-foreground font-body">{t(`${k}.plan.note`)}</p>
-          </div>
         </div>
       </div>
     </section>

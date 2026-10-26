@@ -10,10 +10,9 @@ import { describe, expect, it } from "vitest";
 import {
   AI_SENTINEL_PATH,
   EMPTY_PATH_COUNTS,
-  PLAN_WINDOWS,
   type PathCounts,
 } from "@/components/guided/path-config";
-import { evaluatePath, programFigure } from "@/components/guided/path";
+import { evaluatePath, programFigure, stageProgress } from "@/components/guided/path";
 import { evaluateRegister, type DocumentFacts } from "@/config/document-register";
 import type { NeedsActionItem } from "@/lib/needs-action";
 import {
@@ -22,7 +21,6 @@ import {
   nextActions,
   notYetEntries,
   panelRows,
-  planMilestone,
   programmeAreas,
   sortByNearestDeadline,
   stepDocumentRows,
@@ -61,16 +59,20 @@ const AFTER_QUICKSTART: Partial<PathCounts> = {
 };
 
 describe("the program figure", () => {
-  it("adds up its four parts to the counted steps", () => {
+  it("adds up its four parts to the counted stages", () => {
     const statuses = evaluatePath(AI_SENTINEL_PATH, { ...EMPTY_PATH_COUNTS, ...AFTER_QUICKSTART });
     const f = programFigure(AI_SENTINEL_PATH, statuses);
     expect(f.confirmed + f.toConfirm + f.started + f.notStarted).toBe(f.total);
-    // The quick start's drafts are "to confirm", never confirmed.
-    expect(f.toConfirm).toBe(3);
+    // Counted in stages: five, the same shape as DPO Central's path.
+    expect(f.total).toBe(5);
+    // The quick start's drafts leave stages "to confirm", never done.
+    const waiting = AI_SENTINEL_PATH.stages.filter((st) => stageProgress(st, statuses).state === "toConfirm");
+    expect(f.toConfirm).toBe(waiting.length);
+    expect(f.toConfirm).toBeGreaterThan(0);
     expect(statuses.classification).toBe("toConfirm");
   });
 
-  it("counts a step met with drafts once they are confirmed", () => {
+  it("stops counting a stage as waiting once its drafts are confirmed", () => {
     const before = programFigure(
       AI_SENTINEL_PATH,
       evaluatePath(AI_SENTINEL_PATH, { ...EMPTY_PATH_COUNTS, ...AFTER_QUICKSTART }),
@@ -86,7 +88,7 @@ describe("the program figure", () => {
         unconfirmed: 6,
       }),
     );
-    expect(after.confirmed).toBe(before.confirmed + 3);
+    expect(after.toConfirm).toBeLessThan(before.toConfirm);
     expect(after.total).toBe(before.total);
   });
 });
@@ -122,10 +124,10 @@ describe("areas and next actions", () => {
   const incident: NeedsActionItem = { kind: "incident-open", count: 1, href: "/governance/incidents" };
   const queue: NeedsActionItem = { kind: "review-queue", count: 13, href: "/governance/review" };
 
-  it("gives six areas, the stage with waiting work reading 'action'", () => {
+  it("gives five areas, the stage with waiting work reading 'action'", () => {
     const statuses = evaluatePath(AI_SENTINEL_PATH, { ...EMPTY_PATH_COUNTS, ...AFTER_QUICKSTART });
     const areas = programmeAreas(AI_SENTINEL_PATH, statuses, [incident]);
-    expect(areas).toHaveLength(6);
+    expect(areas).toHaveLength(5);
     expect(areas.find((a) => a.stage.id === "monitor")?.word).toBe("action");
     expect(areas.find((a) => a.stage.id === "assess")?.word).toBe("toConfirm");
   });
@@ -146,23 +148,15 @@ describe("areas and next actions", () => {
 });
 
 describe("deadlines and the All clients order", () => {
-  it("finds the plan's next milestone while the plan runs", () => {
-    const start = "2026-10-01T00:00:00.000Z";
-    const m = planMilestone(PLAN_WINDOWS, start, { kind: "running", day: 12, totalDays: 90, behindBy: 0 });
-    expect(m?.day).toBe(30);
-    expect(m?.at.toISOString().slice(0, 10)).toBe("2026-10-30");
-    expect(planMilestone(PLAN_WINDOWS, null, { kind: "notStarted" })).toBeNull();
-  });
-
   it("takes the earliest deadline, overdue first", () => {
     const d = nearestDeadline(
       [
         { kind: "retest", at: "2026-10-20T00:00:00.000Z", label: "Model", href: "/x" },
         { kind: "incidentReport", at: "2026-10-05T00:00:00.000Z", label: "Outage", href: "/y" },
       ],
-      { day: 30, at: new Date("2026-10-30T00:00:00.000Z") },
     );
     expect(d?.kind).toBe("incidentReport");
+    expect(nearestDeadline([])).toBeNull();
   });
 
   it("sorts clients by the nearest deadline, those with none after, by name", () => {

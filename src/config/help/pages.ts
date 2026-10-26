@@ -66,8 +66,8 @@ export const PAGE_HELP: PageHelp[] = [
     route: "/governance/program",
     title: L("Program", "Programa"),
     purpose: L(
-      "The whole program on one page: the six stages, how far each has come, and a 30/60/90-day plan over them. It is where you see progress rather than do a single task.",
-      "Todo el programa en una página: las seis etapas, hasta dónde ha llegado cada una y un plan de 30/60/90 días sobre ellas. Es donde ves el avance, no donde haces una tarea concreta.",
+      "The whole program on one page: the five stages, how far each has come, and the action plan for each stage. It is where you see progress rather than do a single task.",
+      "Todo el programa en una página: las cinco fases, hasta dónde ha llegado cada una y el plan de acción de cada fase. Es donde ves el avance, no donde haces una tarea concreta.",
     ),
     firstStep: L(
       "Read the plan for the next 30 days, then open the earliest stage that is not yet done.",

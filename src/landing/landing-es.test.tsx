@@ -132,7 +132,7 @@ describe("Spanish sections", () => {
   const asShipped = renderToStaticMarkup(createElement(LandingSections, { t: tEs, locale: "es" }));
 
   it("render in order, with every key translated", () => {
-    const order = ["Tres herramientas", "Descubre cómo", "Seis etapas", "Adaptado a"].map((s) => withVideos.indexOf(s));
+    const order = ["Tres herramientas", "Descubre cómo", "Cinco fases", "Adaptado a"].map((s) => withVideos.indexOf(s));
     expect(order.every((i) => i >= 0)).toBe(true);
     expect([...order].sort((a, b) => a - b)).toEqual(order);
     expect(withVideos).not.toMatch(/>es\.[a-z]/);
@@ -146,12 +146,12 @@ describe("Spanish sections", () => {
     expect(i(ES["es.suite.link.vw"])).toBeLessThan(i(">VendorWatch<"));
   });
 
-  it("show the six stages of the Guided path and the 30/60/90-day plan", () => {
+  it("show the five stages of the Guided path, with no day plan", () => {
     const stages = (appEs as { guided: { stages: Record<string, string> } }).guided.stages;
-    const names = ["setup", "people", "inventory", "assess", "controls", "monitor"].map((k) => stages[k]);
+    const names = ["setup", "inventory", "assess", "controls", "monitor"].map((k) => stages[k]);
     names.forEach((name, n) => expect(ES[`es.stages.s${n + 1}.title`]).toBe(name));
-    expect(asShipped).toContain(ES["es.stages.plan.title"]);
-    for (const p of [1, 2, 3]) expect(asShipped).toContain(ES[`es.stages.plan.p${p}.days`]);
+    expect(ES["es.stages.s6.title"]).toBeUndefined();
+    expect(ES["es.stages.plan.title"]).toBeUndefined();
   });
 
   it("show no price, no superlative and no unprovable claim", () => {

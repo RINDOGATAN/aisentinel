@@ -119,9 +119,9 @@ const SEVERITY_STYLES: Record<ProgramGap["severity"], string> = {
 };
 
 /**
- * The 30/60/90-day plan: the stage plan (two stages of the program path in
- * each thirty days, PLAN_WINDOWS), each stage with its state from the path,
- * and under it the actions the program's gaps call for in that window.
+ * The action plan by phase: one block per phase of the program path, with the
+ * phase's state from the path and, under it, the actions the program's gaps
+ * call for in that phase.
  */
 export function NinetyDayPlan({
   plan,
@@ -131,18 +131,10 @@ export function NinetyDayPlan({
   const t = useTranslations("program.plan");
   const tg = useTranslations("guided");
   const { steps } = useProgramPathQuery();
-  const bucketLabels: Record<string, string> = {
-    "1-30": t("bucket1"),
-    "31-60": t("bucket2"),
-    "61-90": t("bucket3"),
-  };
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
       {plan.map((bucket) => (
         <div key={bucket.bucket} className="space-y-2" data-testid={`plan-${bucket.bucket}`}>
-          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            {bucketLabels[bucket.bucket]}
-          </p>
           <ul className="space-y-1">
             {bucket.stages.map((stageId) => {
               const index = AI_SENTINEL_PATH.stages.findIndex((st) => st.id === stageId);
@@ -151,7 +143,7 @@ export function NinetyDayPlan({
               return (
                 <li key={stageId} className="flex items-center justify-between gap-2 text-sm">
                   <span className="min-w-0 break-words">
-                    <span className="tabular-nums text-muted-foreground mr-1.5">{index + 1}</span>
+                    <span className="text-muted-foreground mr-1.5">{tg("stageNumber", { number: index + 1 })}</span>
                     {tg(`stages.${stageId}`)}
                   </span>
                   {state && <Chip tone={WORD_TONE[state]}>{tg(`stageState.${state}`)}</Chip>}

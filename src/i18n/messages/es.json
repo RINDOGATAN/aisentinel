@@ -4381,8 +4381,8 @@
       "scorecardSubtitle": "Madurez en ocho dimensiones, proyectada sobre las funciones del NIST AI RMF.",
       "nistTitle": "Perfil NIST AI RMF: actual frente a objetivo",
       "dimensionsTitle": "Dimensiones de madurez",
-      "planTitle": "Plan de 30, 60 y 90 días",
-      "planSubtitle": "Dos etapas de la ruta del programa en cada tramo de treinta días y, debajo, las acciones que piden las carencias del programa, de la más urgente a la menos.",
+      "planTitle": "Plan de acción por fases",
+      "planSubtitle": "Las cinco fases de la ruta del programa y, debajo de cada una, las acciones que piden las carencias del programa, de la más urgente a la menos.",
       "rolloutTitle": "Despliegue recomendado por categoría de herramienta",
       "rolloutSubtitle": "Cómo emplear cada clase de herramienta durante el próximo trimestre.",
       "dutiesTitle": "Cobertura de deberes profesionales",
@@ -4423,9 +4423,6 @@
       "ariaLabel": "Radar de madurez NIST AI RMF"
     },
     "plan": {
-      "bucket1": "Días 1 a 30",
-      "bucket2": "Días 31 a 60",
-      "bucket3": "Días 61 a 90",
       "empty": "Nada programado",
       "effort": "Esfuerzo: {effort, select, S {bajo} M {medio} L {alto} other {{effort}}}"
     },
@@ -4569,11 +4566,13 @@
     },
     "plan": {
       "eyebrow": "Plan de acción",
-      "title": "El plan de 30, 60 y 90 días",
+      "title": "El plan de acción por fases",
       "bucket": {
-        "1-30": "Días 1 a 30",
-        "31-60": "Días 31 a 60",
-        "61-90": "Días 61 a 90"
+        "setup": "Fase 1: Puesta en marcha",
+        "inventory": "Fase 2: Inventario",
+        "assess": "Fase 3: Clasificar y evaluar",
+        "controls": "Fase 4: Controles y transparencia",
+        "monitor": "Fase 5: Seguimiento y mejora"
       }
     },
     "rollout": {
@@ -5958,7 +5957,7 @@
     "pathTitle": "Ruta del programa",
     "libraryTitle": "Biblioteca y herramientas",
     "stageProgress": "{done} de {total}",
-    "stageNumber": "Etapa {number}",
+    "stageNumber": "Fase {number}",
     "loading": "Cargando el progreso",
     "requiresLicence": "Requiere una licencia",
     "stageState": {
@@ -5980,7 +5979,6 @@
     },
     "stages": {
       "setup": "Puesta en marcha",
-      "people": "Políticas y personas",
       "inventory": "Inventario",
       "assess": "Clasificar y evaluar",
       "controls": "Controles y transparencia",
@@ -6134,16 +6132,16 @@
     "switchClient": "Cambiar de cliente",
     "addOrganization": "Añadir organización",
     "account": "Cuenta",
-    "phoneBar": "Etapa {number} de {total} · {stage}",
-    "phoneBarDone": "Todas las etapas están hechas",
+    "phoneBar": "Fase {number} de {total}, {stage}",
+    "phoneBarDone": "Todas las fases están completadas",
     "phoneBarOpen": "Abrir la ruta del programa",
-    "overallLabel": "El programa de la organización",
+    "overallLabel": "Tu programa",
     "band": {
       "step": "Paso {number}",
       "next": "Siguiente paso",
       "finish": "Volver al panel de control",
-      "stageDone": "Etapa {number} completada. Siguiente: {next}.",
-      "lastStageDone": "Etapa {number} completada. Todas las etapas están hechas.",
+      "stageDone": "Fase {number} completada. Siguiente: {next}.",
+      "lastStageDone": "Fase {number} completada. Todas las fases están completadas.",
       "doneWhen": "Se completa cuando: {rule}",
       "leftHere": "Falta aquí: {items}.",
       "finishStep": "Terminar este paso",
@@ -6176,22 +6174,11 @@
     },
     "nextStep": {
       "title": "Siguiente paso",
-      "stage": "Etapa {number} · {stage}",
+      "stage": "Fase {number} · {stage}",
       "button": "Ir a {step}",
-      "allDoneTitle": "Todas las etapas están hechas",
+      "allDoneTitle": "Todas las fases están completadas",
       "allDoneBody": "Mantén el programa al día: confirma lo que cambie e informa al consejo.",
       "allDoneButton": "Abrir el mapa del programa"
-    },
-    "plan": {
-      "label": "Plan de 30, 60 y 90 días",
-      "column": "Plan",
-      "day": "Día {day} de {total}",
-      "dayLabelled": "Plan del programa: día {day} de {total}",
-      "onPlan": "Al día con el plan",
-      "behind": "Retraso de {days, plural, one {# día} other {# días}} sobre el plan",
-      "complete": "Plan completado",
-      "remaining": "{count, plural, one {Queda la etapa {stages}} other {Quedan las etapas {stages}}}",
-      "notStarted": "Empieza con el inicio rápido"
     },
     "portfolio": {
       "title": "Todos los clientes",
@@ -6217,7 +6204,7 @@
       "sortNote": "Ordenados por el plazo más próximo, el más cercano primero; después, los clientes sin plazo, por nombre."
     },
     "figure": {
-      "line": "{done} de {total} pasos confirmados",
+      "line": "{done} de {total} fases completadas",
       "toConfirm": "{count} por confirmar",
       "started": "{count} en curso",
       "notStarted": "{count} sin empezar",
@@ -6246,7 +6233,6 @@
       "incidentReport": "Vence la notificación del incidente: {label}",
       "retest": "Vence la revisión del modelo de amenazas: {label}",
       "obligation": "Obligación: {label}",
-      "plan": "Plan: hito del día {day}",
       "overdue": "vencido desde el {date}",
       "empty": "Ningún plazo en los próximos 30 días."
     },
@@ -6308,6 +6294,10 @@
       "title": "Viendo un departamento: {name}",
       "body": "Lo que requiere acción y los plazos de abajo son de este departamento. Las cifras, áreas y documentos del programa abarcan toda la organización: elige «Toda la organización» en Viendo para verlos.",
       "nothingWaiting": "No hay nada pendiente en este departamento."
+    },
+    "phase": {
+      "now": "Ahora: fase {number}, {stage}",
+      "complete": "Programa completo"
     }
   },
   "agentTesting": {
@@ -6710,7 +6700,7 @@
     "open": "Abrir",
     "downloadLabel": "Descargar {name} en {format}",
     "items": {
-      "plan": "Plan de 30, 60 y 90 días",
+      "plan": "Plan de acción por fases",
       "obligationsCalendar": "Calendario de obligaciones",
       "policies": "Políticas de IA",
       "systemRegister": "Registro de sistemas de IA",

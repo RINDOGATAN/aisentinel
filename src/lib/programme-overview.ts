@@ -35,7 +35,6 @@ import {
   type EvaluatedDocument,
 } from "@/config/document-register";
 import type { NeedsActionItem, NeedsActionKind } from "@/lib/needs-action";
-import type { PlanState, PlanWindow } from "@/components/guided/plan";
 
 /** The stage each kind of waiting work belongs to (null: no single stage). */
 export const NEEDS_ACTION_STAGE: Record<NeedsActionKind, string | null> = {
@@ -244,8 +243,6 @@ export function nextActions<C>(
 // Deadlines and All clients
 // ---------------------------------------------------------------------------
 
-const DAY_MS = 24 * 60 * 60 * 1000;
-
 /** A deadline at risk, as the server sends it (src/server/services/program/deadlines.ts). */
 export interface RecordDeadline {
   kind: "incidentReport" | "retest" | "obligation";
@@ -256,39 +253,17 @@ export interface RecordDeadline {
   href: string;
 }
 
-/** A deadline of All clients: a record's, or the plan's next milestone. */
-export type ClientDeadline = RecordDeadline | { kind: "plan"; at: string; day: number };
-
-/**
- * The plan's next milestone (day 30, 60 or 90) while the plan runs: the last
- * day of the window the plan is in. Null before the plan starts and after it
- * ends. The dashboard's deadlines card and All clients both read it here.
- */
-export function planMilestone(
-  windows: readonly PlanWindow[],
-  planStart: string | Date | null,
-  plan: PlanState | null,
-): { day: number; at: Date } | null {
-  if (!planStart || plan?.kind !== "running") return null;
-  const window = windows.find((w) => w.untilDay >= plan.day);
-  if (!window) return null;
-  const start = typeof planStart === "string" ? new Date(planStart) : planStart;
-  return { day: window.untilDay, at: new Date(start.getTime() + (window.untilDay - 1) * DAY_MS) };
-}
+/** A deadline of All clients: a record's. */
+export type ClientDeadline = RecordDeadline;
 
 /**
  * The nearest deadline of one client: the earliest of its incident clocks,
- * its re-tests and obligations due and its plan's next milestone. An overdue
- * one is the earliest of all, so it comes first.
+ * its re-tests and obligations due. An overdue one is the earliest of all, so
+ * it comes first.
  */
-export function nearestDeadline(
-  deadlines: readonly RecordDeadline[],
-  milestone: { day: number; at: Date } | null,
-): ClientDeadline | null {
-  const all: ClientDeadline[] = [...deadlines];
-  if (milestone) all.push({ kind: "plan", at: milestone.at.toISOString(), day: milestone.day });
-  if (all.length === 0) return null;
-  return all.reduce((a, b) => (new Date(b.at).getTime() < new Date(a.at).getTime() ? b : a));
+export function nearestDeadline(deadlines: readonly RecordDeadline[]): ClientDeadline | null {
+  if (deadlines.length === 0) return null;
+  return deadlines.reduce((a, b) => (new Date(b.at).getTime() < new Date(a.at).getTime() ? b : a));
 }
 
 /**

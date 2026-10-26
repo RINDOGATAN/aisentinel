@@ -33,7 +33,7 @@ const H = vi.hoisted(() => {
       calls.push({ model: name, op: "findMany", where });
       return [];
     },
-    // Day 1 of the plan (services/program/plan-start.ts): no audit entry here.
+    // A single record looked up by id or organisation: none here.
     findFirst: async ({ where }: { where: Where }) => {
       calls.push({ model: name, op: "findFirst", where });
       return null;
@@ -110,21 +110,6 @@ describe("programPath.status", () => {
     for (const c of H.calls.filter((c) => c.op === "findFirst")) {
       expect(c.where.organizationId ?? c.where.id, c.model).toBe("org-a");
     }
-  });
-
-  it("starts the plan on the quick start's completion when the audit trail has no entry", async () => {
-    const result = await caller("user-a").status({ organizationId: "org-a" });
-    expect(result.planStart).toBe("2026-09-01T00:00:00.000Z");
-    const audit = H.calls.find((c) => c.model === "auditLog" && c.op === "findFirst");
-    expect(audit?.where).toEqual({
-      organizationId: "org-a",
-      metadata: { path: ["source"], equals: "quickstart" },
-    });
-  });
-
-  it("has no plan start before the quick start is done", async () => {
-    const result = await caller("user-a").status({ organizationId: "org-c" });
-    expect(result.planStart).toBeNull();
   });
 
   it("is readable by a viewer", async () => {

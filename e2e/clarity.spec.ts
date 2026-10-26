@@ -28,7 +28,7 @@ type Locale = "en" | "es";
 const MESSAGES = { en, es } as const;
 const SHOTS = process.env.CLARITY_SHOTS;
 
-/** "{done} of {total} steps confirmed" as a pattern, with the two numbers captured. */
+/** "{done} of {total} stages done" as a pattern, with the two numbers captured. */
 function figurePattern(locale: Locale): RegExp {
   const line = MESSAGES[locale].guided.figure.line;
   const escaped = line.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -196,7 +196,7 @@ for (const locale of ["en", "es"] as const) {
     await expect(page.getByTestId("doc-not-yet")).toContainText(m.documentRegister.items.literacyRecord);
     await expect(page.getByTestId("menu-not-yet").first()).toContainText(m.documentRegister.items.prohibitedScreen);
     await expect(page.getByTestId("pack-button")).toBeDisabled();
-    await expect(page.getByTestId("area-tiles").locator("li")).toHaveCount(6);
+    await expect(page.getByTestId("area-tiles").locator("li")).toHaveCount(5);
     await noSidewaysScroll(page);
     await shot(page, `${locale}-1-empty-dashboard`);
 
@@ -240,7 +240,9 @@ for (const locale of ["en", "es"] as const) {
     // 3. After confirming the drafts
     await confirmEverything(page, locale);
     const confirmed = await dashboardFigure(page, locale);
-    expect(readFigure(confirmed, locale).done).toBeGreaterThan(readFigure(afterStart, locale).done);
+    // Counted in stages: confirming the drafts never moves the figure back,
+    // and a stage counts once all of its counted steps are met.
+    expect(readFigure(confirmed, locale).done).toBeGreaterThanOrEqual(readFigure(afterStart, locale).done);
     expect(readFigure(confirmed, locale).total).toBe(readFigure(afterStart, locale).total);
     expect(await menuFigure(page, locale, `${locale}-3-confirmed`)).toBe(confirmed);
     await expect(page.getByTestId("doc-riskClassification")).toHaveAttribute("data-state", "ready");
@@ -268,7 +270,7 @@ for (const locale of ["en", "es"] as const) {
       (await api<{ id: string }>(page, "organization.create", { name, slug: `c-${Date.now()}` }, "mutation")).id;
     const b = await create(names.b);
     const c = await create(names.c);
-    // B: the quick start (its plan's day 30 milestone is its deadline).
+    // B: the quick start only, so no deadline (there is no day plan).
     await quickStart(page, b, "professional");
     // C: the quick start and a personal-data incident: the 72-hour clock comes first.
     await quickStart(page, c, "healthcare");
@@ -290,18 +292,20 @@ for (const locale of ["en", "es"] as const) {
     await expect(page.getByRole("button", { name: m.guided.portfolio.addClient })).toBeVisible();
     const rows = page.getByTestId(isPhone(page) ? "client-card" : "client-row");
     await expect(rows).toHaveCount(3);
+    // C first (the incident's clock), then the clients with no deadline, by name.
     expect(await rows.evaluateAll((els) => els.map((e) => e.getAttribute("data-client")))).toEqual([
       names.c,
-      names.b,
       names.a,
+      names.b,
     ]);
     await expect(rows.nth(0).getByTestId("client-deadline")).toContainText(`Exposure ${run}`);
+    await expect(rows.nth(1).getByTestId("client-deadline")).toHaveText(m.guided.portfolio.noDeadline);
     await expect(rows.nth(2).getByTestId("client-deadline")).toHaveText(m.guided.portfolio.noDeadline);
     await noSidewaysScroll(page);
     await shot(page, `${locale}-4-firm-clients`);
 
     // Each row says what the client's own dashboard says.
-    for (const name of [names.c, names.b, names.a]) {
+    for (const name of [names.c, names.a, names.b]) {
       await page.goto("/governance/portfolio");
       const row = page.getByTestId(isPhone(page) ? "client-card" : "client-row").filter({ hasText: name });
       const rowFigure = ((await row.getByTestId("program-figure").textContent()) ?? "").trim();

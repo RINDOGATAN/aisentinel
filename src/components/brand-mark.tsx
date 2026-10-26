@@ -5,8 +5,8 @@
  * The designer logo as the sign-in screen and the persona step show it: the
  * white TODO.LAW wordmark (public/logo-negative.svg, 28 px high) with the
  * product name in capitals right next to it, in Jost 600. Shared by the
- * public landing header, the sign-in layout and the persona step, so they
- * cannot drift. The caller supplies the wrapping element and its layout (a
+ * dashboard's top bar and side sheet (guided-layout.tsx), the public landing
+ * header, the sign-in layout and the persona step, so they cannot drift. The caller supplies the wrapping element and its layout (a
  * flex row, items centred, gap-2).
  */
 

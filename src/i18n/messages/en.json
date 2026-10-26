@@ -3683,6 +3683,13 @@
         "webhookTitle": "Webhook verification",
         "webhookBody": "Inbound integration requests are authenticated with an API key, and webhooks use cryptographic signature verification. Unverified requests are discarded before processing."
       },
+      "backups": {
+        "title": "Backups and recovery",
+        "cloud": "On our cloud, each product's database is kept in Frankfurt (EU) and encrypted at rest with AES-256. We keep a continuous history of changes for 7 days, so we can recover the database as it was at any moment in that week, and a daily copy of the whole database kept for 30 days, in the same region. Only our named staff can reach these copies, with two-factor authentication.",
+        "recovery": "If something goes wrong, we aim to restore the service within one business day. If you ask, we recover your organization's records as they were at an earlier moment within those periods, without affecting other customers, at no charge and within two business days. We test a recovery every quarter and record the date.",
+        "deletion": "Deleted data leaves every copy within 30 days. You can export everything at any time.",
+        "selfHosted": "On your own hardware, AI Sentinel includes a script that makes encrypted database backups; you set the schedule and keep the copies."
+      },
       "standards": {
         "title": "Security standards",
         "intro": "AI SENTINEL's security controls are designed to address the OWASP Top 10 web application security risks.",

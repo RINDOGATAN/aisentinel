@@ -314,7 +314,7 @@ One codebase serves both. The differences are environment flags, never branches 
 | Rate limiting | Per serverless instance; effective limit is a multiple of the configured one | Per process, but the key can be forged through `x-vercel-forwarded-for` unless the proxy strips it (section 6) |
 | TLS | Platform-terminated | The kit's Caddy proxy when `TLS_DOMAIN` is set; otherwise the operator's own proxy |
 | Secrets | Vercel project environment variables | The install's `deploy/sovereign/.env`, which the operator should `chmod 600` |
-| Backups | Managed database provider; no documented restore rehearsal in this repository | `deploy/sovereign/backup.sh` (AES-256, mandatory passphrase, 14-day retention) and `restore.sh`, rehearsed (`docs/releasing.md`) |
+| Backups | Managed database provider in Frankfurt (EU), AES-256 at rest: 7-day point-in-time history and a daily copy kept 30 days; restore rehearsed on a separate copy once a quarter with a dated record, the first scheduled for November 2026 | `deploy/sovereign/backup.sh` (AES-256, mandatory passphrase, 14-day retention) and `restore.sh`, rehearsed (`docs/releasing.md`) |
 | Updates | Every push to `main` deploys, and `npm run build` runs `prisma migrate deploy` first | On `./suite.sh update`, which follows `:latest` unless pinned (`docs/releasing.md`) |
 | Reporting a vulnerability | `SECURITY.md` | Same address; state the deployment mode |
 

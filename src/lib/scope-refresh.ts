@@ -33,4 +33,5 @@ export function refreshAfterScopeChange(utils: Utils): void {
   void utils.admt.invalidate();
   void utils.compliance.invalidate();
   void utils.unified.invalidate();
+  void utils.chatbotOverlay.invalidate();
 }

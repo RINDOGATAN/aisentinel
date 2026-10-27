@@ -11,6 +11,7 @@ import { writeFileSync } from "fs";
 import { REGIME_PACKS, flattenRegimeRequirements, regimeRequirementId } from "../../src/config/regimes";
 import { allUnifiedQuestions, UNIFIED_ASSESSMENT_VERSION } from "../../src/config/unified-assessment";
 import { AGENTIC_FINDINGS, AGENTIC_STRESS_TEST_VERSION } from "../../src/config/agentic-stress-test";
+import { CHATBOT_CONTROLS, CHATBOT_OVERLAY_VERSION, chatbotLaw } from "../../src/config/chatbot-overlay";
 
 interface Item {
   id: string;
@@ -93,17 +94,50 @@ for (const finding of AGENTIC_FINDINGS) {
   });
 }
 
+// The customer-facing chatbot overlay: one item per control, with every law
+// entry it carries, so each control can be read and signed off on its own.
+for (const control of CHATBOT_CONTROLS) {
+  items.push({
+    id: `cb-${control.id}`,
+    group: "CHATBOT_OVERLAY",
+    groupLabel: "Customer-facing chatbot rules",
+    kind: "requirement",
+    code: `CB-${control.number}`,
+    titleEn: control.title.en,
+    titleEs: control.title.es,
+    bodyEn: control.duty.en,
+    bodyEs: control.duty.es,
+    extra: [
+      {
+        label: "Keep as evidence",
+        en: control.keeps.map((k) => k.en).join("; "),
+        es: control.keeps.map((k) => k.es).join("; "),
+      },
+      ...control.laws.map((l) => ({
+        label: `${chatbotLaw(l.law)?.name.en ?? l.law}: ${l.citation} (${l.appliesFrom ?? "in force"})`,
+        en: l.adds.en,
+        es: l.adds.es,
+      })),
+    ],
+    citations: control.laws.map((l) => l.citation),
+    scope: ["chatbot:overlay"],
+    source: "src/config/chatbot-overlay.ts",
+  });
+}
+
 const out = {
   generatedAt: new Date().toISOString(),
   versions: {
     unifiedAssessment: UNIFIED_ASSESSMENT_VERSION,
     agenticStressTest: AGENTIC_STRESS_TEST_VERSION,
+    chatbotOverlay: CHATBOT_OVERLAY_VERSION,
     regimes: Object.fromEntries(REGIME_PACKS.map((p) => [p.framework.code, p.framework.contentVersion])),
   },
   groups: [
     ...REGIME_PACKS.map((p) => ({ id: p.framework.code, label: p.framework.name, version: p.framework.version })),
     { id: "UNIFIED", label: "Unified impact assessment", version: UNIFIED_ASSESSMENT_VERSION },
     { id: "AGENTIC", label: "Agentic stress test", version: AGENTIC_STRESS_TEST_VERSION },
+    { id: "CHATBOT_OVERLAY", label: "Customer-facing chatbot rules", version: CHATBOT_OVERLAY_VERSION },
   ],
   items,
 };

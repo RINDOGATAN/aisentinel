@@ -150,6 +150,33 @@ describe.skipIf(!local)("syncRequirements on a seeded database (local only)", ()
     expect((await byFramework()).EU_GDPR).toBeUndefined();
   });
 
+  it("the chatbot overlay adds its rows only with the switch on and a yes, and removes only the empty ones", async () => {
+    const overlayRows = () =>
+      prisma.complianceMapping.findMany({
+        where: { organizationId: orgId, requirement: { framework: { code: "CHATBOT_OVERLAY" } } },
+        select: { id: true },
+      });
+    await prisma.aISystem.update({
+      where: { id: systemId },
+      data: { metadata: { regimeFacts: { interactsWithConsumers: "YES" } } },
+    });
+    const off = await syncRequirements(prisma, orgId, { reason: "test", chatbotOverlayEnabled: false });
+    expect(off.byFramework.CHATBOT_OVERLAY).toBeUndefined();
+    expect(await overlayRows()).toHaveLength(0);
+
+    const on = await syncRequirements(prisma, orgId, { reason: "test", chatbotOverlayEnabled: true });
+    expect(on.byFramework.CHATBOT_OVERLAY?.created).toBe(8);
+    const rows = await overlayRows();
+    expect(rows).toHaveLength(8);
+    const again = await syncRequirements(prisma, orgId, { reason: "test", chatbotOverlayEnabled: true });
+    expect(again.byFramework.CHATBOT_OVERLAY).toBeUndefined();
+
+    await prisma.complianceMapping.update({ where: { id: rows[0].id }, data: { notes: "kept" } });
+    const offAgain = await syncRequirements(prisma, orgId, { reason: "test", chatbotOverlayEnabled: false });
+    expect(offAgain.byFramework.CHATBOT_OVERLAY?.removed).toBe(7);
+    expect((await overlayRows()).map((r) => r.id)).toEqual([rows[0].id]);
+  });
+
   it("a legal hold stops every removal", async () => {
     await prisma.legalHold.create({
       data: { organizationId: orgId, matter: "test", reason: "test", issuedBy: "test" },

@@ -32,6 +32,7 @@ import { REGIME_PACKS } from "./regimes";
 import { flattenRegimeRequirements } from "./regimes/types";
 import { AIUC1_DOMAIN_PARAPHRASES_ES, AIUC1_TITLES_ES, aiuc1RequirementDescriptionEs } from "./aiuc1-requirements-es";
 import { allAiuc1Requirements } from "./aiuc1-requirements";
+import { CHATBOT_REQUIREMENTS } from "./chatbot-overlay";
 import {
   EU_AI_ACT_DESCRIPTIONS_ES,
   ISO_42001_DESCRIPTIONS_ES,
@@ -54,6 +55,7 @@ const FRAMEWORK_NAMES: Record<string, { en: string; es: string }> = {
   CO_SB_26_189: { en: "Colorado SB 26-189", es: "Colorado SB 26-189 (transparencia de la ADMT)" },
   TX_TRAIGA: { en: "Texas TRAIGA (HB 149)", es: "Texas TRAIGA (HB 149)" },
   WA_AI_RULES: { en: "Washington AI rules", es: "Normas de IA de Washington" },
+  CHATBOT_OVERLAY: { en: "Customer-facing chatbot rules", es: "Normas para chatbots de cara al público" },
 };
 
 /** Short chip labels for cross-framework links. */
@@ -67,6 +69,7 @@ const FRAMEWORK_SHORT: Record<string, { en: string; es: string }> = {
   TX_TRAIGA: { en: "TX", es: "TX" },
   WA_AI_RULES: { en: "WA", es: "WA" },
   AIUC_1: { en: "AIUC-1", es: "AIUC-1" },
+  CHATBOT_OVERLAY: { en: "Chatbot", es: "Chatbot" },
 };
 
 /** Compact names for small cards (the system page's per-framework scores). */
@@ -80,6 +83,7 @@ const FRAMEWORK_COMPACT: Record<string, { en: string; es: string }> = {
   TX_TRAIGA: { en: "Texas TRAIGA", es: "Texas TRAIGA" },
   WA_AI_RULES: { en: "Washington AI rules", es: "Normas de IA de Washington" },
   AIUC_1: { en: "AIUC-1", es: "AIUC-1" },
+  CHATBOT_OVERLAY: { en: "Chatbot rules", es: "Normas para chatbots" },
 };
 
 /**
@@ -97,6 +101,7 @@ const FRAMEWORK_CHIP_ES: Record<string, string> = {
   TX_TRAIGA: "TRAIGA de Texas",
   WA_AI_RULES: "Normas de IA de Washington",
   AIUC_1: "AIUC-1",
+  CHATBOT_OVERLAY: "Normas para chatbots",
 };
 
 /**
@@ -335,6 +340,7 @@ export const REQUIREMENT_TITLES_ES: Readonly<Record<string, Readonly<Record<stri
   ...Object.fromEntries(
     REGIME_PACKS.map((pack) => [pack.framework.code, packTitles(flattenRegimeRequirements(pack.requirements))])
   ),
+  CHATBOT_OVERLAY: Object.fromEntries(CHATBOT_REQUIREMENTS.map((r) => [r.code, r.title.es])),
 };
 
 /**
@@ -360,6 +366,7 @@ export const REQUIREMENT_DESCRIPTIONS_ES: Readonly<Record<string, Readonly<Recor
       Object.fromEntries(flattenRegimeRequirements(pack.requirements).map((r) => [r.code, r.description.es])),
     ])
   ),
+  CHATBOT_OVERLAY: Object.fromEntries(CHATBOT_REQUIREMENTS.map((r) => [r.code, r.description.es])),
 };
 
 /** A requirement's description in the screen's language, where a translation exists. */

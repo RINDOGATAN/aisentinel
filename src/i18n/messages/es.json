@@ -4835,6 +4835,13 @@
       "US_UT": "Utah",
       "US_VA": "Virginia",
       "US_WA": "Washington",
+      "US_OR": "Oregón",
+      "US_ID": "Idaho",
+      "US_IA": "Iowa",
+      "US_NE": "Nebraska",
+      "US_HI": "Hawái",
+      "US_ME": "Maine",
+      "US_NV": "Nevada",
       "CANADA": "Canadá",
       "BRAZIL": "Brasil",
       "CHINA": "China",
@@ -7141,5 +7148,78 @@
     "dpia_none": "Ninguna en DPO Central",
     "openDpia": "Abrir la EIPD",
     "noteRemoved": "Este sistema ya no está en DPO Central (anotado el {date}). Aquí no se ha borrado nada."
+  },
+  "chatbotOverlay": {
+    "tabLabel": "Normas para chatbots",
+    "title": "Normas para chatbots de cara al público",
+    "intro": "Cuatro preguntas sobre este sistema. Si alguna respuesta es sí, se aplican ocho controles, cada uno con las leyes a las que responde en los lugares que has declarado y la fecha desde la que se aplica cada una. Información sobre la ley, no asesoramiento jurídico.",
+    "whoAnswers": "Responden a estas preguntas los propietarios, los administradores y los responsables de IA.",
+    "saved": "Respuestas guardadas",
+    "saveAfterCreateFailed": "El sistema se ha registrado, pero no se han guardado las respuestas sobre el chatbot. Respóndelas en la pestaña Normas para chatbots del sistema.",
+    "registrationTitle": "Chatbot de cara al público",
+    "registrationHint": "Cuatro preguntas que deciden si se aplican a este sistema las normas para chatbots. Puedes dejarlas y responderlas más adelante en la página del sistema.",
+    "question": {
+      "interactsWithConsumers": {
+        "label": "¿Habla directamente con el público?",
+        "help": "Clientes, pacientes, usuarios o visitantes le escriben o le hablan y responde. Las herramientas internas solo para el personal son \"no\"."
+      },
+      "isCompanionChatbot": {
+        "label": "¿Actúa como acompañante o mantiene una relación continuada?",
+        "help": "Recuerda conversaciones anteriores para crear una relación, pregunta por los sentimientos por iniciativa propia o mantiene conversaciones personales a lo largo del tiempo."
+      },
+      "minorsMayUse": {
+        "label": "¿Podría usarlo alguien menor de 18 años?",
+        "help": "Responde \"sí\" salvo que compruebes la edad o que el servicio esté cerrado a menores por contrato y en la práctica."
+      },
+      "handlesSensitiveTopics": {
+        "label": "¿Trata la salud, la vida sexual o el estado emocional?",
+        "help": "Los usuarios pueden contarle cosas sobre su salud, su salud mental, su vida sexual o sus sentimientos, o el sistema los infiere."
+      }
+    },
+    "answer": {
+      "YES": "Sí",
+      "NO": "No",
+      "NOT_ASSESSED": "No lo sé"
+    },
+    "state": {
+      "applies": "Estas normas se aplican a este sistema. En tus lugares: {inForce, plural, one {# ley en vigor} other {# leyes en vigor}} y {upcoming, plural, one {# próxima} other {# próximas}}.",
+      "undetermined": "No lo sabes o todavía no has respondido. Los controles siguen abiertos más abajo hasta que se resuelvan las preguntas. No se añade nada al registro hasta que una respuesta sea sí.",
+      "doesNotApply": "Las cuatro respuestas son no: estas normas no se aplican a este sistema."
+    },
+    "declarePlaces": "No hay lugares declarados, así que no se puede mostrar ninguna ley junto a los controles.",
+    "declarePlacesLink": "Declara dónde opera la organización",
+    "signoffPending": "Validación pendiente",
+    "controlsTitle": "Los ocho controles",
+    "controlsIntro": "Cada control se redacta una sola vez, conforme a la norma común más estricta. Las leyes que se muestran son las de tus lugares: {places}. \"Próxima\" significa aprobada y todavía no en vigor.",
+    "controlsIntroNoPlaces": "Cada control se redacta una sola vez, conforme a la norma común más estricta. Declara tus lugares para ver las leyes a las que responde cada uno.",
+    "status": {
+      "COMPLIANT": "Cumple",
+      "PARTIALLY_COMPLIANT": "Cumple en parte",
+      "NON_COMPLIANT": "No cumple",
+      "NOT_APPLICABLE": "No aplicable",
+      "NOT_ASSESSED": "Sin evaluar"
+    },
+    "counts": "{inForce} en vigor · {upcoming} próximas",
+    "keeps": "Conserva como prueba",
+    "evidenceCount": "{count, plural, =0 {Todavía no hay pruebas registradas} one {# prueba registrada} other {# pruebas registradas}}",
+    "noLawsForPlaces": "Ninguna ley de tus lugares exige este control. Sigue siendo una buena práctica.",
+    "timing": {
+      "inForce": "En vigor",
+      "inForceSince": "En vigor desde el {date}",
+      "upcoming": "Próxima: se aplica desde el {date}"
+    },
+    "place": "Lugar",
+    "reaches": "A quién alcanza",
+    "source": "Fuente oficial",
+    "openEvidence": "Registra las pruebas en el registro de cumplimiento",
+    "watchListTitle": "En seguimiento (no es un deber):",
+    "counsel": {
+      "title": "Requiere revisión de un abogado",
+      "intro": "AI Sentinel no dice si una función es lícita. Marca las funciones que tenga este producto. Cada una muestra un aviso con el motivo, y al guardar queda constancia de que has visto los avisos. No se nombra a ningún despacho ni se hace ninguna derivación.",
+      "saved": "Guardado",
+      "seenAt": "Avisos vistos y guardados por última vez el {date}.",
+      "notSeen": "Todavía no se ha guardado.",
+      "save": "Guardar"
+    }
   }
 }

@@ -14,6 +14,7 @@ import { afterAll, describe, expect, it } from "vitest";
 import { PrismaClient } from "@prisma/client";
 import { SEEDED_CHOSEN_FRAMEWORKS, SEEDED_TIER_FRAMEWORKS, docsCounts } from "./docs-counts";
 import { AIUC1_DOMAINS, aiuc1CrossMappings, allAiuc1Requirements } from "./aiuc1-requirements";
+import { OVERLAY_FRAMEWORKS } from "./framework-scope";
 
 const url = process.env.SEED_TEST_DATABASE_URL;
 const local = !!url && /^postgres(ql)?:\/\/[^@]*@(localhost|127\.0\.0\.1)(:\d+)?\//.test(url);
@@ -24,7 +25,11 @@ describe.skipIf(!local)("seeded database (local only)", () => {
 
   it("holds every framework the docs count, AIUC-1 among them", async () => {
     const frameworks = await prisma.complianceFramework.findMany({ select: { code: true } });
-    const codes = frameworks.map((f) => f.code).sort();
+    // The chatbot overlay is seeded too, but it is not a framework the docs
+    // count: it is hidden while its switch is off and never chosen.
+    const all = frameworks.map((f) => f.code).sort();
+    expect(all).toContain("CHATBOT_OVERLAY");
+    const codes = all.filter((c) => !(OVERLAY_FRAMEWORKS as readonly string[]).includes(c));
     expect(codes).toContain("AIUC_1");
     expect(codes).toHaveLength(docsCounts().frameworks);
     for (const code of [...Object.keys(SEEDED_TIER_FRAMEWORKS), ...Object.keys(SEEDED_CHOSEN_FRAMEWORKS)]) {

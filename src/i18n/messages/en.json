@@ -4835,6 +4835,13 @@
       "US_UT": "Utah",
       "US_VA": "Virginia",
       "US_WA": "Washington",
+      "US_OR": "Oregon",
+      "US_ID": "Idaho",
+      "US_IA": "Iowa",
+      "US_NE": "Nebraska",
+      "US_HI": "Hawaii",
+      "US_ME": "Maine",
+      "US_NV": "Nevada",
       "CANADA": "Canada",
       "BRAZIL": "Brazil",
       "CHINA": "China",
@@ -7141,5 +7148,78 @@
     "dpia_none": "None in DPO Central",
     "openDpia": "Open the DPIA",
     "noteRemoved": "This system is no longer in DPO Central (noted on {date}). Nothing has been deleted here."
+  },
+  "chatbotOverlay": {
+    "tabLabel": "Chatbot rules",
+    "title": "Customer-facing chatbot rules",
+    "intro": "Four questions about this system. If any answer is yes, eight controls apply, each listing the laws it answers for the places you have declared, with the date each one applies. Information about the law, not legal advice.",
+    "whoAnswers": "Owners, admins and AI officers answer these questions.",
+    "saved": "Answers saved",
+    "saveAfterCreateFailed": "The system is registered, but the chatbot answers were not saved. Answer them on the system's Chatbot rules tab.",
+    "registrationTitle": "Customer-facing chatbot",
+    "registrationHint": "Four questions that decide whether the chatbot rules apply to this system. You can leave them and answer them later on the system's page.",
+    "question": {
+      "interactsWithConsumers": {
+        "label": "Does it talk directly with members of the public?",
+        "help": "Customers, patients, users or visitors type or speak to it and it answers. Internal tools for staff only are \"no\"."
+      },
+      "isCompanionChatbot": {
+        "label": "Does it act as a companion or keep an ongoing relationship?",
+        "help": "It remembers past conversations to build a relationship, asks about feelings on its own initiative, or holds personal conversations over time."
+      },
+      "minorsMayUse": {
+        "label": "Could anyone under 18 use it?",
+        "help": "Answer \"yes\" unless you check age or the service is closed to minors by contract and in practice."
+      },
+      "handlesSensitiveTopics": {
+        "label": "Does it handle health, sexual life or emotional state?",
+        "help": "Users may tell it about their health, mental health, sex life or feelings, or it infers them."
+      }
+    },
+    "answer": {
+      "YES": "Yes",
+      "NO": "No",
+      "NOT_ASSESSED": "Not sure"
+    },
+    "state": {
+      "applies": "These rules apply to this system. For your places: {inForce, plural, one {# law in force} other {# laws in force}} and {upcoming, plural, one {# upcoming} other {# upcoming}}.",
+      "undetermined": "Not sure, or not answered yet. The controls stay open below until the questions are settled. Nothing is added to the register until one answer is yes.",
+      "doesNotApply": "All four answers are no: these rules do not apply to this system."
+    },
+    "declarePlaces": "No places are declared, so no law can be listed against the controls.",
+    "declarePlacesLink": "Declare where the organization operates",
+    "signoffPending": "Sign-off pending",
+    "controlsTitle": "The eight controls",
+    "controlsIntro": "Each control is written once, to the strictest common rule. The laws shown are those for your places: {places}. \"Upcoming\" means enacted and not yet in force.",
+    "controlsIntroNoPlaces": "Each control is written once, to the strictest common rule. Declare your places to see the laws each one answers.",
+    "status": {
+      "COMPLIANT": "Compliant",
+      "PARTIALLY_COMPLIANT": "Partly compliant",
+      "NON_COMPLIANT": "Not compliant",
+      "NOT_APPLICABLE": "Not applicable",
+      "NOT_ASSESSED": "Not assessed"
+    },
+    "counts": "{inForce} in force · {upcoming} upcoming",
+    "keeps": "Keep as evidence",
+    "evidenceCount": "{count, plural, =0 {No evidence recorded yet} one {# piece of evidence recorded} other {# pieces of evidence recorded}}",
+    "noLawsForPlaces": "No law for your places asks for this control. It remains good practice.",
+    "timing": {
+      "inForce": "In force",
+      "inForceSince": "In force since {date}",
+      "upcoming": "Upcoming: applies from {date}"
+    },
+    "place": "Place",
+    "reaches": "Reaches",
+    "source": "Official source",
+    "openEvidence": "Record evidence in the register",
+    "watchListTitle": "Watch list (not a duty):",
+    "counsel": {
+      "title": "Needs review by counsel",
+      "intro": "AI Sentinel does not say whether a feature is lawful. Tick any feature this product has. Each one shows a flag with the reason, and saving records that the flags were seen. No firm is named and no referral is made.",
+      "saved": "Saved",
+      "seenAt": "Flags last seen and saved on {date}.",
+      "notSeen": "Not saved yet.",
+      "save": "Save"
+    }
   }
 }

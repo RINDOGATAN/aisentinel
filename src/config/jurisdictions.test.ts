@@ -36,8 +36,9 @@ describe("jurisdiction vocabulary", () => {
   });
 
   it("partitions every jurisdiction into exactly one group", () => {
+    // With the chatbot overlay's places offered, every id is in one group.
     const grouped = JURISDICTION_GROUPS.flatMap((g) =>
-      jurisdictionsInGroup(g).map((o) => o.id),
+      jurisdictionsInGroup(g, { chatbotOverlay: true }).map((o) => o.id),
     );
     expect(grouped.sort()).toEqual([...JURISDICTION_IDS].sort());
   });

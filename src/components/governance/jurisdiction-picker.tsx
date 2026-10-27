@@ -18,6 +18,7 @@ import {
   jurisdictionsInGroup,
   type JurisdictionId,
 } from "@/config/jurisdictions";
+import { useChatbotOverlayEnabled } from "@/components/governance/chatbot-overlay/use-chatbot-overlay";
 
 export function JurisdictionPicker({
   value,
@@ -32,6 +33,8 @@ export function JurisdictionPicker({
   compact?: boolean;
 }) {
   const t = useTranslations("jurisdictions");
+  // The places that exist only for the chatbot overlay are offered while it is on.
+  const chatbotOverlay = useChatbotOverlayEnabled();
   const selected = new Set(value);
 
   const toggle = (id: JurisdictionId) => {
@@ -56,7 +59,7 @@ export function JurisdictionPicker({
                 : "grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-1.5"
             }
           >
-            {jurisdictionsInGroup(group).map((option) => (
+            {jurisdictionsInGroup(group, { chatbotOverlay }).map((option) => (
               <label
                 key={option.id}
                 className={`flex items-center gap-2 text-sm ${

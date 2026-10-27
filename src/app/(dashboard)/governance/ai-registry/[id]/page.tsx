@@ -76,6 +76,8 @@ import { TierChip } from "@/components/governance/risk-tier-badge";
 import { PageHeader } from "@/components/governance/page-header";
 import { DeleteRecordButton } from "@/components/governance/delete-record-button";
 import { UnifiedPanel } from "@/components/governance/UnifiedPanel";
+import { ChatbotOverlayPanel } from "@/components/governance/chatbot-overlay/chatbot-overlay-panel";
+import { useChatbotOverlayEnabled } from "@/components/governance/chatbot-overlay/use-chatbot-overlay";
 import { AgentPanel } from "@/components/governance/AgentPanel";
 import { TransparencyStatementCard } from "@/components/ai/TransparencyStatementCard";
 import { DataFlowPanel } from "@/components/governance/data-flow-panel";
@@ -226,6 +228,9 @@ const LINKABLE_TABS = new Set([
   "incidents",
   "unified",
   "agent",
+  // Shown only while the chatbot overlay is switched on; otherwise the page
+  // opens on the first tab.
+  "chatbot",
 ]);
 
 export default function AISystemDetailPage() {
@@ -248,6 +253,9 @@ export default function AISystemDetailPage() {
     document.getElementById("system-tabs")?.scrollIntoView({ block: "start" });
   };
   const { organization, canWrite, canDecide, canDelete } = useOrganization();
+  const chatbotOverlay = useChatbotOverlayEnabled();
+  const tChatbot = useTranslations("chatbotOverlay");
+  const shownTab = tab === "chatbot" && !chatbotOverlay ? "models" : tab;
   const router = useRouter();
   const t = useTranslations("aiRegistryDetail");
   const tDelete = useTranslations("deleteRecord");
@@ -1190,7 +1198,7 @@ export default function AISystemDetailPage() {
 
       {/* Tabs */}
       {/* `?tab=transparency` (from the path's transparency view) opens on that tab. */}
-      <Tabs value={tab} onValueChange={setTab} id="system-tabs" className="scroll-mt-20">
+      <Tabs value={shownTab} onValueChange={setTab} id="system-tabs" className="scroll-mt-20">
         <TabsList className="w-full justify-start overflow-x-auto">
           <TabsTrigger value="models" className="text-xs sm:text-sm">
             {t("tabModels", { count: system.models?.length ?? 0 })}
@@ -1230,6 +1238,11 @@ export default function AISystemDetailPage() {
           <TabsTrigger value="unified" className="text-xs sm:text-sm">
             {tRegimes("title")}
           </TabsTrigger>
+          {chatbotOverlay && (
+            <TabsTrigger value="chatbot" className="text-xs sm:text-sm">
+              {tChatbot("tabLabel")}
+            </TabsTrigger>
+          )}
           <TabsTrigger value="agent" className="text-xs sm:text-sm">
             {tAgent("tabLabel")}
           </TabsTrigger>
@@ -1784,6 +1797,22 @@ export default function AISystemDetailPage() {
             canWrite={canWrite}
           />
         </TabsContent>
+
+        {/* Customer-facing chatbot rules: shown only while the overlay is
+            switched on (CHATBOT_OVERLAY_ENABLED). */}
+        {chatbotOverlay && (
+          <TabsContent value="chatbot" className="mt-4">
+            {shownTab === "chatbot" && (
+              <ChatbotOverlayPanel
+                organizationId={organizationId}
+                aiSystemId={id}
+                canDecide={canDecide}
+                canWrite={canWrite}
+                onOpenEvidence={() => setTab("evidence")}
+              />
+            )}
+          </TabsContent>
+        )}
 
         {/* Agent governance: autonomy, reach, accountability and the stop
             control. Always shown — a system that is not an agent is an answer

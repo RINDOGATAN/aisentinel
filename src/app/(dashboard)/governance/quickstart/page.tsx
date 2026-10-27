@@ -79,6 +79,7 @@ import {
 import {
   EMPTY_APPLICABILITY_ANSWERS,
   type ApplicabilityAnswers,
+  type ChoosableFramework,
 } from "@/config/applicability";
 import { features } from "@/config/features";
 import { RiskTierBadge } from "@/components/governance/risk-tier-badge";
@@ -230,6 +231,8 @@ export default function QuickstartPage() {
   const [applicabilityAnswers, setApplicabilityAnswers] =
     useState<ApplicabilityAnswers>(EMPTY_APPLICABILITY_ANSWERS);
   const [applicabilityTouched, setApplicabilityTouched] = useState(false);
+  const [frameworks, setFrameworks] = useState<ChoosableFramework[]>([]);
+  const [frameworksTouched, setFrameworksTouched] = useState(false);
   const [scopePrefilled, setScopePrefilled] = useState(false);
   const { data: savedApplicability, isError: applicabilityFailed } = trpc.regimes.getApplicability.useQuery(
     { organizationId: organization?.id ?? "" },
@@ -238,6 +241,7 @@ export default function QuickstartPage() {
   if (savedApplicability && !scopePrefilled) {
     setScopePrefilled(true);
     if (!applicabilityTouched) setApplicabilityAnswers(savedApplicability.answers);
+    if (!frameworksTouched) setFrameworks(savedApplicability.frameworks);
     if (!jurisdictionsTouched) setSelectedJurisdictions(savedApplicability.jurisdictions);
   }
   // The scope inputs open once the saved answers are in (or could not be
@@ -410,9 +414,21 @@ export default function QuickstartPage() {
   // Leaving the applicability check. Continuing saves what was changed on
   // the way past: "Not sure yet" for the jurisdictions saves an empty set,
   // which the model treats as UNDECLARED rather than "nowhere", and "not sure
-  // yet" answers are saved as such. Skipping saves nothing. Neither blocks the
-  // wizard, and both stay editable in Settings.
+  // yet" answers are saved as such. Skipping saves nothing but the frameworks
+  // chosen. The program is built from the chosen frameworks, so neither goes
+  // on until at least one is chosen; everything stays editable in Settings.
   const handleProceedFromScope = (skip: boolean) => {
+    if (canWrite && frameworks.length === 0) {
+      toast.error(tap("frameworks.required"));
+      return;
+    }
+    if (skip && orgId && canWrite && frameworksTouched) {
+      setApplicability.mutate({
+        organizationId: orgId,
+        answers: savedApplicability?.answers ?? EMPTY_APPLICABILITY_ANSWERS,
+        frameworks,
+      });
+    }
     if (!skip && orgId && canWrite) {
       if (jurisdictionsTouched) {
         setJurisdictions.mutate({
@@ -420,8 +436,12 @@ export default function QuickstartPage() {
           jurisdictions: jurisdictionsUnsure ? [] : selectedJurisdictions,
         });
       }
-      if (applicabilityTouched) {
-        setApplicability.mutate({ organizationId: orgId, answers: applicabilityAnswers });
+      if (applicabilityTouched || frameworksTouched) {
+        setApplicability.mutate({
+          organizationId: orgId,
+          answers: applicabilityAnswers,
+          ...(frameworksTouched ? { frameworks } : {}),
+        });
       }
     }
     goNext("scope");
@@ -701,9 +721,15 @@ export default function QuickstartPage() {
               <ApplicabilityQuestions
                 answers={applicabilityAnswers}
                 disabled={!canWrite || !scopeReady}
+                jurisdictions={jurisdictionsUnsure ? [] : selectedJurisdictions}
                 onChange={(next) => {
                   setApplicabilityAnswers(next);
                   setApplicabilityTouched(true);
+                }}
+                frameworks={frameworks}
+                onFrameworksChange={(next) => {
+                  setFrameworks(next);
+                  setFrameworksTouched(true);
                 }}
               />
             </CardContent>
@@ -714,6 +740,7 @@ export default function QuickstartPage() {
               <ApplicabilityResult
                 jurisdictions={jurisdictionsUnsure ? [] : selectedJurisdictions}
                 answers={applicabilityAnswers}
+                frameworks={frameworks}
                 screeningInNewTab
               />
             </CardContent>

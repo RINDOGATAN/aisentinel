@@ -40,6 +40,8 @@ import {
   APPLICABILITY_QUESTIONS,
   APPLICABILITY_VERSION,
   readApplicabilityAnswers,
+  readApplicabilitySettings,
+  CHOOSABLE_FRAMEWORKS,
   type ApplicabilityAnswers,
 } from "@/config/applicability";
 
@@ -73,6 +75,9 @@ const applicabilityInput = z.object(
     typeof applicabilityAnswer
   >,
 );
+
+// The frameworks chosen (src/config/applicability.ts, CHOOSABLE_FRAMEWORKS).
+const frameworksInput = z.array(z.enum(CHOOSABLE_FRAMEWORKS)).max(CHOOSABLE_FRAMEWORKS.length);
 
 type OrgRegimeSettings =Partial<Omit<RegimeOrgFacts, "operatingJurisdictions">>;
 type SystemRegimeFacts = Partial<
@@ -327,6 +332,12 @@ export const regimesRouter = createTRPCRouter({
       return {
         jurisdictions: (org?.operatingJurisdictions ?? []) as unknown as JurisdictionId[],
         answers: readApplicabilityAnswers(stored?.answers),
+        // The choice in force: the stored one, or what was in scope before
+        // the question existed for a record that has none.
+        frameworks: readApplicabilitySettings(
+          org?.settings ?? null,
+          (org?.operatingJurisdictions ?? []) as string[],
+        ).frameworks,
         answeredAt: typeof stored?.answeredAt === "string" ? stored.answeredAt : null,
       };
     }),
@@ -339,16 +350,24 @@ export const regimesRouter = createTRPCRouter({
    * those are answered.
    */
   setApplicability: orgWriteProcedure
-    .input(z.object({ organizationId: z.string(), answers: applicabilityInput }))
+    .input(
+      z.object({ organizationId: z.string(), answers: applicabilityInput, frameworks: frameworksInput.optional() }),
+    )
     .mutation(async ({ ctx, input }) => {
       const org = await ctx.prisma.organization.findFirst({
         where: { id: ctx.organization.id },
-        select: { settings: true },
+        select: { settings: true, operatingJurisdictions: true },
       });
       const settings = (org?.settings ?? {}) as Record<string, unknown>;
+      // A choice left out of the input keeps the one in force.
+      const frameworks =
+        input.frameworks !== undefined
+          ? CHOOSABLE_FRAMEWORKS.filter((code) => input.frameworks!.includes(code))
+          : readApplicabilitySettings(org?.settings ?? null, (org?.operatingJurisdictions ?? []) as string[]).frameworks;
       const applicability = {
         version: APPLICABILITY_VERSION,
         answers: input.answers,
+        frameworks,
         answeredAt: new Date().toISOString(),
       };
       await ctx.prisma.organization.update({
@@ -362,7 +381,7 @@ export const regimesRouter = createTRPCRouter({
           action: "UPDATE",
           entityType: "Organization",
           entityId: ctx.organization.id,
-          changes: { applicability: input.answers, version: APPLICABILITY_VERSION },
+          changes: { applicability: input.answers, frameworks, version: APPLICABILITY_VERSION },
         },
       });
       // A "no" can rule a framework out (src/config/framework-scope.ts), and

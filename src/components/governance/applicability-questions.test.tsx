@@ -15,7 +15,7 @@ import { EMPTY_APPLICABILITY_ANSWERS } from "@/config/applicability";
 vi.mock("@/lib/trpc", () => ({ trpc: {} }));
 vi.mock("@/components/guided/use-program-path", () => ({ useProgramPath: () => null }));
 
-import { ApplicabilityQuestions } from "./applicability-check";
+import { ApplicabilityQuestions, FrameworksQuestion } from "./applicability-check";
 
 function render(answers = EMPTY_APPLICABILITY_ANSWERS, locale: "en" | "es" = "en") {
   return renderToStaticMarkup(
@@ -35,6 +35,46 @@ describe("applicability questions", () => {
   it("shows a yes or a no as chosen", () => {
     const html = render({ ...EMPTY_APPLICABILITY_ANSWERS, usesAi: "YES", meetsPeople: "NO" });
     expect(html.match(/checked=""/g)).toHaveLength(2);
+  });
+
+  it("asks only the questions that matter for the declared places", () => {
+    const html = renderToStaticMarkup(
+      <NextIntlClientProvider locale="en" messages={en}>
+        <ApplicabilityQuestions answers={EMPTY_APPLICABILITY_ANSWERS} onChange={() => {}} jurisdictions={["US_TX"]} />
+      </NextIntlClientProvider>,
+    );
+    expect(html).not.toContain(en.applicability.questions.generalPurposeModel.label);
+    expect(html).not.toContain(en.applicability.questions.decidesAboutPeople.label);
+    expect(html).toContain(en.applicability.questions.usesAi.label);
+  });
+
+  it("offers the frameworks unticked, with a hint and a neutral line for a law the places point to", () => {
+    const html = renderToStaticMarkup(
+      <NextIntlClientProvider locale="es" messages={es}>
+        <FrameworksQuestion
+          answers={EMPTY_APPLICABILITY_ANSWERS}
+          jurisdictions={["EU", "US_CO"]}
+          frameworks={["NIST_AI_RMF"]}
+          onChange={() => {}}
+          idPrefix="t"
+        />
+      </NextIntlClientProvider>,
+    );
+    // Only the chosen one is ticked.
+    expect(html.match(/aria-checked="true"/g)).toHaveLength(1);
+    expect(html).toContain(es.applicability.frameworks.options.EU_AI_ACT.hint);
+    expect(html).toContain("pueden aplicarse por ley");
+    expect(html).toContain("Colorado: SB 26-189");
+  });
+
+  it("asks for at least one framework while none is chosen", () => {
+    const html = renderToStaticMarkup(
+      <NextIntlClientProvider locale="en" messages={en}>
+        <FrameworksQuestion answers={EMPTY_APPLICABILITY_ANSWERS} jurisdictions={[]} frameworks={[]} onChange={() => {}} idPrefix="t" />
+      </NextIntlClientProvider>,
+    );
+    expect(html).not.toContain('aria-checked="true"');
+    expect(html).toContain(en.applicability.frameworks.required);
   });
 
   it("says on the band what counts, in both languages", () => {

@@ -85,6 +85,12 @@ export interface PathStep<C> {
    * a moment later than to show one that then disappears.
    */
   shownWhen?: (counts: C) => boolean;
+  /**
+   * Comes before the numbered steps of its stage (choosing the frameworks,
+   * while none is chosen): it carries no number, so the steps after it keep
+   * theirs whether it is shown or not. Its number in the walk is empty.
+   */
+  unnumbered?: boolean;
   /** No page carries it yet: shown, labelled "coming", never counted. */
   coming?: boolean;
   /**
@@ -432,10 +438,13 @@ export function stepSequence<C>(
 ): SequenceEntry<C>[] {
   const out: SequenceEntry<C>[] = [];
   for (const [stageIndex, stage] of config.stages.entries()) {
-    for (const [stepIndex, step] of stage.steps.entries()) {
+    let numbered = 0;
+    for (const step of stage.steps) {
+      // Numbers count the steps of the config, shown or not, except an unnumbered one.
+      if (!step.unnumbered) numbered++;
       if (!step.href || step.coming) continue;
       if (statuses !== undefined && step.id !== keep && !isShown(step, statuses)) continue;
-      out.push({ stage, stageIndex, step, number: `${stageIndex + 1}.${stepIndex + 1}` });
+      out.push({ stage, stageIndex, step, number: step.unnumbered ? "" : `${stageIndex + 1}.${numbered}` });
     }
   }
   return out;

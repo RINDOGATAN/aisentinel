@@ -120,6 +120,16 @@ async function noSidewaysScroll(page: Page) {
 }
 
 async function quickStart(page: Page, organizationId: string, industryId = "saas") {
+  // A new organisation has chosen no framework, and the build needs one: the
+  // set an organisation had before the choice existed (applicability.ts,
+  // legacyFrameworkChoice, with no place declared).
+  const { answers } = await api<{ answers: unknown }>(page, "regimes.getApplicability", { organizationId }, "query");
+  await api(
+    page,
+    "regimes.setApplicability",
+    { organizationId, answers, frameworks: ["EU_AI_ACT", "NIST_AI_RMF", "ISO_42001", "AIUC_1"] },
+    "mutation",
+  );
   await api(page, "organization.setJurisdictions", { organizationId, jurisdictions: ["EU"] }, "mutation");
   await api(page, "quickstart.execute", { organizationId, industryId }, "mutation");
 }

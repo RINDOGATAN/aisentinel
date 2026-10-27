@@ -23,12 +23,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { ArrowRight, Check, Circle } from "lucide-react";
 import { useOrganization } from "@/lib/organization-context";
 import { AI_SENTINEL_PATH } from "./path-config";
 import { stageToCelebrate, stepAndFollowing, type PathStatuses, type StepCheck } from "./path";
 import { useProgramPathQuery } from "./use-program-path";
+import { stepText } from "./step-why";
 
 const SEEN_KEY = "ais_stages_done";
 
@@ -60,7 +61,8 @@ export function StepBand({
 }) {
   const t = useTranslations("guided");
   const { organization } = useOrganization();
-  const { checks: allChecks } = useProgramPathQuery();
+  const { checks: allChecks, disclosureLaws } = useProgramPathQuery();
+  const locale = useLocale();
   const pathname = usePathname();
   const place = stepAndFollowing(AI_SENTINEL_PATH, stepId, statuses);
   const orgId = organization?.id;
@@ -133,11 +135,11 @@ export function StepBand({
         ) : (
           <p className="min-w-0 flex-1">
             <span className="font-semibold text-primary tabular-nums">
-              {t("band.step", { number: current.number })}
+              {current.number ? t("band.step", { number: current.number }) : t("band.beforeSteps")}
             </span>
             <span aria-hidden="true"> · </span>
             <span className="sr-only">: </span>
-            {t(`steps.${current.step.id}.do`)}
+            {stepText(t, current.step.id, "do", disclosureLaws, locale)}
           </p>
         )}
         {!unfinished &&

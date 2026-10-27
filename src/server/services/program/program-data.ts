@@ -19,9 +19,11 @@ import {
   LAWFIRM_ROLLOUT_RECOMMENDATIONS,
   LAWFIRM_PROFESSIONAL_DUTIES,
   getActionTemplate,
+  impactAssessmentDetail,
   getRolloutForCategory,
   PROGRAM_GUIDANCE_REVIEW_MARKER,
   PROGRAM_GUIDANCE_REVIEW_MARKER_GENERAL,
+  type AssessmentLawScope,
   type GapId,
 } from "@/config/program-guidance";
 import {
@@ -36,6 +38,8 @@ import {
   type Art50ProfileStatuses,
 } from "@/config/transparency-rules";
 import { AI_SENTINEL_PATH } from "@/components/guided/path-config";
+import { readApplicabilitySettings } from "@/config/applicability";
+import { frameworksRuledOut } from "@/config/framework-scope";
 import {
   getConfirmationCounts,
   needsConfirmation,
@@ -207,6 +211,29 @@ export type DutyControlStatus =
   | "missing"
   | "recommended";
 
+/**
+ * Which assessment duties the organisation's scope reaches, for the
+ * impact-assessment action of the plan (src/config/program-guidance.ts,
+ * impactAssessmentDetail). Pure: reads the stored places and settings.
+ */
+export function assessmentLawScope(
+  organization: { operatingJurisdictions?: readonly string[] | null; settings?: unknown } | null,
+): AssessmentLawScope {
+  const places = [...(organization?.operatingJurisdictions ?? [])] as string[];
+  const { answers, frameworks } = readApplicabilitySettings(organization?.settings ?? null, places);
+  const ruledOut: readonly string[] = frameworksRuledOut(places, answers, frameworks);
+  const has = (j: string) => places.includes(j);
+  const settings =
+    organization?.settings && typeof organization.settings === "object"
+      ? (organization.settings as { admt?: { coveredBusiness?: unknown } })
+      : {};
+  return {
+    gdpr: has("EU") || has("EEA") || has("UK"),
+    euAiAct: (has("EU") || has("EEA")) && !ruledOut.includes("EU_AI_ACT"),
+    california: has("US_CA") && !ruledOut.includes("CA_CCPA_ADMT") && settings.admt?.coveredBusiness === "YES",
+  };
+}
+
 // ── Graph ───────────────────────────────────────────────────────────
 
 export async function getProgramGraphData(
@@ -331,7 +358,7 @@ export async function getProgramScorecardData(
     }),
     prisma.organization.findUnique({
       where: { id: organizationId },
-      select: { settings: true },
+      select: { settings: true, operatingJurisdictions: true },
     }),
     prisma.aIAssessment.findMany({
       where: { organizationId, status: "APPROVED" },
@@ -492,6 +519,8 @@ export async function getProgramScorecardData(
   // shown under the phase it belongs to (GAP_STAGE), most severe first, so the
   // program page, the PDF and the Dashboard describe one plan.
   const RANK: Record<GapSeverity, number> = { critical: 0, high: 1, medium: 2 };
+  // The impact-assessment action cites only the laws in the organisation's scope.
+  const assessmentDetail = impactAssessmentDetail(assessmentLawScope(organization));
   const plan = AI_SENTINEL_PATH.stages.map((stage) => ({
     bucket: stage.id,
     stages: [stage.id],
@@ -506,7 +535,10 @@ export async function getProgramScorecardData(
           severity: gap.severity,
           count: gap.count,
           title: template?.title[locale] ?? gap.id,
-          detail: template?.detail[locale] ?? "",
+          detail:
+            gap.id === "high-risk-without-assessment"
+              ? assessmentDetail[locale]
+              : (template?.detail[locale] ?? ""),
           href: template?.href ?? "/governance",
           effort: template?.effort ?? "M",
         };

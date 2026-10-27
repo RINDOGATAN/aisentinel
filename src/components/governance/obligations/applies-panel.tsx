@@ -51,7 +51,7 @@ export function AppliesPanel({
 
   const jurisdictions =
     (org?.operatingJurisdictions as JurisdictionId[] | undefined) ?? applicability.jurisdictions;
-  const items = evaluateApplicability(jurisdictions, applicability.answers);
+  const items = evaluateApplicability(jurisdictions, applicability.answers, applicability.frameworks);
   const lines = appliesLines(items, calendar.rows);
   const maybe = items.filter((i) => i.state === "check");
 

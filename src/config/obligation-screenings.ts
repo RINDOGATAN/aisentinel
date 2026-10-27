@@ -24,7 +24,7 @@
  */
 
 import {
-  APPLICABILITY_QUESTIONS,
+  applicabilityQuestionsFor,
   hasAnyApplicabilityAnswer,
   readApplicabilityAnswers,
 } from "@/config/applicability";
@@ -107,7 +107,8 @@ export function obligationScreenings(
   let openQuestions = 0;
   if (!applicabilityAnswered) {
     open.push("applicability");
-    openQuestions += APPLICABILITY_QUESTIONS.filter((q) => applicabilityAnswers[q] === "UNSURE").length;
+    // Only the questions asked for the declared places count.
+    openQuestions += applicabilityQuestionsFor(jurisdictions).filter((q) => applicabilityAnswers[q] === "UNSURE").length;
   }
 
   if (jurisdictions.includes("US_CA")) {

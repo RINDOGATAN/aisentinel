@@ -27,6 +27,9 @@ import type { PathCounts } from "@/components/guided/path-config";
 import { UNCONFIRMED_WHERE } from "@/server/services/provenance/summary";
 import { COUNTED_INCIDENT } from "@/server/services/incident/counted";
 import { obligationScreenings } from "@/config/obligation-screenings";
+import { readApplicabilitySettings } from "@/config/applicability";
+import { frameworksRuledOut } from "@/config/framework-scope";
+import { disclosureLawsFor } from "@/config/disclosure-laws";
 import { loadAgentTestingCounts } from "@/server/services/aiuc1/readiness";
 import {
   CLIENT_TEMPLATE_REF,
@@ -278,6 +281,11 @@ export async function loadPathCounts(
   const quickstart = settingsObject(settings.quickstart);
   const jurisdictions = countedJurisdictions(scope, organization);
   const screenings = obligationScreenings(jurisdictions, settings);
+  // The organisation's own declared places and answers, as the requirement
+  // sync reads them (src/config/framework-scope.ts).
+  const declared = [...(organization?.operatingJurisdictions ?? [])] as string[];
+  const { answers, frameworks } = readApplicabilitySettings(organization?.settings, declared);
+  const ruledOut = frameworksRuledOut(declared, answers, frameworks);
 
   return {
     quickstartCompleted: typeof quickstart.completedAt === "string",
@@ -308,6 +316,9 @@ export async function loadPathCounts(
     threatModels,
     threatModelsActive,
     ...agentTesting,
+    frameworksChosen: frameworks.length > 0,
+    aiuc1Followed: !ruledOut.includes("AIUC_1"),
+    disclosureLaws: disclosureLawsFor(declared, ruledOut),
     oversightGates,
     highRiskWithGate,
     transparencyProfiles,

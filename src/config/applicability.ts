@@ -27,7 +27,7 @@
 
 import type { JurisdictionId } from "@/config/jurisdictions";
 
-export const APPLICABILITY_VERSION = "2026.09.1";
+export const APPLICABILITY_VERSION = "2026.10.1";
 
 export type ApplicabilityAnswer = "YES" | "NO" | "UNSURE";
 
@@ -52,6 +52,173 @@ export const ROLE_QUESTIONS: readonly ApplicabilityQuestion[] = [
   "usesAi",
   "generalPurposeModel",
 ];
+
+/**
+ * The places a question matters for. A question listed here feeds only the
+ * laws of those places, so it is asked only when one of them is declared. A
+ * question not listed here is asked of everyone. With no place declared yet
+ * ("not sure yet"), every question is asked, as before.
+ *
+ * - general-purpose AI model: the EU AI Act's model duties (EU, EEA);
+ * - talks to people: EU AI Act Art. 50 (EU, EEA) and the GDPR line (EU, EEA, UK);
+ * - decides about people: the EU high-risk rules, the GDPR line, the
+ *   California ADMT rules and Colorado SB 26-189.
+ */
+export const QUESTION_PLACES: Partial<Record<ApplicabilityQuestion, readonly JurisdictionId[]>> = {
+  generalPurposeModel: ["EU", "EEA"],
+  meetsPeople: ["EU", "EEA", "UK"],
+  decidesAboutPeople: ["EU", "EEA", "UK", "US_CA", "US_CO"],
+};
+
+/** The questions to ask for these declared places, in the order they are asked. */
+export function applicabilityQuestionsFor(jurisdictions: readonly string[]): ApplicabilityQuestion[] {
+  if (jurisdictions.length === 0) return [...APPLICABILITY_QUESTIONS];
+  return APPLICABILITY_QUESTIONS.filter((q) => {
+    const places = QUESTION_PLACES[q];
+    return !places || places.some((p) => jurisdictions.includes(p));
+  });
+}
+
+/** The role questions asked for these places: a question not asked never counts. */
+export function askedRoleQuestions(jurisdictions: readonly string[]): ApplicabilityQuestion[] {
+  const asked = applicabilityQuestionsFor(jurisdictions);
+  return ROLE_QUESTIONS.filter((q) => asked.includes(q));
+}
+
+// ─── The frameworks the organisation chooses ─────────
+
+/**
+ * The frameworks that shape the program, chosen by the organisation, legal
+ * and standard-based alike. Codes are the framework codes in the database
+ * and i18n keys under `applicability.frameworks.options.<code>`.
+ *
+ * A framework not chosen is out of scope (src/config/framework-scope.ts). A
+ * chosen one still passes through its own rules: a chosen EU AI Act with no
+ * EU or EEA place reaches no system, and a chosen state law still waits for
+ * its place and its screening. The GDPR is not a choice: it follows the
+ * declared places, as before.
+ */
+export const LEGAL_FRAMEWORKS = ["EU_AI_ACT", "CA_CCPA_ADMT", "CO_SB_26_189", "TX_TRAIGA", "WA_AI_RULES"] as const;
+export const STANDARD_FRAMEWORKS = ["NIST_AI_RMF", "ISO_42001", "AIUC_1"] as const;
+export const CHOOSABLE_FRAMEWORKS = [...LEGAL_FRAMEWORKS, ...STANDARD_FRAMEWORKS] as const;
+
+export type ChoosableFramework = (typeof CHOOSABLE_FRAMEWORKS)[number];
+export type LegalFramework = (typeof LEGAL_FRAMEWORKS)[number];
+
+export function isChoosableFramework(code: string): code is ChoosableFramework {
+  return (CHOOSABLE_FRAMEWORKS as readonly string[]).includes(code);
+}
+
+/** The places that make a legal framework likely to apply (a hint, never a choice). */
+export const FRAMEWORK_PLACES: Record<LegalFramework, readonly JurisdictionId[]> = {
+  EU_AI_ACT: ["EU", "EEA"],
+  CA_CCPA_ADMT: ["US_CA"],
+  CO_SB_26_189: ["US_CO"],
+  TX_TRAIGA: ["US_TX"],
+  WA_AI_RULES: ["US_WA"],
+};
+
+/**
+ * The stored choice, read defensively: the chosen codes in the fixed order,
+ * or null when nothing has ever been stored (not even an empty choice).
+ */
+export function readFrameworkChoice(value: unknown): ChoosableFramework[] | null {
+  if (!Array.isArray(value)) return null;
+  return CHOOSABLE_FRAMEWORKS.filter((code) => value.includes(code));
+}
+
+/**
+ * The choice of an organisation that has none stored: what was in scope
+ * before the question existed. The migration
+ * 20261027120000_applicability_framework_choice records the same set for
+ * every existing organisation; this is the fallback for a record it did not
+ * reach. A new organisation is created with an empty choice instead.
+ *
+ * - EU AI Act: unless places are declared and none is the EU or the EEA, or
+ *   every role question is answered no;
+ * - a state law: its place is declared;
+ * - NIST AI RMF and AIUC-1: always;
+ * - ISO/IEC 42001: unless certification is answered no.
+ */
+export function legacyFrameworkChoice(
+  jurisdictions: readonly string[],
+  answers: ApplicabilityAnswers,
+): ChoosableFramework[] {
+  const declared = jurisdictions.length > 0;
+  const europe = jurisdictions.includes("EU") || jurisdictions.includes("EEA");
+  const noRole = ROLE_QUESTIONS.every((q) => answers[q] === "NO");
+  const out: ChoosableFramework[] = [];
+  if (!((declared && !europe) || noRole)) out.push("EU_AI_ACT");
+  if (jurisdictions.includes("US_CA")) out.push("CA_CCPA_ADMT");
+  if (jurisdictions.includes("US_CO")) out.push("CO_SB_26_189");
+  if (jurisdictions.includes("US_TX")) out.push("TX_TRAIGA");
+  if (jurisdictions.includes("US_WA")) out.push("WA_AI_RULES");
+  out.push("NIST_AI_RMF");
+  if (answers.wantsCertification !== "NO") out.push("ISO_42001");
+  out.push("AIUC_1");
+  return out;
+}
+
+/** Why a framework is likely to fit, from the places and answers. */
+export type FrameworkHint = "declaredPlace" | "wantsCertification" | "usesAgents";
+
+/** The hint shown next to a framework; null when nothing points to it. */
+export function frameworkHint(
+  code: ChoosableFramework,
+  jurisdictions: readonly string[],
+  answers: ApplicabilityAnswers,
+): FrameworkHint | null {
+  if (code in FRAMEWORK_PLACES) {
+    const places = FRAMEWORK_PLACES[code as LegalFramework];
+    return places.some((p) => jurisdictions.includes(p)) ? "declaredPlace" : null;
+  }
+  if (code === "ISO_42001") return answers.wantsCertification === "YES" ? "wantsCertification" : null;
+  if (code === "AIUC_1") return answers.usesAgents === "YES" ? "usesAgents" : null;
+  return null;
+}
+
+/**
+ * The legal frameworks the declared places point to but the organisation has
+ * not chosen: they may apply by law whatever the choice, so the screen says
+ * so in one neutral line. Nothing is added for the organisation.
+ */
+export function likelyLegalNotChosen(
+  frameworks: readonly string[],
+  jurisdictions: readonly string[],
+  answers: ApplicabilityAnswers,
+): LegalFramework[] {
+  return LEGAL_FRAMEWORKS.filter(
+    (code) => !frameworks.includes(code) && frameworkHint(code, jurisdictions, answers) === "declaredPlace",
+  );
+}
+
+/**
+ * The applicability settings as stored under `Organization.settings`, read
+ * defensively: the answers, the choice as stored (null if none), and the
+ * choice in force (the stored one, or the legacy set without one).
+ */
+export function readApplicabilitySettings(
+  settings: unknown,
+  jurisdictions: readonly string[],
+): {
+  answers: ApplicabilityAnswers;
+  storedFrameworks: ChoosableFramework[] | null;
+  frameworks: ChoosableFramework[];
+} {
+  const s =
+    settings && typeof settings === "object" && !Array.isArray(settings) ? (settings as Record<string, unknown>) : {};
+  const applicability =
+    s.applicability && typeof s.applicability === "object" && !Array.isArray(s.applicability)
+      ? (s.applicability as Record<string, unknown>)
+      : {};
+  const answers = readApplicabilityAnswers(applicability.answers);
+  const storedFrameworks = readFrameworkChoice(applicability.frameworks);
+  return {
+    answers,
+    storedFrameworks,
+    frameworks: storedFrameworks ?? legacyFrameworkChoice(jurisdictions, answers),
+  };
+}
 
 export const EMPTY_APPLICABILITY_ANSWERS: ApplicabilityAnswers = {
   buildsForOthers: "UNSURE",
@@ -82,7 +249,8 @@ export type ApplicabilityItemId =
   | "texas"
   | "washington"
   | "aiuc1"
-  | "iso42001";
+  | "iso42001"
+  | "nistAiRmf";
 
 /** Ids are also i18n keys under `applicability.reasons.<id>`. */
 export type ApplicabilityReason =
@@ -101,6 +269,7 @@ export type ApplicabilityReason =
   | "personalData"
   | "usesAgents"
   | "wantsCertification"
+  | "chosenFramework"
   | "roleUnsure"
   | "answerUnsure"
   | "thresholds"
@@ -155,18 +324,25 @@ function fromAnswer(answer: ApplicabilityAnswer): ApplicabilityState | null {
  * An empty jurisdiction list is UNDECLARED: no law that depends on a place is
  * listed, not even as "check" (the screen asks where the organisation operates
  * instead). The standards do not depend on a place.
+ *
+ * `frameworks` is the organisation's choice (`readApplicabilitySettings`): a
+ * framework not chosen is never listed, and a chosen standard is listed as
+ * applying (AIUC-1 only for an organisation that may use agents). Without it
+ * (null), the list is what the answers alone point to, as before the choice.
  */
 export function evaluateApplicability(
   jurisdictions: readonly JurisdictionId[],
   answers: ApplicabilityAnswers,
+  frameworks: readonly string[] | null = null,
 ): ApplicabilityItem[] {
   const items: ApplicabilityItem[] = [];
   const has = (j: JurisdictionId) => jurisdictions.includes(j);
 
   // Any role at all. The EU AI Act and Texas reach providers and deployers
   // alike; with every role answered "no" the organisation neither builds nor
-  // uses AI, and neither law is listed.
-  const roleAnswers = ROLE_QUESTIONS.map((q) => answers[q]);
+  // uses AI, and neither law is listed. A role question not asked for these
+  // places (the general-purpose model question outside Europe) never counts.
+  const roleAnswers = askedRoleQuestions(jurisdictions).map((q) => answers[q]);
   const role: ApplicabilityState | null = roleAnswers.includes("YES")
     ? "applies"
     : roleAnswers.includes("UNSURE")
@@ -177,7 +353,9 @@ export function evaluateApplicability(
       ? [
           ...(answers.buildsForOthers === "YES" ? (["provider"] as const) : []),
           ...(answers.usesAi === "YES" ? (["deployer"] as const) : []),
-          ...(answers.generalPurposeModel === "YES" ? (["generalPurpose"] as const) : []),
+          ...(answers.generalPurposeModel === "YES" && askedRoleQuestions(jurisdictions).includes("generalPurposeModel")
+            ? (["generalPurpose"] as const)
+            : []),
         ]
       : role === "check"
         ? ["roleUnsure"]
@@ -286,8 +464,35 @@ export function evaluateApplicability(
 
   // ─── Standards (chosen, not imposed) ───────────────
   const agents = fromAnswer(answers.usesAgents);
-  if (agents) {
-    items.push({
+  if (frameworks === null) {
+    // No choice given: what the answers point to.
+    if (agents) {
+      items.push({
+        id: "aiuc1",
+        frameworkCode: "AIUC_1",
+        kind: "standard",
+        state: agents,
+        reasons: [agents === "applies" ? "usesAgents" : "answerUnsure"],
+      });
+    }
+    const certification = fromAnswer(answers.wantsCertification);
+    if (certification) {
+      items.push({
+        id: "iso42001",
+        frameworkCode: "ISO_42001",
+        kind: "standard",
+        state: certification,
+        reasons: [certification === "applies" ? "wantsCertification" : "answerUnsure"],
+      });
+    }
+    return items;
+  }
+
+  // A choice: the legal lines the organisation has not chosen go, and each
+  // chosen standard is listed. AIUC-1 reaches AI agents only.
+  const chosen = items.filter((i) => !isChoosableFramework(i.frameworkCode) || frameworks.includes(i.frameworkCode));
+  if (frameworks.includes("AIUC_1") && agents) {
+    chosen.push({
       id: "aiuc1",
       frameworkCode: "AIUC_1",
       kind: "standard",
@@ -295,16 +500,11 @@ export function evaluateApplicability(
       reasons: [agents === "applies" ? "usesAgents" : "answerUnsure"],
     });
   }
-  const certification = fromAnswer(answers.wantsCertification);
-  if (certification) {
-    items.push({
-      id: "iso42001",
-      frameworkCode: "ISO_42001",
-      kind: "standard",
-      state: certification,
-      reasons: [certification === "applies" ? "wantsCertification" : "answerUnsure"],
-    });
+  if (frameworks.includes("ISO_42001")) {
+    chosen.push({ id: "iso42001", frameworkCode: "ISO_42001", kind: "standard", state: "applies", reasons: ["chosenFramework"] });
   }
-
-  return items;
+  if (frameworks.includes("NIST_AI_RMF")) {
+    chosen.push({ id: "nistAiRmf", frameworkCode: "NIST_AI_RMF", kind: "standard", state: "applies", reasons: ["chosenFramework"] });
+  }
+  return chosen;
 }

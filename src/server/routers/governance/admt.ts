@@ -19,6 +19,8 @@
  *     as historical.
  */
 
+import { readApplicabilitySettings } from "@/config/applicability";
+import { frameworksRuledOut } from "@/config/framework-scope";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import {
@@ -493,6 +495,13 @@ export const admtRouter = createTRPCRouter({
       // The gate: no tags, no rows. An undeclared jurisdiction or an unanswered
       // determination must not quietly populate ~50 requirements.
       if (scope.tags.length === 0) {
+        return { created: 0, state: scope.state };
+      }
+      // Not chosen among the organisation's frameworks: nothing is attached
+      // (src/config/framework-scope.ts).
+      const places = (org?.operatingJurisdictions ?? []) as string[];
+      const { answers, frameworks } = readApplicabilitySettings(org?.settings ?? null, places);
+      if (frameworksRuledOut(places, answers, frameworks).includes("CA_CCPA_ADMT")) {
         return { created: 0, state: scope.state };
       }
 

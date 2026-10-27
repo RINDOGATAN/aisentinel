@@ -131,6 +131,11 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://aisentinel.todo.law/docs/guides/frontier-ai</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://aisentinel.todo.law/docs/how-it-fits</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>

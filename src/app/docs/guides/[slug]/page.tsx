@@ -2,8 +2,8 @@
 // Copyright (C) 2025-2026 Rindogatan LLC
 
 /**
- * The three short guides, rendered from typed content (src/config/help/guides).
- * One dynamic route serves all three; an unknown slug is a 404. The page is a
+ * The guides, rendered from typed content (src/config/help/guides).
+ * One dynamic route serves them all; an unknown slug is a 404. The page is a
  * thin renderer, so the words live with the rest of the help feature and a
  * sister app can reuse the same shape.
  */
@@ -75,7 +75,9 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
       ))}
 
       <section>
-        <h2 className="text-2xl font-display tracking-tight mb-4">{t("officialText")}</h2>
+        <h2 className="text-2xl font-display tracking-tight mb-4">
+          {guide.sourcesHeading ? guide.sourcesHeading[locale] : t("officialText")}
+        </h2>
         <ul className="flex flex-col gap-2">
           {guide.official.map((link) => (
             <li key={link.href}>

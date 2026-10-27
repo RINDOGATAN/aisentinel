@@ -185,7 +185,10 @@ export const PAGE_HELP: PageHelp[] = [
       "Añade un proveedor desde el catálogo y completa su evaluación de diligencia debida.",
     ),
     terms: ["provider", "evidence", "stakeholder"],
-    docs: [DOC("/docs/vendors", "Vendors", "Proveedores")],
+    docs: [
+      DOC("/docs/vendors", "Vendors", "Proveedores"),
+      DOC("/docs/guides/frontier-ai", "Frontier AI rules and your AI program", "Las normas sobre IA de frontera y tu programa de IA"),
+    ],
     official: [],
   },
   {

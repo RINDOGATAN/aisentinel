@@ -5949,7 +5949,8 @@
       "texas": "Texas: TRAIGA (HB 149)",
       "washington": "Washington: normas de IA por sector",
       "aiuc1": "Norma AIUC-1 para agentes de IA",
-      "iso42001": "Sistema de gestión de la IA ISO/IEC 42001"
+      "iso42001": "Sistema de gestión de la IA ISO/IEC 42001",
+      "nistAiRmf": "NIST AI RMF"
     },
     "reasons": {
       "operatesEu": "La organización opera en la UE.",
@@ -5970,7 +5971,8 @@
       "roleUnsure": "El papel de la organización con la IA aún no está claro.",
       "answerUnsure": "Has respondido «Todavía no lo sé».",
       "thresholds": "Primero deciden los umbrales de tamaño de la CCPA; los pregunta la evaluación de California en Configuración.",
-      "screeningDecides": "Qué normas se aplican depende de las preguntas de evaluación en Configuración."
+      "screeningDecides": "Qué normas se aplican depende de las preguntas de evaluación en Configuración.",
+      "chosenFramework": "La organización ha elegido este marco."
     },
     "answerScreening": "Responde a la evaluación en Configuración para añadir sus requisitos.",
     "reasonsHere": {
@@ -5981,7 +5983,61 @@
       "thresholds": "Primero deciden los umbrales de tamaño de la CCPA; los pregunta la evaluación de California que aparece más abajo.",
       "screeningDecides": "Qué normas se aplican depende de las preguntas de evaluación que aparecen más abajo."
     },
-    "answerScreeningBelow": "Responde a la evaluación que aparece más abajo para añadir sus requisitos."
+    "answerScreeningBelow": "Responde a la evaluación que aparece más abajo para añadir sus requisitos.",
+    "frameworks": {
+      "label": "Elige tus marcos",
+      "hint": "El programa se construye a partir de los marcos que elijas: sus requisitos, recuentos y pestañas. Elige al menos uno. No se elige nada por ti; las indicaciones solo dicen a qué apuntan tus respuestas.",
+      "legalTitle": "Leyes",
+      "standardTitle": "Normas",
+      "required": "Elige al menos un marco para continuar.",
+      "mayApply": "No los has elegido, pero pueden aplicarse por ley donde operas: {names}. Un abogado puede confirmarlo.",
+      "ruledOut": {
+        "noEuropeanPlace": "Elegido, pero todavía no alcanza a ningún sistema: no se ha declarado ningún lugar de la UE ni del EEE.",
+        "noRole": "Elegido, pero todavía no alcanza a ningún sistema: todas las preguntas sobre el papel de la organización tienen un no."
+      },
+      "options": {
+        "EU_AI_ACT": {
+          "label": "RIA (Reglamento de IA de la UE)",
+          "note": "El reglamento de la UE sobre IA.",
+          "hint": "Probablemente se aplica: has declarado la UE o el EEE."
+        },
+        "CA_CCPA_ADMT": {
+          "label": "California: normas sobre decisiones automatizadas (CCPA)",
+          "note": "Se aplica con un lugar en California.",
+          "hint": "Probablemente se aplica: has declarado California."
+        },
+        "CO_SB_26_189": {
+          "label": "Colorado: SB 26-189 sobre decisiones automatizadas",
+          "note": "Se aplica con un lugar en Colorado.",
+          "hint": "Probablemente se aplica: has declarado Colorado."
+        },
+        "TX_TRAIGA": {
+          "label": "Texas: TRAIGA (HB 149)",
+          "note": "Se aplica con un lugar en Texas.",
+          "hint": "Probablemente se aplica: has declarado Texas."
+        },
+        "WA_AI_RULES": {
+          "label": "Washington: normas de IA por sector",
+          "note": "Se aplica con un lugar en Washington.",
+          "hint": "Probablemente se aplica: has declarado Washington."
+        },
+        "NIST_AI_RMF": {
+          "label": "NIST AI RMF",
+          "note": "El marco estadounidense para gestionar los riesgos de la IA.",
+          "hint": "El marco estadounidense para gestionar los riesgos de la IA."
+        },
+        "ISO_42001": {
+          "label": "ISO/IEC 42001",
+          "note": "La norma certificable para un sistema de gestión de la IA.",
+          "hint": "Probablemente encaja: quieres un sistema de gestión que pueda certificarse."
+        },
+        "AIUC_1": {
+          "label": "AIUC-1",
+          "note": "La norma para agentes de IA. Solo se aplica a los sistemas que son agentes de IA.",
+          "hint": "Probablemente encaja: usas agentes de IA. Solo se aplica a los sistemas que son agentes de IA."
+        }
+      }
+    }
   },
   "guided": {
     "navLabel": "Ruta del programa",
@@ -6101,7 +6157,7 @@
       },
       "transparency": {
         "label": "Avisar de que es IA",
-        "why": "Registra para cada sistema si hay que avisar a las personas de que tratan con IA (art. 50).",
+        "why": "Registra para cada sistema si hay que avisar a las personas de que tratan con IA.",
         "do": "Registra para cada sistema si hay que avisar a las personas de que tratan con IA. Abre un sistema para hacerlo.",
         "doneWhen": "cada sistema tiene un perfil de transparencia confirmado por una persona. Los sistemas retirados no cuentan."
       },
@@ -6146,6 +6202,12 @@
         "why": "Cada cambio queda registrado aquí por sí solo.",
         "do": "Consulta cada cambio hecho en el programa. Queda registrado por sí solo.",
         "doneWhen": "el producto lo lleva por sí solo, desde el primer cambio registrado."
+      },
+      "frameworks": {
+        "label": "Elige tus marcos",
+        "why": "El programa se construye a partir de los marcos que elijas. Elige al menos uno.",
+        "do": "Elige las leyes y normas que dan forma al programa de la organización.",
+        "doneWhen": "hay al menos un marco elegido."
       }
     },
     "library": {
@@ -6187,7 +6249,8 @@
       "optional": {
         "proceedings": "Opcional: este paso nunca cuenta en la cifra del programa. Úsalo solo cuando una autoridad o un tribunal abra una investigación o un asunto.",
         "audit": "Opcional: este paso nunca cuenta en la cifra del programa. El producto lleva el registro de auditoría por sí solo."
-      }
+      },
+      "beforeSteps": "Antes de los pasos"
     },
     "emptyStep": {
       "board": "Todavía no hay ningún informe al consejo.",
@@ -6320,7 +6383,8 @@
       "boardReport": "crea un informe al consejo",
       "noHighRiskAssessment": "ningún sistema es de alto riesgo, así que no hace falta ninguna evaluación de impacto",
       "noHighRiskEvidence": "ningún sistema es de alto riesgo, así que ningún requisito necesita estado",
-      "noPersonalData": "ningún sistema trata datos personales, así que no hace falta ninguna evaluación"
+      "noPersonalData": "ningún sistema trata datos personales, así que no hace falta ninguna evaluación",
+      "frameworksChosen": "elige al menos un marco"
     },
     "panel": {
       "failed": "No se ha podido cargar este panel.",
@@ -6338,6 +6402,13 @@
     "phase": {
       "now": "Ahora: fase {number}, {stage}",
       "complete": "Programa completo"
+    },
+    "disclosureLaws": {
+      "sentence": "Normas que revisar en los lugares donde opera la organización: {laws}.",
+      "euAiActArt50": "art. 50 del RIA",
+      "texasTraiga": "TRAIGA de Texas, § 552.051 (administraciones públicas y sanidad)",
+      "utahAipa": "la Ley de Política de IA de Utah",
+      "washingtonCompanion": "HB 2225 de Washington, § 3 (chatbots de compañía)"
     }
   },
   "agentTesting": {

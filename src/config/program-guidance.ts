@@ -313,8 +313,10 @@ export const PROGRAM_ACTION_TEMPLATES: ActionTemplate[] = [
       es: "Completar las evaluaciones de impacto de los sistemas de alto riesgo",
     },
     detail: {
-      en: "Answer and approve the impact assessment drafted for each high-risk system. It covers the GDPR data protection impact assessment (Art. 35), which applies now, and prepares the fundamental rights impact assessment the EU AI Act requires of certain deployers from 2 December 2027 (Art. 27).",
-      es: "Responde y aprueba la evaluación de impacto preparada para cada sistema de alto riesgo. Cubre la evaluación de impacto relativa a la protección de datos del RGPD (art. 35), que ya es aplicable, y prepara la evaluación de impacto en los derechos fundamentales que el RIA exige a determinados responsables del despliegue a partir del 2 de diciembre de 2027 (art. 27).",
+      // The plan shows impactAssessmentDetail() instead, which cites only the
+      // laws in the organisation's scope; this neutral text cites none.
+      en: "Answer and approve the impact assessment drafted for each high-risk system. It records each system's risks and the safeguards in place before the system is used.",
+      es: "Responde y aprueba la evaluación de impacto preparada para cada sistema de alto riesgo. Recoge los riesgos de cada sistema y las salvaguardas previstas antes de que se utilice.",
     },
     href: "/governance/assessments",
     effort: "L",
@@ -555,6 +557,54 @@ export function getRolloutForCategory(
 
 export function getActionTemplate(gapId: GapId): ActionTemplate | undefined {
   return PROGRAM_ACTION_TEMPLATES.find((a) => a.id === gapId);
+}
+
+/**
+ * The laws whose impact or risk assessment the organisation's scope reaches,
+ * for the impact-assessment action. Each is cited only when in scope:
+ *
+ * - `gdpr`: a GDPR place is declared (src/config/regimes/regime-rules.ts,
+ *   the EU, the EEA or the UK);
+ * - `euAiAct`: the EU or the EEA is declared and the EU AI Act is not out of
+ *   scope (src/config/framework-scope.ts);
+ * - `california`: California is declared, its ADMT rules are not out of
+ *   scope, and the organisation has said it is a covered business (the risk
+ *   assessments of §§ 7150 to 7157, src/config/admt-rules.ts).
+ *
+ * Colorado is not cited: SB 26-189 removed the impact assessments of the act
+ * it replaced (src/config/regimes/colorado-requirements.ts).
+ */
+export interface AssessmentLawScope {
+  gdpr: boolean;
+  euAiAct: boolean;
+  california: boolean;
+}
+
+/** The impact-assessment action's text, citing only the laws in scope. */
+export function impactAssessmentDetail(scope: AssessmentLawScope): Localized {
+  const en: string[] = ["Answer and approve the impact assessment drafted for each high-risk system."];
+  const es: string[] = ["Responde y aprueba la evaluación de impacto preparada para cada sistema de alto riesgo."];
+  if (scope.gdpr) {
+    en.push("It covers the GDPR data protection impact assessment (Art. 35), which applies now.");
+    es.push("Cubre la evaluación de impacto relativa a la protección de datos del RGPD (art. 35), que ya es aplicable.");
+  }
+  if (scope.euAiAct) {
+    en.push(
+      "It prepares the fundamental rights impact assessment the EU AI Act requires of certain deployers from 2 December 2027 (Art. 27).",
+    );
+    es.push(
+      "Prepara la evaluación de impacto en los derechos fundamentales que el RIA exige a determinados responsables del despliegue a partir del 2 de diciembre de 2027 (art. 27).",
+    );
+  }
+  if (scope.california) {
+    en.push("It also serves the risk assessment the California CCPA regulations require (§§ 7150 to 7157).");
+    es.push("También sirve para la evaluación de riesgos que exige el reglamento de la CCPA de California (§§ 7150 a 7157).");
+  }
+  if (!scope.gdpr && !scope.euAiAct && !scope.california) {
+    en.push("It records each system's risks and the safeguards in place before the system is used.");
+    es.push("Recoge los riesgos de cada sistema y las salvaguardas previstas antes de que se utilice.");
+  }
+  return { en: en.join(" "), es: es.join(" ") };
 }
 
 /** Referenced by tests; keeps the policy-pack ids visible at the seam. */

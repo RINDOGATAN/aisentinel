@@ -97,6 +97,38 @@ describe.skipIf(!local)("syncRequirements on a seeded database (local only)", ()
     expect((await byFramework()).ISO_42001).toBeGreaterThan(0);
   });
 
+  it("a framework not chosen loses its empty rows, the GDPR stays, and choosing it again brings it back", async () => {
+    const choose = (frameworks: string[]) => {
+      const base = answers("UNSURE");
+      return { applicability: { ...base.applicability, frameworks } };
+    };
+    await prisma.organization.update({
+      where: { id: orgId },
+      data: { settings: choose(["EU_AI_ACT", "ISO_42001", "AIUC_1"]) },
+    });
+    const out = await syncRequirements(prisma, orgId, { reason: "test" });
+    expect(out.byFramework.NIST_AI_RMF?.removed).toBeGreaterThan(0);
+    const without = await byFramework();
+    expect(without.NIST_AI_RMF).toBeUndefined();
+    expect(without.EU_GDPR).toBeGreaterThan(0);
+    await prisma.organization.update({
+      where: { id: orgId },
+      data: { settings: choose(["EU_AI_ACT", "NIST_AI_RMF", "ISO_42001", "AIUC_1"]) },
+    });
+    await syncRequirements(prisma, orgId, { reason: "test" });
+    expect((await byFramework()).NIST_AI_RMF).toBeGreaterThan(0);
+    // An empty choice takes every chosen framework out; the GDPR still follows the places.
+    await prisma.organization.update({ where: { id: orgId }, data: { settings: choose([]) } });
+    await syncRequirements(prisma, orgId, { reason: "test" });
+    const none = await byFramework();
+    expect(none.EU_AI_ACT ?? 0).toBe(0);
+    expect(none.EU_GDPR).toBeGreaterThan(0);
+    // Back to no stored choice: what was in scope before the question existed.
+    await prisma.organization.update({ where: { id: orgId }, data: { settings: answers("UNSURE") } });
+    await syncRequirements(prisma, orgId, { reason: "test" });
+    expect((await byFramework()).EU_AI_ACT).toBeGreaterThan(0);
+  });
+
   it("leaving Europe removes the empty EU rows and keeps the ones worked on", async () => {
     const [noted, withEvidence] = await prisma.complianceMapping.findMany({
       where: { organizationId: orgId, requirement: { framework: { code: "EU_AI_ACT" } } },

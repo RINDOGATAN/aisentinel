@@ -6,8 +6,10 @@
  * The applicability check (src/config/applicability.ts) on screen.
  *
  * - `ApplicabilityQuestions`: the plain questions, three answers each ("Yes",
- *   "No", "Not sure yet"). Controlled: the caller keeps the answers and saves
- *   them (the quick start on its way past, the settings card with a button).
+ *   "No", "Not sure yet"), only those that matter for the declared places, and
+ *   the frameworks the organisation chooses to shape its program. Controlled: the caller
+ *   keeps the answers and saves them (the quick start on its way past, the
+ *   settings card as each answer is chosen).
  * - `ApplicabilityResult`: "These apply to you", one line each with its why,
  *   then "Worth checking" for what may apply.
  * - `ApplicabilityCard`: both, for Settings, where the answers stay editable.
@@ -18,6 +20,7 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { CheckCircle2, CircleHelp, ListChecks } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { CARD_HEADER_WITH_STATUS, CardSaveStatus } from "@/components/ui/save-status";
 import { Instruction } from "@/components/ui/instruction";
 import { useAutoSave } from "@/lib/use-auto-save";
@@ -27,15 +30,22 @@ import { SCREENING_ANCHOR } from "@/lib/settings-anchors";
 import { useProgramPath } from "@/components/guided/use-program-path";
 import { cn } from "@/lib/utils";
 import {
-  APPLICABILITY_QUESTIONS,
+  CHOOSABLE_FRAMEWORKS,
+  LEGAL_FRAMEWORKS,
   ROLE_QUESTIONS,
+  STANDARD_FRAMEWORKS,
+  applicabilityQuestionsFor,
   evaluateApplicability,
+  frameworkHint,
+  likelyLegalNotChosen,
+  type ChoosableFramework,
   type ApplicabilityAnswer,
   type ApplicabilityAnswers,
   type ApplicabilityItem,
   type ApplicabilityQuestion,
 } from "@/config/applicability";
 import type { JurisdictionId } from "@/config/jurisdictions";
+import { euAiActRuleOutReason } from "@/config/framework-scope";
 
 const OPTIONS: ApplicabilityAnswer[] = ["YES", "NO", "UNSURE"];
 
@@ -94,17 +104,115 @@ function QuestionRow({
   );
 }
 
+/**
+ * "Choose your frameworks": one box per framework, legal and standard-based
+ * alike, none ticked for a new organisation. A plain hint says when the
+ * declared places or the answers point to one; nothing is ticked for the
+ * organisation. A legal framework pointed to and not chosen gets one neutral
+ * line: it may apply by law, and counsel can confirm.
+ */
+export function FrameworksQuestion({
+  answers,
+  jurisdictions,
+  frameworks,
+  onChange,
+  disabled,
+  idPrefix,
+}: {
+  answers: ApplicabilityAnswers;
+  jurisdictions: readonly string[];
+  frameworks: readonly ChoosableFramework[];
+  onChange: (next: ChoosableFramework[]) => void;
+  disabled?: boolean;
+  idPrefix: string;
+}) {
+  const t = useTranslations("applicability");
+  const name = `${idPrefix}-frameworks`;
+  const toggle = (code: ChoosableFramework, on: boolean) =>
+    onChange(CHOOSABLE_FRAMEWORKS.filter((c) => (c === code ? on : frameworks.includes(c))));
+  const likely = likelyLegalNotChosen(frameworks, jurisdictions, answers);
+  const euReason = euAiActRuleOutReason(jurisdictions, answers);
+  const group = (codes: readonly ChoosableFramework[], title: string) => (
+    <div className="space-y-2">
+      <p className="text-xs font-medium text-muted-foreground">{title}</p>
+      {codes.map((code) => {
+        const id = `${name}-${code}`;
+        const checked = frameworks.includes(code);
+        const hint = frameworkHint(code, jurisdictions, answers);
+        const ruledOut = checked && code === "EU_AI_ACT" && euReason;
+        return (
+          <div key={code} className="flex items-start gap-2.5">
+            <Checkbox
+              id={id}
+              checked={checked}
+              disabled={disabled}
+              onCheckedChange={(v) => toggle(code, v === true)}
+              className="mt-0.5"
+              aria-describedby={`${id}-note`}
+            />
+            <label htmlFor={id} className="min-w-0 cursor-pointer">
+              <span className="block text-sm">{t(`frameworks.options.${code}.label`)}</span>
+              <span className="block text-xs text-muted-foreground" id={`${id}-note`}>
+                {ruledOut
+                  ? t(`frameworks.ruledOut.${euReason}`)
+                  : hint
+                    ? t(`frameworks.options.${code}.hint`)
+                    : t(`frameworks.options.${code}.note`)}
+              </span>
+            </label>
+          </div>
+        );
+      })}
+    </div>
+  );
+  return (
+    <fieldset id="frameworks" className="space-y-3 scroll-mt-24" disabled={disabled} data-testid="frameworks-question">
+      <legend className="text-sm font-medium">{t("frameworks.label")}</legend>
+      <p className="text-xs text-muted-foreground" id={`${name}-hint`}>
+        {t("frameworks.hint")}
+      </p>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2" aria-describedby={`${name}-hint`}>
+        {group(LEGAL_FRAMEWORKS, t("frameworks.legalTitle"))}
+        {group(STANDARD_FRAMEWORKS, t("frameworks.standardTitle"))}
+      </div>
+      {frameworks.length === 0 && (
+        <p className="text-xs text-primary" role="status">
+          {t("frameworks.required")}
+        </p>
+      )}
+      {likely.length > 0 && (
+        <p className="text-xs text-muted-foreground" data-testid="frameworks-may-apply">
+          {t("frameworks.mayApply", {
+            names: likely.map((code) => t(`frameworks.options.${code}.label`)).join(", "),
+          })}
+        </p>
+      )}
+    </fieldset>
+  );
+}
+
 export function ApplicabilityQuestions({
   answers,
   onChange,
   disabled,
   idPrefix = "applicability",
+  jurisdictions = [],
+  frameworks,
+  onFrameworksChange,
 }: {
   answers: ApplicabilityAnswers;
   onChange: (next: ApplicabilityAnswers) => void;
   disabled?: boolean;
   /** Keeps radio names apart when the questions appear twice on a page. */
   idPrefix?: string;
+  /**
+   * The declared places: a question that matters only for places not
+   * declared is not asked. Empty (not declared yet) asks every question.
+   */
+  jurisdictions?: readonly string[];
+  /** The frameworks chosen; with `onFrameworksChange`, the frameworks question is shown. */
+  frameworks?: readonly ChoosableFramework[];
+  onFrameworksChange?: (next: ChoosableFramework[]) => void;
 }) {
   const t = useTranslations("applicability");
   // An unanswered question is stored as "Not sure yet"; it looks chosen only after someone picks it here.
@@ -118,12 +226,14 @@ export function ApplicabilityQuestions({
     });
     onChange({ ...answers, [q]: a });
   };
-  const others = APPLICABILITY_QUESTIONS.filter((q) => !ROLE_QUESTIONS.includes(q));
+  const asked = applicabilityQuestionsFor(jurisdictions);
+  const roles = ROLE_QUESTIONS.filter((q) => asked.includes(q));
+  const others = asked.filter((q) => !ROLE_QUESTIONS.includes(q));
   return (
     <div className="space-y-5">
       <div className="space-y-4">
         <p className="text-sm font-medium">{t("roleTitle")}</p>
-        {ROLE_QUESTIONS.map((q) => (
+        {roles.map((q) => (
           <QuestionRow
             key={q}
             question={q}
@@ -148,6 +258,18 @@ export function ApplicabilityQuestions({
           />
         ))}
       </div>
+      {frameworks && onFrameworksChange && (
+        <div className="border-t border-border pt-4">
+          <FrameworksQuestion
+            answers={answers}
+            jurisdictions={jurisdictions}
+            frameworks={frameworks}
+            onChange={onFrameworksChange}
+            disabled={disabled}
+            idPrefix={idPrefix}
+          />
+        </div>
+      )}
     </div>
   );
 }
@@ -209,11 +331,14 @@ function ItemLine({
 export function ApplicabilityResult({
   jurisdictions,
   answers,
+  frameworks = null,
   screeningInNewTab = false,
   screeningBelow = false,
 }: {
   jurisdictions: readonly JurisdictionId[];
   answers: ApplicabilityAnswers;
+  /** The frameworks chosen: one not chosen is not listed. Null lists what the answers point to. */
+  frameworks?: readonly string[] | null;
   /** Open the screening link in a new tab (the quick start keeps its place). */
   screeningInNewTab?: boolean;
   /** The California screening is further down the same page (Settings): the lines say "below". */
@@ -229,7 +354,7 @@ export function ApplicabilityResult({
       : screeningBelow
         ? { href: `#${SCREENING_ANCHOR}`, newTab: false }
         : { href: `/governance/settings#${SCREENING_ANCHOR}`, newTab: screeningInNewTab };
-  const items = evaluateApplicability(jurisdictions, answers);
+  const items = evaluateApplicability(jurisdictions, answers, frameworks);
   const applies = items.filter((i) => i.state === "applies");
   const check = items.filter((i) => i.state === "check");
 
@@ -289,6 +414,7 @@ export function ApplicabilityCard({
   // jurisdiction card above shows here at once.
   const { data: org } = trpc.organization.getById.useQuery({ organizationId });
   const [edits, setEdits] = useState<ApplicabilityAnswers | null>(null);
+  const [frameworkEdits, setFrameworkEdits] = useState<ChoosableFramework[] | null>(null);
 
   // Each answer saves as it is chosen. The edits stay as an overlay after
   // saving (the server then holds the same answers), so an answer picked
@@ -296,13 +422,16 @@ export function ApplicabilityCard({
   const save = trpc.regimes.setApplicability.useMutation({
     onSuccess: () => refreshAfterScopeChange(utils),
   });
-  const autosave = useAutoSave<ApplicabilityAnswers>(
-    (answers) => save.mutateAsync({ organizationId, answers }),
+  const autosave = useAutoSave<{ answers: ApplicabilityAnswers; frameworks: ChoosableFramework[] }>(
+    (next) => save.mutateAsync({ organizationId, answers: next.answers, frameworks: next.frameworks }),
     { onError: (err) => toast.error(err instanceof Error ? err.message : String(err)) },
   );
 
   if (!data) return null;
   const answers = edits ?? data.answers;
+  const frameworks = frameworkEdits ?? data.frameworks;
+  const jurisdictions =
+    (org?.operatingJurisdictions as JurisdictionId[] | undefined) ?? data.jurisdictions;
 
   return (
     <Card>
@@ -321,22 +450,74 @@ export function ApplicabilityCard({
           answers={answers}
           onChange={(next) => {
             setEdits(next);
-            autosave.push(next);
+            autosave.push({ answers: next, frameworks });
           }}
+          frameworks={frameworks}
+          onFrameworksChange={(next) => {
+            setFrameworkEdits(next);
+            autosave.push({ answers, frameworks: next });
+          }}
+          jurisdictions={jurisdictions}
           disabled={!canWrite}
           idPrefix={idPrefix}
         />
         {showResult && (
           <div className="rounded-lg border border-border p-4">
             <ApplicabilityResult
-              jurisdictions={
-                (org?.operatingJurisdictions as JurisdictionId[] | undefined) ?? data.jurisdictions
-              }
+              jurisdictions={jurisdictions}
               answers={answers}
+              frameworks={frameworks}
               screeningBelow
             />
           </div>
         )}
+      </CardContent>
+    </Card>
+  );
+}
+
+/**
+ * The frameworks question on its own, for the path's first step: the answers
+ * stay as they are and only the choice is saved, as each box is ticked.
+ */
+export function FrameworksCard({ organizationId, canWrite }: { organizationId: string; canWrite: boolean }) {
+  const t = useTranslations("applicability");
+  const utils = trpc.useUtils();
+  const { data } = trpc.regimes.getApplicability.useQuery({ organizationId });
+  const { data: org } = trpc.organization.getById.useQuery({ organizationId });
+  const [edits, setEdits] = useState<ChoosableFramework[] | null>(null);
+  const save = trpc.regimes.setApplicability.useMutation({
+    onSuccess: () => refreshAfterScopeChange(utils),
+  });
+  const autosave = useAutoSave<{ answers: ApplicabilityAnswers; frameworks: ChoosableFramework[] }>(
+    (next) => save.mutateAsync({ organizationId, answers: next.answers, frameworks: next.frameworks }),
+    { onError: (err) => toast.error(err instanceof Error ? err.message : String(err)) },
+  );
+  if (!data) return null;
+  const jurisdictions = (org?.operatingJurisdictions as JurisdictionId[] | undefined) ?? data.jurisdictions;
+  return (
+    <Card>
+      <CardHeader className={CARD_HEADER_WITH_STATUS}>
+        <CardTitle className="text-base flex items-center gap-2">
+          <ListChecks className="w-4 h-4 text-primary" aria-hidden="true" />
+          {t("frameworks.label")}
+        </CardTitle>
+        {canWrite && (
+          <CardSaveStatus status={autosave.status} onRetry={autosave.retry} testId="frameworks-save-status" />
+        )}
+      </CardHeader>
+      <CardContent>
+        <FrameworksQuestion
+          answers={data.answers}
+          jurisdictions={jurisdictions}
+          frameworks={edits ?? data.frameworks}
+          onChange={(next) => {
+            setEdits(next);
+            autosave.push({ answers: data.answers, frameworks: next });
+          }}
+          disabled={!canWrite}
+          idPrefix="frameworks-step"
+        />
       </CardContent>
     </Card>
   );

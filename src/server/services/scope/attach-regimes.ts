@@ -18,6 +18,8 @@
 
 import { buildScopeFilter } from "@/lib/applicability-scope";
 import { loadSystemScope, type ScopePrisma } from "./system-scope";
+import { readApplicabilitySettings } from "@/config/applicability";
+import { frameworksRuledOut } from "@/config/framework-scope";
 
 export interface AttachResult {
   framework: string;
@@ -46,11 +48,19 @@ export async function attachRegimeMappings(
   frameworkCode?: string,
 ): Promise<{ created: number; results: AttachResult[] }> {
   const scope = await loadSystemScope(prisma, organizationId, aiSystemId);
+  const org = await prisma.organization.findUnique({
+    where: { id: organizationId },
+    select: { operatingJurisdictions: true, settings: true },
+  });
+  const places = (org?.operatingJurisdictions ?? []) as string[];
+  const { answers, frameworks } = readApplicabilitySettings(org?.settings ?? null, places);
+  // A state law the organisation has not chosen gets no rows (the GDPR is not a choice).
+  const ruledOut: readonly string[] = frameworksRuledOut(places, answers, frameworks);
   const results: AttachResult[] = [];
 
   for (const regime of scope.regimes) {
     if (frameworkCode && regime.framework !== frameworkCode) continue;
-    if (regime.tags.length === 0) {
+    if (regime.tags.length === 0 || ruledOut.includes(regime.framework)) {
       results.push({ framework: regime.framework, state: regime.state, created: 0 });
       continue;
     }

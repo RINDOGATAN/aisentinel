@@ -58,6 +58,7 @@ import { ProgressRing } from "./progress-ring";
 import { AppliesPanel } from "@/components/governance/obligations/applies-panel";
 import { trpc } from "@/lib/trpc";
 import { useProgramPathQuery } from "./use-program-path";
+import { stepText } from "./step-why";
 import { useProgrammeOverview, type ProgrammeOverview } from "./use-programme-overview";
 import { documentName, documentStateText, gapsText } from "./document-words";
 import { PanelEmpty, PanelFailed, panelPhase } from "./panel-state";
@@ -595,6 +596,8 @@ export function nextActionHref(action: NextAction): string {
 }
 
 function NextActionRow({ action, index, t, tv }: { action: NextAction; index: number; t: T; tv: T }) {
+  const locale = useLocale();
+  const { disclosureLaws } = useProgramPathQuery();
   const title =
     action.kind === "needsAction"
       ? `${tv(`needsAction.kind.${action.item.kind}`)} (${action.item.count})`
@@ -604,7 +607,7 @@ function NextActionRow({ action, index, t, tv }: { action: NextAction; index: nu
       ? tv(`needsAction.hint.${action.item.kind}`)
       : action.toConfirm
         ? t("nextActions.toConfirm")
-        : t(`steps.${action.step.id}.why`);
+        : stepText(t, action.step.id, "why", disclosureLaws, locale);
   const button =
     action.kind === "needsAction"
       ? action.item.kind === "review-queue"

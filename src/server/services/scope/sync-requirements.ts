@@ -26,11 +26,14 @@
  * In scope means, per framework family:
  *
  *   - EU AI Act, NIST AI RMF, ISO/IEC 42001: the requirements of the system's
- *     risk tier (`applicableTo`), unless the organisation's answers rule the
- *     framework out (src/config/framework-scope.ts);
+ *     risk tier (`applicableTo`), unless the framework is out of scope
+ *     (src/config/framework-scope.ts: not chosen, or ruled out by the answers);
  *   - GDPR, Colorado, Texas, Washington: what the regime rules admit
- *     (src/config/regimes); an undetermined regime admits nothing;
- *   - California ADMT: what the ADMT rules admit once they have resolved.
+ *     (src/config/regimes); an undetermined regime admits nothing, and a
+ *     state law the organisation has not chosen admits nothing (the GDPR is
+ *     not a choice);
+ *   - California ADMT: what the ADMT rules admit once they have resolved, if
+ *     chosen.
  *
  * AIUC-1 rows are left alone: they are written by agent testing, per agent.
  *
@@ -40,7 +43,7 @@
 
 import type { FrameworkCode, Prisma, PrismaClient } from "@prisma/client";
 import { buildScopeFilter } from "@/lib/applicability-scope";
-import { readApplicabilityAnswers } from "@/config/applicability";
+import { readApplicabilitySettings } from "@/config/applicability";
 import { frameworksRuledOut, TIERED_FRAMEWORKS } from "@/config/framework-scope";
 import { REGIME_CODES } from "@/config/regimes";
 import { activeHolds } from "@/server/services/legal-hold";
@@ -103,7 +106,8 @@ export function requirementsInScope(
     ...(system.admtTags ? [{ framework: ADMT_CODE, tags: system.admtTags }] : []),
   ];
   for (const scope of scoped) {
-    if (scope.tags.length === 0) continue;
+    // A state law the organisation has not chosen admits nothing.
+    if (scope.tags.length === 0 || ruledOut.includes(scope.framework)) continue;
     const inScope = buildScopeFilter(scope.tags);
     for (const r of requirements) {
       if (r.frameworkCode === scope.framework && inScope(r)) ids.add(r.id);
@@ -203,11 +207,9 @@ export async function syncRequirements(
     select: { name: true, operatingJurisdictions: true, settings: true },
   });
   if (!org) return { created: 0, removed: 0, byFramework: {} };
-  const settings = (org.settings ?? {}) as { applicability?: { answers?: unknown } };
-  const ruledOut = frameworksRuledOut(
-    org.operatingJurisdictions as string[],
-    readApplicabilityAnswers(settings.applicability?.answers),
-  );
+  const places = org.operatingJurisdictions as string[];
+  const { answers, frameworks } = readApplicabilitySettings(org.settings, places);
+  const ruledOut = frameworksRuledOut(places, answers, frameworks);
 
   const sample = await db.sampleRecord.findMany({
     where: { organizationId, entityType: "AISystem" },
@@ -350,9 +352,7 @@ export async function loadRuledOutFrameworks(
     where: { id: organizationId },
     select: { operatingJurisdictions: true, settings: true },
   });
-  const settings = (org?.settings ?? {}) as { applicability?: { answers?: unknown } };
-  return frameworksRuledOut(
-    (org?.operatingJurisdictions ?? []) as string[],
-    readApplicabilityAnswers(settings.applicability?.answers),
-  ) as FrameworkCode[];
+  const places = (org?.operatingJurisdictions ?? []) as string[];
+  const { answers, frameworks } = readApplicabilitySettings(org?.settings, places);
+  return frameworksRuledOut(places, answers, frameworks) as FrameworkCode[];
 }

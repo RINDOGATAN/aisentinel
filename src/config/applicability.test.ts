@@ -4,6 +4,7 @@
 import { describe, expect, it } from "vitest";
 import {
   APPLICABILITY_QUESTIONS,
+  applicabilityQuestionsFor,
   EMPTY_APPLICABILITY_ANSWERS,
   evaluateApplicability,
   hasAnyApplicabilityAnswer,
@@ -111,6 +112,44 @@ describe("evaluateApplicability", () => {
   it("a no removes a line; not sure keeps it as a check", () => {
     expect(ids(evaluateApplicability([], answers({ usesAgents: "NO" })))).not.toContain("aiuc1");
     expect(byId(evaluateApplicability([], answers({ usesAgents: "UNSURE" })), "aiuc1")?.state).toBe("check");
+  });
+});
+
+describe("questions per declared place", () => {
+  it("asks every question while no place is declared", () => {
+    expect(applicabilityQuestionsFor([])).toEqual([...APPLICABILITY_QUESTIONS]);
+  });
+
+  it("asks the general-purpose model question only with the EU or the EEA", () => {
+    expect(applicabilityQuestionsFor(["EU"])).toContain("generalPurposeModel");
+    expect(applicabilityQuestionsFor(["EEA"])).toContain("generalPurposeModel");
+    expect(applicabilityQuestionsFor(["UK", "US_TX"])).not.toContain("generalPurposeModel");
+  });
+
+  it("asks about people only where a declared place's law reads the answer", () => {
+    expect(applicabilityQuestionsFor(["US_TX"])).toEqual(["buildsForOthers", "usesAi", "usesAgents", "wantsCertification"]);
+    expect(applicabilityQuestionsFor(["US_CO"])).toContain("decidesAboutPeople");
+    expect(applicabilityQuestionsFor(["US_CO"])).not.toContain("meetsPeople");
+    expect(applicabilityQuestionsFor(["UK"])).toEqual(expect.arrayContaining(["meetsPeople", "decidesAboutPeople"]));
+  });
+
+  it("a question not asked never counts: Texas reads only the role questions asked", () => {
+    const given = answers({ buildsForOthers: "NO", usesAi: "NO", generalPurposeModel: "YES" });
+    expect(ids(evaluateApplicability(["US_TX"], given))).not.toContain("texas");
+    expect(ids(evaluateApplicability(["US_TX"], answers({ buildsForOthers: "NO", usesAi: "NO" })))).not.toContain("texas");
+  });
+
+  it("answers to questions not asked for the places change nothing", () => {
+    const places: string[][] = [["US_TX"], ["US_CO"], ["US_WA"], ["UK"], ["EU"], ["US_CA", "US_UT"]];
+    for (const p of places) {
+      const asked = new Set(applicabilityQuestionsFor(p));
+      const yes = (q: string) => [q, "YES"];
+      const all = answers(Object.fromEntries(APPLICABILITY_QUESTIONS.map(yes)) as Partial<ApplicabilityAnswers>);
+      const onlyAsked = answers(
+        Object.fromEntries(APPLICABILITY_QUESTIONS.map((q) => [q, asked.has(q) ? "YES" : "NO"])) as Partial<ApplicabilityAnswers>,
+      );
+      expect(evaluateApplicability(p as never, all), p.join()).toEqual(evaluateApplicability(p as never, onlyAsked));
+    }
   });
 });
 

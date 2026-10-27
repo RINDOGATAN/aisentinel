@@ -118,6 +118,7 @@ export function FrameworksQuestion({
   onChange,
   disabled,
   idPrefix,
+  titled = true,
 }: {
   answers: ApplicabilityAnswers;
   jurisdictions: readonly string[];
@@ -125,6 +126,8 @@ export function FrameworksQuestion({
   onChange: (next: ChoosableFramework[]) => void;
   disabled?: boolean;
   idPrefix: string;
+  /** False inside a card that already carries the title: the legend stays for screen readers only. */
+  titled?: boolean;
 }) {
   const t = useTranslations("applicability");
   const name = `${idPrefix}-frameworks`;
@@ -167,7 +170,7 @@ export function FrameworksQuestion({
   );
   return (
     <fieldset id="frameworks" className="space-y-3 scroll-mt-24" disabled={disabled} data-testid="frameworks-question">
-      <legend className="text-sm font-medium">{t("frameworks.label")}</legend>
+      <legend className={titled ? "text-sm font-medium" : "sr-only"}>{t("frameworks.label")}</legend>
       <p className="text-xs text-muted-foreground" id={`${name}-hint`}>
         {t("frameworks.hint")}
       </p>
@@ -517,6 +520,7 @@ export function FrameworksCard({ organizationId, canWrite }: { organizationId: s
           }}
           disabled={!canWrite}
           idPrefix="frameworks-step"
+          titled={false}
         />
       </CardContent>
     </Card>

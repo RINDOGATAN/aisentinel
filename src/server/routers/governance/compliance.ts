@@ -569,7 +569,7 @@ export const complianceRouter = createTRPCRouter({
         organizationId: z.string(),
         aiSystemId: z.string(),
         requirementId: z.string(),
-        type: z.enum(["POLICY", "DOCUMENT", "TEST_RESULT", "MONITORING", "AUDIT", "TRAINING", "APPROVAL", "OTHER"]),
+        type: z.enum(["POLICY", "DOCUMENT", "TEST_RESULT", "MONITORING", "AUDIT", "TRAINING", "APPROVAL", "PROVIDER_DISCLOSURE", "OTHER"]),
         title: z.string().min(1),
         url: z.string().optional(),
         description: z.string().optional(),

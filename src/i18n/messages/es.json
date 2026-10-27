@@ -148,7 +148,8 @@
     "backToAgentTesting": "Volver a las pruebas de agentes",
     "backToProceedings": "Volver a los asuntos e investigaciones",
     "backToSensitiveData": "Volver a los datos sensibles",
-    "backToThreatModel": "Volver a los modelos de amenazas"
+    "backToThreatModel": "Volver a los modelos de amenazas",
+    "evidenceProviderDisclosure": "Información publicada por el proveedor"
   },
   "nav": {
     "billing": "Facturación",
@@ -1258,7 +1259,32 @@
     "assessmentRiskScore": "Puntuación de riesgo: {score}",
     "assessmentCompletedOn": "Completada: {date}",
     "assessmentNextReview": "Próxima revisión: {date}",
-    "placeholderFindings": "Documenta los hallazgos iniciales, las observaciones o el alcance..."
+    "placeholderFindings": "Documenta los hallazgos iniciales, las observaciones o el alcance...",
+    "disclosures": {
+      "title": "Información publicada por el proveedor",
+      "help": "Proceden de los documentos que el propio proveedor ha publicado.",
+      "guide": "Guía: normas sobre IA de frontera",
+      "edit": "Editar",
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "saved": "Se ha guardado la información del proveedor",
+      "empty": "Todavía no se ha registrado nada.",
+      "notRecorded": "Sin registrar",
+      "badLink": "Escribe un enlace que empiece por https:// o http://",
+      "fields": {
+        "safetyFrameworkUrl": "Marco de seguridad (enlace)",
+        "transparencyReportUrl": "Informe de transparencia (enlace)",
+        "modelCardUrl": "Ficha del modelo (enlace)",
+        "signedGpaiCode": "Ha firmado el Código de buenas prácticas de IA de uso general de la UE",
+        "frontierDeveloper": "Desarrollador de modelos de frontera",
+        "disclosuresCheckedAt": "Fecha de la última comprobación"
+      },
+      "answers": {
+        "YES": "Sí",
+        "NO": "No",
+        "UNKNOWN": "No se sabe"
+      }
+    }
   },
   "policies": {
     "title": "Política de IA",

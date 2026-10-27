@@ -6,8 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("ais_DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("ais_DATABASE_URL")
   // Migrations run over the direct (unpooled) connection: a session advisory lock
   // taken through the pooler can stay held and block later builds (P1002).
   directUrl = env("ais_DATABASE_URL_UNPOOLED")
@@ -180,10 +180,10 @@ model Organization {
   /// invoice id), never shown to the organization. EU_CLOUD is an internal
   /// name: the same plan lifts the same limits whichever currency was paid.
   /// Meaningless on the kit, which is never capped.
-  plan          OrganizationPlan @default(PILOT)
-  planStartedAt DateTime?
-  planRenewsAt  DateTime?
-  planNote      String?
+  plan                     OrganizationPlan @default(PILOT)
+  planStartedAt            DateTime?
+  planRenewsAt             DateTime?
+  planNote                 String?
   /// The payment subscription behind an automatic upgrade
   /// (src/server/services/plan-eu/sync.ts, behind AUTO_UPGRADE_ENABLED), so its
   /// end returns the organization to the pilot; null when the plan was set by
@@ -257,11 +257,11 @@ model OrganizationMember {
   invitedAt      DateTime?
   joinedAt       DateTime         @default(now())
 
-  organization       Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  user               User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
-  ownedBusinessUnits BusinessUnit[]       @relation("BusinessUnitOwner")
-  deputyBusinessUnits BusinessUnit[]      @relation("BusinessUnitDeputy")
-  businessUnitScopes BusinessUnitMember[]
+  organization        Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user                User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ownedBusinessUnits  BusinessUnit[]       @relation("BusinessUnitOwner")
+  deputyBusinessUnits BusinessUnit[]       @relation("BusinessUnitDeputy")
+  businessUnitScopes  BusinessUnitMember[]
 
   @@unique([organizationId, userId])
   @@map("organization_members")
@@ -309,32 +309,32 @@ model OrganizationInvitation {
 /// business units behaves exactly as before: every "for my department" affordance
 /// is hidden and no query is scoped.
 model BusinessUnit {
-  id             String   @id @default(cuid())
-  organizationId String
-  name           String
+  id                 String   @id @default(cuid())
+  organizationId     String
+  name               String
   /// Optional parent department (one level of nesting). SetNull on delete so a
   /// child is orphaned to the top level rather than cascade-deleted.
-  parentId       String?
+  parentId           String?
   /// The member who owns this department, if named. SetNull on delete.
-  ownerId        String?
+  ownerId            String?
   /// A person invited but not yet joined, named as owner. Moved to ownerId
   /// when the invitation is accepted. SetNull on delete.
   ownerInvitationId  String?
   /// A second, deputy owner: a member, or a pending invitee until they join.
   deputyOwnerId      String?
   deputyInvitationId String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 
-  organization Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  parent       BusinessUnit?        @relation("BusinessUnitParent", fields: [parentId], references: [id], onDelete: SetNull)
-  children     BusinessUnit[]       @relation("BusinessUnitParent")
-  owner        OrganizationMember?  @relation("BusinessUnitOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  organization     Organization            @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  parent           BusinessUnit?           @relation("BusinessUnitParent", fields: [parentId], references: [id], onDelete: SetNull)
+  children         BusinessUnit[]          @relation("BusinessUnitParent")
+  owner            OrganizationMember?     @relation("BusinessUnitOwner", fields: [ownerId], references: [id], onDelete: SetNull)
   ownerInvitation  OrganizationInvitation? @relation("BusinessUnitOwnerInvitation", fields: [ownerInvitationId], references: [id], onDelete: SetNull)
   deputyOwner      OrganizationMember?     @relation("BusinessUnitDeputy", fields: [deputyOwnerId], references: [id], onDelete: SetNull)
   deputyInvitation OrganizationInvitation? @relation("BusinessUnitDeputyInvitation", fields: [deputyInvitationId], references: [id], onDelete: SetNull)
-  aiSystems    AISystem[]
-  members      BusinessUnitMember[]
+  aiSystems        AISystem[]
+  members          BusinessUnitMember[]
 
   @@index([organizationId])
   @@index([parentId])
@@ -1727,6 +1727,15 @@ enum EvidenceType {
   TRAINING
   APPROVAL
   OTHER
+  /// A model provider's own published document (safety framework, transparency report, model card).
+  PROVIDER_DISCLOSURE
+}
+
+/// A yes, a no, or not known yet, for a provider disclosure.
+enum DisclosureAnswer {
+  YES
+  NO
+  UNKNOWN
 }
 
 model ComplianceFramework {
@@ -2037,30 +2046,41 @@ enum VendorAssessmentStatus {
 }
 
 model AIVendor {
-  id                 String           @id @default(cuid())
-  organizationId     String
-  name               String
-  website            String?
-  description        String?          @db.Text
-  contactName        String?
-  contactEmail       String?
-  riskLevel          VendorRiskLevel?
-  status             VendorStatus     @default(UNDER_REVIEW)
-  dueDiligenceDate   DateTime?
-  contractStartDate  DateTime?
-  contractExpiryDate DateTime?
-  dpoCentralVendorId String?
-  notes              String?          @db.Text
-  catalogSlug        String?
-  metadata           Json?
+  id                    String            @id @default(cuid())
+  organizationId        String
+  name                  String
+  website               String?
+  description           String?           @db.Text
+  contactName           String?
+  contactEmail          String?
+  riskLevel             VendorRiskLevel?
+  status                VendorStatus      @default(UNDER_REVIEW)
+  dueDiligenceDate      DateTime?
+  contractStartDate     DateTime?
+  contractExpiryDate    DateTime?
+  dpoCentralVendorId    String?
+  notes                 String?           @db.Text
+  catalogSlug           String?
+  metadata              Json?
+  /// The provider's own published documents about its models (frontier-model
+  /// disclosures), all optional: plain records of what the provider states.
+  safetyFrameworkUrl    String?
+  transparencyReportUrl String?
+  modelCardUrl          String?
+  /// Whether the provider has signed the EU General-Purpose AI Code of Practice.
+  signedGpaiCode        DisclosureAnswer?
+  /// Whether the provider describes itself as a frontier model developer.
+  frontierDeveloper     DisclosureAnswer?
+  /// When a person last checked these documents.
+  disclosuresCheckedAt  DateTime?
   /// See AISystem.provenance. A vendor added silently by the quickstart is
   /// AUTO_TEMPLATE; editing it sets confirmedAt and protects it from removal.
-  provenance         Provenance       @default(USER_ENTERED)
-  sourceRef          String?
-  confirmedBy        String?
-  confirmedAt        DateTime?
-  createdAt          DateTime         @default(now())
-  updatedAt          DateTime         @updatedAt
+  provenance            Provenance        @default(USER_ENTERED)
+  sourceRef             String?
+  confirmedBy           String?
+  confirmedAt           DateTime?
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
 
   organization Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   catalogEntry VendorCatalog?       @relation(fields: [catalogSlug], references: [slug])

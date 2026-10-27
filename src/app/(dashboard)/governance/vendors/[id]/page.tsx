@@ -50,6 +50,7 @@ import { STATUS_OUTLINE } from "@/components/ui/status-note";
 import { PageHeader } from "@/components/governance/page-header";
 import { SystemPicker } from "@/components/governance/system-picker";
 import { DeleteRecordButton } from "@/components/governance/delete-record-button";
+import { VendorDisclosuresCard } from "@/components/governance/vendor-disclosures-card";
 
 const statusColors: Record<string, string> = {
   ACTIVE: STATUS_OUTLINE.good,
@@ -423,6 +424,15 @@ export default function VendorDetailPage() {
           </CardContent>
         </Card>
       </div>
+
+      {organization && (
+        <VendorDisclosuresCard
+          organizationId={organization.id}
+          vendorId={id}
+          disclosures={vendor}
+          canWrite={canWrite}
+        />
+      )}
 
       {/* Tabs */}
       {/* `?tab=assessments` (from the "Vendor checks" view) opens on the reviews. */}

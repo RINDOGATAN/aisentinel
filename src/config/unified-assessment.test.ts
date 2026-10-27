@@ -14,6 +14,7 @@ import {
   selectUnifiedQuestions,
   unifiedOverlayTags,
   citationsFor,
+  withCurrentCitations,
   type OverlayTag,
 } from "./unified-assessment";
 import { deriveOverlayTags, undeterminedRegimes } from "@/lib/overlay-tags";
@@ -229,5 +230,34 @@ describe("undeterminedRegimes", () => {
       scope("EU_GDPR", "IN_SCOPE", ["gdpr:core"]),
     ]);
     expect(open).toEqual([{ framework: "WA_AI_RULES", openQuestions: ["companion-chatbot"] }]);
+  });
+});
+
+describe("withCurrentCitations", () => {
+  type Q = { id: string; text?: string; satisfies?: { framework: string; code: string }[] };
+  it("replaces the citations a stored unified question carries with the current ones", () => {
+    const stored: { id: string; questions: Q[] }[] = [
+      {
+        id: "notices",
+        questions: [
+          { id: "not_health_treatment", text: "old", satisfies: [{ framework: "TX_TRAIGA", code: "§ 552.051(b)" }] },
+          { id: "not_ai_interaction", satisfies: [{ framework: "TX_TRAIGA", code: "§ 552.051(a)" }] },
+          { id: "custom_question", satisfies: [{ framework: "X", code: "1" }] },
+          { id: "no_citations" },
+        ],
+      },
+    ];
+    const [section] = withCurrentCitations(stored);
+    const q = (id: string) => section.questions.find((x) => x.id === id)!;
+    expect(q("not_health_treatment").satisfies).toEqual([{ framework: "TX_TRAIGA", code: "§ 552.051(f)" }]);
+    expect(q("not_health_treatment").text).toBe("old");
+    expect(q("not_ai_interaction").satisfies).toContainEqual({ framework: "TX_TRAIGA", code: "§ 552.051(b)" });
+    expect(q("custom_question").satisfies).toEqual([{ framework: "X", code: "1" }]);
+    expect(q("no_citations").satisfies).toBeUndefined();
+  });
+
+  it("leaves anything that is not a list of sections alone", () => {
+    expect(withCurrentCitations(null)).toBeNull();
+    expect(withCurrentCitations({ a: 1 })).toEqual({ a: 1 });
   });
 });

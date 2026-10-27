@@ -189,7 +189,7 @@ curl -s https://aisentinel.todo.law/api/health
 
 Expected framework counts after a full content seed: EU AI Act 83, NIST AI RMF
 23, ISO 42001 33, AIUC-1 57, California CCPA ADMT 92, EU GDPR 26, Colorado
-SB 26-189 10, Texas TRAIGA 11, Washington 16: 351 requirements, 301
+SB 26-189 10, Texas TRAIGA 11, Washington 18: 353 requirements, 301
 cross-framework mappings (186 of them from the AIUC-1 crosswalks), plus the 8 rows of
 the customer-facing chatbot overlay (`CHATBOT_OVERLAY`, hidden from every list while
 `CHATBOT_OVERLAY_ENABLED` is not "true"). A fresh install and an upgraded one must report the same numbers; if

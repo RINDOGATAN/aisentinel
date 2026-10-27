@@ -33,7 +33,7 @@
 import { signoffMarker } from "@/config/legal-signoff";
 import type { Localized } from "@/config/lawfirm-ai-toolkit";
 
-export const UNIFIED_ASSESSMENT_VERSION = "2026.09.1";
+export const UNIFIED_ASSESSMENT_VERSION = "2026.10.1";
 export const UNIFIED_ASSESSMENT_LAW_REVIEWED_AS_OF = "2026-09-08";
 export const UNIFIED_ASSESSMENT_REVIEW_MARKER: Localized = signoffMarker("UNIFIED_ASSESSMENT");
 
@@ -813,7 +813,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         overlay: "eu:art50",
         satisfies: [
           { framework: "EU_AI_ACT", code: "Art. 50(1)" },
-          { framework: "TX_TRAIGA", code: "§ 552.051(a)" },
+          { framework: "TX_TRAIGA", code: "§ 552.051(b)" },
         ],
         feeds: ["assessment", "notice"],
       },
@@ -865,7 +865,7 @@ export const UNIFIED_ASSESSMENT_SECTIONS: UnifiedSection[] = [
         type: "textarea",
         required: true,
         overlay: "tx:healthcare",
-        satisfies: [{ framework: "TX_TRAIGA", code: "§ 552.051(b)" }],
+        satisfies: [{ framework: "TX_TRAIGA", code: "§ 552.051(f)" }],
         feeds: ["assessment", "notice"],
       },
     ],
@@ -1083,6 +1083,35 @@ export function allUnifiedQuestions(): { section: UnifiedSection; question: Unif
   return UNIFIED_ASSESSMENT_SECTIONS.flatMap((section) =>
     section.questions.map((question) => ({ section, question })),
   );
+}
+
+/**
+ * A unified template is stored per system with the citations it was created
+ * with. When a citation is renumbered (for example Texas § 552.051, where the
+ * government duty is subsection (b) and the health care duty (f)), the code
+ * an old template carries would point at a different row once the content is
+ * re-seeded. So a stored question that the current content still defines, and
+ * that carries citations, takes them from the current content. Questions this
+ * module does not define are returned unchanged.
+ */
+export function withCurrentCitations<T>(sections: T): T {
+  if (!Array.isArray(sections)) return sections;
+  const current = new Map(allUnifiedQuestions().map(({ question }) => [question.id, question.satisfies]));
+  return sections.map((section) => {
+    if (!section || typeof section !== "object") return section;
+    const questions = (section as { questions?: unknown }).questions;
+    if (!Array.isArray(questions)) return section;
+    return {
+      ...section,
+      questions: questions.map((q) => {
+        if (!q || typeof q !== "object") return q;
+        const { id, satisfies } = q as { id?: unknown; satisfies?: unknown };
+        const fresh = typeof id === "string" ? current.get(id) : undefined;
+        if (!fresh || !Array.isArray(satisfies)) return q;
+        return { ...q, satisfies: fresh.map((c) => ({ ...c })) };
+      }),
+    };
+  }) as T;
 }
 
 export interface SelectedSection {

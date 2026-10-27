@@ -28,7 +28,7 @@ export interface RegimeOrgFacts {
   isPublicAgency: ScreeningAnswer;
   /** Washington SB 5395 / RCW 48.43.830: a health carrier deciding prior authorisation. */
   isHealthCarrier: ScreeningAnswer;
-  /** Texas TRAIGA § 552.051(b): health care service providers disclosing AI use in treatment. */
+  /** Texas TRAIGA § 552.051(f): health care service providers disclosing AI use in treatment. */
   isHealthcareProvider: ScreeningAnswer;
   /** Washington HB 1170 covered provider: a generative AI system with more than one million monthly users. */
   isCoveredGenAiProvider: ScreeningAnswer;

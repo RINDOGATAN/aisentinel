@@ -21,7 +21,7 @@ import { signoffMarker } from "@/config/legal-signoff";
 import type { Localized } from "@/config/lawfirm-ai-toolkit";
 import type { OverlayTag } from "@/config/unified-assessment";
 
-export const AGENTIC_STRESS_TEST_VERSION = "2026.09.1";
+export const AGENTIC_STRESS_TEST_VERSION = "2026.10.1";
 export const AGENTIC_STRESS_TEST_LAW_REVIEWED_AS_OF = "2026-09-08";
 export const AGENTIC_STRESS_TEST_REVIEW_MARKER: Localized = signoffMarker("AGENTIC_STRESS_TEST");
 
@@ -281,14 +281,14 @@ export const AGENTIC_FINDINGS: AgenticFinding[] = [
       "El acompañante detecta expresiones de ideación suicida o autolesión y responde con recursos de crisis en lugar de continuar la conversación.",
     ),
     breakage: L(
-      "If the conversation is handed to another agent, model or channel, the detection and the protocol must follow it. A handoff that drops the safety layer is the failure mode this statute exists to prevent, and it carries a private right of action.",
-      "Si la conversación se transfiere a otro agente, modelo o canal, la detección y el protocolo deben acompañarla. Una transferencia que pierde la capa de seguridad es precisamente el fallo que esta ley pretende evitar, y lleva aparejada una acción privada.",
+      "If the conversation is handed to another agent, model or channel, the detection and the protocol must follow it. A handoff that drops the safety layer is the failure mode this statute exists to prevent, and a breach is an unfair or deceptive act under the Consumer Protection Act.",
+      "Si la conversación se transfiere a otro agente, modelo o canal, la detección y el protocolo deben acompañarla. Una transferencia que pierde la capa de seguridad es precisamente el fallo que esta ley pretende evitar, y su incumplimiento constituye una práctica desleal o engañosa conforme a la Ley de Protección del Consumidor.",
     ),
     provision: L(
       "Require the crisis-detection layer and the published protocol to apply to every agent and channel in the chain, and test the handoff against the protocol before enabling it.",
       "Exige que la capa de detección de crisis y el protocolo publicado se apliquen a todos los agentes y canales de la cadena, y prueba la transferencia frente al protocolo antes de habilitarla.",
     ),
-    citations: ["WA HB 2225 § 4", "WA HB 2225 § 5"],
+    citations: ["WA HB 2225 § 5"],
     evidencedBy: ["not_companion", "agt_handoff"],
   },
   {

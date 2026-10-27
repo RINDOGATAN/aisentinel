@@ -145,6 +145,13 @@ enum Jurisdiction {
   US_UT
   US_VA
   US_WA
+  US_OR
+  US_ID
+  US_IA
+  US_NE
+  US_HI
+  US_ME
+  US_NV
   CANADA
   BRAZIL
   CHINA
@@ -1708,6 +1715,7 @@ enum FrameworkCode {
   TX_TRAIGA
   WA_AI_RULES
   AIUC_1
+  CHATBOT_OVERLAY
 }
 
 enum ComplianceStatus {

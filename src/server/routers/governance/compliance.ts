@@ -11,6 +11,9 @@ import { assertNotOnHold } from "../../services/legal-hold";
 import type { PrismaClient } from "@prisma/client";
 import { isAgentSystem, isAiuc1Record } from "@/config/aiuc1-evidence";
 import { loadRuledOutFrameworks } from "../../services/scope/sync-requirements";
+import { overlayFrameworksNotInScope } from "@/config/framework-scope";
+import { chatbotOverlayInScope, readChatbotFacts } from "@/config/chatbot-overlay";
+import { chatbotOverlayEnabled } from "../../services/chatbot-overlay/switch";
 
 const FRAMEWORK_ORDER = [
   "EU_AI_ACT",
@@ -22,6 +25,7 @@ const FRAMEWORK_ORDER = [
   "CO_SB_26_189",
   "TX_TRAIGA",
   "WA_AI_RULES",
+  "CHATBOT_OVERLAY",
 ];
 const frameworkRank = (code: string) => {
   const i = FRAMEWORK_ORDER.indexOf(code);
@@ -37,9 +41,10 @@ const BULK_STATUSES = ["NOT_APPLICABLE", "COMPLIANT", "PARTIALLY_COMPLIANT", "NO
 
 /**
  * The frameworks with no requirement in scope for this organisation (and, with
- * a system, for this system): those its answers rule out, and AIUC-1 for a
- * system that is not an AI agent. Their tabs show only what is already
- * recorded against them.
+ * a system, for this system): those its answers rule out, AIUC-1 for a
+ * system that is not an AI agent, and the chatbot overlay while it is switched
+ * off or, for a system, when the system's facts do not apply it. Their tabs
+ * show only what is already recorded against them.
  */
 async function frameworksNotInScope(
   prisma: PrismaClient,
@@ -47,25 +52,35 @@ async function frameworksNotInScope(
   aiSystemId?: string,
 ): Promise<Set<string>> {
   const none = new Set<string>(await loadRuledOutFrameworks(prisma, organizationId));
+  const overlayOn = chatbotOverlayEnabled();
   if (aiSystemId) {
     const system = await prisma.aISystem.findFirst({
       where: { id: aiSystemId, organizationId },
-      select: { technique: true, agentProfile: { select: { autonomy: true } } },
+      select: { technique: true, metadata: true, agentProfile: { select: { autonomy: true } } },
     });
     if (system && !isAgentSystem({ technique: system.technique, autonomy: system.agentProfile?.autonomy })) {
       none.add("AIUC_1");
     }
+    const meta = (system?.metadata ?? null) as { regimeFacts?: unknown } | null;
+    const applies = chatbotOverlayInScope(overlayOn, readChatbotFacts(meta?.regimeFacts));
+    for (const code of overlayFrameworksNotInScope({ enabled: overlayOn, systemApplies: applies })) none.add(code);
+  } else {
+    for (const code of overlayFrameworksNotInScope({ enabled: overlayOn })) none.add(code);
   }
   return none;
 }
 
 export const complianceRouter = createTRPCRouter({
   listFrameworks: publicProcedure.query(async ({ ctx }) => {
-    const frameworks = await ctx.prisma.complianceFramework.findMany({
+    const all = await ctx.prisma.complianceFramework.findMany({
       include: {
         _count: { select: { requirements: true } },
       },
     });
+    // The chatbot overlay's framework exists in the database once seeded, and
+    // stays out of every list while its switch is off.
+    const hidden = new Set(overlayFrameworksNotInScope({ enabled: chatbotOverlayEnabled() }));
+    const frameworks = all.filter((f) => !hidden.has(f.code));
     // The first tab is the one every page opens on. Alphabetical order put
     // California first for everyone, including organisations that operate
     // only in Europe; the EU AI Act is the framework every user has.

@@ -29,6 +29,9 @@ import { useSubmitLock } from "@/lib/use-submit-lock";
 import { OwnerInput } from "@/components/governance/owner-input";
 import { RoleDecider } from "@/components/governance/role-decider";
 import { IntendedPurposeBuilder } from "@/components/governance/intended-purpose-builder";
+import { ChatbotQuestions } from "@/components/governance/chatbot-overlay/chatbot-questions";
+import { useChatbotOverlayEnabled } from "@/components/governance/chatbot-overlay/use-chatbot-overlay";
+import { CHATBOT_QUESTIONS, EMPTY_CHATBOT_FACTS, type ChatbotFacts } from "@/config/chatbot-overlay";
 
 type AITechnique = "MACHINE_LEARNING" | "DEEP_LEARNING" | "GENERATIVE_AI" | "AGENTIC_AI" | "NLP" | "COMPUTER_VISION" | "SPEECH_RECOGNITION" | "ROBOTICS" | "RULE_BASED" | "EXPERT_SYSTEM" | "STATISTICAL" | "OTHER";
 type AISystemRole = "PROVIDER" | "DEPLOYER" | "IMPORTER" | "DISTRIBUTOR" | "USER";
@@ -115,7 +118,14 @@ function SuggestionLine({
 
 export default function NewAISystemPage() {
   const router = useRouter();
-  const { organization } = useOrganization();
+  const { organization, canDecide } = useOrganization();
+  // The chatbot questions are asked at registration while the overlay is on,
+  // to those who may answer screening questions (the server checks again).
+  const chatbotOverlay = useChatbotOverlayEnabled();
+  const tChatbot = useTranslations("chatbotOverlay");
+  const askChatbot = chatbotOverlay && canDecide;
+  const [chatbotFacts, setChatbotFacts] = useState<ChatbotFacts>(EMPTY_CHATBOT_FACTS);
+  const setChatbotOverlayFacts = trpc.chatbotOverlay.setFacts.useMutation();
   const t = useTranslations("aiRegistryNew");
   const tr = useTranslations("aiRegistry");
   const tc = useTranslations("common");
@@ -223,7 +233,15 @@ export default function NewAISystemPage() {
   });
 
   const createSystem = trpc.aiSystem.create.useMutation({
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
+      // A question left unanswered stays unanswered; only answers are saved.
+      if (askChatbot && organization?.id && CHATBOT_QUESTIONS.some((q) => chatbotFacts[q] !== "NOT_ASSESSED")) {
+        try {
+          await setChatbotOverlayFacts.mutateAsync({ organizationId: organization.id, aiSystemId: data.id, ...chatbotFacts });
+        } catch {
+          toast.error(tChatbot("saveAfterCreateFailed"));
+        }
+      }
       toast.success(t("toastSuccess"));
       utils.aiSystem.list.invalidate();
       utils.aiSystem.getStats.invalidate();
@@ -533,6 +551,20 @@ export default function NewAISystemPage() {
               </div>
               <p className="text-xs text-muted-foreground md:col-span-2">{t("ownerPickHint")}</p>
             </div>
+
+            {askChatbot && (
+              <div className="rounded-md border border-border p-4 space-y-3">
+                <div>
+                  <p className="text-sm font-medium">{tChatbot("registrationTitle")}</p>
+                  <p className="text-xs text-muted-foreground">{tChatbot("registrationHint")}</p>
+                </div>
+                <ChatbotQuestions
+                  value={chatbotFacts}
+                  disabled={isSubmitting}
+                  onChange={(q, a) => setChatbotFacts((prev) => ({ ...prev, [q]: a }))}
+                />
+              </div>
+            )}
 
             {/* Personal Data */}
             <div className="flex items-center space-x-2">

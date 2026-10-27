@@ -33,7 +33,8 @@ import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { useEnumLabels } from "@/lib/enum-labels";
 import { useDebounce } from "@/hooks/use-debounce";
-import { JURISDICTIONS } from "@/config/jurisdictions";
+import { offeredJurisdictions } from "@/config/jurisdictions";
+import { useChatbotOverlayEnabled } from "@/components/governance/chatbot-overlay/use-chatbot-overlay";
 import {
   ASSESSMENT_FILTER_OPTIONS,
   REGISTRATION_FILTER_OPTIONS,
@@ -63,6 +64,7 @@ export function SystemFilterBar({
 }) {
   const t = useTranslations("views");
   const tj = useTranslations("jurisdictions");
+  const chatbotOverlay = useChatbotOverlayEnabled();
   const { riskLabel, roleLabel } = useEnumLabels();
 
   const { data: deptData } = trpc.businessUnit.listForScope.useQuery({ organizationId });
@@ -120,7 +122,7 @@ export function SystemFilterBar({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={ANY}>{t("filter.any")}</SelectItem>
-              {JURISDICTIONS.map((j) => (
+              {offeredJurisdictions({ chatbotOverlay }).map((j) => (
                 <SelectItem key={j.id} value={j.id}>
                   {tj(`option.${j.labelKey}`)}
                 </SelectItem>

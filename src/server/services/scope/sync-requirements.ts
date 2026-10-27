@@ -33,7 +33,13 @@
  *     state law the organisation has not chosen admits nothing (the GDPR is
  *     not a choice);
  *   - California ADMT: what the ADMT rules admit once they have resolved, if
- *     chosen.
+ *     chosen;
+ *   - the customer-facing chatbot overlay: its eight control rows, for a
+ *     system whose own facts apply it (any of the four questions "yes"), and
+ *     only while CHATBOT_OVERLAY_ENABLED is "true". It is never a choice, so
+ *     the framework choice does not reach it. Undetermined facts add nothing.
+ *     With the switch off no overlay row is added, and empty ones are removed
+ *     like any other row out of scope.
  *
  * AIUC-1 rows are left alone: they are written by agent testing, per agent.
  *
@@ -47,12 +53,19 @@ import { readApplicabilitySettings } from "@/config/applicability";
 import { frameworksRuledOut, TIERED_FRAMEWORKS } from "@/config/framework-scope";
 import { REGIME_CODES } from "@/config/regimes";
 import { activeHolds } from "@/server/services/legal-hold";
+import { CHATBOT_OVERLAY_FRAMEWORK_CODE, chatbotOverlayInScope, readChatbotFacts } from "@/config/chatbot-overlay";
+import { chatbotOverlayEnabled } from "@/server/services/chatbot-overlay/switch";
 import { buildSystemScope, SYSTEM_INCLUDE, type RawOrg, type RawSystem } from "./system-scope";
 
 const ADMT_CODE = "CA_CCPA_ADMT";
 
 /** The frameworks whose rows this service keeps in step. */
-export const SYNCED_FRAMEWORKS: readonly string[] = [...TIERED_FRAMEWORKS, ...REGIME_CODES, ADMT_CODE];
+export const SYNCED_FRAMEWORKS: readonly string[] = [
+  ...TIERED_FRAMEWORKS,
+  ...REGIME_CODES,
+  ADMT_CODE,
+  CHATBOT_OVERLAY_FRAMEWORK_CODE,
+];
 
 export interface SyncRequirement {
   id: string;
@@ -76,6 +89,8 @@ export interface SystemScopeInput {
   regimes: { framework: string; tags: string[] }[];
   /** The ADMT tags once the ADMT rules have resolved; null while undetermined. */
   admtTags: string[] | null;
+  /** The chatbot overlay applies: the switch is on and a question is "yes". */
+  chatbotOverlay?: boolean;
 }
 
 export interface SyncPlan {
@@ -111,6 +126,12 @@ export function requirementsInScope(
     const inScope = buildScopeFilter(scope.tags);
     for (const r of requirements) {
       if (r.frameworkCode === scope.framework && inScope(r)) ids.add(r.id);
+    }
+  }
+  // The overlay follows the system's facts, never the framework choice.
+  if (system.chatbotOverlay) {
+    for (const r of requirements) {
+      if (r.frameworkCode === CHATBOT_OVERLAY_FRAMEWORK_CODE) ids.add(r.id);
     }
   }
   return ids;
@@ -200,8 +221,16 @@ const EMPTY_ROW: Prisma.ComplianceMappingWhereInput = {
 export async function syncRequirements(
   db: SyncDb,
   organizationId: string,
-  options: { aiSystemId?: string; userId?: string | null; reason: string; dryRun?: boolean },
+  options: {
+    aiSystemId?: string;
+    userId?: string | null;
+    reason: string;
+    dryRun?: boolean;
+    /** Defaults to the CHATBOT_OVERLAY_ENABLED switch. */
+    chatbotOverlayEnabled?: boolean;
+  },
 ): Promise<SyncResult> {
+  const overlayOn = options.chatbotOverlayEnabled ?? chatbotOverlayEnabled();
   const org = await db.organization.findFirst({
     where: { id: organizationId },
     select: { name: true, operatingJurisdictions: true, settings: true },
@@ -265,11 +294,13 @@ export async function syncRequirements(
   };
   const scopes: SystemScopeInput[] = systems.map((system) => {
     const scope = buildSystemScope(system, rawOrg);
+    const meta = (system.metadata ?? null) as { regimeFacts?: unknown } | null;
     return {
       id: system.id,
       riskLevel: scope.riskLevel,
       regimes: scope.regimes.map((r) => ({ framework: r.framework, tags: r.tags })),
       admtTags: scope.admtResolved ? scope.admt.tags : null,
+      chatbotOverlay: chatbotOverlayInScope(overlayOn, readChatbotFacts(meta?.regimeFacts)),
     };
   });
 
@@ -333,7 +364,7 @@ export async function syncRequirements(
 export async function syncRequirementsSafely(
   db: SyncDb,
   organizationId: string,
-  options: { aiSystemId?: string; userId?: string | null; reason: string },
+  options: { aiSystemId?: string; userId?: string | null; reason: string; chatbotOverlayEnabled?: boolean },
 ): Promise<SyncResult | null> {
   try {
     return await syncRequirements(db, organizationId, options);

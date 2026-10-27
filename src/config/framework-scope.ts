@@ -50,6 +50,25 @@ export function frameworksRuledOut(
   );
 }
 
+/**
+ * The overlay frameworks (today only the customer-facing chatbot rules,
+ * src/config/chatbot-overlay.ts) are never a choice and never appear in
+ * CHOOSABLE_FRAMEWORKS, so `frameworksRuledOut` never names them and the
+ * framework choice cannot switch them on or off. They are out of scope when
+ * the switch is off, and, for one system, when that system's own facts do not
+ * apply them. Pass `systemApplies` only when a system is in question.
+ */
+export const OVERLAY_FRAMEWORKS = ["CHATBOT_OVERLAY"] as const;
+
+export function overlayFrameworksNotInScope(options: {
+  enabled: boolean;
+  systemApplies?: boolean;
+}): string[] {
+  if (!options.enabled) return [...OVERLAY_FRAMEWORKS];
+  if (options.systemApplies === false) return [...OVERLAY_FRAMEWORKS];
+  return [];
+}
+
 /** Why a chosen EU AI Act reaches no system, for the screen; null when it can. */
 export function euAiActRuleOutReason(
   jurisdictions: readonly string[],

@@ -168,8 +168,9 @@ describe("planRequirementSync", () => {
   });
 });
 
+const read = (p: string) => readFileSync(p, "utf8");
+
 describe("where the rows are brought in line", () => {
-  const read = (p: string) => readFileSync(p, "utf8");
   it("every save that changes the scope runs the sync", () => {
     const callers: [string, string][] = [
       ["src/server/routers/governance/organization.ts", 'reason: "jurisdictions"'],
@@ -184,6 +185,7 @@ describe("where the rows are brought in line", () => {
       ["src/server/routers/governance/sample.ts", 'reason: "worked-example"'],
       ["src/server/routers/governance/clientTemplate.ts", 'reason: "client-template"'],
       ["src/server/services/suite/dpc-link.ts", 'reason: "dpo-central-link"'],
+      ["src/server/routers/governance/chatbotOverlay.ts", 'reason: "chatbot-overlay-facts"'],
     ];
     for (const [file, marker] of callers) expect(read(file), `${file} ${marker}`).toContain(marker);
   });
@@ -191,5 +193,73 @@ describe("where the rows are brought in line", () => {
   it("the tier queries leave out the frameworks the answers rule out", () => {
     expect(read("src/server/routers/governance/quickstart.ts")).toContain("framework: { code: { notIn: ruledOut } }");
     expect(read("src/server/services/inventory/import-systems.ts")).toContain("framework: { code: { notIn: ruledOut } }");
+  });
+});
+
+describe("the customer-facing chatbot overlay", () => {
+  const OVERLAY: SyncRequirement[] = [
+    ...REQUIREMENTS,
+    req("chatbot-ai-disclosure", "CHATBOT_OVERLAY", [], ["chatbot:overlay"]),
+    req("chatbot-crisis-protocol", "CHATBOT_OVERLAY", [], ["chatbot:overlay"]),
+  ];
+  const overlayIds = (set: Set<string>) => ids(set).filter((id) => id.startsWith("chatbot-"));
+
+  it("adds its rows only to a system the overlay applies to", () => {
+    expect(overlayIds(requirementsInScope(system({ chatbotOverlay: true }), OVERLAY, []))).toEqual([
+      "chatbot-ai-disclosure",
+      "chatbot-crisis-protocol",
+    ]);
+    expect(overlayIds(requirementsInScope(system({ chatbotOverlay: false }), OVERLAY, []))).toEqual([]);
+    expect(overlayIds(requirementsInScope(system(), OVERLAY, []))).toEqual([]);
+  });
+
+  it("does not depend on the risk tier, the places or the framework choice", () => {
+    const s = system({ riskLevel: null, chatbotOverlay: true });
+    const everythingRuledOut = ["EU_AI_ACT", "NIST_AI_RMF", "ISO_42001", "CO_SB_26_189", "TX_TRAIGA", "WA_AI_RULES", "CA_CCPA_ADMT"];
+    expect(overlayIds(requirementsInScope(s, OVERLAY, everythingRuledOut))).toHaveLength(2);
+  });
+
+  it("with the switch off (no system applies) adds nothing and removes only empty rows", () => {
+    const plan = planRequirementSync(
+      [system({ chatbotOverlay: false })],
+      OVERLAY,
+      [row("m1", "chatbot-ai-disclosure", true), row("m2", "chatbot-crisis-protocol", false)],
+      [],
+    );
+    expect(plan.create.filter((c) => c.requirementId.startsWith("chatbot-"))).toEqual([]);
+    expect(plan.remove).toEqual(["m1"]);
+    expect(plan.byFramework.CHATBOT_OVERLAY).toEqual({ created: 0, removed: 1 });
+  });
+
+  it("keeps every row while a legal hold covers the system", () => {
+    const plan = planRequirementSync(
+      [system({ chatbotOverlay: false })],
+      OVERLAY,
+      [row("m1", "chatbot-ai-disclosure", true)],
+      [],
+      new Set(["s1"]),
+    );
+    expect(plan.remove).toEqual([]);
+  });
+
+  it("creates the missing rows once and is idempotent", () => {
+    const first = planRequirementSync([system({ chatbotOverlay: true })], OVERLAY, [row("m1", "chatbot-ai-disclosure")], []);
+    expect(first.create.filter((c) => c.requirementId.startsWith("chatbot-"))).toEqual([
+      { aiSystemId: "s1", requirementId: "chatbot-crisis-protocol" },
+    ]);
+    const second = planRequirementSync(
+      [system({ chatbotOverlay: true })],
+      OVERLAY,
+      [row("m1", "chatbot-ai-disclosure"), row("m2", "chatbot-crisis-protocol")],
+      [],
+    );
+    expect(second.create.filter((c) => c.requirementId.startsWith("chatbot-"))).toEqual([]);
+    expect(second.remove).toEqual([]);
+  });
+
+  it("the sync reads the switch and the system's own facts", () => {
+    const src = read("src/server/services/scope/sync-requirements.ts");
+    expect(src).toContain("chatbotOverlayInScope(overlayOn, readChatbotFacts(meta?.regimeFacts))");
+    expect(src).toContain("options.chatbotOverlayEnabled ?? chatbotOverlayEnabled()");
   });
 });

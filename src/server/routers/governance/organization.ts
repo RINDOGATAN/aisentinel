@@ -13,7 +13,8 @@ import { OrganizationRole, type Prisma } from "@prisma/client";
 import { loadBusinessUnitScope } from "../../services/business-units/scope";
 import { systemScopeWhere } from "../../services/views/queries";
 import { computeMarkingDeadline } from "@/config/transparency-rules";
-import { JURISDICTION_IDS } from "@/config/jurisdictions";
+import { CHATBOT_OVERLAY_ONLY_JURISDICTIONS, JURISDICTION_IDS } from "@/config/jurisdictions";
+import { chatbotOverlayEnabled } from "../../services/chatbot-overlay/switch";
 import { firstFreeSlug } from "@/lib/unique-slug";
 import { claimableDomain } from "@/lib/org-domain";
 import { assertNotOnHold } from "../../services/legal-hold";
@@ -290,6 +291,19 @@ export const organizationRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       // Deduplicate: the picker can't produce repeats, but a direct API call can.
       const jurisdictions = [...new Set(input.jurisdictions)];
+      // The places that exist only for the chatbot overlay are accepted only
+      // while it is switched on; the pickers do not offer them otherwise. One
+      // already declared (the switch was on then) may stay.
+      if (!chatbotOverlayEnabled() && jurisdictions.some((j) => CHATBOT_OVERLAY_ONLY_JURISDICTIONS.includes(j))) {
+        const current = await ctx.prisma.organization.findFirst({
+          where: { id: ctx.organization.id },
+          select: { operatingJurisdictions: true },
+        });
+        const stored = new Set<string>(current?.operatingJurisdictions ?? []);
+        if (jurisdictions.some((j) => CHATBOT_OVERLAY_ONLY_JURISDICTIONS.includes(j) && !stored.has(j))) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "One of these places cannot be declared yet" });
+        }
+      }
       const declared = jurisdictions.length > 0;
 
       const organization = await ctx.prisma.organization.update({

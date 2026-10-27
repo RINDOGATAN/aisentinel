@@ -85,6 +85,9 @@ export const LEGAL_SIGNOFF: Record<string, SignoffRecord> = {
   // Dates of application re-checked against Reg. (EU) 2026/1744 on 2026-09-16
   // (src/config/eu-ai-act-dates.ts); sign-off still pending.
   EU_AI_ACT: { status: "pending", lawReviewedAsOf: "2026-09-16" },
+  // The customer-facing chatbot overlay (src/config/chatbot-overlay.ts):
+  // every control stays pending until it has been read line by line.
+  CHATBOT_OVERLAY: { status: "pending", lawReviewedAsOf: "2026-10-27" },
 };
 
 /** The marker a pack renders under its content. */

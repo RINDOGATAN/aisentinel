@@ -24,7 +24,7 @@
  * grouping) so exported artifacts can state which revision produced them.
  * See src/config/rule-pack-versions.ts.
  */
-export const JURISDICTIONS_VERSION = "2026.08.1";
+export const JURISDICTIONS_VERSION = "2026.10.1";
 
 /**
  * Mirrors the Prisma `Jurisdiction` enum member-for-member. Declared as a
@@ -46,6 +46,13 @@ export type JurisdictionId =
   | "US_UT"
   | "US_VA"
   | "US_WA"
+  | "US_OR"
+  | "US_ID"
+  | "US_IA"
+  | "US_NE"
+  | "US_HI"
+  | "US_ME"
+  | "US_NV"
   | "CANADA"
   | "BRAZIL"
   | "CHINA"
@@ -63,6 +70,12 @@ export interface JurisdictionOption {
   group: JurisdictionGroup;
   /** i18n key under the `jurisdictions.option` namespace — never a display string. */
   labelKey: string;
+  /**
+   * Offered only while the customer-facing chatbot overlay is switched on
+   * (CHATBOT_OVERLAY_ENABLED): the places whose only modelled AI law is a
+   * chatbot law (src/config/chatbot-overlay.ts).
+   */
+  chatbotOverlayOnly?: boolean;
 }
 
 /**
@@ -85,6 +98,13 @@ export const JURISDICTIONS: readonly JurisdictionOption[] = [
   { id: "US_UT", group: "us", labelKey: "US_UT" },
   { id: "US_VA", group: "us", labelKey: "US_VA" },
   { id: "US_WA", group: "us", labelKey: "US_WA" },
+  { id: "US_OR", group: "us", labelKey: "US_OR", chatbotOverlayOnly: true },
+  { id: "US_ID", group: "us", labelKey: "US_ID", chatbotOverlayOnly: true },
+  { id: "US_IA", group: "us", labelKey: "US_IA", chatbotOverlayOnly: true },
+  { id: "US_NE", group: "us", labelKey: "US_NE", chatbotOverlayOnly: true },
+  { id: "US_HI", group: "us", labelKey: "US_HI", chatbotOverlayOnly: true },
+  { id: "US_ME", group: "us", labelKey: "US_ME", chatbotOverlayOnly: true },
+  { id: "US_NV", group: "us", labelKey: "US_NV", chatbotOverlayOnly: true },
 
   { id: "CANADA", group: "other", labelKey: "CANADA" },
   { id: "BRAZIL", group: "other", labelKey: "BRAZIL" },
@@ -114,12 +134,26 @@ export const JURISDICTION_GROUPS: readonly JurisdictionGroup[] = [
   "other",
 ];
 
-/** Options belonging to one display group, in canonical order. */
+/**
+ * Options belonging to one display group, in canonical order. The places that
+ * exist only for the chatbot overlay are left out unless it is switched on.
+ */
 export function jurisdictionsInGroup(
   group: JurisdictionGroup,
+  options: { chatbotOverlay?: boolean } = {},
 ): JurisdictionOption[] {
-  return JURISDICTIONS.filter((j) => j.group === group);
+  return JURISDICTIONS.filter((j) => j.group === group && (options.chatbotOverlay || !j.chatbotOverlayOnly));
 }
+
+/** The options a picker offers: every place, less the overlay's while it is off. */
+export function offeredJurisdictions(options: { chatbotOverlay?: boolean } = {}): JurisdictionOption[] {
+  return JURISDICTIONS.filter((j) => options.chatbotOverlay || !j.chatbotOverlayOnly);
+}
+
+/** The ids that can be declared only while the chatbot overlay is switched on. */
+export const CHATBOT_OVERLAY_ONLY_JURISDICTIONS: readonly JurisdictionId[] = JURISDICTIONS.filter(
+  (j) => j.chatbotOverlayOnly,
+).map((j) => j.id);
 
 /**
  * Has anyone actually told us where this organization operates?

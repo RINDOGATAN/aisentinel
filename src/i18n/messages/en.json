@@ -2001,6 +2001,7 @@
         "guideMyRole": "What is the organization's role?",
         "guideHighRisk": "What is high risk?",
         "guideWhichRules": "Which rules apply to me?",
+        "guideFrontierAi": "Frontier AI rules",
         "aiRegistry": "The organization's AI systems",
         "riskClassification": "Risk classification",
         "assessments": "Assessments",

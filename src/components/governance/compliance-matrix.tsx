@@ -162,6 +162,24 @@ export function frameworksWithRequirements<F extends { id: string }>(
   return all.filter((f) => ids.has(f.id));
 }
 
+/**
+ * The number on a framework's tab: its requirements in scope for this
+ * organisation. A framework with none in scope is shown only because rows were
+ * recorded against it before the scope changed (the scope rules never remove
+ * a row someone worked on), and its tab counts those rows instead of a zero.
+ */
+export function tabCount(
+  scopedCount: number | undefined,
+  seeded: number,
+  mapped: readonly { frameworkId: string; compliant: number; partial: number; nonCompliant: number; notApplicable: number; notAssessed: number }[] | undefined,
+  frameworkId: string,
+): number {
+  if (scopedCount === undefined) return seeded;
+  if (scopedCount > 0) return scopedCount;
+  const row = mapped?.find((m) => m.frameworkId === frameworkId);
+  return row ? row.compliant + row.partial + row.nonCompliant + row.notApplicable + row.notAssessed : 0;
+}
+
 export function ComplianceMatrix({ aiSystemId }: { aiSystemId: string }) {
   const t = useTranslations("compliance");
   const locale = useLocale();
@@ -228,6 +246,7 @@ export function ComplianceMatrix({ aiSystemId }: { aiSystemId: string }) {
       applicabilityTags: admtTags,
       scopedFrameworkCode: "CA_CCPA_ADMT",
       scopes: regimeScopeTags,
+      aiSystemId: selectedSystemId,
     },
     { enabled: !!orgId }
   );
@@ -406,7 +425,8 @@ export function ComplianceMatrix({ aiSystemId }: { aiSystemId: string }) {
               );
               return (
                 <TabsTrigger key={fw.id} value={fw.id} className="flex-none">
-                  {frameworkName(fw.code, fw.name, locale)} ({scoped?.count ?? fw._count.requirements})
+                  {frameworkName(fw.code, fw.name, locale)} (
+                  {tabCount(scoped?.count, fw._count.requirements, systemScorecard?.frameworks, fw.id)})
                 </TabsTrigger>
               );
             })}
@@ -416,6 +436,11 @@ export function ComplianceMatrix({ aiSystemId }: { aiSystemId: string }) {
             <TabsContent key={fw.id} value={fw.id}>
               {fw.code === "CA_CCPA_ADMT" && selectedSystemId && admtScope && (
                 <AdmtScopeBanner state={admtScope.scope.state} />
+              )}
+              {frameworkCounts?.find((c) => c.frameworkId === fw.id)?.count === 0 && (
+                <p className="mb-3 text-xs text-muted-foreground" data-testid="framework-kept-only">
+                  {t("frameworkKeptOnly")}
+                </p>
               )}
               {!matrix ? (
                 <Card>

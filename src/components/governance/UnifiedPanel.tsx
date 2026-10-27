@@ -34,6 +34,7 @@ import { citationString, frameworkChip } from "@/config/framework-display";
 import { overlayLabel } from "@/config/overlay-labels";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
+import { refreshAfterScopeChange } from "@/lib/scope-refresh";
 import { useExportDownload } from "@/components/governance/use-export-download";
 import { STATUS_CHIP, StatusNote } from "@/components/ui/status-note";
 
@@ -117,12 +118,7 @@ export function UnifiedPanel({
   const { data: template } = trpc.unified.getTemplate.useQuery({ organizationId, aiSystemId });
   const { data: stress } = trpc.unified.stressTest.useQuery({ organizationId, aiSystemId });
 
-  const invalidate = () => {
-    void utils.regimes.getScope.invalidate();
-    void utils.unified.getTemplate.invalidate();
-    void utils.unified.stressTest.invalidate();
-    void utils.compliance.getFrameworkCounts.invalidate();
-  };
+  const invalidate = () => refreshAfterScopeChange(utils);
 
   const saveFacts = trpc.regimes.setSystemFacts.useMutation({
     onSuccess: () => {

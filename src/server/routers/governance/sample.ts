@@ -19,6 +19,7 @@ import {
   removeWorkedExample,
 } from "@/server/services/sample/worked-example";
 import { assertNotOnHold } from "@/server/services/legal-hold";
+import { syncRequirementsSafely } from "@/server/services/scope/sync-requirements";
 import { assertPilotRoom, pilotLocale } from "@/server/services/pilot/caps";
 import { EXAMPLE_SYSTEMS, EXAMPLE_VENDORS } from "@/config/worked-example";
 
@@ -53,11 +54,17 @@ export const sampleRouter = createTRPCRouter({
       for (const [key, adding] of room) {
         await assertPilotRoom(ctx.prisma, ctx.organization.id, key, locale, adding);
       }
-      return createWorkedExample(ctx.prisma, {
+      const created = await createWorkedExample(ctx.prisma, {
         organizationId: ctx.organization.id,
         userId: ctx.session.user.id,
         locale,
       });
+      // The example may declare places; the organisation's own systems follow.
+      await syncRequirementsSafely(ctx.prisma, ctx.organization.id, {
+        userId: ctx.session.user.id,
+        reason: "worked-example",
+      });
+      return created;
     }),
 
   /**
@@ -81,9 +88,15 @@ export const sampleRouter = createTRPCRouter({
           message: "This organization holds no sample data",
         });
       }
-      return removeWorkedExample(ctx.prisma, {
+      const removed = await removeWorkedExample(ctx.prisma, {
         organizationId: ctx.organization.id,
         userId: ctx.session.user.id,
       });
+      // Removing the example puts back the places it replaced.
+      await syncRequirementsSafely(ctx.prisma, ctx.organization.id, {
+        userId: ctx.session.user.id,
+        reason: "worked-example-removed",
+      });
+      return removed;
     }),
 });

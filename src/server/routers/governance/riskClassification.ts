@@ -6,6 +6,7 @@ import { editConfirmation, keepSystemAfterEdit } from "@/server/services/provena
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { screenAnnexIii } from "@/config/annex-iii-rules";
+import { syncRequirementsSafely } from "@/server/services/scope/sync-requirements";
 import { LIST_SORTS, DEFAULT_LIST_SORT, aiSystemOrderBy } from "@/lib/list-sort";
 import { chatComplete } from "../../services/ai/llm-door";
 import {
@@ -124,25 +125,16 @@ export const riskClassificationRouter = createTRPCRouter({
           userId: ctx.session.user.id,
         });
 
-        // Auto-generate compliance mappings for any new applicable requirements
-        const applicableRequirements = await ctx.prisma.complianceRequirement.findMany({
-          where: { applicableTo: { has: input.riskLevel } },
-          select: { id: true },
+        // The system's requirement rows follow the new tier: the new tier's
+        // requirements are added, the old tier's untouched rows removed, and
+        // the regimes that read the risk level are recomputed.
+        const synced = await syncRequirementsSafely(ctx.prisma, ctx.organization.id, {
+          aiSystemId: input.aiSystemId,
+          userId: ctx.session.user.id,
+          reason: "risk-classification",
         });
 
-        const complianceMappingsCreated = applicableRequirements.length > 0
-          ? (await ctx.prisma.complianceMapping.createMany({
-              data: applicableRequirements.map((req) => ({
-                organizationId: ctx.organization.id,
-                aiSystemId: input.aiSystemId,
-                requirementId: req.id,
-                status: "NOT_ASSESSED" as const,
-              })),
-              skipDuplicates: true,
-            })).count
-          : 0;
-
-        return { ...updated, complianceMappingsCreated };
+        return { ...updated, complianceMappingsCreated: synced?.created ?? 0 };
       }
 
       // Create new classification
@@ -169,25 +161,15 @@ export const riskClassificationRouter = createTRPCRouter({
         },
       });
 
-      // Auto-generate compliance mappings for applicable requirements
-      const applicableRequirements = await ctx.prisma.complianceRequirement.findMany({
-        where: { applicableTo: { has: input.riskLevel } },
-        select: { id: true },
+      // The requirements of the tier, and of the regimes that read it, in
+      // scope for this organisation (src/server/services/scope/sync-requirements.ts).
+      const synced = await syncRequirementsSafely(ctx.prisma, ctx.organization.id, {
+        aiSystemId: input.aiSystemId,
+        userId: ctx.session.user.id,
+        reason: "risk-classification",
       });
 
-      const complianceMappingsCreated = applicableRequirements.length > 0
-        ? (await ctx.prisma.complianceMapping.createMany({
-            data: applicableRequirements.map((req) => ({
-              organizationId: ctx.organization.id,
-              aiSystemId: input.aiSystemId,
-              requirementId: req.id,
-              status: "NOT_ASSESSED" as const,
-            })),
-            skipDuplicates: true,
-          })).count
-        : 0;
-
-      return { ...classification, complianceMappingsCreated };
+      return { ...classification, complianceMappingsCreated: synced?.created ?? 0 };
     }),
 
   getHistory: organizationProcedure

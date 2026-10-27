@@ -101,7 +101,7 @@ export interface SystemScope {
   undetermined: { framework: string; openQuestions: string[] }[];
 }
 
-const SYSTEM_INCLUDE = {
+export const SYSTEM_INCLUDE = {
   riskClassification: { select: { riskLevel: true, annexIIICategory: true } },
   admtProfile: {
     select: {
@@ -141,7 +141,7 @@ const SYSTEM_INCLUDE = {
   },
 } as const;
 
-interface RawSystem {
+export interface RawSystem {
   id: string;
   name: string;
   technique: string;
@@ -187,7 +187,7 @@ interface RawSystem {
   } | null;
 }
 
-interface RawOrg {
+export interface RawOrg {
   name: string;
   operatingJurisdictions: string[];
   settings: unknown;

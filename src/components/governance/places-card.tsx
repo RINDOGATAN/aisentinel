@@ -20,6 +20,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { CARD_HEADER_WITH_STATUS, CardSaveStatus } from "@/components/ui/save-status";
 import { Instruction } from "@/components/ui/instruction";
 import { trpc } from "@/lib/trpc";
+import { refreshAfterScopeChange } from "@/lib/scope-refresh";
 import { useAutoSave } from "@/lib/use-auto-save";
 import { JurisdictionPicker } from "@/components/governance/jurisdiction-picker";
 import type { JurisdictionId } from "@/config/jurisdictions";
@@ -43,14 +44,7 @@ export function PlacesCard({
   const selection = edited ?? saved;
 
   const save = trpc.organization.setJurisdictions.useMutation({
-    onSuccess: () => {
-      void utils.organization.getById.invalidate();
-      void utils.organization.getDashboardStats.invalidate();
-      void utils.programPath.status.invalidate();
-      void utils.obligations.getObligations.invalidate();
-      void utils.regimes.getApplicability.invalidate();
-      void utils.admt.getOrgScope.invalidate();
-    },
+    onSuccess: () => refreshAfterScopeChange(utils),
   });
   const autosave = useAutoSave<JurisdictionId[]>(
     (jurisdictions) => save.mutateAsync({ organizationId, jurisdictions }),
@@ -79,7 +73,9 @@ export function PlacesCard({
             setEdited(next);
             autosave.push(next);
           }}
-          disabled={!canWrite}
+          // Not before the saved places have loaded: a tick on the empty
+          // picker would save that one place alone and drop the others.
+          disabled={!canWrite || !org}
         />
       </CardContent>
     </Card>

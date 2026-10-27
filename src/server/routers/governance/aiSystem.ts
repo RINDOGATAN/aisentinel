@@ -46,6 +46,7 @@ import {
 } from "../../services/ai/posture";
 import { buildSystemContext, promptLocale } from "../../services/ai/context";
 import { assertNotOnHold } from "../../services/legal-hold";
+import { syncRequirementsSafely } from "@/server/services/scope/sync-requirements";
 import {
   buildAnnexIvSystemPrompt,
   buildAnnexIvUserPrompt,
@@ -329,6 +330,14 @@ export const aiSystemRouter = createTRPCRouter({
         },
       });
 
+      // The same requirements a system set up by the quick start or an import
+      // receives: the regimes that do not wait for a risk level.
+      await syncRequirementsSafely(ctx.prisma, ctx.organization.id, {
+        aiSystemId: system.id,
+        userId: ctx.session.user.id,
+        reason: "system-created",
+      });
+
       return system;
     }),
 
@@ -405,6 +414,16 @@ export const aiSystemRouter = createTRPCRouter({
           changes: data,
         },
       });
+
+      // The regime rules read the technique, the role and personal data, so
+      // a change to one of them can bring a law in or take it out.
+      if (input.technique !== undefined || input.role !== undefined || input.processesPersonalData !== undefined) {
+        await syncRequirementsSafely(ctx.prisma, ctx.organization.id, {
+          aiSystemId: id,
+          userId: ctx.session.user.id,
+          reason: "system-facts",
+        });
+      }
 
       return ctx.prisma.aISystem.findFirst({ where: { id, organizationId: ctx.organization.id } });
     }),

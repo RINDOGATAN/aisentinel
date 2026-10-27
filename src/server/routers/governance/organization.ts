@@ -17,6 +17,7 @@ import { JURISDICTION_IDS } from "@/config/jurisdictions";
 import { firstFreeSlug } from "@/lib/unique-slug";
 import { claimableDomain } from "@/lib/org-domain";
 import { assertNotOnHold } from "../../services/legal-hold";
+import { syncRequirementsSafely } from "@/server/services/scope/sync-requirements";
 import { COUNTED_INCIDENT } from "@/server/services/incident/counted";
 import {
   assertPilotOrganizationLimit,
@@ -315,6 +316,13 @@ export const organizationRouter = createTRPCRouter({
             declared,
           },
         },
+      });
+
+      // The places decide which laws reach each system: its requirement rows
+      // follow (src/server/services/scope/sync-requirements.ts).
+      await syncRequirementsSafely(ctx.prisma, ctx.organization.id, {
+        userId: ctx.session.user.id,
+        reason: "jurisdictions",
       });
 
       return organization;

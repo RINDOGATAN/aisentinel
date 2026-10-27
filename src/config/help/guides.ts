@@ -3,7 +3,9 @@
 
 /**
  * The three short guides a newcomer needs before the product makes sense:
- * "What is my role?", "What is high risk?" and "Which rules apply to me?".
+ * "What is my role?", "What is high risk?" and "Which rules apply to me?",
+ * and a fourth, longer reference guide on the rules aimed at frontier AI
+ * developers and what they mean for an organization that uses AI.
  *
  * They are docs pages under /docs/guides, linked from every help panel and
  * from the first-run card. The content is typed data here (bilingual), like
@@ -37,11 +39,16 @@ export interface GuideSection {
 }
 
 export interface Guide {
-  slug: "my-role" | "high-risk" | "which-rules";
+  slug: "my-role" | "high-risk" | "which-rules" | "frontier-ai";
   title: Localized;
   lead: Localized;
   sections: GuideSection[];
   official: OfficialLink[];
+  /**
+   * Heading for the source list. Defaults to the generic "the law itself"
+   * label; a guide that also cites proposals, not only law, names its own.
+   */
+  sourcesHeading?: Localized;
   /** Where the reader most likely goes next, inside the product. */
   next?: { href: string; label: Localized };
 }
@@ -203,6 +210,149 @@ export const GUIDES: Guide[] = [
     next: {
       href: "/governance/settings",
       label: L("Set your jurisdictions", "Fija tus jurisdicciones"),
+    },
+  },
+  {
+    slug: "frontier-ai",
+    title: L("Frontier AI rules and your AI program", "Las normas sobre IA de frontera y tu programa de IA"),
+    lead: L(
+      "Three sets of rules aim at the companies that build the most capable AI models: California's Transparency in Frontier Artificial Intelligence Act (SB 53), the EU AI Act's rules for general-purpose AI models, and a federal framework that Anthropic proposed in June 2026. They place duties on those developers, not on the organizations that use their models. If your organization uses AI, they reach you mostly through the information developers must now publish or pass on to you, and that information is useful evidence for your own program.",
+      "Tres conjuntos de normas se dirigen a las empresas que construyen los modelos de IA más capaces: la Ley de transparencia en la inteligencia artificial de frontera de California (SB 53), las normas del RIA para los modelos de IA de uso general y un marco federal que Anthropic ha propuesto en junio de 2026. Imponen obligaciones a esos desarrolladores, no a las organizaciones que utilizan sus modelos. Si tu organización utiliza IA, te alcanzan sobre todo a través de la información que los desarrolladores deben ahora publicar o transmitirte, y esa información es una prueba útil para tu propio programa.",
+    ),
+    sections: [
+      {
+        heading: L("Who these rules apply to", "A quién se aplican estas normas"),
+        items: [
+          {
+            term: L("California SB 53 (in force since 1 January 2026)", "SB 53 de California (en vigor desde el 1 de enero de 2026)"),
+            body: L(
+              "Signed on 29 September 2025. A frontier developer is a person that has trained, or begun training, a foundation model using more than 10²⁶ computing operations. Every frontier developer must publish a transparency report when it deploys a new or substantially modified frontier model (it may form part of a system card) and report critical safety incidents to the California Office of Emergency Services within 15 days of discovering them, or within 24 hours to an appropriate authority where an incident poses an imminent risk of death or serious physical injury. A large frontier developer (more than $500 million in annual gross revenue, with its affiliates, in the preceding calendar year) must also publish a frontier AI framework, review it at least once a year, and send the Office of Emergency Services a summary of its internal-use catastrophic risk assessments every three months, or on another reasonable schedule it sets and communicates. Employees who report catastrophic risks are protected, and only the Attorney General can seek civil penalties of up to $1 million per violation.",
+              "Firmada el 29 de septiembre de 2025. Un desarrollador de frontera es quien ha entrenado, o ha iniciado el entrenamiento de, un modelo fundacional con más de 10²⁶ operaciones de cómputo. Todo desarrollador de frontera debe publicar un informe de transparencia cuando despliega un modelo de frontera nuevo o sustancialmente modificado (puede formar parte de una ficha del sistema) y notificar los incidentes críticos de seguridad a la Oficina de Servicios de Emergencia de California en los 15 días siguientes a su descubrimiento, o en 24 horas a la autoridad competente cuando un incidente supone un riesgo inminente de muerte o de lesión física grave. Un gran desarrollador de frontera (más de 500 millones de dólares de ingresos brutos anuales, junto con sus filiales, en el año natural anterior) debe además publicar un marco de IA de frontera, revisarlo al menos una vez al año y enviar a esa Oficina un resumen de sus evaluaciones del riesgo catastrófico derivado del uso interno cada tres meses, o con otra periodicidad razonable que fije y comunique. Se protege a los empleados que denuncian riesgos catastróficos, y solo el Fiscal General puede reclamar sanciones civiles de hasta 1 millón de dólares por infracción.",
+            ),
+          },
+          {
+            term: L("EU AI Act: general-purpose AI models (Arts. 53 and 55)", "RIA: modelos de IA de uso general (arts. 53 y 55)"),
+            body: L(
+              "Every provider of a general-purpose AI model must keep technical documentation for the authorities, give the providers who integrate the model into their own AI systems the information they need to understand its capabilities and limitations (Art. 53(1)(b) and Annex XII), adopt a copyright policy, and publish a summary of the content used for training. A model is presumed to carry systemic risk when its training used more than 10²⁵ floating-point operations (Art. 51(2)); its provider must also evaluate it, including adversarial testing, assess and mitigate systemic risks, report serious incidents to the AI Office without undue delay, and protect its cybersecurity (Art. 55).",
+              "Todo proveedor de un modelo de IA de uso general debe mantener documentación técnica para las autoridades, facilitar a los proveedores que integran el modelo en sus propios sistemas de IA la información que necesitan para entender sus capacidades y limitaciones (art. 53.1.b y anexo XII), adoptar directrices sobre derechos de autor y publicar un resumen del contenido utilizado para el entrenamiento. Se presume que un modelo tiene riesgo sistémico cuando su entrenamiento ha utilizado más de 10²⁵ operaciones de coma flotante (art. 51.2); su proveedor debe además evaluarlo, incluidas pruebas adversarias, evaluar y mitigar los riesgos sistémicos, comunicar los incidentes graves a la Oficina de IA sin demora indebida y proteger su ciberseguridad (art. 55).",
+            ),
+          },
+          {
+            term: L("EU AI Act: the dates", "RIA: las fechas"),
+            body: L(
+              "These obligations apply since 2 August 2025 (Art. 113). The Commission's enforcement powers apply from 2 August 2026: it can request information and access to a model, require measures, ask a provider to restrict, withdraw or recall a model (Art. 93), and fine up to 3% of worldwide annual turnover or EUR 15 million, whichever is higher (Art. 101). Models placed on the market before 2 August 2025 must comply by 2 August 2027 (Art. 111(3)).",
+              "Estas obligaciones se aplican desde el 2 de agosto de 2025 (art. 113). Los poderes de ejecución de la Comisión se aplican desde el 2 de agosto de 2026: puede solicitar información y acceso a un modelo, exigir medidas, pedir a un proveedor que restrinja la comercialización de un modelo, lo retire o lo recupere (art. 93) e imponer multas de hasta el 3 % del volumen de negocios mundial anual o de 15 millones de euros, si esta cifra es superior (art. 101). Los modelos introducidos en el mercado antes del 2 de agosto de 2025 deben cumplir a más tardar el 2 de agosto de 2027 (art. 111.3).",
+            ),
+          },
+          {
+            term: L("The General-Purpose AI Code of Practice", "El Código de buenas prácticas de IA de uso general"),
+            body: L(
+              "A voluntary code the Commission received on 10 July 2025. It has three chapters: Transparency and Copyright, for every provider, and Safety and Security, for the few providers of the most advanced models. The Transparency chapter includes a Model Documentation Form. Providers that sign it can rely on it to show they meet Arts. 53 and 55 until a harmonised standard is published (Arts. 53(4) and 55(2)).",
+              "Un código voluntario que la Comisión ha recibido el 10 de julio de 2025. Tiene tres capítulos: Transparencia y Derechos de autor, para todos los proveedores, y Seguridad y Protección, para los pocos proveedores de los modelos más avanzados. El capítulo de Transparencia incluye un formulario de documentación del modelo. Los proveedores que lo firman pueden apoyarse en él para demostrar que cumplen los arts. 53 y 55 hasta que se publique una norma armonizada (arts. 53.4 y 55.2).",
+            ),
+          },
+          {
+            term: L("Anthropic's Advanced AI Framework (a proposal, not law)", "El Advanced AI Framework de Anthropic (una propuesta, no una ley)"),
+            body: L(
+              "A policy proposal published in June 2026, written mainly for the US federal government. It would cover developers that train models with more than 10²⁵ operations and either earn more than $500 million a year in AI revenue or spend more than $1 billion a year on AI research and development. They would publish a safety framework and certify compliance with it every year, publish a system card for each covered model release or major new capability and a risk report at least every six months, report critical safety incidents to a federal agency within 15 days, and engage an independent evaluator. It creates no duty today.",
+              "Una propuesta normativa publicada en junio de 2026, pensada sobre todo para el Gobierno federal de EE. UU. Abarcaría a los desarrolladores que entrenen modelos con más de 10²⁵ operaciones y que, además, ingresen más de 500 millones de dólares al año por IA o inviertan más de 1.000 millones de dólares al año en investigación y desarrollo de IA. Deberían publicar un marco de seguridad y certificar cada año que lo cumplen, publicar una ficha del sistema por cada lanzamiento de un modelo cubierto o cada nueva capacidad importante y un informe de riesgos al menos cada seis meses, notificar los incidentes críticos de seguridad a una agencia federal en 15 días y contar con un evaluador independiente. Hoy no crea ninguna obligación.",
+            ),
+          },
+        ],
+      },
+      {
+        heading: L("What they mean if your organization uses AI", "Qué suponen si tu organización utiliza IA"),
+        intro: L(
+          "An organization that uses AI models built by others is very unlikely to meet these thresholds. The rules still matter to it, because they make the developers of the models it relies on publish or hand over information it can use.",
+          "Es muy poco probable que una organización que utiliza modelos de IA construidos por otros alcance estos umbrales. Aun así, las normas le importan, porque obligan a los desarrolladores de los modelos de los que depende a publicar o entregar información que puede aprovechar.",
+        ),
+        items: [
+          {
+            term: L("Published documents you can ask for and keep", "Documentos publicados que puedes pedir y conservar"),
+            body: L(
+              "A frontier AI framework and a transparency report or system card for each frontier model (California), the public training-content summary and the provider's copyright policy (EU), and whether the provider has signed the Code of Practice. Each tells you something about intended uses, restrictions on use and known risks that belongs in your own risk assessment and vendor review.",
+              "Un marco de IA de frontera y un informe de transparencia o una ficha del sistema para cada modelo de frontera (California), el resumen público del contenido de entrenamiento y las directrices del proveedor sobre derechos de autor (UE), y si el proveedor ha firmado el Código de buenas prácticas. Cada uno te dice algo sobre usos previstos, restricciones de uso y riesgos conocidos que tiene su lugar en tu propia evaluación de riesgos y en la revisión del proveedor.",
+            ),
+          },
+          {
+            term: L("Documentation passed downstream", "Documentación que se transmite aguas abajo"),
+            body: L(
+              "If you build a general-purpose model into an AI system that you provide, including one you put into service for your own use, you are a downstream provider under the EU AI Act (Art. 3(68)) and the model's provider must give you the information in Art. 53(1)(b) and Annex XII. If you change a model substantially, check whether you become its provider; the Commission's guidelines for providers of general-purpose AI models explain who is in scope. The AI Office also runs a channel for downstream providers to report suspected infringements by model providers.",
+              "Si integras un modelo de uso general en un sistema de IA del que eres proveedor, incluido uno que pones en servicio para tu propio uso, eres un proveedor posterior conforme al RIA (art. 3.68) y el proveedor del modelo debe facilitarte la información del art. 53.1.b y del anexo XII. Si modificas un modelo de forma sustancial, comprueba si pasas a ser su proveedor; las directrices de la Comisión para los proveedores de modelos de IA de uso general explican quién está incluido. La Oficina de IA dispone además de un canal para que los proveedores posteriores denuncien posibles infracciones de los proveedores de modelos.",
+            ),
+          },
+          {
+            term: L("Incidents you should hear about", "Incidentes de los que deberías enterarte"),
+            body: L(
+              "A critical safety incident at a model's developer may affect the systems you run on that model. Members of the public can also report such incidents to the California Office of Emergency Services. Treat a provider's incident disclosure as a trigger to review the systems that depend on it.",
+              "Un incidente crítico de seguridad en el desarrollador de un modelo puede afectar a los sistemas que utilizas sobre ese modelo. Cualquier persona puede además notificar esos incidentes a la Oficina de Servicios de Emergencia de California. Trata la comunicación de un incidente por parte de un proveedor como el aviso para revisar los sistemas que dependen de él.",
+            ),
+          },
+        ],
+      },
+      {
+        heading: L("How AI Sentinel helps", "Cómo te ayuda AI Sentinel"),
+        intro: L(
+          "AI Sentinel does not add SB 53 or Anthropic's proposal as frameworks, because neither places duties on an organization that uses AI. It gives you places to keep what the developers publish, next to the frameworks it does map: the EU AI Act, the GDPR, the NIST AI RMF, ISO/IEC 42001, AIUC-1 and the California, Colorado, Texas and Washington rules.",
+          "AI Sentinel no incorpora la SB 53 ni la propuesta de Anthropic como marcos, porque ninguna impone obligaciones a una organización que utiliza IA. Te da lugares donde guardar lo que publican los desarrolladores, junto a los marcos que sí mapea: el RIA, el RGPD, el NIST AI RMF, la ISO/IEC 42001, AIUC-1 y las normas de California, Colorado, Texas y Washington.",
+        ),
+        items: [
+          {
+            term: L("Vendors and vendor reviews", "Proveedores y revisiones de proveedores"),
+            body: L(
+              "Record each model developer as a vendor, link it to the systems that use it, and run a vendor assessment with findings and a next review date. Note in the findings which disclosures the developer has published and whether it has signed the Code of Practice. A vendor added from the catalog brings its trust center link, certifications and frameworks with it.",
+              "Registra a cada desarrollador de modelos como proveedor, vincúlalo a los sistemas que lo utilizan y realiza una evaluación del proveedor con conclusiones y una fecha de próxima revisión. Anota en las conclusiones qué documentos ha publicado el desarrollador y si ha firmado el Código de buenas prácticas. Un proveedor añadido desde el catálogo trae consigo el enlace a su centro de confianza, sus certificaciones y sus marcos.",
+            ),
+          },
+          {
+            term: L("The model behind each system", "El modelo que hay detrás de cada sistema"),
+            body: L(
+              "In the AI registry, each system lists the models it uses, with provider, version, a training data summary and known limitations. Take these from the provider's system card or model documentation, and export them with the model inventory report.",
+              "En el registro de IA, cada sistema enumera los modelos que utiliza, con el proveedor, la versión, un resumen de los datos de entrenamiento y las limitaciones conocidas. Tómalos de la ficha del sistema o de la documentación del modelo del proveedor y expórtalos con el informe del inventario de modelos.",
+            ),
+          },
+          {
+            term: L("Evidence", "Pruebas"),
+            body: L(
+              "Attach a provider's published document as an evidence item, with its link and a description, to the requirements you map in Compliance. The EU AI Act framework includes the Art. 53 requirements on technical documentation, information for downstream providers, the copyright policy and the training content summary.",
+              "Adjunta un documento publicado por un proveedor como prueba, con su enlace y una descripción, a los requisitos que mapeas en Cumplimiento. El marco del RIA incluye los requisitos del art. 53 sobre documentación técnica, información para proveedores posteriores, directrices sobre derechos de autor y resumen del contenido de entrenamiento.",
+            ),
+          },
+          {
+            term: L("Incidents, oversight and the calendar", "Incidentes, supervisión y calendario"),
+            body: L(
+              "Log a provider's incident disclosure as an incident on each affected system, with its timeline, and use an oversight gate for the decision to adopt or upgrade a model. Once you declare the relevant jurisdictions, the obligations calendar shows the EU general-purpose AI milestone and the California SB 53 milestone as context.",
+              "Registra la comunicación de un incidente por parte de un proveedor como incidente en cada sistema afectado, con su cronología, y utiliza un punto de control de supervisión para la decisión de adoptar o actualizar un modelo. Cuando declaras las jurisdicciones pertinentes, el calendario de obligaciones muestra como contexto el hito de la UE sobre IA de uso general y el hito de la SB 53 de California.",
+            ),
+          },
+        ],
+      },
+      {
+        heading: L("Information, not legal advice", "Información, no asesoramiento jurídico"),
+        intro: L(
+          "This page summarizes the rules as published in the sources below, read on 26 October 2026. It is information, not legal advice, and it does not decide whether a rule applies to your organization. Anthropic's framework is a proposal: it may change, and it may never become law.",
+          "Esta página resume las normas tal como se publican en las fuentes siguientes, consultadas el 26 de octubre de 2026. Es información, no asesoramiento jurídico, y no decide si una norma se aplica a tu organización. El marco de Anthropic es una propuesta: puede cambiar y puede no llegar nunca a ser ley.",
+        ),
+      },
+    ],
+    official: [
+      OFFICIAL_LINKS.caSb53,
+      OFFICIAL_LINKS.caOesFrontierReporting,
+      OFFICIAL_LINKS.caAgSb53,
+      OFFICIAL_LINKS.euArt51,
+      OFFICIAL_LINKS.euArt53,
+      OFFICIAL_LINKS.euArt55,
+      OFFICIAL_LINKS.euArt93,
+      OFFICIAL_LINKS.euArt113,
+      OFFICIAL_LINKS.gpaiEnforcementFaq,
+      OFFICIAL_LINKS.gpaiCodeOfPractice,
+      OFFICIAL_LINKS.gpaiCodePressRelease,
+      OFFICIAL_LINKS.anthropicAdvancedAiFramework,
+    ],
+    sourcesHeading: L("Sources", "Fuentes"),
+    next: {
+      href: "/governance/vendors",
+      label: L("Go to vendors", "Ir a proveedores"),
     },
   },
 ];

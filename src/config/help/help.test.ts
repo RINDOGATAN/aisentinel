@@ -102,8 +102,8 @@ describe("glossary", () => {
 });
 
 describe("guides", () => {
-  it("the three guides exist with bilingual content", () => {
-    expect(GUIDES.map((g) => g.slug).sort()).toEqual(["high-risk", "my-role", "which-rules"]);
+  it("the four guides exist with bilingual content", () => {
+    expect(GUIDES.map((g) => g.slug).sort()).toEqual(["frontier-ai", "high-risk", "my-role", "which-rules"]);
     for (const guide of GUIDES) {
       expect(guide.title.en.trim().length).toBeGreaterThan(0);
       expect(guide.title.es.trim().length).toBeGreaterThan(0);

@@ -34,6 +34,7 @@ import {
   ListChecks,
   FlaskConical,
   LifeBuoy,
+  Cpu,
 } from "lucide-react";
 import { useState } from "react";
 import { PremiumNotice } from "@/components/docs/premium-notice";
@@ -51,6 +52,7 @@ const sidebarItems: SidebarItem[] = [
   { href: "/docs/guides/my-role", labelKey: "guideMyRole", icon: Users, group: "guides" },
   { href: "/docs/guides/high-risk", labelKey: "guideHighRisk", icon: ShieldAlert, group: "guides" },
   { href: "/docs/guides/which-rules", labelKey: "guideWhichRules", icon: Globe2, group: "guides" },
+  { href: "/docs/guides/frontier-ai", labelKey: "guideFrontierAi", icon: Cpu, group: "guides" },
   { href: "/docs/ai-registry", labelKey: "aiRegistry", icon: Brain },
   { href: "/docs/risk-classification", labelKey: "riskClassification", icon: ShieldAlert },
   { href: "/docs/assessments", labelKey: "assessments", icon: ClipboardCheck },

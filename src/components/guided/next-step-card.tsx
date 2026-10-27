@@ -9,7 +9,7 @@
  */
 
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { ArrowRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { AI_SENTINEL_PATH } from "./path-config";
 import { nextStep, stageNumber } from "./path";
 import { useProgramPathQuery } from "./use-program-path";
+import { stepText } from "./step-why";
 
 export function NextStepCard({
   waitForFresh = false,
@@ -29,7 +30,8 @@ export function NextStepCard({
   waitForFresh?: boolean;
 } = {}) {
   const t = useTranslations("guided");
-  const { steps, refreshing } = useProgramPathQuery();
+  const locale = useLocale();
+  const { steps, refreshing, disclosureLaws } = useProgramPathQuery();
   const statuses = waitForFresh && refreshing ? null : steps;
   const next = statuses ? nextStep(AI_SENTINEL_PATH, statuses) : null;
   const StepIcon = next?.step.icon;
@@ -58,7 +60,7 @@ export function NextStepCard({
               <h2 className="mt-1 font-semibold text-base sm:text-lg">
                 {t(`steps.${next.step.id}.label`)}
               </h2>
-              <p className="text-sm text-muted-foreground mt-1">{t(`steps.${next.step.id}.why`)}</p>
+              <p className="text-sm text-muted-foreground mt-1">{stepText(t, next.step.id, "why", disclosureLaws, locale)}</p>
             </div>
             {next.step.href && (
               <Link href={next.step.href} className="w-full sm:w-auto shrink-0">

@@ -227,6 +227,10 @@ export const organizationRouter = createTRPCRouter({
           name: input.name,
           slug,
           domain,
+          // A new organisation starts with no framework chosen: the quick
+          // start and the first step of the path ask for the choice
+          // (src/config/applicability.ts, CHOOSABLE_FRAMEWORKS).
+          settings: { applicability: { frameworks: [] } },
           ...(pilotFirstSignInAt ? { pilotFirstSignInAt } : {}),
           members: {
             create: {

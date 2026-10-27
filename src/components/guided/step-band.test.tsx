@@ -26,6 +26,7 @@ vi.mock("./use-program-path", () => ({
     steps: null,
     checks: state.checks,
     screeningQuestionsOpen: 0,
+    disclosureLaws: [],
     refreshing: false,
   }),
 }));
@@ -120,7 +121,7 @@ describe("the stage count and the coming steps in the menu", () => {
     const html = renderToStaticMarkup(
       <PathMenu
         config={AI_SENTINEL_PATH}
-        statuses={evaluatePath(AI_SENTINEL_PATH, EMPTY_PATH_COUNTS)}
+        statuses={evaluatePath(AI_SENTINEL_PATH, { ...EMPTY_PATH_COUNTS, frameworksChosen: true })}
         pathname="/governance/policies"
         stripeEnabled={false}
         variant="sidebar"

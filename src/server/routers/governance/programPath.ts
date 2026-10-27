@@ -109,6 +109,8 @@ export const programPathRouter = createTRPCRouter({
         checks: evaluateChecks(AI_SENTINEL_PATH, counts),
         // Step 1.2's questions still to answer ("Answer 3 questions").
         screeningQuestionsOpen: counts.screeningQuestionsOpen,
+        // The laws the transparency step names (src/config/disclosure-laws.ts).
+        disclosureLaws: counts.disclosureLaws,
       };
     }),
 

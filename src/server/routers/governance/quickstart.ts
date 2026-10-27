@@ -37,6 +37,7 @@ import {
 } from "../../../config/quickstart-compliance-baseline";
 import { attachRegimeMappings } from "../../services/scope/attach-regimes";
 import { loadRuledOutFrameworks } from "../../services/scope/sync-requirements";
+import { readApplicabilitySettings } from "@/config/applicability";
 import { localizeTemplate } from "../../../config/ai-governance-templates.es";
 import { createStarterArtifacts } from "@/server/services/program/starter-artifacts";
 import { quickstartGateDescription } from "@/server/services/program/gate-description";
@@ -425,6 +426,22 @@ export const quickstartRouter = createTRPCRouter({
       );
       const skipSystems = new Set(input.skipSystemNames);
       const skipPolicies = new Set(input.skipPolicyTitles);
+
+      // The program is built from the chosen frameworks: at least one first.
+      const orgScope = await ctx.prisma.organization.findFirst({
+        where: { id: orgId },
+        select: { operatingJurisdictions: true, settings: true },
+      });
+      const chosen = readApplicabilitySettings(
+        orgScope?.settings ?? null,
+        (orgScope?.operatingJurisdictions ?? []) as string[],
+      ).frameworks;
+      if (chosen.length === 0) {
+        throw new TRPCError({
+          code: "PRECONDITION_FAILED",
+          message: "Choose at least one framework before the program is built",
+        });
+      }
 
       // Validate at least one path is selected
       if (

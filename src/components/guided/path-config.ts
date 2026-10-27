@@ -50,6 +50,7 @@ import {
 } from "lucide-react";
 import type { PathConfig, StepCheck } from "./path";
 import type { ObligationScreening } from "@/config/obligation-screenings";
+import type { DisclosureLawId } from "@/config/disclosure-laws";
 
 /**
  * What the rules read. Counts only: nothing here names a record.
@@ -114,6 +115,15 @@ export interface PathCounts {
   agentsReadyForAudit: number;
   /** Agents with at least one AIUC-1 test or not-applicable decision recorded. */
   agentsStartedTesting: number;
+  /** Frameworks chosen to shape the program (src/config/applicability.ts, CHOOSABLE_FRAMEWORKS). */
+  frameworksChosen: boolean;
+  /** AIUC-1 is among the chosen frameworks. */
+  aiuc1Followed: boolean;
+  /**
+   * The laws on telling people it is AI for the declared places
+   * (src/config/disclosure-laws.ts): the transparency step names them.
+   */
+  disclosureLaws: DisclosureLawId[];
 
   oversightGates: number;
   /** Oversight gates drafted (quick start, template) that nobody has confirmed. */
@@ -200,6 +210,9 @@ export const EMPTY_PATH_COUNTS: PathCounts = {
   agents: 0,
   agentsReadyForAudit: 0,
   agentsStartedTesting: 0,
+  frameworksChosen: false,
+  aiuc1Followed: true,
+  disclosureLaws: [],
   oversightGates: 0,
   gatesUnconfirmed: 0,
   highRiskWithGate: 0,
@@ -267,6 +280,8 @@ function riskLevelsCheck(c: PathCounts): StepCheck {
 export const OBLIGATIONS_PLACES_HREF = "/governance/obligations#places";
 export const OBLIGATIONS_QUESTIONS_HREF = "/governance/obligations#questions";
 const REVIEW_HREF = "/governance/review";
+/** Where the frameworks question sits on step 1.2's page. */
+export const FRAMEWORKS_HREF = "/governance/frameworks";
 
 const SCREENING_CHECK: Record<ObligationScreening, string> = {
   applicability: "screeningApplicability",
@@ -280,6 +295,18 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
       id: "setup",
       icon: Rocket,
       steps: [
+        // First, and only while no framework is chosen: the program is built
+        // from the chosen frameworks, so nothing else can start before it.
+        {
+          id: "frameworks",
+          href: FRAMEWORKS_HREF,
+          unnumbered: true,
+          icon: ListChecks,
+          rule: "Shown only while the organisation has chosen no framework to shape its program (the frameworks question in the quick start, on step 1.2's page and in Settings). It is then the first step, and it is hidden once at least one framework is chosen.",
+          shownWhen: (c) => !c.frameworksChosen,
+          status: () => "todo",
+          checks: () => [check("frameworksChosen", false, FRAMEWORKS_HREF)],
+        },
         {
           id: "quickstart",
           href: "/governance/quickstart",
@@ -510,8 +537,8 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
           id: "agentTesting",
           href: "/governance/agent-testing",
           icon: Bot,
-          rule: "Shown only when the inventory holds an AI agent (technique Agentic AI, or an agent profile that acts). Done when every agent is ready for the AIUC-1 audit: each applicable requirement has a current pass or an accepted partial. Started when any agent has a test or a not-applicable decision recorded.",
-          shownWhen: (c) => c.agents > 0,
+          rule: "Shown only when the inventory holds an AI agent (technique Agentic AI, or an agent profile that acts) and AIUC-1 is among the organisation's chosen frameworks. Done when every agent is ready for the AIUC-1 audit: each applicable requirement has a current pass or an accepted partial. Started when any agent has a test or a not-applicable decision recorded.",
+          shownWhen: (c) => c.agents > 0 && c.aiuc1Followed,
           status: (c) =>
             c.agents > 0 && c.agentsReadyForAudit >= c.agents
               ? "done"
@@ -559,7 +586,7 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
           // a profile, each card opening the system's Transparency tab.
           href: "/governance/ai-registry?view=transparency",
           icon: Megaphone,
-          rule: "Done when every registered system has a transparency (Art. 50) profile and none of them is a draft waiting for a person to confirm it (to confirm while any is). Started when some have one. The profile is a tab on each system's page. Retired systems are left out.",
+          rule: "Shown to every organisation; its explanation names the disclosure laws of the declared places (src/config/disclosure-laws.ts), and none with no place declared. Done when every registered system has a transparency profile and none of them is a draft waiting for a person to confirm it (to confirm while any is). Started when some have one. The profile is a tab on each system's page. Retired systems are left out.",
           status: (c) =>
             c.systems > 0 && c.transparencyProfiles >= c.systems
               ? c.transparencyUnconfirmed > 0

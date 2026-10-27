@@ -19,6 +19,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { trpc } from "@/lib/trpc";
 import { useOrganization } from "@/lib/organization-context";
 import type { PathChecks, PathStatuses } from "./path";
+import type { DisclosureLawId } from "@/config/disclosure-laws";
 
 const STALE_MS = 30_000;
 
@@ -36,6 +37,8 @@ export function useProgramPathQuery(): {
   checks: PathChecks | null;
   /** Step 1.2's screening questions still to answer. */
   screeningQuestionsOpen: number;
+  /** The disclosure laws the transparency step names (src/config/disclosure-laws.ts). */
+  disclosureLaws: DisclosureLawId[];
   refreshing: boolean;
   /** The last read failed and nothing is held: the caller says so instead of loading forever. */
   failed: boolean;
@@ -50,6 +53,7 @@ export function useProgramPathQuery(): {
     steps: data?.steps ?? null,
     checks: data?.checks ?? null,
     screeningQuestionsOpen: data?.screeningQuestionsOpen ?? 0,
+    disclosureLaws: data?.disclosureLaws ?? [],
     refreshing: isFetching,
     failed: isError && !data,
     retry: () => void refetch(),

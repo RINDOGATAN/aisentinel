@@ -43,6 +43,7 @@ const DATES_FOR: Record<ApplicabilityItemId, { instruments?: string[]; ids?: str
   texas: { instruments: ["tx-traiga"] },
   washington: {},
   aiuc1: {},
+  nistAiRmf: {},
   iso42001: {},
 };
 

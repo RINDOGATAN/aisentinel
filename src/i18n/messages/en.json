@@ -5976,7 +5976,8 @@
       "texas": "Texas: TRAIGA (HB 149)",
       "washington": "Washington: AI rules by sector",
       "aiuc1": "AIUC-1 standard for AI agents",
-      "iso42001": "ISO/IEC 42001 AI management system"
+      "iso42001": "ISO/IEC 42001 AI management system",
+      "nistAiRmf": "NIST AI RMF"
     },
     "reasons": {
       "operatesEu": "The organization operates in the EU.",
@@ -5997,7 +5998,8 @@
       "roleUnsure": "The organization's role with AI is not settled yet.",
       "answerUnsure": "You answered \"Not sure yet\".",
       "thresholds": "The CCPA size thresholds decide first; the California screening in Settings asks them.",
-      "screeningDecides": "Which rules apply depends on the screening questions in Settings."
+      "screeningDecides": "Which rules apply depends on the screening questions in Settings.",
+      "chosenFramework": "The organization chose this framework."
     },
     "answerScreening": "Answer the screening in Settings to add its requirements.",
     "reasonsHere": {
@@ -6008,7 +6010,61 @@
       "thresholds": "The CCPA size thresholds decide first; the California screening below asks them.",
       "screeningDecides": "Which rules apply depends on the screening questions below."
     },
-    "answerScreeningBelow": "Answer the screening below to add its requirements."
+    "answerScreeningBelow": "Answer the screening below to add its requirements.",
+    "frameworks": {
+      "label": "Choose your frameworks",
+      "hint": "The program is built from the frameworks you choose: their requirements, counts and tabs. Choose at least one. Nothing is chosen for you; the hints only say what your answers point to.",
+      "legalTitle": "Laws",
+      "standardTitle": "Standards",
+      "required": "Choose at least one framework to continue.",
+      "mayApply": "Not chosen, but may apply by law where you operate: {names}. Counsel can confirm.",
+      "ruledOut": {
+        "noEuropeanPlace": "Chosen, but it reaches no system yet: no place in the EU or the EEA is declared.",
+        "noRole": "Chosen, but it reaches no system yet: every question on the organization's role is answered no."
+      },
+      "options": {
+        "EU_AI_ACT": {
+          "label": "EU AI Act",
+          "note": "The EU regulation on AI.",
+          "hint": "Likely applies: you have declared the EU or the EEA."
+        },
+        "CA_CCPA_ADMT": {
+          "label": "California: automated decision-making rules (CCPA)",
+          "note": "Applies with a place in California.",
+          "hint": "Likely applies: you have declared California."
+        },
+        "CO_SB_26_189": {
+          "label": "Colorado: SB 26-189 on automated decisions",
+          "note": "Applies with a place in Colorado.",
+          "hint": "Likely applies: you have declared Colorado."
+        },
+        "TX_TRAIGA": {
+          "label": "Texas: TRAIGA (HB 149)",
+          "note": "Applies with a place in Texas.",
+          "hint": "Likely applies: you have declared Texas."
+        },
+        "WA_AI_RULES": {
+          "label": "Washington: AI rules by sector",
+          "note": "Applies with a place in Washington.",
+          "hint": "Likely applies: you have declared Washington."
+        },
+        "NIST_AI_RMF": {
+          "label": "NIST AI RMF",
+          "note": "The US framework for managing AI risk.",
+          "hint": "The US framework for managing AI risk."
+        },
+        "ISO_42001": {
+          "label": "ISO/IEC 42001",
+          "note": "The certifiable standard for an AI management system.",
+          "hint": "Likely fits: you want a management system that can be certified."
+        },
+        "AIUC_1": {
+          "label": "AIUC-1",
+          "note": "The standard for AI agents. It applies only to systems that are AI agents.",
+          "hint": "Likely fits: you use AI agents. It applies only to systems that are AI agents."
+        }
+      }
+    }
   },
   "guided": {
     "navLabel": "Program path",
@@ -6128,7 +6184,7 @@
       },
       "transparency": {
         "label": "Telling people it is AI",
-        "why": "Record for each system whether people must be told they are dealing with AI (Art. 50).",
+        "why": "Record for each system whether people must be told they are dealing with AI.",
         "do": "For each system, record whether people must be told they are dealing with AI. Open a system to do it.",
         "doneWhen": "every system has a transparency profile confirmed by a person. Retired systems are left out."
       },
@@ -6173,6 +6229,12 @@
         "why": "Every change is recorded here on its own.",
         "do": "See every change made in the program. It is recorded on its own.",
         "doneWhen": "the product keeps it on its own, from the first recorded change."
+      },
+      "frameworks": {
+        "label": "Choose your frameworks",
+        "why": "The program is built from the frameworks you choose. Choose at least one.",
+        "do": "Choose the laws and standards that shape the organization's program.",
+        "doneWhen": "at least one framework is chosen."
       }
     },
     "library": {
@@ -6214,7 +6276,8 @@
       "optional": {
         "proceedings": "Optional: this step never counts toward the program figure. Use it only when an authority or a court opens an inquiry or a case.",
         "audit": "Optional: this step never counts toward the program figure. The product keeps the audit trail on its own."
-      }
+      },
+      "beforeSteps": "Before the steps"
     },
     "emptyStep": {
       "board": "No board report yet.",
@@ -6347,7 +6410,8 @@
       "boardReport": "create a board report",
       "noHighRiskAssessment": "no system is high-risk, so no impact assessment is needed",
       "noHighRiskEvidence": "no system is high-risk, so no requirement needs a status",
-      "noPersonalData": "no system processes personal data, so no assessment is needed"
+      "noPersonalData": "no system processes personal data, so no assessment is needed",
+      "frameworksChosen": "choose at least one framework"
     },
     "panel": {
       "failed": "This panel could not be loaded.",
@@ -6365,6 +6429,13 @@
     "phase": {
       "now": "Now: stage {number}, {stage}",
       "complete": "Program complete"
+    },
+    "disclosureLaws": {
+      "sentence": "Laws to check for the places the organization operates in: {laws}.",
+      "euAiActArt50": "EU AI Act Art. 50",
+      "texasTraiga": "Texas TRAIGA § 552.051 (government agencies and health care)",
+      "utahAipa": "the Utah AI Policy Act",
+      "washingtonCompanion": "Washington HB 2225 § 3 (companion chatbots)"
     }
   },
   "agentTesting": {

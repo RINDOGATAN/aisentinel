@@ -11,7 +11,14 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import en from "@/i18n/messages/en.json";
 import es from "@/i18n/messages/es.json";
-import { AI_SENTINEL_PATH, EMPTY_PATH_COUNTS, type PathCounts } from "./path-config";
+import { AI_SENTINEL_PATH, EMPTY_PATH_COUNTS as NEW_ORG_COUNTS, type PathCounts } from "./path-config";
+
+/**
+ * An organisation with nothing done yet but its frameworks chosen: the shape
+ * every rule below is written against. Before the choice, the path shows one
+ * extra step first ("the frameworks step", below).
+ */
+const EMPTY_PATH_COUNTS: PathCounts = { ...NEW_ORG_COUNTS, frameworksChosen: true };
 import {
   evaluateChecks,
   currentLibraryId,
@@ -74,6 +81,9 @@ const COMPLETE: PathCounts = {
   agents: 2,
   agentsReadyForAudit: 2,
   agentsStartedTesting: 2,
+  frameworksChosen: true,
+  aiuc1Followed: true,
+  disclosureLaws: [],
   oversightGates: 3,
   gatesUnconfirmed: 0,
   highRiskWithGate: 1,
@@ -169,8 +179,10 @@ describe("the shape of the path", () => {
       "controls",
       "monitor",
     ]);
-    expect(PATH.stages[0].steps[0].id).toBe("quickstart");
-    expect(PATH.stages[0].steps[0].href).toBe("/governance/quickstart");
+    // First the frameworks step, shown only until a framework is chosen; then the quick start.
+    expect(PATH.stages[0].steps[0].id).toBe("frameworks");
+    expect(PATH.stages[0].steps[1].id).toBe("quickstart");
+    expect(PATH.stages[0].steps[1].href).toBe("/governance/quickstart");
   });
 
   it("gives every step a unique id, a written rule, and either a page or the coming label", () => {
@@ -314,7 +326,7 @@ describe("the done rules", () => {
 
   it("marks a complete organisation done on every counted step", () => {
     const s = evaluatePath(PATH, COMPLETE);
-    for (const st of steps.filter(isCounted)) expect(s[st.id], st.id).toBe("done");
+    for (const st of steps.filter(isCounted)) expect(s[st.id], st.id).toBe(st.id === "frameworks" ? "hidden" : "done");
     expect(nextStep(PATH, s)).toBeNull();
   });
 
@@ -440,7 +452,9 @@ describe("the done rules", () => {
     expect(step("agentTesting").shownWhen).toBeTypeOf("function");
     // Only these steps are conditional, and they close the stage: every other
     // step shows for everyone.
-    expect(steps.filter((s) => s.shownWhen).map((s) => s.id)).toEqual(["threatModel", "agentTesting"]);
+    // The frameworks step is the one exception: first, and shown only before
+    // any framework is chosen (tested below).
+    expect(steps.filter((s) => s.shownWhen).map((s) => s.id)).toEqual(["frameworks", "threatModel", "agentTesting"]);
     expect(assess.steps.slice(-2).map((s) => s.id)).toEqual(["threatModel", "agentTesting"]);
   });
 
@@ -829,5 +843,23 @@ describe("stage 3 order", () => {
   it("asks for the AI tools in use before the AI systems", () => {
     const inventory = PATH.stages.find((s) => s.id === "inventory")!;
     expect(inventory.steps.map((s) => s.id)).toEqual(["shadowAi", "systems", "vendors"]);
+  });
+});
+
+describe("the frameworks step", () => {
+  it("comes first, and only while no framework is chosen", () => {
+    const fresh = evaluatePath(PATH, NEW_ORG_COUNTS);
+    expect(fresh.frameworks).toBe("todo");
+    expect(nextStep(PATH, fresh)?.step.id).toBe("frameworks");
+    // Unnumbered: the quick start stays 1.1 and step 1.2 stays the obligations.
+    const numberIn = (statuses: PathStatuses, id: string) =>
+      stepSequence(PATH, statuses).find((e) => e.step.id === id)?.number;
+    expect(numberIn(fresh, "frameworks")).toBe("");
+    expect(numberIn(fresh, "quickstart")).toBe("1.1");
+    expect(numberIn(fresh, "obligations")).toBe("1.2");
+    const chosen = evaluatePath(PATH, { ...NEW_ORG_COUNTS, frameworksChosen: true });
+    expect(chosen.frameworks).toBe("hidden");
+    expect(nextStep(PATH, chosen)?.step.id).toBe("quickstart");
+    expect(numberIn(chosen, "frameworks")).toBeUndefined();
   });
 });

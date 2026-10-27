@@ -23,6 +23,7 @@ import {
   planClientTemplate,
 } from "@/server/services/client-template/copy";
 import { assertPilotWithinCeilings, pilotLocale } from "@/server/services/pilot/caps";
+import { syncRequirementsSafely } from "@/server/services/scope/sync-requirements";
 
 const MAX_SOURCES = 50;
 const partsInput = z.array(z.enum(COPY_PARTS)).min(1);
@@ -100,7 +101,7 @@ export const clientTemplateRouter = createTRPCRouter({
       const userId = ctx.session.user.id;
       await assertTemplatePermission(ctx.prisma, userId, input.sourceOrganizationId, ctx.organization.id);
 
-      return ctx.prisma.$transaction(
+      const result = await ctx.prisma.$transaction(
         async (tx) => {
           const plan = await planClientTemplate(tx, {
             sourceOrganizationId: input.sourceOrganizationId,
@@ -124,5 +125,9 @@ export const clientTemplateRouter = createTRPCRouter({
         },
         { timeout: 30000 },
       );
+      // Copied places, answers and systems: the requirement rows follow,
+      // outside the transaction so the copy does not wait on them.
+      await syncRequirementsSafely(ctx.prisma, ctx.organization.id, { userId, reason: "client-template" });
+      return result;
     }),
 });

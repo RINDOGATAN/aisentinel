@@ -19,6 +19,7 @@
 import type { AIRiskLevel, PrismaClient } from "@prisma/client";
 import type { ImportRow } from "@/lib/inventory-import";
 import { attachRegimeMappings } from "@/server/services/scope/attach-regimes";
+import { loadRuledOutFrameworks } from "@/server/services/scope/sync-requirements";
 import { nextSystemNumber } from "@/server/services/ai-system/number";
 
 export interface ImportResult {
@@ -65,10 +66,12 @@ export async function importInventoryRows(
   const vendorByName = new Map(vendors.map((v) => [v.name.trim().toLowerCase(), v.id]));
 
   const requirementsByTier = new Map<string, string[]>();
+  // Less the frameworks the organisation's answers rule out (src/config/framework-scope.ts).
+  const ruledOut = await loadRuledOutFrameworks(prisma, organizationId);
   const requirementsFor = async (tier: AIRiskLevel) => {
     if (!requirementsByTier.has(tier)) {
       const reqs = await prisma.complianceRequirement.findMany({
-        where: { applicableTo: { has: tier } },
+        where: { applicableTo: { has: tier }, framework: { code: { notIn: ruledOut } } },
         select: { id: true },
       });
       requirementsByTier.set(tier, reqs.map((r) => r.id));

@@ -23,6 +23,7 @@ import type { Prisma } from "@prisma/client";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { withoutTemplateCopyMark } from "@/config/client-template";
 import { attachRegimeMappings } from "@/server/services/scope/attach-regimes";
+import { syncRequirementsSafely } from "@/server/services/scope/sync-requirements";
 import type { JurisdictionId } from "@/config/jurisdictions";
 import {
   DEFAULT_ORG_FACTS,
@@ -302,6 +303,10 @@ export const regimesRouter = createTRPCRouter({
           changes: { regimeOrgFacts: facts },
         },
       });
+      await syncRequirementsSafely(ctx.prisma, ctx.organization.id, {
+        userId: ctx.session.user.id,
+        reason: "regime-org-facts",
+      });
       return next;
     }),
 
@@ -360,6 +365,12 @@ export const regimesRouter = createTRPCRouter({
           changes: { applicability: input.answers, version: APPLICABILITY_VERSION },
         },
       });
+      // A "no" can rule a framework out (src/config/framework-scope.ts), and
+      // a "yes" or "not sure yet" brings it back.
+      await syncRequirementsSafely(ctx.prisma, ctx.organization.id, {
+        userId: ctx.session.user.id,
+        reason: "applicability",
+      });
       return applicability;
     }),
 
@@ -404,6 +415,11 @@ export const regimesRouter = createTRPCRouter({
           entityId: system.id,
           changes: { regimeSystemFacts: facts },
         },
+      });
+      await syncRequirementsSafely(ctx.prisma, ctx.organization.id, {
+        aiSystemId: system.id,
+        userId: ctx.session.user.id,
+        reason: "regime-system-facts",
       });
       return next;
     }),

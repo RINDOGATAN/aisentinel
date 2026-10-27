@@ -215,15 +215,16 @@ test("a new user's first session, end to end", async ({ page }, testInfo) => {
     expect((await download).suggestedFilename()).toMatch(/\.pdf$/);
   });
 
-  await step(page, watch, "the system's evidence tab offers AIUC-1 beside the other frameworks", async () => {
+  await step(page, watch, "the system's evidence tab leaves AIUC-1 to agents", async () => {
     // The evidence step lists the systems; each opens its own page on the Evidence tab.
     await page.goto("/governance/compliance");
     await page.getByRole("link", { name: new RegExp(systemName) }).click();
     await page.waitForURL(/\/governance\/ai-registry\/[^/]+\?tab=evidence$/);
-    await page.getByRole("tab", { name: /^AIUC-1 \(57\)$/ }).click();
-    const panel = page.getByRole("tabpanel").last();
-    await expect(panel.getByText("Data & Privacy", { exact: true })).toBeVisible();
-    await expect(panel.getByText("Society", { exact: true })).toBeVisible();
+    // A generative system used as a deployer is not an AI agent: AIUC-1, the
+    // standard for agents, has no requirement for it, and its tab is counted
+    // among the frameworks not shown.
+    await expect(page.getByTestId("frameworks-not-shown")).toBeVisible();
+    await expect(page.getByRole("tab", { name: /^AIUC-1 / })).toHaveCount(0);
   });
 
   await step(page, watch, "the health route answers 200 with the version", async () => {

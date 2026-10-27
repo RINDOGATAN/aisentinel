@@ -22,6 +22,7 @@ import { CARD_HEADER_WITH_STATUS, CardSaveStatus } from "@/components/ui/save-st
 import { Instruction } from "@/components/ui/instruction";
 import { useAutoSave } from "@/lib/use-auto-save";
 import { trpc } from "@/lib/trpc";
+import { refreshAfterScopeChange } from "@/lib/scope-refresh";
 import { SCREENING_ANCHOR } from "@/lib/settings-anchors";
 import { useProgramPath } from "@/components/guided/use-program-path";
 import { cn } from "@/lib/utils";
@@ -293,10 +294,7 @@ export function ApplicabilityCard({
   // saving (the server then holds the same answers), so an answer picked
   // while the previous one is on its way is never shown undone.
   const save = trpc.regimes.setApplicability.useMutation({
-    onSuccess: () => {
-      void utils.regimes.getApplicability.invalidate();
-      void utils.programPath.status.invalidate();
-    },
+    onSuccess: () => refreshAfterScopeChange(utils),
   });
   const autosave = useAutoSave<ApplicabilityAnswers>(
     (answers) => save.mutateAsync({ organizationId, answers }),

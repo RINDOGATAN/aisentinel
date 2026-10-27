@@ -22,6 +22,7 @@ import { RiskScreeningPanel } from "@/components/ai/RiskScreeningPanel";
 import { TierMarker } from "@/components/governance/risk-tier-badge";
 import { annexIIILabel } from "@/lib/annex-iii-label";
 import { trpc } from "@/lib/trpc";
+import { refreshAfterScopeChange } from "@/lib/scope-refresh";
 import { addReason, reasonsFor } from "@/config/classification-reasons";
 
 const ANNEX_III_CATEGORIES = [
@@ -78,7 +79,8 @@ export function RiskClassificationForm({
       void utils.riskClassification.list.invalidate();
       void utils.riskClassification.getStats.invalidate();
       void utils.aiSystem.getById.invalidate();
-      void utils.compliance.getSystemScorecard.invalidate();
+      // The tier moves the system's requirement rows (and the regimes that read it).
+      refreshAfterScopeChange(utils);
       setForm({ riskLevel: "", rationale: "", annexIIICategory: "" });
       onDone();
     },

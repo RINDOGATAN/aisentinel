@@ -13,6 +13,7 @@
  *   - refuse a write for a role that may not write, or that is unknown;
  *   - write one audit entry per record created.
  */
+import { createHmac } from "node:crypto";
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 
 const H = vi.hoisted(() => {
@@ -74,10 +75,23 @@ import { __resetRateLimitStore } from "@/lib/rate-limit";
 
 const KEY = "test-import-key";
 
+const IDENTITY_SECRET = "identity-test-secret";
+
+/** The signed statement the calling app sends for the person named in the body. */
+function statement(sub: string): string {
+  const now = Math.floor(Date.now() / 1000);
+  const h = Buffer.from(JSON.stringify({ alg: "HS256", typ: "JWT" })).toString("base64url");
+  const p = Buffer.from(
+    JSON.stringify({ iss: "dpocentral", aud: "aisentinel-import", sub, iat: now, exp: now + 300, jti: "t" }),
+  ).toString("base64url");
+  return `${h}.${p}.${createHmac("sha256", IDENTITY_SECRET).update(`${h}.${p}`).digest("base64url")}`;
+}
+
 function post(path: string, body: unknown, key: string = KEY) {
+  const email = (body as { userEmail?: string }).userEmail ?? "";
   return new Request(`http://localhost/api/import/${path}`, {
     method: "POST",
-    headers: { "content-type": "application/json", "x-api-key": key },
+    headers: { "content-type": "application/json", "x-api-key": key, "x-import-identity": statement(email) },
     body: JSON.stringify(body),
   });
 }
@@ -91,6 +105,7 @@ beforeEach(() => {
   }
   __resetRateLimitStore();
   vi.stubEnv("VW_IMPORT_API_KEYS", KEY);
+  vi.stubEnv("IMPORT_IDENTITY_SECRETS", IDENTITY_SECRET);
   vi.spyOn(console, "error").mockImplementation(() => {});
 
   H.organizations.push({ id: "org-a", name: "Org A" }, { id: "org-b", name: "Org B" });

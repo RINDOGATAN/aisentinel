@@ -594,6 +594,9 @@ export const policyRouter = createTRPCRouter({
         data: {
           currentVersion: newVersion,
           status: "PUBLISHED",
+          // Publishing is a decision by an approver role: it vouches for a
+          // drafted policy, so the policy leaves the review queue.
+          ...(policy.confirmedAt ? {} : { confirmedBy: ctx.session.user.id, confirmedAt: new Date() }),
           ...(policy.reviewIntervalMonths && {
             reviewDate: new Date(reviewDateAfter(new Date(), policy.reviewIntervalMonths)),
           }),
@@ -639,6 +642,10 @@ export const policyRouter = createTRPCRouter({
           status: "APPROVED",
           approvedBy: ctx.session.user.id,
           approvedAt: new Date(),
+          // Approving is a decision by an approver role (the same roles as
+          // provenance.confirm): it vouches for a drafted policy, so the
+          // policy leaves the review queue instead of waiting there too.
+          ...(policy.confirmedAt ? {} : { confirmedBy: ctx.session.user.id, confirmedAt: new Date() }),
         },
       });
 

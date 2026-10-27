@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Dialog,
@@ -161,11 +162,29 @@ export function frameworksWithRequirements<F extends { id: string }>(
   return all.filter((f) => ids.has(f.id));
 }
 
+/**
+ * The number on a framework's tab: its requirements in scope for this
+ * organisation. A framework with none in scope is shown only because rows were
+ * recorded against it before the scope changed (the scope rules never remove
+ * a row someone worked on), and its tab counts those rows instead of a zero.
+ */
+export function tabCount(
+  scopedCount: number | undefined,
+  seeded: number,
+  mapped: readonly { frameworkId: string; compliant: number; partial: number; nonCompliant: number; notApplicable: number; notAssessed: number }[] | undefined,
+  frameworkId: string,
+): number {
+  if (scopedCount === undefined) return seeded;
+  if (scopedCount > 0) return scopedCount;
+  const row = mapped?.find((m) => m.frameworkId === frameworkId);
+  return row ? row.compliant + row.partial + row.nonCompliant + row.notApplicable + row.notAssessed : 0;
+}
+
 export function ComplianceMatrix({ aiSystemId }: { aiSystemId: string }) {
   const t = useTranslations("compliance");
   const locale = useLocale();
   const tc = useTranslations("common");
-  const { organization, canWrite } = useOrganization();
+  const { organization, canWrite, canDecide } = useOrganization();
   const { download } = useExportDownload();
   const orgId = organization?.id ?? "";
   const selectedSystemId = aiSystemId;
@@ -227,6 +246,7 @@ export function ComplianceMatrix({ aiSystemId }: { aiSystemId: string }) {
       applicabilityTags: admtTags,
       scopedFrameworkCode: "CA_CCPA_ADMT",
       scopes: regimeScopeTags,
+      aiSystemId: selectedSystemId,
     },
     { enabled: !!orgId }
   );
@@ -312,6 +332,32 @@ export function ComplianceMatrix({ aiSystemId }: { aiSystemId: string }) {
     onError: (err) => toast.error(err.message),
   });
 
+  // Several requirements at once (approver roles): the ones ticked, or every
+  // one still without a status in the framework shown.
+  const [selectedReqs, setSelectedReqs] = useState<Set<string>>(new Set());
+  const toggleSelected = (id: string, checked: boolean) =>
+    setSelectedReqs((prev) => {
+      const next = new Set(prev);
+      if (checked) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+  const unsetIds = useMemo(() => (matrix ? unsetRequirementIds(matrix) : []), [matrix]);
+  const bulkSetStatus = trpc.compliance.bulkSetStatus.useMutation({
+    onSuccess: (res, vars) => {
+      toast.success(
+        t("bulkDone", { count: res.updated, status: bulkStatusLabel(t, vars.status) }),
+      );
+      setSelectedReqs(new Set());
+      refetchMatrix();
+    },
+    onError: (err) => toast.error(err.message),
+  });
+  const applyBulk = (status: BulkStatus, requirementIds: string[], onlyUnset: boolean) => {
+    if (requirementIds.length === 0 || bulkSetStatus.isPending) return;
+    bulkSetStatus.mutate({ organizationId: orgId, aiSystemId: selectedSystemId, requirementIds, status, onlyUnset });
+  };
+
   const toggleExpand = (id: string) => {
     const next = new Set(expandedReqs);
     next.has(id) ? next.delete(id) : next.add(id);
@@ -362,7 +408,10 @@ export function ComplianceMatrix({ aiSystemId }: { aiSystemId: string }) {
       {frameworks && frameworks.length > 0 && (
         <Tabs
           value={selectedFrameworkId || frameworks[0]?.id}
-          onValueChange={setSelectedFrameworkId}
+          onValueChange={(id) => {
+            setSelectedFrameworkId(id);
+            setSelectedReqs(new Set());
+          }}
         >
           {/* Nine frameworks with long names do not fit a phone: the bar
               scrolls inside itself and the tabs keep their width, rather than
@@ -376,7 +425,8 @@ export function ComplianceMatrix({ aiSystemId }: { aiSystemId: string }) {
               );
               return (
                 <TabsTrigger key={fw.id} value={fw.id} className="flex-none">
-                  {frameworkName(fw.code, fw.name, locale)} ({scoped?.count ?? fw._count.requirements})
+                  {frameworkName(fw.code, fw.name, locale)} (
+                  {tabCount(scoped?.count, fw._count.requirements, systemScorecard?.frameworks, fw.id)})
                 </TabsTrigger>
               );
             })}
@@ -387,6 +437,11 @@ export function ComplianceMatrix({ aiSystemId }: { aiSystemId: string }) {
               {fw.code === "CA_CCPA_ADMT" && selectedSystemId && admtScope && (
                 <AdmtScopeBanner state={admtScope.scope.state} />
               )}
+              {frameworkCounts?.find((c) => c.frameworkId === fw.id)?.count === 0 && (
+                <p className="mb-3 text-xs text-muted-foreground" data-testid="framework-kept-only">
+                  {t("frameworkKeptOnly")}
+                </p>
+              )}
               {!matrix ? (
                 <Card>
                   <CardContent className="p-8 text-center text-muted-foreground">
@@ -396,11 +451,28 @@ export function ComplianceMatrix({ aiSystemId }: { aiSystemId: string }) {
                 </Card>
               ) : (
                 <div className="space-y-2">
+                  {canDecide && matrix.length > 0 && (
+                    <BulkStatusBar
+                      selectedCount={selectedReqs.size}
+                      unsetCount={unsetIds.length}
+                      pending={bulkSetStatus.isPending}
+                      onApplySelected={(status) => applyBulk(status, [...selectedReqs], false)}
+                      onApplyUnset={(status) => applyBulk(status, unsetIds, true)}
+                    />
+                  )}
                   {matrix.map((req) => (
                     <Card key={req.id}>
                       <CardHeader className="p-4 cursor-pointer" onClick={() => toggleExpand(req.id)}>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
+                            {canDecide && (
+                              <Checkbox
+                                checked={selectedReqs.has(req.id)}
+                                onClick={(e) => e.stopPropagation()}
+                                onCheckedChange={(checked) => toggleSelected(req.id, checked === true)}
+                                aria-label={t("bulkSelect", { code: requirementCode(fw.code, req.code, locale) })}
+                              />
+                            )}
                             {req.children && req.children.length > 0 ? (
                               expandedReqs.has(req.id) ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />
                             ) : <div className="w-4" />}
@@ -436,7 +508,14 @@ export function ComplianceMatrix({ aiSystemId }: { aiSystemId: string }) {
                           {req.children?.map((child) => (
                             <div key={child.id} className="ml-6 pl-4 border-l border-border space-y-2">
                               <div className="flex items-center justify-between">
-                                <div>
+                                <div className="flex items-center gap-2">
+                                  {canDecide && (
+                                    <Checkbox
+                                      checked={selectedReqs.has(child.id)}
+                                      onCheckedChange={(checked) => toggleSelected(child.id, checked === true)}
+                                      aria-label={t("bulkSelect", { code: requirementCode(fw.code, child.code, locale) })}
+                                    />
+                                  )}
                                   <span className="font-mono text-xs text-primary">{requirementCode(fw.code, child.code, locale)}</span>
                                   <span className="ml-2 text-sm">{requirementTitle(fw.code, child.code, child.title, locale)}</span>
                                 </div>
@@ -480,6 +559,84 @@ export function ComplianceMatrix({ aiSystemId }: { aiSystemId: string }) {
         </p>
       )}
     </div>
+  );
+}
+
+/** The statuses the bulk action can set (compliance.bulkSetStatus). Not applicable first: the usual case. */
+const BULK_STATUSES = ["NOT_APPLICABLE", "COMPLIANT", "PARTIALLY_COMPLIANT", "NON_COMPLIANT"] as const;
+type BulkStatus = (typeof BULK_STATUSES)[number];
+/** "Not applicable" in full: the matrix badge abbreviates it. */
+function bulkStatusLabel(t: (key: string) => string, status: BulkStatus): string {
+  return status === "NOT_APPLICABLE" ? t("bulkNotApplicable") : t(statusOptionKeys[status].labelKey);
+}
+
+/** The requirements in a matrix (parents and children) with no status yet. */
+export function unsetRequirementIds(
+  matrix: ReadonlyArray<{
+    id: string;
+    mapping: { status: string } | null;
+    children?: ReadonlyArray<{ id: string; mapping: { status: string } | null }>;
+  }>,
+): string[] {
+  const unset = (m: { status: string } | null) => (m?.status ?? "NOT_ASSESSED") === "NOT_ASSESSED";
+  const out: string[] = [];
+  for (const req of matrix) {
+    if (unset(req.mapping)) out.push(req.id);
+    for (const child of req.children ?? []) if (unset(child.mapping)) out.push(child.id);
+  }
+  return out;
+}
+
+function BulkStatusBar({
+  selectedCount,
+  unsetCount,
+  pending,
+  onApplySelected,
+  onApplyUnset,
+}: {
+  selectedCount: number;
+  unsetCount: number;
+  pending: boolean;
+  onApplySelected: (status: BulkStatus) => void;
+  onApplyUnset: (status: BulkStatus) => void;
+}) {
+  const t = useTranslations("compliance");
+  const [status, setStatus] = useState<BulkStatus>("NOT_APPLICABLE");
+  return (
+    <Card data-testid="bulk-status">
+      <CardContent className="flex flex-wrap items-center gap-2 p-3">
+        <span className="text-sm text-muted-foreground">{t("bulkLabel")}</span>
+        <Select value={status} onValueChange={(v) => setStatus(v as BulkStatus)}>
+          <SelectTrigger className="w-full sm:w-44" aria-label={t("bulkStatusLabel")}>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {BULK_STATUSES.map((s) => (
+              <SelectItem key={s} value={s}>
+                {bulkStatusLabel(t, s)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={pending || selectedCount === 0}
+          onClick={() => onApplySelected(status)}
+        >
+          {t("bulkApplySelected", { count: selectedCount })}
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={pending || unsetCount === 0}
+          onClick={() => onApplyUnset(status)}
+        >
+          {pending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+          {t("bulkApplyUnset", { count: unsetCount })}
+        </Button>
+      </CardContent>
+    </Card>
   );
 }
 

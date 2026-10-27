@@ -25,6 +25,7 @@ import { ScrollText } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
+import { refreshAfterScopeChange } from "@/lib/scope-refresh";
 import { useAutoSave } from "@/lib/use-auto-save";
 import { CARD_HEADER_WITH_STATUS, CardSaveStatus } from "@/components/ui/save-status";
 
@@ -60,12 +61,7 @@ export function CaliforniaScreeningCard({
   // saving (the server then holds the same values), so an answer picked while
   // the previous one is on its way is never shown undone.
   const save = trpc.admt.setOrgFacts.useMutation({
-    onSuccess: () => {
-      void utils.admt.getOrgScope.invalidate();
-      void utils.admt.getScope.invalidate();
-      void utils.compliance.getFrameworkCounts.invalidate();
-      void utils.programPath.status.invalidate();
-    },
+    onSuccess: () => refreshAfterScopeChange(utils),
   });
   const autosave = useAutoSave<FormState>(
     (value) => save.mutateAsync({ organizationId, ...value }),

@@ -42,6 +42,7 @@ import {
 import { computeAdmtDeadlines } from "@/config/admt-deadlines";
 import type { JurisdictionId } from "@/config/jurisdictions";
 import { buildScopeFilter } from "@/lib/applicability-scope";
+import { syncRequirementsSafely } from "@/server/services/scope/sync-requirements";
 
 // Every enum input is a z.enum over the shared vocabulary rather than
 // z.nativeEnum over the generated client: a stale client would otherwise make
@@ -344,6 +345,11 @@ export const admtRouter = createTRPCRouter({
         },
       });
 
+      await syncRequirementsSafely(ctx.prisma, ctx.organization.id, {
+        userId: ctx.session.user.id,
+        reason: "admt-org-facts",
+      });
+
       return admt;
     }),
 
@@ -432,6 +438,14 @@ export const admtRouter = createTRPCRouter({
             optOutBasis: input.optOutBasis,
           },
         },
+      });
+
+      // The determination settles the California rows and, as a proxy, the
+      // GDPR Art. 22 and Colorado tests: the system's rows follow.
+      await syncRequirementsSafely(ctx.prisma, ctx.organization.id, {
+        aiSystemId: input.aiSystemId,
+        userId: ctx.session.user.id,
+        reason: "admt-profile",
       });
 
       return profile;

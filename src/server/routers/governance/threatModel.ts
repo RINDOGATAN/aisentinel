@@ -221,13 +221,20 @@ export const threatModelRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const existing = await ctx.prisma.threatModel.findFirst({
         where: { id: input.id, organizationId: ctx.organization.id },
-        select: { id: true, capabilities: true },
+        select: { id: true, capabilities: true, status: true },
       });
       if (!existing) {
         throw new TRPCError({ code: "NOT_FOUND", message: "Threat model not found" });
       }
 
       const { organizationId: _org, id, markReviewed, ...data } = input;
+      // "Mark as reviewed" is the one action the page offers on a model, so a
+      // reviewed draft leaves DRAFT here. The program path's threat-model step
+      // and the document register read "past draft"; without this no screen
+      // could ever reach it.
+      if (markReviewed && data.status === undefined && existing.status === "DRAFT") {
+        data.status = "ACTIVE";
+      }
 
       await ctx.prisma.threatModel.updateMany({
         where: { id, organizationId: ctx.organization.id },
@@ -249,6 +256,10 @@ export const threatModelRouter = createTRPCRouter({
             ...(data.capabilities
               ? { capabilitiesBefore: existing.capabilities, capabilitiesAfter: data.capabilities }
               : {}),
+            ...(data.status && data.status !== existing.status
+              ? { statusBefore: existing.status, statusAfter: data.status }
+              : {}),
+            ...(markReviewed ? { reviewed: true } : {}),
           },
         },
       });

@@ -132,8 +132,16 @@ export async function loadAgentsWithReadiness(
 export async function loadAgentTestingCounts(
   prisma: PrismaClient,
   organizationId: string,
+  /**
+   * The path's scope: the worked example's systems never count, and a retired
+   * agent is out of the "every agent" rule.
+   */
+  opts: { excludeSystemIds?: readonly string[] } = {},
 ): Promise<{ agents: number; agentsReadyForAudit: number; agentsStartedTesting: number }> {
-  const agents = await loadAgentsWithReadiness(prisma, organizationId);
+  const excluded = new Set(opts.excludeSystemIds ?? []);
+  const agents = (await loadAgentsWithReadiness(prisma, organizationId)).filter(
+    (a) => a.status !== "RETIRED" && !excluded.has(a.id),
+  );
   return {
     agents: agents.length,
     agentsReadyForAudit: agents.filter((a) => a.readiness.overall.readyForAudit).length,

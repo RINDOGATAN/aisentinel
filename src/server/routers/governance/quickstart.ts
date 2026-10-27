@@ -8,7 +8,7 @@ import {
 } from "@/server/services/business-units/scope";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure } from "../../trpc";
 import { TRPCError } from "@trpc/server";
-import { VendorStatus } from "@prisma/client";
+import { VendorStatus, type AIRiskLevel } from "@prisma/client";
 import {
   findAIMappingForCategory,
   vendorSystemDescription,
@@ -36,6 +36,7 @@ import {
   TRANSPARENCY_PROFILE_NOTES,
 } from "../../../config/quickstart-compliance-baseline";
 import { attachRegimeMappings } from "../../services/scope/attach-regimes";
+import { loadRuledOutFrameworks } from "../../services/scope/sync-requirements";
 import { localizeTemplate } from "../../../config/ai-governance-templates.es";
 import { createStarterArtifacts } from "@/server/services/program/starter-artifacts";
 import { quickstartGateDescription } from "@/server/services/program/gate-description";
@@ -449,6 +450,15 @@ export const quickstartRouter = createTRPCRouter({
       }
       const contentLocale = resolveContentLocale(ctx.getCookie);
 
+      // The tier's requirements, less the frameworks the organisation's own
+      // answers rule out (src/config/framework-scope.ts): the step before
+      // this one has just saved them.
+      const ruledOut = await loadRuledOutFrameworks(ctx.prisma, orgId);
+      const tierRequirements = (riskLevel: AIRiskLevel) => ({
+        applicableTo: { has: riskLevel },
+        framework: { code: { notIn: ruledOut } },
+      });
+
       // Validate vendor catalog access if vendor path selected
       if (input.vendorSlugs.length > 0) {
         const hasAccess = await hasVendorCatalogAccess(orgId);
@@ -657,7 +667,7 @@ export const quickstartRouter = createTRPCRouter({
 
             // Auto-create compliance mappings for applicable requirements
             const applicableReqs = await tx.complianceRequirement.findMany({
-              where: { applicableTo: { has: mapping.riskLevel } },
+              where: tierRequirements(mapping.riskLevel),
               select: { id: true },
             });
             if (applicableReqs.length > 0) {
@@ -763,7 +773,7 @@ export const quickstartRouter = createTRPCRouter({
 
               // Auto-create compliance mappings for applicable requirements
               const applicableReqs = await tx.complianceRequirement.findMany({
-                where: { applicableTo: { has: templateSystem.riskLevel } },
+                where: tierRequirements(templateSystem.riskLevel),
                 select: { id: true },
               });
               if (applicableReqs.length > 0) {
@@ -936,7 +946,7 @@ export const quickstartRouter = createTRPCRouter({
             });
 
             const applicableReqs = await tx.complianceRequirement.findMany({
-              where: { applicableTo: { has: governance.riskLevel } },
+              where: tierRequirements(governance.riskLevel),
               select: { id: true },
             });
             if (applicableReqs.length > 0) {

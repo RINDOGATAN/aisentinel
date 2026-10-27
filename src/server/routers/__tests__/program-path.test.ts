@@ -101,7 +101,8 @@ describe("programPath.status", () => {
     expect(counts.length).toBeGreaterThan(30);
     for (const c of counts) expect(c.where.organizationId, c.model).toBe("org-a");
     const lists = H.calls.filter((c) => c.op === "findMany");
-    expect(lists.map((c) => c.model)).toEqual(["aISystem"]);
+    // The worked example's list (left out of every count), then the agents.
+    expect(lists.map((c) => c.model)).toEqual(["sampleRecord", "aISystem"]);
     for (const c of lists) expect(c.where.organizationId, c.model).toBe("org-a");
     // No agent: the AIUC-1 step does not concern this organisation.
     expect(result.steps.agentTesting).toBe("hidden");

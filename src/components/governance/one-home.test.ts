@@ -9,7 +9,7 @@
 
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
-import { frameworksWithRequirements } from "./compliance-matrix";
+import { frameworksWithRequirements, tabCount, unsetRequirementIds } from "./compliance-matrix";
 
 const read = (p: string) => readFileSync(p, "utf8");
 
@@ -32,6 +32,45 @@ describe("frameworksWithRequirements", () => {
       { frameworkId: "iso", count: 33 },
     ];
     expect(frameworksWithRequirements(all, [], counts).map((f) => f.id)).toEqual(["eu", "nist", "iso"]);
+  });
+});
+
+describe("tabCount (the number on a framework's tab)", () => {
+  const mapped = [
+    { frameworkId: "eu", compliant: 1, partial: 2, nonCompliant: 0, notApplicable: 3, notAssessed: 1 },
+  ];
+  it("shows the requirements in scope, or the seeded size while the scope is unknown", () => {
+    expect(tabCount(74, 83, mapped, "eu")).toBe(74);
+    expect(tabCount(undefined, 83, mapped, "eu")).toBe(83);
+  });
+
+  it("counts the rows kept when the framework no longer has a requirement in scope", () => {
+    expect(tabCount(0, 83, mapped, "eu")).toBe(7);
+    expect(tabCount(0, 33, mapped, "iso")).toBe(0);
+  });
+
+  it("the matrix says why such a tab is still there", () => {
+    const src = read("src/components/governance/compliance-matrix.tsx");
+    expect(src).toContain('t("frameworkKeptOnly")');
+    expect(src).toContain("aiSystemId: selectedSystemId,");
+  });
+});
+
+describe("unsetRequirementIds (the bulk action's 'all without a status')", () => {
+  it("lists parents and children with no mapping or a NOT_ASSESSED one", () => {
+    const matrix = [
+      { id: "a", mapping: null, children: [{ id: "a1", mapping: { status: "COMPLIANT" } }, { id: "a2", mapping: null }] },
+      { id: "b", mapping: { status: "NOT_ASSESSED" } },
+      { id: "c", mapping: { status: "NOT_APPLICABLE" }, children: [] },
+    ];
+    expect(unsetRequirementIds(matrix)).toEqual(["a", "a2", "b"]);
+    expect(unsetRequirementIds([])).toEqual([]);
+  });
+
+  it("is offered to the approver roles only, through the bulk endpoint", () => {
+    const src = read("src/components/governance/compliance-matrix.tsx");
+    expect(src).toContain("trpc.compliance.bulkSetStatus.useMutation");
+    expect(src).toContain("canDecide && matrix.length > 0");
   });
 });
 

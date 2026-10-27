@@ -31,6 +31,7 @@ import type { Jurisdiction, Prisma, PrismaClient } from "@prisma/client";
 import { mapRole, mapTechnique } from "@/lib/dpc-import-mapping";
 import { nextSystemNumber } from "@/server/services/ai-system/number";
 import { pilotRemaining } from "@/server/services/pilot/caps";
+import { syncRequirementsSafely } from "@/server/services/scope/sync-requirements";
 
 /** Roles that may create or remove a link, on either side. */
 export const LINK_ROLES: readonly string[] = ["OWNER", "ADMIN"];
@@ -501,6 +502,9 @@ export async function createLink(
       metadata: { source: "suite-link" },
     },
   });
+  // The places just added, and the systems just imported, decide which laws
+  // reach each system: the requirement rows follow.
+  await syncRequirementsSafely(db, args.organizationId, { userId: args.userId, reason: "dpo-central-link" });
   return { ok: true as const, link, result };
 }
 
@@ -565,6 +569,9 @@ export async function syncRound(
   },
 ) {
   const imported = await importFromDpoCentral(db, args.organizationId, null, args.vendors, args.systems);
+  if (imported.createdSystems > 0) {
+    await syncRequirementsSafely(db, args.organizationId, { reason: "dpo-central-sync" });
+  }
 
   // Records that came from DPO Central and are no longer there get a note.
   const presentDpcSystemIds = new Set(args.systems.map((s) => s.dpcId));

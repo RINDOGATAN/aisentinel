@@ -510,6 +510,15 @@ function StepRow<C>({
       )}
       <span className={WRAP_LABEL}>
         <span className="block">{label}</span>
+        {/* Optional steps say so in the menu, not only in a tooltip. */}
+        {showProgress && step.optional && status !== "done" && (
+          <span
+            className="mt-0.5 block text-[11px] leading-snug text-muted-foreground"
+            data-testid={`step-optional-${step.id}`}
+          >
+            {t("band.optionalTag")}
+          </span>
+        )}
         {note && (
           <span
             className="mt-0.5 block text-[11px] leading-snug text-muted-foreground"

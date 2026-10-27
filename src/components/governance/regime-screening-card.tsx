@@ -22,6 +22,7 @@ import { Globe2, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
+import { refreshAfterScopeChange } from "@/lib/scope-refresh";
 import { useAutoSave } from "@/lib/use-auto-save";
 import { CARD_HEADER_WITH_STATUS, CardSaveStatus } from "@/components/ui/save-status";
 import { Instruction } from "@/components/ui/instruction";
@@ -64,14 +65,7 @@ export function RegimeScreeningCard({
     { enabled: !!organizationId },
   );
 
-  const invalidate = () => {
-    void utils.regimes.getScope.invalidate();
-    void utils.regimes.getOrgFacts.invalidate();
-    void utils.organization.getById.invalidate();
-    void utils.programPath.status.invalidate();
-    void utils.unified.getTemplate.invalidate();
-    void utils.compliance.getFrameworkCounts.invalidate();
-  };
+  const invalidate = () => refreshAfterScopeChange(utils);
 
   // Each answer saves as it is chosen, and only the answers changed here are
   // sent: the server merges them into what it holds, so an answer this card

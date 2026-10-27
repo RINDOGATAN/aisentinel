@@ -51,7 +51,14 @@ import {
 import type { PathConfig, StepCheck } from "./path";
 import type { ObligationScreening } from "@/config/obligation-screenings";
 
-/** What the rules read. Counts only: nothing here names a record. */
+/**
+ * What the rules read. Counts only: nothing here names a record.
+ *
+ * What is counted (src/server/services/program/path-counts.ts): the worked
+ * example's records never count; "systems" are the systems not retired and
+ * "vendors" the vendors not terminated, so the "every system" and "every
+ * vendor" rules leave those out.
+ */
 export interface PathCounts {
   /** The quick start has been run to the end at least once. */
   quickstartCompleted: boolean;
@@ -118,7 +125,12 @@ export interface PathCounts {
   transparencyUnconfirmed: number;
   mappings: number;
   mappingsNotAssessed: number;
+  /** Requirements mapped to a high-risk system: the evidence step's scope. */
+  highRiskMappings: number;
+  highRiskMappingsNotAssessed: number;
   evidence: number;
+  /** Evidence attached to a requirement mapped to a high-risk system. */
+  highRiskEvidence: number;
   sensitiveAssessments: number;
   /** Systems that process personal data and have a sensitive-data assessment. */
   personalDataSystemsAssessed: number;
@@ -195,7 +207,10 @@ export const EMPTY_PATH_COUNTS: PathCounts = {
   transparencyUnconfirmed: 0,
   mappings: 0,
   mappingsNotAssessed: 0,
+  highRiskMappings: 0,
+  highRiskMappingsNotAssessed: 0,
   evidence: 0,
+  highRiskEvidence: 0,
   sensitiveAssessments: 0,
   personalDataSystemsAssessed: 0,
   incidents: 0,
@@ -221,6 +236,33 @@ function check(
   return { id, met, ...(href ? { href } : {}), ...(progress ?? {}) };
 }
 
+/**
+ * Every system has a risk level, so whether any is high-risk is known. "No
+ * high-risk system" means nothing is in scope only once this holds; before
+ * it, the steps that run over high-risk systems cannot say so.
+ */
+export function riskKnown(c: PathCounts): boolean {
+  return c.systems > 0 && c.classified >= c.systems;
+}
+
+/** Nothing for the high-risk steps (3.2, 4.3) to cover: every system classified, none high-risk. */
+export function noHighRiskInScope(c: PathCounts): boolean {
+  return c.highRisk === 0 && riskKnown(c);
+}
+
+/** Nothing for the sensitive-data step (4.4) to cover: systems registered, none processes personal data. */
+export function noPersonalDataInScope(c: PathCounts): boolean {
+  return c.systems > 0 && c.systemsProcessingPersonalData === 0;
+}
+
+/** "Give every system a risk level", as the classification step shows it. */
+function riskLevelsCheck(c: PathCounts): StepCheck {
+  return check("systemsClassified", riskKnown(c), "/governance/risk-classification", {
+    done: Math.min(c.classified, c.systems),
+    total: c.systems,
+  });
+}
+
 /** Where step 1.2's questions sit on the step page itself. */
 export const OBLIGATIONS_PLACES_HREF = "/governance/obligations#places";
 export const OBLIGATIONS_QUESTIONS_HREF = "/governance/obligations#questions";
@@ -242,7 +284,7 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
           id: "quickstart",
           href: "/governance/quickstart",
           icon: Sparkles,
-          rule: "Done when the quick start has been completed once, or when the work it would do already exists (at least one system, one vendor and one policy) and nothing copied from another client's template is waiting for review. Started when a system, a vendor or a policy exists without that.",
+          rule: "Done when the quick start has been completed once, or when the work it would do already exists (at least one system, one vendor and one policy) and nothing copied from another client's template is waiting for review. Started when a system, a vendor or a policy exists without that. The worked example's records never count, here or in any other step.",
           status: (c) =>
             c.quickstartCompleted ||
             (c.systems > 0 && c.vendors > 0 && c.policies > 0 && copiedPending(c) === 0)
@@ -342,7 +384,7 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
           id: "systems",
           href: "/governance/ai-registry",
           icon: Brain,
-          rule: "Done when at least one system is registered, every system has a business owner, and no system copied from another client's template is waiting for review. Started when a system is registered.",
+          rule: "Done when at least one system is registered, every system has a business owner, and no system copied from another client's template is waiting for review. Started when a system is registered. Retired systems are left out.",
           status: (c) =>
             c.systems > 0 && c.systemsWithOwner >= c.systems && c.copiedSystemsPending === 0
               ? "done"
@@ -362,7 +404,7 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
           id: "vendors",
           href: "/governance/vendors",
           icon: Building2,
-          rule: "Done when at least one vendor is recorded (the vendor catalog is the way to add one) and no vendor copied from another client's template is waiting for review. Started while copied vendors wait.",
+          rule: "Done when at least one vendor is recorded (the vendor catalog is the way to add one) and no vendor copied from another client's template is waiting for review. Started while copied vendors wait. Terminated vendors are left out.",
           status: (c) =>
             c.vendors > 0 && c.copiedVendorsPending === 0
               ? "done"
@@ -384,7 +426,7 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
           id: "classification",
           href: "/governance/risk-classification",
           icon: ShieldAlert,
-          rule: "Done when every registered system has a risk classification and none of them is a draft waiting for a person to confirm it (to confirm while any is). Started when some have one.",
+          rule: "Done when every registered system has a risk classification and none of them is a draft waiting for a person to confirm it (to confirm while any is). Started when some have one. Retired systems are left out.",
           status: (c) =>
             c.systems > 0 && c.classified >= c.systems
               ? c.classificationsUnconfirmed > 0
@@ -405,24 +447,30 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
           id: "assessments",
           href: "/governance/assessments",
           icon: ClipboardCheck,
-          rule: "Done when at least one assessment is approved and every high-risk system has an approved one. Started when any assessment exists.",
+          rule: "With a high-risk system: done when every high-risk system has an approved assessment. With none: nothing is in scope, so done once every system has a risk level (riskKnown). Started when any assessment exists.",
           status: (c) =>
-            c.assessmentsApproved > 0 && c.highRiskAssessed >= c.highRisk
-              ? "done"
-              : c.assessments > 0
-                ? "started"
-                : "todo",
-          checks: (c) => [
-            check("assessmentApproved", c.assessmentsApproved > 0, "/governance/assessments"),
-            ...(c.highRisk > 0
+            c.highRisk > 0
+              ? c.highRiskAssessed >= c.highRisk
+                ? "done"
+                : c.assessments > 0
+                  ? "started"
+                  : "todo"
+              : noHighRiskInScope(c)
+                ? "done"
+                : c.assessments > 0
+                  ? "started"
+                  : "todo",
+          checks: (c) =>
+            c.highRisk > 0
               ? [
                   check("highRiskAssessed", c.highRiskAssessed >= c.highRisk, "/governance/assessments", {
                     done: Math.min(c.highRiskAssessed, c.highRisk),
                     total: c.highRisk,
                   }),
                 ]
-              : []),
-          ],
+              : riskKnown(c)
+                ? [check("noHighRiskAssessment", true)]
+                : [riskLevelsCheck(c)],
         },
         {
           id: "vendorDueDiligence",
@@ -430,7 +478,7 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
           // review state, each card opening the vendor's assessments tab.
           href: "/governance/vendors?view=due-diligence",
           icon: FileCheck2,
-          rule: "Done when every vendor has a completed due-diligence assessment. Started when any vendor assessment exists.",
+          rule: "Done when every vendor has a completed due-diligence assessment. Started when any vendor assessment exists. Terminated vendors are left out.",
           status: (c) =>
             c.vendors > 0 && c.vendorsAssessed >= c.vendors
               ? "done"
@@ -450,7 +498,7 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
           id: "threatModel",
           href: "/governance/threat-model",
           icon: Crosshair,
-          rule: "Shown to organisations that build AI (a system with the provider role) and to any organisation that already has a threat model. Done when at least one threat model is past draft. Started when a draft exists.",
+          rule: "Shown to organisations that build AI (a system with the provider role) and to any organisation that already has a threat model. Done when at least one threat model is past draft (marking a draft model as reviewed on its page takes it out of draft, threatModel.update). Started when a draft exists.",
           shownWhen: (c) => c.providerSystems > 0 || c.threatModels > 0,
           status: (c) =>
             c.threatModelsActive > 0 ? "done" : c.threatModels > 0 ? "started" : "todo",
@@ -511,7 +559,7 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
           // a profile, each card opening the system's Transparency tab.
           href: "/governance/ai-registry?view=transparency",
           icon: Megaphone,
-          rule: "Done when every registered system has a transparency (Art. 50) profile and none of them is a draft waiting for a person to confirm it (to confirm while any is). Started when some have one. The profile is a tab on each system's page.",
+          rule: "Done when every registered system has a transparency (Art. 50) profile and none of them is a draft waiting for a person to confirm it (to confirm while any is). Started when some have one. The profile is a tab on each system's page. Retired systems are left out.",
           status: (c) =>
             c.systems > 0 && c.transparencyProfiles >= c.systems
               ? c.transparencyUnconfirmed > 0
@@ -532,36 +580,50 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
           id: "evidence",
           href: "/governance/compliance",
           icon: Scale,
-          rule: "Done when every mapped requirement has a status and at least one piece of evidence is attached. Started when some requirement has a status or evidence exists.",
-          status: (c) =>
-            c.mappings > 0 && c.mappingsNotAssessed === 0 && c.evidence > 0
-              ? "done"
-              : c.evidence > 0 || (c.mappings > 0 && c.mappingsNotAssessed < c.mappings)
-                ? "started"
-                : "todo",
-          checks: (c) => [
-            check("mappingsAssessed", c.mappings > 0 && c.mappingsNotAssessed === 0, "/governance/compliance", {
-              done: c.mappings - c.mappingsNotAssessed,
-              total: c.mappings,
-            }),
-            check("evidenceAttached", c.evidence > 0, "/governance/compliance"),
-          ],
+          rule: "Runs over the requirements mapped to high-risk systems. With a high-risk system: done when every such requirement has a status and at least one piece of evidence is attached to one of them. With none: nothing is in scope, so done once every system has a risk level (riskKnown). Started when any requirement has a status or evidence exists.",
+          status: (c) => {
+            const met =
+              c.highRisk > 0
+                ? c.highRiskMappings > 0 && c.highRiskMappingsNotAssessed === 0 && c.highRiskEvidence > 0
+                : noHighRiskInScope(c);
+            if (met) return "done";
+            return c.evidence > 0 || (c.mappings > 0 && c.mappingsNotAssessed < c.mappings)
+              ? "started"
+              : "todo";
+          },
+          checks: (c) =>
+            c.highRisk > 0
+              ? [
+                  check(
+                    "mappingsAssessed",
+                    c.highRiskMappings > 0 && c.highRiskMappingsNotAssessed === 0,
+                    "/governance/compliance",
+                    {
+                      done: c.highRiskMappings - c.highRiskMappingsNotAssessed,
+                      total: c.highRiskMappings,
+                    },
+                  ),
+                  check("evidenceAttached", c.highRiskEvidence > 0, "/governance/compliance"),
+                ]
+              : riskKnown(c)
+                ? [check("noHighRiskEvidence", true)]
+                : [riskLevelsCheck(c)],
         },
         {
           id: "sensitiveData",
           href: "/governance/sensitive-data",
           icon: HeartPulse,
-          rule: "Done when at least one sensitive-data assessment exists and every system that processes personal data has one. Started when any assessment exists.",
-          status: (c) =>
-            c.sensitiveAssessments > 0 &&
-            c.personalDataSystemsAssessed >= c.systemsProcessingPersonalData
-              ? "done"
-              : c.sensitiveAssessments > 0
-                ? "started"
-                : "todo",
-          checks: (c) => [
-            check("sensitiveAssessed", c.sensitiveAssessments > 0, "/governance/sensitive-data"),
-            ...(c.systemsProcessingPersonalData > 0
+          rule: "With a system that processes personal data: done when every such system has a sensitive-data assessment. With none (and at least one system registered): nothing is in scope, so done. Started when any assessment exists.",
+          status: (c) => {
+            const met =
+              c.systemsProcessingPersonalData > 0
+                ? c.personalDataSystemsAssessed >= c.systemsProcessingPersonalData
+                : noPersonalDataInScope(c);
+            if (met) return "done";
+            return c.sensitiveAssessments > 0 ? "started" : "todo";
+          },
+          checks: (c) =>
+            c.systemsProcessingPersonalData > 0
               ? [
                   check(
                     "personalDataAssessed",
@@ -573,8 +635,9 @@ export const AI_SENTINEL_PATH: PathConfig<PathCounts> = {
                     },
                   ),
                 ]
-              : []),
-          ],
+              : c.systems > 0
+                ? [check("noPersonalData", true)]
+                : [check("systemRegistered", false, "/governance/ai-registry/new")],
         },
       ],
     },

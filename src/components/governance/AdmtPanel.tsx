@@ -22,6 +22,7 @@ import { AlertTriangle, Scale, ShieldAlert } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
+import { refreshAfterScopeChange } from "@/lib/scope-refresh";
 import { useFormatDate } from "@/lib/use-format-date";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -219,8 +220,8 @@ export function AdmtPanel({
     onSuccess: () => {
       toast.success(t("ui.toastSaved"));
       setEdits({});
-      void utils.admt.getScope.invalidate({ organizationId, aiSystemId });
-      void utils.admt.getOrgScope.invalidate({ organizationId });
+      // The determination moves the system's California, GDPR and Colorado rows.
+      refreshAfterScopeChange(utils);
     },
     onError: (err) => toast.error(err.message),
   });

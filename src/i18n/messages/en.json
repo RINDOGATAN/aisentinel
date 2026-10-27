@@ -148,7 +148,8 @@
     "backToAgentTesting": "Back to agent tests",
     "backToProceedings": "Back to cases and inquiries",
     "backToSensitiveData": "Back to sensitive data",
-    "backToThreatModel": "Back to threat models"
+    "backToThreatModel": "Back to threat models",
+    "evidenceProviderDisclosure": "Provider disclosure"
   },
   "nav": {
     "billing": "Billing",
@@ -1258,7 +1259,32 @@
     "assessmentRiskScore": "Risk Score: {score}",
     "assessmentCompletedOn": "Completed: {date}",
     "assessmentNextReview": "Next Review: {date}",
-    "placeholderFindings": "Document initial findings, observations, or scope..."
+    "placeholderFindings": "Document initial findings, observations, or scope...",
+    "disclosures": {
+      "title": "Provider disclosures",
+      "help": "These come from the provider's own published documents.",
+      "guide": "Guide: frontier AI rules",
+      "edit": "Edit",
+      "save": "Save",
+      "cancel": "Cancel",
+      "saved": "Provider disclosures saved",
+      "empty": "Nothing recorded yet.",
+      "notRecorded": "Not recorded",
+      "badLink": "Enter a link that starts with https:// or http://",
+      "fields": {
+        "safetyFrameworkUrl": "Safety framework (link)",
+        "transparencyReportUrl": "Transparency report (link)",
+        "modelCardUrl": "Model card (link)",
+        "signedGpaiCode": "Signed the EU General-Purpose AI Code of Practice",
+        "frontierDeveloper": "Frontier developer",
+        "disclosuresCheckedAt": "Date last checked"
+      },
+      "answers": {
+        "YES": "Yes",
+        "NO": "No",
+        "UNKNOWN": "Unknown"
+      }
+    }
   },
   "policies": {
     "title": "AI policy",

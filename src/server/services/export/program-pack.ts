@@ -29,6 +29,7 @@
  * generated document also keeps its own gap blocks and review markers.
  */
 
+import { DISCLOSURE_ANSWER_FIELDS, DISCLOSURE_LINK_FIELDS, hasDisclosures } from "@/config/provider-disclosures";
 import type { PrismaClient } from "@prisma/client";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { createTranslator } from "next-intl";
@@ -156,6 +157,16 @@ const L = {
     noVendors: "No vendors yet.",
     noReview: "No review yet.",
     nextReview: "Next review",
+    disclosuresTitle: "Provider disclosures (from the provider's own published documents)",
+    disclosure: {
+      safetyFrameworkUrl: "Safety framework",
+      transparencyReportUrl: "Transparency report",
+      modelCardUrl: "Model card",
+      signedGpaiCode: "Signed the EU General-Purpose AI Code of Practice",
+      frontierDeveloper: "Frontier developer",
+      disclosuresCheckedAt: "Last checked",
+    },
+    disclosureAnswer: { YES: "Yes", NO: "No", UNKNOWN: "Unknown" },
     riskLevel: "Risk level",
     notSet: "not set",
     index: {
@@ -264,6 +275,16 @@ const L = {
     noVendors: "Todavía no hay proveedores.",
     noReview: "Sin revisión todavía.",
     nextReview: "Próxima revisión",
+    disclosuresTitle: "Información publicada por el proveedor (de sus propios documentos)",
+    disclosure: {
+      safetyFrameworkUrl: "Marco de seguridad",
+      transparencyReportUrl: "Informe de transparencia",
+      modelCardUrl: "Ficha del modelo",
+      signedGpaiCode: "Ha firmado el Código de buenas prácticas de IA de uso general de la UE",
+      frontierDeveloper: "Desarrollador de modelos de frontera",
+      disclosuresCheckedAt: "Última comprobación",
+    },
+    disclosureAnswer: { YES: "Sí", NO: "No", UNKNOWN: "No se sabe" },
     riskLevel: "Nivel de riesgo",
     notSet: "sin indicar",
     index: {
@@ -688,6 +709,12 @@ export async function buildProgramPack(
     if (vendors.length === 0) vendorMd.push(l.noVendors, "");
     for (const v of vendors) {
       vendorMd.push(`## ${v.name}`, "", `${l.riskLevel}: ${v.riskLevel ? n.vendorRisk[v.riskLevel] ?? v.riskLevel : l.notSet}`, "");
+      if (hasDisclosures(v)) {
+        vendorMd.push(`### ${l.disclosuresTitle}`, "");
+        for (const f of DISCLOSURE_LINK_FIELDS) vendorMd.push(`- ${l.disclosure[f]}: ${v[f] ?? l.notSet}`);
+        for (const f of DISCLOSURE_ANSWER_FIELDS) vendorMd.push(`- ${l.disclosure[f]}: ${l.disclosureAnswer[v[f] ?? "UNKNOWN"]}`);
+        vendorMd.push(`- ${l.disclosure.disclosuresCheckedAt}: ${v.disclosuresCheckedAt ? day(v.disclosuresCheckedAt) : l.notSet}`, "");
+      }
       if (v.assessments.length === 0) vendorMd.push(l.noReview, "");
       for (const a of v.assessments) {
         vendorMd.push(

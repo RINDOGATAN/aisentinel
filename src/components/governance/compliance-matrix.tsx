@@ -88,6 +88,7 @@ const evidenceTypeKeys: Record<string, { labelKey: string; icon: typeof Shield }
   AUDIT: { labelKey: "evidenceAudit", icon: ClipboardCheck },
   TRAINING: { labelKey: "evidenceTraining", icon: GraduationCap },
   APPROVAL: { labelKey: "evidenceApproval", icon: ThumbsUp },
+  PROVIDER_DISCLOSURE: { labelKey: "evidenceProviderDisclosure", icon: FileText },
   OTHER: { labelKey: "evidenceOther", icon: MoreHorizontal },
 };
 
@@ -647,7 +648,7 @@ type MappingUpdate = { organizationId: string; aiSystemId: string; requirementId
  * back; `onFailed` runs when the save is refused.
  */
 type SaveMapping = (data: MappingUpdate, undoStatus?: StatusValue, onFailed?: () => void) => void;
-type EvidenceTypeValue = "POLICY" | "DOCUMENT" | "TEST_RESULT" | "MONITORING" | "AUDIT" | "TRAINING" | "APPROVAL" | "OTHER";
+type EvidenceTypeValue = "POLICY" | "DOCUMENT" | "TEST_RESULT" | "MONITORING" | "AUDIT" | "TRAINING" | "APPROVAL" | "PROVIDER_DISCLOSURE" | "OTHER";
 
 function RequirementRow({
   reqId,

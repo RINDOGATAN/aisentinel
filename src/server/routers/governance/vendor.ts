@@ -19,6 +19,22 @@ import {
   computeSharedSubprocessors,
 } from "@/lib/supply-chain";
 import { nextSystemNumber } from "../../services/ai-system/number";
+import { cleanDisclosureUrl } from "@/config/provider-disclosures";
+
+/** A provider disclosure link: http(s) only, empty clears it. */
+const disclosureUrl = z
+  .string()
+  .nullable()
+  .optional()
+  .transform((value, ctx) => {
+    if (value === undefined) return undefined;
+    const cleaned = cleanDisclosureUrl(value);
+    if (cleaned === undefined) {
+      ctx.addIssue({ code: "custom", message: "Enter a link that starts with https:// or http://" });
+      return z.NEVER;
+    }
+    return cleaned;
+  });
 
 export const vendorRouter = createTRPCRouter({
   list: organizationProcedure
@@ -256,6 +272,13 @@ export const vendorRouter = createTRPCRouter({
         contractExpiryDate: z.string().nullable().optional(),
         dpoCentralVendorId: z.string().nullable().optional(),
         notes: z.string().nullable().optional(),
+        // The provider's own published documents (frontier-model disclosures).
+        safetyFrameworkUrl: disclosureUrl,
+        transparencyReportUrl: disclosureUrl,
+        modelCardUrl: disclosureUrl,
+        signedGpaiCode: z.enum(["YES", "NO", "UNKNOWN"]).nullable().optional(),
+        frontierDeveloper: z.enum(["YES", "NO", "UNKNOWN"]).nullable().optional(),
+        disclosuresCheckedAt: z.string().nullable().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -264,7 +287,7 @@ export const vendorRouter = createTRPCRouter({
       const updateData: Record<string, unknown> = {};
       for (const [key, value] of Object.entries(data)) {
         if (value === undefined) continue;
-        if (key === "contractStartDate" || key === "contractExpiryDate") {
+        if (key === "contractStartDate" || key === "contractExpiryDate" || key === "disclosuresCheckedAt") {
           updateData[key] = value ? new Date(value as string) : null;
         } else {
           updateData[key] = value;

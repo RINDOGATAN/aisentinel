@@ -9,6 +9,7 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { trpc } from "@/lib/trpc";
+import { refreshAfterScopeChange } from "@/lib/scope-refresh";
 import { useUserType } from "@/lib/use-user-type";
 import { useOrganization } from "@/lib/organization-context";
 import { DeploymentExpertCta } from "@/components/governance/deployment-expert-cta";
@@ -237,11 +238,9 @@ function JurisdictionCard({
   const selection = edited ?? saved;
 
   const save = trpc.organization.setJurisdictions.useMutation({
-    onSuccess: () => {
-      void utils.organization.getById.invalidate();
-      void utils.organization.getDashboardStats.invalidate();
-      void utils.programPath.status.invalidate();
-    },
+    // The places change which laws reach each system: everything that shows
+    // the scope asks again (src/lib/scope-refresh.ts).
+    onSuccess: () => refreshAfterScopeChange(utils),
   });
   const autosave = useAutoSave<JurisdictionId[]>(
     (jurisdictions) => save.mutateAsync({ organizationId, jurisdictions }),
@@ -266,7 +265,7 @@ function JurisdictionCard({
         <CardDescription>{tj("description")}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {!declared && <Instruction tone="attention">{tj("undeclaredHint")}</Instruction>}
+        {org && !declared && <Instruction tone="attention">{tj("undeclaredHint")}</Instruction>}
 
         <JurisdictionPicker
           value={selection}
@@ -274,7 +273,9 @@ function JurisdictionCard({
             setEdited(next);
             autosave.push(next);
           }}
-          disabled={!canWrite}
+          // Not before the saved places have loaded: a tick on the empty
+          // picker would save that one place alone and drop the others.
+          disabled={!canWrite || !org}
         />
 
         <p className="text-xs text-muted-foreground">

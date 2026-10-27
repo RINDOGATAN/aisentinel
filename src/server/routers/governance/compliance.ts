@@ -8,7 +8,9 @@ import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, organizationProcedure, orgWriteProcedure, publicProcedure } from "../../trpc";
 import { buildScopeFilter } from "@/lib/applicability-scope";
 import { assertNotOnHold } from "../../services/legal-hold";
-import { isAiuc1Record } from "@/config/aiuc1-evidence";
+import type { PrismaClient } from "@prisma/client";
+import { isAgentSystem, isAiuc1Record } from "@/config/aiuc1-evidence";
+import { loadRuledOutFrameworks } from "../../services/scope/sync-requirements";
 
 const FRAMEWORK_ORDER = [
   "EU_AI_ACT",
@@ -32,6 +34,30 @@ const AIUC1_DECIDER_ROLES = ["OWNER", "ADMIN", "AI_OFFICER"] as const;
 const BULK_DECIDER_ROLES = AIUC1_DECIDER_ROLES;
 /** The statuses a bulk action can set: every assessed status (NOT_ASSESSED is the absence of one). */
 const BULK_STATUSES = ["NOT_APPLICABLE", "COMPLIANT", "PARTIALLY_COMPLIANT", "NON_COMPLIANT"] as const;
+
+/**
+ * The frameworks with no requirement in scope for this organisation (and, with
+ * a system, for this system): those its answers rule out, and AIUC-1 for a
+ * system that is not an AI agent. Their tabs show only what is already
+ * recorded against them.
+ */
+async function frameworksNotInScope(
+  prisma: PrismaClient,
+  organizationId: string,
+  aiSystemId?: string,
+): Promise<Set<string>> {
+  const none = new Set<string>(await loadRuledOutFrameworks(prisma, organizationId));
+  if (aiSystemId) {
+    const system = await prisma.aISystem.findFirst({
+      where: { id: aiSystemId, organizationId },
+      select: { technique: true, agentProfile: { select: { autonomy: true } } },
+    });
+    if (system && !isAgentSystem({ technique: system.technique, autonomy: system.agentProfile?.autonomy })) {
+      none.add("AIUC_1");
+    }
+  }
+  return none;
+}
 
 export const complianceRouter = createTRPCRouter({
   listFrameworks: publicProcedure.query(async ({ ctx }) => {
@@ -107,6 +133,12 @@ export const complianceRouter = createTRPCRouter({
          * `applicabilityTags` + `scopedFrameworkCode`.
          */
         scopes: z.record(z.string(), z.array(z.string())).optional(),
+        /**
+         * The system the tabs are for. AIUC-1 is the standard for AI agents:
+         * for a system that is not an agent it reports zero, so its tab shows
+         * only where something is already recorded against it.
+         */
+        aiSystemId: z.string().optional(),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -114,8 +146,14 @@ export const complianceRouter = createTRPCRouter({
         select: { id: true, code: true },
       });
 
+      // Frameworks the organisation's own answers rule out report zero
+      // (src/config/framework-scope.ts), the same decision the requirement
+      // rows follow (services/scope/sync-requirements.ts).
+      const none = await frameworksNotInScope(ctx.prisma, ctx.organization.id, input.aiSystemId);
+
       const counts = await Promise.all(
         frameworks.map(async (fw) => {
+          if (none.has(fw.code)) return { frameworkId: fw.id, code: fw.code, count: 0 };
           // Scoping applies only to the framework the tags belong to; every
           // other framework reports its full size, exactly as before.
           const mappedTags = input.scopes?.[fw.code];
@@ -185,14 +223,6 @@ export const complianceRouter = createTRPCRouter({
       // children arrive through a relation include that a top-level `where`
       // does not reach: filtering only the parents would return a scoped parent
       // with all of its out-of-scope children attached.
-      const inScope = buildScopeFilter(input.applicabilityTags);
-
-      const scoped = requirements
-        .map((req) => ({ ...req, children: req.children.filter(inScope) }))
-        // A parent survives if it is itself in scope or still has a child that
-        // is — dropping it would strand the child.
-        .filter((req) => inScope(req) || req.children.length > 0);
-
       const mappings = await ctx.prisma.complianceMapping.findMany({
         where: {
           organizationId: ctx.organization.id,
@@ -205,6 +235,28 @@ export const complianceRouter = createTRPCRouter({
       });
 
       const mappingMap = new Map(mappings.map((m) => [m.requirementId, m]));
+
+      // A framework the organisation's answers rule out (or AIUC-1 for a
+      // system that is not an agent) has no requirement in scope. Whatever is
+      // in scope, a requirement with a row on this system stays visible: the
+      // scope rules remove only empty rows, so a row still here holds work
+      // that must not disappear from view when the scope changes.
+      const framework = await ctx.prisma.complianceFramework.findFirst({
+        where: { id: input.frameworkId },
+        select: { code: true },
+      });
+      const notInScope = framework
+        ? (await frameworksNotInScope(ctx.prisma, ctx.organization.id, input.aiSystemId)).has(framework.code)
+        : false;
+      const tagScope = buildScopeFilter(input.applicabilityTags);
+      const inScope = (req: { id: string; applicabilityTags: string[] }) =>
+        mappingMap.has(req.id) || (!notInScope && tagScope(req));
+
+      const scoped = requirements
+        .map((req) => ({ ...req, children: req.children.filter(inScope) }))
+        // A parent survives if it is itself in scope or still has a child that
+        // is — dropping it would strand the child.
+        .filter((req) => inScope(req) || req.children.length > 0);
 
       // Build hierarchical structure
       const topLevel = scoped.filter((r) => !r.parentId);

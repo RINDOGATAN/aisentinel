@@ -46,6 +46,7 @@ import {
 import { toast } from "sonner";
 import { useTranslations, useLocale } from "next-intl";
 import { trpc } from "@/lib/trpc";
+import { refreshAfterScopeChange } from "@/lib/scope-refresh";
 import { useOrganization } from "@/lib/organization-context";
 import { PathIntro } from "@/components/guided/path-intro";
 import {
@@ -219,10 +220,7 @@ export default function QuickstartPage() {
     onError: (err) => toast.error(err.message),
     // The review step's screening card reads the declared jurisdictions to
     // decide which questions to ask.
-    onSuccess: () => {
-      void utilsForJurisdictions.organization.getById.invalidate();
-      void utilsForJurisdictions.regimes.getApplicability.invalidate();
-    },
+    onSuccess: () => refreshAfterScopeChange(utilsForJurisdictions),
   });
 
   // The applicability check (src/config/applicability.ts): the answers
@@ -233,7 +231,7 @@ export default function QuickstartPage() {
     useState<ApplicabilityAnswers>(EMPTY_APPLICABILITY_ANSWERS);
   const [applicabilityTouched, setApplicabilityTouched] = useState(false);
   const [scopePrefilled, setScopePrefilled] = useState(false);
-  const { data: savedApplicability } = trpc.regimes.getApplicability.useQuery(
+  const { data: savedApplicability, isError: applicabilityFailed } = trpc.regimes.getApplicability.useQuery(
     { organizationId: organization?.id ?? "" },
     { enabled: !!organization?.id },
   );
@@ -242,9 +240,12 @@ export default function QuickstartPage() {
     if (!applicabilityTouched) setApplicabilityAnswers(savedApplicability.answers);
     if (!jurisdictionsTouched) setSelectedJurisdictions(savedApplicability.jurisdictions);
   }
+  // The scope inputs open once the saved answers are in (or could not be
+  // read, so a failed read never locks the step).
+  const scopeReady = scopePrefilled || applicabilityFailed;
   const setApplicability = trpc.regimes.setApplicability.useMutation({
     onError: (err) => toast.error(err.message),
-    onSuccess: () => void utilsForJurisdictions.regimes.getApplicability.invalidate(),
+    onSuccess: () => refreshAfterScopeChange(utilsForJurisdictions),
   });
 
   // Vendor selection
@@ -671,7 +672,9 @@ export default function QuickstartPage() {
               <JurisdictionPicker
                 compact
                 value={selectedJurisdictions}
-                disabled={jurisdictionsUnsure || !canWrite}
+                // Not before the saved places have filled the picker: a tick
+                // on the empty picker would replace them all with that one.
+                disabled={jurisdictionsUnsure || !canWrite || !scopeReady}
                 onChange={(next) => {
                   setSelectedJurisdictions(next);
                   setJurisdictionsTouched(true);
@@ -681,7 +684,7 @@ export default function QuickstartPage() {
               <label className="flex items-center gap-2 text-xs text-muted-foreground cursor-pointer min-h-11 sm:min-h-0">
                 <Checkbox
                   checked={jurisdictionsUnsure}
-                  disabled={!canWrite}
+                  disabled={!canWrite || !scopeReady}
                   onCheckedChange={(v) => {
                     setJurisdictionsUnsure(!!v);
                     setJurisdictionsTouched(true);
@@ -697,7 +700,7 @@ export default function QuickstartPage() {
             <CardContent className="p-4">
               <ApplicabilityQuestions
                 answers={applicabilityAnswers}
-                disabled={!canWrite}
+                disabled={!canWrite || !scopeReady}
                 onChange={(next) => {
                   setApplicabilityAnswers(next);
                   setApplicabilityTouched(true);

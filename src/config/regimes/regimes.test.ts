@@ -249,3 +249,42 @@ describe("Washington rules", () => {
     expect(s.state).toBe("OUT_OF_SCOPE");
   });
 });
+
+describe("statutory citations re-read on 2026-10-27", () => {
+  const byCode = (code: string) =>
+    REGIME_PACKS.flatMap((p) => flattenRegimeRequirements(p.requirements)).filter((r) => r.code === code);
+  const row = (fw: string, slug: string) => {
+    const pack = REGIME_PACKS.find((p) => p.framework.code === fw)!;
+    return flattenRegimeRequirements(pack.requirements).find((r) => r.slug === slug)!;
+  };
+
+  it("Texas: the government disclosure is § 552.051(b) and the health care disclosure § 552.051(f)", () => {
+    expect(row("TX_TRAIGA", "552-051-gov-disclosure").code).toBe("§ 552.051(b)");
+    expect(row("TX_TRAIGA", "552-051-health-disclosure").code).toBe("§ 552.051(f)");
+    expect(byCode("§ 552.051(a)")).toHaveLength(0);
+  });
+
+  it("Washington ESHB 2225: disclosure § 3, minors § 4, crisis protocol § 5", () => {
+    expect(row("WA_AI_RULES", "hb2225-disclosure").code).toBe("HB 2225 § 3");
+    expect(row("WA_AI_RULES", "hb2225-not-human-claim").code).toBe("HB 2225 § 3(3)");
+    expect(row("WA_AI_RULES", "hb2225-minors").code).toBe("HB 2225 § 4");
+    expect(row("WA_AI_RULES", "hb2225-crisis").code).toBe("HB 2225 § 5");
+    expect(row("WA_AI_RULES", "hb2225-referral-count").code).toBe("HB 2225 § 5 (referral count)");
+  });
+
+  it("Washington ESHB 2225: enforced through the Consumer Protection Act, eating disorders in the protocol", () => {
+    const parent = row("WA_AI_RULES", "hb2225");
+    expect(parent.description.en).toContain("Consumer Protection Act");
+    expect(parent.description.en).not.toMatch(/private right of action/i);
+    expect(parent.description.es).not.toMatch(/acción privada/i);
+    expect(row("WA_AI_RULES", "hb2225-crisis").description.en).toContain("eating disorders");
+    expect(row("WA_AI_RULES", "hb2225-crisis").description.es).toContain("trastornos de la conducta alimentaria");
+  });
+
+  it("every Washington companion row is scoped to the companion tag only", () => {
+    const pack = REGIME_PACKS.find((p) => p.framework.code === "WA_AI_RULES")!;
+    const rows = flattenRegimeRequirements(pack.requirements).filter((r) => r.slug.startsWith("hb2225"));
+    expect(rows).toHaveLength(6);
+    for (const r of rows) expect([...r.applicabilityTags]).toEqual(["jurisdiction:US_WA", "wa:companion"]);
+  });
+});

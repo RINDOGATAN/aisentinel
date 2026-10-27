@@ -7,8 +7,9 @@
  * prohibitions that reach anyone developing or deploying AI in Texas, plus
  * disclosure duties for government agencies and health care providers,
  * Attorney General enforcement with a 60-day cure period, a NIST-aligned safe
- * harbour and a regulatory sandbox. Section numbers follow the enrolled act;
- * legal sign-off PENDING.
+ * harbour and a regulatory sandbox. Section numbers follow the enrolled act:
+ * the government disclosure is § 552.051(b) and the health care disclosure
+ * § 552.051(f) (re-read against the statute on 2026-10-27).
  *
  * Scope tags: tx:core (any AI system with a Texas nexus), tx:government,
  * tx:healthcare.
@@ -27,7 +28,7 @@ export const TEXAS_FRAMEWORK: RegimeFramework = {
   abbreviation: "TX",
   description:
     "The Texas Responsible Artificial Intelligence Governance Act: intent-based prohibitions on manipulation, constitutional-rights infringement, unlawful discrimination and unlawful explicit content; disclosure duties for government agencies and health care providers; a ban on government social scoring and non-consensual biometric identification; Attorney General enforcement with a cure period; a NIST AI RMF safe harbor and a 36-month regulatory sandbox.",
-  contentVersion: "2026.09.1",
+  contentVersion: "2026.10.1",
   lawReviewedAsOf: REVIEWED,
   reviewMarker: signoffMarker("TX_TRAIGA"),
 };
@@ -39,7 +40,7 @@ const HEALTH = ["jurisdiction:US_TX", "tx:healthcare"] as const;
 export const TEXAS_REQUIREMENTS: RegimeRequirementSeed[] = [
   {
     slug: "552-051-gov-disclosure",
-    code: "§ 552.051(a)",
+    code: "§ 552.051(b)",
     title: { en: "Government: disclose that the consumer is interacting with AI", es: "Administración: informar de que el consumidor interactúa con una IA" },
     description: {
       en: "A governmental agency that makes an AI system available to interact with consumers must disclose, clearly and conspicuously in plain language, that the consumer is interacting with an artificial intelligence system, regardless of whether it would be obvious to a reasonable person.",
@@ -50,7 +51,7 @@ export const TEXAS_REQUIREMENTS: RegimeRequirementSeed[] = [
   },
   {
     slug: "552-051-health-disclosure",
-    code: "§ 552.051(b)",
+    code: "§ 552.051(f)",
     title: { en: "Health care: disclose AI use in treatment", es: "Sanidad: informar del uso de IA en el tratamiento" },
     description: {
       en: "A health care service provider that uses an AI system in relation to health care service or treatment must disclose the use to the patient, or to the patient's representative, no later than the date the service is first provided, except in an emergency, where the disclosure follows as soon as reasonably possible.",

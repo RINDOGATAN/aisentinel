@@ -80,7 +80,7 @@ describe("docs counts", () => {
   it("state the totals the docs quote", () => {
     const c = docsCounts();
     expect(c.frameworks).toBe(9);
-    expect(c.requirements).toBe(351);
+    expect(c.requirements).toBe(353);
     expect(c.crossMappings).toBe(301);
     expect(c.unifiedQuestions).toBe(53);
     expect(c.unifiedSections).toBe(10);

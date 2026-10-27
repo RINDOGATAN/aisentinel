@@ -41,6 +41,7 @@ import {
   UNIFIED_ASSESSMENT_VERSION,
   citationsFor,
   selectUnifiedQuestions,
+  withCurrentCitations,
 } from "@/config/unified-assessment";
 
 type ContentLocale = "en" | "es";
@@ -301,7 +302,7 @@ async function buildPlan(
     throw new TRPCError({ code: "NOT_FOUND", message: "Assessment not found" });
   }
 
-  const sections = (assessment.template?.sections ?? []) as unknown as {
+  const sections = withCurrentCitations(assessment.template?.sections ?? []) as unknown as {
     questions?: { id: string; satisfies?: unknown }[];
   }[];
   const responses = (assessment.responses ?? {}) as Record<string, unknown>;

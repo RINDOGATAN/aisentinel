@@ -70,7 +70,7 @@ const CITATIONS: Record<SystemFactKey, string> = {
   materiallyInfluencesConsequentialDecision: "SB 26-189",
   isCompanionChatbot: "HB 2225 (2026 c 168)",
   usedInPriorAuthorization: "RCW 48.43.830",
-  interactsWithConsumers: "TRAIGA § 552.051(a)",
+  interactsWithConsumers: "TRAIGA § 552.051(b)",
   handsOffToAutonomousAgent: "",
 };
 

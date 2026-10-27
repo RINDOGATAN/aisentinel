@@ -27,6 +27,7 @@ import { unansweredRequired, localizedText } from "@/lib/assessment-answers";
 import { markConfirmed } from "@/server/services/template-items/mark";
 import { assertNotOnHold } from "../../services/legal-hold";
 import { assertCanDeleteRecords } from "../../services/authz/delete-roles";
+import { withCurrentCitations } from "@/config/unified-assessment";
 
 /** Statuses in which an assessment is still a working document. */
 const EDITABLE_STATUSES = ["DRAFT", "IN_PROGRESS"];
@@ -106,6 +107,14 @@ export const assessmentRouter = createTRPCRouter({
         throw new TRPCError({ code: "NOT_FOUND", message: "Assessment not found" });
       }
 
+      // Unified questions show the citations of the current content, not the
+      // ones stored when the template was created.
+      if (assessment.template) {
+        return {
+          ...assessment,
+          template: { ...assessment.template, sections: withCurrentCitations(assessment.template.sections) },
+        };
+      }
       return assessment;
     }),
 

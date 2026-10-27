@@ -827,7 +827,7 @@ const NOTICE_ADDENDA: AddendumSpec[] = [
   {
     tag: "tx:core",
     heading: { en: "Texas", es: "Texas" },
-    citations: ["TX TRAIGA § 552.051(a)"],
+    citations: ["TX TRAIGA § 552.051(b)"],
     questionIds: ["not_ai_interaction"],
     statements: [
       {
@@ -839,7 +839,7 @@ const NOTICE_ADDENDA: AddendumSpec[] = [
   {
     tag: "tx:healthcare",
     heading: { en: "Texas: health care", es: "Texas: asistencia sanitaria" },
-    citations: ["TX TRAIGA § 552.051(b)"],
+    citations: ["TX TRAIGA § 552.051(f)"],
     questionIds: ["not_health_treatment"],
     statements: [
       {

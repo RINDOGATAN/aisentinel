@@ -9,8 +9,12 @@
  *     including health inferred by algorithms. Live since 31 Mar 2024.
  *   - HB 1170 (2026 c 167): provenance data in generative-AI image, video and
  *     audio from covered providers. Signed 24 Mar 2026, effective 1 Feb 2027.
- *   - HB 2225 (2026 c 168): AI companion chatbots. Signed 24 Mar 2026,
- *     effective 1 Jan 2027. Private right of action.
+ *   - ESHB 2225 (2026 c 168): AI companion chatbots. Signed 24 Mar 2026,
+ *     effective 1 Jan 2027 (Sec. 9). Disclosure in Sec. 3, minors in Sec. 4,
+ *     the crisis protocol in Sec. 5. A violation is an unfair or deceptive
+ *     act under the Consumer Protection Act, chapter 19.86 RCW (Sec. 6); the
+ *     act states no separate private right of action. Re-read against the
+ *     session law on 2026-10-27.
  *   - ESSB 5395 (2026 c 157), RCW 48.43.830: prior-authorisation decisions by
  *     health carriers may not rely solely on AI. VERIFIED 2026-09-08 against
  *     the session law: the AI duties are NEW in this act (underlined in
@@ -42,7 +46,7 @@ export const WASHINGTON_FRAMEWORK: RegimeFramework = {
   abbreviation: "WA",
   description:
     "Washington's AI obligations by domain: the My Health My Data Act for health data and health inferences, HB 1170 provenance duties for covered generative-AI providers, HB 2225 duties for AI companion chatbots, the prior-authorisation limits on automated denials in RCW 48.43.830, and the automated decision-system rules for public agencies under RCW 43.105. The AI Task Force created by ESSB 5838 (2024) under the Attorney General monitors generative AI and issues recommendations; it imposes no duty of its own.",
-  contentVersion: "2026.09.2",
+  contentVersion: "2026.10.1",
   lawReviewedAsOf: REVIEWED,
   reviewMarker: signoffMarker("WA_AI_RULES"),
 };
@@ -151,8 +155,8 @@ export const WASHINGTON_REQUIREMENTS: RegimeRequirementSeed[] = [
     code: "HB 2225 (2026 c 168)",
     title: { en: "AI companion chatbots", es: "Chatbots de compañía basados en IA" },
     description: {
-      en: "From 1 January 2027 an operator of an AI companion chatbot, one that provides adaptive, human-like responses and is capable of sustaining a relationship across sessions, owes disclosure, minor-protection and crisis-response duties, enforceable by the Attorney General and through a private right of action.",
-      es: "Desde el 1 de enero de 2027, el operador de un chatbot de compañía basado en IA, el que ofrece respuestas adaptativas de apariencia humana y puede mantener una relación a lo largo de sesiones, tiene deberes de información, de protección de menores y de respuesta ante crisis, exigibles por la Fiscalía General y mediante acción privada.",
+      en: "From 1 January 2027 an operator of an AI companion chatbot, one that provides adaptive, human-like responses and is capable of sustaining a relationship across interactions, owes disclosure (§ 3), minor-protection (§ 4) and crisis-response (§ 5) duties. A violation is an unfair or deceptive act under the Consumer Protection Act, chapter 19.86 RCW (§ 6), so it is enforced through that act rather than through a separate right of action in this law.",
+      es: "Desde el 1 de enero de 2027, el operador de un chatbot de compañía basado en IA, el que ofrece respuestas adaptativas de apariencia humana y puede mantener una relación a lo largo de distintas interacciones, tiene deberes de información (§ 3), de protección de menores (§ 4) y de respuesta ante crisis (§ 5). La infracción constituye una práctica desleal o engañosa conforme a la Ley de Protección del Consumidor, capítulo 19.86 RCW (§ 6), de modo que se exige a través de esa ley y no mediante una acción propia de esta norma.",
     },
     applicabilityTags: COMP,
     sortOrder: 300,
@@ -162,30 +166,52 @@ export const WASHINGTON_REQUIREMENTS: RegimeRequirementSeed[] = [
         code: "HB 2225 § 3",
         title: { en: "Disclose that the chatbot is not human, with periodic reminders", es: "Informar de que el chatbot no es humano, con recordatorios periódicos" },
         description: {
-          en: "Clearly and conspicuously disclose that the companion is artificial and not human, and repeat the reminder during continuing interactions: at least every three hours for adults and every hour for users known to be minors.",
-          es: "Informa de forma clara y visible de que el acompañante es artificial y no humano, y repite el recordatorio durante las interacciones continuadas: al menos cada tres horas para adultos y cada hora para usuarios que se sepa que son menores.",
+          en: "Clearly and conspicuously disclose that the companion is artificial and not human at the start of an interaction, and repeat the reminder at least every three hours during continuing interactions. For users known to be minors the reminder is hourly (§ 4).",
+          es: "Informa de forma clara y visible de que el acompañante es artificial y no humano al inicio de la interacción, y repite el recordatorio al menos cada tres horas durante las interacciones continuadas. Para los usuarios que se sepa que son menores, el recordatorio es cada hora (§ 4).",
         },
         applicabilityTags: COMP,
         sortOrder: 302,
       },
       {
+        slug: "hb2225-not-human-claim",
+        code: "HB 2225 § 3(3)",
+        title: { en: "Never claim to be human", es: "No afirmar nunca que es humano" },
+        description: {
+          en: "Take reasonable measures so the companion never claims to be human, for every user and not only for minors. Test it by asking the chatbot directly whether it is a person, and keep the transcript.",
+          es: "Adopta medidas razonables para que el acompañante no afirme nunca que es humano, con todos los usuarios y no solo con los menores. Compruébalo preguntando directamente al chatbot si es una persona y conserva la transcripción.",
+        },
+        applicabilityTags: COMP,
+        sortOrder: 303,
+      },
+      {
         slug: "hb2225-crisis",
-        code: "HB 2225 § 4",
+        code: "HB 2225 § 5",
         title: { en: "Published protocol for suicidal ideation and self-harm", es: "Protocolo publicado ante ideación suicida y autolesiones" },
         description: {
-          en: "Maintain, and publish on the operator's website, a protocol to detect and respond to expressions of suicidal ideation, self-harm or a mental-health crisis, including referral to crisis services. When the protocol triggers, the system must respond with crisis resources rather than continue the ordinary conversation.",
-          es: "Mantén, y publica en el sitio web del operador, un protocolo para detectar y responder a expresiones de ideación suicida, autolesión o crisis de salud mental, incluida la derivación a servicios de crisis. Cuando el protocolo se active, el sistema debe responder con recursos de crisis en lugar de continuar la conversación ordinaria.",
+          en: "Maintain a protocol to detect and respond to expressions of suicidal ideation or self-harm, including eating disorders, with referral to crisis resources, and publish it on the operator's website and in the app. When the protocol triggers, the system must respond with crisis resources rather than continue the ordinary conversation.",
+          es: "Mantén un protocolo para detectar y responder a expresiones de ideación suicida o autolesión, incluidos los trastornos de la conducta alimentaria, con derivación a recursos de crisis, y publícalo en el sitio web del operador y en la aplicación. Cuando el protocolo se active, el sistema debe responder con recursos de crisis en lugar de continuar la conversación ordinaria.",
         },
         applicabilityTags: COMP,
         sortOrder: 304,
       },
       {
+        slug: "hb2225-referral-count",
+        code: "HB 2225 § 5 (referral count)",
+        title: { en: "Publish the number of crisis referrals", es: "Publicar el número de derivaciones a servicios de crisis" },
+        description: {
+          en: "Publish, with the protocol, the number of crisis referrals made in the preceding year. Keep a log of referrals as they happen, or the figure cannot be evidenced.",
+          es: "Publica, junto con el protocolo, el número de derivaciones a servicios de crisis realizadas el año anterior. Lleva un registro de las derivaciones a medida que se producen, o la cifra no podrá acreditarse.",
+        },
+        applicabilityTags: COMP,
+        sortOrder: 305,
+      },
+      {
         slug: "hb2225-minors",
-        code: "HB 2225 § 5",
+        code: "HB 2225 § 4",
         title: { en: "Protections for minors", es: "Protección de menores" },
         description: {
-          en: "For companions directed at minors, or where the operator knows the user is a minor, implement reasonable measures to prevent sexually explicit content or suggestive dialogue, and apply the hourly reminder. Document the age-signal logic and the content safeguards.",
-          es: "En los acompañantes dirigidos a menores, o cuando el operador sepa que el usuario es menor, adopta medidas razonables para impedir contenido sexual explícito o diálogo sugerente, y aplica el recordatorio cada hora. Documenta la lógica de detección de edad y las salvaguardas de contenido.",
+          en: "For companions directed at minors, or where the operator knows the user is a minor, give the notice at the start and every hour, implement reasonable measures to prevent sexually explicit content or suggestive dialogue, and do not use the manipulative engagement techniques the section lists. Document the age-signal logic and the content safeguards.",
+          es: "En los acompañantes dirigidos a menores, o cuando el operador sepa que el usuario es menor, informa al inicio y cada hora, adopta medidas razonables para impedir contenido sexual explícito o diálogo sugerente, y no utilices las técnicas de captación manipuladoras que enumera la sección. Documenta la lógica de detección de edad y las salvaguardas de contenido.",
         },
         applicabilityTags: COMP,
         sortOrder: 306,

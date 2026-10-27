@@ -188,7 +188,7 @@ curl -s https://aisentinel.todo.law/api/health
 
 Expected framework counts after a full content seed: EU AI Act 83, NIST AI RMF
 23, ISO 42001 33, AIUC-1 57, California CCPA ADMT 92, EU GDPR 26, Colorado
-SB 26-189 10, Texas TRAIGA 11, Washington 16: 351 requirements, 301
+SB 26-189 10, Texas TRAIGA 11, Washington 18: 353 requirements, 301
 cross-framework mappings (186 of them from the AIUC-1 crosswalks). A fresh install and an upgraded one must report the same numbers; if
 they differ, the seeds did not all run, or a code was retired without an entry
 in `src/config/requirement-supersessions.ts`. The query is in section 5.

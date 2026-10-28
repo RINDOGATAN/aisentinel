@@ -27,7 +27,7 @@
  * it are this application's own translations.
  */
 
-import type { Jurisdiction, Prisma, PrismaClient } from "@prisma/client";
+import { Prisma, type Jurisdiction, type PrismaClient } from "@prisma/client";
 import { mapRole, mapTechnique } from "@/lib/dpc-import-mapping";
 import { nextSystemNumber } from "@/server/services/ai-system/number";
 import { pilotRemaining } from "@/server/services/pilot/caps";
@@ -558,6 +558,20 @@ export interface AisOutboundVendor {
 }
 
 /**
+ * Systems that are not copies of a DPO Central record. A bare
+ * `NOT { path: ["importedFrom"], equals: "dpocentral" }` is not enough: in
+ * Postgres the path lookup is SQL NULL when `metadata` is NULL or has no
+ * `importedFrom` key, `NOT (NULL = ...)` is NULL, and the row is dropped.
+ * `AnyNull` on the path matches those rows (and a JSON null value).
+ */
+export const notImportedFromDpoCentral = {
+  OR: [
+    { metadata: { path: ["importedFrom"], equals: Prisma.AnyNull } },
+    { NOT: { metadata: { path: ["importedFrom"], equals: "dpocentral" } } },
+  ],
+} satisfies Prisma.AISystemWhereInput;
+
+/**
  * One sync round, called by DPO Central. Brings DPO Central's records in,
  * marks those it no longer has, and returns what was created here for DPO
  * Central to take as drafts, with the ids of records here that DPO Central
@@ -598,7 +612,7 @@ export async function syncRound(
   const ownSystems = await db.aISystem.findMany({
     where: {
       organizationId: args.organizationId,
-      NOT: { metadata: { path: ["importedFrom"], equals: "dpocentral" } },
+      ...notImportedFromDpoCentral,
       status: { not: "RETIRED" },
     },
     select: { id: true, name: true, description: true, purpose: true, vendorId: true, vendor: { select: { name: true } } },

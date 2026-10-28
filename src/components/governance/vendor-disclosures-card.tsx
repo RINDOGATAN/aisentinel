@@ -66,7 +66,7 @@ export function VendorDisclosuresCard({
   canWrite: boolean;
 }) {
   const t = useTranslations("vendorDetail.disclosures");
-  const { formatDate } = useFormatDate();
+  const { formatDay } = useFormatDate();
   const utils = trpc.useUtils();
   const [draft, setDraft] = useState<Draft | null>(null);
   const update = trpc.vendor.update.useMutation({
@@ -215,7 +215,7 @@ export function VendorDisclosuresCard({
               <dt className="text-sm text-muted-foreground">{t("fields.disclosuresCheckedAt")}</dt>
               <dd className="text-sm">
                 {disclosures.disclosuresCheckedAt
-                  ? formatDate(disclosures.disclosuresCheckedAt)
+                  ? formatDay(disclosures.disclosuresCheckedAt)
                   : t("notRecorded")}
               </dd>
             </div>

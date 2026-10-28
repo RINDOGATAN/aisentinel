@@ -48,3 +48,15 @@ export function formatDayIn(locale: string, isoDay: string): string {
   if (Number.isNaN(at.getTime())) return isoDay;
   return tidy(locale, at.toLocaleDateString(dateLocaleTag(locale), { ...OPTIONS_DATE, timeZone: "UTC" }));
 }
+
+/**
+ * A date-only value held as a timestamp at 00:00 UTC (a contract start or
+ * expiry, the day a vendor's disclosures were last checked), shown as that
+ * same calendar day whatever the viewer's time zone.
+ */
+export function formatCalendarDayIn(locale: string, date: Date | string | null | undefined): string {
+  if (!date) return missingDate(locale);
+  const at = new Date(date);
+  if (Number.isNaN(at.getTime())) return typeof date === "string" ? date : missingDate(locale);
+  return formatDayIn(locale, at.toISOString());
+}

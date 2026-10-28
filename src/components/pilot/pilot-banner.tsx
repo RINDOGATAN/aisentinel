@@ -15,6 +15,8 @@
  * the server, hosted-pilot-banner.tsx), an owner or administrator of the
  * selected organisation also sees "Move to the paid plan", which opens
  * GET /api/plan/checkout for that organisation; other members never see it.
+ * Payment and pricing links open in a new tab, and the status is read again
+ * when the person comes back (src/lib/pay-return.ts).
  *
  * PilotEndBar draws the bar from its state and needs no app shell, so a test
  * can render it on its own; OrganizationPilotEndBar feeds it the selected
@@ -26,6 +28,7 @@ import { X } from "lucide-react";
 import { useOrganization } from "@/lib/organization-context";
 import { trpc } from "@/lib/trpc";
 import { useChargeCurrency } from "@/components/charge-currency";
+import { payLinkProps, usePayReturnRefetch } from "@/lib/pay-return";
 import {
   PILOT_BAR_DISMISS_KEY,
   PILOT_BAR_PRICING_URL,
@@ -125,8 +128,7 @@ export function PilotEndBar({
         {text}{" "}
         <a
           href={PILOT_BAR_PRICING_URL[locale]}
-          target="_blank"
-          rel="noopener noreferrer"
+          {...payLinkProps("plan")}
           className="underline underline-offset-2 font-medium hover:text-primary"
         >
           {copy.pricing}
@@ -134,10 +136,10 @@ export function PilotEndBar({
         {upgradeHref && upgradeMonthlyHref && (
           <>
             {" "}
-            <a href={upgradeMonthlyHref} data-testid="pilot-upgrade-monthly-link" className={UPGRADE_LINK}>
+            <a href={upgradeMonthlyHref} {...payLinkProps("plan")} data-testid="pilot-upgrade-monthly-link" className={UPGRADE_LINK}>
               {copy.upgradeMonthly}
             </a>{" "}
-            <a href={upgradeHref} data-testid="pilot-upgrade-link" className={UPGRADE_LINK}>
+            <a href={upgradeHref} {...payLinkProps("plan")} data-testid="pilot-upgrade-link" className={UPGRADE_LINK}>
               {copy.upgradeYearly}
             </a>
           </>
@@ -145,7 +147,7 @@ export function PilotEndBar({
         {upgradeHref && !upgradeMonthlyHref && (
           <>
             {" "}
-            <a href={upgradeHref} data-testid="pilot-upgrade-link" className={UPGRADE_LINK}>
+            <a href={upgradeHref} {...payLinkProps("plan")} data-testid="pilot-upgrade-link" className={UPGRADE_LINK}>
               {copy.upgrade}
             </a>
           </>
@@ -180,10 +182,14 @@ export function OrganizationPilotEndBar({
   const { organization } = useOrganization();
   // A paid organisation is never asked about (and its status is inactive anyway).
   const paid = isPaidPlanValue(organization?.plan);
-  const { data } = trpc.pilot.status.useQuery(
+  const { data, refetch } = trpc.pilot.status.useQuery(
     { organizationId: organization?.id ?? "" },
     { enabled: !!organization?.id && !paid, staleTime: 60 * 1000 },
   );
+  // The checkout opens in a new tab: on coming back, read the status again so
+  // the bar goes once the payment has synced (a paid organisation's status is
+  // inactive; the Settings card shares this query's cache).
+  usePayReturnRefetch("plan", refetch, paid || (!!data && !data.active));
   if (!organization || paid) return null;
   const endsAt = data?.active ? data.endsAt : null;
   const transition = data?.active ? isTransitionPilot(data.startedAt) : false;

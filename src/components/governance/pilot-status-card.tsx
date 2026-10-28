@@ -21,6 +21,9 @@ import {
   PILOT_PRICING_URL,
   PILOT_TERMS,
 } from "@/config/pilot";
+// The pricing page carries the plan's payment links: the click arms the plan
+// refetch on return (the pilot bar's query, which this card shares).
+import { payLinkProps } from "@/lib/pay-return";
 
 export function PilotStatusCard({ organizationId }: { organizationId: string }) {
   const t = useTranslations("pilot");
@@ -117,7 +120,7 @@ function WaysOut({ exportUrl, locale }: { exportUrl: string; locale: "en" | "es"
   return (
     <div className="flex flex-wrap gap-2">
       <Button asChild variant="outline" size="sm" className="h-7 text-xs">
-        <a href={PILOT_PRICING_URL[locale]} target="_blank" rel="noopener noreferrer">
+        <a href={PILOT_PRICING_URL[locale]} {...payLinkProps("plan")}>
           <ExternalLink className="w-3.5 h-3.5 mr-1.5" />
           {t("paidPlan")}
         </a>

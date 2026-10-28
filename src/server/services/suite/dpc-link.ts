@@ -32,6 +32,7 @@ import { mapRole, mapTechnique } from "@/lib/dpc-import-mapping";
 import { nextSystemNumber } from "@/server/services/ai-system/number";
 import { pilotRemaining } from "@/server/services/pilot/caps";
 import { syncRequirementsSafely } from "@/server/services/scope/sync-requirements";
+import { reapplyFirmTeamsForOrganization } from "@/server/services/suite/firm-team";
 
 /** Roles that may create or remove a link, on either side. */
 export const LINK_ROLES: readonly string[] = ["OWNER", "ADMIN"];
@@ -505,6 +506,9 @@ export async function createLink(
   // The places just added, and the systems just imported, decide which laws
   // reach each system: the requirement rows follow.
   await syncRequirementsSafely(db, args.organizationId, { userId: args.userId, reason: "dpo-central-link" });
+  // A link to one of the consultant's DPO Central firm organisations brings
+  // the consultant's firm team in (src/server/services/suite/firm-team.ts).
+  await reapplyFirmTeamsForOrganization(db, args.organizationId, args.userId);
   return { ok: true as const, link, result };
 }
 
@@ -531,6 +535,8 @@ export async function removeLink(
       metadata: { source: "suite-link" },
     },
   });
+  // Without the link, a firm team that reached the organisation through it goes.
+  await reapplyFirmTeamsForOrganization(db, organizationId, userId);
   return { changed: true };
 }
 

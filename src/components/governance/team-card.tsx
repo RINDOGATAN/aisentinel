@@ -15,6 +15,10 @@
  * Permissions mirror the server (organization and team routers): owners and
  * admins invite and remove members, nobody gives a role above their own, only
  * owners change roles, and the last owner can be neither demoted nor removed.
+ *
+ * People who come from a DPO Central firm team are listed apart, one group
+ * per consultant, without controls: that team is managed in DPO Central only,
+ * and the server refuses changes to those memberships here.
  */
 
 import { useState } from "react";
@@ -37,6 +41,8 @@ import { useUnsavedChangesWarning } from "@/lib/use-unsaved-changes";
 import { blockedEmailMessage, isBlockedAccountEmail } from "@/lib/email-policy";
 import { departmentNames } from "@/lib/department-tree";
 import { DepartmentMultiSelect } from "./department-multi-select";
+import { splitFirmMembers } from "@/lib/firm-members";
+import { brand } from "@/config/brand";
 
 const ROLES = ["OWNER", "ADMIN", "AI_OFFICER", "MEMBER", "VIEWER"] as const;
 type Role = (typeof ROLES)[number];
@@ -85,7 +91,9 @@ export function TeamCard({
   const grantable = grantableRoles(currentRole);
 
   const { data: org } = trpc.organization.getById.useQuery({ organizationId });
-  const members = org?.members ?? [];
+  const { own: members, firmGroups } = splitFirmMembers(org?.members ?? []);
+  const allMembers = org?.members ?? [];
+  const currentEmail = allMembers.find((m) => m.userId === currentUserId)?.user.email?.toLowerCase() ?? null;
   const { data: invitations } = trpc.team.invitations.useQuery({ organizationId }, { enabled: canManage });
   const { data: scopeData } = trpc.businessUnit.listForScope.useQuery({ organizationId }, { enabled: canManage });
   const allDepartments = scopeData?.departments ?? [];
@@ -220,6 +228,44 @@ export function TeamCard({
             );
           })}
         </div>
+
+        {firmGroups.map((g) => {
+          const mine = currentEmail === g.ownerEmail;
+          const ownerName =
+            allMembers.find((m) => m.user.email?.toLowerCase() === g.ownerEmail)?.user.name ?? g.ownerEmail;
+          return (
+            <div key={g.ownerEmail} className="space-y-2" data-testid="firm-group">
+              <p className="text-sm font-medium">
+                {mine ? t("firmGroupOwner") : t("firmGroup", { name: ownerName })}
+              </p>
+              <p className="text-xs text-muted-foreground" data-testid="firm-managed">
+                {!mine
+                  ? t("firmManaged", { name: ownerName })
+                  : brand.dpoCentralUrl
+                    ? t.rich("firmManagedOwner", {
+                        link: (chunks) => (
+                          <a
+                            href={`${brand.dpoCentralUrl}/privacy/settings#firm-team`}
+                            className="text-primary underline underline-offset-4"
+                          >
+                            {chunks}
+                          </a>
+                        ),
+                      })
+                    : t("firmManagedOwnerNoLink")}
+              </p>
+              {g.members.map((m) => (
+                <div key={m.id} className="flex flex-wrap items-center gap-3 p-2 rounded border border-border">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium truncate">{m.user.name ?? m.user.email}</p>
+                    <p className="text-xs text-muted-foreground truncate">{m.user.email}</p>
+                  </div>
+                  <span className="text-xs text-muted-foreground">{tn(ROLE_KEY[m.role as Role])}</span>
+                </div>
+              ))}
+            </div>
+          );
+        })}
 
         {canManage && invitations && invitations.length > 0 && (
           <div className="space-y-2" data-testid="pending-invitations">

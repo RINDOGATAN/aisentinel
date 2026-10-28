@@ -311,7 +311,7 @@ export async function acceptInvitation(
 
   const existing = await prisma.organizationMember.findFirst({
     where: { organizationId: inv.organizationId, userId: args.userId },
-    select: { id: true, role: true },
+    select: { id: true, role: true, firmTeamMemberId: true },
   });
   if (!existing) {
     await assertPilotOrganizationLimit(prisma, args.userId, args.locale, inv.organization);
@@ -343,7 +343,10 @@ export async function acceptInvitation(
       // Already a member (for example joined by the e-mail domain): the
       // invitation can raise the role to the one offered, never lower it.
       memberId = existing.id;
-      finalRole = ROLE_RANK[role] > ROLE_RANK[existing.role] ? role : existing.role;
+      // A membership from a DPO Central firm team keeps its role: it is
+      // managed there only (src/server/services/suite/firm-team.ts).
+      finalRole =
+        !existing.firmTeamMemberId && ROLE_RANK[role] > ROLE_RANK[existing.role] ? role : existing.role;
       if (finalRole !== existing.role) {
         await tx.organizationMember.update({ where: { id: existing.id }, data: { role: finalRole } });
       }

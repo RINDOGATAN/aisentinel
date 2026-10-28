@@ -20,6 +20,7 @@ import { brand } from "@/config/brand";
 import { mailFrom, signInSubject } from "@/lib/mail-from";
 import { resolveCookieDomain } from "@/config/pilot";
 import { recordPilotSignIn } from "@/server/services/pilot/first-sign-in";
+import { applyFirmTeamsAtSignIn } from "@/server/services/suite/firm-team";
 import { claimableDomain, emailDomain as domainOfEmail } from "@/lib/org-domain";
 import { isBlockedAccountEmail } from "@/lib/email-policy";
 import { EMAIL_NOT_ACCEPTED_ERROR } from "@/lib/auth-email-policy";
@@ -412,6 +413,10 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user, trigger, account, profile }) {
       if (user) {
         token.id = user.id;
+        // DPO Central firm teams this address belongs to (or that this
+        // consultant manages) reach their organisations now
+        // (src/server/services/suite/firm-team.ts). Never blocks sign-in.
+        if (user.id) await applyFirmTeamsAtSignIn(prisma, user.id, user.email);
       }
       // Fetch userType on sign-in or when session is updated (e.g. after persona selection)
       const userId = token.sub ?? (token.id as string | undefined);

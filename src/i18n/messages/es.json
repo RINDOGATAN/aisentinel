@@ -5407,6 +5407,11 @@
     "withdraw": "Retirar la invitación",
     "withdrawn": "Invitación retirada.",
     "alreadyMember": "Esta persona ya es miembro de la organización.",
+    "firmGroup": "Equipo de {name}",
+    "firmGroupOwner": "Tu equipo",
+    "firmManaged": "Estas personas forman parte del equipo de {name} y trabajan en todos los clientes que gestiona. El equipo se gestiona en DPO Central: solo {name} puede cambiar su rol o quitarlas, desde allí.",
+    "firmManagedOwner": "Se gestiona en DPO Central: cambia su rol o quítalas en <link>Tu equipo</link>.",
+    "firmManagedOwnerNoLink": "Se gestiona en DPO Central: cambia su rol o quítalas en Tu equipo, en la configuración de DPO Central.",
     "inviteEmail": {
       "subject": "{inviter} te ha invitado a {organization} en {app}",
       "lead": "{inviter} te ha invitado a unirte a {organization} en {app} como {role}. Inicia sesión con esta dirección de correo para aceptar.",

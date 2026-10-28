@@ -47,6 +47,7 @@ model User {
   aiGenerations           AiGeneration[]
   pilotDisclosures        PilotDisclosureAcknowledgement[]
   savedViews              SavedView[]
+  organizationsCreated    Organization[]                   @relation("OrganizationCreator")
 
   @@map("users")
 }
@@ -206,6 +207,13 @@ model Organization {
   jurisdictionsReviewedBy String?
   jurisdictionsReviewedAt DateTime?
 
+  /// The account that created the organization. Set on every creation from
+  /// the release that added it; null for organizations created before, which
+  /// a DPO Central firm team reaches only through an active DPO Central link
+  /// (src/server/services/suite/firm-team.ts).
+  createdById String?
+  createdBy   User?   @relation("OrganizationCreator", fields: [createdById], references: [id], onDelete: SetNull)
+
   members                  OrganizationMember[]
   invitations              OrganizationInvitation[]
   aiSystems                AISystem[]
@@ -252,26 +260,68 @@ model Organization {
   /// GIN so `operatingJurisdictions has 'US_CA'` scoping queries stay indexed.
   @@index([operatingJurisdictions], type: Gin)
   @@index([planStripeSubscriptionId])
+  @@index([createdById])
   @@map("organizations")
 }
 
 model OrganizationMember {
-  id             String           @id @default(cuid())
-  organizationId String
-  userId         String
-  role           OrganizationRole @default(MEMBER)
-  invitedEmail   String?
-  invitedAt      DateTime?
-  joinedAt       DateTime         @default(now())
+  id               String           @id @default(cuid())
+  organizationId   String
+  userId           String
+  role             OrganizationRole @default(MEMBER)
+  invitedEmail     String?
+  invitedAt        DateTime?
+  joinedAt         DateTime         @default(now())
+  /// Set when the membership comes from a DPO Central firm team: it is
+  /// created, changed and removed only from there
+  /// (src/server/services/suite/firm-team.ts). Null for a membership the
+  /// person holds in their own right, which the firm team never touches.
+  firmTeamMemberId String?
 
   organization        Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   user                User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  firmTeamMember      FirmTeamMember?      @relation(fields: [firmTeamMemberId], references: [id], onDelete: Cascade)
   ownedBusinessUnits  BusinessUnit[]       @relation("BusinessUnitOwner")
   deputyBusinessUnits BusinessUnit[]       @relation("BusinessUnitDeputy")
   businessUnitScopes  BusinessUnitMember[]
 
   @@unique([organizationId, userId])
+  @@index([firmTeamMemberId])
   @@map("organization_members")
+}
+
+/// A person in the firm team of a DPO Central account, as DPO Central last
+/// pushed it (POST /api/suite/firm-team). The list is managed in DPO Central
+/// only; this is its copy. Keyed by the account's e-mail and the person's,
+/// since either may not have signed in here yet. `role` is already this
+/// application's role (never OWNER); `state` is DPO Central's.
+model FirmTeamMember {
+  id         String           @id @default(cuid())
+  ownerEmail String
+  email      String
+  role       OrganizationRole
+  /// "pending" or "accepted", as in DPO Central.
+  state      String
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
+  memberships OrganizationMember[]
+
+  @@unique([ownerEmail, email])
+  @@index([email])
+  @@map("firm_team_members")
+}
+
+/// The last firm-team push applied for a DPO Central account: its time
+/// (a push that is not later is refused) and the DPO Central organisations
+/// that are the account's firm organisations there.
+model FirmTeamSync {
+  ownerEmail         String   @id
+  lastAppliedAt      DateTime
+  dpcOrganizationIds String[] @default([])
+  updatedAt          DateTime @updatedAt
+
+  @@map("firm_team_syncs")
 }
 
 /// An invitation to join an organization, sent by e-mail to a person who may

@@ -29,6 +29,7 @@ import {
   previewInvitation,
   sendInvitationEmail,
 } from "../../services/team/invitations";
+import { reapplyFirmTeamsForOrganization } from "@/server/services/suite/firm-team";
 
 function assertInviter(role: string) {
   if (!canInvite(role)) {
@@ -244,12 +245,17 @@ export const teamRouter = createTRPCRouter({
   accept: protectedProcedure
     .input(z.object({ token: z.string().min(16).max(128) }))
     .mutation(async ({ ctx, input }) => {
-      return acceptInvitation(ctx.prisma, {
+      const accepted = await acceptInvitation(ctx.prisma, {
         token: input.token,
         userId: ctx.session.user.id,
         userEmail: ctx.session.user.email,
         locale: pilotLocale(ctx.getCookie),
       });
+      // A new owner can change which firm teams reach the organisation.
+      if (accepted.role === "OWNER") {
+        await reapplyFirmTeamsForOrganization(ctx.prisma, accepted.organizationId, ctx.session.user.id);
+      }
+      return accepted;
     }),
 });
 

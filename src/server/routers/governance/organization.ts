@@ -16,6 +16,7 @@ import { computeMarkingDeadline } from "@/config/transparency-rules";
 import { CHATBOT_OVERLAY_ONLY_JURISDICTIONS, JURISDICTION_IDS } from "@/config/jurisdictions";
 import { chatbotOverlayEnabled } from "../../services/chatbot-overlay/switch";
 import { firstFreeSlug } from "@/lib/unique-slug";
+import { reapplyFirmTeamsForOrganization } from "@/server/services/suite/firm-team";
 import { claimableDomain } from "@/lib/org-domain";
 import { assertNotOnHold } from "../../services/legal-hold";
 import { syncRequirementsSafely } from "@/server/services/scope/sync-requirements";
@@ -61,6 +62,13 @@ async function hasAcceptedCurrentDpa(
   );
 }
 
+/** Why a firm-team membership cannot be changed or removed here. */
+export function firmManagedMessage(locale: "en" | "es"): string {
+  return locale === "es"
+    ? "Esta persona forma parte del equipo de un despacho, que se gestiona en DPO Central. Solo quien gestiona ese equipo puede cambiar su rol o quitarla, desde DPO Central."
+    : "This person is in a firm team, which is managed in DPO Central. Only the account that manages that team can change their role or remove them, from DPO Central.";
+}
+
 export const organizationRouter = createTRPCRouter({
   list: protectedProcedure.query(async ({ ctx }) => {
     const memberships = await ctx.prisma.organizationMember.findMany({
@@ -100,6 +108,7 @@ export const organizationRouter = createTRPCRouter({
               user: {
                 select: { id: true, name: true, email: true, image: true },
               },
+              firmTeamMember: { select: { ownerEmail: true } },
             },
           },
           _count: {
@@ -233,6 +242,10 @@ export const organizationRouter = createTRPCRouter({
           // (src/config/applicability.ts, CHOOSABLE_FRAMEWORKS).
           settings: { applicability: { frameworks: [] } },
           ...(pilotFirstSignInAt ? { pilotFirstSignInAt } : {}),
+          // Who created it: a DPO Central firm team reaches an organisation
+          // its consultant created and is the only owner of
+          // (src/server/services/suite/firm-team.ts).
+          createdById: ctx.session.user.id,
           members: {
             create: {
               userId: ctx.session.user.id,
@@ -268,6 +281,9 @@ export const organizationRouter = createTRPCRouter({
           },
         });
       }
+
+      // The creator's DPO Central firm team, if any, joins it. Never blocks creation.
+      await reapplyFirmTeamsForOrganization(ctx.prisma, organization.id, ctx.session.user.id);
 
       return organization;
     }),
@@ -470,6 +486,10 @@ export const organizationRouter = createTRPCRouter({
       if (!member) {
         throw new TRPCError({ code: "NOT_FOUND", message: "Member not found in this organization" });
       }
+      // A membership from a DPO Central firm team is managed there only.
+      if (member.firmTeamMemberId) {
+        throw new TRPCError({ code: "FORBIDDEN", message: firmManagedMessage(pilotLocale(ctx.getCookie)) });
+      }
       // Never leave an organization without an owner.
       if (member.role === "OWNER" && input.role !== "OWNER") {
         const ownerCount = await ctx.prisma.organizationMember.count({
@@ -502,6 +522,11 @@ export const organizationRouter = createTRPCRouter({
         },
       });
 
+      // An owner added or demoted changes which firm teams reach this organisation.
+      if (member.role !== input.role && (member.role === "OWNER" || input.role === "OWNER")) {
+        await reapplyFirmTeamsForOrganization(ctx.prisma, ctx.organization.id, ctx.session.user.id);
+      }
+
       return updated;
     }),
 
@@ -526,6 +551,11 @@ export const organizationRouter = createTRPCRouter({
 
       if (!memberToRemove) {
         throw new TRPCError({ code: "NOT_FOUND", message: "Member not found" });
+      }
+
+      // A membership from a DPO Central firm team is managed there only.
+      if (memberToRemove.firmTeamMemberId) {
+        throw new TRPCError({ code: "FORBIDDEN", message: firmManagedMessage(pilotLocale(ctx.getCookie)) });
       }
 
       if (memberToRemove.role === "OWNER" && ctx.membership.role !== "OWNER") {
@@ -560,6 +590,10 @@ export const organizationRouter = createTRPCRouter({
           changes: { memberUserId: memberToRemove.userId, role: memberToRemove.role },
         },
       });
+      // A removed owner no longer manages this organisation: its firm team's memberships here go.
+      if (memberToRemove.role === "OWNER") {
+        await reapplyFirmTeamsForOrganization(ctx.prisma, ctx.organization.id, ctx.session.user.id);
+      }
       return { success: true };
     }),
 

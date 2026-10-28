@@ -102,7 +102,7 @@ const techniqueLabelKeys: Record<string, string> = {
 
 export default function VendorDetailPage() {
   const t = useTranslations("vendorDetail");
-  const { formatDate } = useFormatDate();
+  const { formatDate, formatDay } = useFormatDate();
   const { riskLabel, statusLabel } = useEnumLabels();
   const locale = useLocale();
   const tc = useTranslations("common");
@@ -314,14 +314,14 @@ export default function VendorDetailPage() {
                 <p className="text-sm text-muted-foreground">{t("labelContractStart")}</p>
                 <p className="font-medium text-sm flex items-center gap-1">
                   <Calendar className="w-3 h-3 text-muted-foreground" />
-                  {formatDate(vendor.contractStartDate)}
+                  {formatDay(vendor.contractStartDate)}
                 </p>
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">{t("labelContractExpiry")}</p>
                 <p className="font-medium text-sm flex items-center gap-1">
                   <Calendar className="w-3 h-3 text-muted-foreground" />
-                  {formatDate(vendor.contractExpiryDate)}
+                  {formatDay(vendor.contractExpiryDate)}
                 </p>
               </div>
             </div>

@@ -8,14 +8,16 @@
  */
 
 import { useLocale } from "next-intl";
-import { formatDateIn, formatDateTimeIn } from "./format-date";
+import { formatCalendarDayIn, formatDateIn, formatDateTimeIn } from "./format-date";
 
-export { dateLocaleTag, formatDateIn, formatDateTimeIn, formatDayIn, missingDate } from "./format-date";
+export { dateLocaleTag, formatCalendarDayIn, formatDateIn, formatDateTimeIn, formatDayIn, missingDate } from "./format-date";
 
 export function useFormatDate() {
   const locale = useLocale();
   return {
     formatDate: (date: Date | string | null | undefined) => formatDateIn(locale, date),
     formatDateTime: (date: Date | string | null | undefined) => formatDateTimeIn(locale, date),
+    /** A date-only value stored at 00:00 UTC: the same calendar day in every time zone. */
+    formatDay: (date: Date | string | null | undefined) => formatCalendarDayIn(locale, date),
   };
 }

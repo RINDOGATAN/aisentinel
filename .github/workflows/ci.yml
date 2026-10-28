@@ -106,8 +106,8 @@ jobs:
       - name: Fresh install (every migration from zero, seed, content)
         run: npx tsx e2e/with-env.ts sh deploy/sovereign/migrate.sh
 
-      - name: Seeded content matches the counts, the scope sync runs on it, firm teams apply
-        run: npx tsx e2e/with-env.ts npx vitest run src/config/aiuc1-seed.db.test.ts src/server/services/scope/sync-requirements.db.test.ts src/server/services/suite/firm-team.db.test.ts
+      - name: Seeded content matches the counts, the scope sync runs on it, firm teams apply, suite sync selects native systems
+        run: npx tsx e2e/with-env.ts npx vitest run src/config/aiuc1-seed.db.test.ts src/server/services/scope/sync-requirements.db.test.ts src/server/services/suite/firm-team.db.test.ts src/server/services/suite/dpc-link.db.test.ts
 
       - name: Build (self-host posture)
         run: npx tsx e2e/with-env.ts npx next build

@@ -1223,13 +1223,26 @@ export function chatbotControlViews(places: readonly string[], today: string): C
       if (hit.length === 0) continue;
       laws.push({ law, entry, timing: lawTiming(entry.appliesFrom, today), places: hit });
     }
-    return {
-      control,
-      laws,
-      inForce: laws.filter((l) => l.timing === "IN_FORCE").length,
-      upcoming: laws.filter((l) => l.timing === "UPCOMING").length,
-    };
+    return { control, laws, ...countDistinctLaws(laws.map((l) => ({ lawId: l.law.id, timing: l.timing }))) };
   });
+}
+
+/**
+ * How many distinct laws are in force and how many are upcoming. A law listed
+ * under several controls, or twice under one, counts once: in force when any
+ * of its entries is in force, otherwise upcoming.
+ */
+export function countDistinctLaws(laws: readonly { lawId: string; timing: LawTiming }[]): {
+  inForce: number;
+  upcoming: number;
+} {
+  const timing = new Map<string, LawTiming>();
+  for (const l of laws) {
+    if (l.timing === "IN_FORCE" || !timing.has(l.lawId)) timing.set(l.lawId, l.timing);
+  }
+  let inForce = 0;
+  for (const t of timing.values()) if (t === "IN_FORCE") inForce++;
+  return { inForce, upcoming: timing.size - inForce };
 }
 
 /** The watch-list notes for the declared places. */

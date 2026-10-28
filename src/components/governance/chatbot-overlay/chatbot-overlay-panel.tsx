@@ -26,6 +26,7 @@ import {
   COUNSEL_FLAG,
   COUNSEL_ITEMS,
   EMPTY_CHATBOT_FACTS,
+  countDistinctLaws,
   type ChatbotAnswer,
   type ChatbotFacts,
   type ChatbotQuestion,
@@ -88,8 +89,7 @@ export function ChatbotOverlayPanel({
   const counselSelected = counselEdits ?? data.counsel.items;
   const counselDirty = counselEdits !== null;
   const showControls = data.state !== "DOES_NOT_APPLY";
-  const inForce = data.controls.reduce((n, c) => n + c.inForce, 0);
-  const upcoming = data.controls.reduce((n, c) => n + c.upcoming, 0);
+  const { inForce, upcoming } = countDistinctLaws(data.controls.flatMap((c) => c.laws));
 
   const placeLabel = (id: string) => tj(`option.${id}`);
   // An ISO date is a calendar day: read it as local midnight, so a day never
